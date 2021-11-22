@@ -92,6 +92,7 @@ class WalletConnectCardScanner {
         }
         
         scannedCardsRepository.add(cardInfo.card)
+        
         return WalletInfo(cid: cardInfo.card.cardId,
                           walletPublicKey: wallet.publicKey,
                           blockchain: blockchain,

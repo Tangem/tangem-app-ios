@@ -40,31 +40,36 @@ public class WalletManagerFactory {
     /// - Returns: WalletManager?
     public func makeWalletManager(from cardId: String, wallet: Card.Wallet, blockchain: Blockchain) -> WalletManager? {
         return makeWalletManager(from: blockchain,
-                                 walletPublicKey: wallet.publicKey,
+                                 publicKey: wallet.publicKey,
+                                 chainCode: wallet.chainCode,
                                  cardId: cardId,
                                  cardCurve: wallet.curve ,
-                                 walletPairPublicKey: nil,
+                                 pairPublicKey: nil,
                                  tokens: [])
     }
     
     public func makeTwinWalletManager(from cardId: String, wallet: Card.Wallet, blockchain: Blockchain, pairKey: Data) -> WalletManager? {
         return makeWalletManager(from: blockchain,
-                                 walletPublicKey: wallet.publicKey,
+                                 publicKey: wallet.publicKey,
+                                 chainCode: wallet.chainCode,
                                  cardId: cardId,
                                  cardCurve: wallet.curve,
-                                 walletPairPublicKey: pairKey,
+                                 pairPublicKey: pairKey,
                                  tokens: [])
     }
     
     func makeWalletManager(from blockchain: Blockchain,
-                           walletPublicKey: Data,
+                           publicKey: Data,
+                           chainCode: Data?,
                            cardId: String,
                            cardCurve: EllipticCurve,
-                           walletPairPublicKey: Data? = nil,
+                           pairPublicKey: Data? = nil,
                            tokens: [Token] = []) -> WalletManager? {
         guard blockchain.curve == cardCurve else { return nil }
         
-        let addresses = blockchain.makeAddresses(from: walletPublicKey, with: walletPairPublicKey)
+        guard let walletPublicKey = try? blockchain.makePublicKey(publicKey, chainCode: chainCode) else { return nil }
+        
+        let addresses = blockchain.makeAddresses(from: walletPublicKey.blockchainPublicKey, with: pairPublicKey)
         let wallet = Wallet(blockchain: blockchain,
                             addresses: addresses)
         

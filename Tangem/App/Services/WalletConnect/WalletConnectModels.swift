@@ -9,18 +9,19 @@
 import Foundation
 import BlockchainSdk
 import WalletConnectSwift
+import TangemSdk
 
 struct WalletInfo: Codable, Hashable {
     let cid: String
-    let walletPublicKey: Data
+    let walletPublicKey: Wallet.PublicKey
     let blockchain: Blockchain
     let chainId: Int?
     
     var address: String {
-        blockchain.makeAddresses(from: walletPublicKey, with: nil).first!.value
+        blockchain.makeAddresses(from: walletPublicKey.blockchainKey, with: nil).first!.value
     }
     
-    internal init(cid: String, walletPublicKey: Data, blockchain: Blockchain, chainId: Int?) {
+    internal init(cid: String, walletPublicKey: Wallet.PublicKey, blockchain: Blockchain, chainId: Int?) {
         self.cid = cid
         self.walletPublicKey = walletPublicKey
         self.blockchain = blockchain

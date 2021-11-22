@@ -96,7 +96,7 @@ class BnbSignHandler: WalletConnectSignHandler {
         do {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.outputFormatting = .sortedKeys
-            let pubkey = session.wallet.walletPublicKey.hexString
+            let pubkey = session.wallet.walletPublicKey.blockchainKey.hexString
             let signResponse = BnbSignResponse(signature: signature, publicKey: pubkey)
             
             // Important note!
@@ -114,20 +114,11 @@ class BnbSignHandler: WalletConnectSignHandler {
         
     }
     
-    override func sign(data: Data, cardId: String, walletPublicKey: Data) -> AnyPublisher<String, Error> {
+    override func sign(data: Data, cardId: String, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<String, Error> {
         let hash = data.sha256()
         
-        return signer.sign(hash: hash, cardId: cardId, walletPublicKey: walletPublicKey)
-            .tryMap {
-                guard let normalizedSignature = Secp256k1Utils.normalizeVerify(secp256k1Signature: $0, hash: hash, publicKey: walletPublicKey) else {
-                    throw "Failed to normalize signature"
-                }
-                
-                let signature = normalizedSignature.hexString
-                print("Signature: \($0.hexString)\nNomalized: \(signature)")
-                return signature
-            }
-
+        return signer.sign(hash: hash, cardId: cardId, walletPublicKey: walletPublicKey.seedKey, hdPath: walletPublicKey.hdPath)
+            .tryMap { $0.hexString }
             .eraseToAnyPublisher()
     }
     

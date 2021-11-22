@@ -158,7 +158,7 @@ public enum Blockchain {
         case .binance:
             return ["bnb:"]
         case .dogecoin:
-            return ["doge:"]
+            return ["doge:", "dogecoin:"]
         default:
             return [""]
         }
@@ -166,8 +166,39 @@ public enum Blockchain {
     
     public var defaultAddressType: AddressType {
         switch self {
-        case .bitcoin: return .bitcoin(type: .bech32)
+        case .bitcoin, .litecoin: return .bitcoin(type: .bech32)
         default: return .plain
+        }
+    }
+    
+    /// BIP44
+    public var derivationPath: DerivationPath? {
+        guard curve == .secp256k1 else { return  nil }
+        
+        let bip44 = BIP44(coinType: coinType,
+                          account: 0,
+                          change: .external,
+                          addressIndex: 0)
+        
+        return bip44.buildPath().toNonHardened()
+    }
+    
+    public var coinType: UInt32 {
+        if isTestnet {
+            return 1
+        }
+        
+        switch self {
+        case .bitcoin, .ducatus: return 0
+        case .litecoin: return 2
+        case .dogecoin: return 3
+        case .ethereum, .bsc, .rsk, .polygon: return 60
+        case .bitcoinCash: return 145
+        case .binance: return 714
+        case .xrp: return 144
+        case .tezos: return 1729
+        case .stellar: return 148
+        case .cardano: return 1815
         }
     }
     
@@ -188,7 +219,7 @@ public enum Blockchain {
     
     public func getShareString(from address: String) -> String {
         switch self {
-        case .bitcoin, .ethereum, .litecoin:
+        case .bitcoin, .ethereum, .litecoin, .binance:
             return "\(qrPrefixes.first ?? "")\(address)"
         default:
             return "\(address)"
@@ -200,10 +231,12 @@ public enum Blockchain {
         case .binance(let testnet):
             let baseUrl = testnet ? "https://testnet-explorer.binance.org/address/" : "https://explorer.binance.org/address/"
             return URL(string: baseUrl + address)
-        case .bitcoin:
-            return URL(string: "https://blockchain.info/address/\(address)")
-        case .bitcoinCash:
-            return URL(string: "https://blockchair.com/bitcoin-cash/address/\(address)")
+        case .bitcoin(let testnet):
+            let baseUrl = testnet ? "https://www.blockchain.com/btc-testnet/address/" : "https://www.blockchain.com/btc/address/"
+            return URL(string: baseUrl + address)
+        case .bitcoinCash(let testnet):
+            let baseUrl = testnet ? "https://www.blockchain.com/bch-testnet/address/" : "https://www.blockchain.com/bch/address/"
+            return URL(string: baseUrl + address)
         case .cardano:
             return URL(string: "https://cardanoexplorer.com/address/\(address)")
         case .ducatus:
@@ -214,7 +247,7 @@ public enum Blockchain {
                 "https://etherscan.io/token/\(tokenContractAddress!)?a=\(address)"
             return URL(string: exploreLink)
         case .litecoin:
-            return URL(string: "https://live.blockcypher.com/ltc/address/\(address)")
+            return URL(string: "https://blockchair.com/litecoin/address/\(address)")
         case .rsk:
             var exploreLink = "https://explorer.rsk.co/address/\(address)"
             if tokenContractAddress != nil {
@@ -273,7 +306,7 @@ public enum Blockchain {
             let networkParams = network.networkParams
             return BitcoinAddressService(networkParams: networkParams)
         case .litecoin:
-            return BitcoinLegacyAddressService(networkParams: LitecoinNetworkParams())
+            return BitcoinAddressService(networkParams: LitecoinNetworkParams())
         case .stellar:
             return StellarAddressService()
         case .ethereum, .bsc, .polygon:
@@ -365,5 +398,18 @@ extension Blockchain: Equatable, Hashable, Codable {
         if case let .cardano(shelley) = self {
             try container.encode(shelley, forKey: Keys.shelley)
         }
+    }
+    
+    
+    public func makePublicKey(_ publicKey: Data, chainCode: Data?) throws -> Wallet.PublicKey {
+        guard let hdPath = self.derivationPath,
+              let chainCode = chainCode else {
+                  return Wallet.PublicKey(publicKey: publicKey, derivedKey: nil)
+              }
+        
+        let extendedKey = ExtendedPublicKey(compressedPublicKey: publicKey, chainCode: chainCode)
+        let derivedKey = try extendedKey.derivePublicKey(path: hdPath).compressedPublicKey
+        
+        return Wallet.PublicKey(publicKey: publicKey, derivedKey: derivedKey)
     }
 }

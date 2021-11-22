@@ -115,4 +115,17 @@ extension Wallet {
         case created
         case loaded
     }
+    
+    public struct PublicKey: Codable, Hashable {
+        private let publicKey: Data
+        private let derivedKey: Data?
+        
+        public var signingPublicKey: Data { publicKey }
+        public var blockchainPublicKey: Data { derivedKey ?? publicKey }
+        
+        public init(publicKey: Data, derivedKey: Data?) {
+            self.publicKey = publicKey
+            self.derivedKey = derivedKey
+        }
+    }
 }

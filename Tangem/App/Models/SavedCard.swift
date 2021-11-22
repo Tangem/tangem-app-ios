@@ -15,7 +15,7 @@ struct SavedCard: Codable {
     
     static func savedCard(from card: Card) -> SavedCard {
         let wallets: [SavedCardWallet] = card.wallets.map {
-            .init(publicKey: $0.publicKey, curve: $0.curve)
+            .init(publicKey: $0.publicKey, curve: $0.curve, chainCode: $0.chainCode)
         }
         
         return .init(cardId: card.cardId, wallets: wallets)
@@ -25,4 +25,5 @@ struct SavedCard: Codable {
 struct SavedCardWallet: Codable {
     let publicKey: Data
     let curve: EllipticCurve
+    let chainCode: Data?
 }

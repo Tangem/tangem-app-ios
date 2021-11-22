@@ -157,18 +157,18 @@ extension Assembly {
     }
     
     
-//    func makeReadViewModel() -> ReadViewModel {
-//        if let restored: ReadViewModel = get() {
-//            return restored
-//        }
-//        
-//        let vm =  ReadViewModel()
-//        initialize(vm, isResetable: false)
-//        vm.failedCardScanTracker = services.failedCardScanTracker
-//        vm.userPrefsService = services.userPrefsService
-//        vm.cardsRepository = services.cardsRepository
-//        return vm
-//    }
+    //    func makeReadViewModel() -> ReadViewModel {
+    //        if let restored: ReadViewModel = get() {
+    //            return restored
+    //        }
+    //
+    //        let vm =  ReadViewModel()
+    //        initialize(vm, isResetable: false)
+    //        vm.failedCardScanTracker = services.failedCardScanTracker
+    //        vm.userPrefsService = services.userPrefsService
+    //        vm.cardsRepository = services.cardsRepository
+    //        return vm
+    //    }
     
     // MARK: - Main view model
     func makeMainViewModel() -> MainViewModel {
@@ -196,7 +196,7 @@ extension Assembly {
     func makeTokenDetailsViewModel( blockchain: Blockchain, amountType: Amount.AmountType = .coin) -> TokenDetailsViewModel {
         if let restored: TokenDetailsViewModel = get() {
             if let cardModel = services.cardsRepository.lastScanResult.cardModel {
-             //   restored.card = cardModel
+                //   restored.card = cardModel
             }
             return restored
         }
@@ -229,10 +229,10 @@ extension Assembly {
         if cardInfo.card.isTwinCard,
            let savedPairKey = cardInfo.twinCardInfo?.pairPublicKey,
            let publicKey = cardInfo.card.wallets.first?.publicKey,
-           let twinWalletManager = services.walletManagerFactory.makeTwinWalletManager(from: cardInfo.card.cardId,
-                                                                                       walletPublicKey: publicKey,
-                                                                                       pairKey: savedPairKey,
-                                                                                       isTestnet: false) {  //TODO: Do we actually need testnet for twins?
+           let twinWalletManager = try? services.walletManagerFactory.makeTwinWalletManager(from: cardInfo.card.cardId,
+                                                                                            walletPublicKey: publicKey,
+                                                                                            pairKey: savedPairKey,
+                                                                                            isTestnet: false) {  //TODO: Do we actually need testnet for twins?
             walletManagers.append(twinWalletManager)
         } else {
             //If this card supports multiwallet feature, load all saved tokens from persistent storage
@@ -241,8 +241,10 @@ extension Assembly {
                 
                 //Load erc20 tokens if exists
                 let tokens = tokenItems.compactMap { $0.token }
-                if let secpWalletPublicKey = cardInfo.card.wallets.first(where: { $0.curve == .secp256k1 })?.publicKey {
-                    let tokenManagers = services.walletManagerFactory.makeWalletManagers(for: cardInfo.card.cardId, with: secpWalletPublicKey, and: tokens)
+                if let secpWallet = cardInfo.card.wallets.first(where: { $0.curve == .secp256k1 }),
+                   let tokenManagers = try? services.walletManagerFactory.makeWalletManagers(for: cardInfo.card.cardId,
+                                                                                                wallet: secpWallet,
+                                                                                                and: tokens) {
                     walletManagers.append(contentsOf: tokenManagers)
                 }
                 
@@ -292,10 +294,10 @@ extension Assembly {
         var walletManagers = [WalletManager]()
         
         for blockchain in blockchains {
-            if let walletPublicKey = cardInfo.card.wallets.first(where: { $0.curve == blockchain.curve })?.publicKey,
-               let wm = services.walletManagerFactory.makeWalletManager(from: cardInfo.card.cardId,
-                                                                        walletPublicKey: walletPublicKey,
-                                                                        blockchain: blockchain) {
+            if let wallet = cardInfo.card.wallets.first(where: { $0.curve == blockchain.curve }),
+               let wm = try? services.walletManagerFactory.makeWalletManager(from: cardInfo.card.cardId,
+                                                                             wallet: wallet,
+                                                                             blockchain: blockchain) {
                 walletManagers.append(wm)
             }
         }
@@ -309,16 +311,18 @@ extension Assembly {
         var walletManagers = [WalletManager]()
         
         for blockchain in blockchains {
-            if let walletPublicKey = cardDto.wallets.first(where: { $0.curve == blockchain.curve })?.publicKey,
-               let wm = services.walletManagerFactory.makeWalletManager(from: cid,
-                                                                        walletPublicKey: walletPublicKey,
-                                                                        blockchain: blockchain) {
+            if let wallet = cardDto.wallets.first(where: { $0.curve == blockchain.curve }),
+               let wm = try? services.walletManagerFactory.makeWalletManager(from: cid,
+                                                                             walletPublicKey: wallet.publicKey,
+                                                                             chainCode: wallet.chainCode,
+                                                                             blockchain: blockchain) {
                 walletManagers.append(wm)
             }
         }
         
         return walletManagers
     }
+    
     
     // MARK: Card model
     func makeCardModel(from info: CardInfo) -> CardViewModel {
@@ -460,45 +464,45 @@ extension Assembly {
         return vm
     }
     
-//    func makeTwinCardOnboardingViewModel(isFromMain: Bool) -> TwinCardOnboardingViewModel {
-//        let scanResult = services.cardsRepository.lastScanResult
-//        let twinInfo = scanResult.cardModel?.cardInfo.twinCardInfo
-//        let twinPairCid = AppTwinCardIdFormatter.format(cid: /*twinInfo?.pairCid ??*/ "", cardNumber: twinInfo?.series.pair.number ?? 1)
-//		return makeTwinCardOnboardingViewModel(state: .onboarding(withPairCid: twinPairCid, isFromMain: isFromMain))
-//	}
-//
-//    func makeTwinCardWarningViewModel(isRecreating: Bool) -> TwinCardOnboardingViewModel {
-//        makeTwinCardOnboardingViewModel(state: .warning(isRecreating: isRecreating))
-//    }
-//
-//    func makeTwinCardOnboardingViewModel(state: TwinCardOnboardingViewModel.State) -> TwinCardOnboardingViewModel {
-//        let key = String(describing: TwinCardOnboardingViewModel.self) + "_" + state.storageKey
-//        if let vm: TwinCardOnboardingViewModel = get(key: key) {
-//            vm.state = state
-//            return vm
-//        }
-//
-//        let vm = TwinCardOnboardingViewModel(state: state, imageLoader: services.imageLoaderService)
-//        initialize(vm, with: key, isResetable: false)
-//        vm.userPrefsService = services.userPrefsService
-//        return vm
-//    }
-//
-//    func makeTwinsWalletCreationViewModel(isRecreating: Bool) -> TwinsWalletCreationViewModel {
-//        if let twinInfo = services.cardsRepository.lastScanResult.cardModel!.cardInfo.twinCardInfo {
-//            services.twinsWalletCreationService.setupTwins(for: twinInfo)
-//        }
-//        if let vm: TwinsWalletCreationViewModel = get() {
-//            vm.walletCreationService = services.twinsWalletCreationService
-//            return vm
-//        }
-//
-//        let vm = TwinsWalletCreationViewModel(isRecreatingWallet: isRecreating,
-//                                              walletCreationService: services.twinsWalletCreationService,
-//                                              imageLoaderService: services.imageLoaderService)
-//        initialize(vm)
-//        return vm
-//    }
+    //    func makeTwinCardOnboardingViewModel(isFromMain: Bool) -> TwinCardOnboardingViewModel {
+    //        let scanResult = services.cardsRepository.lastScanResult
+    //        let twinInfo = scanResult.cardModel?.cardInfo.twinCardInfo
+    //        let twinPairCid = AppTwinCardIdFormatter.format(cid: /*twinInfo?.pairCid ??*/ "", cardNumber: twinInfo?.series.pair.number ?? 1)
+    //		return makeTwinCardOnboardingViewModel(state: .onboarding(withPairCid: twinPairCid, isFromMain: isFromMain))
+    //	}
+    //
+    //    func makeTwinCardWarningViewModel(isRecreating: Bool) -> TwinCardOnboardingViewModel {
+    //        makeTwinCardOnboardingViewModel(state: .warning(isRecreating: isRecreating))
+    //    }
+    //
+    //    func makeTwinCardOnboardingViewModel(state: TwinCardOnboardingViewModel.State) -> TwinCardOnboardingViewModel {
+    //        let key = String(describing: TwinCardOnboardingViewModel.self) + "_" + state.storageKey
+    //        if let vm: TwinCardOnboardingViewModel = get(key: key) {
+    //            vm.state = state
+    //            return vm
+    //        }
+    //
+    //        let vm = TwinCardOnboardingViewModel(state: state, imageLoader: services.imageLoaderService)
+    //        initialize(vm, with: key, isResetable: false)
+    //        vm.userPrefsService = services.userPrefsService
+    //        return vm
+    //    }
+    //
+    //    func makeTwinsWalletCreationViewModel(isRecreating: Bool) -> TwinsWalletCreationViewModel {
+    //        if let twinInfo = services.cardsRepository.lastScanResult.cardModel!.cardInfo.twinCardInfo {
+    //            services.twinsWalletCreationService.setupTwins(for: twinInfo)
+    //        }
+    //        if let vm: TwinsWalletCreationViewModel = get() {
+    //            vm.walletCreationService = services.twinsWalletCreationService
+    //            return vm
+    //        }
+    //
+    //        let vm = TwinsWalletCreationViewModel(isRecreatingWallet: isRecreating,
+    //                                              walletCreationService: services.twinsWalletCreationService,
+    //                                              imageLoaderService: services.imageLoaderService)
+    //        initialize(vm)
+    //        return vm
+    //    }
     
     func makeWalletConnectViewModel(cardModel: CardViewModel) -> WalletConnectViewModel {
         let vm = WalletConnectViewModel(cardModel: cardModel)
@@ -531,16 +535,16 @@ extension Assembly {
     }
     
     public func reset() {
-//        var persistentKeys = [String]()
-//        persistentKeys.append(String(describing: type(of: MainViewModel.self)))
-//        persistentKeys.append(String(describing: type(of: ReadViewModel.self)))
-//        persistentKeys.append(String(describing: DeprecatedDisclaimerViewModel.self) + "_\(DeprecatedDisclaimerViewModel.State.accept)")
-//        persistentKeys.append(String(describing: TwinCardOnboardingViewModel.self) + "_" + TwinCardOnboardingViewModel.State.onboarding(withPairCid: "", isFromMain: false).storageKey)
-//        persistentKeys.append(String(describing: type(of: CardOnboardingViewModel.self)))
-//        persistentKeys.append(String(describing: type(of: NoteOnboardingViewModel.self)))
+        //        var persistentKeys = [String]()
+        //        persistentKeys.append(String(describing: type(of: MainViewModel.self)))
+        //        persistentKeys.append(String(describing: type(of: ReadViewModel.self)))
+        //        persistentKeys.append(String(describing: DeprecatedDisclaimerViewModel.self) + "_\(DeprecatedDisclaimerViewModel.State.accept)")
+        //        persistentKeys.append(String(describing: TwinCardOnboardingViewModel.self) + "_" + TwinCardOnboardingViewModel.State.onboarding(withPairCid: "", isFromMain: false).storageKey)
+        //        persistentKeys.append(String(describing: type(of: CardOnboardingViewModel.self)))
+        //        persistentKeys.append(String(describing: type(of: NoteOnboardingViewModel.self)))
         
-//        let indicesToRemove = modelsStorage.keys.filter { !persistentKeys.contains($0) }
-//        indicesToRemove.forEach { modelsStorage.removeValue(forKey: $0) }
+        //        let indicesToRemove = modelsStorage.keys.filter { !persistentKeys.contains($0) }
+        //        indicesToRemove.forEach { modelsStorage.removeValue(forKey: $0) }
         modelsStorage.removeAll()
     }
     

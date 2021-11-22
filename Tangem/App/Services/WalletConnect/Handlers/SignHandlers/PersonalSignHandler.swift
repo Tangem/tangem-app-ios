@@ -10,6 +10,7 @@ import Foundation
 import WalletConnectSwift
 import Combine
 import TangemSdk
+import BlockchainSdk
 
 class PersonalSignHandler: WalletConnectSignHandler {
     
@@ -38,14 +39,14 @@ class PersonalSignHandler: WalletConnectSignHandler {
         .signature(signature, for: request)
     }
     
-    override func sign(data: Data, cardId: String, walletPublicKey: Data) -> AnyPublisher<String, Error> {
+    override func sign(data: Data, cardId: String, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<String, Error> {
         let hash = data.sha3(.keccak256)
         
-        return signer.sign(hash: hash, cardId: cardId, walletPublicKey: walletPublicKey)
+        return signer.sign(hash: hash, cardId: cardId, walletPublicKey: walletPublicKey.seedKey, hdPath: walletPublicKey.hdPath)
             .tryMap { response -> String in
                 if let unmarshalledSig = Secp256k1Utils.unmarshal(secp256k1Signature: response,
                                                                   hash: hash,
-                                                                  publicKey: walletPublicKey) {
+                                                                  publicKey: walletPublicKey.blockchainKey) {
                     
                     let strSig =  "0x" + unmarshalledSig.r.hexString + unmarshalledSig.s.hexString +
                         unmarshalledSig.v.hexString
