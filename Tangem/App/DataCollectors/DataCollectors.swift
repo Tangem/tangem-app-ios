@@ -69,22 +69,44 @@ struct SendScreenDataCollector: EmailDataCollector {
         
         let walletPublicKey = sendViewModel.walletModel.wallet.publicKey.seedKey
         let cardWallet = cardInfo.card.wallets[walletPublicKey]
-        let signedHashesDescription = cardWallet?.totalSignedHashes?.description ?? "-"
+
+        if let signedHashesDescription = cardWallet?.totalSignedHashes?.description {
+            data.append(EmailCollectedData(type: .wallet(.signedHashes), data: signedHashesDescription))
+        }
+        
+        data.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: sendViewModel.walletModel.walletManager.currentHost))
+        
+        if let outputsDescription = sendViewModel.walletModel.walletManager.outputsCount?.description {
+            data.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
+        }
+        
+        if let errorDescription = self.lastError?.localizedDescription {
+            data.append(EmailCollectedData(type: .error, data: errorDescription))
+        }
+        
+        data.append(.separator(.dashes))
         
         data.append(contentsOf: [
-            EmailCollectedData(type: .wallet(.signedHashes), data: signedHashesDescription),
-            EmailCollectedData(type: .wallet(.walletManagerHost), data: sendViewModel.walletModel.walletManager.currentHost),
-            EmailCollectedData(type: .error, data: lastError?.localizedDescription ?? "Unknown error"),
-            .separator(.dashes),
             EmailCollectedData(type: .send(.sourceAddress), data: sendViewModel.walletModel.wallet.address),
             EmailCollectedData(type: .send(.destinationAddress), data: sendViewModel.destination),
             EmailCollectedData(type: .send(.amount), data: sendViewModel.amountText),
             EmailCollectedData(type: .send(.fee), data: sendViewModel.sendFee),
         ])
         
+        if let txHex = self.txHex {
+            data.append(EmailCollectedData(type: .send(.transactionHex), data: txHex))
+        }
+        
         return formatData(data)
     }
     
+    private var txHex: String? {
+        if let sendError = lastError as? SendTxError {
+            return sendError.tx
+        }
+        
+        return nil
+    }
 }
 
 struct PushScreenDataCollector: EmailDataCollector {

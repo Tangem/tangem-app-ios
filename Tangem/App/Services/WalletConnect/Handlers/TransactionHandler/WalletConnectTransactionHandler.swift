@@ -135,13 +135,17 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
                         return m
                     }()
                     let alert = WalletConnectUIBuilder.makeAlert(for: .sendTx, message: message, onAcceptAction: {
-                        switch walletModel.walletManager.createTransaction(amount: valueAmount, fee: gasAmount, destinationAddress: transaction.to, sourceAddress: transaction.from) {
-                        case .success(var tx):
+                        
+                        do {
+                            var tx = try walletModel.walletManager.createTransaction(amount: valueAmount,
+                                                                                     fee: gasAmount,
+                                                                                     destinationAddress: transaction.to,
+                                                                                     sourceAddress: transaction.from)
                             let contractDataString = transaction.data.drop0xPrefix
                             let wcTxData = Data(hexString: String(contractDataString))
                             tx.params = EthereumTransactionParams(data: wcTxData, gasLimit: gasLimit, nonce: transaction.nonce?.hexToInteger)
                             promise(.success(tx))
-                        case .failure(let error):
+                        } catch {
                             promise(.failure(error))
                         }
                     }, isAcceptEnabled: (balance >= totalAmount), onReject: {

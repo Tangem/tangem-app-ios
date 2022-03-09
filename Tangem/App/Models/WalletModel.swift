@@ -30,7 +30,6 @@ class WalletModel: ObservableObject, Identifiable {
     }
     weak var tokenItemsRepository: TokenItemsRepository!
     
-    var txSender: TransactionSender { walletManager as! TransactionSender }
     var wallet: Wallet { walletManager.wallet }
     
     var addressNames: [String] {
@@ -122,7 +121,7 @@ class WalletModel: ObservableObject, Identifiable {
         self.signer = signer
         
         updateBalanceViewModel(with: walletManager.wallet, state: .idle)
-        self.walletManager.$wallet
+        self.walletManager.walletPublisher
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: {[unowned self] wallet in
@@ -355,7 +354,7 @@ class WalletModel: ObservableObject, Identifiable {
                 .eraseToAnyPublisher()
         }
         
-        return txSender.send(tx, signer: signer)
+        return walletManager.send(tx, signer: signer)
             .receive(on: RunLoop.main)
             .handleEvents(receiveOutput: {[weak self] _ in
                 self?.startUpdatingTimer()

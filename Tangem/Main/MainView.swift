@@ -208,7 +208,7 @@ struct MainView: View {
                                             .padding(.horizontal, 16)
                                             .padding(.bottom, 8)
                                             .sheet(isPresented: $navigation.mainToAddTokens, content: {
-                                                TokenListView(viewModel: viewModel.assembly.makeAddTokensViewModel(for: viewModel.cardModel!))
+                                                TokenListView(viewModel: viewModel.assembly.makeTokenListViewModel(mode: .add(cardModel: viewModel.cardModel!)))
                                                     .environmentObject(navigation)
                                             })
                                             

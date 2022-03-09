@@ -223,19 +223,21 @@ class PushTxViewModel: ViewModel, ObservableObject {
                 }
                 
                 let newAmount = isFeeIncluded ? self.transaction.amount + self.previousFeeAmount - fee : self.transaction.amount
-                let txResult = walletModel.walletManager.createTransaction(amount: newAmount,
-                                                                           fee: fee,
-                                                                           destinationAddress: self.destination)
-                self.updateAmount(isFeeIncluded: isFeeIncluded, selectedFee: fee)
-                switch txResult {
-                case .success(let tx):
-                    return (tx, fee)
-                case .failure(let error):
-                    errorMessage = error.errors.first?.errorDescription
-                    return (nil, fee)
+              
+                var tx: BlockchainSdk.Transaction? = nil
+                
+                do {
+                    tx = try walletModel.walletManager.createTransaction(amount: newAmount,
+                                                                             fee: fee,
+                                                                             destinationAddress: self.destination)
+                } catch {
+                   errorMessage = error.localizedDescription
                 }
+                
+                self.updateAmount(isFeeIncluded: isFeeIncluded, selectedFee: fee)
+                return (tx, fee)
             }
-            .sink(receiveValue: { txFee in
+            .sink(receiveValue: {[unowned self] txFee in
                 let tx = txFee.0
                 let fee = txFee.1
                 self.newTransaction = tx

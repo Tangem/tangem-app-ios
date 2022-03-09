@@ -16,7 +16,17 @@ class TokenListViewModel: ViewModel, ObservableObject {
     enum Mode {
         case add(cardModel: CardViewModel)
         case show
+
+        var id: String {
+            switch self {
+            case .add:
+                return "add"
+            case .show:
+                return "show"
+            }
+        }
     }
+    
     
     weak var assembly: Assembly!
     weak var navigation: NavigationCoordinator!

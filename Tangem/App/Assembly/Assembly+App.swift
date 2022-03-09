@@ -304,23 +304,12 @@ extension Assembly {
         return vm
     }
     
-    
-    func makeAddTokensViewModel(for cardModel: CardViewModel) -> TokenListViewModel {
-        if let restored: TokenListViewModel = get() {
+    func makeTokenListViewModel(mode: TokenListViewModel.Mode) -> TokenListViewModel {
+        if let restored: TokenListViewModel = get(key: mode.id) {
             return restored
         }
         
-        let vm = TokenListViewModel(mode: .add(cardModel: cardModel))
-        initialize(vm)
-        return vm
-    }
-    
-    func makeTokenListViewModel() -> TokenListViewModel {
-        if let restored: TokenListViewModel = get() {
-            return restored
-        }
-        
-        let vm = TokenListViewModel(mode: .show)
+        let vm = TokenListViewModel(mode: mode)
         initialize(vm)
         return vm
     }

@@ -28,15 +28,11 @@ class TestnetBuyCryptoService {
     }
     
     private static func buyErc20Token(walletManager: WalletManager, token: Token) {
-        guard let transactionSender = walletManager as? TransactionSender else {
-            return
-        }
-        
         let amountToSend = Amount(with: walletManager.wallet.blockchain, value: 0)
         let destinationAddress = token.contractAddress
         
         var subs: AnyCancellable!
-        subs = transactionSender.getFee(amount: amountToSend, destination: destinationAddress)
+        subs = walletManager.getFee(amount: amountToSend, destination: destinationAddress)
             .flatMap { (fees: [Amount]) -> AnyPublisher<Void, Error> in
                 let fee = fees[0]
                 
@@ -44,13 +40,11 @@ class TestnetBuyCryptoService {
                     return .anyFail(error: "testnet_error_not_enough_ether_message".localized)
                 }
                 
-                guard
-                    case let txResult = walletManager.createTransaction(amount: amountToSend, fee: fee, destinationAddress: destinationAddress),
-                    case let .success(tx) = txResult  else {
+                guard let tx = try? walletManager.createTransaction(amount: amountToSend, fee: fee, destinationAddress: destinationAddress) else {
                     return .anyFail(error: "testnet_error_failed_create_tx".localized)
                 }
                 
-                return transactionSender.send(tx, signer: signer)
+                return walletManager.send(tx, signer: signer)
             }
             .sink { completion in
                 if case let .failure(error) = completion {

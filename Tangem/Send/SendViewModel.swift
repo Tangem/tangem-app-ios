@@ -57,7 +57,7 @@ class SendViewModel: ViewModel, ObservableObject {
     
     // MARK: UI
     var shoudShowFeeSelector: Bool {
-        walletModel.txSender.allowsFeeSelection
+        walletModel.walletManager.allowsFeeSelection
     }
     
     var shoudShowFeeIncludeSelector: Bool {
@@ -331,7 +331,7 @@ class SendViewModel: ViewModel, ObservableObject {
             .combineLatest($validatedDestination.compactMap { $0 })
             .flatMap { [unowned self] amount, dest -> AnyPublisher<[Amount], Never> in
                 self.isFeeLoading = true
-                return self.walletModel.txSender.getFee(amount: amount, destination: dest)
+                return self.walletModel.walletManager.getFee(amount: amount, destination: dest)
                     .catch { error -> Just<[Amount]> in
                         print(error)
                         Analytics.log(error: error)
@@ -352,26 +352,25 @@ class SendViewModel: ViewModel, ObservableObject {
             .combineLatest($validatedDestination,
                            $selectedFee,
                            $isFeeIncluded)
-            .map {[unowned self] amount, destination, fee, isFeeIncluded -> BlockchainSdk.Transaction? in
+            .tryMap {[unowned self] amount, destination, fee, isFeeIncluded -> BlockchainSdk.Transaction? in
                 guard let amount = amount, let destination = destination, let fee = fee else {
                     return nil
                 }
              
-                let result = self.walletModel.walletManager.createTransaction(amount: isFeeIncluded ? amount - fee : amount,
+                let tx = try self.walletModel.walletManager.createTransaction(amount: isFeeIncluded ? amount - fee : amount,
                                                                               fee: fee,
                                                                               destinationAddress: destination)
-                switch result {
-                case .success(let tx):
-                    DispatchQueue.main.async {
-                        self.validateWithdrawal(tx, amount)
-                    }
-                    self.amountHint = nil
-                    return tx
-                case .failure(let error):
-                    self.amountHint = TextHint(isError: true, message: error.errors.first!.localizedDescription)
-                    return nil
+                DispatchQueue.main.async {
+                    self.validateWithdrawal(tx, amount)
                 }
-            }.sink{[unowned self] tx in
+                self.amountHint = nil
+                return tx
+            }
+            .catch {[unowned self] error -> AnyPublisher<BlockchainSdk.Transaction?, Never> in
+                self.amountHint = TextHint(isError: true, message: error.localizedDescription)
+                return Just(nil).eraseToAnyPublisher()
+            }
+            .sink{[unowned self] tx in
                 self.transaction = tx
             }
             .store(in: &bag)

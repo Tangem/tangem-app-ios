@@ -29,7 +29,7 @@ class SendTransactionHandler: WalletConnectTransactionHandler {
                 
                 let ethWalletModel = buildResult.0
                 let tx = buildResult.1
-                return ethWalletModel.txSender.send(tx, signer: self.assembly.services.signer)
+                return ethWalletModel.walletManager.send(tx, signer: self.assembly.services.signer)
                     .map { ethWalletModel }
                     .eraseToAnyPublisher()
             }

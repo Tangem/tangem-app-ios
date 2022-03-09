@@ -91,7 +91,7 @@ enum EmailCollectedDataType {
     }
     
     enum WalletData: String {
-        case walletAddress = "Wallet address", explorerLink = "Explorer link", signedHashes = "Signed hashes", walletManagerHost = "Host"
+        case walletAddress = "Wallet address", explorerLink = "Explorer link", signedHashes = "Signed hashes", walletManagerHost = "Host", outputsCount = "Outputs count"
     }
     
     enum TokenData: String {
