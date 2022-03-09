@@ -14,7 +14,6 @@ import Moya
 public enum ETHError: String, Error, LocalizedError {
     case failedToParseTxCount = "eth_tx_count_parse_error"
     case failedToParseBalance = "eth_balance_parse_error"
-    case failedToParseTokenBalance = "eth_token_balance_parse_error"
     case failedToParseGasLimit
     case notValidEthereumValue
     case unsupportedFeature

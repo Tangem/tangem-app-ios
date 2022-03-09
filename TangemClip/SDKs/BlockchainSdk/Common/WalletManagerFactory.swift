@@ -111,7 +111,7 @@ public class WalletManagerFactory {
                 let jsonRpcProviders = rpcUrls.map { EthereumJsonRpcProvider(url: $0) }
                 
                 let blockchair = BlockchairNetworkProvider(endpoint: .bitcoin, apiKey: config.blockchairApiKey)
-                $0.networkService = EthereumNetworkService(decimals: blockchain.decimalCount, providers: jsonRpcProviders, blockchairProvider: blockchair)
+                $0.networkService = EthereumNetworkService(blockchain: blockchain, providers: jsonRpcProviders, blockchairProvider: blockchair)
             }
             
         case .rsk, .bsc, .polygon, .avalanche, .fantom:
@@ -119,7 +119,7 @@ public class WalletManagerFactory {
                let rpcUrls = blockchain.getJsonRpcURLs(infuraProjectId: config.infuraProjectId)!
                 let jsonRpcProviders = rpcUrls.map { EthereumJsonRpcProvider(url: $0) }
                 
-                $0.networkService = EthereumNetworkService(decimals: blockchain.decimalCount, providers: jsonRpcProviders, blockchairProvider: nil)
+                $0.networkService = EthereumNetworkService(blockchain: blockchain, providers: jsonRpcProviders, blockchairProvider: nil)
             }
             
         case .bitcoinCash:

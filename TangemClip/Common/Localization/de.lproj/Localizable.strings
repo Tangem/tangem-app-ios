@@ -21,7 +21,6 @@
 "xrp_missing_reserve_error" = "keine Reserve";
 "eth_tx_count_parse_error" = "Analyse tx Berechnung fehlgeschlagen";
 "eth_balance_parse_error" = "Analyse der Bilanz fehlgeschlagen";
-"eth_token_balance_parse_error" = "Analyse der Token-Bilanz fehlgeschlagen";
 "failed_to_load_fee_error" = "Failed to load fee from network";
 "xlm_latest_ledger_error" = "Letztes Konto nicht gefunden";
 "xlm_requires_memo_error" = "Memo erforderlich";

@@ -21,7 +21,6 @@
 "xrp_missing_reserve_error" = "Не удалось загрузить информацию о резерве";
 "eth_tx_count_parse_error" = "Не удалось определить количество транзакций";
 "eth_balance_parse_error" = "Не удалось определить баланс";
-"eth_token_balance_parse_error" = "Не удалось определить баланс токенов";
 "failed_to_load_fee_error" = "Не удалось загрузить комиссию из сети";
 "xlm_latest_ledger_error" = "Не удалось получить информацию от блокчейна";
 "xlm_requires_memo_error" = "Требуется memo";

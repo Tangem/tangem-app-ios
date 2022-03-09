@@ -159,7 +159,16 @@ class WalletModel: ObservableObject, Identifiable {
                         self.state = .noAccount(message: noAccountMessage)
                     } else {
                         self.state = .failed(error: error.detailedError)
-                        Analytics.log(error: error)
+                        
+                        if case let .failedToParseBalance(name, encodedAmount, decimalCount) = (error as? WalletError) {
+                            Analytics.log(event: .balanceParseFailed, with: [
+                                .blockchain: name,
+                                .amountString: encodedAmount,
+                                .decimalCount: decimalCount,
+                            ])
+                        } else {
+                            Analytics.log(error: error)
+                        }
                     }
                     self.updateBalanceViewModel(with: self.wallet, state: self.state)
                 } else {

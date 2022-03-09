@@ -13,7 +13,7 @@ public enum EthereumUtils {
         let value = try prepareHexString(string)
         guard let balanceData = asciiHexToData(value),
               let balanceWei = dataToDecimal(balanceData) else {
-            throw ETHError.failedToParseTokenBalance
+            throw ETHError.failedToParseBalance
         }
         
         let balanceEth = balanceWei.dividing(by: NSDecimalNumber(value: 1).multiplying(byPowerOf10: Int16(decimalsCount)))

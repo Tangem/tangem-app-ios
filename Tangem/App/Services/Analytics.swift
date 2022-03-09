@@ -150,6 +150,7 @@ extension Analytics {
         case userBoughtCrypto = "user_bought_crypto"
         case userSoldCrypto = "user_sold_crypto"
         case getACard = "get_card"
+        case balanceParseFailed = "balance_parse_failed"
         
         fileprivate static var nfcError: String {
             "nfc_error"
@@ -187,6 +188,8 @@ extension Analytics {
         case walletConnectDappUrl = "wallet_connect_dapp_url"
         case currencyCode = "currency_code"
         case source = "source"
+        case amountString = "amount_string"
+        case decimalCount = "decimal_count"
     }
     
     enum ParameterValue: String {

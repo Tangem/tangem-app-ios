@@ -14,11 +14,13 @@ import SwiftyJSON
 import BigInt
 
 class EthereumNetworkService: MultiNetworkProvider<EthereumJsonRpcProvider> {
+    private let blockchain: Blockchain
     private let decimals: Int
     private let blockchairProvider: BlockchairNetworkProvider?
     
-    init(decimals: Int, providers: [EthereumJsonRpcProvider], blockchairProvider: BlockchairNetworkProvider?) {
-        self.decimals = decimals
+    init(blockchain: Blockchain, providers: [EthereumJsonRpcProvider], blockchairProvider: BlockchairNetworkProvider?) {
+        self.blockchain = blockchain
+        self.decimals = blockchain.decimalCount
         self.blockchairProvider = blockchairProvider
         super.init(providers: providers)
     }
