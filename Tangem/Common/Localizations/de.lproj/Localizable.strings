@@ -469,7 +469,7 @@ URL: %@";
 "story_web3_description" = "Exchange, buy NFT’s, make loans and deposits in more than 100 different decentralized services";
 "story_finish_title" = "The Wallet for Everyone";
 "story_finish_description" = "Use it on the go, anywhere, anytime. No wires or batteries. Just tap the card to your phone when you need your crypto.";
-"home_button_order" = "Order card";
+"home_button_order" = "Order";
 "home_button_search_tokens" = "Search tokens";
 "search_tokens_title" = "Search tokens";
 "alert_demo_message" = "You are currently running in Demo mode. All funds are not real.";

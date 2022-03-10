@@ -1,0 +1,29 @@
+{
+  "types": {
+      "EIP712Domain": [
+          {"name": "name", "type": "string"},
+          {"name": "version", "type": "string"},
+          {"name": "chainId", "type": "uint256"},
+          {"name": "verifyingContract", "type": "address"}
+      ],
+      "Person": [
+          {"name": "name", "type": "string"},
+          {"name": "wallet", "type": "bytes32"},
+          {"name": "age", "type": "int256"},
+          {"name": "paid", "type": "bool"}
+      ]
+  },
+  "primaryType": "Person",
+  "domain": {
+      "name": "Person",
+      "version": "1",
+      "chainId": 1,
+      "verifyingContract": "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
+  },
+  "message": {
+      "name": "alice",
+      "wallet": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+      "age": 40,
+      "paid": true
+    }
+}

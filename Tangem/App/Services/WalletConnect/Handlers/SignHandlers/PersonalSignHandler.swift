@@ -26,10 +26,11 @@ class PersonalSignHandler: WalletConnectSignHandler {
                 return
             }
         
-            let prefix = String(format: "wallet_connect_personal_sign_message".localized, session.session.dAppInfo.peerMeta.name) 
-            let message = String(data: Data(hex: messageBytes), encoding: .utf8) ?? messageBytes
-            let personalMessageData = self.makePersonalMessageData(Data(hex: messageBytes))
-            askToSign(in: session, request: request, message: prefix + message, dataToSign: personalMessageData)
+            let messageData = Data(hex: messageBytes)
+            let prefix = String(format: "wallet_connect_personal_sign_message".localized, session.session.dAppInfo.peerMeta.name)
+            let personalMessageData = self.makePersonalMessageData(messageData)
+            
+            askToSign(in: session, request: request, message: prefix + messageBytes, dataToSign: personalMessageData)
         } catch {
             delegate?.sendInvalid(request)
         }

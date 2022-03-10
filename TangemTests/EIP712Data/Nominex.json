@@ -1,0 +1,53 @@
+{
+  "types": {
+    "EIP712Domain": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "name": "verifyingContract",
+        "type": "address"
+      },
+      {
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "BindWalletRequest": [
+      {
+        "name": "userId",
+        "type": "uint256"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "name": "requestSignature",
+        "type": "string"
+      }
+    ]
+  },
+  "domain": {
+    "name": "nominex exchange",
+    "version": "1",
+    "chainId": 56,
+    "verifyingContract": "0x0000000000000000000000000000000000000000",
+    "salt": "0x0485e54364e48037675c7a31e2845981c95a0d93804666291f8e37ba091d8f7e"
+  },
+  "primaryType": "BindWalletRequest",
+  "message": {
+    "userId": 201300,
+    "timestamp": 1646396337316,
+    "requestSignature": "3D8DD57CE590E944F261CCB45E483536ABACC67B3E098EF099401813E31BF3FE"
+  }
+}

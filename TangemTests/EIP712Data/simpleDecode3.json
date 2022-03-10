@@ -1,0 +1,18 @@
+{
+  "number": 123456,
+  "string": "this is a string",
+  "null": null,
+  "bytes": "0x1234",
+  "array": [{
+      "name": "bob",
+      "address": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+      "age": 22,
+      "paid": false
+  }],
+  "object": {
+      "name": "alice",
+      "address": "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+      "age": 40,
+      "paid": true
+    }
+}

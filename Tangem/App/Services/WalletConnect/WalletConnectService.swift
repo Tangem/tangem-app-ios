@@ -44,6 +44,7 @@ enum WalletConnectAction: String {
     case sendTransaction = "eth_sendTransaction"
     case bnbSign = "bnb_sign"
     case bnbTxConfirmation = "bnb_tx_confirmation"
+    case signTypedData = "eth_signTypedData"
     
 //    var shouldDisplaySuccessAlert: Bool {
 //        switch self {
@@ -54,7 +55,7 @@ enum WalletConnectAction: String {
     
     var successMessage: String {
         switch self {
-        case .personalSign: return "wallet_connect_message_signed".localized
+        case .personalSign, .signTypedData: return "wallet_connect_message_signed".localized
         case .signTransaction: return "wallet_connect_transaction_signed".localized
         case .sendTransaction: return "wallet_connect_transaction_signed_and_send".localized
         case .bnbSign: return "wallet_connect_bnb_transaction_signed".localized
@@ -112,6 +113,7 @@ class WalletConnectService: ObservableObject {
         server.register(handler: SendTransactionHandler(signer: signer, delegate: self, dataSource: self, assembly: assembly, scannedCardsRepo: scannedCardsRepository))
         server.register(handler: BnbSignHandler(signer: signer, delegate: self, dataSource: self))
         server.register(handler: BnbSuccessHandler(delegate: self, dataSource: self))
+        server.register(handler: SignTypedDataHandler(signer: signer, delegate: self, dataSource: self))
     }
     
     func disconnect(from session: Session) {

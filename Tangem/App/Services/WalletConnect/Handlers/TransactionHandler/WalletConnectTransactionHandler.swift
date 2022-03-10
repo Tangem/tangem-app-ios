@@ -78,8 +78,9 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
             return .anyFail(error: error)
         }
         
-        guard let value = try? EthereumUtils.parseEthereumDecimal(transaction.value ?? "0x0", decimalsCount: blockchain.decimalCount) else {
-            let error = WalletConnectServiceError.failedToBuildTx(code: .noValue)
+        let rawValue = transaction.value ?? "0x0"
+        guard let value = EthereumUtils.parseEthereumDecimal(rawValue, decimalsCount: blockchain.decimalCount) else {
+            let error = ETHError.failedToParseBalance(value: rawValue, address: "", decimals: blockchain.decimalCount)
             Analytics.log(error: error)
             return .anyFail(error: error)
         }

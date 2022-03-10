@@ -11,6 +11,7 @@ import Foundation
 import FirebaseAnalytics
 import FirebaseCrashlytics
 import AppsFlyerLib
+import BlockchainSdk
 #endif
 import TangemSdk
 
@@ -59,8 +60,18 @@ class Analytics {
         if case .userCancelled = error.toTangemSdkError() {
             return
         }
-
-        Crashlytics.crashlytics().record(error: error)
+        
+        if let detailedDescription = (error as? DetailedError)?.detailedDescription {
+            var params = [ParameterKey: Any]()
+            params[.errorDescription] = detailedDescription
+            let nsError = NSError(domain: "DetailedError",
+                                  code: 1,
+                                  userInfo: params.firebaseParams)
+            Crashlytics.crashlytics().record(error: nsError)
+        } else {
+            Crashlytics.crashlytics().record(error: error)
+        }
+       
         #endif
     }
     
