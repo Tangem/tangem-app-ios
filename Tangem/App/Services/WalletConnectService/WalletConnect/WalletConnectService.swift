@@ -90,6 +90,8 @@ enum WalletConnectNetwork {
 }
 
 class WalletConnectService: ObservableObject {
+    @Injected(\.cardsRepository) private var cardsRepository: CardsRepository
+
     var isServiceBusy: CurrentValueSubject<Bool, Never> = .init(false)
 
     @Published private(set) var sessions: [WalletConnectSession] = .init()
@@ -292,7 +294,9 @@ extension WalletConnectService: ServerDelegate {
         }
 
         resetSessionConnectTimer()
-        guard let parsedNetworkInfo = WalletConnectNetworkParserUtility.parse(dAppInfo: session.dAppInfo) else {
+
+        let testnet = cardsRepository.lastScanResult.card?.isTestnet ?? false
+        guard let parsedNetworkInfo = WalletConnectNetworkParserUtility.parse(dAppInfo: session.dAppInfo, testnet: testnet) else {
             failureCompletion()
             return
         }
@@ -321,9 +325,13 @@ extension WalletConnectService: ServerDelegate {
                             $0.wallet.chainId == chainId &&
                             (savedUrl.count > newUrl.count ? savedUrl.contains(newUrl) : newUrl.contains(savedUrl))
                     }.forEach { try? server.disconnect(from: $0.session) }
+
+                    let defaultBlockchain = Blockchain.ethereum(testnet: testnet)
+                    let defaultChainId = defaultBlockchain.chainId ?? 1
+
                     completion(Session.WalletInfo(approved: true,
                                                   accounts: [wallet.address],
-                                                  chainId: wallet.chainId ?? 1,
+                                                  chainId: wallet.chainId ?? defaultChainId,
                                                   peerId: UUID().uuidString,
                                                   peerMeta: self.walletMeta))
                 }

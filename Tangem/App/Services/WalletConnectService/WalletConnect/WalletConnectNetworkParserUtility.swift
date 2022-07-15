@@ -16,7 +16,7 @@ enum WalletConnectNetworkParserUtility {
         let chainId: Int
     }
 
-    static func parse(dAppInfo: Session.DAppInfo) -> ParseResult? {
+    static func parse(dAppInfo: Session.DAppInfo, testnet: Bool) -> ParseResult? {
         let wcNetwork: WalletConnectNetwork
         var chainId: Int = -1
         if let id = dAppInfo.chainId {
@@ -44,7 +44,7 @@ enum WalletConnectNetworkParserUtility {
         } else {
             // WC interface doesn't provide info about network. So in cases when chainId is null we use ethereum main network
             // Dapps on ethereum mainnet sending null in chainId
-            let id = Blockchain.ethereum(testnet: false).chainId!
+            let id = Blockchain.ethereum(testnet: testnet).chainId!
             chainId = id
             wcNetwork = .eth(chainId: id)
         }
