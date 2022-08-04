@@ -78,10 +78,9 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
+    func loadRates(for coinIds: [String], currencyCode: String) -> AnyPublisher<[String: Decimal], Never> {
         provider
-            .requestPublisher(TangemApiTarget(type: .rates(coinIds: coinIds,
-                                                           currencyId: AppSettings.shared.selectedCurrencyCode),
+            .requestPublisher(TangemApiTarget(type: .rates(coinIds: coinIds, currencyId: currencyCode),
                                               authData: authData))
             .filterSuccessfulStatusAndRedirectCodes()
             .map(RatesResponse.self)

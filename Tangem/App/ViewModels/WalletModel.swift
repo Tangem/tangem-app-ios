@@ -138,8 +138,8 @@ class WalletModel: ObservableObject, Identifiable, Initializable {
         AppSettings.shared
             .$selectedCurrencyCode
             .dropFirst()
-            .sink { [unowned self] _ in
-                self.loadRates()
+            .sink { [unowned self] currencyCode in
+                self.loadRates(currencyCode: currencyCode)
             }
             .store(in: &bag)
     }
@@ -185,7 +185,7 @@ class WalletModel: ObservableObject, Identifiable, Initializable {
                     if case let .failure(error) = result {
                         if case let .noAccount(noAccountMessage) = (error as? WalletError) {
                             self.state = .noAccount(message: noAccountMessage)
-                            self.loadRates()
+                            self.loadRates(currencyCode: AppSettings.shared.selectedCurrencyCode)
                         } else {
                             self.state = .failed(error: error.detailedError)
                             self.displayState = .readyForDisplay
@@ -202,7 +202,7 @@ class WalletModel: ObservableObject, Identifiable, Initializable {
                             self.state = .idle
                         }
 
-                        self.loadRates()
+                        self.loadRates(currencyCode: AppSettings.shared.selectedCurrencyCode)
                     }
 
                     self.updateBalanceViewModel(with: self.wallet)
@@ -423,15 +423,15 @@ class WalletModel: ObservableObject, Identifiable, Initializable {
         updateTokenItemViewModels()
     }
 
-    private func loadRates() {
+    private func loadRates(currencyCode: String) {
         let currenciesToExchange = [walletManager.wallet.blockchain.currencyId] + walletManager.cardTokens.compactMap { $0.id }
 
-        loadRates(for: Array(currenciesToExchange))
+        loadRates(for: Array(currenciesToExchange), currencyCode: currencyCode)
     }
 
-    private func loadRates(for currenciesToExchange: [String]) {
+    private func loadRates(for currenciesToExchange: [String], currencyCode: String) {
         tangemApiService
-            .loadRates(for: currenciesToExchange)
+            .loadRates(for: currenciesToExchange, currencyCode: currencyCode)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else {

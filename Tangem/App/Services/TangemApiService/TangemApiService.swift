@@ -13,7 +13,7 @@ protocol TangemApiService: AnyObject, Initializable {
     var geoIpRegionCode: String { get }
 
     func loadCoins(requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Error>
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Never>
+    func loadRates(for coinIds: [String], currencyCode code: String) -> AnyPublisher<[String: Decimal], Never>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
     func setAuthData(_ authData: TangemApiTarget.AuthData)
