@@ -76,6 +76,10 @@ extension Card {
         Card.getDerivationStyle(for: batchId, isHdWalletAllowed: settings.isHDWalletAllowed)
     }
 
+    var tangemApiAuthData: TangemApiTarget.AuthData {
+        .init(cardId: cardId, cardPublicKey: cardPublicKey)
+    }
+
     static func getDerivationStyle(for batchId: String, isHdWalletAllowed: Bool) -> DerivationStyle {
         guard isHdWalletAllowed else {
             return .legacy
