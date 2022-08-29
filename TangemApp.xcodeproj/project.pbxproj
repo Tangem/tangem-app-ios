@@ -569,6 +569,7 @@
 		EFC98EA22897CB3F00261D33 /* AttentionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC98EA02897CB3F00261D33 /* AttentionViewModel.swift */; };
 		EFC98EA32897CB3F00261D33 /* AttentionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC98EA12897CB3F00261D33 /* AttentionView.swift */; };
 		EFCC66C028AA2FDC00EC7757 /* TangemClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = B0D3600125F26C7400929564 /* TangemClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EFFC85FE28BC9B9600F863CE /* ErrorTokenListLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC85FD28BC9B9600F863CE /* ErrorTokenListLoading.swift */; };
 		F06BBA2FE022C3EF1F3B6513 /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F3AA1BEE46AF490A6F95DA /* Pods_Tangem.framework */; };
 /* End PBXBuildFile section */
 
@@ -1191,6 +1192,7 @@
 		EFC98EA02897CB3F00261D33 /* AttentionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttentionViewModel.swift; sourceTree = "<group>"; };
 		EFC98EA12897CB3F00261D33 /* AttentionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttentionView.swift; sourceTree = "<group>"; };
 		EFCDF8C52892A8A3007127B9 /* AttentionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttentionView.swift; sourceTree = "<group>"; };
+		EFFC85FD28BC9B9600F863CE /* ErrorTokenListLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTokenListLoading.swift; sourceTree = "<group>"; };
 		F3B96D298A039D2A8811CEF0 /* Pods-Tangem Tap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem Tap.release.xcconfig"; path = "Target Support Files/Pods-Tangem Tap/Pods-Tangem Tap.release.xcconfig"; sourceTree = "<group>"; };
 		F53CBE3ACFB9A989F5FE398D /* Pods-TangemClip.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemClip.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemClip/Pods-TangemClip.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F60138EF52D91E1A088F9C27 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
@@ -1472,6 +1474,7 @@
 		5D958E1224F513C1006BD932 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				EFFC85FA28BC9B6100F863CE /* ErrorTokenListLoading */,
 				EFA580642893F89000110DB0 /* AttentionView */,
 				EF9CFC3A2890233100329BE0 /* DefaultListViews */,
 				65B4DEC52881A948001524CF /* BottomSheet */,
@@ -2776,6 +2779,14 @@
 			path = Types;
 			sourceTree = "<group>";
 		};
+		EFFC85FA28BC9B6100F863CE /* ErrorTokenListLoading */ = {
+			isa = PBXGroup;
+			children = (
+				EFFC85FD28BC9B9600F863CE /* ErrorTokenListLoading.swift */,
+			);
+			path = ErrorTokenListLoading;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3439,6 +3450,7 @@
 				5DDFC1FB2812A59F005976FE /* CoinsResponse.swift in Sources */,
 				5D15F9E8258A522500392BA5 /* PickerView.swift in Sources */,
 				B0C6B4C326CE678900FA990B /* CGSize+.swift in Sources */,
+				EFFC85FE28BC9B9600F863CE /* ErrorTokenListLoading.swift in Sources */,
 				DC0A584C282C07B10031BECC /* WalletConnectServiceProvider.swift in Sources */,
 				5D73C9862513C85D00487CA5 /* CurrencySelectView.swift in Sources */,
 				5D4B8BBB27EDB354002CE87C /* NetworkIcon.swift in Sources */,

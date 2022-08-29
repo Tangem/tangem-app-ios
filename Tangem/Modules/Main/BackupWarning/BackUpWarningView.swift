@@ -16,7 +16,7 @@ struct BackUpWarningButton: View {
             tapAction()
         } label: {
             HStack(alignment: .center, spacing: 0) {
-                Image("warningIcon")
+                Assets.attention
                     .frame(width: 42, height: 42)
                     .background(Color.tangemBgGray)
                     .cornerRadius(21)
