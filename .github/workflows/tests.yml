@@ -17,14 +17,9 @@ jobs:
     runs-on: macOS-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: true
-        token: ${{ secrets.GH_MOBILE_PAT }}
+      uses: actions/checkout@v2   
     - name: Bundle Install
       run: bundle install
-    - name: Cocoapods
-      run: bundle exec pod install
     - name: Tests
       run: bundle exec fastlane test
     - name: Build notification
