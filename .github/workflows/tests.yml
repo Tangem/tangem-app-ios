@@ -21,6 +21,8 @@ jobs:
     - name: Bundle Install
       run: bundle install
     - name: Tests
+      run: bundle exec cocoapods install
+    - name: Tests
       run: bundle exec fastlane test
     - name: Build notification
       if: failure()
