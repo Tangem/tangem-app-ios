@@ -1,0 +1,34 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: 
+    - 'release/**'
+    - 'develop'
+    - 'master'
+  workflow_dispatch:
+
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}
+
+jobs:
+  test:
+    name: Test
+    runs-on: macOS-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2   
+    - name: Bundle Install
+      run: bundle install
+    - name: Tests
+      run: bundle exec fastlane test
+    - name: Build notification
+      if: failure()
+      uses: adamkdean/simple-slack-notify@master
+      with:
+        xcode-version: latest-stable
+        channel: '#development-ios'
+        text: 'Card SDK tests #${{ github.run_number }} failed'
+        color: 'danger'
+        fields: |
+          [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
