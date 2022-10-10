@@ -13,9 +13,12 @@ env:
 
 jobs:
   test:
+    runs-on: macos-ventura
     name: Test
-    runs-on: macOS-latest
     steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
     - name: Checkout
       uses: actions/checkout@v2
       with:
