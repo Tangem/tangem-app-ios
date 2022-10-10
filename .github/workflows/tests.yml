@@ -31,9 +31,8 @@ jobs:
       if: failure()
       uses: adamkdean/simple-slack-notify@master
       with:
-        xcode-version: latest-stable
         channel: '#development-ios'
-        text: 'Card SDK tests #${{ github.run_number }} failed'
+        text: 'Tangem tests #${{ github.run_number }} failed'
         color: 'danger'
         fields: |
           [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
