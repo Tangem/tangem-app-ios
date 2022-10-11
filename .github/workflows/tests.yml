@@ -8,17 +8,11 @@ on:
     - 'master'
   workflow_dispatch:
 
-env:
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}
-
 jobs:
   test:
-    runs-on: macos-ventura
     name: Test
+    runs-on: self-hosted
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -55,9 +49,12 @@ jobs:
     - name: Build notification
       if: failure()
       uses: adamkdean/simple-slack-notify@master
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}
       with:
         channel: '#development-ios'
         text: 'Tangem tests #${{ github.run_number }} failed'
         color: 'danger'
         fields: |
           [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
+      
