@@ -18,27 +18,11 @@ jobs:
       with:
         submodules: true
         token: ${{ secrets.GH_MOBILE_PAT }}
-    
-    - name: Cash bundler modules
-      uses: actions/cache@v3
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
         
     - name: Bundle install
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
-      
-    - name: Cash cocoapods
-      uses: actions/cache@v3
-      with:
-        path: Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
       
     - name: Pods install
       run: bundle exec pod install
