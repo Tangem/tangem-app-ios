@@ -3,7 +3,7 @@ name: Tests
 on:
   pull_request:
     branches: 
-    - 'release/**'
+    - 'releases/**'
     - 'develop'
     - 'master'
   workflow_dispatch:
