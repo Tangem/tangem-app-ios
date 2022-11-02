@@ -10,27 +10,25 @@ import Foundation
 
 // MARK: - Provider
 
-// Use this provider for your feature
-// Will be expand for control availability version
+// Use this provider for check availability your feature
 enum FeatureProvider {
     static func isAvailable(_ toggle: FeatureToggle) -> Bool {
-        print("InfoDictionaryUtils.version.value", InfoDictionaryUtils.version.value)
-        if let appVersion = InfoDictionaryUtils.version.value,
-           appVersion <= toggle.releaseVersion {
+        if AppEnvironment.current.isProduction,
+           let appVersion = InfoDictionaryUtils.version.value,
+           appVersion >= toggle.releaseVersion {
             EnvironmentProvider.shared.availableFeatures.insert(toggle)
-            return true
         }
 
         return EnvironmentProvider.shared.availableFeatures.contains(toggle)
     }
 }
 
+// MARK: - FeatureToggle
+
 protocol FeatureToggleType {
     var name: String { get }
     var releaseVersion: String { get }
 }
-
-// MARK: - Keys
 
 enum FeatureToggle: String, Hashable, FeatureToggleType, CaseIterable {
     case exchange
@@ -43,7 +41,7 @@ enum FeatureToggle: String, Hashable, FeatureToggleType, CaseIterable {
 
     var releaseVersion: String {
         switch self {
-        case .exchange: return "3.57"
+        case .exchange: return "3.58"
         }
     }
 }
