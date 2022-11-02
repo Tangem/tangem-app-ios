@@ -64,6 +64,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AppSettings.shared.numberOfLaunches += 1
         migrateTOS()
+        print("isAvailable", FeatureProvider.isAvailable(.exchange))
+
         return true
     }
 

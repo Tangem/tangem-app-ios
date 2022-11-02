@@ -14,18 +14,36 @@ import Foundation
 // Will be expand for control availability version
 enum FeatureProvider {
     static func isAvailable(_ toggle: FeatureToggle) -> Bool {
-        EnvironmentProvider.shared.availableFeatures.contains(toggle)
+        print("InfoDictionaryUtils.version.value", InfoDictionaryUtils.version.value)
+        if let appVersion = InfoDictionaryUtils.version.value,
+           appVersion <= toggle.releaseVersion {
+            EnvironmentProvider.shared.availableFeatures.insert(toggle)
+            return true
+        }
+
+        return EnvironmentProvider.shared.availableFeatures.contains(toggle)
     }
+}
+
+protocol FeatureToggleType {
+    var name: String { get }
+    var releaseVersion: String { get }
 }
 
 // MARK: - Keys
 
-enum FeatureToggle: String, Hashable, CaseIterable {
-    case test
+enum FeatureToggle: String, Hashable, FeatureToggleType, CaseIterable {
+    case exchange
 
     var name: String {
         switch self {
-        case .test: return "Test (will be added in the future)"
+        case .exchange: return "Exchange"
+        }
+    }
+
+    var releaseVersion: String {
+        switch self {
+        case .exchange: return "3.57"
         }
     }
 }
