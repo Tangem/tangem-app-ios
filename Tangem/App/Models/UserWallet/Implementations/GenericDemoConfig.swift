@@ -131,7 +131,13 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+
+        if !AppEnvironment.current.isTestnet {
+            warnings.append(.demoCard)
+        }
+
+        return warnings
     }
 
     var tangemSigner: TangemSigner {
