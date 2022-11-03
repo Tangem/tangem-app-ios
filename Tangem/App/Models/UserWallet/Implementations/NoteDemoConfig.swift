@@ -76,9 +76,7 @@ extension NoteDemoConfig: UserWalletConfig {
     var warningEvents: [WarningEvent] {
         var warnings = WarningEventsFactory().makeWarningEvents(for: card)
 
-        if AppEnvironment.current.isTestnet {
-            warnings.append(.testnetCard)
-        } else {
+        if !AppEnvironment.current.isTestnet {
             warnings.append(.demoCard)
         }
 
