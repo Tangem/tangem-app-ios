@@ -62,7 +62,7 @@ extension FeatureToggle {
         var version: String? {
             switch self {
             case .unspecified: return nil
-            case let .version(version): return version
+            case .version(let version): return version
             }
         }
     }
