@@ -34,7 +34,7 @@ extension WarningsService: AppWarningsProviding {
         card: Card,
         validator: SignatureCountValidator?
     ) {
-        setupWarnings(for: config)
+        setupWarnings(for: config, card: card)
 
         // The testnet card shouldn't count hashes
         if !AppEnvironment.current.isTestnet {
@@ -77,11 +77,17 @@ extension WarningsService: AppWarningsProviding {
 }
 
 private extension WarningsService {
-    func setupWarnings(for config: UserWalletConfig) {
+    func setupWarnings(for config: UserWalletConfig, card: Card) {
         let main = WarningsContainer()
         let send = WarningsContainer()
 
-        for warningEvent in config.warningEvents  {
+        var warningEvents = config.warningEvents
+
+        if card.firmwareVersion.type == .sdk && card.isDevelopmentCard && !warningEvents.contains(.testnetCard) {
+            warningEvents.append(.devCard)
+        }
+
+        for warningEvent in warningEvents  {
             if warningEvent.locationsToDisplay.contains(WarningsLocation.main) {
                 main.add(warningEvent.warning)
             }
