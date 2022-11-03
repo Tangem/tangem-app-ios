@@ -83,7 +83,11 @@ private extension WarningsService {
 
         var warningEvents = config.warningEvents
 
-        if card.firmwareVersion.type == .sdk && card.isDevelopmentCard && !warningEvents.contains(.testnetCard) {
+        if card.firmwareVersion.type == .sdk &&
+            card.isDevelopmentCard &&
+            !warningEvents.contains(.testnetCard) &&
+            !DemoUtil().isDemoCard(cardId: card.cardId)
+        {
             warningEvents.append(.devCard)
         }
 
