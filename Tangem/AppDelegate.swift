@@ -64,7 +64,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AppSettings.shared.numberOfLaunches += 1
         migrateTOS()
-
         return true
     }
 
