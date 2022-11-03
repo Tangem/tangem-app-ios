@@ -55,10 +55,10 @@ extension FeatureToggle {
     enum ReleaseVersion: Hashable {
         /// This case is for an unterminated release date
         case unspecified
-        
+
         /// Version in the format "1.1.0" or "1.2"
         case version(_ version: String)
-        
+
         var version: String? {
             switch self {
             case .unspecified: return nil
