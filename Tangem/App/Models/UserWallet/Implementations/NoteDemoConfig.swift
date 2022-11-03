@@ -24,10 +24,6 @@ struct NoteDemoConfig {
         let defaultBlockchain = Blockchain.from(blockchainName: blockchainName, curve: .secp256k1)!
         return defaultBlockchain
     }
-
-    private var isTestnet: Bool {
-        defaultBlockchain.isTestnet
-    }
 }
 
 extension NoteDemoConfig: UserWalletConfig {
@@ -80,7 +76,7 @@ extension NoteDemoConfig: UserWalletConfig {
     var warningEvents: [WarningEvent] {
         var warnings = WarningEventsFactory().makeWarningEvents(for: card)
 
-        if isTestnet {
+        if AppEnvironment.current.isTestnet {
             warnings.append(.testnetCard)
         } else {
             warnings.append(.demoCard)

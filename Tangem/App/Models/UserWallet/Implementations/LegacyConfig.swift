@@ -21,10 +21,6 @@ struct LegacyConfig {
         return Blockchain.from(blockchainName: walletData.blockchain, curve: card.supportedCurves[0])!
     }
 
-    private var isTestnet: Bool {
-        defaultBlockchain?.isTestnet ?? false
-    }
-
     private var isMultiwallet: Bool {
         card.supportedCurves.contains(.secp256k1)
     }
@@ -71,7 +67,7 @@ extension LegacyConfig: UserWalletConfig {
 
     var supportedBlockchains: Set<Blockchain> {
         if isMultiwallet || defaultBlockchain == nil {
-            let allBlockchains = isTestnet ? Blockchain.supportedTestnetBlockchains
+            let allBlockchains = AppEnvironment.current.isTestnet ? Blockchain.supportedTestnetBlockchains
                 : Blockchain.supportedBlockchains
 
             return allBlockchains.filter { card.supportedCurves.contains($0.curve) }
@@ -107,12 +103,6 @@ extension LegacyConfig: UserWalletConfig {
         if card.firmwareVersion.doubleValue < 2.28,
            NFCUtils.isPoorNfcQualityDevice {
             warnings.append(.oldDeviceOldCard)
-        }
-
-        if isTestnet {
-            warnings.append(.testnetCard)
-        } else if card.firmwareVersion.type == .sdk && !DemoUtil().isDemoCard(cardId: card.cardId) {
-            warnings.append(.devCard)
         }
 
         return warnings

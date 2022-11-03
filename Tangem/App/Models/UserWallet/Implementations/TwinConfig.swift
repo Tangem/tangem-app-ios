@@ -19,10 +19,6 @@ struct TwinConfig {
         Blockchain.from(blockchainName: walletData.blockchain, curve: card.supportedCurves[0])!
     }
 
-    private var isTestnet: Bool {
-        defaultBlockchain.isTestnet
-    }
-
     init(card: Card, walletData: WalletData, twinData: TwinData) {
         self.card = card
         self.walletData = walletData
@@ -101,15 +97,7 @@ extension TwinConfig: UserWalletConfig {
     }
 
     var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
-
-        if isTestnet {
-            warnings.append(.testnetCard)
-        } else if card.firmwareVersion.type == .sdk && !DemoUtil().isDemoCard(cardId: card.cardId) {
-            warnings.append(.devCard)
-        }
-
-        return warnings
+        WarningEventsFactory().makeWarningEvents(for: card)
     }
 
     // TODO: TBD Enable twin signing by any card
@@ -181,7 +169,7 @@ extension TwinConfig: UserWalletConfig {
         let factory = WalletManagerFactoryProvider().factory
         let twinManager = try factory.makeTwinWalletManager(walletPublicKey: walletPublicKey,
                                                             pairKey: savedPairKey,
-                                                            isTestnet: isTestnet)
+                                                            isTestnet: AppEnvironment.current.isTestnet)
 
         return WalletModel(walletManager: twinManager, derivationStyle: card.derivationStyle)
     }

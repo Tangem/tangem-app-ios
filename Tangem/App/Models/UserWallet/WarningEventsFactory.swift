@@ -18,6 +18,12 @@ struct WarningEventsFactory {
             warnings.append(.failedToValidateCard)
         }
 
+        if AppEnvironment.current.isTestnet {
+            warnings.append(.testnetCard)
+        } else if card.firmwareVersion.type == .sdk && !DemoUtil().isDemoCard(cardId: card.cardId) {
+            warnings.append(.devCard)
+        }
+
         for wallet in card.wallets {
             if let remainingSignatures = wallet.remainingSignatures,
                remainingSignatures <= 10 {
