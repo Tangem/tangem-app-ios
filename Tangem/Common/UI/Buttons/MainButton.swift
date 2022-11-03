@@ -12,21 +12,21 @@ struct MainButton: View {
     private let text: String
     private let icon: Icon?
     private let style: Style
-    private let action: () -> Void
     private let isDisabled: Bool
+    private let action: () -> Void
 
     init(
         text: String,
         icon: Icon? = nil,
         style: Style = .primary,
-        action: @escaping (() -> Void),
-        isDisabled: Bool = false
+        isDisabled: Bool = false,
+        action: @escaping (() -> Void)
     ) {
         self.text = text
         self.icon = icon
         self.style = style
-        self.action = action
         self.isDisabled = isDisabled
+        self.action = action
     }
 
     var body: some View {
@@ -146,25 +146,21 @@ struct MainButton_Previews: PreviewProvider {
         VStack(spacing: 16) {
             MainButton(text: "Order card",
                        icon: .leading(Assets.tangemIcon),
-                       style: style,
-                       action: {})
+                       style: style) {}
 
             MainButton(text: "Order card",
                        icon: .leading(Assets.tangemIcon),
                        style: style,
-                       action: {},
-                       isDisabled: true)
+                       isDisabled: true) {}
+
+            MainButton(text: "Order card",
+                       icon: .trailing(Assets.tangemIcon),
+                       style: style) {}
 
             MainButton(text: "Order card",
                        icon: .trailing(Assets.tangemIcon),
                        style: style,
-                       action: {})
-
-            MainButton(text: "Order card",
-                       icon: .trailing(Assets.tangemIcon),
-                       style: style,
-                       action: {},
-                       isDisabled: true)
+                       isDisabled: true) {}
         }
         .padding(.horizontal, 16)
     }
