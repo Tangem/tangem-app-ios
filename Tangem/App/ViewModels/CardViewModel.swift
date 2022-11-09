@@ -59,7 +59,7 @@ class CardViewModel: Identifiable, ObservableObject {
     }
 
     var canCreateBackup: Bool {
-        config.hasFeature(.backup)
+        !config.getFeatureAvailability(.backup).isHidden
     }
 
     var canTwin: Bool {

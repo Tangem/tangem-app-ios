@@ -910,7 +910,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     }
 
     private func addDefaultTokens(for card: Card) {
-        let config = GenericConfig(card: card)
+        let config = UserWalletConfigFactory(CardInfo(card: card, walletData: .none)).makeConfig()
 
         guard let seed = config.userWalletIdSeed else { return }
 

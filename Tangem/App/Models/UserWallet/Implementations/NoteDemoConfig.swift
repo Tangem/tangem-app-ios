@@ -114,7 +114,7 @@ extension NoteDemoConfig: UserWalletConfig {
         case .exchange:
             return .disabled(localizedReason: "alert_demo_feature_disabled".localized)
         case .walletConnect:
-            return .disabled(localizedReason: "alert_demo_feature_disabled".localized)
+            return .hidden
         case .multiCurrency:
             return .hidden
         case .tokensSearch:
