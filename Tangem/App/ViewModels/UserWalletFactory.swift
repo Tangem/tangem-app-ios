@@ -58,7 +58,7 @@ class UserWalletFactory {
             card: cardViewModel.card,
             associatedCardIds: [cardViewModel.card.cardId],
             walletData: walletData,
-            artwork: cardViewModel.artworkInfo,
+            artwork: cardViewModel.artwork?.artworkInfo,
             isHDWalletAllowed: cardViewModel.card.settings.isHDWalletAllowed
         )
     }

@@ -427,7 +427,8 @@ class MainViewModel: ObservableObject {
 
     private func loadImage() {
         cardImageProvider
-            .loadImage(cardId: cardModel.cardId, cardPublicKey: cardModel.cardPublicKey)
+            .loadImage(cardId: cardModel.cardId, cardPublicKey: cardModel.cardPublicKey, artwork: cardModel.artwork)
+            .print()
             .weakAssignAnimated(to: \.image, on: self)
             .store(in: &bag)
     }

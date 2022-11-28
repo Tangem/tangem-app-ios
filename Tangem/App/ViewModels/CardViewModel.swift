@@ -79,8 +79,8 @@ class CardViewModel: Identifiable, ObservableObject {
         cardInfo.card.walletSignedHashes
     }
 
-    var artworkInfo: ArtworkInfo? {
-        CardImageProvider().cardArtwork(for: cardInfo.card.cardId)?.artworkInfo
+    var artwork: CardArtwork? {
+        CardImageProvider().cardArtwork(for: cardInfo.card.cardId)
     }
 
     var name: String {
