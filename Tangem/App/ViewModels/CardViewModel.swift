@@ -321,7 +321,7 @@ class CardViewModel: Identifiable, ObservableObject {
         userWalletModel?.append(entries: config.defaultBlockchains)
     }
 
-    func deriveEntriesWithoutDerivation() {
+    func deriveEntriesWithoutDerivation(completion: @escaping () -> Void) {
         guard let userWalletModel = userWalletModel else {
             assertionFailure("UserWalletModel not created")
             return
@@ -334,6 +334,8 @@ class CardViewModel: Identifiable, ObservableObject {
             case .failure:
                 print("Derivation error")
             }
+
+            completion()
         }
     }
 

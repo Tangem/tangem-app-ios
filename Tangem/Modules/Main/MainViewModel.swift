@@ -273,7 +273,9 @@ class MainViewModel: ObservableObject {
     }
 
     func deriveEntriesWithoutDerivation() {
-        cardModel.deriveEntriesWithoutDerivation()
+        cardModel.deriveEntriesWithoutDerivation { [weak self] in
+            self?.showUserWalletSaveIfNeeded()
+        }
     }
 
     // MARK: Warning action handler
