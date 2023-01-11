@@ -111,7 +111,7 @@ class TokenDetailsViewModel: ObservableObject {
             return Localization.tokenDetailsSendBlockedTxFormat(wallet.amounts[.coin]?.currencySymbol ?? "")
         }
 
-        if !wallet.hasPendingTx && !canSend && !currentAmount.isZero { // no fee
+        if !wallet.hasPendingTx && !canSend && !currentAmount.isZero { // asdasdno fee
             return Localization.tokenDetailsSendBlockedFeeFormat(wallet.blockchain.displayName, wallet.blockchain.displayName)
         }
 
