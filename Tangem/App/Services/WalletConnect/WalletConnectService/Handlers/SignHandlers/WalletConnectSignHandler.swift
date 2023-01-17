@@ -71,11 +71,14 @@ class WalletConnectSignHandler: TangemWalletConnectRequestHandler {
             return
         }
 
+        guard let cardWallet = cardModel.wallets.first(where: { $0.publicKey.seedKey == wallet.walletPublicKey }) else {
+            completion(.failure(WalletConnectServiceError.signFailed))
+            return
+        }
+
         Analytics.log(.requestSigned)
         signerSubscription = sign(data: data,
-                                  walletPublicKey: Wallet.PublicKey(seedKey: wallet.walletPublicKey,
-                                                                    derivedKey: wallet.derivedPublicKey,
-                                                                    derivationPath: wallet.derivationPath),
+                                  walletPublicKey: cardWallet.publicKey,
                                   signer: cardModel.signer)
             .sink(receiveCompletion: { [weak self] subsCompletion in
                 if case let .failure(error) = subsCompletion {

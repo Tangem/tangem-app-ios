@@ -113,6 +113,7 @@ enum EmailCollectedDataType {
         case walletManagerHost = "Host"
         case outputsCount = "Outputs count"
         case derivationPath = "Derivation path"
+        case xpub = "XPUB"
     }
 
     enum TokenData: String {
