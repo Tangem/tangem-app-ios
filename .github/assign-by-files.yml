@@ -1,0 +1,3 @@
+# If change any file set ios-team to reviewers
+"**/*":
+  - team: ios-team
