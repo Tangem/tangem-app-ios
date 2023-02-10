@@ -342,6 +342,7 @@
 "story_meet_title" = "Meet\nTangem";
 "story_web3_description" = "Exchange, buy NFT's, make loans and deposits in more than 100 different decentralized services";
 "story_web3_title" = "DeFi Compatible";
+"swapping_error_wrapper" = "Error: %s";
 "swapping_give_permission" = "Give Permission";
 "swapping_insufficient_funds" = "Insufficient funds";
 "swapping_not_enough_funds_for_fee" = "Not enough funds for fee in your %1$@ wallet to create a transaction. Top up your %2$@ wallet first.";
@@ -375,6 +376,10 @@
 "token_details_unable_hide_alert_message" = "The %1$@ token is the main currency on the %2$@ network and cannot be hidden as long as you have other tokens on this network in the list.";
 "token_details_unable_hide_alert_title" = "Unable to hide %@";
 "token_item_no_rate" = "No rate";
+"transaction_history_tx_in_progress" = "In progress...";
+"transactions_history_empty_transactions" = "You don't have any transactions yet";
+"transactions_history_error_failed_to_load" = "Failed to load transactions. Try again later.";
+"transactions_history_title" = "Transactions";
 "twin_error_not_a_twin_card" = "You've scanned not a twin card. To create twin wallet you need to scan a Tangem Twin card";
 "twin_error_same_card" = "You've scanned the same card. To create a twin wallet you need to scan the card with number %li";
 "twin_error_wrong_twin" = "You've scanned wrong twin card. Please try another one";

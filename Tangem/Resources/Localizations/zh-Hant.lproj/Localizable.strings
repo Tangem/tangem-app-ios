@@ -148,13 +148,13 @@
 "main_scan_card_warning_view_subtitle" = "要訪問所有的網路您需要掃描卡片";
 "main_scan_card_warning_view_title" = "掃描卡片";
 "main_tokens" = "代幣";
-"onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包。";
+"onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包";
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";
 "onboarding_access_code_feature_2_title" = "個人化";
-"onboarding_access_code_feature_3_description" = "門禁密碼可以用聯動卡恢復，不要把所有卡都放在一個地方。";
+"onboarding_access_code_feature_3_description" = "門禁密碼可以用聯動卡恢復，不要把所有卡都放在一個地方";
 "onboarding_access_code_feature_3_title" = "恢復";
-"onboarding_access_code_hint" = "選擇您想要的任何單詞、短語或數字作為您的訪問代碼。";
+"onboarding_access_code_hint" = "選擇您想要的任何單詞、短語或數字作為您的訪問代碼";
 "onboarding_access_code_intro_title" = "建立訪問密碼";
 "onboarding_access_code_repeat_code_title" = "重新輸入訪問密碼";
 "onboarding_access_code_too_short" = "訪問代碼的長度必須至少為 4 個字符";
@@ -314,7 +314,7 @@
 "shop_buy_now" = "現在購買";
 "shop_free" = "免費";
 "shop_i_have_a_promo_code" = "輸入折扣碼";
-"shop_one_wallet" = "Tangem 冷錢包";
+"shop_one_wallet" = "Tangem Wallet";
 "shop_other_payment_methods" = "其他付款方式";
 "shop_placing_order" = "下訂";
 "shop_shipping" = "運送";
@@ -384,7 +384,7 @@
 "twins_recreate_title_creating_wallet" = "創建錢包";
 "twins_recreate_title_format" = "掃描 #%@ 雙胞胎卡";
 "twins_recreate_title_preparing" = "準備卡片";
-"twins_recreate_toolbar" = "Tangem雙胞胎卡";
+"twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "這個動作是不可逆的。您將無法訪問舊錢包";
 "twins_scan_twin_with_number" = "將您的 iPhone 靠近編號為 %@ 的雙胞胎卡";
 "user_wallet_list_add_button" = "添加新錢包";

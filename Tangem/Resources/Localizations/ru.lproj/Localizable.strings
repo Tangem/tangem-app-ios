@@ -375,6 +375,10 @@
 "token_details_unable_hide_alert_message" = "Токен %1$@ является основной валютой в сети %2$@ и не может быть скрыт до тех пор, пока у вас в списке есть другие токены этой сети.";
 "token_details_unable_hide_alert_title" = "Невозможно скрыть %@";
 "token_item_no_rate" = "Нет цены";
+"transaction_history_tx_in_progress" = "В процессе…";
+"transactions_history_empty_transactions" = "У вас еще нет транзакций";
+"transactions_history_error_failed_to_load" = "Не удалось загрузить транзакции. Попробуйте, пожалуйста, позже";
+"transactions_history_title" = "Транзакции";
 "twin_error_not_a_twin_card" = "Вы отсканировали не twin-карту. Для создания двойного кошелька необходимо отсканировать карту Tangem Twin.";
 "twin_error_same_card" = "Вы отсканировали ту же карту. Для создания twin-кошелька вам необходимо отсканировать карту с номером %li";
 "twin_error_wrong_twin" = "Вы отсканировали не ту twin-карту. Пожалуйста, попробуйте отсканировать другую";
