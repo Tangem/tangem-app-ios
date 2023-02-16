@@ -476,7 +476,7 @@
 "warning_existential_deposit_message" = "Сеть %1$@ использует концепцию экзистенциального депозита. Если баланс вашего счета опустится ниже %2$@, он будет деактивирован, а все оставшиеся средства будут уничтожены.";
 "warning_failed_to_verify_card_message" = "Эта карта может быть производственным образцом или подделкой";
 "warning_failed_to_verify_card_title" = "Проверка подлинности не удалась";
-"warning_important_security_info" = "Важная информация о безопасности \U26A0";
+"warning_important_security_info" = "Важная информация о безопасности %@";
 "warning_low_signatures_format" = "На этой карте осталось только %@ подписей. Вы должны вывести все свои средства.";
 "warning_rate_app_message" = "Как вам Tangem?";
 "warning_rate_app_title" = "Один вопрос";

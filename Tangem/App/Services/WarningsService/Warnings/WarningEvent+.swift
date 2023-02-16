@@ -50,7 +50,7 @@ fileprivate enum WarningsList {
     static let numberOfSignedHashesIncorrect = AppWarning(title: warningTitle, message: Localization.alertCardSignedTransactions, priority: .info, type: .temporary, event: .numberOfSignedHashesIncorrect)
     static let rateApp = AppWarning(title: Localization.warningRateAppTitle, message: Localization.warningRateAppMessage, priority: .info, type: .temporary, event: .rateApp)
     static let failedToVerifyCard = AppWarning(title: Localization.warningFailedToVerifyCardTitle, message: Localization.warningFailedToVerifyCardMessage, priority: .critical, type: .permanent, event: .failedToValidateCard)
-    static let multiWalletSignedHashes = AppWarning(title: Localization.warningImportantSecurityInfo, message: Localization.warningSignedTxPreviously, priority: .info, type: .temporary, location: [.main], event: .multiWalletSignedHashes)
+    static let multiWalletSignedHashes = AppWarning(title: Localization.warningImportantSecurityInfo("\u{26A0}"), message: Localization.warningSignedTxPreviously, priority: .info, type: .temporary, location: [.main], event: .multiWalletSignedHashes)
     static let testnetCard = AppWarning(title: warningTitle, message: Localization.warningTestnetCardMessage, priority: .critical, type: .permanent, location: [.main, .send], event: .testnetCard)
     static let demoCard = AppWarning(title: warningTitle, message: Localization.alertDemoMessage, priority: .critical, type: .permanent, location: [.main, .send], event: .demoCard)
     static let legacyDerivation = AppWarning(title: warningTitle, message: Localization.alertManageTokensAddressesMessage, priority: .critical, type: .permanent, location: [.manageTokens], event: .legacyDerivation)

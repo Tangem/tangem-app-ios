@@ -476,7 +476,7 @@
 "warning_existential_deposit_message" = "%1$@ network has a concept of Existential Deposit. If your account drops below %2$@ it will be deactivated and any remaining funds will be destroyed.";
 "warning_failed_to_verify_card_message" = "This card might be a production sample or counterfeit";
 "warning_failed_to_verify_card_title" = "Authenticity check failed";
-"warning_important_security_info" = "Important security information \U26A0";
+"warning_important_security_info" = "Important security information %@";
 "warning_low_signatures_format" = "There are only %@ signatures available on this card. You must withdraw all of your funds.";
 "warning_rate_app_message" = "How do you like Tangem?";
 "warning_rate_app_title" = "One question";
