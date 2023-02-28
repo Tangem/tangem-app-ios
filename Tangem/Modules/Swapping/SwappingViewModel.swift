@@ -177,7 +177,7 @@ final class SwappingViewModel: ObservableObject {
     func didTapWaringRefresh() {
         exchangeManager.refresh(type: .full)
     }
-    
+
     private func setupExternalSendValue(_ amount: Decimal) {
         sendDecimalValue = .external(amount)
         pendingValidatingAmount = amount
@@ -230,7 +230,7 @@ private extension SwappingViewModel {
         }
 
         runTask(in: self) { obj in
-            let fiatFee = try await obj.fiatRatesProvider.getFiat(for: info.sourceBlockchain, amount: result.fee)
+            let fiatFee = try await obj.fiatRatesProvider.getFiat(for: info.sourceBlockchain, amount: info.fee)
             let inputModel = SwappingPermissionInputModel(
                 fiatFee: fiatFee,
                 transactionInfo: info
