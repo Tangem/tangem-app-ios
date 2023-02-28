@@ -211,22 +211,13 @@ class TokenDetailsViewModel: ObservableObject {
     func updateExchangeButtons() {
         guard FeatureProvider.isAvailable(.exchange) else { return }
 
-        var exchangeOptions: [ExchangeButtonType] = [.buy]
-
-        if canSellCrypto {
-            exchangeOptions.append(.sell)
-        }
-
-        if canSwap {
-            exchangeOptions.append(.swap)
-        }
-
-        if exchangeOptions.count == 1,
-           let single = exchangeOptions.first {
-            exchangeButtonState = .single(option: single)
-        } else {
-            exchangeButtonState = .multi(options: exchangeOptions)
-        }
+        exchangeButtonState = .init(
+            options: ExchangeButtonType.build(
+                canBuyCrypto: canBuyCrypto,
+                canSellCrypto: canSellCrypto,
+                canSwap: canSwap
+            )
+        )
     }
 
     func openExchangeActionSheet() {
@@ -566,50 +557,6 @@ private extension TokenDetailsViewModel {
 
         case .token(let token):
             return mapper.mapToCurrency(token: token, blockchain: blockchain)
-        }
-    }
-}
-
-extension TokenDetailsViewModel {
-    enum ExchangeButtonState: Hashable {
-        case single(option: ExchangeButtonType)
-        case multi(options: [ExchangeButtonType])
-
-        var options: [ExchangeButtonType] {
-            switch self {
-            case .single(let option):
-                return [option]
-            case .multi(let options):
-                return options
-            }
-        }
-    }
-
-    enum ExchangeButtonType: Hashable {
-        case buy
-        case sell
-        case swap
-
-        var title: String {
-            switch self {
-            case .buy:
-                return Localization.walletButtonBuy
-            case .sell:
-                return Localization.walletButtonSell
-            case .swap:
-                return Localization.swappingSwapAction
-            }
-        }
-
-        var icon: ImageType {
-            switch self {
-            case .buy:
-                return Assets.arrowUpMini
-            case .sell:
-                return Assets.arrowDownMini
-            case .swap:
-                return Assets.exchangeIcon
-            }
         }
     }
 }

@@ -159,9 +159,16 @@ struct MainView: View {
 
     @ViewBuilder
     var exchangeCryptoButton: some View {
-        if viewModel.canSellCrypto {
+        switch viewModel.exchangeButtonState {
+        case .single(let option):
             MainButton(
-                title: Localization.walletButtonTrade,
+                title: option.title,
+                icon: .leading(Assets.arrowUpMini),
+                action: viewModel.openBuyCryptoIfPossible
+            )
+        case .multi:
+            MainButton(
+                title: Localization.walletButtonActions,
                 icon: .leading(Assets.exchangeMini),
                 action: viewModel.tradeCryptoAction
             )
@@ -175,12 +182,6 @@ struct MainView: View {
                     ]
                 )
             })
-        } else {
-            MainButton(
-                title: Localization.walletButtonBuy,
-                icon: .leading(Assets.arrowUpMini),
-                action: viewModel.openBuyCryptoIfPossible
-            )
         }
     }
 

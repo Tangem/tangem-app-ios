@@ -66,6 +66,8 @@ final class SwappingViewModel: ObservableObject {
     // MARK: - Private
 
     private lazy var refreshDataTimer = Timer.publish(every: 1, on: .main, in: .common)
+    // TODO: Remove this variable and refactor Task cancellation in DefaultExchangeManager
+    private var pendingValidatingAmount: Decimal?
     private var refreshDataTimerBag: AnyCancellable?
     private var bag: Set<AnyCancellable> = []
 
@@ -100,7 +102,8 @@ final class SwappingViewModel: ObservableObject {
     }
 
     func userDidTapMaxAmount() {
-        sendDecimalValue = .external(exchangeManager.getExchangeItems().sourceBalance)
+        let sourceBalance = exchangeManager.getExchangeItems().sourceBalance
+        setupExternalSendValue(sourceBalance)
     }
 
     func userDidRequestChangeDestination(to currency: Currency) {
@@ -133,7 +136,7 @@ final class SwappingViewModel: ObservableObject {
         // If amount have been set we'll should to round and update it with new decimalCount
         if let amount = sendDecimalValue?.value {
             let roundedAmount = amount.rounded(scale: items.source.decimalCount, roundingMode: .plain)
-            sendDecimalValue = .external(roundedAmount)
+            setupExternalSendValue(roundedAmount)
 
             exchangeManager.update(amount: roundedAmount)
         }
@@ -173,6 +176,11 @@ final class SwappingViewModel: ObservableObject {
 
     func didTapWaringRefresh() {
         exchangeManager.refresh(type: .full)
+    }
+    
+    private func setupExternalSendValue(_ amount: Decimal) {
+        sendDecimalValue = .external(amount)
+        pendingValidatingAmount = amount
     }
 }
 
@@ -259,6 +267,14 @@ extension SwappingViewModel: ExchangeManagerDelegate {
 // MARK: - View updates
 
 private extension SwappingViewModel {
+    func resetViews() {
+        refreshWarningRowViewModel = nil
+        feeWarningRowViewModel = nil
+        permissionInfoRowViewModel = nil
+        highPriceImpactWarningRowViewModel = nil
+        swapButtonIsLoading = false
+    }
+
     func updateView(exchangeItems: ExchangeItems) {
         updateSendView(exchangeItems: exchangeItems)
         updateReceiveView(exchangeItems: exchangeItems)
@@ -335,9 +351,7 @@ private extension SwappingViewModel {
 
         switch state {
         case .idle:
-            refreshWarningRowViewModel = nil
-            feeWarningRowViewModel = nil
-            permissionInfoRowViewModel = nil
+            resetViews()
 
             receiveCurrencyViewModel?.update(cryptoAmountState: .loaded(0))
             receiveCurrencyViewModel?.update(fiatAmountState: .loaded(0))
@@ -500,7 +514,20 @@ private extension SwappingViewModel {
     }
 
     func checkForHighPriceImpact(destinationFiatAmount: Decimal) async throws {
-        guard let sendDecimalValue = sendDecimalValue?.value else {
+        guard
+            let sendDecimalValue = sendDecimalValue?.value,
+            pendingValidatingAmount?.isEqual(to: sendDecimalValue) ?? false
+        else {
+            // Current send decimal value was changed during old update. We can ignore this check
+            return
+        }
+
+        if sendDecimalValue.isZero {
+            pendingValidatingAmount = nil
+            // No need to calculate price impact with zero input
+            await runOnMain {
+                highPriceImpactWarningRowViewModel = nil
+            }
             return
         }
 
@@ -509,10 +536,10 @@ private extension SwappingViewModel {
             amount: sendDecimalValue
         )
 
-        let lostInPercents = (sourceFiatAmount / destinationFiatAmount - 1) * 100
+        let lossesInPercents = (1 - destinationFiatAmount / sourceFiatAmount) * 100
 
         await runOnMain {
-            if lostInPercents >= Constants.highPriceImpactWarningLimit {
+            if lossesInPercents >= Constants.highPriceImpactWarningLimit {
                 highPriceImpactWarningRowViewModel = DefaultWarningRowViewModel(
                     title: Localization.swappingHighPriceImpact,
                     subtitle: Localization.swappingHighPriceImpactDescription,
@@ -521,6 +548,7 @@ private extension SwappingViewModel {
             } else {
                 highPriceImpactWarningRowViewModel = nil
             }
+            pendingValidatingAmount = nil
         }
     }
 
@@ -555,7 +583,13 @@ private extension SwappingViewModel {
             .removeDuplicates()
             .debounce(for: 1, scheduler: DispatchQueue.main)
             .sink { [weak self] amount in
-                self?.refreshWarningRowViewModel = nil
+                // TODO: Refactor send decimal value storage logic
+                // Currently sendDecimalValue is updating directly from UI
+                // but requesting update in exchange manager with 1 second delay.
+                // So when all necessary information already loaded in exchange manager
+                // we will face wrong send decimal value while checking high price impact.
+                self?.pendingValidatingAmount = amount
+                self?.resetViews()
                 self?.exchangeManager.update(amount: amount)
                 self?.updateSendFiatValue()
             }
