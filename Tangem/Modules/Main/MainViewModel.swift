@@ -185,6 +185,7 @@ class MainViewModel: ObservableObject {
         bind()
         cardModel.setupWarnings()
         updateContent()
+        updateExchangeButtons()
     }
 
     deinit {

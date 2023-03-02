@@ -86,7 +86,7 @@ fileprivate struct OpacityColor {
 fileprivate extension UIColor {
     static func from(swiftUIDescription description: String, internalType: String) throws -> UIColor {
         switch internalType {
-        case "SystemColorType":
+        case "SystemColorType", "Resolved":
             guard let uiColor = UIColor.from(systemColorName: description) else {
                 throw ColorConversionError(reason: "Could not parse SystemColorType from \"\(description)\"")
             }

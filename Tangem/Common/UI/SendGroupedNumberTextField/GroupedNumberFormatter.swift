@@ -31,6 +31,14 @@ struct GroupedNumberFormatter {
         numberFormatter.maximumFractionDigits = maximumFractionDigits
     }
 
+    func format(_ decimal: Decimal) -> String {
+        guard let string = numberFormatter.string(for: decimal) else {
+            return ""
+        }
+
+        return format(from: string)
+    }
+
     func format(from string: String) -> String {
         // Exclude unnecessary logic
         guard !string.isEmpty else { return "" }
