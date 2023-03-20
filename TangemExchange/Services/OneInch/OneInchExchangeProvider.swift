@@ -70,11 +70,12 @@ extension OneInchExchangeProvider: ExchangeProvider {
         }
     }
 
-    func fetchQuote(items: ExchangeItems, amount: String) async throws -> QuoteDataModel {
+    func fetchQuote(items: ExchangeItems, amount: String, referrer: ExchangeReferrerAccount?) async throws -> QuoteDataModel {
         let parameters = QuoteParameters(
             fromTokenAddress: items.source.contractAddress ?? oneInchCoinContractAddress,
             toTokenAddress: items.destination?.contractAddress ?? oneInchCoinContractAddress,
-            amount: amount
+            amount: amount,
+            fee: referrer?.fee.description
         )
 
         let result = await oneInchAPIProvider.quote(blockchain: items.source.blockchain, parameters: parameters)

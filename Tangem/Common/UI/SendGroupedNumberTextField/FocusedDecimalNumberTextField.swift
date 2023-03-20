@@ -1,5 +1,5 @@
 //
-//  FocusedGroupedNumberTextField.swift
+//  FocusedDecimalNumberTextField.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 12.01.2023.
@@ -9,17 +9,17 @@
 import Foundation
 import SwiftUI
 
-/// It same as`GroupedNumberTextField` but with support focus state and toolbar buttons
+/// It same as`DecimalNumberTextField` but with support focus state and toolbar buttons
 @available(iOS 15.0, *)
-struct FocusedGroupedNumberTextField<ToolbarButton: View>: View {
-    @Binding private var decimalValue: GroupedNumberTextField.DecimalValue?
+struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
+    @Binding private var decimalValue: DecimalNumberTextField.DecimalValue?
     @FocusState private var isInputActive: Bool
     private var maximumFractionDigits: Int
 
     private let toolbarButton: () -> ToolbarButton
 
     init(
-        decimalValue: Binding<GroupedNumberTextField.DecimalValue?>,
+        decimalValue: Binding<DecimalNumberTextField.DecimalValue?>,
         maximumFractionDigits: Int,
         @ViewBuilder toolbarButton: @escaping () -> ToolbarButton
     ) {
@@ -29,9 +29,9 @@ struct FocusedGroupedNumberTextField<ToolbarButton: View>: View {
     }
 
     var body: some View {
-        GroupedNumberTextField(
+        DecimalNumberTextField(
             decimalValue: $decimalValue,
-            groupedNumberFormatter: GroupedNumberFormatter(maximumFractionDigits: maximumFractionDigits)
+            decimalNumberFormatter: DecimalNumberFormatter(maximumFractionDigits: maximumFractionDigits)
         )
         .maximumFractionDigits(maximumFractionDigits)
         .focused($isInputActive)
@@ -58,18 +58,18 @@ struct FocusedGroupedNumberTextField<ToolbarButton: View>: View {
 // MARK: - Setupable
 
 @available(iOS 15.0, *)
-extension FocusedGroupedNumberTextField: Setupable {
+extension FocusedDecimalNumberTextField: Setupable {
     func maximumFractionDigits(_ digits: Int) -> Self {
         map { $0.maximumFractionDigits = digits }
     }
 }
 
 struct FocusedNumberTextField_Previews: PreviewProvider {
-    @State private static var decimalValue: GroupedNumberTextField.DecimalValue?
+    @State private static var decimalValue: DecimalNumberTextField.DecimalValue?
 
     static var previews: some View {
         if #available(iOS 15.0, *) {
-            FocusedGroupedNumberTextField(decimalValue: $decimalValue, maximumFractionDigits: 8) {}
+            FocusedDecimalNumberTextField(decimalValue: $decimalValue, maximumFractionDigits: 8) {}
         }
     }
 }

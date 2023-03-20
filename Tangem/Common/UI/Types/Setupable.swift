@@ -10,7 +10,7 @@ import Foundation
 
 /// Protocol for customizing UI components
 /// Extend your view this protocol and use `map` function for update some property
-/// Example: `GroupedNumberTextField`
+/// Example: `DecimalNumberTextField`
 public protocol Setupable {
     func map(_ closure: (inout Self) -> Void) -> Self
 }

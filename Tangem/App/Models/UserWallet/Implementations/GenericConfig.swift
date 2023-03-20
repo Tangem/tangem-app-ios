@@ -85,6 +85,7 @@ extension GenericConfig: UserWalletConfig {
         }
 
         if card.wallets.isEmpty {
+            // Check is card supports seed phrase, if so add seed phrase steps
             steps.append(contentsOf: [.createWallet] + _backupSteps + userWalletSavingSteps + [.success])
         } else {
             if !AppSettings.shared.cardsStartedActivation.contains(card.cardId) {
@@ -229,6 +230,10 @@ extension GenericConfig: UserWalletConfig {
         case .displayHashesCount:
             return .available
         case .transactionHistory:
+            return .hidden
+        case .seedPhrase:
+            // Something like `isSeedPhraseAllowed` will be checked here...
+            // The actual implementation is not yet described in the firmware
             return .hidden
         }
     }

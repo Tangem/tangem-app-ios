@@ -38,7 +38,7 @@ extension CommonPaymentologyApiService: PaymentologyApiService {
             .requestPublisher(target)
             .filterSuccessfulStatusCodes()
             .map(RegistrationResponse.self, using: JSONDecoder.saltPayDecoder)
-            .tryExtractError()
+            .tryExtractExtraError()
             .tryGetFirstResult()
             .tryExtractError()
             .retry(3)
@@ -53,7 +53,7 @@ extension CommonPaymentologyApiService: PaymentologyApiService {
             .requestPublisher(target)
             .filterSuccessfulStatusCodes()
             .map(AttestationResponse.self, using: JSONDecoder.saltPayDecoder)
-            .tryExtractError()
+            .tryExtractExtraError()
             .retry(3)
             .eraseToAnyPublisher()
     }
@@ -65,7 +65,7 @@ extension CommonPaymentologyApiService: PaymentologyApiService {
             .requestPublisher(target)
             .filterSuccessfulStatusCodes()
             .map(RegisterWalletResponse.self, using: JSONDecoder.saltPayDecoder)
-            .tryExtractError()
+            .tryExtractExtraError()
             .retry(3)
             .eraseToAnyPublisher()
     }
@@ -77,7 +77,7 @@ extension CommonPaymentologyApiService: PaymentologyApiService {
             .requestPublisher(target)
             .filterSuccessfulStatusCodes()
             .map(RegisterWalletResponse.self, using: JSONDecoder.saltPayDecoder)
-            .tryExtractError()
+            .tryExtractExtraError()
             .retry(3)
             .eraseToAnyPublisher()
     }
@@ -91,6 +91,27 @@ fileprivate extension AnyPublisher where Output: ErrorContainer, Failure: Error 
             }
 
             return container
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+fileprivate extension AnyPublisher where Output: ErrorExtraContainer, Failure: Error {
+    func tryExtractExtraError() -> AnyPublisher<Output, Error> {
+        tryMap { container in
+            if container.success {
+                return container
+            }
+
+            if let error = container.error {
+                throw error
+            }
+
+            if let errorCode = container.errorCode {
+                throw "An error occured. Code: \(errorCode)" // TODO: localize
+            }
+
+            throw SaltPayRegistratorError.unknownServerError
         }
         .eraseToAnyPublisher()
     }

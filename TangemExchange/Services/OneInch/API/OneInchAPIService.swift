@@ -10,11 +10,13 @@ import Foundation
 import Moya
 
 struct OneInchAPIService: OneInchAPIServicing {
-    private let provider = MoyaProvider<OneInchBaseTarget>()
+    private let provider: MoyaProvider<OneInchBaseTarget>
     private let logger: ExchangeLogger
 
-    init(logger: ExchangeLogger) {
+    init(logger: ExchangeLogger, configuration: URLSessionConfiguration = .oneInchURLConfiguration) {
         self.logger = logger
+        let session = Session(configuration: configuration)
+        provider = MoyaProvider<OneInchBaseTarget>(session: session)
     }
 
     func healthCheck(blockchain: ExchangeBlockchain) async -> Result<HealthCheck, ExchangeProviderError> {
@@ -120,5 +122,13 @@ private extension OneInchAPIService {
             \(error)
             """
         )
+    }
+}
+
+extension URLSessionConfiguration {
+    static var oneInchURLConfiguration: URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.default
+        configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        return configuration
     }
 }

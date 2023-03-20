@@ -245,6 +245,11 @@ class SaltPayRegistrator {
                     // .setFailureType(to: Error.self) //TODO: remove
                     .eraseToAnyPublisher()
             }
+            .flatMap { [weak self] _ -> AnyPublisher<Void, Error> in
+                guard let self = self else { return .anyFail(error: SaltPayRegistratorError.empty) }
+
+                return self.checkRegistration().eraseToAnyPublisher()
+            }
             .sink { [weak self] completion in
                 if case .failure(let error) = completion {
                     if !error.toTangemSdkError().isUserCancelled {
@@ -253,10 +258,8 @@ class SaltPayRegistrator {
                 }
 
                 self?.isBusy = false
-            } receiveValue: { [weak self] _ in
-                self?.registrationState?.pinSet = true
+            } receiveValue: {
                 Analytics.log(.pinCodeSet)
-                self?.updateState()
             }
             .store(in: &bag)
     }

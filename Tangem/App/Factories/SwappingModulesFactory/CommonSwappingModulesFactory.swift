@@ -56,7 +56,7 @@ extension CommonSwappingModulesFactory: SwappingModulesFactory {
             userCurrenciesProvider: userCurrenciesProvider,
             tokenIconURLBuilder: tokenIconURLBuilder,
             currencyMapper: currencyMapper,
-            blockchainDataProvider: blockchainDataProvider,
+            walletDataProvider: walletDataProvider,
             fiatRatesProvider: fiatRatesProvider,
             coordinator: coordinator
         )
@@ -105,6 +105,7 @@ private extension CommonSwappingModulesFactory {
             transactionCreator: walletManager,
             transactionSender: walletManager,
             transactionSigner: signer,
+            ethereumNetworkProvider: walletManager as! EthereumNetworkProvider,
             currencyMapper: currencyMapper
         )
     }
@@ -117,16 +118,18 @@ private extension CommonSwappingModulesFactory {
         CommonExplorerURLService()
     }
 
-    var blockchainDataProvider: TangemExchange.BlockchainDataProvider {
-        BlockchainNetworkService(
-            walletModel: walletModel,
+    var walletDataProvider: WalletDataProvider {
+        ExchangeWalletDataProvider(
+            wallet: walletModel.wallet,
+            ethereumGasLoader: walletManager as! EthereumGasLoader,
+            ethereumNetworkProvider: walletManager as! EthereumNetworkProvider,
             currencyMapper: currencyMapper
         )
     }
 
     func exchangeManager(source: Currency, destination: Currency?) -> ExchangeManager {
         TangemExchangeFactory().createExchangeManager(
-            blockchainDataProvider: blockchainDataProvider,
+            walletDataProvider: walletDataProvider,
             referrer: referrer,
             source: source,
             destination: destination,

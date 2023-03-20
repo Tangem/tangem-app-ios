@@ -83,6 +83,21 @@ public enum ExchangeBlockchain: Hashable, CaseIterable {
         }
     }
 
+    /// Uses for load currency rates
+    public var currencyID: String {
+        switch self {
+        case .ethereum, .arbitrum, .optimism, .aurora: return "ethereum"
+        case .bsc: return "binancecoin"
+        case .polygon: return "matic-network"
+        case .avalanche: return "avalanche-2"
+        case .fantom: return "fantom"
+        case .gnosis: return "xdai"
+        case .klayth:
+            assertionFailure("Unimplemented")
+            return ""
+        }
+    }
+
     /// Uses for load tokens
     public var networkId: String {
         switch self {
@@ -99,7 +114,6 @@ public enum ExchangeBlockchain: Hashable, CaseIterable {
         }
     }
 
-    /// Uses for load tokens
     public var name: String {
         switch self {
         case .ethereum: return "ethereum"

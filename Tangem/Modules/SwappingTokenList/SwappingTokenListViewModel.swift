@@ -33,7 +33,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
 
     private let tokenIconURLBuilder: TokenIconURLBuilding
     private let currencyMapper: CurrencyMapping
-    private let blockchainDataProvider: TangemExchange.BlockchainDataProvider
+    private let walletDataProvider: WalletDataProvider
     private let fiatRatesProvider: FiatRatesProviding
     private unowned let coordinator: SwappingTokenListRoutable
 
@@ -47,7 +47,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
         userCurrenciesProvider: UserCurrenciesProviding,
         tokenIconURLBuilder: TokenIconURLBuilding,
         currencyMapper: CurrencyMapping,
-        blockchainDataProvider: TangemExchange.BlockchainDataProvider,
+        walletDataProvider: WalletDataProvider,
         fiatRatesProvider: FiatRatesProviding,
         coordinator: SwappingTokenListRoutable
     ) {
@@ -55,7 +55,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
         userCurrencies = userCurrenciesProvider.getCurrencies(blockchain: sourceCurrency.blockchain)
         self.tokenIconURLBuilder = tokenIconURLBuilder
         self.currencyMapper = currencyMapper
-        self.blockchainDataProvider = blockchainDataProvider
+        self.walletDataProvider = walletDataProvider
         self.fiatRatesProvider = fiatRatesProvider
         self.coordinator = coordinator
 
@@ -165,7 +165,7 @@ private extension SwappingTokenListViewModel {
 
     func getCurrencyAmount(for currency: Currency) async -> CurrencyAmount? {
         do {
-            let balance = try await blockchainDataProvider.getBalance(for: currency)
+            let balance = try await walletDataProvider.getBalance(for: currency)
             return CurrencyAmount(value: balance, currency: currency)
         } catch {
             return nil

@@ -12,4 +12,5 @@ protocol OnboardingRoutable: AnyObject {
     func onboardingDidFinish()
     func closeOnboarding()
     func openSupportChat(input: SupportChatInputModel)
+    func openWebView(with url: URL)
 }

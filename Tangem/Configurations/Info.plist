@@ -43,10 +43,10 @@
 	<string>To Scan Smart Card</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To Scan QR Code or take a photo for chat support</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To share with chat support</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID to allow save your card in the app</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To share with chat support</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>ScanTangemCardIntent</string>

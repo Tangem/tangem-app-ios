@@ -54,7 +54,7 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     func loadCoins(requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Error> {
-        provider
+        return provider
             .requestPublisher(TangemApiTarget(type: .coins(requestModel), authData: authData))
             .filterSuccessfulStatusCodes()
             .map(CoinsResponse.self)

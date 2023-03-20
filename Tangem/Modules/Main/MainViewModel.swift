@@ -32,6 +32,9 @@ class MainViewModel: ObservableObject {
     @Published var isLackDerivationWarningViewVisible: Bool = false
     @Published var isBackupAllowed: Bool = false
 
+    @Published var exchangeButtonState: ExchangeButtonState = .single(option: .buy)
+    @Published var exchangeActionSheet: ActionSheetBinder?
+
     @Published var singleWalletContentViewModel: SingleWalletContentViewModel? {
         didSet {
             singleWalletContentViewModel?.objectWillChange
@@ -104,7 +107,7 @@ class MainViewModel: ObservableObject {
         singleWalletContentViewModel?.singleWalletModel?.wallet
     }
 
-    var currenyCode: String {
+    var currencyCode: String {
         wallet?.blockchain.currencySymbol ?? .unknown
     }
 
@@ -184,6 +187,7 @@ class MainViewModel: ObservableObject {
         bind()
         cardModel.setupWarnings()
         updateContent()
+        updateExchangeButtons()
     }
 
     deinit {
@@ -214,6 +218,15 @@ class MainViewModel: ObservableObject {
                 self.objectWillChange.send()
             }
             .store(in: &bag)
+    }
+
+    func updateExchangeButtons() {
+        exchangeButtonState = .init(
+            options: ExchangeButtonType.build(
+                canBuyCrypto: canBuyCrypto,
+                canSellCrypto: canSellCrypto
+            )
+        )
     }
 
     func updateIsBackupAllowed() {
@@ -258,6 +271,43 @@ class MainViewModel: ObservableObject {
     func didTapUserWalletListButton() {
         Analytics.log(.buttonMyWallets)
         coordinator.openUserWalletList()
+    }
+
+    func openExchangeActionSheet() {
+        Analytics.log(.buttonExchange)
+
+        var buttons: [ActionSheet.Button] = exchangeButtonState.options.map { action in
+            .default(Text(action.title)) { [weak self] in
+                self?.didTapExchangeButtonAction(type: action)
+            }
+        }
+
+        buttons.append(.cancel())
+
+        let sheet = ActionSheet(title: Text(""), buttons: buttons)
+        exchangeActionSheet = ActionSheetBinder(sheet: sheet)
+    }
+
+    func didTapExchangeButtonAction(type: ExchangeButtonType) {
+        switch type {
+        case .buy:
+            openBuyCryptoIfPossible()
+        case .sell:
+            openSellCrypto()
+        case .swap:
+            break
+        }
+    }
+
+    func isAvailable(type: ExchangeButtonType) -> Bool {
+        switch type {
+        case .buy:
+            return canBuyCrypto
+        case .sell:
+            return canSellCrypto
+        case .swap:
+            return false
+        }
     }
 
     func sendTapped() {
@@ -337,24 +387,9 @@ class MainViewModel: ObservableObject {
         warningsService.hideWarning(warning)
     }
 
-    func tradeCryptoAction() {
-        Analytics.log(.buttonExchange)
-
-        showTradeSheet.toggle()
-    }
-
     func extractSellCryptoRequest(from response: String) {
         if let request = exchangeService.extractSellCryptoRequest(from: response) {
             openSendToSell(with: request)
-        }
-    }
-
-    func sendAnalyticsEvent(_ event: Analytics.Event) {
-        switch event {
-        case .userBoughtCrypto:
-            Analytics.log(event: event, params: [.currencyCode: currenyCode])
-        default:
-            break
         }
     }
 
@@ -491,9 +526,12 @@ extension MainViewModel {
             coordinator.openBuyCrypto(at: url, closeUrl: buyCryptoCloseUrl) { [weak self] _ in
                 guard let self = self else { return }
 
-                self.sendAnalyticsEvent(.userBoughtCrypto)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.userWalletModel.updateAndReloadWalletModels()
+                let code = self.currencyCode
+                Analytics.log(event: .userBoughtCrypto, params: [.currencyCode: code])
+                Analytics.log(event: .tokenBought, params: [.token: code])
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                    self?.userWalletModel.updateAndReloadWalletModels()
                 }
             }
         }

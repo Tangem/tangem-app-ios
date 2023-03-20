@@ -193,6 +193,8 @@ extension TwinConfig: UserWalletConfig {
             return .hidden
         case .transactionHistory:
             return .hidden
+        case .seedPhrase:
+            return .hidden
         }
     }
 

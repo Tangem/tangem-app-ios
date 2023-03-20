@@ -182,6 +182,9 @@
 "onboarding_button_what_does_it_mean" = "How does it work?";
 "onboarding_create_wallet_body" = "Let's generate all the keys on your card and create a secure wallet";
 "onboarding_create_wallet_button_create_wallet" = "Create wallet";
+"onboarding_create_wallet_options_button_options" = "Other options";
+"onboarding_create_wallet_options_message" = "Your keys will be securely generated inside the card. No seed phrase or any ability to export and steal them.";
+"onboarding_create_wallet_options_title" = "Generate keys privately";
 "onboarding_done_body" = "Your card is activated and ready to be used";
 "onboarding_done_header" = "Success!";
 "onboarding_exit_alert_message" = "In this case, you will need to start from the beginning.";
@@ -199,6 +202,11 @@
 "onboarding_saltpay_title_no_backup_card" = "No backup card";
 "onboarding_saltpay_title_one_backup_card" = "Backup card ready";
 "onboarding_saltpay_title_prepare_origin" = "Prepare the SaltPay card";
+"onboarding_seed_button_read_more" = "Read more about seed phrases";
+"onboarding_seed_intro_button_generate" = "Generate seed phrase";
+"onboarding_seed_intro_button_import" = "Import Wallet";
+"onboarding_seed_intro_message" = "Seed phrase is a series of words that gives an ability to recover the wallet. Unlike the card generated keys, seed phrase is unprotected and can be copied and stolen. Use this option at your own risk.";
+"onboarding_seed_intro_title" = "Use seed phrase";
 "onboarding_subtitle_backup_card" = "You can backup your keys up to two other blank wallet cards";
 "onboarding_subtitle_claim" = "To get started, simply claim wxDAI to your wallet";
 "onboarding_subtitle_claim_progress" = "It will take a few seconds";

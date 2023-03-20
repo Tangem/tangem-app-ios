@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RegistrationResponse: Codable, ErrorContainer {
+struct RegistrationResponse: Codable, ErrorContainer, ErrorExtraContainer {
     let results: [RegistrationResponse.Item]
     let error: String?
     let errorCode: Int?
@@ -45,14 +45,14 @@ extension RegistrationResponse {
     }
 }
 
-struct AttestationResponse: Codable, ErrorContainer {
+struct AttestationResponse: Codable, ErrorContainer, ErrorExtraContainer {
     let challenge: Data
     let error: String?
     let errorCode: Int?
     let success: Bool
 }
 
-struct RegisterWalletResponse: Codable, ErrorContainer {
+struct RegisterWalletResponse: Codable, ErrorContainer, ErrorExtraContainer {
     let error: String?
     let errorCode: Int?
     let success: Bool
@@ -60,6 +60,11 @@ struct RegisterWalletResponse: Codable, ErrorContainer {
 
 protocol ErrorContainer {
     var error: String? { get }
+}
+
+protocol ErrorExtraContainer: ErrorContainer {
+    var errorCode: Int? { get }
+    var success: Bool { get }
 }
 
 enum KYCStatus: String, Codable {

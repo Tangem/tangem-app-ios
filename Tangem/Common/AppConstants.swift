@@ -11,6 +11,7 @@ import UIKit
 
 enum AppConstants {
     static let tangemDomainUrl = URL(string: "https://tangem.com")!
+    static let seedPhraseReadMoreURL = URL(string: "https://tangem.com/ru/blog/post/seed-phrase-a-risky-solution/")!
 
     static var isSmallScreen: Bool {
         UIScreen.main.bounds.width < 375 || UIScreen.main.bounds.height < 650
@@ -18,4 +19,5 @@ enum AppConstants {
 
     static let messageForWalletID = "UserWalletID"
     static let messageForTokensKey = "TokensSymmetricKey"
+    static let maximumFractionDigitsForBalance = 8
 }

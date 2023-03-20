@@ -35,7 +35,7 @@ struct DerivationManager {
 
         let nonDeriveEntries = entries.compactMap { entry -> StorageEntry? in
             guard let path = entry.blockchainNetwork.derivationPath,
-                  let wallet = cardInfo.card.wallets.first(where: { $0.curve == entry.blockchainNetwork.blockchain.curve }),
+                  let wallet = cardInfo.card.wallets.last(where: { $0.curve == entry.blockchainNetwork.blockchain.curve }),
                   !wallet.derivedKeys.keys.contains(path) else {
                 return nil
             }

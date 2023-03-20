@@ -13,7 +13,7 @@ public struct TangemExchangeFactory {
     public init() {}
 
     public func createExchangeManager(
-        blockchainDataProvider: BlockchainDataProvider,
+        walletDataProvider: WalletDataProvider,
         referrer: ExchangeReferrerAccount? = nil,
         source: Currency,
         destination: Currency?,
@@ -26,7 +26,7 @@ public struct TangemExchangeFactory {
 
         return DefaultExchangeManager(
             exchangeProvider: provider,
-            blockchainDataProvider: blockchainDataProvider,
+            walletDataProvider: walletDataProvider,
             logger: logger ?? DefaultExchangeLogger(),
             referrer: referrer,
             exchangeItems: exchangeItems,

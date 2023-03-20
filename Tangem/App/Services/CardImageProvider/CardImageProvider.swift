@@ -12,7 +12,7 @@ import TangemSdk
 import Kingfisher
 
 struct CardImageProvider {
-    private static var cardArtworkCache: [String: CardArtwork] = [:]
+    @Atomic private static var cardArtworkCache: [String: CardArtwork] = [:]
 
     @Injected(\.cardImageLoader) private var imageLoader: CardImageLoaderProtocol
 
@@ -119,13 +119,14 @@ private extension CardImageProvider {
         cardVerifier.getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
             .map { info in
                 if let artwork = info.artwork {
-                    let cardArtwork = CardArtwork.artwork(artwork)
-                    CardImageProvider.cardArtworkCache[cardId] = cardArtwork
-                    return cardArtwork
+                    return CardArtwork.artwork(artwork)
                 } else {
                     return .noArtwork
                 }
             }
+            .handleEvents(receiveOutput: { cardArtwork in
+                CardImageProvider.cardArtworkCache[cardId] = cardArtwork
+            })
             .replaceError(with: CardArtwork.noArtwork)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

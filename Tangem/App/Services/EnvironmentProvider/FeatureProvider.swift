@@ -38,20 +38,23 @@ enum FeatureToggle: String, Hashable, CaseIterable {
     case exchange
     case referralProgram
     case walletConnectV2
+    case blockBookUtxoApis
 
     var name: String {
         switch self {
         case .exchange: return "Exchange"
         case .referralProgram: return "Referral Program"
         case .walletConnectV2: return "WalletConnect V2"
+        case .blockBookUtxoApis: return "Block Book UTXO APIs (NOWNodes, GetBlock)"
         }
     }
 
     var releaseVersion: ReleaseVersion {
         switch self {
-        case .exchange: return .unspecified
-        case .referralProgram: return .unspecified
+        case .exchange: return .version("4.2")
+        case .referralProgram: return .version("4.2")
         case .walletConnectV2: return .unspecified
+        case .blockBookUtxoApis: return .unspecified
         }
     }
 }

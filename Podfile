@@ -11,8 +11,11 @@ def tangem_sdk_pod
 end
 
 def blockchain_sdk_pods
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-214'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-231'
 #  pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
+  
+  pod 'TangemWalletCore', :git => 'https://github.com/tangem/wallet-core-binaries-ios.git', :tag => '3.1.9-tangem2'
+#  pod 'TangemWalletCore', :path => '../wallet-core-binaries-ios'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => 'add-external-signer-7'
   # pod 'Solana.Swift', :path => '../Solana.Swift'
@@ -94,6 +97,12 @@ post_install do |installer|
       end
 
       config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
+  end
+  
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+    end
   end
   
 	installer.pods_project.targets.each do |target|

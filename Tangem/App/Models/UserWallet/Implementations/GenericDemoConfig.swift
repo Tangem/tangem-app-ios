@@ -230,6 +230,8 @@ extension GenericDemoConfig: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
+        case .seedPhrase:
+            return .hidden
         }
     }
 

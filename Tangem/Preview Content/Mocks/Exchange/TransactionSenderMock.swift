@@ -17,4 +17,5 @@ struct FiatRatesProviderMock: FiatRatesProviding {
     func getFiat(for currency: TangemExchange.Currency, amount: Decimal) async throws -> Decimal { .zero }
     func getFiat(for blockchain: TangemExchange.ExchangeBlockchain, amount: Decimal) async throws -> Decimal { .zero }
     func hasRates(for currency: Currency) -> Bool { false }
+    func hasRates(for blockchain: ExchangeBlockchain) -> Bool { false }
 }

@@ -33,7 +33,7 @@ class Analytics {
         }
 
         analyticsContext.removeValue(forKey: .scanSource, scope: .common)
-        logInternal(.cardWasScanned, params: [.scanSource: source.cardWasScannedParameterValue.rawValue])
+        logInternal(.cardWasScanned, params: [.commonSource: source.cardWasScannedParameterValue.rawValue])
 
         if let cardId = analyticsContext.contextData?.analyticsParams[.cardId],
            DemoUtil().isDemoCard(cardId: cardId) {

@@ -54,7 +54,7 @@ enum WalletOnboardingCardLayout {
 
     func offset(at step: WalletOnboardingStep, in container: CGSize) -> CGSize {
         switch (self, step) {
-        case (_, .createWallet), (_, .scanPrimaryCard):
+        case (_, .createWallet), (_, .createWalletSelector), (_, .scanPrimaryCard):
             return .init(width: 0, height: container.height * 0.089)
         case (.origin, .backupIntro):
             return .init(width: 1, height: container.height * 0.034)
@@ -108,7 +108,7 @@ extension WalletOnboardingCardLayout: OnboardingCardFrameCalculator {
 
     func cardHeightToContainerHeightRatio(for step: WalletOnboardingStep) -> CGFloat {
         switch step {
-        case .createWallet, .scanPrimaryCard:
+        case .createWallet, .createWalletSelector, .scanPrimaryCard:
             return 0.453
         case .selectBackupCards:
             return 0.318
@@ -121,7 +121,7 @@ extension WalletOnboardingCardLayout: OnboardingCardFrameCalculator {
 
     func cardFrameMinHorizontalPadding(at step: WalletOnboardingStep) -> CGFloat {
         switch step {
-        case .createWallet, .scanPrimaryCard: return 60
+        case .createWallet, .createWalletSelector, .scanPrimaryCard: return 60
         case .backupIntro: return 146
         case .selectBackupCards: return 143
         default: return 0

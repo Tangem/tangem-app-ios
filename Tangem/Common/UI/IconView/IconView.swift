@@ -17,14 +17,16 @@ struct IconView: View {
     // TODO: on 16.2 on the first run of the first time this screen is opened
     private let forceKingfisher: Bool
 
-    init(url: URL?, size: CGSize = CGSize(width: 36, height: 36), forceKingfisher: Bool = false) {
+    init(url: URL?, size: CGSize, forceKingfisher: Bool = false) {
         self.url = url
         self.size = size
         self.forceKingfisher = forceKingfisher
     }
 
     var body: some View {
-        if #available(iOS 15.0, *), !forceKingfisher {
+        if forceKingfisher {
+            kfImage
+        } else if #available(iOS 15.0, *) {
             cachedAsyncImage
         } else {
             kfImage
@@ -60,9 +62,10 @@ struct IconView: View {
 
     var kfImage: some View {
         KFImage(url)
+            .renderingMode(.original) // iOS 13 needs this to properly display an image inside a button label
             .cancelOnDisappear(true)
             .setProcessor(DownsamplingImageProcessor(size: size))
-            .placeholder { placeholder }
+            .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }
             .fade(duration: 0.3)
             .cacheOriginalImage()
             .scaleFactor(UIScreen.main.scale)

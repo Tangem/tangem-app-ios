@@ -137,6 +137,14 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
         Analytics.log(.chatScreenOpened)
         supportChatViewModel = SupportChatViewModel(input: input)
     }
+
+    func openWebView(with url: URL) {
+        modalWebViewModel = WebViewContainerViewModel(
+            url: url,
+            title: "",
+            addLoadingIndicator: true
+        )
+    }
 }
 
 extension OnboardingCoordinator: OnboardingRoutable {

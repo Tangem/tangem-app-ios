@@ -44,6 +44,6 @@ extension Analytics {
         case productType = "Product Type"
         case sendToken = "Send Token"
         case receiveToken = "Receive Token"
-        case scanSource = "Source"
+        case commonSource = "Source"
     }
 }

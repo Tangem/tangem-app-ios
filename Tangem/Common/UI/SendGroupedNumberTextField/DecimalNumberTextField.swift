@@ -1,5 +1,5 @@
 //
-//  GroupedNumberTextField.swift
+//  DecimalNumberTextField.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 18.11.2022.
@@ -8,26 +8,26 @@
 
 import SwiftUI
 
-struct GroupedNumberTextField: View {
+struct DecimalNumberTextField: View {
     @Binding private var decimalValue: DecimalValue?
     @State private var textFieldText: String = ""
 
     private let placeholder: String = "0"
-    private var groupedNumberFormatter: GroupedNumberFormatter
-    private var decimalSeparator: Character { groupedNumberFormatter.decimalSeparator }
-    private var groupingSeparator: String { groupedNumberFormatter.groupingSeparator }
+    private var decimalNumberFormatter: DecimalNumberFormatter
+    private var decimalSeparator: Character { decimalNumberFormatter.decimalSeparator }
+    private var groupingSeparator: Character { decimalNumberFormatter.groupingSeparator }
 
     init(
         decimalValue: Binding<DecimalValue?>,
-        groupedNumberFormatter: GroupedNumberFormatter
+        decimalNumberFormatter: DecimalNumberFormatter
     ) {
         _decimalValue = decimalValue
-        self.groupedNumberFormatter = groupedNumberFormatter
+        self.decimalNumberFormatter = decimalNumberFormatter
     }
 
     private var textFieldProxyBinding: Binding<String> {
         Binding<String>(
-            get: { groupedNumberFormatter.format(from: textFieldText) },
+            get: { decimalNumberFormatter.format(value: textFieldText) },
             set: { updateValues(with: $0) }
         )
     }
@@ -45,23 +45,19 @@ struct GroupedNumberTextField: View {
                 case .external(let value):
                     // If the decimalValue did updated from external place
                     // We have to update the private values
-                    let formattedNewValue = groupedNumberFormatter.format(from: value)
+                    let formattedNewValue = decimalNumberFormatter.format(value: value)
                     updateValues(with: formattedNewValue)
                 }
             }
     }
 
     private func updateValues(with newValue: String) {
-        // Remove space separators for formatter correct work
-        var numberString = newValue.replacingOccurrences(of: groupingSeparator, with: "")
+        var numberString = newValue
 
-        // If user start enter number with `decimalSeparator` add zero before comma
+        // If user start enter number with `decimalSeparator` add zero before it
         if numberString == String(decimalSeparator) {
             numberString.insert("0", at: numberString.startIndex)
         }
-
-        // Continue if the field is empty. The field supports only decimal values
-        guard numberString.isEmpty || Decimal(string: numberString) != nil else { return }
 
         // If user double tap on zero, add `decimalSeparator` to continue enter number
         if numberString == "00" {
@@ -74,21 +70,13 @@ struct GroupedNumberTextField: View {
             numberString.removeLast()
         }
 
+        // Format the string and reduce the tail
+        numberString = decimalNumberFormatter.format(value: numberString)
+
         // Update private `@State` for display not correct number, like 0,000
         textFieldText = numberString
 
-        // Format string to reduce digits
-        var formattedValue = groupedNumberFormatter.format(from: numberString)
-
-        // Convert formatted string to correct decimal number
-        formattedValue = formattedValue.replacingOccurrences(of: String(decimalSeparator), with: ".")
-        formattedValue = formattedValue.replacingOccurrences(of: groupingSeparator, with: "")
-
-        // We can't use here the NumberFormatter because it work with the NSNumber
-        // And NSNumber is working wrong with ten zeros and one after decimalSeparator
-        // Eg. NumberFormatter.number(from: "0.00000000001") will return "0.000000000009999999999999999"
-        // Like is NSNumber(floatLiteral: 0.00000000001) will return "0.000000000009999999999999999"
-        if let value = Decimal(string: formattedValue) {
+        if let value = decimalNumberFormatter.mapToDecimal(string: numberString) {
             decimalValue = .internal(value)
         } else if numberString.isEmpty {
             decimalValue = nil
@@ -98,24 +86,24 @@ struct GroupedNumberTextField: View {
 
 // MARK: - Setupable
 
-extension GroupedNumberTextField: Setupable {
+extension DecimalNumberTextField: Setupable {
     func maximumFractionDigits(_ digits: Int) -> Self {
-        map { $0.groupedNumberFormatter.update(maximumFractionDigits: digits) }
+        map { $0.decimalNumberFormatter.update(maximumFractionDigits: digits) }
     }
 }
 
-struct GroupedNumberTextField_Previews: PreviewProvider {
-    @State private static var decimalValue: GroupedNumberTextField.DecimalValue?
+struct DecimalNumberTextField_Previews: PreviewProvider {
+    @State private static var decimalValue: DecimalNumberTextField.DecimalValue?
 
     static var previews: some View {
-        GroupedNumberTextField(
+        DecimalNumberTextField(
             decimalValue: $decimalValue,
-            groupedNumberFormatter: GroupedNumberFormatter(maximumFractionDigits: 8)
+            decimalNumberFormatter: DecimalNumberFormatter(maximumFractionDigits: 8)
         )
     }
 }
 
-extension GroupedNumberTextField {
+extension DecimalNumberTextField {
     enum DecimalValue: Hashable {
         case `internal`(Decimal)
         case external(Decimal)

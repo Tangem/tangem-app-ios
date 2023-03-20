@@ -35,12 +35,15 @@ struct DefaultWarningRow: View {
                 if let title = viewModel.title {
                     Text(title)
                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Text(viewModel.subtitle)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
 
             rightView
         }

@@ -62,7 +62,7 @@ struct BottomSheetModifier<ContentView: View>: ViewModifier {
 
             bottomSheetViewController?.cornerRadius = viewModelSettings.cornerRadius
             bottomSheetViewController?.backgroundColor = viewModelSettings.overlayColor.uiColorFromRGB()
-            bottomSheetViewController?.contentBackgroundColor = viewModelSettings.contentBackgroundColor.uiColorFromRGB()
+            bottomSheetViewController?.contentBackgroundColor = viewModelSettings.contentBackgroundColor.uiColor
             bottomSheetViewController?.swipeDownToDismissEnabled = viewModelSettings.swipeDownToDismissEnabled
             bottomSheetViewController?.tapOutsideToDismissEnabled = viewModelSettings.tapOutsideToDismissEnabled
 

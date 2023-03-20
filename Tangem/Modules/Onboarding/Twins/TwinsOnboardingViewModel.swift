@@ -286,10 +286,8 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
     }
 
     override func handleUserWalletOnFinish() throws {
-        if let originalUserWallet,
-           retwinMode,
-           AppSettings.shared.saveUserWallets {
-            userWalletRepository.delete(originalUserWallet)
+        if retwinMode, AppSettings.shared.saveUserWallets {
+            userWalletRepository.logoutIfNeeded()
         } else {
             try super.handleUserWalletOnFinish()
         }
@@ -332,7 +330,12 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .combineLatest(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification))
             .sink(receiveValue: { [unowned self] newStep, _ in
                 switch (self.currentStep, newStep) {
-                case (.first, .second), (.second, .third), (.third, .done):
+                case (.first, .second):
+                    if let originalUserWallet = originalUserWallet {
+                        userWalletRepository.delete(originalUserWallet, logoutIfNeeded: false)
+                    }
+                    fallthrough
+                case (.second, .third), (.third, .done):
                     if newStep == .done {
                         if input.isStandalone {
                             self.fireConfetti()

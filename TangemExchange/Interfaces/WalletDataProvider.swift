@@ -1,5 +1,5 @@
 //
-//  BlockchainDataProvider.swift
+//  WalletDataProvider.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 15.11.2022.
@@ -8,10 +8,15 @@
 
 import Foundation
 
-public protocol BlockchainDataProvider {
-    func updateWallet() async throws
-    func hasPendingTransaction(currency: Currency, to spenderAddress: String) -> Bool
+public protocol WalletDataProvider {
     func getWalletAddress(currency: Currency) -> String?
+    func getGasModel(
+        sourceAddress: String,
+        destinationAddress: String,
+        data: Data,
+        blockchain: ExchangeBlockchain,
+        value: Decimal
+    ) async throws -> EthereumGasDataModel
 
     func getBalance(for currency: Currency) async throws -> Decimal
     func getBalance(for blockchain: ExchangeBlockchain) async throws -> Decimal

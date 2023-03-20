@@ -131,17 +131,19 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     }
 
     override var mainButtonSettings: MainButton.Settings? {
-        switch currentStep {
-        case .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .claim, .successClaim, .disclaimer, .kycWaiting:
-            return nil
-        default:
-            break
-        }
-
         var icon: MainButton.Icon?
 
-        if currentStep == .selectBackupCards {
+        switch currentStep {
+        case .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .claim, .successClaim, .disclaimer, .kycWaiting, .seedPhraseIntro:
+            return nil
+        case .selectBackupCards:
             icon = .leading(Assets.plusMini)
+        case .createWalletSelector:
+            icon = .leading(Assets.tangemIcon)
+        case .createWallet:
+            icon = .trailing(Assets.tangemIcon)
+        default:
+            break
         }
 
         return MainButton.Settings(
@@ -211,6 +213,8 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     override var supplementButtonColor: ButtonColorStyle {
         switch currentStep {
+        case .createWalletSelector:
+            return .grayAlt3
         case .backupIntro:
             return .transparentWhite
         default:
@@ -242,7 +246,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .kycWaiting, .disclaimer:
+        case .saveUserWallet, .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .kycWaiting, .disclaimer, .seedPhraseIntro:
             return true
         default: return false
         }
@@ -250,7 +254,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     var isButtonsVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .kycProgress: return false
+        case .saveUserWallet, .kycProgress, .seedPhraseIntro: return false
         default: return true
         }
     }
@@ -526,10 +530,21 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         }
     }
 
+    override func goToNextStep() {
+        switch currentStep {
+        case .createWalletSelector:
+            goToStep(.backupIntro)
+        default:
+            super.goToNextStep()
+        }
+    }
+
     override func mainButtonAction() {
         switch currentStep {
-        case .createWallet:
+        case .createWallet, .createWalletSelector:
             createWallet()
+        case .seedPhraseIntro:
+            goToNextStep()
         case .scanPrimaryCard:
             readPrimaryCard()
         case .backupIntro:
@@ -557,6 +572,8 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         switch currentStep {
         case .createWallet:
             break
+        case .createWalletSelector:
+            goToStep(.seedPhraseIntro)
         case .backupIntro:
             Analytics.log(.backupSkipped)
             if steps.contains(.saveUserWallet) {
@@ -965,6 +982,14 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
         let repository = CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
         repository.append(config.defaultBlockchains)
+    }
+}
+
+// MARK: - Seed phrase related
+
+extension WalletOnboardingViewModel {
+    func openReadMoreAboutSeedPhraseScreen() {
+        coordinator.openWebView(with: AppConstants.seedPhraseReadMoreURL)
     }
 }
 

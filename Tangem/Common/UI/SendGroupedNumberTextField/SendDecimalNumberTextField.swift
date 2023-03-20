@@ -1,5 +1,5 @@
 //
-//  SendGroupedNumberTextField.swift
+//  SendDecimalNumberTextField.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 10.01.2023.
@@ -9,28 +9,28 @@
 import Foundation
 import SwiftUI
 
-struct SendGroupedNumberTextField: View {
-    @Binding private var decimalValue: GroupedNumberTextField.DecimalValue?
+struct SendDecimalNumberTextField: View {
+    @Binding private var decimalValue: DecimalNumberTextField.DecimalValue?
     private var maximumFractionDigits: Int
     private var didTapMaxAmountAction: (() -> Void)?
 
-    init(decimalValue: Binding<GroupedNumberTextField.DecimalValue?>, maximumFractionDigits: Int) {
+    init(decimalValue: Binding<DecimalNumberTextField.DecimalValue?>, maximumFractionDigits: Int) {
         _decimalValue = decimalValue
         self.maximumFractionDigits = maximumFractionDigits
     }
 
     var body: some View {
         if #available(iOS 15, *) {
-            FocusedGroupedNumberTextField(decimalValue: $decimalValue, maximumFractionDigits: maximumFractionDigits) {
+            FocusedDecimalNumberTextField(decimalValue: $decimalValue, maximumFractionDigits: maximumFractionDigits) {
                 Button(Localization.sendMaxAmountLabel) {
                     didTapMaxAmountAction?()
                 }
             }
             .maximumFractionDigits(maximumFractionDigits)
         } else {
-            GroupedNumberTextField(
+            DecimalNumberTextField(
                 decimalValue: $decimalValue,
-                groupedNumberFormatter: GroupedNumberFormatter(maximumFractionDigits: maximumFractionDigits)
+                decimalNumberFormatter: DecimalNumberFormatter(maximumFractionDigits: maximumFractionDigits)
             )
             .maximumFractionDigits(maximumFractionDigits)
         }
@@ -39,7 +39,7 @@ struct SendGroupedNumberTextField: View {
 
 // MARK: - Setupable
 
-extension SendGroupedNumberTextField: Setupable {
+extension SendDecimalNumberTextField: Setupable {
     func maximumFractionDigits(_ digits: Int) -> Self {
         map { $0.maximumFractionDigits = digits }
     }

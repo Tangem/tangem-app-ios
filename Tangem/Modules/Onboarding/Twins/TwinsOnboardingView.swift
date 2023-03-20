@@ -62,6 +62,10 @@ struct TwinsOnboardingView: View {
                 .zIndex(110)
 
             disclaimerContent
+                .layoutPriority(1)
+                .readSize { size in
+                    viewModel.setupContainer(with: size)
+                }
 
             VStack(spacing: 0) {
                 GeometryReader { geom in

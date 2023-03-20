@@ -10,7 +10,7 @@ import Foundation
 
 protocol ExchangeProvider {
     func fetchAmountAllowance(for currency: Currency, walletAddress: String) async throws -> Decimal
-    func fetchQuote(items: ExchangeItems, amount: String) async throws -> QuoteDataModel
+    func fetchQuote(items: ExchangeItems, amount: String, referrer: ExchangeReferrerAccount?) async throws -> QuoteDataModel
     func fetchExchangeData(
         items: ExchangeItems,
         walletAddress: String,

@@ -209,24 +209,13 @@ class TokenDetailsViewModel: ObservableObject {
     }
 
     func updateExchangeButtons() {
-        guard FeatureProvider.isAvailable(.exchange) else { return }
-
-        var exchangeOptions: [ExchangeButtonType] = [.buy]
-
-        if canSellCrypto {
-            exchangeOptions.append(.sell)
-        }
-
-        if canSwap {
-            exchangeOptions.append(.swap)
-        }
-
-        if exchangeOptions.count == 1,
-           let single = exchangeOptions.first {
-            exchangeButtonState = .single(option: single)
-        } else {
-            exchangeButtonState = .multi(options: exchangeOptions)
-        }
+        exchangeButtonState = .init(
+            options: ExchangeButtonType.build(
+                canBuyCrypto: canBuyCrypto,
+                canSellCrypto: canSellCrypto,
+                canSwap: canSwap
+            )
+        )
     }
 
     func openExchangeActionSheet() {
@@ -296,15 +285,6 @@ class TokenDetailsViewModel: ObservableObject {
     func processSellCryptoRequest(_ request: String) {
         if let request = exchangeService.extractSellCryptoRequest(from: request) {
             openSendToSell(with: request)
-        }
-    }
-
-    func sendAnalyticsEvent(_ event: Analytics.Event) {
-        switch event {
-        case .userBoughtCrypto:
-            Analytics.log(event: event, params: [.currencyCode: blockchainNetwork.blockchain.currencySymbol])
-        default:
-            break
         }
     }
 
@@ -380,7 +360,6 @@ class TokenDetailsViewModel: ObservableObject {
             return
         }
 
-        let currencySymbol = amountType.token?.symbol ?? blockchainNetwork.blockchain.currencySymbol
         Analytics.log(event: .buttonRemoveToken, params: [Analytics.ParameterKey.token: currencySymbol])
 
         let item = CommonUserWalletModel.RemoveItem(amount: amountType, blockchainNetwork: walletModel.blockchainNetwork)
@@ -481,8 +460,12 @@ extension TokenDetailsViewModel {
 
         if let url = buyCryptoUrl {
             coordinator.openBuyCrypto(at: url, closeUrl: buyCryptoCloseUrl) { [weak self] _ in
-                self?.sendAnalyticsEvent(.userBoughtCrypto)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                guard let self else { return }
+
+                Analytics.log(event: .userBoughtCrypto, params: [.currencyCode: self.currencySymbol])
+                Analytics.log(event: .tokenBought, params: [.token: self.currencySymbol])
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                     self?.walletModel?.update(silent: true)
                 }
             }
@@ -550,10 +533,11 @@ extension TokenDetailsViewModel {
 
 private extension TokenDetailsViewModel {
     var canSwap: Bool {
-        FeatureProvider.isAvailable(.exchange) &&
-            !isCustomToken &&
+        !isCustomToken &&
             card.supportsSwapping &&
-            ExchangeManagerUtil().isNetworkAvailableForExchange(networkId: blockchainNetwork.blockchain.networkId)
+            SwappingAvailableUtils().canSwap(
+                blockchainNetworkId: blockchainNetwork.blockchain.networkId
+            )
     }
 
     var sourceCurrency: Currency? {
@@ -566,50 +550,6 @@ private extension TokenDetailsViewModel {
 
         case .token(let token):
             return mapper.mapToCurrency(token: token, blockchain: blockchain)
-        }
-    }
-}
-
-extension TokenDetailsViewModel {
-    enum ExchangeButtonState: Hashable {
-        case single(option: ExchangeButtonType)
-        case multi(options: [ExchangeButtonType])
-
-        var options: [ExchangeButtonType] {
-            switch self {
-            case .single(let option):
-                return [option]
-            case .multi(let options):
-                return options
-            }
-        }
-    }
-
-    enum ExchangeButtonType: Hashable {
-        case buy
-        case sell
-        case swap
-
-        var title: String {
-            switch self {
-            case .buy:
-                return Localization.walletButtonBuy
-            case .sell:
-                return Localization.walletButtonSell
-            case .swap:
-                return Localization.swappingSwapAction
-            }
-        }
-
-        var icon: ImageType {
-            switch self {
-            case .buy:
-                return Assets.arrowUpMini
-            case .sell:
-                return Assets.arrowDownMini
-            case .swap:
-                return Assets.exchangeIcon
-            }
         }
     }
 }

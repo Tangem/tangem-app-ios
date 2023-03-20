@@ -187,7 +187,6 @@ class SendViewModel: ObservableObject {
         canFiatCalculation = false
         sendAmount = amountToSend.value.description
         amountText = sendAmount
-        bind()
     }
 
     private func getDescription(for amount: Amount?) -> String {
@@ -680,6 +679,8 @@ class SendViewModel: ObservableObject {
                                 .blockchain: self.blockchainNetwork.blockchain.displayName,
                             ]
                         )
+
+                        Analytics.log(.transactionSentBasic, params: [.commonSource: self.isSellingCrypto ? .transactionSourceSell : .transactionSourceSend])
                     }
 
                     let alert = AlertBuilder.makeSuccessAlert(

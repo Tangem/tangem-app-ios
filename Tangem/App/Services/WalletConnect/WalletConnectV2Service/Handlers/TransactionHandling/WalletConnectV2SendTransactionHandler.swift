@@ -69,6 +69,8 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
 
         try await walletModel.send(transaction, signer: signer).async()
 
+        Analytics.log(.transactionSentBasic, params: [.commonSource: .transactionSourceWalletConnect])
+
         let selectedAction = await uiDelegate.getResponseFromUser(with: WalletConnectAsyncUIRequest<RPCResult>(
             event: .success,
             message: Localization.sendTransactionSuccess,

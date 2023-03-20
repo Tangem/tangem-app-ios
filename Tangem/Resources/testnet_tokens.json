@@ -148,6 +148,17 @@
             ]
         },
         {
+            "id": "the-open-network",
+            "symbol": "TON",
+            "name": "The Open Network",
+            "networks":
+            [
+                {
+                    "networkId": "the-open-network/test"
+                }
+            ]
+        },
+        {
             "id": "tether",
             "symbol": "USDT",
             "name": "Tether USD",

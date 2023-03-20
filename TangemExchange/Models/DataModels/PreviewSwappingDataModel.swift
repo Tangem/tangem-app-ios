@@ -10,6 +10,7 @@ import Foundation
 
 public struct PreviewSwappingDataModel {
     public let expectedAmount: Decimal
+
     public let isPermissionRequired: Bool
     public let hasPendingTransaction: Bool
     public let isEnoughAmountForExchange: Bool

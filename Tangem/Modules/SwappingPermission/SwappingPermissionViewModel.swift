@@ -99,9 +99,8 @@ private extension SwappingPermissionViewModel {
         let walletAddress = AddressFormatter(address: transactionInfo.sourceAddress).truncated()
         let spenderAddress = AddressFormatter(address: transactionInfo.destinationAddress).truncated()
 
-        let fee = transactionInfo.fee.rounded(scale: 2, roundingMode: .up)
         let fiatFee = inputModel.fiatFee.currencyFormatted(code: AppSettings.shared.selectedCurrencyCode)
-        let formattedFee = fee.groupedFormatted(maximumFractionDigits: transactionInfo.sourceBlockchain.decimalCount)
+        let formattedFee = transactionInfo.fee.groupedFormatted()
         let feeLabel = "\(formattedFee) \(inputModel.transactionInfo.sourceBlockchain.symbol) (\(fiatFee))"
 
         contentRowViewModels = [

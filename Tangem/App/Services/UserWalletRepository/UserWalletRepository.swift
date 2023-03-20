@@ -20,11 +20,12 @@ protocol UserWalletRepository: Initializable {
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func setSelectedUserWalletId(_ userWalletId: Data?, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
+    func logoutIfNeeded()
 
     func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func contains(_ userWallet: UserWallet) -> Bool
     func save(_ userWallet: UserWallet)
-    func delete(_ userWallet: UserWallet)
+    func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool)
     func clear()
 }
 

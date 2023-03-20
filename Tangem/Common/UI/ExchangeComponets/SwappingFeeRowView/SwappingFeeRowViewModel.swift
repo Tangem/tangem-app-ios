@@ -11,18 +11,8 @@ import SwiftUI
 
 struct SwappingFeeRowViewModel: Identifiable {
     var id: Int { hashValue }
-
-    var isLoading: Bool {
-        state.isLoading
-    }
-
-    var formattedFee: String? {
-        state.formattedFee
-    }
-
+    var state: State
     let isDisclaimerOpened: () -> Binding<Bool>
-
-    private var state: State
 
     init(state: State, isDisclaimerOpened: @escaping () -> Binding<Bool>) {
         self.state = state

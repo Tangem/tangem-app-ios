@@ -24,16 +24,9 @@ extension Decimal {
         return formatter.string(from: self as NSDecimalNumber) ?? "\(self) \(code)"
     }
 
-    func groupedFormatted(
-        minimumFractionDigits: Int = 0,
-        maximumFractionDigits: Int = 8
-    ) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = minimumFractionDigits
-        formatter.maximumFractionDigits = maximumFractionDigits
-
-        return formatter.string(from: self as NSDecimalNumber) ?? "\(self)"
+    func groupedFormatted(maximumFractionDigits: Int = AppConstants.maximumFractionDigitsForBalance) -> String {
+        let formatter = DecimalNumberFormatter(maximumFractionDigits: maximumFractionDigits)
+        return formatter.format(value: self)
     }
 
     static func decimalSeparator() -> String {

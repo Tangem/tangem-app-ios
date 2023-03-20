@@ -23,7 +23,6 @@ public struct ExchangeTokenData: Decodable {
     public let decimals: Int
     public let address: String
     public let logoURI: String
-    public let tags: [String]
 }
 
 public struct TransactionData: Codable {
@@ -32,6 +31,5 @@ public struct TransactionData: Codable {
     public let data: String
     public let value: String
     public let gas: Int
-    // WEI
     public let gasPrice: String
 }

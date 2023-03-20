@@ -140,7 +140,7 @@ private extension CardSettingsViewModel {
     }
 
     func deleteWallet(_ userWallet: UserWallet) {
-        userWalletRepository.delete(userWallet)
+        userWalletRepository.delete(userWallet, logoutIfNeeded: true)
     }
 
     func navigateAwayAfterReset() {

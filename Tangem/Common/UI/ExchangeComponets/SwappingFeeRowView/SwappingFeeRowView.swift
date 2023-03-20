@@ -24,16 +24,7 @@ struct SwappingFeeRowView: View {
 
             Spacer()
 
-            if let formattedFee = viewModel.formattedFee {
-                Text(formattedFee)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-                    .skeletonable(isShown: viewModel.isLoading, size: CGSize(width: 100, height: 11))
-
-                Assets.chevron.image
-                    .rotationEffect(.degrees(isDisclaimerOpened ? -90 : 90))
-                    .padding(.leading, 4)
-                    .padding(.vertical, 4)
-            }
+            content
         }
         .lineLimit(1)
         .padding(.vertical, 14)
@@ -41,6 +32,27 @@ struct SwappingFeeRowView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             isDisclaimerOpened.toggle()
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewModel.state {
+        case .idle:
+            EmptyView()
+        case .loading:
+            SkeletonView()
+                .frame(width: 100, height: 11)
+                .cornerRadiusContinuous(3)
+
+        case .fee:
+            HStack(spacing: 4) {
+                Text(viewModel.state.formattedFee ?? "")
+                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+
+                Assets.chevron.image
+                    .rotationEffect(.degrees(isDisclaimerOpened ? -90 : 90))
+            }
         }
     }
 }

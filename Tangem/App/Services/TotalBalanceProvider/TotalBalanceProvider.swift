@@ -109,9 +109,14 @@ private extension TotalBalanceProvider {
             let currentValue = balance ?? 0
             balance = currentValue + token.fiatValue
 
-            // Just show wawning for custom tokens
-            if token.rate.isEmpty, token.isCustom {
-                hasError = true
+            if token.rate.isEmpty {
+                // Just show wawning for custom tokens
+                if token.isCustom {
+                    hasError = true
+                } else {
+                    balance = nil
+                    break
+                }
             }
         }
 

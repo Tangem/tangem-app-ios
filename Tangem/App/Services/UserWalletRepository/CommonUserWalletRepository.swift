@@ -297,6 +297,14 @@ class CommonUserWalletRepository: UserWalletRepository {
         initializeServicesForSelectedModel()
     }
 
+    func logoutIfNeeded() {
+        if userWallets.contains(where: { !$0.isLocked }) {
+            return
+        }
+
+        lock(reason: .nothingToDisplay)
+    }
+
     func setSelectedUserWalletId(_ userWalletId: Data?, reason: UserWalletRepositorySelectionChangeReason) {
         setSelectedUserWalletId(userWalletId, unlockIfNeeded: true, reason: reason)
     }
@@ -343,7 +351,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func delete(_ userWallet: UserWallet) {
+    func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {
         let userWalletId = userWallet.userWalletId
         encryptionKeyByUserWalletId[userWalletId] = nil
         userWallets.removeAll { $0.userWalletId == userWalletId }
@@ -363,11 +371,13 @@ class CommonUserWalletRepository: UserWalletRepository {
             if let firstUnlockedModel = unlockedModels.first {
                 setSelectedUserWalletId(firstUnlockedModel.userWalletId, reason: .deleted)
             } else if let firstModel = sortedModels.first {
-                lock(reason: .nothingToDisplay)
                 setSelectedUserWalletId(firstModel.userWalletId, unlockIfNeeded: false, reason: .deleted)
             } else {
-                lock(reason: .nothingToDisplay)
                 setSelectedUserWalletId(nil, reason: .deleted)
+            }
+
+            if shouldAutoLogout {
+                logoutIfNeeded()
             }
         }
 

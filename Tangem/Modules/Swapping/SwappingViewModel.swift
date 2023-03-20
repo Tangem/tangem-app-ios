@@ -18,7 +18,7 @@ final class SwappingViewModel: ObservableObject {
     @Published var receiveCurrencyViewModel: ReceiveCurrencyViewModel?
     @Published var swapButtonIsLoading: Bool = false
 
-    @Published var sendDecimalValue: GroupedNumberTextField.DecimalValue?
+    @Published var sendDecimalValue: DecimalNumberTextField.DecimalValue?
     @Published var refreshWarningRowViewModel: DefaultWarningRowViewModel?
     @Published var highPriceImpactWarningRowViewModel: DefaultWarningRowViewModel?
     @Published var permissionInfoRowViewModel: DefaultWarningRowViewModel?
@@ -66,6 +66,8 @@ final class SwappingViewModel: ObservableObject {
     // MARK: - Private
 
     private lazy var refreshDataTimer = Timer.publish(every: 1, on: .main, in: .common)
+    // TODO: Remove this variable and refactor Task cancellation in DefaultExchangeManager
+    private var pendingValidatingAmount: Decimal?
     private var refreshDataTimerBag: AnyCancellable?
     private var bag: Set<AnyCancellable> = []
 
@@ -100,7 +102,8 @@ final class SwappingViewModel: ObservableObject {
     }
 
     func userDidTapMaxAmount() {
-        sendDecimalValue = .external(exchangeManager.getExchangeItems().sourceBalance)
+        let sourceBalance = exchangeManager.getExchangeItems().sourceBalance
+        setupExternalSendValue(sourceBalance)
     }
 
     func userDidRequestChangeDestination(to currency: Currency) {
@@ -132,8 +135,8 @@ final class SwappingViewModel: ObservableObject {
 
         // If amount have been set we'll should to round and update it with new decimalCount
         if let amount = sendDecimalValue?.value {
-            let roundedAmount = amount.rounded(scale: items.source.decimalCount, roundingMode: .plain)
-            sendDecimalValue = .external(roundedAmount)
+            let roundedAmount = amount.rounded(scale: items.source.decimalCount, roundingMode: .down)
+            setupExternalSendValue(roundedAmount)
 
             exchangeManager.update(amount: roundedAmount)
         }
@@ -174,6 +177,11 @@ final class SwappingViewModel: ObservableObject {
     func didTapWaringRefresh() {
         exchangeManager.refresh(type: .full)
     }
+
+    private func setupExternalSendValue(_ amount: Decimal) {
+        sendDecimalValue = .external(amount)
+        pendingValidatingAmount = amount
+    }
 }
 
 // MARK: - Navigation
@@ -210,11 +218,10 @@ private extension SwappingViewModel {
 
     func openPermissionView() {
         let state = exchangeManager.getAvailabilityState()
-        let source = exchangeManager.getExchangeItems().source
 
         guard case .available(let result, let info) = state,
               result.isPermissionRequired,
-              fiatRatesProvider.hasRates(for: source) else {
+              fiatRatesProvider.hasRates(for: info.sourceBlockchain) else {
             // If we don't have enough data disable button and refresh()
             mainButtonIsEnabled = false
             exchangeManager.refresh(type: .full)
@@ -223,7 +230,7 @@ private extension SwappingViewModel {
         }
 
         runTask(in: self) { obj in
-            let fiatFee = try await obj.fiatRatesProvider.getFiat(for: source, amount: info.fee)
+            let fiatFee = try await obj.fiatRatesProvider.getFiat(for: info.sourceBlockchain, amount: info.fee)
             let inputModel = SwappingPermissionInputModel(
                 fiatFee: fiatFee,
                 transactionInfo: info
@@ -260,6 +267,14 @@ extension SwappingViewModel: ExchangeManagerDelegate {
 // MARK: - View updates
 
 private extension SwappingViewModel {
+    func resetViews() {
+        refreshWarningRowViewModel = nil
+        feeWarningRowViewModel = nil
+        permissionInfoRowViewModel = nil
+        highPriceImpactWarningRowViewModel = nil
+        swapButtonIsLoading = false
+    }
+
     func updateView(exchangeItems: ExchangeItems) {
         updateSendView(exchangeItems: exchangeItems)
         updateReceiveView(exchangeItems: exchangeItems)
@@ -336,9 +351,7 @@ private extension SwappingViewModel {
 
         switch state {
         case .idle:
-            refreshWarningRowViewModel = nil
-            feeWarningRowViewModel = nil
-            permissionInfoRowViewModel = nil
+            resetViews()
 
             receiveCurrencyViewModel?.update(cryptoAmountState: .loaded(0))
             receiveCurrencyViewModel?.update(fiatAmountState: .loaded(0))
@@ -438,20 +451,21 @@ private extension SwappingViewModel {
         switch state {
         case .idle, .requiredRefresh, .preview:
             swappingFeeRowViewModel?.update(state: .idle)
-        case .loading:
-            swappingFeeRowViewModel?.update(state: .loading)
-        case .available(let result, let info):
+        case .loading(let type):
+            if type == .full {
+                swappingFeeRowViewModel?.update(state: .loading)
+            }
+        case .available(_, let info):
             let source = exchangeManager.getExchangeItems().source
-            let fee = result.fee.rounded(scale: 2, roundingMode: .up)
 
             Task {
-                let fiatFee = try await fiatRatesProvider.getFiat(for: info.sourceBlockchain, amount: result.fee)
+                let fiatFee = try await fiatRatesProvider.getFiat(for: info.sourceBlockchain, amount: info.fee)
                 let code = await AppSettings.shared.selectedCurrencyCode
 
                 await runOnMain {
                     swappingFeeRowViewModel?.update(
                         state: .fee(
-                            fee: fee.groupedFormatted(maximumFractionDigits: source.decimalCount),
+                            fee: info.fee.groupedFormatted(),
                             symbol: source.blockchain.symbol,
                             fiat: fiatFee.currencyFormatted(code: code)
                         )
@@ -466,7 +480,11 @@ private extension SwappingViewModel {
         case .idle:
             mainButtonIsEnabled = false
             mainButtonState = .swap
-        case .loading, .requiredRefresh:
+        case .loading(let type):
+            if type == .full {
+                mainButtonIsEnabled = false
+            }
+        case .requiredRefresh:
             mainButtonIsEnabled = false
         case .preview(let preview):
             mainButtonIsEnabled = preview.isEnoughAmountForExchange && !preview.hasPendingTransaction
@@ -495,7 +513,20 @@ private extension SwappingViewModel {
     }
 
     func checkForHighPriceImpact(destinationFiatAmount: Decimal) async throws {
-        guard let sendDecimalValue = sendDecimalValue?.value else {
+        guard
+            let sendDecimalValue = sendDecimalValue?.value,
+            pendingValidatingAmount?.isEqual(to: sendDecimalValue) ?? false
+        else {
+            // Current send decimal value was changed during old update. We can ignore this check
+            return
+        }
+
+        if sendDecimalValue.isZero {
+            pendingValidatingAmount = nil
+            // No need to calculate price impact with zero input
+            await runOnMain {
+                highPriceImpactWarningRowViewModel = nil
+            }
             return
         }
 
@@ -504,10 +535,10 @@ private extension SwappingViewModel {
             amount: sendDecimalValue
         )
 
-        let lostInPercents = (sourceFiatAmount / destinationFiatAmount - 1) * 100
+        let lossesInPercents = (1 - destinationFiatAmount / sourceFiatAmount) * 100
 
         await runOnMain {
-            if lostInPercents >= Constants.highPriceImpactWarningLimit {
+            if lossesInPercents >= Constants.highPriceImpactWarningLimit {
                 highPriceImpactWarningRowViewModel = DefaultWarningRowViewModel(
                     title: Localization.swappingHighPriceImpact,
                     subtitle: Localization.swappingHighPriceImpactDescription,
@@ -516,6 +547,7 @@ private extension SwappingViewModel {
             } else {
                 highPriceImpactWarningRowViewModel = nil
             }
+            pendingValidatingAmount = nil
         }
     }
 
@@ -527,6 +559,8 @@ private extension SwappingViewModel {
             Binding<Bool> {
                 self?.feeInfoRowViewModel != nil
             } set: { isOpen in
+                UIApplication.shared.endEditing()
+
                 if isOpen {
                     let percentFee = self?.exchangeManager.getReferrerAccount()?.fee ?? 0
                     let formattedFee = "\(percentFee.groupedFormatted())%"
@@ -550,6 +584,13 @@ private extension SwappingViewModel {
             .removeDuplicates()
             .debounce(for: 1, scheduler: DispatchQueue.main)
             .sink { [weak self] amount in
+                // TODO: Refactor send decimal value storage logic
+                // Currently sendDecimalValue is updating directly from UI
+                // but requesting update in exchange manager with 1 second delay.
+                // So when all necessary information already loaded in exchange manager
+                // we will face wrong send decimal value while checking high price impact.
+                self?.pendingValidatingAmount = amount
+                self?.resetViews()
                 self?.exchangeManager.update(amount: amount)
                 self?.updateSendFiatValue()
             }
@@ -621,6 +662,9 @@ private extension SwappingViewModel {
                 let sendResult = try await transactionSender.sendTransaction(info)
                 addDestinationTokenToUserWalletList()
                 exchangeManager.didSendSwapTransaction(exchangeTxData: info)
+
+                Analytics.log(.transactionSentBasic, params: [.commonSource: .transactionSourceSwap])
+
                 await runOnMain {
                     openSuccessView(result: result, transactionModel: info, transactionID: sendResult.hash)
                 }
@@ -660,7 +704,7 @@ private extension SwappingViewModel {
 
     func updateRefreshWarningRowViewModel(message: String) {
         refreshWarningRowViewModel = DefaultWarningRowViewModel(
-            subtitle: message.capitalizingFirstLetter(),
+            subtitle: Localization.swappingErrorWrapper(message.capitalizingFirstLetter()),
             leftView: .icon(Assets.attention),
             rightView: .icon(Assets.refreshWarningIcon)
         ) { [weak self] in

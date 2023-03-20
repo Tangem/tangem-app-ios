@@ -299,6 +299,8 @@ class WalletModel: ObservableObject, Identifiable {
 
         return tangemApiService
             .loadRates(for: currenciesToExchange)
+            .replaceError(with: [:])
+            .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
 

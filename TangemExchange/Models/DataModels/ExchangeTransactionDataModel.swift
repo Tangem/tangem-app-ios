@@ -26,16 +26,11 @@ public struct ExchangeTransactionDataModel {
     /// Value which should be sent in transaction
     public let value: Decimal
 
-    /// A long value gas, usual in period from 21000 to 30000
-    public let gasValue: Int
-
-    /// Gas price in WEI which will be used for calculate estimated fee
-    public let gasPrice: Int
+    /// The gas limit value depends on the complexity of the transaction
+    public let gas: EthereumGasDataModel
 
     /// Calculated estimated fee
-    public var fee: Decimal {
-        sourceBlockchain.convertFromWEI(value: Decimal(gasValue * gasPrice))
-    }
+    public var fee: Decimal { gas.fee }
 
     public init(
         sourceCurrency: Currency,
@@ -47,8 +42,7 @@ public struct ExchangeTransactionDataModel {
         sourceAmount: Decimal,
         destinationAmount: Decimal,
         value: Decimal,
-        gasValue: Int,
-        gasPrice: Int
+        gas: EthereumGasDataModel
     ) {
         self.sourceCurrency = sourceCurrency
         self.sourceBlockchain = sourceBlockchain
@@ -59,7 +53,6 @@ public struct ExchangeTransactionDataModel {
         self.sourceAmount = sourceAmount
         self.destinationAmount = destinationAmount
         self.value = value
-        self.gasValue = gasValue
-        self.gasPrice = gasPrice
+        self.gas = gas
     }
 }

@@ -182,6 +182,9 @@
 "onboarding_button_what_does_it_mean" = "Как это работает?";
 "onboarding_create_wallet_body" = "Давайте сгенерируем все ключи на вашей карте и создадим безопасный кошелек";
 "onboarding_create_wallet_button_create_wallet" = "Создать кошелек";
+"onboarding_create_wallet_options_button_options" = "Другие опции";
+"onboarding_create_wallet_options_message" = "Ваши ключи будут надежно сгенерированы внутри карты. Никаких сид-фраз или возможности их экспорта и кражи.";
+"onboarding_create_wallet_options_title" = "Сгенерировать ключи приватно";
 "onboarding_done_body" = "Ваша карта активирована и готова к использованию";
 "onboarding_done_header" = "Успешно!";
 "onboarding_exit_alert_message" = "В этом случае вам будет необходимо начать процесс заново.";
@@ -199,6 +202,12 @@
 "onboarding_saltpay_title_no_backup_card" = "Бэкап карта не добавлена";
 "onboarding_saltpay_title_one_backup_card" = "Бэкап карта создана";
 "onboarding_saltpay_title_prepare_origin" = "Приготовьте SaltPay карту";
+"onboarding_seed_button_read_more" = "Читать про сид-фразу";
+"onboarding_seed_intro_button_generate" = "Сгенерировать сид-фразу";
+"onboarding_seed_intro_button_import" = "Импортировать кошелек";
+"onboarding_seed_intro_message" = "Сид-фраза - это серия слов, которая дает возможность восстановить кошелек. В отличие от ключей, генерируемых картой, сид-фраза не защищена и может быть скопирована и украдена. Используйте эту опцию на свой страх и риск.";
+"onboarding_seed_intro_title" = "Использовать сид-фразу";
+"onboarding_seed_phrase_intro_legacy" = "Устаревший";
 "onboarding_subtitle_backup_card" = "Вы можете сделать резервную копию своих ключей на одной или двух других пустых картах Wallet";
 "onboarding_subtitle_claim" = "Для начала работы просто запросите начисление wxDAI на свой кошелек";
 "onboarding_subtitle_claim_progress" = "Это займет несколько секунд";

@@ -25,6 +25,11 @@ extension Analytics {
         case scanSourceAuth = "Sign In"
         case scanSourceMyWallets = "My Wallets"
 
+        case transactionSourceSend = "Send"
+        case transactionSourceSwap = "Swap"
+        case transactionSourceWalletConnect = "WalletConnect"
+        case transactionSourceSell = "Sell"
+
         // MARK: - Actions
 
         case scan = "tap_scan_task"

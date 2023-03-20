@@ -55,6 +55,7 @@ struct OnboardingTextButtonView: View {
                 }
             }
 
+            // TODO: Refactor to `MainButton` and for dark theme
             if let settings = buttonsSettings.supplement {
                 //            if buttonsSettings.containSupplementButton {
                 TangemButton(title: settings.title) {

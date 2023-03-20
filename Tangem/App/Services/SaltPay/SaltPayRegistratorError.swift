@@ -22,6 +22,7 @@ enum SaltPayRegistratorError: String, Error, LocalizedError, BindableError {
     case failedToParseAllowance
     case missingClaimableAmount
     case blockchainError
+    case unknownServerError
 
     var errorDescription: String? {
         rawValue

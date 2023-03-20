@@ -55,6 +55,10 @@ struct SingleCardOnboardingView: View {
                 .zIndex(100)
 
             disclaimerContent
+                .layoutPriority(1)
+                .readSize { size in
+                    viewModel.setupContainer(with: size)
+                }
 
             VStack(spacing: 0) {
                 GeometryReader { proxy in
