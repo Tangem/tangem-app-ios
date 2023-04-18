@@ -655,6 +655,10 @@ class SendViewModel: ObservableObject {
                 if let memo = validatedMemo {
                     tx.params = TONTransactionParams(memo: memo)
                 }
+            case .cosmos:
+                if let memo = validatedMemo {
+                    tx.params = CosmosTransactionParams(memo: memo)
+                }
             default:
                 break
             }
