@@ -60,6 +60,8 @@ class StoriesViewModel: ObservableObject {
             self?.currentProgress = $0
         }
 
+//        print("***", "get page", currentPage)
+
         switch currentPage {
         case WelcomeStoryPage.meetTangem:
             MeetTangemStoryPage(progress: progressBinding, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
