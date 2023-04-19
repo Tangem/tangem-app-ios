@@ -132,8 +132,8 @@ class CardViewModel: Identifiable, ObservableObject {
         config.hasFeature(.tokenSynchronization)
     }
 
-    var supportsSwapping: Bool {
-        config.hasFeature(.swapping)
+    var canShowSwapping: Bool {
+        !config.getFeatureAvailability(.swapping).isHidden
     }
 
     // Temp for WC. Migrate to userWalletId?
@@ -227,7 +227,7 @@ class CardViewModel: Identifiable, ObservableObject {
 
     var canParticipateInReferralProgram: Bool {
         // TODO: refactor to a single function that any other entity can use to request feature availability
-        config.hasFeature(.referralProgram)
+        !config.getFeatureAvailability(.referralProgram).isHidden
     }
 
     var supportedBlockchains: Set<Blockchain> {

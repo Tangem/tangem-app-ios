@@ -39,7 +39,7 @@ struct DetailsView: View {
         }
         .ignoresBottomArea()
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
-        .alert(item: $viewModel.error) { $0.alert }
+        .alert(item: $viewModel.alert) { $0.alert }
         .navigationBarTitle(Text(Localization.detailsTitle), displayMode: .inline)
         .onAppear(perform: viewModel.onAppear)
     }

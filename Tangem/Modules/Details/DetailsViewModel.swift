@@ -22,7 +22,7 @@ class DetailsViewModel: ObservableObject {
     @Published var environmentSetupViewModel: DefaultRowViewModel?
 
     @Published var cardModel: CardViewModel
-    @Published var error: AlertBinder?
+    @Published var alert: AlertBinder?
 
     var canCreateBackup: Bool {
         cardModel.canCreateBackup
@@ -156,6 +156,11 @@ extension DetailsViewModel {
     }
 
     func openReferral() {
+        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .referralProgram) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         guard let userWalletId = cardModel.userWalletId else {
             // This shouldn't be the case, because currently user can't reach this screen
             // with card that doesn't have a wallet.

@@ -166,9 +166,9 @@ extension GenericDemoConfig: UserWalletConfig {
         case .tokenSynchronization:
             return .hidden
         case .referralProgram:
-            return .hidden
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .swapping:
-            return .hidden
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .displayHashesCount:
             return .available
         case .transactionHistory:

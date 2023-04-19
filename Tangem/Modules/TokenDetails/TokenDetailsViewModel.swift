@@ -496,6 +496,11 @@ extension TokenDetailsViewModel {
     }
 
     func openSwapping() {
+        if let disabledLocalizedReason = card.getDisabledLocalizedReason(for: .swapping) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         guard FeatureProvider.isAvailable(.exchange),
               let userWalletModel = card.userWalletModel,
               let walletModel = walletModel,
@@ -533,7 +538,7 @@ extension TokenDetailsViewModel {
 private extension TokenDetailsViewModel {
     var canSwap: Bool {
         !isCustomToken &&
-            card.supportsSwapping &&
+            card.canShowSwapping &&
             SwappingAvailableUtils().canSwap(
                 blockchainNetworkId: blockchainNetwork.blockchain.networkId
             )
