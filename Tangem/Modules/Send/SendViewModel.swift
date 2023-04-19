@@ -440,7 +440,7 @@ class SendViewModel: ObservableObject {
                 if memo.isEmpty { return }
 
                 switch blockchainNetwork.blockchain {
-                case .binance, .ton:
+                case .binance, .ton, .cosmos:
                     self.validatedMemo = memo
                 case .stellar:
                     if let memoId = UInt64(memo) {
