@@ -11,48 +11,10 @@ import TangemSdk
 import BlockchainSdk
 
 struct GenericConfig {
-    @Injected(\.backupServiceProvider) private var backupServiceProvider: BackupServiceProviding
-
-    private let card: CardDTO
-
-    private var _backupSteps: [WalletOnboardingStep] {
-        if card.backupStatus?.isActive == true {
-            return []
-        }
-
-        if !card.settings.isBackupAllowed {
-            return []
-        }
-
-        var steps: [WalletOnboardingStep] = .init()
-
-        steps.append(.backupIntro)
-
-        if !card.wallets.isEmpty, !backupServiceProvider.backupService.primaryCardIsSet {
-            steps.append(.scanPrimaryCard)
-        }
-
-        if backupServiceProvider.backupService.addedBackupCardsCount < BackupService.maxBackupCardsCount {
-            steps.append(.selectBackupCards)
-        }
-
-        steps.append(.backupCards)
-
-        return steps
-    }
-
-    var userWalletSavingSteps: [WalletOnboardingStep] {
-        guard needUserWalletSavingSteps else { return [] }
-        return [.saveUserWallet]
-    }
-
-    private var seedPhraseSteps: [WalletOnboardingStep] {
-        [.seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport]
-    }
+    let card: CardDTO
 
     init(card: CardDTO) {
         self.card = card
-        backupServiceProvider.backupService.skipCompatibilityChecks = false
     }
 }
 
@@ -79,40 +41,6 @@ extension GenericConfig: UserWalletConfig {
 
     var defaultCurve: EllipticCurve? {
         return nil
-    }
-
-    var onboardingSteps: OnboardingSteps {
-        var steps = [WalletOnboardingStep]()
-
-        if !AppSettings.shared.termsOfServicesAccepted.contains(tou.id) {
-            steps.append(.disclaimer)
-        }
-
-        if card.wallets.isEmpty {
-            // Check is card supports seed phrase, if so add seed phrase steps
-            let initialSteps: [WalletOnboardingStep]
-            if FeatureProvider.isAvailable(.importSeedPhrase), hasFeature(.seedPhrase) {
-                initialSteps = [.createWalletSelector] + seedPhraseSteps
-            } else {
-                initialSteps = [.createWallet]
-            }
-            steps.append(contentsOf: initialSteps + _backupSteps + userWalletSavingSteps + [.success])
-        } else {
-            let isBackupActive = card.backupStatus?.isActive ?? false
-            let forceBackup = !canSkipBackup && !isBackupActive
-
-            if AppSettings.shared.cardsStartedActivation.contains(card.cardId) || forceBackup {
-                steps.append(contentsOf: _backupSteps + userWalletSavingSteps + [.success])
-            } else {
-                steps.append(contentsOf: userWalletSavingSteps)
-            }
-        }
-
-        return .wallet(steps)
-    }
-
-    var backupSteps: OnboardingSteps? {
-        .wallet(_backupSteps + [.success])
     }
 
     var canSkipBackup: Bool {
@@ -171,11 +99,9 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var tangemSigner: TangemSigner {
-        if let backupStatus = card.backupStatus, backupStatus.isActive {
-            return .init(with: nil)
-        } else {
-            return .init(with: card.cardId)
-        }
+        let shouldSkipCardId = card.backupStatus?.isActive ?? false
+        let cardId = shouldSkipCardId ? nil : card.cardId
+        return .init(with: cardId, sdk: makeTangemSdk())
     }
 
     var userWalletIdSeed: Data? {
@@ -281,6 +207,10 @@ extension GenericConfig: UserWalletConfig {
         }
     }
 }
+
+// MARK: - WalletOnboardingStepsBuilderFactory
+
+extension GenericConfig: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 

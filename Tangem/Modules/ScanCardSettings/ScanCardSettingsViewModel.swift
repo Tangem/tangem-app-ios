@@ -8,20 +8,21 @@
 
 import Combine
 import SwiftUI
+import TangemSdk
 
 final class ScanCardSettingsViewModel: ObservableObject, Identifiable {
-    @Injected(\.tangemSdkProvider) private var sdkProvider: TangemSdkProviding
-
     let id = UUID()
 
     @Published var isLoading: Bool = false
     @Published var alert: AlertBinder?
 
     private let expectedUserWalletId: Data
+    private let sdk: TangemSdk
     private unowned let coordinator: ScanCardSettingsRoutable
 
-    init(expectedUserWalletId: Data, coordinator: ScanCardSettingsRoutable) {
+    init(expectedUserWalletId: Data, sdk: TangemSdk, coordinator: ScanCardSettingsRoutable) {
         self.expectedUserWalletId = expectedUserWalletId
+        self.sdk = sdk
         self.coordinator = coordinator
     }
 }
@@ -35,8 +36,6 @@ extension ScanCardSettingsViewModel {
 
             switch result {
             case .success(let cardInfo):
-                let config = UserWalletConfigFactory(cardInfo).makeConfig()
-                let cardModel = CardViewModel(cardInfo: cardInfo, config: config)
                 self.processSuccessScan(for: cardInfo)
             case .failure(let error):
                 self.showErrorAlert(error: error)
@@ -64,7 +63,7 @@ extension ScanCardSettingsViewModel {
     func scan(completion: @escaping (Result<CardInfo, Error>) -> Void) {
         isLoading = true
         let task = AppScanTask(shouldAskForAccessCode: true)
-        sdkProvider.sdk.startSession(with: task) { [weak self] result in
+        sdk.startSession(with: task) { [weak self] result in
             self?.isLoading = false
 
             switch result {

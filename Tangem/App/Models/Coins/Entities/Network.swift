@@ -13,5 +13,6 @@ extension CoinsResponse {
         public let networkId: String
         public let contractAddress: String?
         public let decimalCount: Int?
+        public let exchangeable: Bool
     }
 }

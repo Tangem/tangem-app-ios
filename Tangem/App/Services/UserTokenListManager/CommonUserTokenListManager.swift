@@ -142,6 +142,7 @@ private extension CommonUserTokenListManager {
                 symbol: blockchain.currencySymbol,
                 decimals: blockchain.decimalCount,
                 derivationPath: entry.blockchainNetwork.derivationPath,
+                exchangeable: nil,
                 contractAddress: nil
             )
             if !result.contains(blockchainToken) {
@@ -156,6 +157,7 @@ private extension CommonUserTokenListManager {
                     symbol: token.symbol,
                     decimals: token.decimalCount,
                     derivationPath: entry.blockchainNetwork.derivationPath,
+                    exchangeable: token.exchangeable,
                     contractAddress: token.contractAddress
                 )
 

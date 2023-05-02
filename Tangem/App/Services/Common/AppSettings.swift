@@ -30,12 +30,6 @@ class AppSettings {
     @AppStorageCompat(StorageType.searchedCards)
     var searchedCards: [String] = []
 
-    @AppStorageCompat(StorageType.scannedNdefs)
-    var scannedNdefs: [String] = []
-
-    @AppStorageCompat(StorageType.lastScannedNdef)
-    var lastScannedNdef: String = ""
-
     @AppStorageCompat(StorageType.cardsStartedActivation)
     var cardsStartedActivation: [String] = []
 

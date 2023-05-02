@@ -55,6 +55,8 @@ fileprivate struct MoonpayCurrency: Decodable {
         case stellar
         case litecoin
         case solana
+        case tron
+        case polygon
         case unknown
 
         func blockchain(testnet: Bool) -> Blockchain? {
@@ -75,6 +77,10 @@ fileprivate struct MoonpayCurrency: Decodable {
                 return .litecoin
             case .stellar:
                 return .stellar(testnet: testnet)
+            case .tron:
+                return .tron(testnet: testnet)
+            case .polygon:
+                return .polygon(testnet: testnet)
             }
         }
 
@@ -86,6 +92,7 @@ fileprivate struct MoonpayCurrency: Decodable {
     }
 
     struct Metadata: Decodable {
+        let contractAddress: String?
         let networkCode: NetworkCode
     }
 
@@ -100,8 +107,8 @@ fileprivate struct MoonpayCurrency: Decodable {
 }
 
 fileprivate struct MoonpaySupportedCurrency: Hashable {
-    let currencyCode: String
     let networkCode: MoonpayCurrency.NetworkCode
+    let contractAddress: String?
 }
 
 // MARK: - Service
@@ -121,9 +128,9 @@ class MoonPayService {
     ]
 
     private var availableToSell: Set<MoonpaySupportedCurrency> = [
-        MoonpaySupportedCurrency(currencyCode: "BTC", networkCode: .bitcoin),
-        MoonpaySupportedCurrency(currencyCode: "ETH", networkCode: .ethereum),
-        MoonpaySupportedCurrency(currencyCode: "BCH", networkCode: .bnbChain),
+        MoonpaySupportedCurrency(networkCode: .bitcoin, contractAddress: nil),
+        MoonpaySupportedCurrency(networkCode: .ethereum, contractAddress: nil),
+        MoonpaySupportedCurrency(networkCode: .bnbChain, contractAddress: nil),
     ]
 
     private(set) var canBuyCrypto = true
@@ -163,13 +170,15 @@ extension MoonPayService: ExchangeService {
             return false
         }
 
-        if currencySymbol.uppercased() == "BNB", blockchain == .bsc(testnet: true) || blockchain == .bsc(testnet: false) {
-            return false
-        }
-
         return availableToSell.contains(where: {
-            $0.currencyCode == currencySymbol.uppercased() &&
-                $0.networkCode.blockchain(testnet: blockchain.isTestnet) == blockchain
+            switch amountType {
+            case .coin:
+                return $0.networkCode.blockchain(testnet: blockchain.isTestnet) == blockchain
+            case .token(let value):
+                return $0.contractAddress?.caseInsensitiveCompare(value.contractAddress) == .orderedSame
+            case .reserve:
+                return false
+            }
         })
     }
 
@@ -293,7 +302,7 @@ extension MoonPayService: ExchangeService {
 
                     if let isSellSupported = $0.isSellSupported, isSellSupported, let metadata = $0.metadata {
                         currenciesToSell.insert(
-                            MoonpaySupportedCurrency(currencyCode: $0.code.uppercased(), networkCode: metadata.networkCode)
+                            MoonpaySupportedCurrency(networkCode: metadata.networkCode, contractAddress: metadata.contractAddress)
                         )
                     }
                 }

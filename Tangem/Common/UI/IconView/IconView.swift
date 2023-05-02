@@ -62,7 +62,6 @@ struct IconView: View {
 
     var kfImage: some View {
         KFImage(url)
-            .renderingMode(.original) // iOS 13 needs this to properly display an image inside a button label
             .cancelOnDisappear(true)
             .setProcessor(DownsamplingImageProcessor(size: size))
             .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }

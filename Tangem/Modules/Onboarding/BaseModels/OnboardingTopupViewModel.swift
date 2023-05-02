@@ -21,8 +21,6 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
 
     var walletModelUpdateCancellable: AnyCancellable?
 
-    var cardModel: CardViewModel?
-
     var buyCryptoURL: URL? {
         if let wallet = cardModel?.wallets.first {
             return exchangeService.getBuyUrl(
@@ -51,14 +49,6 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
     }
 
     private var refreshButtonDispatchWork: DispatchWorkItem?
-
-    override init(input: OnboardingInput, coordinator: Coordinator) {
-        if let cardModel = input.cardInput.cardModel {
-            self.cardModel = cardModel
-        }
-
-        super.init(input: input, coordinator: coordinator)
-    }
 
     func updateCardBalance(for type: Amount.AmountType = .coin, shouldGoToNextStep: Bool = true) {
         guard

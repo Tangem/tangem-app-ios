@@ -39,7 +39,6 @@ extension CommonKeysManager: KeysManager {
             blockchairApiKeys: keys.blockchairApiKeys,
             blockcypherTokens: keys.blockcypherTokens,
             infuraProjectId: keys.infuraProjectId,
-            useBlockBookUtxoApis: FeatureProvider.isAvailable(.blockBookUtxoApis),
             nowNodesApiKey: keys.nowNodesApiKey,
             getBlockApiKey: keys.getBlockApiKey,
             kaspaSecondaryApiUrl: keys.kaspaSecondaryApiUrl,

@@ -40,13 +40,9 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.pushTxCoordinator) {
                 PushTxCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
             }

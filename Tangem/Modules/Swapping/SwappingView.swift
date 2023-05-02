@@ -32,7 +32,6 @@ struct SwappingView: View {
 
                 mainButton
             }
-            .keyboardAdaptive()
             .scrollDismissesKeyboardCompat(true)
             // For animate button below informationSection
             .animation(.easeInOut, value: viewModel.informationSectionViewModels.count)
@@ -73,7 +72,8 @@ struct SwappingView: View {
     private var swappingButton: some View {
         Group {
             if viewModel.swapButtonIsLoading {
-                ProgressViewCompat(color: Colors.Icon.informative)
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
             } else {
                 Button(action: viewModel.userDidTapSwapSwappingItemsButton) {
                     Assets.swappingIcon.image
@@ -144,7 +144,7 @@ struct SwappingView: View {
         }
         .padding(.bottom, UIApplication.safeAreaInsets.bottom + 10)
         .edgesIgnoringSafeArea(.bottom)
-        .ignoresKeyboard()
+        .ignoresSafeArea(.keyboard)
     }
 }
 

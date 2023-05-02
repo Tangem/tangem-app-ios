@@ -78,13 +78,12 @@ private extension MultiWalletContentViewModel {
     func bind() {
         /// Subscribe for update wallets for each changes in `WalletModel`
         userWalletModel.subscribeToWalletModels()
-            .map { walletModels in
-                walletModels
-                    .map { $0.walletDidChange }
-                    .combineLatest()
-                    .map { _ in walletModels }
+            .flatMap { walletModels in
+                Publishers
+                    .MergeMany(walletModels.map { $0.walletDidChange })
+                    .filter { !$0.isLoading }
             }
-            .switchToLatest()
+            .receive(on: DispatchQueue.global())
             .map { [weak self] _ -> [TokenItemViewModel] in
                 self?.collectTokenItemViewModels() ?? []
             }

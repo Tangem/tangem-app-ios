@@ -15,12 +15,9 @@ final class UncompletedBackupViewModel: ObservableObject {
     @Published var discardAlert: ActionSheetBinder?
     @Published var error: AlertBinder?
 
-    // MARK: - Dependencies
-
-    @Injected(\.backupServiceProvider) private var backupServiceProvider: BackupServiceProviding
-
     private unowned let coordinator: UncompletedBackupRoutable
-    private var backupService: BackupService { backupServiceProvider.backupService }
+
+    private lazy var backupHelper = BackupHelper()
 
     init(
         coordinator: UncompletedBackupRoutable
@@ -58,23 +55,24 @@ final class UncompletedBackupViewModel: ObservableObject {
     }
 
     private func continueBackup() {
-        guard let primaryCardId = backupService.primaryCard?.cardId else {
+        guard let cardId = backupHelper.cardId else {
             return
         }
 
-        let input = OnboardingInput(
-            steps: .wallet(WalletOnboardingStep.resumeBackupSteps),
-            cardInput: .cardId(primaryCardId),
-            twinData: nil,
-            currentStepIndex: 0,
-            isStandalone: true
-        )
+        let backupServiceFactory: BackupServiceFactory = backupHelper.hasIncompletedSaltPayBackup
+            ? SaltPayBackupServiceFactory(cardId: cardId, isAccessCodeSet: false)
+            : GenericBackupServiceFactory(isAccessCodeSet: false)
 
-        openBackup(with: input)
+        let factory = ResumeBackupInputFactory(
+            cardId: cardId,
+            tangemSdkFactory: TangemSdkDefaultFactory(),
+            backupServiceFactory: backupServiceFactory
+        )
+        openBackup(with: factory.makeBackupInput())
     }
 
     private func discardBackup() {
-        backupService.discardIncompletedBackup()
+        backupHelper.discardIncompletedBackup()
         dismiss()
     }
 }

@@ -13,15 +13,18 @@ import BlockchainSdk
 struct PreviewData {
     static var previewNoteCardOnboardingInput: OnboardingInput {
         OnboardingInput(
+            tangemSdk: .init(),
+            backupService: .init(sdk: .init()),
             steps: .singleWallet([.createWallet, .success]),
             cardInput: .cardModel(PreviewCard.ethEmptyNote.cardModel),
-            twinData: nil,
-            currentStepIndex: 0
+            twinData: nil
         )
     }
 
     static var previewTwinOnboardingInput: OnboardingInput {
         .init(
+            tangemSdk: .init(),
+            backupService: .init(sdk: .init()),
             steps: .twins([
                 .intro(pairNumber: "0128"),
                 .first,
@@ -31,17 +34,17 @@ struct PreviewData {
                 .done,
             ]),
             cardInput: .cardModel(PreviewCard.twin.cardModel),
-            twinData: .init(series: TwinCardSeries.cb61),
-            currentStepIndex: 0
+            twinData: .init(series: TwinCardSeries.cb61)
         )
     }
 
     static var previewWalletOnboardingInput: OnboardingInput {
         .init(
+            tangemSdk: .init(),
+            backupService: .init(sdk: .init()),
             steps: .wallet([.createWallet, .backupIntro, .selectBackupCards, .backupCards, .success]),
             cardInput: .cardModel(PreviewCard.tangemWalletEmpty.cardModel),
-            twinData: nil,
-            currentStepIndex: 0
+            twinData: nil
         )
     }
 }

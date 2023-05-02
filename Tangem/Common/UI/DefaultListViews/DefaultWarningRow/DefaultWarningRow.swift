@@ -80,7 +80,8 @@ struct DefaultWarningRow: View {
                 .resizable()
                 .frame(width: 20, height: 20)
         case .loader:
-            ProgressViewCompat(color: Colors.Icon.informative)
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
                 .frame(width: 20, height: 20)
         }
     }

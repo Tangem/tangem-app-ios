@@ -60,7 +60,12 @@ extension CommonRateAppService: RateAppService {
         shouldShowRateAppWarning = false
         if isPositive {
             Analytics.log(.noticeRateTheAppButtonTapped)
-            SKStoreReviewController.requestReview()
+
+            if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                DispatchQueue.main.async {
+                    SKStoreReviewController.requestReview(in: scene)
+                }
+            }
         }
     }
 

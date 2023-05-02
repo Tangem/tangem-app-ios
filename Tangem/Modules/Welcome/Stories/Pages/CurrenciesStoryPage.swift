@@ -10,7 +10,7 @@ import SwiftUI
 
 struct CurrenciesStoryPage: View {
     @Binding var progress: Double
-    let isScanning: Bool
+    @Binding var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
     let searchTokens: () -> Void
@@ -79,7 +79,7 @@ struct CurrenciesStoryPage: View {
                 .padding(.horizontal, 16)
             }
 
-            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }
@@ -90,7 +90,7 @@ struct CurrenciesStoryPage: View {
 
 struct CurrenciesStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        CurrenciesStoryPage(progress: .constant(1), isScanning: false) {} orderCard: {} searchTokens: {}
+        CurrenciesStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {} searchTokens: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
     }
 }

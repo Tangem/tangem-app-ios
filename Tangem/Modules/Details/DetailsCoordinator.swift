@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TangemSdk
 
 class DetailsCoordinator: CoordinatorObject {
     var dismissAction: Action
@@ -75,7 +76,8 @@ extension DetailsCoordinator: DetailsRoutable {
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: emailType)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: emailType)
     }
 
     func openWalletConnect(with cardModel: CardViewModel) {
@@ -89,8 +91,8 @@ extension DetailsCoordinator: DetailsRoutable {
         disclaimerViewModel = .init(url: url, style: .details)
     }
 
-    func openScanCardSettings(with userWalletId: Data) {
-        scanCardSettingsViewModel = ScanCardSettingsViewModel(expectedUserWalletId: userWalletId, coordinator: self)
+    func openScanCardSettings(with userWalletId: Data, sdk: TangemSdk) {
+        scanCardSettingsViewModel = ScanCardSettingsViewModel(expectedUserWalletId: userWalletId, sdk: sdk, coordinator: self)
     }
 
     func openAppSettings(userWallet: CardViewModel) {

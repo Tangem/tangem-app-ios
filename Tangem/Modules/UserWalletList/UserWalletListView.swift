@@ -11,15 +11,6 @@ import SwiftUI
 struct UserWalletListView: View {
     @ObservedObject private var viewModel: UserWalletListViewModel
 
-    static var sheetBackground: Color {
-        if #available(iOS 14, *) {
-            return Colors.Background.secondary
-        } else {
-            // iOS 13 can't convert named SwiftUI colors to UIColor
-            return Color(hex: "F2F2F7")!
-        }
-    }
-
     private let listHorizontalPadding: Double = 16
 
     init(viewModel: UserWalletListViewModel) {
@@ -67,7 +58,7 @@ struct UserWalletListView: View {
                 ]
             )
         }
-        .background(Self.sheetBackground.edgesIgnoringSafeArea(.all))
+        .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .background(
             ScanTroubleshootingView(
                 isPresented: $viewModel.showTroubleshootingView,
@@ -96,7 +87,6 @@ extension UserWalletListView {
     }
 
     @ViewBuilder
-    @available(iOS 14.0, *)
     private func userWalletsList() -> some View {
         List {
             sections()

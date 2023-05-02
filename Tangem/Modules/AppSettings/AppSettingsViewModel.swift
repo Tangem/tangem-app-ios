@@ -12,7 +12,6 @@ import TangemSdk
 
 class AppSettingsViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @Injected(\.tangemSdkProvider) private var sdkProvider: TangemSdkProviding
 
     // MARK: ViewState
 

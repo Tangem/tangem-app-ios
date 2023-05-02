@@ -92,16 +92,8 @@ struct TokenDetailsView: View {
         .navigationBarTitle("", displayMode: .inline)
         .navigationBarItems(trailing: trailingButton)
         .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
-        .ignoresKeyboard()
+        .ignoresSafeArea(.keyboard)
         .onAppear(perform: viewModel.onAppear)
-        //        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-        //            .filter {_ in !navigation.detailsToSend
-        //                && !navigation.detailsToBuyCrypto && !navigation.detailsToSellCrypto
-        //            }
-        //            .delay(for: 0.5, scheduler: DispatchQueue.global())
-        //            .receive(on: DispatchQueue.main)) { _ in
-        //                viewModel.walletModel?.update(silent: true)
-        //            }
         .alert(item: $viewModel.alert) { $0.alert }
     }
 

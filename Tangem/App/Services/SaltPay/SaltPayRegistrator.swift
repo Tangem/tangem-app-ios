@@ -50,7 +50,6 @@ class SaltPayRegistrator {
         "https://success.tangem.com"
     }
 
-    @Injected(\.tangemSdkProvider) private var tangemSdkProvider: TangemSdkProviding
     @Injected(\.keysManager) private var keysManager: KeysManager
 
     private let api: PaymentologyApiService = CommonPaymentologyApiService()
@@ -68,6 +67,7 @@ class SaltPayRegistrator {
 
     private let approvalValue: Decimal = .greatestFiniteMagnitude
     private let spendLimitValue: Decimal = 100
+    private let sdk: TangemSdk
 
     private var kycRefId: String {
         UserWalletId(with: walletPublicKey).stringValue
@@ -78,6 +78,7 @@ class SaltPayRegistrator {
         self.cardId = cardId
         self.cardPublicKey = cardPublicKey
         self.walletPublicKey = walletPublicKey
+        sdk = SaltPayTangemSdkFactory(isAccessCodeSet: false).makeTangemSdk()
     }
 
     func setAccessCode(_ accessCode: String) {
@@ -130,7 +131,7 @@ class SaltPayRegistrator {
             .flatMap { [weak self] tx -> AnyPublisher<SignedEthereumTransaction, Error> in
                 guard let self = self else { return .anyFail(error: SaltPayRegistratorError.empty) }
 
-                return self.tangemSdkProvider.sdk.startSessionPublisher(with: SignHashCommand(hash: tx.hash, walletPublicKey: self.walletPublicKey), accessCode: self.accessCode)
+                return self.sdk.startSessionPublisher(with: SignHashCommand(hash: tx.hash, walletPublicKey: self.walletPublicKey), accessCode: self.accessCode)
                     .map { signResponse -> SignedEthereumTransaction in
                         .init(compiledTransaction: tx, signature: signResponse.signature)
                     }
@@ -199,7 +200,7 @@ class SaltPayRegistrator {
 
                 self.registrationTask = task
 
-                return self.tangemSdkProvider.sdk.startSessionPublisher(
+                return self.sdk.startSessionPublisher(
                     with: task,
                     cardId: self.cardId,
                     initialMessage: nil,

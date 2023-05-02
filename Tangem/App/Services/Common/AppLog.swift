@@ -13,17 +13,26 @@ import TangemSwapping
 class AppLog {
     static let shared = AppLog()
 
+    let fileLogger = FileLogger()
+
     private init() {}
 
     var sdkLogConfig: Log.Config {
-        .custom(
+        var loggers: [TangemSdkLogger] = [fileLogger]
+
+        if AppEnvironment.current.isDebug {
+            loggers.append(ConsoleLogger())
+        }
+
+        return .custom(
             logLevel: Log.Level.allCases,
-            loggers: [FileLogger(), ConsoleLogger()]
+            loggers: loggers
         )
     }
 
     func configure() {
         Log.config = sdkLogConfig
+        fileLogger.removeLogFileIfNeeded()
     }
 
     func debug<T>(_ message: @autoclosure () -> T) {
@@ -32,6 +41,13 @@ class AppLog {
 
     func error(_ error: Error) {
         self.error(error: error, params: [:])
+    }
+
+    func logAppLaunch(_ currentLaunch: Int) {
+        let dashSeparator = String(repeating: "-", count: 25)
+        let launchNumberMessage = "\(dashSeparator) New session. Current launch number: \(currentLaunch) \(dashSeparator)"
+        let deviceInfoMessage = "\(dashSeparator) \(DeviceInfoProvider.Subject.allCases.map { $0.description }.joined(separator: ", ")) \(dashSeparator)"
+        debug("\n\(launchNumberMessage)\n\(deviceInfoMessage)\n\n")
     }
 }
 

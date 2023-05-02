@@ -62,7 +62,7 @@ final class AppScanTask: CardSessionRunnable {
             walletData = .legacy(legacyWalletData)
         }
 
-        appendWalletsIfNeeded(session: session, completion: completion)
+        readExtra(session: session, completion: completion)
     }
 
     private func readExtra(session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
@@ -180,35 +180,6 @@ final class AppScanTask: CardSessionRunnable {
             series: TwinCardSeries.series(for: card.cardId)!,
             pairPublicKey: pairPublicKey
         )
-    }
-
-    private func appendWalletsIfNeeded(session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        let card = session.environment.card!
-
-        let existingCurves: Set<EllipticCurve> = .init(card.wallets.map { $0.curve })
-        let mandatoryCurves: Set<EllipticCurve> = [.secp256k1, .ed25519]
-        let missingCurves = mandatoryCurves.subtracting(existingCurves)
-        let hasBackup = card.backupStatus?.isActive ?? false
-
-        guard card.settings.maxWalletsCount > 1,
-              !hasBackup,
-              !existingCurves.isEmpty, !missingCurves.isEmpty else {
-            readExtra(session: session, completion: completion)
-            return
-        }
-
-        appendWallets(Array(missingCurves), session: session, completion: completion)
-    }
-
-    private func appendWallets(_ curves: [EllipticCurve], session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        CreateMultiWalletTask(curves: curves).run(in: session) { result in
-            switch result {
-            case .success:
-                self.readExtra(session: session, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
     }
 
     private func readPrimaryCard(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {

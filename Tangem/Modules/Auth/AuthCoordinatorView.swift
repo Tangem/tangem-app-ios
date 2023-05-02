@@ -24,7 +24,7 @@ struct AuthCoordinatorView: CoordinatorView {
 
             sheets
         }
-        .navigationBarHidden(coordinator.navigationBarHidden)
+        .navigationBarHidden(true)
     }
 
     @ViewBuilder

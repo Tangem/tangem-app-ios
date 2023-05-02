@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Web3StoryPage: View {
     @Binding var progress: Double
-    let isScanning: Bool
+    @Binding var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -67,7 +67,7 @@ struct Web3StoryPage: View {
                     }
                 )
 
-            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }
@@ -78,7 +78,7 @@ struct Web3StoryPage: View {
 
 struct Web3StoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        Web3StoryPage(progress: .constant(1), isScanning: false) {} orderCard: {}
+        Web3StoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 struct MailViewModel: Identifiable {
     let id: UUID = .init()
 
-    let dataCollector: EmailDataCollector
+    let logsComposer: LogsComposer
     let recipient: String
     let emailType: EmailType
 }

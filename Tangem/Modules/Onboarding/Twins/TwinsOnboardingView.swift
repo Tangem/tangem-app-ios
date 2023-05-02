@@ -57,7 +57,6 @@ struct TwinsOnboardingView: View {
         ZStack {
             ConfettiView(shouldFireConfetti: $viewModel.shouldFireConfetti)
                 .allowsHitTesting(false)
-                .disabled(true) // Resolve iOS13 gesture conflict with the webView
                 .frame(maxWidth: screenSize.width)
                 .zIndex(110)
 

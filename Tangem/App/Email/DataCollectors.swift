@@ -10,22 +10,30 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
-protocol EmailDataCollector {
-    var dataForEmail: String { get }
-    var attachment: Data? { get }
-}
+protocol EmailDataCollector: LogFileProvider {}
 
 extension EmailDataCollector {
-    var attachment: Data? { nil }
+    var fileName: String {
+        "infoLogs.txt"
+    }
 
-    fileprivate func formatData(_ data: [EmailCollectedData], appendDeviceInfo: Bool = true) -> String {
-        data.reduce("") { $0 + $1.type.title + $1.data + "\n" } + (appendDeviceInfo ? DeviceInfoProvider.info() : "")
+    func prepareLogFile() -> URL {
+        let url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+        try? logData?.write(to: url)
+        return url
+    }
+}
+
+fileprivate extension EmailDataCollector {
+    func formatData(_ collectedInfo: [EmailCollectedData], appendDeviceInfo: Bool = true) -> Data? {
+        let collectedString = collectedInfo.reduce("") { $0 + $1.type.title + $1.data + "\n" } + (appendDeviceInfo ? DeviceInfoProvider.info() : "")
+        return collectedString.data(using: .utf8)
     }
 }
 
 struct NegativeFeedbackDataCollector: EmailDataCollector {
-    var dataForEmail: String {
-        return formatData(userWalletEmailData)
+    var logData: Data? {
+        formatData(userWalletEmailData)
     }
 
     private let userWalletEmailData: [EmailCollectedData]
@@ -36,11 +44,7 @@ struct NegativeFeedbackDataCollector: EmailDataCollector {
 }
 
 struct SendScreenDataCollector: EmailDataCollector {
-    var attachment: Data? {
-        FileLogger().logData
-    }
-
-    var dataForEmail: String {
+    var logData: Data? {
         var data = userWalletEmailData
         data.append(.separator(.dashes))
 
@@ -113,11 +117,7 @@ struct SendScreenDataCollector: EmailDataCollector {
 }
 
 struct PushScreenDataCollector: EmailDataCollector {
-    var attachment: Data? {
-        FileLogger().logData
-    }
-
-    var dataForEmail: String {
+    var logData: Data? {
         var data = userWalletEmailData
         data.append(.separator(.dashes))
         switch amountToSend.type {
@@ -170,11 +170,7 @@ struct PushScreenDataCollector: EmailDataCollector {
 }
 
 struct DetailsFeedbackDataCollector: EmailDataCollector {
-    var attachment: Data? {
-        FileLogger().logData
-    }
-
-    var dataForEmail: String {
+    var logData: Data? {
         var dataToFormat = userWalletEmailData
 
         for walletModel in cardModel.walletModels {

@@ -100,7 +100,7 @@ fileprivate struct WordInputView: View {
                 clearsOnBeginEditing: false,
                 handleKeyboard: true,
                 clearButtonMode: .never,
-                textColor: hasError ? Colors.Text.warning.uiColorFromRGB() : Colors.Text.primary1.uiColorFromRGB(),
+                textColor: UIColor(hasError ? Colors.Text.warning : Colors.Text.primary1),
                 font: UIFonts.Regular.body,
                 placeholder: "",
                 isEnabled: true

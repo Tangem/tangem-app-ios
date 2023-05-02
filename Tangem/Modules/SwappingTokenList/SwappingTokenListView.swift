@@ -37,24 +37,20 @@ struct SwappingTokenListView: View {
                 )
 
                 if viewModel.hasNextPage {
-                    ProgressViewCompat(color: Colors.Icon.informative)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
                         .onAppear(perform: viewModel.fetch)
                 }
             }
             .searchableCompat(text: $viewModel.searchText.value)
             .modifier(ifLet: viewModel.navigationTitleViewModel) { view, viewModel in
-                if #available(iOS 14.0, *) {
-                    view
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .principal) {
-                                BlockchainNetworkNavigationTitleView(viewModel: viewModel)
-                            }
+                view
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            BlockchainNetworkNavigationTitleView(viewModel: viewModel)
                         }
-                } else {
-                    view
-                        .navigationBarTitle(Text(Localization.swappingTokenListTitle), displayMode: .inline)
-                }
+                    }
             }
         }
     }

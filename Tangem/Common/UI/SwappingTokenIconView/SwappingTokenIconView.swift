@@ -19,7 +19,7 @@ struct SwappingTokenIconView: View {
 
     private let imageSize = CGSize(width: 36, height: 36)
     private let networkIconSize = CGSize(width: 16, height: 16)
-    private let chevronIconSize = CGSize(width: 8, height: 8)
+    private let chevronIconSize = CGSize(width: 9, height: 9)
 
     private var chevronYOffset: CGFloat {
         imageSize.height / 2 - chevronIconSize.height / 2
@@ -34,8 +34,10 @@ struct SwappingTokenIconView: View {
             HStack(alignment: .top, spacing: 4) {
                 mainContent
 
-                Assets.chevronDownMini.image
+                Assets.chevron.image
                     .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
                     .frame(size: chevronIconSize)
                     .offset(y: chevronYOffset)
                     /// View have to keep size of the view same for both cases

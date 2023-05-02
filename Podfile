@@ -1,21 +1,21 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
+platform :ios, '14.5'
 project 'TangemApp.xcodeproj'
 # Comment the next line if you don't want to use dynamic frameworks
 use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-219'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-225'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-269-hotfix-1'
-#  pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-282'
+  #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
   
-  pod 'TangemWalletCore', :git => 'https://github.com/tangem/wallet-core-binaries-ios.git', :tag => '3.1.9-tangem2'
-#  pod 'TangemWalletCore', :path => '../wallet-core-binaries-ios'
+  pod 'TangemWalletCore', :git => 'https://github.com/tangem/wallet-core-binaries-ios.git', :tag => '3.1.9-tangem3'
+  #pod 'TangemWalletCore', :path => '../wallet-core-binaries-ios'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => 'add-external-signer-7'
   # pod 'Solana.Swift', :path => '../Solana.Swift'
@@ -45,10 +45,9 @@ target 'Tangem' do
   pod 'Mobile-Buy-SDK' # Shopify
 
   # Helpers
-  pod 'DeviceGuru', '8.0.0'
   pod 'AlertToast', :git => 'https://github.com/elai950/AlertToast', :commit => 'a437862bb6605080a5816e866cbd4ac8c8657b49'
   
-  # support chat 
+  # support chat
   pod 'ZendeskSupportSDK', '~> 5.5.0'
   pod 'ZendeskChatSDK', '~> 2.12.0'
   
@@ -78,38 +77,35 @@ target 'TangemSwapping' do
 end
 
 pre_install do |installer|
-    # workaround for https://github.com/CocoaPods/CocoaPods/issues/3289
-    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+  # workaround for https://github.com/CocoaPods/CocoaPods/issues/3289
+  Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
 end
 
 post_install do |installer|
   installer.pods_project.build_configurations.each do |config|
-      if config.name.include?("Debug")
-          config.build_settings['GCC_OPTIMIZATION_LEVEL'] = '0'
-          config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
-          config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
-          config.build_settings['ENABLE_TESTABILITY'] = 'YES'
-          config.build_settings['SWIFT_COMPILATION_MODE'] = 'Incremental'
-      end
+    if config.name.include?("Debug")
+      config.build_settings['GCC_OPTIMIZATION_LEVEL'] = '0'
+      config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
+      config.build_settings['ENABLE_TESTABILITY'] = 'YES'
+      config.build_settings['SWIFT_COMPILATION_MODE'] = 'Incremental'
+    end
 
-      config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
+    config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
   end
-  
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-    end
-  end
-  
-	installer.pods_project.targets.each do |target|
-		target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
 
       if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
         target.build_configurations.each do |config|
-            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
         end
       end
-		end
-	end
+
+    end
+  end
+
 end

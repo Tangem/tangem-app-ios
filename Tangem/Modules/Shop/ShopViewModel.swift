@@ -73,9 +73,7 @@ class ShopViewModel: ObservableObject {
     }
 
     func didEnterDiscountCode() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Fix iOS13 keyboard layout glitch
-            self.setDiscountCode(self.discountCode.isEmpty ? nil : self.discountCode)
-        }
+        setDiscountCode(discountCode.isEmpty ? nil : discountCode)
     }
 
     func openApplePayCheckout() {

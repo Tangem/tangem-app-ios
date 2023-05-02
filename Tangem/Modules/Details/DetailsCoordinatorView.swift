@@ -55,8 +55,6 @@ struct DetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.modalOnboardingCoordinator) {
                 OnboardingCoordinatorView(coordinator: $0)
                     .presentation(modal: true, onDismissalAttempt: $0.onDismissalAttempt, onDismissed: nil)
@@ -64,14 +62,10 @@ struct DetailsCoordinatorView: CoordinatorView {
                         coordinator.modalOnboardingCoordinatorKeeper = value
                     })
             }
-
-        NavHolder()
             .sheet(item: $coordinator.supportChatViewModel) {
                 SupportChatView(viewModel: $0)
                     .edgesIgnoringSafeArea(.vertical)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.scanCardSettingsViewModel) {
                 ScanCardSettingsView(viewModel: $0)
             }

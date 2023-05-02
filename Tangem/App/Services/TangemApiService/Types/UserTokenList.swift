@@ -38,6 +38,7 @@ extension UserTokenList {
         let symbol: String
         let decimals: Int
         let derivationPath: DerivationPath?
+        let exchangeable: Bool?
         let contractAddress: String?
     }
 

@@ -19,7 +19,7 @@ class ReferralViewModel: ObservableObject {
     @Published var errorAlert: AlertBinder?
     @Published var showCodeCopiedToast: Bool = false
 
-    private unowned let coordinator: ReferralRoutable
+    private weak var coordinator: ReferralRoutable?
     private let cardModel: CardViewModel
     private let userWalletId: Data
 
@@ -55,7 +55,7 @@ class ReferralViewModel: ObservableObject {
             AppLog.shared.error(Localization.referralErrorFailedToLoadInfo)
             errorAlert = AlertBuilder.makeOkErrorAlert(
                 message: Localization.referralErrorFailedToLoadInfo,
-                okAction: coordinator.dismiss
+                okAction: coordinator?.dismiss ?? {}
             )
             isProcessingRequest = false
             return
@@ -107,7 +107,7 @@ class ReferralViewModel: ObservableObject {
             let referralError = ReferralError(error)
             let message = Localization.referralErrorFailedToLoadInfoWithReason(referralError.code)
             AppLog.shared.error(referralError)
-            errorAlert = AlertBuilder.makeOkErrorAlert(message: message, okAction: coordinator.dismiss)
+            errorAlert = AlertBuilder.makeOkErrorAlert(message: message, okAction: coordinator?.dismiss ?? {})
         }
     }
 
@@ -251,6 +251,6 @@ extension ReferralViewModel {
         }
 
         Analytics.log(.referralButtonOpenTos)
-        coordinator.openTOS(with: url)
+        coordinator?.openTOS(with: url)
     }
 }

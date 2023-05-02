@@ -59,7 +59,8 @@ extension SendCoordinator {
 
 extension SendCoordinator: SendRoutable {
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: .failedToSendTx)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToSendTx)
     }
 
     func closeModule() {

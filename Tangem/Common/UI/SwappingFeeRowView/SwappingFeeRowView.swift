@@ -50,8 +50,10 @@ struct SwappingFeeRowView: View {
                 Text(viewModel.state.formattedFee ?? "")
                     .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                Assets.chevron.image
-                    .rotationEffect(.degrees(isDisclaimerOpened ? -90 : 90))
+                Assets.chevronDownMini.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+                    .rotationEffect(.degrees(isDisclaimerOpened ? -180 : 0))
             }
         }
     }

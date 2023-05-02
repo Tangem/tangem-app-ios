@@ -21,7 +21,7 @@ struct WelcomeCoordinatorView: CoordinatorView {
 
             sheets
         }
-        .navigationBarHidden(coordinator.navigationBarHidden)
+        .navigationBarHidden(true)
     }
 
     @ViewBuilder
@@ -41,13 +41,9 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.shopCoordinator) {
                 ShopCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.tokenListCoordinator) {
                 TokenListCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }

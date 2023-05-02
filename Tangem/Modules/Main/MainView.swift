@@ -69,7 +69,7 @@ struct MainView: View {
         .onAppear {
             viewModel.onAppear()
         }
-        .ignoresKeyboard()
+        .ignoresSafeArea(.keyboard)
         .alert(item: $viewModel.error) { $0.alert }
     }
 

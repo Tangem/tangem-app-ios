@@ -12,7 +12,6 @@ import TangemSdk
 
 class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable> {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @Injected(\.tangemSdkProvider) private var tangemSdkProvider: TangemSdkProviding
 
     let navbarSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 44)
     let resetAnimDuration: Double = 0.3
@@ -128,9 +127,17 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     private(set) var containerSize: CGSize = .zero
     unowned let coordinator: Coordinator
 
+    var cardModel: CardViewModel?
+
     init(input: OnboardingInput, coordinator: Coordinator) {
         self.input = input
         self.coordinator = coordinator
+
+        // TODO: remove
+        if let cardModel = input.cardInput.cardModel {
+            self.cardModel = cardModel
+        }
+
         isFromMain = input.isStandalone
         isNavBarVisible = input.isStandalone
 
@@ -141,6 +148,27 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         )
 
         bindAnalytics()
+    }
+
+    func initializeUserWallet(from cardInfo: CardInfo) {
+        let config = UserWalletConfigFactory(cardInfo).makeConfig()
+        let userWallet = CardViewModel(cardInfo: cardInfo, config: config)
+        userWallet.appendDefaultBlockchains()
+        userWallet.userWalletModel?.updateAndReloadWalletModels()
+        cardModel = userWallet
+    }
+
+    func handleUserWalletOnFinish() throws {
+        guard
+            AppSettings.shared.saveUserWallets,
+            let cardModel = cardModel,
+            let userWallet = cardModel.userWallet
+        else {
+            return
+        }
+
+        userWalletRepository.save(cardModel)
+        userWalletRepository.setSelectedUserWalletId(userWallet.userWalletId, reason: .inserted)
     }
 
     func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
@@ -258,19 +286,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.state(for: agreed)])
     }
 
-    func handleUserWalletOnFinish() throws {
-        guard
-            AppSettings.shared.saveUserWallets,
-            let cardModel = input.cardInput.cardModel,
-            let userWallet = cardModel.userWallet
-        else {
-            return
-        }
-
-        userWalletRepository.save(cardModel)
-        userWalletRepository.setSelectedUserWalletId(userWallet.userWalletId, reason: .inserted)
-    }
-
     func disclaimerAccepted() {
         guard let id = input.cardInput.cardModel?.cardDisclaimer.id else {
             return
@@ -371,8 +386,7 @@ extension OnboardingViewModel {
 
         coordinator.openSupportChat(input: .init(
             environment: cardModel.supportChatEnvironment,
-            cardId: cardModel.cardId,
-            dataCollector: dataCollector
+            logsComposer: .init(infoProvider: dataCollector)
         ))
     }
 }

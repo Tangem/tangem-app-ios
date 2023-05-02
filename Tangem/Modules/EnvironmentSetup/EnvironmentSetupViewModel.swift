@@ -12,45 +12,58 @@ import SwiftUI
 final class EnvironmentSetupViewModel: ObservableObject {
     // MARK: - ViewState
 
-    @Published var appSettingsTogglesViewModels: [DefaultToggleRowViewModel]
-    @Published var togglesViewModels: [DefaultToggleRowViewModel]
-
+    @Published var appSettingsTogglesViewModels: [DefaultToggleRowViewModel] = []
+    @Published var featureStateViewModels: [FeatureStateRowViewModel] = []
     @Published var alert: AlertBinder?
 
     // MARK: - Dependencies
 
+    private let featureStorage = FeatureStorage()
     private var bag: Set<AnyCancellable> = []
 
     init() {
+        setupView()
+    }
+
+    func setupView() {
         appSettingsTogglesViewModels = [
             DefaultToggleRowViewModel(
                 title: "Use testnet",
                 isOn: Binding<Bool>(
-                    get: { EnvironmentProvider.shared.isTestnet },
-                    set: { EnvironmentProvider.shared.isTestnet = $0 }
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isTestnet },
+                    set: { $0.isTestnet = $1 }
                 )
             ),
             DefaultToggleRowViewModel(
                 title: "Use dev API",
                 isOn: Binding<Bool>(
-                    get: { EnvironmentProvider.shared.useDevApi },
-                    set: { EnvironmentProvider.shared.useDevApi = $0 }
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.useDevApi },
+                    set: { $0.useDevApi = $1 }
                 )
             ),
         ]
 
-        togglesViewModels = FeatureToggle.allCases.map { toggle in
-            DefaultToggleRowViewModel(
-                title: toggle.name,
-                isOn: Binding<Bool> {
-                    EnvironmentProvider.shared.availableFeatures.contains(toggle)
-                } set: { isActive in
-                    if isActive {
-                        EnvironmentProvider.shared.availableFeatures.insert(toggle)
-                    } else {
-                        EnvironmentProvider.shared.availableFeatures.remove(toggle)
+        featureStateViewModels = Feature.allCases.reversed().map { feature in
+            FeatureStateRowViewModel(
+                feature: feature,
+                enabledByDefault: FeatureProvider.isAvailableForReleaseVersion(feature),
+                state: Binding<FeatureState>(
+                    root: featureStorage,
+                    default: .default,
+                    get: { $0.availableFeatures[feature] ?? .default },
+                    set: { obj, state in
+                        switch state {
+                        case .default:
+                            obj.availableFeatures.removeValue(forKey: feature)
+                        case .on, .off:
+                            obj.availableFeatures[feature] = state
+                        }
                     }
-                }
+                )
             )
         }
     }

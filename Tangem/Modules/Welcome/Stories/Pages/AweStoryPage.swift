@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AweStoryPage: View {
     @Binding var progress: Double
-    let isScanning: Bool
+    @Binding var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -58,7 +58,7 @@ struct AweStoryPage: View {
                     slowMovementSpeedCoefficient: 0.15
                 )
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }
@@ -69,7 +69,7 @@ struct AweStoryPage: View {
 
 struct AweStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        AweStoryPage(progress: .constant(1), isScanning: false) {} orderCard: {}
+        AweStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
             .environment(\.colorScheme, .dark)
     }

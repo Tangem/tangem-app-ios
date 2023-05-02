@@ -10,9 +10,7 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
-protocol UserWalletConfig {
-    var sdkConfig: Config { get }
-
+protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, TangemSdkFactory {
     var emailConfig: EmailConfig? { get }
 
     var tou: TOU { get }
@@ -29,12 +27,7 @@ protocol UserWalletConfig {
 
     var warningEvents: [WarningEvent] { get }
 
-    var onboardingSteps: OnboardingSteps { get }
-
-    var backupSteps: OnboardingSteps? { get }
-
     var canSkipBackup: Bool { get }
-
     /// All blockchains supported by this user wallet.
     var supportedBlockchains: Set<Blockchain> { get }
 
@@ -65,14 +58,6 @@ protocol UserWalletConfig {
 }
 
 extension UserWalletConfig {
-    var sdkConfig: Config {
-        TangemSdkConfigFactory().makeDefaultConfig()
-    }
-
-    var needUserWalletSavingSteps: Bool {
-        return BiometricsUtil.isAvailable && !AppSettings.shared.saveUserWallets && !AppSettings.shared.askedToSaveUserWallets
-    }
-
     func hasFeature(_ feature: UserWalletFeature) -> Bool {
         getFeatureAvailability(feature).isAvailable
     }
@@ -118,4 +103,20 @@ struct EmailConfig {
 struct TOU {
     let id: String
     let url: URL
+}
+
+protocol CardContainer {
+    var card: CardDTO { get }
+}
+
+extension UserWalletConfig where Self: CardContainer {
+    func makeTangemSdk() -> TangemSdk {
+        let factory = GenericTangemSdkFactory(isAccessCodeSet: card.isAccessCodeSet)
+        return factory.makeTangemSdk()
+    }
+
+    func makeBackupService() -> BackupService {
+        let factory = GenericBackupServiceFactory(isAccessCodeSet: card.isAccessCodeSet)
+        return factory.makeBackupService()
+    }
 }

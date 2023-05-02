@@ -105,7 +105,6 @@ struct CardAnimSettings: Equatable {
     }
 }
 
-@available(iOS 14, *)
 struct CardStackAnimator<Card: View>: View {
     let cards: [Card]
     let namespace: Namespace.ID
@@ -220,7 +219,6 @@ class CardStackAnimatorPreviewModel: ObservableObject {
     }
 }
 
-@available(iOS 14, *)
 struct CardStackAnimatorPreview: View {
     @ObservedObject var viewModel: CardStackAnimatorPreviewModel = .init(content: .backup(numberOfCards: 3))
 
@@ -315,7 +313,6 @@ struct CardStackAnimatorPreview: View {
     }
 }
 
-@available(iOS 14, *)
 struct CardStackAnimator_Previews: PreviewProvider {
     static var previews: some View {
         CardStackAnimatorPreview(

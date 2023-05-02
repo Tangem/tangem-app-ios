@@ -22,7 +22,7 @@ class DetailsViewModel: ObservableObject {
     @Published var environmentSetupViewModel: DefaultRowViewModel?
 
     @Published var cardModel: CardViewModel
-    @Published var error: AlertBinder?
+    @Published var alert: AlertBinder?
 
     var canCreateBackup: Bool {
         cardModel.canCreateBackup
@@ -113,7 +113,7 @@ extension DetailsViewModel {
         }
 
         Analytics.log(.buttonCardSettings)
-        coordinator.openScanCardSettings(with: userWalletId)
+        coordinator.openScanCardSettings(with: userWalletId, sdk: cardModel.makeTangemSdk()) // TODO: refactor.
     }
 
     func openAppSettings() {
@@ -131,8 +131,7 @@ extension DetailsViewModel {
 
         coordinator.openSupportChat(input: .init(
             environment: cardModel.supportChatEnvironment,
-            cardId: cardModel.cardId,
-            dataCollector: dataCollector
+            logsComposer: .init(infoProvider: dataCollector)
         ))
     }
 
@@ -156,6 +155,11 @@ extension DetailsViewModel {
     }
 
     func openReferral() {
+        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .referralProgram) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         guard let userWalletId = cardModel.userWalletId else {
             // This shouldn't be the case, because currently user can't reach this screen
             // with card that doesn't have a wallet.
@@ -215,7 +219,7 @@ extension DetailsViewModel {
             DefaultRowViewModel(title: Localization.detailsChat, action: openSupportChat),
         ]
 
-        if cardModel.canParticipateInReferralProgram, FeatureProvider.isAvailable(.referralProgram) {
+        if cardModel.canParticipateInReferralProgram {
             supportSectionModels.append(DefaultRowViewModel(title: Localization.detailsReferralTitle, action: openReferral))
         }
 

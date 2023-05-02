@@ -12,21 +12,25 @@ import ChatSDK
 import ChatProvidersSDK
 import SupportSDK
 import Foundation
+import SwiftUI
 import UIKit
-import DeviceGuru
 
-struct ZendeskSupportChatViewModel {
+final class ZendeskSupportChatViewModel {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    let cardId: String?
-    let dataCollector: EmailDataCollector?
+    let logsComposer: LogsComposer
+
+    private var chatViewController: UIViewController?
+    private var observationToken: ChatProvidersSDK.ObservationToken?
+
+    private var showSupportChatSheet: ((ActionSheet) -> Void)?
 
     init(
-        cardId: String? = nil,
-        dataCollector: EmailDataCollector? = nil
+        logsComposer: LogsComposer,
+        showSupportChatSheet: ((ActionSheet) -> Void)?
     ) {
-        self.cardId = cardId
-        self.dataCollector = dataCollector
+        self.logsComposer = logsComposer
+        self.showSupportChatSheet = showSupportChatSheet
 
         initialize()
     }
@@ -52,22 +56,90 @@ struct ZendeskSupportChatViewModel {
             clientId: config.zendeskClientId,
             zendeskUrl: config.zendeskUrl
         )
+
         Support.initialize(withZendesk: Zendesk.instance)
+
         Zendesk.instance?.setIdentity(Identity.createAnonymous())
+
         Chat.initialize(accountKey: config.zendeskAccountKey, appId: config.zendeskAppId)
+
+        observationToken = Chat.chatProvider?.observeChatState { [weak self] state in
+            guard let self = self else { return }
+
+            if state.chatSessionStatus == .started {
+                self.chatViewController?.navigationItem.setLeftBarButton(
+                    UIBarButtonItem(
+                        image: Assets.chatSettings.uiImage,
+                        style: .plain,
+                        target: self,
+                        action: #selector(ZendeskSupportChatViewModel.leftBarButtonItemDidTouch(_:))
+                    ),
+                    animated: true
+                )
+            } else {
+                self.chatViewController?.navigationItem.setLeftBarButtonItems([], animated: false)
+            }
+        }
     }
 
     func buildUI() throws -> UIViewController {
-        let device = DeviceGuru().hardwareDescription() ?? ""
-        let userWalletData = dataCollector?.dataForEmail ?? ""
+        let device = UIDevice.current.iPhoneModel?.name ?? ""
 
         Chat.instance?
             .providers
             .profileProvider
-            .setNote("\(device) \(cardId ?? "") \(userWalletData)")
+            .setNote("\(device)")
 
         let chatEngine = try ChatEngine.engine()
-        let viewController = try Messaging.instance.buildUI(engines: [chatEngine], configs: [chatConfiguration, messagingConfiguration])
-        return viewController
+        chatViewController = try Messaging.instance.buildUI(engines: [chatEngine], configs: [chatConfiguration, messagingConfiguration])
+
+        return chatViewController ?? UIViewController()
+    }
+
+    // MARK: - Private Implementation
+
+    private func sendLogFileIntoChat() {
+        logsComposer.getLogFiles().forEach {
+            Chat.chatProvider?.sendFile(url: $0)
+        }
+    }
+
+    private func sendRateUser(_ isPositive: Bool) {
+        Chat.chatProvider?.sendChatRating(isPositive ? .good : .bad)
+    }
+
+    private func showActionSheetChatUserMenuActions() {
+        let buttonCancel: ActionSheet.Button = .default(Text(Localization.commonCancel))
+        let buttonSendLog: ActionSheet.Button = .default(Text(Localization.chatUserActionSendLog), action: sendLogFileIntoChat)
+        let buttonRateOperator: ActionSheet.Button = .default(Text(Localization.chatUserActionRateUser), action: showActionSheetChatRateOperatorActions)
+
+        let sheet = ActionSheet(
+            title: Text(Localization.chatUserActionsTitle),
+            buttons: [buttonSendLog, buttonRateOperator, buttonCancel]
+        )
+
+        showSupportChatSheet?(sheet)
+    }
+
+    private func showActionSheetChatRateOperatorActions() {
+        let buttonCancel: ActionSheet.Button = .default(Text(Localization.commonCancel))
+        let buttonLike: ActionSheet.Button = .default(Text(Localization.commonLike), action: { [weak self] in
+            self?.sendRateUser(true)
+        })
+        let buttonDislike: ActionSheet.Button = .default(Text(Localization.commonDislike), action: { [weak self] in
+            self?.sendRateUser(false)
+        })
+
+        let sheet = ActionSheet(
+            title: Text(Localization.chatUserRateOperatorTitle),
+            buttons: [buttonLike, buttonDislike, buttonCancel]
+        )
+
+        showSupportChatSheet?(sheet)
+    }
+
+    @objc
+    func leftBarButtonItemDidTouch(_ sender: UIBarButtonItem) {
+        showActionSheetChatUserMenuActions()
     }
 }

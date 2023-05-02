@@ -51,6 +51,7 @@ extension UserWalletListCoordinator: UserWalletListRoutable {
     }
 
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: emailType)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: emailType)
     }
 }
