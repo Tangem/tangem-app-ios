@@ -34,7 +34,7 @@ struct SwappingTokenIconView: View {
             HStack(alignment: .top, spacing: 4) {
                 mainContent
 
-                Assets.chevron.image
+                Assets.chevronDownMini.image
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Colors.Icon.informative)
