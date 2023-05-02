@@ -37,7 +37,8 @@ extension CoinModel {
                     symbol: symbol,
                     contractAddress: contractAddress.trimmed(),
                     decimalCount: decimalCount,
-                    id: id
+                    id: id,
+                    exchangeable: network.exchangeable
                 ), blockchain)
             } else {
                 return .blockchain(blockchain)

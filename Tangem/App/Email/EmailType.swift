@@ -36,14 +36,6 @@ enum EmailType {
         }
     }
 
-    var dataCollectionMessage: String {
-        switch self {
-        case .failedToScanCard: return ""
-        default:
-            return Localization.feedbackDataCollectionMessage
-        }
-    }
-
     var sentEmailAlertTitle: String {
         switch self {
         case .negativeRateAppFeedback: return Localization.alertNegativeAppRateSentTitle

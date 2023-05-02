@@ -11,8 +11,6 @@ import BlockchainSdk
 import Combine
 
 struct TangemSigner: TransactionSigner {
-    @Injected(\.tangemSdkProvider) private var sdkProvider: TangemSdkProviding
-
     var signPublisher: AnyPublisher<Card, Never> {
         _signPublisher.eraseToAnyPublisher()
     }
@@ -21,18 +19,20 @@ struct TangemSigner: TransactionSigner {
     private var initialMessage: Message { .init(header: nil, body: Localization.initialMessageSignBody) }
     private let cardId: String?
     private let twinKey: TwinKey?
+    private let sdk: TangemSdk
 
-    init(with cardId: String?) {
-        self.init(cardId: cardId, twinKey: nil)
+    init(with cardId: String?, sdk: TangemSdk) {
+        self.init(cardId: cardId, twinKey: nil, sdk: sdk)
     }
 
-    init(with twinKey: TwinKey) {
-        self.init(cardId: nil, twinKey: twinKey)
+    init(with twinKey: TwinKey, sdk: TangemSdk) {
+        self.init(cardId: nil, twinKey: twinKey, sdk: sdk)
     }
 
-    private init(cardId: String?, twinKey: TwinKey?) {
+    private init(cardId: String?, twinKey: TwinKey?, sdk: TangemSdk) {
         self.cardId = cardId
         self.twinKey = twinKey
+        self.sdk = sdk
     }
 
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
@@ -44,7 +44,7 @@ struct TangemSigner: TransactionSigner {
                 derivationPath: walletPublicKey.derivationPath
             )
 
-            self.sdkProvider.sdk.startSession(with: signCommand, cardId: self.cardId, initialMessage: self.initialMessage) { signResult in
+            self.sdk.startSession(with: signCommand, cardId: self.cardId, initialMessage: self.initialMessage) { signResult in
                 switch signResult {
                 case .success(let response):
                     self._signPublisher.send(response.card)

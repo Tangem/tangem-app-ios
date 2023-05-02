@@ -57,7 +57,8 @@ struct MainButton: View {
     @ViewBuilder
     private var content: some View {
         if isLoading {
-            ProgressViewCompat(color: style.loaderColor())
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: style.loaderColor()))
         } else {
             Group {
                 switch icon {

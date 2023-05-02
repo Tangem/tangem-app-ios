@@ -10,7 +10,7 @@ import SwiftUI
 
 struct FinishStoryPage: View {
     @Binding var progress: Double
-    let isScanning: Bool
+    @Binding var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -60,7 +60,7 @@ struct FinishStoryPage: View {
 
             Spacer()
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }
@@ -71,7 +71,7 @@ struct FinishStoryPage: View {
 
 struct FinishStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        FinishStoryPage(progress: .constant(1), isScanning: false) {} orderCard: {}
+        FinishStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
             .environment(\.colorScheme, .dark)
     }

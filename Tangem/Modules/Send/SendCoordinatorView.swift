@@ -29,8 +29,6 @@ struct SendCoordinatorView: CoordinatorView {
                 .sheet(item: $coordinator.mailViewModel) {
                     MailView(viewModel: $0)
                 }
-
-            NavHolder()
                 .sheet(item: $coordinator.qrScanViewModel) {
                     QRScanView(viewModel: $0)
                         .edgesIgnoringSafeArea(.all)

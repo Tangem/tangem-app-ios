@@ -40,6 +40,7 @@ extension Analytics {
         case accessCodeReEntered = "[Onboarding / Backup] Access Code Re-entered"
         case backupFinished = "[Onboarding / Backup] Backup Finished"
         case pinScreenOpened = "[Onboarding / Backup] PIN Screen Opened"
+        case backupResetCardNotification = "[Onboarding / Backup] Reset Card Notification"
         case activationScreenOpened = "[Onboarding / Top Up] Activation Screen Opened"
         case buttonBuyCrypto = "[Onboarding / Top Up] Button - Buy Crypto"
         case onboardingButtonShowTheWalletAddress = "[Onboarding / Top Up] Button - Show the Wallet Address"

@@ -33,7 +33,6 @@ struct ShopOrderProgressView: View {
                     .padding(.horizontal)
                     .offset(x: 0, y: -50)
             )
-            .navigationBarTitle("", displayMode: .inline) // Don't remove it, otherwise navigation title will NOT hide on iOS 13
             .edgesIgnoringSafeArea(.all)
     }
 }

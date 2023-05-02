@@ -13,7 +13,6 @@ struct WelcomeView: View {
 
     var body: some View {
         storiesView
-            .navigationBarTitle("", displayMode: .inline)
             .alert(item: $viewModel.error, content: { $0.alert })
             .onAppear(perform: viewModel.onAppear)
             .onDidAppear(viewModel.onDidAppear)
@@ -31,7 +30,7 @@ struct WelcomeView: View {
         StoriesView(viewModel: viewModel.storiesModel) { [weak viewModel] in
             if let viewModel = viewModel {
                 viewModel.storiesModel.currentStoryPage(
-                    isScanning: viewModel.isScanningCard,
+                    isScanning: $viewModel.isScanningCard,
                     scanCard: viewModel.scanCardTapped,
                     orderCard: viewModel.orderCard,
                     searchTokens: viewModel.openTokensList

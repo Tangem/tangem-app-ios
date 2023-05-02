@@ -78,7 +78,7 @@ extension View {
         background(links)
     }
 
-    /// Fixes ios13 single link issue
+    /// Fixes single link issue
     func emptyNavigationLink() -> some View {
         navigation(item: .constant(nil)) {
             EmptyView()

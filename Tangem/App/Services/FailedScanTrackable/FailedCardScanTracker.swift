@@ -9,12 +9,8 @@
 import Foundation
 
 class FailedCardScanTracker: EmailDataCollector, FailedScanTrackable {
-    var dataForEmail: String {
-        "----------\n" + DeviceInfoProvider.info()
-    }
-
-    var attachment: Data? {
-        FileLogger().logData
+    var logData: Data? {
+        ("----------\n" + DeviceInfoProvider.info()).data(using: .utf8)
     }
 
     var shouldDisplayAlert: Bool {

@@ -30,7 +30,7 @@ class ServicesManager {
 
         let currentLaunches = AppSettings.shared.numberOfLaunches + 1
         AppSettings.shared.numberOfLaunches = currentLaunches
-        AppLog.shared.debug("Current launches: \(currentLaunches)")
+        AppLog.shared.logAppLaunch(currentLaunches)
         S2CTOUMigrator().migrate()
 
         exchangeService.initialize()

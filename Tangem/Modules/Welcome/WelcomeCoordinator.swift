@@ -29,11 +29,6 @@ class WelcomeCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel? = nil
 
-    // MARK: - Navigation bar state
-
-    // We should update navigationBar visibility state for the main module on iOS13
-    var navigationBarHidden: Bool { mainCoordinator == nil }
-
     // MARK: - Private
 
     private var welcomeLifecycleSubscription: AnyCancellable?
@@ -100,7 +95,8 @@ extension WelcomeCoordinator: WelcomeRoutable {
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: .failedToScanCard)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToScanCard)
     }
 
     func openTokensList() {

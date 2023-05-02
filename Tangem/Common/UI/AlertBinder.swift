@@ -106,4 +106,21 @@ enum AlertBuilder {
             secondaryButton: .destructive(Text(Localization.commonYes), action: okAction)
         ))
     }
+
+    static func makeAlert(title: String, message: String, primaryButton: Alert.Button, secondaryButton: Alert.Button?) -> AlertBinder {
+        if let secondaryButton {
+            return .init(alert: Alert(
+                title: Text(title),
+                message: Text(message),
+                primaryButton: primaryButton,
+                secondaryButton: secondaryButton
+            ))
+        } else {
+            return .init(alert: Alert(
+                title: Text(title),
+                message: Text(message),
+                dismissButton: primaryButton
+            ))
+        }
+    }
 }

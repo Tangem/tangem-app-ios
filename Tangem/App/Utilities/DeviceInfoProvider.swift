@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import DeviceGuru
 
 struct DeviceInfoProvider {
     enum Subject: CaseIterable {
@@ -16,33 +15,33 @@ struct DeviceInfoProvider {
         case osVersion
         case appVersion
 
-        var title: String {
+        var payload: String {
+            let device = UIDevice.current
             switch self {
-            case .deviceModel: return "Phone model: "
-            case .osVersion: return "OS version: "
-            case .appVersion: return "App version: "
+            case .deviceModel:
+                return device.iPhoneModel?.name ?? device.model
+            case .osVersion:
+                return [device.systemName, device.systemVersion].joined(separator: " ")
+            case .appVersion:
+                return [
+                    InfoDictionaryUtils.version.value() ?? "",
+                    "(\(InfoDictionaryUtils.bundleVersion.value() ?? ""))",
+                ]
+                .joined(separator: " ")
             }
         }
 
         var description: String {
-            let device = UIDevice.current
-            let devGuru = DeviceGuru()
-            var str = title
             switch self {
-            case .deviceModel:
-                str += devGuru.hardwareDescription() ?? device.model
-            case .osVersion:
-                str += device.systemName + " " + device.systemVersion
-            case .appVersion:
-                let bundle = Bundle.main
-                str += (bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") + " (\(bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""))"
+            case .deviceModel: return "Phone model: \(payload)"
+            case .osVersion: return "OS version: \(payload)"
+            case .appVersion: return "App version: \(payload)"
             }
-            str += "\n"
-            return str
         }
     }
 
     static func info(for subjects: [Subject] = Subject.allCases) -> String {
-        subjects.reduce(into: "\n") { $0 += $1.description }
+        let info = subjects.map { $0.description }.joined(separator: "\n")
+        return "\n\(info)\n"
     }
 }

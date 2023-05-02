@@ -17,7 +17,6 @@ struct AuthView: View {
 
     var body: some View {
         unlockView
-            .navigationBarTitle("", displayMode: .inline)
             .alert(item: $viewModel.error, content: { $0.alert })
             .onAppear(perform: viewModel.onAppear)
             .onDidAppear(viewModel.onDidAppear)

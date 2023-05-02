@@ -44,6 +44,10 @@
 "card_settings_security_mode_footer" = "Выбранный способ защиты приложения";
 "card_settings_title" = "Настройки карты";
 "chat_button_title" = "Чат";
+"chat_user_action_rate_user" = "Оценить оператора";
+"chat_user_action_send_log" = "Отправить логи";
+"chat_user_actions_title" = "Пожалуйста, выберите действие";
+"chat_user_rate_operator_title" = "Пожалуйста, оцените работу оператора";
 "common_accept" = "Принять";
 "common_attention" = "Внимание";
 "common_back" = "Назад";
@@ -58,11 +62,13 @@
 "common_delete" = "Удалить";
 "common_disabled" = "Отключено";
 "common_disconnect" = "Отключить";
+"common_dislike" = "Не нравится";
 "common_done" = "Готово";
 "common_enabled" = "Включено";
 "common_error" = "Ошибка";
 "common_explorer_format" = "%@ обозреватель";
 "common_import" = "Импортировать";
+"common_like" = "Нравится";
 "common_no" = "Нет";
 "common_ok" = "Ок";
 "common_origin_card" = "Основная карта";
@@ -81,6 +87,7 @@
 "common_success" = "Успешно";
 "common_terms_and_conditions" = "условия участия";
 "common_understand" = "Я понял";
+"common_unreachable" = "Недоступно";
 "common_warning" = "Предупреждение";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
@@ -128,7 +135,6 @@
 "error_wrong_wallet_tapped" = "Вы использовали карту от другого кошелька. Приложите карту, связанную с этим кошельком.";
 "exchange_receive_view_header" = "Вы получаете";
 "exchange_send_view_header" = "Вы отправляете";
-"feedback_data_collection_message" = "Информация ниже не является обязательной. Вы можете стереть её, если хотите.";
 "feedback_preface_rate_negative" = "Расскажите, каких функций вам не хватает, и мы постараемся вам помочь.";
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта?";
 "feedback_preface_support" = "Привет, команда поддержки,";
@@ -198,6 +204,7 @@
 "onboarding_exit_alert_message" = "В этом случае вам будет необходимо начать процесс заново.";
 "onboarding_exit_alert_title" = "Вы хотите выйти из процесса активации?";
 "onboarding_getting_started" = "Подготовка";
+"onboarding_linking_error_card_with_wallets" = "Другой кошелек уже был создан на карте, которую вы пытаетесь добавить. Хотите сбросить его и использовать карту для бэкапа?";
 "onboarding_navbar_kyc_progress" = "Подтвердите свою личность";
 "onboarding_navbar_pin" = "Код доступа";
 "onboarding_navbar_register_wallet" = "Подключиться";
@@ -367,6 +374,8 @@
 "story_meet_title" = "Встречайте\nTangem";
 "story_web3_description" = "Обменивайте, покупайте NFT, получайте займы и делайте вклады в более чем 100 различных децентрализованных сервисах";
 "story_web3_title" = "Поддержка DeFi";
+"swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
+"swapping_approve_information_title" = "Подтвердить";
 "swapping_error_wrapper" = "Ошибка: %@";
 "swapping_give_permission" = "Дать разрешение";
 "swapping_high_price_impact" = "Сильные колебания цены!";

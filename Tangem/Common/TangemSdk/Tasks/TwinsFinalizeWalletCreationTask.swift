@@ -39,15 +39,6 @@ class TwinsFinalizeWalletCreationTask: CardSessionRunnable {
                 completion(.failure(error))
             }
         }
-        //		let task = WriteFileCommand(dataToWrite: FileDataProtectedByPasscode(data: fileToWrite))
-        //		task.run(in: session, completion: { (result) in
-        //			switch result {
-        //			case .success:
-        //				self.readCard(in: session, completion: completion)
-        //			case .failure(let error):
-        //				completion(.failure(error))
-        //			}
-        //		})
     }
 
     func readCard(in session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {

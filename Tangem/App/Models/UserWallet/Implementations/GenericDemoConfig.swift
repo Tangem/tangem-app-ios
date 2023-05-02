@@ -10,41 +10,8 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
-struct GenericDemoConfig {
-    @Injected(\.backupServiceProvider) private var backupServiceProvider: BackupServiceProviding
-
-    private let card: CardDTO
-
-    private var _backupSteps: [WalletOnboardingStep] {
-        if card.backupStatus?.isActive == true {
-            return []
-        }
-
-        if !card.settings.isBackupAllowed {
-            return []
-        }
-
-        var steps: [WalletOnboardingStep] = .init()
-
-        steps.append(.backupIntro)
-
-        if !backupServiceProvider.backupService.primaryCardIsSet {
-            steps.append(.scanPrimaryCard)
-        }
-
-        if backupServiceProvider.backupService.addedBackupCardsCount < BackupService.maxBackupCardsCount {
-            steps.append(.selectBackupCards)
-        }
-
-        steps.append(.backupCards)
-
-        return steps
-    }
-
-    var userWalletSavingSteps: [WalletOnboardingStep] {
-        guard needUserWalletSavingSteps else { return [] }
-        return [.saveUserWallet]
-    }
+struct GenericDemoConfig: CardContainer {
+    let card: CardDTO
 
     init(card: CardDTO) {
         self.card = card
@@ -70,30 +37,6 @@ extension GenericDemoConfig: UserWalletConfig {
 
     var cardName: String {
         "Wallet"
-    }
-
-    var onboardingSteps: OnboardingSteps {
-        var steps = [WalletOnboardingStep]()
-
-        if !AppSettings.shared.termsOfServicesAccepted.contains(tou.id) {
-            steps.append(.disclaimer)
-        }
-
-        if card.wallets.isEmpty {
-            steps.append(contentsOf: [.createWallet] + _backupSteps + userWalletSavingSteps + [.success])
-        } else {
-            if !AppSettings.shared.cardsStartedActivation.contains(card.cardId) {
-                steps.append(contentsOf: userWalletSavingSteps)
-            } else {
-                steps.append(contentsOf: _backupSteps + userWalletSavingSteps + [.success])
-            }
-        }
-
-        return .wallet(steps)
-    }
-
-    var backupSteps: OnboardingSteps? {
-        .wallet(_backupSteps + [.success])
     }
 
     var supportedBlockchains: Set<Blockchain> {
@@ -157,7 +100,7 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     var tangemSigner: TangemSigner {
-        .init(with: card.cardId)
+        .init(with: card.cardId, sdk: makeTangemSdk())
     }
 
     var emailData: [EmailCollectedData] {
@@ -223,9 +166,9 @@ extension GenericDemoConfig: UserWalletConfig {
         case .tokenSynchronization:
             return .hidden
         case .referralProgram:
-            return .hidden
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .swapping:
-            return .hidden
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .displayHashesCount:
             return .available
         case .transactionHistory:
@@ -268,6 +211,10 @@ extension GenericDemoConfig: UserWalletConfig {
         return model
     }
 }
+
+// MARK: - WalletOnboardingStepsBuilderFactory
+
+extension GenericDemoConfig: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 

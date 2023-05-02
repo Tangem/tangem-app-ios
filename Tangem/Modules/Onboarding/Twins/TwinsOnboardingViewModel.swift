@@ -35,7 +35,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             return super.title
         }
 
-        if twinData.series.number != 1 {
+        if twinCardSeries.number != 1 {
             switch currentStep {
             case .first, .third:
                 return TwinsOnboardingStep.second.title
@@ -54,7 +54,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             return super.mainButtonTitle
         }
 
-        if twinData.series.number != 1 {
+        if twinCardSeries.number != 1 {
             switch currentStep {
             case .first, .third:
                 return TwinsOnboardingStep.second.mainButtonTitle
@@ -125,24 +125,21 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
     }
 
     private var stackCalculator: StackCalculator = .init()
-    private var twinData: TwinData
+    private var twinCardSeries: TwinCardSeries
     private var stepUpdatesSubscription: AnyCancellable?
     private let twinsService: TwinsWalletCreationUtil
-    private let originalUserWallet: UserWallet?
 
     private var canBuy: Bool { exchangeService.canBuy("BTC", amountType: .coin, blockchain: .bitcoin(testnet: false)) }
 
     override init(input: OnboardingInput, coordinator: OnboardingCoordinator) {
-        let cardModel = input.cardInput.cardModel!
         let twinData = input.twinData!
 
-        self.twinData = twinData
-        twinsService = .init(card: cardModel, twinData: twinData)
-        originalUserWallet = cardModel.userWallet
+        twinCardSeries = twinData.series
+        twinsService = .init(cardId: input.cardInput.cardId, twinData: twinData)
 
         super.init(input: input, coordinator: coordinator)
 
-        if let walletModel = self.cardModel?.walletModels.first {
+        if let walletModel = cardModel?.walletModels.first {
             updateCardBalanceText(for: walletModel)
         }
 
@@ -221,7 +218,8 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
             Analytics.log(.twinSetupStarted)
 
-            if twinsService.step.value != .first {
+            // TODO: Remove?
+            if case .first = twinsService.step.value {} else {
                 twinsService.resetSteps()
                 stepUpdatesSubscription = nil
             }
@@ -283,14 +281,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         }
     }
 
-    override func handleUserWalletOnFinish() throws {
-        if retwinMode, AppSettings.shared.saveUserWallets {
-            userWalletRepository.logoutIfNeeded()
-        } else {
-            try super.handleUserWalletOnFinish()
-        }
-    }
-
     private func bind() {
         twinsService
             .isServiceBusy
@@ -329,12 +319,13 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .sink(receiveValue: { [unowned self] newStep, _ in
                 switch (self.currentStep, newStep) {
                 case (.first, .second):
-                    if let originalUserWallet = originalUserWallet {
+                    if let originalUserWallet = self.input.userWalletToDelete {
                         userWalletRepository.delete(originalUserWallet, logoutIfNeeded: false)
                     }
                     fallthrough
                 case (.second, .third), (.third, .done):
-                    if newStep == .done {
+                    if case .done(let cardInfo) = newStep {
+                        self.initializeUserWallet(from: cardInfo)
                         if input.isStandalone {
                             self.fireConfetti()
                         } else {
@@ -368,7 +359,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     private func loadSecondTwinImage() {
         CardImageProvider()
-            .loadTwinImage(for: twinData.series.pair.number)
+            .loadTwinImage(for: twinCardSeries.pair.number)
             .map { $0.image }
             .zip($cardImage.compactMap { $0 })
             .receive(on: DispatchQueue.main)
@@ -377,9 +368,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
                 self.firstTwinImage = main
                 self.secondTwinImage = paired
-                //            withAnimation {
-                //                self.displayTwinImages = true
-                //            }
             }
             .store(in: &bag)
     }

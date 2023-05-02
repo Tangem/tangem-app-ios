@@ -346,7 +346,7 @@ extension AppStorageCompat where Value == [String] {
     }
 }
 
-extension AppStorageCompat where Value == Set<FeatureToggle> {
+extension AppStorageCompat where Value == [Feature: FeatureState] {
     /// Creates a property that can read and write to an integer user default.
     ///
     /// - Parameters:
@@ -359,10 +359,20 @@ extension AppStorageCompat where Value == Set<FeatureToggle> {
     init(wrappedValue: Value, _ key: Key, store: UserDefaults? = .init(suiteName: AppEnvironment.current.suiteName)) {
         let store = (store ?? .standard)
         let initialValue = store.value(forKey: key.rawValue) as? Value ?? wrappedValue
-        self.init(value: initialValue, store: store, key: key, transform: {
-            Set(($0 as? [String])?.compactMap { FeatureToggle(rawValue: $0) } ?? [])
-        }, saveValue: { newValue in
-            store.setValue(Array(newValue.map { $0.rawValue }), forKey: key.rawValue)
-        })
+        self.init(value: initialValue, store: store, key: key) { value in
+            let dictionary = (value as? [String: String]) ?? [:]
+
+            return dictionary.reduce(into: [:]) { result, element in
+                if let toggle = Feature(rawValue: element.key),
+                   let state = FeatureState(rawValue: element.value) {
+                    result[toggle] = state
+                }
+            }
+        } saveValue: { newValue in
+            let dictionary = newValue.reduce(into: [:]) { result, element in
+                result[element.key.rawValue] = element.value.rawValue
+            }
+            store.setValue(dictionary, forKey: key.rawValue)
+        }
     }
 }

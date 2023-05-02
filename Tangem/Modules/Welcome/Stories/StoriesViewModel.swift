@@ -49,7 +49,7 @@ class StoriesViewModel: ObservableObject {
 
     @ViewBuilder
     func currentStoryPage(
-        isScanning: Bool,
+        isScanning: Binding<Bool>,
         scanCard: @escaping () -> Void,
         orderCard: @escaping () -> Void,
         searchTokens: @escaping () -> Void
@@ -155,6 +155,10 @@ class StoriesViewModel: ObservableObject {
     }
 
     private func resumeTimer() {
+        if timerIsRunning() {
+            return
+        }
+
         let remainingProgress = 1 - currentProgress
         let remainingStoryDuration = currentPage.duration * remainingProgress
         let currentStoryTime = currentPage.duration * currentProgress

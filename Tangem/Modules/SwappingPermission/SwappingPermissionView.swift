@@ -16,6 +16,25 @@ struct SwappingPermissionView: View {
     }
 
     var body: some View {
+        ZStack(alignment: .topTrailing) {
+            mainContent
+
+            infoButton
+        }
+        .background(Colors.Background.secondary)
+        .alert(item: $viewModel.errorAlert, content: { $0.alert })
+    }
+
+    private var infoButton: some View {
+        Button(action: {
+            viewModel.didTapInfoButton()
+        }) {
+            Assets.infoIconMini.image
+                .padding(.trailing, 16)
+        }
+    }
+
+    private var mainContent: some View {
         VStack(spacing: 16) {
             headerView
 
@@ -23,10 +42,8 @@ struct SwappingPermissionView: View {
 
             buttons
         }
-        .padding(.top, 16)
+        .padding(.top, 8)
         .padding(.bottom, 4)
-        .background(Colors.Background.secondary)
-        .alert(item: $viewModel.errorAlert, content: { $0.alert })
     }
 
     private var headerView: some View {

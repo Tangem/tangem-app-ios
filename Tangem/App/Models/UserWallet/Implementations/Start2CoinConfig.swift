@@ -10,8 +10,8 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
-struct Start2CoinConfig {
-    private let card: CardDTO
+struct Start2CoinConfig: CardContainer {
+    let card: CardDTO
     private let walletData: WalletData
 
     private var defaultBlockchain: Blockchain {
@@ -52,31 +52,6 @@ extension Start2CoinConfig: UserWalletConfig {
         defaultBlockchain.curve
     }
 
-    var onboardingSteps: OnboardingSteps {
-        var steps = [SingleCardOnboardingStep]()
-
-        if !AppSettings.shared.termsOfServicesAccepted.contains(tou.id) {
-            steps.append(.disclaimer)
-        }
-
-        if card.wallets.isEmpty {
-            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
-        } else {
-            steps.append(contentsOf: userWalletSavingSteps)
-        }
-
-        return .singleWallet(steps)
-    }
-
-    var backupSteps: OnboardingSteps? {
-        return nil
-    }
-
-    var userWalletSavingSteps: [SingleCardOnboardingStep] {
-        guard needUserWalletSavingSteps else { return [] }
-        return [.saveUserWallet]
-    }
-
     var supportedBlockchains: Set<Blockchain> {
         [defaultBlockchain]
     }
@@ -99,7 +74,7 @@ extension Start2CoinConfig: UserWalletConfig {
         WarningEventsFactory().makeWarningEvents(for: card)
     }
 
-    var tangemSigner: TangemSigner { .init(with: card.cardId) }
+    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
 
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: walletData)
@@ -186,6 +161,10 @@ extension Start2CoinConfig: UserWalletConfig {
             token: nil,
             derivationStyle: card.derivationStyle
         )
+    }
+
+    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
+        return Start2CoinOnboardingStepsBuilder(card: card, touId: tou.id)
     }
 }
 

@@ -211,17 +211,22 @@ struct TransactionsListView_Previews: PreviewProvider {
             ]
         ),
     ]
+
     static var previews: some View {
-        PerfList {
-            TransactionsListView(state: .loaded([]))
-            TransactionsListView(state: .error(""))
-            TransactionsListView(state: .loading)
+        ScrollView {
+            LazyVStack {
+                TransactionsListView(state: .loaded([]))
+                TransactionsListView(state: .error(""))
+                TransactionsListView(state: .loading)
+            }
         }
         .background(Colors.Background.secondary)
         .padding(.horizontal, 16)
 
-        PerfList {
-            TransactionsListView(state: .loaded(listItems))
+        ScrollView {
+            LazyVStack {
+                TransactionsListView(state: .loaded(listItems))
+            }
         }
         .padding(.horizontal, 16)
     }

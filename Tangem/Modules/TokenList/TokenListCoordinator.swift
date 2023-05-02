@@ -32,9 +32,7 @@ class TokenListCoordinator: CoordinatorObject {
 
 extension TokenListCoordinator: AddCustomTokenRoutable {
     func closeModule() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { // fix freeze ios13
-            self.dismiss()
-        }
+        dismiss()
     }
 }
 

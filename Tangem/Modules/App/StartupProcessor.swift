@@ -10,11 +10,10 @@ import Foundation
 import TangemSdk
 
 class StartupProcessor {
-    @Injected(\.backupServiceProvider) private var backupServiceProvider: BackupServiceProviding
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     func getStartupOption() -> StartupOption {
-        if backupServiceProvider.backupService.hasIncompletedBackup {
+        if BackupHelper().hasIncompletedBackup {
             return .uncompletedBackup
         }
 

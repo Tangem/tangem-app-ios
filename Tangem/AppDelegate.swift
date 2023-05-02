@@ -39,21 +39,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UISwitch.appearance().onTintColor = .tangemBlue
         UITableView.appearance().backgroundColor = .clear
         UIScrollView.appearance().keyboardDismissMode = AppConstants.defaultScrollViewKeyboardDismissMode
-
-        if #available(iOS 14.0, *) {
-            UINavigationBar.appearance().tintColor = UIColor(Colors.Text.primary1)
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor(Colors.Text.primary1),
-            ]
-            // iOS 14 doesn't have extra separators below the list by default.
-        } else {
-            // To remove only extra separators below the list:
-            UITableView.appearance().tableFooterView = UIView()
-            UINavigationBar.appearance().tintColor = UIColor(named: "TextPrimary1")
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor(named: "TextPrimary1") ?? UIColor.black,
-            ]
-        }
+        UINavigationBar.appearance().tintColor = UIColor(Colors.Text.primary1)
+        UINavigationBar.appearance().titleTextAttributes = [
+            .foregroundColor: UIColor(Colors.Text.primary1),
+        ]
 
         servicesManager.initialize()
         return true

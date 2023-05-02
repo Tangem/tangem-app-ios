@@ -40,6 +40,13 @@ final class SwappingPermissionViewModel: ObservableObject, Identifiable {
         setupView()
     }
 
+    func didTapInfoButton() {
+        errorAlert = AlertBinder(
+            title: Localization.swappingApproveInformationTitle,
+            message: Localization.swappingApproveInformationText
+        )
+    }
+
     func didTapApprove() {
         let data = inputModel.transactionData
 

@@ -28,10 +28,8 @@ extension View {
     func toggleStyleCompat(_ color: Color) -> some View {
         if #available(iOS 15.0, *) {
             self.tint(color)
-        } else if #available(iOS 14.0, *) {
-            self.toggleStyle(SwitchToggleStyle(tint: color))
         } else {
-            self
+            toggleStyle(SwitchToggleStyle(tint: color))
         }
     }
 
@@ -41,24 +39,6 @@ extension View {
             self.searchable(text: text, placement: .navigationBarDrawer(displayMode: .always))
         } else {
             self
-        }
-    }
-
-    @ViewBuilder
-    func ignoresKeyboard() -> some View {
-        if #available(iOS 14.0, *) {
-            self.ignoresSafeArea(.keyboard)
-        } else {
-            self
-        }
-    }
-
-    @ViewBuilder
-    func ignoresBottomArea() -> some View {
-        if #available(iOS 14.0, *) {
-            self.ignoresSafeArea(.container, edges: .bottom)
-        } else {
-            edgesIgnoringSafeArea(.bottom)
         }
     }
 
@@ -77,16 +57,6 @@ extension View {
             transform(self)
         } else {
             self
-        }
-    }
-
-    @_disfavoredOverload
-    @ViewBuilder
-    public func onChange<V>(of value: V, perform action: @escaping (V) -> Void) -> some View where V: Equatable {
-        if #available(iOS 14, *) {
-            onChange(of: value, perform: action)
-        } else {
-            modifier(ChangeObserver(newValue: value, action: action))
         }
     }
 }

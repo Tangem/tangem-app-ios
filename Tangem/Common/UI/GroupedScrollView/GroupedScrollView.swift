@@ -28,17 +28,8 @@ struct GroupedScrollView<Content: View>: View {
 
     var body: some View {
         ScrollView {
-            stackContent
-                .padding(.horizontal, horizontalPadding)
-        }
-    }
-
-    @ViewBuilder
-    private var stackContent: some View {
-        if #available(iOS 14.0, *) {
             LazyVStack(alignment: alignment, spacing: spacing, content: content)
-        } else {
-            VStack(alignment: alignment, spacing: spacing, content: content)
+                .padding(.horizontal, horizontalPadding)
         }
     }
 }

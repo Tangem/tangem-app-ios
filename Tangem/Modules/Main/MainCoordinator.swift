@@ -64,9 +64,7 @@ class MainCoordinator: CoordinatorObject {
                     }
 
                     let options = Options(cardModel: selectedModel)
-                    DispatchQueue.main.async { // fix ios13 freeze
-                        self.start(with: options)
-                    }
+                    self.start(with: options)
                 case .inserted(let userWallet):
                     self.lastInsertedUserWalletId = userWallet.userWalletId
                 default:
@@ -240,7 +238,8 @@ extension MainCoordinator: MainRoutable {
     }
 
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: emailType)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: emailType)
     }
 
     func openQR(shareAddress: String, address: String, qrNotice: String) {

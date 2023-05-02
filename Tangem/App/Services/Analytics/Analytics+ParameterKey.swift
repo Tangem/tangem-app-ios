@@ -48,5 +48,6 @@ extension Analytics {
         case balance = "Balance"
         case creationType = "Creation type"
         case status = "Status"
+        case option
     }
 }

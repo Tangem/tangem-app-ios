@@ -69,18 +69,6 @@ class TwinsCreateWalletTask: CardSessionRunnable {
         }
     }
 
-    //	private func deleteFile(at index: Int? = nil, in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
-    //		let deleteFile = DeleteFilesTask(filesToDelete: index == nil ? nil : [index!])
-    //		deleteFile.run(in: session) { (result) in
-    //			switch result {
-    //			case .success:
-    //				self.createWallet(in: session, completion: completion)
-    //			case .failure(let error):
-    //				completion(.failure(error))
-    //			}
-    //		}
-    //	}
-
     private func eraseWallet(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         let walletPublicKey = session.environment.card?.wallets.first?.publicKey
         let erase = PurgeWalletCommand(publicKey: walletPublicKey!)
@@ -111,8 +99,6 @@ class TwinsCreateWalletTask: CardSessionRunnable {
     }
 
     private func writePublicKeyFile(fileToWrite: Data, walletResponse: CreateWalletResponse, in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        //		let writeFileCommand = WriteFileCommand(dataToWrite: FileDataProtectedByPasscode(data: fileToWrite))
-
         guard let issuerKeys = SignerUtils.signerKeys(for: session.environment.card!.issuer.publicKey) else {
             completion(.failure(TangemSdkError.unknownError))
             return
@@ -128,14 +114,6 @@ class TwinsCreateWalletTask: CardSessionRunnable {
                 completion(.failure(error))
             }
         }
-        //		command.run(in: session) { (response) in
-        //			switch response {
-        //			case .success:
-        //				completion(.success(walletResponse))
-        //			case .failure(let error):
-        //				completion(.failure(error))
-        //			}
-        //		}
     }
 
     private func scanCard(session: CardSession, walletResponse: CreateWalletResponse, completion: @escaping CompletionResult<CommandResponse>) {

@@ -45,11 +45,6 @@ PODS:
     - TangemWalletCore
     - web3swift
   - CryptoSwift (1.5.1)
-  - DeviceGuru (8.0.0):
-    - DeviceGuru/DeviceGuru (= 8.0.0)
-  - DeviceGuru/DeviceGuru (8.0.0):
-    - DeviceGuru/Resources
-  - DeviceGuru/Resources (8.0.0)
   - Firebase/Analytics (10.7.0):
     - Firebase/Core
   - Firebase/Core (10.7.0):
@@ -250,8 +245,7 @@ DEPENDENCIES:
   - AppsFlyerFramework
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.9`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.19`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-269-hotfix-1`)
-  - DeviceGuru (= 8.0.0)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-282`)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - HDWalletKit (from `https://github.com/tangem/hdwallet.git`, tag `0.3.12`)
@@ -259,8 +253,8 @@ DEPENDENCIES:
   - Mobile-Buy-SDK
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-7`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-219`)
-  - TangemWalletCore (from `https://github.com/tangem/wallet-core-binaries-ios.git`, tag `3.1.9-tangem2`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-225`)
+  - TangemWalletCore (from `https://github.com/tangem/wallet-core-binaries-ios.git`, tag `3.1.9-tangem3`)
   - WalletConnectSwift (from `https://github.com/WalletConnect/WalletConnectSwift`, tag `1.7.0`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.1.0`)
   - web3swift (from `https://github.com/tangem/web3swift.git`, tag `2.2.12`)
@@ -276,7 +270,6 @@ SPEC REPOS:
     - AppsFlyerFramework
     - BigInt
     - CryptoSwift
-    - DeviceGuru
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -328,7 +321,7 @@ EXTERNAL SOURCES:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-269-hotfix-1
+    :tag: develop-282
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -340,10 +333,10 @@ EXTERNAL SOURCES:
     :tag: add-external-signer-7
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-219
+    :tag: develop-225
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
-    :tag: 3.1.9-tangem2
+    :tag: 3.1.9-tangem3
   WalletConnectSwift:
     :git: https://github.com/WalletConnect/WalletConnectSwift
     :tag: 1.7.0
@@ -366,7 +359,7 @@ CHECKOUT OPTIONS:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-269-hotfix-1
+    :tag: develop-282
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -378,10 +371,10 @@ CHECKOUT OPTIONS:
     :tag: add-external-signer-7
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-219
+    :tag: develop-225
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
-    :tag: 3.1.9-tangem2
+    :tag: 3.1.9-tangem3
   WalletConnectSwift:
     :git: https://github.com/WalletConnect/WalletConnectSwift
     :tag: 1.7.0
@@ -404,7 +397,6 @@ SPEC CHECKSUMS:
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
   BlockchainSdk: 595295c1d028307a0473d7ef4641589eed7e5c78
   CryptoSwift: c4f2debceb38bf44c80659afe009f71e23e4a082
-  DeviceGuru: 0362f13097207ca1fe246e92df2ba1d3978b2293
   Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
   FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
   FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
@@ -452,6 +444,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 77a62fe6bacc05bb10ff20edce75612fa109fd61
   ZendeskSupportSDK: ba72e90e327635b5fde3d023a3de33242a6ee8ab
 
-PODFILE CHECKSUM: 5b13dc6b4b9d96463e610b155abd0f9c52b6c2a4
+PODFILE CHECKSUM: e8cd6b1cb7132fa71868f0154711f8fb9f0772e7
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

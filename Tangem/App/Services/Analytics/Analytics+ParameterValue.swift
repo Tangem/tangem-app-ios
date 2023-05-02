@@ -41,6 +41,8 @@ extension Analytics {
 
         case enabled = "Enabled"
         case disabled = "Disabled"
+        case reset = "Reset"
+        case cancel = "Cancel"
 
         // MARK: - Actions
 

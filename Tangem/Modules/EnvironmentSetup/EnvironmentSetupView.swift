@@ -26,8 +26,8 @@ struct EnvironmentSetupView: View {
                     DefaultHeaderView("App settings")
                 }
 
-                GroupedSection(viewModel.togglesViewModels) { viewModel in
-                    DefaultToggleRowView(viewModel: viewModel)
+                GroupedSection(viewModel.featureStateViewModels) { viewModel in
+                    FeatureStateRowView(viewModel: viewModel)
                 } header: {
                     DefaultHeaderView("Feature toggles")
                 }

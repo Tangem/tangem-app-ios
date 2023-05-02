@@ -55,6 +55,8 @@ struct BottomSheetContainer<Item, ContentView: View>: View {
 
                 sheetView
                     .transition(.move(edge: .bottom))
+                    // Fix for black outing the sheet after dismiss externally
+                    .zIndex(1)
 
                 settings.backgroundColor
                     // For hide bottom space when sheet is up

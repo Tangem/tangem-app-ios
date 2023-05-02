@@ -46,34 +46,27 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.pushTxCoordinator) {
                 PushTxCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.tokenListCoordinator) {
                 TokenListCoordinatorView(coordinator: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
-
-        NavHolder()
             .sheet(item: $coordinator.modalOnboardingCoordinator) {
                 OnboardingCoordinatorView(coordinator: $0)
                     .presentation(modal: true, onDismissalAttempt: $0.onDismissalAttempt, onDismissed: nil)
                     .onPreferenceChange(ModalSheetPreferenceKey.self, perform: { value in
                         coordinator.modalOnboardingCoordinatorKeeper = value
                     })
+            }
+            .sheet(item: $coordinator.userWalletListCoordinator) {
+                UserWalletListCoordinatorView(coordinator: $0)
             }
 
         NavHolder()
@@ -90,11 +83,6 @@ struct MainCoordinatorView: CoordinatorView {
                 viewModelSettings: .warning
             ) {
                 WarningBankCardView(viewModel: $0)
-            }
-
-        NavHolder()
-            .sheet(item: $coordinator.userWalletListCoordinator) {
-                UserWalletListCoordinatorView(coordinator: $0)
             }
     }
 }

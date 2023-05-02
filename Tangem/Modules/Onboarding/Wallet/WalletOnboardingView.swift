@@ -114,7 +114,6 @@ struct WalletOnboardingView: View {
         ZStack {
             ConfettiView(shouldFireConfetti: $viewModel.shouldFireConfetti)
                 .allowsHitTesting(false)
-                .disabled(true) // Resolve iOS13 gesture conflict with the webView
                 .frame(maxWidth: screenSize.width)
                 .zIndex(110)
 
@@ -276,10 +275,9 @@ struct WalletOnboardingView: View {
 struct WalletOnboardingView_Previews: PreviewProvider {
     static var previewWalletOnboardingInput: OnboardingInput {
         .init(
-            steps: .wallet([.createWalletSelector, .seedPhraseIntro, .seedPhraseGeneration, .backupIntro, .selectBackupCards, .backupCards, .success]),
+            tangemSdk: .init(), backupService: .init(sdk: .init()), steps: .wallet([.createWalletSelector, .seedPhraseIntro, .seedPhraseGeneration, .backupIntro, .selectBackupCards, .backupCards, .success]),
             cardInput: .cardModel(PreviewCard.tangemWalletEmpty.cardModel),
-            twinData: nil,
-            currentStepIndex: 0
+            twinData: nil
         )
     }
 

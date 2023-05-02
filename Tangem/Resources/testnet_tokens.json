@@ -159,6 +159,17 @@
             ]
         },
         {
+            "id": "cosmos",
+            "symbol": "ATOM",
+            "name": "Cosmos Hub",
+            "networks":
+            [
+                {
+                    "networkId": "cosmos/test"
+                }
+            ]
+        },
+        {
             "id": "tether",
             "symbol": "USDT",
             "name": "Tether USD",

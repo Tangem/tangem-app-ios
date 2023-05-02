@@ -63,8 +63,8 @@ struct ResizableBottomSheetModifier<ContentView: ResizableSheetView>: ViewModifi
             )
 
             bottomSheetViewController?.cornerRadius = viewModelSettings.cornerRadius
-            bottomSheetViewController?.backgroundColor = viewModelSettings.overlayColor.uiColorFromRGB()
-            bottomSheetViewController?.contentBackgroundColor = viewModelSettings.contentBackgroundColor.uiColorFromRGB()
+            bottomSheetViewController?.backgroundColor = UIColor(viewModelSettings.overlayColor)
+            bottomSheetViewController?.contentBackgroundColor = UIColor(viewModelSettings.contentBackgroundColor)
             bottomSheetViewController?.swipeDownToDismissEnabled = viewModelSettings.swipeDownToDismissEnabled
             bottomSheetViewController?.tapOutsideToDismissEnabled = viewModelSettings.tapOutsideToDismissEnabled
 

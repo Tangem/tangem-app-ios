@@ -26,11 +26,6 @@ class AuthCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel?
 
-    // MARK: - Navigation bar state
-
-    // We should update navigationBar visibility state for the main module on iOS13
-    var navigationBarHidden: Bool { mainCoordinator == nil }
-
     required init(
         dismissAction: @escaping Action,
         popToRootAction: @escaping ParamsAction<PopToRootOptions>
@@ -77,6 +72,7 @@ extension AuthCoordinator: AuthRoutable {
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
-        mailViewModel = MailViewModel(dataCollector: dataCollector, recipient: recipient, emailType: .failedToScanCard)
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToScanCard)
     }
 }

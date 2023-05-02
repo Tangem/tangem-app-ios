@@ -16,12 +16,30 @@ struct TokenListView: View {
 
     var body: some View {
         ZStack {
-            PerfList {
+            list
+
+            overlay
+        }
+        .scrollDismissesKeyboardCompat(true)
+        .navigationBarTitle(Text(viewModel.titleKey), displayMode: .automatic)
+        .navigationBarItems(trailing: addCustomView)
+        .alert(item: $viewModel.alert, content: { $0.alert })
+        .toast(isPresenting: $viewModel.showToast) {
+            AlertToast(type: .complete(Color.tangemGreen), title: Localization.contractAddressCopiedMessage)
+        }
+        .searchableCompat(text: $viewModel.enteredSearchText.value)
+        .background(Color.clear.edgesIgnoringSafeArea(.all))
+        .onAppear { viewModel.onAppear() }
+        .onDisappear { viewModel.onDisappear() }
+    }
+
+    private var list: some View {
+        ScrollView {
+            LazyVStack {
                 if #available(iOS 15.0, *) {} else {
-                    let horizontalInset: CGFloat = UIDevice.isIOS13 ? 8 : 16
                     SearchBar(text: $viewModel.enteredSearchText.value, placeholder: Localization.commonSearch)
-                        .padding(.horizontal, UIDevice.isIOS13 ? 0 : 8)
-                        .listRowInsets(.init(top: 8, leading: horizontalInset, bottom: 8, trailing: horizontalInset))
+                        .padding(.horizontal, 8)
+                        .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
                 if viewModel.shouldShowAlert {
@@ -31,17 +49,16 @@ struct TokenListView: View {
                         .foregroundColor(Color(hex: "#848488"))
                         .cornerRadius(10)
                         .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
-                        .perfListPadding()
+                        .padding(.horizontal)
                 }
 
-                PerfListDivider()
+                divider
 
                 ForEach(viewModel.coinViewModels) {
                     CoinView(model: $0)
-                        .buttonStyle(PlainButtonStyle()) // fix ios13 list item selection
-                        .perfListPadding()
+                        .padding(.horizontal)
 
-                    PerfListDivider()
+                    divider
                 }
 
                 if viewModel.hasNextPage {
@@ -55,20 +72,12 @@ struct TokenListView: View {
                     Color.clear.frame(width: 10, height: 58, alignment: .center)
                 }
             }
+        }
+    }
 
-            overlay
-        }
-        .navigationBarTitle(Text(viewModel.titleKey), displayMode: UIDevice.isIOS13 ? .inline : .automatic)
-        .navigationBarItems(trailing: addCustomView)
-        .alert(item: $viewModel.alert, content: { $0.alert })
-        .toast(isPresenting: $viewModel.showToast) {
-            AlertToast(type: .complete(Color.tangemGreen), title: Localization.contractAddressCopiedMessage)
-        }
-        .searchableCompat(text: $viewModel.enteredSearchText.value)
-        .background(Color.clear.edgesIgnoringSafeArea(.all))
-        .onAppear { viewModel.onAppear() }
-        .onDisappear { viewModel.onDisappear() }
-        .keyboardAdaptive()
+    private var divider: some View {
+        Divider()
+            .padding([.leading])
     }
 
     @ViewBuilder private var addCustomView: some View {
