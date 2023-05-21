@@ -182,7 +182,13 @@ fileprivate extension Array where Element == StorageEntry {
     }
 
     mutating func tryRemove(blockchainNetwork: BlockchainNetwork) -> Bool {
-        if let existingIndex = firstIndex(where: { $0.blockchainNetwork == blockchainNetwork }) {
+        if let existingIndex = firstIndex(where: {
+            if $0.blockchainNetwork.blockchain.isEvm {
+                return $0.blockchainNetwork == blockchainNetwork && $0.blockchainNetwork.derivationPath == blockchainNetwork.derivationPath
+            } else {
+                return $0.blockchainNetwork == blockchainNetwork
+            }
+        }) {
             remove(at: existingIndex)
             return true
         }
