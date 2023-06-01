@@ -205,14 +205,6 @@ class CardViewModel: Identifiable, ObservableObject {
         config.cardAmountType
     }
 
-    var supportChatEnvironment: SupportChatEnvironment {
-        config.supportChatEnvironment
-    }
-
-    var exchangeServiceEnvironment: ExchangeServiceEnvironment {
-        config.exchangeServiceEnvironment
-    }
-
     var hasWallet: Bool {
         !walletModels.isEmpty
     }

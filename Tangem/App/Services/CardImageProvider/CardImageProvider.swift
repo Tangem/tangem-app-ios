@@ -58,11 +58,6 @@ extension CardImageProvider: CardImageProviding {
     }
 
     func loadImage(cardId: String, cardPublicKey: Data, artwork: CardArtwork?) -> AnyPublisher<CardImageResult, Never> {
-        if SaltPayUtil().isSaltPayCard(batchId: String(cardId.prefix(4)), cardId: cardId) { // TODO: We must use the batchId here
-            return Just(.embedded(UIImage(named: "saltpay")!))
-                .eraseToAnyPublisher()
-        }
-
         guard supportsOnlineImage else {
             return Just(.embedded(defaultImage)).eraseToAnyPublisher()
         }

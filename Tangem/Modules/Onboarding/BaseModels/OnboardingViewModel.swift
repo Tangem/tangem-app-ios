@@ -315,20 +315,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
                         Analytics.log(.createWalletScreenOpened)
                     case .backupIntro:
                         Analytics.log(.backupScreenOpened)
-                    case .kycStart:
-                        Analytics.log(.kycStartScreenOpened)
-                    case .kycProgress:
-                        Analytics.log(.kycProgressScreenOpened)
-                    case .kycRetry:
-                        Analytics.log(.kycRetryScreenOpened)
-                    case .kycWaiting:
-                        Analytics.log(.kycWaitingScreenOpened)
-                    case .claim:
-                        Analytics.log(.claimScreenOpened)
-                    case .enterPin:
-                        Analytics.log(.pinScreenOpened)
-                    case .registerWallet:
-                        Analytics.log(.registerScreenOpened)
                     case .selectBackupCards:
                         Analytics.log(.backupStarted)
                     case .seedPhraseIntro:
@@ -390,7 +376,6 @@ extension OnboardingViewModel {
         )
 
         coordinator.openSupportChat(input: .init(
-            environment: input.cardInput.supportChatEnvironment,
             logsComposer: .init(infoProvider: dataCollector)
         ))
     }

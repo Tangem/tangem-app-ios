@@ -49,8 +49,7 @@ class OnboardingInputFactory {
             cardInitializer: cardInitializer,
             steps: steps,
             cardInput: makeCardInput(),
-            twinData: cardInfo.walletData.twinData,
-            stepsBuilder: stepsBuilder // for saltpay
+            twinData: cardInfo.walletData.twinData
         )
     }
 

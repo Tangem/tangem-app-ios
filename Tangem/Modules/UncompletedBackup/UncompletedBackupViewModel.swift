@@ -59,9 +59,7 @@ final class UncompletedBackupViewModel: ObservableObject {
             return
         }
 
-        let backupServiceFactory: BackupServiceFactory = backupHelper.hasIncompletedSaltPayBackup
-            ? SaltPayBackupServiceFactory(cardId: cardId, isAccessCodeSet: false)
-            : GenericBackupServiceFactory(isAccessCodeSet: false)
+        let backupServiceFactory = GenericBackupServiceFactory(isAccessCodeSet: false)
 
         let factory = ResumeBackupInputFactory(
             cardId: cardId,

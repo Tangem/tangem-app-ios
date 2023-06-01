@@ -112,7 +112,7 @@ extension UtorgService: ExchangeService {
 
         let url = urlComponents.url?
             .appendingPathComponent("direct")
-            .appendingPathComponent(keysManager.saltPay.kycProvider.sidValue.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
+            .appendingPathComponent(keysManager.utorgSID.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
             .appendingPathComponent(walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
 
         return url
@@ -181,7 +181,7 @@ extension UtorgService: ExchangeService {
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = [
             "Content-Type": "application/json;charset=UTF-8",
-            "X-AUTH-SID": keysManager.saltPay.kycProvider.sidValue,
+            "X-AUTH-SID": keysManager.utorgSID,
             "X-AUTH-NONCE": UUID().uuidString,
         ]
         request.httpMethod = "POST"

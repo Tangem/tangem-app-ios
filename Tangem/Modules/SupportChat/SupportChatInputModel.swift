@@ -9,6 +9,5 @@
 import Foundation
 
 struct SupportChatInputModel {
-    let environment: SupportChatEnvironment
     let logsComposer: LogsComposer
 }

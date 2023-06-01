@@ -63,14 +63,3 @@ extension CombinedExchangeService: ExchangeService {
         utorgService.initialize()
     }
 }
-
-extension CombinedExchangeService: ExchangeServiceConfigurator {
-    func configure(for environment: ExchangeServiceEnvironment) {
-        switch environment {
-        case .default:
-            buyService = mercuryoService
-        case .saltpay:
-            buyService = utorgService
-        }
-    }
-}

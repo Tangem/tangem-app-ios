@@ -20,19 +20,6 @@ class BackupHelper {
         backupService.hasIncompletedBackup
     }
 
-    var hasIncompletedSaltPayBackup: Bool {
-        guard backupService.hasIncompletedBackup else {
-            return false
-        }
-
-        guard let batchId = backupService.primaryCard?.batchId else {
-            return false
-        }
-
-        let saltPayUtil = SaltPayUtil()
-        return saltPayUtil.isPrimaryCard(batchId: batchId)
-    }
-
     func discardIncompletedBackup() {
         backupService.discardIncompletedBackup()
     }

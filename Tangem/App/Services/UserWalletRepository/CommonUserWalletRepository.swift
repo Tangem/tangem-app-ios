@@ -14,9 +14,7 @@ import TangemSdk
 class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.walletConnectService) private var walletConnectServiceProvider: WalletConnectService
-    @Injected(\.saltPayRegistratorProvider) private var saltPayRegistratorProvider: SaltPayRegistratorProviding
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
-    @Injected(\.exchangeServiceConfigurator) var exchangeService: ExchangeServiceConfigurator
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
 
     var selectedModel: CardViewModel? {
@@ -79,44 +77,6 @@ class CommonUserWalletRepository: UserWalletRepository {
     private func scanPublisher() -> AnyPublisher<UserWalletRepositoryResult?, Never> {
         scanInternal()
             .eraseError()
-            .flatMap { [weak self] response -> AnyPublisher<AppScanTaskResponse, Error> in
-                guard let self else {
-                    return .justWithError(output: response)
-                }
-
-                let saltPayUtil = SaltPayUtil()
-
-                if saltPayUtil.isBackupCard(cardId: response.card.cardId) {
-                    if response.card.wallets.isEmpty {
-                        return .anyFail(error: SaltPayRegistratorError.emptyBackupCardScanned)
-                    } else {
-                        return .justWithError(output: response)
-                    }
-                }
-
-                if !saltPayUtil.isPrimaryCard(batchId: response.card.batchId) {
-                    self.saltPayRegistratorProvider.reset()
-                    return .justWithError(output: response)
-                }
-
-                if let wallet = response.card.wallets.first {
-                    try? self.saltPayRegistratorProvider.initialize(
-                        cardId: response.card.cardId,
-                        walletPublicKey: wallet.publicKey,
-                        cardPublicKey: response.card.cardPublicKey
-                    )
-                }
-
-                guard let saltPayRegistrator = self.saltPayRegistratorProvider.registrator else {
-                    return .justWithError(output: response)
-                }
-
-                return saltPayRegistrator.updatePublisher()
-                    .map { _ in
-                        return response
-                    }
-                    .eraseToAnyPublisher()
-            }
             .flatMap { [weak self] response -> AnyPublisher<UserWalletRepositoryResult?, Error> in
                 guard let self else {
                     return .justWithError(output: nil)
@@ -157,10 +117,6 @@ class CommonUserWalletRepository: UserWalletRepository {
                 AppLog.shared.error(error)
                 self.failedCardScanTracker.recordFailure()
                 self.sendEvent(.scan(isScanning: false))
-
-                if error is SaltPayRegistratorError {
-                    return Just(UserWalletRepositoryResult.error(error))
-                }
 
                 if self.failedCardScanTracker.shouldDisplayAlert {
                     return Just(UserWalletRepositoryResult.troubleshooting)
@@ -430,7 +386,6 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         analyticsContext.setupContext(with: contextData)
         tangemApiService.setAuthData(cardInfo.card.tangemApiAuthData)
-        exchangeService.configure(for: cardModel.exchangeServiceEnvironment)
         walletConnectServiceProvider.initialize(with: cardModel)
     }
 

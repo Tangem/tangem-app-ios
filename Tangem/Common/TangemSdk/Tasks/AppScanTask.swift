@@ -87,10 +87,9 @@ final class AppScanTask: CardSessionRunnable {
     }
 
     private func readPrimaryIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        let isSaltPayCard = SaltPayUtil().isPrimaryCard(batchId: card.batchId)
         let isWalletInOnboarding = AppSettings.shared.cardsStartedActivation.contains(card.cardId)
 
-        if isSaltPayCard || isWalletInOnboarding,
+        if isWalletInOnboarding,
            card.settings.isBackupAllowed, card.backupStatus == .noBackup {
             readPrimaryCard(session, completion)
             return

@@ -17,7 +17,6 @@ struct OnboardingInput { // TODO: Split to coordinator options and input
     let twinData: TwinData?
     var isStandalone = false
     var userWalletToDelete: UserWallet? // for twins. TODO: refactor UserWalletRepository to remove this
-    var stepsBuilder: OnboardingStepsBuilder? // for saltpay
 }
 
 extension OnboardingInput {
@@ -35,18 +34,6 @@ extension OnboardingInput {
                 return cardModel.emailData
             case .cardId:
                 return []
-            }
-        }
-
-        var supportChatEnvironment: SupportChatEnvironment {
-            switch self {
-            case .cardInfo(let cardInfo):
-                let factory = UserWalletConfigFactory(cardInfo)
-                return factory.makeConfig().supportChatEnvironment
-            case .cardModel(let cardModel):
-                return cardModel.supportChatEnvironment
-            case .cardId:
-                return .tangem
             }
         }
 

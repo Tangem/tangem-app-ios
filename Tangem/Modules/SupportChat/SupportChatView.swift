@@ -13,14 +13,9 @@ struct SupportChatView: View {
     @ObservedObject var viewModel: SupportChatViewModel
 
     var body: some View {
-        switch viewModel.viewState {
-        case .webView(let url):
-            WebView(url: url)
-        case .zendesk(let zendeskViewModel):
+        if let zendeskViewModel = viewModel.zendeskViewModel {
             ZendeskSupportChatView(viewModel: zendeskViewModel)
                 .actionSheet(item: $viewModel.showSupportActionSheet, content: { $0.sheet })
-        case .none:
-            EmptyView()
         }
     }
 }

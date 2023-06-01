@@ -24,16 +24,6 @@ enum WalletOnboardingStep: Equatable {
     case seedPhraseUserValidation
     case seedPhraseImport
 
-    // visa only
-    case enterPin
-    case registerWallet
-    case kycStart
-    case kycRetry
-    case kycProgress
-    case kycWaiting
-    case claim
-    case successClaim
-
     case success
 
     var navbarTitle: String {
@@ -44,14 +34,6 @@ enum WalletOnboardingStep: Equatable {
         case .backupCards: return Localization.onboardingButtonFinalizeBackup
         case .saveUserWallet: return Localization.onboardingNavbarSaveWallet
         case .success: return Localization.commonDone
-        case .enterPin:
-            return Localization.onboardingNavbarPin
-        case .registerWallet:
-            return Localization.onboardingNavbarRegisterWallet
-        case .kycStart, .kycProgress, .kycWaiting, .kycRetry:
-            return Localization.onboardingNavbarKycProgress
-        case .claim, .successClaim:
-            return Localization.onboardingGettingStarted
         case .createWalletSelector:
             return Localization.walletTitle
         case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation:
@@ -69,8 +51,6 @@ enum WalletOnboardingStep: Equatable {
         switch self {
         case .disclaimer, .success, .backupCards:
             return .zero
-        case .claim, .successClaim:
-            return defaultBackgroundFrameSize(in: containerSize)
         default:
             let cardFrame = WalletOnboardingCardLayout.origin.frame(for: self, containerSize: containerSize)
             let diameter = cardFrame.height * 1.242
@@ -81,27 +61,16 @@ enum WalletOnboardingStep: Equatable {
     func cardBackgroundCornerRadius(containerSize: CGSize) -> CGFloat {
         switch self {
         case .disclaimer, .success, .backupCards: return 0
-        case .claim, .successClaim: return 8
         default: return cardBackgroundFrame(containerSize: containerSize).height / 2
         }
     }
 
     func backgroundOffset(in container: CGSize) -> CGSize {
-        switch self {
-        case .claim, .successClaim:
-            return defaultBackgroundOffset(in: container)
-        default:
-            let cardOffset = WalletOnboardingCardLayout.origin.offset(at: .createWallet, in: container)
-            return cardOffset
-        }
+        let cardOffset = WalletOnboardingCardLayout.origin.offset(at: .createWallet, in: container)
+        return cardOffset
     }
 
-    var balanceStackOpacity: Double {
-        switch self {
-        case .claim, .successClaim: return 1
-        default: return 0
-        }
-    }
+    var balanceStackOpacity: Double { 0 }
 }
 
 extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
@@ -111,19 +80,9 @@ extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
         case .scanPrimaryCard: return Localization.onboardingTitleScanOriginCard
         case .backupIntro: return Localization.onboardingTitleBackupCard
         case .selectBackupCards: return Localization.onboardingTitleNoBackupCards
-        case .backupCards, .kycProgress, .claim, .disclaimer: return ""
+        case .backupCards, .disclaimer: return ""
         case .saveUserWallet: return nil
-        case .success, .successClaim: return successTitle
-        case .registerWallet:
-            return Localization.onboardingTitleRegisterWallet
-        case .kycStart:
-            return Localization.onboardingTitleKycStart
-        case .kycRetry:
-            return Localization.onboardingTitleKycRetry
-        case .kycWaiting:
-            return Localization.onboardingTitleKycWaiting
-        case .enterPin:
-            return Localization.onboardingTitlePin
+        case .success: return successTitle
         case .createWalletSelector:
             return Localization.onboardingCreateWalletOptionsTitle
         case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation:
@@ -137,23 +96,9 @@ extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
         case .scanPrimaryCard: return Localization.onboardingSubtitleScanPrimary
         case .backupIntro: return Localization.onboardingSubtitleBackupCard
         case .selectBackupCards: return Localization.onboardingSubtitleNoBackupCards
-        case .backupCards, .kycProgress, .disclaimer: return ""
+        case .backupCards, .disclaimer: return ""
         case .saveUserWallet: return nil
         case .success: return Localization.onboardingSubtitleSuccessBackup
-        case .registerWallet:
-            return Localization.onboardingSubtitleRegisterWallet
-        case .kycStart:
-            return Localization.onboardingSubtitleKycStart
-        case .kycRetry:
-            return Localization.onboardingSubtitleKycRetry
-        case .kycWaiting:
-            return Localization.onboardingSubtitleKycWaiting
-        case .enterPin:
-            return Localization.onboardingSubtitlePin
-        case .claim:
-            return Localization.onboardingSubtitleClaim
-        case .successClaim:
-            return Localization.onboardingSubtitleSuccessClaim
         case .createWalletSelector:
             return Localization.onboardingCreateWalletOptionsMessage
         case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation:
@@ -163,7 +108,7 @@ extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
 
     var messagesOffset: CGSize {
         switch self {
-        case .success, .claim, .successClaim: return CGSize(width: 0, height: -2)
+        case .success: return CGSize(width: 0, height: -2)
         default: return .zero
         }
     }
@@ -189,12 +134,6 @@ extension WalletOnboardingStep: OnboardingButtonsInfoProvider {
         case .createWallet: return Localization.onboardingButtonWhatDoesItMean
         case .backupIntro: return Localization.onboardingButtonSkipBackup
         case .selectBackupCards: return Localization.onboardingButtonFinalizeBackup
-        case .kycWaiting: return Localization.onboardingButtonKycWaiting
-        case .enterPin: return Localization.onboardingButtonPin
-        case .registerWallet: return Localization.onboardingButtonRegisterWallet
-        case .kycStart, .kycRetry: return Localization.onboardingButtonKycStart
-        case .claim: return Localization.onboardingButtonClaim
-        case .successClaim: return Localization.onboardingButtonContinueWallet
         case .createWalletSelector: return Localization.onboardingCreateWalletOptionsButtonOptions
         case .seedPhraseIntro: return Localization.onboardingSeedIntroButtonImport
         default: return ""
@@ -229,7 +168,7 @@ extension WalletOnboardingStep: OnboardingButtonsInfoProvider {
 extension WalletOnboardingStep: OnboardingProgressStepIndicatable {
     var requiresConfetti: Bool {
         switch self {
-        case .success, .successClaim:
+        case .success:
             return true
         default:
             return false
