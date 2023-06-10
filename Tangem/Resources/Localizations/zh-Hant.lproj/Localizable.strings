@@ -355,12 +355,13 @@
 "send_transaction_success" = "交易已成功簽署並發送至區塊鏈節點。錢包餘額稍後更新";
 "send_validation_invalid_address" = "無效地址";
 "shop_buy_now" = "現在購買";
+"shop_high_order_volume_warning" = "Due to the high volume of orders we are receiving. Shipping and Local Delivery orders may be delayed.";
 "shop_i_have_a_promo_code" = "輸入折扣碼";
 "shop_one_wallet" = "Tangem Wallet";
+"shop_order_now" = "Order now";
 "shop_other_payment_methods" = "其他付款方式";
 "shop_placing_order" = "下訂";
 "shop_pre_order_now" = "Pre-order now";
-"shop_high_order_volume_warning" = "Due to the high volume of orders we are receiving. Shipping and Local Delivery orders may be delayed.";
 "shop_sold_out_description_prefix" = "Sold out, but don't worry! We are working very hard to get more for you! Make sure to place a pre-order here. Deliveries start on";
 "shop_sold_out_description_suffix" = "!";
 "shop_total" = "總計";

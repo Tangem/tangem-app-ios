@@ -40,15 +40,16 @@ class ShopViewModel: ObservableObject {
     @Published var error: AlertBinder?
 
     var applePayButtonType: PKPaymentButtonType {
-        preorderDeliveryDateFormatted == nil ? .buy : .order
+//        preorderDeliveryDateFormatted == nil ? .buy : .order
+        .order
     }
 
     var buyButtonText: String {
-//        preorderDeliveryDateFormatted == nil ? Localization.shopBuyNow : Localization.shopPreOrderNow
-        Localization.homeButtonOrder
+//        preorderDeliveryDateFormatted == nil ? Localization.shopBuyNow : Localization.shopOrderNow
+        Localization.shopOrderNow
     }
 
-    let preorderDeliveryDateFormatted: String?
+    var preorderDeliveryDateFormatted: String?
 
     private var shopifyProductVariants: [ProductVariant] = []
     private var currentVariantID: GraphQL.ID = .init(rawValue: "")
@@ -58,8 +59,6 @@ class ShopViewModel: ObservableObject {
 
     init(coordinator: ShopViewRoutable) {
         self.coordinator = coordinator
-
-        preorderDeliveryDateFormatted = Self.preorderDeliveryDateFormatted()
     }
 
     deinit {

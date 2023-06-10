@@ -355,12 +355,13 @@
 "send_transaction_success" = "La transaction a été signée avec succès et envoyée au nœud de blockchain. Le solde du portefeuille sera mis à jour après un certain temps";
 "send_validation_invalid_address" = "Adresse incorrecte";
 "shop_buy_now" = "Buy now";
+"shop_high_order_volume_warning" = "Due to the high volume of orders we are receiving. Shipping and Local Delivery orders may be delayed.";
 "shop_i_have_a_promo_code" = "I have a promo code…";
 "shop_one_wallet" = "Tangem Wallet";
+"shop_order_now" = "Order now";
 "shop_other_payment_methods" = "Other payment methods";
 "shop_placing_order" = "Placing your order";
 "shop_pre_order_now" = "Pre-order now";
-"shop_high_order_volume_warning" = "Due to the high volume of orders we are receiving. Shipping and Local Delivery orders may be delayed.";
 "shop_sold_out_description_prefix" = "Sold out, but don't worry! We are working very hard to get more for you! Make sure to place a pre-order here. Deliveries start on";
 "shop_sold_out_description_suffix" = "!";
 "shop_total" = "Total";
