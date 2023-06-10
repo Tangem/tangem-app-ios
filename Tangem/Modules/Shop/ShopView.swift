@@ -145,7 +145,7 @@ struct ShopView: View {
 
         if let preorderDeliveryDate = viewModel.preorderDeliveryDateFormatted {
             VStack {
-                soldOutText(preorderDeliveryDate)
+                Text(Localization.shopSoldOutDescriptionPrefix)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)

@@ -360,6 +360,7 @@
 "shop_other_payment_methods" = "其他付款方式";
 "shop_placing_order" = "下訂";
 "shop_pre_order_now" = "Pre-order now";
+"shop_high_order_volume_warning" = "Due to the high volume of orders we are receiving. Shipping and Local Delivery orders may be delayed.";
 "shop_sold_out_description_prefix" = "Sold out, but don't worry! We are working very hard to get more for you! Make sure to place a pre-order here. Deliveries start on";
 "shop_sold_out_description_suffix" = "!";
 "shop_total" = "總計";

@@ -44,7 +44,8 @@ class ShopViewModel: ObservableObject {
     }
 
     var buyButtonText: String {
-        preorderDeliveryDateFormatted == nil ? Localization.shopBuyNow : Localization.shopPreOrderNow
+//        preorderDeliveryDateFormatted == nil ? Localization.shopBuyNow : Localization.shopPreOrderNow
+        Localization.homeButtonOrder
     }
 
     let preorderDeliveryDateFormatted: String?
