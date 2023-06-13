@@ -47,7 +47,7 @@ class ShopViewModel: ObservableObject {
         Localization.shopOrderNow
     }
 
-    var preorderDeliveryDateFormatted: String?
+    let preorderDeliveryDateFormatted: String?
 
     private var shopifyProductVariants: [ProductVariant] = []
     private var currentVariantID: GraphQL.ID = .init(rawValue: "")
@@ -57,6 +57,8 @@ class ShopViewModel: ObservableObject {
 
     init(coordinator: ShopViewRoutable) {
         self.coordinator = coordinator
+
+        preorderDeliveryDateFormatted = Self.preorderDeliveryDateFormatted()
     }
 
     deinit {
