@@ -39,13 +39,13 @@ class AccessCodeRecoverySettingsViewModel: ObservableObject {
 
             switch result {
             case .success:
-                Analytics.log(.cardSettingsAccessCodeRecoveryChanged, params: [.status: self.accessCodeRecoveryEnabled ? .enabled : .disabled])
+                Analytics.log(.cardSettingsAccessCodeRecoveryChanged, params: [.status: accessCodeRecoveryEnabled ? .enabled : .disabled])
             case .failure(let error):
                 if error.isUserCancelled {
                     break
                 }
 
-                self.errorAlert = error.alertBinder
+                errorAlert = error.alertBinder
             }
             DispatchQueue.main.async {
                 self.isLoading = false

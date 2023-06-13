@@ -157,7 +157,7 @@ private extension CommonWalletListManager {
                     return .just
                 }
 
-                return self.updateWalletModelsPublisher(silent: silent)
+                return updateWalletModelsPublisher(silent: silent)
             }
             .eraseToAnyPublisher()
     }

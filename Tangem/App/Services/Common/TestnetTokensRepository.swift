@@ -40,7 +40,7 @@ class TestnetTokensRepository {
     }
 }
 
-fileprivate extension TestnetTokensRepository {
+private extension TestnetTokensRepository {
     enum Constants {
         static let testFilename: String = "testnet_tokens"
     }

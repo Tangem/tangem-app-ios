@@ -9,25 +9,25 @@
 import Foundation
 import BlockchainSdk
 
-fileprivate struct UtorgResponse<SuccessResult: Decodable>: Decodable {
+private struct UtorgResponse<SuccessResult: Decodable>: Decodable {
     let success: Bool
     let timestamp: Double
     let data: SuccessResult?
     let error: UtorgError?
 }
 
-fileprivate enum UtorgErrorType: String, Decodable {
+private enum UtorgErrorType: String, Decodable {
     case unauthorized = "UNAUTHORIZED"
     case unknownError = "UNKNOWN_ERROR"
     case badRequest = "BAD_REQUEST"
 }
 
-fileprivate struct UtorgError: Decodable {
+private struct UtorgError: Decodable {
     let type: UtorgErrorType
     let message: String?
 }
 
-fileprivate struct UtorgCurrency: Decodable {
+private struct UtorgCurrency: Decodable {
     let currency: String
     let symbol: String
     let enabled: Bool
@@ -36,16 +36,16 @@ fileprivate struct UtorgCurrency: Decodable {
     let chain: String?
 }
 
-fileprivate struct UtorgSuccessURLResponse: Decodable {
+private struct UtorgSuccessURLResponse: Decodable {
     let successUrl: String
 }
 
-fileprivate enum CurrencyType: String, Decodable {
+private enum CurrencyType: String, Decodable {
     case crypto = "CRYPTO"
     case fiat = "FIAT"
 }
 
-fileprivate enum UtorgEndpoint: String {
+private enum UtorgEndpoint: String {
     case currency
     case successUrl
 }
@@ -112,7 +112,7 @@ extension UtorgService: ExchangeService {
 
         let url = urlComponents.url?
             .appendingPathComponent("direct")
-            .appendingPathComponent(keysManager.saltPay.kycProvider.sidValue.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
+            .appendingPathComponent(keysManager.utorgSID.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
             .appendingPathComponent(walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed) ?? "")
 
         return url
@@ -134,9 +134,9 @@ extension UtorgService: ExchangeService {
         runTask { [weak self] in
             guard let self else { return }
             do {
-                try await self.loadCurrencies()
-                self.initialized = true
-                try await self.setSuccessURL()
+                try await loadCurrencies()
+                initialized = true
+                try await setSuccessURL()
             } catch {
                 AppLog.shared.debug("[Utorg] Failed to initialize Utorg service. Error: \(error)")
             }
@@ -181,7 +181,7 @@ extension UtorgService: ExchangeService {
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = [
             "Content-Type": "application/json;charset=UTF-8",
-            "X-AUTH-SID": keysManager.saltPay.kycProvider.sidValue,
+            "X-AUTH-SID": keysManager.utorgSID,
             "X-AUTH-NONCE": UUID().uuidString,
         ]
         request.httpMethod = "POST"

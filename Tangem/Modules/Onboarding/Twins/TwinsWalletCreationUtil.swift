@@ -123,11 +123,11 @@ class TwinsWalletCreationUtil {
             case .success(let response):
                 Analytics.log(.walletCreatedSuccessfully, params: [.creationType: .walletCreationTypePrivateKey])
 
-                self.step.send(.done(response.getCardInfo()))
+                step.send(.done(response.getCardInfo()))
             case .failure(let error):
-                self.occuredError.send(error)
+                occuredError.send(error)
             }
-            self.isServiceBusy.send(false)
+            isServiceBusy.send(false)
         }
     }
 

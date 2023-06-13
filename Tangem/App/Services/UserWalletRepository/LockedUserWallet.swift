@@ -24,11 +24,11 @@ class LockedUserWallet: UserWalletModel {
 
     var userWalletId: UserWalletId { .init(value: userWallet.userWalletId) }
 
+    var walletModels: [WalletModel] { [] }
+
     var userTokenListManager: UserTokenListManager { DummyUserTokenListManager() }
 
     var totalBalanceProvider: TotalBalanceProviding { DummyTotalBalanceProvider() }
-
-    func getWalletModels() -> [WalletModel] { [] }
 
     func subscribeToWalletModels() -> AnyPublisher<[WalletModel], Never> { .just(output: []) }
 

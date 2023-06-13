@@ -31,8 +31,8 @@ struct SendView: View {
                     }
                     .padding(.bottom)
                     TextInputField(
-                        placeholder: self.addressHint,
-                        text: self.$viewModel.destination,
+                        placeholder: addressHint,
+                        text: $viewModel.destination,
                         suplementView: {
                             if !viewModel.isSellingCrypto {
                                 pasteAddressButton
@@ -48,8 +48,8 @@ struct SendView: View {
                                 .cameraAccessDeniedAlert($viewModel.showCameraDeniedAlert)
                             }
                         },
-                        message: self.viewModel.destinationHint?.message ?? " ",
-                        isErrorMessage: self.viewModel.destinationHint?.isError ?? false
+                        message: viewModel.destinationHint?.message ?? " ",
+                        isErrorMessage: viewModel.destinationHint?.isError ?? false
                     )
                     .disabled(viewModel.isSellingCrypto)
 
@@ -57,10 +57,10 @@ struct SendView: View {
                         if case .memo = viewModel.additionalInputFields {
                             TextInputField(
                                 placeholder: Localization.sendExtrasHintMemo,
-                                text: self.$viewModel.memo,
+                                text: $viewModel.memo,
                                 clearButtonMode: .whileEditing,
-                                message: self.viewModel.memoHint?.message ?? "",
-                                isErrorMessage: self.viewModel.memoHint?.isError ?? false
+                                message: viewModel.memoHint?.message ?? "",
+                                isErrorMessage: viewModel.memoHint?.isError ?? false
                             )
                             .transition(.opacity)
                         }
@@ -68,11 +68,11 @@ struct SendView: View {
                         if case .destinationTag = viewModel.additionalInputFields {
                             TextInputField(
                                 placeholder: Localization.sendExtrasHintDestinationTag,
-                                text: self.$viewModel.destinationTagStr,
+                                text: $viewModel.destinationTagStr,
                                 keyboardType: .numberPad,
                                 clearButtonMode: .whileEditing,
-                                message: self.viewModel.destinationTagHint?.message ?? "",
-                                isErrorMessage: self.viewModel.destinationTagHint?.isError ?? false
+                                message: viewModel.destinationTagHint?.message ?? "",
+                                isErrorMessage: viewModel.destinationTagHint?.isError ?? false
                             )
                             .transition(.opacity)
                         }
@@ -81,9 +81,9 @@ struct SendView: View {
                     Group {
                         HStack {
                             CustomTextField(
-                                text: self.$viewModel.amountText,
+                                text: $viewModel.amountText,
                                 isResponder: Binding.constant(nil),
-                                actionButtonTapped: self.$viewModel.maxAmountTapped,
+                                actionButtonTapped: $viewModel.maxAmountTapped,
                                 defaultStringToClear: "0",
                                 handleKeyboard: true,
                                 actionButton: Localization.sendMaxAmountLabel,
@@ -91,15 +91,15 @@ struct SendView: View {
                                 textColor: viewModel.isSellingCrypto ? UIColor.tangemGrayDark6.withAlphaComponent(0.6) : UIColor.tangemGrayDark6,
                                 font: UIFont.systemFont(ofSize: 38.0, weight: .light),
                                 placeholder: "",
-                                decimalCount: self.viewModel.inputDecimalsCount
+                                decimalCount: viewModel.inputDecimalsCount
                             )
                             .disabled(viewModel.isSellingCrypto)
 
                             Button(action: {
-                                self.viewModel.isFiatCalculation.toggle()
+                                viewModel.isFiatCalculation.toggle()
                             }) {
                                 HStack(alignment: .center, spacing: 8.0) {
-                                    Text(self.viewModel.currencyUnit)
+                                    Text(viewModel.currencyUnit)
                                         .font(Font.system(size: 38.0, weight: .light, design: .default))
                                         .foregroundColor(!viewModel.isSellingCrypto ?
                                             Color.tangemBlue : Color.tangemGrayDark6.opacity(0.5))
@@ -116,19 +116,19 @@ struct SendView: View {
                         .padding(.top, 25.0)
                         Separator()
                         HStack {
-                            Text(self.viewModel.amountHint?.message ?? " ")
+                            Text(viewModel.amountHint?.message ?? " ")
                                 .font(Font.system(size: 13.0, weight: .medium, design: .default))
-                                .foregroundColor((self.viewModel.amountHint?.isError ?? false) ?
+                                .foregroundColor((viewModel.amountHint?.isError ?? false) ?
                                     Color.red : Color.tangemGrayDark)
                             Spacer()
-                            Text(self.viewModel.walletTotalBalanceFormatted)
+                            Text(viewModel.walletTotalBalanceFormatted)
                                 .font(Font.system(size: 13.0, weight: .medium, design: .default))
                                 .lineLimit(2)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .foregroundColor(Color.tangemGrayDark)
                         }
                     }
-                    if self.viewModel.shouldShowNetworkBlock {
+                    if viewModel.shouldShowNetworkBlock {
                         Group {
                             HStack {
                                 Text(Localization.sendNetworkFeeTitle)
@@ -137,33 +137,33 @@ struct SendView: View {
                                 Spacer()
                                 Button(action: {
                                     withAnimation {
-                                        self.viewModel.isNetworkFeeBlockOpen.toggle()
+                                        viewModel.isNetworkFeeBlockOpen.toggle()
                                     }
                                 }) {
                                     if !viewModel.isSellingCrypto {
-                                        Image(systemName: self.viewModel.isNetworkFeeBlockOpen ? "chevron.up" : "chevron.down")
+                                        Image(systemName: viewModel.isNetworkFeeBlockOpen ? "chevron.up" : "chevron.down")
                                             .font(Font.system(size: 14.0, weight: .medium, design: .default))
                                             .foregroundColor(Color.tangemGrayDark6)
                                             .padding([.vertical, .leading])
                                     }
                                 }
-                                .accessibility(label: Text(self.viewModel.isNetworkFeeBlockOpen ? Localization.voiceOverCloseNetworkFeeSettings : Localization.voiceOverOpenNetworkFeeSettings))
+                                .accessibility(label: Text(viewModel.isNetworkFeeBlockOpen ? Localization.voiceOverCloseNetworkFeeSettings : Localization.voiceOverOpenNetworkFeeSettings))
                                 .disabled(viewModel.isSellingCrypto)
                             }
-                            if self.viewModel.isNetworkFeeBlockOpen || viewModel.isSellingCrypto {
+                            if viewModel.isNetworkFeeBlockOpen || viewModel.isSellingCrypto {
                                 VStack(spacing: 16.0) {
-                                    if self.viewModel.shoudShowFeeSelector {
+                                    if viewModel.shoudShowFeeSelector {
                                         PickerView(
                                             contents: [
                                                 Localization.sendFeePickerLow,
                                                 Localization.sendFeePickerNormal,
                                                 Localization.sendFeePickerPriority,
                                             ],
-                                            selection: self.$viewModel.selectedFeeLevel
+                                            selection: $viewModel.selectedFeeLevel
                                         )
                                     }
-                                    if self.viewModel.shoudShowFeeIncludeSelector {
-                                        Toggle(isOn: self.$viewModel.isFeeIncluded) {
+                                    if viewModel.shoudShowFeeIncludeSelector {
+                                        Toggle(isOn: $viewModel.isFeeIncluded) {
                                             Text(Localization.sendFeeIncludeDescription)
                                                 .font(Font.system(size: 13.0, weight: .medium, design: .default))
                                                 .foregroundColor(Color.tangemGrayDark6)
@@ -184,7 +184,7 @@ struct SendView: View {
                                 .font(Font.system(size: 14.0, weight: .medium, design: .default))
                                 .foregroundColor(Color.tangemGrayDark6)
                             Spacer()
-                            Text(self.viewModel.sendAmount)
+                            Text(viewModel.sendAmount)
                                 .font(Font.system(size: 14.0, weight: .medium, design: .default))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .foregroundColor(Color.tangemGrayDark6)
@@ -194,11 +194,11 @@ struct SendView: View {
                                 .font(Font.system(size: 14.0, weight: .medium, design: .default))
                                 .foregroundColor(Color.tangemGrayDark)
                             Spacer()
-                            if self.viewModel.isFeeLoading {
+                            if viewModel.isFeeLoading {
                                 ActivityIndicatorView(color: UIColor.tangemGrayDark)
                                     .offset(x: 8)
                             } else {
-                                Text(self.viewModel.sendFee)
+                                Text(viewModel.sendFee)
                                     .font(Font.system(size: 14.0, weight: .medium, design: .default))
                                     .foregroundColor(Color.tangemGrayDark)
                                     .frame(height: 20)
@@ -212,7 +212,7 @@ struct SendView: View {
                                 .font(Font.system(size: 20.0, weight: .bold, design: .default))
                                 .foregroundColor(Color.tangemGrayDark6)
                             Spacer()
-                            Text(self.viewModel.sendTotal)
+                            Text(viewModel.sendTotal)
                                 .font(Font.system(size: 20.0, weight: .bold, design: .default))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
@@ -222,7 +222,7 @@ struct SendView: View {
                         if !viewModel.isSellingCrypto {
                             HStack {
                                 Spacer()
-                                Text(self.viewModel.sendTotalSubtitle)
+                                Text(viewModel.sendTotalSubtitle)
                                     .font(Font.system(size: 14.0, weight: .bold, design: .default))
                                     .fixedSize(horizontal: false, vertical: true)
                                     .foregroundColor(Color.tangemGrayDark)
@@ -230,7 +230,7 @@ struct SendView: View {
                         }
                     }
                     WarningListView(warnings: viewModel.warnings, warningButtonAction: {
-                        self.viewModel.warningButtonAction(at: $0, priority: $1, button: $2)
+                        viewModel.warningButtonAction(at: $0, priority: $1, button: $2)
                     })
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.vertical, 16)
@@ -248,7 +248,7 @@ struct SendView: View {
             }
         }
         .onAppear {
-            self.viewModel.onAppear()
+            viewModel.onAppear()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .receive(on: DispatchQueue.main)) { _ in
@@ -275,8 +275,8 @@ struct SendView: View {
                 imageColor: .white,
                 isDisabled: viewModel.validatedClipboard == nil
             )
-            .accessibility(label: Text(self.viewModel.validatedClipboard == nil ? Localization.voiceOverNothingToPaste : Localization.voiceOverPasteFromClipboard))
-            .disabled(self.viewModel.validatedClipboard == nil)
+            .accessibility(label: Text(viewModel.validatedClipboard == nil ? Localization.voiceOverNothingToPaste : Localization.voiceOverPasteFromClipboard))
+            .disabled(viewModel.validatedClipboard == nil)
         }
     }
 

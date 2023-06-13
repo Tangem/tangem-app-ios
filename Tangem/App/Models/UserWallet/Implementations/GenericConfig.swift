@@ -148,8 +148,6 @@ extension GenericConfig: UserWalletConfig {
             return .available
         case .multiCurrency:
             return .available
-        case .tokensSearch:
-            return .hidden
         case .resetToFactory:
             return .available
         case .receive:
@@ -214,7 +212,7 @@ extension GenericConfig: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 
-fileprivate extension Card.BackupStatus {
+private extension Card.BackupStatus {
     var backupCardsCount: Int? {
         if case .active(let backupCards) = self {
             return backupCards

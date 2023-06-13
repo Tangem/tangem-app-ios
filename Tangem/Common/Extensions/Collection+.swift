@@ -15,4 +15,10 @@ extension Swift.Collection {
     func allConforms(_ predicate: (Element) -> Bool) -> Bool {
         !isEmpty && allSatisfy { predicate($0) }
     }
+
+    /// Useful for cases like `SwiftUI.ForEach` + non-zero-based collections.
+    /// See https://onmyway133.com/posts/how-to-use-foreach-with-indices-in-swiftui/ for details.
+    func indexed() -> some RandomAccessCollection<(Self.Index, Self.Element)> {
+        return Array(zip(indices, self))
+    }
 }

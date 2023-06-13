@@ -66,7 +66,7 @@ class ShopifyService: ShopifyProtocol {
                 return
             }
 
-            let task = self.client.queryGraphWith(query) { query, error in
+            let task = client.queryGraphWith(query) { query, error in
                 if let query = query {
                     promise(.success(query.shop.name))
                     return
@@ -81,7 +81,7 @@ class ShopifyService: ShopifyProtocol {
                 promise(.failure(ShopifyError.unknown))
             }
 
-            self.runTask(task)
+            runTask(task)
         }.eraseToAnyPublisher()
     }
 
@@ -109,7 +109,7 @@ class ShopifyService: ShopifyProtocol {
                 return
             }
 
-            let task = self.client.queryGraphWith(query) { response, error in
+            let task = client.queryGraphWith(query) { response, error in
                 if let response = response {
                     let collections = response.collections.edges.map { Collection($0.node) }
                     promise(.success(collections))
@@ -127,7 +127,7 @@ class ShopifyService: ShopifyProtocol {
                 promise(.failure(ShopifyError.unknown))
             }
 
-            self.runTask(task)
+            runTask(task)
         }
         .eraseToAnyPublisher()
     }
@@ -161,7 +161,7 @@ class ShopifyService: ShopifyProtocol {
                 return false
             }
 
-            let task = self.client.queryGraphWith(query, retryHandler: retryHandler) { response, error in
+            let task = client.queryGraphWith(query, retryHandler: retryHandler) { response, error in
                 if let queriedCheckout = response?.node as? Storefront.Checkout {
                     promise(.success(Checkout(queriedCheckout)))
                     return
@@ -177,7 +177,7 @@ class ShopifyService: ShopifyProtocol {
                 AppLog.shared.debug("Failed to get checkout")
                 promise(.failure(ShopifyError.unknown))
             }
-            self.runTask(task)
+            runTask(task)
         }
 
         return future.eraseToAnyPublisher()
@@ -332,14 +332,14 @@ class ShopifyService: ShopifyProtocol {
             .sink { _ in
 
             } receiveValue: { [unowned self] checkout, shopName in
-                self.paySession = PaySession(
+                paySession = PaySession(
                     shopName: shopName,
                     checkout: checkout.payCheckout,
                     currency: checkout.payCurrency,
-                    merchantID: self.shop.merchantID
+                    merchantID: shop.merchantID
                 )
-                self.paySession?.delegate = self
-                self.paySession?.authorize()
+                paySession?.delegate = self
+                paySession?.authorize()
             }
             .store(in: &subscriptions)
 
@@ -432,23 +432,23 @@ extension ShopifyService: PaySessionDelegate {
         updateAddress(address, checkoutID: checkoutID, waitForShippingRates: false)
             .zip(updateEmail(email: email, checkoutID: checkoutID))
             .flatMap { [unowned self] _, _ in
-                self.completeWithTokenizedPayment(payment, checkoutID: checkoutID)
+                completeWithTokenizedPayment(payment, checkoutID: checkoutID)
             }
             .sink { [unowned self] completion in
                 AppLog.shared.debug("Apple Pay: finished with completion: \(completion)")
                 switch completion {
                 case .finished:
                     completeTransaction(.success)
-                    self.paySessionPublisher?.send(completion: .finished)
+                    paySessionPublisher?.send(completion: .finished)
                 case .failure:
                     completeTransaction(.failure)
-                    self.paySessionPublisher?.send(completion: .failure(ShopifyError.applePayFailed))
+                    paySessionPublisher?.send(completion: .failure(ShopifyError.applePayFailed))
                 }
 
-                self.paySessionPublisher = nil
+                paySessionPublisher = nil
             } receiveValue: { [unowned self] checkout in
                 AppLog.shared.debug("Apple Pay: Finished with checkout: \(checkout)")
-                self.paySessionPublisher?.send(checkout)
+                paySessionPublisher?.send(checkout)
             }
             .store(in: &subscriptions)
     }
@@ -506,8 +506,8 @@ extension ShopifyService: PaySessionDelegate {
                 return
             }
 
-            let retryHandler = self.retryHandler(waitUntilReady: waitUntilReady, checkShippingRates: checkShippingRates, payloadProvider: payloadProvider)
-            let task = self.client.mutateGraphWith(mutation, retryHandler: retryHandler) { mutation, error in
+            let retryHandler = retryHandler(waitUntilReady: waitUntilReady, checkShippingRates: checkShippingRates, payloadProvider: payloadProvider)
+            let task = client.mutateGraphWith(mutation, retryHandler: retryHandler) { mutation, error in
                 guard
                     let mutation = mutation,
                     let payload = payloadProvider(mutation)
@@ -540,7 +540,7 @@ extension ShopifyService: PaySessionDelegate {
                 promise(.failure(ShopifyError.unknown))
             }
 
-            self.runTask(task)
+            runTask(task)
         }
         .eraseToAnyPublisher()
     }

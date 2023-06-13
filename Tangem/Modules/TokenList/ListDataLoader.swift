@@ -67,11 +67,11 @@ class ListDataLoader {
             .sink { [weak self] items in
                 guard let self = self else { return }
 
-                self.currentPage += 1
+                currentPage += 1
                 self.items.append(contentsOf: items)
                 // If count of data received is less than perPage value then it is last page.
-                if items.count < self.perPage {
-                    self.canFetchMore = false
+                if items.count < perPage {
+                    canFetchMore = false
                 }
             }
     }
@@ -116,7 +116,7 @@ private extension ListDataLoader {
                 guard let searchText = searchText,
                       !searchText.isEmpty else { return models }
 
-                if let cachedSearch = self.cachedSearch[searchText] {
+                if let cachedSearch = cachedSearch[searchText] {
                     return cachedSearch
                 }
 
@@ -124,7 +124,7 @@ private extension ListDataLoader {
                     "\($0.name) \($0.symbol)".lowercased().contains(searchText)
                 }
 
-                self.cachedSearch[searchText] = foundItems
+                cachedSearch[searchText] = foundItems
 
                 return foundItems
             }

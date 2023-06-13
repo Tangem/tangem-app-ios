@@ -156,7 +156,7 @@ public final class ABIEncoder {
     }
 }
 
-fileprivate extension BigInt {
+private extension BigInt {
     /// Serializes the `BigInt` with the specified bit width.
     ///
     /// - Returns: the serialized data or `nil` if the number doesn't fit in the specified bit width.

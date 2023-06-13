@@ -14,6 +14,8 @@ class UserWalletModelMock: UserWalletModel {
 
     var userWalletId: UserWalletId { .init(with: Data()) }
 
+    var walletModels: [WalletModel] { [] }
+
     var userTokenListManager: UserTokenListManager { UserTokenListManagerMock() }
 
     var userWallet: UserWallet {
@@ -21,8 +23,6 @@ class UserWalletModelMock: UserWalletModel {
     }
 
     var totalBalanceProvider: TotalBalanceProviding { TotalBalanceProviderMock() }
-
-    func getWalletModels() -> [WalletModel] { [] }
 
     func subscribeToWalletModels() -> AnyPublisher<[WalletModel], Never> { .just(output: []) }
 

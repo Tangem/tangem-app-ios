@@ -36,7 +36,7 @@ struct AnimationCompletionObserverModifier<Value>: AnimatableModifier where Valu
         /// Dispatching is needed to take the next runloop for the completion callback.
         /// This prevents errors like "Modifying state during view update, this will cause undefined behavior."
         DispatchQueue.main.async {
-            self.completion()
+            completion()
         }
     }
 

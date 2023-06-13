@@ -71,21 +71,21 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
                 switch newState {
                 case .noDerivation:
-                    self.missingDerivation = true
-                    self.networkUnreachable = false
+                    missingDerivation = true
+                    networkUnreachable = false
                 case .failed:
-                    self.missingDerivation = false
-                    self.networkUnreachable = true
+                    missingDerivation = false
+                    networkUnreachable = true
                 case .noAccount(let message):
-                    self.balanceCrypto = .loaded(text: message)
+                    balanceCrypto = .loaded(text: message)
                     fallthrough
                 case .created:
-                    self.missingDerivation = false
-                    self.networkUnreachable = false
+                    missingDerivation = false
+                    networkUnreachable = false
                 case .idle:
-                    self.missingDerivation = false
-                    self.networkUnreachable = false
-                    self.updateBalances()
+                    missingDerivation = false
+                    networkUnreachable = false
+                    updateBalances()
                 case .loading:
                     break
                 }
@@ -134,9 +134,9 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
                 let fiatBalance = try await BalanceConverter().convertToFiat(
                     value: balance,
                     from: cryptoFormattingOptions.currencyCode,
-                    to: self.fiatFormattingOptions.currencyCode
+                    to: fiatFormattingOptions.currencyCode
                 )
-                formattedFiat = formatter.formatFiatBalance(fiatBalance, formattingOptions: self.fiatFormattingOptions)
+                formattedFiat = formatter.formatFiatBalance(fiatBalance, formattingOptions: fiatFormattingOptions)
             } catch {
                 formattedFiat = "-"
             }

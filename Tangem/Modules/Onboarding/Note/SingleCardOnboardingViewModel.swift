@@ -94,7 +94,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
     private var scheduledUpdate: DispatchWorkItem?
 
     private var canBuyCrypto: Bool {
-        if let blockchain = cardModel?.wallets.first?.blockchain,
+        if let blockchain = cardModel?.walletModels.first?.blockchainNetwork.blockchain,
            exchangeService.canBuy(blockchain.currencySymbol, amountType: .coin, blockchain: blockchain) {
             return true
         }
@@ -132,17 +132,17 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
             .delay(for: 0.1, scheduler: DispatchQueue.main)
             .receiveValue { [weak self] index in
                 guard let self,
-                      index < self.steps.count else { return }
+                      index < steps.count else { return }
 
-                let currentStep = self.steps[index]
+                let currentStep = steps[index]
 
                 switch currentStep {
                 case .topup:
-                    if let walletModel = self.cardModel?.walletModels.first {
-                        self.updateCardBalanceText(for: walletModel)
+                    if let walletModel = cardModel?.walletModels.first {
+                        updateCardBalanceText(for: walletModel)
                     }
 
-                    if self.walletCreatedWhileOnboarding {
+                    if walletCreatedWhileOnboarding {
                         return
                     }
 
@@ -150,14 +150,14 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
                         self.isBalanceRefresherVisible = true
                     }
 
-                    self.updateCardBalance()
+                    updateCardBalance()
                 case .successTopup:
                     withAnimation {
                         self.refreshButtonState = .doneCheckmark
                     }
                     fallthrough
                 case .success:
-                    self.fireConfetti()
+                    fireConfetti()
                 default:
                     break
                 }
@@ -246,8 +246,8 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
             switch result {
             case .success(let cardInfo):
-                self.initializeUserWallet(from: cardInfo)
-                self.walletCreatedWhileOnboarding = true
+                initializeUserWallet(from: cardInfo)
+                walletCreatedWhileOnboarding = true
 
                 Analytics.log(.walletCreatedSuccessfully, params: [.creationType: .walletCreationTypePrivateKey])
 
@@ -261,7 +261,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
                 }
             }
 
-            self.isMainButtonBusy = false
+            isMainButtonBusy = false
         }
     }
 }

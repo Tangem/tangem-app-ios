@@ -330,11 +330,11 @@ private extension TokenListViewModel {
             let title = Localization.tokenDetailsHideAlertTitle(tokenItem.currencySymbol)
 
             let cancelAction = { [unowned self] in
-                self.updateSelection(tokenItem)
+                updateSelection(tokenItem)
             }
 
             let hideAction = { [unowned self] in
-                self.onSelect(isSelected, tokenItem)
+                onSelect(isSelected, tokenItem)
             }
 
             alert = AlertBinder(alert:

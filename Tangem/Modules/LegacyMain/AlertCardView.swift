@@ -16,11 +16,11 @@ struct AlertCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if !title.isEmpty {
-                Text(self.title)
+                Text(title)
                     .font(Font.system(size: 14, weight: .bold, design: .default))
                     .padding(.bottom, 8)
             }
-            Text(self.message)
+            Text(message)
                 .font(Font.system(size: 13, weight: .medium, design: .default))
                 .fixedSize(horizontal: false, vertical: true)
                 .lineSpacing(4)

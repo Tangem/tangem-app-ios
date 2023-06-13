@@ -171,7 +171,7 @@ extension LegacyConfig: UserWalletConfig {
             return .hidden
         case .exchange:
             return .available
-        case .walletConnect, .multiCurrency, .tokensSearch:
+        case .walletConnect, .multiCurrency:
             if isMultiwallet {
                 return .available
             } else {

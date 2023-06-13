@@ -55,21 +55,21 @@ struct PushTxView: View {
                                 .opacity(0.6)
                             Spacer()
                             Button(action: {
-                                self.viewModel.isFiatCalculation.toggle()
+                                viewModel.isFiatCalculation.toggle()
                             }) { HStack(alignment: .center, spacing: 8.0) {
-                                Text(self.viewModel.currency)
+                                Text(viewModel.currency)
                                     .font(Font.system(size: 38.0, weight: .light, design: .default))
-                                    .foregroundColor(self.viewModel.canFiatCalculation ?
+                                    .foregroundColor(viewModel.canFiatCalculation ?
                                         Color.tangemBlue : Color.tangemBlue.opacity(0.5))
                                 Image(systemName: "arrow.up.arrow.down")
                                     .font(Font.system(size: 17.0, weight: .regular, design: .default))
-                                    .foregroundColor(self.viewModel.canFiatCalculation ?
+                                    .foregroundColor(viewModel.canFiatCalculation ?
                                         Color.tangemBlue : Color.tangemBlue.opacity(0.5))
                             }
                             }
                             .foregroundColor(.tangemBlue)
                             .buttonStyle(PlainButtonStyle())
-                            .disabled(!self.viewModel.canFiatCalculation)
+                            .disabled(!viewModel.canFiatCalculation)
                         }
                         .font(.system(size: 38, weight: .light))
                     }
@@ -102,7 +102,7 @@ struct PushTxView: View {
                             .font(.system(size: 13.0, weight: .medium, design: .default))
                             .foregroundColor((viewModel.amountHint?.isError ?? false) ?
                                 Color.red : Color.tangemGrayDark)
-                        Toggle(isOn: self.$viewModel.isFeeIncluded) {
+                        Toggle(isOn: $viewModel.isFeeIncluded) {
                             Text(Localization.sendFeeIncludeDescription)
                                 .font(Font.system(size: 13.0, weight: .medium, design: .default))
                                 .foregroundColor(Color.tangemGrayDark6)

@@ -99,8 +99,8 @@ class ShopViewModel: ObservableObject {
             .flatMap { [weak self] _ -> AnyPublisher<Checkout, Error> in
                 guard let self = self else { return .anyFail(error: ShopError.empty) }
 
-                self.pollingForOrder = true
-                return self.shopifyService.checkout(pollUntilOrder: true, checkoutID: checkoutID)
+                pollingForOrder = true
+                return shopifyService.checkout(pollUntilOrder: true, checkoutID: checkoutID)
             }
             .sink { completion in
                 AppLog.shared.debug("Finished Apple Pay session with completion: \(completion)")
@@ -128,7 +128,7 @@ class ShopViewModel: ObservableObject {
             } receiveValue: { [weak self] collections in
                 guard let self = self else { return }
 
-                self.loadingProducts = false
+                loadingProducts = false
 
                 // There can be multiple variants with the same SKU and the same ID along multiple products.
                 let allVariants: [ProductVariant] = collections.reduce([]) { partialResult, collection in
@@ -147,12 +147,12 @@ class ShopViewModel: ObservableObject {
                 }
 
                 guard variants.count == skusToDisplay.count else {
-                    self.error = AppError.serverUnavailable.alertBinder
+                    error = AppError.serverUnavailable.alertBinder
                     return
                 }
 
-                self.shopifyProductVariants = variants
-                self.didSelectBundle(self.selectedBundle)
+                shopifyProductVariants = variants
+                didSelectBundle(selectedBundle)
             }
             .store(in: &bag)
     }
@@ -243,10 +243,10 @@ class ShopViewModel: ObservableObject {
                 if checkout.discount == nil {
                     self.discountCode = ""
                 }
-                self.checkoutByVariantID[variantID] = checkout
+                checkoutByVariantID[variantID] = checkout
                 if isCurrentVariantID {
-                    self.updatePrice()
-                    self.checkingDiscountCode = false
+                    updatePrice()
+                    checkingDiscountCode = false
                 }
             }
             .store(in: &bag)
@@ -333,9 +333,9 @@ extension ShopViewModel {
             .flatMap { [weak self] checkout -> AnyPublisher<Checkout, Error> in
                 guard let self = self else { return .anyFail(error: ShopError.empty) }
 
-                self.coordinator.openWebCheckout(at: checkout.webUrl)
+                coordinator.openWebCheckout(at: checkout.webUrl)
 
-                return self.shopifyService.checkout(pollUntilOrder: true, checkoutID: checkoutID)
+                return shopifyService.checkout(pollUntilOrder: true, checkoutID: checkoutID)
             }
             .sink { _ in
 
@@ -343,10 +343,10 @@ extension ShopViewModel {
                 guard let self = self else { return }
 
                 if let order = checkout.order {
-                    self.didPlaceOrder(order)
+                    didPlaceOrder(order)
                 }
 
-                self.closeWebCheckout()
+                closeWebCheckout()
             }
             .store(in: &bag)
     }

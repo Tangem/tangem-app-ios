@@ -109,8 +109,6 @@ extension NoteDemoConfig: UserWalletConfig {
             return .hidden
         case .multiCurrency:
             return .hidden
-        case .tokensSearch:
-            return .hidden
         case .resetToFactory:
             return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .receive:

@@ -23,7 +23,7 @@ struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
         let proposerName = proposer.name
         let chains = targetBlockchains.joined(separator: ", ")
         let allMethods = namespaces.map { $0.value.methods.joined(separator: ", ") }.joined(separator: ";\n")
-        let allChains = namespaces.map { $0.value.chains.map { $0.absoluteString }.joined(separator: ", ") }.joined(separator: ";\n")
+        let allChains = namespaces.map { ($0.value.chains ?? []).map { $0.absoluteString }.joined(separator: ", ") }.joined(separator: ";\n")
         let allEvents = namespaces.map { $0.value.events.joined(separator: ", ") }.joined(separator: ";\n")
         let proposerDescription = proposer.description
         let proposerURL = proposer.url
@@ -44,7 +44,7 @@ struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
                 dApp.name,
                 dApp.url,
                 transaction.amount.description,
-                transaction.fee.description,
+                transaction.fee.amount.description,
                 totalAmount.description,
                 walletModel.getBalance(for: .coin)
             )

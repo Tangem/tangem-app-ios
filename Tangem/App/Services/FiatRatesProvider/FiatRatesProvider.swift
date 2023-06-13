@@ -12,15 +12,28 @@ import TangemSwapping
 class FiatRatesProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
+    private let ratesQueue = DispatchQueue(
+        label: "com.tangem.FiatRatesProvider.ratesQueue",
+        attributes: .concurrent
+    )
+
     /// Collect rates for calculate fiat balance
-    @Atomic private var rates: [String: Decimal]
+    private var _rates: [String: Decimal]
+    private var rates: [String: Decimal] {
+        get {
+            return ratesQueue.sync { _rates }
+        }
+        set {
+            ratesQueue.async(flags: .barrier) { self._rates = newValue }
+        }
+    }
 
     // TODO: Move FiatRatesProvider into WalletModel
     private let walletModel: WalletModel
 
     init(walletModel: WalletModel, rates: [String: Decimal]) {
         self.walletModel = walletModel
-        self.rates = rates
+        _rates = rates
     }
 }
 

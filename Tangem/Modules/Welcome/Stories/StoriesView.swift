@@ -31,7 +31,7 @@ struct StoriesView<Content: View>: View {
                             }
                     )
 
-                StoriesProgressView(pages: WelcomeStoryPage.allCases, currentPage: $viewModel.currentPage, progress: $viewModel.currentProgress)
+                StoriesProgressView(pages: viewModel.pages, currentPageIndex: viewModel.currentPageIndex, progress: $viewModel.currentProgress)
                     .padding(.horizontal)
                     .padding(.top)
             }

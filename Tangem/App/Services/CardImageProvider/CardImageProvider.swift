@@ -12,7 +12,20 @@ import TangemSdk
 import Kingfisher
 
 struct CardImageProvider {
-    @Atomic private static var cardArtworkCache: [String: CardArtwork] = [:]
+    private static let cardArtworkCacheQueue = DispatchQueue(
+        label: "com.tangem.CardImageProvider.cardArtworkCacheQueue",
+        attributes: .concurrent
+    )
+
+    private static var _cardArtworkCache: [String: CardArtwork] = [:]
+    private static var cardArtworkCache: [String: CardArtwork] {
+        get {
+            return cardArtworkCacheQueue.sync { _cardArtworkCache }
+        }
+        set {
+            cardArtworkCacheQueue.async(flags: .barrier) { _cardArtworkCache = newValue }
+        }
+    }
 
     @Injected(\.cardImageLoader) private var imageLoader: CardImageLoaderProtocol
 
@@ -45,11 +58,6 @@ extension CardImageProvider: CardImageProviding {
     }
 
     func loadImage(cardId: String, cardPublicKey: Data, artwork: CardArtwork?) -> AnyPublisher<CardImageResult, Never> {
-        if SaltPayUtil().isSaltPayCard(batchId: String(cardId.prefix(4)), cardId: cardId) { // TODO: We must use the batchId here
-            return Just(.embedded(UIImage(named: "saltpay")!))
-                .eraseToAnyPublisher()
-        }
-
         guard supportsOnlineImage else {
             return Just(.embedded(defaultImage)).eraseToAnyPublisher()
         }

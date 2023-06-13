@@ -94,7 +94,7 @@ struct OnboardingProgressCheckmarksView: View {
     }
 }
 
-fileprivate class Provider: ObservableObject {
+private class Provider: ObservableObject {
     @Published var currentStep: Int = 10
 
     var numberOfSteps: Int { 6 }

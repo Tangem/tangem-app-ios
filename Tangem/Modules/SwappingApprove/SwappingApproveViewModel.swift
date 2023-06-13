@@ -105,7 +105,7 @@ final class SwappingApproveViewModel: ObservableObject, Identifiable {
 
 extension SwappingApproveViewModel {
     @MainActor
-    func didSendApproveTransaction(transactionData: SwappingTransactionData) {        
+    func didSendApproveTransaction(transactionData: SwappingTransactionData) {
         swappingInteractor.didSendApproveTransaction(swappingTxData: transactionData)
 
         // We have to waiting close the nfc view to close this permission view

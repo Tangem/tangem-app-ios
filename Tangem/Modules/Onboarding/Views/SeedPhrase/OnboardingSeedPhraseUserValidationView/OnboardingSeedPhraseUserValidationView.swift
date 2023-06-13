@@ -76,7 +76,7 @@ struct OnboardingSeedPhraseUserValidationView: View {
     }
 }
 
-fileprivate struct WordInputView: View {
+private struct WordInputView: View {
     let wordNumber: Int
     let hasError: Bool
     let text: Binding<String>

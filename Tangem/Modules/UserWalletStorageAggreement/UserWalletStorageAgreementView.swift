@@ -70,7 +70,7 @@ struct UserWalletStorageAgreementView: View {
     }
 }
 
-fileprivate extension UserWalletStorageAgreementView {
+private extension UserWalletStorageAgreementView {
     struct FlexibleSpacer: View {
         let maxHeight: CGFloat
 

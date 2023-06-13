@@ -29,7 +29,7 @@ extension View {
     }
 }
 
-fileprivate struct SensitiveInformationTestView: View {
+private struct SensitiveInformationTestView: View {
     @State var showBalance = true
 
     var body: some View {

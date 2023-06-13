@@ -48,7 +48,7 @@ struct LegacyPendingTxView: View, Identifiable {
         VStack(alignment: .leading) {
             HStack(spacing: 0) {
                 if address != "unknown" {
-                    Image(systemName: self.pendingTx.direction == .incoming ? "arrow.down" :
+                    Image(systemName: pendingTx.direction == .incoming ? "arrow.down" :
                         "arrow.right")
                         .resizable()
                         .aspectRatio(contentMode: .fit)

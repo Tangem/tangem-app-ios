@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 extension Analytics {
     enum AnalyticsSystem {
         case firebase

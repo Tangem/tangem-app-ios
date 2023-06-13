@@ -32,8 +32,8 @@ class UserWalletEncryptionKeyStorage {
                         var keys: [Data: SymmetricKey] = [:]
 
                         for userWalletId in userWalletIds {
-                            let storageKey = self.encryptionKeyStorageKey(for: userWalletId)
-                            let encryptionKeyData = try self.biometricsStorage.get(storageKey, context: context)
+                            let storageKey = encryptionKeyStorageKey(for: userWalletId)
+                            let encryptionKeyData = try biometricsStorage.get(storageKey, context: context)
                             if let encryptionKeyData = encryptionKeyData {
                                 keys[userWalletId] = SymmetricKey(data: encryptionKeyData)
                             }

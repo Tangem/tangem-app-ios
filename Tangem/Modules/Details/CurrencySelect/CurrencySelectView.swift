@@ -56,7 +56,7 @@ struct CurrencySelectView: View {
         }
         .navigationBarTitle(Text(Localization.detailsRowTitleCurrency), displayMode: .inline)
         .onAppear {
-            self.viewModel.onAppear()
+            viewModel.onAppear()
         }
         .alert(item: $viewModel.error) { $0.alert }
     }

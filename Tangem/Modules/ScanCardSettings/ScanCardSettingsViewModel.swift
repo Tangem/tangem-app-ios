@@ -36,9 +36,9 @@ extension ScanCardSettingsViewModel {
 
             switch result {
             case .success(let cardInfo):
-                self.processSuccessScan(for: cardInfo)
+                processSuccessScan(for: cardInfo)
             case .failure(let error):
-                self.showErrorAlert(error: error)
+                showErrorAlert(error: error)
             }
         }
     }

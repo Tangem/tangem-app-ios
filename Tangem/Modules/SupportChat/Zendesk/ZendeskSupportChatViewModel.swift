@@ -67,7 +67,7 @@ final class ZendeskSupportChatViewModel {
             guard let self = self else { return }
 
             if state.chatSessionStatus == .started {
-                self.chatViewController?.navigationItem.setLeftBarButton(
+                chatViewController?.navigationItem.setLeftBarButton(
                     UIBarButtonItem(
                         image: Assets.chatSettings.uiImage,
                         style: .plain,
@@ -77,7 +77,7 @@ final class ZendeskSupportChatViewModel {
                     animated: true
                 )
             } else {
-                self.chatViewController?.navigationItem.setLeftBarButtonItems([], animated: false)
+                chatViewController?.navigationItem.setLeftBarButtonItems([], animated: false)
             }
         }
     }

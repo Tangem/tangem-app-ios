@@ -9,11 +9,9 @@
 import Foundation
 
 public struct SwappingAvailabilityModel {
-    public let isEnoughAmountForSwapping: Bool
-    public let isEnoughAmountForFee: Bool
-    public let isPermissionRequired: Bool
     public let transactionData: SwappingTransactionData
     public let gasOptions: [EthereumGasDataModel]
+    public let restrictions: Restrictions
 
     public var destinationAmount: Decimal {
         transactionData.destinationCurrency.convertFromWEI(
@@ -21,17 +19,39 @@ public struct SwappingAvailabilityModel {
         )
     }
 
+    public func isEnoughAmountForSwapping(for policy: SwappingGasPricePolicy) -> Bool {
+        restrictions.isEnoughAmountForSwapping[policy] ?? false
+    }
+
+    public func isEnoughAmountForFee(for policy: SwappingGasPricePolicy) -> Bool {
+        restrictions.isEnoughAmountForFee[policy] ?? false
+    }
+
     public init(
-        isEnoughAmountForSwapping: Bool,
-        isEnoughAmountForFee: Bool,
-        isPermissionRequired: Bool,
         transactionData: SwappingTransactionData,
-        gasOptions: [EthereumGasDataModel]
+        gasOptions: [EthereumGasDataModel],
+        restrictions: Restrictions
     ) {
-        self.isEnoughAmountForSwapping = isEnoughAmountForSwapping
-        self.isEnoughAmountForFee = isEnoughAmountForFee
-        self.isPermissionRequired = isPermissionRequired
         self.transactionData = transactionData
         self.gasOptions = gasOptions
+        self.restrictions = restrictions
+    }
+}
+
+public extension SwappingAvailabilityModel {
+    struct Restrictions {
+        public let isEnoughAmountForSwapping: [SwappingGasPricePolicy: Bool]
+        public let isEnoughAmountForFee: [SwappingGasPricePolicy: Bool]
+        public let isPermissionRequired: Bool
+
+        public init(
+            isEnoughAmountForSwapping: [SwappingGasPricePolicy: Bool],
+            isEnoughAmountForFee: [SwappingGasPricePolicy: Bool],
+            isPermissionRequired: Bool
+        ) {
+            self.isEnoughAmountForSwapping = isEnoughAmountForSwapping
+            self.isEnoughAmountForFee = isEnoughAmountForFee
+            self.isPermissionRequired = isPermissionRequired
+        }
     }
 }

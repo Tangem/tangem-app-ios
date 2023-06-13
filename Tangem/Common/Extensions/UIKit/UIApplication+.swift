@@ -21,7 +21,7 @@ extension UIApplication {
         return keyWindow?.topViewController
     }
 
-    static func modalFromTop(_ vc: UIViewController) {
+    static func modalFromTop(_ vc: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
         guard let top = topViewController else { return }
 
         if top.isBeingDismissed {
@@ -29,7 +29,7 @@ extension UIApplication {
                 modalFromTop(vc)
             }
         } else {
-            top.present(vc, animated: true, completion: nil)
+            top.present(vc, animated: animated, completion: completion)
         }
     }
 

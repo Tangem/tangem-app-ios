@@ -272,10 +272,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                 // This part is related only to the twin cards, because for other card types
                 // reset to factory settings goes not through onboarding screens. If back button
                 // appearance logic will change in future - recheck also this code and update it accordingly
-                if self.isOnboardingFinished {
-                    self.onboardingDidFinish()
+                if isOnboardingFinished {
+                    onboardingDidFinish()
                 } else {
-                    self.closeOnboarding()
+                    closeOnboarding()
                 }
             }
         }
@@ -317,19 +317,19 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .receive(on: DispatchQueue.main)
             .combineLatest(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification))
             .sink(receiveValue: { [unowned self] newStep, _ in
-                switch (self.currentStep, newStep) {
+                switch (currentStep, newStep) {
                 case (.first, .second):
-                    if let originalUserWallet = self.input.userWalletToDelete {
+                    if let originalUserWallet = input.userWalletToDelete {
                         userWalletRepository.delete(originalUserWallet, logoutIfNeeded: false)
                     }
                     fallthrough
                 case (.second, .third), (.third, .done):
                     if case .done(let cardInfo) = newStep {
-                        self.initializeUserWallet(from: cardInfo)
+                        initializeUserWallet(from: cardInfo)
                         if input.isStandalone {
-                            self.fireConfetti()
+                            fireConfetti()
                         } else {
-                            self.updateCardBalance()
+                            updateCardBalance()
                         }
                     }
 
@@ -341,7 +341,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                         }
                     }
                 default:
-                    AppLog.shared.debug("Wrong state while twinning cards: current - \(self.currentStep), new - \(newStep)")
+                    AppLog.shared.debug("Wrong state while twinning cards: current - \(currentStep), new - \(newStep)")
                 }
 
                 if !retwinMode {
@@ -361,8 +361,8 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .sink { [weak self] paired, main in
                 guard let self = self else { return }
 
-                self.firstTwinImage = main
-                self.secondTwinImage = paired
+                firstTwinImage = main
+                secondTwinImage = paired
             }
             .store(in: &bag)
     }

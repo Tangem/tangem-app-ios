@@ -52,13 +52,13 @@ class SendTransactionHandler: WalletConnectTransactionHandler {
                     let sendedTx = ethWalletModel.wallet.transactions.last,
                     let txHash = sendedTx.hash
                 else {
-                    self.sendReject(for: request, error: WalletConnectServiceError.txNotFound)
+                    sendReject(for: request, error: WalletConnectServiceError.txNotFound)
                     return
                 }
 
                 Analytics.log(.transactionSent, params: [.commonSource: .transactionSourceWalletConnect])
 
-                self.delegate?.send(try! Response(url: request.url, value: txHash, id: request.id!), for: self.action)
+                delegate?.send(try! Response(url: request.url, value: txHash, id: request.id!), for: action)
             }
             .store(in: &bag)
     }

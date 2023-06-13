@@ -13,23 +13,44 @@ import BlockchainSdk
 import SwiftUI
 
 class WarningsService {
-    @Injected(\.rateAppService) var rateAppChecker: RateAppService
     @Injected(\.deprecationService) var deprecationService: DeprecationServicing
 
-    var warningsUpdatePublisher: CurrentValueSubject<Void, Never> = .init(())
+    private let featureStorage = FeatureStorage()
+
+    private let warningsUpdateSubject = PassthroughSubject<Void, Never>()
 
     private var mainWarnings: WarningsContainer = .init()
     private var sendWarnings: WarningsContainer = .init()
-    private var validatorSubscription: AnyCancellable?
 
-    init() {}
+    private var testnetSubscription: AnyCancellable?
+
+    init() {
+        bind()
+    }
 
     deinit {
         AppLog.shared.debug("WarningsService deinit")
     }
+
+    private func bind() {
+        if AppEnvironment.current.isProduction {
+            return
+        }
+
+        testnetSubscription = featureStorage.$isTestnet
+            .sink { [weak self] isTestnet in
+                if isTestnet {
+                    self?.appendWarning(for: .testnetCard)
+                } else {
+                    self?.hideWarning(for: .testnetCard)
+                }
+            }
+    }
 }
 
-extension WarningsService: AppWarningsProviding {
+extension WarningsService {
+    var warningsUpdatePublisher: AnyPublisher<Void, Never> { warningsUpdateSubject.eraseToAnyPublisher() }
+
     func setupWarnings(
         for config: UserWalletConfig,
         card: CardDTO,
@@ -54,18 +75,6 @@ extension WarningsService: AppWarningsProviding {
         }
     }
 
-    func appendWarning(for event: WarningEvent) {
-        let warning = event.warning
-        if event.locationsToDisplay.contains(.main) {
-            mainWarnings.add(warning)
-        }
-        if event.locationsToDisplay.contains(.send) {
-            sendWarnings.add(warning)
-        }
-
-        warningsUpdatePublisher.send(())
-    }
-
     func hideWarning(_ warning: AppWarning) {
         mainWarnings.remove(warning)
         sendWarnings.remove(warning)
@@ -78,6 +87,16 @@ extension WarningsService: AppWarningsProviding {
 }
 
 private extension WarningsService {
+    func appendWarning(for event: WarningEvent) {
+        let warning = event.warning
+        if event.locationsToDisplay.contains(.main) {
+            mainWarnings.add(warning)
+        }
+        if event.locationsToDisplay.contains(.send) {
+            sendWarnings.add(warning)
+        }
+    }
+
     func setupWarnings(for config: UserWalletConfig) {
         let main = WarningsContainer()
         let send = WarningsContainer()
@@ -95,7 +114,7 @@ private extension WarningsService {
 
         mainWarnings = main
         sendWarnings = send
-        warningsUpdatePublisher.send(())
+        warningsUpdateSubject.send(())
     }
 
     func validateHashesCount(
@@ -103,8 +122,6 @@ private extension WarningsService {
         card: CardDTO,
         validator: SignatureCountValidator?
     ) {
-        validatorSubscription = nil
-
         let cardId = card.cardId
         let cardSignedHashes = card.walletSignedHashes
         let isMultiWallet = config.hasFeature(.multiCurrency)
@@ -132,16 +149,18 @@ private extension WarningsService {
         }
 
         guard !isMultiWallet else {
-            showAlertAnimated(.multiWalletSignedHashes)
+            showWarningWithAnimation(.multiWalletSignedHashes)
             didFinishCountingHashes()
             return
         }
 
         guard let validator = validator else {
-            showAlertAnimated(.numberOfSignedHashesIncorrect)
+            showWarningWithAnimation(.numberOfSignedHashesIncorrect)
             didFinishCountingHashes()
             return
         }
+
+        var validatorSubscription: AnyCancellable?
 
         validatorSubscription = validator.validateSignatureCount(signedHashes: cardSignedHashes)
             .subscribe(on: DispatchQueue.global())
@@ -154,13 +173,15 @@ private extension WarningsService {
                 case .finished:
                     break
                 case .failure:
-                    self?.showAlertAnimated(.numberOfSignedHashesIncorrect)
+                    self?.showWarningWithAnimation(.numberOfSignedHashesIncorrect)
                 }
                 didFinishCountingHashes()
+
+                validatorSubscription = nil
             }
     }
 
-    func showAlertAnimated(_ event: WarningEvent) {
+    func showWarningWithAnimation(_ event: WarningEvent) {
         withAnimation {
             appendWarning(for: event)
         }

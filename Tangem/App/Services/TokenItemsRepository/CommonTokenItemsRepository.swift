@@ -142,7 +142,7 @@ private extension CommonTokenItemsRepository {
 
 // MARK: - Private Array extension
 
-fileprivate extension Array where Element == StorageEntry {
+private extension Array where Element == StorageEntry {
     mutating func add(entry: StorageEntry) -> Bool {
         guard let existingIndex = firstIndex(where: { $0.blockchainNetwork == entry.blockchainNetwork }) else {
             append(entry)
@@ -193,7 +193,7 @@ fileprivate extension Array where Element == StorageEntry {
 
 // MARK: - Legacy storage
 
-fileprivate enum LegacyStorageEntry: Codable {
+private enum LegacyStorageEntry: Codable {
     case blockchain(Blockchain)
     case token(LegacyToken)
 
@@ -245,7 +245,7 @@ fileprivate enum LegacyStorageEntry: Codable {
     }
 }
 
-fileprivate struct LegacyToken: Codable {
+private struct LegacyToken: Codable {
     let name: String
     let symbol: String
     let contractAddress: String
@@ -264,7 +264,7 @@ fileprivate struct LegacyToken: Codable {
     }
 }
 
-fileprivate struct LegacyCloudToken: Decodable {
+private struct LegacyCloudToken: Decodable {
     let name: String
     let symbol: String
     let contractAddress: String

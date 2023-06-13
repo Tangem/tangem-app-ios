@@ -114,9 +114,7 @@ final class AuthViewModel: ObservableObject {
         case .onboarding(let input):
             openOnboarding(with: input)
         case .error(let error):
-            if let saltPayError = error as? SaltPayRegistratorError {
-                self.error = saltPayError.alertBinder
-            } else if case .userCancelled = error as? TangemSdkError {
+            if case .userCancelled = error as? TangemSdkError {
                 break
             } else {
                 self.error = error.alertBinder

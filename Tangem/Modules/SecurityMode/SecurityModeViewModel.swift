@@ -142,7 +142,7 @@ extension SecurityModeViewModel {
         coordinator.openPinChange(with: option.title) { [weak self] coordinatorCompletion in
             guard let self = self else { return }
 
-            self.cardModel.changeSecurityOption(option) { [weak self] result in
+            cardModel.changeSecurityOption(option) { [weak self] result in
                 self?.logSecurityModeChange()
 
                 coordinatorCompletion(result)

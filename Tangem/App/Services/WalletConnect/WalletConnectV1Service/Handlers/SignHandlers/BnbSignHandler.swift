@@ -12,9 +12,9 @@ import Combine
 import BlockchainSdk
 import TangemSdk
 
-fileprivate protocol BinanceMessage: Codable {}
+private protocol BinanceMessage: Codable {}
 
-fileprivate struct TransactionMessage: BinanceMessage {
+private struct TransactionMessage: BinanceMessage {
     struct Coin: Codable {
         let amount: Int64
         let denom: String
@@ -29,7 +29,7 @@ fileprivate struct TransactionMessage: BinanceMessage {
     let outputs: [Item]
 }
 
-fileprivate struct TradeMessage: BinanceMessage {
+private struct TradeMessage: BinanceMessage {
     let id: String
     let ordertype: Int
     let price: Int
@@ -40,7 +40,7 @@ fileprivate struct TradeMessage: BinanceMessage {
     let timeinforce: Int
 }
 
-fileprivate struct BinanceSingMessage<T: BinanceMessage>: Codable {
+private struct BinanceSingMessage<T: BinanceMessage>: Codable {
     let accountNumber: String
     let chainId: String
     let data: String?
@@ -71,7 +71,7 @@ fileprivate struct BinanceSingMessage<T: BinanceMessage>: Codable {
     }
 }
 
-fileprivate struct BnbMessageDTO {
+private struct BnbMessageDTO {
     let address: String
     let data: Data
     let message: String

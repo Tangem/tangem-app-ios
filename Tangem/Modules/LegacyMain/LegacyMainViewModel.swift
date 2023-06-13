@@ -16,12 +16,12 @@ class LegacyMainViewModel: ObservableObject {
     // MARK: - Dependencies
 
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
-    @Injected(\.appWarningsService) private var warningsService: AppWarningsProviding
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
     @Injected(\.rateAppService) private var rateAppService: RateAppService
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.deprecationService) private var deprecationService: DeprecationServicing
+    @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
 
     // MARK: - Published variables
 
@@ -31,6 +31,7 @@ class LegacyMainViewModel: ObservableObject {
     @Published var image: UIImage? = nil
     @Published var isLackDerivationWarningViewVisible: Bool = false
     @Published var isBackupAllowed: Bool = false
+    @Published var canOpenPromotion: Bool = false
 
     @Published var exchangeButtonState: ExchangeButtonState = .single(option: .buy)
     @Published var exchangeActionSheet: ActionSheetBinder?
@@ -40,7 +41,7 @@ class LegacyMainViewModel: ObservableObject {
             singleWalletContentViewModel?.objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink(receiveValue: { [unowned self] in
-                    self.objectWillChange.send()
+                    objectWillChange.send()
                 })
                 .store(in: &bag)
         }
@@ -51,7 +52,7 @@ class LegacyMainViewModel: ObservableObject {
             multiWalletContentViewModel?.objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink(receiveValue: { [unowned self] in
-                    self.objectWillChange.send()
+                    objectWillChange.send()
                 })
                 .store(in: &bag)
         }
@@ -168,6 +169,24 @@ class LegacyMainViewModel: ObservableObject {
         AppSettings.shared.saveUserWallets
     }
 
+    var learnAndEarnTitle: String {
+        if let _ = promotionService.promoCode {
+            #warning("L10n")
+            return "Learn & Earn"
+        } else {
+            return Localization.mainLearnTitle
+        }
+    }
+
+    var learnAndEarnSubtitle: String {
+        if let _ = promotionService.promoCode {
+            #warning("L10n")
+            return "Complete the training and get 10 1inch tokens on your wallet"
+        } else {
+            return Localization.mainLearnSubtitle
+        }
+    }
+
     init(
         cardModel: CardViewModel,
         cardImageProvider: CardImageProviding,
@@ -177,8 +196,10 @@ class LegacyMainViewModel: ObservableObject {
         self.cardImageProvider = cardImageProvider
         self.coordinator = coordinator
 
+        canOpenPromotion = promotionService.promotionAvailable()
+
         bind()
-        cardModel.setupWarnings()
+        setupWarnings()
         updateContent()
         updateExchangeButtons()
     }
@@ -190,18 +211,11 @@ class LegacyMainViewModel: ObservableObject {
     // MARK: - Functions
 
     func bind() {
-        warningsService.warningsUpdatePublisher
-            .sink { [unowned self] in
-                AppLog.shared.debug("⚠️ Main view model fetching warnings")
-                self.warnings = self.warningsService.warnings(for: .main)
-            }
-            .store(in: &bag)
-
         cardModel.subscribeToEntriesWithoutDerivation()
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .sink { [unowned self] entries in
-                self.updateLackDerivationWarningView(entries: entries)
+                updateLackDerivationWarningView(entries: entries)
             }
             .store(in: &bag)
 
@@ -209,6 +223,12 @@ class LegacyMainViewModel: ObservableObject {
             .dropFirst()
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
+            }
+            .store(in: &bag)
+
+        promotionService.readyForAwardPublisher
+            .sink { [weak self] in
+                self?.startAwardProcess()
             }
             .store(in: &bag)
     }
@@ -327,8 +347,77 @@ class LegacyMainViewModel: ObservableObject {
         cardModel.deriveEntriesWithoutDerivation()
     }
 
-    // MARK: - Warning action handler
+    func extractSellCryptoRequest(from response: String) {
+        if let request = exchangeService.extractSellCryptoRequest(from: response) {
+            openSendToSell(with: request)
+        }
+    }
 
+    func learnAndEarn() {
+        runTask { [weak self] in
+            guard let self else { return }
+
+            do {
+                try await promotionService.checkIfCanGetAward(userWalletId: cardModel.userWalletId.stringValue)
+
+                if promotionService.promoCode == nil {
+                    coordinator.openPromotion(
+                        cardPublicKey: cardModel.cardPublicKey.hex,
+                        cardId: cardModel.cardId,
+                        walletId: cardModel.userWalletId.stringValue
+                    )
+                } else {
+                    startAwardProcess()
+                }
+            } catch {
+                AppLog.shared.error(error)
+                if let apiError = error as? TangemAPIError,
+                   case .promotionCodeNotFound = apiError.code {
+                    #warning("L10n")
+                    self.error = AlertBinder(title: Localization.commonError, message: "There was no purchase of a wallet for your promotional code after education, which means you cannot receive a bonus. Buy Tangem wallet, scan it in the app, and take a bonus.")
+                } else {
+                    self.error = error.alertBinder
+                }
+            }
+
+            canOpenPromotion = promotionService.promotionAvailable()
+        }
+    }
+
+    func startAwardProcess() {
+        runTask { [weak self] in
+            guard let self else { return }
+
+            do {
+                let awarded = try await promotionService.claimReward(
+                    userWalletId: cardModel.userWalletId.stringValue,
+                    storageEntryAdding: cardModel
+                )
+
+                if awarded {
+                    #warning("l10n")
+                    error = AlertBuilder.makeSuccessAlert(message: "Your 1inch tokens will be credited to your wallet address within 2 days.")
+                }
+            } catch {
+                AppLog.shared.error(error)
+                self.error = error.alertBinder
+            }
+
+            canOpenPromotion = promotionService.promotionAvailable()
+        }
+    }
+
+    func prepareForBackup() {
+        if let input = cardModel.backupInput {
+            Analytics.log(.noticeBackupYourWalletTapped)
+            openOnboarding(with: input)
+        }
+    }
+}
+
+// MARK: - Warnings related
+
+extension LegacyMainViewModel {
     func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
         guard let warning = warnings.warning(at: index, with: priority) else { return }
 
@@ -367,7 +456,7 @@ class LegacyMainViewModel: ObservableObject {
                     secondaryButton: .default(Text(Localization.commonUnderstand)) { [weak self] in
                         withAnimation {
                             registerValidatedSignedHashesCard()
-                            self?.warningsService.hideWarning(warning)
+                            self?.cardModel.warningsService.hideWarning(warning)
                         }
                     }
                 ))
@@ -375,22 +464,24 @@ class LegacyMainViewModel: ObservableObject {
             }
         }
 
-        warningsService.hideWarning(warning)
+        cardModel.warningsService.hideWarning(warning)
     }
 
-    func extractSellCryptoRequest(from response: String) {
-        if let request = exchangeService.extractSellCryptoRequest(from: response) {
-            openSendToSell(with: request)
-        }
-    }
+    private func setupWarnings() {
+        cardModel.warningsService.warningsUpdatePublisher
+            .sink { [weak self] in
+                guard let self else { return }
 
-    func prepareForBackup() {
-        if let input = cardModel.backupInput {
-            Analytics.log(.noticeBackupYourWalletTapped)
-            openOnboarding(with: input)
-        }
-    }
+                AppLog.shared.debug("⚠️ Main view model fetching warnings")
+                warnings = cardModel.warningsService.warnings(for: .main)
+            }
+            .store(in: &bag)
 
+        cardModel.setupWarnings()
+    }
+}
+
+private extension LegacyMainViewModel {
     // MARK: - Private functions
 
     private func updateContent() {
@@ -515,7 +606,7 @@ extension LegacyMainViewModel {
             coordinator.openBuyCrypto(at: url, closeUrl: buyCryptoCloseUrl) { [weak self] _ in
                 guard let self = self else { return }
 
-                let code = self.currencyCode
+                let code = currencyCode
                 Analytics.log(event: .tokenBought, params: [.token: code])
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in

@@ -85,7 +85,7 @@ struct OnboardingTextButtonView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if let title = self.title, let subtitle = self.subtitle {
+            if let title = title, let subtitle = subtitle {
                 OnboardingMessagesView(
                     title: title,
                     subtitle: subtitle
@@ -98,7 +98,7 @@ struct OnboardingTextButtonView: View {
                 Spacer()
             }
 
-            if let checkmarkText = self.checkmarkText {
+            if let checkmarkText = checkmarkText {
                 HStack {
                     CheckmarkSwitch(
                         isChecked: isCheckmarkChecked,

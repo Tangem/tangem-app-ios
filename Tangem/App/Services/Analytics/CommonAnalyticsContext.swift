@@ -71,7 +71,7 @@ private extension CommonAnalyticsContext {
 
 // MARK: - AnalyticsStorage
 
-fileprivate class AnalyticsStorage {
+private class AnalyticsStorage {
     private var tempStorage: [String: Any] = [:]
 
     func value(_ storageKey: AnalyticsStorageKey, id: String) -> Any? {

@@ -19,19 +19,19 @@ struct WarningListView: View {
         Group {
             ForEach(Array(warnings.criticals.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.criticals[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .critical, button: b)
+                    buttonAction(at: i, priority: .critical, button: b)
                 })
                 .transition(transition)
             }
             ForEach(Array(warnings.warnings.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.warnings[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .warning, button: b)
+                    buttonAction(at: i, priority: .warning, button: b)
                 })
                 .transition(transition)
             }
             ForEach(Array(warnings.infos.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.infos[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .info, button: b)
+                    buttonAction(at: i, priority: .info, button: b)
                 })
                 .transition(transition)
             }
@@ -40,7 +40,7 @@ struct WarningListView: View {
 
     private func buttonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
         withAnimation {
-            self.warningButtonAction(index, priority, button)
+            warningButtonAction(index, priority, button)
         }
     }
 }

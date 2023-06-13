@@ -62,7 +62,7 @@ extension CardImageLoader: CardImageLoaderProtocol {
     }
 }
 
-fileprivate enum ImageError: Error {
+private enum ImageError: Error {
     case nothingToLoad
     case mapFailed
     case badNdef

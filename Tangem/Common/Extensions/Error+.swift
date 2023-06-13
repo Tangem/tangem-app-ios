@@ -34,7 +34,7 @@ extension Error {
 
 // MARK: - BindableErrorWrapper
 
-fileprivate struct BindableErrorWrapper: BindableError {
+private struct BindableErrorWrapper: BindableError {
     private let error: Error
 
     init(_ error: Error) {

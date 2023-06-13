@@ -132,7 +132,7 @@ struct CustomTextField: UIViewRepresentable {
     var keyboard: UIKeyboardType = .default
     var clearButtonMode: UITextField.ViewMode = .never
     var textColor: UIColor = .tangemGrayDark4
-    var font: UIFont = UIFont.systemFont(ofSize: 16.0)
+    var font: UIFont = .systemFont(ofSize: 16.0)
     let placeholder: String
     let toolbarItems: [UIBarButtonItem]? = nil
     var decimalCount: Int?

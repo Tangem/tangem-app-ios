@@ -14,7 +14,7 @@ import BlockchainSdk
 
 // MARK: - Models
 
-fileprivate enum QueryKey: String {
+private enum QueryKey: String {
     case apiKey
     case currencyCode
     case walletAddress
@@ -26,7 +26,7 @@ fileprivate enum QueryKey: String {
     case depositWalletAddress
 }
 
-fileprivate struct IpCheckResponse: Decodable {
+private struct IpCheckResponse: Decodable {
     let countryCode: String
     let stateCode: String
     let isMoonpayAllowed: Bool
@@ -41,7 +41,7 @@ fileprivate struct IpCheckResponse: Decodable {
     }
 }
 
-fileprivate struct MoonpayCurrency: Decodable {
+private struct MoonpayCurrency: Decodable {
     enum CurrencyType: String, Decodable {
         case crypto
         case fiat
@@ -106,7 +106,7 @@ fileprivate struct MoonpayCurrency: Decodable {
     let metadata: Metadata?
 }
 
-fileprivate struct MoonpaySupportedCurrency: Hashable {
+private struct MoonpaySupportedCurrency: Hashable {
     let networkCode: MoonpayCurrency.NetworkCode
     let contractAddress: String?
 }
@@ -269,8 +269,8 @@ extension MoonPayService: ExchangeService {
             var stateCode = ""
             do {
                 let decodedResponse = try decoder.decode(IpCheckResponse.self, from: ipOutput.data)
-                self.canBuyCrypto = decodedResponse.isBuyAllowed
-                self.canSellCrypto = decodedResponse.isSellAllowed
+                canBuyCrypto = decodedResponse.isBuyAllowed
+                canSellCrypto = decodedResponse.isSellAllowed
                 countryCode = decodedResponse.countryCode
                 stateCode = decodedResponse.stateCode
             } catch {
@@ -306,20 +306,20 @@ extension MoonPayService: ExchangeService {
                         )
                     }
                 }
-                self.availableToBuy = currenciesToBuy
-                self.availableToSell = currenciesToSell
+                availableToBuy = currenciesToBuy
+                availableToSell = currenciesToSell
             } catch {
                 AppLog.shared.debug("Failed to load currencies")
                 AppLog.shared.error(error)
             }
 
-            self.initialized = true
+            initialized = true
         }
         .store(in: &bag)
     }
 }
 
-fileprivate extension URLQueryItem {
+private extension URLQueryItem {
     init(key: QueryKey, value: String?) {
         self.init(name: key.rawValue, value: value)
     }

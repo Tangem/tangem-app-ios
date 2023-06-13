@@ -59,7 +59,7 @@ enum ItemPosition: Equatable {
     }
 }
 
-fileprivate struct LineShape: Shape {
+private struct LineShape: Shape {
     let position: ItemPosition
 
     func path(in rect: CGRect) -> Path {
@@ -88,7 +88,7 @@ fileprivate struct LineShape: Shape {
     }
 }
 
-fileprivate struct TriangleShape: Shape {
+private struct TriangleShape: Shape {
     let size: CGFloat = 6
 
     func path(in rect: CGRect) -> Path {

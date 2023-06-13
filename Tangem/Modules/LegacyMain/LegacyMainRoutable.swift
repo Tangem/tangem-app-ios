@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 
-protocol LegacyMainRoutable: TokenDetailsRoutable {
+protocol LegacyMainRoutable: LegacyTokenDetailsRoutable {
     func close(newScan: Bool)
     func openSettings(cardModel: CardViewModel)
     func openTokenDetails(cardModel: CardViewModel, blockchainNetwork: BlockchainNetwork, amountType: Amount.AmountType)
@@ -19,6 +19,7 @@ protocol LegacyMainRoutable: TokenDetailsRoutable {
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
     func openQR(shareAddress: String, address: String, qrNotice: String)
     func openUserWalletList()
+    func openPromotion(cardPublicKey: String, cardId: String, walletId: String)
 }
 
 protocol OpenCurrencySelectionDelegate: AnyObject {

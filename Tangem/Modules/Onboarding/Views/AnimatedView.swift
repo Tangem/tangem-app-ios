@@ -128,7 +128,7 @@ struct AnimatedView<Content: View>: View {
     }
 }
 
-fileprivate class AnimatedViewPreviewModel: ObservableObject {
+private class AnimatedViewPreviewModel: ObservableObject {
     enum Step: String {
         case zero
         case first
@@ -265,7 +265,7 @@ fileprivate class AnimatedViewPreviewModel: ObservableObject {
     }
 }
 
-fileprivate struct AnimatedViewPreview: View {
+private struct AnimatedViewPreview: View {
     @ObservedObject var viewModel: AnimatedViewPreviewModel
 
     var body: some View {

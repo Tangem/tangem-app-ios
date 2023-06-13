@@ -33,12 +33,12 @@ class MinimizedAppTimer {
             .sink { [weak self] _ in
                 guard let self else { return }
 
-                if let lastTimeEnteredBackground = self.lastTimeEnteredBackground,
+                if let lastTimeEnteredBackground = lastTimeEnteredBackground,
                    Date().timeIntervalSince(lastTimeEnteredBackground) >= self.interval {
-                    self.publisher.send(())
+                    publisher.send(())
                 }
 
-                self.lastTimeEnteredBackground = nil
+                lastTimeEnteredBackground = nil
             }
             .store(in: &bag)
     }

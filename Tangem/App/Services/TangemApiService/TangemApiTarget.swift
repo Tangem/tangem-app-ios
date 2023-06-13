@@ -33,6 +33,14 @@ struct TangemApiTarget: TargetType {
             return "/referral/\(userWalletId)"
         case .participateInReferralProgram:
             return "/referral"
+        case .validateNewUserPromotionEligibility:
+            return "/promotion/code/validate"
+        case .validateOldUserPromotionEligibility:
+            return "/promotion/validate"
+        case .awardNewUser:
+            return "/promotion/code/award"
+        case .awardOldUser:
+            return "/promotion/award"
         }
     }
 
@@ -42,7 +50,7 @@ struct TangemApiTarget: TargetType {
             return .get
         case .saveUserWalletTokens:
             return .put
-        case .participateInReferralProgram:
+        case .participateInReferralProgram, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser:
             return .post
         }
     }
@@ -67,6 +75,28 @@ struct TangemApiTarget: TargetType {
             return .requestPlain
         case .participateInReferralProgram(let requestData):
             return .requestURLEncodable(requestData)
+        case .validateNewUserPromotionEligibility(let walletId, let code):
+            return .requestParameters(parameters: [
+                "walletId": walletId,
+                "code": code,
+            ], encoding: JSONEncoding.default)
+        case .validateOldUserPromotionEligibility(let walletId, let programName):
+            return .requestParameters(parameters: [
+                "walletId": walletId,
+                "programName": programName,
+            ], encoding: JSONEncoding.default)
+        case .awardNewUser(let walletId, let address, let code):
+            return .requestParameters(parameters: [
+                "walletId": walletId,
+                "address": address,
+                "code": code,
+            ], encoding: JSONEncoding.default)
+        case .awardOldUser(let walletId, let address, let programName):
+            return .requestParameters(parameters: [
+                "walletId": walletId,
+                "address": address,
+                "programName": programName,
+            ], encoding: JSONEncoding.default)
         }
     }
 
@@ -85,6 +115,12 @@ extension TangemApiTarget {
         case saveUserWalletTokens(key: String, list: UserTokenList)
         case loadReferralProgramInfo(userWalletId: String)
         case participateInReferralProgram(userInfo: ReferralParticipationRequestBody)
+
+        // Promotion
+        case validateNewUserPromotionEligibility(walletId: String, code: String)
+        case validateOldUserPromotionEligibility(walletId: String, programName: String)
+        case awardNewUser(walletId: String, address: String, code: String)
+        case awardOldUser(walletId: String, address: String, programName: String)
     }
 
     struct AuthData {

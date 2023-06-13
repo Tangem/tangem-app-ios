@@ -27,7 +27,6 @@ enum UserWalletFeature: Int, CaseIterable { // TODO: Add comments
 
     case walletConnect
     case multiCurrency
-    case tokensSearch
     case resetToFactory
     /// Count signed hashes to display warning for user if card already sign hashes in the past.
     case signedHashesCounter

@@ -15,21 +15,28 @@ struct AddCustomTokenView: View {
         ScrollView {
             VStack(spacing: 10) {
                 VStack(spacing: 1) {
-                    TextInputWithTitle(title: Localization.customTokenContractAddressInputTitle, placeholder: "0x0000000000000000000000000000000000000000", text: $viewModel.contractAddress, keyboardType: .default, isEnabled: true, isLoading: viewModel.isLoading)
+                    PickerInputWithTitle(title: Localization.customTokenNetworkInputTitle, model: $viewModel.blockchainsPicker)
                         .cornerRadius(10, corners: [.topLeft, .topRight])
 
-                    PickerInputWithTitle(title: Localization.customTokenNetworkInputTitle, model: $viewModel.blockchainsPicker)
+                    if viewModel.canEnterTokenDetails {
+                        TextInputWithTitle(title: Localization.customTokenContractAddressInputTitle, placeholder: "0x0000000000000000000000000000000000000000", text: $viewModel.contractAddress, keyboardType: .default, isEnabled: true, isLoading: viewModel.isLoading)
 
-                    TextInputWithTitle(title: Localization.customTokenNameInputTitle, placeholder: Localization.customTokenNameInputPlaceholder, text: $viewModel.name, keyboardType: .default, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
+                        TextInputWithTitle(title: Localization.customTokenNameInputTitle, placeholder: Localization.customTokenNameInputPlaceholder, text: $viewModel.name, keyboardType: .default, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
 
-                    TextInputWithTitle(title: Localization.customTokenTokenSymbolInputTitle, placeholder: Localization.customTokenTokenSymbolInputPlaceholder, text: $viewModel.symbol, keyboardType: .default, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
+                        TextInputWithTitle(title: Localization.customTokenTokenSymbolInputTitle, placeholder: Localization.customTokenTokenSymbolInputPlaceholder, text: $viewModel.symbol, keyboardType: .default, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
 
-                    TextInputWithTitle(title: Localization.customTokenDecimalsInputTitle, placeholder: "0", text: $viewModel.decimals, keyboardType: .numberPad, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
-                        .cornerRadius(viewModel.showDerivationPaths ? 0 : 10, corners: [.bottomLeft, .bottomRight])
+                        TextInputWithTitle(title: Localization.customTokenDecimalsInputTitle, placeholder: "0", text: $viewModel.decimals, keyboardType: .numberPad, isEnabled: viewModel.canEnterTokenDetails, isLoading: false)
+                            .cornerRadius(viewModel.showDerivationPaths ? 0 : 10, corners: [.bottomLeft, .bottomRight])
+                    }
 
                     if viewModel.showDerivationPaths {
                         PickerInputWithTitle(title: Localization.customTokenDerivationPathInputTitle, model: $viewModel.derivationsPicker)
-                            .cornerRadius(10, corners: [.bottomLeft, .bottomRight])
+                            .cornerRadius(viewModel.showCustomDerivationPath ? 0 : 10, corners: [.bottomLeft, .bottomRight])
+
+                        if viewModel.showCustomDerivationPath {
+                            TextInputWithTitle(title: Localization.customTokenCustomDerivation, placeholder: "m/44'/0'/0'/0/0", text: $viewModel.customDerivationPath, keyboardType: .default, isEnabled: true, isLoading: false)
+                                .cornerRadius(10, corners: [.bottomLeft, .bottomRight])
+                        }
                     }
                 }
 
@@ -55,7 +62,7 @@ struct AddCustomTokenView: View {
 }
 
 // TODO: Refactor? Combine together? Is this stuff going to survive the redesign?
-fileprivate struct TextInputWithTitle: View {
+private struct TextInputWithTitle: View {
     var title: String
     var placeholder: String
     var text: Binding<String>
@@ -85,7 +92,7 @@ fileprivate struct TextInputWithTitle: View {
     }
 }
 
-fileprivate struct PickerInputWithTitle: View {
+private struct PickerInputWithTitle: View {
     var title: String
     var height: CGFloat = 60
     var backgroundColor: Color = .white
@@ -121,7 +128,7 @@ fileprivate struct PickerInputWithTitle: View {
 
 // MARK: - Modifiers
 
-fileprivate struct PickerAlignmentModifier: ViewModifier {
+private struct PickerAlignmentModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 16, *) {
             content
@@ -132,7 +139,7 @@ fileprivate struct PickerAlignmentModifier: ViewModifier {
     }
 }
 
-fileprivate struct PickerStyleModifier: ViewModifier {
+private struct PickerStyleModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15, *) {
             content

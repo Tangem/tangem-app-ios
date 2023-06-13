@@ -25,8 +25,6 @@ struct UserWalletConfigFactory {
 
         switch cardInfo.walletData {
         case .none:
-            let isSaltPay = SaltPayUtil().isSaltPayCard(batchId: cardInfo.card.batchId, cardId: cardInfo.card.cardId)
-
             // old multiwallet
             if cardInfo.card.firmwareVersion <= .backupAvailable {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
@@ -34,8 +32,6 @@ struct UserWalletConfigFactory {
 
             if isDemo {
                 return GenericDemoConfig(card: cardInfo.card)
-            } else if isSaltPay {
-                return SaltPayConfig(card: cardInfo.card)
             } else {
                 return GenericConfig(card: cardInfo.card)
             }

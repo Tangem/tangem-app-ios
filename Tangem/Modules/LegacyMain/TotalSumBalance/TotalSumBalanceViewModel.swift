@@ -43,9 +43,8 @@ class TotalSumBalanceViewModel: ObservableObject {
 
     func updateForSingleCoinCard() {
         guard let cardAmountType = cardAmountType else { return }
-        let walletModels = userWalletModel.getWalletModels()
 
-        singleWalletBalance = walletModels.first?.allTokenItemViewModels().first(where: { $0.amountType == cardAmountType })?.balance
+        singleWalletBalance = userWalletModel.walletModels.first?.legacyMultiCurrencyViewModel().first(where: { $0.amountType == cardAmountType })?.balance
     }
 
     func didTapOnCurrencySymbol() {
@@ -85,7 +84,7 @@ class TotalSumBalanceViewModel: ObservableObject {
     private func checkPositiveBalance() {
         guard rateAppService.shouldCheckBalanceForRateApp else { return }
 
-        guard userWalletModel.getWalletModels().contains(where: { !$0.wallet.isEmpty }) else { return }
+        guard userWalletModel.walletModels.contains(where: { !$0.wallet.isEmpty }) else { return }
 
         rateAppService.registerPositiveBalanceDate()
     }

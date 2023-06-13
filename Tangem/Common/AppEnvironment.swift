@@ -46,6 +46,14 @@ extension AppEnvironment {
             URL(string: "https://api.tangem-tech.com/v1")!
     }
 
+    var tangemComBaseUrl: URL {
+        if FeatureStorage().useDevApi {
+            return URL(string: "https://devweb.tangem.com")!
+        } else {
+            return URL(string: "https://tangem.com")!
+        }
+    }
+
     var isTestnet: Bool {
         FeatureStorage().isTestnet
     }

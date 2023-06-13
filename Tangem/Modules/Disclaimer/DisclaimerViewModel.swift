@@ -6,7 +6,7 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 
 class DisclaimerViewModel: Identifiable {
     let webViewModel: WebViewContainerViewModel
@@ -28,7 +28,7 @@ class DisclaimerViewModel: Identifiable {
             addLoadingIndicator: true,
             withCloseButton: false,
             withNavigationBar: false,
-            contentInset: .init(top: 0, left: 0, bottom: style.bottomOverlayHeight / 2, right: 0)
+            contentInset: style.contentInset
         )
     }
 }
@@ -45,6 +45,19 @@ extension DisclaimerViewModel {
             case .onboarding:
                 return 170
             }
+        }
+
+        var bottomOverlayOffset: CGFloat {
+            switch self {
+            case .onboarding:
+                return 64
+            case .details:
+                return .zero
+            }
+        }
+
+        var contentInset: UIEdgeInsets {
+            return .init(top: 0, left: 0, bottom: (bottomOverlayHeight / 2) + bottomOverlayOffset, right: 0)
         }
     }
 }

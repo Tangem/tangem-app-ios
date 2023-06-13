@@ -46,10 +46,6 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var userWalletIdSeed: Data? { get }
 
-    var supportChatEnvironment: SupportChatEnvironment { get }
-
-    var exchangeServiceEnvironment: ExchangeServiceEnvironment { get }
-
     var productType: Analytics.ProductType { get }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability
@@ -64,14 +60,6 @@ extension UserWalletConfig {
 
     var cardAmountType: Amount.AmountType? {
         return nil
-    }
-
-    var supportChatEnvironment: SupportChatEnvironment {
-        .tangem
-    }
-
-    var exchangeServiceEnvironment: ExchangeServiceEnvironment {
-        .default
     }
 
     var tou: TOU {

@@ -44,10 +44,10 @@ struct TangemSigner: TransactionSigner {
                 derivationPath: walletPublicKey.derivationPath
             )
 
-            self.sdk.startSession(with: signCommand, cardId: self.cardId, initialMessage: self.initialMessage) { signResult in
+            sdk.startSession(with: signCommand, cardId: cardId, initialMessage: initialMessage) { signResult in
                 switch signResult {
                 case .success(let response):
-                    self._signPublisher.send(response.card)
+                    _signPublisher.send(response.card)
                     promise(.success(response.signatures))
                 case .failure(let error):
                     promise(.failure(error))

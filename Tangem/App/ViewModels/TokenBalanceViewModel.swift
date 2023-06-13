@@ -9,20 +9,8 @@
 import Foundation
 import BlockchainSdk
 
-struct TokenBalanceViewModel: Hashable, Identifiable {
-    var id: Int { token.hashValue }
-
+struct TokenBalanceViewModel {
     let name: String
-    let tokenName: String
     let balance: String
     let fiatBalance: String
-    let token: Token
-
-    init(token: Token, balance: String, fiatBalance: String) {
-        name = token.name
-        tokenName = token.symbol
-        self.balance = balance
-        self.fiatBalance = fiatBalance
-        self.token = token
-    }
 }

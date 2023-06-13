@@ -124,7 +124,6 @@ extension DetailsViewModel {
         )
 
         coordinator.openSupportChat(input: .init(
-            environment: cardModel.supportChatEnvironment,
             logsComposer: .init(infoProvider: dataCollector)
         ))
     }

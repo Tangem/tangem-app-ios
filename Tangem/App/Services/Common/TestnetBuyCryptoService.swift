@@ -47,7 +47,7 @@ class TestnetBuyCryptoService {
                     AppPresenter.shared.show(AlertBuilder.makeSuccessAlertController(message: Localization.testnetAddressTopuped))
                 }
 
-                self.bag.remove(subs)
+                bag.remove(subs)
                 subs = nil
             } receiveValue: { _ in }
 

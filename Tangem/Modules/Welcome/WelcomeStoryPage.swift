@@ -9,11 +9,8 @@
 import Foundation
 import SwiftUI
 
-enum WelcomeStoryPage: Int, Identifiable, CaseIterable {
-    var id: Int {
-        rawValue
-    }
-
+enum WelcomeStoryPage: CaseIterable {
+    case learn
     case meetTangem
     case awe
     case backup
@@ -23,7 +20,7 @@ enum WelcomeStoryPage: Int, Identifiable, CaseIterable {
 
     var colorScheme: ColorScheme {
         switch self {
-        case .meetTangem, .awe, .finish:
+        case .learn, .meetTangem, .awe, .finish:
             return .dark
         default:
             return .light
@@ -32,7 +29,7 @@ enum WelcomeStoryPage: Int, Identifiable, CaseIterable {
 
     var duration: Double {
         switch self {
-        case .meetTangem:
+        case .learn, .meetTangem:
             return 8
         default:
             return 6

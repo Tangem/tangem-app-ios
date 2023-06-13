@@ -147,8 +147,6 @@ extension GenericDemoConfig: UserWalletConfig {
             return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .multiCurrency:
             return .available
-        case .tokensSearch:
-            return .hidden
         case .resetToFactory:
             return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .receive:
@@ -218,7 +216,7 @@ extension GenericDemoConfig: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 
-fileprivate extension Card.BackupStatus {
+private extension Card.BackupStatus {
     var backupCardsCount: Int? {
         if case .active(let backupCards) = self {
             return backupCards

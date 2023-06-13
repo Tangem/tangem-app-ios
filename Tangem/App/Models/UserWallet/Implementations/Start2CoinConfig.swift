@@ -116,8 +116,6 @@ extension Start2CoinConfig: UserWalletConfig {
             return .hidden
         case .multiCurrency:
             return .hidden
-        case .tokensSearch:
-            return .hidden
         case .resetToFactory:
             return .hidden
         case .receive:
@@ -170,7 +168,7 @@ extension Start2CoinConfig: UserWalletConfig {
 
 // MARK: - TOU
 
-fileprivate struct TOUBuilder {
+private struct TOUBuilder {
     func makeTOU(for cardId: String) -> TOU {
         let regionCode = regionCode(for: cardId)
         let url = TOUItem.makeFrom(languageCode: Locale.current.languageCode, regionCode: regionCode).url
@@ -194,7 +192,7 @@ fileprivate struct TOUBuilder {
     }
 }
 
-fileprivate enum TOUItem: CaseIterable {
+private enum TOUItem: CaseIterable {
     case deAt
     case deCh
     case enCh

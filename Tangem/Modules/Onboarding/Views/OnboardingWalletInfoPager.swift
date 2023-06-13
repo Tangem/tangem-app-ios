@@ -128,9 +128,9 @@ struct PagerViewWithDots<Data, Content>: View
                 index = 0
             }
             withAnimation(.easeInOut(duration: 0.4)) {
-                self.currentIndex = index
+                currentIndex = index
             }
-            self.switchToNextPage()
+            switchToNextPage()
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: pageUpdateWork!)
     }

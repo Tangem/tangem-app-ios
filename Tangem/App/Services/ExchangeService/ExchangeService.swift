@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 // TODO: Refactor name)
-private typealias ExternalExchangeService = ExchangeService & ExchangeServiceConfigurator
+private typealias ExternalExchangeService = ExchangeService
 
 protocol ExchangeService: AnyObject, Initializable {
     var initializationPublisher: Published<Bool>.Publisher { get }
@@ -23,29 +23,16 @@ protocol ExchangeService: AnyObject, Initializable {
     func extractSellCryptoRequest(from data: String) -> SellCryptoRequest?
 }
 
-protocol ExchangeServiceConfigurator {
-    func configure(for environment: ExchangeServiceEnvironment)
-}
-
-enum ExchangeServiceEnvironment {
-    case `default`
-    case saltpay
-}
-
 private struct ExchangeServiceKey: InjectionKey {
     static var currentValue: ExternalExchangeService = CombinedExchangeService(
         mercuryoService: MercuryoService(),
-        utorgService: UtorgService(),
+        utorgService: nil, // Remove optional from the ExternalExchangeService and set the utorgSID in the CommonKeysManager tore-integrate Utorg
         sellService: MoonPayService()
     )
 }
 
 extension InjectedValues {
     var exchangeService: ExchangeService {
-        externalExchangeService
-    }
-
-    var exchangeServiceConfigurator: ExchangeServiceConfigurator {
         externalExchangeService
     }
 

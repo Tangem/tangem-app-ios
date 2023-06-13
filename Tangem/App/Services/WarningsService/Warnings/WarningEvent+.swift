@@ -41,7 +41,7 @@ extension WarningEvent {
     }
 }
 
-fileprivate enum WarningsList {
+private enum WarningsList {
     static let warningTitle = Localization.commonWarning
 
     static let oldCard = AppWarning(title: warningTitle, message: Localization.alertOldCard, priority: .info, type: .permanent)

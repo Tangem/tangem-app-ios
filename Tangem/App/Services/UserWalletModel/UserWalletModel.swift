@@ -12,11 +12,11 @@ import Combine
 protocol UserWalletModel: AnyObject {
     var isMultiWallet: Bool { get }
     var userWalletId: UserWalletId { get }
+    var walletModels: [WalletModel] { get }
     var userTokenListManager: UserTokenListManager { get }
     var totalBalanceProvider: TotalBalanceProviding { get }
     var userWallet: UserWallet { get }
 
-    func getWalletModels() -> [WalletModel]
     func subscribeToWalletModels() -> AnyPublisher<[WalletModel], Never>
 
     func getSavedEntries() -> [StorageEntry]

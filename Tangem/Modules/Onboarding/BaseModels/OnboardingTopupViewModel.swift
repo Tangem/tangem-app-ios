@@ -21,7 +21,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
     var walletModelUpdateCancellable: AnyCancellable?
 
     var buyCryptoURL: URL? {
-        if let wallet = cardModel?.wallets.first {
+        if let wallet = cardModel?.walletModels.first?.wallet {
             return exchangeService.getBuyUrl(
                 currencySymbol: wallet.blockchain.currencySymbol,
                 amountType: .coin,
@@ -62,7 +62,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
             .sink { [weak self] walletModelState in
                 guard let self = self else { return }
 
-                self.updateCardBalanceText(for: walletModel, type: type)
+                updateCardBalanceText(for: walletModel, type: type)
                 switch walletModelState {
                 case .noAccount(let message):
                     AppLog.shared.debug(message)
@@ -72,25 +72,25 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        !(walletModel.wallet.amounts[type]?.isZero ?? true) {
                         Analytics.logTopUpIfNeeded(balance: walletModel.totalBalance)
-                        self.goToNextStep()
-                        self.walletModelUpdateCancellable = nil
+                        goToNextStep()
+                        walletModelUpdateCancellable = nil
                         return
                     }
 
-                    self.resetRefreshButtonState()
+                    resetRefreshButtonState()
                 case .failed(let error):
-                    self.resetRefreshButtonState()
+                    resetRefreshButtonState()
 
                     // Need check is display alert yet, because not to present an error if it is already shown
-                    guard self.alert == nil else {
+                    guard alert == nil else {
                         return
                     }
 
-                    self.alert = error.alertBinder
+                    alert = error.alertBinder
                 case .loading, .created, .noDerivation:
                     return
                 }
-                self.walletModelUpdateCancellable = nil
+                walletModelUpdateCancellable = nil
             }
         walletModel.update(silent: false)
     }

@@ -23,8 +23,8 @@ struct WalletConnectV2Utils {
                 return false
             }
 
-            let blockchains = proposals.chains.compactMap(createBlockchain(for:))
-            if blockchains.count != proposals.chains.count {
+            let blockchains = proposals.chains?.compactMap(createBlockchain(for:))
+            if blockchains?.count != proposals.chains?.count {
                 return false
             }
         }
@@ -49,8 +49,12 @@ struct WalletConnectV2Utils {
     func extractUnsupportedBlockchainNames(from namespaces: [String: ProposalNamespace]) -> [String] {
         var blockchains = [String]()
         for (namespace, proposal) in namespaces {
+            guard let chains = proposal.chains else {
+                continue
+            }
+
             if namespace == evmNamespace {
-                let notSupportedEVMChainIds: [String] = proposal.chains.compactMap { chain in
+                let notSupportedEVMChainIds: [String] = chains.compactMap { chain in
                     guard createBlockchain(for: chain) == nil else {
                         return nil
                     }
@@ -60,7 +64,7 @@ struct WalletConnectV2Utils {
 
                 blockchains.append(contentsOf: notSupportedEVMChainIds)
             } else {
-                let notEVMChainNames = proposal.chains.map { chain in
+                let notEVMChainNames = chains.map { chain in
                     return createBlockchain(for: chain)?.displayName ?? namespace.capitalizingFirstLetter()
                 }
 
@@ -83,7 +87,11 @@ struct WalletConnectV2Utils {
         var missingBlockchains: [String] = []
         var unsupportedEVMBlockchains: [String] = []
         for (namespace, proposalNamespace) in namespaces {
-            let accounts: [[Account]] = proposalNamespace.chains.compactMap { wcBlockchain in
+            guard let chains = proposalNamespace.chains else {
+                continue
+            }
+
+            let accounts: [[Account]] = chains.compactMap { wcBlockchain in
                 guard let blockchain = createBlockchain(for: wcBlockchain) else {
                     unsupportedEVMBlockchains.append(wcBlockchain.reference)
                     return nil
@@ -101,8 +109,7 @@ struct WalletConnectV2Utils {
             let sessionNamespace = SessionNamespace(
                 accounts: Set(accounts.reduce([], +)),
                 methods: proposalNamespace.methods,
-                events: proposalNamespace.events,
-                extensions: nil
+                events: proposalNamespace.events
             )
             sessionNamespaces[namespace] = sessionNamespace
         }

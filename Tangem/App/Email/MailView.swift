@@ -79,7 +79,7 @@ struct MailView: UIViewControllerRepresentable {
     ) {}
 }
 
-fileprivate struct MailViewPlaceholder: View {
+private struct MailViewPlaceholder: View {
     @Binding var presentationMode: PresentationMode
 
     var body: some View {

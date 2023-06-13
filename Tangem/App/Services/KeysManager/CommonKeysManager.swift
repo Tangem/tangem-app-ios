@@ -47,14 +47,18 @@ extension CommonKeysManager: KeysManager {
             // TODO: rename to solana
             quickNodeSolanaCredentials: .init(apiKey: keys.quiknodeApiKey, subdomain: keys.quiknodeSubdomain),
             quickNodeBscCredentials: .init(apiKey: keys.bscQuiknodeApiKey, subdomain: keys.bscQuiknodeSubdomain),
-            blockscoutCredentials: keys.saltPay.blockscoutCredentials,
+            blockscoutCredentials: .init(login: "", password: ""), // used for saltpay tx history
             defaultNetworkProviderConfiguration: .init(logger: .verbose, urlSessionConfiguration: .standart),
-            networkProviderConfigurations: [.saltPay: .init(logger: .verbose, credentials: keys.saltPay.credentials)]
+            networkProviderConfigurations: [:]
         )
     }
 
     var shopifyShop: ShopifyShop {
         keys.shopifyShop
+    }
+
+    var tangemComAuthorization: String? {
+        keys.tangemComAuthorization
     }
 
     var zendesk: ZendeskConfig {
@@ -65,8 +69,8 @@ extension CommonKeysManager: KeysManager {
         keys.amplitudeApiKey
     }
 
-    var saltPay: SaltPayConfiguration {
-        keys.saltPay
+    var utorgSID: String {
+        "tangemTEST"
     }
 
     var infuraProjectId: String {
@@ -75,6 +79,10 @@ extension CommonKeysManager: KeysManager {
 
     var swapReferrerAccount: SwapReferrerAccount? {
         keys.swapReferrerAccount
+    }
+
+    var walletConnectProjectId: String {
+        keys.walletConnectProjectId
     }
 }
 
@@ -99,8 +107,9 @@ extension CommonKeysManager {
         let bscQuiknodeApiKey: String
         let bscQuiknodeSubdomain: String
         let shopifyShop: ShopifyShop
+        let tangemComAuthorization: String?
         let zendesk: ZendeskConfig
-        let saltPay: SaltPayConfiguration
         let swapReferrerAccount: SwapReferrerAccount?
+        let walletConnectProjectId: String
     }
 }

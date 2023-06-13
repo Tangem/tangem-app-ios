@@ -29,6 +29,11 @@ class CommonTangemApiService {
     deinit {
         AppLog.shared.debug("CommonTangemApiService deinit")
     }
+
+    private func request<D: Decodable>(for type: TangemApiTarget.TargetType) async throws -> D {
+        let target = TangemApiTarget(type: type, authData: authData)
+        return try await provider.asyncRequest(for: target).mapAPIResponse()
+    }
 }
 
 // MARK: - TangemApiService
@@ -155,6 +160,26 @@ extension CommonTangemApiService: TangemApiService {
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }
 
+    @discardableResult
+    func validateNewUserPromotionEligibility(walletId: String, code: String) async throws -> PromotionValidationResult {
+        try await request(for: .validateNewUserPromotionEligibility(walletId: walletId, code: code))
+    }
+
+    @discardableResult
+    func validateOldUserPromotionEligibility(walletId: String, programName: String) async throws -> PromotionValidationResult {
+        try await request(for: .validateOldUserPromotionEligibility(walletId: walletId, programName: programName))
+    }
+
+    @discardableResult
+    func awardNewUser(walletId: String, address: String, code: String) async throws -> PromotionAwardResult {
+        try await request(for: .awardNewUser(walletId: walletId, address: address, code: code))
+    }
+
+    @discardableResult
+    func awardOldUser(walletId: String, address: String, programName: String) async throws -> PromotionAwardResult {
+        try await request(for: .awardOldUser(walletId: walletId, address: address, programName: programName))
+    }
+
     func initialize() {
         provider
             .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
@@ -171,5 +196,17 @@ extension CommonTangemApiService: TangemApiService {
 
     func setAuthData(_ authData: TangemApiTarget.AuthData) {
         self.authData = authData
+    }
+}
+
+private extension Response {
+    func mapAPIResponse<D: Decodable>() throws -> D {
+        let filteredResponse = try filterSuccessfulStatusCodes()
+
+        if let baseError = try? filteredResponse.map(TangemBaseAPIError.self) {
+            throw baseError.error
+        }
+
+        return try filteredResponse.map(D.self)
     }
 }

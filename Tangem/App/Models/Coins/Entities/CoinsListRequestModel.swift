@@ -16,6 +16,8 @@ struct CoinsListRequestModel: Encodable {
     let limit: Int?
     let offset: Int?
     let active: Bool?
+    /// Token or coin id
+    let ids: String?
 
     init(
         contractAddress: String? = nil,
@@ -24,7 +26,8 @@ struct CoinsListRequestModel: Encodable {
         exchangeable: Bool? = nil,
         limit: Int? = nil,
         offset: Int? = nil,
-        active: Bool? = nil
+        active: Bool? = nil,
+        ids: [String] = []
     ) {
         self.contractAddress = contractAddress
         self.networkIds = networkIds.isEmpty ? nil : networkIds.joined(separator: ",")
@@ -33,5 +36,6 @@ struct CoinsListRequestModel: Encodable {
         self.limit = limit
         self.offset = offset
         self.active = active
+        self.ids = ids.isEmpty ? nil : ids.joined(separator: ",")
     }
 }

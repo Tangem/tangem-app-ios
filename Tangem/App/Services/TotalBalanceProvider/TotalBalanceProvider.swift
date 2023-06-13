@@ -135,7 +135,7 @@ private extension TotalBalanceProvider {
 
     func getTokenItemViewModels(from walletModels: [WalletModel]) -> [LegacyTokenItemViewModel] {
         walletModels
-            .flatMap { $0.allTokenItemViewModels() }
+            .flatMap { $0.legacyMultiCurrencyViewModel() }
             .filter { model in
                 guard let amountType = userWalletAmountType else { return true }
 

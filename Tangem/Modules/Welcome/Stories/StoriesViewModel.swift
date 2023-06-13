@@ -10,10 +10,16 @@ import Combine
 import SwiftUI
 
 class StoriesViewModel: ObservableObject {
-    @Published var currentPage: WelcomeStoryPage = WelcomeStoryPage.allCases[0]
+    @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
+
+    @Published var currentPage: WelcomeStoryPage = .meetTangem
     @Published var currentProgress = 0.0
 
-    let pages: [WelcomeStoryPage] = WelcomeStoryPage.allCases
+    var currentPageIndex: Int {
+        pages.firstIndex(of: currentPage) ?? 0
+    }
+
+    private(set) var pages: [WelcomeStoryPage] = []
     private var timerSubscription: AnyCancellable?
     private var timerStartDate: Date?
     private var longTapTimerSubscription: AnyCancellable?
@@ -21,8 +27,23 @@ class StoriesViewModel: ObservableObject {
     private var currentDragLocation: CGPoint?
     private var bag: Set<AnyCancellable> = []
 
+    private var showLearnPage: Bool = false
     private let longTapDuration = 0.25
     private let minimumSwipeDistance = 100.0
+
+    init() {
+        showLearnPage = promotionService.promotionAvailable()
+
+        var pages: [WelcomeStoryPage] = WelcomeStoryPage.allCases
+        if !showLearnPage,
+           let learnIndex = pages.firstIndex(of: .learn) {
+            pages.remove(at: learnIndex)
+        }
+
+        self.pages = pages
+
+        currentPage = pages[0]
+    }
 
     func onAppear() {
         NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
@@ -52,6 +73,7 @@ class StoriesViewModel: ObservableObject {
         isScanning: Binding<Bool>,
         scanCard: @escaping () -> Void,
         orderCard: @escaping () -> Void,
+        openPromotion: @escaping () -> Void,
         searchTokens: @escaping () -> Void
     ) -> some View {
         let progressBinding = Binding<Double> { [weak self] in
@@ -61,8 +83,10 @@ class StoriesViewModel: ObservableObject {
         }
 
         switch currentPage {
+        case WelcomeStoryPage.learn:
+            LearnAndEarnStoryPage(learn: openPromotion)
         case WelcomeStoryPage.meetTangem:
-            MeetTangemStoryPage(progress: progressBinding, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            MeetTangemStoryPage(progress: progressBinding, immediatelyShowTangemLogo: showLearnPage, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.awe:
             AweStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.backup:
@@ -119,7 +143,18 @@ class StoriesViewModel: ObservableObject {
     }
 
     private func move(forward: Bool) {
-        currentPage = WelcomeStoryPage(rawValue: currentPage.rawValue + (forward ? 1 : -1)) ?? pages.first!
+        guard let currentPageIndex = pages.firstIndex(of: currentPage) else { return }
+
+        let nextPageIndex = currentPageIndex + (forward ? 1 : -1)
+
+        let nextPage: WelcomeStoryPage
+        if nextPageIndex < 0 || nextPageIndex > (pages.count - 1) {
+            nextPage = pages.first!
+        } else {
+            nextPage = pages[nextPageIndex]
+        }
+
+        currentPage = nextPage
         restartTimer()
         if currentPage != pages.first {
             AppSettings.shared.didDisplayMainScreenStories = true
@@ -192,7 +227,7 @@ extension StoriesViewModel: WelcomeViewLifecycleListener {
     }
 }
 
-fileprivate extension CGPoint {
+private extension CGPoint {
     func distance(to other: CGPoint) -> CGFloat {
         return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2))
     }

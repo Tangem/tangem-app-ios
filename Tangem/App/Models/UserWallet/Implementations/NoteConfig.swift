@@ -107,8 +107,6 @@ extension NoteConfig: UserWalletConfig {
             return .hidden
         case .multiCurrency:
             return .hidden
-        case .tokensSearch:
-            return .hidden
         case .resetToFactory:
             return .available
         case .receive:

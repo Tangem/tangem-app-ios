@@ -27,7 +27,7 @@ class WalletConnectV1Service {
 
     private(set) var cardModel: CardViewModel
 
-    fileprivate var wallet: WalletInfo?
+    private var wallet: WalletInfo?
 
     private var server: Server!
     private let updateQueue = DispatchQueue(label: "ws_sessions_update_queue")
@@ -63,7 +63,7 @@ class WalletConnectV1Service {
             guard let self = self else { return }
 
             let decoder = JSONDecoder()
-            if let oldSessionsObject = UserDefaults.standard.object(forKey: self.sessionsKey) as? Data {
+            if let oldSessionsObject = UserDefaults.standard.object(forKey: sessionsKey) as? Data {
                 let decodedSessions = (try? decoder.decode([WalletConnectSession].self, from: oldSessionsObject)) ?? []
 
                 // TODO: Refactor. We can use seed keys as identifiers for sessions now.
@@ -190,17 +190,17 @@ extension WalletConnectV1Service {
         updateQueue.async { [weak self] in
             guard let self = self else { return }
 
-            guard let index = self.sessions.firstIndex(where: { $0.id == id }) else { return }
+            guard let index = sessions.firstIndex(where: { $0.id == id }) else { return }
 
-            let session = self.sessions[index]
+            let session = sessions[index]
             do {
-                try self.server.disconnect(from: session.session)
+                try server.disconnect(from: session.session)
             } catch {
                 AppLog.shared.debug("Failed to disconnect WC session: \(error.localizedDescription)")
             }
 
-            self.sessions.remove(at: index)
-            self.save()
+            sessions.remove(at: index)
+            save()
             Analytics.log(.sessionDisconnected)
         }
     }
@@ -233,8 +233,8 @@ extension WalletConnectV1Service: ServerDelegate {
 
     func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
         let failureCompletion = { [unowned self] in
-            self.canEstablishNewSessionPublisher.send(true)
-            completion(self.rejectedResponse)
+            canEstablishNewSessionPublisher.send(true)
+            completion(rejectedResponse)
         }
 
         guard isWaitingToConnect else {
@@ -369,16 +369,16 @@ extension WalletConnectV1Service: ServerDelegate {
         updateQueue.async { [weak self] in
             guard let self = self else { return }
 
-            if let sessionIndex = self.sessions.firstIndex(where: { $0.session == session }) { // reconnect
-                self.sessions[sessionIndex].status = .connected
+            if let sessionIndex = sessions.firstIndex(where: { $0.session == session }) { // reconnect
+                sessions[sessionIndex].status = .connected
             } else {
-                if let wallet = self.wallet { // new session only if wallet exists
-                    self.sessions.append(WalletConnectSession(wallet: wallet, session: session, status: .connected))
-                    self.save()
+                if let wallet = wallet { // new session only if wallet exists
+                    sessions.append(WalletConnectSession(wallet: wallet, session: session, status: .connected))
+                    save()
                 }
             }
 
-            self.canEstablishNewSessionPublisher.send(true)
+            canEstablishNewSessionPublisher.send(true)
         }
     }
 
@@ -386,9 +386,9 @@ extension WalletConnectV1Service: ServerDelegate {
         updateQueue.async { [weak self] in
             guard let self = self else { return }
 
-            if let index = self.sessions.firstIndex(where: { $0.session == session }) {
-                self.sessions.remove(at: index)
-                self.save()
+            if let index = sessions.firstIndex(where: { $0.session == session }) {
+                sessions.remove(at: index)
+                save()
             }
         }
     }
@@ -398,7 +398,7 @@ extension WalletConnectV1Service: ServerDelegate {
     }
 }
 
-fileprivate struct DApps {
+private struct DApps {
     private let unsupportedList: [String] = ["dydx.exchange"]
 
     func isSupported(_ dAppURL: URL) -> Bool {

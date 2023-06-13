@@ -27,9 +27,6 @@ class AppSettings {
     @AppStorageCompat(StorageType.positiveBalanceAppearanceLaunch)
     var positiveBalanceAppearanceLaunch: Int? = nil
 
-    @AppStorageCompat(StorageType.searchedCards)
-    var searchedCards: [String] = []
-
     @AppStorageCompat(StorageType.cardsStartedActivation)
     var cardsStartedActivation: [String] = []
 

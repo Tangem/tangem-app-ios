@@ -47,7 +47,7 @@ extension MoyaProvider {
         try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
 
-            self.request(target) { result in
+            request(target) { result in
                 switch result {
                 case .success(let responseValue):
                     continuation.resume(returning: responseValue)

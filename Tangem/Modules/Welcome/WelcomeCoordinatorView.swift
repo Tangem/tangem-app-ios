@@ -41,6 +41,9 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.shopCoordinator) {
                 ShopCoordinatorView(coordinator: $0)
             }
+            .sheet(item: $coordinator.promotionCoordinator) {
+                PromotionCoordinatorView(coordinator: $0)
+            }
             .sheet(item: $coordinator.tokenListCoordinator) {
                 TokenListCoordinatorView(coordinator: $0)
             }

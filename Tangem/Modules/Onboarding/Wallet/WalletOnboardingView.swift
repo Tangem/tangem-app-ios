@@ -42,41 +42,6 @@ struct WalletOnboardingView: View {
         switch viewModel.currentStep {
         case .saveUserWallet:
             UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
-        case .enterPin:
-            EnterPinView(
-                text: $viewModel.pinText,
-                title: viewModel.currentStep.title!,
-                subtitle: viewModel.currentStep.subtitle!,
-                maxDigits: SaltPayRegistrator.Constants.pinLength
-            )
-        case .registerWallet:
-            CustomContentView(
-                imageType: Assets.cardsWallet,
-                title: viewModel.currentStep.title!,
-                subtitle: viewModel.currentStep.subtitle!
-            )
-        case .kycStart:
-            CustomContentView(
-                imageType: Assets.passport,
-                title: viewModel.currentStep.title!,
-                subtitle: viewModel.currentStep.subtitle!
-            )
-        case .kycProgress:
-            if let kycModel = viewModel.kycModel {
-                WebViewContainer(viewModel: kycModel)
-            }
-        case .kycWaiting:
-            KYCView(
-                imageType: Assets.successWaiting,
-                title: viewModel.currentStep.title!,
-                subtitle: viewModel.currentStep.subtitle!
-            )
-        case .kycRetry:
-            KYCView(
-                imageType: Assets.errorCircle,
-                title: viewModel.currentStep.title!,
-                subtitle: viewModel.currentStep.subtitle!
-            )
         case .seedPhraseIntro:
             OnboardingSeedPhraseIntroView(
                 readMoreAction: viewModel.openReadMoreAboutSeedPhraseScreen,
@@ -195,22 +160,6 @@ struct WalletOnboardingView: View {
                                         .opacity(viewModel.canShowOriginCardLabel ? 1.0 : 0.0)
                                 }
                             }
-
-                            let backgroundFrame = viewModel.isInitialAnimPlayed ? currentStep.cardBackgroundFrame(containerSize: size) : .zero
-                            let backgroundOffset = viewModel.isInitialAnimPlayed ? currentStep.backgroundOffset(in: size) : .zero
-
-                            OnboardingTopupBalanceView(
-                                backgroundFrameSize: backgroundFrame,
-                                cornerSize: currentStep.cardBackgroundCornerRadius(containerSize: size),
-                                backgroundOffset: backgroundOffset,
-                                balance: viewModel.cardBalance,
-                                balanceUpdaterFrame: backgroundFrame,
-                                balanceUpdaterOffset: backgroundOffset,
-                                refreshAction: viewModel.onRefresh,
-                                refreshButtonState: viewModel.refreshButtonState,
-                                refreshButtonSize: .medium,
-                                refreshButtonOpacity: currentStep.balanceStackOpacity
-                            )
 
                             OnboardingCircleButton(
                                 refreshAction: {},

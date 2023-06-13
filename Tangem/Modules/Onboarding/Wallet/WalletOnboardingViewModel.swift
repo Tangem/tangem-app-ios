@@ -11,35 +11,19 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 
-class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, OnboardingCoordinator>, ObservableObject {
-    @Injected(\.saltPayRegistratorProvider) private var saltPayRegistratorProvider: SaltPayRegistratorProviding
+class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, OnboardingCoordinator>, ObservableObject {
     private let seedPhraseManager = SeedPhraseManager()
 
     @Published var thirdCardSettings: AnimatedViewSettings = .zero
     @Published var canDisplayCardImage: Bool = false
-    @Published var pinText: String = ""
 
     private var stackCalculator: StackCalculator = .init()
     private var fanStackCalculator: FanStackCalculator = .init()
     private var accessCode: String?
     private var cardIds: [String]?
     private var stepPublisher: AnyCancellable?
-    private var claimed: Bool = false
 
-    private var cardIdDisplayFormat: CardIdDisplayFormat {
-        isSaltPayOnboarding ? .none : .lastMasked(4)
-    }
-
-    private var isSaltPayOnboarding: Bool {
-        saltPayRegistratorProvider.registrator != nil
-    }
-
-    //    override var isBackButtonVisible: Bool {
-    //        switch currentStep {
-    //        case .success: return false
-    //        default: return super.isBackButtonVisible
-    //        }
-    //    }
+    private var cardIdDisplayFormat: CardIdDisplayFormat = .lastMasked(4)
 
     override var disclaimerModel: DisclaimerViewModel? {
         guard currentStep == .disclaimer else { return nil }
@@ -57,24 +41,18 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         switch currentStep {
         case .selectBackupCards:
             switch backupCardsAddedCount {
-            case 0: return isSaltPayOnboarding ? Localization.onboardingSaltpayTitleNoBackupCard : Localization.onboardingTitleNoBackupCards
-            case 1: return isSaltPayOnboarding ? Localization.onboardingSaltpayTitleOneBackupCard : Localization.onboardingTitleOneBackupCard
+            case 0: return Localization.onboardingTitleNoBackupCards
+            case 1: return Localization.onboardingTitleOneBackupCard
             default: return Localization.onboardingTitleTwoBackupCards
             }
         case .backupIntro:
             return ""
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return isSaltPayOnboarding ? Localization.onboardingSaltpayTitlePrepareOrigin : Localization.commonOriginCard
-            case .finalizingBackupCard(let index): return isSaltPayOnboarding ? Localization.onboardingSaltpayTitleBackupCard : Localization.onboardingTitleBackupCardFormat(index)
+            case .finalizingPrimaryCard: return Localization.commonOriginCard
+            case .finalizingBackupCard(let index): return Localization.onboardingTitleBackupCardFormat(index)
             default: break
             }
-
-        case .registerWallet, .kycStart, .kycRetry, .enterPin, .kycWaiting:
-            return nil
-        case .claim:
-            let claimValue = saltPayRegistratorProvider.registrator?.claimableAmountDescription ?? ""
-            return claimed ? Localization.onboardingTitleClaimProgress : Localization.onboardingTitleClaim(claimValue)
         default: break
         }
         return super.title
@@ -86,8 +64,8 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         switch currentStep {
         case .selectBackupCards:
             switch backupCardsAddedCount {
-            case 0: return isSaltPayOnboarding ? Localization.onboardingSaltpaySubtitleNoBackupCards : Localization.onboardingSubtitleNoBackupCards
-            case 1: return isSaltPayOnboarding ? Localization.onboardingSaltpaySubtitleOneBackupCard : Localization.onboardingSubtitleOneBackupCard
+            case 0: return Localization.onboardingSubtitleNoBackupCards
+            case 1: return Localization.onboardingSubtitleOneBackupCard
             default: return Localization.onboardingSubtitleTwoBackupCards
             }
         case .backupIntro:
@@ -101,10 +79,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         case .backupCards:
             switch backupServiceState {
             case .finalizingPrimaryCard:
-                if isSaltPayOnboarding {
-                    return Localization.onboardingTwinsInterruptWarning
-                }
-
                 guard let primaryCardId = backupService.primaryCard?.cardId,
                       let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: primaryCardId) else {
                     return super.subtitle
@@ -112,10 +86,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
                 return Localization.onboardingSubtitleScanPrimaryCardFormat(cardIdFormatted)
             case .finalizingBackupCard(let index):
-                if isSaltPayOnboarding {
-                    return Localization.onboardingTwinsInterruptWarning
-                }
-
                 let cardId = backupService.backupCardIds[index - 1]
                 guard let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: cardId) else {
                     return super.subtitle
@@ -124,10 +94,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
                 return Localization.onboardingSubtitleScanBackupCardFormat(cardIdFormatted)
             default: return super.subtitle
             }
-        case .registerWallet, .kycStart, .kycRetry, .enterPin, .kycWaiting:
-            return nil
-        case .claim:
-            return claimed ? Localization.onboardingSubtitleClaimProgress : super.subtitle
         default: return super.subtitle
         }
     }
@@ -138,7 +104,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         var icon: MainButton.Icon?
 
         switch currentStep {
-        case .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .claim, .successClaim, .disclaimer, .kycWaiting, .seedPhraseIntro:
+        case .disclaimer, .seedPhraseIntro:
             return nil
         case .selectBackupCards:
             icon = .leading(Assets.plusMini)
@@ -166,8 +132,8 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
             return Localization.onboardingButtonAddBackupCard
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return isSaltPayOnboarding ? Localization.onboardingSaltpayButtonBackupOrigin : Localization.onboardingButtonBackupOrigin
-            case .finalizingBackupCard(let index): return isSaltPayOnboarding ? Localization.onboardingSaltpayTitleBackupCard : Localization.onboardingButtonBackupCardFormat(index)
+            case .finalizingPrimaryCard: return Localization.onboardingButtonBackupOrigin
+            case .finalizingBackupCard(let index): return Localization.onboardingButtonBackupCardFormat(index)
             default: break
             }
         case .success:
@@ -179,7 +145,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     var mainButtonStyle: MainButton.Style {
         switch currentStep {
-        case .selectBackupCards, .kycWaiting: return .secondary
+        case .selectBackupCards: return .secondary
         default: return .primary
         }
     }
@@ -210,9 +176,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     override var isSupplementButtonEnabled: Bool {
         switch currentStep {
         case .selectBackupCards: return backupCardsAddedCount > 0
-        case .claim:
-            return saltPayRegistratorProvider.registrator?.canClaim ?? false
-        case .enterPin: return pinText.count == SaltPayRegistrator.Constants.pinLength
         default: return true
         }
     }
@@ -254,7 +217,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .enterPin, .registerWallet, .kycStart, .kycRetry, .kycProgress, .kycWaiting, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport:
+        case .saveUserWallet, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport:
             return true
         default: return false
         }
@@ -262,27 +225,12 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     var isButtonsVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .kycProgress, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport: return false
+        case .saveUserWallet, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport: return false
         default: return true
         }
     }
 
     // MARK: - Other View related stuff
-
-    lazy var kycModel: WebViewContainerViewModel? = {
-        guard let registrator = saltPayRegistratorProvider.registrator else { return nil }
-
-        return .init(
-            url: registrator.kycURL,
-            title: "",
-            addLoadingIndicator: false,
-            withCloseButton: false,
-            withNavigationBar: false,
-            urlActions: [registrator.kycDoneURL: { [weak self] _ in
-                self?.supplementButtonAction()
-            }]
-        )
-    }()
 
     lazy var importSeedPhraseModel: OnboardingSeedPhraseImportViewModel? = .init(
         inputProcessor: SeedPhraseInputProcessor()) { [weak self] mnemonic in
@@ -315,14 +263,10 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     }()
 
     var canShowThirdCardImage: Bool {
-        !isSaltPayOnboarding
+        return true
     }
 
     var canShowOriginCardLabel: Bool {
-        if isSaltPayOnboarding {
-            return false
-        }
-
         return currentStep == .backupCards
     }
 
@@ -363,10 +307,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     }
 
     private var canAddBackupCards: Bool {
-        if isSaltPayOnboarding {
-            return backupService.addedBackupCardsCount == 0
-        }
-
         return backupService.canAddBackupCards
     }
 
@@ -379,10 +319,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
     private var walletCreationType: WalletCreationType = .privateKey
 
     private let backupService: BackupService
-
-    private var saltPayAmountType: Amount.AmountType {
-        .token(value: GnosisRegistrator.Settings.main.token)
-    }
 
     // MARK: - Initializer
 
@@ -402,15 +338,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
             canDisplayCardImage = true
         }
 
-        bindSaltPayIfNeeded()
-
         bind()
-
-        if steps.first == .claim, currentStep == .claim {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.onRefresh()
-            }
-        }
     }
 
     func onAppear() {
@@ -419,12 +347,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         }
 
         playInitialAnim()
-    }
-
-    func onRefresh() {
-        guard let registrator = saltPayRegistratorProvider.registrator else { return }
-
-        updateCardBalance(for: saltPayAmountType, shouldGoToNextStep: !registrator.canClaim)
     }
 
     private func bind() {
@@ -438,11 +360,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
                 let currentStep = steps[index]
 
                 switch currentStep {
-                case .successClaim:
-                    withAnimation {
-                        self?.refreshButtonState = .doneCheckmark
-                        self?.fireConfetti()
-                    }
                 case .success:
                     withAnimation {
                         self?.fireConfetti()
@@ -456,79 +373,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         subscribeToScreenshots()
     }
 
-    private func bindSaltPayIfNeeded() {
-        guard let saltPayRegistrator = saltPayRegistratorProvider.registrator else { return }
-
-        if let walletModel = cardModel?.walletModels.first {
-            updateCardBalanceText(for: walletModel, type: saltPayAmountType)
-        }
-
-        if let cardModel = cardModel,
-           let backup = cardModel.backupInput, backup.steps.stepsCount > 0 {
-            AppSettings.shared.cardsStartedActivation.insert(cardModel.cardId)
-        }
-
-        saltPayRegistrator
-            .$error
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .weakAssign(to: \.alert, on: self)
-            .store(in: &bag)
-
-        saltPayRegistrator
-            .$isBusy
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .weakAssign(to: \.isSupplementButtonBusy, on: self)
-            .store(in: &bag)
-
-        saltPayRegistrator
-            .$state
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] newState in
-                guard let self else { return }
-
-                guard self.currentStep != .kycRetry else { // we need custom handling
-                    return
-                }
-
-                switch newState {
-                case .kycStart:
-                    if self.currentStep == .kycWaiting {
-                        self.rebuildSteps()
-                        return
-                    }
-
-                    self.goToNextStep()
-                case .claim:
-                    self.goToNextStep()
-                case .finished:
-                    if self.currentStep != .claim { // move to the next step only after the balance update
-                        self.goToNextStep()
-                    }
-                case .kycRetry:
-                    self.rebuildSteps()
-                default:
-                    break
-                }
-            })
-            .store(in: &bag)
-    }
-
-    private func rebuildSteps() {
-        guard let stepsBuilder = input.stepsBuilder else {
-            return
-        }
-
-        let newSteps = stepsBuilder.buildOnboardingSteps()
-
-        if case .wallet(let steps) = newSteps {
-            self.steps = steps
-            self.currentStepIndex = 0
-        }
-    }
-
     private func loadImageForRestoredbackup(cardId: String, cardPublicKey: Data) {
         CardImageProvider()
             .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
@@ -539,12 +383,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
     override func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
         super.loadImage(supportsOnlineImage: supportsOnlineImage, cardId: cardId, cardPublicKey: cardPublicKey)
-        if !isSaltPayOnboarding {
-            secondImage = nil
-        } else {
-            let isPrimaryScanned = cardId.map { !SaltPayUtil().isBackupCard(cardId: $0) } ?? false
-            secondImage = isPrimaryScanned ? Assets.saltPayBackup.image : Assets.saltpay.image
-        }
+        secondImage = nil
     }
 
     override func setupContainer(with size: CGSize) {
@@ -658,49 +497,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
             } else {
                 openAccessCode()
             }
-        case .kycWaiting:
-            saltPayRegistratorProvider.registrator?.update()
-        case .enterPin:
-            Analytics.log(.onboardingButtonSetPinCode)
-            if saltPayRegistratorProvider.registrator?.setPin(pinText) ?? false {
-                goToNextStep()
-            }
-        case .registerWallet:
-            Analytics.log(.buttonConnect)
-            saltPayRegistratorProvider.registrator?.register()
-        case .kycStart:
-            goToNextStep()
-        case .successClaim:
-            goToNextStep()
-        case .kycProgress:
-            saltPayRegistratorProvider.registrator?.registerKYC()
-            goToNextStep()
-        case .claim:
-            Analytics.log(.buttonClaim)
-            claim()
-        case .kycRetry:
-            saltPayRegistratorProvider.registrator?.update { [weak self] newState in
-                guard let self = self else { return }
-
-                switch newState {
-                case .kycRetry, .kycStart:
-                    self.goToNextStep()
-                case .claim:
-                    if let index = self.steps.firstIndex(of: .claim) {
-                        self.goToStep(with: index)
-                    }
-                case .finished:
-                    if let index = self.steps.firstIndex(of: .success) {
-                        self.goToStep(with: index)
-                    }
-                case .kycWaiting:
-                    if let index = self.steps.firstIndex(of: .kycWaiting) {
-                        self.goToStep(with: index)
-                    }
-                default:
-                    break
-                }
-            }
         case .disclaimer:
             disclaimerAccepted()
             goToNextStep()
@@ -759,25 +555,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         }
     }
 
-    func claim() {
-        guard let saltPayRegistrator = saltPayRegistratorProvider.registrator else { return }
-
-        refreshButtonState = .activityIndicator
-        saltPayRegistrator.claim { [weak self] result in
-            switch result {
-            case .success:
-                Analytics.log(.claimFinished)
-                self?.claimed = true
-                // Add a small delay because of too fast transactions
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self?.onRefresh()
-                }
-            case .failure:
-                self?.resetRefreshButtonState()
-            }
-        }
-    }
-
     override func backButtonAction() {
         switch currentStep {
         case .seedPhraseUserValidation:
@@ -825,8 +602,6 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
             accessCode = code
             cardIds = backupService.allCardIds
-
-            saltPayRegistratorProvider.registrator?.setAccessCode(code)
 
             stackCalculator.setupNumberOfCards(1 + backupCardsAddedCount)
 
@@ -896,21 +671,21 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
 
             switch result {
             case .success(let cardInfo):
-                self.initializeUserWallet(from: cardInfo)
+                initializeUserWallet(from: cardInfo)
 
                 if let primaryCard = cardInfo.primaryCard {
-                    self.backupService.setPrimaryCard(primaryCard)
+                    backupService.setPrimaryCard(primaryCard)
                 }
 
-                Analytics.log(.walletCreatedSuccessfully, params: [.creationType: self.walletCreationType.analyticsValue])
-                self.processPrimaryCardScan()
+                Analytics.log(.walletCreatedSuccessfully, params: [.creationType: walletCreationType.analyticsValue])
+                processPrimaryCardScan()
             case .failure(let error):
                 if !error.toTangemSdkError().isUserCancelled {
                     AppLog.shared.error(error, params: [.action: .preparePrimary])
                 }
             }
 
-            self.isMainButtonBusy = false
+            isMainButtonBusy = false
         }
     }
 
@@ -919,7 +694,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
             Future { [weak self] promise in
                 guard let self = self else { return }
 
-                self.backupService.readPrimaryCard(cardId: self.input.cardInput.cardId) { result in
+                backupService.readPrimaryCard(cardId: input.cardInput.cardId) { result in
                     switch result {
                     case .success:
                         promise(.success(()))
@@ -943,7 +718,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         stepPublisher =
             Deferred {
                 Future { [unowned self] promise in
-                    self.backupService.addBackupCard { result in
+                    backupService.addBackupCard { result in
                         switch result {
                         case .success:
                             promise(.success(()))
@@ -975,7 +750,7 @@ class WalletOnboardingViewModel: OnboardingTopupViewModel<WalletOnboardingStep, 
         stepPublisher =
             Deferred {
                 Future { [unowned self] promise in
-                    self.backupService.proceedBackup { result in
+                    backupService.proceedBackup { result in
                         switch result {
                         case .success(let updatedCard):
                             if updatedCard.cardId == self.backupService.primaryCard?.cardId {
@@ -1092,7 +867,7 @@ extension WalletOnboardingViewModel {
         NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)
             .filter { [weak self] _ in
                 guard let self else { return false }
-                switch self.currentStep {
+                switch currentStep {
                 case .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport:
                     return true
                 default:
@@ -1139,6 +914,6 @@ extension NotificationCenter {
     }
 }
 
-fileprivate extension BackupService {
+private extension BackupService {
     var allCardIds: [String] { [primaryCard?.cardId].compactMap { $0 } + backupCardIds }
 }

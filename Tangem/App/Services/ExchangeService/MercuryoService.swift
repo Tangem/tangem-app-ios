@@ -11,7 +11,7 @@ import Combine
 import BlockchainSdk
 import TangemSdk
 
-fileprivate enum QueryKey: String {
+private enum QueryKey: String {
     case widget_id
     case type
     case currency
@@ -22,16 +22,16 @@ fileprivate enum QueryKey: String {
     case return_url
 }
 
-fileprivate struct MercuryoCurrencyResponse: Decodable {
+private struct MercuryoCurrencyResponse: Decodable {
     let data: MercuryoData
 }
 
-fileprivate struct MercuryoData: Decodable {
+private struct MercuryoData: Decodable {
     let crypto: [String]
     let config: MercuryoConfig
 }
 
-fileprivate struct MercuryoConfig: Decodable {
+private struct MercuryoConfig: Decodable {
     let base: [String: String]
 }
 
@@ -144,9 +144,9 @@ extension MercuryoService: ExchangeService {
             .sink { _ in
 
             } receiveValue: { [unowned self] response in
-                self.availableCryptoCurrencyCodes = response.data.crypto
-                self.networkCodeByCurrencyCode = response.data.config.base
-                self.initialized = true
+                availableCryptoCurrencyCodes = response.data.crypto
+                networkCodeByCurrencyCode = response.data.config.base
+                initialized = true
             }
             .store(in: &bag)
     }
@@ -156,7 +156,7 @@ extension MercuryoService: ExchangeService {
     }
 }
 
-fileprivate extension URLQueryItem {
+private extension URLQueryItem {
     init(key: QueryKey, value: String?) {
         self.init(name: key.rawValue, value: value)
     }

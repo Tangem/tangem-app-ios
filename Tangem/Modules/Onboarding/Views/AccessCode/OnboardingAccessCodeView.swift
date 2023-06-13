@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-fileprivate struct AccessCodeFeature {
+private struct AccessCodeFeature {
     let title: String
     let description: String
     let icon: ImageType
@@ -135,7 +135,7 @@ struct OnboardingAccessCodeView: View {
         .padding(.horizontal, 40)
         .onDisappear {
             DispatchQueue.main.async {
-                self.error = .none
+                error = .none
             }
         }
     }

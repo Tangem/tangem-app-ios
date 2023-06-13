@@ -61,7 +61,7 @@ struct AmountView: View {
     }
 }
 
-fileprivate class Blinker: ObservableObject {
+private class Blinker: ObservableObject {
     @Published var blink: Bool = false
 }
 

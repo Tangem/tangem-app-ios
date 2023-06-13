@@ -53,7 +53,7 @@ struct CoinView: View {
                             Spacer()
                         } else {
                             HStack(spacing: 5) {
-                                ForEach(0..<itemsCount, id: \.id) { index in
+                                ForEach(0 ..< itemsCount, id: \.id) { index in
                                     if isItemsOverflows, index == (maxNetworkItemsInRow - 1) {
                                         Text("+\(model.items.count - maxNetworkItemsInRow + 1)")
                                             .style(Fonts.Bold.caption2, color: Colors.Icon.informative)

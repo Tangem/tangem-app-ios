@@ -24,7 +24,7 @@ struct ArrowBack: View {
     }
 }
 
-fileprivate enum DefaultNavigationBarSettings {
+private enum DefaultNavigationBarSettings {
     static let color = Color.tangemGrayDark6
     static let padding = 16.0
 }

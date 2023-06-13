@@ -91,11 +91,8 @@ struct LegacySingleWalletContentView: View {
                 EmptyView()
 
             case .idle, .loading, .failed:
-                BalanceView(
-                    balanceViewModel: singleWalletModel.balanceViewModel(),
-                    tokenBalanceViewModels: singleWalletModel.tokenBalanceViewModels()
-                )
-                .padding(.horizontal, 16.0)
+                BalanceView(balanceViewModel: singleWalletModel.legacySingleCurrencyViewModel())
+                    .padding(.horizontal, 16.0)
 
             case .noAccount(let message):
                 MessageView(title: Localization.walletErrorNoAccount, subtitle: message, type: .error)

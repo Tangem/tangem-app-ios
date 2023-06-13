@@ -24,13 +24,12 @@ protocol WalletConnectV2WalletModelProvider: AnyObject {
 
 final class WalletConnectV2Service {
     @Injected(\.walletConnectSessionsStorage) private var sessionsStorage: WalletConnectSessionsStorage
+    @Injected(\.keysManager) private var keysManager: KeysManager
 
     private let factory = WalletConnectV2DefaultSocketFactory()
     private let uiDelegate: WalletConnectUIDelegate
     private let messageComposer: WalletConnectV2MessageComposable
     private let wcHandlersService: WalletConnectV2HandlersServicing
-    private let pairApi: PairingInteracting
-    private let signApi: SignClient
     private let infoProvider: WalletConnectUserWalletInfoProvider
 
     private var canEstablishNewSessionSubject: CurrentValueSubject<Bool, Never> = .init(true)
@@ -53,6 +52,9 @@ final class WalletConnectV2Service {
         }
     }
 
+    private lazy var pairApi: PairingInteracting = Pair.instance
+    private lazy var signApi: SignClient = Sign.instance
+
     init(
         with infoProvider: WalletConnectUserWalletInfoProvider,
         uiDelegate: WalletConnectUIDelegate,
@@ -65,21 +67,17 @@ final class WalletConnectV2Service {
         self.wcHandlersService = wcHandlersService
 
         Networking.configure(
-            // TODO: Update to production id. Should be saved to config file.
-            projectId: "c0e14e9fac0113e872980f2aae3354de",
+            projectId: keysManager.walletConnectProjectId,
             socketFactory: factory,
             socketConnectionType: .automatic
         )
         Pair.configure(metadata: AppMetadata(
             // Not sure that we really need this name, but currently it is hard to recognize what card is connected in dApp
             name: "Tangem \(infoProvider.name)",
-            description: "NFC crypto wallet",
+            description: "Tangem is a card-shaped self-custodial cold hardware wallet",
             url: "tangem.com",
             icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"]
         ))
-
-        pairApi = Pair.instance
-        signApi = Sign.instance
 
         loadSessions(for: infoProvider.userWalletId.value)
         setupSessionSubscriptions()
@@ -137,8 +135,8 @@ final class WalletConnectV2Service {
     private func setupSessionSubscriptions() {
         signApi.sessionProposalPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] sessionProposal in
-                self?.log("Session proposal: \(sessionProposal)")
+            .sink { [weak self] sessionProposal, context in
+                self?.log("Session proposal: \(sessionProposal) with verify context: \(String(describing: context))")
                 self?.validateProposal(sessionProposal)
             }
             .store(in: &sessionSubscriptions)
@@ -148,14 +146,14 @@ final class WalletConnectV2Service {
             .asyncMap { [weak self] session in
                 guard let self else { return }
 
-                self.log("Session established: \(session)")
+                log("Session established: \(session)")
                 let savedSession = WalletConnectV2Utils().createSavedSession(
                     from: session,
-                    with: self.infoProvider.userWalletId.stringValue,
-                    and: self.infoProvider.walletModels
+                    with: infoProvider.userWalletId.stringValue,
+                    and: infoProvider.walletModels
                 )
 
-                await self.sessionsStorage.save(savedSession)
+                await sessionsStorage.save(savedSession)
             }
             .sink()
             .store(in: &sessionSubscriptions)
@@ -165,14 +163,14 @@ final class WalletConnectV2Service {
             .asyncMap { [weak self] topic, reason in
                 guard let self else { return }
 
-                self.log("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
+                log("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
 
-                guard let session = await self.sessionsStorage.session(with: topic) else {
+                guard let session = await sessionsStorage.session(with: topic) else {
                     return
                 }
 
-                self.log("Session with topic (\(topic)) was found. Deleting session from storage...")
-                await self.sessionsStorage.remove(session)
+                log("Session with topic (\(topic)) was found. Deleting session from storage...")
+                await sessionsStorage.remove(session)
             }
             .sink()
             .store(in: &sessionSubscriptions)
@@ -181,11 +179,11 @@ final class WalletConnectV2Service {
     private func setupMessagesSubscriptions() {
         signApi.sessionRequestPublisher
             .receive(on: DispatchQueue.main)
-            .asyncMap { [weak self] request in
+            .asyncMap { [weak self] request, context in
                 guard let self else { return }
 
-                self.log("Receive message request: \(request)")
-                await self.handle(request)
+                log("Receive message request: \(request) with verify context: \(String(describing: context))")
+                await handle(request)
             }
             .sink()
             .store(in: &messagesSubscriptions)
@@ -250,13 +248,13 @@ final class WalletConnectV2Service {
             guard let self else { return }
 
             do {
-                self.log("Namespaces to approve for session connection: \(namespaces)")
-                try await self.signApi.approve(proposalId: id, namespaces: namespaces)
+                log("Namespaces to approve for session connection: \(namespaces)")
+                try await signApi.approve(proposalId: id, namespaces: namespaces)
             } catch let error as WalletConnectV2Error {
                 self.displayErrorUI(error)
             } catch {
                 let mappedError = WalletConnectV2ErrorMappingUtils().mapWCv2Error(error)
-                self.displayErrorUI(mappedError)
+                displayErrorUI(mappedError)
                 AppLog.shared.error("[WC 2.0] Failed to approve Session with error: \(error)")
             }
         }

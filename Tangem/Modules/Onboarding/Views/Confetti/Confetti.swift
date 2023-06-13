@@ -26,7 +26,7 @@ struct ConfettiView: UIViewRepresentable {
         if shouldFireConfetti.wrappedValue {
             launchConfetti(for: uiView)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.shouldFireConfetti.wrappedValue = false
+                shouldFireConfetti.wrappedValue = false
             }
         }
     }

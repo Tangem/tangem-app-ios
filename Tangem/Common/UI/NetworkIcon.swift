@@ -37,7 +37,7 @@ struct NetworkIcon: View {
     }
 }
 
-fileprivate struct MainNetworkIndicator: View {
+private struct MainNetworkIndicator: View {
     let borderPadding: CGFloat = 1.5
 
     var body: some View {

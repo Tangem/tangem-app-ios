@@ -82,7 +82,7 @@ class LegacySingleWalletContentViewModel: ObservableObject {
         self.output = output
 
         /// Initial set to `singleWalletModel`
-        singleWalletModel = cardModel.getWalletModels().first
+        singleWalletModel = cardModel.walletModels.first
 
         makeActionButtons()
         bind()

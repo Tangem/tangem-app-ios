@@ -128,7 +128,7 @@ class WalletConnectViewModel: ObservableObject {
             .sink(receiveValue: { [weak self] in
                 guard let self = self else { return }
 
-                self.v1Sessions = $0
+                v1Sessions = $0
                 AppLog.shared.debug("Loaded v1 sessions: \($0)")
             })
             .store(in: &bag)

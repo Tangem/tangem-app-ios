@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MeetTangemStoryPage: View {
     @Binding var progress: Double
+    var immediatelyShowTangemLogo: Bool
     var immediatelyShowButtons: Bool
     @Binding var isScanning: Bool
     let scanCard: () -> Void
@@ -57,7 +58,7 @@ struct MeetTangemStoryPage: View {
                     .padding()
                     .modifier(AnimatableVisibilityModifier(
                         progress: progress,
-                        start: wordListProgressEnd,
+                        start: immediatelyShowTangemLogo ? 0 : wordListProgressEnd,
                         end: .infinity
                     ))
 
@@ -137,7 +138,7 @@ struct MeetTangemStoryPage: View {
 
 struct MeetTangemStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        MeetTangemStoryPage(progress: .constant(0.8), immediatelyShowButtons: false, isScanning: .constant(false)) {} orderCard: {}
+        MeetTangemStoryPage(progress: .constant(0.8), immediatelyShowTangemLogo: false, immediatelyShowButtons: false, isScanning: .constant(false)) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
             .environment(\.colorScheme, .dark)
     }

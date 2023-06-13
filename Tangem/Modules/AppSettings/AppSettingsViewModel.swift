@@ -89,10 +89,10 @@ private extension AppSettingsViewModel {
             guard let self else { return }
 
             if case .failure = result {
-                self.updateView()
+                updateView()
                 completion(false)
             } else {
-                let _ = self.userWalletRepository.save(self.userWallet)
+                _ = userWalletRepository.save(userWallet)
                 completion(true)
             }
         }
