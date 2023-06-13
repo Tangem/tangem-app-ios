@@ -75,8 +75,7 @@ extension UserWalletConfig {
     }
 
     var tou: TOU {
-//        let url = URL(string: "https://tangem.com/tangem_tos.html")!
-        let url = Bundle.main.url(forResource: "Legal Disclaimer", withExtension: "html")!
+        let url = URL(string: "https://tangem.com/tangem_tos.html")!
         return TOU(id: url.absoluteString, url: url)
     }
 

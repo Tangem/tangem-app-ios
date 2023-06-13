@@ -352,7 +352,6 @@
 		B0D76D4525D4E4560073FA98 /* AddCustomTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D76D4425D4E4560073FA98 /* AddCustomTokenView.swift */; };
 		B0D76D4D25D4E4610073FA98 /* AddCustomTokenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D76D4C25D4E4610073FA98 /* AddCustomTokenViewModel.swift */; };
 		B0D7F896295EDCBE00497139 /* ReferralErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D7F895295EDCBE00497139 /* ReferralErrors.swift */; };
-		B0DBEA0C2A344994001C1DE2 /* Legal Disclaimer.html in Resources */ = {isa = PBXBuildFile; fileRef = B0DBEA0B2A344994001C1DE2 /* Legal Disclaimer.html */; };
 		B0DC10CD2927505300BBE854 /* SwiftConcurrency+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DC10CC2927505300BBE854 /* SwiftConcurrency+.swift */; };
 		B0DC10D1292755BB00BBE854 /* walletWithBackup.json in Resources */ = {isa = PBXBuildFile; fileRef = B0DC10CF292755BA00BBE854 /* walletWithBackup.json */; };
 		B0DC10D42927564000BBE854 /* PreviewCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DC10D32927564000BBE854 /* PreviewCards.swift */; };
@@ -1331,7 +1330,6 @@
 		B0D76D4425D4E4560073FA98 /* AddCustomTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTokenView.swift; sourceTree = "<group>"; };
 		B0D76D4C25D4E4610073FA98 /* AddCustomTokenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTokenViewModel.swift; sourceTree = "<group>"; };
 		B0D7F895295EDCBE00497139 /* ReferralErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralErrors.swift; sourceTree = "<group>"; };
-		B0DBEA0B2A344994001C1DE2 /* Legal Disclaimer.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Legal Disclaimer.html"; sourceTree = "<group>"; };
 		B0DC10CC2927505300BBE854 /* SwiftConcurrency+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftConcurrency+.swift"; sourceTree = "<group>"; };
 		B0DC10CF292755BA00BBE854 /* walletWithBackup.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = walletWithBackup.json; sourceTree = "<group>"; };
 		B0DC10D32927564000BBE854 /* PreviewCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCards.swift; sourceTree = "<group>"; };
@@ -3087,7 +3085,6 @@
 				5D383E4224D9602700C9BFF6 /* Assets */,
 				5D383E3C24D95B6B00C9BFF6 /* Localizations */,
 				5DE552F527B418B400D7ADCD /* testnet_tokens.json */,
-				B0DBEA0B2A344994001C1DE2 /* Legal Disclaimer.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -5017,7 +5014,6 @@
 				DA64C36D27CCAD7E005B5E9A /* InfoPlist.strings in Resources */,
 				EF661E2E28BF41D6005769E5 /* Intents.strings in Resources */,
 				DC261CA1292CD3B800875E64 /* GoogleService-Info-Production.plist in Resources */,
-				B0DBEA0C2A344994001C1DE2 /* Legal Disclaimer.html in Resources */,
 				5D3F77D224BF56DC00E8695B /* LaunchScreen.storyboard in Resources */,
 				5D5CE1A92625FF00009023EC /* config_prod.json in Resources */,
 				5DBBAB0D24D8547F00E78F1C /* Colors.xcassets in Resources */,

@@ -40,12 +40,10 @@ class ShopViewModel: ObservableObject {
     @Published var error: AlertBinder?
 
     var applePayButtonType: PKPaymentButtonType {
-//        preorderDeliveryDateFormatted == nil ? .buy : .order
         .order
     }
 
     var buyButtonText: String {
-//        preorderDeliveryDateFormatted == nil ? Localization.shopBuyNow : Localization.shopOrderNow
         Localization.shopOrderNow
     }
 
