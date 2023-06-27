@@ -376,11 +376,11 @@ class LegacyMainViewModel: ObservableObject {
                 } else {
                     try await startPromotionAwardProcess()
                 }
+
+                await updatePromotionState()
             } catch {
                 handlePromotionError(error)
             }
-
-            await updatePromotionState()
         }
     }
 
@@ -516,11 +516,10 @@ private extension LegacyMainViewModel {
 
             do {
                 try await startPromotionAwardProcess()
+                await updatePromotionState()
             } catch {
                 handlePromotionError(error)
             }
-
-            await updatePromotionState()
         }
     }
 
@@ -535,6 +534,25 @@ private extension LegacyMainViewModel {
             alert = error.alertBinder
         }
         showAlert(alert)
+
+        let fatalPromotionErrorCodes: [TangemAPIError.ErrorCode] = [
+            .promotionCodeAlreadyUsed,
+            .promotionWalletAlreadyAwarded,
+            .promotionCardAlreadyAwarded,
+            .promotionProgramNotFound,
+            .promotionProgramEnded,
+            .promotionCodeNotFound,
+        ]
+
+        let promotionAvailable: Bool
+        if let apiError = error as? TangemAPIError,
+           fatalPromotionErrorCodes.contains(apiError.code) {
+            promotionAvailable = false
+        } else {
+            promotionAvailable = promotionService.promotionAvailable
+        }
+
+        didFinishCheckingPromotion(promotionAvailable: promotionAvailable)
     }
 
     private func startPromotionAwardProcess() async throws {
@@ -550,12 +568,13 @@ private extension LegacyMainViewModel {
 
     private func updatePromotionState() async {
         await promotionService.checkPromotion(timeout: nil)
-        didFinishCheckingPromotion()
+
+        didFinishCheckingPromotion(promotionAvailable: promotionService.promotionAvailable)
     }
 
     @MainActor
-    private func didFinishCheckingPromotion() {
-        promotionAvailable = promotionService.promotionAvailable
+    private func didFinishCheckingPromotion(promotionAvailable: Bool) {
+        self.promotionAvailable = promotionAvailable
         promotionRequestInProgress = false
     }
 

@@ -27,7 +27,7 @@ struct TangemAPIError: Decodable, Error, LocalizedError {
 }
 
 extension TangemAPIError {
-    enum ErrorCode: Int, Decodable {
+    enum ErrorCode: Int, Decodable, Equatable {
         // Internal errors
         case unknown = -1
         case decode = -2
