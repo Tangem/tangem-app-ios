@@ -20,6 +20,7 @@ struct CardsInfoPagerView<
     private let contentFactory: ContentFactory
 
     @Binding private var selectedIndex: Int
+    @State private var previouslySelectedIndex: Int
 
     @GestureState private var nextIndexToSelect: Int?
     @GestureState private var hasNextIndexToSelect = true
@@ -81,6 +82,7 @@ struct CardsInfoPagerView<
         self.data = data
         self.idProvider = idProvider
         _selectedIndex = selectedIndex
+        _previouslySelectedIndex = .init(initialValue: selectedIndex.wrappedValue)
         self.headerFactory = headerFactory
         self.contentFactory = contentFactory
     }
@@ -110,7 +112,6 @@ struct CardsInfoPagerView<
     private func makeContent(with proxy: GeometryProxy) -> some View {
         // TODO: Andrey Fedorov - Migrate to LazyHStack (IOS-3771)
         ZStack(alignment: .topLeading) {
-            let currentPageIndex = nextIndexToSelect ?? selectedIndex
             let helpersFactory = CardsInfoPagerScrollViewHelpersFactory(
                 headerPlaceholderTopInset: Constants.headerPlaceholderTopInset,
                 headerAutoScrollThresholdRatio: Constants.headerAutoScrollThresholdRatio,
@@ -122,7 +123,6 @@ struct CardsInfoPagerView<
                 let scrollViewScroller = helpersFactory.makeScroller(forPageAtIndex: index)
                 ScrollViewReader { scrollViewProxy in
                     contentFactory(element, scrollViewConnector)
-                        .hidden(index != currentPageIndex)
                         .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
                             if newValue != oldValue, !newValue {
                                 scrollViewScroller.performScrollIfNeeded(
@@ -132,11 +132,20 @@ struct CardsInfoPagerView<
                             }
                         }
                 }
+                .modifier(
+                    ContentPageSwitchingAnimationModifier(
+                        progress: pageSwitchProgress,
+                        pageIndex: index,
+                        selectedIndex: selectedIndex,
+                        previouslySelectedIndex: previouslySelectedIndex,
+                        nextIndexToSelect: nextIndexToSelect
+                    )
+                )
             }
         }
         .frame(size: proxy.size)
         .modifier(
-            BodyAnimationModifier(
+            ContentAnimationModifier(
                 progress: pageSwitchProgress,
                 verticalOffset: contentViewVerticalOffset,
                 hasNextIndexToSelect: hasNextIndexToSelect
@@ -183,13 +192,22 @@ struct CardsInfoPagerView<
                     max: totalWidth
                 )
 
+                // FIXME: Andrey Fedorov - Fix unwanted overscroll when `pageSwitchThreshold` < 0.5
                 let newIndex = nextIndexToSelectClamped(
                     translation: predictedTranslation,
                     totalWidth: totalWidth,
                     nextPageThreshold: pageSwitchThreshold
                 )
-                pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
+
                 cumulativeHorizontalTranslation += value.translation.width
+                previouslySelectedIndex = selectedIndex
+
+                // The `content` part of the page must be updated exactly in the middle of the
+                // current gesture/animation, therefore separate animation with half the duration
+                // of the original animation is used here to animate `pageSwitchProgress` value
+                withAnimation(pageSwitchAnimation.speed(2.0)) {
+                    pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
+                }
 
                 withAnimation(pageSwitchAnimation) {
                     cumulativeHorizontalTranslation = -CGFloat(newIndex) * totalWidth
@@ -272,7 +290,9 @@ extension CardsInfoPagerView: Setupable {
     }
 }
 
-private struct BodyAnimationModifier: Animatable, ViewModifier {
+// MARK: - Auxiliary types
+
+private struct ContentAnimationModifier: AnimatableModifier {   // TODO: Andrey Fedorov - This modifier should use original animation, not a faster one
     var progress: CGFloat
     let verticalOffset: CGFloat
     let hasNextIndexToSelect: Bool
@@ -290,6 +310,37 @@ private struct BodyAnimationModifier: Animatable, ViewModifier {
         return content
             .opacity(1.0 - Double(ratio))
             .offset(y: verticalOffset * ratio)
+    }
+}
+
+private struct ContentPageSwitchingAnimationModifier: AnimatableModifier {
+    var progress: CGFloat
+
+    let pageIndex: Int
+    let selectedIndex: Int
+    let previouslySelectedIndex: Int
+    let nextIndexToSelect: Int?
+
+    var animatableData: CGFloat {
+        get { progress }
+        set { progress = newValue }
+    }
+
+    private var shouldHideContent: Bool {
+        // The `content` part of the page must be updated exactly in the middle of the
+        // current gesture/animation, therefore we use `0.5` as a threshold here
+        if let nextIndexToSelect = nextIndexToSelect {
+            return pageIndex != nextIndexToSelect
+        } else if progress >= 0.5 {
+            return pageIndex != selectedIndex
+        } else {
+            return pageIndex != previouslySelectedIndex
+        }
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .hidden(shouldHideContent)
     }
 }
 
