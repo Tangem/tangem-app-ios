@@ -43,6 +43,9 @@ struct CardsInfoPagerView<
     private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
     private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
 
+    @State private var contentSize: CGSize = .zero
+    @State private var viewportSize: CGSize = .zero
+
     private var lowerBound: Int { 0 }
     private var upperBound: Int { data.count - 1 }
 
@@ -57,12 +60,7 @@ struct CardsInfoPagerView<
 
     var body: some View {
         GeometryReader { proxy in
-            ZStack(alignment: .topLeading) {
-                makeContent(with: proxy)
-
-                makeHeader(with: proxy)
-                    .gesture(makeDragGesture(with: proxy))
-            }
+            makeContent(with: proxy)
             .environment(\.cardsInfoPageHeaderPlaceholderHeight, headerHeight)
             .onAppear(perform: scrollDetector.startDetectingScroll)
             .onDisappear(perform: scrollDetector.stopDetectingScroll)
@@ -102,10 +100,6 @@ struct CardsInfoPagerView<
         .offset(x: cumulativeHorizontalTranslation)
         // This offset is responsible for the next/previous cell peek
         .offset(x: headerItemPeekHorizontalOffset)
-        // This offset is responsible for the header stickiness
-        .offset(y: -verticalContentOffset.y)
-        // This offset is constant and based on the mockups
-        .offset(y: Constants.headerPlaceholderTopInset)
         .infinityFrame(alignment: .topLeading)
     }
 
@@ -126,32 +120,57 @@ struct CardsInfoPagerView<
                         .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
                             if newValue != oldValue, !newValue {
                                 scrollViewScroller.performScrollIfNeeded(
-                                    with: scrollViewProxy,
-                                    proposedState: proposedHeaderState
+            let scrollViewConnector = helpersFactory.makeConnector(forPageAtIndex: selectedIndex)
+            let scrollViewScroller = helpersFactory.makeScroller(forPageAtIndex: selectedIndex)
+            ScrollViewReader { scrollViewProxy in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0.0) {
+                        makeHeader(with: proxy)
+                            .gesture(makeDragGesture(with: proxy))
+                            .debugBorder(color: .red)
+                            .padding(.top, Constants.headerPlaceholderTopInset)
+                            .padding(.bottom, 14.0)
+
+                        contentFactory(data[selectedIndex], scrollViewConnector)
+                            .animation(nil, value: selectedIndex)
+                            .modifier(
+                                ContentAnimationModifier(
+                                    progress: pageSwitchProgress,
+                                    verticalOffset: contentViewVerticalOffset,
+                                    hasNextIndexToSelect: hasNextIndexToSelect
                                 )
-                            }
-                        }
-                }
-                .modifier(
-                    ContentPageSwitchingAnimationModifier(
-                        progress: pageSwitchProgress,
-                        pageIndex: index,
-                        selectedIndex: selectedIndex,
-                        previouslySelectedIndex: previouslySelectedIndex,
-                        nextIndexToSelect: nextIndexToSelect
+                            )
+                    }
+                    .readGeometry(\.size, bindTo: $contentSize)
+                    .readContentOffset(inCoordinateSpace: .named("coordinateSpace"), bindTo: $verticalContentOffset)
+
+                    Spacer(
+                        minLength: scrollViewConnector.footerViewHeight(
+                            viewportSize: viewportSize,
+                            contentSize: contentSize
+                        )
                     )
-                )
-                .animation(nil, value: selectedIndex)   // Content page switching animated explicitly
+                }
+                .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
+                    if newValue != oldValue, !newValue {
+                        scrollViewScroller.performScrollIfNeeded(
+                            with: scrollViewProxy,
+                            proposedState: proposedHeaderState
+                        )
+                    }
+                }
             }
+            .coordinateSpace(name: "coordinateSpace")
         }
         .frame(size: proxy.size)
-        .modifier(
-            ContentAnimationModifier(
-                progress: pageSwitchProgress,
-                verticalOffset: contentViewVerticalOffset,
-                hasNextIndexToSelect: hasNextIndexToSelect
-            )
-        )
+        .readGeometry(\.size, bindTo: $viewportSize)
+//        .modifier(
+//            ContentAnimationModifier(
+//                progress: pageSwitchProgress,
+//                verticalOffset: contentViewVerticalOffset,
+//                hasNextIndexToSelect: hasNextIndexToSelect
+//            )
+//        )
     }
 
     private func makeDragGesture(with proxy: GeometryProxy) -> some Gesture {
@@ -375,10 +394,7 @@ struct CardsInfoPagerView_Previews: PreviewProvider {
                                 .cornerRadius(14.0)
                         },
                         contentFactory: { pageViewModel, scrollViewConnector in
-                            CardInfoPagePreviewView(
-                                viewModel: pageViewModel,
-                                scrollViewConnector: scrollViewConnector
-                            )
+                            CardInfoPagePreviewView(viewModel: pageViewModel)
                         }
                     )
                     .pageSwitchThreshold(0.4)
