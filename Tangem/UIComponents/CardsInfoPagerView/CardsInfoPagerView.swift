@@ -141,6 +141,7 @@ struct CardsInfoPagerView<
                         nextIndexToSelect: nextIndexToSelect
                     )
                 )
+                .animation(nil, value: selectedIndex)   // Content page switching animated explicitly
             }
         }
         .frame(size: proxy.size)
@@ -202,15 +203,9 @@ struct CardsInfoPagerView<
                 cumulativeHorizontalTranslation += value.translation.width
                 previouslySelectedIndex = selectedIndex
 
-                // The `content` part of the page must be updated exactly in the middle of the
-                // current gesture/animation, therefore separate animation with half the duration
-                // of the original animation is used here to animate `pageSwitchProgress` value
-                withAnimation(pageSwitchAnimation.speed(2.0)) {
-                    pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
-                }
-
                 withAnimation(pageSwitchAnimation) {
                     cumulativeHorizontalTranslation = -CGFloat(newIndex) * totalWidth
+                    pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
                     selectedIndex = newIndex
                 }
             }
@@ -292,7 +287,7 @@ extension CardsInfoPagerView: Setupable {
 
 // MARK: - Auxiliary types
 
-private struct ContentAnimationModifier: AnimatableModifier {   // TODO: Andrey Fedorov - This modifier should use original animation, not a faster one
+private struct ContentAnimationModifier: AnimatableModifier {
     var progress: CGFloat
     let verticalOffset: CGFloat
     let hasNextIndexToSelect: Bool
@@ -354,7 +349,7 @@ private extension CardsInfoPagerView {
         static var headerAutoScrollThresholdRatio: CGFloat { 0.25 }
         static var contentViewVerticalOffset: CGFloat { 44.0 }
         static var pageSwitchThreshold: CGFloat { 0.5 }
-        static var pageSwitchAnimation: Animation { .interactiveSpring(response: 0.30) }
+        static var pageSwitchAnimation: Animation { .interactiveSpring(response: 0.4) }
     }
 }
 
