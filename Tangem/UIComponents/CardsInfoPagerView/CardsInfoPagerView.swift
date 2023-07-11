@@ -171,17 +171,28 @@ struct CardsInfoPagerView<
                 pageSwitchProgress = abs(value.translation.width / proxy.size.width)
             }
             .onEnded { value in
+                let totalWidth = proxy.size.width
+
+                // Predicted translation takes the gesture's speed into account,
+                // which makes page switching feel more natural.
+                // The result value is clamped in the range `-totalWidth...totalWidth`
+                // because we don't want to switch multiple pages at once
+                let predictedTranslation = clamp(
+                    value.predictedEndLocation.x - value.startLocation.x,
+                    min: -totalWidth,
+                    max: totalWidth
+                )
+
                 let newIndex = nextIndexToSelectClamped(
-                    translation: value.translation.width,
-                    totalWidth: proxy.size.width,
+                    translation: predictedTranslation,
+                    totalWidth: totalWidth,
                     nextPageThreshold: pageSwitchThreshold
                 )
                 pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
-
                 cumulativeHorizontalTranslation += value.translation.width
 
                 withAnimation(pageSwitchAnimation) {
-                    cumulativeHorizontalTranslation = -CGFloat(newIndex) * proxy.size.width
+                    cumulativeHorizontalTranslation = -CGFloat(newIndex) * totalWidth
                     selectedIndex = newIndex
                 }
             }
