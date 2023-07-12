@@ -70,12 +70,12 @@ struct CardsInfoPagerView<
     var body: some View {
         GeometryReader { proxy in
             makeContent(with: proxy)
-            .environment(\.cardsInfoPageHeaderPlaceholderHeight, headerHeight)
-            .onAppear(perform: scrollDetector.startDetectingScroll)
-            .onDisappear(perform: scrollDetector.stopDetectingScroll)
-            .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
-                proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
-            }
+                .environment(\.cardsInfoPageHeaderPlaceholderHeight, headerHeight)
+                .onAppear(perform: scrollDetector.startDetectingScroll)
+                .onDisappear(perform: scrollDetector.stopDetectingScroll)
+                .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
+                    proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
+                }
         }
     }
 
@@ -269,8 +269,8 @@ struct CardsInfoPagerView<
         guard (0.0 ..< headerHeight) ~= yOffset else { return }
 
         let headerAutoScrollRatio = proposedHeaderState == .collapsed
-        ? Constants.headerAutoScrollThresholdRatio
-        : 1.0 - Constants.headerAutoScrollThresholdRatio
+            ? Constants.headerAutoScrollThresholdRatio
+            : 1.0 - Constants.headerAutoScrollThresholdRatio
 
         withAnimation(.spring()) {
             if yOffset > headerHeight * headerAutoScrollRatio {
