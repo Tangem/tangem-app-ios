@@ -12,7 +12,7 @@ struct CardsInfoPagerView<
     Data, ID, Header, Body
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
-    typealias ContentFactory = (_ element: Data.Element, _ scrollViewConnector: CardsInfoPagerScrollViewConnector) -> Body
+    typealias ContentFactory = (_ element: Data.Element) -> Body
 
     private enum ProposedHeaderState {
         case collapsed
@@ -70,7 +70,6 @@ struct CardsInfoPagerView<
     var body: some View {
         GeometryReader { proxy in
             makeContent(with: proxy)
-                .environment(\.cardsInfoPageHeaderPlaceholderHeight, headerHeight)
                 .onAppear(perform: scrollDetector.startDetectingScroll)
                 .onDisappear(perform: scrollDetector.stopDetectingScroll)
                 .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
@@ -114,15 +113,6 @@ struct CardsInfoPagerView<
 
     @ViewBuilder
     private func makeContent(with proxy: GeometryProxy) -> some View {
-        // TODO: Andrey Fedorov - Migrate to LazyHStack (IOS-3771)
-        let helpersFactory = CardsInfoPagerScrollViewHelpersFactory(
-            headerPlaceholderTopInset: Constants.headerTopInset,
-            headerAutoScrollThresholdRatio: Constants.headerAutoScrollThresholdRatio,
-            headerPlaceholderHeight: headerHeight,
-            contentOffset: $verticalContentOffset
-        )
-        let scrollViewConnector = helpersFactory.makeConnector(forPageAtIndex: selectedIndex)
-
         ScrollViewReader { scrollViewProxy in
             ScrollView(showsIndicators: false) {
                 Spacer(minLength: Constants.headerTopInset)
@@ -137,7 +127,7 @@ struct CardsInfoPagerView<
                     Spacer(minLength: Constants.headerTopInset)
                         .id(collapsedHeaderScrollTargetIdentifier)
 
-                    contentFactory(data[selectedIndex], scrollViewConnector)
+                    contentFactory(data[selectedIndex])
                         .animation(nil, value: selectedIndex)
                         .modifier(
                             ContentAnimationModifier(
@@ -153,11 +143,11 @@ struct CardsInfoPagerView<
                     bindTo: $verticalContentOffset
                 )
 
-                Spacer(
-                    minLength: scrollViewConnector.footerViewHeight(
-                        viewportSize: viewportSize,
-                        contentSize: contentSize
-                    )
+                CardsInfoPagerFlexibleFooterView(
+                    contentSize: contentSize,
+                    viewportSize: viewportSize,
+                    headerTopInset: Constants.headerTopInset,
+                    headerHeight: headerHeight
                 )
             }
             .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
@@ -408,7 +398,7 @@ struct CardsInfoPagerView_Previews: PreviewProvider {
                             MultiWalletCardHeaderView(viewModel: pageViewModel.header)
                                 .cornerRadius(14.0)
                         },
-                        contentFactory: { pageViewModel, scrollViewConnector in
+                        contentFactory: { pageViewModel in
                             CardInfoPagePreviewView(viewModel: pageViewModel)
                         }
                     )
