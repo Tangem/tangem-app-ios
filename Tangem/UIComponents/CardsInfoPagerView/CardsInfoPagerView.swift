@@ -115,48 +115,52 @@ struct CardsInfoPagerView<
     private func makeContent(with proxy: GeometryProxy) -> some View {
         ScrollViewReader { scrollViewProxy in
             ScrollView(showsIndicators: false) {
-                Spacer(minLength: Constants.headerTopInset)
-                    .id(expandedHeaderScrollTargetIdentifier)
-
+                // ScrollView inserts default spacing between its content views.
+                // Wrapping content into `VStack` prevents it.
                 VStack(spacing: 0.0) {
-                    makeHeader(with: proxy)
-                        .gesture(makeDragGesture(with: proxy))
+                    Spacer(minLength: Constants.headerVerticalPadding)
+                        .id(expandedHeaderScrollTargetIdentifier)
 
-                    Spacer(minLength: max(14.0 - Constants.headerTopInset, 0.0))
+                    VStack(spacing: 0.0) {
+                        makeHeader(with: proxy)
+                            .gesture(makeDragGesture(with: proxy))
 
-                    Spacer(minLength: Constants.headerTopInset)
-                        .id(collapsedHeaderScrollTargetIdentifier)
+                        Spacer(minLength: Constants.headerAdditionalSpacingHeight)
 
-                    contentFactory(data[selectedIndex])
-                        .animation(nil, value: selectedIndex)
-                        .modifier(
-                            ContentAnimationModifier(
-                                progress: pageSwitchProgress,
-                                verticalOffset: contentViewVerticalOffset,
-                                hasNextIndexToSelect: hasNextIndexToSelect
+                        Spacer(minLength: Constants.headerVerticalPadding)
+                            .id(collapsedHeaderScrollTargetIdentifier)
+
+                        contentFactory(data[selectedIndex])
+                            .animation(nil, value: selectedIndex)
+                            .modifier(
+                                ContentAnimationModifier(
+                                    progress: pageSwitchProgress,
+                                    verticalOffset: contentViewVerticalOffset,
+                                    hasNextIndexToSelect: hasNextIndexToSelect
+                                )
                             )
-                        )
-                }
-                .readGeometry(\.size, bindTo: $contentSize)
-                .readContentOffset(
-                    inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                    bindTo: $verticalContentOffset
-                )
+                    }
+                    .readGeometry(\.size, bindTo: $contentSize)
+                    .readContentOffset(
+                        inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                        bindTo: $verticalContentOffset
+                    )
 
-                CardsInfoPagerFlexibleFooterView(
-                    contentSize: contentSize,
-                    viewportSize: viewportSize,
-                    headerTopInset: Constants.headerTopInset,
-                    headerHeight: headerHeight
-                )
+                    CardsInfoPagerFlexibleFooterView(
+                        contentSize: contentSize,
+                        viewportSize: viewportSize,
+                        headerTopInset: Constants.headerVerticalPadding,
+                        headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
+                    )
+                }
             }
             .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
                 if newValue != oldValue, !newValue {
                     performScrollIfNeeded(with: scrollViewProxy)
                 }
             }
-            .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
             .readGeometry(\.size, bindTo: $viewportSize)
+            .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         }
     }
 
@@ -254,7 +258,7 @@ struct CardsInfoPagerView<
     }
 
     func performScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
-        let yOffset = verticalContentOffset.y - Constants.headerTopInset
+        let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
 
         guard (0.0 ..< headerHeight) ~= yOffset else { return }
 
@@ -369,7 +373,8 @@ private extension CardsInfoPagerView {
     private enum Constants {
         static var headerInteritemSpacing: CGFloat { 8.0 }
         static var headerItemHorizontalOffset: CGFloat { headerInteritemSpacing * 2.0 }
-        static var headerTopInset: CGFloat { 8.0 }
+        static var headerVerticalPadding: CGFloat { 8.0 }
+        static var headerAdditionalSpacingHeight: CGFloat { max(14.0 - Constants.headerVerticalPadding, 0.0) }
         static var headerAutoScrollThresholdRatio: CGFloat { 0.25 }
         static var contentViewVerticalOffset: CGFloat { 44.0 }
         static var pageSwitchThreshold: CGFloat { 0.5 }
