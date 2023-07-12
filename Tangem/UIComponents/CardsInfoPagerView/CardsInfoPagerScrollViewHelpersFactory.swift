@@ -24,17 +24,6 @@ struct CardsInfoPagerScrollViewHelpersFactory {
         )
     }
 
-    func makeScroller(forPageAtIndex pageIndex: Int) -> CardsInfoPagerScrollViewScroller {
-        return CardsInfoPagerScrollViewScroller(
-            contentOffset: contentOffset,
-            headerPlaceholderTopInset: headerPlaceholderTopInset,
-            headerPlaceholderHeight: headerPlaceholderHeight,
-            headerAutoScrollThresholdRatio: headerAutoScrollThresholdRatio,
-            expandedHeaderScrollTargetIdentifier: makeExpandedHeaderScrollTargetIdentifier(forPageAtIndex: pageIndex),
-            collapsedHeaderScrollTargetIdentifier: makeCollapsedHeaderScrollTargetIdentifier(forPageAtIndex: pageIndex)
-        )
-    }
-
     private func makeHeaderPlaceholderView(forPageAtIndex pageIndex: Int) -> CardsInfoPageHeaderPlaceholderView {
         return CardsInfoPageHeaderPlaceholderView(
             expandedHeaderScrollTargetIdentifier: makeExpandedHeaderScrollTargetIdentifier(forPageAtIndex: pageIndex),

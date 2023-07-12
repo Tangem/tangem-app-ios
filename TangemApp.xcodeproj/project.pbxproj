@@ -409,7 +409,6 @@
 		B63B63BD2A44013E00A7CECF /* OrganizeTokensListFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B63BC2A44013E00A7CECF /* OrganizeTokensListFooter.swift */; };
 		B63B63BF2A44016400A7CECF /* OrganizeTokensListFooterOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B63BE2A44016400A7CECF /* OrganizeTokensListFooterOverlayView.swift */; };
 		B64F7EB62A55A17400E70B38 /* CardsInfoPagerScrollViewHelpersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64F7EB52A55A17400E70B38 /* CardsInfoPagerScrollViewHelpersFactory.swift */; };
-		B64F7EBA2A55AD9300E70B38 /* CardsInfoPagerScrollViewScroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64F7EB92A55AD9300E70B38 /* CardsInfoPagerScrollViewScroller.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
 		B675A1E62A1E05F700F624B6 /* CardsInfoPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675A1E52A1E05F700F624B6 /* CardsInfoPagerView.swift */; };
 		B675A1EA2A1E068D00F624B6 /* Clamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675A1E92A1E068D00F624B6 /* Clamp.swift */; };
@@ -1455,7 +1454,6 @@
 		B63B63BC2A44013E00A7CECF /* OrganizeTokensListFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFooter.swift; sourceTree = "<group>"; };
 		B63B63BE2A44016400A7CECF /* OrganizeTokensListFooterOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFooterOverlayView.swift; sourceTree = "<group>"; };
 		B64F7EB52A55A17400E70B38 /* CardsInfoPagerScrollViewHelpersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerScrollViewHelpersFactory.swift; sourceTree = "<group>"; };
-		B64F7EB92A55AD9300E70B38 /* CardsInfoPagerScrollViewScroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerScrollViewScroller.swift; sourceTree = "<group>"; };
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
 		B675A1E52A1E05F700F624B6 /* CardsInfoPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerView.swift; sourceTree = "<group>"; };
 		B675A1E92A1E068D00F624B6 /* Clamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clamp.swift; sourceTree = "<group>"; };
@@ -3588,7 +3586,6 @@
 				B6BF1A072A27B36300843DB0 /* CardsInfoPageHeaderPlaceholderView+Environment.swift */,
 				B64F7EB52A55A17400E70B38 /* CardsInfoPagerScrollViewHelpersFactory.swift */,
 				B6B30E712A552F8E00A14BB8 /* CardsInfoPagerScrollViewConnector.swift */,
-				B64F7EB92A55AD9300E70B38 /* CardsInfoPagerScrollViewScroller.swift */,
 			);
 			path = CardsInfoPagerView;
 			sourceTree = "<group>";
@@ -6199,7 +6196,6 @@
 				B0C8A0D42562C86A00DEEAC7 /* View+PreviewDevice.swift in Sources */,
 				DC66BBFC285A389000CDF765 /* PopoverModifier.swift in Sources */,
 				EFEC653C292E1B9100AE8521 /* SwappingViewModel.swift in Sources */,
-				B64F7EBA2A55AD9300E70B38 /* CardsInfoPagerScrollViewScroller.swift in Sources */,
 				B0B8670326DF5AE1008DAA67 /* ModalSheetPreferenceKey.swift in Sources */,
 				B69D5EEB2A3252A800B494A9 /* OrganizeTokensListCornerRadiusParametersProvider.swift in Sources */,
 				B6C3B3072A3AD2120007525E /* TokenListItemLoadingPlaceholderView.swift in Sources */,
