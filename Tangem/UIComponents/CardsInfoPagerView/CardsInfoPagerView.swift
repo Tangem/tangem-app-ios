@@ -122,7 +122,7 @@ struct CardsInfoPagerView<
                     makeHeader(with: proxy)
                         .gesture(makeDragGesture(with: proxy))
 
-                    Spacer(minLength: 14.0 - Constants.headerTopInset)
+                    Spacer(minLength: max(14.0 - Constants.headerTopInset, 0.0))
 
                     Spacer(minLength: Constants.headerTopInset)
                         .id(collapsedHeaderScrollTargetIdentifier)
