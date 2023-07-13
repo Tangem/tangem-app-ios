@@ -68,7 +68,7 @@ struct MultiWalletCardHeaderView: View {
             trailingOffset = imageSize.width + horizontalSpacing
         }
 
-        return containerWidth - trailingOffset
+        return max(containerWidth - trailingOffset, 0.0)
     }
 }
 
