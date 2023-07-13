@@ -131,7 +131,6 @@ struct CardsInfoPagerView<
                             .id(collapsedHeaderScrollTargetIdentifier)
 
                         contentFactory(data[selectedIndex])
-                            .animation(nil, value: selectedIndex)
                             .modifier(
                                 ContentAnimationModifier(
                                     progress: pageSwitchProgress,
@@ -156,7 +155,7 @@ struct CardsInfoPagerView<
             }
             .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
                 if newValue != oldValue, !newValue {
-                    performScrollIfNeeded(with: scrollViewProxy)
+                    performVerticalScrollIfNeeded(with: scrollViewProxy)
                 }
             }
             .readGeometry(\.size, bindTo: $viewportSize)
@@ -257,7 +256,7 @@ struct CardsInfoPagerView<
         return selectedIndex - indexDiff
     }
 
-    func performScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
+    func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
         let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
 
         guard (0.0 ..< headerHeight) ~= yOffset else { return }
@@ -333,37 +332,6 @@ private struct ContentAnimationModifier: AnimatableModifier {
         return content
             .opacity(1.0 - Double(ratio))
             .offset(y: verticalOffset * ratio)
-    }
-}
-
-private struct ContentPageSwitchingAnimationModifier: AnimatableModifier {
-    var progress: CGFloat
-
-    let pageIndex: Int
-    let selectedIndex: Int
-    let previouslySelectedIndex: Int
-    let nextIndexToSelect: Int?
-
-    var animatableData: CGFloat {
-        get { progress }
-        set { progress = newValue }
-    }
-
-    private var shouldHideContent: Bool {
-        // The `content` part of the page must be updated exactly in the middle of the
-        // current gesture/animation, therefore we use `0.5` as a threshold here
-        if let nextIndexToSelect = nextIndexToSelect {
-            return pageIndex != nextIndexToSelect
-        } else if progress >= 0.5 {
-            return pageIndex != selectedIndex
-        } else {
-            return pageIndex != previouslySelectedIndex
-        }
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .hidden(shouldHideContent)
     }
 }
 
