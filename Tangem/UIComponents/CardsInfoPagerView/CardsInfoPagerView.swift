@@ -118,10 +118,10 @@ struct CardsInfoPagerView<
                 // ScrollView inserts default spacing between its content views.
                 // Wrapping content into `VStack` prevents it.
                 VStack(spacing: 0.0) {
-                    Spacer(minLength: Constants.headerVerticalPadding)
-                        .id(expandedHeaderScrollTargetIdentifier)
-
                     VStack(spacing: 0.0) {
+                        Spacer(minLength: Constants.headerVerticalPadding)
+                            .id(expandedHeaderScrollTargetIdentifier)
+
                         makeHeader(with: proxy)
                             .gesture(makeDragGesture(with: proxy))
 
