@@ -130,6 +130,7 @@ struct CardsInfoPagerView<
                         Spacer(minLength: Constants.headerVerticalPadding)
                             .id(collapsedHeaderScrollTargetIdentifier)
 
+                        // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
                         contentFactory(data[selectedIndex])
                             .modifier(
                                 ContentAnimationModifier(
@@ -202,7 +203,7 @@ struct CardsInfoPagerView<
                     max: totalWidth
                 )
 
-                // FIXME: Andrey Fedorov - Fix unwanted overscroll when `pageSwitchThreshold` < 0.5
+                // FIXME: Andrey Fedorov - Fix unwanted overscroll when `pageSwitchThreshold` is less than 0.5 (IOS-4012)
                 let newIndex = nextIndexToSelectClamped(
                     translation: predictedTranslation,
                     totalWidth: totalWidth,
