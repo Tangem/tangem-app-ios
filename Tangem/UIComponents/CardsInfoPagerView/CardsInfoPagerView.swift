@@ -195,15 +195,7 @@ struct CardsInfoPagerView<
 
                 // Predicted translation takes the gesture's speed into account,
                 // which makes page switching feel more natural.
-                // The result value is clamped in the range `-totalWidth...totalWidth`
-                // because we don't want to switch multiple pages at once
-                let predictedTranslation = clamp(
-                    value.predictedEndLocation.x - value.startLocation.x,
-                    min: -totalWidth,
-                    max: totalWidth
-                )
-
-                // FIXME: Andrey Fedorov - Fix unwanted overscroll when `pageSwitchThreshold` is less than 0.5 (IOS-4012)
+                let predictedTranslation = value.predictedEndLocation.x - value.startLocation.x
                 let newIndex = nextIndexToSelectClamped(
                     translation: predictedTranslation,
                     totalWidth: totalWidth,
@@ -254,7 +246,9 @@ struct CardsInfoPagerView<
     ) -> Int {
         let gestureProgress = translation / (totalWidth * nextPageThreshold * 2.0)
         let indexDiff = Int(gestureProgress.rounded())
-        return selectedIndex - indexDiff
+        // The difference is clamped because we don't want to switch
+        // by more than one page at a time in case of overscroll
+        return selectedIndex - clamp(indexDiff, min: -1, max: 1)
     }
 
     func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
