@@ -121,7 +121,7 @@ extension Analytics {
         case walletConnectScreenOpened = "[Wallet Connect] WC Screen Opened"
         case newSessionEstablished = "[Wallet Connect] New Session Established"
         case sessionDisconnected = "[Wallet Connect] Session Disconnected"
-        case requestSigned = "[Wallet Connect] Request Signed"
+        case requestHandled = "[Wallet Connect] Request Handled"
         case chatScreenOpened = "[Chat] Chat Screen Opened"
         case settingsScreenOpened = "[Settings] Settings Screen Opened"
 

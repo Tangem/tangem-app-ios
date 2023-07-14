@@ -44,6 +44,7 @@ PODS:
     - TangemSdk
     - TangemWalletCore
     - web3swift
+  - CombineExt (1.8.0)
   - CryptoSwift (1.5.1)
   - Firebase/Analytics (10.7.0):
     - Firebase/Core
@@ -253,7 +254,8 @@ DEPENDENCIES:
   - AppsFlyerFramework
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.9`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.19`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-330`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-332`)
+  - CombineExt (~> 1.8.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - HDWalletKit (from `https://github.com/tangem/hdwallet.git`, tag `0.3.12`)
@@ -277,6 +279,7 @@ SPEC REPOS:
     - AnyCodable-FlightSchool
     - AppsFlyerFramework
     - BigInt
+    - CombineExt
     - CryptoSwift
     - Firebase
     - FirebaseAnalytics
@@ -329,7 +332,7 @@ EXTERNAL SOURCES:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-330
+    :tag: develop-332
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -367,7 +370,7 @@ CHECKOUT OPTIONS:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-330
+    :tag: develop-332
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -404,6 +407,7 @@ SPEC CHECKSUMS:
   BinanceChain: b77d4c0e496efbf13bdb1f428621480fd52f4ba1
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
   BlockchainSdk: 595295c1d028307a0473d7ef4641589eed7e5c78
+  CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   CryptoSwift: c4f2debceb38bf44c80659afe009f71e23e4a082
   Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
   FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
@@ -452,6 +456,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 77a62fe6bacc05bb10ff20edce75612fa109fd61
   ZendeskSupportSDK: ba72e90e327635b5fde3d023a3de33242a6ee8ab
 
-PODFILE CHECKSUM: b98b4e2482f5f7a52fe7e27900f27ab84a107183
+PODFILE CHECKSUM: b16768bac4f243a9ab1e92a206552b5a3db7873f
 
 COCOAPODS: 1.12.1

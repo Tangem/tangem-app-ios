@@ -9,23 +9,44 @@
 import SwiftUI
 
 struct OrganizeTokensView: View {
+    // MARK: - Model
+
     @ObservedObject private var viewModel: OrganizeTokensViewModel
 
-    @StateObject private var dragAndDropController = OrganizeTokensDragAndDropController()
+    // MARK: - Coordinate spaces
 
-    @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
-    @State private var scrollViewBottomContentInset: CGFloat = 0.0
+    // Semantically, this is the same as `UIScrollView.frameLayoutGuide` from UIKit
+    private let scrollViewFrameCoordinateSpaceName = UUID()
+
+    // Semantically, this is the same as `UIScrollView.contentLayoutGuide` from UIKit
+    private let scrollViewContentCoordinateSpaceName = UUID()
+
+    // MARK: - Content insets and overlay views
 
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var scrollViewTopContentInset: CGFloat = 0.0
 
+    @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
+    @State private var scrollViewBottomContentInset: CGFloat = 0.0
+
+    @State private var scrollViewTopContentInsetSpacerIdentifier: UUID
+    @State private var scrollViewBottomContentInsetSpacerIdentifier: UUID
+
     @State private var tokenListFooterFrameMinY: CGFloat = 0.0
     @State private var tokenListContentFrameMaxY: CGFloat = 0.0
-
     @State private var scrollViewContentOffset: CGPoint = .zero
 
     @State private var isTokenListFooterGradientHidden = true
     @State private var isNavigationBarBackgroundHidden = true
+
+    // MARK: - Drag and drop support
+
+    @StateObject private var dragAndDropController: OrganizeTokensDragAndDropController
+
+    // Viewport with `contentInset` (i.e. with `scrollViewTopContentInset` and `scrollViewBottomContentInset`)
+    @State private var visibleViewportFrame: CGRect = .zero
+
+    @State private var draggedItemFrame: CGRect = .zero
 
     // Index path for a view that received a new touch.
     //
@@ -42,19 +63,12 @@ struct OrganizeTokensView: View {
     // Stable identity, independent of changes in the underlying model (unlike index paths)
     @State private var dragAndDropSourceViewModelIdentifier: UUID?
 
+    @GestureState private var dragGestureTranslation: CGSize = .zero
+
     // Semantically, this is the same as `UITableView.hasActiveDrag` from UIKit
     private var hasActiveDrag: Bool { dragAndDropSourceIndexPath != nil }
 
-    @GestureState private var dragGestureTranslation: CGSize = .zero
-
-    // Location in 'scrollViewFrameCoordinateSpaceName' coordinate space
-    @GestureState private var dragGestureLocation: CGPoint?
-
-    // Semantically, this is the same as `UIScrollView.frameLayoutGuide` from UIKit
-    private let scrollViewFrameCoordinateSpaceName = UUID()
-
-    // Semantically, this is the same as `UIScrollView.contentLayoutGuide` from UIKit
-    private let scrollViewContentCoordinateSpaceName = UUID()
+    // MARK: - Body
 
     var body: some View {
         ZStack {
@@ -82,48 +96,9 @@ struct OrganizeTokensView: View {
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 0.0) {
                         Spacer(minLength: scrollViewTopContentInset)
+                            .id(scrollViewTopContentInsetSpacerIdentifier)
 
-                        let parametersProvider = OrganizeTokensListCornerRadiusParametersProvider(
-                            sections: viewModel.sections,
-                            cornerRadius: Constants.cornerRadius
-                        )
-
-                        ForEach(indexed: viewModel.sections.indexed()) { sectionIndex, sectionViewModel in
-                            Section(
-                                content: {
-                                    ForEach(indexed: sectionViewModel.items.indexed()) { itemIndex, itemViewModel in
-                                        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-
-                                        makeCell(
-                                            viewModel: itemViewModel,
-                                            indexPath: indexPath,
-                                            parametersProvider: parametersProvider
-                                        )
-                                        .hidden(itemViewModel.id == dragAndDropSourceViewModelIdentifier)
-                                        .id(itemViewModel.id)
-                                        .readGeometry(
-                                            \.frame,
-                                            inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
-                                        ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
-                                    }
-                                },
-                                header: {
-                                    let indexPath = IndexPath(item: viewModel.sectionHeaderItemIndex, section: sectionIndex)
-
-                                    makeSection(
-                                        viewModel: sectionViewModel,
-                                        sectionIndex: sectionIndex,
-                                        parametersProvider: parametersProvider
-                                    )
-                                    .hidden(sectionViewModel.id == dragAndDropSourceViewModelIdentifier)
-                                    .id(sectionViewModel.id)
-                                    .readGeometry(
-                                        \.frame,
-                                        inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
-                                    ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
-                                }
-                            )
-                        }
+                        tokenListContent
                     }
                     .animation(.spring(), value: viewModel.sections)
                     .padding(.horizontal, Constants.contentHorizontalInset)
@@ -141,19 +116,22 @@ struct OrganizeTokensView: View {
                     )
 
                     Spacer(minLength: scrollViewBottomContentInset)
+                        .id(scrollViewBottomContentInsetSpacerIdentifier)
                 }
-                .onChange(of: dragGestureLocation) { newValue in
-                    guard let newValue = newValue, var dragAndDropSourceItemFrame = dragAndDropSourceItemFrame else {
-                        return
-                    }
-
-                    dragAndDropSourceItemFrame.origin.y += dragGestureTranslation.height
-
-                    if let scrollTarget = dragAndDropController.scrollTarget(
-                        sourceLocation: dragAndDropSourceItemFrame.origin,
-                        currentLocation: newValue
-                    ) {
-                        scrollProxy.scrollTo(scrollTarget)
+                .readGeometry(\.frame) { newValue in
+                    dragAndDropController.viewportSizeSubject.send(newValue.size)
+                    visibleViewportFrame = newValue
+                        .divided(atDistance: scrollViewTopContentInset, from: .minYEdge)
+                        .remainder
+                        .divided(atDistance: scrollViewBottomContentInset, from: .maxYEdge)
+                        .remainder
+                }
+                .onChange(of: draggedItemFrame) { draggedItemFrame in
+                    changeAutoScrollStatusIfNeeded(draggedItemFrame: draggedItemFrame)
+                }
+                .onReceive(dragAndDropController.autoScrollTargetPublisher) { newValue in
+                    withAnimation(.linear(duration: Constants.autoScrollFrequency)) {
+                        scrollProxy.scrollTo(newValue, anchor: scrollAnchor())
                     }
                 }
             }
@@ -167,6 +145,7 @@ struct OrganizeTokensView: View {
             }
         }
         .onChange(of: scrollViewContentOffset) { newValue in
+            dragAndDropController.contentOffsetSubject.send(newValue)
             isNavigationBarBackgroundHidden = newValue.y <= 0.0
         }
         .onChange(of: dragAndDropDestinationIndexPath) { [oldValue = dragAndDropDestinationIndexPath] newValue in
@@ -183,7 +162,52 @@ struct OrganizeTokensView: View {
         .onChange(of: dragAndDropSourceViewModelIdentifier) { [oldValue = dragAndDropSourceViewModelIdentifier] newValue in
             guard oldValue != nil, newValue == nil else { return }
 
+            dragAndDropController.stopAutoScrolling()
             viewModel.onDragAnimationCompletion()
+        }
+    }
+
+    @ViewBuilder private var tokenListContent: some View {
+        let parametersProvider = OrganizeTokensListCornerRadiusParametersProvider(
+            sections: viewModel.sections,
+            cornerRadius: Constants.cornerRadius
+        )
+
+        ForEach(indexed: viewModel.sections.indexed()) { sectionIndex, sectionViewModel in
+            Section(
+                content: {
+                    ForEach(indexed: sectionViewModel.items.indexed()) { itemIndex, itemViewModel in
+                        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+
+                        makeCell(
+                            viewModel: itemViewModel,
+                            indexPath: indexPath,
+                            parametersProvider: parametersProvider
+                        )
+                        .hidden(itemViewModel.id == dragAndDropSourceViewModelIdentifier)
+                        .id(itemViewModel.id)
+                        .readGeometry(
+                            \.frame,
+                            inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
+                        ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
+                    }
+                },
+                header: {
+                    let indexPath = IndexPath(item: viewModel.sectionHeaderItemIndex, section: sectionIndex)
+
+                    makeSection(
+                        viewModel: sectionViewModel,
+                        sectionIndex: sectionIndex,
+                        parametersProvider: parametersProvider
+                    )
+                    .hidden(sectionViewModel.id == dragAndDropSourceViewModelIdentifier)
+                    .id(sectionViewModel.id)
+                    .readGeometry(
+                        \.frame,
+                        inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
+                    ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
+                }
+            )
         }
     }
 
@@ -222,6 +246,20 @@ struct OrganizeTokensView: View {
         viewModel: OrganizeTokensViewModel
     ) {
         self.viewModel = viewModel
+        // Explicit @State/ @StateObject initialization is used here because we have a classic chicken-egg problem:
+        // 'Cannot use instance member within property initializer; property initializers run before 'self' is available'
+        let topContentInsetdentifier = UUID()
+        let bottomContentInsetIdentifier = UUID()
+        _scrollViewTopContentInsetSpacerIdentifier = .init(initialValue: topContentInsetdentifier)
+        _scrollViewBottomContentInsetSpacerIdentifier = .init(initialValue: bottomContentInsetIdentifier)
+        _dragAndDropController = .init(
+            wrappedValue: OrganizeTokensDragAndDropController(
+                autoScrollFrequency: Constants.autoScrollFrequency,
+                destinationItemSelectionThresholdRatio: Constants.dragAndDropDestinationItemSelectionThresholdRatio,
+                topEdgeAdditionalAutoScrollTargets: [topContentInsetdentifier],
+                bottomEdgeAdditionalAutoScrollTargets: [bottomContentInsetIdentifier]
+            )
+        )
     }
 
     // MARK: - Gestures
@@ -229,22 +267,8 @@ struct OrganizeTokensView: View {
     /// For more information about `Sequenced` gestures in SwiftUI see
     /// [official documentation](https://developer.apple.com/documentation/swiftui/composing-swiftui-gestures).
     private func makeDragAndDropGesture() -> some Gesture {
-        LongPressGesture(minimumDuration: 1.0)
-            .sequenced(before: DragGesture(coordinateSpace: .named(scrollViewFrameCoordinateSpaceName)))
-            .updating($dragGestureLocation) { value, state, _ in
-                switch value {
-                case .first:
-                    break
-                case .second(let isLongPressGestureEnded, let dragGestureValue):
-                    // Long press gesture successfully ended (equivalent of `UIGestureRecognizer.State.ended`)
-                    guard isLongPressGestureEnded else { return }
-
-                    // Drag gesture changed (equivalent of `UIGestureRecognizer.State.changed`)
-                    guard let dragGestureValue = dragGestureValue else { return }
-
-                    state = dragGestureValue.location
-                }
-            }
+        LongPressGesture(minimumDuration: Constants.dragLiftLongPressGestureDuration)
+            .sequenced(before: DragGesture())
             .updating($dragGestureTranslation) { value, state, _ in
                 switch value {
                 case .first:
@@ -259,7 +283,7 @@ struct OrganizeTokensView: View {
                     state = dragGestureValue.translation
                 }
             }
-            .updating($dragAndDropSourceIndexPath) { value, state, _ in
+            .updating($dragAndDropSourceIndexPath) { [initialIndexPath = dragAndDropInitialIndexPath] value, state, _ in
                 switch value {
                 case .first(let isLongPressGestureBegins):
                     // Long press gesture began (equivalent of `UIGestureRecognizer.State.began`)
@@ -272,19 +296,19 @@ struct OrganizeTokensView: View {
                     guard
                         isLongPressGestureEnded,
                         dragGestureValue == nil,
-                        let sourceIndexPath = dragAndDropInitialIndexPath
+                        let sourceIndexPath = initialIndexPath
                     else {
                         return
                     }
 
                     state = sourceIndexPath
 
-                    dragAndDropInitialIndexPath = nil // effectively consumes `self.dragAndDropInitialIndexPath`
-                    dragAndDropSourceItemFrame = dragAndDropController.frame(forItemAt: sourceIndexPath)
-                    dragAndDropSourceViewModelIdentifier = viewModel.viewModelIdentifier(at: sourceIndexPath)
-
                     // `DispatchQueue.main.async` used here to allow publishing changes during view update
                     DispatchQueue.main.async {
+                        dragAndDropInitialIndexPath = nil // effectively consumes `self.dragAndDropInitialIndexPath`
+                        dragAndDropSourceItemFrame = dragAndDropController.frame(forItemAt: sourceIndexPath)
+                        dragAndDropSourceViewModelIdentifier = viewModel.viewModelIdentifier(at: sourceIndexPath)
+
                         dragAndDropController.onDragStart()
                         viewModel.onDragStart(at: sourceIndexPath)
                     }
@@ -323,6 +347,35 @@ struct OrganizeTokensView: View {
             dragAndDropInitialIndexPath = initialIndexPath
         } else {
             dragAndDropInitialIndexPath = nil
+        }
+    }
+
+    // MARK: - Auto scrolling support
+
+    private func scrollAnchor() -> UnitPoint? {
+        switch dragAndDropController.autoScrollStatus {
+        case .active(.top):
+            return .top
+        case .active(.bottom):
+            return .bottom
+        case .inactive:
+            return nil
+        }
+    }
+
+    private func changeAutoScrollStatusIfNeeded(draggedItemFrame: CGRect) {
+        guard visibleViewportFrame.canBeRendered, draggedItemFrame.canBeRendered else { return }
+
+        let intersection = visibleViewportFrame.intersection(draggedItemFrame)
+        if intersection.isNull || intersection.height < min(visibleViewportFrame.height, draggedItemFrame.height) {
+            if draggedItemFrame.minY + Constants.autoScrollTriggerHeightDiff < visibleViewportFrame.minY {
+                dragAndDropController.startAutoScrolling(direction: .top)
+            } else if draggedItemFrame.maxY - Constants.autoScrollTriggerHeightDiff > visibleViewportFrame.maxY {
+                dragAndDropController.startAutoScrolling(direction: .bottom)
+            } else {
+                // TODO: Andrey Fedorov - Doesn't work reliably since dragged view doesn't preserve a fixed position on the screen (IOS-3884)
+                dragAndDropController.stopAutoScrolling()
+            }
         }
     }
 
@@ -422,18 +475,17 @@ struct OrganizeTokensView: View {
             progress: 0.0,
             threshold: Constants.dropAnimationProgressThresholdForViewRemoval
         ) {
-            dragAndDropSourceViewModelIdentifier = nil
+            // `DispatchQueue.main.async` used here to allow publishing changes during view update
+            DispatchQueue.main.async {
+                dragAndDropSourceViewModelIdentifier = nil
+            }
         }
 
         content()
             .frame(width: width)
+            .readGeometry(\.frame, bindTo: $draggedItemFrame)
             .cornerRadiusContinuous(hasActiveDrag ? Constants.draggableViewCornerRadius : 0.0)
-            .shadow(
-                color: Color.black.opacity(0.08), // TODO: Andrey Fedorov - Dark mode support (IOS-3927)
-                radius: hasActiveDrag ? 14.0 : 0.0,
-                x: 0.0,
-                y: 8.0
-            )
+            .shadow(color: Color.black.opacity(0.08), radius: hasActiveDrag ? 14.0 : 0.0, y: 8.0) // TODO: Andrey Fedorov - Dark mode support (IOS-3927)
             .scaleEffect(Constants.draggableViewScale)
             .offset(y: itemFrame.origin.y)
             .offset(y: dragGestureTranslation.height)
@@ -461,10 +513,14 @@ private extension OrganizeTokensView {
         static let overlayViewAdditionalVerticalInset = 10.0
         static let tokenListHeaderViewTopInset = 8.0
         static let contentHorizontalInset = 16.0
+        static let dragLiftLongPressGestureDuration = 0.5
         static let dragLiftAnimationDuration = 0.35
         static let dropAnimationProgressThresholdForViewRemoval = 0.05
+        static let dragAndDropDestinationItemSelectionThresholdRatio = 0.5
         static let draggableViewScale = 1.035
         static let draggableViewCornerRadius = 7.0
+        static let autoScrollFrequency = 0.2
+        static let autoScrollTriggerHeightDiff = 10.0
     }
 }
 
@@ -478,6 +534,7 @@ struct OrganizeTokensView_Preview: PreviewProvider {
             previewProvider.multipleSections(),
             previewProvider.singleMediumSection(),
             previewProvider.singleSmallSection(),
+            previewProvider.singleLargeSection(),
         ]
 
         Group {

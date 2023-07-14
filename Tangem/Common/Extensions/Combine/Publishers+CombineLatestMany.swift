@@ -7,6 +7,7 @@
 //
 import Combine
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 public extension Publisher {
     /// Projects `self` and a `Collection` of `Publisher`s onto a type-erased publisher that chains `combineLatest` calls on
     /// the inner publishers. This is a variadic overload on Combine’s variants that top out at arity three.
@@ -35,6 +36,7 @@ public extension Publisher {
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 public extension Swift.Collection where Element: Publisher {
     /// Projects a `Collection` of `Publisher`s onto a type-erased publisher that chains `combineLatest` calls on
     /// the inner publishers. This is a variadic overload on Combine’s variants that top out at arity three.
@@ -55,6 +57,7 @@ public extension Swift.Collection where Element: Publisher {
 /// CombineLatest an array of input publishers in four-somes.
 ///
 /// - parameter input: An array of publishers
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 private func makeCombinedQuads<Output, Failure: Swift.Error>(
     input: [AnyPublisher<[Output], Failure>]
 ) -> [AnyPublisher<[Output], Failure>] {

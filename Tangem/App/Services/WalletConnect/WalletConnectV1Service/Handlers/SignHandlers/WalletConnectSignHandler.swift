@@ -92,7 +92,6 @@ class WalletConnectSignHandler: TangemWalletConnectRequestHandler {
             }
             self?.signerSubscription = nil
         }, receiveValue: { signature in
-            Analytics.log(.requestSigned)
 
             completion(.success(signature))
         })

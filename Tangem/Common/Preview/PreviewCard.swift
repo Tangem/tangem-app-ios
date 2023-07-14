@@ -77,7 +77,7 @@ enum PreviewCard {
         case .stellar:
             return .stellar(testnet: false)
         case .cardanoNote:
-            return .cardano(shelley: true)
+            return .cardano
         default:
             return nil
         }

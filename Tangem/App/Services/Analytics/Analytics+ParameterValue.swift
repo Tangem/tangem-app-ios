@@ -51,6 +51,8 @@ extension Analytics {
         case reset = "Reset"
         case cancel = "Cancel"
 
+        case errorCode = "Error Code"
+
         case oneTransactionApprove = "Transaction"
         case unlimitedApprove = "Unlimited"
 
@@ -59,8 +61,8 @@ extension Analytics {
         case destinationAddressPasteButton = "PasteButton"
         case destinationAddressPastePopup = "PastePopup"
 
-        case destinationAddressValidationSuccess = "Success"
-        case destinationAddressValidationFail = "Fail"
+        case success = "Success"
+        case fail = "Fail"
 
         // SelectedCurrency
         case selectedCurrencyToken = "Token"

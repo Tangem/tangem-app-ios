@@ -25,7 +25,7 @@ extension Blockchain {
         case "rootstock", "rsk": self = .rsk
         case "bitcoin-cash": self = .bitcoinCash(testnet: isTestnet)
         case "binancecoin", "bnb": self = .binance(testnet: isTestnet)
-        case "cardano": self = .cardano(shelley: true)
+        case "cardano": self = .cardano
         case "ripple", "xrp": self = .xrp(curve: .secp256k1)
         case "ducatus": self = .ducatus
         case "tezos": self = .tezos(curve: .secp256k1)
@@ -198,7 +198,7 @@ extension Blockchain {
             .binance(testnet: false),
             .tezos(curve: .secp256k1),
             .stellar(testnet: false),
-            .cardano(shelley: true),
+            .cardano,
             .dogecoin,
             .bsc(testnet: false),
             .polygon(testnet: false),

@@ -12,7 +12,6 @@ import WalletConnectSwiftV2
 protocol WalletConnectV2MessageComposable {
     func makeMessage(for proposal: Session.Proposal, targetBlockchains: [String]) -> String
     func makeMessage(for transaction: Transaction, walletModel: WalletModel, dApp: WalletConnectSavedSession.DAppInfo) -> String
-    func makeErrorMessage(with error: WalletConnectV2Error) -> String
 }
 
 struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
@@ -54,28 +53,5 @@ struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
             return m
         }()
         return message
-    }
-
-    func makeErrorMessage(with error: WalletConnectV2Error) -> String {
-        switch error {
-        case .unsupportedBlockchains(let blockchainNames):
-            var message = Localization.walletConnectErrorUnsupportedBlockchains
-            message += blockchainNames.joined(separator: ", ")
-
-            return message
-        case .missingBlockchains(let blockchainNames):
-            var message = Localization.walletConnectErrorMissingBlockchains
-            message += blockchainNames.joined(separator: ", ")
-
-            return message
-        case .wrongCardSelected:
-            return Localization.walletConnectErrorWrongCardSelected
-        case .unknown(let errorMessage):
-            return Localization.walletConnectErrorWithFrameworkMessage(errorMessage)
-        case .sessionConnetionTimeout:
-            return Localization.walletConnectErrorTimeout
-        default:
-            return Localization.walletConnectGenericErrorWithCode(error.code)
-        }
     }
 }

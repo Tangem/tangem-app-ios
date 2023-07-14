@@ -86,12 +86,12 @@ class Analytics {
     }
 
     static func logDestinationAddress(isAddressValid: Bool, source: DestinationAddressSource) {
-        let validationResult: Analytics.ParameterValue = isAddressValid ? .destinationAddressValidationSuccess : .destinationAddressValidationFail
+        let validationResult: Analytics.ParameterValue = isAddressValid ? .success : .fail
         Analytics.log(
             .addressEntered,
             params: [
                 .commonSource: source.parameterValue,
-                .destinationAddressValidationResult: validationResult,
+                .validation: validationResult,
             ]
         )
     }
