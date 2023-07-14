@@ -207,7 +207,7 @@ struct CardsInfoPagerView<
 
                 withAnimation(pageSwitchAnimation) {
                     cumulativeHorizontalTranslation = -CGFloat(newIndex) * totalWidth
-                    pageSwitchProgress = newIndex == selectedIndex ? 0.0 : 1.0
+                    pageSwitchProgress = (newIndex == selectedIndex) ? 0.0 : 1.0
                     selectedIndex = newIndex
                 }
             }
@@ -254,11 +254,14 @@ struct CardsInfoPagerView<
     func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
         let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
 
-        guard (0.0 ..< headerHeight) ~= yOffset else { return }
+        guard 0.0 ..< headerHeight ~= yOffset else { return }
 
-        let headerAutoScrollRatio = proposedHeaderState == .collapsed
-            ? Constants.headerAutoScrollThresholdRatio
-            : 1.0 - Constants.headerAutoScrollThresholdRatio
+        let headerAutoScrollRatio: CGFloat
+        if proposedHeaderState == .collapsed {
+            headerAutoScrollRatio = Constants.headerAutoScrollThresholdRatio
+        } else {
+            headerAutoScrollRatio = 1.0 - Constants.headerAutoScrollThresholdRatio
+        }
 
         withAnimation(.spring()) {
             if yOffset > headerHeight * headerAutoScrollRatio {
