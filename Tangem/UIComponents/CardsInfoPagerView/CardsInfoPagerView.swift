@@ -254,7 +254,7 @@ struct CardsInfoPagerView<
     func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
         let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
 
-        guard 0.0 ..< headerHeight ~= yOffset else { return }
+        guard 0.0 <= yOffset, yOffset < headerHeight else { return }
 
         let headerAutoScrollRatio: CGFloat
         if proposedHeaderState == .collapsed {
