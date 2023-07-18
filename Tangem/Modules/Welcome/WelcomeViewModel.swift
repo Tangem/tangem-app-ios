@@ -101,7 +101,7 @@ class WelcomeViewModel: ObservableObject {
             case .success(let cardModel), .partial(let cardModel, _): // partial unlock is impossible in this case
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
-                    .walletsCount: "\(userWalletRepository.count)",
+                    .walletsCount: "1", // we don't have any saved wallets, just log one
                 ])
                 openMain(with: cardModel)
             }

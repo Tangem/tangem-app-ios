@@ -221,7 +221,6 @@ extension Blockchain {
             .terraV1,
             .terraV2,
             .cronos,
-            .telos(testnet: false),
         ]
     }()
 
@@ -247,7 +246,6 @@ extension Blockchain {
             .kava(testnet: true),
             .ravencoin(testnet: true),
             .cosmos(testnet: true),
-            .telos(testnet: true),
         ]
     }()
 }

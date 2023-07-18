@@ -317,10 +317,16 @@ class ShopifyService: ShopifyProtocol {
     // MARK: - Apple Pay
 
     func canUseApplePay() -> Bool {
-        PKPaymentAuthorizationController.canMakePayments()
+        PKPaymentAuthorizationController.canMakePayments() && shop.merchantID != nil
     }
 
     func startApplePaySession(checkoutID: GraphQL.ID) -> AnyPublisher<Checkout, Error> {
+        guard let merchantID = shop.merchantID else {
+            AppLog.shared.debug("Merchant ID not available. Cannot use Apple Pay")
+            return Fail<Checkout, Error>(error: ShopifyError.applePayFailed)
+                .eraseToAnyPublisher()
+        }
+
         guard paySession == nil else {
             AppLog.shared.debug("Another pay session is in progress")
             return Fail<Checkout, Error>(error: ShopifyError.applePayFailed)
@@ -336,7 +342,7 @@ class ShopifyService: ShopifyProtocol {
                     shopName: shopName,
                     checkout: checkout.payCheckout,
                     currency: checkout.payCurrency,
-                    merchantID: shop.merchantID
+                    merchantID: merchantID
                 )
                 paySession?.delegate = self
                 paySession?.authorize()
