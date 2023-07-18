@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 extension Publisher where Output: Equatable {
     var uiPublisher: AnyPublisher<Output, Failure> {
         dropFirst()
@@ -25,6 +26,7 @@ extension Publisher where Output: Equatable {
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 extension Publisher where Failure == Never {
     func weakAssign<Root: AnyObject>(to keyPath: ReferenceWritableKeyPath<Root, Output>, on root: Root) -> AnyCancellable {
         sink { [weak root] in
@@ -55,6 +57,7 @@ extension Publisher where Failure == Never {
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 public extension Publisher {
     /// Subscribes to current publisher without handling events
     func sink() -> AnyCancellable {
@@ -84,18 +87,21 @@ public extension Publisher {
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 extension Publisher where Output == Void, Failure == Error {
     static var just: AnyPublisher<Output, Failure> {
         Just(()).setFailureType(to: Failure.self).eraseToAnyPublisher()
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 extension Publisher where Output == Void, Failure == Never {
     static var just: AnyPublisher<Output, Failure> {
         Just(()).eraseToAnyPublisher()
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 extension Publisher {
     func asyncMap<T>(
         _ transform: @escaping (Output) async throws -> T
@@ -128,6 +134,7 @@ extension Publisher {
     }
 }
 
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
 @available(iOS, deprecated: 15.0, message: "AsyncCompatibilityKit is only useful when targeting iOS versions earlier than 15")
 public extension Publisher where Failure == Never {
     /// Convert this publisher into an `AsyncStream` that can
@@ -152,6 +159,26 @@ public extension Publisher where Failure == Never {
                     }
                 )
             }
+        }
+    }
+}
+
+extension Publisher {
+    func withWeakCaptureOf<Object>(
+        _ object: Object
+    ) -> Publishers.CompactMap<Self, (Object, Self.Output)> where Object: AnyObject {
+        return compactMap { [weak object] output in
+            guard let object = object else { return nil }
+
+            return (object, output)
+        }
+    }
+
+    func withUnownedCaptureOf<Object>(
+        _ object: Object
+    ) -> Publishers.Map<Self, (Object, Self.Output)> where Object: AnyObject {
+        return map { [unowned object] output in
+            return (object, output)
         }
     }
 }

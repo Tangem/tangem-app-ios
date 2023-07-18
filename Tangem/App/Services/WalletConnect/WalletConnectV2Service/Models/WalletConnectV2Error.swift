@@ -23,6 +23,7 @@ enum WalletConnectV2Error: LocalizedError {
     case transactionSentButNotFoundInManager
     case wrongCardSelected
     case sessionConnetionTimeout
+    case unsupportedDApp
 
     case unknown(String)
 
@@ -42,8 +43,34 @@ enum WalletConnectV2Error: LocalizedError {
         case .transactionSentButNotFoundInManager: return 8012
         case .wrongCardSelected: return 8013
         case .sessionConnetionTimeout: return 8014
+        case .unsupportedDApp: return 8015
 
         case .unknown: return 8999
+        }
+    }
+
+    var errorDescription: String? {
+        switch self {
+        case .unsupportedBlockchains(let blockchainNames):
+            var message = Localization.walletConnectErrorUnsupportedBlockchains
+            message += blockchainNames.joined(separator: ", ")
+
+            return message
+        case .missingBlockchains(let blockchainNames):
+            var message = Localization.walletConnectErrorMissingBlockchains
+            message += blockchainNames.joined(separator: ", ")
+
+            return message
+        case .wrongCardSelected:
+            return Localization.walletConnectErrorWrongCardSelected
+        case .unknown(let errorMessage):
+            return Localization.walletConnectErrorWithFrameworkMessage(errorMessage)
+        case .sessionConnetionTimeout:
+            return Localization.walletConnectErrorTimeout
+        case .unsupportedDApp:
+            return Localization.walletConnectErrorUnsupportedDapp
+        default:
+            return Localization.walletConnectGenericErrorWithCode(code)
         }
     }
 

@@ -10,5 +10,5 @@ import Foundation
 struct ShopifyShop: Decodable {
     let domain: String
     let storefrontApiKey: String
-    let merchantID: String
+    let merchantID: String?
 }

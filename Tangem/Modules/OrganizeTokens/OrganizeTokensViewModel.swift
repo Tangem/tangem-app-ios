@@ -153,4 +153,11 @@ extension OrganizeTokensViewModel: OrganizeTokensDragAndDropControllerDataSource
     ) -> OrganizeTokensDragAndDropControllerListViewKind {
         return indexPath.item == sectionHeaderItemIndex ? .sectionHeader : .cell
     }
+
+    func controller(
+        _ controller: OrganizeTokensDragAndDropController,
+        listViewIdentifierForItemAt indexPath: IndexPath
+    ) -> AnyHashable {
+        return viewModelIdentifier(at: indexPath)
+    }
 }
