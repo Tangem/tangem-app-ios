@@ -216,7 +216,7 @@ struct CardsInfoPagerView<
     private func makeDragGesture(with proxy: GeometryProxy) -> some Gesture {
         DragGesture()
             .updating($currentHorizontalTranslation) { value, state, _ in
-                state = value.translation.width
+                state = valueWithRubberbandingIfNeeded(value.translation.width)
             }
             .onChanged { value in
                 let totalWidth = proxy.size.width
@@ -224,7 +224,7 @@ struct CardsInfoPagerView<
                     - Constants.headerItemHorizontalOffset
                     - Constants.headerInteritemSpacing
 
-                pageSwitchProgress = abs(value.translation.width / adjustedWidth)
+                pageSwitchProgress = abs(valueWithRubberbandingIfNeeded(value.translation.width) / adjustedWidth)
 
                 // The `content` part of the page must be updated exactly in the middle of the
                 // current gesture/animation, therefore `nextPageThreshold` equals 0.5 here
@@ -257,7 +257,7 @@ struct CardsInfoPagerView<
                 )
                 let pageHasBeenSwitched = newSelectedIndex != selectedIndex
 
-                cumulativeHorizontalTranslation += value.translation.width
+                cumulativeHorizontalTranslation += valueWithRubberbandingIfNeeded(value.translation.width)
                 cumulativeHorizontalTranslation += additionalHorizontalTranslation(
                     oldSelectedIndex: selectedIndex,
                     newSelectedIndex: newSelectedIndex
@@ -319,6 +319,10 @@ struct CardsInfoPagerView<
             : currentPageSwitchProgress
 
         return 1.0 / max(relativeAnimationDuration, .ulpOfOne) // Protecting against division by zero
+    }
+
+    private func valueWithRubberbandingIfNeeded<T>(_ value: T) -> T where T: BinaryFloatingPoint {
+        return hasNextIndexToSelect ? value : value.withRubberbanding()
     }
 
     // MARK: - Header vertical auto scrolling support
