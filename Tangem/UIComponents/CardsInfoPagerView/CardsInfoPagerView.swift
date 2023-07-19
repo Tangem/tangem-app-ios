@@ -39,7 +39,7 @@ struct CardsInfoPagerView<
     /// whereas `content` part must be updated exactly in the middle of the current gesture/animation).
     @State private var contentSelectedIndex: Int
 
-    @GestureState private var hasNextIndexToSelect = true
+    @State private var hasNextIndexToSelect = false
 
     private var selectedIndexLowerBound: Int { 0 }
     private var selectedIndexUpperBound: Int { data.count - 1 }
@@ -218,15 +218,6 @@ struct CardsInfoPagerView<
             .updating($currentHorizontalTranslation) { value, state, _ in
                 state = value.translation.width
             }
-            .updating($hasNextIndexToSelect) { value, state, _ in
-                // The `content` part of the page must be updated exactly in the middle of the
-                // current gesture/animation, therefore `nextPageThreshold` equals 0.5 here
-                state = nextIndexToSelectFiltered(
-                    translation: value.translation.width,
-                    totalWidth: proxy.size.width,
-                    nextPageThreshold: 0.5
-                ) != nil
-            }
             .onChanged { value in
                 let totalWidth = proxy.size.width
                 let adjustedWidth = totalWidth
@@ -242,6 +233,15 @@ struct CardsInfoPagerView<
                     totalWidth: totalWidth,
                     nextPageThreshold: 0.5
                 )
+
+                // The presence/absence of the next index to select must be determined as soon as possible
+                // when drag gesture starts, therefore `nextPageThreshold` equals `ulpOfOne` here
+                let nextIndexToSelect = nextIndexToSelectFiltered(
+                    translation: value.translation.width,
+                    totalWidth: proxy.size.width,
+                    nextPageThreshold: .ulpOfOne
+                )
+                hasNextIndexToSelect = nextIndexToSelect != nil && nextIndexToSelect != selectedIndex
             }
             .onEnded { value in
                 let totalWidth = proxy.size.width
