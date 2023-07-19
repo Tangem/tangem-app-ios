@@ -15,8 +15,6 @@ import enum TangemSdk.TangemSdkError
 class AddCustomTokenViewModel: ObservableObject {
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
 
-    unowned var cardModel: CardViewModel
-
     @Published var name = ""
     @Published var symbol = ""
     @Published var contractAddress = ""
@@ -51,22 +49,25 @@ class AddCustomTokenViewModel: ObservableObject {
         return blockchain?.canHandleTokens ?? false
     }
 
-    private var supportedBlockchains: Set<Blockchain> {
-        return cardModel.supportedBlockchains
-    }
-
     private var bag: Set<AnyCancellable> = []
     private var blockchainByName: [String: Blockchain] = [:]
     private var derivationPathByBlockchainName: [String: DerivationPath] = [:]
     private var foundStandardToken: CoinModel?
     private unowned let coordinator: AddCustomTokenRoutable
+    private let userTokensManager: UserTokensManager
 
     private let defaultDerivationItemID = "default-derivation"
     private let customDerivationItemID = "custom-derivation"
+    private let settings: ManageTokensSettings
 
-    init(cardModel: CardViewModel, coordinator: AddCustomTokenRoutable) {
+    init(
+        settings: ManageTokensSettings,
+        userTokensManager: UserTokensManager,
+        coordinator: AddCustomTokenRoutable
+    ) {
+        self.settings = settings
+        self.userTokensManager = userTokensManager
         self.coordinator = coordinator
-        self.cardModel = cardModel
 
         $contractAddress.removeDuplicates()
             .dropFirst()
@@ -103,16 +104,14 @@ class AddCustomTokenViewModel: ObservableObject {
         UIApplication.shared.endEditing()
 
         let tokenItem: TokenItem
-        let blockchain: Blockchain
         let derivationPath: DerivationPath?
         do {
             tokenItem = try enteredTokenItem()
-            blockchain = try enteredBlockchain()
-            derivationPath = try enteredDerivationPath()
+            derivationPath = enteredDerivationPath()
 
             if case .token(_, let blockchain) = tokenItem,
                case .solana = blockchain,
-               !cardModel.longHashesSupported {
+               !settings.longHashesSupported {
                 throw TokenCreationErrors.tokensNotSupported
             }
         } catch {
@@ -120,10 +119,7 @@ class AddCustomTokenViewModel: ObservableObject {
             return
         }
 
-        let blockchainNetwork = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: derivationPath)
-        let entry = StorageEntry(blockchainNetwork: blockchainNetwork, token: tokenItem.token)
-
-        cardModel.add(entries: [entry]) { [weak self] result in
+        userTokensManager.add(tokenItem, derivationPath: derivationPath) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -143,7 +139,7 @@ class AddCustomTokenViewModel: ObservableObject {
 
     func onAppear() {
         Analytics.log(.customTokenScreenOpened)
-        updateBlockchains(supportedBlockchains)
+        updateBlockchains(settings.supportedBlockchains)
         updateDerivationPaths()
     }
 
@@ -190,10 +186,10 @@ class AddCustomTokenViewModel: ObservableObject {
         let customItem = (Localization.customTokenCustomDerivation, customDerivationItemID)
 
         let derivations: [(String, String)]
-        if !cardModel.hdWalletsSupported {
+        if !settings.hdWalletsSupported {
             derivations = []
         } else {
-            derivations = supportedBlockchains
+            derivations = settings.supportedBlockchains
                 .compactMap {
                     guard let derivationPath = $0.derivationPaths(for: .v1)[.default] else {
                         return nil
@@ -315,25 +311,14 @@ class AddCustomTokenViewModel: ObservableObject {
     }
 
     private func checkLocalStorage() throws {
-        guard let blockchain = try? enteredBlockchain() else {
+        guard let tokenItem = try? enteredTokenItem() else {
             return
         }
 
-        let cardTokenItems = cardModel.userTokenListManager.getEntriesFromRepository()
-
-        let checkingContractAddress = !contractAddress.isEmpty
         let derivationPath = enteredDerivationPath()
 
-        let blockchainNetwork = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: derivationPath)
-
-        if let networkItem = cardTokenItems.first(where: { $0.blockchainNetwork == blockchainNetwork }) {
-            if !checkingContractAddress {
-                throw TokenSearchError.alreadyAdded
-            }
-
-            if networkItem.tokens.contains(where: { $0.contractAddress == contractAddress }) {
-                throw TokenSearchError.alreadyAdded
-            }
+        if userTokensManager.contains(tokenItem, derivationPath: derivationPath) {
+            throw TokenSearchError.alreadyAdded
         }
     }
 
@@ -345,7 +330,7 @@ class AddCustomTokenViewModel: ObservableObject {
                 .eraseToAnyPublisher()
         }
 
-        let networkIds = supportedBlockchains.map { $0.networkId }
+        let networkIds = settings.supportedBlockchains.map { $0.networkId }
         let requestModel = CoinsListRequestModel(
             contractAddress: contractAddress,
             networkIds: networkIds
@@ -366,7 +351,7 @@ class AddCustomTokenViewModel: ObservableObject {
             partialResult.union(currencyModel.items.map { $0.blockchain })
         }
 
-        let blockchains = supportedBlockchains
+        let blockchains = settings.supportedBlockchains
         updateBlockchains(blockchains, newSelectedBlockchain: currencyModelBlockchains.first)
 
         self.foundStandardToken = currencyModels.first
@@ -416,7 +401,7 @@ class AddCustomTokenViewModel: ObservableObject {
             .token: tokenItem.currencySymbol,
         ]
 
-        if let derivationStyle = cardModel.derivationStyle,
+        if let derivationStyle = settings.derivationStyle,
            let usedDerivationPath = derivationPath ?? tokenItem.blockchain.derivationPaths(for: derivationStyle)[.default]
         {
             params[.derivationPath] = usedDerivationPath.rawPath

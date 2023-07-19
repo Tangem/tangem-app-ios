@@ -13,11 +13,13 @@ import BlockchainSdk
 struct UserCurrenciesProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
-    private let walletModel: WalletModel
+    private let blockchain: Blockchain
+    private let walletModelTokens: [Token]
     private let currencyMapper: CurrencyMapping
 
-    init(walletModel: WalletModel, currencyMapper: CurrencyMapping) {
-        self.walletModel = walletModel
+    init(blockchain: Blockchain, walletModelTokens: [Token], currencyMapper: CurrencyMapping) {
+        self.blockchain = blockchain
+        self.walletModelTokens = walletModelTokens
         self.currencyMapper = currencyMapper
     }
 }
@@ -26,20 +28,18 @@ struct UserCurrenciesProvider {
 
 extension UserCurrenciesProvider: UserCurrenciesProviding {
     func getCurrencies(blockchain swappingBlockchain: SwappingBlockchain) async -> [Currency] {
-        let blockchain = walletModel.blockchainNetwork.blockchain
-
-        guard blockchain.networkId == swappingBlockchain.networkId else {
-            assertionFailure("incorrect blockchain in WalletModel")
-            return []
-        }
+        // get user tokens from API with filled in fields
+        let tokens = await getTokens(
+            networkId: swappingBlockchain.networkId,
+            ids: walletModelTokens.compactMap { $0.id }
+        )
 
         var currencies: [Currency] = []
         if let coinCurrency = currencyMapper.mapToCurrency(blockchain: blockchain) {
             currencies.append(coinCurrency)
         }
 
-        let userTokens = walletModel.getTokens()
-        if userTokens.isEmpty {
+        if walletModelTokens.isEmpty {
             return currencies
         }
 
@@ -47,7 +47,7 @@ extension UserCurrenciesProvider: UserCurrenciesProviding {
         // For checking exchangeable
         let filledTokens = await getTokens(
             networkId: swappingBlockchain.networkId,
-            ids: userTokens.compactMap { $0.id }
+            ids: walletModelTokens.compactMap { $0.id }
         )
 
         currencies += filledTokens.compactMap { token in

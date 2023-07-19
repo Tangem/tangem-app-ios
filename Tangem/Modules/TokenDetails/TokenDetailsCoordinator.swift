@@ -47,6 +47,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
 
         tokenDetailsViewModel = .init(
             cardModel: options.cardModel,
+            userTokensManager: options.userTokensManager,
             walletModel: options.walletModel,
             blockchainNetwork: options.blockchainNetwork,
             amountType: options.amountType,
@@ -62,6 +63,7 @@ extension TokenDetailsCoordinator {
     struct Options {
         let cardModel: CardViewModel
         let walletModel: WalletModel
+        let userTokensManager: UserTokensManager
         let blockchainNetwork: BlockchainNetwork
         let amountType: Amount.AmountType
     }

@@ -32,7 +32,7 @@ class SignTransactionHandler: WalletConnectTransactionHandler {
                 let ethWalletModel = buildResponse.0
                 let tx = buildResponse.1
 
-                guard let txSigner = ethWalletModel.walletManager as? EthereumTransactionSigner else {
+                guard let txSigner = ethWalletModel.ethereumTransactionSigner else {
                     return .anyFail(error: WalletConnectServiceError.failedToFindSigner)
                 }
 

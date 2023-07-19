@@ -11,26 +11,26 @@ def tangem_sdk_pod
 end
 
 def blockchain_sdk_pods
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-332'
-  # pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-334'
+  #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
   
   pod 'TangemWalletCore', :git => 'https://github.com/tangem/wallet-core-binaries-ios.git', :tag => '3.2.1-tangem2'
   #pod 'TangemWalletCore', :path => '../wallet-core-binaries-ios'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => 'add-external-signer-7'
-  # pod 'Solana.Swift', :path => '../Solana.Swift'
+  #pod 'Solana.Swift', :path => '../Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.9'
-  # pod 'BinanceChain', :path => '../SwiftBinanceChain'
+  #pod 'BinanceChain', :path => '../SwiftBinanceChain'
 
   pod 'HDWalletKit', :git => 'https://github.com/tangem/hdwallet.git', :tag => '0.3.12'
-  # pod 'HDWalletKit', :path => '../HDWallet'
+  #pod 'HDWalletKit', :path => '../HDWallet'
   
   pod 'web3swift', :git => 'https://github.com/tangem/web3swift.git', :tag => '2.2.12'
-  # pod 'web3swift', :path => '../web3swift'
+  #pod 'web3swift', :path => '../web3swift'
   
   pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.19'
-  # pod 'BitcoinCore.swift', :path => '../bitcoincore'
+  #pod 'BitcoinCore.swift', :path => '../bitcoincore'
 end
 
 target 'Tangem' do

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import BlockchainSdk
 
 struct AddCustomTokenView: View {
     @ObservedObject var viewModel: AddCustomTokenViewModel
@@ -153,6 +154,20 @@ private struct PickerStyleModifier: ViewModifier {
 
 struct AddCustomTokenView_Previews: PreviewProvider {
     static var previews: some View {
-        AddCustomTokenView(viewModel: .init(cardModel: PreviewCard.tangemWalletEmpty.cardModel, coordinator: TokenListCoordinator()))
+        let settings = ManageTokensSettings(
+            supportedBlockchains: Blockchain.supportedBlockchains,
+            hdWalletsSupported: true,
+            longHashesSupported: true,
+            derivationStyle: .v3,
+            shouldShowLegacyDerivationAlert: false
+        )
+
+        let viewModel = AddCustomTokenViewModel(
+            settings: settings,
+            userTokensManager: UserTokensManagerMock(),
+            coordinator: TokenListCoordinator()
+        )
+
+        AddCustomTokenView(viewModel: viewModel)
     }
 }

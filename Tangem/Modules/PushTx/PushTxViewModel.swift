@@ -36,7 +36,8 @@ class PushTxViewModel: ObservableObject {
     }
 
     var walletModel: WalletModel {
-        cardViewModel.walletModels.first(where: { $0.blockchainNetwork == blockchainNetwork })!
+        let id = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: amountToSend.type).id
+        return cardViewModel.walletModels.first(where: { $0.id == id })!
     }
 
     var previousFeeAmount: Amount { transaction.fee.amount }
@@ -123,7 +124,7 @@ class PushTxViewModel: ObservableObject {
         guard
             let tx = newTransaction,
             let previousTxHash = transaction.hash,
-            let pusher = walletModel.walletManager as? TransactionPusher
+            let pusher = walletModel.transactionPusher
         else {
             return
         }
@@ -164,14 +165,6 @@ class PushTxViewModel: ObservableObject {
         AppLog.shared.debug("\n\nCreating push tx view model subscriptions \n\n")
 
         bag.removeAll()
-
-        walletModel
-            .$rates
-            .map { [unowned self] newRates -> Bool in
-                return newRates[amountToSend.currencySymbol] != nil
-            }
-            .weakAssign(to: \.canFiatCalculation, on: self)
-            .store(in: &bag)
 
         $isFiatCalculation
             .sink { [unowned self] isFiat in
@@ -236,8 +229,8 @@ class PushTxViewModel: ObservableObject {
                 var tx: BlockchainSdk.Transaction?
 
                 do {
-                    tx = try walletModel.walletManager.createTransaction(
-                        amount: newAmount,
+                    tx = try walletModel.createTransaction(
+                        amountToSend: newAmount,
                         fee: fee,
                         destinationAddress: destination
                     )
@@ -262,7 +255,7 @@ class PushTxViewModel: ObservableObject {
 
     private func loadNewFees() {
         guard
-            let pusher = walletModel.walletManager as? TransactionPusher,
+            let pusher = walletModel.transactionPusher,
             let txHash = transaction.hash
         else {
             return

@@ -20,7 +20,7 @@ class ReferralViewModel: ObservableObject {
     @Published var showCodeCopiedToast: Bool = false
 
     private weak var coordinator: ReferralRoutable?
-    private let cardModel: CardViewModel
+    private let userTokensManager: UserTokensManager
     private let userWalletId: Data
 
     private var shareLink: String {
@@ -31,12 +31,18 @@ class ReferralViewModel: ObservableObject {
         return Localization.referralShareLink(referralInfo.shareLink)
     }
 
-    init(cardModel: CardViewModel, userWalletId: Data, coordinator: ReferralRoutable) {
-        self.cardModel = cardModel
+    init(
+        userWalletId: Data,
+        userTokensManager: UserTokensManager,
+        coordinator: ReferralRoutable
+    ) {
+        self.userTokensManager = userTokensManager
         self.userWalletId = userWalletId
         self.coordinator = coordinator
 
-        runTask(loadReferralInfo)
+        runTask(in: self) { root in
+            await root.loadReferralInfo()
+        }
     }
 
     @MainActor
@@ -50,7 +56,8 @@ class ReferralViewModel: ObservableObject {
 
         guard
             let award = referralProgramInfo?.conditions.awards.first,
-            let blockchain = Blockchain(from: award.token.networkId)
+            let blockchain = Blockchain(from: award.token.networkId),
+            let token = award.token.storageToken
         else {
             AppLog.shared.error(Localization.referralErrorFailedToLoadInfo)
             errorAlert = AlertBuilder.makeOkErrorAlert(
@@ -61,25 +68,23 @@ class ReferralViewModel: ObservableObject {
             return
         }
 
-        let token = award.token
-
-        let network = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-        guard let address = cardModel.walletModels.first(where: { $0.blockchainNetwork == network })?.wallet.address else {
-            requestDerivation(for: blockchain, with: token)
-            return
-        }
-
-        saveToStorageIfNeeded(token, for: blockchain)
         do {
-            let referralProgramInfo = try await runInTask {
-                try await self.tangemApiService.participateInReferralProgram(using: token, for: address, with: self.userWalletId.hexString)
+            let address = try await userTokensManager.add(.token(token, blockchain), derivationPath: nil)
+            isProcessingRequest = false
+
+            let referralProgramInfo: ReferralProgramInfo? = try await runInTask { [weak self] in
+                guard let self else { return nil }
+
+                return try await tangemApiService.participateInReferralProgram(using: award.token, for: address, with: userWalletId.hexString)
             }
             self.referralProgramInfo = referralProgramInfo
         } catch {
-            let referralError = ReferralError(error)
-            let message = Localization.referralErrorFailedToParticipate(referralError.code)
-            errorAlert = AlertBuilder.makeOkErrorAlert(message: message)
-            AppLog.shared.error(referralError)
+            if !error.toTangemSdkError().isUserCancelled {
+                let referralError = ReferralError(error)
+                let message = Localization.referralErrorFailedToParticipate(referralError.code)
+                errorAlert = AlertBuilder.makeOkErrorAlert(message: message)
+                AppLog.shared.error(referralError)
+            }
         }
 
         isProcessingRequest = false
@@ -100,8 +105,10 @@ class ReferralViewModel: ObservableObject {
     @MainActor
     private func loadReferralInfo() async {
         do {
-            let referralProgramInfo = try await runInTask {
-                try await self.tangemApiService.loadReferralProgramInfo(for: self.userWalletId.hexString)
+            let referralProgramInfo: ReferralProgramInfo? = try await runInTask { [weak self] in
+                guard let self else { return nil }
+
+                return try await tangemApiService.loadReferralProgramInfo(for: userWalletId.hexString)
             }
             self.referralProgramInfo = referralProgramInfo
         } catch {
@@ -109,51 +116,6 @@ class ReferralViewModel: ObservableObject {
             let message = Localization.referralErrorFailedToLoadInfoWithReason(referralError.code)
             AppLog.shared.error(referralError)
             errorAlert = AlertBuilder.makeOkErrorAlert(message: message, okAction: coordinator?.dismiss ?? {})
-        }
-    }
-
-    private func requestDerivation(for blockchain: Blockchain, with referralToken: AwardToken) {
-        let network = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-        let token = referralToken.storageToken
-
-        let storageEntry = StorageEntry(blockchainNetwork: network, token: token)
-        if let model = cardModel.walletModels.first(where: { $0.blockchainNetwork == network }),
-           let token {
-            model.addTokens([token])
-        }
-
-        cardModel.add(entries: [storageEntry]) { [weak self] result in
-            guard let self else { return }
-
-            isProcessingRequest = false
-            switch result {
-            case .success:
-                runTask(participateInReferralProgram)
-            case .failure(let error):
-                if case .userCancelled = error.toTangemSdkError() {
-                    return
-                }
-
-                AppLog.shared.error(error)
-                errorAlert = error.alertBinder
-            }
-        }
-    }
-
-    private func saveToStorageIfNeeded(_ referralToken: AwardToken, for blockchain: Blockchain) {
-        let network = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-        guard
-            let storageToken = referralToken.storageToken
-        else {
-            return
-        }
-
-        var savedEntries = cardModel.getSavedEntries()
-
-        if let savedNetworkIndex = savedEntries.firstIndex(where: { $0.blockchainNetwork == network }),
-           !savedEntries[savedNetworkIndex].tokens.contains(where: { $0 == storageToken }) {
-            savedEntries[savedNetworkIndex].tokens.append(storageToken)
-            cardModel.update(entries: savedEntries)
         }
     }
 }

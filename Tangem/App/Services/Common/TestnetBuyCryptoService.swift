@@ -16,28 +16,29 @@ class TestnetBuyCryptoService {
 
     func buyCrypto(_ target: CryptoToBuy) {
         switch target {
-        case .erc20Token(let token, let walletManager, let signer):
-            buyErc20Token(token, walletManager: walletManager, signer: signer)
+        case .erc20Token(let token, let walletModel, let signer):
+            buyErc20Token(token, walletModel: walletModel, signer: signer)
         }
     }
 
-    private func buyErc20Token(_ token: Token, walletManager: WalletManager, signer: TransactionSigner) {
-        let amountToSend = Amount(with: walletManager.wallet.blockchain, value: 0)
+    private func buyErc20Token(_ token: Token, walletModel: WalletModel, signer: TangemSigner) {
+        let amountToSend = Amount(with: walletModel.wallet.blockchain, value: 0)
         let destinationAddress = token.contractAddress
 
         var subs: AnyCancellable!
-        subs = walletManager.getFee(amount: amountToSend, destination: destinationAddress)
-            .flatMap { fees -> AnyPublisher<TransactionSendResult, Error> in
+
+        subs = walletModel.getFee(amount: amountToSend, destination: destinationAddress)
+            .flatMap { fees -> AnyPublisher<Void, Error> in
                 guard let fee = fees.first,
-                      fee.amount.value <= walletManager.wallet.amounts[.coin]?.value ?? 0 else {
+                      fee.amount.value <= walletModel.wallet.amounts[.coin]?.value ?? 0 else {
                     return .anyFail(error: "Not enough funds on ETH wallet balance. You need to topup ETH wallet first")
                 }
 
-                guard let tx = try? walletManager.createTransaction(amount: amountToSend, fee: fee, destinationAddress: destinationAddress) else {
+                guard let tx = try? walletModel.createTransaction(amountToSend: amountToSend, fee: fee, destinationAddress: destinationAddress) else {
                     return .anyFail(error: "Failed to create topup transaction for token. Try again later")
                 }
 
-                return walletManager.send(tx, signer: signer)
+                return walletModel.send(tx, signer: signer)
             }
             .sink { [unowned self] completion in
                 if case .failure(let error) = completion {
@@ -57,6 +58,6 @@ class TestnetBuyCryptoService {
 
 extension TestnetBuyCryptoService {
     enum CryptoToBuy {
-        case erc20Token(_ token: Token, walletManager: WalletManager, signer: TransactionSigner)
+        case erc20Token(_ token: Token, walletModel: WalletModel, signer: TangemSigner)
     }
 }

@@ -29,7 +29,7 @@ struct LegacyMainView: View {
                         .padding(.top, 8)
                         .fixedSize(horizontal: false, vertical: true)
 
-                        if viewModel.isLackDerivationWarningViewVisible {
+                        if viewModel.hasPendingDerivations {
                             ScanCardWarningView(action: viewModel.deriveEntriesWithoutDerivation)
                                 .padding(.horizontal, 16)
                         }

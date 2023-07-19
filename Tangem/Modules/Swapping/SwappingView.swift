@@ -155,7 +155,7 @@ struct SwappingView_Preview: PreviewProvider {
         initialSourceCurrency: .mock,
         swappingInteractor: .init(
             swappingManager: SwappingManagerMock(),
-            userWalletModel: UserWalletModelMock(),
+            userTokensManager: UserTokensManagerMock(),
             currencyMapper: CurrencyMapper(),
             blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!
         ),

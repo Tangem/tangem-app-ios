@@ -45,7 +45,7 @@ struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
                 transaction.amount.description,
                 transaction.fee.amount.description,
                 totalAmount.description,
-                walletModel.getBalance(for: .coin)
+                walletModel.balance
             )
             if balance < totalAmount {
                 m += "\n\n" + Localization.walletConnectCreateTxNotEnoughFunds

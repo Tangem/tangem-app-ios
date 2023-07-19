@@ -64,7 +64,7 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
             return .anyFail(error: error)
         }
 
-        guard let gasLoader = walletModel.walletManager as? EthereumGasLoader else {
+        guard let gasLoader = walletModel.ethereumGasLoader else {
             let error = WalletConnectServiceError.failedToBuildTx(code: .noWalletManager)
             AppLog.shared.error(error)
             return .anyFail(error: error)
@@ -93,28 +93,11 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
             gasLoader
         )
 
-        let walletUpdatePublisher = walletModel
-            .$state
-            .setFailureType(to: Error.self)
-            .tryMap { state -> WalletModel.State in
-                switch state {
-                case .failed(let error):
-                    throw error
-                case .noAccount(let message):
-                    throw message
-                default:
-                    return state
-                }
-            }
-            .filter { $0 == .idle }
-
-        walletModel.update(silent: false)
-
         // This zip attempting to load gas price and update wallet balance.
         // In some cases (ex. when swapping currencies on OpenSea) dApp didn't send gasPrice, that why we need to load this data from blockchain
         // Also we must identify that wallet failed to update balance.
         // If we couldn't get gasPrice and can't update wallet balance reject message will be send to dApp
-        return Publishers.Zip3(gasPricePublisher, gasLimitPublisher, walletUpdatePublisher)
+        return Publishers.Zip3(gasPricePublisher, gasLimitPublisher, walletModel.update(silent: false).setFailureType(to: Error.self))
             .flatMap { gasPrice, gasLimit, state -> AnyPublisher<Transaction, Error> in
                 Future { promise in
                     let gasAmount = Amount(with: blockchain, type: .coin, value: Decimal(gasLimit * gasPrice) / blockchain.decimalValue)
@@ -129,7 +112,7 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
                             valueAmount.description,
                             gasAmount.description,
                             totalAmount.description,
-                            walletModel.getBalance(for: .coin)
+                            walletModel.balance
                         )
                         if balance < totalAmount {
                             m += "\n\n" + Localization.walletConnectCreateTxNotEnoughFunds
@@ -140,7 +123,7 @@ class WalletConnectTransactionHandler: TangemWalletConnectRequestHandler {
                         do {
                             let gasParameters = EthereumFeeParameters(gasLimit: BigUInt(gasLimit), gasPrice: BigUInt(gasPrice))
                             let fee = Fee(gasAmount, parameters: gasParameters)
-                            var tx = try walletModel.walletManager.createTransaction(
+                            var tx = try walletModel.transactionCreator.createTransaction(
                                 amount: valueAmount,
                                 fee: fee,
                                 sourceAddress: transaction.from,

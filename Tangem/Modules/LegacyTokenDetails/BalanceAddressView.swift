@@ -10,7 +10,7 @@ import SwiftUI
 import BlockchainSdk
 
 struct BalanceAddressView: View {
-    @ObservedObject var walletModel: WalletModel
+    var walletModel: WalletModel
     var amountType: Amount.AmountType
     var isRefreshing: Bool
     let showExplorerURL: (URL?) -> Void
@@ -56,11 +56,11 @@ struct BalanceAddressView: View {
     }
 
     var balance: String {
-        walletModel.getBalance(for: amountType)
+        walletModel.balance
     }
 
     var fiatBalance: String {
-        walletModel.getFiatBalance(for: amountType)
+        walletModel.fiatBalance
     }
 
     var isSkeletonShown: Bool {
@@ -164,7 +164,7 @@ struct BalanceAddressView: View {
             .frame(height: 86)
             .padding(.bottom, 16)
 
-            Text(walletModel.getQRReceiveMessage(for: amountType))
+            Text(walletModel.qrReceiveMessage)
                 .font(.system(size: 16, weight: .regular))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.tangemGrayDark)
@@ -190,8 +190,6 @@ struct BalanceAddressView: View {
 struct BalanceAddressView_Previews: PreviewProvider {
     static var walletModel: WalletModel {
         let vm = PreviewCard.stellar.cardModel.walletModels.first!
-        vm.state = .failed(error: "Failed to load. Internet connection is unnreachable")
-        vm.state = .idle
         return vm
     }
 

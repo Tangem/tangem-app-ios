@@ -506,6 +506,10 @@ class CommonUserWalletRepository: UserWalletRepository {
             }
         }
 
+        models.forEach {
+            $0.initialUpdate()
+        }
+
         self.models = models
     }
 

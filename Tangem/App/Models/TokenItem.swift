@@ -27,6 +27,15 @@ enum TokenItem: Hashable {
         }
     }
 
+    var currencyId: String? {
+        switch self {
+        case .token(let token, _):
+            return token.id
+        case .blockchain(let blockchain):
+            return blockchain.currencyId
+        }
+    }
+
     var blockchain: Blockchain {
         switch self {
         case .token(_, let blockchain):

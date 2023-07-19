@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 @available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
-extension AnyPublisher {
+extension AnyPublisher where Failure: Error {
     static func just(output: Output) -> AnyPublisher<Output, Never> {
         Just(output).eraseToAnyPublisher()
     }
@@ -24,6 +24,22 @@ extension AnyPublisher {
                     if case .failure(let error) = completion {
                         continuation.resume(throwing: error)
                     }
+                    cancellable?.cancel()
+                } receiveValue: { output in
+                    continuation.resume(returning: output)
+                }
+        }
+    }
+}
+
+@available(*, deprecated, message: "Migrate to CombineExt if applicable (IOS-4000)")
+extension AnyPublisher where Failure == Never {
+    func async() async -> Output {
+        await withCheckedContinuation { continuation in
+            var cancellable: AnyCancellable?
+
+            cancellable = first()
+                .sink { completion in
                     cancellable?.cancel()
                 } receiveValue: { output in
                     continuation.resume(returning: output)

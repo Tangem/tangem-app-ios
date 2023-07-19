@@ -32,6 +32,7 @@ final class TokenDetailsViewModel: ObservableObject {
 
     private let cardModel: CardViewModel
     private let walletModel: WalletModel
+    private let userTokensManager: UserTokensManager
     private let blockchainNetwork: BlockchainNetwork
     private let amountType: Amount.AmountType
 
@@ -53,10 +54,6 @@ final class TokenDetailsViewModel: ObservableObject {
     var canBuyCrypto: Bool { exchangeUtility.buyAvailable }
 
     private var canSend: Bool {
-        guard cardModel.canSend else {
-            return false
-        }
-
         guard canSignLongTransactions else {
             return false
         }
@@ -81,6 +78,7 @@ final class TokenDetailsViewModel: ObservableObject {
 
     init(
         cardModel: CardViewModel,
+        userTokensManager: UserTokensManager,
         walletModel: WalletModel,
         blockchainNetwork: BlockchainNetwork,
         amountType: Amount.AmountType,
@@ -90,6 +88,7 @@ final class TokenDetailsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.walletModel = walletModel
         self.cardModel = cardModel
+        self.userTokensManager = userTokensManager
         self.blockchainNetwork = blockchainNetwork
         self.amountType = amountType
         self.exchangeUtility = exchangeUtility
@@ -131,7 +130,7 @@ final class TokenDetailsViewModel: ObservableObject {
 
     func reloadHistory() {
         isReloadingTransactionHistory = true
-        walletModel.loadTransactionHistory()
+        walletModel.updateTransactionsHistory()
             .sink { [weak self] completion in
                 self?.isReloadingTransactionHistory = false
             } receiveValue: { _ in }
@@ -147,7 +146,7 @@ final class TokenDetailsViewModel: ObservableObject {
         if let token = amountType.token, blockchain == .ethereum(testnet: true) {
             testnetBuyCryptoService.buyCrypto(.erc20Token(
                 token,
-                walletManager: walletModel.walletManager,
+                walletModel: walletModel,
                 signer: cardModel.signer
             ))
             return
@@ -170,7 +169,7 @@ final class TokenDetailsViewModel: ObservableObject {
 
 extension TokenDetailsViewModel {
     func hideTokenButtonAction() {
-        if walletModel.canRemove(amountType: amountType) {
+        if userTokensManager.canRemove(walletModel.tokenItem, derivationPath: walletModel.blockchainNetwork.derivationPath) {
             showHideWarningAlert()
         } else {
             showUnableToHideAlert()
@@ -204,7 +203,7 @@ extension TokenDetailsViewModel {
     private func hideToken() {
         Analytics.log(event: .buttonRemoveToken, params: [Analytics.ParameterKey.token: currencySymbol])
 
-        cardModel.remove(amountType: amountType, blockchainNetwork: walletModel.blockchainNetwork)
+        userTokensManager.remove(walletModel.tokenItem, derivationPath: walletModel.blockchainNetwork.derivationPath)
         dismiss()
     }
 }
@@ -226,7 +225,7 @@ private extension TokenDetailsViewModel {
     }
 
     private func bind() {
-        walletModel.$state
+        walletModel.walletDidChangePublisher
             .receive(on: DispatchQueue.main)
             .sink { _ in } receiveValue: { [weak self] newState in
                 AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
@@ -235,7 +234,7 @@ private extension TokenDetailsViewModel {
             }
             .store(in: &bag)
 
-        walletModel.$transactionHistoryState
+        walletModel.transactionHistoryPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newState in
                 AppLog.shared.debug("New transaction history state: \(newState)")
@@ -278,11 +277,11 @@ private extension TokenDetailsViewModel {
             transactionHistoryState = .notSupported
         case .notLoaded:
             transactionHistoryState = .loading
-            walletModel.loadTransactionHistory()
+            walletModel.updateTransactionsHistory()
                 .sink()
                 .store(in: &bag)
         case .loading:
-            if case .notLoaded = walletModel.transactionHistoryState {
+            if case .notLoaded = newState {
                 transactionHistoryState = .loading
             }
         case .failedToLoad(let error):
@@ -378,7 +377,9 @@ private extension TokenDetailsViewModel {
         }
 
         guard
-            let sourceCurrency = CurrencyMapper().mapToCurrency(amountType: amountType, in: blockchain)
+            let sourceCurrency = CurrencyMapper().mapToCurrency(amountType: amountType, in: blockchain),
+            let ethereumNetworkProvider = walletModel.ethereumNetworkProvider,
+            let ethereumTransactionProcessor = walletModel.ethereumTransactionProcessor
         else { return }
 
         var referrer: SwappingReferrerAccount?
@@ -388,13 +389,18 @@ private extension TokenDetailsViewModel {
         }
 
         let input = CommonSwappingModulesFactory.InputModel(
-            userWalletModel: cardModel,
-            walletModel: walletModel,
-            sender: walletModel.walletManager,
+            userTokensManager: userTokensManager,
+            wallet: walletModel.wallet,
+            blockchainNetwork: walletModel.blockchainNetwork,
+            sender: walletModel.transactionSender,
             signer: cardModel.signer,
+            transactionCreator: walletModel.transactionCreator,
+            ethereumNetworkProvider: ethereumNetworkProvider,
+            ethereumTransactionProcessor: ethereumTransactionProcessor,
             logger: AppLog.shared,
             referrer: referrer,
-            source: sourceCurrency
+            source: sourceCurrency,
+            walletModelTokens: userTokensManager.getAllTokens(for: walletModel.blockchainNetwork)
         )
 
         coordinator.openSwapping(input: input)

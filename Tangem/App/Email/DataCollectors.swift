@@ -60,9 +60,9 @@ struct SendScreenDataCollector: EmailDataCollector {
             break
         }
 
-        data.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.walletManager.currentHost))
+        data.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
 
-        if let outputsDescription = walletModel.walletManager.outputsCount?.description {
+        if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
             data.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
         }
 
@@ -70,7 +70,7 @@ struct SendScreenDataCollector: EmailDataCollector {
             data.append(EmailCollectedData(type: .error, data: errorDescription))
         }
 
-        let derivationPath = walletModel.walletManager.wallet.publicKey.derivationPath
+        let derivationPath = walletModel.wallet.publicKey.derivationPath
         data.append(EmailCollectedData(type: .wallet(.derivationPath), data: derivationPath?.rawPath ?? "[default]"))
 
         data.append(.separator(.dashes))
@@ -130,7 +130,7 @@ struct PushScreenDataCollector: EmailDataCollector {
         }
 
         data.append(contentsOf: [
-            EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.walletManager.currentHost),
+            EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost),
             EmailCollectedData(type: .error, data: lastError?.localizedDescription ?? "Unknown error"),
             .separator(.dashes),
             EmailCollectedData(type: .send(.pushingTxHash), data: pushingTxHash),
@@ -184,23 +184,17 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
                 dataToFormat.append(EmailCollectedData(type: .wallet(.xpub), data: xpubKey))
             }
 
-            if let outputsDescription = walletModel.walletManager.outputsCount?.description {
+            if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
                 dataToFormat.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
             }
 
-            let tokens = walletModel.walletManager.cardTokens
-
-            if !tokens.isEmpty {
-                dataToFormat.append(EmailCollectedData(type: .token(.tokens), data: ""))
-            }
-
-            for token in tokens {
+            if let token = walletModel.amountType.token {
                 dataToFormat.append(EmailCollectedData(type: .token(.id), data: token.id ?? "[custom token]"))
                 dataToFormat.append(EmailCollectedData(type: .token(.name), data: token.name))
                 dataToFormat.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
             }
 
-            dataToFormat.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.walletManager.currentHost))
+            dataToFormat.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
             if walletModel.addressNames.count > 1 {
                 var explorerLinks = "Multiple explorers links: "
                 var addresses = "Multiple addresses: "

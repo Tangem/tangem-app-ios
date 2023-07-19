@@ -51,12 +51,6 @@ struct TotalSumBalanceView: View {
                 .foregroundColor(Color.tangemGrayDark6)
                 .skeletonable(isShown: viewModel.isLoading, size: CGSize(width: 100, height: 25))
                 .frame(height: 33)
-
-            if let balance = viewModel.singleWalletBalance {
-                Text(balance)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    .layoutPriority(1)
-            }
         }
     }
 

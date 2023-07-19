@@ -51,15 +51,16 @@ public extension EIP712TypedData {
         var depSet = findDependencies(primaryType: primaryType)
         depSet.remove(primaryType)
         let sorted = [primaryType] + Array(depSet).sorted()
-        let fullType = sorted.compactMap { type -> String? in
-            guard let type = types[type] else {
-                AppLog.shared.debug("EIP712TypedData type: \(type) not found in \(types)")
+        let fullType = sorted.compactMap { searchingType -> String? in
+            guard let type = types[searchingType] else {
+                AppLog.shared.debug("EIP712TypedData type: \(searchingType) not found in \(types)")
                 return nil
             }
 
             let param = type.map { "\($0.type) \($0.name)" }.joined(separator: ",")
-            return "\(type)(\(param))"
+            return "\(searchingType)(\(param))"
         }.joined()
+
         return fullType.data(using: .utf8) ?? Data()
     }
 

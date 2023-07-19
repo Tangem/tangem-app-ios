@@ -155,7 +155,11 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     func initializeUserWallet(from cardInfo: CardInfo) {
         guard let userWallet = CardViewModel(cardInfo: cardInfo) else { return }
 
-        userWallet.appendDefaultBlockchains()
+        let defaultBlockchains = userWallet.config.defaultBlockchains
+        if !defaultBlockchains.isEmpty {
+            userWallet.userTokenListManager.update(.append(defaultBlockchains), shouldUpload: true)
+        }
+
         userWallet.initialUpdate()
 
         analyticsContext.updateContext(with: userWallet.userWalletId.value)

@@ -95,7 +95,7 @@ struct SwappingApproveView_Preview: PreviewProvider {
         transactionSender: TransactionSenderMock(),
         swappingInteractor: .init(
             swappingManager: SwappingManagerMock(),
-            userWalletModel: UserWalletModelMock(),
+            userTokensManager: UserTokensManagerMock(),
             currencyMapper: CurrencyMapper(),
             blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!
         ),

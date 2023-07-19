@@ -78,7 +78,7 @@ struct LegacyTokenDetailsView: View {
                             AlertCardView(title: Localization.commonWarning, message: transactionLengthWarning)
                         }
 
-                        if let solanaRentWarning = viewModel.solanaRentWarning {
+                        if let solanaRentWarning = viewModel.rentWarning {
                             AlertCardView(title: Localization.commonWarning, message: solanaRentWarning)
                         }
                     }

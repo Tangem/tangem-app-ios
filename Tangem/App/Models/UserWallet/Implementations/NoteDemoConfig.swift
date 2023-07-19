@@ -142,22 +142,12 @@ extension NoteDemoConfig: UserWalletConfig {
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        let blockchain = token.blockchainNetwork.blockchain
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return DemoWalletModelsFactory(derivationStyle: nil)
+    }
 
-        guard let walletPublicKey = card.wallets.first(where: { $0.curve == blockchain.curve })?.publicKey else {
-            throw CommonError.noData
-        }
-
-        let factory = WalletModelsFactory()
-        let model = try factory.makeSingleWallet(
-            walletPublicKey: walletPublicKey,
-            blockchain: blockchain,
-            token: token.tokens.first,
-            derivationStyle: card.derivationStyle
-        )
-        model.demoBalance = DemoUtil().getDemoBalance(for: defaultBlockchain)
-        return model
+    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+        return SimpleWalletManagerFactory()
     }
 }
 

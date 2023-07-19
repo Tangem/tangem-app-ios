@@ -29,7 +29,7 @@ class LegacyMainViewModel: ObservableObject {
     @Published var showTradeSheet: Bool = false
     @Published var showSelectWalletSheet: Bool = false
     @Published var image: UIImage? = nil
-    @Published var isLackDerivationWarningViewVisible: Bool = false
+    @Published var hasPendingDerivations: Bool = false
     @Published var isBackupAllowed: Bool = false
     @Published var promotionAvailable: Bool = false
     @Published var promotionRequestInProgress: Bool = false
@@ -101,7 +101,7 @@ class LegacyMainViewModel: ObservableObject {
     }
 
     var wallet: Wallet? {
-        singleWalletContentViewModel?.singleWalletModel?.wallet
+        singleWalletContentViewModel?.singleWalletModel.wallet
     }
 
     var currencyCode: String {
@@ -210,12 +210,10 @@ class LegacyMainViewModel: ObservableObject {
     // MARK: - Functions
 
     func bind() {
-        cardModel.subscribeToEntriesWithoutDerivation()
+        cardModel.derivationManager?.hasPendingDerivations
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
-            .sink { [unowned self] entries in
-                updateLackDerivationWarningView(entries: entries)
-            }
+            .weakAssign(to: \.hasPendingDerivations, on: self)
             .store(in: &bag)
 
         AppSettings.shared.$saveUserWallets
@@ -343,7 +341,7 @@ class LegacyMainViewModel: ObservableObject {
 
     func deriveEntriesWithoutDerivation() {
         Analytics.log(.noticeScanYourCardTapped)
-        cardModel.deriveEntriesWithoutDerivation()
+        cardModel.derivationManager?.deriveKeys(cardInteractor: cardModel.cardInteractor, completion: { _ in })
     }
 
     func extractSellCryptoRequest(from response: String) {
@@ -468,15 +466,20 @@ private extension LegacyMainViewModel {
 
         if cardModel.isMultiWallet {
             multiWalletContentViewModel = LegacyMultiWalletContentViewModel(
-                cardModel: cardModel,
+                walletModelsManager: cardModel.walletModelsManager,
                 userTokenListManager: cardModel.userTokenListManager,
+                totalBalanceProvider: cardModel.totalBalanceProvider,
                 output: self
             )
         } else {
-            singleWalletContentViewModel = LegacySingleWalletContentViewModel(
-                cardModel: cardModel,
-                output: self
-            )
+            if let singleWalletModel = cardModel.walletModelsManager.walletModels.first {
+                singleWalletContentViewModel = LegacySingleWalletContentViewModel(
+                    walletModel: singleWalletModel,
+                    walletModelsManager: cardModel.walletModelsManager,
+                    totalBalanceProvider: cardModel.totalBalanceProvider,
+                    output: self
+                )
+            }
         }
     }
 
@@ -486,10 +489,6 @@ private extension LegacyMainViewModel {
         }
 
         self.error = error
-    }
-
-    private func updateLackDerivationWarningView(entries: [StorageEntry]) {
-        isLackDerivationWarningViewVisible = !entries.isEmpty
     }
 
     private func loadImage() {
@@ -553,7 +552,7 @@ private extension LegacyMainViewModel {
     private func startPromotionAwardProcess() async throws {
         let awardedBlockchain = try await promotionService.claimReward(
             userWalletId: cardModel.userWalletId.stringValue,
-            storageEntryAdding: cardModel
+            userTokensManager: cardModel.userTokensManager
         )
 
         if let awardedBlockchain {
@@ -650,7 +649,7 @@ extension LegacyMainViewModel {
         if let walletModel = cardModel.walletModels.first,
            walletModel.wallet.blockchain == .ethereum(testnet: true),
            let token = walletModel.wallet.amounts.keys.compactMap({ $0.token }).first {
-            testnetBuyCryptoService.buyCrypto(.erc20Token(token, walletManager: walletModel.walletManager, signer: cardModel.signer))
+            testnetBuyCryptoService.buyCrypto(.erc20Token(token, walletModel: walletModel, signer: cardModel.signer))
         }
 
         if let url = buyCryptoURL {
@@ -661,7 +660,7 @@ extension LegacyMainViewModel {
                 Analytics.log(event: .tokenBought, params: [.token: code])
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                    self?.cardModel.updateAndReloadWalletModels()
+                    self?.cardModel.walletModelsManager.updateAll(silent: true, completion: {})
                 }
             }
         }
@@ -723,7 +722,18 @@ extension LegacyMainViewModel: LegacySingleWalletContentViewModelOutput {
 
 extension LegacyMainViewModel: LegacyMultiWalletContentViewModelOutput {
     func openTokensList() {
-        coordinator.openTokensList(with: cardModel)
+        let settings = ManageTokensSettings(
+            supportedBlockchains: cardModel.supportedBlockchains,
+            hdWalletsSupported: cardModel.config.hasFeature(.hdWallets),
+            longHashesSupported: cardModel.config.hasFeature(.longHashes),
+            derivationStyle: cardModel.cardInfo.card.derivationStyle, // TODO: move to config
+            shouldShowLegacyDerivationAlert: cardModel.shouldShowLegacyDerivationAlert
+        )
+
+        coordinator.openTokensList(
+            with: settings,
+            userTokensManager: cardModel.userTokensManager
+        )
     }
 
     func openTokenDetails(_ tokenItem: LegacyTokenItemViewModel) {
