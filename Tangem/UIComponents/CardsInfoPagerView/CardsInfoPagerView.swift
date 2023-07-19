@@ -440,7 +440,7 @@ private extension CardsInfoPagerView {
         static var headerAutoScrollThresholdRatio: CGFloat { 0.25 }
         static var contentViewVerticalOffset: CGFloat { 44.0 }
         static var pageSwitchThreshold: CGFloat { 0.5 }
-        static var pageSwitchAnimation: Animation { .interactiveSpring(response: 0.4) }
+        static var pageSwitchAnimation: Animation { .spring().speed(0.5) }
     }
 }
 
