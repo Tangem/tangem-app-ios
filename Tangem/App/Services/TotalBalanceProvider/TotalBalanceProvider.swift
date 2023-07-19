@@ -13,16 +13,16 @@ import BlockchainSdk
 class TotalBalanceProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
-    private unowned let userWalletModel: UserWalletModel
+    private let walletModelsManager: WalletModelsManager
+    private let derivationManager: DerivationManager?
     private let totalBalanceSubject = CurrentValueSubject<LoadingValue<TotalBalance>, Never>(.loading)
     private var refreshSubscription: AnyCancellable?
-    private let userWalletAmountType: Amount.AmountType?
     private var bag: Set<AnyCancellable> = .init()
     private var updateSubscription: AnyCancellable?
 
-    init(userWalletModel: UserWalletModel, userWalletAmountType: Amount.AmountType?) {
-        self.userWalletModel = userWalletModel
-        self.userWalletAmountType = userWalletAmountType
+    init(walletModelsManager: WalletModelsManager, derivationManager: DerivationManager?) {
+        self.walletModelsManager = walletModelsManager
+        self.derivationManager = derivationManager
         bind()
     }
 }
@@ -37,12 +37,10 @@ extension TotalBalanceProvider: TotalBalanceProviding {
 
 private extension TotalBalanceProvider {
     func bind() {
-        let hasEntriesWithoutDerivationPublisher = userWalletModel
-            .subscribeToEntriesWithoutDerivation()
-            .map { !$0.isEmpty }
+        let hasEntriesWithoutDerivationPublisher = derivationManager?.hasPendingDerivations ?? .just(output: false)
 
         // Subscription to handle token changes
-        userWalletModel.subscribeToWalletModels()
+        walletModelsManager.walletModelsPublisher
             .combineLatest(
                 AppSettings.shared.$selectedCurrencyCode.delay(for: 0.3, scheduler: DispatchQueue.main),
                 hasEntriesWithoutDerivationPublisher
@@ -71,13 +69,7 @@ private extension TotalBalanceProvider {
     private func subscribeToUpdates(_ walletModels: [WalletModel], _ hasEntriesWithoutDerivation: Bool) {
         // Subscription to handle balance loading completion
 
-        updateSubscription = Publishers.MergeMany(
-            walletModels.map { $0
-                .walletDidChange
-                .filter { !$0.isLoading } // subscribe to all the walletDidChange events
-                // This delay has been added because `walletDidChange` pushed the changes on `willSet`
-                .delay(for: 0.1, scheduler: DispatchQueue.main)
-            })
+        updateSubscription = Publishers.MergeMany(walletModels.map { $0.walletDidChangePublisher })
             .map { _ in (walletModels, hasEntriesWithoutDerivation) }
             .debounce(for: 0.2, scheduler: DispatchQueue.main) // Hide skeleton with delay
             .filter { walletModels, _ in
@@ -100,22 +92,20 @@ private extension TotalBalanceProvider {
     }
 
     func mapToTotalBalance(currencyCode: String, _ walletModels: [WalletModel], _ hasEntriesWithoutDerivation: Bool) -> TotalBalance {
-        let tokenItemViewModels = getTokenItemViewModels(from: walletModels)
-
         var hasError = false
         var balance: Decimal?
 
-        for token in tokenItemViewModels {
+        for token in walletModels {
             if !token.state.isSuccesfullyLoaded {
                 balance = nil
                 break
             }
 
             let currentValue = balance ?? 0
-            balance = currentValue + token.fiatValue
+            balance = currentValue + (token.fiatValue ?? 0)
 
-            if token.rate.isEmpty {
-                // Just show wawning for custom tokens
+            if token.rateFormatted.isEmpty {
+                // Just show warning for custom tokens
                 if token.isCustom {
                     hasError = true
                 } else {
@@ -131,16 +121,6 @@ private extension TotalBalanceProvider {
         }
 
         return TotalBalance(balance: balance, currencyCode: currencyCode, hasError: hasError)
-    }
-
-    func getTokenItemViewModels(from walletModels: [WalletModel]) -> [LegacyTokenItemViewModel] {
-        walletModels
-            .flatMap { $0.legacyMultiCurrencyViewModel() }
-            .filter { model in
-                guard let amountType = userWalletAmountType else { return true }
-
-                return model.amountType == amountType
-            }
     }
 }
 

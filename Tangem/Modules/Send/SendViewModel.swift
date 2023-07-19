@@ -45,7 +45,7 @@ class SendViewModel: ObservableObject {
     // MARK: UI
 
     var shoudShowFeeSelector: Bool {
-        walletModel.walletManager.allowsFeeSelection
+        walletModel.shoudShowFeeSelector
     }
 
     var shoudShowFeeIncludeSelector: Bool {
@@ -119,7 +119,8 @@ class SendViewModel: ObservableObject {
     let cardViewModel: CardViewModel
 
     var walletModel: WalletModel {
-        return cardViewModel.walletModels.first(where: { $0.blockchainNetwork == blockchainNetwork })!
+        let id = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: amountToSend.type).id
+        return cardViewModel.walletModels.first(where: { $0.id == id })!
     }
 
     var bag = Set<AnyCancellable>()
@@ -231,22 +232,6 @@ class SendViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        walletModel
-            .objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                self?.objectWillChange.send()
-            }
-            .store(in: &bag)
-
-        walletModel
-            .$rates
-            .map { [unowned self] newRates -> Bool in
-                return newRates[amountToSend.currencySymbol] != nil
-            }
-            .weakAssign(to: \.canFiatCalculation, on: self)
-            .store(in: &bag)
-
         $destination // destination validation
             .debounce(for: 1.0, scheduler: RunLoop.main, options: nil)
             .removeDuplicates()
@@ -281,9 +266,7 @@ class SendViewModel: ObservableObject {
                     return
                 }
 
-                let currencyId = walletModel.currencyId(for: amountToSend.type)
-
-                if let converted = value ? walletModel.getFiat(for: decimals, currencyId: currencyId, roundingType: .defaultFiat(roundingMode: .down))
+                if let converted = value ? walletModel.getFiat(for: decimals, roundingType: .defaultFiat(roundingMode: .down))
                     : walletModel.getCrypto(for: Amount(with: amountToSend, value: decimals)) {
                     amountText = converted.description
                 } else {
@@ -326,7 +309,7 @@ class SendViewModel: ObservableObject {
                 let newAmount = Amount(with: amountToSend, value: newAmountValue)
 
                 do {
-                    try walletModel.walletManager.validate(amount: newAmount)
+                    try walletModel.transactionCreator.validate(amount: newAmount)
                     amountHint = nil
                     validatedAmount = newAmount
                 } catch {
@@ -375,8 +358,8 @@ class SendViewModel: ObservableObject {
                 }
 
                 do {
-                    let tx = try walletModel.walletManager.createTransaction(
-                        amount: isFeeIncluded ? amount - selectedFee.amount : amount,
+                    let tx = try walletModel.createTransaction(
+                        amountToSend: isFeeIncluded ? amount - selectedFee.amount : amount,
                         fee: selectedFee,
                         destinationAddress: destination
                     )
@@ -562,7 +545,7 @@ class SendViewModel: ObservableObject {
 
     func validateWithdrawal(_ transaction: BlockchainSdk.Transaction, _ totalAmount: Amount) {
         guard
-            let validator = walletModel.walletManager as? WithdrawalValidator,
+            let validator = walletModel.withdrawalValidator,
             let warning = validator.validate(transaction),
             error == nil
         else {

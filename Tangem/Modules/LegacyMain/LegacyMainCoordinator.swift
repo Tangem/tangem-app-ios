@@ -218,6 +218,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
             coordinator.start(with: .init(
                 cardModel: cardModel,
                 walletModel: walletModel,
+                userTokensManager: cardModel.userTokensManager,
                 blockchainNetwork: blockchainNetwork,
                 amountType: amountType
             ))
@@ -240,13 +241,19 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
         currencySelectViewModel?.dismissAfterSelection = autoDismiss
     }
 
-    func openTokensList(with cardModel: CardViewModel) {
+    func openTokensList(
+        with settings: ManageTokensSettings,
+        userTokensManager: UserTokensManager
+    ) {
         let dismissAction: Action = { [weak self] in
             self?.tokenListCoordinator = nil
         }
 
         let coordinator = TokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .add(cardModel: cardModel))
+        coordinator.start(with: .add(
+            settings: settings,
+            userTokensManager: userTokensManager
+        ))
         tokenListCoordinator = coordinator
     }
 

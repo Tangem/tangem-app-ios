@@ -265,14 +265,13 @@ extension WalletConnectV1Service: ServerDelegate {
             throw WalletConnectServiceError.unsupportedNetwork
         }
 
-        let blockchainNetwork = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-
         let wallet = cardModel.walletModels
-            .first { $0.blockchainNetwork == blockchainNetwork }
+            .filter { !$0.isCustom }
+            .first { $0.blockchainNetwork.blockchain == blockchain }
             .map { $0.wallet }
 
         guard let wallet = wallet else {
-            throw WalletConnectServiceError.networkNotFound(name: blockchainNetwork.blockchain.displayName)
+            throw WalletConnectServiceError.networkNotFound(name: blockchain.displayName)
         }
 
         let derivedKey = wallet.publicKey.blockchainKey != wallet.publicKey.seedKey ? wallet.publicKey.blockchainKey : nil
@@ -281,7 +280,7 @@ extension WalletConnectV1Service: ServerDelegate {
             walletPublicKey: wallet.publicKey.seedKey,
             derivedPublicKey: derivedKey,
             derivationPath: wallet.publicKey.derivationPath,
-            blockchain: blockchainNetwork.blockchain
+            blockchain: blockchain
         )
     }
 
@@ -338,9 +337,19 @@ extension WalletConnectV1Service: ServerDelegate {
         }
 
         let onSelectChainRequested = { [cardModel] in
-            let availableChains = cardModel.walletModels
-                .filter { $0.blockchainNetwork.blockchain.isEvm }
-                .map { $0.wallet }
+
+            var unuqueEVMWalletModels = [WalletModel]()
+
+            cardModel.walletModels.forEach { walletModel in
+                guard walletModel.blockchainNetwork.blockchain.isEvm,
+                      !unuqueEVMWalletModels.contains(where: { $0.blockchainNetwork == walletModel.blockchainNetwork }) else {
+                    return
+                }
+
+                unuqueEVMWalletModels.append(walletModel)
+            }
+
+            let availableChains = unuqueEVMWalletModels.map { $0.wallet }
 
             AppPresenter.shared.show(
                 WalletConnectUIBuilder.makeChainsSheet(

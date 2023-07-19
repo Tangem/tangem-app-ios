@@ -1,5 +1,5 @@
 //
-//  FiatRatesProvider.swift
+//  SwappingRatesProvider.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 19.01.2023.
@@ -9,37 +9,18 @@
 import Foundation
 import TangemSwapping
 
-class FiatRatesProvider {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
-
-    private let ratesQueue = DispatchQueue(
-        label: "com.tangem.FiatRatesProvider.ratesQueue",
-        attributes: .concurrent
-    )
+class SwappingRatesProvider {
+    @Injected(\.ratesRepository) private var ratesRepository: RatesRepository
 
     /// Collect rates for calculate fiat balance
-    private var _rates: [String: Decimal]
     private var rates: [String: Decimal] {
-        get {
-            return ratesQueue.sync { _rates }
-        }
-        set {
-            ratesQueue.async(flags: .barrier) { self._rates = newValue }
-        }
-    }
-
-    // TODO: Move FiatRatesProvider into WalletModel
-    private let walletModel: WalletModel
-
-    init(walletModel: WalletModel, rates: [String: Decimal]) {
-        self.walletModel = walletModel
-        _rates = rates
+        return ratesRepository.rates
     }
 }
 
 // MARK: - FiatRatesProviding
 
-extension FiatRatesProvider: FiatRatesProviding {
+extension SwappingRatesProvider: FiatRatesProviding {
     func hasRates(for currency: Currency) -> Bool {
         let id = currency.isToken ? currency.id : currency.blockchain.currencyID
         return rates[id] != nil
@@ -80,7 +61,7 @@ extension FiatRatesProvider: FiatRatesProviding {
 
 // MARK: - Private
 
-private extension FiatRatesProvider {
+private extension SwappingRatesProvider {
     func getFiatRateFor(for currency: Currency) async throws -> Decimal {
         let id = currency.isToken ? currency.id : currency.blockchain.currencyID
         return try await getFiatRate(currencyId: id)
@@ -91,20 +72,7 @@ private extension FiatRatesProvider {
     }
 
     func getFiatRate(currencyId: String) async throws -> Decimal {
-        var currencyRate = rates[currencyId]
-
-        if currencyRate == nil {
-            let loadedRates = try await tangemApiService.loadRates(for: [currencyId]).async()
-            currencyRate = loadedRates[currencyId]
-        }
-
-        guard let currencyRate else {
-            throw CommonError.noData
-        }
-
-        updateRate(for: currencyId, with: currencyRate)
-
-        return currencyRate
+        return try await ratesRepository.rate(for: currencyId)
     }
 
     func mapToFiat(amount: Decimal, rate: Decimal) -> Decimal {
@@ -114,17 +82,5 @@ private extension FiatRatesProvider {
         }
 
         return max(fiatValue, 0.01).rounded(scale: 2, roundingMode: .plain)
-    }
-
-    func updateRate(for currencyId: String, with value: Decimal) {
-        rates[currencyId] = value
-
-        DispatchQueue.main.async {
-            // We get "UI from background warning" here
-            // because "walletModel.rates" work with @Published wrapper
-            self.rates.forEach { key, value in
-                self.walletModel.rates.updateValue(value, forKey: key)
-            }
-        }
     }
 }

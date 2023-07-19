@@ -58,7 +58,7 @@ extension WalletConnectV2SignTransactionHandler: WalletConnectMessageHandler {
     }
 
     func handle() async throws -> RPCResult {
-        guard let ethSigner = walletModel.walletManager as? EthereumTransactionSigner else {
+        guard let ethSigner = walletModel.ethereumTransactionSigner else {
             throw WalletConnectV2Error.missingEthTransactionSigner
         }
 

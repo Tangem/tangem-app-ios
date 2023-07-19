@@ -90,7 +90,7 @@ struct LegacyAddressDetailView: View {
             .padding(.horizontal, 24.0)
             .padding(.top, 16.0)
 
-            Text(walletModel.getQRReceiveMessage())
+            Text(walletModel.qrReceiveMessage)
                 .font(.system(size: 16, weight: .regular))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.tangemGrayDark)

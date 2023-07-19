@@ -180,35 +180,16 @@ extension GenericDemoConfig: UserWalletConfig {
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        let walletPublicKeys: [EllipticCurve: Data] = card.wallets.reduce(into: [:]) { partialResult, cardWallet in
-            partialResult[cardWallet.curve] = cardWallet.publicKey
-        }
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return DemoWalletModelsFactory(derivationStyle: card.derivationStyle)
+    }
 
-        let factory = WalletModelsFactory()
-        let model: WalletModel
-
-        if card.settings.isHDWalletAllowed {
-            let derivedKeys: [EllipticCurve: [DerivationPath: ExtendedPublicKey]] = card.wallets.reduce(into: [:]) { partialResult, cardWallet in
-                partialResult[cardWallet.curve] = cardWallet.derivedKeys
-            }
-
-            model = try factory.makeMultipleWallet(
-                seedKeys: walletPublicKeys,
-                entry: token,
-                derivedKeys: derivedKeys,
-                derivationStyle: card.derivationStyle
-            )
+    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+        if case .available = getFeatureAvailability(.hdWallets) {
+            return HDWalletManagerFactory()
         } else {
-            model = try factory.makeMultipleWallet(
-                walletPublicKeys: walletPublicKeys,
-                entry: token,
-                derivationStyle: card.derivationStyle
-            )
+            return SimpleWalletManagerFactory()
         }
-
-        model.demoBalance = DemoUtil().getDemoBalance(for: model.wallet.blockchain)
-        return model
     }
 }
 

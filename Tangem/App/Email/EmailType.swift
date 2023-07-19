@@ -110,7 +110,6 @@ enum EmailCollectedDataType {
     enum TokenData: String {
         case contractAddress = "Contract address"
         case name = "Name"
-        case tokens = "Tokens"
         case id = "ID"
     }
 

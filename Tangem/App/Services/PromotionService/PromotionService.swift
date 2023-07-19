@@ -9,6 +9,7 @@
 import Combine
 import TangemSdk
 import BlockchainSdk
+import Moya
 
 class PromotionService {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -110,15 +111,23 @@ extension PromotionService: PromotionServiceProtocol {
     }
 
     func checkIfCanGetAward(userWalletId: String) async throws {
-        if let promoCode {
-            try await tangemApiService.validateNewUserPromotionEligibility(walletId: userWalletId, code: promoCode)
-        } else {
-            try await tangemApiService.validateOldUserPromotionEligibility(walletId: userWalletId, programName: currentProgramName)
+        do {
+            if let promoCode {
+                try await tangemApiService.validateNewUserPromotionEligibility(walletId: userWalletId, code: promoCode)
+            } else {
+                try await tangemApiService.validateOldUserPromotionEligibility(walletId: userWalletId, programName: currentProgramName)
+            }
+        } catch {
+            if case .statusCode = error as? MoyaError {
+                throw AppError.serverUnavailable
+            } else {
+                throw error
+            }
         }
     }
 
-    func claimReward(userWalletId: String, storageEntryAdding: StorageEntryAdding) async throws -> Blockchain? {
-        guard let awardDetails = try await awardDetails(storageEntryAdding: storageEntryAdding) else { return nil }
+    func claimReward(userWalletId: String, userTokensManager: UserTokensManager) async throws -> Blockchain? {
+        guard let awardDetails = try await awardDetails(userTokensManager: userTokensManager) else { return nil }
 
         let address = awardDetails.address
 
@@ -179,7 +188,7 @@ extension PromotionService {
         let address: String
     }
 
-    private func awardDetails(storageEntryAdding: StorageEntryAdding) async throws -> AwardDetails? {
+    private func awardDetails(userTokensManager: UserTokensManager) async throws -> AwardDetails? {
         let promotion = try await tangemApiService.promotion(programName: currentProgramName, timeout: nil)
 
         guard
@@ -189,12 +198,8 @@ extension PromotionService {
             throw TangemAPIError(code: .decode)
         }
 
-        let blockchainNetwork = storageEntryAdding.getBlockchainNetwork(for: awardBlockchain, derivationPath: nil)
-
-        let entry = StorageEntry(blockchainNetwork: blockchainNetwork, token: awardToken)
-
         do {
-            let address = try await storageEntryAdding.add(entry: entry)
+            let address = try await userTokensManager.add(.token(awardToken, awardBlockchain), derivationPath: nil)
             return AwardDetails(blockchain: awardBlockchain, address: address)
         } catch {
             if error.toTangemSdkError().isUserCancelled {
@@ -224,6 +229,7 @@ extension PromotionService {
 
             switch tangemApiError.code {
             case .promotionCardAlreadyAwarded, .promotionWalletAlreadyAwarded:
+                markCurrentPromotionAsAwarded(true)
                 return true
             default:
                 return false

@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import TangemSwapping
 
-protocol FiatRatesProviding {
+public protocol FiatRatesProviding {
     func hasRates(for currency: Currency) -> Bool
     func hasRates(for blockchain: TangemSwapping.SwappingBlockchain) -> Bool
 

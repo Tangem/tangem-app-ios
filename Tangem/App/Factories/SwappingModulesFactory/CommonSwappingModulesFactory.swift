@@ -11,25 +11,35 @@ import TangemSwapping
 import BlockchainSdk
 
 class CommonSwappingModulesFactory {
-    private let userWalletModel: UserWalletModel
-    private let walletModel: WalletModel
+    private let userTokensManager: UserTokensManager
+    private let blockchainNetwork: BlockchainNetwork
+    private let wallet: Wallet
     private let sender: TransactionSender
     private let signer: TransactionSigner
+    private let transactionCreator: TransactionCreator
+    private let ethereumNetworkProvider: EthereumNetworkProvider
+    private let ethereumTransactionProcessor: EthereumTransactionProcessor
     private let logger: SwappingLogger
     private let referrer: SwappingReferrerAccount?
     private let source: Currency
+    private let walletModelTokens: [Token]
     private let destination: Currency?
 
     private lazy var swappingInteractor = makeSwappingInteractor(source: source, destination: destination)
 
     init(inputModel: InputModel) {
-        userWalletModel = inputModel.userWalletModel
-        walletModel = inputModel.walletModel
+        userTokensManager = inputModel.userTokensManager
+        wallet = inputModel.wallet
+        blockchainNetwork = inputModel.blockchainNetwork
         sender = inputModel.sender
         signer = inputModel.signer
+        transactionCreator = inputModel.transactionCreator
+        ethereumNetworkProvider = inputModel.ethereumNetworkProvider
+        ethereumTransactionProcessor = inputModel.ethereumTransactionProcessor
         logger = inputModel.logger
         referrer = inputModel.referrer
         source = inputModel.source
+        walletModelTokens = inputModel.walletModelTokens
         destination = inputModel.destination
     }
 }
@@ -86,10 +96,8 @@ extension CommonSwappingModulesFactory: SwappingModulesFactory {
 // MARK: Dependencies
 
 private extension CommonSwappingModulesFactory {
-    var walletManager: WalletManager { walletModel.walletManager }
-
     var swappingDestinationService: SwappingDestinationServicing {
-        SwappingDestinationService(walletModel: walletModel, mapper: currencyMapper)
+        SwappingDestinationService(blockchain: blockchainNetwork.blockchain, mapper: currencyMapper, walletModelTokens: walletModelTokens)
     }
 
     var currencyMapper: CurrencyMapping { CurrencyMapper() }
@@ -98,23 +106,24 @@ private extension CommonSwappingModulesFactory {
 
     var userCurrenciesProvider: UserCurrenciesProviding {
         UserCurrenciesProvider(
-            walletModel: walletModel,
+            blockchain: blockchainNetwork.blockchain,
+            walletModelTokens: walletModelTokens,
             currencyMapper: currencyMapper
         )
     }
 
     var transactionSender: SwappingTransactionSender {
         CommonSwappingTransactionSender(
-            transactionCreator: walletManager,
-            transactionSender: walletManager,
+            transactionCreator: transactionCreator,
+            transactionSender: sender,
             transactionSigner: signer,
-            ethereumNetworkProvider: walletManager as! EthereumNetworkProvider,
+            ethereumNetworkProvider: ethereumNetworkProvider,
             currencyMapper: currencyMapper
         )
     }
 
     var fiatRatesProvider: FiatRatesProviding {
-        FiatRatesProvider(walletModel: walletModel, rates: walletModel.rates)
+        SwappingRatesProvider()
     }
 
     var swappingFeeFormatter: SwappingFeeFormatter {
@@ -127,9 +136,9 @@ private extension CommonSwappingModulesFactory {
 
     var walletDataProvider: SwappingWalletDataProvider {
         CommonSwappingWalletDataProvider(
-            wallet: walletModel.wallet,
-            ethereumNetworkProvider: walletManager as! EthereumNetworkProvider,
-            ethereumTransactionProcessor: walletManager as! EthereumTransactionProcessor,
+            wallet: wallet,
+            ethereumNetworkProvider: ethereumNetworkProvider,
+            ethereumTransactionProcessor: ethereumTransactionProcessor,
             currencyMapper: currencyMapper
         )
     }
@@ -138,9 +147,9 @@ private extension CommonSwappingModulesFactory {
         let swappingManager = makeSwappingManager(source: source, destination: destination)
         return SwappingInteractor(
             swappingManager: swappingManager,
-            userWalletModel: userWalletModel,
+            userTokensManager: userTokensManager,
             currencyMapper: currencyMapper,
-            blockchainNetwork: walletModel.blockchainNetwork
+            blockchainNetwork: blockchainNetwork
         )
     }
 
@@ -157,32 +166,47 @@ private extension CommonSwappingModulesFactory {
 
 extension CommonSwappingModulesFactory {
     struct InputModel {
-        let userWalletModel: UserWalletModel
-        let walletModel: WalletModel
+        let userTokensManager: UserTokensManager
+        let wallet: Wallet
+        let blockchainNetwork: BlockchainNetwork
         let sender: TransactionSender
         let signer: TransactionSigner
+        let transactionCreator: TransactionCreator
+        let ethereumNetworkProvider: EthereumNetworkProvider
+        let ethereumTransactionProcessor: EthereumTransactionProcessor
         let logger: SwappingLogger
         let referrer: SwappingReferrerAccount?
         let source: Currency
+        let walletModelTokens: [Token]
         let destination: Currency?
 
         init(
-            userWalletModel: UserWalletModel,
-            walletModel: WalletModel,
+            userTokensManager: UserTokensManager,
+            wallet: Wallet,
+            blockchainNetwork: BlockchainNetwork,
             sender: TransactionSender,
             signer: TransactionSigner,
+            transactionCreator: TransactionCreator,
+            ethereumNetworkProvider: EthereumNetworkProvider,
+            ethereumTransactionProcessor: EthereumTransactionProcessor,
             logger: SwappingLogger,
             referrer: SwappingReferrerAccount?,
             source: Currency,
+            walletModelTokens: [Token],
             destination: Currency? = nil
         ) {
-            self.userWalletModel = userWalletModel
-            self.walletModel = walletModel
+            self.userTokensManager = userTokensManager
+            self.wallet = wallet
+            self.blockchainNetwork = blockchainNetwork
             self.sender = sender
             self.signer = signer
+            self.transactionCreator = transactionCreator
+            self.ethereumNetworkProvider = ethereumNetworkProvider
+            self.ethereumTransactionProcessor = ethereumTransactionProcessor
             self.logger = logger
             self.referrer = referrer
             self.source = source
+            self.walletModelTokens = walletModelTokens
             self.destination = destination
         }
     }

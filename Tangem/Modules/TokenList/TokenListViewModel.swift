@@ -44,15 +44,11 @@ class TokenListViewModel: ObservableObject {
     }
 
     var shouldShowAlert: Bool {
-        cardModel?.shouldShowLegacyDerivationAlert ?? false
+        mode.settings?.shouldShowLegacyDerivationAlert ?? false
     }
 
     var isSaveDisabled: Bool {
         pendingAdd.isEmpty && pendingRemove.isEmpty
-    }
-
-    var cardModel: CardViewModel? {
-        mode.cardModel
     }
 
     var hasNextPage: Bool {
@@ -72,25 +68,18 @@ class TokenListViewModel: ObservableObject {
     }
 
     func saveChanges() {
-        guard let cardModel = cardModel else {
+        guard let userTokensManager = mode.userTokensManager else {
             closeModule()
             return
         }
 
-        var alreadySaved = cardModel.userTokenListManager.getEntriesFromRepository()
+        isSaving = true
 
-        DispatchQueue.global().async {
-            self.update(cardModel: cardModel, entries: &alreadySaved)
-            self.updateStorage(cardModel: cardModel, entries: alreadySaved)
-        }
-    }
-
-    func updateStorage(cardModel: CardViewModel, entries: [StorageEntry]) {
-        DispatchQueue.main.async {
-            self.isSaving = true
-        }
-
-        cardModel.update(entries: entries) { [weak self] result in
+        userTokensManager.update(
+            itemsToRemove: pendingRemove,
+            itemsToAdd: pendingAdd,
+            derivationPath: nil
+        ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isSaving = false
 
@@ -98,9 +87,10 @@ class TokenListViewModel: ObservableObject {
                 case .success:
                     self?.tokenListDidSave()
                 case .failure(let error):
-                    if let sdkError = error as? TangemSdkError, sdkError.isUserCancelled {
+                    if error.isUserCancelled {
                         return
                     }
+
                     self?.alert = error.alertBinder
                 }
             }
@@ -141,9 +131,9 @@ extension TokenListViewModel {
     }
 
     func openAddCustom() {
-        if let cardModel = cardModel {
+        if let settings = mode.settings, let userTokensManager = mode.userTokensManager {
             Analytics.log(.buttonCustomToken)
-            coordinator.openAddCustom(for: cardModel)
+            coordinator.openAddCustom(settings: settings, userTokensManager: userTokensManager)
         }
     }
 }
@@ -176,7 +166,7 @@ private extension TokenListViewModel {
     }
 
     func setupListDataLoader() -> ListDataLoader {
-        let supportedBlockchains = cardModel?.supportedBlockchains ?? Blockchain.supportedBlockchains
+        let supportedBlockchains = mode.settings?.supportedBlockchains ?? Blockchain.supportedBlockchains
         let networkIds = supportedBlockchains.map { $0.networkId }
         let loader = ListDataLoader(networkIds: networkIds)
 
@@ -192,29 +182,19 @@ private extension TokenListViewModel {
     }
 
     func isAdded(_ tokenItem: TokenItem) -> Bool {
-        guard let cardModel = cardModel else {
+        guard let userTokensManager = mode.userTokensManager else {
             return false
         }
 
-        let network = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-        if let walletManager = cardModel.walletModels.first(where: { $0.blockchainNetwork == network })?.walletManager {
-            if let token = tokenItem.token {
-                return walletManager.cardTokens.contains(token)
-            }
-
-            return true
-        }
-
-        return false
+        return userTokensManager.contains(tokenItem, derivationPath: nil)
     }
 
-    func canManage(_ tokenItem: TokenItem) -> Bool {
-        guard let cardModel = cardModel else {
+    func canRemove(_ tokenItem: TokenItem) -> Bool {
+        guard let userTokensManager = mode.userTokensManager else {
             return false
         }
 
-        let network = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-        return cardModel.canManage(amountType: tokenItem.amountType, blockchainNetwork: network)
+        return userTokensManager.canRemove(tokenItem, derivationPath: nil)
     }
 
     func isSelected(_ tokenItem: TokenItem) -> Bool {
@@ -230,13 +210,14 @@ private extension TokenListViewModel {
     }
 
     func onSelect(_ selected: Bool, _ tokenItem: TokenItem) {
-        guard let cardModel = cardModel else {
+        guard let settings = mode.settings else {
             return
         }
+
         if selected,
            case .token(_, let blockchain) = tokenItem,
            case .solana = blockchain,
-           !cardModel.longHashesSupported {
+           !settings.longHashesSupported {
             let okButton = Alert.Button.default(Text(Localization.commonOk)) {
                 self.updateSelection(tokenItem)
             }
@@ -253,16 +234,9 @@ private extension TokenListViewModel {
 
         let alreadyAdded = isAdded(tokenItem)
 
-        let network = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-        let token = TokenItem.blockchain(network.blockchain)
-
         if alreadyAdded {
             if selected {
                 pendingRemove.remove(tokenItem)
-                if pendingRemove.contains(token) {
-                    pendingRemove.remove(token)
-                    updateSelection(token)
-                }
             } else {
                 pendingRemove.append(tokenItem)
             }
@@ -326,7 +300,8 @@ private extension TokenListViewModel {
             onSelect(isSelected, tokenItem)
             return
         }
-        if canManage(tokenItem) || canRemove(tokenItem: tokenItem) {
+
+        if canRemove(tokenItem) {
             let title = Localization.tokenDetailsHideAlertTitle(tokenItem.currencySymbol)
 
             let cancelAction = { [unowned self] in
@@ -346,19 +321,11 @@ private extension TokenListViewModel {
                 )
             )
         } else {
-            guard let cardModel = cardModel else { return }
-
-            let network = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-
-            guard let walletModel = cardModel.walletModels.first(where: { $0.blockchainNetwork == network }) else {
-                return
-            }
-
             let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.blockchain.currencySymbol)
 
             let message = Localization.tokenDetailsUnableHideAlertMessage(
                 tokenItem.blockchain.currencySymbol,
-                walletModel.blockchainNetwork.blockchain.displayName
+                tokenItem.blockchain.displayName
             )
 
             alert = AlertBinder(alert: Alert(
@@ -371,31 +338,10 @@ private extension TokenListViewModel {
         }
     }
 
-    private func canRemove(tokenItem: TokenItem) -> Bool {
-        guard let cardModel = cardModel else { return false }
-
-        let network = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-
-        guard let walletModel = cardModel.walletModels.first(where: { $0.blockchainNetwork == network }) else {
-            return false
-        }
-
-        let cardTokens: [TokenItem] = walletModel
-            .walletManager
-            .cardTokens
-            .map { token in
-                TokenItem.token(token, network.blockchain)
-            }
-            .filter { !pendingRemove.contains($0) }
-
-        return cardTokens.isEmpty
-    }
-
     func isTokenAvailable(_ tokenItem: TokenItem) -> Bool {
         if case .token(_, let blockchain) = tokenItem,
            case .solana = blockchain,
-           let cardModel = cardModel,
-           !cardModel.longHashesSupported {
+           mode.settings?.longHashesSupported == false {
             return false
         }
         return true
@@ -407,61 +353,30 @@ private extension TokenListViewModel {
             .token: tokenItem.currencySymbol,
         ])
     }
-
-    func update(cardModel: CardViewModel, entries: inout [StorageEntry]) {
-        pendingRemove.forEach { tokenItem in
-            let blockchainNetwork = cardModel.getBlockchainNetwork(for: tokenItem.blockchain, derivationPath: nil)
-
-            switch tokenItem {
-            case .blockchain:
-                entries.removeAll { $0.blockchainNetwork == blockchainNetwork }
-            case .token(let token, _):
-                if let index = entries.firstIndex(where: { $0.blockchainNetwork == blockchainNetwork }) {
-                    entries[index].tokens.removeAll { $0.id == token.id }
-                }
-            }
-        }
-
-        pendingAdd.forEach { tokenItem in
-            switch tokenItem {
-            case .blockchain(let blockchain):
-                let network = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-                if !entries.contains(where: { $0.blockchainNetwork == network }) {
-                    let entry = StorageEntry(blockchainNetwork: network, tokens: [])
-                    entries.append(entry)
-                }
-            case .token(let token, let blockchain):
-                let network = cardModel.getBlockchainNetwork(for: blockchain, derivationPath: nil)
-
-                if let entry = entries.firstIndex(where: { $0.blockchainNetwork == network }) {
-                    entries[entry].tokens.append(token)
-                } else {
-                    let entry = StorageEntry(blockchainNetwork: network, token: token)
-                    entries.append(entry)
-                }
-            }
-        }
-    }
 }
 
+// TODO: refactor, split into separate viewModels
 extension TokenListViewModel {
     enum Mode {
-        case add(cardModel: CardViewModel)
+        case add(
+            settings: ManageTokensSettings,
+            userTokensManager: UserTokensManager
+        )
         case show
 
-        var id: String {
+        fileprivate var settings: ManageTokensSettings? {
             switch self {
-            case .add:
-                return "add"
+            case .add(let settings, _):
+                return settings
             case .show:
-                return "show"
+                return nil
             }
         }
 
-        var cardModel: CardViewModel? {
+        fileprivate var userTokensManager: UserTokensManager? {
             switch self {
-            case .add(let cardModel):
-                return cardModel
+            case .add(_, let userTokensManager):
+                return userTokensManager
             case .show:
                 return nil
             }

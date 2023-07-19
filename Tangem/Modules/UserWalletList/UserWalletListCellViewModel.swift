@@ -12,7 +12,6 @@ import UIKit
 
 class UserWalletListCellViewModel: ObservableObject {
     @Published var balance: String = UserWalletListCellViewModel.defaultBalanceValue
-    @Published var numberOfTokens: String? = nil
     @Published var image: UIImage?
     @Published var isSelected = false
     @Published var isBalanceLoading = true
@@ -30,6 +29,15 @@ class UserWalletListCellViewModel: ObservableObject {
     var userWalletId: Data { userWallet.userWalletId }
     var name: String { userWallet.name }
     var isUserWalletLocked: Bool { userWallet.isLocked }
+
+    var numberOfTokens: String? {
+        if isMultiWallet,
+           let tokensCount = userWalletModel.tokensCount {
+            return Localization.tokenCount(tokensCount)
+        }
+
+        return nil
+    }
 
     private let cardImageProvider: CardImageProviding
     private var bag: Set<AnyCancellable> = []
@@ -56,17 +64,9 @@ class UserWalletListCellViewModel: ObservableObject {
 
         bind()
         loadImage()
-
-        if isMultiWallet {
-            updateNumberOfTokens()
-        }
     }
 
-    func onAppear() {
-        if !userWalletModel.userWallet.isLocked {
-            userWalletModel.initialUpdate()
-        }
-    }
+    func onAppear() {}
 
     func edit() {
         didEditUserWallet()
@@ -77,7 +77,7 @@ class UserWalletListCellViewModel: ObservableObject {
     }
 
     private func bind() {
-        userWalletModel.totalBalanceProvider.totalBalancePublisher()
+        userWalletModel.totalBalancePublisher()
             .sink { [unowned self] loadingValue in
                 switch loadingValue {
                 case .loading:
@@ -95,13 +95,6 @@ class UserWalletListCellViewModel: ObservableObject {
                 }
             }
             .store(in: &bag)
-    }
-
-    private func updateNumberOfTokens() {
-        let blockchainsCount = userWalletModel.getSavedEntries().count
-        let allTokensCount = blockchainsCount + userWalletModel.getSavedEntries().reduce(0) { $0 + $1.tokens.count }
-
-        numberOfTokens = Localization.tokenCount(allTokensCount)
     }
 
     private func loadImage() {
