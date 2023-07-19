@@ -39,7 +39,6 @@ struct CardsInfoPagerView<
     /// whereas `content` part must be updated exactly in the middle of the current gesture/animation).
     @State private var contentSelectedIndex: Int
 
-    @GestureState private var nextIndexToSelect: Int?
     @GestureState private var hasNextIndexToSelect = true
 
     private var selectedIndexLowerBound: Int { 0 }
@@ -218,15 +217,6 @@ struct CardsInfoPagerView<
         DragGesture()
             .updating($currentHorizontalTranslation) { value, state, _ in
                 state = value.translation.width
-            }
-            .updating($nextIndexToSelect) { value, state, _ in
-                // The `content` part of the page must be updated exactly in the middle of the
-                // current gesture/animation, therefore `nextPageThreshold` equals 0.5 here
-                state = nextIndexToSelectFiltered(
-                    translation: value.translation.width,
-                    totalWidth: proxy.size.width,
-                    nextPageThreshold: 0.5
-                )
             }
             .updating($hasNextIndexToSelect) { value, state, _ in
                 // The `content` part of the page must be updated exactly in the middle of the
