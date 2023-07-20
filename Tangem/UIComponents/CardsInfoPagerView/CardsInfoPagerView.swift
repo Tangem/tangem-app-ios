@@ -57,6 +57,7 @@ struct CardsInfoPagerView<
     private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
     private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
     private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
+    private var isHorizontalScrollDisabled = false
 
     private var lowerBound: Int { 0 }
     private var upperBound: Int { data.count - 1 }
@@ -159,7 +160,10 @@ struct CardsInfoPagerView<
                     .id(expandedHeaderScrollTargetIdentifier)
 
                 makeHeader(with: geometryProxy)
-                    .gesture(makeDragGesture(with: geometryProxy))
+                    .gesture(
+                        makeDragGesture(with: geometryProxy),
+                        including: isHorizontalScrollDisabled ? .subviews : .all
+                    )
 
                 // This spacer is used to maintain `Constants.headerAdditionalSpacingHeight` (value
                 // derived from mockups) spacing between the bottom edge of the navigation bar and
@@ -342,6 +346,10 @@ extension CardsInfoPagerView: Setupable {
     /// gesture-driven or animation-driven page switch
     func contentViewVerticalOffset(_ offset: CGFloat) -> Self {
         map { $0.contentViewVerticalOffset = offset }
+    }
+
+    func horizontalScrollDisabled(_ disabled: Bool) -> Self {
+        map { $0.isHorizontalScrollDisabled = disabled }
     }
 }
 
