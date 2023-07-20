@@ -70,6 +70,13 @@ struct CardsInfoPagerView<
     var body: some View {
         GeometryReader { proxy in
             makeContent(with: proxy)
+                .onAppear {
+                    // `DispatchQueue.main.async` used here to allow publishing changes during view updates
+                    DispatchQueue.main.async {
+                        // Applying initial view's state based on the initial value of `selectedIndex`
+                        cumulativeHorizontalTranslation = -CGFloat(selectedIndex) * proxy.size.width
+                    }
+                }
                 .onAppear(perform: scrollDetector.startDetectingScroll)
                 .onDisappear(perform: scrollDetector.stopDetectingScroll)
                 .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
