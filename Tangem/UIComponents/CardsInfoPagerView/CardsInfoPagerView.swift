@@ -39,6 +39,7 @@ struct CardsInfoPagerView<
     /// - Warning: Won't be reset back to 0 after successful (non-cancelled) page switch, use with caution.
     @State private var pageSwitchProgress: CGFloat = .zero
 
+    /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var headerHeight: CGFloat = .zero
     @State private var verticalContentOffset: CGPoint = .zero
@@ -110,7 +111,7 @@ struct CardsInfoPagerView<
             ForEach(data.indexed(), id: idProvider) { index, element in
                 headerFactory(element)
                     .frame(width: max(proxy.size.width - Constants.headerItemHorizontalOffset * 2.0, 0.0))
-                    .readGeometry(\.size.height, bindTo: $headerHeight) // All headers are expected to have the same height
+                    .readGeometry(\.size.height, bindTo: $headerHeight)
             }
         }
         // This offset translates the page based on swipe
@@ -377,32 +378,58 @@ private extension CardsInfoPagerView {
 // MARK: - Previews
 
 struct CardsInfoPagerView_Previews: PreviewProvider {
+    private struct PreviewConfig: Identifiable {
+        let id = UUID()
+        let initiallySelectedIndex: Int
+        let onPullToRefresh: OnRefresh?
+    }
+
     private struct CardsInfoPagerPreview: View {
         @ObservedObject private var previewProvider = CardsInfoPagerPreviewProvider()
 
-        @State private var selectedIndex = 0
+        var previewConfigs: [PreviewConfig] {
+            return [
+                PreviewConfig(initiallySelectedIndex: 0) { completionHandler in
+                    AppLog.shared.debug("Starting pull to refresh at \(CACurrentMediaTime())")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        AppLog.shared.debug("Finishing pull to refresh at \(CACurrentMediaTime())")
+                        completionHandler()
+                    }
+                },
+                PreviewConfig(initiallySelectedIndex: 2, onPullToRefresh: nil),
+            ]
+        }
 
         var body: some View {
-            NavigationView {
-                ZStack {
-                    Colors.Background.secondary
-                        .ignoresSafeArea()
-
-                    CardsInfoPagerView(
-                        data: previewProvider.pages,
-                        selectedIndex: $selectedIndex,
-                        headerFactory: { pageViewModel in
-                            MultiWalletCardHeaderView(viewModel: pageViewModel.header)
-                                .cornerRadius(14.0)
-                        },
-                        contentFactory: { pageViewModel in
-                            CardInfoPagePreviewView(viewModel: pageViewModel)
-                        }
+            ForEach(previewConfigs) { previewConfig in
+                NavigationView {
+                    var initiallySelectedIndex = previewConfig.initiallySelectedIndex
+                    let selectedIndex = Binding(
+                        get: { initiallySelectedIndex },
+                        set: { initiallySelectedIndex = $0 }
                     )
-                    .pageSwitchThreshold(0.4)
-                    .contentViewVerticalOffset(64.0)
-                    .navigationTitle("CardsInfoPagerView")
-                    .navigationBarTitleDisplayMode(.inline)
+
+                    ZStack {
+                        Colors.Background.secondary
+                            .ignoresSafeArea()
+
+                        CardsInfoPagerView(
+                            data: previewProvider.pages,
+                            selectedIndex: selectedIndex,
+                            headerFactory: { pageViewModel in
+                                MultiWalletCardHeaderView(viewModel: pageViewModel.header)
+                                    .cornerRadius(14.0)
+                            },
+                            contentFactory: { pageViewModel in
+                                CardInfoPagePreviewView(viewModel: pageViewModel)
+                            },
+                            onPullToRefresh: previewConfig.onPullToRefresh
+                        )
+                        .pageSwitchThreshold(0.4)
+                        .contentViewVerticalOffset(64.0)
+                        .navigationTitle("CardsInfoPagerView")
+                        .navigationBarTitleDisplayMode(.inline)
+                    }
                 }
             }
         }
