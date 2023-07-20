@@ -394,78 +394,17 @@ private extension CardsInfoPagerView {
 // MARK: - Previews
 
 struct CardsInfoPagerView_Previews: PreviewProvider {
-    private struct PreviewConfig: Identifiable {
-        let id = UUID()
-        let initiallySelectedIndex: Int
-        let hasPullToRefresh: Bool
-    }
-
-    private struct ContainerView: View {
-        init(
-            previewConfig: PreviewConfig
-        ) {
-            _selectedIndex = .init(initialValue: previewConfig.initiallySelectedIndex)
-            self.hasPullToRefresh = previewConfig.hasPullToRefresh
-        }
-
-        @StateObject private var previewProvider = CardsInfoPagerPreviewProvider()
-        @State private var isHorizontalScrollDisabled = false
-        @State private var selectedIndex: Int
-        private let hasPullToRefresh: Bool
-
-        private var onPullToRefresh: OnRefresh? {
-            guard hasPullToRefresh else { return nil }
-
-            return  { completionHandler in
-                AppLog.shared.debug("Starting pull to refresh at \(CACurrentMediaTime())")
-                isHorizontalScrollDisabled = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                    AppLog.shared.debug("Finishing pull to refresh at \(CACurrentMediaTime())")
-                    completionHandler()
-                    isHorizontalScrollDisabled = false
-                }
-            }
-        }
-
-        var body: some View {
-            NavigationView {
-                ZStack {
-                    Colors.Background.secondary
-                        .ignoresSafeArea()
-
-                    CardsInfoPagerView(
-                        data: previewProvider.pages,
-                        selectedIndex: $selectedIndex,
-                        headerFactory: { pageViewModel in
-                            MultiWalletCardHeaderView(viewModel: pageViewModel.header)
-                                .cornerRadius(14.0)
-                        },
-                        contentFactory: { pageViewModel in
-                            CardInfoPagePreviewView(viewModel: pageViewModel)
-                        },
-                        onPullToRefresh: onPullToRefresh
-                    )
-                    .pageSwitchThreshold(0.4)
-                    .contentViewVerticalOffset(64.0)
-                    .horizontalScrollDisabled(isHorizontalScrollDisabled)
-                    .navigationTitle("CardsInfoPagerView")
-                    .navigationBarTitleDisplayMode(.inline)
-                }
-            }
-        }
-    }
-
     private struct CardsInfoPagerPreview: View {
-        var previewConfigs: [PreviewConfig] {
+        var previewConfigs: [CardInfoPagePreviewConfig] {
             return [
-                PreviewConfig(initiallySelectedIndex: 0, hasPullToRefresh: true),
-                PreviewConfig(initiallySelectedIndex: 2, hasPullToRefresh: false),
+                CardInfoPagePreviewConfig(initiallySelectedIndex: 0, hasPullToRefresh: true),
+                CardInfoPagePreviewConfig(initiallySelectedIndex: 2, hasPullToRefresh: false),
             ]
         }
 
         var body: some View {
             ForEach(previewConfigs) { previewConfig in
-                ContainerView(previewConfig: previewConfig)
+                CardInfoPagePreviewContainerView(previewConfig: previewConfig)
             }
         }
     }
