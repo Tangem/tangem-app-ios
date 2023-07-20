@@ -1,10 +1,18 @@
-// Authoer: The SwiftUI Lab
-// Full article: https://swiftui-lab.com/scrollview-pull-to-refresh/
+//
+//  RefreshableScrollView.swift
+//  Tangem
+//
+//  Created by Alexander Osokin on 26.08.2020.
+//  Copyright © 2020 Tangem AG. All rights reserved.
+//
+
 import SwiftUI
 
-typealias RefreshComplete = () -> Void
-typealias OnRefresh = (@escaping RefreshComplete) -> Void
+typealias RefreshCompletionHandler = () -> Void
+typealias OnRefresh = (_ completionHandler: @escaping RefreshCompletionHandler) -> Void
 
+/// Author: The SwiftUI Lab.
+/// Full article: https://swiftui-lab.com/scrollview-pull-to-refresh/.
 struct RefreshableScrollView<Content: View>: View {
     @State private var previousScrollOffset: CGFloat = 0
     @State private var scrollOffset: CGFloat = 0
@@ -17,7 +25,11 @@ struct RefreshableScrollView<Content: View>: View {
     let onRefresh: OnRefresh
     let content: Content
 
-    init(height: CGFloat = 100, onRefresh: @escaping OnRefresh, @ViewBuilder content: () -> Content) {
+    init(
+        height: CGFloat = 100,
+        onRefresh: @escaping OnRefresh,
+        @ViewBuilder content: () -> Content
+    ) {
         threshold = height
         self.onRefresh = onRefresh
         self.content = content()
@@ -51,9 +63,21 @@ struct RefreshableScrollView<Content: View>: View {
                 ZStack(alignment: .top) {
                     MovingView()
 
-                    VStack { content }.alignmentGuide(.top, computeValue: { d in (refreshing && frozen) ? (-threshold + 30) : 0.0 })
+                    VStack {
+                        content
+                    }
+                    .alignmentGuide(
+                        .top,
+                        computeValue: { d in (refreshing && frozen) ? (-threshold + 30) : 0.0 }
+                    )
 
-                    SymbolView(height: threshold - 30, loading: refreshing, frozen: frozen, rotation: rotation, alpha: alpha)
+                    SymbolView(
+                        height: threshold - 30,
+                        loading: refreshing,
+                        frozen: frozen,
+                        rotation: rotation,
+                        alpha: alpha
+                    )
                 }
             }
             .background(FixedView())
@@ -65,7 +89,7 @@ struct RefreshableScrollView<Content: View>: View {
 
     private func refreshLogic(values: [RefreshableKeyTypes.PrefData]) {
         DispatchQueue.main.async {
-            // Calculate scroll offset
+            // Calculating scroll offset
             let movingBounds = values.first { $0.vType == .movingView }?.bounds ?? .zero
             let fixedBounds = values.first { $0.vType == .fixedView }?.bounds ?? .zero
 
@@ -88,11 +112,11 @@ struct RefreshableScrollView<Content: View>: View {
                     frozen = true
                 }
             } else {
-                // remove the sapce at the top of the scroll view
+                // Removing the space at the top of the scroll view
                 frozen = false
             }
 
-            // Update last scroll offset
+            // Updating last scroll offset
             previousScrollOffset = scrollOffset
         }
     }
@@ -147,7 +171,16 @@ struct RefreshableScrollView<Content: View>: View {
     private struct MovingView: View {
         var body: some View {
             GeometryReader { proxy in
-                Color.clear.preference(key: RefreshableKeyTypes.PrefKey.self, value: [RefreshableKeyTypes.PrefData(vType: .movingView, bounds: proxy.frame(in: .global))])
+                Color.clear
+                    .preference(
+                        key: RefreshableKeyTypes.PrefKey.self,
+                        value: [
+                            RefreshableKeyTypes.PrefData(
+                                vType: .movingView,
+                                bounds: proxy.frame(in: .global)
+                            ),
+                        ]
+                    )
             }.frame(height: 0)
         }
     }
@@ -155,11 +188,22 @@ struct RefreshableScrollView<Content: View>: View {
     private struct FixedView: View {
         var body: some View {
             GeometryReader { proxy in
-                Color.clear.preference(key: RefreshableKeyTypes.PrefKey.self, value: [RefreshableKeyTypes.PrefData(vType: .fixedView, bounds: proxy.frame(in: .global))])
+                Color.clear
+                    .preference(
+                        key: RefreshableKeyTypes.PrefKey.self,
+                        value: [
+                            RefreshableKeyTypes.PrefData(
+                                vType: .fixedView,
+                                bounds: proxy.frame(in: .global)
+                            ),
+                        ]
+                    )
             }
         }
     }
 }
+
+// MARK: - Auxiliary types
 
 private enum RefreshableKeyTypes {
     enum ViewType: Int {
@@ -184,16 +228,23 @@ private enum RefreshableKeyTypes {
 }
 
 private struct ActivityRep: UIViewRepresentable {
-    func makeUIView(context: UIViewRepresentableContext<ActivityRep>) -> UIActivityIndicatorView {
+    func makeUIView(
+        context: UIViewRepresentableContext<ActivityRep>
+    ) -> UIActivityIndicatorView {
         return UIActivityIndicatorView()
     }
 
-    func updateUIView(_ uiView: UIActivityIndicatorView, context: UIViewRepresentableContext<ActivityRep>) {
+    func updateUIView(
+        _ uiView: UIActivityIndicatorView,
+        context: UIViewRepresentableContext<ActivityRep>
+    ) {
         if !uiView.isAnimating {
             uiView.startAnimating()
         }
     }
 }
+
+// MARK: - Previews
 
 struct RefreshableScrollViewView_Previews: PreviewProvider {
     struct _ScrollView: View {
