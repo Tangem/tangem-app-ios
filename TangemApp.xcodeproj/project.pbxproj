@@ -3579,8 +3579,8 @@
 		B64505482A1E2A32002B10B6 /* CardsInfo */ = {
 			isa = PBXGroup;
 			children = (
-				B6AA135E2A2A36D600B53937 /* Views */,
-				B6AA135D2A2A36CF00B53937 /* ViewModels */,
+				B6AA135E2A2A36D600B53937 /* ViewModels */,
+				B6AA135D2A2A36CF00B53937 /* Views */,
 			);
 			path = CardsInfo;
 			sourceTree = "<group>";
@@ -3612,24 +3612,24 @@
 			path = OrganizeTokens;
 			sourceTree = "<group>";
 		};
-		B6AA135D2A2A36CF00B53937 /* ViewModels */ = {
+		B6AA135D2A2A36CF00B53937 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				B6AA13642A2A371600B53937 /* Common */,
 				B6AA13632A2A371200B53937 /* TransactionSection */,
 				B6AA13622A2A370D00B53937 /* WarningSection */,
 			);
-			path = ViewModels;
+			path = Views;
 			sourceTree = "<group>";
 		};
-		B6AA135E2A2A36D600B53937 /* Views */ = {
+		B6AA135E2A2A36D600B53937 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				B6AA135F2A2A36F200B53937 /* Common */,
 				B6AA13602A2A36F500B53937 /* TransactionSection */,
 				B6AA13612A2A36FF00B53937 /* WarningSection */,
 			);
-			path = Views;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		B6AA135F2A2A36F200B53937 /* Common */ = {
