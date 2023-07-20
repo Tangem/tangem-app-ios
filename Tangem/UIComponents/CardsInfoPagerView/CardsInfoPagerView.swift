@@ -120,7 +120,7 @@ struct CardsInfoPagerView<
         .offset(x: cumulativeHorizontalTranslation)
         // This offset is responsible for the next/previous cell peek
         .offset(x: headerItemPeekHorizontalOffset)
-        .infinityFrame(alignment: .topLeading)
+        .infinityFrame(axis: .horizontal, alignment: .topLeading)
     }
 
     @ViewBuilder
@@ -154,14 +154,17 @@ struct CardsInfoPagerView<
         VStack(spacing: 0.0) {
             VStack(spacing: 0.0) {
                 Spacer(minLength: Constants.headerVerticalPadding)
+                    .fixedSize()
                     .id(expandedHeaderScrollTargetIdentifier)
 
                 makeHeader(with: geometryProxy)
                     .gesture(makeDragGesture(with: geometryProxy))
 
                 Spacer(minLength: Constants.headerAdditionalSpacingHeight)
+                    .fixedSize()
 
                 Spacer(minLength: Constants.headerVerticalPadding)
+                    .fixedSize()
                     .id(collapsedHeaderScrollTargetIdentifier)
 
                 // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
