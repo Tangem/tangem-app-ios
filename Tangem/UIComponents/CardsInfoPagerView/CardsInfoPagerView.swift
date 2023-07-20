@@ -13,6 +13,7 @@ struct CardsInfoPagerView<
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
+    typealias OnPullToRefresh = OnRefresh
 
     private enum ProposedHeaderState {
         case collapsed
@@ -23,6 +24,7 @@ struct CardsInfoPagerView<
     private let idProvider: KeyPath<(Data.Index, Data.Element), ID>
     private let headerFactory: HeaderFactory
     private let contentFactory: ContentFactory
+    private let onPullToRefresh: OnPullToRefresh?
 
     @Binding private var selectedIndex: Int
     @State private var previouslySelectedIndex: Int
@@ -69,7 +71,9 @@ struct CardsInfoPagerView<
 
     var body: some View {
         GeometryReader { proxy in
-            makeContent(with: proxy)
+            makeScrollView(with: proxy)
+                .onAppear(perform: scrollDetector.startDetectingScroll)
+                .onDisappear(perform: scrollDetector.stopDetectingScroll)
                 .onAppear {
                     // `DispatchQueue.main.async` used here to allow publishing changes during view updates
                     DispatchQueue.main.async {
@@ -77,8 +81,6 @@ struct CardsInfoPagerView<
                         cumulativeHorizontalTranslation = -CGFloat(selectedIndex) * proxy.size.width
                     }
                 }
-                .onAppear(perform: scrollDetector.startDetectingScroll)
-                .onDisappear(perform: scrollDetector.stopDetectingScroll)
                 .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
                     proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
                 }
@@ -90,7 +92,8 @@ struct CardsInfoPagerView<
         id idProvider: KeyPath<(Data.Index, Data.Element), ID>,
         selectedIndex: Binding<Int>,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
-        @ViewBuilder contentFactory: @escaping ContentFactory
+        @ViewBuilder contentFactory: @escaping ContentFactory,
+        onPullToRefresh: OnPullToRefresh? = nil
     ) {
         self.data = data
         self.idProvider = idProvider
@@ -98,6 +101,7 @@ struct CardsInfoPagerView<
         _previouslySelectedIndex = .init(initialValue: selectedIndex.wrappedValue)
         self.headerFactory = headerFactory
         self.contentFactory = contentFactory
+        self.onPullToRefresh = onPullToRefresh
     }
 
     private func makeHeader(with proxy: GeometryProxy) -> some View {
@@ -119,46 +123,17 @@ struct CardsInfoPagerView<
     }
 
     @ViewBuilder
-    private func makeContent(with proxy: GeometryProxy) -> some View {
+    private func makeScrollView(with geometryProxy: GeometryProxy) -> some View {
         ScrollViewReader { scrollViewProxy in
-            ScrollView(showsIndicators: false) {
-                // ScrollView inserts default spacing between its content views.
-                // Wrapping content into `VStack` prevents it.
-                VStack(spacing: 0.0) {
-                    VStack(spacing: 0.0) {
-                        Spacer(minLength: Constants.headerVerticalPadding)
-                            .id(expandedHeaderScrollTargetIdentifier)
-
-                        makeHeader(with: proxy)
-                            .gesture(makeDragGesture(with: proxy))
-
-                        Spacer(minLength: Constants.headerAdditionalSpacingHeight)
-
-                        Spacer(minLength: Constants.headerVerticalPadding)
-                            .id(collapsedHeaderScrollTargetIdentifier)
-
-                        // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
-                        contentFactory(data[selectedIndex])
-                            .modifier(
-                                ContentAnimationModifier(
-                                    progress: pageSwitchProgress,
-                                    verticalOffset: contentViewVerticalOffset,
-                                    hasNextIndexToSelect: hasNextIndexToSelect
-                                )
-                            )
+            Group {
+                if let onPullToRefresh = onPullToRefresh {
+                    RefreshableScrollView(onRefresh: onPullToRefresh) {
+                        makeContent(with: geometryProxy)
                     }
-                    .readGeometry(\.size, bindTo: $contentSize)
-                    .readContentOffset(
-                        inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                        bindTo: $verticalContentOffset
-                    )
-
-                    CardsInfoPagerFlexibleFooterView(
-                        contentSize: contentSize,
-                        viewportSize: viewportSize,
-                        headerTopInset: Constants.headerVerticalPadding,
-                        headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
-                    )
+                } else {
+                    ScrollView(showsIndicators: false) {
+                        makeContent(with: geometryProxy)
+                    }
                 }
             }
             .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
@@ -168,6 +143,48 @@ struct CardsInfoPagerView<
             }
             .readGeometry(\.size, bindTo: $viewportSize)
             .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
+        }
+    }
+
+    @ViewBuilder
+    private func makeContent(with geometryProxy: GeometryProxy) -> some View {
+        // ScrollView inserts default spacing between its content views.
+        // Wrapping content into `VStack` prevents it.
+        VStack(spacing: 0.0) {
+            VStack(spacing: 0.0) {
+                Spacer(minLength: Constants.headerVerticalPadding)
+                    .id(expandedHeaderScrollTargetIdentifier)
+
+                makeHeader(with: geometryProxy)
+                    .gesture(makeDragGesture(with: geometryProxy))
+
+                Spacer(minLength: Constants.headerAdditionalSpacingHeight)
+
+                Spacer(minLength: Constants.headerVerticalPadding)
+                    .id(collapsedHeaderScrollTargetIdentifier)
+
+                // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
+                contentFactory(data[selectedIndex])
+                    .modifier(
+                        ContentAnimationModifier(
+                            progress: pageSwitchProgress,
+                            verticalOffset: contentViewVerticalOffset,
+                            hasNextIndexToSelect: hasNextIndexToSelect
+                        )
+                    )
+            }
+            .readGeometry(\.size, bindTo: $contentSize)
+            .readContentOffset(
+                inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                bindTo: $verticalContentOffset
+            )
+
+            CardsInfoPagerFlexibleFooterView(
+                contentSize: contentSize,
+                viewportSize: viewportSize,
+                headerTopInset: Constants.headerVerticalPadding,
+                headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
+            )
         }
     }
 
@@ -287,14 +304,16 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
         data: Data,
         selectedIndex: Binding<Int>,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
-        @ViewBuilder contentFactory: @escaping ContentFactory
+        @ViewBuilder contentFactory: @escaping ContentFactory,
+        onPullToRefresh: OnPullToRefresh? = nil
     ) {
         self.init(
             data: data,
             id: \.1.id,
             selectedIndex: selectedIndex,
             headerFactory: headerFactory,
-            contentFactory: contentFactory
+            contentFactory: contentFactory,
+            onPullToRefresh: onPullToRefresh
         )
     }
 }
