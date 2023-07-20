@@ -153,6 +153,7 @@ struct CardsInfoPagerView<
         // Wrapping content into `VStack` prevents it.
         VStack(spacing: 0.0) {
             VStack(spacing: 0.0) {
+                // This spacer acts as an auto scroll target when the header is expanded
                 Spacer(minLength: Constants.headerVerticalPadding)
                     .fixedSize()
                     .id(expandedHeaderScrollTargetIdentifier)
@@ -160,9 +161,13 @@ struct CardsInfoPagerView<
                 makeHeader(with: geometryProxy)
                     .gesture(makeDragGesture(with: geometryProxy))
 
+                // This spacer is used to maintain `Constants.headerAdditionalSpacingHeight` (value
+                // derived from mockups) spacing between the bottom edge of the navigation bar and
+                // the top edge of the `content` part of a particular page when the header is collapsed
                 Spacer(minLength: Constants.headerAdditionalSpacingHeight)
                     .fixedSize()
 
+                // This spacer acts as an auto scroll target when the header is collapsed
                 Spacer(minLength: Constants.headerVerticalPadding)
                     .fixedSize()
                     .id(collapsedHeaderScrollTargetIdentifier)
