@@ -65,32 +65,6 @@ struct CardsInfoPagerView<
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
     @State private var cumulativeHorizontalTranslation: CGFloat = .zero
 
-    /// - Warning: Won't be reset back to 0 after successful (non-cancelled) page switch, use with caution.
-    @State private var pageSwitchProgress: CGFloat = .zero
-
-    /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
-    @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
-    @State private var headerHeight: CGFloat = .zero
-    @State private var verticalContentOffset: CGPoint = .zero
-    @State private var contentSize: CGSize = .zero
-    @State private var viewportSize: CGSize = .zero
-
-    private let scrollViewFrameCoordinateSpaceName = UUID()
-
-    private let expandedHeaderScrollTargetIdentifier = UUID()
-    private let collapsedHeaderScrollTargetIdentifier = UUID()
-
-    @StateObject private var scrollDetector = ScrollDetector()
-    @State private var proposedHeaderState: ProposedHeaderState = .expanded
-
-    private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
-    private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
-    private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
-    private var isHorizontalScrollDisabled = false
-
-    private var lowerBound: Int { 0 }
-    private var upperBound: Int { data.count - 1 }
-
     private var headerItemPeekHorizontalOffset: CGFloat {
         var offset = 0.0
         // Semantically, this is the same as `UICollectionViewFlowLayout.sectionInset` from UIKit
@@ -243,10 +217,18 @@ struct CardsInfoPagerView<
                 // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
                 contentFactory(data[selectedIndex])
                     .modifier(
-                        ContentAnimationModifier(
+                        CardsInfoPagerContentAnimationModifier(
                             progress: pageSwitchProgress,
                             verticalOffset: contentViewVerticalOffset,
                             hasNextIndexToSelect: hasNextIndexToSelect
+                        )
+                    )
+                    .modifier(
+                        CardsInfoPagerContentSwitchingModifier(
+                            progress: pageSwitchProgress,
+                            finalPageSwitchProgress: finalPageSwitchProgress,
+                            initialSelectedIndex: previouslySelectedIndex,
+                            finalSelectedIndex: selectedIndex
                         )
                     )
             }
@@ -484,29 +466,6 @@ extension CardsInfoPagerView: Setupable {
 
     func horizontalScrollDisabled(_ disabled: Bool) -> Self {
         map { $0.isHorizontalScrollDisabled = disabled }
-    }
-}
-
-// MARK: - Auxiliary types
-
-private struct ContentAnimationModifier: AnimatableModifier {
-    var progress: CGFloat
-    let verticalOffset: CGFloat
-    let hasNextIndexToSelect: Bool
-
-    var animatableData: CGFloat {
-        get { progress }
-        set { progress = newValue }
-    }
-
-    func body(content: Content) -> some View {
-        let ratio = !hasNextIndexToSelect && progress > 0.5
-            ? 1.0
-            : sin(.pi * progress)
-
-        return content
-            .opacity(1.0 - Double(ratio))
-            .offset(y: verticalOffset * ratio)
     }
 }
 
