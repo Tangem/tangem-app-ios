@@ -1,16 +1,16 @@
 //
-//  GenericConfig.swift
+//  Wallet2Config.swift
 //  Tangem
 //
-//  Created by Alexander Osokin on 01.08.2022.
-//  Copyright © 2022 Tangem AG. All rights reserved.
+//  Created by Sergey Balashov on 14.07.2023.
+//  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
 import Foundation
 import TangemSdk
 import BlockchainSdk
 
-struct GenericConfig {
+struct Wallet2Config {
     let card: CardDTO
 
     init(card: CardDTO) {
@@ -18,7 +18,7 @@ struct GenericConfig {
     }
 }
 
-extension GenericConfig: UserWalletConfig {
+extension Wallet2Config: UserWalletConfig {
     var cardSetLabel: String? {
         guard let backupCardsCount = card.backupStatus?.backupCardsCount else {
             return nil
@@ -43,6 +43,10 @@ extension GenericConfig: UserWalletConfig {
         [.secp256k1, .ed25519]
     }
 
+    var canSkipBackup: Bool {
+        return false
+    }
+
     var supportedBlockchains: Set<Blockchain> {
         let allBlockchains = AppEnvironment.current.isTestnet ? Blockchain.supportedTestnetBlockchains
             : Blockchain.supportedBlockchains
@@ -51,10 +55,6 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var defaultBlockchains: [StorageEntry] {
-        if let persistentBlockchains = persistentBlockchains {
-            return persistentBlockchains
-        }
-
         let isTestnet = AppEnvironment.current.isTestnet
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
 
@@ -105,7 +105,7 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
+        .wallet2
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -123,11 +123,7 @@ extension GenericConfig: UserWalletConfig {
         case .send:
             return .available
         case .longHashes:
-            if card.firmwareVersion.doubleValue >= 4.52 {
-                return .available
-            }
-
-            return .hidden
+            return .available
         case .signedHashesCounter:
             return .hidden
         case .backup:
@@ -169,9 +165,9 @@ extension GenericConfig: UserWalletConfig {
         case .transactionHistory:
             return .hidden
         case .seedPhrase:
-            return .hidden
+            return card.settings.isKeysImportAllowed ? .available : .hidden
         case .accessCodeRecoverySettings:
-            return .hidden
+            return .available
         case .promotion:
             return .available
         }
@@ -192,7 +188,7 @@ extension GenericConfig: UserWalletConfig {
 
 // MARK: - WalletOnboardingStepsBuilderFactory
 
-extension GenericConfig: WalletOnboardingStepsBuilderFactory {}
+extension Wallet2Config: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 

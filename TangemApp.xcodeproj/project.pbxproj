@@ -873,6 +873,7 @@
 		EF8D7814298281F700B67418 /* SwappingModulesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8D7813298281F700B67418 /* SwappingModulesFactory.swift */; };
 		EF8EF52F2A0668D6007B52C4 /* SwappingApproveRoutableMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8EF52E2A0668D6007B52C4 /* SwappingApproveRoutableMock.swift */; };
 		EF8F2352294098C80046F4C0 /* SwappingDestinationServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8F2351294098C80046F4C0 /* SwappingDestinationServiceMock.swift */; };
+		EF914D522A612E49001F00B2 /* Wallet2Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF914D512A612E49001F00B2 /* Wallet2Config.swift */; };
 		EF92412F2934BB8000C28551 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92412E2934BB8000C28551 /* MainButton.swift */; };
 		EF9241322934C25400C28551 /* CommonSwappingModulesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9241312934C25400C28551 /* CommonSwappingModulesFactory.swift */; };
 		EF9241362934E25900C28551 /* TokenIconURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9241352934E25900C28551 /* TokenIconURLBuilder.swift */; };
@@ -1964,6 +1965,7 @@
 		EF8D7813298281F700B67418 /* SwappingModulesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingModulesFactory.swift; sourceTree = "<group>"; };
 		EF8EF52E2A0668D6007B52C4 /* SwappingApproveRoutableMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingApproveRoutableMock.swift; sourceTree = "<group>"; };
 		EF8F2351294098C80046F4C0 /* SwappingDestinationServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingDestinationServiceMock.swift; sourceTree = "<group>"; };
+		EF914D512A612E49001F00B2 /* Wallet2Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet2Config.swift; sourceTree = "<group>"; };
 		EF92412E2934BB8000C28551 /* MainButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
 		EF9241312934C25400C28551 /* CommonSwappingModulesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSwappingModulesFactory.swift; sourceTree = "<group>"; };
 		EF9241352934E25900C28551 /* TokenIconURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenIconURLBuilder.swift; sourceTree = "<group>"; };
@@ -4293,6 +4295,7 @@
 				DC7127B22897ECEE00F60F71 /* GenericConfig.swift */,
 				DC22535428A4F5730094F30C /* NoteDemoConfig.swift */,
 				DC22535628A4F5BF0094F30C /* GenericDemoConfig.swift */,
+				EF914D512A612E49001F00B2 /* Wallet2Config.swift */,
 			);
 			path = Implementations;
 			sourceTree = "<group>";
@@ -5843,6 +5846,7 @@
 				B0CE1E492A309F9E00D297F8 /* FakeCryptoBalanceProvider.swift in Sources */,
 				EF9241322934C25400C28551 /* CommonSwappingModulesFactory.swift in Sources */,
 				B05209C3261F2B4E000DD204 /* WalletConnectUIBuilder.swift in Sources */,
+				EF914D522A612E49001F00B2 /* Wallet2Config.swift in Sources */,
 				B00FC6A92949A6460007ACCA /* CardImageResult.swift in Sources */,
 				EFD32AE729ED93F20026353E /* FeatureStateRowView.swift in Sources */,
 				B074BAC326779BC8005D641B /* PushTxViewModel.swift in Sources */,
