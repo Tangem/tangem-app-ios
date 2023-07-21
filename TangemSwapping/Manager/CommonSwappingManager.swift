@@ -23,9 +23,9 @@ class CommonSwappingManager {
     private var amount: Decimal?
     private var approvePolicy: SwappingApprovePolicy = .unlimited
     private var gasPricePolicy: SwappingGasPricePolicy = .normal
-    private var swappingAllowanceLimit: [Currency: Decimal] = [:]
+    private let swappingAllowanceLimit: ThreadSafeContainer<[Currency: Decimal]> = [:]
     // Cached addresses for check approving transactions
-    private var pendingTransactions: [Currency: PendingTransactionState] = [:]
+    private let pendingTransactions: ThreadSafeContainer<[Currency: PendingTransactionState]> = [:]
     private var bag: Set<AnyCancellable> = []
 
     private var formattedAmount: String? {
@@ -123,8 +123,12 @@ extension CommonSwappingManager: SwappingManager {
     }
 
     func didSendApproveTransaction(swappingTxData: SwappingTransactionData) {
-        pendingTransactions[swappingTxData.sourceCurrency] = .pending(destination: swappingTxData.destinationAddress)
-        swappingAllowanceLimit[swappingTxData.sourceCurrency] = nil
+        pendingTransactions.mutate { value in
+            value[swappingTxData.sourceCurrency] = .pending(destination: swappingTxData.destinationAddress)
+        }
+        swappingAllowanceLimit.mutate { value in
+            value[swappingTxData.sourceCurrency] = nil
+        }
     }
 }
 
@@ -163,7 +167,9 @@ private extension CommonSwappingManager {
         if isEnoughAllowance() {
             // If we saved pending transaction just remove it
             if hasPendingTransaction() {
-                pendingTransactions[swappingItems.source] = nil
+                pendingTransactions.mutate { [source = swappingItems.source] value in
+                    value[source] = nil
+                }
             }
 
             return try await loadDataForCoinSwapping()
@@ -233,7 +239,9 @@ private extension CommonSwappingManager {
             for: swappingItems.source,
             walletAddress: walletAddress
         )
-        swappingAllowanceLimit[swappingItems.source] = allowance
+        swappingAllowanceLimit.mutate { [source = swappingItems.source] value in
+            value[source] = allowance
+        }
 
         logger.debug("Token \(swappingItems.source.name) allowance \(allowance)")
     }

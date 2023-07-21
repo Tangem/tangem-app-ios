@@ -64,6 +64,9 @@ class AppSettings {
     @AppStorageCompat(StorageType.understandsAddressNetworkRequirements)
     var understandsAddressNetworkRequirements: [String] = []
 
+    @AppStorageCompat(StorageType.promotionQuestionnaireFinished)
+    var promotionQuestionnaireFinished: Bool = false
+
     static let shared: AppSettings = .init()
 
     private init() {}

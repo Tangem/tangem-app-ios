@@ -57,6 +57,17 @@ final class AppScanTask: CardSessionRunnable {
 
     /// read ->  readTwinData or note Data or derive wallet's keys -> appendWallets(createwallets+ scan)  -> attestation
     public func run(in session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        // tmp disable reading cards with imported wallets
+        if card.wallets.contains(where: { $0.isImported == true }) {
+            completion(.failure(.wrongCardType(nil)))
+            return
+        }
+
         if let legacyWalletData = session.environment.walletData,
            legacyWalletData.blockchain != "ANY" {
             walletData = .legacy(legacyWalletData)

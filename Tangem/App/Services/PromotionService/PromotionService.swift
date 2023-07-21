@@ -32,6 +32,10 @@ class PromotionService {
 }
 
 extension PromotionService: PromotionServiceProtocol {
+    var questionnaireFinished: Bool {
+        AppSettings.shared.promotionQuestionnaireFinished
+    }
+
     var promoCode: String? {
         let secureStorage = SecureStorage()
         guard
@@ -91,6 +95,10 @@ extension PromotionService: PromotionServiceProtocol {
 
         awardAmount = award
         self.promotionAvailable = promotionAvailable
+    }
+
+    func setQuestionnaireFinished(_ finished: Bool) {
+        AppSettings.shared.promotionQuestionnaireFinished = finished
     }
 
     func setPromoCode(_ promoCode: String?) {

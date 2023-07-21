@@ -33,6 +33,7 @@ enum StorageType: String {
     case saveAccessCodes = "tangem_save_access_codes"
     case systemDeprecationWarningDismissDate = "tangem_system_deprecation_warning_dismiss_date"
     case understandsAddressNetworkRequirements = "tangem_understands_address_network_requirements"
+    case promotionQuestionnaireFinished = "promotion_questionnaire_finished"
 
     // Temp migrated cards storage. Remove with LegacyCardMigrator
     case migratedCardsWithDefaultTokens = "tangem_migrated_cards_default_tokens"

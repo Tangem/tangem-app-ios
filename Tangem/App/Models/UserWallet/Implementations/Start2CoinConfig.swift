@@ -140,8 +140,6 @@ extension Start2CoinConfig: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return .hidden
         case .accessCodeRecoverySettings:
             return .hidden
         case .promotion:

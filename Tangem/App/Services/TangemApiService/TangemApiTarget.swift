@@ -25,6 +25,8 @@ struct TangemApiTarget: TargetType {
             return "/currencies"
         case .coins:
             return "/coins"
+        case .quotes:
+            return "/quotes"
         case .geo:
             return "/geo"
         case .getUserWalletTokens(let key), .saveUserWalletTokens(let key, _):
@@ -52,7 +54,7 @@ struct TangemApiTarget: TargetType {
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .shops, .promotion:
+        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .shops, .promotion:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -74,6 +76,8 @@ struct TangemApiTarget: TargetType {
                 encoding: URLEncoding.default
             )
         case .coins(let pageModel):
+            return .requestURLEncodable(pageModel)
+        case .quotes(let pageModel):
             return .requestURLEncodable(pageModel)
         case .currencies, .geo, .getUserWalletTokens:
             return .requestPlain
@@ -131,6 +135,7 @@ extension TangemApiTarget {
         case rates(coinIds: [String], currencyId: String)
         case currencies
         case coins(_ requestModel: CoinsListRequestModel)
+        case quotes(_ requestModel: QuotesDTO.Request)
         case geo
         case getUserWalletTokens(key: String)
         case saveUserWalletTokens(key: String, list: UserTokenList)

@@ -25,8 +25,7 @@ final class PromotionViewModel: ObservableObject {
         let baseUrl = AppEnvironment.current.tangemComBaseUrl.absoluteString
 
         var actions: [String: (String) -> Void] = [:]
-        actions["\(baseUrl)/\(urlPath)/code-created"] = handleCodeCreated
-        actions["\(baseUrl)/\(urlPath)/ready-for-existed-card-award"] = handleReadyForAward // TODO: REMOVE
+        actions["\(baseUrl)/\(urlPath)/success"] = handlePromotionSuccess
         actions["\(baseUrl)/\(urlPath)/ready-for-existing-card-award"] = handleReadyForAward
         actions["\(baseUrl)/analytics"] = handleAnalyticsEvent
 
@@ -51,6 +50,9 @@ final class PromotionViewModel: ObservableObject {
             queryItems.append(URLQueryItem(name: "cardId", value: cardId))
             queryItems.append(URLQueryItem(name: "walletId", value: walletId))
             queryItems.append(URLQueryItem(name: "programName", value: promotionService.currentProgramName))
+            if promotionService.questionnaireFinished {
+                queryItems.append(URLQueryItem(name: "finished", value: "true"))
+            }
         case .default:
             break
         }
@@ -84,16 +86,21 @@ final class PromotionViewModel: ObservableObject {
         self.coordinator = coordinator
     }
 
-    func handleCodeCreated(url: String) {
-        guard
-            let urlComponents = URLComponents(string: url),
-            let queryItem = urlComponents.queryItems?.first(where: { $0.name == "code" }),
-            let code = queryItem.value
-        else {
-            return
+    func handlePromotionSuccess(url: String) {
+        let newClient: Bool
+        if let urlComponents = URLComponents(string: url),
+           let queryItem = urlComponents.queryItems?.first(where: { $0.name == "code" }),
+           let code = queryItem.value {
+            newClient = true
+            promotionService.setPromoCode(code)
+        } else {
+            newClient = false
         }
 
-        promotionService.setPromoCode(code)
+        let programName = promotionService.currentProgramName
+        Analytics.logPromotionEvent(.promoSuccessOpened, programName: programName, newClient: newClient)
+
+        promotionService.setQuestionnaireFinished(true)
     }
 
     func handleReadyForAward(url: String) {
@@ -113,9 +120,6 @@ final class PromotionViewModel: ObservableObject {
         switch event {
         case "promotion-buy":
             Analytics.logPromotionEvent(.promoBuy, programName: programName)
-        case "promotion-success-new-user", "promotion-success-old-user":
-            let newClient = (event == "promotion-success-new-user")
-            Analytics.logPromotionEvent(.promoSuccessOpened, programName: programName, newClient: newClient)
         default:
             AppLog.shared.debug("Unknown analytics event from promotion web view \(event), program name \(programName)")
         }

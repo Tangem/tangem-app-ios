@@ -51,10 +51,6 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var defaultBlockchains: [StorageEntry] {
-        if let persistentBlockchains = persistentBlockchains {
-            return persistentBlockchains
-        }
-
         let isTestnet = AppEnvironment.current.isTestnet
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
 
@@ -167,8 +163,6 @@ extension GenericConfig: UserWalletConfig {
         case .displayHashesCount:
             return .available
         case .transactionHistory:
-            return .hidden
-        case .seedPhrase:
             return .hidden
         case .accessCodeRecoverySettings:
             return .hidden

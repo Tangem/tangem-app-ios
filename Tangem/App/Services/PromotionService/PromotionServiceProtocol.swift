@@ -12,6 +12,7 @@ import BlockchainSdk
 
 protocol PromotionServiceProtocol {
     var currentProgramName: String { get }
+    var questionnaireFinished: Bool { get }
     var promoCode: String? { get }
 
     var awardAmount: Int? { get }
@@ -22,6 +23,8 @@ protocol PromotionServiceProtocol {
     func didBecomeReadyForAward()
 
     func checkPromotion(isNewCard: Bool, userWalletId: String?, timeout: TimeInterval?) async
+
+    func setQuestionnaireFinished(_ finished: Bool)
 
     func setPromoCode(_ promoCode: String?)
     func checkIfCanGetAward(userWalletId: String) async throws

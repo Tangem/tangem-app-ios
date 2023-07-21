@@ -10,6 +10,8 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
+// TODO: Keep in mind, that cards with hasImportedWallets == false must have old derivations
+// TODO: Refactor default/persistent blockchains https://tangem.atlassian.net/browse/IOS-4051
 struct Wallet2Config {
     let card: CardDTO
 
@@ -164,8 +166,6 @@ extension Wallet2Config: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return card.settings.isKeysImportAllowed ? .available : .hidden
         case .accessCodeRecoverySettings:
             return .available
         case .promotion:
@@ -199,5 +199,11 @@ private extension Card.BackupStatus {
         }
 
         return nil
+    }
+}
+
+private extension Card {
+    var hasImportedWallets: Bool {
+        wallets.contains(where: { $0.isImported == true })
     }
 }
