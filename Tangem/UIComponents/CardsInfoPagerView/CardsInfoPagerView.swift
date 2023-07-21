@@ -13,6 +13,7 @@ struct CardsInfoPagerView<
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
+    typealias OnPullToRefresh = OnRefresh
 
     private enum ProposedHeaderState {
         case collapsed
@@ -25,6 +26,7 @@ struct CardsInfoPagerView<
     private let idProvider: KeyPath<(Data.Index, Data.Element), ID>
     private let headerFactory: HeaderFactory
     private let contentFactory: ContentFactory
+    private let onPullToRefresh: OnPullToRefresh?
 
     // MARK: - Selected index
 
@@ -63,6 +65,32 @@ struct CardsInfoPagerView<
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
     @State private var cumulativeHorizontalTranslation: CGFloat = .zero
 
+    /// - Warning: Won't be reset back to 0 after successful (non-cancelled) page switch, use with caution.
+    @State private var pageSwitchProgress: CGFloat = .zero
+
+    /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
+    @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
+    @State private var headerHeight: CGFloat = .zero
+    @State private var verticalContentOffset: CGPoint = .zero
+    @State private var contentSize: CGSize = .zero
+    @State private var viewportSize: CGSize = .zero
+
+    private let scrollViewFrameCoordinateSpaceName = UUID()
+
+    private let expandedHeaderScrollTargetIdentifier = UUID()
+    private let collapsedHeaderScrollTargetIdentifier = UUID()
+
+    @StateObject private var scrollDetector = ScrollDetector()
+    @State private var proposedHeaderState: ProposedHeaderState = .expanded
+
+    private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
+    private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
+    private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
+    private var isHorizontalScrollDisabled = false
+
+    private var lowerBound: Int { 0 }
+    private var upperBound: Int { data.count - 1 }
+
     private var headerItemPeekHorizontalOffset: CGFloat {
         var offset = 0.0
         // Semantically, this is the same as `UICollectionViewFlowLayout.sectionInset` from UIKit
@@ -100,9 +128,16 @@ struct CardsInfoPagerView<
 
     var body: some View {
         GeometryReader { proxy in
-            makeContent(with: proxy)
+            makeScrollView(with: proxy)
                 .onAppear(perform: scrollDetector.startDetectingScroll)
                 .onDisappear(perform: scrollDetector.stopDetectingScroll)
+                .onAppear {
+                    // `DispatchQueue.main.async` used here to allow publishing changes during view updates
+                    DispatchQueue.main.async {
+                        // Applying initial view's state based on the initial value of `selectedIndex`
+                        cumulativeHorizontalTranslation = -CGFloat(selectedIndex) * proxy.size.width
+                    }
+                }
                 .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
                     proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
                 }
@@ -120,7 +155,8 @@ struct CardsInfoPagerView<
         id idProvider: KeyPath<(Data.Index, Data.Element), ID>,
         selectedIndex: Binding<Int>,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
-        @ViewBuilder contentFactory: @escaping ContentFactory
+        @ViewBuilder contentFactory: @escaping ContentFactory,
+        onPullToRefresh: OnPullToRefresh? = nil
     ) {
         self.data = data
         self.idProvider = idProvider
@@ -129,6 +165,7 @@ struct CardsInfoPagerView<
         _contentSelectedIndex = .init(initialValue: selectedIndex.wrappedValue)
         self.headerFactory = headerFactory
         self.contentFactory = contentFactory
+        self.onPullToRefresh = onPullToRefresh
     }
 
     // MARK: - Subviews
@@ -139,7 +176,7 @@ struct CardsInfoPagerView<
             ForEach(data.indexed(), id: idProvider) { index, element in
                 headerFactory(element)
                     .frame(width: max(proxy.size.width - Constants.headerItemHorizontalOffset * 2.0, 0.0))
-                    .readGeometry(\.size.height, bindTo: $headerHeight) // All headers are expected to have the same height
+                    .readGeometry(\.size.height, bindTo: $headerHeight)
             }
         }
         // This offset translates the page based on swipe
@@ -148,57 +185,21 @@ struct CardsInfoPagerView<
         .offset(x: cumulativeHorizontalTranslation)
         // This offset is responsible for the next/previous cell peek
         .offset(x: headerItemPeekHorizontalOffset)
-        .infinityFrame(alignment: .topLeading)
+        .infinityFrame(axis: .horizontal, alignment: .topLeading)
     }
 
     @ViewBuilder
-    private func makeContent(with proxy: GeometryProxy) -> some View {
+    private func makeScrollView(with geometryProxy: GeometryProxy) -> some View {
         ScrollViewReader { scrollViewProxy in
-            ScrollView(showsIndicators: false) {
-                // ScrollView inserts default spacing between its content views.
-                // Wrapping content into `VStack` prevents it.
-                VStack(spacing: 0.0) {
-                    VStack(spacing: 0.0) {
-                        Spacer(minLength: Constants.headerVerticalPadding)
-                            .id(expandedHeaderScrollTargetIdentifier)
-
-                        makeHeader(with: proxy)
-                            .gesture(makeDragGesture(with: proxy))
-
-                        Spacer(minLength: Constants.headerAdditionalSpacingHeight)
-
-                        Spacer(minLength: Constants.headerVerticalPadding)
-                            .id(collapsedHeaderScrollTargetIdentifier)
-
-                        contentFactory(data[contentSelectedIndex])
-                            .modifier(
-                                CardsInfoPagerContentAnimationModifier(
-                                    progress: pageSwitchProgress,
-                                    verticalOffset: contentViewVerticalOffset,
-                                    hasNextIndexToSelect: hasNextIndexToSelect
-                                )
-                            )
-                            .modifier(
-                                CardsInfoPagerContentSwitchingModifier(
-                                    progress: pageSwitchProgress,
-                                    finalPageSwitchProgress: finalPageSwitchProgress,
-                                    initialSelectedIndex: previouslySelectedIndex,
-                                    finalSelectedIndex: selectedIndex
-                                )
-                            )
+            Group {
+                if let onPullToRefresh = onPullToRefresh {
+                    RefreshableScrollView(onRefresh: onPullToRefresh) {
+                        makeContent(with: geometryProxy)
                     }
-                    .readGeometry(\.size, bindTo: $contentSize)
-                    .readContentOffset(
-                        inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                        bindTo: $verticalContentOffset
-                    )
-
-                    CardsInfoPagerFlexibleFooterView(
-                        contentSize: contentSize,
-                        viewportSize: viewportSize,
-                        headerTopInset: Constants.headerVerticalPadding,
-                        headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
-                    )
+                } else {
+                    ScrollView(showsIndicators: false) {
+                        makeContent(with: geometryProxy)
+                    }
                 }
             }
             .onChange(of: scrollDetector.isScrolling) { [oldValue = scrollDetector.isScrolling] newValue in
@@ -211,7 +212,58 @@ struct CardsInfoPagerView<
         }
     }
 
-    // MARK: - Gestures
+    @ViewBuilder
+    private func makeContent(with geometryProxy: GeometryProxy) -> some View {
+        // ScrollView inserts default spacing between its content views.
+        // Wrapping content into `VStack` prevents it.
+        VStack(spacing: 0.0) {
+            VStack(spacing: 0.0) {
+                // This spacer acts as an auto scroll target when the header is expanded
+                Spacer(minLength: Constants.headerVerticalPadding)
+                    .fixedSize()
+                    .id(expandedHeaderScrollTargetIdentifier)
+
+                makeHeader(with: geometryProxy)
+                    .gesture(
+                        makeDragGesture(with: geometryProxy),
+                        including: isHorizontalScrollDisabled ? .subviews : .all
+                    )
+
+                // This spacer is used to maintain `Constants.headerAdditionalSpacingHeight` (value
+                // derived from mockups) spacing between the bottom edge of the navigation bar and
+                // the top edge of the `content` part of a particular page when the header is collapsed
+                Spacer(minLength: Constants.headerAdditionalSpacingHeight)
+                    .fixedSize()
+
+                // This spacer acts as an auto scroll target when the header is collapsed
+                Spacer(minLength: Constants.headerVerticalPadding)
+                    .fixedSize()
+                    .id(collapsedHeaderScrollTargetIdentifier)
+
+                // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
+                contentFactory(data[selectedIndex])
+                    .modifier(
+                        ContentAnimationModifier(
+                            progress: pageSwitchProgress,
+                            verticalOffset: contentViewVerticalOffset,
+                            hasNextIndexToSelect: hasNextIndexToSelect
+                        )
+                    )
+            }
+            .readGeometry(\.size, bindTo: $contentSize)
+            .readContentOffset(
+                inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                bindTo: $verticalContentOffset
+            )
+
+            CardsInfoPagerFlexibleFooterView(
+                contentSize: contentSize,
+                viewportSize: viewportSize,
+                headerTopInset: Constants.headerVerticalPadding,
+                headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
+            )
+        }
+    }
 
     private func makeDragGesture(with proxy: GeometryProxy) -> some Gesture {
         DragGesture()
@@ -399,14 +451,16 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
         data: Data,
         selectedIndex: Binding<Int>,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
-        @ViewBuilder contentFactory: @escaping ContentFactory
+        @ViewBuilder contentFactory: @escaping ContentFactory,
+        onPullToRefresh: OnPullToRefresh? = nil
     ) {
         self.init(
             data: data,
             id: \.1.id,
             selectedIndex: selectedIndex,
             headerFactory: headerFactory,
-            contentFactory: contentFactory
+            contentFactory: contentFactory,
+            onPullToRefresh: onPullToRefresh
         )
     }
 }
@@ -426,6 +480,33 @@ extension CardsInfoPagerView: Setupable {
     /// gesture-driven or animation-driven page switch
     func contentViewVerticalOffset(_ offset: CGFloat) -> Self {
         map { $0.contentViewVerticalOffset = offset }
+    }
+
+    func horizontalScrollDisabled(_ disabled: Bool) -> Self {
+        map { $0.isHorizontalScrollDisabled = disabled }
+    }
+}
+
+// MARK: - Auxiliary types
+
+private struct ContentAnimationModifier: AnimatableModifier {
+    var progress: CGFloat
+    let verticalOffset: CGFloat
+    let hasNextIndexToSelect: Bool
+
+    var animatableData: CGFloat {
+        get { progress }
+        set { progress = newValue }
+    }
+
+    func body(content: Content) -> some View {
+        let ratio = !hasNextIndexToSelect && progress > 0.5
+            ? 1.0
+            : sin(.pi * progress)
+
+        return content
+            .opacity(1.0 - Double(ratio))
+            .offset(y: verticalOffset * ratio)
     }
 }
 
@@ -448,32 +529,16 @@ private extension CardsInfoPagerView {
 
 struct CardsInfoPagerView_Previews: PreviewProvider {
     private struct CardsInfoPagerPreview: View {
-        @ObservedObject private var previewProvider = CardsInfoPagerPreviewProvider()
-
-        @State private var selectedIndex = 0
+        var previewConfigs: [CardInfoPagePreviewConfig] {
+            return [
+                CardInfoPagePreviewConfig(initiallySelectedIndex: 0, hasPullToRefresh: true),
+                CardInfoPagePreviewConfig(initiallySelectedIndex: 2, hasPullToRefresh: false),
+            ]
+        }
 
         var body: some View {
-            NavigationView {
-                ZStack {
-                    Colors.Background.secondary
-                        .ignoresSafeArea()
-
-                    CardsInfoPagerView(
-                        data: previewProvider.pages,
-                        selectedIndex: $selectedIndex,
-                        headerFactory: { pageViewModel in
-                            MultiWalletCardHeaderView(viewModel: pageViewModel.header)
-                                .cornerRadius(14.0)
-                        },
-                        contentFactory: { pageViewModel in
-                            CardInfoPagePreviewView(viewModel: pageViewModel)
-                        }
-                    )
-                    .pageSwitchThreshold(0.4)
-                    .contentViewVerticalOffset(64.0)
-                    .navigationTitle("CardsInfoPagerView")
-                    .navigationBarTitleDisplayMode(.inline)
-                }
+            ForEach(previewConfigs) { previewConfig in
+                CardInfoPagePreviewContainerView(previewConfig: previewConfig)
             }
         }
     }

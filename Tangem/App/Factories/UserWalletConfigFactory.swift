@@ -32,6 +32,8 @@ struct UserWalletConfigFactory {
 
             if isDemo {
                 return GenericDemoConfig(card: cardInfo.card)
+            } else if cardInfo.card.firmwareVersion >= .keysImportAvailable {
+                return Wallet2Config(card: cardInfo.card)
             } else {
                 return GenericConfig(card: cardInfo.card)
             }

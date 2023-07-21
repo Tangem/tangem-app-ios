@@ -122,16 +122,20 @@ class WebSocket {
     }
 
     func write(string text: String, completion: (() -> Void)?) {
-        guard isConnected else { return }
+        guard isConnected else {
+            // We need to send completion event, because otherwise WC2 library will stuck and won't work anymore...
+            completion?()
+            return
+        }
 
         log("Writing text: \(text) to socket")
         task?.send(.string(text)) { [weak self] error in
             if let error = error {
                 self?.handleEvent(.connnectionError(error))
             } else {
-                completion?()
                 self?.handleEvent(.messageSent(text))
             }
+            completion?()
         }
     }
 

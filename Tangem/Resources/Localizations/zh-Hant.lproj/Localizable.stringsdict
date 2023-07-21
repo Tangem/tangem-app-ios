@@ -27,9 +27,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Complete three lessons and receive %li 1INCH token to your wallet</string>
+        <string>Complete three lessons and receive %li 1INCH token to your wallet</string>
         <key>other</key>
-        <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
+        <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>

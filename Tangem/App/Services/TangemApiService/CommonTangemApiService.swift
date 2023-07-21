@@ -104,6 +104,20 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
+        let target = TangemApiTarget(type: .quotes(requestModel), authData: authData)
+
+        return provider
+            .requestPublisher(target)
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(QuotesDTO.Response.self)
+            .eraseError()
+            .map { response in
+                QuotesMapper().mapToQuotes(response)
+            }
+            .eraseToAnyPublisher()
+    }
+
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error> {
         provider
             .requestPublisher(TangemApiTarget(type: .currencies, authData: authData))

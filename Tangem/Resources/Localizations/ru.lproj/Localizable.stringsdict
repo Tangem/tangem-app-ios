@@ -33,13 +33,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токен на свой кошелек</string>
+        <string>Пройдите 3 урока и получите %li 1INCH токен на свой кошелек</string>
         <key>few</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токена на свой кошелек</string>
+        <string>Пройдите 3 урока и получите %li 1INCH токена на свой кошелек</string>
         <key>many</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токена на свой кошелек</string>
+        <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
         <key>other</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
+        <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
