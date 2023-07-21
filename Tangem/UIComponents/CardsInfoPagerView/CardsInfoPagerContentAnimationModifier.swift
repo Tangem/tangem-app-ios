@@ -13,7 +13,7 @@ import SwiftUI
 struct CardsInfoPagerContentAnimationModifier: AnimatableModifier {
     var progress: CGFloat
     let verticalOffset: CGFloat
-    let hasNextIndexToSelect: Bool
+    let hasValidIndexToSelect: Bool
 
     var animatableData: CGFloat {
         get { progress }
@@ -21,7 +21,7 @@ struct CardsInfoPagerContentAnimationModifier: AnimatableModifier {
     }
 
     func body(content: Content) -> some View {
-        let ratio = hasNextIndexToSelect ? abs(sin(.pi * progress)) : 0.0
+        let ratio = hasValidIndexToSelect ? abs(sin(.pi * progress)) : 0.0
 
         content
             .opacity(1.0 - Double(ratio))

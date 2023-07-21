@@ -41,7 +41,11 @@ struct CardsInfoPagerView<
     /// whereas `content` part must be updated exactly in the middle of the current gesture/animation).
     @State private var contentSelectedIndex: Int
 
-    @State private var hasNextIndexToSelect = false
+    /// Equals `true` if we a have valid next/previous index (relative to the currently selected index, `selectedIndex`)
+    /// to select from the currently selected index, `false` otherwise.
+    ///
+    /// - Warning: This property has an undefined value if there is no active drag gesture.
+    @State private var hasValidIndexToSelect = false
 
     private var selectedIndexLowerBound: Int { 0 }
     private var selectedIndexUpperBound: Int { data.count - 1 }
@@ -49,18 +53,21 @@ struct CardsInfoPagerView<
     // MARK: - Page switch progress
 
     /// Progress in 0...1 range, updated with animation.
+    ///
     /// - Warning: Won't be reset back to 0 after a successful (non-cancelled) page switch, use with caution.
     @State private var pageSwitchProgress: CGFloat = .zero
 
     /// Progress in 0...1 range, updated without animation. Set at the end of the active drag gesture.
+    ///
     /// - Warning: Won't be reset back to 0 after a successful (non-cancelled) page switch, use with caution.
     @State private var initialPageSwitchProgress: CGFloat = .zero
 
     /// Progress in 0...1 range, updated without animation. Set at the end of the active drag gesture.
+    ///
     /// - Warning: Won't be reset back to 0 after a successful (non-cancelled) page switch, use with caution.
     @State private var finalPageSwitchProgress: CGFloat = .zero
 
-    // MARK: - Header horizontal scrolling
+    // MARK: - Horizontal scrolling
 
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
     @State private var cumulativeHorizontalTranslation: CGFloat = .zero
@@ -74,7 +81,7 @@ struct CardsInfoPagerView<
         return offset
     }
 
-    // MARK: - Header vertical auto scrolling
+    // MARK: - Vertical auto scrolling (collapsible/expandable header)
 
     @StateObject private var scrollDetector = ScrollDetector()
 
@@ -84,6 +91,7 @@ struct CardsInfoPagerView<
     private let collapsedHeaderScrollTargetIdentifier = UUID()
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
+    /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var headerHeight: CGFloat = .zero
 
@@ -97,6 +105,7 @@ struct CardsInfoPagerView<
     private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
     private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
     private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
+    private var isHorizontalScrollDisabled = false
 
     // MARK: - Body
 
@@ -124,6 +133,8 @@ struct CardsInfoPagerView<
         }
     }
 
+    // MARK: - Initialization/Deinitialization
+
     init(
         data: Data,
         id idProvider: KeyPath<(Data.Index, Data.Element), ID>,
@@ -142,8 +153,9 @@ struct CardsInfoPagerView<
         self.onPullToRefresh = onPullToRefresh
     }
 
-    // MARK: - Subviews
+    // MARK: - View factories
 
+    @ViewBuilder
     private func makeHeader(with proxy: GeometryProxy) -> some View {
         // TODO: Andrey Fedorov - Migrate to LazyHStack (IOS-3771)
         HStack(spacing: Constants.headerInteritemSpacing) {
@@ -214,13 +226,12 @@ struct CardsInfoPagerView<
                     .fixedSize()
                     .id(collapsedHeaderScrollTargetIdentifier)
 
-                // FIXME: Andrey Fedorov - Current content page must be changed to prev/next page exactly when `pageSwitchProgress` equals 0.5 (IOS-4012)
                 contentFactory(data[selectedIndex])
                     .modifier(
                         CardsInfoPagerContentAnimationModifier(
                             progress: pageSwitchProgress,
                             verticalOffset: contentViewVerticalOffset,
-                            hasNextIndexToSelect: hasNextIndexToSelect
+                            hasValidIndexToSelect: hasValidIndexToSelect
                         )
                     )
                     .modifier(
@@ -246,6 +257,8 @@ struct CardsInfoPagerView<
             )
         }
     }
+
+    // MARK: - Gestures
 
     private func makeDragGesture(with proxy: GeometryProxy) -> some Gesture {
         DragGesture()
@@ -275,7 +288,7 @@ struct CardsInfoPagerView<
                     totalWidth: proxy.size.width,
                     nextPageThreshold: .ulpOfOne
                 )
-                hasNextIndexToSelect = nextIndexToSelect != nil && nextIndexToSelect != selectedIndex
+                hasValidIndexToSelect = nextIndexToSelect != nil && nextIndexToSelect != selectedIndex
             }
             .onEnded { value in
                 let totalWidth = proxy.size.width
@@ -323,7 +336,7 @@ struct CardsInfoPagerView<
             }
     }
 
-    // MARK: - Header horizontal scrolling support
+    // MARK: - Horizontal scrolling support
 
     private func additionalHorizontalTranslation(
         oldSelectedIndex: Int,
@@ -356,10 +369,10 @@ struct CardsInfoPagerView<
     }
 
     private func valueWithRubberbandingIfNeeded<T>(_ value: T) -> T where T: BinaryFloatingPoint {
-        return hasNextIndexToSelect ? value : value.withRubberbanding()
+        return hasValidIndexToSelect ? value : value.withRubberbanding()
     }
 
-    // MARK: - Header vertical auto scrolling support
+    // MARK: - Vertical auto scrolling support (collapsible/expandable header)
 
     func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
         let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
