@@ -138,6 +138,12 @@ struct CardsInfoPagerView<
             )
         )
         .onAnimationCompleted(for: cumulativeHorizontalTranslation) {
+            // Last resort workaround for rare edge cases of desynchronization between `selectedIndex`
+            // and `contentSelectedIndex` properties if multiple page switching animations in
+            // different directions are launched simultaneously.
+            // The desynchronization is hard to reproduce and the reasons for such behavior are unknown.
+            // This workaround guarantees that at the end of all animations, the values in `selectedIndex`
+            // and `contentSelectedIndex` will be in sync.
             contentSelectedIndex = selectedIndex
         }
         .onPreferenceChange(CardsInfoPagerContentSwitchingModifier.PreferenceKey.self) { newValue in
@@ -345,6 +351,7 @@ struct CardsInfoPagerView<
 
     // MARK: - Horizontal scrolling support
 
+    /// Additional horizontal translation which takes into account horizontal offsets for next/previous cell peeking.
     private func additionalHorizontalTranslation(
         oldSelectedIndex: Int,
         newSelectedIndex: Int
@@ -364,6 +371,10 @@ struct CardsInfoPagerView<
         return (Constants.headerItemHorizontalOffset + Constants.headerInteritemSpacing) * multiplier
     }
 
+    /// Speed up page switching animations based on the already elapsed horizontal distance.
+    ///
+    /// For example, if the user has already scrolled 2/3 of a horizontal distance using the drag gesture,
+    /// the remaining 1/3 of the distance will be animated using 1/3 of the original duration of the animation
     private func horizontalScrollAnimationDuration(
         currentPageSwitchProgress: CGFloat,
         pageHasBeenSwitched: Bool
@@ -444,6 +455,9 @@ struct CardsInfoPagerView<
         // by more than one page at a time in case of overscroll
         return selectedIndex - clamp(indexDiff, min: -1, max: 1)
     }
+
+    /// Multiple simultaneous page switching animations may finish roughly at the same time,
+    /// therefore we have to debounce multiple updates of the `contentSelectedIndex` property.
     private func scheduleContentSelectedIndexUpdateIfNeeded(toNewValue newValue: Int) {
         // `contentSelectedIndex` is updated in `onChanged(_:)` callback
         // during an active horizontal drag gesture, nothing to do here
