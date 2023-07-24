@@ -41,6 +41,8 @@ struct CardsInfoPagerView<
     /// whereas `content` part must be updated exactly in the middle of the current gesture/animation).
     @State private var contentSelectedIndex: Int
 
+    @State private var scheduledContentSelectedIndexUpdate: DispatchWorkItem?
+
     /// Equals `true` if we a have valid next/previous index (relative to the currently selected index, `selectedIndex`)
     /// to select from the currently selected index, `false` otherwise.
     ///
@@ -68,6 +70,8 @@ struct CardsInfoPagerView<
     @State private var finalPageSwitchProgress: CGFloat = .zero
 
     // MARK: - Horizontal scrolling
+
+    @GestureState private var isDraggingHorizontally = false
 
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
     @State private var cumulativeHorizontalTranslation: CGFloat = .zero
@@ -125,11 +129,19 @@ struct CardsInfoPagerView<
                     proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
                 }
         }
+        .modifier(
+            CardsInfoPagerContentSwitchingModifier(
+                progress: pageSwitchProgress,
+                finalPageSwitchProgress: finalPageSwitchProgress,
+                initialSelectedIndex: previouslySelectedIndex,
+                finalSelectedIndex: selectedIndex
+            )
+        )
+        .onAnimationCompleted(for: cumulativeHorizontalTranslation) {
+            contentSelectedIndex = selectedIndex
+        }
         .onPreferenceChange(CardsInfoPagerContentSwitchingModifier.PreferenceKey.self) { newValue in
-            // `DispatchQueue.main.async` used here to allow publishing changes during view updates
-            DispatchQueue.main.async {
-                contentSelectedIndex = newValue
-            }
+            scheduleContentSelectedIndexUpdateIfNeeded(toNewValue: newValue)
         }
     }
 
@@ -226,20 +238,12 @@ struct CardsInfoPagerView<
                     .fixedSize()
                     .id(collapsedHeaderScrollTargetIdentifier)
 
-                contentFactory(data[selectedIndex])
+                contentFactory(data[contentSelectedIndex])
                     .modifier(
                         CardsInfoPagerContentAnimationModifier(
                             progress: pageSwitchProgress,
                             verticalOffset: contentViewVerticalOffset,
                             hasValidIndexToSelect: hasValidIndexToSelect
-                        )
-                    )
-                    .modifier(
-                        CardsInfoPagerContentSwitchingModifier(
-                            progress: pageSwitchProgress,
-                            finalPageSwitchProgress: finalPageSwitchProgress,
-                            initialSelectedIndex: previouslySelectedIndex,
-                            finalSelectedIndex: selectedIndex
                         )
                     )
             }
@@ -264,6 +268,9 @@ struct CardsInfoPagerView<
         DragGesture()
             .updating($currentHorizontalTranslation) { value, state, _ in
                 state = valueWithRubberbandingIfNeeded(value.translation.width)
+            }
+            .updating($isDraggingHorizontally) { _, state, _ in
+                state = true
             }
             .onChanged { value in
                 let totalWidth = proxy.size.width
@@ -436,6 +443,17 @@ struct CardsInfoPagerView<
         // The difference is clamped because we don't want to switch
         // by more than one page at a time in case of overscroll
         return selectedIndex - clamp(indexDiff, min: -1, max: 1)
+    }
+    private func scheduleContentSelectedIndexUpdateIfNeeded(toNewValue newValue: Int) {
+        // `contentSelectedIndex` is updated in `onChanged(_:)` callback
+        // during an active horizontal drag gesture, nothing to do here
+        guard !isDraggingHorizontally else { return }
+
+        scheduledContentSelectedIndexUpdate?.cancel()
+
+        let scheduledUpdate = DispatchWorkItem { contentSelectedIndex = newValue }
+        scheduledContentSelectedIndexUpdate = scheduledUpdate
+        DispatchQueue.main.async(execute: scheduledUpdate)
     }
 }
 
