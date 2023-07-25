@@ -106,7 +106,7 @@ struct CardsInfoPagerView<
 
     private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
     private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
-    private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
+    private var pageSwitchAnimationDuration: CGFloat = Constants.pageSwitchAnimationDuration
     private var isHorizontalScrollDisabled = false
 
     // MARK: - Body
@@ -301,7 +301,7 @@ struct CardsInfoPagerView<
                 // when drag gesture starts, therefore `nextPageThreshold` equals `ulpOfOne` here
                 let nextIndexToSelect = nextIndexToSelectFiltered(
                     translation: value.translation.width,
-                    totalWidth: proxy.size.width,
+                    totalWidth: totalWidth,
                     nextPageThreshold: .ulpOfOne
                 )
                 hasValidIndexToSelect = nextIndexToSelect != nil && nextIndexToSelect != selectedIndex
@@ -309,12 +309,8 @@ struct CardsInfoPagerView<
             .onEnded { value in
                 let totalWidth = proxy.size.width
 
-                // Predicted translation takes the gesture's velocity into account,
-                // which makes page switching feel more natural.
-                let predictedTranslation = value.predictedEndLocation.x - value.startLocation.x
-
                 let newSelectedIndex = nextIndexToSelectClamped(
-                    translation: predictedTranslation,
+                    translation: value.predictedEndTranslation.width,
                     totalWidth: totalWidth,
                     nextPageThreshold: pageSwitchThreshold
                 )
@@ -341,11 +337,14 @@ struct CardsInfoPagerView<
                 initialPageSwitchProgress = pageSwitchProgress
                 finalPageSwitchProgress = pageHasBeenSwitched ? 1.0 : 0.0
 
-                let pageSwitchAnimationSpeed = horizontalScrollAnimationDuration(
+                let animation = makeHorizontalScrollAnimation(
+                    totalWidth: totalWidth,
+                    dragGestureVelocity: value.velocityCompat,
                     currentPageSwitchProgress: pageSwitchProgress,
                     pageHasBeenSwitched: pageHasBeenSwitched
                 )
-                withAnimation(pageSwitchAnimation.speed(pageSwitchAnimationSpeed)) {
+
+                withAnimation(animation) {
                     cumulativeHorizontalTranslation = -CGFloat(newSelectedIndex) * totalWidth
                     pageSwitchProgress = finalPageSwitchProgress
                 }
@@ -374,19 +373,70 @@ struct CardsInfoPagerView<
         return (Constants.headerItemHorizontalOffset + Constants.headerInteritemSpacing) * multiplier
     }
 
+    private func makeHorizontalScrollAnimation(
+        totalWidth: CGFloat,
+        dragGestureVelocity: CGSize,
+        currentPageSwitchProgress: CGFloat,
+        pageHasBeenSwitched: Bool
+    ) -> Animation {
+        let remainingPageSwitchProgress = pageHasBeenSwitched
+            ? 1.0 - currentPageSwitchProgress
+            : currentPageSwitchProgress
+        let remainingWidth = totalWidth * remainingPageSwitchProgress
+        let horizontalDragGestureVelocity = abs(dragGestureVelocity.width)
+        var animationSpeed = 1.0
+
+        if horizontalDragGestureVelocity > 0.0 {
+            let gestureDrivenAnimationDuration = remainingWidth / horizontalDragGestureVelocity
+            let remainingAnimationDuration = pageSwitchAnimationDuration * remainingPageSwitchProgress
+            if gestureDrivenAnimationDuration < remainingAnimationDuration {
+                // `sqrt(2.0)` constant is used to reduce 'sharpness' of the gesture-driven animation
+                animationSpeed = pageSwitchAnimationDuration / (gestureDrivenAnimationDuration * sqrt(2.0))
+            } else {
+                // Horizontal velocity of the drag gesture is slower than the velocity of the default
+                // animation with remaining duration, therefore animation speed is calculated based
+                // on current page switching progress
+                animationSpeed = pageSwitchProgressDrivenAnimationSpeed(
+                    remainingPageSwitchProgress: remainingPageSwitchProgress
+                )
+            }
+        } else {
+            // Horizontal velocity of the drag gesture is zero, therefore animation speed
+            // is calculated based on current page switching progress
+            animationSpeed = pageSwitchProgressDrivenAnimationSpeed(
+                remainingPageSwitchProgress: remainingPageSwitchProgress
+            )
+        }
+
+        if !hasValidIndexToSelect {
+            // 'sharpness' of the animation is reduced if there is no valid next/previous index
+            // to select, i.e. when we are at the first/last page and we're trying to switch to
+            // either `selectedIndexLowerBound - 1` or `selectedIndexUpperBound + 1` index
+            animationSpeed = clamp(animationSpeed, min: 1.0, max: 3.0)
+        }
+
+        let springAnimationResponse = 0.55
+        let springAnimationDampingFraction = 0.75
+
+        // It's impossible to set the duration of spring animation to a particular value precisely,
+        // so this speed is approximate
+        let approximateDefaultAnimationSpeed = springAnimationResponse / pageSwitchAnimationDuration
+
+        return .spring(response: springAnimationResponse, dampingFraction: springAnimationDampingFraction)
+            .speed(approximateDefaultAnimationSpeed)
+            .speed(animationSpeed)
+    }
+
     /// Speed up page switching animations based on the already elapsed horizontal distance.
     ///
     /// For example, if the user has already scrolled 2/3 of a horizontal distance using the drag gesture,
     /// the remaining 1/3 of the distance will be animated using 1/3 of the original duration of the animation
-    private func horizontalScrollAnimationDuration(
-        currentPageSwitchProgress: CGFloat,
-        pageHasBeenSwitched: Bool
+    private func pageSwitchProgressDrivenAnimationSpeed(
+        remainingPageSwitchProgress: CGFloat
     ) -> CGFloat {
-        let relativeAnimationDuration = pageHasBeenSwitched
-            ? 1.0 - currentPageSwitchProgress
-            : currentPageSwitchProgress
+        guard remainingPageSwitchProgress > 0.0 else { return 1.0 }
 
-        return 1.0 / max(relativeAnimationDuration, .ulpOfOne) // Protecting against division by zero
+        return 1.0 / remainingPageSwitchProgress
     }
 
     private func valueWithRubberbandingIfNeeded<T>(_ value: T) -> T where T: BinaryFloatingPoint {
@@ -502,18 +552,18 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
 // MARK: - Setupable protocol conformance
 
 extension CardsInfoPagerView: Setupable {
-    func pageSwitchAnimation(_ animation: Animation) -> Self {
-        map { $0.pageSwitchAnimation = animation }
+    /// Maximum vertical offset for the `content` part of the page during
+    /// gesture-driven or animation-driven page switch
+    func contentViewVerticalOffset(_ offset: CGFloat) -> Self {
+        map { $0.contentViewVerticalOffset = offset }
     }
 
     func pageSwitchThreshold(_ threshold: CGFloat) -> Self {
         map { $0.pageSwitchThreshold = threshold }
     }
 
-    /// Maximum vertical offset for the `content` part of the page during
-    /// gesture-driven or animation-driven page switch
-    func contentViewVerticalOffset(_ offset: CGFloat) -> Self {
-        map { $0.contentViewVerticalOffset = offset }
+    func pageSwitchAnimationDuration(_ value: CGFloat) -> Self {
+        map { $0.pageSwitchAnimationDuration = value }
     }
 
     func horizontalScrollDisabled(_ disabled: Bool) -> Self {
@@ -532,7 +582,7 @@ private extension CardsInfoPagerView {
         static var headerAutoScrollThresholdRatio: CGFloat { 0.25 }
         static var contentViewVerticalOffset: CGFloat { 44.0 }
         static var pageSwitchThreshold: CGFloat { 0.5 }
-        static var pageSwitchAnimation: Animation { .spring().speed(0.5) }
+        static var pageSwitchAnimationDuration: CGFloat { 0.7 }
     }
 }
 
