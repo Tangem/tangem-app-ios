@@ -174,7 +174,7 @@ class SendViewModel: ObservableObject {
         self.coordinator = coordinator
         isSellingCrypto = false
         fillTotalBlockWithDefaults()
-        bind()
+//        bind()
         setupWarnings()
     }
 
