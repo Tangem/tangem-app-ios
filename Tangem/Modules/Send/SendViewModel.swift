@@ -179,7 +179,7 @@ class SendViewModel: ObservableObject {
     }
 
     deinit {
-        AppLog.shared.debug("SendViewModel deinit")
+        AppLog.shared.debug("SendViewModel deinitaaa")
     }
 
     convenience init(
