@@ -16,6 +16,6 @@ extension BinaryFloatingPoint {
     /// and [fluid-interfaces repo](https://github.com/nathangitter/fluid-interfaces/).
     func withRubberbanding() -> Self {
         let sign = self < 0.0 ? -1.0 : 1.0
-        return Self(sign * pow(sign * Double(self), 0.7))
+        return Self(sign * pow(sign * Double(self), 0.75))
     }
 }
