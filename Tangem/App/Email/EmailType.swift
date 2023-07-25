@@ -92,6 +92,7 @@ enum EmailCollectedDataType {
         case destinationAddress = "Destination address"
         case amount
         case fee
+        case isFeeIncluded = "Is fee included"
         case transactionHex = "Transaction HEX"
         case pushingTxHash = "Pushing Transaction Hash"
         case pushingFee = "Pushing Transaction New Fee"
@@ -111,6 +112,7 @@ enum EmailCollectedDataType {
         case contractAddress = "Contract address"
         case name = "Name"
         case id = "ID"
+        case decimals = "Decimals"
     }
 
     enum SeparatorType: String {

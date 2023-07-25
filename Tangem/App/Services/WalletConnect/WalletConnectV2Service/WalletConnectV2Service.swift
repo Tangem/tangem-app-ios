@@ -41,11 +41,6 @@ final class WalletConnectV2Service {
             .eraseToAnyPublisher()
     }
 
-    var sessionsPublisher: AnyPublisher<[WalletConnectSession], Never> {
-        Just([])
-            .eraseToAnyPublisher()
-    }
-
     var newSessions: AsyncStream<[WalletConnectSavedSession]> {
         get async {
             await sessionsStorage.sessions

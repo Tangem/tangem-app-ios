@@ -21,16 +21,13 @@ class CardViewModel: Identifiable, ObservableObject {
 
     let walletModelsManager: WalletModelsManager
 
-    lazy var userTokensManager: UserTokensManager = {
-        // TODO: move derivationstyle into config
-        CommonUserTokensManager(
-            userTokenListManager: userTokenListManager,
-            walletModelsManager: walletModelsManager,
-            derivationStyle: cardInfo.card.derivationStyle,
-            derivationManager: derivationManager,
-            cardDerivableProvider: self
-        )
-    }()
+    lazy var userTokensManager: UserTokensManager = CommonUserTokensManager(
+        userTokenListManager: userTokenListManager,
+        walletModelsManager: walletModelsManager,
+        derivationStyle: config.derivationStyle,
+        derivationManager: derivationManager,
+        cardDerivableProvider: self
+    )
 
     let userTokenListManager: UserTokenListManager
 
@@ -74,9 +71,6 @@ class CardViewModel: Identifiable, ObservableObject {
 
     var batchId: String { cardInfo.card.batchId }
     var cardPublicKey: Data { cardInfo.card.cardPublicKey }
-    var derivationStyle: DerivationStyle? {
-        cardInfo.card.derivationStyle
-    }
 
     var supportsOnlineImage: Bool {
         config.hasFeature(.onlineImage)

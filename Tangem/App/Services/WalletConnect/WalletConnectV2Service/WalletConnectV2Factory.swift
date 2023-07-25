@@ -8,11 +8,8 @@
 
 import Foundation
 
-typealias WCServices = (v1Service: WalletConnectV1Service, v2Service: WalletConnectV2Service)
-
 struct WalletConnectFactory {
-    func createWCServices(for model: CardViewModel) -> WCServices {
-        let v1Service = WalletConnectV1Service(with: model)
+    func createWCService(for model: CardViewModel) -> WalletConnectV2Service {
         let uiDelegate = WalletConnectAlertUIDelegate()
         let messageComposer = WalletConnectV2MessageComposer()
         let ethTransactionBuilder = CommonWalletConnectEthTransactionBuilder()
@@ -35,6 +32,6 @@ struct WalletConnectFactory {
         )
 
         handlersFactory.walletModelProvider = v2Service
-        return (v1Service, v2Service)
+        return v2Service
     }
 }

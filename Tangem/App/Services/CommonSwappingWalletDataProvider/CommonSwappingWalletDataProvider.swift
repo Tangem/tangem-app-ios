@@ -62,19 +62,17 @@ extension CommonSwappingWalletDataProvider: SwappingWalletDataProvider {
         )
     }
 
+    func getBalance(for currency: Currency) -> Decimal? {
+        guard let amountType = mapToAmountType(currency: currency) else {
+            return nil
+        }
+
+        return balances[amountType]
+    }
+
     func getBalance(for currency: Currency) async throws -> Decimal {
-        let amountType: Amount.AmountType
-
-        switch currency.currencyType {
-        case .token:
-            guard let token = currencyMapper.mapToToken(currency: currency) else {
-                assertionFailure("Currency isn't a token")
-                return 0
-            }
-
-            amountType = Amount.AmountType.token(value: token)
-        case .coin:
-            amountType = Amount.AmountType.coin
+        guard let amountType = mapToAmountType(currency: currency) else {
+            throw CommonError.noData
         }
 
         if let balance = balances[amountType] {
@@ -231,5 +229,19 @@ private extension CommonSwappingWalletDataProvider {
             fee: blockchain.convertFromWEI(value: Decimal(gasLimit * gasPrice)),
             policy: policy
         )
+    }
+
+    func mapToAmountType(currency: Currency) -> Amount.AmountType? {
+        switch currency.currencyType {
+        case .token:
+            guard let token = currencyMapper.mapToToken(currency: currency) else {
+                assertionFailure("Currency isn't a token")
+                return nil
+            }
+
+            return Amount.AmountType.token(value: token)
+        case .coin:
+            return Amount.AmountType.coin
+        }
     }
 }

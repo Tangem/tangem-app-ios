@@ -14,10 +14,6 @@ public struct WalletConnectURLParser {
             return .v2(wcURI)
         }
 
-        if let wcURI = WalletConnectV1URI(uriString) {
-            return .v1(wcURI)
-        }
-
         return nil
     }
 
@@ -50,6 +46,5 @@ extension WalletConnectURLParser {
 }
 
 public enum WalletConnectRequestURI {
-    case v1(WalletConnectV1URI)
     case v2(WalletConnectV2URI)
 }

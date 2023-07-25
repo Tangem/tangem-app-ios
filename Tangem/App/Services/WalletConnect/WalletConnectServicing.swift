@@ -11,13 +11,11 @@ import Combine
 
 protocol WalletConnectService {
     var canEstablishNewSessionPublisher: AnyPublisher<Bool, Never> { get }
-    var sessionsPublisher: AnyPublisher<[WalletConnectSession], Never> { get }
     var newSessions: AsyncStream<[WalletConnectSavedSession]> { get async }
 
     func initialize(with cardModel: CardViewModel)
     func reset()
-    func disconnectSession(with id: Int)
-    func disconnectV2Session(with id: Int) async
+    func disconnectSession(with id: Int) async
 
     func canOpenSession(with uri: WalletConnectRequestURI) -> Bool
     func openSession(with uri: WalletConnectRequestURI)

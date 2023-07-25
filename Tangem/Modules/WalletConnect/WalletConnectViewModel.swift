@@ -18,14 +18,11 @@ class WalletConnectViewModel: ObservableObject {
     @Published var showCameraDeniedAlert: Bool = false
     @Published var alert: AlertBinder?
     @Published var isServiceBusy: Bool = true
-    @Published var v1Sessions: [WalletConnectSession] = []
 
-    @Published @MainActor var v2Sessions: [WalletConnectSavedSession] = []
+    @Published @MainActor var sessions: [WalletConnectSavedSession] = []
 
     @MainActor
-    var noActiveSessions: Bool {
-        v1Sessions.isEmpty && v2Sessions.isEmpty
-    }
+    var noActiveSessions: Bool { sessions.isEmpty }
 
     private var cardModel: CardViewModel
     private var bag = Set<AnyCancellable>()
@@ -48,18 +45,10 @@ class WalletConnectViewModel: ObservableObject {
         bind()
     }
 
-    func disconnectV1Session(_ session: WalletConnectSession) {
-        Analytics.log(.buttonStopWalletConnectSession)
-        walletConnectService.disconnectSession(with: session.id)
-        withAnimation {
-            self.objectWillChange.send()
-        }
-    }
-
-    func disconnectV2Session(_ session: WalletConnectSavedSession) {
+    func disconnectSession(_ session: WalletConnectSavedSession) {
         Analytics.log(.buttonStopWalletConnectSession)
         Task { [weak self] in
-            await self?.walletConnectService.disconnectV2Session(with: session.id)
+            await self?.walletConnectService.disconnectSession(with: session.id)
             await runOnMain {
                 withAnimation {
                     self?.objectWillChange.send()
@@ -123,16 +112,6 @@ class WalletConnectViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        walletConnectService.sessionsPublisher
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] in
-                guard let self = self else { return }
-
-                v1Sessions = $0
-                AppLog.shared.debug("Loaded v1 sessions: \($0)")
-            })
-            .store(in: &bag)
-
         scannedQRCode
             .compactMap { $0 }
             .compactMap { WalletConnectURLParser().parse($0) }
@@ -148,7 +127,7 @@ class WalletConnectViewModel: ObservableObject {
                 AppLog.shared.debug("Loaded v2 sessions: \(sessions)")
                 await MainActor.run {
                     withAnimation {
-                        self.v2Sessions = sessions
+                        self.sessions = sessions
                     }
                 }
             }

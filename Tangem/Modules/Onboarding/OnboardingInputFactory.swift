@@ -82,11 +82,6 @@ class OnboardingInputFactory {
             return .cardModel(cardModel)
         }
 
-        if let userWallet = CardViewModel(cardInfo: cardInfo) {
-            userWallet.initialUpdate()
-            return .cardModel(userWallet)
-        }
-
         return .cardInfo(cardInfo)
     }
 }

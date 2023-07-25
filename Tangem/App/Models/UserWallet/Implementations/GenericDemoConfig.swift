@@ -35,6 +35,19 @@ extension GenericDemoConfig: UserWalletConfig {
         [.secp256k1, .ed25519]
     }
 
+    var derivationStyle: DerivationStyle? {
+        guard hasFeature(.hdWallets) else {
+            return nil
+        }
+
+        let batchId = card.batchId.uppercased()
+        if BatchId.isDetached(batchId) {
+            return .v1
+        }
+
+        return .v2
+    }
+
     var cardName: String {
         "Wallet"
     }
@@ -55,7 +68,7 @@ extension GenericDemoConfig: UserWalletConfig {
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
 
         let entries: [StorageEntry] = blockchains.map {
-            if let derivationStyle = card.derivationStyle {
+            if let derivationStyle = derivationStyle {
                 let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
@@ -72,7 +85,7 @@ extension GenericDemoConfig: UserWalletConfig {
         let blockchains = DemoUtil().getDemoBlockchains(isTestnet: AppEnvironment.current.isTestnet)
 
         let entries: [StorageEntry] = blockchains.map {
-            if let derivationStyle = card.derivationStyle {
+            if let derivationStyle = derivationStyle {
                 let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
@@ -179,11 +192,11 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return DemoWalletModelsFactory(derivationStyle: card.derivationStyle)
+        return DemoWalletModelsFactory(derivationStyle: derivationStyle)
     }
 
     func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
-        if case .available = getFeatureAvailability(.hdWallets) {
+        if hasFeature(.hdWallets) {
             return HDWalletManagerFactory()
         } else {
             return SimpleWalletManagerFactory()

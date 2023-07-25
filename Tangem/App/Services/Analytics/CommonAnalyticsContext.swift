@@ -19,16 +19,6 @@ class CommonAnalyticsContext: AnalyticsContext {
         self.contextData = contextData
     }
 
-    /// Update current context after wallet creation
-    func updateContext(with userWalletId: Data) {
-        guard let contextData, contextData.id == nil else {
-            return
-        }
-
-        let newContext = contextData.copy(with: userWalletId)
-        setupContext(with: newContext)
-    }
-
     func clearContext() {
         contextData = nil
     }

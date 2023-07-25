@@ -30,7 +30,7 @@ extension SwappingRatesProvider: FiatRatesProviding {
         return rates[blockchain.currencyID] != nil
     }
 
-    func getSyncFiat(for currency: Currency, amount: Decimal) -> Decimal? {
+    func getFiat(for currency: Currency, amount: Decimal) -> Decimal? {
         let id = currency.isToken ? currency.id : currency.blockchain.currencyID
         if let rate = rates[id] {
             return mapToFiat(amount: amount, rate: rate)
@@ -39,7 +39,7 @@ extension SwappingRatesProvider: FiatRatesProviding {
         return nil
     }
 
-    func getSyncFiat(for blockchain: TangemSwapping.SwappingBlockchain, amount: Decimal) -> Decimal? {
+    func getFiat(for blockchain: TangemSwapping.SwappingBlockchain, amount: Decimal) -> Decimal? {
         if let rate = rates[blockchain.currencyID] {
             return mapToFiat(amount: amount, rate: rate)
         }
@@ -49,32 +49,31 @@ extension SwappingRatesProvider: FiatRatesProviding {
 
     func getFiat(for currency: Currency, amount: Decimal) async throws -> Decimal {
         let id = currency.isToken ? currency.id : currency.blockchain.currencyID
-        let rate = try await getFiatRate(currencyId: id)
+        let rate = try await ratesRepository.rate(for: id)
         return mapToFiat(amount: amount, rate: rate)
     }
 
     func getFiat(for blockchain: SwappingBlockchain, amount: Decimal) async throws -> Decimal {
-        let rate = try await getFiatRate(currencyId: blockchain.currencyID)
+        let rate = try await ratesRepository.rate(for: blockchain.currencyID)
         return mapToFiat(amount: amount, rate: rate)
+    }
+
+    func getFiat(for currencies: [Currency: Decimal]) async throws -> [Currency: Decimal] {
+        let ids = currencies.keys.map { $0.isToken ? $0.id : $0.blockchain.currencyID }
+        _ = await ratesRepository.loadRates(coinIds: ids)
+
+        return currencies.reduce(into: [:]) { result, args in
+            let (currency, amount) = args
+            if let fiat = getFiat(for: currency, amount: amount) {
+                result[currency] = fiat
+            }
+        }
     }
 }
 
 // MARK: - Private
 
 private extension SwappingRatesProvider {
-    func getFiatRateFor(for currency: Currency) async throws -> Decimal {
-        let id = currency.isToken ? currency.id : currency.blockchain.currencyID
-        return try await getFiatRate(currencyId: id)
-    }
-
-    func getFiatRateFor(for blockchain: SwappingBlockchain) async throws -> Decimal {
-        try await getFiatRate(currencyId: blockchain.currencyID)
-    }
-
-    func getFiatRate(currencyId: String) async throws -> Decimal {
-        return try await ratesRepository.rate(for: currencyId)
-    }
-
     func mapToFiat(amount: Decimal, rate: Decimal) -> Decimal {
         let fiatValue = amount * rate
         if fiatValue == 0 {

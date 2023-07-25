@@ -85,7 +85,7 @@ class StoriesViewModel: ObservableObject {
         case WelcomeStoryPage.learn:
             LearnAndEarnStoryPage(learn: openPromotion)
         case WelcomeStoryPage.meetTangem:
-            MeetTangemStoryPage(progress: progressBinding, immediatelyShowTangemLogo: showLearnPage, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            MeetTangemStoryPage(progress: progressBinding, immediatelyShowTangemLogo: showLearnPage, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories || showLearnPage, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.awe:
             AweStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.backup:

@@ -53,9 +53,11 @@ struct SendScreenDataCollector: EmailDataCollector {
             data: walletModel.blockchainNetwork.blockchain.displayName
         ))
 
-        switch amountToSend.type {
+        switch amount.type {
         case .token(let token):
             data.append(EmailCollectedData(type: .card(.token), data: token.symbol))
+            data.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
+            data.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
         case .coin, .reserve:
             break
         }
@@ -78,8 +80,9 @@ struct SendScreenDataCollector: EmailDataCollector {
         data.append(contentsOf: [
             EmailCollectedData(type: .send(.sourceAddress), data: walletModel.wallet.address),
             EmailCollectedData(type: .send(.destinationAddress), data: destination),
-            EmailCollectedData(type: .send(.amount), data: amountText),
-            EmailCollectedData(type: .send(.fee), data: feeText),
+            EmailCollectedData(type: .send(.amount), data: amount.description),
+            EmailCollectedData(type: .send(.fee), data: fee.description),
+            EmailCollectedData(type: .send(.isFeeIncluded), data: "\(isFeeIncluded)"),
         ])
 
         if let txHex = txHex {
@@ -99,19 +102,19 @@ struct SendScreenDataCollector: EmailDataCollector {
 
     private let userWalletEmailData: [EmailCollectedData]
     private let walletModel: WalletModel
-    private let amountToSend: Amount
-    private let feeText: String
+    private let fee: Amount
     private let destination: String
-    private let amountText: String
+    private let amount: Amount
+    private let isFeeIncluded: Bool
     private let lastError: Error?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, amountToSend: Amount, feeText: String, destination: String, amountText: String, lastError: Error?) {
+    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: Error?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
-        self.amountToSend = amountToSend
-        self.feeText = feeText
+        self.fee = fee
         self.destination = destination
-        self.amountText = amountText
+        self.amount = amount
+        self.isFeeIncluded = isFeeIncluded
         self.lastError = lastError
     }
 }
@@ -120,9 +123,9 @@ struct PushScreenDataCollector: EmailDataCollector {
     var logData: Data? {
         var data = userWalletEmailData
         data.append(.separator(.dashes))
-        switch amountToSend.type {
+        switch amount.type {
         case .coin:
-            data.append(EmailCollectedData(type: .card(.blockchain), data: amountToSend.currencySymbol))
+            data.append(EmailCollectedData(type: .card(.blockchain), data: amount.currencySymbol))
         case .token(let token):
             data.append(EmailCollectedData(type: .card(.token), data: token.symbol))
         default:
@@ -134,11 +137,11 @@ struct PushScreenDataCollector: EmailDataCollector {
             EmailCollectedData(type: .error, data: lastError?.localizedDescription ?? "Unknown error"),
             .separator(.dashes),
             EmailCollectedData(type: .send(.pushingTxHash), data: pushingTxHash),
-            EmailCollectedData(type: .send(.pushingFee), data: pushingFeeText),
+            EmailCollectedData(type: .send(.pushingFee), data: pushingFee?.description ?? "[unknown]"),
             EmailCollectedData(type: .send(.sourceAddress), data: source),
             EmailCollectedData(type: .send(.destinationAddress), data: destination),
-            EmailCollectedData(type: .send(.amount), data: amountText),
-            EmailCollectedData(type: .send(.fee), data: feeText),
+            EmailCollectedData(type: .send(.amount), data: amount.description),
+            EmailCollectedData(type: .send(.fee), data: fee?.description ?? "[unknown]"),
         ])
 
         return formatData(data)
@@ -146,24 +149,22 @@ struct PushScreenDataCollector: EmailDataCollector {
 
     private let userWalletEmailData: [EmailCollectedData]
     private let walletModel: WalletModel
-    private let amountToSend: Amount
-    private let feeText: String
-    private let pushingFeeText: String
+    private let fee: Amount?
+    private let pushingFee: Amount?
     private let destination: String
     private let source: String
-    private let amountText: String
+    private let amount: Amount
     private let pushingTxHash: String
     private let lastError: Error?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, amountToSend: Amount, feeText: String, pushingFeeText: String, destination: String, source: String, amountText: String, pushingTxHash: String, lastError: Error?) {
+    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount?, pushingFee: Amount?, destination: String, source: String, amount: Amount, pushingTxHash: String, lastError: Error?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
-        self.amountToSend = amountToSend
-        self.feeText = feeText
-        self.pushingFeeText = pushingFeeText
+        self.fee = fee
+        self.pushingFee = pushingFee
         self.destination = destination
         self.source = source
-        self.amountText = amountText
+        self.amount = amount
         self.pushingTxHash = pushingTxHash
         self.lastError = lastError
     }
@@ -190,6 +191,7 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
 
             if let token = walletModel.amountType.token {
                 dataToFormat.append(EmailCollectedData(type: .token(.id), data: token.id ?? "[custom token]"))
+                dataToFormat.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
                 dataToFormat.append(EmailCollectedData(type: .token(.name), data: token.name))
                 dataToFormat.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
             }

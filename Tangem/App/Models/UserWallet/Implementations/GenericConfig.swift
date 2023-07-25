@@ -43,6 +43,19 @@ extension GenericConfig: UserWalletConfig {
         [.secp256k1, .ed25519]
     }
 
+    var derivationStyle: DerivationStyle? {
+        guard hasFeature(.hdWallets) else {
+            return nil
+        }
+
+        let batchId = card.batchId.uppercased()
+        if BatchId.isDetached(batchId) {
+            return .v1
+        }
+
+        return .v2
+    }
+
     var supportedBlockchains: Set<Blockchain> {
         let allBlockchains = AppEnvironment.current.isTestnet ? Blockchain.supportedTestnetBlockchains
             : Blockchain.supportedBlockchains
@@ -55,7 +68,7 @@ extension GenericConfig: UserWalletConfig {
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
 
         let entries: [StorageEntry] = blockchains.map {
-            if let derivationStyle = card.derivationStyle {
+            if let derivationStyle = derivationStyle {
                 let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
@@ -79,7 +92,7 @@ extension GenericConfig: UserWalletConfig {
     var warningEvents: [WarningEvent] {
         var warnings = WarningEventsFactory().makeWarningEvents(for: card)
 
-        if hasFeature(.hdWallets), card.derivationStyle == .v1 {
+        if hasFeature(.hdWallets), derivationStyle == .v1 {
             warnings.append(.legacyDerivation)
         }
 
@@ -172,7 +185,7 @@ extension GenericConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: card.derivationStyle)
+        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
     }
 
     func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {

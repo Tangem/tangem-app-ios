@@ -857,13 +857,15 @@ private extension SendViewModel {
 
 extension SendViewModel {
     func openMail(with error: Error) {
+        guard let transaction else { return }
+
         let emailDataCollector = SendScreenDataCollector(
             userWalletEmailData: cardViewModel.emailData,
             walletModel: walletModel,
-            amountToSend: amountToSend,
-            feeText: sendFee,
+            fee: transaction.fee.amount,
             destination: destination,
-            amountText: amountText,
+            amount: transaction.amount,
+            isFeeIncluded: isFeeIncluded,
             lastError: error
         )
 

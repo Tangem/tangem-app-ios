@@ -511,14 +511,16 @@ private extension LegacyMainViewModel {
     private func didBecomeReadyForAward() {
         promotionRequestInProgress = true
 
-        runTask { [weak self] in
-            guard let self else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            runTask { [weak self] in
+                guard let self else { return }
 
-            do {
-                try await startPromotionAwardProcess()
-                await updatePromotionState()
-            } catch {
-                handlePromotionError(error)
+                do {
+                    try await startPromotionAwardProcess()
+                    await updatePromotionState()
+                } catch {
+                    handlePromotionError(error)
+                }
             }
         }
     }
@@ -726,7 +728,7 @@ extension LegacyMainViewModel: LegacyMultiWalletContentViewModelOutput {
             supportedBlockchains: cardModel.supportedBlockchains,
             hdWalletsSupported: cardModel.config.hasFeature(.hdWallets),
             longHashesSupported: cardModel.config.hasFeature(.longHashes),
-            derivationStyle: cardModel.cardInfo.card.derivationStyle, // TODO: move to config
+            derivationStyle: cardModel.config.derivationStyle,
             shouldShowLegacyDerivationAlert: cardModel.shouldShowLegacyDerivationAlert
         )
 

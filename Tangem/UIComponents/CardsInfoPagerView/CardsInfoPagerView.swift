@@ -31,6 +31,7 @@ struct CardsInfoPagerView<
     // MARK: - Selected index
 
     @Binding private var selectedIndex: Int
+    @State private var previouslySelectedIndex: Int
 
     /// Contains previous value of the `selectedIndex` property.
     @State private var previouslySelectedIndex: Int
@@ -74,7 +75,36 @@ struct CardsInfoPagerView<
     @GestureState private var isDraggingHorizontally = false
 
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
+
     @State private var cumulativeHorizontalTranslation: CGFloat = .zero
+/// start
+
+    /// - Warning: Won't be reset back to 0 after successful (non-cancelled) page switch, use with caution.
+    @State private var pageSwitchProgress: CGFloat = .zero
+
+    /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
+    @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
+    @State private var headerHeight: CGFloat = .zero
+    @State private var verticalContentOffset: CGPoint = .zero
+    @State private var contentSize: CGSize = .zero
+    @State private var viewportSize: CGSize = .zero
+
+    private let scrollViewFrameCoordinateSpaceName = UUID()
+
+    private let expandedHeaderScrollTargetIdentifier = UUID()
+    private let collapsedHeaderScrollTargetIdentifier = UUID()
+
+    @StateObject private var scrollDetector = ScrollDetector()
+    @State private var proposedHeaderState: ProposedHeaderState = .expanded
+
+    private var contentViewVerticalOffset: CGFloat = Constants.contentViewVerticalOffset
+    private var pageSwitchThreshold: CGFloat = Constants.pageSwitchThreshold
+    private var pageSwitchAnimation: Animation = Constants.pageSwitchAnimation
+    private var isHorizontalScrollDisabled = false
+
+    private var lowerBound: Int { 0 }
+    private var upperBound: Int { data.count - 1 }
+// finish
 
     private var headerItemPeekHorizontalOffset: CGFloat {
         var offset = 0.0
@@ -468,7 +498,33 @@ struct CardsInfoPagerView<
         let scheduledUpdate = DispatchWorkItem { contentSelectedIndex = newValue }
         scheduledContentSelectedIndexUpdate = scheduledUpdate
         DispatchQueue.main.async(execute: scheduledUpdate)
+        // The difference is clamped because we don't want to switch
+        // by more than one page at a time in case of overscroll
+        return selectedIndex - clamp(indexDiff, min: -1, max: 1)
     }
+
+//start
+    func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
+        let yOffset = verticalContentOffset.y - Constants.headerVerticalPadding
+
+        guard 0.0 <= yOffset, yOffset < headerHeight else { return }
+
+        let headerAutoScrollRatio: CGFloat
+        if proposedHeaderState == .collapsed {
+            headerAutoScrollRatio = Constants.headerAutoScrollThresholdRatio
+        } else {
+            headerAutoScrollRatio = 1.0 - Constants.headerAutoScrollThresholdRatio
+        }
+
+        withAnimation(.spring()) {
+            if yOffset > headerHeight * headerAutoScrollRatio {
+                scrollViewProxy.scrollTo(collapsedHeaderScrollTargetIdentifier, anchor: .top)
+            } else {
+                scrollViewProxy.scrollTo(expandedHeaderScrollTargetIdentifier, anchor: .top)
+            }
+        }
+    }
+//finish
 }
 
 // MARK: - Convenience extensions

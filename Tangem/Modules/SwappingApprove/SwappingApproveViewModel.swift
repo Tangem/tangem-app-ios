@@ -200,8 +200,7 @@ private extension SwappingApproveViewModel {
         let fee = transactionData.fee
         let sourceBlockchain = transactionData.sourceBlockchain
 
-        if fiatRatesProvider.hasRates(for: sourceBlockchain),
-           let fiatFee = fiatRatesProvider.getSyncFiat(for: sourceBlockchain, amount: fee) {
+        if let fiatFee = fiatRatesProvider.getFiat(for: sourceBlockchain, amount: fee) {
             let fiatFeeFormatted = format(fee: fee, fiatFee: fiatFee)
             feeRowViewModel = DefaultRowViewModel(
                 title: Localization.sendFeeLabel,

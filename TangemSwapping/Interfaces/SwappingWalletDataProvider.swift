@@ -18,6 +18,7 @@ public protocol SwappingWalletDataProvider {
         destinationAddress: String
     ) async throws -> [EthereumGasDataModel]
 
+    func getBalance(for currency: Currency) -> Decimal?
     func getBalance(for currency: Currency) async throws -> Decimal
     func getBalance(for blockchain: SwappingBlockchain) async throws -> Decimal
 }

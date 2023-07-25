@@ -26,7 +26,7 @@ extension CommonSwappingFeeFormatter: SwappingFeeFormatter {
     }
 
     func format(fee: Decimal, blockchain: SwappingBlockchain) throws -> String {
-        guard let fiatFee = fiatRatesProvider.getSyncFiat(for: blockchain, amount: fee) else {
+        guard let fiatFee = fiatRatesProvider.getFiat(for: blockchain, amount: fee) else {
             throw CommonError.noData
         }
 

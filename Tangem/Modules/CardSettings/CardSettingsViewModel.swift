@@ -155,11 +155,11 @@ private extension CardSettingsViewModel {
     }
 
     func deleteWallet(_ userWallet: UserWallet) {
-        userWalletRepository.delete(userWallet, logoutIfNeeded: true)
+        userWalletRepository.delete(userWallet, logoutIfNeeded: false)
     }
 
     func navigateAwayAfterReset() {
-        if userWalletRepository.isEmpty {
+        if userWalletRepository.selectedModel == nil {
             coordinator.popToRoot()
         } else {
             coordinator.dismiss()

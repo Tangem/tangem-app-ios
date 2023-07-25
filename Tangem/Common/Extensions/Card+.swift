@@ -23,25 +23,7 @@ extension CardDTO {
         !wallets.isEmpty
     }
 
-    var derivationStyle: DerivationStyle? {
-        CardDTO.getDerivationStyle(for: batchId, isHdWalletAllowed: settings.isHDWalletAllowed)
-    }
-
     var tangemApiAuthData: TangemApiTarget.AuthData {
         .init(cardId: cardId, cardPublicKey: cardPublicKey)
-    }
-
-    static func getDerivationStyle(for batchId: String, isHdWalletAllowed: Bool) -> DerivationStyle? {
-        guard isHdWalletAllowed else {
-            return nil
-        }
-
-        let batchId = batchId.uppercased()
-
-        if BatchId.isDetached(batchId) {
-            return .v1
-        }
-
-        return .v2
     }
 }

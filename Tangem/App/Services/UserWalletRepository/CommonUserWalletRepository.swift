@@ -97,17 +97,22 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
+                let cardModel = CardViewModel(cardInfo: cardInfo)
+                if let cardModel {
+                    initializeServices(for: cardModel, cardInfo: cardInfo)
+                    cardModel.initialUpdate()
+                }
+
                 let factory = OnboardingInputFactory(
                     cardInfo: cardInfo,
-                    cardModel: nil,
+                    cardModel: cardModel,
                     sdkFactory: config,
                     onboardingStepsBuilderFactory: config
                 )
 
                 if let onboardingInput = factory.makeOnboardingInput() {
                     return .justWithError(output: .onboarding(onboardingInput))
-                } else if let cardModel = CardViewModel(cardInfo: cardInfo) {
-                    initializeServices(for: cardModel, cardInfo: cardInfo)
+                } else if let cardModel {
                     return .justWithError(output: .success(cardModel))
                 }
 
@@ -313,6 +318,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {
+        resetServices()
         let userWalletId = userWallet.userWalletId
         encryptionKeyByUserWalletId[userWalletId] = nil
         userWallets.removeAll { $0.userWalletId == userWalletId }
@@ -360,6 +366,19 @@ class CommonUserWalletRepository: UserWalletRepository {
         setSelectedUserWalletId(nil, reason: .deleted)
     }
 
+    func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {
+        let contextData = AnalyticsContextData(
+            card: cardInfo.card,
+            productType: cardModel.productType,
+            userWalletId: cardModel.userWalletId.value,
+            embeddedEntry: cardModel.embeddedEntry
+        )
+
+        analyticsContext.setupContext(with: contextData)
+        tangemApiService.setAuthData(cardInfo.card.tangemApiAuthData)
+        walletConnectServiceProvider.initialize(with: cardModel)
+    }
+
     private func clearUserWallets() {
         let userWalletRepositoryUtil = UserWalletRepositoryUtil()
         userWalletRepositoryUtil.saveUserWallets([])
@@ -378,19 +397,6 @@ class CommonUserWalletRepository: UserWalletRepository {
     private func resetServices() {
         walletConnectServiceProvider.reset()
         analyticsContext.clearContext()
-    }
-
-    private func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {
-        let contextData = AnalyticsContextData(
-            card: cardInfo.card,
-            productType: cardModel.productType,
-            userWalletId: cardModel.userWalletId.value,
-            embeddedEntry: cardModel.embeddedEntry
-        )
-
-        analyticsContext.setupContext(with: contextData)
-        tangemApiService.setAuthData(cardInfo.card.tangemApiAuthData)
-        walletConnectServiceProvider.initialize(with: cardModel)
     }
 
     private func unlockWithBiometry(completion: @escaping (UserWalletRepositoryResult?) -> Void) {
