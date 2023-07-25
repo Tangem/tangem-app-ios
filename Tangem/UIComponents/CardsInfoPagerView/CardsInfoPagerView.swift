@@ -125,6 +125,11 @@ struct CardsInfoPagerView<
                 }
                 .onChange(of: verticalContentOffset) { [oldValue = verticalContentOffset] newValue in
                     proposedHeaderState = oldValue.y > newValue.y ? .expanded : .collapsed
+                    // Vertical scrolling may delay or even cancel horizontal scroll animations,
+                    // which in turn may lead to desynchronization between `selectedIndex` and
+                    // `contentSelectedIndex` properties.
+                    // Therefore, we sync them forcefully when vertical scrolling starts.
+                    synchronizeContentSelectedIndex()
                 }
         }
         .modifier(
@@ -141,8 +146,8 @@ struct CardsInfoPagerView<
             // different directions are launched simultaneously.
             // The desynchronization is hard to reproduce and the reasons for such behavior are unknown.
             // This workaround guarantees that at the end of all animations, the values in `selectedIndex`
-            // and `contentSelectedIndex` will be in sync.
-            contentSelectedIndex = selectedIndex
+            // and `contentSelectedIndex` properties will be in sync.
+            synchronizeContentSelectedIndex()
         }
         .onPreferenceChange(CardsInfoPagerContentSwitchingModifier.PreferenceKey.self) { newValue in
             scheduleContentSelectedIndexUpdateIfNeeded(toNewValue: newValue)
@@ -304,7 +309,7 @@ struct CardsInfoPagerView<
             .onEnded { value in
                 let totalWidth = proxy.size.width
 
-                // Predicted translation takes the gesture's speed into account,
+                // Predicted translation takes the gesture's velocity into account,
                 // which makes page switching feel more natural.
                 let predictedTranslation = value.predictedEndLocation.x - value.startLocation.x
 
@@ -457,7 +462,7 @@ struct CardsInfoPagerView<
     /// Multiple simultaneous page switching animations may finish roughly at the same time,
     /// therefore we have to debounce multiple updates of the `contentSelectedIndex` property.
     private func scheduleContentSelectedIndexUpdateIfNeeded(toNewValue newValue: Int) {
-        // `contentSelectedIndex` is updated in `onChanged(_:)` callback
+        // `contentSelectedIndex` is being updated in `onChanged(_:)` callback
         // during an active horizontal drag gesture, nothing to do here
         guard !isDraggingHorizontally else { return }
 
@@ -466,6 +471,10 @@ struct CardsInfoPagerView<
         let scheduledUpdate = DispatchWorkItem { contentSelectedIndex = newValue }
         scheduledContentSelectedIndexUpdate = scheduledUpdate
         DispatchQueue.main.async(execute: scheduledUpdate)
+    }
+
+    private func synchronizeContentSelectedIndex() {
+        contentSelectedIndex = selectedIndex
     }
 }
 
