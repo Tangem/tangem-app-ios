@@ -120,22 +120,6 @@ struct ReferralView: View {
         VStack(spacing: 14) {
             Spacer()
 
-            HStack {
-                Text(Localization.referralFriendsBoughtTitle)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-
-                Text(viewModel.numberOfWalletsBought)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-            }
-            .roundedBackground(
-                with: Colors.Background.primary,
-                padding: 16,
-                radius: 14
-            )
-            .padding(.top, 24)
-
             VStack(spacing: 8) {
                 Text(Localization.referralPromoCodeTitle)
                     .style(
@@ -182,6 +166,20 @@ struct ReferralView: View {
                 ))
             }
 
+            HStack {
+                Text(Localization.referralFriendsBoughtTitle)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                Spacer()
+
+                Text(viewModel.numberOfWalletsBought)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            }
+            .roundedBackground(
+                with: Colors.Background.primary,
+                padding: 16,
+                radius: 14
+            )
             tosButton
         }
     }
