@@ -11,6 +11,7 @@ import Foundation
 struct ReferralProgramInfo: Decodable {
     let conditions: Conditions
     let referral: Referral?
+    let expectedAwards: ExpectedAwards?
 }
 
 extension ReferralProgramInfo {
@@ -44,5 +45,16 @@ extension ReferralProgramInfo {
         var symbol: String {
             "%"
         }
+    }
+
+    struct ExpectedAwards: Decodable {
+        let numberOfWallets: Int
+        let list: [ExpectedAward]
+    }
+
+    struct ExpectedAward: Decodable {
+        let currency: String
+        let paymentDate: String
+        let amount: Int
     }
 }
