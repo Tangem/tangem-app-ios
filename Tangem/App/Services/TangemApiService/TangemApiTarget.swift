@@ -31,7 +31,7 @@ struct TangemApiTarget: TargetType {
             return "/geo"
         case .getUserWalletTokens(let key), .saveUserWalletTokens(let key, _):
             return "/user-tokens/\(key)"
-        case .loadReferralProgramInfo(let userWalletId):
+        case .loadReferralProgramInfo(let userWalletId, _):
             return "/referral/\(userWalletId)"
         case .participateInReferralProgram:
             return "/referral"
@@ -83,8 +83,13 @@ struct TangemApiTarget: TargetType {
             return .requestPlain
         case .saveUserWalletTokens(_, let list):
             return .requestJSONEncodable(list)
-        case .loadReferralProgramInfo:
-            return .requestPlain
+        case .loadReferralProgramInfo(_, let expectedAwardsLimit):
+            return .requestParameters(
+                parameters: [
+                    "expected-awards-limit": expectedAwardsLimit,
+                ],
+                encoding: URLEncoding.default
+            )
         case .participateInReferralProgram(let requestData):
             return .requestURLEncodable(requestData)
         case .shops(let name):
@@ -139,7 +144,7 @@ extension TangemApiTarget {
         case geo
         case getUserWalletTokens(key: String)
         case saveUserWalletTokens(key: String, list: UserTokenList)
-        case loadReferralProgramInfo(userWalletId: String)
+        case loadReferralProgramInfo(userWalletId: String, expectedAwardsLimit: Int)
         case participateInReferralProgram(userInfo: ReferralParticipationRequestBody)
         case shops(name: String)
 

@@ -145,9 +145,9 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
-    func loadReferralProgramInfo(for userWalletId: String) async throws -> ReferralProgramInfo {
+    func loadReferralProgramInfo(for userWalletId: String, expectedAwardsLimit: Int) async throws -> ReferralProgramInfo {
         let target = TangemApiTarget(
-            type: .loadReferralProgramInfo(userWalletId: userWalletId),
+            type: .loadReferralProgramInfo(userWalletId: userWalletId, expectedAwardsLimit: expectedAwardsLimit),
             authData: authData
         )
         let response = try await provider.asyncRequest(for: target)
