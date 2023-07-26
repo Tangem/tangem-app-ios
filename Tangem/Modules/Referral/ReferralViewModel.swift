@@ -24,6 +24,7 @@ class ReferralViewModel: ObservableObject {
     private let userWalletId: Data
 
     private let expectedAwardsLimit = 30
+    private let expectedAwardsInitialLimit = 3
 
     private var shareLink: String {
         guard let referralInfo = referralProgramInfo?.referral else {
@@ -170,6 +171,31 @@ extension ReferralViewModel {
         return Localization.referralWalletsPurchasedCount(count)
     }
 
+    var hasExpectedAwards: Bool {
+        referralProgramInfo?.expectedAwards != nil
+    }
+
+    #warning("l10n")
+    var numberOfWalletsForPayments: String {
+        "for \(referralProgramInfo?.expectedAwards?.numberOfWallets ?? 0) wallets"
+    }
+
+    var expectedAwards: [ExpectedAward] {
+        guard let list = referralProgramInfo?.expectedAwards?.list else {
+            return []
+        }
+
+        
+        return list.map {
+            .init(date: "03.08.23", amount: "\($0.amount) \($0.currency)")
+        }
+    }
+
+    var canExpandExpectedAwards: Bool {
+        let list = referralProgramInfo?.expectedAwards?.list ?? []
+        return list.count > expectedAwardsInitialLimit
+    }
+
     var promoCode: String {
         guard let info = referralProgramInfo?.referral else {
             return ""
@@ -204,5 +230,12 @@ extension ReferralViewModel {
 
         Analytics.log(.referralButtonOpenTos)
         coordinator?.openTOS(with: url)
+    }
+}
+
+extension ReferralViewModel {
+    struct ExpectedAward {
+        let date: String
+        let amount: String
     }
 }

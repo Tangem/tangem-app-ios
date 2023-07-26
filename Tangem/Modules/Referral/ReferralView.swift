@@ -180,6 +180,36 @@ struct ReferralView: View {
                 padding: 16,
                 radius: 14
             )
+
+            if viewModel.hasExpectedAwards {
+                VStack {
+                    HStack(spacing: 0) {
+                        Text("Upcoming payments")
+
+                        Spacer()
+
+                        Text(viewModel.numberOfWalletsForPayments)
+                    }
+
+                    ForEach(viewModel.expectedAwards, id: \.date) { expectedAward in
+                        HStack {
+                            Text(expectedAward.date)
+                            
+                            Spacer()
+                            
+                            Text(expectedAward.amount)
+                        }
+                        .padding(.vertical, 14)
+                        
+                    }
+                }
+                .roundedBackground(
+                    with: Colors.Background.primary,
+                    padding: 16,
+                    radius: 14
+                )
+            }
+
             tosButton
         }
     }
