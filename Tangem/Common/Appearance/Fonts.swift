@@ -67,7 +67,7 @@ enum Fonts {
         static let callout: Font = .system(size: 16, weight: .medium)
 
         /// weight: medium, size: 15
-        static let subheadline: Font = .system(size: 15, weight: .semibold)
+        static let subheadline: Font = .system(size: 15, weight: .medium)
 
         /// weight: semibold, size: 13
         static let footnote: Font = .system(size: 13, weight: .semibold)
