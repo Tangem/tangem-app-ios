@@ -12,6 +12,8 @@ import AlertToast
 struct ReferralView: View {
     @ObservedObject var viewModel: ReferralViewModel
 
+    private let dudePadding: CGFloat = 14
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -27,11 +29,11 @@ struct ReferralView: View {
                                 ],
                                 center: .bottom,
                                 startRadius: 0,
-                                endRadius: geometry.size.width * 0.62
+                                endRadius: 0.65 * (geometry.size.width - 2 * dudePadding)
                             )
                             .cornerRadiusContinuous(14)
                         )
-                        .padding(.horizontal, 14)
+                        .padding(.horizontal, dudePadding)
 
                     Text(Localization.referralTitle)
                         .style(Fonts.Bold.title1, color: Colors.Text.primary1)
