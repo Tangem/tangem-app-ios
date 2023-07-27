@@ -25,8 +25,8 @@ class ReferralViewModel: ObservableObject {
     private let userTokensManager: UserTokensManager
     private let userWalletId: Data
 
-    private let expectedAwardsLimit = 30
-    private let expectedAwardsInitialLimit = 3
+    private let expectedAwardsFetchLimit = 30
+    private let expectedAwardsShortListLimit = 3
 
     private var shareLink: String {
         guard let referralInfo = referralProgramInfo?.referral else {
@@ -208,13 +208,13 @@ extension ReferralViewModel {
             return ExpectedAward(date: formattedDate, amount: amount)
         }
 
-        let awardsToShow = expectedAwardsExpanded ? expectedAwardsLimit : expectedAwardsInitialLimit
+        let awardsToShow = expectedAwardsExpanded ? expectedAwardsFetchLimit : expectedAwardsShortListLimit
         return Array(awards.prefix(awardsToShow))
     }
 
     var canExpandExpectedAwards: Bool {
         let list = referralProgramInfo?.expectedAwards?.list ?? []
-        return list.count > expectedAwardsInitialLimit
+        return list.count > expectedAwardsShortListLimit
     }
 
     var expandButtonText: String {
