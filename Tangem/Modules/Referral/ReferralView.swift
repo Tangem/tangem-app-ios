@@ -166,51 +166,90 @@ struct ReferralView: View {
                 ))
             }
 
-            HStack {
-                Text(Localization.referralFriendsBoughtTitle)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+            VStack(spacing: 0) {
+                HStack {
+                    Text(Localization.referralFriendsBoughtTitle)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                Spacer()
+                    Spacer()
 
-                Text(viewModel.numberOfWalletsBought)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                    Text(viewModel.numberOfWalletsBought)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                }
+                .padding(14)
+
+                if viewModel.hasPurchases {
+                    Separator(height: 0.5, color: Colors.Stroke.primary)
+
+                    expectedAwards
+                }
             }
             .roundedBackground(
                 with: Colors.Background.primary,
-                padding: 16,
+                padding: 0,
                 radius: 14
             )
 
+            tosButton
+        }
+    }
+
+    @ViewBuilder
+    private var expectedAwards: some View {
+        VStack(spacing: 0) {
             if viewModel.hasExpectedAwards {
-                VStack {
-                    HStack(spacing: 0) {
-                        Text("Upcoming payments")
+                #warning("l10n")
+                HStack(spacing: 0) {
+                    #warning("l10n")
+                    Text("Upcoming payments")
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                        Spacer()
+                    Spacer()
 
-                        Text(viewModel.numberOfWalletsForPayments)
-                    }
-
-                    ForEach(viewModel.expectedAwards, id: \.date) { expectedAward in
-                        HStack {
-                            Text(expectedAward.date)
-                            
-                            Spacer()
-                            
-                            Text(expectedAward.amount)
-                        }
-                        .padding(.vertical, 14)
-                        
-                    }
+                    Text(viewModel.numberOfWalletsForPayments)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
-                .roundedBackground(
-                    with: Colors.Background.primary,
-                    padding: 16,
-                    radius: 14
-                )
+                .padding(14)
+            } else {
+                #warning("l10n")
+                Text("No upcoming payments")
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
             }
 
-            tosButton
+            ForEach(viewModel.expectedAwards, id: \.date) { expectedAward in
+                HStack {
+                    Text(expectedAward.date)
+                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                    Spacer()
+
+                    Text(expectedAward.amount)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                }
+                .padding(14)
+            }
+
+            Button {
+                withAnimation(nil) {
+                    viewModel.expectedAwardsExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    #warning("l10n")
+                    Text(viewModel.expectedAwardsExpanded ? "Less" : "More")
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+                    Image(systemName: viewModel.expectedAwardsExpanded ? "chevron.up" : "chevron.down")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 9)
+                        .foregroundColor(Colors.Text.tertiary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(14)
         }
     }
 

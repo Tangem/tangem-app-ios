@@ -19,6 +19,8 @@ class ReferralViewModel: ObservableObject {
     @Published var errorAlert: AlertBinder?
     @Published var showCodeCopiedToast: Bool = false
 
+    @Published var expectedAwardsExpanded = false
+
     private weak var coordinator: ReferralRoutable?
     private let userTokensManager: UserTokensManager
     private let userWalletId: Data
@@ -166,13 +168,19 @@ extension ReferralViewModel {
         return Localization.referralPointDiscountDescriptionValue("\(info.conditions.discount.amount)\(info.conditions.discount.type.symbol)")
     }
 
+    var hasPurchases: Bool {
+        let count = referralProgramInfo?.referral?.walletsPurchased ?? 0
+        return count > 0
+    }
+
     var numberOfWalletsBought: String {
         let count = referralProgramInfo?.referral?.walletsPurchased ?? 0
         return Localization.referralWalletsPurchasedCount(count)
     }
 
     var hasExpectedAwards: Bool {
-        referralProgramInfo?.expectedAwards != nil
+        let count = referralProgramInfo?.expectedAwards?.numberOfWallets ?? 0
+        return count > 0
     }
 
     #warning("l10n")
@@ -185,10 +193,28 @@ extension ReferralViewModel {
             return []
         }
 
-        
-        return list.map {
-            .init(date: "03.08.23", amount: "\($0.amount) \($0.currency)")
+        let dateParser = DateFormatter()
+        dateParser.dateFormat = "yyyy-MM-dd"
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.doesRelativeDateFormatting = true
+
+        let awards: [ExpectedAward] = list.map {
+            let amount = "\($0.amount) \($0.currency)"
+
+            guard
+                let date = dateParser.date(from: $0.paymentDate)
+            else {
+                return ExpectedAward(date: $0.paymentDate, amount: amount)
+            }
+
+            let formattedDate = dateFormatter.string(from: date)
+            return ExpectedAward(date: formattedDate, amount: amount)
         }
+
+        let awardsToShow = expectedAwardsExpanded ? expectedAwardsLimit : expectedAwardsInitialLimit
+        return Array(awards.prefix(awardsToShow))
     }
 
     var canExpandExpectedAwards: Bool {
