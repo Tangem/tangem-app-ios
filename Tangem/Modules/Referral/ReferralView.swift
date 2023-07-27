@@ -245,25 +245,27 @@ struct ReferralView: View {
                 .padding(14)
             }
 
-            Button {
-                withAnimation(nil) {
-                    viewModel.expectedAwardsExpanded.toggle()
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    #warning("l10n")
-                    Text(viewModel.expectedAwardsExpanded ? "Less" : "More")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            if viewModel.canExpandExpectedAwards {
+                Button {
+                    withAnimation(nil) {
+                        viewModel.expectedAwardsExpanded.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        #warning("l10n")
+                        Text(viewModel.expectedAwardsExpanded ? "Less" : "More")
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                    Image(systemName: viewModel.expectedAwardsExpanded ? "chevron.up" : "chevron.down")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 9)
-                        .foregroundColor(Colors.Text.tertiary)
+                        Image(systemName: viewModel.expectedAwardsExpanded ? "chevron.up" : "chevron.down")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 9)
+                            .foregroundColor(Colors.Text.tertiary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(14)
             }
-            .padding(14)
         }
     }
 
