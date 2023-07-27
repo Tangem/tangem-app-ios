@@ -10,6 +10,8 @@ import SwiftUI
 import AlertToast
 
 struct ReferralView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     @ObservedObject var viewModel: ReferralViewModel
 
     private let dudePadding: CGFloat = 14
@@ -28,7 +30,7 @@ struct ReferralView: View {
                                     Color.clear,
                                 ],
                                 center: .bottom,
-                                startRadius: 0.30 * (geometry.size.width - 2 * dudePadding),
+                                startRadius: (colorScheme == .light ? 0.5 : 0.30) * (geometry.size.width - 2 * dudePadding),
                                 endRadius: 0.65 * (geometry.size.width - 2 * dudePadding)
                             )
                             .cornerRadiusContinuous(14)
