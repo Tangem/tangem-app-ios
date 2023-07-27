@@ -24,11 +24,11 @@ struct ReferralView: View {
                         .background(
                             RadialGradient(
                                 colors: [
-                                    Color(hex: "#DADADA")!,
+                                    Colors.Control.unchecked,
                                     Color.clear,
                                 ],
                                 center: .bottom,
-                                startRadius: 0,
+                                startRadius: 0.50 * (geometry.size.width - 2 * dudePadding),
                                 endRadius: 0.65 * (geometry.size.width - 2 * dudePadding)
                             )
                             .cornerRadiusContinuous(14)
