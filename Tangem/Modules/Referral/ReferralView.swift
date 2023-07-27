@@ -19,7 +19,19 @@ struct ReferralView: View {
                     Assets.referralDude.image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .padding(.horizontal, 40)
+                        .background(
+                            RadialGradient(
+                                colors: [
+                                    Color(hex: "#DADADA")!,
+                                    Color.clear,
+                                ],
+                                center: .bottom,
+                                startRadius: 0,
+                                endRadius: geometry.size.width * 0.62
+                            )
+                            .cornerRadiusContinuous(14)
+                        )
+                        .padding(.horizontal, 14)
 
                     Text(Localization.referralTitle)
                         .style(Fonts.Bold.title1, color: Colors.Text.primary1)
