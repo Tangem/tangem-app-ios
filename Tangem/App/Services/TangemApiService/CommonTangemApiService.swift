@@ -184,16 +184,16 @@ extension CommonTangemApiService: TangemApiService {
                 ]
               },
               "expectedAwards": {
-                "numberOfWallets": 63,
+                "numberOfWallets": 30,
                 "list": [
                   {
                     "currency": "USDT",
-                    "paymentDate": "2023-07-26",
+                    "paymentDate": "2023-07-27",
                     "amount": 5
                   },
                   {
                     "currency": "USDT",
-                    "paymentDate": "2023-07-27",
+                    "paymentDate": "2023-07-28",
                     "amount": 5
                   },
                   {
