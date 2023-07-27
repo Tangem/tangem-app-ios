@@ -183,9 +183,9 @@ extension ReferralViewModel {
         return count > 0
     }
 
-    #warning("l10n")
     var numberOfWalletsForPayments: String {
-        "for \(referralProgramInfo?.expectedAwards?.numberOfWallets ?? 0) wallets"
+        let count = referralProgramInfo?.expectedAwards?.numberOfWallets ?? 0
+        return Localization.referralNumberOfWallets(count)
     }
 
     var expectedAwards: [ExpectedAward] {
@@ -220,6 +220,10 @@ extension ReferralViewModel {
     var canExpandExpectedAwards: Bool {
         let list = referralProgramInfo?.expectedAwards?.list ?? []
         return list.count > expectedAwardsInitialLimit
+    }
+
+    var expandButtonText: String {
+        expectedAwardsExpanded ? Localization.referralLess : Localization.referralMore
     }
 
     var promoCode: String {

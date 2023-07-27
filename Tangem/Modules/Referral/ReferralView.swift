@@ -212,10 +212,8 @@ struct ReferralView: View {
     private var expectedAwards: some View {
         VStack(spacing: 0) {
             if viewModel.hasExpectedAwards {
-                #warning("l10n")
                 HStack(spacing: 0) {
-                    #warning("l10n")
-                    Text("Upcoming payments")
+                    Text(Localization.referralExpectedAwards)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                     Spacer()
@@ -225,8 +223,7 @@ struct ReferralView: View {
                 }
                 .padding(14)
             } else {
-                #warning("l10n")
-                Text("No upcoming payments")
+                Text(Localization.referralNoExpectedAwards)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
@@ -252,8 +249,7 @@ struct ReferralView: View {
                     }
                 } label: {
                     HStack(spacing: 4) {
-                        #warning("l10n")
-                        Text(viewModel.expectedAwardsExpanded ? "Less" : "More")
+                        Text(viewModel.expandButtonText)
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
                         Image(systemName: viewModel.expectedAwardsExpanded ? "chevron.up" : "chevron.down")

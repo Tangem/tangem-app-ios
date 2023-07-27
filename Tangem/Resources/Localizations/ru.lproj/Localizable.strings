@@ -279,7 +279,11 @@
 "referral_error_failed_to_load_info" = "Не удалось загрузить информацию по реферальной программе. Пожалуйста, попробуйте позже.";
 "referral_error_failed_to_load_info_with_reason" = "Не удалось загрузить информацию по реферальной программе. Код ошибки: %@. Пожалуйста, попробуйте позже.";
 "referral_error_failed_to_participate" = "Не удалось обработать вашу заявку на участие. Код ошибки: %@. Пожалуйста, попробуйте позже. Если проблема сохранится, вы можете обратиться в техподдержку.";
+"referral_expected_awards" = "Грядущие выплаты";
 "referral_friends_bought_title" = "Ваши друзья купили";
+"referral_less" = "Меньше";
+"referral_more" = "Больше";
+"referral_no_expected_awards" = "Нет грядущих выплат";
 "referral_point_currencies_description_prefix" = "Получите";
 "referral_point_currencies_description_suffix" = "на ваш адрес в сети %1$@%2$@ за каждый кошелек, который купит ваш друг";
 "referral_point_currencies_title" = "Вы";

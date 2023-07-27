@@ -279,7 +279,11 @@
 "referral_error_failed_to_load_info" = "Failed to load the information about the referral program. Please try again later.";
 "referral_error_failed_to_load_info_with_reason" = "Failed to load the information about the referral program. Error code: %@. Please try again later.";
 "referral_error_failed_to_participate" = "Your participation request could not be processed. Error code: %@. Please try again later. If the problem persists — feel free to contact our support.";
+"referral_expected_awards" = "Upcoming payments";
 "referral_friends_bought_title" = "Your friends bought";
+"referral_less" = "Less";
+"referral_more" = "More";
+"referral_no_expected_awards" = "No upcoming payments";
 "referral_point_currencies_description_prefix" = "Will get";
 "referral_point_currencies_description_suffix" = "for each wallet bought by your friend on your %1$@ network address%2$@";
 "referral_point_currencies_title" = "You";

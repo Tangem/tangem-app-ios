@@ -34,6 +34,22 @@
         <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
       </dict>
     </dict>
+    <key>referral_number_of_wallets</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>for %li wallet</string>
+        <key>other</key>
+        <string>for %li wallets</string>
+      </dict>
+    </dict>
     <key>referral_wallets_purchased_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>

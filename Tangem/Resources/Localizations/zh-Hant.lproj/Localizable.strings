@@ -280,7 +280,11 @@
 "referral_error_failed_to_load_info" = "無法加載有關推薦計劃的消息。請稍後再試";
 "referral_error_failed_to_load_info_with_reason" = "無法加載有關推薦計劃的消息。原因：%@。請稍後再試";
 "referral_error_failed_to_participate" = "無法處理您的請求。原因：%@。請稍後再試。無如果問題仍然存在—請隨時聯繫服務人員";
+"referral_expected_awards" = "Upcoming payments";
 "referral_friends_bought_title" = "您的朋友買";
+"referral_less" = "Less";
+"referral_more" = "More";
+"referral_no_expected_awards" = "No upcoming payments";
 "referral_point_currencies_description_prefix" = "會得到";
 "referral_point_currencies_description_suffix" = "對於你的朋友在你的 %1$@ 網絡地址%2$@上購買的每個錢包";
 "referral_point_currencies_title" = "你";

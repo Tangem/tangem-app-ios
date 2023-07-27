@@ -42,6 +42,26 @@
         <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
       </dict>
     </dict>
+    <key>referral_number_of_wallets</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>за %li кошелек</string>
+        <key>few</key>
+        <string>за %li кошелька</string>
+        <key>many</key>
+        <string>за %li кошельков</string>
+        <key>other</key>
+        <string>за %li кошельков</string>
+      </dict>
+    </dict>
     <key>referral_wallets_purchased_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
