@@ -98,7 +98,7 @@ struct ReferralView: View {
                 notReferralView
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
     }
 
     @ViewBuilder
@@ -110,7 +110,7 @@ struct ReferralView: View {
 
             Spacer()
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
     }
 
     @ViewBuilder
