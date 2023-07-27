@@ -10,6 +10,10 @@ import Combine
 import BlockchainSdk
 
 class UserWalletModelMock: UserWalletModel {
+    var signer: TangemSigner = .init(with: nil, sdk: .init())
+
+    var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
+
     var isMultiWallet: Bool { false }
 
     var tokensCount: Int? { 10 }

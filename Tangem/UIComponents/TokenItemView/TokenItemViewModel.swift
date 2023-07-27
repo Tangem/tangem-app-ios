@@ -26,15 +26,10 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
 
     private let tokenIcon: TokenIconInfo
-    private let amountType: Amount.AmountType
+    private let tokenItem: TokenItem
     private let tokenTapped: (WalletModelId) -> Void
     private unowned let infoProvider: TokenItemInfoProvider
     private unowned let priceChangeProvider: PriceChangeProvider
-
-    private let cryptoFormattingOptions: BalanceFormattingOptions
-    private var fiatFormattingOptions: BalanceFormattingOptions {
-        .defaultFiatFormattingOptions
-    }
 
     private var bag = Set<AnyCancellable>()
     private var balanceUpdateTask: Task<Void, Error>?
@@ -42,19 +37,17 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     init(
         id: Int,
         tokenIcon: TokenIconInfo,
-        amountType: Amount.AmountType,
+        tokenItem: TokenItem,
         tokenTapped: @escaping (WalletModelId) -> Void,
         infoProvider: TokenItemInfoProvider,
-        priceChangeProvider: PriceChangeProvider,
-        cryptoFormattingOptions: BalanceFormattingOptions
+        priceChangeProvider: PriceChangeProvider
     ) {
         self.id = id
         self.tokenIcon = tokenIcon
-        self.amountType = amountType
+        self.tokenItem = tokenItem
         self.tokenTapped = tokenTapped
         self.infoProvider = infoProvider
         self.priceChangeProvider = priceChangeProvider
-        self.cryptoFormattingOptions = cryptoFormattingOptions
 
         bind()
     }
@@ -119,10 +112,11 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
     }
 
+    // TODO: remove update from here! Get it from walletModel
     private func updateBalances() {
         let formatter = BalanceFormatter()
-        let balance = infoProvider.balance(for: amountType)
-        let formattedBalance = formatter.formatCryptoBalance(balance, formattingOptions: cryptoFormattingOptions)
+        let balance = infoProvider.balance(for: tokenItem.amountType)
+        let formattedBalance = formatter.formatCryptoBalance(balance, currencyCode: tokenItem.currencySymbol)
         balanceCrypto = .loaded(text: formattedBalance)
 
         balanceUpdateTask?.cancel()
@@ -133,10 +127,9 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             do {
                 let fiatBalance = try await BalanceConverter().convertToFiat(
                     value: balance,
-                    from: cryptoFormattingOptions.currencyCode,
-                    to: fiatFormattingOptions.currencyCode
+                    from: tokenItem.currencyId ?? ""
                 )
-                formattedFiat = formatter.formatFiatBalance(fiatBalance, formattingOptions: fiatFormattingOptions)
+                formattedFiat = formatter.formatFiatBalance(fiatBalance)
             } catch {
                 formattedFiat = "-"
             }

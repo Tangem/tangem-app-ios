@@ -58,9 +58,10 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     func tryReadFromClipboard() -> WalletConnectRequestURI? {
-        guard let pasteboardValue = UIPasteboard.general.string,
-              let uri = WalletConnectURLParser().parse(pasteboardValue),
-              walletConnectService.canOpenSession(with: uri) else {
+        guard
+            let pasteboardValue = UIPasteboard.general.string,
+            let uri = WalletConnectURLParser().parse(pasteboardValue)
+        else {
             return nil
         }
 
@@ -92,11 +93,6 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     private func openSession(with uri: WalletConnectRequestURI) {
-        guard walletConnectService.canOpenSession(with: uri) else {
-            alert = WalletConnectServiceError.failedToConnect.alertBinder
-            return
-        }
-
         walletConnectService.openSession(with: uri)
     }
 

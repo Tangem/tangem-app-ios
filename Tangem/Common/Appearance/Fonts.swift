@@ -13,7 +13,7 @@ enum Fonts {
         /// weight: regular, size: 34
         static let largeTitle: Font = .system(size: 34, weight: .regular)
 
-        /// weight: regular, size: 28
+        /// weight: semibold, size: 28
         static let title1: Font = .system(size: 28, weight: .semibold)
 
         /// weight: regular, size: 22

@@ -143,9 +143,9 @@ struct ShopView: View {
         .background(Color.white.cornerRadius(sectionCornerRadius))
         .padding(.bottom, 8)
 
-        if !viewModel.canOrder {
+        if let notification = viewModel.orderNotification {
             VStack {
-                Text(Localization.shopSoldOutDescription)
+                Text(notification)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)

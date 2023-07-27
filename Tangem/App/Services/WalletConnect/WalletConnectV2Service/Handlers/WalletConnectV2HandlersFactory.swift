@@ -13,25 +13,22 @@ protocol WalletConnectHandlersCreator: AnyObject {
     func createHandler(
         for action: WalletConnectAction,
         with params: AnyCodable,
-        blockchain: Blockchain
+        blockchainId: String,
+        signer: TangemSigner,
+        walletModelProvider: WalletConnectWalletModelProvider
     ) throws -> WalletConnectMessageHandler
 }
 
 final class WalletConnectHandlersFactory: WalletConnectHandlersCreator {
-    private let signer: TangemSigner
     private let messageComposer: WalletConnectV2MessageComposable
     private let uiDelegate: WalletConnectUIDelegate
     private let ethTransactionBuilder: WalletConnectEthTransactionBuilder
 
-    weak var walletModelProvider: WalletConnectV2WalletModelProvider?
-
     init(
-        signer: TangemSigner,
         messageComposer: WalletConnectV2MessageComposable,
         uiDelegate: WalletConnectUIDelegate,
         ethTransactionBuilder: WalletConnectEthTransactionBuilder
     ) {
-        self.signer = signer
         self.messageComposer = messageComposer
         self.uiDelegate = uiDelegate
         self.ethTransactionBuilder = ethTransactionBuilder
@@ -40,31 +37,29 @@ final class WalletConnectHandlersFactory: WalletConnectHandlersCreator {
     func createHandler(
         for action: WalletConnectAction,
         with params: AnyCodable,
-        blockchain: Blockchain
+        blockchainId: String,
+        signer: TangemSigner,
+        walletModelProvider: WalletConnectWalletModelProvider
     ) throws -> WalletConnectMessageHandler {
-        guard let walletModelProvider = self.walletModelProvider else {
-            throw WalletConnectV2Error.missingWalletModelProviderInHandlersFactory
-        }
-
         switch action {
         case .personalSign:
             return try WalletConnectV2PersonalSignHandler(
                 request: params,
-                blockchain: blockchain,
+                blockchainId: blockchainId,
                 signer: CommonWalletConnectSigner(signer: signer),
                 walletModelProvider: walletModelProvider
             )
         case .signTypedData, .signTypedDataV4:
             return try WalletConnectV2SignTypedDataHandler(
                 requestParams: params,
-                blockchain: blockchain,
+                blockchainId: blockchainId,
                 signer: CommonWalletConnectSigner(signer: signer),
                 walletModelProvider: walletModelProvider
             )
         case .signTransaction:
             return try WalletConnectV2SignTransactionHandler(
                 requestParams: params,
-                blockchain: blockchain,
+                blockchainId: blockchainId,
                 transactionBuilder: ethTransactionBuilder,
                 messageComposer: messageComposer,
                 signer: signer,
@@ -73,12 +68,12 @@ final class WalletConnectHandlersFactory: WalletConnectHandlersCreator {
         case .sendTransaction:
             return try WalletConnectV2SendTransactionHandler(
                 requestParams: params,
-                blockchain: blockchain,
+                blockchainId: blockchainId,
                 transactionBuilder: ethTransactionBuilder,
                 messageComposer: messageComposer,
                 signer: signer,
-                uiDelegate: uiDelegate,
-                walletModelProvider: walletModelProvider
+                walletModelProvider: walletModelProvider,
+                uiDelegate: uiDelegate
             )
         case .bnbSign, .bnbTxConfirmation:
             // TODO: https://tangem.atlassian.net/browse/IOS-2896

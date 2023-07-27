@@ -11,6 +11,7 @@ import Combine
 
 protocol UserWalletRepository: Initializable {
     var models: [UserWalletModel] { get }
+    var userWallets: [UserWallet] { get }
     var selectedModel: CardViewModel? { get }
     var selectedUserWalletId: Data? { get }
     var isEmpty: Bool { get }

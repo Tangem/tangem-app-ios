@@ -11,24 +11,21 @@ import Foundation
 struct BalanceFormattingOptions {
     let minFractionDigits: Int
     let maxFractionDigits: Int
-    let currencyCode: String
     let roundingType: AmountRoundingType?
 
     static var defaultFiatFormattingOptions: BalanceFormattingOptions {
         .init(
             minFractionDigits: 2,
             maxFractionDigits: 2,
-            currencyCode: AppSettings.shared.selectedCurrencyCode,
-            roundingType: nil
+            roundingType: .default(roundingMode: .plain, scale: 2)
         )
     }
 
-    static func makeDefaultCryptoFormattingOptions(for currencyCode: String, maxFractionDigits: Int = 8, withRounding roundingMode: NSDecimalNumber.RoundingMode = .down) -> BalanceFormattingOptions {
-        BalanceFormattingOptions(
+    static var defaultCryptoFormattingOptions: BalanceFormattingOptions {
+        .init(
             minFractionDigits: 2,
-            maxFractionDigits: maxFractionDigits,
-            currencyCode: currencyCode,
-            roundingType: .default(roundingMode: roundingMode, scale: maxFractionDigits)
+            maxFractionDigits: 8,
+            roundingType: .default(roundingMode: .down, scale: 8)
         )
     }
 }

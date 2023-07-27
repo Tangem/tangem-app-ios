@@ -558,7 +558,8 @@ private extension LegacyMainViewModel {
         )
 
         if let awardedBlockchain {
-            Analytics.logPromotionEvent(.mainNoticeSuccessfulClaim, programName: promotionService.currentProgramName)
+            let newClient = (promotionService.promoCode != nil)
+            Analytics.logPromotionEvent(.mainNoticeSuccessfulClaim, programName: promotionService.currentProgramName, newClient: newClient)
 
             showAlert(AlertBuilder.makeSuccessAlert(message: Localization.mainPromotionCredited(awardedBlockchain.displayName)))
         }

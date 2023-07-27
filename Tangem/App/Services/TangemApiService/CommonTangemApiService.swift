@@ -344,8 +344,8 @@ extension CommonTangemApiService: TangemApiService {
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }
 
-    func shops(name: String) async throws -> ShopDetails {
-        try await request(for: .shops(name: name))
+    func sales(locale: String, shops: String) async throws -> SalesDetails {
+        try await request(for: .sales(locale: locale, shops: shops))
     }
 
     func promotion(programName: String, timeout: TimeInterval?) async throws -> PromotionParameters {

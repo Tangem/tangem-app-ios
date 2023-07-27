@@ -17,7 +17,6 @@ struct WalletConnectSavedSession: Codable, Hashable, Identifiable {
 
 extension WalletConnectSavedSession {
     struct SessionInfo: Codable, Hashable {
-        let connectedBlockchains: [BlockchainNetwork]
         let dAppInfo: DAppInfo
     }
 

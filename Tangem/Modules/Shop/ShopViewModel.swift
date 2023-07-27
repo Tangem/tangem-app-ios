@@ -36,6 +36,7 @@ class ShopViewModel: ObservableObject {
     @Published var totalAmountWithoutDiscount: String? = nil
     @Published var totalAmount = ""
     @Published var canOrder = true
+    @Published var orderNotification: String?
     @Published var pollingForOrder = false
     @Published var order: Order?
 
@@ -53,12 +54,14 @@ class ShopViewModel: ObservableObject {
     private var shopifyProductVariants: [ProductVariant] = []
     private var currentVariantID: GraphQL.ID = .init(rawValue: "")
     private var checkoutByVariantID: [GraphQL.ID: Checkout] = [:]
+    private var salesDetails: SalesDetails?
     private var initialized = false
+    private let bundleChangeAnimation = Animation.easeOut(duration: 0.25)
     private unowned let coordinator: ShopViewRoutable
 
     init(coordinator: ShopViewRoutable) {
         self.coordinator = coordinator
-        updateOrderAvailability()
+        fetchSalesDetails()
     }
 
     deinit {
@@ -157,22 +160,41 @@ class ShopViewModel: ObservableObject {
             .store(in: &bag)
     }
 
-    private func updateOrderAvailability() {
+    private func fetchSalesDetails() {
         runTask { [weak self] in
             guard let self else { return }
 
-            let canOrder = try await tangemApiService.shops(name: "shopify").canOrder
+            let locale = Locale.current.languageCode ?? "en"
+            let shops = "shopify"
+            salesDetails = try await tangemApiService.sales(locale: locale, shops: shops)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                withAnimation {
-                    self.canOrder = canOrder
-                }
+                self.updateCurrentProductSalesDetails(self.selectedBundle)
             }
         }
     }
 
+    private func updateCurrentProductSalesDetails(_ bundle: Bundle) {
+        let canOrder: Bool
+        let orderNotification: String?
+
+        let productCode = bundle.salesProductCode
+        if let currentProductSalesDetails = salesDetails?.sales.first(where: { $0.product.code == productCode }) {
+            canOrder = (currentProductSalesDetails.state == .order)
+            orderNotification = currentProductSalesDetails.notification?.description
+        } else {
+            canOrder = true
+            orderNotification = nil
+        }
+
+        self.canOrder = canOrder
+        withAnimation(bundleChangeAnimation) {
+            self.orderNotification = orderNotification
+        }
+    }
+
     private func didSelectBundle(_ bundle: Bundle) {
-        withAnimation(.easeOut(duration: 0.25)) {
+        withAnimation(bundleChangeAnimation) {
             showingThirdCard = (bundle == .threeCards)
         }
 
@@ -186,6 +208,7 @@ class ShopViewModel: ObservableObject {
         currentVariantID = variant.id
         updatePrice()
         createCheckouts()
+        updateCurrentProductSalesDetails(bundle)
     }
 
     private func didCloseWebCheckout() {
@@ -312,6 +335,15 @@ extension ShopViewModel {
                 return "TG115X2-S"
             case .threeCards:
                 return "TG115X3-S"
+            }
+        }
+
+        var salesProductCode: String {
+            switch self {
+            case .twoCards:
+                return "pack2"
+            case .threeCards:
+                return "pack3"
             }
         }
     }

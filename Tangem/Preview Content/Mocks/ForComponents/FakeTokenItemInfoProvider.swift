@@ -30,29 +30,26 @@ class FakeTokenItemInfoProvider: TokenItemInfoProvider, PriceChangeProvider, Obs
             .init(
                 id: makeId(for: amounts[amountsIndex][.coin]!),
                 tokenIcon: coinInfo,
-                amountType: .coin,
+                tokenItem: .blockchain(blockchain),
                 tokenTapped: modelTapped(with:),
                 infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: blockchain.currencySymbol)
+                priceChangeProvider: self
             ),
             .init(
                 id: makeId(for: amounts[amountsIndex][.token(value: wxDaiToken)]!),
                 tokenIcon: makeTokenIconInfo(for: wxDaiToken),
-                amountType: .token(value: wxDaiToken),
+                tokenItem: .token(wxDaiToken, blockchain),
                 tokenTapped: modelTapped(with:),
                 infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: wxDaiToken.symbol)
+                priceChangeProvider: self
             ),
             .init(
                 id: makeId(for: amounts[amountsIndex][.token(value: tetherToken)]!),
                 tokenIcon: makeTokenIconInfo(for: tetherToken),
-                amountType: .token(value: tetherToken),
+                tokenItem: .token(tetherToken, blockchain),
                 tokenTapped: modelTapped(with:),
                 infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: tetherToken.symbol)
+                priceChangeProvider: self
             ),
         ]
     }()

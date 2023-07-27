@@ -11,6 +11,9 @@ import Combine
 import BlockchainSdk
 
 class LockedUserWallet: UserWalletModel {
+    var walletModelsManager: WalletModelsManager = WalletModelsManagerMock()
+    var signer: TangemSigner
+
     var tokensCount: Int? { nil }
 
     var isMultiWallet: Bool { config.hasFeature(.multiCurrency) }
@@ -24,6 +27,7 @@ class LockedUserWallet: UserWalletModel {
     init(with userWallet: UserWallet) {
         self.userWallet = userWallet
         config = UserWalletConfigFactory(userWallet.cardInfo()).makeConfig()
+        signer = TangemSigner(with: userWallet.card.cardId, sdk: config.makeTangemSdk())
     }
 
     func initialUpdate() {}

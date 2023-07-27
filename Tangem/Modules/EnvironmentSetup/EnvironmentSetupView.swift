@@ -26,6 +26,12 @@ struct EnvironmentSetupView: View {
                     DefaultHeaderView("App settings")
                 }
 
+                GroupedSection(viewModel.additionalSettingsViewModels) { viewModel in
+                    DefaultRowView(viewModel: viewModel)
+                } header: {
+                    DefaultHeaderView("Additional settings")
+                }
+
                 GroupedSection(viewModel.featureStateViewModels) { viewModel in
                     FeatureStateRowView(viewModel: viewModel)
                 } header: {
@@ -87,7 +93,7 @@ struct EnvironmentSetupView: View {
 }
 
 struct EnvironmentSetupView_Preview: PreviewProvider {
-    static let viewModel = EnvironmentSetupViewModel(cardId: "AC01")
+    static let viewModel = EnvironmentSetupViewModel(coordinator: EnvironmentSetupRoutableMock(), cardId: "AC01")
 
     static var previews: some View {
         NavigationView {

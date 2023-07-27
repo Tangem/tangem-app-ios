@@ -41,8 +41,8 @@ struct DetailsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.disclaimerViewModel) {
                 DisclaimerView(viewModel: $0)
             }
-            .navigation(item: $coordinator.setupEnvironmentViewModel) {
-                EnvironmentSetupView(viewModel: $0)
+            .navigation(item: $coordinator.environmentSetupCoordinator) {
+                EnvironmentSetupCoordinatorView(coordinator: $0)
             }
             .navigation(item: $coordinator.referralCoordinator) {
                 ReferralCoordinatorView(coordinator: $0)

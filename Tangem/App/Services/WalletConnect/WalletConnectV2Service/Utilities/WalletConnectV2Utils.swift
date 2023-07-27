@@ -83,6 +83,7 @@ struct WalletConnectV2Utils {
     /// Dictionary with `chains` (`WalletConnectSwiftV2` terminology) as keys and session settings as values.
     /// - Throws:Error with list of unsupported blockchain names or a list of not added to user token list blockchain names
     func createSessionNamespaces(from namespaces: [String: ProposalNamespace], optionalNamespaces: [String: ProposalNamespace]?, for wallets: [WalletModel]) throws -> [String: SessionNamespace] {
+        let wallets = wallets.filter { $0.isMainToken }
         var sessionNamespaces: [String: SessionNamespace] = [:]
         var missingBlockchains: [String] = []
         var unsupportedEVMBlockchains: [String] = []
@@ -100,7 +101,7 @@ struct WalletConnectV2Utils {
                 }
 
                 supportedChains.insert(wcBlockchain)
-                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain == blockchain }
+                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.id == blockchain.id }
                 if filteredWallets.isEmpty {
                     missingBlockchains.append(blockchain.displayName)
                     return nil
@@ -130,7 +131,7 @@ struct WalletConnectV2Utils {
                 }
 
                 supportedChains.insert(wcBlockchain)
-                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain == blockchain }
+                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.id == blockchain.id }
                 if filteredWallets.isEmpty {
                     return nil
                 }
@@ -176,9 +177,7 @@ struct WalletConnectV2Utils {
     /// Method for creating internal session structure for storing on disk. Used for finding information about wallet using session topic.
     /// Also used in UI to display list of connected WC sessions for selected Wallet
     /// - Returns: `WalletConnectSavedSession` with info about wallet, dApp and session
-    func createSavedSession(from session: Session, with userWalletId: String, and walletModels: [WalletModel]) -> WalletConnectSavedSession {
-        let targetBlockchains = mapBlockchainNetworks(from: session.namespaces, using: walletModels)
-
+    func createSavedSession(from session: Session, with userWalletId: String) -> WalletConnectSavedSession {
         let dApp = session.peer
         let dAppInfo = WalletConnectSavedSession.DAppInfo(
             name: dApp.name,
@@ -187,7 +186,6 @@ struct WalletConnectV2Utils {
             iconLinks: dApp.icons
         )
         let sessionInfo = WalletConnectSavedSession.SessionInfo(
-            connectedBlockchains: targetBlockchains,
             dAppInfo: dAppInfo
         )
 
@@ -198,16 +196,22 @@ struct WalletConnectV2Utils {
         )
     }
 
-    func createBlockchain(for wcBlockchain: WalletConnectSwiftV2.Blockchain) -> BlockchainSdk.Blockchain? {
+    func createBlockchain(for wcBlockchain: WalletConnectSwiftV2.Blockchain) -> BlockchainMeta? {
         switch wcBlockchain.namespace {
         case evmNamespace:
-            var blockchains = BlockchainSdk.Blockchain.supportedBlockchains
-            blockchains = blockchains.union(BlockchainSdk.Blockchain.supportedTestnetBlockchains)
-
+            let blockchains = SupportedBlockchains.all
             let wcChainId = Int(wcBlockchain.reference)
-            return blockchains.first(where: { $0.chainId == wcChainId })
+            return blockchains
+                .first(where: { $0.chainId == wcChainId })
+                .map {
+                    BlockchainMeta(
+                        id: $0.id,
+                        currencySymbol: $0.currencySymbol,
+                        displayName: $0.displayName
+                    )
+                }
         default:
-            return BlockchainSdk.Blockchain(from: wcBlockchain.namespace)
+            return nil
         }
     }
 
@@ -231,7 +235,7 @@ struct WalletConnectV2Utils {
         case evmNamespace:
             guard
                 let blockchain = createBlockchain(for: wcBlockchain),
-                let walletModel = walletModels.first(where: { $0.wallet.blockchain == blockchain && $0.wallet.address == address })
+                let walletModel = walletModels.first(where: { $0.wallet.blockchain.id == blockchain.id && $0.wallet.address == address })
             else {
                 return nil
             }
@@ -241,4 +245,10 @@ struct WalletConnectV2Utils {
             return nil
         }
     }
+}
+
+struct BlockchainMeta {
+    let id: String
+    let currencySymbol: String
+    let displayName: String
 }

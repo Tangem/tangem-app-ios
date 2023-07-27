@@ -14,6 +14,8 @@ protocol UserWalletModel: TotalBalanceProviding, AnyObject {
     var tokensCount: Int? { get }
     var userWalletId: UserWalletId { get }
     var userWallet: UserWallet { get }
+    var walletModelsManager: WalletModelsManager { get }
+    var signer: TangemSigner { get }
 
     func initialUpdate()
     func updateWalletName(_ name: String)

@@ -33,7 +33,7 @@ class DetailsCoordinator: CoordinatorObject {
     @Published var disclaimerViewModel: DisclaimerViewModel? = nil
     @Published var supportChatViewModel: SupportChatViewModel? = nil
     @Published var scanCardSettingsViewModel: ScanCardSettingsViewModel? = nil
-    @Published var setupEnvironmentViewModel: EnvironmentSetupViewModel? = nil
+    @Published var environmentSetupCoordinator: EnvironmentSetupCoordinator? = nil
 
     // MARK: - Helpers
 
@@ -111,7 +111,10 @@ extension DetailsCoordinator: DetailsRoutable {
     }
 
     func openEnvironmentSetup(with cardId: String) {
-        setupEnvironmentViewModel = EnvironmentSetupViewModel(cardId: cardId)
+        let coordinator = EnvironmentSetupCoordinator(popToRootAction: popToRootAction)
+        coordinator.start(with: .init(cardId: cardId))
+
+        environmentSetupCoordinator = coordinator
     }
 
     func openReferral(with cardModel: CardViewModel, userWalletId: Data) {

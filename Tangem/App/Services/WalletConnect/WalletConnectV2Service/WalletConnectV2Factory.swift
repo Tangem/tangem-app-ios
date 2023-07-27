@@ -9,13 +9,12 @@
 import Foundation
 
 struct WalletConnectFactory {
-    func createWCService(for model: CardViewModel) -> WalletConnectV2Service {
+    func createWCService() -> WalletConnectV2Service {
         let uiDelegate = WalletConnectAlertUIDelegate()
         let messageComposer = WalletConnectV2MessageComposer()
         let ethTransactionBuilder = CommonWalletConnectEthTransactionBuilder()
 
         let handlersFactory = WalletConnectHandlersFactory(
-            signer: model.signer,
             messageComposer: messageComposer,
             uiDelegate: uiDelegate,
             ethTransactionBuilder: ethTransactionBuilder
@@ -25,13 +24,11 @@ struct WalletConnectFactory {
             handlersCreator: handlersFactory
         )
         let v2Service = WalletConnectV2Service(
-            with: model,
             uiDelegate: uiDelegate,
             messageComposer: messageComposer,
             wcHandlersService: wcHandlersService
         )
 
-        handlersFactory.walletModelProvider = v2Service
         return v2Service
     }
 }

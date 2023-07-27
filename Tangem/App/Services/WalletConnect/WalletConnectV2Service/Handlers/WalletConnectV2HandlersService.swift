@@ -15,7 +15,9 @@ protocol WalletConnectV2HandlersServicing {
     func handle(
         _ request: Request,
         from dApp: WalletConnectSavedSession.DAppInfo,
-        blockchain: Blockchain
+        blockchainId: String,
+        signer: TangemSigner,
+        walletModelProvider: WalletConnectWalletModelProvider
     ) async throws -> RPCResult
 }
 
@@ -33,13 +35,13 @@ struct WalletConnectV2HandlersService {
         self.handlersCreator = handlersCreator
     }
 
-    private func getHandler(for request: Request, blockchain: Blockchain) throws -> WalletConnectMessageHandler {
+    private func getHandler(for request: Request, blockchainId: String, signer: TangemSigner, walletModelProvider: WalletConnectWalletModelProvider) throws -> WalletConnectMessageHandler {
         let method = request.method
         guard let wcAction = WalletConnectAction(rawValue: method) else {
             throw WalletConnectV2Error.unsupportedWCMethod(method)
         }
 
-        return try handlersCreator.createHandler(for: wcAction, with: request.params, blockchain: blockchain)
+        return try handlersCreator.createHandler(for: wcAction, with: request.params, blockchainId: blockchainId, signer: signer, walletModelProvider: walletModelProvider)
     }
 }
 
@@ -47,9 +49,11 @@ extension WalletConnectV2HandlersService: WalletConnectV2HandlersServicing {
     func handle(
         _ request: Request,
         from dApp: WalletConnectSavedSession.DAppInfo,
-        blockchain: Blockchain
+        blockchainId: String,
+        signer: TangemSigner,
+        walletModelProvider: WalletConnectWalletModelProvider
     ) async throws -> RPCResult {
-        let handler = try getHandler(for: request, blockchain: blockchain)
+        let handler = try getHandler(for: request, blockchainId: blockchainId, signer: signer, walletModelProvider: walletModelProvider)
 
         let selectedAction = await uiDelegate.getResponseFromUser(with: WalletConnectAsyncUIRequest(
             event: handler.event,

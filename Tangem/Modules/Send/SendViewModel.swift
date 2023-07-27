@@ -78,7 +78,7 @@ class SendViewModel: ObservableObject {
     }
 
     var isFiatConvertingAvailable: Bool {
-        !isSellingCrypto && walletModel.getFiat(for: amountToSend, roundingType: .defaultFiat(roundingMode: .down)) != nil
+        !isSellingCrypto && getFiat(for: amountToSend, roundingType: .defaultFiat(roundingMode: .down)) != nil
     }
 
     @Published var isNetworkFeeBlockOpen: Bool = false
@@ -131,7 +131,7 @@ class SendViewModel: ObservableObject {
 
     var walletTotalBalanceDecimals: String {
         let amount = walletModel.wallet.amounts[amountToSend.type]
-        return isFiatCalculation ? walletModel.getFiat(for: amount, roundingType: .defaultFiat(roundingMode: .down))?.description ?? ""
+        return isFiatCalculation ? getFiat(for: amount, roundingType: .defaultFiat(roundingMode: .down))?.description ?? ""
             : amount?.value.description ?? ""
     }
 
@@ -204,7 +204,7 @@ class SendViewModel: ObservableObject {
 
     private func getDescription(for amount: Amount?) -> String {
         if isFiatCalculation {
-            return walletModel.getFiatFormatted(for: amount, roundingType: .defaultFiat(roundingMode: .down)) ?? ""
+            return getFiatFormatted(for: amount, roundingType: .defaultFiat(roundingMode: .down)) ?? ""
         }
 
         return amount?.description ?? ""
@@ -266,16 +266,13 @@ class SendViewModel: ObservableObject {
                     return
                 }
 
-                if let converted = value ? walletModel.getFiat(for: decimals, roundingType: .defaultFiat(roundingMode: .down))
-                    : walletModel.getCrypto(for: Amount(with: amountToSend, value: decimals)) {
+                let amount = Amount(with: amountToSend, value: decimals)
+                if let converted = value ? getFiat(for: amount, roundingType: .defaultFiat(roundingMode: .down))
+                    : getCrypto(for: amount) {
                     amountText = converted.description
                 } else {
                     amountText = "0"
                 }
-
-//                self.amountText = value ? self.walletModel.getFiat(for: self.amountToSend)?.description
-//                    ?? ""
-//                    : self.valida.value.description
             }
             .store(in: &bag)
 
@@ -287,14 +284,6 @@ class SendViewModel: ObservableObject {
             .removeDuplicates(by: { prev, current in
                 prev.0 == current.0
             })
-//            .filter {[unowned self] (string, isFiat) -> Bool in
-//                if isFiat,
-//                   let fiat = self.walletModel.getFiat(for: self.amountToSend)?.description,
-//                   string == fiat {
-//                    return false //prevent cross-convert after max amount tap
-//                }
-//                return true
-//            }
             .sink { [unowned self] newAmountString, isFiat in
                 guard
                     let decimals = Decimal(string: newAmountString.replacingOccurrences(of: ",", with: ".")),
@@ -305,7 +294,7 @@ class SendViewModel: ObservableObject {
                     return
                 }
 
-                let newAmountValue = isFiat ? walletModel.getCrypto(for: Amount(with: amountToSend, value: decimals)) ?? 0 : decimals
+                let newAmountValue = isFiat ? getCrypto(for: Amount(with: amountToSend, value: decimals)) ?? 0 : decimals
                 let newAmount = Amount(with: amountToSend, value: newAmountValue)
 
                 do {
@@ -562,7 +551,7 @@ class SendViewModel: ObservableObject {
 
                 let newAmountValue: Decimal?
                 if self.isFiatCalculation {
-                    newAmountValue = self.walletModel.getFiat(for: newAmount, roundingType: .defaultFiat(roundingMode: .down))
+                    newAmountValue = self.getFiat(for: newAmount, roundingType: .defaultFiat(roundingMode: .down))
                 } else {
                     newAmountValue = newAmount.value
                 }
@@ -764,7 +753,7 @@ private extension SendViewModel {
         )
 
         if isFiatCalculation {
-            sendAmount = walletModel.getFiatFormatted(for: transaction.amount, roundingType: .defaultFiat(roundingMode: .plain)) ?? ""
+            sendAmount = getFiatFormatted(for: transaction.amount, roundingType: .defaultFiat(roundingMode: .plain)) ?? ""
             sendTotal = totalInFiatFormatted.total
 
             if transaction.amount.type == transaction.fee.amount.type {
@@ -793,9 +782,9 @@ private extension SendViewModel {
     }
 
     func totalAndFeeInFiatFormatted(from transaction: BlockchainSdk.Transaction, currencyCode: String) -> (total: String, fee: String) {
-        guard let famount = walletModel.getFiat(for: transaction.amount, roundingType: .shortestFraction(roundingMode: .plain)),
-              let ffee = walletModel.getFiat(for: transaction.fee.amount, roundingType: .shortestFraction(roundingMode: .plain)),
-              let feeFormatted = walletModel.getFiatFormatted(for: transaction.fee.amount, roundingType: .shortestFraction(roundingMode: .plain)) else {
+        guard let famount = getFiat(for: transaction.amount, roundingType: .shortestFraction(roundingMode: .plain)),
+              let ffee = getFiat(for: transaction.fee.amount, roundingType: .shortestFraction(roundingMode: .plain)),
+              let feeFormatted = getFiatFormatted(for: transaction.fee.amount, roundingType: .shortestFraction(roundingMode: .plain)) else {
             return (total: "", fee: "")
         }
 
@@ -814,7 +803,7 @@ private extension SendViewModel {
         let formatted: String
 
         if isFiatCalculation {
-            formatted = walletModel.getFiatFormatted(for: amount, roundingType: .defaultFiat(roundingMode: .plain)) ?? ""
+            formatted = getFiatFormatted(for: amount, roundingType: .defaultFiat(roundingMode: .plain)) ?? ""
         } else {
             formatted = amount.description
         }
@@ -824,6 +813,39 @@ private extension SendViewModel {
         }
 
         return formatted
+    }
+
+    func getFiatFormatted(for amount: Amount?, roundingType: AmountRoundingType) -> String? {
+        return getFiat(for: amount, roundingType: roundingType)?.currencyFormatted(code: AppSettings.shared.selectedCurrencyCode)
+    }
+
+    func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
+        if let amount = amount {
+            let currencyId = amount.type.token?.id ?? blockchainNetwork.blockchain.currencyId
+            guard let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId) else {
+                return nil
+            }
+
+            if fiatValue == 0 {
+                return 0
+            }
+
+            switch roundingType {
+            case .shortestFraction(let roundingMode):
+                return SignificantFractionDigitRounder(roundingMode: roundingMode).round(value: fiatValue)
+            case .default(let roundingMode, let scale):
+                return max(fiatValue, Decimal(1) / pow(10, scale)).rounded(scale: scale, roundingMode: roundingMode)
+            }
+        }
+        return nil
+    }
+
+    func getCrypto(for amount: Amount?) -> Decimal? {
+        guard let amount = amount else { return nil }
+
+        return BalanceConverter()
+            .convertFromFiat(value: amount.value, to: amount.currencySymbol)?
+            .rounded(scale: amount.decimals)
     }
 
     func showLoadingFeeErrorAlert(error: Error) {

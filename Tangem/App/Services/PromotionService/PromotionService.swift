@@ -20,7 +20,10 @@ class PromotionService {
 
     let currentProgramName = "1inch"
     private let promoCodeStorageKey = "promo_code"
-    private let finishedPromotionNamesStorageKey = "finished_promotion_names"
+
+    // "491" -- hack to reset the storage in 4.9.1 due to the change in the way we record finished promotions.
+    // Worst case the users will send one more network request per device.
+    private let finishedPromotionNamesStorageKey = "finished_promotion_names_491"
     private let awardedPromotionNamesStorageKey = "awarded_promotion_names"
 
     var awardAmount: Int?
@@ -73,16 +76,30 @@ extension PromotionService: PromotionServiceProtocol {
                 let promotionActive = (cardParameters.status == .active)
                 let alreadyClaimedAward = await alreadyClaimedAward(userWalletId: userWalletId)
 
-                let canClaimAwardBasedOnWalletPurchase: Bool
+                let madePurchase: Bool
+                let madePromotionalPurchase: Bool
                 if let promoCode, let userWalletId {
-                    canClaimAwardBasedOnWalletPurchase = await hasPurchaseForPromoCode(promoCode, userWalletId: userWalletId)
+                    // New user
+                    // Only able to claim the reward AFTER they made a purchase
+                    // Regardless of whether or not promotion has finished or not
+                    let hasPromoCodePurchase = await hasPurchaseForPromoCode(promoCode, userWalletId: userWalletId)
+
+                    madePurchase = hasPromoCodePurchase
+                    madePromotionalPurchase = hasPromoCodePurchase
                 } else {
-                    canClaimAwardBasedOnWalletPurchase = true
+                    // Old user
+                    // They have already made the purchase, albeit not as part of the promotion
+                    // Thus they can only claim while the promotion lasts
+                    madePurchase = true
+                    madePromotionalPurchase = false
                 }
 
-                promotionAvailable = promotionActive && !alreadyClaimedAward && canClaimAwardBasedOnWalletPurchase
+                promotionAvailable = (promotionActive || madePromotionalPurchase) && !alreadyClaimedAward && madePurchase
 
-                if cardParameters.status == .finished {
+                // Only mark the promotion as finished when we know the UserWallet ID and we know it's the old user (no promocode)
+                // This is done to prolong the promotion for new users who went through the promotion but did not buy the wallet yet
+                // We're going to wait for them to claim the reward
+                if cardParameters.status == .finished, userWalletId != nil, promoCode == nil || currentPromotionIsAwarded() {
                     markCurrentPromotionAsFinished(true)
                 }
 
@@ -254,6 +271,10 @@ extension PromotionService {
             // We only care about promotionCodeNotApplied error but it does not make sense to treat other errors differently
             return false
         }
+    }
+
+    private func currentPromotionIsAwarded() -> Bool {
+        awardedPromotionNames().contains(currentProgramName)
     }
 
     private func currentPromotionIsFinished() -> Bool {

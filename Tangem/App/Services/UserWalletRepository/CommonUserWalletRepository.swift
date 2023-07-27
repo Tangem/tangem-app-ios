@@ -13,7 +13,7 @@ import TangemSdk
 
 class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
-    @Injected(\.walletConnectService) private var walletConnectServiceProvider: WalletConnectService
+    @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
 
@@ -38,10 +38,9 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private(set) var models = [UserWalletModel]()
+    private(set) var userWallets: [UserWallet] = []
 
     var isLocked: Bool { userWallets.contains { $0.isLocked } }
-
-    private var userWallets: [UserWallet] = []
 
     private var encryptionKeyByUserWalletId: [Data: SymmetricKey] = [:]
 
@@ -295,7 +294,6 @@ class CommonUserWalletRepository: UserWalletRepository {
             self?.selectedUserWalletId = userWallet.userWalletId
             AppSettings.shared.selectedUserWalletId = userWallet.userWalletId
             self?.initializeServicesForSelectedModel()
-            self?.selectedModel?.initialUpdate()
             self?.sendEvent(.selected(userWallet: userWallet, reason: reason))
         }
 
@@ -348,6 +346,7 @@ class CommonUserWalletRepository: UserWalletRepository {
             }
         }
 
+        walletConnectService.disconnectAllSessionsForUserWallet(with: userWalletId.toHexString())
         sendEvent(.deleted(userWalletId: userWalletId))
     }
 
@@ -376,7 +375,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         analyticsContext.setupContext(with: contextData)
         tangemApiService.setAuthData(cardInfo.card.tangemApiAuthData)
-        walletConnectServiceProvider.initialize(with: cardModel)
+        walletConnectService.initialize(with: cardModel)
     }
 
     private func clearUserWallets() {
@@ -395,7 +394,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     // TODO: refactor
     private func resetServices() {
-        walletConnectServiceProvider.reset()
+        walletConnectService.reset()
         analyticsContext.clearContext()
     }
 
@@ -419,7 +418,6 @@ class CommonUserWalletRepository: UserWalletRepository {
                     self.userWallets = self.savedUserWallets(withSensitiveData: true)
                     self.loadModels()
                     self.initializeServicesForSelectedModel()
-                    self.selectedModel?.initialUpdate()
 
                     if let selectedModel = self.selectedModel {
                         if keys.count == self.userWallets.count {
@@ -447,11 +445,10 @@ class CommonUserWalletRepository: UserWalletRepository {
                     return
                 }
 
-                // begin update if scan from stories
                 if !AppSettings.shared.saveUserWallets {
-                    if case .success(let cardModel) = result {
-                        cardModel.initialUpdate()
-                    }
+                    userWallets = [cardModel.userWallet]
+                    models = [cardModel]
+                    selectedUserWalletId = cardModel.userWalletId.value
                     completion(result)
                     return
                 }
@@ -494,7 +491,6 @@ class CommonUserWalletRepository: UserWalletRepository {
 
                 setSelectedUserWalletId(savedUserWallet.userWalletId, reason: .userSelected)
                 initializeServicesForSelectedModel()
-                selectedModel?.initialUpdate()
 
                 sendEvent(.updated(userWalletModel: cardModel))
 

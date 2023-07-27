@@ -117,6 +117,7 @@ extension WelcomeViewModel {
     }
 
     func openPromotion() {
+        Analytics.log(.introductionProcessLearn)
         coordinator.openPromotion()
     }
 

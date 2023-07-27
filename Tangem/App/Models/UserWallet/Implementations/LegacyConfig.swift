@@ -71,9 +71,7 @@ extension LegacyConfig: UserWalletConfig {
 
     var supportedBlockchains: Set<Blockchain> {
         if isMultiwallet || defaultBlockchain == nil {
-            let allBlockchains = AppEnvironment.current.isTestnet ? Blockchain.supportedTestnetBlockchains
-                : Blockchain.supportedBlockchains
-
+            let allBlockchains = SupportedBlockchains(version: .v1).blockchains()
             return allBlockchains.filter { card.walletCurves.contains($0.curve) }
         } else {
             return [defaultBlockchain!]

@@ -15,21 +15,21 @@ struct BalanceFormatter {
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
     /// - Parameters:
     ///   - value: Balance that should be rounded and formated
+    ///   - currencyCode: Code to be used
     ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string
-    func formatCryptoBalance(_ value: Decimal, formattingOptions: BalanceFormattingOptions) -> String {
-        let symbol = formattingOptions.currencyCode
+    func formatCryptoBalance(_ value: Decimal, currencyCode: String, formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions) -> String {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
-        formatter.currencySymbol = symbol
+        formatter.currencySymbol = currencyCode
         formatter.alwaysShowsDecimalSeparator = true
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
         let valueToFormat = roundDecimal(value, with: formattingOptions.roundingType)
-        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(symbol)"
+        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
     }
 
     /// Format fiat balance using `BalanceFormattingOptions`
@@ -38,12 +38,12 @@ struct BalanceFormatter {
     ///   - value: Balance that should be rounded and formated
     ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string
-    func formatFiatBalance(_ value: Decimal?, formattingOptions: BalanceFormattingOptions) -> String {
+    func formatFiatBalance(_ value: Decimal?, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
         guard let balance = value else {
             return Self.defaultEmptyBalanceString
         }
 
-        let code = formattingOptions.currencyCode
+        let code = AppSettings.shared.selectedCurrencyCode
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.numberStyle = .currency

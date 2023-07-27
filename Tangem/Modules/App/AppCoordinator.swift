@@ -17,6 +17,7 @@ class AppCoordinator: CoordinatorObject {
     // MARK: - Injected
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
 
     // MARK: - Child coordinators
 
@@ -31,6 +32,7 @@ class AppCoordinator: CoordinatorObject {
     init() {
         // We can't move it into ServicesManager because of locked keychain during preheating
         userWalletRepository.initialize()
+        walletConnectSessionStorageInitializer.initialize()
         bind()
     }
 

@@ -58,8 +58,14 @@ class WalletModel {
         }
     }
 
+    var balanceValue: Decimal? {
+        wallet.amounts[amountType]?.value
+    }
+
     var balance: String {
-        wallet.amounts[amountType].map { $0.string(with: Constants.defaultCryptoRounding) } ?? ""
+        guard let balanceValue else { return "" }
+
+        return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
     }
 
     var isZeroAmount: Bool {
@@ -67,19 +73,22 @@ class WalletModel {
     }
 
     var fiatBalance: String {
-        let amount = wallet.amounts[amountType] ?? Amount(with: wallet.blockchain, type: amountType, value: .zero)
-        return getFiatFormatted(for: amount, roundingType: .defaultFiat(roundingMode: .plain)) ?? "–"
+        formatter.formatFiatBalance(fiatValue)
     }
 
     var fiatValue: Decimal? {
-        getFiat(for: wallet.amounts[amountType], roundingType: .defaultFiat(roundingMode: .plain))
+        guard let balanceValue,
+              let currencyId = tokenItem.currencyId else {
+            return nil
+        }
+
+        return converter.convertToFiat(value: balanceValue, from: currencyId)
     }
 
     var rateFormatted: String {
-        return rate?.currencyFormatted(
-            code: AppSettings.shared.selectedCurrencyCode,
-            maximumFractionDigits: 2
-        ) ?? ""
+        guard let rate else { return "" }
+
+        return formatter.formatFiatBalance(rate, formattingOptions: .defaultFiatFormattingOptions)
     }
 
     var hasPendingTx: Bool {
@@ -107,7 +116,10 @@ class WalletModel {
                 destination: $0.sourceAddress,
                 timeFormatted: "",
                 date: $0.date,
-                transferAmount: $0.amount.string(with: Constants.defaultCryptoRounding),
+                transferAmount: formatter.formatCryptoBalance(
+                    $0.amount.value,
+                    currencyCode: $0.amount.currencySymbol
+                ),
                 transactionType: .receive,
                 status: .inProgress
             )
@@ -121,7 +133,10 @@ class WalletModel {
                 destination: $0.destinationAddress,
                 timeFormatted: "",
                 date: $0.date,
-                transferAmount: $0.amount.string(with: Constants.defaultCryptoRounding),
+                transferAmount: formatter.formatCryptoBalance(
+                    $0.amount.value,
+                    currencyCode: $0.amount.currencySymbol
+                ),
                 transactionType: .send,
                 status: .inProgress
             )
@@ -188,6 +203,9 @@ class WalletModel {
 
         return ratesRepository.rates[currencyId]
     }
+
+    private let converter = BalanceConverter()
+    private let formatter = BalanceFormatter()
 
     deinit {
         AppLog.shared.debug("🗑 WalletModel deinit")
@@ -411,43 +429,6 @@ class WalletModel {
 // MARK: - Helpers
 
 extension WalletModel {
-    func getFiatFormatted(for amount: Amount?, roundingType: AmountRoundingType) -> String? {
-        return getFiat(for: amount, roundingType: roundingType)?.currencyFormatted(code: AppSettings.shared.selectedCurrencyCode)
-    }
-
-    func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
-        if let amount = amount {
-            return getFiat(for: amount.value, roundingType: roundingType)
-        }
-        return nil
-    }
-
-    func getFiat(for value: Decimal, roundingType: AmountRoundingType) -> Decimal? {
-        if let rate {
-            let fiatValue = value * rate
-            if fiatValue == 0 {
-                return 0
-            }
-
-            switch roundingType {
-            case .shortestFraction(let roundingMode):
-                return SignificantFractionDigitRounder(roundingMode: roundingMode).round(value: fiatValue)
-            case .default(let roundingMode, let scale):
-                return max(fiatValue, Decimal(1) / pow(10, scale)).rounded(scale: scale, roundingMode: roundingMode)
-            }
-        }
-        return nil
-    }
-
-    func getCrypto(for amount: Amount?) -> Decimal? {
-        guard let amount = amount else { return nil }
-
-        if let rate {
-            return (amount.value / rate).rounded(scale: amount.decimals)
-        }
-        return nil
-    }
-
     func displayAddress(for index: Int) -> String {
         wallet.addresses[index].value
     }
@@ -768,11 +749,5 @@ extension WalletModel {
 
     var ethereumTransactionProcessor: EthereumTransactionProcessor? {
         walletManager as? EthereumTransactionProcessor
-    }
-}
-
-private extension WalletModel {
-    enum Constants {
-        static let defaultCryptoRounding = 8
     }
 }

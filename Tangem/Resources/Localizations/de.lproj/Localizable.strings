@@ -181,7 +181,7 @@
 "main_no_backup_warning_title" = "Your wallet has not been backed up";
 "main_page_balance" = "Total balance";
 "main_processing_full_amount" = "Der Betrag enthält nicht einige Ihrer Mittel";
-"main_promotion_credited" = "1INCH tokens will be credited to your %@ wallet address within 24 hours";
+"main_promotion_credited" = "1INCH tokens will be credited to your %@ wallet address within 48 hours";
 "main_scan_card_warning_view_subtitle" = "To access all the networks you need to scan the card";
 "main_scan_card_warning_view_title" = "Scan your card";
 "main_tokens" = "Tokens";
@@ -336,7 +336,6 @@
 "shop_other_payment_methods" = "Other payment methods";
 "shop_placing_order" = "Placing your order";
 "shop_pre_order_now" = "Pre-order now";
-"shop_sold_out_description" = "Due to the high volume of orders we are receiving shipping may be delayed up to 5 weeks depending on your location";
 "shop_total" = "Total";
 "shop_web_checkout_title" = "Your order";
 "solana_rent_warning" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
