@@ -28,7 +28,7 @@ struct ReferralView: View {
                                     Color.clear,
                                 ],
                                 center: .bottom,
-                                startRadius: 0.50 * (geometry.size.width - 2 * dudePadding),
+                                startRadius: 0.30 * (geometry.size.width - 2 * dudePadding),
                                 endRadius: 0.65 * (geometry.size.width - 2 * dudePadding)
                             )
                             .cornerRadiusContinuous(14)
