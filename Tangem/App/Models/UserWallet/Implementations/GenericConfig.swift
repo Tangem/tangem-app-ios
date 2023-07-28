@@ -87,6 +87,11 @@ extension GenericConfig: UserWalletConfig {
         return nil
     }
 
+    var canSkipBackup: Bool {
+        // Shiba cards have new firmware, but old config, except backup skipping.
+        card.firmwareVersion < .keysImportAvailable
+    }
+
     var warningEvents: [WarningEvent] {
         var warnings = WarningEventsFactory().makeWarningEvents(for: card)
 

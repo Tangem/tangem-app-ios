@@ -32,7 +32,7 @@ struct UserWalletConfigFactory {
 
             if isDemo {
                 return GenericDemoConfig(card: cardInfo.card)
-            } else if cardInfo.card.firmwareVersion >= .keysImportAvailable {
+            } else if cardInfo.card.firmwareVersion >= FirmwareVersion(major: 6, minor: 29) { // TODO: Set new version from TangemSdk when available
                 return Wallet2Config(card: cardInfo.card)
             } else {
                 return GenericConfig(card: cardInfo.card)

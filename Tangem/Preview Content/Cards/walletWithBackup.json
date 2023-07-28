@@ -33,7 +33,12 @@
         
         "isSelectBlockchainAllowed" : true,
         "isHDWalletAllowed" : true,
-        "isSettingPasscodeAllowed" : true
+        "isSettingPasscodeAllowed" : true,
+
+        "isPermanentWallet": false,
+        "isOverwritingIssuerExtraDataRestricted": true,
+        "isIssuerDataProtectedAgainstReplay": true,
+        "isSelectBlockchainAllowed": true
     },
     "issuer" : {
         "name" : "TANGEM AG",

@@ -109,7 +109,7 @@ enum PreviewCard {
         case .tangemWalletBackuped:
             return .walletWithBackup
         default:
-            return .card
+            return .walletV2
         }
     }
 }

@@ -1,0 +1,72 @@
+{
+    "isAccessCodeSet" : false,
+    "linkedTerminalStatus" : "none",
+    "cardPublicKey" : "047BB767B8251E8801BAF9D523A2C8A4706E330ECE53859DBD1B72910B0EF89993420EDAA92F167CB21D53029ECBE0B1604DA9118552BD7B10E1F6150D46C2116D",
+    "settings" : {
+        "maxWalletsCount" : 1,
+        "isRemovingUserCodesAllowed" : true,
+        "isLinkedTerminalEnabled" : true,
+        "isFilesAllowed" : true,
+        "supportedEncryptionModes" : [
+            "strong",
+            "fast",
+            "none"
+        ],
+        "securityDelay" : 15000,
+        "isBackupAllowed" : false,
+        "isSettingAccessCodeAllowed" : true,
+        "isHDWalletAllowed" : false,
+        "isKeysImportAllowed" : false,
+        "isSettingPasscodeAllowed" : true,
+        "isPermanentWallet": false,
+        "isOverwritingIssuerExtraDataRestricted": true,
+        "isIssuerDataProtectedAgainstReplay": true,
+        "isSelectBlockchainAllowed": true
+    },
+    "supportedCurves" : [
+        "secp256k1"
+    ],
+    "issuer" : {
+        "name" : "TANGEM",
+        "publicKey" : "048196AA4B410AC44A3B9CCE18E7BE226AEA070ACC83A9CF67540FAC49AF25129F6A538A28AD6341358E3C4F9963064F7E365372A651D374E5C23CDD37FD099BF2"
+    },
+    "firmwareVersion" : {
+        "minor" : 29,
+        "patch" : 0,
+        "major" : 3,
+        "stringValue" : "3.29r",
+        "type" : "r"
+    },
+    "batchId" : "0073",
+    "isPasscodeSet" : false,
+    "manufacturer" : {
+        "name" : "TANGEM",
+        "manufactureDate" : "2020-12-01",
+        "signature" : "CE8FE9529CF65FA5709EE99FA60CEF51303DD119E4B6992EDFC615A0F5EF5A2DD6725D5BC111109ACDC1EA53EB5077DC7463D257926CA0F3F1E95FD387FD95C6"
+    },
+    "attestation" : {
+        "cardKeyAttestation" : "verified",
+        "walletKeysAttestation" : "skipped",
+        "firmwareAttestation" : "skipped",
+        "cardUniquenessAttestation" : "skipped"
+    },
+    "cardId" : "CB61000000001264",
+    "wallets" : [
+        {
+            "totalSignedHashes" : 1,
+            "isImported" : false,
+            "hasBackup" : false,
+            "remainingSignatures" : 999999,
+            "derivedKeys" : { },
+            "curve" : "secp256k1",
+            "publicKey" : "0431FE457291E91331DFD93FE55075B7E630FCB8BDBA4B8C50B02B542918BA838BD8A0B3374E322D8CB46C40088AC004BF4146EBB2061D62DE489D1407B86848D1",
+            "settings" : {
+                "isPermanent" : false
+            },
+            "index" : 0
+        }
+    ],
+    "userSettings" : {
+        "isUserCodeRecoveryAllowed" : false
+    }
+}

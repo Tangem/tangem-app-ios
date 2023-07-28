@@ -13,10 +13,45 @@ extension Card {
         Bundle.main.url(forResource: "walletWithBackup", withExtension: "json")!
     }
 
+    private static var walletV2URL: URL {
+        Bundle.main.url(forResource: "walletV2", withExtension: "json")!
+    }
+
+    private static var twinURL: URL {
+        Bundle.main.url(forResource: "twinCard", withExtension: "json")!
+    }
+
+    private static var xrpNoteURL: URL {
+        Bundle.main.url(forResource: "xrpNote", withExtension: "json")!
+    }
+
     static var walletWithBackup: Card {
-        let dataStr = try! String(contentsOf: walletWithBackupUrl)
+        return decodeFromURL(walletWithBackupUrl)!
+    }
+
+    static var walletV2: Card {
+        return decodeFromURL(walletV2URL)!
+    }
+
+    static var twin: Card {
+        return decodeFromURL(twinURL)!
+    }
+
+    static var xrpNote: Card {
+        return decodeFromURL(xrpNoteURL)!
+    }
+
+    private static func decodeFromURL(_ url: URL) -> Card? {
+        print("Attempt to decode file at url: \(url)")
+        let dataStr = try! String(contentsOf: url)
         let decoder = JSONDecoder.tangemSdkDecoder
         decoder.keyDecodingStrategy = .useDefaultKeys
-        return try! decoder.decode(Card.self, from: dataStr.data(using: .utf8)!)
+        do {
+            print(dataStr)
+            return try decoder.decode(Card.self, from: dataStr.data(using: .utf8)!)
+        } catch {
+            print("Failed to decode card. Reason: \(error)")
+        }
+        return nil
     }
 }
