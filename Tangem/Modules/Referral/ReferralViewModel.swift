@@ -113,7 +113,7 @@ class ReferralViewModel: ObservableObject {
             let referralProgramInfo: ReferralProgramInfo? = try await runInTask { [weak self] in
                 guard let self else { return nil }
 
-                return try await tangemApiService.loadReferralProgramInfo(for: userWalletId.hexString, expectedAwardsLimit: expectedAwardsLimit)
+                return try await tangemApiService.loadReferralProgramInfo(for: userWalletId.hexString, expectedAwardsLimit: expectedAwardsFetchLimit)
             }
             self.referralProgramInfo = referralProgramInfo
         } catch {
