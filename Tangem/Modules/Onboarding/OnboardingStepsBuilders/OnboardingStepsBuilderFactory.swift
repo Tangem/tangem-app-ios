@@ -20,7 +20,13 @@ protocol WalletOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, Car
 extension UserWalletConfig where Self: WalletOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
         return WalletOnboardingStepsBuilder(
-            card: card,
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
+            isBackupAllowed: card.settings.isBackupAllowed,
+            isKeysImportAllowed: canImportKeys,
+            canBackup: card.backupStatus?.canBackup ?? false,
+            hasBackup: card.backupStatus?.isActive ?? false,
+            canSkipBackup: canSkipBackup,
             touId: tou.id,
             backupService: backupService
         )
@@ -34,7 +40,8 @@ protocol SingleCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory,
 extension UserWalletConfig where Self: SingleCardOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
         return SingleCardOnboardingStepsBuilder(
-            card: card,
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
             touId: tou.id
         )
     }
@@ -47,7 +54,8 @@ protocol NoteCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, C
 extension UserWalletConfig where Self: NoteCardOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
         return NoteOnboardingStepsBuilder(
-            card: card,
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
             touId: tou.id
         )
     }

@@ -30,6 +30,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
     var warningEvents: [WarningEvent] { get }
 
     var canSkipBackup: Bool { get }
+
+    var canImportKeys: Bool { get }
     /// All blockchains supported by this user wallet.
     var supportedBlockchains: Set<Blockchain> { get }
 
@@ -71,6 +73,10 @@ extension UserWalletConfig {
 
     var canSkipBackup: Bool {
         true
+    }
+
+    var canImportKeys: Bool {
+        false
     }
 
     var derivationStyle: DerivationStyle? {

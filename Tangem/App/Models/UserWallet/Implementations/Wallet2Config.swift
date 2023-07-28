@@ -59,6 +59,10 @@ extension Wallet2Config: UserWalletConfig {
         return false
     }
 
+    var canImportKeys: Bool {
+        card.settings.isKeysImportAllowed && FeatureProvider.isAvailable(.importSeedPhrase)
+    }
+
     var supportedBlockchains: Set<Blockchain> {
         let allBlockchains = SupportedBlockchains(version: .v2).blockchains()
         return allBlockchains.filter { card.walletCurves.contains($0.curve) }

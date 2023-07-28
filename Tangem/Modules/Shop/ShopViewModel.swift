@@ -126,12 +126,18 @@ class ShopViewModel: ObservableObject {
 
         shopifyService
             .products(collectionTitleFilter: nil)
-            .sink { completion in
-
-            } receiveValue: { [weak self] collections in
+            .sink { [weak self] completion in
                 guard let self = self else { return }
 
+                if case .failure(let error) = completion {
+                    AppLog.shared.debug("Failed to load shopify products")
+                    AppLog.shared.error(error)
+                    self.error = AppError.serverUnavailable.alertBinder
+                }
+
                 loadingProducts = false
+            } receiveValue: { [weak self] collections in
+                guard let self = self else { return }
 
                 // There can be multiple variants with the same SKU and the same ID along multiple products.
                 let allVariants: [ProductVariant] = collections.reduce([]) { partialResult, collection in
@@ -198,6 +204,8 @@ class ShopViewModel: ObservableObject {
             showingThirdCard = (bundle == .threeCards)
         }
 
+        updateCurrentProductSalesDetails(bundle)
+
         let sku = bundle.sku
         guard let variant = shopifyProductVariants.first(where: {
             $0.sku == sku
@@ -208,7 +216,6 @@ class ShopViewModel: ObservableObject {
         currentVariantID = variant.id
         updatePrice()
         createCheckouts()
-        updateCurrentProductSalesDetails(bundle)
     }
 
     private func didCloseWebCheckout() {

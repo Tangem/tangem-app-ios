@@ -9,8 +9,9 @@
 import Foundation
 import TangemSdk
 
-class TwinOnboardingStepsBulder {
-    private let card: CardDTO
+struct TwinOnboardingStepsBulder {
+    private let cardId: String
+    private let hasWallets: Bool
     private let twinData: TwinData
     private let touId: String
 
@@ -24,8 +25,9 @@ class TwinOnboardingStepsBulder {
         return [.saveUserWallet]
     }
 
-    init(card: CardDTO, twinData: TwinData, touId: String) {
-        self.card = card
+    init(cardId: String, hasWallets: Bool, twinData: TwinData, touId: String) {
+        self.cardId = cardId
+        self.hasWallets = hasWallets
         self.twinData = twinData
         self.touId = touId
     }
@@ -45,7 +47,7 @@ extension TwinOnboardingStepsBulder: OnboardingStepsBuilder {
             steps.append(.intro(pairNumber: "#\(twinPairNumber)"))
         }
 
-        if card.wallets.isEmpty { // twin without created wallet. Start onboarding
+        if !hasWallets { // twin without created wallet. Start onboarding
             steps.append(contentsOf: TwinsOnboardingStep.twinningProcessSteps)
             steps.append(contentsOf: userWalletSavingSteps)
             steps.append(contentsOf: TwinsOnboardingStep.topupSteps)
@@ -57,7 +59,7 @@ extension TwinOnboardingStepsBulder: OnboardingStepsBuilder {
                 steps.append(contentsOf: TwinsOnboardingStep.topupSteps)
                 return .twins(steps)
             } else { // is twinned
-                if AppSettings.shared.cardsStartedActivation.contains(card.cardId) { // card is in onboarding process, go to topup
+                if AppSettings.shared.cardsStartedActivation.contains(cardId) { // card is in onboarding process, go to topup
                     steps.append(contentsOf: userWalletSavingSteps)
                     steps.append(contentsOf: TwinsOnboardingStep.topupSteps)
                     return .twins(steps)

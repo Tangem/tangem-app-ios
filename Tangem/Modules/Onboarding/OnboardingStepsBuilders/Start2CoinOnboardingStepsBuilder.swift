@@ -9,8 +9,8 @@
 import Foundation
 import TangemSdk
 
-class Start2CoinOnboardingStepsBuilder {
-    private let card: CardDTO
+struct Start2CoinOnboardingStepsBuilder {
+    private let hasWallets: Bool
     private let touId: String
 
     private var userWalletSavingSteps: [SingleCardOnboardingStep] {
@@ -23,8 +23,8 @@ class Start2CoinOnboardingStepsBuilder {
         return [.saveUserWallet]
     }
 
-    init(card: CardDTO, touId: String) {
-        self.card = card
+    init(hasWallets: Bool, touId: String) {
+        self.hasWallets = hasWallets
         self.touId = touId
     }
 }
@@ -37,10 +37,10 @@ extension Start2CoinOnboardingStepsBuilder: OnboardingStepsBuilder {
             steps.append(.disclaimer)
         }
 
-        if card.wallets.isEmpty {
-            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
-        } else {
+        if hasWallets {
             steps.append(contentsOf: userWalletSavingSteps)
+        } else {
+            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
         }
 
         return .singleWallet(steps)

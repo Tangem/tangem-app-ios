@@ -9,8 +9,9 @@
 import Foundation
 import TangemSdk
 
-class SingleCardOnboardingStepsBuilder {
-    private let card: CardDTO
+struct SingleCardOnboardingStepsBuilder {
+    private let cardId: String
+    private let hasWallets: Bool
     private let touId: String
 
     private var userWalletSavingSteps: [SingleCardOnboardingStep] {
@@ -23,8 +24,9 @@ class SingleCardOnboardingStepsBuilder {
         return [.saveUserWallet]
     }
 
-    init(card: CardDTO, touId: String) {
-        self.card = card
+    init(cardId: String, hasWallets: Bool, touId: String) {
+        self.cardId = cardId
+        self.hasWallets = hasWallets
         self.touId = touId
     }
 }
@@ -37,14 +39,14 @@ extension SingleCardOnboardingStepsBuilder: OnboardingStepsBuilder {
             steps.append(.disclaimer)
         }
 
-        if card.wallets.isEmpty {
-            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
-        } else {
-            if !AppSettings.shared.cardsStartedActivation.contains(card.cardId) {
+        if hasWallets {
+            if !AppSettings.shared.cardsStartedActivation.contains(cardId) {
                 steps.append(contentsOf: userWalletSavingSteps)
             } else {
                 steps.append(contentsOf: userWalletSavingSteps + [.success])
             }
+        } else {
+            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
         }
 
         return .singleWallet(steps)

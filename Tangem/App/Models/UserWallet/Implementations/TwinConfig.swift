@@ -159,7 +159,12 @@ extension TwinConfig: UserWalletConfig {
     }
 
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return TwinOnboardingStepsBulder(card: card, twinData: twinData, touId: tou.id)
+        return TwinOnboardingStepsBulder(
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
+            twinData: twinData,
+            touId: tou.id
+        )
     }
 
     func makeTangemSdk() -> TangemSdk {
