@@ -32,11 +32,11 @@ enum FeatureProvider {
     /// Return `true` if the feature is should be released or has already been released in current app version
     static func isAvailableForReleaseVersion(_ feature: Feature) -> Bool {
         guard let appVersion: String = InfoDictionaryUtils.version.value(),
-              let releaseVersion = feature.releaseVersion.version,
-              appVersion >= releaseVersion else {
+              let releaseVersion = feature.releaseVersion.version else {
             return false
         }
 
-        return true
+        let comparisonResult = appVersion.compare(releaseVersion, options: .numeric)
+        return comparisonResult == .orderedDescending || comparisonResult == .orderedSame
     }
 }

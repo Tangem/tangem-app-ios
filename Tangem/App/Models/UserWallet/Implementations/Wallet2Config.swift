@@ -74,7 +74,7 @@ extension Wallet2Config: UserWalletConfig {
 
         let entries: [StorageEntry] = blockchains.map {
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
+                let derivationPath = $0.derivationPath(for: derivationStyle)
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
             }
@@ -115,6 +115,10 @@ extension Wallet2Config: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .wallet2
+    }
+
+    var cardHeaderImage: ImageType? {
+        cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

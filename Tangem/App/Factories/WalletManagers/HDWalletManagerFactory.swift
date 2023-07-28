@@ -20,7 +20,8 @@ struct HDWalletManagerFactory: AnyWalletManagerFactory {
             partialResult[cardWallet.curve] = cardWallet.derivedKeys
         }
 
-        let curve = token.blockchainNetwork.blockchain.curve
+        let blockchain = token.blockchainNetwork.blockchain
+        let curve = blockchain.curve
 
         guard let derivationPath = token.blockchainNetwork.derivationPath else {
             throw AnyWalletManagerFactoryError.entryHasNotDerivationPath
@@ -33,13 +34,8 @@ struct HDWalletManagerFactory: AnyWalletManagerFactory {
         }
 
         let factory = WalletManagerFactoryProvider().factory
-
-        let walletManager = try factory.makeWalletManager(
-            blockchain: token.blockchainNetwork.blockchain,
-            seedKey: seedKey,
-            derivedKey: derivedKey,
-            derivation: .custom(derivationPath)
-        )
+        let publicKey = Wallet.PublicKey(seedKey: seedKey, derivation: .init(path: derivationPath, derivedKey: derivedKey))
+        let walletManager = try factory.makeWalletManager(blockchain: blockchain, publicKey: publicKey)
 
         walletManager.addTokens(token.tokens)
         return walletManager

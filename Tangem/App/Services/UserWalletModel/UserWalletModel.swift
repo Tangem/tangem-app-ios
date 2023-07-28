@@ -12,10 +12,13 @@ import Combine
 protocol UserWalletModel: TotalBalanceProviding, AnyObject {
     var isMultiWallet: Bool { get }
     var tokensCount: Int? { get }
+    var cardsCount: Int { get }
     var userWalletId: UserWalletId { get }
     var userWallet: UserWallet { get }
     var walletModelsManager: WalletModelsManager { get }
+    var userTokenListManager: UserTokenListManager { get }
     var signer: TangemSigner { get }
+    var updatePublisher: AnyPublisher<Void, Never> { get }
 
     func initialUpdate()
     func updateWalletName(_ name: String)

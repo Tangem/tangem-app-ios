@@ -37,7 +37,7 @@ struct CommonUserTokensManager {
         }
 
         if let derivationStyle {
-            let derivationPath = blockchain.derivationPaths(for: derivationStyle)[.default]
+            let derivationPath = blockchain.derivationPath(for: derivationStyle)
             return BlockchainNetwork(blockchain, derivationPath: derivationPath)
         }
 

@@ -13,16 +13,21 @@ class UserWalletModelMock: UserWalletModel {
     var signer: TangemSigner = .init(with: nil, sdk: .init())
 
     var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
+    var userTokenListManager: UserTokenListManager { UserTokenListManagerMock() }
 
     var isMultiWallet: Bool { false }
 
     var tokensCount: Int? { 10 }
+
+    var cardsCount: Int { 1 }
 
     var userWalletId: UserWalletId { .init(with: Data()) }
 
     var userWallet: UserWallet {
         UserWallet(userWalletId: Data(), name: "", card: .init(card: .walletWithBackup), associatedCardIds: [], walletData: .none, artwork: nil, isHDWalletAllowed: false)
     }
+
+    var updatePublisher: AnyPublisher<Void, Never> { .just }
 
     func initialUpdate() {}
     func updateWalletName(_ name: String) {}

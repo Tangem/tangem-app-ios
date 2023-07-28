@@ -87,6 +87,10 @@ extension TwinConfig: UserWalletConfig {
         .twin
     }
 
+    var cardHeaderImage: ImageType? {
+        Assets.Cards.twin
+    }
+
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
         switch feature {
         case .accessCode:

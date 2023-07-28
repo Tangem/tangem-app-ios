@@ -67,7 +67,7 @@ extension GenericDemoConfig: UserWalletConfig {
 
         let entries: [StorageEntry] = blockchains.map {
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
+                let derivationPath = $0.derivationPath(for: derivationStyle)
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
             }
@@ -84,7 +84,7 @@ extension GenericDemoConfig: UserWalletConfig {
 
         let entries: [StorageEntry] = blockchains.map {
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPaths(for: derivationStyle)[.default]
+                let derivationPath = $0.derivationPath(for: derivationStyle)
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
             }
@@ -124,6 +124,10 @@ extension GenericDemoConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         card.firmwareVersion.doubleValue >= 4.39 ? .demoWallet : .other
+    }
+
+    var cardHeaderImage: ImageType? {
+        Assets.Cards.wallet
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

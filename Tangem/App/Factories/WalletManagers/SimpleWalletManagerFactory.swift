@@ -18,11 +18,8 @@ struct SimpleWalletManagerFactory: AnyWalletManagerFactory {
         }
 
         let factory = WalletManagerFactoryProvider().factory
-
-        let walletManager = try factory.makeWalletManager(
-            blockchain: blockchain,
-            walletPublicKey: walletPublicKey
-        )
+        let publicKey = Wallet.PublicKey(seedKey: walletPublicKey, derivation: .none)
+        let walletManager = try factory.makeWalletManager(blockchain: blockchain, publicKey: publicKey)
 
         walletManager.addTokens(token.tokens)
         return walletManager

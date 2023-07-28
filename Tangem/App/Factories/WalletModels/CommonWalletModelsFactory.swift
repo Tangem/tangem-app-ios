@@ -22,7 +22,7 @@ struct CommonWalletModelsFactory {
             return true
         }
 
-        let defaultDerivation = blockchain.derivationPaths(for: derivationStyle)[.default]
+        let defaultDerivation = blockchain.derivationPath(for: derivationStyle)
         return derivationPath == defaultDerivation
     }
 }
