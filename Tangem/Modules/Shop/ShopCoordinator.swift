@@ -14,7 +14,7 @@ class ShopCoordinator: CoordinatorObject {
 
     // MARK: - Main view model
 
-    @Published private(set) var shopViewModel: ShopViewModel? = nil
+//    @Published private(set) var shopViewModel: ShopViewModel? = nil
 
     // MARK: - Child view models
 
@@ -36,8 +36,8 @@ class ShopCoordinator: CoordinatorObject {
 
         if let webShopUrl = ShopWebHelper().webShopUrl {
             self.webShopUrl = webShopUrl
-        } else {
-            shopViewModel = ShopViewModel(coordinator: self)
+//        } else {
+//            shopViewModel = ShopViewModel(coordinator: self)
         }
     }
 }
@@ -46,16 +46,18 @@ extension ShopCoordinator {
     struct Options {}
 }
 
-extension ShopCoordinator: ShopViewRoutable {
-    func openWebCheckout(at url: URL) {
-        pushedWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.shopWebCheckoutTitle,
-            addLoadingIndicator: true
-        )
-    }
+/*
+  extension ShopCoordinator: ShopViewRoutable {
+     func openWebCheckout(at url: URL) {
+         pushedWebViewModel = WebViewContainerViewModel(
+             url: url,
+             title: Localization.shopWebCheckoutTitle,
+             addLoadingIndicator: true
+         )
+     }
 
-    func closeWebCheckout() {
-        pushedWebViewModel = nil
-    }
-}
+     func closeWebCheckout() {
+         pushedWebViewModel = nil
+     }
+ }
+  */
