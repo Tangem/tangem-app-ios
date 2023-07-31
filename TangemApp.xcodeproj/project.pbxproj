@@ -1567,7 +1567,6 @@
 		DAC53CF427BE63830027147D /* FinishStoryPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinishStoryPage.swift; sourceTree = "<group>"; };
 		DAC53CF527BE63830027147D /* Web3StoryPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Web3StoryPage.swift; sourceTree = "<group>"; };
 		DAE0F0592A404CCC006074FF /* AwardToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwardToken.swift; sourceTree = "<group>"; };
-		DAE47BA72A77A6760043801D /* Shopify README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Shopify README.txt"; sourceTree = "<group>"; };
 		DAE6F76C2800011400411F45 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		DAF466A599E954AB0543E190 /* Pods-TangemSwapping.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		DAF7D2F62A39BC7D00CC6650 /* ShopDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetails.swift; sourceTree = "<group>"; };
@@ -3746,7 +3745,6 @@
 		DA23788E27B250D3009795A8 /* Shop */ = {
 			isa = PBXGroup;
 			children = (
-				DAE47BA72A77A6760043801D /* Shopify README.txt */,
 				DC66BBEC2859B68100CDF765 /* ShopCoordinator.swift */,
 				DC66BBEE2859B6C700CDF765 /* ShopCoordinatorView.swift */,
 				DA23788F27B250EB009795A8 /* ShopViewModel.swift */,
