@@ -9,14 +9,7 @@
 import Foundation
 
 class ShopWebHelper {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
-
     var webShopUrl: URL? {
-        switch tangemApiService.geoIpRegionCode {
-        case LanguageCode.ru, LanguageCode.by:
-            return URL(string: "https://tangem.com/ru/resellers/")
-        default:
-            return nil
-        }
+        URL(string: "https://buy.tangem.com")
     }
 }

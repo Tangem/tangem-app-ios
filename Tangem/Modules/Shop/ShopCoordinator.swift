@@ -34,7 +34,11 @@ class ShopCoordinator: CoordinatorObject {
     func start(with options: ShopCoordinator.Options = .init()) {
         Analytics.log(.shopScreenOpened)
 
-        webShopUrl = URL(string: "https://buy.tangem.com")
+        if let webShopUrl = ShopWebHelper().webShopUrl {
+            self.webShopUrl = webShopUrl
+        } else {
+            shopViewModel = ShopViewModel(coordinator: self)
+        }
     }
 }
 
