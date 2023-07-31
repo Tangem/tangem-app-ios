@@ -514,6 +514,7 @@
 		DAC53D0027BE63830027147D /* Web3StoryPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC53CF527BE63830027147D /* Web3StoryPage.swift */; };
 		DAE0F05A2A404CCC006074FF /* AwardToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0F0592A404CCC006074FF /* AwardToken.swift */; };
 		DAE47B902A77A38F0043801D /* ShopifyShop.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA23788A27B2488D009795A8 /* ShopifyShop.swift */; };
+		DAE47B912A77A3A70043801D /* ShopWebHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA8F8892888397700F14B9A /* ShopWebHelper.swift */; };
 		DAE6F76D2800011400411F45 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F76C2800011400411F45 /* AppError.swift */; };
 		DAF7D2F72A39BC7D00CC6650 /* ShopDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF7D2F62A39BC7D00CC6650 /* ShopDetails.swift */; };
 		DAFD691627CDEB7F00B36C71 /* CombinedExchangeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFD691527CDEB7F00B36C71 /* CombinedExchangeService.swift */; };
@@ -5895,6 +5896,7 @@
 				5D6784CE25EB92F300149995 /* TestnetTokensRepository.swift in Sources */,
 				DA5CD09A2A25F4F2008FD876 /* PromotionCoordinator.swift in Sources */,
 				EFC46EFE29266982003928E3 /* SendCurrencyViewModel.swift in Sources */,
+				DAE47B912A77A3A70043801D /* ShopWebHelper.swift in Sources */,
 				B0FAD01226BAF35C00F45E88 /* FrameSizeModifier.swift in Sources */,
 				EFA1CFFD29B0E8CE008B24C3 /* SwappingAvailableUtils.swift in Sources */,
 				B05A13A829FBB98700FB511A /* TokenItemInfoProvider.swift in Sources */,
