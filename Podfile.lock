@@ -149,7 +149,6 @@ PODS:
     - CryptoSwift
     - secp256k1.swift
   - Kingfisher (6.3.1)
-  - Mobile-Buy-SDK (7.1.0)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
@@ -258,7 +257,6 @@ DEPENDENCIES:
   - Firebase/Crashlytics
   - HDWalletKit (from `https://github.com/tangem/hdwallet.git`, tag `0.3.12`)
   - Kingfisher (from `https://github.com/onevcat/Kingfisher.git`, branch `version6-xcode13`)
-  - Mobile-Buy-SDK
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-7`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-255`)
@@ -289,7 +287,6 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
-    - Mobile-Buy-SDK
     - Moya
     - nanopb
     - ObjcExceptionBridging
@@ -418,7 +415,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   HDWalletKit: 602ec664633cc6bae1c697e4e17af42efb69bfad
   Kingfisher: 8b783c3d7be73a99b2172a743a5bc0a4dd331d79
-  Mobile-Buy-SDK: 29812838f06cbf78fd80728d9f84e9eaf49c7843
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -452,6 +448,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 77a62fe6bacc05bb10ff20edce75612fa109fd61
   ZendeskSupportSDK: ba72e90e327635b5fde3d023a3de33242a6ee8ab
 
-PODFILE CHECKSUM: 9fc0bbeb417fee108bdcc71555f36861fe0f3c38
+PODFILE CHECKSUM: fa219c1d512d88655ccd4f3ea4c806cb04ff5f6d
 
 COCOAPODS: 1.12.1
