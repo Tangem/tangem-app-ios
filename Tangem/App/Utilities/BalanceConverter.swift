@@ -15,16 +15,16 @@ struct BalanceConverter {
     /// Will throw error if failed to load rates or failed to find currency with specified code
     /// - Parameters:
     ///   - value: Amout of crypto to convert to fiat
-    ///   - cryptoCurrencyCode: Code for crypto currency
+    ///   - currencyId: ID of the crypto currency
     /// - Returns: Converted decimal value in specified fiat currency
-    func convertToFiat(value: Decimal, from cryptoCurrencyCode: String) async throws -> Decimal {
-        let rate = try await ratesRepository.rate(for: cryptoCurrencyCode)
+    func convertToFiat(value: Decimal, from currencyId: String) async throws -> Decimal {
+        let rate = try await ratesRepository.rate(for: currencyId)
         let fiatValue = value * rate
         return fiatValue
     }
 
-    func convertToFiat(value: Decimal, from cryptoCurrencyCode: String) -> Decimal? {
-        guard let rate = ratesRepository.rates[cryptoCurrencyCode] else {
+    func convertToFiat(value: Decimal, from currencyId: String) -> Decimal? {
+        guard let rate = ratesRepository.rates[currencyId] else {
             return nil
         }
 
@@ -32,8 +32,8 @@ struct BalanceConverter {
         return fiatValue
     }
 
-    func convertFromFiat(value: Decimal, to cryptoCurrencyCode: String) -> Decimal? {
-        guard let rate = ratesRepository.rates[cryptoCurrencyCode] else {
+    func convertFromFiat(value: Decimal, to currencyId: String) -> Decimal? {
+        guard let rate = ratesRepository.rates[currencyId] else {
             return nil
         }
 
