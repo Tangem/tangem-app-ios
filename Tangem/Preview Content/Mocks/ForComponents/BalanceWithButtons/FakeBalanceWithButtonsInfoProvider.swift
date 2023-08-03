@@ -19,12 +19,12 @@ class FakeBalanceWithButtonsInfoProvider {
                 .init(title: "Send", icon: Assets.arrowUpMini, action: {}, disabled: false),
             ],
             delay: 5,
-            cryptoBalanceInfo: .init(balance: 1034.435432, currencyCode: "ETH")
+            cryptoBalanceInfo: .init(balance: 1034.435432, currencyId: "", currencyCode: "ETH")
         ),
         FakeTokenBalanceProvider(
             buttons: [],
             delay: 0,
-            cryptoBalanceInfo: .init(balance: 1031232431232151004.435432, currencyCode: "BTC")
+            cryptoBalanceInfo: .init(balance: 1031232431232151004.435432, currencyId: "", currencyCode: "BTC")
         ),
         FakeTokenBalanceProvider(
             buttons: [
@@ -36,7 +36,7 @@ class FakeBalanceWithButtonsInfoProvider {
                 .init(title: "Dance", icon: Assets.heartMini, action: {}, disabled: false),
             ],
             delay: 3,
-            cryptoBalanceInfo: .init(balance: -1, currencyCode: "MATIC")
+            cryptoBalanceInfo: .init(balance: -1, currencyId: "", currencyCode: "MATIC")
         ),
         FakeTokenBalanceProvider(
             buttons: [
@@ -44,7 +44,7 @@ class FakeBalanceWithButtonsInfoProvider {
                 .init(title: "Send", icon: Assets.arrowUpMini, action: {}),
             ],
             delay: 6,
-            cryptoBalanceInfo: .init(balance: 4.421231232143214132432135432, currencyCode: "XLM")
+            cryptoBalanceInfo: .init(balance: 4.421231232143214132432135432, currencyId: "", currencyCode: "XLM")
         ),
     ]
 

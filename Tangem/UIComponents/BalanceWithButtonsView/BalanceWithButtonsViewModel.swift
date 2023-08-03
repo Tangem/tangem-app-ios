@@ -71,7 +71,12 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
             let converter = BalanceConverter()
 
             do {
-                let fiatBalance = try await converter.convertToFiat(value: newBalance.balance, from: newBalance.currencyCode)
+                let fiatBalance: Decimal?
+                if let currencyId = newBalance.currencyId {
+                    fiatBalance = try await converter.convertToFiat(value: newBalance.balance, from: currencyId)
+                } else {
+                    fiatBalance = nil
+                }
                 let formattedFiat = formatter.formatFiatBalance(fiatBalance)
                 let attributedFiatBalance = formatter.formatTotalBalanceForMain(fiatBalance: formattedFiat, formattingOptions: .defaultOptions)
 

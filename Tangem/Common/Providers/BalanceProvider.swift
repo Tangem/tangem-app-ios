@@ -15,5 +15,6 @@ protocol BalanceProvider: AnyObject {
 
 struct BalanceInfo {
     let balance: Decimal
+    let currencyId: String?
     let currencyCode: String
 }
