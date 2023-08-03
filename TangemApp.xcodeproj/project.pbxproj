@@ -520,6 +520,7 @@
 		DA7444252A27889600F926A9 /* PromotionServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7444232A27889600F926A9 /* PromotionServiceProtocol.swift */; };
 		DA798E3D2A6FC3B3009BC25C /* SalesDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA798E3C2A6FC3B3009BC25C /* SalesDetails.swift */; };
 		DA8BBF972A0248E300B085DC /* SensitiveInformationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8BBF962A0248E300B085DC /* SensitiveInformationModifier.swift */; };
+		DA8D351B2A7BE5F800575B5F /* CurrencyId.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D351A2A7BE5F800575B5F /* CurrencyId.swift */; };
 		DA91770E2A25DD3F006CD67B /* OneInchGradientViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA91770D2A25DD3F006CD67B /* OneInchGradientViews.swift */; };
 		DAA0559928744E2400E4F7B9 /* MercuryoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA0559828744E2400E4F7B9 /* MercuryoService.swift */; };
 		DAA153BC2876CBFC002254D1 /* GeoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA153BB2876CBFC002254D1 /* GeoResponse.swift */; };
@@ -1627,6 +1628,7 @@
 		DA7444232A27889600F926A9 /* PromotionServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromotionServiceProtocol.swift; sourceTree = "<group>"; };
 		DA798E3C2A6FC3B3009BC25C /* SalesDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesDetails.swift; sourceTree = "<group>"; };
 		DA8BBF962A0248E300B085DC /* SensitiveInformationModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SensitiveInformationModifier.swift; sourceTree = "<group>"; };
+		DA8D351A2A7BE5F800575B5F /* CurrencyId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyId.swift; sourceTree = "<group>"; };
 		DA91770D2A25DD3F006CD67B /* OneInchGradientViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneInchGradientViews.swift; sourceTree = "<group>"; };
 		DAA0559828744E2400E4F7B9 /* MercuryoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MercuryoService.swift; sourceTree = "<group>"; };
 		DAA153BB2876CBFC002254D1 /* GeoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoResponse.swift; sourceTree = "<group>"; };
@@ -3038,6 +3040,7 @@
 				B0E0AF5C2996488100E52F7B /* TransactionHistoryMapper.swift */,
 				EFA1CFFC29B0E8CE008B24C3 /* SwappingAvailableUtils.swift */,
 				B003BDAB2A029C4300B282F7 /* BalanceConverter.swift */,
+				DA8D351A2A7BE5F800575B5F /* CurrencyId.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -6121,6 +6124,7 @@
 				EF4662202924DEEE00346B6C /* DefaultWarningRowViewModel.swift in Sources */,
 				DC261CAA292CF56600875E64 /* AuthView.swift in Sources */,
 				B09BB860259A075600B92000 /* ButtonStyles.swift in Sources */,
+				DA8D351B2A7BE5F800575B5F /* CurrencyId.swift in Sources */,
 				EF92413B2935F24A00C28551 /* SwappingTokenIconViewModel.swift in Sources */,
 				B0DC10CD2927505300BBE854 /* SwiftConcurrency+.swift in Sources */,
 				B09BB863259A075600B92000 /* NavigationConfigurator.swift in Sources */,
