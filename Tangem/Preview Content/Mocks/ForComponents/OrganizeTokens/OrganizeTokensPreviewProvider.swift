@@ -282,7 +282,7 @@ struct OrganizeTokensPreviewProvider {
     func multipleSections() -> [OrganizeTokensListSectionViewModel] {
         return [
             .init(
-                style: .invisible,
+                style: .draggable(title: "Section #1"),
                 items: [
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -326,7 +326,7 @@ struct OrganizeTokensPreviewProvider {
             ),
 
             .init(
-                style: .invisible,
+                style: .draggable(title: "Section #2"),
                 items: [
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -370,7 +370,7 @@ struct OrganizeTokensPreviewProvider {
             ),
 
             .init(
-                style: .invisible,
+                style: .draggable(title: "Section #3"),
                 items: [
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -414,7 +414,7 @@ struct OrganizeTokensPreviewProvider {
             ),
 
             .init(
-                style: .invisible,
+                style: .draggable(title: "Section #4"),
                 items: [
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -458,7 +458,7 @@ struct OrganizeTokensPreviewProvider {
             ),
 
             .init(
-                style: .invisible,
+                style: .draggable(title: "Section #5"),
                 items: [
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(

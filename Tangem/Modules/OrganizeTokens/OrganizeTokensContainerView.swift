@@ -14,19 +14,22 @@ struct OrganizeTokensContainerView: View {
     private let viewModel: OrganizeTokensViewModel
 
     var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationView {
-                organizeTokensView
-                    .toolbarBackground(.hidden, for: .navigationBar)
-            }
-        } else {
-            UIAppearanceBoundaryContainerView(boundaryMarker: OrganizeTokensContainerViewUIAppearanceBoundaryMarker.self) {
+        Group {
+            if #available(iOS 16.0, *) {
                 NavigationView {
                     organizeTokensView
-                        .onAppear { Self.setupUIAppearanceIfNeeded() }
+                        .toolbarBackground(.hidden, for: .navigationBar)
+                }
+            } else {
+                UIAppearanceBoundaryContainerView(boundaryMarker: OrganizeTokensContainerViewUIAppearanceBoundaryMarker.self) {
+                    NavigationView {
+                        organizeTokensView
+                            .onAppear { Self.setupUIAppearanceIfNeeded() }
+                    }
                 }
             }
         }
+        .ignoresSafeArea(edges: .vertical)
     }
 
     @ViewBuilder
