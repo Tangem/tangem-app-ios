@@ -821,8 +821,10 @@ private extension SendViewModel {
 
     func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
         if let amount = amount {
-            let currencyId = amount.type.token?.id ?? blockchainNetwork.blockchain.currencyId
-            guard let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId) else {
+            guard
+                let currencyId = currencyId(for: amount),
+                let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId)
+            else {
                 return nil
             }
 
@@ -841,10 +843,15 @@ private extension SendViewModel {
     }
 
     func getCrypto(for amount: Amount?) -> Decimal? {
-        guard let amount = amount else { return nil }
+        guard
+            let amount = amount,
+            let currencyId = currencyId(for: amount)
+        else {
+            return nil
+        }
 
         return BalanceConverter()
-            .convertFromFiat(value: amount.value, to: amount.currencySymbol)?
+            .convertFromFiat(value: amount.value, to: currencyId)?
             .rounded(scale: amount.decimals)
     }
 
@@ -872,6 +879,15 @@ private extension SendViewModel {
 
         let hasEnteredData = validatedMemoId != nil || validatedMemo != nil || validatedXrpDestinationTag != nil
         return hasEnteredData ? .full : .empty
+    }
+
+    func currencyId(for amount: Amount) -> String? {
+        switch amount.type {
+        case .token(let token):
+            return token.id
+        default:
+            return blockchainNetwork.blockchain.currencyId
+        }
     }
 }
 
