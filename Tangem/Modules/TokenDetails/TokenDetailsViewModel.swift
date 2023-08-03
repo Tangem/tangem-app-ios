@@ -250,7 +250,7 @@ private extension TokenDetailsViewModel {
         case .idle:
             balance = .loaded(.init(
                 balance: walletModel.getDecimalBalance(for: amountType) ?? 0,
-                currencyId: walletModel.tokenItem.id,
+                currencyId: walletModel.tokenItem.currencyId,
                 currencyCode: currencySymbol
             ))
         case .noAccount(let message), .failed(let message):

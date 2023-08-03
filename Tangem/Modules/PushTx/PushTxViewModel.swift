@@ -338,7 +338,7 @@ class PushTxViewModel: ObservableObject {
     private func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
         if let amount = amount {
             guard
-                let currencyId = walletModel.tokenItem.id,
+                let currencyId = walletModel.tokenItem.currencyId,
                 let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: amount.currencySymbol)
             else {
                 return nil

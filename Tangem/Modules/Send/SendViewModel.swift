@@ -822,7 +822,7 @@ private extension SendViewModel {
     func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
         if let amount = amount {
             guard
-                let currencyId = walletModel.tokenItem.id,
+                let currencyId = walletModel.tokenItem.currencyId,
                 let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId)
             else {
                 return nil
@@ -845,7 +845,7 @@ private extension SendViewModel {
     func getCrypto(for amount: Amount?) -> Decimal? {
         guard
             let amount = amount,
-            let currencyId = walletModel.tokenItem.id
+            let currencyId = walletModel.tokenItem.currencyId
         else {
             return nil
         }
