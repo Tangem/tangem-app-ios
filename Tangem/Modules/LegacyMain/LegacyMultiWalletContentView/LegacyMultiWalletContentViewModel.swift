@@ -78,6 +78,7 @@ private extension LegacyMultiWalletContentViewModel {
                     .MergeMany(walletModels.map { $0.walletDidChangePublisher })
             }
             .receive(on: updateQueue)
+            .debounce(for: 0.3, scheduler: RunLoop.main)
             .map { [weak self] _ -> [LegacyTokenItemViewModel] in
                 self?.collectTokenItemViewModels() ?? []
             }
