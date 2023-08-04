@@ -20,8 +20,6 @@ class LegacyMultiWalletContentViewModel: ObservableObject {
     @Published var contentState: LoadingValue<[LegacyTokenItemViewModel]> = .loading
     @Published var tokenListIsEmpty: Bool = true
 
-    private let updateQueue = DispatchQueue(label: "multi_wallet_content_update_queue", qos: .default)
-
     var totalSumBalanceViewModel: TotalSumBalanceViewModel
 
     // MARK: Private
@@ -30,6 +28,7 @@ class LegacyMultiWalletContentViewModel: ObservableObject {
 
     private let userTokenListManager: UserTokenListManager
     private let walletModelsManager: WalletModelsManager
+    private let updateQueue = DispatchQueue(label: "multi_wallet_content_update_queue", qos: .default)
     private var bag = Set<AnyCancellable>()
 
     init(
