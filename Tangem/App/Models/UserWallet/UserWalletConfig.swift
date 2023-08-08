@@ -64,6 +64,14 @@ extension UserWalletConfig {
         getFeatureAvailability(feature).isAvailable
     }
 
+    func isFeatureVisible(_ feature: UserWalletFeature) -> Bool {
+        !getFeatureAvailability(feature).isHidden
+    }
+
+    func getDisabledLocalizedReason(for feature: UserWalletFeature) -> String? {
+        getFeatureAvailability(feature).disabledLocalizedReason
+    }
+
     var tou: TOU {
         let url = URL(string: "https://tangem.com/tangem_tos.html")!
         return TOU(id: url.absoluteString, url: url)

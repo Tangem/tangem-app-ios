@@ -12,6 +12,7 @@ import Combine
 class LockedUserWallet: UserWalletModel {
     let walletModelsManager: WalletModelsManager = LockedWalletModelsManager()
     let userTokenListManager: UserTokenListManager = LockedUserTokenListManager()
+    let config: UserWalletConfig
     var signer: TangemSigner
 
     var tokensCount: Int? { nil }
@@ -25,8 +26,6 @@ class LockedUserWallet: UserWalletModel {
     var updatePublisher: AnyPublisher<Void, Never> { .just }
 
     private(set) var userWallet: UserWallet
-
-    private let config: UserWalletConfig
 
     init(with userWallet: UserWallet) {
         self.userWallet = userWallet
