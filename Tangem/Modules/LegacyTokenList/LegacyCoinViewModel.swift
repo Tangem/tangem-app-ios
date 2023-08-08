@@ -1,5 +1,5 @@
 //
-//  CoinViewModel.swift
+//  LegacyCoinViewModel.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 18.03.2022.
@@ -8,21 +8,21 @@
 
 import Foundation
 
-class CoinViewModel: Identifiable, ObservableObject {
+class LegacyCoinViewModel: Identifiable, ObservableObject {
     let id: UUID = .init()
     let imageURL: URL?
     let name: String
     let symbol: String
-    let items: [CoinItemViewModel]
+    let items: [LegacyCoinItemViewModel]
 
-    init(imageURL: URL?, name: String, symbol: String, items: [CoinItemViewModel]) {
+    init(imageURL: URL?, name: String, symbol: String, items: [LegacyCoinItemViewModel]) {
         self.imageURL = imageURL
         self.name = name
         self.symbol = symbol
         self.items = items
     }
 
-    init(with model: CoinModel, items: [CoinItemViewModel]) {
+    init(with model: CoinModel, items: [LegacyCoinItemViewModel]) {
         name = model.name
         symbol = model.symbol
         imageURL = model.imageURL
@@ -40,12 +40,12 @@ class CoinViewModel: Identifiable, ObservableObject {
     }
 }
 
-extension CoinViewModel: Hashable {
+extension LegacyCoinViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 
-    static func == (lhs: CoinViewModel, rhs: CoinViewModel) -> Bool {
+    static func == (lhs: LegacyCoinViewModel, rhs: LegacyCoinViewModel) -> Bool {
         lhs.id == rhs.id
     }
 }

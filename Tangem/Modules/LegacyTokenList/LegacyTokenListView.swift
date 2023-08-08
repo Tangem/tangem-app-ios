@@ -1,5 +1,5 @@
 //
-//  TokenListView.swift
+//  LegacyTokenListView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 09/02/21.
@@ -11,8 +11,8 @@ import BlockchainSdk
 import Combine
 import AlertToast
 
-struct TokenListView: View {
-    @ObservedObject var viewModel: TokenListViewModel
+struct LegacyTokenListView: View {
+    @ObservedObject var viewModel: LegacyTokenListViewModel
 
     var body: some View {
         ZStack {
@@ -55,7 +55,7 @@ struct TokenListView: View {
                 divider
 
                 ForEach(viewModel.coinViewModels) {
-                    CoinView(model: $0)
+                    LegacyCoinView(model: $0)
                         .padding(.horizontal)
 
                     divider
@@ -128,11 +128,11 @@ struct TokenListView: View {
     }
 }
 
-struct AddNewTokensView_Previews: PreviewProvider {
+struct LegacyAddNewTokensView_Previews: PreviewProvider {
     static var previews: some View {
-        TokenListView(viewModel: .init(
+        LegacyTokenListView(viewModel: .init(
             mode: .show,
-            coordinator: TokenListCoordinator()
+            coordinator: LegacyTokenListCoordinator()
         ))
     }
 }

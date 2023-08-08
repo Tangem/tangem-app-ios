@@ -1,5 +1,5 @@
 //
-//  TokenListRoutable.swift
+//  LegacyAddCustomTokenRoutable.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 17.06.2022.
@@ -8,7 +8,6 @@
 
 import Foundation
 
-protocol TokenListRoutable: AnyObject {
+protocol LegacyAddCustomTokenRoutable: AnyObject {
     func closeModule()
-    func openAddCustom(settings: ManageTokensSettings, userTokensManager: UserTokensManager)
 }

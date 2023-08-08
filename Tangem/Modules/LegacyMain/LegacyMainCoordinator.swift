@@ -27,7 +27,7 @@ class LegacyMainCoordinator: CoordinatorObject {
     @Published var legacyTokenDetailsCoordinator: LegacyTokenDetailsCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var detailsCoordinator: DetailsCoordinator? = nil
-    @Published var tokenListCoordinator: TokenListCoordinator? = nil
+    @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
     @Published var modalOnboardingCoordinator: OnboardingCoordinator? = nil
 
     // MARK: - Child view models
@@ -241,20 +241,20 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
         currencySelectViewModel?.dismissAfterSelection = autoDismiss
     }
 
-    func openTokensList(
-        with settings: ManageTokensSettings,
+    func openLegacyTokensList(
+        with settings: LegacyManageTokensSettings,
         userTokensManager: UserTokensManager
     ) {
         let dismissAction: Action = { [weak self] in
-            self?.tokenListCoordinator = nil
+            self?.legacyTokenListCoordinator = nil
         }
 
-        let coordinator = TokenListCoordinator(dismissAction: dismissAction)
+        let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .add(
             settings: settings,
             userTokensManager: userTokensManager
         ))
-        tokenListCoordinator = coordinator
+        legacyTokenListCoordinator = coordinator
     }
 
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
