@@ -12,9 +12,9 @@ import TangemSdk
 import BlockchainSdk
 
 struct LockedUserTokensManager: UserTokensManager {
-    var isInitialSyncPerformed: Bool
+    var isInitialSyncPerformed: Bool { false }
 
-    var initialSyncPublisher: AnyPublisher<Bool, Never>
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
 
     var derivationManager: DerivationManager? { nil }
 
