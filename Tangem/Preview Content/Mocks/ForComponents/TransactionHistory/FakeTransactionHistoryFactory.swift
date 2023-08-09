@@ -87,7 +87,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
                 timeFormatted: "03:23",
@@ -96,7 +96,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .swap(type: .sell),
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "18:42",
@@ -105,7 +105,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "18:12",
@@ -114,7 +114,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .swap(type: .sell), address: "0x0123...ba223ced"),
                 timeFormatted: "15:23",
@@ -123,7 +123,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .swap(type: .sell),
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x01f3...baced"),
                 timeFormatted: "18:32",
@@ -132,7 +132,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .receive, address: "0x0123...baced"),
                 timeFormatted: "18:00",
@@ -141,7 +141,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .receive,
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
                 timeFormatted: "21:23",
@@ -150,7 +150,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .swap(type: .sell),
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "19:32",
@@ -159,7 +159,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "18:30",
