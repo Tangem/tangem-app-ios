@@ -12,9 +12,20 @@ struct MultiWalletMainContentView: View {
     @ObservedObject var viewModel: MultiWalletMainContentViewModel
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 14) {
+            if viewModel.pendingDerivationsCount > 0 {
+                MissingAddressesWarningView(
+                    missingAddressesCount: viewModel.pendingDerivationsCount,
+                    isLoading: viewModel.isScannerBusy,
+                    action: viewModel.deriveEntriesWithoutDerivation
+                )
+                .transition(AnyTransition.scale.combined(with: .opacity))
+            }
+
             tokensContent
         }
+        .animation(.default, value: viewModel.pendingDerivationsCount)
+        .padding(.horizontal, 16)
         .padding(.bottom, 40)
     }
 
@@ -31,7 +42,6 @@ struct MultiWalletMainContentView: View {
             }
         }
         .cornerRadiusContinuous(14)
-        .padding(.horizontal, 16)
     }
 
     private var emptyList: some View {

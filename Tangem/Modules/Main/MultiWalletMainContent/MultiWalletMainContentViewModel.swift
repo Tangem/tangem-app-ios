@@ -15,6 +15,9 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     @Published var isLoadingTokenList: Bool = true
     @Published var sections: [MultiWalletTokenItemsSection] = []
+    @Published var pendingDerivationsCount: Int = 0
+
+    @Published var isScannerBusy = false
 
     private let userWalletModel: UserWalletModel
 
@@ -53,7 +56,24 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         }
     }
 
+    func deriveEntriesWithoutDerivation() {
+        Analytics.log(.noticeScanYourCardTapped)
+        isScannerBusy = true
+        userWalletModel.userTokensManager.deriveEntriesWithoutDerivation { [weak self] in
+            DispatchQueue.main.async {
+                self?.isScannerBusy = false
+            }
+        }
+    }
+
     private func bind() {
+        userWalletModel.userTokensManager.derivationManager?
+            .pendingDerivationsCount
+            .receive(on: DispatchQueue.main)
+            .removeDuplicates()
+            .assign(to: \.pendingDerivationsCount, on: self, ownership: .weak)
+            .store(in: &bag)
+
         sectionsProvider.sectionsPublisher
             .map(convertToSections(_:))
             .assign(to: \.sections, on: self, ownership: .weak)
