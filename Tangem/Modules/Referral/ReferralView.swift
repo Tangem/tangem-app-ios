@@ -27,7 +27,8 @@ struct ReferralView: View {
                             RadialGradient(
                                 colors: [
                                     Colors.Control.unchecked,
-                                    Color.clear,
+                                    // DO NOT replace it with Color.clear. Apparently it is not the same on iOS 15
+                                    Colors.Control.unchecked.opacity(0),
                                 ],
                                 center: .bottom,
                                 startRadius: (colorScheme == .light ? 0.5 : 0.30) * (geometry.size.width - 2 * dudePadding),

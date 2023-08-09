@@ -28,6 +28,7 @@ class LegacyMultiWalletContentViewModel: ObservableObject {
 
     private let userTokenListManager: UserTokenListManager
     private let walletModelsManager: WalletModelsManager
+    private let updateQueue = DispatchQueue(label: "multi_wallet_content_update_queue", qos: .default)
     private var bag = Set<AnyCancellable>()
 
     init(
@@ -75,7 +76,8 @@ private extension LegacyMultiWalletContentViewModel {
                 Publishers
                     .MergeMany(walletModels.map { $0.walletDidChangePublisher })
             }
-            .receive(on: DispatchQueue.global())
+            .receive(on: updateQueue)
+            .debounce(for: 0.3, scheduler: RunLoop.main)
             .map { [weak self] _ -> [LegacyTokenItemViewModel] in
                 self?.collectTokenItemViewModels() ?? []
             }
@@ -88,7 +90,7 @@ private extension LegacyMultiWalletContentViewModel {
 
         walletModelsManager.walletModelsPublisher
             .combineLatest(userTokenListManager.userTokensPublisher)
-            .receive(on: DispatchQueue.global())
+            .receive(on: updateQueue)
             .map { [weak self] _ -> [LegacyTokenItemViewModel] in
                 /// `unowned` will be crashed when the wallet which currently open is deleted from the list of saved wallet
                 self?.collectTokenItemViewModels() ?? []

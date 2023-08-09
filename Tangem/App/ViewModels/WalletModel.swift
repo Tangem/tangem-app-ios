@@ -109,9 +109,9 @@ class WalletModel {
         wallet.blockchain.isTestnet
     }
 
-    var incomingPendingTransactions: [TransactionRecord] {
+    var incomingPendingTransactions: [LegacyTransactionRecord] {
         wallet.pendingIncomingTransactions.map {
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: $0.amount.type,
                 destination: $0.sourceAddress,
                 timeFormatted: "",
@@ -126,9 +126,9 @@ class WalletModel {
         }
     }
 
-    var outgoingPendingTransactions: [TransactionRecord] {
+    var outgoingPendingTransactions: [LegacyTransactionRecord] {
         return wallet.pendingOutgoingTransactions.map {
-            return TransactionRecord(
+            return LegacyTransactionRecord(
                 amountType: $0.amount.type,
                 destination: $0.destinationAddress,
                 timeFormatted: "",
@@ -143,7 +143,7 @@ class WalletModel {
         }
     }
 
-    var transactions: [TransactionRecord] {
+    var transactions: [LegacyTransactionRecord] {
         // TODO: Remove after transaction history implementation in BlockchainSDK
         if FeatureStorage().useFakeTxHistory {
             return Bool.random() ? FakeTransactionHistoryFactory().createFakeTxs(currencyCode: wallet.amounts[.coin]?.currencySymbol ?? "") : []
@@ -260,7 +260,8 @@ class WalletModel {
             .store(in: &bag)
 
         _state
-            .combineLatest(_rate)
+            .removeDuplicates()
+            .combineLatest(_rate.removeDuplicates())
             .map { $0.0 }
             .weakAssign(to: \._walletDidChangePublisher.value, on: self)
             .store(in: &bag)
@@ -462,40 +463,7 @@ extension WalletModel {
                 .eraseToAnyPublisher()
         }
 
-        guard
-            blockchainNetwork.blockchain.canLoadTransactionHistory,
-            let historyLoader = walletManager as? TransactionHistoryLoader
-        else {
-            DispatchQueue.main.async {
-                self._transactionsHistory.value = .notSupported
-            }
-            return .just(output: _transactionsHistory.value)
-        }
-
-        guard txHistoryUpdateSubscription == nil else {
-            return .just(output: _transactionsHistory.value)
-        }
-
-        _transactionsHistory.value = .loading
-
-        let historyPublisher = historyLoader.loadTransactionHistory()
-            .map { _ in TransactionHistoryState.loaded }
-            .catch {
-                AppLog.shared.debug("🔄 Failed to load transaction history. Error: \($0)")
-
-                return Just(TransactionHistoryState.failedToLoad($0))
-                    .eraseToAnyPublisher()
-            }
-
-        txHistoryUpdateSubscription = historyPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newState in
-                self?._transactionsHistory.value = .loaded
-                self?.txHistoryUpdateSubscription = nil
-            }
-
-        return historyPublisher
-            .eraseToAnyPublisher()
+        return .just(output: .notSupported)
     }
 
     // MARK: - Fake tx history related

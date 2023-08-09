@@ -1,5 +1,5 @@
 //
-//  AddCustomTokenViewModel.swift
+//  LegacyAddCustomTokenViewModel.swift
 //  Tangem
 //
 //  Created by Andrew Son on 11/02/21.
@@ -12,7 +12,7 @@ import BlockchainSdk
 import struct TangemSdk.DerivationPath
 import enum TangemSdk.TangemSdkError
 
-class AddCustomTokenViewModel: ObservableObject {
+class LegacyAddCustomTokenViewModel: ObservableObject {
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
 
     @Published var name = ""
@@ -21,8 +21,8 @@ class AddCustomTokenViewModel: ObservableObject {
     @Published var decimals = ""
     @Published var customDerivationPath = ""
 
-    @Published var blockchainsPicker: PickerModel = .empty
-    @Published var derivationsPicker: PickerModel = .empty
+    @Published var blockchainsPicker: LegacyPickerModel = .empty
+    @Published var derivationsPicker: LegacyPickerModel = .empty
 
     @Published var error: AlertBinder?
 
@@ -53,17 +53,17 @@ class AddCustomTokenViewModel: ObservableObject {
     private var blockchainByName: [String: Blockchain] = [:]
     private var derivationPathByBlockchainName: [String: DerivationPath] = [:]
     private var foundStandardToken: CoinModel?
-    private unowned let coordinator: AddCustomTokenRoutable
+    private unowned let coordinator: LegacyAddCustomTokenRoutable
     private let userTokensManager: UserTokensManager
 
     private let defaultDerivationItemID = "default-derivation"
     private let customDerivationItemID = "custom-derivation"
-    private let settings: ManageTokensSettings
+    private let settings: LegacyManageTokensSettings
 
     init(
-        settings: ManageTokensSettings,
+        settings: LegacyManageTokensSettings,
         userTokensManager: UserTokensManager,
-        coordinator: AddCustomTokenRoutable
+        coordinator: LegacyAddCustomTokenRoutable
     ) {
         self.settings = settings
         self.userTokensManager = userTokensManager
@@ -418,7 +418,7 @@ class AddCustomTokenViewModel: ObservableObject {
 
 // MARK: - Navigation
 
-extension AddCustomTokenViewModel {
+extension LegacyAddCustomTokenViewModel {
     func closeModule() {
         coordinator.closeModule()
     }
@@ -428,7 +428,7 @@ private protocol DynamicValidationError {
     var preventsFromAdding: Bool { get }
 }
 
-private extension AddCustomTokenViewModel {
+private extension LegacyAddCustomTokenViewModel {
     enum TokenCreationErrors: LocalizedError {
         case blockchainNotSelected
         case emptyFields
@@ -497,13 +497,13 @@ private extension AddCustomTokenViewModel {
     }
 }
 
-struct PickerModel: Identifiable {
+struct LegacyPickerModel: Identifiable {
     let id = UUID()
     let items: [(String, String)]
     var selection: String
     var isEnabled: Bool = true
 
-    static var empty: PickerModel {
+    static var empty: LegacyPickerModel {
         .init(items: [], selection: "")
     }
 }

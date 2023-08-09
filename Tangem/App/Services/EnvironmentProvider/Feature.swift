@@ -37,7 +37,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .importSeedPhrase: return .unspecified
         case .accessCodeRecoverySettings: return .unspecified
         case .disableFirmwareVersionLimit: return .unspecified
-        case .learnToEarn: return .version("4.9")
+        case .learnToEarn: return .unspecified
         case .tokenDetailsV2: return .unspecified
         case .enableBlockchainSdkEvents: return .unspecified
         case .mainV2: return .unspecified

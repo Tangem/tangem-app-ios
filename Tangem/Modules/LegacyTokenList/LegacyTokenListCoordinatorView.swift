@@ -1,5 +1,5 @@
 //
-//  TokenListCoordinatorView.swift
+//  LegacyTokenListCoordinatorView.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 15.06.2022.
@@ -9,13 +9,13 @@
 import Foundation
 import SwiftUI
 
-struct TokenListCoordinatorView: CoordinatorView {
-    @ObservedObject var coordinator: TokenListCoordinator
+struct LegacyTokenListCoordinatorView: CoordinatorView {
+    @ObservedObject var coordinator: LegacyTokenListCoordinator
 
     var body: some View {
         NavigationView {
             if let model = coordinator.tokenListViewModel {
-                TokenListView(viewModel: model)
+                LegacyTokenListView(viewModel: model)
                     .navigationLinks(links)
             }
         }
@@ -26,7 +26,7 @@ struct TokenListCoordinatorView: CoordinatorView {
     private var links: some View {
         NavHolder()
             .navigation(item: $coordinator.addCustomTokenViewModel) {
-                AddCustomTokenView(viewModel: $0)
+                LegacyAddCustomTokenView(viewModel: $0)
             }
             .emptyNavigationLink()
     }

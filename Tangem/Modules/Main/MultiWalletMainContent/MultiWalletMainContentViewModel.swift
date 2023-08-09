@@ -81,13 +81,13 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func subscribeToTokenListUpdatesIfNeeded() {
-        if !userWalletModel.userTokenListManager.userTokens.isEmpty || userWalletModel.didPerformInitialTokenSync {
+        if userWalletModel.userTokensManager.isInitialSyncPerformed {
             isLoadingTokenList = false
             return
         }
 
         var tokenSyncSubscription: AnyCancellable?
-        tokenSyncSubscription = userWalletModel.didPerformInitialTokenSyncPublisher
+        tokenSyncSubscription = userWalletModel.userTokensManager.initialSyncPublisher
             .filter { $0 }
             .sink(receiveValue: { [weak self] _ in
                 self?.isLoadingTokenList = false

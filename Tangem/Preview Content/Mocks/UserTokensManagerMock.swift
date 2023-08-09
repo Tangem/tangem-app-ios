@@ -7,11 +7,16 @@
 //
 
 import Foundation
+import Combine
 import TangemSdk
 import BlockchainSdk
 
 struct UserTokensManagerMock: UserTokensManager {
     var derivationManager: DerivationManager? { nil }
+
+    var isInitialSyncPerformed: Bool { true }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
 
     func deriveEntriesWithoutDerivation(_ completion: @escaping () -> Void) {}
 
@@ -40,4 +45,6 @@ struct UserTokensManagerMock: UserTokensManager {
     }
 
     func remove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) {}
+
+    func updateUserTokens() {}
 }

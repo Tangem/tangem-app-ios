@@ -18,6 +18,10 @@ struct UserTokenListManagerMock: UserTokenListManager {
         .just(output: [])
     }
 
+    var isInitialSyncPerformed: Bool { true }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
+
     func contains(_ entry: StorageEntry) -> Bool {
         return false
     }
@@ -27,4 +31,6 @@ struct UserTokenListManagerMock: UserTokenListManager {
     func upload() {}
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {}
+
+    func updateUserTokens() {}
 }

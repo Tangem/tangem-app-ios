@@ -11,7 +11,7 @@ import SwiftUI
 
 struct LegacyPendingTxView: View, Identifiable {
     var id: Int { pendingTx.id }
-    let pendingTx: TransactionRecord
+    let pendingTx: LegacyTransactionRecord
     var pushAction: (() -> Void)?
 
     var address: String {
@@ -79,9 +79,9 @@ struct LegacyPendingTxView_Previews: PreviewProvider {
         ZStack {
             Color.tangemBgGray
             VStack {
-                LegacyPendingTxView(pendingTx: TransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.00000002 BTC", transactionType: .receive, status: .inProgress))
-                LegacyPendingTxView(pendingTx: TransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.00000002 BTC", transactionType: .send, status: .inProgress))
-                LegacyPendingTxView(pendingTx: TransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.2 BTC", transactionType: .send, status: .inProgress))
+                LegacyPendingTxView(pendingTx: LegacyTransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.00000002 BTC", transactionType: .receive, status: .inProgress))
+                LegacyPendingTxView(pendingTx: LegacyTransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.00000002 BTC", transactionType: .send, status: .inProgress))
+                LegacyPendingTxView(pendingTx: LegacyTransactionRecord(amountType: .coin, destination: "0x2314719083467891237649123675478612354", timeFormatted: "05:06", transferAmount: "0.2 BTC", transactionType: .send, status: .inProgress))
             }
             .padding(.horizontal, 16)
         }

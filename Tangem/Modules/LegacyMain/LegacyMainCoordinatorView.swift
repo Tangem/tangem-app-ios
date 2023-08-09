@@ -55,8 +55,8 @@ struct LegacyMainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
             }
-            .sheet(item: $coordinator.tokenListCoordinator) {
-                TokenListCoordinatorView(coordinator: $0)
+            .sheet(item: $coordinator.legacyTokenListCoordinator) {
+                LegacyTokenListCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)

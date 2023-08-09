@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 import SwiftUI
 
-struct TransactionRecord: Hashable, Identifiable {
+struct LegacyTransactionRecord: Hashable, Identifiable {
     var id: Int { hashValue }
 
     let amountType: Amount.AmountType
@@ -22,7 +22,7 @@ struct TransactionRecord: Hashable, Identifiable {
     let status: Status
 }
 
-extension TransactionRecord {
+extension LegacyTransactionRecord {
     enum TransactionType: Hashable {
         case receive
         case send

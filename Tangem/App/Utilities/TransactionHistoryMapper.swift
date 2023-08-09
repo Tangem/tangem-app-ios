@@ -9,11 +9,11 @@
 import BlockchainSdk
 
 struct TransactionHistoryMapper {
-    func convertToTransactionRecords(_ transactions: [Transaction], for addresses: [BlockchainSdk.Address]) -> [TransactionRecord] {
+    func convertToTransactionRecords(_ transactions: [Transaction], for addresses: [BlockchainSdk.Address]) -> [LegacyTransactionRecord] {
         transactions.compactMap { convertToTransactionRecord($0, for: addresses) }
     }
 
-    func convertToTransactionRecord(_ transaction: Transaction, for addresses: [BlockchainSdk.Address]) -> TransactionRecord? {
+    func convertToTransactionRecord(_ transaction: Transaction, for addresses: [BlockchainSdk.Address]) -> LegacyTransactionRecord? {
         let timeFormatter = DateFormatter()
         timeFormatter.timeStyle = .short
 
@@ -21,7 +21,7 @@ struct TransactionHistoryMapper {
             return nil
         }
 
-        let transactionType: TransactionRecord.TransactionType = addresses.contains(where: {
+        let transactionType: LegacyTransactionRecord.TransactionType = addresses.contains(where: {
             $0.value.caseInsensitiveCompare(transaction.destinationAddress) == .orderedSame
         }) ? .receive : .send
         let address = transactionType == .receive ? transaction.sourceAddress : transaction.destinationAddress
@@ -37,7 +37,7 @@ struct TransactionHistoryMapper {
         )
     }
 
-    func makeTransactionListItems(from transactions: [TransactionRecord]) -> [TransactionListItem] {
+    func makeTransactionListItems(from transactions: [LegacyTransactionRecord]) -> [TransactionListItem] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.doesRelativeDateFormatting = true
@@ -45,7 +45,7 @@ struct TransactionHistoryMapper {
 
         var controlDate: Date!
         var txListItems = [TransactionListItem]()
-        var controlDateTxs = [TransactionRecord]()
+        var controlDateTxs = [LegacyTransactionRecord]()
         transactions.forEach { tx in
             guard let recordDate = tx.date else {
                 return

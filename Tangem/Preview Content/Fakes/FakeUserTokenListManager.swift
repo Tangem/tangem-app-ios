@@ -18,7 +18,22 @@ class FakeUserTokenListManager: UserTokenListManager {
         userTokensSubject.eraseToAnyPublisher()
     }
 
+    var isInitialSyncPerformed: Bool {
+        initialSyncSubject.value
+    }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> {
+        initialSyncSubject.eraseToAnyPublisher()
+    }
+
+    private let initialSyncSubject = CurrentValueSubject<Bool, Never>(false)
     private let userTokensSubject = CurrentValueSubject<[StorageEntry], Never>([])
+
+    init() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
+            self.initialSyncSubject.send(true)
+        }
+    }
 
     func update(_ type: CommonUserTokenListManager.UpdateType, shouldUpload: Bool) {}
 

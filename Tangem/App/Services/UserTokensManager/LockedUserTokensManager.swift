@@ -7,10 +7,15 @@
 //
 
 import Foundation
+import Combine
 import TangemSdk
 import BlockchainSdk
 
 struct LockedUserTokensManager: UserTokensManager {
+    var isInitialSyncPerformed: Bool
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never>
+
     var derivationManager: DerivationManager? { nil }
 
     func deriveEntriesWithoutDerivation(_ completion: @escaping () -> Void) {}
@@ -40,4 +45,6 @@ struct LockedUserTokensManager: UserTokensManager {
     }
 
     func remove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) {}
+
+    func updateUserTokens() {}
 }

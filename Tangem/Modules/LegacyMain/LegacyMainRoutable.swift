@@ -15,7 +15,7 @@ protocol LegacyMainRoutable: LegacyTokenDetailsRoutable {
     func openTokenDetails(cardModel: CardViewModel, blockchainNetwork: BlockchainNetwork, amountType: Amount.AmountType)
     func openOnboardingModal(with input: OnboardingInput)
     func openCurrencySelection(autoDismiss: Bool)
-    func openTokensList(with settings: ManageTokensSettings, userTokensManager: UserTokensManager)
+    func openLegacyTokensList(with settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager)
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
     func openQR(shareAddress: String, address: String, qrNotice: String)
     func openUserWalletList()

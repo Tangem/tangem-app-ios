@@ -281,7 +281,6 @@ class CardViewModel: Identifiable, ObservableObject {
     }
 
     private let _updatePublisher: PassthroughSubject<Void, Never> = .init()
-    private let _didPerformInitialTokenSync: CurrentValueSubject<Bool, Never> = .init(false)
     private let _userWalletNamePubliher: CurrentValueSubject<String, Never>
     private var bag = Set<AnyCancellable>()
     private var signSubscription: AnyCancellable?
@@ -560,10 +559,7 @@ extension CardViewModel: UserWalletModel {
 
         didPerformInitialUpdate = true
 
-        userTokenListManager.updateLocalRepositoryFromServer { [weak self] _ in
-            self?._didPerformInitialTokenSync.send(true)
-            self?.walletModelsManager.updateAll(silent: false, completion: {})
-        }
+        userTokensManager.updateUserTokens()
     }
 
     func updateWalletName(_ name: String) {
@@ -578,10 +574,6 @@ extension CardViewModel: MainHeaderInfoProvider {
     var isUserWalletLocked: Bool { userWallet.isLocked }
 
     var userWalletNamePublisher: AnyPublisher<String, Never> { _userWalletNamePubliher.eraseToAnyPublisher() }
-
-    var didPerformInitialTokenSync: Bool { _didPerformInitialTokenSync.value }
-
-    var didPerformInitialTokenSyncPublisher: AnyPublisher<Bool, Never> { _didPerformInitialTokenSync.eraseToAnyPublisher() }
 }
 
 // TODO: refactor storage to single source

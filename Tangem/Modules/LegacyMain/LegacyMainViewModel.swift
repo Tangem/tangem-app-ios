@@ -717,7 +717,7 @@ extension LegacyMainViewModel: LegacySingleWalletContentViewModelOutput {
 
 extension LegacyMainViewModel: LegacyMultiWalletContentViewModelOutput {
     func openTokensList() {
-        let settings = ManageTokensSettings(
+        let settings = LegacyManageTokensSettings(
             supportedBlockchains: cardModel.supportedBlockchains,
             hdWalletsSupported: cardModel.config.hasFeature(.hdWallets),
             longHashesSupported: cardModel.config.hasFeature(.longHashes),
@@ -725,7 +725,7 @@ extension LegacyMainViewModel: LegacyMultiWalletContentViewModelOutput {
             shouldShowLegacyDerivationAlert: cardModel.shouldShowLegacyDerivationAlert
         )
 
-        coordinator.openTokensList(
+        coordinator.openLegacyTokensList(
             with: settings,
             userTokensManager: cardModel.userTokensManager
         )

@@ -29,6 +29,11 @@ class CommonTokenItemsRepository {
 // MARK: - TokenItemsRepository
 
 extension CommonTokenItemsRepository: TokenItemsRepository {
+    var containsFile: Bool {
+        let entries: [StorageEntry]? = try? persistanceStorage.value(for: .wallets(cid: key))
+        return entries != nil
+    }
+
     func update(_ entries: [StorageEntry]) {
         lockQueue.sync {
             save(entries, for: key)
