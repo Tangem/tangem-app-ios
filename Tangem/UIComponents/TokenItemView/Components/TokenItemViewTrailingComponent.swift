@@ -9,14 +9,15 @@
 import SwiftUI
 
 struct TokenItemViewTrailingComponent: View {
-    let networkUnreachable: Bool
+    let isWithError: Bool
+    let errorMessage: String?
     let balanceFiat: LoadableTextView.State
     let changePercentage: LoadableTextView.State
 
     var body: some View {
         VStack(alignment: .trailing) {
-            if networkUnreachable {
-                Text(Localization.commonUnreachable)
+            if isWithError, let errorMessage {
+                Text(errorMessage)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             } else {
                 LoadableTextView(

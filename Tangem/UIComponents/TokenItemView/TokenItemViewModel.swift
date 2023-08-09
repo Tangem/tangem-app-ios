@@ -24,6 +24,18 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     var name: String { tokenIcon.name }
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
+    var isColorlessIcon: Bool { networkUnreachable || missingDerivation || tokenItem.blockchain.isTestnet }
+    var trailingErrorMessage: String? {
+        if missingDerivation {
+            return Localization.commonNoAddress
+        }
+
+        if networkUnreachable {
+            return Localization.commonUnreachable
+        }
+
+        return nil
+    }
 
     private let tokenIcon: TokenIconInfo
     private let tokenItem: TokenItem

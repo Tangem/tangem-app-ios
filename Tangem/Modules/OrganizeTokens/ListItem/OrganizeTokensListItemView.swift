@@ -17,7 +17,7 @@ struct OrganizeTokensListItemView: View {
                 name: viewModel.name,
                 imageURL: viewModel.imageURL,
                 blockchainIconName: viewModel.blockchainIconName,
-                networkUnreachable: viewModel.networkUnreachable
+                isColorless: viewModel.networkUnreachable
             )
 
             // According to the mockups, network unreachable state on the organize tokens screen
@@ -57,7 +57,7 @@ struct OrganizeTokensListItemView: View {
             name: viewModel.name,
             balance: viewModel.balance,
             hasPendingTransactions: viewModel.hasPendingTransactions,
-            networkUnreachable: viewModel.networkUnreachable
+            isWithError: viewModel.networkUnreachable
         )
     }
 }

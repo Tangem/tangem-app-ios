@@ -81,6 +81,7 @@
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
 "common_no" = "Нет";
+"common_no_address" = "Нет адреса";
 "common_no_data" = "Нет данных";
 "common_ok" = "OK";
 "common_origin_card" = "Основная карта";

@@ -82,6 +82,7 @@
 "common_locked" = "Locked";
 "common_main_network" = "Main network";
 "common_no" = "否";
+"common_no_address" = "No address";
 "common_no_data" = "No data";
 "common_ok" = "OK";
 "common_origin_card" = "主卡片";
