@@ -225,7 +225,9 @@ final class AppScanTask: CardSessionRunnable {
         var derivations: [EllipticCurve: [DerivationPath]] = [:]
 
         if let seed = config.userWalletIdSeed {
-            let tokenItemsRepository = CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
+            let userWalletId = UserWalletId(with: seed)
+
+            let tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.stringValue)
 
             // Force add blockchains for demo cards
             if let persistentBlockchains = config.persistentBlockchains {
@@ -241,18 +243,16 @@ final class AppScanTask: CardSessionRunnable {
                 }
             }
 
+            let userWalletRepository = UserWalletRepositoryUtil()
             let encryptionKey = UserWalletEncryptionKey(with: seed)
-            if let userWalletId = UserWalletIdFactory().userWalletId(config: config) {
-                let userWalletRepository = UserWalletRepositoryUtil()
-                let encryptionKeys = [userWalletId.value: encryptionKey.symmetricKey]
+            let keys = [userWalletId.value: encryptionKey.symmetricKey]
 
-                if let savedUserWallet = userWalletRepository.savedUserWallets(encryptionKeyByUserWalletId: encryptionKeys).first {
-                    let savedWallets = savedUserWallet.card.wallets
+            if let savedUserWallet = userWalletRepository.savedUserWallets(encryptionKeyByUserWalletId: keys).first {
+                let savedWallets = savedUserWallet.card.wallets
 
-                    for savedWallet in savedWallets {
-                        for derivedKey in savedWallet.derivedKeys {
-                            derivations[savedWallet.curve, default: []].append(derivedKey.key)
-                        }
+                for savedWallet in savedWallets {
+                    for derivedKey in savedWallet.derivedKeys {
+                        derivations[savedWallet.curve, default: []].append(derivedKey.key)
                     }
                 }
             }
