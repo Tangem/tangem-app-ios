@@ -240,6 +240,22 @@ final class AppScanTask: CardSessionRunnable {
                     derivations[wallet.curve, default: []].append(path)
                 }
             }
+
+            let encryptionKey = UserWalletEncryptionKey(with: seed)
+            if let userWalletId = UserWalletIdFactory().userWalletId(config: config) {
+                let userWalletRepository = UserWalletRepositoryUtil()
+                let encryptionKeys = [userWalletId.value: encryptionKey.symmetricKey]
+
+                if let savedUserWallet = userWalletRepository.savedUserWallets(encryptionKeyByUserWalletId: encryptionKeys).first {
+                    let savedWallets = savedUserWallet.card.wallets
+
+                    for savedWallet in savedWallets {
+                        for derivedKey in savedWallet.derivedKeys {
+                            derivations[savedWallet.curve, default: []].append(derivedKey.key)
+                        }
+                    }
+                }
+            }
         }
 
         if derivations.isEmpty {
