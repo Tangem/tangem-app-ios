@@ -11,10 +11,11 @@ import TangemSdk
 import BlockchainSdk
 
 struct CommonUserTokensManager {
+    let derivationManager: DerivationManager?
+
     private let userTokenListManager: UserTokenListManager
     private let walletModelsManager: WalletModelsManager
     private let derivationStyle: DerivationStyle?
-    private let derivationManager: DerivationManager?
     private weak var cardDerivableProvider: CardDerivableProvider?
 
     init(
@@ -79,6 +80,12 @@ struct CommonUserTokensManager {
 }
 
 extension CommonUserTokensManager: UserTokensManager {
+    func deriveEntriesWithoutDerivation(_ completion: @escaping () -> Void) {
+        deriveIfNeeded { _ in
+            completion()
+        }
+    }
+
     func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
         let blockchainNetwork = makeBlockchainNetwork(for: tokenItem.blockchain, derivationPath: derivationPath)
 
