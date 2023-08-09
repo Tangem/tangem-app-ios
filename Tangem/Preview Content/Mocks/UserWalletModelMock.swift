@@ -22,8 +22,6 @@ class UserWalletModelMock: UserWalletModel {
 
     var isMultiWallet: Bool { false }
 
-    var didPerformInitialTokenSync: Bool { true }
-
     var tokensCount: Int? { 10 }
 
     var cardsCount: Int { 1 }
@@ -32,14 +30,11 @@ class UserWalletModelMock: UserWalletModel {
 
     var userWalletId: UserWalletId { .init(with: Data()) }
 
-    var emailConfig: EmailConfig? { nil }
-
     var userWallet: UserWallet {
         UserWallet(userWalletId: Data(), name: "", card: .init(card: .walletWithBackup), associatedCardIds: [], walletData: .none, artwork: nil, isHDWalletAllowed: false)
     }
 
     var updatePublisher: AnyPublisher<Void, Never> { .just }
-    var didPerformInitialTokenSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
 
     var userWalletNamePublisher: AnyPublisher<String, Never> { .just(output: "") }
 

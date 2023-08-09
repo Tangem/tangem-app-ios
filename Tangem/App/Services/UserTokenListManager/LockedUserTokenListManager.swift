@@ -10,6 +10,10 @@ import Foundation
 import Combine
 
 struct LockedUserTokenListManager: UserTokenListManager {
+    var isInitialSyncPerformed: Bool { false }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
+
     var userTokens: [StorageEntry] { [] }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
@@ -25,4 +29,6 @@ struct LockedUserTokenListManager: UserTokenListManager {
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
         result(.success(()))
     }
+
+    func updateUserTokens() {}
 }

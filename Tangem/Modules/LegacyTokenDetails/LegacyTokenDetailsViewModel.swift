@@ -34,11 +34,11 @@ class LegacyTokenDetailsViewModel: ObservableObject {
 
     var walletModel: WalletModel?
 
-    var incomingTransactions: [TransactionRecord] {
+    var incomingTransactions: [LegacyTransactionRecord] {
         walletModel?.incomingPendingTransactions.filter { $0.amountType == amountType } ?? []
     }
 
-    var outgoingTransactions: [TransactionRecord] {
+    var outgoingTransactions: [LegacyTransactionRecord] {
         walletModel?.outgoingPendingTransactions.filter { $0.amountType == amountType } ?? []
     }
 

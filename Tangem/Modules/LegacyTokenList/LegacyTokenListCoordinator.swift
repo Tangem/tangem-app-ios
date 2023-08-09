@@ -1,5 +1,5 @@
 //
-//  TokenListCoordinator.swift
+//  LegacyTokenListCoordinator.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 15.06.2022.
@@ -8,36 +8,36 @@
 
 import Foundation
 
-class TokenListCoordinator: CoordinatorObject {
+class LegacyTokenListCoordinator: CoordinatorObject {
     var dismissAction: Action
     var popToRootAction: ParamsAction<PopToRootOptions>
 
     // MARK: - Main view model
 
-    @Published private(set) var tokenListViewModel: TokenListViewModel? = nil
+    @Published private(set) var tokenListViewModel: LegacyTokenListViewModel? = nil
 
     // MARK: - Child view models
 
-    @Published var addCustomTokenViewModel: AddCustomTokenViewModel? = nil
+    @Published var addCustomTokenViewModel: LegacyAddCustomTokenViewModel? = nil
 
     required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
-    func start(with mode: TokenListViewModel.Mode) {
+    func start(with mode: LegacyTokenListViewModel.Mode) {
         tokenListViewModel = .init(mode: mode, coordinator: self)
     }
 }
 
-extension TokenListCoordinator: AddCustomTokenRoutable {
+extension LegacyTokenListCoordinator: LegacyAddCustomTokenRoutable {
     func closeModule() {
         dismiss()
     }
 }
 
-extension TokenListCoordinator: TokenListRoutable {
-    func openAddCustom(settings: ManageTokensSettings, userTokensManager: UserTokensManager) {
+extension LegacyTokenListCoordinator: LegacyTokenListRoutable {
+    func openAddCustom(settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager) {
         addCustomTokenViewModel = .init(
             settings: settings,
             userTokensManager: userTokensManager,

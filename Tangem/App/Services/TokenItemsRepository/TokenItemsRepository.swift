@@ -10,6 +10,8 @@ import Foundation
 import BlockchainSdk
 
 protocol TokenItemsRepository {
+    var containsFile: Bool { get }
+
     func update(_ entries: [StorageEntry])
     func append(_ entries: [StorageEntry])
 

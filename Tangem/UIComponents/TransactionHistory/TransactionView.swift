@@ -9,39 +9,39 @@
 import SwiftUI
 
 struct TransactionView: View {
-    let transactionRecord: TransactionRecord
+    let LegacyTransactionRecord: LegacyTransactionRecord
 
     var body: some View {
         HStack(spacing: 12) {
             txTypeIcon
                 .renderingMode(.template)
-                .foregroundColor(transactionRecord.status.iconColor)
+                .foregroundColor(LegacyTransactionRecord.status.iconColor)
                 .padding(10)
-                .background(transactionRecord.status.iconBackgroundColor)
+                .background(LegacyTransactionRecord.status.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
-                    Text(transactionRecord.transactionType.name)
+                    Text(LegacyTransactionRecord.transactionType.name)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    if case .inProgress = transactionRecord.status {
+                    if case .inProgress = LegacyTransactionRecord.status {
                         Assets.pendingTxIndicator.image
                     }
 
                     Spacer()
 
-                    Text(transactionRecord.transferAmount)
-                        .style(Fonts.Regular.subheadline, color: transactionRecord.transactionType.amountTextColor)
+                    Text(LegacyTransactionRecord.transferAmount)
+                        .style(Fonts.Regular.subheadline, color: LegacyTransactionRecord.transactionType.amountTextColor)
                 }
 
                 HStack(spacing: 6) {
-                    Text(transactionRecord.destination)
+                    Text(LegacyTransactionRecord.destination)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
                     Spacer()
 
-                    Text(transactionRecord.timeFormatted)
+                    Text(LegacyTransactionRecord.timeFormatted)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }
@@ -49,7 +49,7 @@ struct TransactionView: View {
     }
 
     private var txTypeIcon: Image {
-        switch transactionRecord.transactionType {
+        switch LegacyTransactionRecord.transactionType {
         case .receive:
             return Assets.arrowDownMini.image
         case .send:
@@ -62,9 +62,9 @@ struct TransactionView: View {
     }
 
     private var subtitleText: String {
-        switch transactionRecord.status {
+        switch LegacyTransactionRecord.status {
         case .confirmed:
-            return transactionRecord.timeFormatted
+            return LegacyTransactionRecord.timeFormatted
         case .inProgress:
             return Localization.transactionHistoryTxInProgress
         }
@@ -72,11 +72,11 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static func destination(for transactionType: TransactionRecord.TransactionType, address: String) -> String {
+    static func destination(for transactionType: LegacyTransactionRecord.TransactionType, address: String) -> String {
         transactionType.localizeDestination(for: address)
     }
 
-    static let incomingInProgressRecord = TransactionRecord(
+    static let incomingInProgressRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .receive, address: "0x01230...3feed"),
         timeFormatted: "10:45",
@@ -85,7 +85,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let incomingConfirmedRecord = TransactionRecord(
+    static let incomingConfirmedRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .receive, address: "0x01230...3feed"),
         timeFormatted: "05:10",
@@ -94,7 +94,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let outgoingInProgressRecord = TransactionRecord(
+    static let outgoingInProgressRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .receive, address: "0x012...baced"),
         timeFormatted: "00:04",
@@ -103,7 +103,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let outgoingConfirmedRecord = TransactionRecord(
+    static let outgoingConfirmedRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .receive, address: "0x0123...baced"),
         timeFormatted: "15:00",
@@ -112,7 +112,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let incomingSwapRecord = TransactionRecord(
+    static let incomingSwapRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .swap(type: .buy), address: "0x0123...baced"),
         timeFormatted: "16:23",
@@ -121,7 +121,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let outgoingSwapRecord = TransactionRecord(
+    static let outgoingSwapRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
         timeFormatted: "16:23",
@@ -130,7 +130,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let approveConfirmedRecord = TransactionRecord(
+    static let approveConfirmedRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .approval, address: "0x0123...baced"),
         timeFormatted: "18:32",
@@ -139,7 +139,7 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let approveInProgressRecord = TransactionRecord(
+    static let approveInProgressRecord = LegacyTransactionRecord(
         amountType: .coin,
         destination: destination(for: .approval, address: "0x0123...baced"),
         timeFormatted: "18:32",
@@ -150,14 +150,14 @@ struct TransactionView_Previews: PreviewProvider {
 
     static var previews: some View {
         VStack {
-            TransactionView(transactionRecord: incomingInProgressRecord)
-            TransactionView(transactionRecord: incomingConfirmedRecord)
-            TransactionView(transactionRecord: outgoingInProgressRecord)
-            TransactionView(transactionRecord: outgoingConfirmedRecord)
-            TransactionView(transactionRecord: incomingSwapRecord)
-            TransactionView(transactionRecord: outgoingSwapRecord)
-            TransactionView(transactionRecord: approveInProgressRecord)
-            TransactionView(transactionRecord: approveConfirmedRecord)
+            TransactionView(LegacyTransactionRecord: incomingInProgressRecord)
+            TransactionView(LegacyTransactionRecord: incomingConfirmedRecord)
+            TransactionView(LegacyTransactionRecord: outgoingInProgressRecord)
+            TransactionView(LegacyTransactionRecord: outgoingConfirmedRecord)
+            TransactionView(LegacyTransactionRecord: incomingSwapRecord)
+            TransactionView(LegacyTransactionRecord: outgoingSwapRecord)
+            TransactionView(LegacyTransactionRecord: approveInProgressRecord)
+            TransactionView(LegacyTransactionRecord: approveConfirmedRecord)
         }
         .padding()
     }

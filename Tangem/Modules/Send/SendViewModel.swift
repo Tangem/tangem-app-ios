@@ -500,8 +500,8 @@ class SendViewModel: ObservableObject {
     }
 
     func validateAddress(_ address: String) -> Bool {
-        return walletModel.wallet.blockchain.validate(address: address)
-            && !walletModel.wallet.addresses.contains(where: { $0.value == address })
+        let service = AddressServiceFactory(blockchain: walletModel.wallet.blockchain).makeAddressService()
+        return service.validate(address) && !walletModel.wallet.addresses.contains(where: { $0.value == address })
     }
 
     func validateDestination(_ destination: String) {

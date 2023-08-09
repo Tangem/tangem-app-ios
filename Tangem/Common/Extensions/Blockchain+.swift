@@ -103,6 +103,7 @@ extension Blockchain {
         case .cronos: return "crypto-com-chain"
         case .telos: return "telos"
         case .octa: return "octaspace"
+        case .chia: return "chia"
         }
     }
 
@@ -160,6 +161,7 @@ extension Blockchain {
         case .cronos: return "cronos"
         case .telos: return "telos"
         case .octa: return "octaspace"
+        case .chia: return "chia"
         }
     }
 

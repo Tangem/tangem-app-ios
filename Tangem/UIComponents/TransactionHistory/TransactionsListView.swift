@@ -12,7 +12,7 @@ struct TransactionListItem: Hashable, Identifiable {
     var id: Int { hashValue }
 
     let header: String
-    let items: [TransactionRecord]
+    let items: [LegacyTransactionRecord]
 }
 
 struct TransactionsListView: View {
@@ -143,7 +143,7 @@ struct TransactionsListView: View {
                     Section {
                         LazyVStack(spacing: 12) {
                             ForEach(item.items, id: \.id) { record in
-                                TransactionView(transactionRecord: record)
+                                TransactionView(LegacyTransactionRecord: record)
                             }
                         }
                     } header: {
@@ -211,7 +211,7 @@ struct TransactionsListView_Previews: PreviewProvider {
         TransactionListItem(
             header: "Today",
             items: [
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "01:00",
@@ -219,7 +219,7 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .inProgress
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "02:00",
@@ -227,7 +227,7 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "05:00",
@@ -235,7 +235,7 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .receive,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "08:00",
@@ -243,9 +243,9 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
-                    destination: TransactionRecord.TransactionType.receive.localizeDestination(for: "0x0123...baced"),
+                    destination: LegacyTransactionRecord.TransactionType.receive.localizeDestination(for: "0x0123...baced"),
                     timeFormatted: "15:00",
                     transferAmount: "+15 wxDAI",
                     transactionType: .receive,
@@ -256,7 +256,7 @@ struct TransactionsListView_Previews: PreviewProvider {
         TransactionListItem(
             header: "Yesterday",
             items: [
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "05:00",
@@ -264,7 +264,7 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "09:00",
@@ -277,7 +277,7 @@ struct TransactionsListView_Previews: PreviewProvider {
         TransactionListItem(
             header: "02.05.23",
             items: [
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "05:00",
@@ -285,7 +285,7 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
                     destination: "0x0123...baced",
                     timeFormatted: "08:00",
@@ -293,9 +293,9 @@ struct TransactionsListView_Previews: PreviewProvider {
                     transactionType: .send,
                     status: .confirmed
                 ),
-                TransactionRecord(
+                LegacyTransactionRecord(
                     amountType: .coin,
-                    destination: TransactionRecord.TransactionType.approval.localizeDestination(for: "0x0123...baced"),
+                    destination: LegacyTransactionRecord.TransactionType.approval.localizeDestination(for: "0x0123...baced"),
                     timeFormatted: "18:32",
                     transferAmount: "-0.0012 ETH",
                     transactionType: .approval,

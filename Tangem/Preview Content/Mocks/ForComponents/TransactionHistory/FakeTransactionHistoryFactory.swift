@@ -10,12 +10,12 @@ import Foundation
 import BlockchainSdk
 
 struct FakeTransactionHistoryFactory {
-    func createFakeTxs(currencyCode: String) -> [TransactionRecord] {
+    func createFakeTxs(currencyCode: String) -> [LegacyTransactionRecord] {
         let calendar = Calendar.current
         let today = Date()
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
         return [
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .receive, address: "0x01230...3feed"),
                 timeFormatted: "10:45",
@@ -24,7 +24,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .receive,
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .receive, address: "0x01230...3feed"),
                 timeFormatted: "05:10",
@@ -33,7 +33,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .receive,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .receive, address: "0x012...baced"),
                 timeFormatted: "00:04",
@@ -42,7 +42,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .send,
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .receive, address: "0x0123...baced"),
                 timeFormatted: "15:00",
@@ -51,7 +51,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .send,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .swap(type: .buy), address: "0x0123...baced"),
                 timeFormatted: "10:23",
@@ -60,7 +60,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .swap(type: .buy),
                 status: .inProgress
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
                 timeFormatted: "05:23",
@@ -69,7 +69,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .swap(type: .sell),
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "18:32",
@@ -78,7 +78,7 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .confirmed
             ),
-            TransactionRecord(
+            LegacyTransactionRecord(
                 amountType: .coin,
                 destination: destination(for: .approval, address: "0x0123...baced"),
                 timeFormatted: "18:82",
@@ -171,7 +171,7 @@ struct FakeTransactionHistoryFactory {
         ]
     }
 
-    private func destination(for transactionType: TransactionRecord.TransactionType, address: String) -> String {
+    private func destination(for transactionType: LegacyTransactionRecord.TransactionType, address: String) -> String {
         transactionType.localizeDestination(for: address)
     }
 }

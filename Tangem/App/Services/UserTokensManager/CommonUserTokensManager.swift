@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import TangemSdk
 import BlockchainSdk
 
@@ -167,6 +168,23 @@ extension CommonUserTokensManager: UserTokensManager {
 
         addInternal(itemsToAdd, derivationPath: nil, shouldUpload: false)
         userTokenListManager.upload()
+    }
+}
+
+extension CommonUserTokensManager: UserTokensSyncService {
+    var isInitialSyncPerformed: Bool {
+        userTokenListManager.isInitialSyncPerformed
+    }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> {
+        userTokenListManager.initialSyncPublisher
+            .eraseToAnyPublisher()
+    }
+
+    func updateUserTokens() {
+        userTokenListManager.updateLocalRepositoryFromServer { _ in
+            self.walletModelsManager.updateAll(silent: false, completion: {})
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  AddCustomTokenView.swift
+//  LegacyAddCustomTokenView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 11/02/21.
@@ -9,8 +9,8 @@
 import SwiftUI
 import BlockchainSdk
 
-struct AddCustomTokenView: View {
-    @ObservedObject var viewModel: AddCustomTokenViewModel
+struct LegacyAddCustomTokenView: View {
+    @ObservedObject var viewModel: LegacyAddCustomTokenViewModel
 
     var body: some View {
         ScrollView {
@@ -97,7 +97,7 @@ private struct PickerInputWithTitle: View {
     var title: String
     var height: CGFloat = 60
     var backgroundColor: Color = .white
-    @Binding var model: PickerModel
+    @Binding var model: LegacyPickerModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -152,9 +152,9 @@ private struct PickerStyleModifier: ViewModifier {
     }
 }
 
-struct AddCustomTokenView_Previews: PreviewProvider {
+struct LegacyAddCustomTokenView_Previews: PreviewProvider {
     static var previews: some View {
-        let settings = ManageTokensSettings(
+        let settings = LegacyManageTokensSettings(
             supportedBlockchains: SupportedBlockchains.all,
             hdWalletsSupported: true,
             longHashesSupported: true,
@@ -162,12 +162,12 @@ struct AddCustomTokenView_Previews: PreviewProvider {
             shouldShowLegacyDerivationAlert: false
         )
 
-        let viewModel = AddCustomTokenViewModel(
+        let viewModel = LegacyAddCustomTokenViewModel(
             settings: settings,
             userTokensManager: UserTokensManagerMock(),
-            coordinator: TokenListCoordinator()
+            coordinator: LegacyTokenListCoordinator()
         )
 
-        AddCustomTokenView(viewModel: viewModel)
+        LegacyAddCustomTokenView(viewModel: viewModel)
     }
 }

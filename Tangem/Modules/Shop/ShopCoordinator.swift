@@ -37,6 +37,7 @@ class ShopCoordinator: CoordinatorObject {
         if let webShopUrl = ShopWebHelper().webShopUrl {
             self.webShopUrl = webShopUrl
         } else {
+            fatalError("Did you return the availability of Shopify? There's an untested dynamic Shopify system that hasn't been tested yet (IOS-3910)")
             shopViewModel = ShopViewModel(coordinator: self)
         }
     }
