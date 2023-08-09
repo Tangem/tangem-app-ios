@@ -174,6 +174,7 @@
 		B00FC6A92949A6460007ACCA /* CardImageResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00FC6A82949A6460007ACCA /* CardImageResult.swift */; };
 		B0120A932A0E0F4400F485F1 /* FakeCardHeaderPreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0120A922A0E0F4400F485F1 /* FakeCardHeaderPreviewProvider.swift */; };
 		B0120A962A0E0FB900F485F1 /* Text+NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0120A952A0E0FB900F485F1 /* Text+NSAttributedString.swift */; };
+		B0125C402A835C0E0093F8DD /* MissingAddressesWarningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0125C3F2A835C0E0093F8DD /* MissingAddressesWarningView.swift */; };
 		B018F2FD2591FE8600D8F89A /* AppWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B018F2FC2591FE8600D8F89A /* AppWarning.swift */; };
 		B018F304259204A200D8F89A /* WarningEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B018F303259204A200D8F89A /* WarningEvent.swift */; };
 		B01EB9C426E9F18A0060E2FB /* StackCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01EB9C326E9F18A0060E2FB /* StackCalculator.swift */; };
@@ -1278,6 +1279,7 @@
 		B00FC6A82949A6460007ACCA /* CardImageResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageResult.swift; sourceTree = "<group>"; };
 		B0120A922A0E0F4400F485F1 /* FakeCardHeaderPreviewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCardHeaderPreviewProvider.swift; sourceTree = "<group>"; };
 		B0120A952A0E0FB900F485F1 /* Text+NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+NSAttributedString.swift"; sourceTree = "<group>"; };
+		B0125C3F2A835C0E0093F8DD /* MissingAddressesWarningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingAddressesWarningView.swift; sourceTree = "<group>"; };
 		B018F2FC2591FE8600D8F89A /* AppWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWarning.swift; sourceTree = "<group>"; };
 		B018F303259204A200D8F89A /* WarningEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningEvent.swift; sourceTree = "<group>"; };
 		B01EB9C326E9F18A0060E2FB /* StackCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackCalculator.swift; sourceTree = "<group>"; };
@@ -2800,6 +2802,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		B0125C3E2A835BE80093F8DD /* Warnings */ = {
+			isa = PBXGroup;
+			children = (
+				B0125C3F2A835C0E0093F8DD /* MissingAddressesWarningView.swift */,
+			);
+			path = Warnings;
+			sourceTree = "<group>";
+		};
 		B018F3012591FED600D8F89A /* JsonSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2965,6 +2975,7 @@
 		B04A5C762A793C33001B95EC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B0125C3E2A835BE80093F8DD /* Warnings */,
 				B04A5C772A793C3B001B95EC /* TokenList */,
 			);
 			path = Views;
@@ -6786,6 +6797,7 @@
 				B0B4556925E0E63000D7572F /* FailedCardScanTracker.swift in Sources */,
 				EFEBCE2B29265CF300B0C886 /* TokenIconInfo.swift in Sources */,
 				DC66BBF5285A14CB00CDF765 /* WelcomeViewLifecycleListener.swift in Sources */,
+				B0125C402A835C0E0093F8DD /* MissingAddressesWarningView.swift in Sources */,
 				B08ACD8225D2BC3D007387BD /* TokenListView.swift in Sources */,
 				EFA6B04729533C860090A92F /* ResetToFactoryViewRoutable.swift in Sources */,
 				B0F319002A739477009F131E /* FakeWalletManager.swift in Sources */,

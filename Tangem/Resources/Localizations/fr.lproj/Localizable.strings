@@ -74,6 +74,7 @@
 "common_explore_transaction_history" = "Explore transaction history";
 "common_explorer" = "Explorer";
 "common_explorer_format" = "%@ explorer";
+"common_generate_addresses" = "Generate addresses";
 "common_import" = "Import";
 "common_learn_and_earn" = "Learn & Earn";
 "common_like" = "Like";
@@ -186,6 +187,7 @@
 "main_scan_card_warning_view_subtitle" = "To access all the networks you need to scan the card";
 "main_scan_card_warning_view_title" = "Scan your card";
 "main_tokens" = "Tokens";
+"main_warning_missing_derivation_title" = "Some addresses are missing";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your wallets";
 "onboarding_access_code_feature_1_title" = "Protect";
 "onboarding_access_code_feature_2_description" = "You can set up an individual access code on each card later";

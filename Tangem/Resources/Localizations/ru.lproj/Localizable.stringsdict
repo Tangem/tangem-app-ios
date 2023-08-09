@@ -42,6 +42,26 @@
         <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
       </dict>
     </dict>
+    <key>main_warning_missing_derivation_description</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@format@</string>
+        <key>format</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>li</string>
+            <key>one</key>
+            <string>Вам надо сгенерировать адрес для %li новой сети, используя вашу карточку</string>
+            <key>few</key>
+            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карточку</string>
+            <key>many</key>
+            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карточку</string>
+            <key>other</key>
+            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карточку</string>
+        </dict>
+    </dict>
     <key>referral_number_of_wallets</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>

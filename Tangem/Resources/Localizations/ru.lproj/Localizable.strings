@@ -74,6 +74,7 @@
 "common_explore_transaction_history" = "Посмотреть историю транзакций";
 "common_explorer" = "Обозреватель";
 "common_explorer_format" = "%@ обозреватель";
+"common_generate_addresses" = "Сгенерировать адреса";
 "common_import" = "Импортировать";
 "common_learn_and_earn" = "Learn & Earn";
 "common_like" = "Нравится";
@@ -186,6 +187,7 @@
 "main_scan_card_warning_view_subtitle" = "Чтобы получить доступ ко всем сетям, вам необходимо отсканировать карту";
 "main_scan_card_warning_view_title" = "Отсканируйте карту";
 "main_tokens" = "Токены";
+"main_warning_missing_derivation_title" = "Некоторые адреса отсутствуют";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
 "onboarding_access_code_feature_1_title" = "Защита";
 "onboarding_access_code_feature_2_description" = "Позже вы сможете установить индивидуальный код доступа для каждой карты";
