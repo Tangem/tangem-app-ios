@@ -32,13 +32,13 @@ class GroupedTokenListInfoProvider {
 
     private func bind() {
         userTokenListManager.userTokensPublisher
-            .map(convertToSectionInfo(from:))
+            .combineLatest(walletModelsManager.walletModelsPublisher)
+            .map(convertToSectionInfo(from:and:))
             .assign(to: \.value, on: currentSections)
             .store(in: &bag)
     }
 
-    private func convertToSectionInfo(from storageEntries: [StorageEntry]) -> [TokenListSectionInfo] {
-        let walletModels = walletModelsManager.walletModels
+    private func convertToSectionInfo(from storageEntries: [StorageEntry], and walletModels: [WalletModel]) -> [TokenListSectionInfo] {
         return storageEntries.reduce([]) { result, entry in
             if walletModels.contains(where: { $0.blockchainNetwork == entry.blockchainNetwork }) {
                 let ids = entry.walletModelIds
