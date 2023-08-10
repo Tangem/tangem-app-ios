@@ -58,13 +58,7 @@ class WalletModel {
         }
     }
 
-    var balanceValue: Decimal? {
-        wallet.amounts[amountType]?.value
-    }
-
     var balance: String {
-        guard let balanceValue else { return "" }
-
         return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
     }
 
@@ -77,8 +71,7 @@ class WalletModel {
     }
 
     var fiatValue: Decimal? {
-        guard let balanceValue,
-              let currencyId = tokenItem.currencyId else {
+        guard let currencyId = tokenItem.currencyId else {
             return nil
         }
 
@@ -202,6 +195,10 @@ class WalletModel {
         }
 
         return ratesRepository.rates[currencyId]
+    }
+
+    private var balanceValue: Decimal {
+        wallet.amounts[amountType]?.value ?? .zero
     }
 
     private let converter = BalanceConverter()
