@@ -316,7 +316,10 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {
-        resetServices()
+        if selectedUserWalletId == userWallet.userWalletId {
+            resetServices()
+        }
+
         let userWalletId = userWallet.userWalletId
         encryptionKeyByUserWalletId[userWalletId] = nil
         userWallets.removeAll { $0.userWalletId == userWalletId }
