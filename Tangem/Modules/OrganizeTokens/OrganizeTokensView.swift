@@ -128,9 +128,14 @@ struct OrganizeTokensView: View {
                         .padding(.horizontal, Constants.contentHorizontalInset)
                         .coordinateSpace(name: scrollViewContentCoordinateSpaceName)
                         .onTouchesBegan(onTouchesBegan(atLocation:))
-                        .readGeometry(\.frame.maxY, bindTo: $tokenListContentFrameMaxY)
+                        .readGeometry(
+                            \.frame.maxY,
+                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
+                            bindTo: $tokenListContentFrameMaxY
+                        )
                         .readContentOffset(
                             inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
                             bindTo: $scrollViewContentOffset
                         )
 
