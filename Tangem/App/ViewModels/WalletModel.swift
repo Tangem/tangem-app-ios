@@ -73,22 +73,39 @@ class WalletModel {
     }
 
     var fiatBalance: String {
-        formatter.formatFiatBalance(fiatValue)
+        formatter.formatFiatBalance(fiatValue?.displayValue, formattingOptions: fiatFormattingOptions)
     }
 
-    var fiatValue: Decimal? {
-        guard let balanceValue,
-              let currencyId = tokenItem.currencyId else {
+    var fiatValue: FiatValue? {
+        guard
+            let balanceValue,
+            let currencyId = tokenItem.currencyId,
+            let rawValue = converter.convertToFiat(value: balanceValue, from: currencyId)
+        else {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        let displayValue: Decimal
+        if rawValue.isZero {
+            displayValue = rawValue
+        } else {
+            switch fiatFormattingOptions.roundingType {
+            case .shortestFraction, .none:
+                assertionFailure("Fiat balance must be formatted with default formatter")
+                displayValue = rawValue
+            case .default(let roundingMode, let scale):
+                let minValue = Decimal(1) / pow(10, scale)
+                displayValue = max(rawValue, minValue).rounded(scale: scale, roundingMode: roundingMode)
+            }
+        }
+
+        return FiatValue(rawValue: rawValue, displayValue: displayValue)
     }
 
     var rateFormatted: String {
         guard let rate else { return "" }
 
-        return formatter.formatFiatBalance(rate, formattingOptions: .defaultFiatFormattingOptions)
+        return formatter.formatFiatBalance(rate, formattingOptions: fiatFormattingOptions)
     }
 
     var hasPendingTransactions: Bool {
@@ -206,6 +223,7 @@ class WalletModel {
 
     private let converter = BalanceConverter()
     private let formatter = BalanceFormatter()
+    private let fiatFormattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")

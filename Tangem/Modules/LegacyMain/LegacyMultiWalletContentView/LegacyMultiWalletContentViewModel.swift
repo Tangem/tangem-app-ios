@@ -137,7 +137,7 @@ private extension LegacyMultiWalletContentViewModel {
             balance: walletModel.balance,
             fiatBalance: walletModel.fiatBalance,
             rate: walletModel.rateFormatted,
-            fiatValue: walletModel.fiatValue ?? 0,
+            fiatValue: walletModel.fiatValue ?? .zero,
             blockchainNetwork: walletModel.blockchainNetwork,
             amountType: walletModel.amountType,
             hasTransactionInProgress: walletModel.isMainToken ? walletModel.hasPendingTransactions : false,
