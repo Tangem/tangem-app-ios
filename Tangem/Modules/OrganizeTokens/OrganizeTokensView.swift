@@ -166,9 +166,7 @@ struct OrganizeTokensView: View {
         .onTapGesture {} // allows scroll to work, see https://developer.apple.com/forums/thread/127277 for details
         .gesture(makeDragAndDropGesture())
         .onChange(of: tokenListContentFrameMaxY) { newValue in
-            withAnimation(.easeOut(duration: 0.1)) {
-                isTokenListFooterGradientHidden = newValue < tokenListFooterFrameMinY
-            }
+            isTokenListFooterGradientHidden = newValue < tokenListFooterFrameMinY
         }
         .onChange(of: scrollViewContentOffset) { newValue in
             dragAndDropController.contentOffsetSubject.send(newValue)
@@ -264,6 +262,7 @@ struct OrganizeTokensView: View {
             cornerRadius: Constants.contentCornerRadius,
             horizontalInset: Constants.contentHorizontalInset
         )
+        .animation(.linear(duration: 0.1), value: isTokenListFooterGradientHidden)
         .readGeometry { geometryInfo in
             $tokenListFooterFrameMinY.wrappedValue = geometryInfo.frame.minY
             $scrollViewBottomContentInset.wrappedValue = geometryInfo.size.height + Constants.contentVerticalInset
