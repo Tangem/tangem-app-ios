@@ -138,7 +138,8 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
         modalWebViewModel = WebViewContainerViewModel(
             url: url,
             title: "",
-            addLoadingIndicator: true
+            addLoadingIndicator: true,
+            withCloseButton: true
         )
     }
 }
