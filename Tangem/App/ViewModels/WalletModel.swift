@@ -61,7 +61,7 @@ class WalletModel {
     var balanceValue: Decimal {
         wallet.amounts[amountType]?.value ?? .zero
     }
-    
+
     var balance: String {
         return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
     }
