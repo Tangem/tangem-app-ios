@@ -13,6 +13,7 @@ import Moya
 
 class PromotionService {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     var readyForAwardPublisher: AnyPublisher<Void, Never> {
         readyForAwardSubject.eraseToAnyPublisher()
@@ -30,6 +31,9 @@ class PromotionService {
     var promotionAvailable: Bool = false
 
     private let readyForAwardSubject = PassthroughSubject<Void, Never>()
+    private var supportedBlockchains: Set<Blockchain> {
+        userWalletRepository.selectedModel?.config.supportedBlockchains ?? []
+    }
 
     init() {}
 }
@@ -217,7 +221,7 @@ extension PromotionService {
         let promotion = try await tangemApiService.promotion(programName: currentProgramName, timeout: nil)
 
         guard
-            let awardBlockchain = Blockchain(from: promotion.awardPaymentToken.networkId),
+            let awardBlockchain = supportedBlockchains[promotion.awardPaymentToken.networkId],
             let awardToken = promotion.awardPaymentToken.storageToken
         else {
             throw TangemAPIError(code: .decode)

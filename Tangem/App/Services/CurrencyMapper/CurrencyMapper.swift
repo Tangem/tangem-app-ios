@@ -47,7 +47,7 @@ struct CurrencyMapper: CurrencyMapping {
         }
 
         return Currency(
-            id: blockchain.id,
+            id: blockchain.coinId,
             blockchain: swappingBlockchain,
             name: blockchain.displayName,
             symbol: blockchain.currencySymbol,

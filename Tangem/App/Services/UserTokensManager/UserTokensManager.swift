@@ -7,10 +7,16 @@
 //
 
 import Foundation
+import Combine
 import TangemSdk
 import BlockchainSdk
 
-protocol UserTokensManager {
+protocol UserTokensSyncService {
+    var isInitialSyncPerformed: Bool { get }
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { get }
+}
+
+protocol UserTokensManager: UserTokensSyncService {
     func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool
     func getAllTokens(for blockchainNetwork: BlockchainNetwork) -> [Token]
 
@@ -18,6 +24,8 @@ protocol UserTokensManager {
     func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
     /// Update storage without derivtion
     func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?)
+
+    func updateUserTokens()
 
     func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
     func add(_ tokenItems: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void)

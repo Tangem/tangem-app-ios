@@ -160,7 +160,7 @@ struct SwappingView_Preview: PreviewProvider {
             blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!
         ),
         swappingDestinationService: SwappingDestinationServiceMock(),
-        tokenIconURLBuilder: TokenIconURLBuilderMock(),
+        tokenIconURLBuilder: TokenIconURLBuilder(),
         transactionSender: TransactionSenderMock(),
         fiatRatesProvider: FiatRatesProviderMock(),
         swappingFeeFormatter: SwappingFeeFormatterMock(),

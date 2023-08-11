@@ -8,4 +8,6 @@
 
 import Foundation
 
-protocol OrganizeTokensRoutable: AnyObject {}
+protocol OrganizeTokensRoutable: AnyObject {
+    func didTapCancelButton()
+}

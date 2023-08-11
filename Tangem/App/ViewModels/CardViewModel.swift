@@ -312,6 +312,7 @@ class CardViewModel: Identifiable, ObservableObject {
         userTokenListManager = CommonUserTokenListManager(
             hasTokenSynchronization: config.hasFeature(.tokenSynchronization),
             userWalletId: userWalletId.value,
+            supportedBlockchains: config.supportedBlockchains,
             hdWalletsSupported: config.hasFeature(.hdWallets)
         )
 
@@ -559,9 +560,7 @@ extension CardViewModel: UserWalletModel {
 
         didPerformInitialUpdate = true
 
-        userTokenListManager.updateLocalRepositoryFromServer { [weak self] _ in
-            self?.walletModelsManager.updateAll(silent: false, completion: {})
-        }
+        userTokensManager.updateUserTokens()
     }
 
     func updateWalletName(_ name: String) {

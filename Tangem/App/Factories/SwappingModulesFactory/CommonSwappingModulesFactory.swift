@@ -62,6 +62,7 @@ extension CommonSwappingModulesFactory: SwappingModulesFactory {
 
     func makeSwappingTokenListViewModel(coordinator: SwappingTokenListRoutable) -> SwappingTokenListViewModel {
         SwappingTokenListViewModel(
+            blockchain: wallet.blockchain,
             sourceCurrency: source,
             userCurrenciesProvider: userCurrenciesProvider,
             tokenIconURLBuilder: tokenIconURLBuilder,
@@ -102,7 +103,7 @@ private extension CommonSwappingModulesFactory {
 
     var currencyMapper: CurrencyMapping { CurrencyMapper() }
 
-    var tokenIconURLBuilder: TokenIconURLBuilding { TokenIconURLBuilder(baseURL: CoinsResponse.baseURL) }
+    var tokenIconURLBuilder: TokenIconURLBuilding { TokenIconURLBuilder() }
 
     var userCurrenciesProvider: UserCurrenciesProviding {
         UserCurrenciesProvider(

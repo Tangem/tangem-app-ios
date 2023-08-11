@@ -1,5 +1,5 @@
 //
-//  View+InfinityFrame.swift
+//  InfinityFrameModifier.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 06.06.2023.
@@ -13,11 +13,13 @@ extension View {
         axis: Axis.Set = [.horizontal, .vertical],
         alignment: Alignment = .center
     ) -> some View {
-        modifier(InfinityFrameViewModifier(axis: axis, alignment: alignment))
+        modifier(InfinityFrameModifier(axis: axis, alignment: alignment))
     }
 }
 
-private struct InfinityFrameViewModifier: ViewModifier {
+// MARK: - Private implementation
+
+private struct InfinityFrameModifier: ViewModifier {
     let axis: Axis.Set
     let alignment: Alignment
 

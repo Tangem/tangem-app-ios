@@ -105,8 +105,8 @@ struct SwappingTokenIcon_Previews: PreviewProvider {
             SwappingTokenIconView(
                 viewModel: SwappingTokenIconViewModel(
                     state: .loaded(
-                        imageURL: TokenIconURLBuilderMock().iconURL(id: "dai", size: .large),
-                        networkURL: TokenIconURLBuilderMock().iconURL(id: "ethereum", size: .small),
+                        imageURL: TokenIconURLBuilder().iconURL(id: "dai", size: .large),
+                        networkURL: TokenIconURLBuilder().iconURL(id: "ethereum", size: .small),
                         symbol: "MATIC"
                     )
                 )
@@ -116,8 +116,8 @@ struct SwappingTokenIcon_Previews: PreviewProvider {
             SwappingTokenIconView(
                 viewModel: SwappingTokenIconViewModel(
                     state: .loaded(
-                        imageURL: TokenIconURLBuilderMock().iconURL(id: "dai", size: .large),
-                        networkURL: TokenIconURLBuilderMock().iconURL(id: "ethereum", size: .small),
+                        imageURL: TokenIconURLBuilder().iconURL(id: "dai", size: .large),
+                        networkURL: TokenIconURLBuilder().iconURL(id: "ethereum", size: .small),
                         symbol: "MATIC"
                     )
                 )

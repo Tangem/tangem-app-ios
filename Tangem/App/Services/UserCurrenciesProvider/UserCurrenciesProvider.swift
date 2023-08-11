@@ -30,7 +30,7 @@ extension UserCurrenciesProvider: UserCurrenciesProviding {
     func getCurrencies(blockchain swappingBlockchain: SwappingBlockchain) async -> [Currency] {
         // get user tokens from API with filled in fields
         let tokens = await getTokens(
-            networkId: swappingBlockchain.networkId,
+            blockchain: blockchain,
             ids: walletModelTokens.compactMap { $0.id }
         )
 
@@ -46,7 +46,7 @@ extension UserCurrenciesProvider: UserCurrenciesProviding {
         // Get user tokens from API with filled in fields
         // For checking exchangeable
         let filledTokens = await getTokens(
-            networkId: swappingBlockchain.networkId,
+            blockchain: blockchain,
             ids: walletModelTokens.compactMap { $0.id }
         )
 
@@ -63,9 +63,9 @@ extension UserCurrenciesProvider: UserCurrenciesProviding {
 }
 
 private extension UserCurrenciesProvider {
-    func getTokens(networkId: String, ids: [String]) async -> [Token] {
+    func getTokens(blockchain: Blockchain, ids: [String]) async -> [Token] {
         let coins = try? await tangemApiService.loadCoins(
-            requestModel: CoinsListRequestModel(networkIds: [networkId], ids: ids)
+            requestModel: CoinsList.Request(supportedBlockchains: [blockchain], ids: ids)
         ).async()
 
         return coins?.compactMap { coin in

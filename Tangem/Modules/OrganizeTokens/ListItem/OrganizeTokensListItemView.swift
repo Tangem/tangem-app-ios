@@ -17,12 +17,12 @@ struct OrganizeTokensListItemView: View {
                 name: viewModel.name,
                 imageURL: viewModel.imageURL,
                 blockchainIconName: viewModel.blockchainIconName,
-                networkUnreachable: viewModel.networkUnreachable
+                networkUnreachable: viewModel.isNetworkUnreachable
             )
 
-            // According to the mockups, network unreachable state on the organize tokens screen
+            // According to the mockups, network unreachable state on the Organize Tokens screen
             // looks different than on the main screen
-            if viewModel.networkUnreachable {
+            if viewModel.isNetworkUnreachable {
                 networkUnreachableMiddleComponent
             } else {
                 defaultMiddleComponent
@@ -56,8 +56,8 @@ struct OrganizeTokensListItemView: View {
         TokenItemViewMiddleComponent(
             name: viewModel.name,
             balance: viewModel.balance,
-            hasPendingTransactions: viewModel.hasPendingTransactions,
-            networkUnreachable: viewModel.networkUnreachable
+            hasPendingTransactions: false, // Pending transactions aren't shown on the Organize Tokens screen
+            networkUnreachable: viewModel.isNetworkUnreachable
         )
     }
 }

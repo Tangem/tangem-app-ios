@@ -140,7 +140,7 @@ extension TangemApiTarget {
     enum TargetType {
         case rates(coinIds: [String], currencyId: String)
         case currencies
-        case coins(_ requestModel: CoinsListRequestModel)
+        case coins(_ requestModel: CoinsList.Request)
         case quotes(_ requestModel: QuotesDTO.Request)
         case geo
         case getUserWalletTokens(key: String)

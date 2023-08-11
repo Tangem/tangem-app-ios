@@ -109,7 +109,7 @@ struct SendCurrencyView_Preview: PreviewProvider {
             canChangeCurrency: true,
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "bitcoin", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "bitcoin", size: .large),
                     symbol: "BTC"
                 )
             )
@@ -121,7 +121,7 @@ struct SendCurrencyView_Preview: PreviewProvider {
             canChangeCurrency: true,
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "bitcoin", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "bitcoin", size: .large),
                     symbol: "BTC"
                 )
             )

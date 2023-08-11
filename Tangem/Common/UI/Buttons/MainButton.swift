@@ -11,6 +11,7 @@ struct MainButton: View {
     private let title: String
     private let icon: Icon?
     private let style: Style
+    private let size: Size
     private let isLoading: Bool
     private let isDisabled: Bool
     private let action: () -> Void
@@ -19,6 +20,7 @@ struct MainButton: View {
         title: String,
         icon: Icon? = nil,
         style: Style = .primary,
+        size: Size = .default,
         isLoading: Bool = false,
         isDisabled: Bool = false,
         action: @escaping (() -> Void)
@@ -26,6 +28,7 @@ struct MainButton: View {
         self.title = title
         self.icon = icon
         self.style = style
+        self.size = size
         self.isLoading = isLoading
         self.isDisabled = isDisabled
         self.action = action
@@ -36,6 +39,7 @@ struct MainButton: View {
             title: settings.title,
             icon: settings.icon,
             style: settings.style,
+            size: settings.size,
             isLoading: settings.isLoading,
             isDisabled: settings.isDisabled,
             action: settings.action
@@ -45,8 +49,7 @@ struct MainButton: View {
     var body: some View {
         Button(action: action) {
             content
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 14)
+                .frame(maxWidth: .infinity, minHeight: size.height, maxHeight: size.height, alignment: .center)
                 .background(style.background(isDisabled: isDisabled))
                 .cornerRadiusContinuous(14)
         }
@@ -162,10 +165,25 @@ extension MainButton {
         }
     }
 
+    enum Size {
+        /// Height: 46
+        case `default`
+        /// Height: 40
+        case notification
+
+        var height: CGFloat {
+            switch self {
+            case .default: return 46
+            case .notification: return 40
+            }
+        }
+    }
+
     struct Settings {
         let title: String
         let icon: Icon?
         let style: Style
+        let size: Size
         let isLoading: Bool
         var isDisabled: Bool
         let action: () -> Void
@@ -174,6 +192,7 @@ extension MainButton {
             title: String,
             icon: Icon? = nil,
             style: Style = .primary,
+            size: Size = .default,
             isLoading: Bool = false,
             isDisabled: Bool = false,
             action: @escaping (() -> Void)
@@ -181,6 +200,7 @@ extension MainButton {
             self.title = title
             self.icon = icon
             self.style = style
+            self.size = size
             self.isLoading = isLoading
             self.isDisabled = isDisabled
             self.action = action
@@ -212,6 +232,7 @@ struct MainButton_Previews: PreviewProvider {
                 title: "Order card",
                 icon: .leading(Assets.tangemIcon),
                 style: style,
+                size: .notification,
                 isDisabled: true
             ) {}
 
@@ -232,6 +253,7 @@ struct MainButton_Previews: PreviewProvider {
                 title: "Order card",
                 icon: .trailing(Assets.tangemIcon),
                 style: style,
+                size: .notification,
                 isLoading: true
             ) {}
 
@@ -241,6 +263,21 @@ struct MainButton_Previews: PreviewProvider {
                 style: style,
                 isLoading: false
             ) {}
+
+            HStack {
+                MainButton(
+                    title: "Order card",
+                    icon: .leading(Assets.tangemIcon),
+                    style: style
+                ) {}
+
+                MainButton(
+                    title: "Order card",
+                    icon: .leading(Assets.tangemIcon),
+                    style: style,
+                    size: .notification
+                ) {}
+            }
         }
         .padding(.horizontal, 16)
         .background(Colors.Background.secondary)

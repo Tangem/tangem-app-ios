@@ -10,21 +10,27 @@ import Foundation
 import Combine
 
 struct UserTokenListManagerMock: UserTokenListManager {
-    var userTokens: [StorageEntry] {
-        []
-    }
+    var isInitialSyncPerformed: Bool { true }
 
-    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
-        .just(output: [])
-    }
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
+
+    var userTokens: [StorageEntry] { [] }
+
+    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
+
+    var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
 
     func contains(_ entry: StorageEntry) -> Bool {
         return false
     }
 
-    func update(_ type: CommonUserTokenListManager.UpdateType, shouldUpload: Bool) {}
+    func update(with userTokenList: UserTokenList) {}
 
-    func upload() {}
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {}
+
+    func updateUserTokens() {}
+
+    func upload() {}
 }

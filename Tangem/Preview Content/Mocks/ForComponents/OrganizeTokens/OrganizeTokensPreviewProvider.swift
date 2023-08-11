@@ -20,9 +20,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .bitcoin(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -40,9 +39,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .bitcoin(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -60,9 +58,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .bitcoin(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -77,9 +74,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -88,9 +84,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -98,9 +93,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .ethereumClassic(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: true,
-                        hasPendingTransactions: true
+                        isNetworkUnreachable: true,
+                        isDraggable: false
                     ),
                 ]
             ),
@@ -115,164 +109,140 @@ struct OrganizeTokensPreviewProvider {
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .bitcoin(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .arbitrum(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .litecoin),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .stellar(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .stellar(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ethereum(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ethereumPoW(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ethereumClassic(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .bitcoinCash(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .binance(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .cardano),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .cardano(extended: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .bsc(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .dogecoin),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .polygon(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .avalanche(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .solana(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .solana(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .fantom(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .polkadot(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .polkadot(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .azero(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .azero(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .tron(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .dash(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .optimism(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ton(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ton(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .kava(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ), .init(
                         tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .cosmos(testnet: false)),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -290,9 +260,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .bitcoin(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -307,9 +276,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -318,9 +286,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -334,9 +301,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .ethereum(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: true,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: true,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -351,9 +317,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: true
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -362,9 +327,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -378,9 +342,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .ethereum(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: true,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: true,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -395,9 +358,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: true
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -406,9 +368,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -422,9 +383,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .ethereum(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: true,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: true,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -439,9 +399,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: true
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -450,9 +409,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),
@@ -466,9 +424,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .ethereum(testnet: false)
                         ),
                         balance: .loading,
-                        isDraggable: true,
-                        networkUnreachable: true,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: true,
+                        isDraggable: true
                     ),
                     .init(
                         tokenIcon: TokenIconInfoBuilder().build(
@@ -483,9 +440,8 @@ struct OrganizeTokensPreviewProvider {
                             in: .dash(testnet: false)
                         ),
                         balance: .noData,
-                        isDraggable: false,
-                        networkUnreachable: false,
-                        hasPendingTransactions: true
+                        isNetworkUnreachable: false,
+                        isDraggable: false
                     ),
                     .init(
                         tokenIcon: .init(
@@ -494,9 +450,8 @@ struct OrganizeTokensPreviewProvider {
                             imageURL: nil
                         ),
                         balance: .loaded(text: "22222222222222222222222222222222222222222222.00 $"),
-                        isDraggable: true,
-                        networkUnreachable: false,
-                        hasPendingTransactions: false
+                        isNetworkUnreachable: false,
+                        isDraggable: true
                     ),
                 ]
             ),

@@ -106,7 +106,7 @@ struct ReceiveCurrencyView_Preview: PreviewProvider {
             fiatAmountState: .loading,
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "polygon", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "polygon", size: .large),
                     symbol: "MATIC"
                 )
             )
@@ -118,7 +118,7 @@ struct ReceiveCurrencyView_Preview: PreviewProvider {
             fiatAmountState: .loading,
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "polygon", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "polygon", size: .large),
                     symbol: "MATIC"
                 )
             )
@@ -130,7 +130,7 @@ struct ReceiveCurrencyView_Preview: PreviewProvider {
             fiatAmountState: .loaded(1100.46),
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "polygon", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "polygon", size: .large),
                     symbol: "MATIC"
                 )
             )
@@ -142,7 +142,7 @@ struct ReceiveCurrencyView_Preview: PreviewProvider {
             fiatAmountState: .loaded(1100.46),
             tokenIcon: SwappingTokenIconViewModel(
                 state: .loaded(
-                    imageURL: TokenIconURLBuilderMock().iconURL(id: "polygon", size: .large),
+                    imageURL: TokenIconURLBuilder().iconURL(id: "polygon", size: .large),
                     symbol: "MATIC"
                 )
             )

@@ -330,10 +330,9 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
                 .eraseToAnyPublisher()
         }
 
-        let networkIds = settings.supportedBlockchains.map { $0.networkId }
-        let requestModel = CoinsListRequestModel(
-            contractAddress: contractAddress,
-            networkIds: networkIds
+        let requestModel = CoinsList.Request(
+            supportedBlockchains: settings.supportedBlockchains,
+            contractAddress: contractAddress
         )
 
         return tangemApiService

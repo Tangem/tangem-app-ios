@@ -7,10 +7,15 @@
 //
 
 import Foundation
+import Combine
 import TangemSdk
 import BlockchainSdk
 
 struct UserTokensManagerMock: UserTokensManager {
+    var isInitialSyncPerformed: Bool { true }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
+
     func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
     func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?) {}
@@ -36,4 +41,6 @@ struct UserTokensManagerMock: UserTokensManager {
     }
 
     func remove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) {}
+
+    func updateUserTokens() {}
 }

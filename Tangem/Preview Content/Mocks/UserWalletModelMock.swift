@@ -18,6 +18,7 @@ class UserWalletModelMock: UserWalletModel {
 
     var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
     var userTokenListManager: UserTokenListManager { UserTokenListManagerMock() }
+    var userTokensManager: UserTokensManager { UserTokensManagerMock() }
 
     var isMultiWallet: Bool { false }
 

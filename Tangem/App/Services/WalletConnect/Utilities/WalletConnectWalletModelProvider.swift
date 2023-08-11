@@ -26,7 +26,7 @@ struct CommonWalletConnectWalletModelProvider: WalletConnectWalletModelProvider 
     func getModel(with address: String, blockchainId: String) throws -> WalletModel {
         guard
             let model = walletModelsManager.walletModels.first(where: {
-                $0.wallet.blockchain.id == blockchainId && $0.wallet.address.caseInsensitiveCompare(address) == .orderedSame
+                $0.wallet.blockchain.coinId == blockchainId && $0.wallet.address.caseInsensitiveCompare(address) == .orderedSame
             })
         else {
             throw WalletConnectV2Error.walletModelNotFound(blockchainId)

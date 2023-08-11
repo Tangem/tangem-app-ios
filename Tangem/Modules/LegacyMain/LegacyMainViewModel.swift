@@ -483,14 +483,6 @@ private extension LegacyMainViewModel {
         }
     }
 
-    private func setError(_ error: AlertBinder?) {
-        if self.error != nil {
-            return
-        }
-
-        self.error = error
-    }
-
     private func loadImage() {
         imageLoadingSubscription = cardImageProvider
             .loadImage(cardId: cardModel.cardId, cardPublicKey: cardModel.cardPublicKey)

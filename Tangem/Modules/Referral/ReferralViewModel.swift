@@ -25,6 +25,7 @@ class ReferralViewModel: ObservableObject {
     private weak var coordinator: ReferralRoutable?
     private let userTokensManager: UserTokensManager
     private let userWalletId: Data
+    private let supportedBlockchains: Set<Blockchain>
 
     private let expectedAwardsFetchLimit = 30
     private let expectedAwardsShortListLimit = 3
@@ -39,11 +40,13 @@ class ReferralViewModel: ObservableObject {
 
     init(
         userWalletId: Data,
+        supportedBlockchains: Set<Blockchain>,
         userTokensManager: UserTokensManager,
         coordinator: ReferralRoutable
     ) {
         self.userTokensManager = userTokensManager
         self.userWalletId = userWalletId
+        self.supportedBlockchains = supportedBlockchains
         self.coordinator = coordinator
 
         runTask(in: self) { root in
@@ -62,7 +65,7 @@ class ReferralViewModel: ObservableObject {
 
         guard
             let award = referralProgramInfo?.conditions.awards.first,
-            let blockchain = Blockchain(from: award.token.networkId),
+            let blockchain = supportedBlockchains[award.token.networkId],
             let token = award.token.storageToken
         else {
             AppLog.shared.error(Localization.referralErrorFailedToLoadInfo)
@@ -145,7 +148,7 @@ extension ReferralViewModel {
         }
 
         if let token = referralProgramInfo?.conditions.awards.first?.token,
-           let blockchain = Blockchain(from: token.networkId) {
+           let blockchain = supportedBlockchains[token.networkId] {
             tokenName = blockchain.displayName
         }
 

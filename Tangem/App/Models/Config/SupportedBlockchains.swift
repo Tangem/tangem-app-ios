@@ -17,9 +17,9 @@ extension SupportedBlockchains {
     }
 
     /// Blockchains which don't include in supported blockchains by default
-    static var testable: Set<Blockchain> {
-        Set(Blockchain.allMainnetCases)
-            .subtracting(SupportedBlockchains(version: .v1).mainnetBlockchains())
+    static var testableIDs: Set<String> {
+        // Here version isn't important because we take only coinId
+        return Set(SupportedBlockchains(version: .v1).testableBlockchains().map { $0.coinId })
     }
 }
 
@@ -45,13 +45,24 @@ struct SupportedBlockchains {
             return mainnetBlockchains
         }
 
-        let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { Blockchain(from: $0) }
+        let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { id in
+            testableBlockchains().first { $0.coinId == id }
+        }
 
         return mainnetBlockchains.union(Set(betaTestingBlockchains))
     }
 
-    private func mainnetBlockchains() -> Set<Blockchain> {
+    /// Blockchains for test. They don't include in supported blockchains by default
+    private func testableBlockchains() -> Set<Blockchain> {
         [
+            .telos(testnet: false),
+            .azero(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
+            .chia(testnet: false),
+        ]
+    }
+
+    private func mainnetBlockchains() -> Set<Blockchain> {
+        var blockchains: Set<Blockchain> = [
             .ethereum(testnet: false),
             .ethereumClassic(testnet: false),
             .ethereumPoW(testnet: false),
@@ -62,24 +73,23 @@ struct SupportedBlockchains {
             .xrp(curve: .secp256k1),
             .rsk,
             .binance(testnet: false),
-            .tezos(curve: version == .v2 ? .ed25519 : .secp256k1),
-            .stellar(testnet: false),
-            .cardano,
+            .tezos(curve: version == .v2 ? .ed25519_slip0010 : .secp256k1),
+            .stellar(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
             .dogecoin,
             .bsc(testnet: false),
             .polygon(testnet: false),
             .avalanche(testnet: false),
-            .solana(testnet: false),
-            .polkadot(testnet: false),
-            .kusama,
-            .azero(testnet: false),
+            .solana(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
+            .polkadot(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
+            .kusama(curve: version == .v2 ? .ed25519_slip0010 : .ed25519),
+            .azero(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
             .fantom(testnet: false),
             .tron(testnet: false),
             .arbitrum(testnet: false),
             .gnosis,
             .dash(testnet: false),
             .optimism(testnet: false),
-            .ton(testnet: false),
+            .ton(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: false),
             .kava(testnet: false),
             .kaspa,
             .ravencoin(testnet: false),
@@ -89,6 +99,13 @@ struct SupportedBlockchains {
             .cronos,
             .octa,
         ]
+
+        // Tempopary support only old not extended cardano
+        if version == .v1 {
+            blockchains.insert(.cardano(extended: false))
+        }
+
+        return blockchains
     }
 
     private func testnetBlockchains() -> Set<Blockchain> {
@@ -98,18 +115,18 @@ struct SupportedBlockchains {
             .ethereumClassic(testnet: true),
             .ethereumPoW(testnet: true),
             .binance(testnet: true),
-            .stellar(testnet: true),
+            .stellar(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: true),
             .bsc(testnet: true),
             .polygon(testnet: true),
             .avalanche(testnet: true),
-            .solana(testnet: true),
+            .solana(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: true),
             .fantom(testnet: true),
-            .polkadot(testnet: true),
-            .azero(testnet: true),
+            .polkadot(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: true),
+            .azero(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: true),
             .tron(testnet: true),
             .arbitrum(testnet: true),
             .optimism(testnet: true),
-            .ton(testnet: true),
+            .ton(curve: version == .v2 ? .ed25519_slip0010 : .ed25519, testnet: true),
             .kava(testnet: true),
             .ravencoin(testnet: true),
             .cosmos(testnet: true),

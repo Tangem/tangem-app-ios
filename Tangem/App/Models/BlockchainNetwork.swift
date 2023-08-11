@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import enum BlockchainSdk.Blockchain
 import struct TangemSdk.DerivationPath
 
 struct BlockchainNetwork: Codable, Hashable, Equatable {

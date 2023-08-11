@@ -241,7 +241,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
         Analytics.log(.buttonCreateWallet)
         isMainButtonBusy = true
 
-        cardInitializer.initializeCard(seed: nil) { [weak self] result in
+        cardInitializer.initializeCard(mnemonic: nil) { [weak self] result in
             guard let self else { return }
 
             switch result {

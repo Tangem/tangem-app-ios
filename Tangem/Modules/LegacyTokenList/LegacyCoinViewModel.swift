@@ -25,7 +25,7 @@ class LegacyCoinViewModel: Identifiable, ObservableObject {
     init(with model: CoinModel, items: [LegacyCoinItemViewModel]) {
         name = model.name
         symbol = model.symbol
-        imageURL = model.imageURL
+        imageURL = TokenIconURLBuilder().iconURL(id: model.id, size: .large)
         self.items = items
     }
 

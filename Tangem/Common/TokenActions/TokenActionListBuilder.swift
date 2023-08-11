@@ -9,8 +9,7 @@
 import Foundation
 
 struct TokenActionListBuilder {
-    func buildActions(for cardModel: CardViewModel, exchangeUtility: ExchangeCryptoUtility) -> [TokenActionType] {
-        let canExchange = cardModel.canExchangeCrypto
+    func buildActions(canExchange: Bool, exchangeUtility: ExchangeCryptoUtility) -> [TokenActionType] {
         let canBuy = exchangeUtility.buyAvailable
         let canSell = exchangeUtility.sellAvailable
 

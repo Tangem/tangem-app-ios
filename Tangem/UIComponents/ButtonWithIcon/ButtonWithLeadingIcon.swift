@@ -46,13 +46,17 @@ struct FixedSizeButtonWithLeadingIcon: View {
 struct FlexySizeButtonWithLeadingIcon: View {
     let title: String
     let icon: Image
-    let isSelected: Bool
+    /// A special appearance for cases when this button is used to switch between
+    /// the discrete `On` and `Off` states, like `SwiftUI.Switch` does.
+    /// See [this mockup](https://www.figma.com/file/ZJoUO3kZGCcVgOUbCMQcY4/iOS-%E2%80%93-UI?type=design&node-id=5333-16973&mode=design&t=GAR2V2mQICJTQ6XD-4)
+    /// as an example of such behavior.
+    var isToggled: Bool = false
     let action: () -> Void
 
     var body: some View {
         let colorConfiguration = ButtonWithLeadingIconContentView.ColorConfiguration(
-            textColor: isSelected ? Colors.Text.primary1 : Colors.Text.secondary,
-            iconColor: isSelected ? Colors.Text.primary1 : Colors.Text.secondary,
+            textColor: isToggled ? Colors.Text.secondary : Colors.Text.primary1,
+            iconColor: isToggled ? Colors.Text.secondary : Colors.Text.primary1,
             backgroundColor: Colors.Background.primary
         )
         ButtonWithLeadingIconContentView(
@@ -147,32 +151,29 @@ struct ButtonWithLeadingIcon_Previews: PreviewProvider {
 
                 FlexySizeButtonWithLeadingIcon(
                     title: "Buy",
-                    icon: Assets.plusMini.image,
-                    isSelected: false
+                    icon: Assets.plusMini.image
                 ) {}
 
                 FlexySizeButtonWithLeadingIcon(
                     title: "Exchange",
                     icon: Assets.exchangeMini.image,
-                    isSelected: true
+                    isToggled: true
+                ) {}
+
+                FlexySizeButtonWithLeadingIcon(
+                    title: "",
+                    icon: Assets.horizontalDots.image
                 ) {}
 
                 FlexySizeButtonWithLeadingIcon(
                     title: "Organize tokens",
                     icon: Assets.sliders.image,
-                    isSelected: false
-                ) {}
-
-                FlexySizeButtonWithLeadingIcon(
-                    title: "",
-                    icon: Assets.horizontalDots.image,
-                    isSelected: true
+                    isToggled: true
                 ) {}
 
                 FlexySizeButtonWithLeadingIcon(
                     title: "LongTitle_LongTitle_LongTitle_LongTitle_LongTitle",
-                    icon: Assets.infoIconMini.image,
-                    isSelected: false
+                    icon: Assets.infoIconMini.image
                 ) {}
             }
             .padding(.horizontal)

@@ -28,10 +28,53 @@ struct MainCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.detailsCoordinator) {
                 DetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.tokenDetailsCoordinator) {
+                TokenDetailsCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.swappingCoordinator) {
+                SwappingCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.pushedWebViewModel) {
+                WebViewContainer(viewModel: $0)
+            }
     }
 
     @ViewBuilder
     private var sheets: some View {
-        EmptyView()
+        NavHolder()
+            .sheet(item: $coordinator.mailViewModel) {
+                MailView(viewModel: $0)
+            }
+            .sheet(item: $coordinator.sendCoordinator) {
+                SendCoordinatorView(coordinator: $0)
+            }
+            .sheet(item: $coordinator.modalWebViewModel) {
+                WebViewContainer(viewModel: $0)
+            }
+            .sheet(item: $coordinator.modalOnboardingCoordinator) {
+                OnboardingCoordinatorView(coordinator: $0)
+                    .presentation(modal: true, onDismissalAttempt: $0.onDismissalAttempt, onDismissed: nil)
+                    .onPreferenceChange(ModalSheetPreferenceKey.self, perform: { value in
+                        coordinator.modalOnboardingCoordinatorKeeper = value
+                    })
+            }
+            .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
+                OrganizeTokensContainerView(viewModel: viewModel)
+            }
+
+        NavHolder()
+            .bottomSheet(
+                item: $coordinator.warningBankCardViewModel,
+                sheetContent: {
+                    WarningBankCardView(viewModel: $0)
+                        .padding(.bottom, 10)
+                }
+            )
+            .bottomSheet(
+                item: $coordinator.receiveBottomSheetViewModel,
+                settings: .init(backgroundColor: Colors.Background.primary)
+            ) {
+                ReceiveBottomSheetView(viewModel: $0)
+            }
     }
 }

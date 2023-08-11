@@ -7,29 +7,74 @@
 //
 
 import Foundation
+import Combine
+import CombineExt
 
 final class OrganizeTokensHeaderViewModel: ObservableObject {
-    @Published var isSortByBalanceEnabled = true
+    @Published var isSortByBalanceEnabled = false
 
     var sortByBalanceButtonTitle: String {
         return Localization.organizeTokensSortByBalance
     }
 
-    @Published var isGroupingEnabled = true
+    @Published var isGroupingEnabled = false
 
     var groupingButtonTitle: String {
         return isGroupingEnabled
-            ? Localization.organizeTokensGroup
-            : Localization.organizeTokensUngroup
+            ? Localization.organizeTokensUngroup
+            : Localization.organizeTokensGroup
+    }
+
+    private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
+    private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+
+    private var bag: Set<AnyCancellable> = []
+
+    init(
+        organizeTokensOptionsProviding: OrganizeTokensOptionsProviding,
+        organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+    ) {
+        self.organizeTokensOptionsProviding = organizeTokensOptionsProviding
+        self.organizeTokensOptionsEditing = organizeTokensOptionsEditing
+    }
+
+    func onViewAppear() {
+        bind()
     }
 
     func toggleSortState() {
-        isSortByBalanceEnabled.toggle()
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-3461)
+        organizeTokensOptionsEditing.sort(by: isSortByBalanceEnabled ? .dragAndDrop : .byBalance)
     }
 
     func toggleGroupState() {
-        isGroupingEnabled.toggle()
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-3461)
+        organizeTokensOptionsEditing.group(by: isGroupingEnabled ? .none : .byBlockchainNetwork)
+    }
+
+    private func bind() {
+        organizeTokensOptionsProviding
+            .groupingOption
+            .map { groupingOption in
+                switch groupingOption {
+                case .none:
+                    return false
+                case .byBlockchainNetwork:
+                    return true
+                }
+            }
+            .assign(to: \.isGroupingEnabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        organizeTokensOptionsProviding
+            .sortingOption
+            .map { sortingOption in
+                switch sortingOption {
+                case .dragAndDrop:
+                    return false
+                case .byBalance:
+                    return true
+                }
+            }
+            .assign(to: \.isSortByBalanceEnabled, on: self, ownership: .weak)
+            .store(in: &bag)
     }
 }

@@ -17,7 +17,7 @@ struct TokenIconViewModel: Hashable, Identifiable {
     var imageURL: URL? {
         guard let id else { return nil }
 
-        return TokenIconURLBuilder(baseURL: CoinsResponse.baseURL)
+        return TokenIconURLBuilder()
             .iconURL(id: id, size: .large)
     }
 
@@ -42,7 +42,7 @@ struct TokenIconViewModel: Hashable, Identifiable {
     init(tokenItem: TokenItem) {
         switch tokenItem {
         case .blockchain(let blockchain):
-            self.init(id: blockchain.id, name: blockchain.displayName, style: .blockchain)
+            self.init(id: blockchain.coinId, name: blockchain.displayName, style: .blockchain)
         case .token(let token, let blockchain):
             self.init(id: token.id, name: token.name, style: .token(blockchain.iconNameFilled))
         }
@@ -51,7 +51,7 @@ struct TokenIconViewModel: Hashable, Identifiable {
     init(with type: Amount.AmountType, blockchain: Blockchain) {
         switch type {
         case .coin, .reserve:
-            self.init(id: blockchain.id, name: blockchain.displayName, style: .blockchain)
+            self.init(id: blockchain.coinId, name: blockchain.displayName, style: .blockchain)
         case .token(let token):
             self.init(id: token.id, name: token.name, style: .token(blockchain.iconNameFilled))
         }

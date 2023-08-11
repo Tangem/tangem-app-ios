@@ -18,7 +18,7 @@ struct TokenIconInfoBuilder {
 
         switch type {
         case .coin, .reserve:
-            id = blockchain.id
+            id = blockchain.coinId
             name = blockchain.displayName
         case .token(let token):
             id = token.id
@@ -27,10 +27,14 @@ struct TokenIconInfoBuilder {
         }
 
         if let id {
-            imageURL = TokenIconURLBuilder(baseURL: CoinsResponse.baseURL)
+            imageURL = TokenIconURLBuilder()
                 .iconURL(id: id, size: .large)
         }
 
         return .init(name: name, blockchainIconName: blockchainIconName, imageURL: imageURL)
+    }
+
+    func build(from tokenItem: TokenItem) -> TokenIconInfo {
+        build(for: tokenItem.amountType, in: tokenItem.blockchain)
     }
 }

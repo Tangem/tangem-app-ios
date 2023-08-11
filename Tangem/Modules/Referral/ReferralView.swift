@@ -298,6 +298,7 @@ struct ReferralView_Previews: PreviewProvider {
             ReferralView(
                 viewModel: ReferralViewModel(
                     userWalletId: Data(),
+                    supportedBlockchains: SupportedBlockchains.all,
                     userTokensManager: UserTokensManagerMock(),
                     coordinator: ReferralCoordinator()
                 )
@@ -309,6 +310,7 @@ struct ReferralView_Previews: PreviewProvider {
             ReferralView(
                 viewModel: ReferralViewModel(
                     userWalletId: Data(hexString: "6772C99F8B400E6F59FFCE0C4A66193BFD49DE2D9738868DE36F5E16569BB4F9"),
+                    supportedBlockchains: SupportedBlockchains.all,
                     userTokensManager: UserTokensManagerMock(),
                     coordinator: ReferralCoordinator()
                 )

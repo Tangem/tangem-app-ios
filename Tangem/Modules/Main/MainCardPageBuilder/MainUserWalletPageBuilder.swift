@@ -35,10 +35,12 @@ enum MainUserWalletPageBuilder: Identifiable {
     @ViewBuilder
     var body: some View {
         switch self {
-        case .singleWallet(_, _, let bodyModel):
+        case .singleWallet(let id, _, let bodyModel):
             SingleWalletMainContentView(viewModel: bodyModel)
-        case .multiWallet(_, _, let bodyModel):
+                .id(id)
+        case .multiWallet(let id, _, let bodyModel):
             MultiWalletMainContentView(viewModel: bodyModel)
+                .id(id)
         }
     }
 }

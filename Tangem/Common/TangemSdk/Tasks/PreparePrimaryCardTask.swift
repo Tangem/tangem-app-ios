@@ -13,12 +13,12 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     var shouldAskForAccessCode: Bool { false }
 
     private let curves: [EllipticCurve]
-    private let seed: Data?
+    private let mnemonic: Mnemonic?
     private var commandBag: (any CardSessionRunnable)?
 
-    init(curves: [EllipticCurve], seed: Data?) {
+    init(curves: [EllipticCurve], mnemonic: Mnemonic?) {
         self.curves = curves
-        self.seed = seed
+        self.mnemonic = mnemonic
     }
 
     deinit {
@@ -58,7 +58,7 @@ class PreparePrimaryCardTask: CardSessionRunnable {
         let existingCurves = card.wallets.map { $0.curve }
         let curvesToCreate = curves.filter { !existingCurves.contains($0) }
 
-        let command = CreateMultiWalletTask(curves: curvesToCreate, seed: seed)
+        let command = CreateMultiWalletTask(curves: curvesToCreate, mnemonic: mnemonic)
         commandBag = command
         command.run(in: session) { result in
             switch result {

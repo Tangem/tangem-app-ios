@@ -133,7 +133,7 @@ class SeedPhraseInputProcessor {
         }
 
         switch mnemonicError {
-        case .invalidEntropyLength, .invalidWordCount, .invalidWordsFile, .mnenmonicCreationFailed, .normalizationFailed, .wrongWordCount:
+        case .invalidEntropyLength, .invalidWordCount, .invalidWordsFile, .mnenmonicCreationFailed, .normalizationFailed, .wrongWordCount, .invalidMnemonic:
             inputError = nil
         case .invalidCheksum:
             inputError = Localization.onboardingSeedMnemonicInvalidChecksum

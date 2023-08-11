@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO: Andrey Fedorov - This VM is subject to change (IOS-3461)
 struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
     var id = UUID()
 
@@ -18,23 +17,20 @@ struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
 
     var balance: LoadableTextView.State
 
+    var isNetworkUnreachable: Bool
     var isDraggable: Bool
-    var networkUnreachable: Bool
-    var hasPendingTransactions: Bool
 
     private let tokenIcon: TokenIconInfo
 
     init(
         tokenIcon: TokenIconInfo,
         balance: LoadableTextView.State,
-        isDraggable: Bool,
-        networkUnreachable: Bool,
-        hasPendingTransactions: Bool
+        isNetworkUnreachable: Bool,
+        isDraggable: Bool
     ) {
         self.tokenIcon = tokenIcon
         self.balance = balance
+        self.isNetworkUnreachable = isNetworkUnreachable
         self.isDraggable = isDraggable
-        self.networkUnreachable = networkUnreachable
-        self.hasPendingTransactions = hasPendingTransactions
     }
 }

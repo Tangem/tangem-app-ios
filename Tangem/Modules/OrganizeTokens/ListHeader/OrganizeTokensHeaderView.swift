@@ -17,25 +17,43 @@ struct OrganizeTokensHeaderView: View {
                 FlexySizeButtonWithLeadingIcon(
                     title: viewModel.sortByBalanceButtonTitle,
                     icon: Assets.OrganizeTokens.byBalanceSortIcon.image,
-                    isSelected: viewModel.isSortByBalanceEnabled,
+                    isToggled: viewModel.isSortByBalanceEnabled,
                     action: viewModel.toggleSortState
                 )
+                // TODO: Andrey Fedorov - Dark mode support for shadows (IOS-3927)
+                .shadow(color: Colors.Button.primary.opacity(sortByBalanceButtonShadowOpacity), radius: 5.0)
 
                 FlexySizeButtonWithLeadingIcon(
                     title: viewModel.groupingButtonTitle,
                     icon: Assets.OrganizeTokens.makeGroupIcon.image,
-                    isSelected: true,
                     action: viewModel.toggleGroupState
                 )
+                // TODO: Andrey Fedorov - Dark mode support for shadows (IOS-3927)
+                .shadow(color: Colors.Button.primary.opacity(groupingButtonShadowOpacity), radius: 5.0)
             }
-            // TODO: Andrey Fedorov - Proper shadow color and dark mode support (IOS-3927)
-            .shadow(color: Colors.Button.primary.opacity(0.1), radius: 5.0)
             .background(
                 Colors.Background
                     .primary
                     .cornerRadiusContinuous(10.0)
             )
+            .onFirstAppear(perform: viewModel.onViewAppear)
         }
+    }
+
+    private var sortByBalanceButtonShadowOpacity: CGFloat {
+        return Constants.buttonShadowOpacity / (viewModel.isSortByBalanceEnabled ? 3.0 : 1.0)
+    }
+
+    private var groupingButtonShadowOpacity: CGFloat {
+        return Constants.buttonShadowOpacity
+    }
+}
+
+// MARK: - Constants
+
+private extension OrganizeTokensHeaderView {
+    enum Constants {
+        static let buttonShadowOpacity = 0.1
     }
 }
 
@@ -43,8 +61,11 @@ struct OrganizeTokensHeaderView: View {
 
 struct OrganizeTokensHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        OrganizeTokensHeaderView(
-            viewModel: .init()
+        let optionsManager = OrganizeTokensOptionsManagerStub()
+        let viewModel = OrganizeTokensHeaderViewModel(
+            organizeTokensOptionsProviding: optionsManager,
+            organizeTokensOptionsEditing: optionsManager
         )
+        return OrganizeTokensHeaderView(viewModel: viewModel)
     }
 }

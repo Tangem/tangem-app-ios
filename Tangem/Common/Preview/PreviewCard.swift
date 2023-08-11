@@ -78,9 +78,9 @@ enum PreviewCard {
         case .ethereum:
             return .ethereum(testnet: false)
         case .stellar:
-            return .stellar(testnet: false)
+            return .stellar(curve: .ed25519_slip0010, testnet: false)
         case .cardanoNote:
-            return .cardano
+            return .cardano(extended: false)
         default:
             return nil
         }

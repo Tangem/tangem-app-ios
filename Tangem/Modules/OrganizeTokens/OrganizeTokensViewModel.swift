@@ -7,36 +7,166 @@
 //
 
 import Combine
+import CombineExt
 import SwiftUI
 
-final class OrganizeTokensViewModel: ObservableObject {
+final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     /// Sentinel value for `item` of `IndexPath` representing a section.
     var sectionHeaderItemIndex: Int { .min }
 
-    let headerViewModel: OrganizeTokensHeaderViewModel
+    private(set) lazy var headerViewModel = OrganizeTokensHeaderViewModel(
+        organizeTokensOptionsProviding: organizeTokensOptionsProviding,
+        organizeTokensOptionsEditing: organizeTokensOptionsEditing
+    )
 
-    @Published var sections: [OrganizeTokensListSectionViewModel]
+    @Published private(set) var sections: [OrganizeTokensListSectionViewModel] = []
+
+    let id = UUID()
 
     private unowned let coordinator: OrganizeTokensRoutable
+
+    private let walletModelsManager: WalletModelsManager
+    private let walletModelsAdapter: OrganizeWalletModelsAdapter
+    private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
+    private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
 
     private var currentlyDraggedSectionIdentifier: UUID?
     private var currentlyDraggedSectionItems: [OrganizeTokensListItemViewModel] = []
 
+    private let onSave = PassthroughSubject<Void, Never>()
+
+    private let mappingQueue = DispatchQueue(
+        label: "com.tangem.OrganizeTokensViewModel.mappingQueue",
+        qos: .userInitiated
+    )
+
+    private var bag: Set<AnyCancellable> = []
+
     init(
         coordinator: OrganizeTokensRoutable,
-        sections: [OrganizeTokensListSectionViewModel]
+        walletModelsManager: WalletModelsManager,
+        walletModelsAdapter: OrganizeWalletModelsAdapter,
+        organizeTokensOptionsProviding: OrganizeTokensOptionsProviding,
+        organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
     ) {
         self.coordinator = coordinator
-        self.sections = sections
-        headerViewModel = OrganizeTokensHeaderViewModel()
+        self.walletModelsManager = walletModelsManager
+        self.walletModelsAdapter = walletModelsAdapter
+        self.organizeTokensOptionsProviding = organizeTokensOptionsProviding
+        self.organizeTokensOptionsEditing = organizeTokensOptionsEditing
+    }
+
+    func onViewAppear() {
+        bind()
     }
 
     func onCancelButtonTap() {
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-3461)
+        coordinator.didTapCancelButton()
     }
 
     func onApplyButtonTap() {
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-3461)
+        onSave.send()
+    }
+
+    private func bind() {
+        let walletModelsPublisher = walletModelsManager
+            .walletModelsPublisher
+
+        let walletModelsDidChangePublisher = walletModelsPublisher
+            .receive(on: mappingQueue)
+            .flatMap { walletModels in
+                return walletModels
+                    .map(\.walletDidChangePublisher)
+                    .merge()
+            }
+            .debounce(for: 0.3, scheduler: RunLoop.main)
+            .withLatestFrom(walletModelsPublisher)
+
+        walletModelsAdapter
+            .organizedWalletModels(from: walletModelsDidChangePublisher, on: mappingQueue)
+            .withLatestFrom(organizeTokensOptionsProviding.sortingOption) { ($0, $1) }
+            .map(Self.map)
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.sections, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        onSave
+            .throttle(for: 1.0, scheduler: RunLoop.main, latest: false)
+            .eraseToAnyPublisher()
+            .withWeakCaptureOf(self)
+            .flatMapLatest { viewModel, _ in
+                viewModel.organizeTokensOptionsEditing.save()
+            }
+            .sink()
+            .store(in: &bag)
+    }
+
+    private static func map(
+        walletModelsSections: [OrganizeWalletModelsAdapter.Section],
+        sortingOption: OrganizeTokensOptions.Sorting
+    ) -> [OrganizeTokensListSectionViewModel] {
+        let tokenIconInfoBuilder = TokenIconInfoBuilder()
+        let isListItemsDraggable = isListItemDraggable(sortingOption: sortingOption)
+
+        return walletModelsSections.map { section in
+            let items = section.items.map { item in
+                return map(
+                    walletModel: item,
+                    isDraggable: isListItemsDraggable,
+                    using: tokenIconInfoBuilder
+                )
+            }
+
+            switch section.model {
+            case .group(let blockchainNetwork):
+                let title = Localization.walletNetworkGroupTitle(blockchainNetwork.blockchain.displayName)
+                return OrganizeTokensListSectionViewModel(style: .draggable(title: title), items: items)
+            case .plain:
+                return OrganizeTokensListSectionViewModel(style: .invisible, items: items)
+            }
+        }
+    }
+
+    private static func map(
+        walletModel: WalletModel,
+        isDraggable: Bool,
+        using tokenIconInfoBuilder: TokenIconInfoBuilder
+    ) -> OrganizeTokensListItemViewModel {
+        let tokenIcon = tokenIconInfoBuilder.build(
+            for: walletModel.amountType,
+            in: walletModel.blockchainNetwork.blockchain
+        )
+
+        return OrganizeTokensListItemViewModel(
+            tokenIcon: tokenIcon,
+            balance: fiatBalance(for: walletModel),
+            isNetworkUnreachable: walletModel.state.isBlockchainUnreachable,
+            isDraggable: isDraggable
+        )
+    }
+
+    private static func fiatBalance(for walletModel: WalletModel) -> LoadableTextView.State {
+        guard !walletModel.rateFormatted.isEmpty else { return .noData }
+
+        switch walletModel.state {
+        case .created, .idle, .noAccount, .noDerivation:
+            return .loaded(text: walletModel.fiatBalance)
+        case .loading:
+            return .loading
+        case .failed:
+            return .noData
+        }
+    }
+
+    private static func isListItemDraggable(
+        sortingOption: OrganizeTokensOptions.Sorting
+    ) -> Bool {
+        switch sortingOption {
+        case .dragAndDrop:
+            return true
+        case .byBalance:
+            return false
+        }
     }
 }
 

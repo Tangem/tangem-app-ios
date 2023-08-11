@@ -12,7 +12,7 @@ import Combine
 protocol TangemApiService: AnyObject, Initializable {
     var geoIpRegionCode: String { get }
 
-    func loadCoins(requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Error>
+    func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error>
     func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>

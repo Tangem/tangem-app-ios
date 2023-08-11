@@ -17,6 +17,7 @@ class CommonUserTokenListManager {
 
     private let userWalletId: Data
     private let tokenItemsRepository: TokenItemsRepository
+    private let supportedBlockchains: Set<Blockchain>
 
     private var pendingTokensToUpdate: UserTokenList?
     private var loadTokensCancellable: AnyCancellable?
@@ -26,15 +27,31 @@ class CommonUserTokenListManager {
     /// Bool flag for migration custom token to token form our API
     private var migrated = false
 
+    private let initialTokenSyncSubject: CurrentValueSubject<Bool, Never>
     private var _userTokens: CurrentValueSubject<[StorageEntry], Never>
+    private var _userTokenList: CurrentValueSubject<UserTokenList, Never>
 
-    init(hasTokenSynchronization: Bool, userWalletId: Data, hdWalletsSupported: Bool) {
+    init(hasTokenSynchronization: Bool, userWalletId: Data, supportedBlockchains: Set<Blockchain>, hdWalletsSupported: Bool) {
         self.hasTokenSynchronization = hasTokenSynchronization
         self.userWalletId = userWalletId
+        self.supportedBlockchains = supportedBlockchains
         self.hdWalletsSupported = hdWalletsSupported
         tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.hexString)
+        initialTokenSyncSubject = CurrentValueSubject(tokenItemsRepository.containsFile)
         _userTokens = .init(tokenItemsRepository.getItems())
+        _userTokenList = .init(.empty)
         removeInvalidTokens()
+        performInitialSync()
+    }
+
+    private func performInitialSync() {
+        if isInitialSyncPerformed {
+            return
+        }
+
+        updateLocalRepositoryFromServer { [weak self] _ in
+            self?.initialTokenSyncSubject.send(true)
+        }
     }
 }
 
@@ -49,7 +66,15 @@ extension CommonUserTokenListManager: UserTokenListManager {
         _userTokens.eraseToAnyPublisher()
     }
 
-    func update(_ type: CommonUserTokenListManager.UpdateType, shouldUpload: Bool) {
+    var userTokenList: AnyPublisher<UserTokenList, Never> {
+        _userTokenList.eraseToAnyPublisher()
+    }
+
+    func update(with userTokenList: UserTokenList) {
+        // TODO: Andrey Fedorov - Add actual implementation (IOS-4152)
+    }
+
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {
         switch type {
         case .rewrite(let entries):
             tokenItemsRepository.update(entries)
@@ -61,17 +86,11 @@ extension CommonUserTokenListManager: UserTokenListManager {
             tokenItemsRepository.remove([token], blockchainNetwork: network)
         }
 
-        sendUpdate()
+        updateUserTokens()
 
         if shouldUpload {
             updateTokensOnServer()
         }
-    }
-
-    func upload() {
-        guard hasTokenSynchronization else { return }
-
-        updateTokensOnServer()
     }
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
@@ -82,13 +101,33 @@ extension CommonUserTokenListManager: UserTokenListManager {
 
         loadUserTokenList(result: result)
     }
+
+    func upload() {
+        guard hasTokenSynchronization else { return }
+
+        updateTokensOnServer()
+    }
+}
+
+extension CommonUserTokenListManager: UserTokensSyncService {
+    var isInitialSyncPerformed: Bool {
+        tokenItemsRepository.containsFile
+    }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> {
+        initialTokenSyncSubject.eraseToAnyPublisher()
+    }
 }
 
 // MARK: - Private
 
 private extension CommonUserTokenListManager {
-    func sendUpdate() {
+    func updateUserTokens() {
         _userTokens.send(tokenItemsRepository.getItems())
+    }
+
+    func updateUserTokenList(with userTokenList: UserTokenList) {
+        _userTokenList.send(userTokenList)
     }
 
     // MARK: - Requests
@@ -117,7 +156,8 @@ private extension CommonUserTokenListManager {
                 }
             } receiveValue: { [unowned self] list, _ in
                 tokenItemsRepository.update(mapToEntries(list: list))
-                sendUpdate()
+                updateUserTokens()
+                updateUserTokenList(with: list)
                 result(.success(()))
             }
     }
@@ -144,7 +184,11 @@ private extension CommonUserTokenListManager {
     func getUserTokenList() -> UserTokenList {
         let entries = tokenItemsRepository.getItems()
         let tokens = mapToTokens(entries: entries)
-        return UserTokenList(tokens: tokens)
+        return UserTokenList(
+            tokens: tokens,
+            group: .none,
+            sort: .manual
+        )
     }
 
     // MARK: - Mapping
@@ -153,7 +197,7 @@ private extension CommonUserTokenListManager {
         entries.reduce(into: []) { result, entry in
             let blockchain = entry.blockchainNetwork.blockchain
             let blockchainToken = UserTokenList.Token(
-                id: blockchain.id,
+                id: blockchain.coinId,
                 networkId: blockchain.networkId,
                 name: blockchain.displayName,
                 symbol: blockchain.currencySymbol,
@@ -187,7 +231,7 @@ private extension CommonUserTokenListManager {
         let blockchains = list.tokens
             .filter { $0.contractAddress == nil }
             .compactMap { token -> BlockchainNetwork? in
-                guard let blockchain = Blockchain(from: token.networkId) else {
+                guard let blockchain = supportedBlockchains[token.networkId] else {
                     return nil
                 }
 
@@ -251,9 +295,9 @@ private extension CommonUserTokenListManager {
     }
 
     func updateCustomToken(token: Token, in blockchainNetwork: BlockchainNetwork) -> AnyPublisher<Bool, Never> {
-        let requestModel = CoinsListRequestModel(
-            contractAddress: token.contractAddress,
-            networkIds: [blockchainNetwork.blockchain.networkId]
+        let requestModel = CoinsList.Request(
+            supportedBlockchains: [blockchainNetwork.blockchain],
+            contractAddress: token.contractAddress
         )
 
         // TODO: refactor, reduce complexity
@@ -261,14 +305,13 @@ private extension CommonUserTokenListManager {
             .loadCoins(requestModel: requestModel)
             .replaceError(with: [])
             .flatMap { [weak self] models -> AnyPublisher<Bool, Never> in
-                guard let self = self,
-                      let token = models.first?.items.compactMap({ $0.token }).first else {
+                guard let token = models.first?.items.compactMap({ $0.token }).first else {
                     return Just(false).eraseToAnyPublisher()
                 }
 
                 return Future<Bool, Never> { promise in
                     let entry = StorageEntry(blockchainNetwork: blockchainNetwork, token: token)
-                    self.update(.append([entry]), shouldUpload: true)
+                    self?.update(.append([entry]), shouldUpload: true)
                     promise(.success(true))
                 }
                 .eraseToAnyPublisher()
@@ -290,14 +333,5 @@ private extension CommonUserTokenListManager {
 
         let networks = badItems.map { $0.blockchainNetwork }
         tokenItemsRepository.remove(networks)
-    }
-}
-
-extension CommonUserTokenListManager {
-    enum UpdateType {
-        case rewrite(_ entries: [StorageEntry])
-        case append(_ entries: [StorageEntry])
-        case removeBlockchain(_ blockchain: BlockchainNetwork)
-        case removeToken(_ token: Token, in: BlockchainNetwork)
     }
 }

@@ -63,7 +63,8 @@ final class AppScanTask: CardSessionRunnable {
         }
 
         // tmp disable reading cards with imported wallets
-        if card.wallets.contains(where: { $0.isImported == true }) {
+        if card.firmwareVersion < .ed25519Slip0010Available,
+           card.wallets.contains(where: { $0.isImported == true }) {
             completion(.failure(.wrongCardType(nil)))
             return
         }

@@ -10,19 +10,25 @@ import Foundation
 import Combine
 
 struct LockedUserTokenListManager: UserTokenListManager {
+    var isInitialSyncPerformed: Bool { false }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
+
     var userTokens: [StorageEntry] { [] }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
 
-    func contains(_ entry: StorageEntry) -> Bool {
-        return false
-    }
+    var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
 
-    func update(_ type: CommonUserTokenListManager.UpdateType, shouldUpload: Bool) {}
+    func update(with userTokenList: UserTokenList) {}
 
-    func upload() {}
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
         result(.success(()))
     }
+
+    func updateUserTokens() {}
+
+    func upload() {}
 }

@@ -84,7 +84,7 @@ struct IconView: View {
 struct IconView_Preview: PreviewProvider {
     static var previews: some View {
         IconView(
-            url: TokenIconURLBuilder(baseURL: CoinsResponse.baseURL).iconURL(id: "arbitrum-one", size: .small),
+            url: TokenIconURLBuilder().iconURL(id: "arbitrum-one", size: .small),
             size: CGSize(width: 40, height: 40)
         )
     }

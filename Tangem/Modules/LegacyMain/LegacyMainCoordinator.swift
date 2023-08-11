@@ -218,9 +218,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
             coordinator.start(with: .init(
                 cardModel: cardModel,
                 walletModel: walletModel,
-                userTokensManager: cardModel.userTokensManager,
-                blockchainNetwork: blockchainNetwork,
-                amountType: amountType
+                userTokensManager: cardModel.userTokensManager
             ))
             tokenDetailsCoordinator = coordinator
             return

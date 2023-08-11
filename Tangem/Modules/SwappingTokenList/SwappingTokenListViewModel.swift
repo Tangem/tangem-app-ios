@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import TangemSwapping
+import enum BlockchainSdk.Blockchain
 
 final class SwappingTokenListViewModel: ObservableObject, Identifiable {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -35,6 +36,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
     private let fiatRatesProvider: FiatRatesProviding
     private unowned let coordinator: SwappingTokenListRoutable
 
+    private let blockchain: Blockchain
     private let sourceCurrency: Currency
     private var userCurrencies: [Currency] = []
     private var bag: Set<AnyCancellable> = []
@@ -45,6 +47,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
     }
 
     init(
+        blockchain: Blockchain,
         sourceCurrency: Currency,
         userCurrenciesProvider: UserCurrenciesProviding,
         tokenIconURLBuilder: TokenIconURLBuilding,
@@ -53,6 +56,7 @@ final class SwappingTokenListViewModel: ObservableObject, Identifiable {
         fiatRatesProvider: FiatRatesProviding,
         coordinator: SwappingTokenListRoutable
     ) {
+        self.blockchain = blockchain
         self.sourceCurrency = sourceCurrency
         self.userCurrenciesProvider = userCurrenciesProvider
         self.tokenIconURLBuilder = tokenIconURLBuilder
@@ -187,7 +191,7 @@ private extension SwappingTokenListViewModel {
     }
 
     func setupLoader() -> ListDataLoader {
-        let dataLoader = ListDataLoader(networkIds: [sourceCurrency.blockchain.networkId], exchangeable: true)
+        let dataLoader = ListDataLoader(supportedBlockchains: [blockchain], exchangeable: true)
         dataLoader.$items
             .receive(on: DispatchQueue.global())
             .map { [weak self] coinModels in

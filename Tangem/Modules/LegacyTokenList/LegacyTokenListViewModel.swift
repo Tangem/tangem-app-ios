@@ -167,8 +167,7 @@ private extension LegacyTokenListViewModel {
 
     func setupListDataLoader() -> ListDataLoader {
         let supportedBlockchains = mode.settings?.supportedBlockchains ?? SupportedBlockchains.all
-        let networkIds = supportedBlockchains.map { $0.networkId }
-        let loader = ListDataLoader(networkIds: networkIds)
+        let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
             .map { [weak self] items -> [LegacyCoinViewModel] in

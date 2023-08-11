@@ -10,5 +10,7 @@ import Foundation
 
 protocol MainRoutable: AnyObject {
     func openDetails(for cardModel: CardViewModel)
+    func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
+    func openOnboardingModal(with input: OnboardingInput)
     func close(newScan: Bool)
 }

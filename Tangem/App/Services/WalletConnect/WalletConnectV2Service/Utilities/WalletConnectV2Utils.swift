@@ -101,7 +101,7 @@ struct WalletConnectV2Utils {
                 }
 
                 supportedChains.insert(wcBlockchain)
-                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.id == blockchain.id }
+                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.coinId == blockchain.id }
                 if filteredWallets.isEmpty {
                     missingBlockchains.append(blockchain.displayName)
                     return nil
@@ -131,7 +131,7 @@ struct WalletConnectV2Utils {
                 }
 
                 supportedChains.insert(wcBlockchain)
-                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.id == blockchain.id }
+                let filteredWallets = wallets.filter { $0.blockchainNetwork.blockchain.coinId == blockchain.id }
                 if filteredWallets.isEmpty {
                     return nil
                 }
@@ -205,7 +205,7 @@ struct WalletConnectV2Utils {
                 .first(where: { $0.chainId == wcChainId })
                 .map {
                     BlockchainMeta(
-                        id: $0.id,
+                        id: $0.coinId,
                         currencySymbol: $0.currencySymbol,
                         displayName: $0.displayName
                     )
@@ -235,7 +235,7 @@ struct WalletConnectV2Utils {
         case evmNamespace:
             guard
                 let blockchain = createBlockchain(for: wcBlockchain),
-                let walletModel = walletModels.first(where: { $0.wallet.blockchain.id == blockchain.id && $0.wallet.address == address })
+                let walletModel = walletModels.first(where: { $0.wallet.blockchain.coinId == blockchain.id && $0.wallet.address == address })
             else {
                 return nil
             }

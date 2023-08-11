@@ -55,6 +55,7 @@ class UtorgService {
     @Published private var initialized: Bool = false
 
     private var supportedCurrencies = [UtorgCurrency]()
+    private let supportedBlockchains = SupportedBlockchains.all
 
     private var host: String {
         if AppEnvironment.current.isTestnet {
@@ -68,7 +69,8 @@ class UtorgService {
         return supportedCurrencies.first(where: {
             guard
                 let chain = $0.chain,
-                let utorgBlockchain = Blockchain(from: chain.lowercased()),
+                // TODO: Make sure that the blockchain has been correctly founded from the SupportedBlockchains
+                let utorgBlockchain = supportedBlockchains[chain.lowercased()],
                 $0.enabled,
                 $0.symbol.lowercased() == symbol.lowercased(),
                 utorgBlockchain == blockchain

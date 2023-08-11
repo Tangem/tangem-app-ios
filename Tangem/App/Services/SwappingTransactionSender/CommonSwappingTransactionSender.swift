@@ -86,10 +86,11 @@ private extension CommonSwappingTransactionSender {
     }
 
     func createAmount(from swappingBlockchain: SwappingBlockchain, amount: Decimal) throws -> Amount {
-        guard let blockchain = Blockchain(from: swappingBlockchain.networkId) else {
-            throw CommonError.noData
-        }
-
-        return Amount(with: blockchain, value: amount)
+        Amount(
+            type: .coin,
+            currencySymbol: swappingBlockchain.symbol,
+            value: amount,
+            decimals: swappingBlockchain.decimalCount
+        )
     }
 }

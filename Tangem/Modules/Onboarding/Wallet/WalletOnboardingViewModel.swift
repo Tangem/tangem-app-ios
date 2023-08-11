@@ -230,7 +230,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     lazy var importSeedPhraseModel: OnboardingSeedPhraseImportViewModel? = .init(
         inputProcessor: SeedPhraseInputProcessor()) { [weak self] mnemonic in
-            self?.createWallet(using: mnemonic)
+            self?.createWalletOnPrimaryCard(using: mnemonic)
         }
 
     lazy var validationUserSeedPhraseModel: OnboardingSeedPhraseUserValidationViewModel? = {
@@ -253,7 +253,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 }
 
                 self?.walletCreationType = .seedImport
-                self?.createWallet(using: mnemonic)
+                self?.createWalletOnPrimaryCard(using: mnemonic)
             }
         ))
     }()
@@ -657,12 +657,12 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             )
     }
 
-    private func createWalletOnPrimaryCard(using seed: Data? = nil) {
+    private func createWalletOnPrimaryCard(using mnemonic: Mnemonic? = nil) {
         guard let cardInitializer = input.cardInitializer else { return }
 
         AppSettings.shared.cardsStartedActivation.insert(input.cardInput.cardId)
 
-        cardInitializer.initializeCard(seed: seed) { [weak self] result in
+        cardInitializer.initializeCard(mnemonic: mnemonic) { [weak self] result in
             guard let self else { return }
 
             switch result {
@@ -845,15 +845,6 @@ extension WalletOnboardingViewModel {
             try seedPhraseManager.generateSeedPhrase()
             walletCreationType = .newSeed
             goToNextStep()
-        } catch {
-            alert = error.alertBinder
-        }
-    }
-
-    private func createWallet(using mnemonic: Mnemonic) {
-        do {
-            let seed = try mnemonic.generateSeed()
-            createWalletOnPrimaryCard(using: seed)
         } catch {
             alert = error.alertBinder
         }

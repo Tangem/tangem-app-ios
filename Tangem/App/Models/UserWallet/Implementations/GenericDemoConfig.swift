@@ -32,7 +32,7 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     var mandatoryCurves: [EllipticCurve] {
-        [.secp256k1, .ed25519]
+        [.secp256k1, .ed25519, .bip0340, .bls12381_G2_AUG]
     }
 
     var derivationStyle: DerivationStyle? {

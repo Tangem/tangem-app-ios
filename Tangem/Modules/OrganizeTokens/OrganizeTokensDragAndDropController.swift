@@ -244,10 +244,10 @@ final class OrganizeTokensDragAndDropController: ObservableObject {
         let listViewKind = dataSource.controller(self, listViewKindForItemAt: indexPath)
 
         switch listViewKind {
-        case .cell:
+        case .cell where isSectionValid:
             let numberOfRowsInSection = dataSource.controller(self, numberOfRowsInSection: indexPath.section)
-            return isSectionValid && 0 ..< numberOfRowsInSection ~= indexPath.item
-        case .sectionHeader:
+            return 0 ..< numberOfRowsInSection ~= indexPath.item
+        case .cell, .sectionHeader:
             return isSectionValid
         }
     }

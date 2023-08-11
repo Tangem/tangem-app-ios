@@ -25,7 +25,7 @@ class ListDataLoader {
 
     // MARK: Input
 
-    private let networkIds: [String]
+    private let supportedBlockchains: Set<Blockchain>
     private let exchangeable: Bool?
 
     // MARK: Private
@@ -42,8 +42,8 @@ class ListDataLoader {
     private var cachedSearch: [String: [CoinModel]] = [:]
     private var lastSearchText = ""
 
-    init(networkIds: [String], exchangeable: Bool? = nil) {
-        self.networkIds = networkIds
+    init(supportedBlockchains: Set<Blockchain>, exchangeable: Bool? = nil) {
+        self.supportedBlockchains = supportedBlockchains
         self.exchangeable = exchangeable
     }
 
@@ -82,8 +82,8 @@ class ListDataLoader {
 private extension ListDataLoader {
     func loadItems(_ searchText: String) -> AnyPublisher<[CoinModel], Never> {
         let searchText = searchText.trimmed()
-        let requestModel = CoinsListRequestModel(
-            networkIds: networkIds,
+        let requestModel = CoinsList.Request(
+            supportedBlockchains: supportedBlockchains,
             searchText: searchText,
             exchangeable: exchangeable,
             limit: perPage,
@@ -92,14 +92,14 @@ private extension ListDataLoader {
         )
 
         // If testnet then use local coins from testnet_tokens.json file.
-        if networkIds.contains(where: { $0.contains(Blockchain.testnetId) }) {
+        if supportedBlockchains.contains(where: { $0.isTestnet }) {
             return loadTestnetItems(requestModel)
         }
 
         return loadMainnetItems(requestModel)
     }
 
-    func loadTestnetItems(_ requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Never> {
+    func loadTestnetItems(_ requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
         let searchText = requestModel.searchText?.lowercased()
         let itemsPublisher: AnyPublisher<[CoinModel], Never>
 
@@ -134,13 +134,13 @@ private extension ListDataLoader {
             .eraseToAnyPublisher()
     }
 
-    func loadMainnetItems(_ requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Never> {
+    func loadMainnetItems(_ requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
         tangemApiService.loadCoins(requestModel: requestModel)
             .replaceError(with: [])
             .eraseToAnyPublisher()
     }
 
-    func loadCoinsFromLocalJsonPublisher(requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Never> {
+    func loadCoinsFromLocalJsonPublisher(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
         TestnetTokensRepository().loadCoins(requestModel: requestModel)
             .handleEvents(receiveOutput: { [weak self] output in
                 self?.cached = output

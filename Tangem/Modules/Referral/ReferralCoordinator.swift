@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import BlockchainSdk
 
 class ReferralCoordinator: CoordinatorObject {
     var dismissAction: Action
@@ -23,6 +24,7 @@ class ReferralCoordinator: CoordinatorObject {
     func start(with options: Options) {
         referralViewModel = .init(
             userWalletId: options.userWalletId,
+            supportedBlockchains: options.supportedBlockchains,
             userTokensManager: options.userTokensManager,
             coordinator: self
         )
@@ -32,6 +34,7 @@ class ReferralCoordinator: CoordinatorObject {
 extension ReferralCoordinator {
     struct Options {
         let userWalletId: Data
+        let supportedBlockchains: Set<Blockchain>
         let userTokensManager: UserTokensManager
     }
 }

@@ -61,7 +61,7 @@ struct TokenIcon_Preview: PreviewProvider {
             VStack {
                 ForEach(coins, id: \.id) { coin in
                     TokenIcon(
-                        name: coin.id, imageURL: TokenIconURLBuilder(baseURL: CoinsResponse.baseURL).iconURL(id: coin.id, size: .large),
+                        name: coin.id, imageURL: TokenIconURLBuilder().iconURL(id: coin.id, size: .large),
                         blockchainIconName: coin.iconName
                     )
                 }
