@@ -37,7 +37,7 @@ struct OnboardingMessagesView: View {
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.8)
                 .font(.system(size: 16, weight: .regular))
-                .foregroundColor(.tangemGrayDark6)
+                .foregroundColor(Colors.Text.secondary)
                 .frame(maxWidth: .infinity)
                 .transition(.opacity)
                 .id("onboarding_subtitle_\(subtitle)")
