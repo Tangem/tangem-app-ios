@@ -9,36 +9,70 @@
 import SwiftUI
 
 struct GeometryInfo: Equatable {
-    static var zero: Self {
-        .init(
-            coordinateSpace: .global,
-            frame: .zero,
-            size: .zero,
-            safeAreaInsets: .init()
-        )
-    }
-
     let coordinateSpace: CoordinateSpace
     let frame: CGRect
     let size: CGSize
     let safeAreaInsets: EdgeInsets
+
+    fileprivate init(
+        coordinateSpace: CoordinateSpace,
+        frame: CGRect,
+        size: CGSize,
+        safeAreaInsets: EdgeInsets
+    ) {
+        self.coordinateSpace = coordinateSpace
+        self.frame = frame
+        self.size = size
+        self.safeAreaInsets = safeAreaInsets
+    }
 }
 
+extension GeometryInfo {
+    struct ThrottleInterval: ExpressibleByFloatLiteral {
+        // No throttling at all.
+        static let zero = ThrottleInterval(0.0)
+        /// Aggressive throttling, use for non-precision tasks.
+        static let aggressive = ThrottleInterval(1.0 / 30.0)
+        /// Standard 60 FPS (single frame duration: ~16msec).
+        static let standard = ThrottleInterval(1.0 / 60.0)
+        /// 120 FPS on ProMotion capable devices (single frame duration: ~8msec).
+        static let proMotion = ThrottleInterval(1.0 / 120.0)
+
+        fileprivate let value: CFTimeInterval
+
+        init(_ value: CFTimeInterval) {
+            self.value = value
+        }
+
+        init(floatLiteral value: CFTimeInterval) {
+            self.value = value
+        }
+    }
+}
+
+// MARK: - Convenience extensions
+
 extension View {
-    /// Closure-based helper. Use optional `keyPath` parameter if you aren't interested in the whole `GeometryInfo` but rather a single property of it.
+    /// Closure-based helper. Use optional `keyPath` parameter if you aren't interested
+    /// in the whole `GeometryInfo` but rather a single property of it.
     func readGeometry<T>(
         _ keyPath: KeyPath<GeometryInfo, T> = \.self,
         inCoordinateSpace coordinateSpace: CoordinateSpace = .global,
+        throttleInterval: GeometryInfo.ThrottleInterval = .zero,
         onChange: @escaping (_ value: T) -> Void
     ) -> some View {
         modifier(
-            GeometryInfoReaderViewModifier(coordinateSpace: coordinateSpace) { geometryInfo in
+            GeometryInfoReaderViewModifier(
+                coordinateSpace: coordinateSpace,
+                throttleInterval: throttleInterval
+            ) { geometryInfo in
                 onChange(geometryInfo[keyPath: keyPath])
             }
         )
     }
 
-    /// Binding-based helper. Use optional `keyPath` parameter if you aren't interested in the whole `GeometryInfo` but rather a single property of it.
+    /// Binding-based helper. Use optional `keyPath` parameter if you aren't interested
+    /// in the whole `GeometryInfo` but rather a single property of it.
     ///
     /// ```swift
     /// struct SomeView: View {
@@ -55,9 +89,14 @@ extension View {
     func readGeometry<T>(
         _ keyPath: KeyPath<GeometryInfo, T> = \.self,
         inCoordinateSpace coordinateSpace: CoordinateSpace = .global,
+        throttleInterval: GeometryInfo.ThrottleInterval = .zero,
         bindTo value: Binding<T>
     ) -> some View {
-        readGeometry(keyPath, inCoordinateSpace: coordinateSpace) { newValue in
+        readGeometry(
+            keyPath,
+            inCoordinateSpace: coordinateSpace,
+            throttleInterval: throttleInterval
+        ) { newValue in
             value.wrappedValue = newValue
         }
     }
@@ -67,7 +106,8 @@ extension View {
 
 private struct GeometryInfoReaderViewModifier: ViewModifier {
     let coordinateSpace: CoordinateSpace
-    let onChange: (_ contentOffset: GeometryInfo) -> Void
+    let throttleInterval: GeometryInfo.ThrottleInterval
+    let onChange: (_ geometryInfo: GeometryInfo) -> Void
 
     func body(content: Content) -> some View {
         content
@@ -79,16 +119,51 @@ private struct GeometryInfoReaderViewModifier: ViewModifier {
                         size: geometryProxy.size,
                         safeAreaInsets: geometryProxy.safeAreaInsets
                     )
+                    let container = TimeStampContainer(
+                        timeStamp: CACurrentMediaTime(),
+                        throttleInterval: throttleInterval.value,
+                        geometryInfo: geometryInfo
+                    )
                     Color.clear
-                        .preference(key: GeometryInfoReaderPreferenceKey.self, value: geometryInfo)
+                        .preference(key: GeometryInfoReaderPreferenceKey.self, value: container)
                 }
             )
-            .onPreferenceChange(GeometryInfoReaderPreferenceKey.self, perform: onChange)
+            .onPreferenceChange(GeometryInfoReaderPreferenceKey.self) { newValue in
+                onChange(newValue.geometryInfo)
+            }
     }
 }
 
-private struct GeometryInfoReaderPreferenceKey: PreferenceKey {
-    static var defaultValue: GeometryInfo { .zero }
+// MARK: - Auxiliary types
 
-    static func reduce(value: inout GeometryInfo, nextValue: () -> GeometryInfo) {}
+private struct GeometryInfoReaderPreferenceKey: PreferenceKey {
+    typealias Value = TimeStampContainer
+
+    static var defaultValue: Value {
+        let defaultValue = GeometryInfo(
+            coordinateSpace: .global,
+            frame: .zero,
+            size: .zero,
+            safeAreaInsets: .init()
+        )
+        return Value(timeStamp: .zero, throttleInterval: .zero, geometryInfo: defaultValue)
+    }
+
+    static func reduce(value: inout Value, nextValue: () -> Value) {}
+}
+
+private struct TimeStampContainer: Equatable {
+    let timeStamp: CFTimeInterval
+    let throttleInterval: CFTimeInterval
+    let geometryInfo: GeometryInfo
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        assert(lhs.throttleInterval == rhs.throttleInterval)
+
+        if abs(lhs.timeStamp - rhs.timeStamp) < rhs.throttleInterval {
+            return true
+        }
+
+        return lhs.geometryInfo == rhs.geometryInfo
+    }
 }
