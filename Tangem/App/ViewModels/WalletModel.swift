@@ -59,7 +59,11 @@ class WalletModel {
     }
 
     var balanceValue: Decimal? {
-        wallet.amounts[amountType]?.value
+        if state.isNoAccount {
+            return 0
+        }
+
+        return wallet.amounts[amountType]?.value
     }
 
     var balance: String {
