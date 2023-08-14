@@ -836,7 +836,16 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
 extension WalletOnboardingViewModel {
     func openReadMoreAboutSeedPhraseScreen() {
-        coordinator.openWebView(with: AppConstants.seedPhraseReadMoreURL)
+        let websiteLanguageCode: String
+        switch Locale.current.languageCode {
+        case LanguageCode.ru, LanguageCode.by:
+            websiteLanguageCode = LanguageCode.ru
+        default:
+            websiteLanguageCode = LanguageCode.en
+        }
+
+        let url = URL(string: "https://tangem.com/\(websiteLanguageCode)/blog/post/seed-phrase-a-risky-solution/")!
+        coordinator.openWebView(with: url)
         Analytics.log(.onboardingSeedButtonReadMore)
     }
 
