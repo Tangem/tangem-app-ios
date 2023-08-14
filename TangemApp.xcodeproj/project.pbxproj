@@ -439,6 +439,7 @@
 		B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */; };
 		B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
+		B655CFF52A881DC6003012BE /* _TokenItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */; };
 		B655CFF72A88F9FE003012BE /* StorageEntry+WalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655CFF62A88F9FE003012BE /* StorageEntry+WalletModel.swift */; };
 		B655CFF92A8932A6003012BE /* Sequence+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655CFF82A8932A6003012BE /* Sequence+.swift */; };
 		B65D3FCB2A67129D00FEEFE8 /* CardsInfoPagerContentAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65D3FCA2A67129D00FEEFE8 /* CardsInfoPagerContentAnimationModifier.swift */; };
@@ -1569,6 +1570,7 @@
 		B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerFlexibleFooterView.swift; sourceTree = "<group>"; };
 		B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerAnimationFactory.swift; sourceTree = "<group>"; };
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
+		B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _TokenItemsRepository.swift; sourceTree = "<group>"; };
 		B655CFF62A88F9FE003012BE /* StorageEntry+WalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEntry+WalletModel.swift"; sourceTree = "<group>"; };
 		B655CFF82A8932A6003012BE /* Sequence+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+.swift"; sourceTree = "<group>"; };
 		B65D3FCA2A67129D00FEEFE8 /* CardsInfoPagerContentAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerContentAnimationModifier.swift; sourceTree = "<group>"; };
@@ -4363,6 +4365,7 @@
 				5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */,
 				EFFC861228BCF6C500F863CE /* StorageEntry.swift */,
 				B655CFF62A88F9FE003012BE /* StorageEntry+WalletModel.swift */,
+				B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */,
 			);
 			path = TokenItemsRepository;
 			sourceTree = "<group>";
@@ -6072,6 +6075,7 @@
 				DC22535728A4F5BF0094F30C /* GenericDemoConfig.swift in Sources */,
 				DC66BBE52858EB6300CDF765 /* OnboardingCoordinator.swift in Sources */,
 				5DDE22F52609022D008657C6 /* WalletConnectView.swift in Sources */,
+				B655CFF52A881DC6003012BE /* _TokenItemsRepository.swift in Sources */,
 				EF4BEFDF28AD3EE500C5D1BE /* ContentState.swift in Sources */,
 				B0BE30652A7BA74000B3AD13 /* MultiWalletTokenItemsSectionFactory.swift in Sources */,
 				EF5A5AD728D86094002544AC /* CardArtwork.swift in Sources */,
