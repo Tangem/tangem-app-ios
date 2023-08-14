@@ -7,9 +7,15 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdk.Token // TODO: Andrey Fedorov - Remove this import if possible
 
-struct StorageEntry: Hashable, Codable, Equatable {
+// MARK: - V1
+
+// TODO: Andrey Fedorov - Put `LegacyToken` and `LegacyCloudToken` here
+
+// MARK: - V2
+
+struct StorageEntry: Codable, Hashable { // TODO: Andrey Fedorov - Move into v2
     let blockchainNetwork: BlockchainNetwork
     var tokens: [Token]
 
@@ -29,12 +35,43 @@ struct StorageEntry: Hashable, Codable, Equatable {
     }
 }
 
+// MARK: - V3
+
 extension StorageEntry {
-    var walletModelIds: [WalletModel.ID] {
-        let mainCoinId = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .coin).id
-        let tokenCoinIds = tokens.map {
-            WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .token(value: $0)).id
+    enum Version: Codable {
+        case v1
+        case v2
+        case v3
+    }
+
+    enum V3 {
+        typealias BlockchainNetwork = Tangem.BlockchainNetwork
+
+        enum Grouping: Codable {
+            case none
+            case byBlockchainNetwork
         }
-        return [mainCoinId] + tokenCoinIds
+
+        enum Sorting: Codable {
+            case manual
+            case byBalance
+        }
+
+        struct Token: Codable {
+            let id: String?
+            let networkId: String
+            let name: String
+            let symbol: String
+            let decimals: Int
+            let blockchainNetwork: BlockchainNetwork
+            let contractAddress: String?
+        }
+
+        struct List: Codable {
+            let version: Version
+            let grouping: Grouping
+            let sorting: Sorting
+            let tokens: [Token]
+        }
     }
 }

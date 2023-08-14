@@ -21,15 +21,3 @@ protocol TokenItemsRepository {
 
     func getItems() -> [StorageEntry]
 }
-
-extension TokenItemsRepository {
-    func append(_ blockchainNetworks: [BlockchainNetwork]) {
-        let entries = blockchainNetworks.map { StorageEntry(blockchainNetwork: $0, tokens: []) }
-        append(entries)
-    }
-
-    func append(_ tokens: [Token], blockchainNetwork: BlockchainNetwork) {
-        let entry = StorageEntry(blockchainNetwork: blockchainNetwork, tokens: tokens)
-        append([entry])
-    }
-}
