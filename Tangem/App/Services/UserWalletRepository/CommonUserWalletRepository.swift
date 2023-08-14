@@ -356,7 +356,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
 
         walletConnectService.disconnectAllSessionsForUserWallet(with: userWalletId.toHexString())
-        sendEvent(.deleted(userWalletId: userWalletId))
+        sendEvent(.deleted(userWalletIds: [userWalletId]))
     }
 
     func lock(reason: UserWalletRepositoryLockReason) {
@@ -374,9 +374,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         clearUserWalletStorage()
         discardSensitiveData(except: selectedUserWallet)
 
-        for otherUserWallet in otherUserWallets {
-            sendEvent(.deleted(userWalletId: otherUserWallet.userWalletId))
-        }
+        sendEvent(.deleted(userWalletIds: otherUserWallets.map { $0.userWalletId }))
     }
 
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {

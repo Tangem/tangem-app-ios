@@ -139,9 +139,9 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePage(with userWalletId: Data) {
+    private func removePage(with userWalletIds: [Data]) {
         pages.removeAll { page in
-            page.id.value == userWalletId
+            userWalletIds.contains(page.id.value)
         }
         selectedCardIndex = 0
     }
@@ -172,8 +172,8 @@ final class MainViewModel: ObservableObject {
                     break
                 case .updated(let userWalletModel):
                     self?.addNewPage(for: userWalletModel)
-                case .deleted(let userWalletId):
-                    self?.removePage(with: userWalletId)
+                case .deleted(let userWalletIds):
+                    self?.removePage(with: userWalletIds)
                 case .selected:
                     break
                 }
