@@ -60,6 +60,39 @@ struct MainHeaderView: View {
         .padding(.horizontal, 14)
         .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
+        .previewContentShape(cornerRadius: 14)
+        .contextMenu {
+            Button {
+//                viewModel.edit()
+            } label: {
+                HStack {
+                    Text(Localization.userWalletListRename)
+                    Image(systemName: "pencil")
+                }
+            }
+
+            if #available(iOS 15, *) {
+                Button(role: .destructive) {
+                    //                    viewModel.delete()
+                } label: {
+                    deleteButtonLabel
+                }
+            } else {
+                Button {
+//                    viewModel.delete()
+                } label: {
+                    deleteButtonLabel
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var deleteButtonLabel: some View {
+        HStack {
+            Text(Localization.commonDelete)
+            Image(systemName: "trash")
+        }
     }
 
     private var subtitleText: some View {
@@ -79,6 +112,18 @@ struct MainHeaderView: View {
         }
 
         return max(containerWidth - trailingOffset, 0.0)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func previewContentShape(cornerRadius: Double) -> some View {
+        if #available(iOS 15.0, *) {
+            self
+                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        } else {
+            self
+        }
     }
 }
 
