@@ -16,4 +16,5 @@ protocol AnyWalletManagerFactory {
 enum AnyWalletManagerFactoryError: Error {
     case entryHasNotDerivationPath
     case noDerivation
+    case walletWithBlockchainCurveNotFound
 }

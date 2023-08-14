@@ -45,7 +45,7 @@ enum PreviewCard {
             )
             let walletManager = try! factory.makeWalletManager(
                 blockchain: blockchain,
-                publicKey: .init(seedKey: publicKey, derivation: .none)
+                publicKey: .init(seedKey: publicKey, derivationType: .none)
             )
         }
 

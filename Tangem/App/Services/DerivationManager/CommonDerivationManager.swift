@@ -8,21 +8,7 @@
 
 import TangemSdk
 import Combine
-
-struct CardanoUtil {
-    func extendedDerivationPath(for derivationPath: DerivationPath) -> DerivationPath? {
-        var nodes = derivationPath.nodes
-        guard nodes.count == 5 else {
-            assertionFailure("Cardano derivation path has less that 5 nodes")
-            return nil
-        }
-
-        nodes[3] = .nonHardened(2)
-
-        let extendedDerivationPath = DerivationPath(nodes: nodes)
-        return extendedDerivationPath
-    }
-}
+import BlockchainSdk
 
 class CommonDerivationManager {
     weak var delegate: DerivationManagerDelegate?
@@ -77,13 +63,17 @@ class CommonDerivationManager {
 
         // If we use the extended cardano then
         // we should have two derivations for collect correct PublicKey
-        guard case .cardano(let extended) = network.blockchain,
-              extended,
-              let extendedPath = CardanoUtil().extendedDerivationPath(for: derivationPath) else {
+        guard case .cardano(let extended) = network.blockchain, extended else {
             return [derivationPath]
         }
-        
-        return [derivationPath, extendedPath]
+
+        do {
+            let extendedPath = try CardanoUtil().extendedDerivationPath(for: derivationPath)
+            return [derivationPath, extendedPath]
+        } catch {
+            AppLog.shared.error(error)
+            return [derivationPath]
+        }
     }
 }
 
