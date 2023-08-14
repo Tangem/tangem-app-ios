@@ -367,11 +367,16 @@ class CommonUserWalletRepository: UserWalletRepository {
         sendEvent(.locked(reason: reason))
     }
 
-    func clear() {
-        clearUserWallets()
-        discardSensitiveData()
+    func clearNonSelectedUserWallets() {
+        let selectedUserWallet = selectedModel?.userWallet
+        let otherUserWallets = userWallets.filter { $0.userWalletId != selectedUserWalletId }
 
-        setSelectedUserWalletId(nil, reason: .deleted)
+        clearUserWalletStorage()
+        discardSensitiveData(except: selectedUserWallet)
+
+        for otherUserWallet in otherUserWallets {
+            sendEvent(.deleted(userWalletId: otherUserWallet.userWalletId))
+        }
     }
 
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {
@@ -387,7 +392,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         walletConnectService.initialize(with: cardModel)
     }
 
-    private func clearUserWallets() {
+    private func clearUserWalletStorage() {
         let userWalletRepositoryUtil = UserWalletRepositoryUtil()
         userWalletRepositoryUtil.saveUserWallets([])
         userWalletRepositoryUtil.removePublicDataEncryptionKey()
@@ -395,10 +400,17 @@ class CommonUserWalletRepository: UserWalletRepository {
         encryptionKeyStorage.clear()
     }
 
-    private func discardSensitiveData() {
+    private func discardSensitiveData(except userWalletToKeep: UserWallet? = nil) {
         encryptionKeyByUserWalletId = [:]
-        models = []
-        userWallets = savedUserWallets(withSensitiveData: false)
+
+        let newModels = models.filter { $0.userWalletId.value == userWalletToKeep?.userWalletId }
+        models = newModels
+
+        var newUserWallets = savedUserWallets(withSensitiveData: false)
+        if let userWalletToKeep, !newUserWallets.contains(where: { $0.userWalletId == userWalletToKeep.userWalletId }) {
+            newUserWallets.append(userWalletToKeep)
+        }
+        userWallets = newUserWallets
     }
 
     // TODO: refactor
@@ -570,7 +582,7 @@ extension CommonUserWalletRepository {
         // Removing UserWallet-related data from Keychain
         if AppSettings.shared.numberOfLaunches == 1 {
             AppLog.shared.debug("Clean CommonUserWalletRepository")
-            clearUserWallets()
+            clearUserWalletStorage()
         }
 
         let savedSelectedUserWalletId = AppSettings.shared.selectedUserWalletId

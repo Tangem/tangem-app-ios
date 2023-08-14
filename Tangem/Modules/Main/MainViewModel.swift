@@ -139,8 +139,11 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePage(with id: Data) {
-        // TODO: Removal logic will be added in IOS-4156
+    private func removePage(with userWalletId: Data) {
+        pages.removeAll { page in
+            page.id.value == userWalletId
+        }
+        selectedCardIndex = 0
     }
 
     // MARK: - Private functions
