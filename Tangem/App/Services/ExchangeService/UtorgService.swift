@@ -69,6 +69,7 @@ class UtorgService {
         return supportedCurrencies.first(where: {
             guard
                 let chain = $0.chain,
+                // TODO: Make sure that the blockchain has been correctly founded from the SupportedBlockchains
                 let utorgBlockchain = supportedBlockchains[chain.lowercased()],
                 $0.enabled,
                 $0.symbol.lowercased() == symbol.lowercased(),

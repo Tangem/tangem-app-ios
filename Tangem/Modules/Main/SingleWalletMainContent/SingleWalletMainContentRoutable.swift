@@ -8,4 +8,4 @@
 
 import Foundation
 
-protocol SingleWalletMainContentRoutable: AnyObject {}
+protocol SingleWalletMainContentRoutable: SingleTokenBaseRoutable {}

@@ -35,7 +35,7 @@ class FakeTokenItemInfoProvider: PriceChangeProvider, ObservableObject {
                 tokenIcon: makeTokenIconInfo(for: $0),
                 tokenItem: makeTokenItem(for: $0),
                 tokenTapped: modelTapped(with:),
-                infoProvider: $0,
+                infoProvider: DefaultTokenItemInfoProvider(walletModel: $0),
                 priceChangeProvider: self
             )
         }

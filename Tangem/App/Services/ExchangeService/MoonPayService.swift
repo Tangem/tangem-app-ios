@@ -59,28 +59,28 @@ private struct MoonpayCurrency: Decodable {
         case polygon
         case unknown
 
-        func blockchain(testnet: Bool) -> Blockchain? {
+        func blockchainId() -> String? {
             switch self {
             case .unknown:
                 return nil
             case .bitcoin:
-                return .bitcoin(testnet: testnet)
+                return Blockchain.bitcoin(testnet: false).coinId
             case .bitcoinCash:
-                return .bitcoinCash(testnet: testnet)
+                return Blockchain.bitcoinCash(testnet: false).coinId
             case .ethereum:
-                return .ethereum(testnet: testnet)
+                return Blockchain.ethereum(testnet: false).coinId
             case .bnbChain:
-                return .binance(testnet: testnet)
+                return Blockchain.binance(testnet: false).coinId
             case .solana:
-                return .solana(testnet: testnet)
+                return Blockchain.solana(curve: .ed25519_slip0010, testnet: false).coinId
             case .litecoin:
-                return .litecoin
+                return Blockchain.litecoin.coinId
             case .stellar:
-                return .stellar(testnet: testnet)
+                return Blockchain.stellar(curve: .ed25519_slip0010, testnet: false).coinId
             case .tron:
-                return .tron(testnet: testnet)
+                return Blockchain.tron(testnet: false).coinId
             case .polygon:
-                return .polygon(testnet: testnet)
+                return Blockchain.polygon(testnet: false).coinId
             }
         }
 
@@ -173,7 +173,7 @@ extension MoonPayService: ExchangeService {
         return availableToSell.contains(where: {
             switch amountType {
             case .coin:
-                return $0.networkCode.blockchain(testnet: blockchain.isTestnet) == blockchain
+                return $0.networkCode.blockchainId() == blockchain.coinId
             case .token(let value):
                 return $0.contractAddress?.caseInsensitiveCompare(value.contractAddress) == .orderedSame
             case .reserve:

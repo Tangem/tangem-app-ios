@@ -11,6 +11,7 @@ import Combine
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.failedScanTracker) private var failedCardScanTracker: FailedCardScanTracker
 
     // MARK: - ViewState
 
@@ -18,6 +19,7 @@ final class MainViewModel: ObservableObject {
     @Published var selectedCardIndex = 0
     @Published var isHorizontalScrollDisabled = false
     @Published var errorAlert: AlertBinder?
+    @Published var showTroubleshootingView: Bool = false
 
     // MARK: - Dependencies
 
@@ -36,7 +38,7 @@ final class MainViewModel: ObservableObject {
         self.mainUserWalletPageBuilderFactory = mainUserWalletPageBuilderFactory
 
         pages = mainUserWalletPageBuilderFactory.createPages(from: userWalletRepository.models)
-        setupHorizontalScrollAvailability()
+        bind()
     }
 
     convenience init(
@@ -75,20 +77,21 @@ final class MainViewModel: ObservableObject {
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
         isHorizontalScrollDisabled = true
         let completion = { [weak self] in
-            self?.setupHorizontalScrollAvailability()
+            self?.isHorizontalScrollDisabled = false
             completionHandler()
         }
         let page = pages[selectedCardIndex]
-        let model = userWalletRepository.models[selectedCardIndex]
 
         switch page {
-        case .singleWallet:
-            model.walletModelsManager.updateAll(silent: false, completion: completion)
-        case .multiWallet:
-            model.userTokenListManager.updateLocalRepositoryFromServer { _ in
-                model.walletModelsManager.updateAll(silent: true, completion: completion)
-            }
+        case .singleWallet(_, _, let viewModel):
+            viewModel.onPullToRefresh(completionHandler: completion)
+        case .multiWallet(_, _, let viewModel):
+            viewModel.onPullToRefresh(completionHandler: completion)
         }
+    }
+
+    func updateIsBackupAllowed() {
+        // TODO: Will be added in IOS-4165
     }
 
     // MARK: - Scan card
@@ -101,39 +104,96 @@ final class MainViewModel: ObservableObject {
 
             switch result {
             case .troubleshooting:
-                // TODO: https://tangem.atlassian.net/browse/IOS-4127
-                break
-            case .onboarding:
-                // TODO: https://tangem.atlassian.net/browse/IOS-4127
-                break
+                showTroubleshootingView = true
+            case .onboarding(let input):
+                openOnboarding(with: input)
             case .error(let error):
                 if let userWalletRepositoryError = error as? UserWalletRepositoryError {
                     errorAlert = userWalletRepositoryError.alertBinder
                 } else {
                     errorAlert = error.alertBinder
                 }
-            case .success(let cardModel), .partial(let cardModel, _):
-                addNewPage(for: cardModel)
+            case .success(_), .partial:
+                // Will be handled through `updated` user wallet repo event
+                break
             }
         }
     }
 
     private func addNewPage(for userWalletModel: UserWalletModel) {
-        let newPage = mainUserWalletPageBuilderFactory.createPage(for: userWalletModel)
+        // FIXME: Awaiting CommonUserWalletRepository event system refactoring
+        // We need this check to prevent adding new pages after each
+        // UserWalletModel update in `CommonUserWalletRepository`.
+        // The problem itself not in `update` event from repository but
+        // in `inserted` event, which is sending `UserWallet` instead of `UserWalletModel`
+        if pages.contains(where: { $0.id == userWalletModel.userWalletId }) {
+            return
+        }
+
+        guard let newPage = mainUserWalletPageBuilderFactory.createPage(for: userWalletModel) else {
+            return
+        }
+
         let newPageIndex = pages.count
         pages.append(newPage)
         selectedCardIndex = newPageIndex
     }
 
-    // MARK: - Private functions
-
-    private func setupHorizontalScrollAvailability() {
-        isHorizontalScrollDisabled = pages.count <= 1
+    private func removePage(with id: Data) {
+        // TODO: Removal logic will be added in IOS-4156
     }
 
-    private func bind() {}
+    // MARK: - Private functions
+
+    private func bind() {
+        $selectedCardIndex
+            .sink { [weak self] newIndex in
+                guard let userWalletId = self?.pages[newIndex].id else {
+                    return
+                }
+
+                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, reason: .userSelected)
+            }
+            .store(in: &bag)
+
+        userWalletRepository.eventProvider
+            .sink { [weak self] event in
+                switch event {
+                case .locked:
+                    break
+                case .scan:
+                    // TODO: Do we need to place spinner into Navbar?..
+                    break
+                case .inserted:
+                    // Useless event...
+                    break
+                case .updated(let userWalletModel):
+                    self?.addNewPage(for: userWalletModel)
+                case .deleted(let userWalletId):
+                    self?.removePage(with: userWalletId)
+                case .selected:
+                    break
+                }
+            }
+            .store(in: &bag)
+    }
 
     private func log(_ message: String) {
         AppLog.shared.debug("[Main V2] \(message)")
+    }
+}
+
+// MARK: - Navigation
+
+extension MainViewModel {
+    func openOnboarding(with input: OnboardingInput) {
+        coordinator?.openOnboardingModal(with: input)
+    }
+
+    func requestSupport() {
+        Analytics.log(.buttonRequestSupport)
+        failedCardScanTracker.resetCounter()
+
+        coordinator?.openMail(with: failedCardScanTracker, emailType: .failedToScanCard, recipient: EmailConfig.default.recipient)
     }
 }

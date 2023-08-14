@@ -215,7 +215,13 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     // TODO: refactor
     func save(_ cardViewModel: CardViewModel) {
-        if !models.contains(where: { $0.userWalletId == cardViewModel.userWalletId }) {
+        if models.isEmpty, !userWallets.isEmpty {
+            loadModels()
+        }
+
+        if let index = models.firstIndex(where: { $0.userWalletId == cardViewModel.userWalletId }) {
+            models[index] = cardViewModel
+        } else {
             models.append(cardViewModel)
         }
 
@@ -316,7 +322,10 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {
-        resetServices()
+        if selectedUserWalletId == userWallet.userWalletId {
+            resetServices()
+        }
+
         let userWalletId = userWallet.userWalletId
         encryptionKeyByUserWalletId[userWalletId] = nil
         userWallets.removeAll { $0.userWalletId == userWalletId }

@@ -24,7 +24,7 @@ struct OnboardingSeedPhraseIntroView: View {
                     Fonts.Bold.caption2,
                     color: Colors.Icon.warning
                 )
-                .padding(.vertical, 6)
+                .padding(.vertical, 5)
                 .padding(.horizontal, 10)
                 .background(Colors.Icon.warning.opacity(0.12))
                 .cornerRadiusContinuous(8)
@@ -43,7 +43,7 @@ struct OnboardingSeedPhraseIntroView: View {
                     color: Colors.Text.secondary
                 )
                 .multilineTextAlignment(.center)
-                .lineSpacing(5)
+                .lineSpacing(2)
                 .padding(.horizontal, 44)
                 .padding(.top, 14)
 
@@ -58,7 +58,7 @@ struct OnboardingSeedPhraseIntroView: View {
                             color: Colors.Text.primary1
                         )
                 }
-                .padding(.vertical, 12)
+                .padding(.vertical, 7)
                 .padding(.horizontal, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 10)

@@ -33,7 +33,7 @@ class LegacySingleWalletContentViewModel: ObservableObject {
             }
 
         return BalanceViewModel(
-            hasTransactionInProgress: singleWalletModel.hasPendingTx,
+            hasTransactionInProgress: singleWalletModel.hasPendingTransactions,
             state: singleWalletModel.state,
             name: singleWalletModel.name,
             fiatBalance: singleWalletModel.fiatBalance,

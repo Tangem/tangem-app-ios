@@ -31,8 +31,8 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     private let eventSubject = PassthroughSubject<UserWalletRepositoryEvent, Never>()
 
-    init() {
-        models = FakeUserWalletModel.allFakeWalletModels
+    init(models: [UserWalletModel] = FakeUserWalletModel.allFakeWalletModels) {
+        self.models = models
     }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
@@ -48,7 +48,7 @@ class FakeUserWalletRepository: UserWalletRepository {
     func save(_ cardViewModel: CardViewModel) {}
 
     func contains(_ userWallet: UserWallet) -> Bool {
-        false
+        return false
     }
 
     func save(_ userWallet: UserWallet) {}

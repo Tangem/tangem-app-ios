@@ -21,7 +21,7 @@ struct OnboardingSeedPhraseGenerateView: View {
             Text(Localization.onboardingSeedGenerateMessage)
                 .style(Fonts.Regular.callout, color: Colors.Text.secondary)
                 .multilineTextAlignment(.center)
-                .lineSpacing(3)
+                .lineSpacing(2)
                 .padding(.horizontal, 54)
                 .padding(.top, 14)
 

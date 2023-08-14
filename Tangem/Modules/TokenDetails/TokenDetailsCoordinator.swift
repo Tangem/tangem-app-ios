@@ -40,17 +40,15 @@ class TokenDetailsCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         let exchangeUtility = ExchangeCryptoUtility(
-            blockchain: options.blockchainNetwork.blockchain,
+            blockchain: options.walletModel.blockchainNetwork.blockchain,
             address: options.walletModel.wallet.address,
-            amountType: options.amountType
+            amountType: options.walletModel.amountType
         )
 
         tokenDetailsViewModel = .init(
             cardModel: options.cardModel,
             userTokensManager: options.userTokensManager,
             walletModel: options.walletModel,
-            blockchainNetwork: options.blockchainNetwork,
-            amountType: options.amountType,
             exchangeUtility: exchangeUtility,
             coordinator: self
         )
@@ -64,8 +62,6 @@ extension TokenDetailsCoordinator {
         let cardModel: CardViewModel
         let walletModel: WalletModel
         let userTokensManager: UserTokensManager
-        let blockchainNetwork: BlockchainNetwork
-        let amountType: Amount.AmountType
     }
 }
 

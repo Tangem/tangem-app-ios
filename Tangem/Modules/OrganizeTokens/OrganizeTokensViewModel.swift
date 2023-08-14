@@ -10,7 +10,7 @@ import Combine
 import CombineExt
 import SwiftUI
 
-final class OrganizeTokensViewModel: ObservableObject {
+final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     /// Sentinel value for `item` of `IndexPath` representing a section.
     var sectionHeaderItemIndex: Int { .min }
 
@@ -21,9 +21,9 @@ final class OrganizeTokensViewModel: ObservableObject {
 
     @Published private(set) var sections: [OrganizeTokensListSectionViewModel] = []
 
-    private unowned let coordinator: OrganizeTokensRoutable
+    let id = UUID()
 
-    private let onSave = PassthroughSubject<Void, Never>()
+    private unowned let coordinator: OrganizeTokensRoutable
 
     private let walletModelsManager: WalletModelsManager
     private let walletModelsAdapter: OrganizeWalletModelsAdapter
@@ -32,6 +32,8 @@ final class OrganizeTokensViewModel: ObservableObject {
 
     private var currentlyDraggedSectionIdentifier: UUID?
     private var currentlyDraggedSectionItems: [OrganizeTokensListItemViewModel] = []
+
+    private let onSave = PassthroughSubject<Void, Never>()
 
     private let mappingQueue = DispatchQueue(
         label: "com.tangem.OrganizeTokensViewModel.mappingQueue",

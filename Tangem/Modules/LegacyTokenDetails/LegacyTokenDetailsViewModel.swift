@@ -204,12 +204,6 @@ class LegacyTokenDetailsViewModel: ObservableObject {
             return
         }
 
-        if isCustomToken {
-            canSwap = false
-            updateExchangeButtons()
-            return
-        }
-
         // For a coin we can check it locally
         if amountType == .coin {
             canSwap = SwappingAvailableUtils().canSwap(amountType: .coin, blockchain: blockchainNetwork.blockchain)
@@ -217,11 +211,16 @@ class LegacyTokenDetailsViewModel: ObservableObject {
             return
         }
 
+        // For a custom token id == nil
+        guard let currencyId = amountType.token?.id, !isCustomToken else {
+            canSwap = false
+            updateExchangeButtons()
+            return
+        }
+
         exchangeButtonIsLoading = true
 
         let networkId = blockchainNetwork.blockchain.networkId
-        let currencyId = amountType.token?.id ?? blockchainNetwork.blockchain.coinId
-
         tangemApiService
             .loadCoins(requestModel: CoinsList.Request(supportedBlockchains: [blockchainNetwork.blockchain], ids: [currencyId]))
             .sink { [weak self] completion in

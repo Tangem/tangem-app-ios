@@ -46,6 +46,13 @@ struct MainView: View {
                 .offset(x: 10)
             }
         })
+        .background(
+            ScanTroubleshootingView(
+                isPresented: $viewModel.showTroubleshootingView,
+                tryAgainAction: viewModel.scanCardAction,
+                requestSupportAction: viewModel.requestSupport
+            )
+        )
         .alert(item: $viewModel.errorAlert) { $0.alert }
     }
 

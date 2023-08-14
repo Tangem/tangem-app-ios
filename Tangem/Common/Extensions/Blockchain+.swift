@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 extension Blockchain {
-    /// Should be used to get a coin icon
+    /// Should be used as blockchain identifier
     var coinId: String {
         id(type: .coin)
     }

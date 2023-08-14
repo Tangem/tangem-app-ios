@@ -91,7 +91,7 @@ class WalletModel {
         return formatter.formatFiatBalance(rate, formattingOptions: .defaultFiatFormattingOptions)
     }
 
-    var hasPendingTx: Bool {
+    var hasPendingTransactions: Bool {
         wallet.hasPendingTx(for: amountType)
     }
 
@@ -732,11 +732,5 @@ extension WalletModel {
 
     var ethereumTransactionProcessor: EthereumTransactionProcessor? {
         walletManager as? EthereumTransactionProcessor
-    }
-}
-
-extension WalletModel: TokenItemInfoProvider {
-    var hasPendingTransactions: Bool {
-        !incomingPendingTransactions.isEmpty || !outgoingPendingTransactions.isEmpty
     }
 }

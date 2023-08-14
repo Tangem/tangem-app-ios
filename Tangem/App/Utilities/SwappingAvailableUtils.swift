@@ -58,13 +58,12 @@ struct SwappingAvailableUtils {
         case .coin:
             return .justWithError(output: true)
         case .token(let token):
-            if token.isCustom {
+            // For a custom token id == nil
+            guard let currencyId = token.id, !token.isCustom else {
                 return .justWithError(output: false)
             }
 
             let networkId = swapBlockchain.networkId
-            let currencyId = token.id ?? blockchain.coinId
-
             return tangemApiService
                 .loadCoins(requestModel: .init(supportedBlockchains: [blockchain], ids: [currencyId]))
                 .map { models in

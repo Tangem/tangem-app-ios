@@ -34,8 +34,8 @@ enum Feature: String, Hashable, CaseIterable {
     var releaseVersion: ReleaseVersion {
         switch self {
         case .exchange: return .version("4.2")
-        case .importSeedPhrase: return .unspecified
-        case .accessCodeRecoverySettings: return .unspecified
+        case .importSeedPhrase: return .version("4.10")
+        case .accessCodeRecoverySettings: return .version("4.10")
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
         case .tokenDetailsV2: return .unspecified

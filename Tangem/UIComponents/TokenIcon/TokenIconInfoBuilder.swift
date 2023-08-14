@@ -33,4 +33,8 @@ struct TokenIconInfoBuilder {
 
         return .init(name: name, blockchainIconName: blockchainIconName, imageURL: imageURL)
     }
+
+    func build(from tokenItem: TokenItem) -> TokenIconInfo {
+        build(for: tokenItem.amountType, in: tokenItem.blockchain)
+    }
 }

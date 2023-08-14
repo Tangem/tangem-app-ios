@@ -87,6 +87,87 @@ struct FakeTransactionHistoryFactory {
                 transactionType: .approval,
                 status: .inProgress
             ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
+                timeFormatted: "03:23",
+                date: calendar.date(byAdding: .hour, value: -8, to: yesterday),
+                transferAmount: "-0.2532154 \(currencyCode)",
+                transactionType: .swap(type: .sell),
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .approval, address: "0x0123...baced"),
+                timeFormatted: "18:42",
+                date: calendar.date(byAdding: .day, value: -6, to: yesterday),
+                transferAmount: "-0.0212 \(currencyCode)",
+                transactionType: .approval,
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .approval, address: "0x0123...baced"),
+                timeFormatted: "18:12",
+                date: calendar.date(byAdding: .day, value: -10, to: yesterday),
+                transferAmount: "-0.045642 \(currencyCode)",
+                transactionType: .approval,
+                status: .inProgress
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .swap(type: .sell), address: "0x0123...ba223ced"),
+                timeFormatted: "15:23",
+                date: calendar.date(byAdding: .hour, value: -8, to: yesterday),
+                transferAmount: "-1.532154 \(currencyCode)",
+                transactionType: .swap(type: .sell),
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .approval, address: "0x01f3...baced"),
+                timeFormatted: "18:32",
+                date: calendar.date(byAdding: .day, value: -6, to: yesterday),
+                transferAmount: "-0.0098725 \(currencyCode)",
+                transactionType: .approval,
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .receive, address: "0x0123...baced"),
+                timeFormatted: "18:00",
+                date: calendar.date(byAdding: .day, value: -10, to: yesterday),
+                transferAmount: "-0.1897912 \(currencyCode)",
+                transactionType: .receive,
+                status: .inProgress
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
+                timeFormatted: "21:23",
+                date: calendar.date(byAdding: .hour, value: -8, to: yesterday),
+                transferAmount: "-0.532154 \(currencyCode)",
+                transactionType: .swap(type: .sell),
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .approval, address: "0x0123...baced"),
+                timeFormatted: "19:32",
+                date: calendar.date(byAdding: .day, value: -6, to: yesterday),
+                transferAmount: "-9.0012 \(currencyCode)",
+                transactionType: .approval,
+                status: .confirmed
+            ),
+            LegacyTransactionRecord(
+                amountType: .coin,
+                destination: destination(for: .approval, address: "0x0123...baced"),
+                timeFormatted: "18:30",
+                date: calendar.date(byAdding: .day, value: -10, to: yesterday),
+                transferAmount: "-0.789512 \(currencyCode)",
+                transactionType: .approval,
+                status: .inProgress
+            ),
         ]
     }
 

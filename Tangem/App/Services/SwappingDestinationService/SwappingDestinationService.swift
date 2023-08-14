@@ -59,15 +59,15 @@ extension SwappingDestinationService: SwappingDestinationServicing {
 private extension SwappingDestinationService {
     func loadPreferredCurrency(networkId: String) async throws -> Currency {
         for preferred in PreferredTokenSymbol.allCases {
-            if let currency = try? await loadPreferredCurrencyFromAPI(networkId: networkId, tokenSymbol: preferred.rawValue) {
+            if let currency = try? await loadPreferredCurrencyFromAPI(tokenSymbol: preferred.rawValue) {
                 return currency
             }
         }
 
-        return try await loadPreferredCurrencyFromAPI(networkId: networkId)
+        return try await loadPreferredCurrencyFromAPI()
     }
 
-    func loadPreferredCurrencyFromAPI(networkId: String, tokenSymbol: String? = nil) async throws -> Currency {
+    func loadPreferredCurrencyFromAPI(tokenSymbol: String? = nil) async throws -> Currency {
         let model = CoinsList.Request(
             supportedBlockchains: [blockchain],
             searchText: tokenSymbol,

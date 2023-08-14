@@ -56,7 +56,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func bind() {
-        infoProvider.walletDidChangePublisher
+        infoProvider.tokenItemStatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newState in
                 guard let self else { return }
@@ -65,16 +65,17 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
                 case .noDerivation:
                     missingDerivation = true
                     networkUnreachable = false
-                case .failed:
+                    updateBalances()
+                case .networkError:
                     missingDerivation = false
                     networkUnreachable = true
                 case .noAccount(let message):
                     balanceCrypto = .loaded(text: message)
                     fallthrough
-                case .created:
+                case .notLoaded:
                     missingDerivation = false
                     networkUnreachable = false
-                case .idle:
+                case .loaded:
                     missingDerivation = false
                     networkUnreachable = false
                     updateBalances()

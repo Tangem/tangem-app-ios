@@ -125,7 +125,7 @@ struct OrganizeTokensPreviewProvider {
                         isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .stellar(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .stellar(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true
@@ -160,7 +160,7 @@ struct OrganizeTokensPreviewProvider {
                         isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .cardano),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .cardano(extended: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true
@@ -188,7 +188,7 @@ struct OrganizeTokensPreviewProvider {
                         isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .solana(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .solana(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true
@@ -200,13 +200,13 @@ struct OrganizeTokensPreviewProvider {
                         isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .polkadot(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .polkadot(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true
                     ),
                     .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .azero(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .azero(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true
@@ -229,7 +229,7 @@ struct OrganizeTokensPreviewProvider {
                         isNetworkUnreachable: false,
                         isDraggable: true
                     ), .init(
-                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ton(testnet: false)),
+                        tokenIcon: TokenIconInfoBuilder().build(for: .coin, in: .ton(curve: .ed25519_slip0010, testnet: false)),
                         balance: .loading,
                         isNetworkUnreachable: false,
                         isDraggable: true

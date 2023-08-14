@@ -57,10 +57,12 @@ class FakeWalletManager: WalletManager {
 
     func addToken(_ token: BlockchainSdk.Token) {
         cardTokens.append(token)
+        wallet.add(tokenValue: 0, for: token)
     }
 
     func addTokens(_ tokens: [BlockchainSdk.Token]) {
         cardTokens.append(contentsOf: tokens)
+        tokens.forEach { wallet.add(tokenValue: 0, for: $0) }
     }
 
     func send(_ transaction: BlockchainSdk.Transaction, signer: BlockchainSdk.TransactionSigner) -> AnyPublisher<BlockchainSdk.TransactionSendResult, Error> {

@@ -27,6 +27,7 @@ class CommonUserTokenListManager {
     /// Bool flag for migration custom token to token form our API
     private var migrated = false
 
+    private let initialTokenSyncSubject: CurrentValueSubject<Bool, Never>
     private var _userTokens: CurrentValueSubject<[StorageEntry], Never>
     private var _userTokenList: CurrentValueSubject<UserTokenList, Never>
 
@@ -36,9 +37,21 @@ class CommonUserTokenListManager {
         self.supportedBlockchains = supportedBlockchains
         self.hdWalletsSupported = hdWalletsSupported
         tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.hexString)
+        initialTokenSyncSubject = CurrentValueSubject(tokenItemsRepository.containsFile)
         _userTokens = .init(tokenItemsRepository.getItems())
         _userTokenList = .init(.empty)
         removeInvalidTokens()
+        performInitialSync()
+    }
+
+    private func performInitialSync() {
+        if isInitialSyncPerformed {
+            return
+        }
+
+        updateLocalRepositoryFromServer { [weak self] _ in
+            self?.initialTokenSyncSubject.send(true)
+        }
     }
 }
 
@@ -93,6 +106,16 @@ extension CommonUserTokenListManager: UserTokenListManager {
         guard hasTokenSynchronization else { return }
 
         updateTokensOnServer()
+    }
+}
+
+extension CommonUserTokenListManager: UserTokensSyncService {
+    var isInitialSyncPerformed: Bool {
+        tokenItemsRepository.containsFile
+    }
+
+    var initialSyncPublisher: AnyPublisher<Bool, Never> {
+        initialTokenSyncSubject.eraseToAnyPublisher()
     }
 }
 

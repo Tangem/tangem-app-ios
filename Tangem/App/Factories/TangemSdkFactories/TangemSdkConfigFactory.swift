@@ -23,7 +23,7 @@ struct TangemSdkConfigFactory {
 
         config.filter.issuerFilter = .deny(["TTM BANK"])
         if !FeatureProvider.isAvailable(.disableFirmwareVersionLimit) {
-            config.filter.maxFirmwareVersion = FirmwareVersion(major: 6, minor: 21)
+            config.filter.maxFirmwareVersion = FirmwareVersion(major: 6, minor: 33)
         }
         config.allowUntrustedCards = true
         config.biometricsLocalizedReason = Localization.biometryTouchIdReason

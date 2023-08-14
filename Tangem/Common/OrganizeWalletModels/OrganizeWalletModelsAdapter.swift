@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CombineExt
 import struct BlockchainSdk.Amount // TODO: Andrey Fedorov - Remove after migration to actual types from the domain layer (IOS-4152)
 import enum BlockchainSdk.Blockchain // TODO: Andrey Fedorov - Remove after migration to actual types from the domain layer (IOS-4152)
 
@@ -23,15 +24,18 @@ final class OrganizeWalletModelsAdapter {
     }
 
     private let userTokenListManager: UserTokenListManager
+    private let walletModelComponentsBuilder: WalletModelComponentsBuilder
     private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
     private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
 
     init(
         userTokenListManager: UserTokenListManager,
+        walletModelComponentsBuilder: WalletModelComponentsBuilder,
         organizeTokensOptionsProviding: OrganizeTokensOptionsProviding,
         organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
     ) {
         self.userTokenListManager = userTokenListManager
+        self.walletModelComponentsBuilder = walletModelComponentsBuilder
         self.organizeTokensOptionsProviding = organizeTokensOptionsProviding
         self.organizeTokensOptionsEditing = organizeTokensOptionsEditing
     }
@@ -47,8 +51,10 @@ final class OrganizeWalletModelsAdapter {
                 organizeTokensOptionsProviding.sortingOption
             )
             .receive(on: workingQueue)
-            .map { walletModels, userTokens, groupingOption, sortingOption in
-                return Self.makeSections(
+            .withWeakCaptureOf(self)
+            .map { input in
+                let (adapter, (walletModels, userTokens, groupingOption, sortingOption)) = input
+                return adapter.makeSections(
                     walletModels: walletModels,
                     userTokens: userTokens,
                     groupingOption: groupingOption,
@@ -57,7 +63,7 @@ final class OrganizeWalletModelsAdapter {
             }
     }
 
-    private static func makeSections(
+    private func makeSections(
         walletModels: [WalletModel],
         userTokens: [UserToken],
         groupingOption: GroupingOption,
@@ -82,18 +88,20 @@ final class OrganizeWalletModelsAdapter {
         }
     }
 
-    private static func makeGroupedSections(
+    private func makeGroupedSections(
         walletModelsKeyedByID: [WalletModel.ID: WalletModel],
         userTokens: [UserToken],
         sortingOption: SortingOption
     ) -> [Section] {
         let blockchainNetworks = userTokens
-            .unique(by: \.blockchainNetwork)
-            .compactMap(\.blockchainNetwork)
+            .compactMap { walletModelComponentsBuilder.buildBlockchainNetwork(from: $0) }
+            .unique()
 
         let userTokensGroupedByBlockchainNetworks: [BlockchainNetwork: [UserToken]] = userTokens
             .reduce(into: [:]) { partialResult, element in
-                guard let blockchainNetwork = element.blockchainNetwork else { return }
+                guard let blockchainNetwork = walletModelComponentsBuilder.buildBlockchainNetwork(from: element) else {
+                    return
+                }
 
                 partialResult[blockchainNetwork, default: []].append(element)
             }
@@ -101,7 +109,9 @@ final class OrganizeWalletModelsAdapter {
         return blockchainNetworks.map { blockchainNetwork in
             let userTokensForBlockchainNetwork = userTokensGroupedByBlockchainNetworks[blockchainNetwork, default: []]
             let walletModelsForBlockchainNetwork = userTokensForBlockchainNetwork.compactMap { token -> WalletModel? in
-                guard let walletModelID = token.walletModelID else { return nil }
+                guard let walletModelID = walletModelComponentsBuilder.buildWalletModelID(from: token) else {
+                    return nil
+                }
 
                 return walletModelsKeyedByID[walletModelID]
             }
@@ -116,13 +126,15 @@ final class OrganizeWalletModelsAdapter {
         }
     }
 
-    private static func makePlainSections(
+    private func makePlainSections(
         walletModelsKeyedByID: [WalletModel.ID: WalletModel],
         userTokens: [UserToken],
         sortingOption: SortingOption
     ) -> [Section] {
         let walletModels = userTokens.compactMap { token -> WalletModel? in
-            guard let walletModelID = token.walletModelID else { return nil }
+            guard let walletModelID = walletModelComponentsBuilder.buildWalletModelID(from: token) else {
+                return nil
+            }
 
             return walletModelsKeyedByID[walletModelID]
         }
@@ -139,7 +151,7 @@ final class OrganizeWalletModelsAdapter {
         ]
     }
 
-    private static func walletModels(
+    private func walletModels(
         _ walletModels: [WalletModel],
         sortedBy sortingOption: SortingOption
     ) -> [WalletModel] {
@@ -160,39 +172,6 @@ final class OrganizeWalletModelsAdapter {
                     return lhsFiatValue > rhsFiatValue
                 }
             }
-        }
-    }
-}
-
-// MARK: - Convenience extensions
-
-// TODO: Andrey Fedorov - Remove after migration to actual types from the domain layer (IOS-4152)
-private extension UserTokenList.Token {
-    var blockchainNetwork: BlockchainNetwork? {
-        guard let blockchain = Blockchain(from: networkId) else { return nil }
-
-        return BlockchainNetwork(blockchain, derivationPath: derivationPath)
-    }
-
-    var walletModelID: WalletModel.ID? {
-        guard let blockchainNetwork = blockchainNetwork else { return nil }
-
-        return WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: amountType).id
-    }
-
-    private var amountType: Amount.AmountType {
-        if let contractAddress = contractAddress {
-            return .token(
-                value: .init(
-                    name: name,
-                    symbol: symbol,
-                    contractAddress: contractAddress,
-                    decimalCount: decimals,
-                    id: id
-                )
-            )
-        } else {
-            return .coin
         }
     }
 }

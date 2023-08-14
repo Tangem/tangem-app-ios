@@ -19,7 +19,7 @@ struct DemoUtil {
             .bitcoin(testnet: isTestnet),
             .ethereum(testnet: isTestnet),
             .dogecoin,
-            .solana(testnet: isTestnet),
+            .solana(curve: .ed25519, testnet: isTestnet),
         ]
     }
 

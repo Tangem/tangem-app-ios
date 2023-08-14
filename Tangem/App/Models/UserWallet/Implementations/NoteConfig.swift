@@ -84,7 +84,7 @@ extension NoteConfig: UserWalletConfig {
         case .bitcoin: return Assets.Cards.noteBitcoin
         case .ethereum: return Assets.Cards.noteEthereum
         case .cardano: return Assets.Cards.noteCardano
-        case .binance: return Assets.Cards.noteBinance
+        case .bsc: return Assets.Cards.noteBinance
         case .dogecoin: return Assets.Cards.noteDoge
         case .xrp: return Assets.Cards.noteXrp
         default: return nil
