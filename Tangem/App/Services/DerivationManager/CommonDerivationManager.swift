@@ -9,6 +9,21 @@
 import TangemSdk
 import Combine
 
+struct CardanoUtil {
+    func extendedDerivationPath(for derivationPath: DerivationPath) -> DerivationPath? {
+        var nodes = derivationPath.nodes
+        guard nodes.count == 5 else {
+            assertionFailure("Cardano derivation path has less that 5 nodes")
+            return nil
+        }
+
+        nodes[3] = .nonHardened(2)
+
+        let extendedDerivationPath = DerivationPath(nodes: nodes)
+        return extendedDerivationPath
+    }
+}
+
 class CommonDerivationManager {
     weak var delegate: DerivationManagerDelegate?
 
@@ -39,16 +54,36 @@ class CommonDerivationManager {
         entries.forEach { entry in
             let curve = entry.blockchainNetwork.blockchain.curve
 
-            guard let derivationPath = entry.blockchainNetwork.derivationPath,
-                  let masterKey = keys.first(where: { $0.curve == curve }),
-                  !masterKey.derivedKeys.keys.contains(derivationPath) else {
+            let derivationPaths = derivationPaths(from: entry.blockchainNetwork)
+            guard let masterKey = keys.first(where: { $0.curve == curve }) else {
                 return
             }
 
-            derivations[masterKey.publicKey, default: []].append(derivationPath)
+            // If needed derivationPaths already add just skip it
+            if derivationPaths.allConforms(masterKey.derivedKeys.keys.contains(_:)) {
+                return
+            }
+
+            derivations[masterKey.publicKey, default: []] += derivationPaths
         }
 
         pendingDerivations.send(derivations)
+    }
+
+    private func derivationPaths(from network: BlockchainNetwork) -> [DerivationPath] {
+        guard let derivationPath = network.derivationPath else {
+            return []
+        }
+
+        // If we use the extended cardano then
+        // we should have two derivations for collect correct PublicKey
+        guard case .cardano(let extended) = network.blockchain,
+              extended,
+              let extendedPath = CardanoUtil().extendedDerivationPath(for: derivationPath) else {
+            return [derivationPath]
+        }
+        
+        return [derivationPath, extendedPath]
     }
 }
 

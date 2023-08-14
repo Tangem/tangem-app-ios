@@ -40,4 +40,8 @@ struct HDWalletManagerFactory: AnyWalletManagerFactory {
         walletManager.addTokens(token.tokens)
         return walletManager
     }
+    
+    func makePublicKey(seedKey: Data, derivedWalletKeys: [DerivationPath : ExtendedPublicKey]) -> Wallet.PublicKey {
+        
+    }
 }
