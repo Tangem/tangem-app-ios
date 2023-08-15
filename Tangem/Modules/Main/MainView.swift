@@ -17,6 +17,15 @@ struct MainView: View {
             selectedIndex: $viewModel.selectedCardIndex,
             headerFactory: { info in
                 info.header
+                    .contextMenu {
+                        Button(action: viewModel.didTapEditWallet, label: editButtonLabel)
+
+                        if #available(iOS 15, *) {
+                            Button(role: .destructive, action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                        } else {
+                            Button(action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                        }
+                    }
             },
             contentFactory: { info in
                 info.body
@@ -54,6 +63,15 @@ struct MainView: View {
             )
         )
         .alert(item: $viewModel.errorAlert) { $0.alert }
+        .actionSheet(isPresented: $viewModel.showingDeleteConfirmation) {
+            ActionSheet(
+                title: Text(Localization.userWalletListDeletePrompt),
+                buttons: [
+                    .destructive(Text(Localization.commonDelete), action: viewModel.didConfirmWalletDeletion),
+                    .cancel(Text(Localization.commonCancel)),
+                ]
+            )
+        }
     }
 
     var scanCardButton: some View {
@@ -73,6 +91,22 @@ struct MainView: View {
         .buttonStyle(PlainButtonStyle())
         .animation(nil)
         .accessibility(label: Text(Localization.voiceOverOpenCardDetails))
+    }
+
+    @ViewBuilder
+    private func editButtonLabel() -> some View {
+        HStack {
+            Text(Localization.userWalletListRename)
+            Image(systemName: "pencil")
+        }
+    }
+
+    @ViewBuilder
+    private func deleteButtonLabel() -> some View {
+        HStack {
+            Text(Localization.commonDelete)
+            Image(systemName: "trash")
+        }
     }
 }
 

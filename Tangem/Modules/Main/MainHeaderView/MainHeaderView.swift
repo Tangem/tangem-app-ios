@@ -61,38 +61,6 @@ struct MainHeaderView: View {
         .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
         .previewContentShape(cornerRadius: 14)
-        .contextMenu {
-            Button {
-//                viewModel.edit()
-            } label: {
-                HStack {
-                    Text(Localization.userWalletListRename)
-                    Image(systemName: "pencil")
-                }
-            }
-
-            if #available(iOS 15, *) {
-                Button(role: .destructive) {
-                    //                    viewModel.delete()
-                } label: {
-                    deleteButtonLabel
-                }
-            } else {
-                Button {
-//                    viewModel.delete()
-                } label: {
-                    deleteButtonLabel
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var deleteButtonLabel: some View {
-        HStack {
-            Text(Localization.commonDelete)
-            Image(systemName: "trash")
-        }
     }
 
     private var subtitleText: some View {

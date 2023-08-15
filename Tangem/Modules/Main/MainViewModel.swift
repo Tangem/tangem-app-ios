@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -20,6 +21,7 @@ final class MainViewModel: ObservableObject {
     @Published var isHorizontalScrollDisabled = false
     @Published var errorAlert: AlertBinder?
     @Published var showTroubleshootingView: Bool = false
+    @Published var showingDeleteConfirmation = false
 
     // MARK: - Dependencies
 
@@ -92,6 +94,53 @@ final class MainViewModel: ObservableObject {
 
     func updateIsBackupAllowed() {
         // TODO: Will be added in IOS-4165
+    }
+
+    func didTapEditWallet() {
+        // TODO: Analytics
+//        Analytics.log(.buttonEditWalletTapped)
+
+        guard let userWallet = userWalletRepository.selectedModel?.userWallet else { return }
+
+        let alert = UIAlertController(title: Localization.userWalletListRenamePopupTitle, message: nil, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: Localization.commonCancel, style: .cancel)
+        alert.addAction(cancelAction)
+
+        var nameTextField: UITextField?
+        alert.addTextField { textField in
+            nameTextField = textField
+            nameTextField?.placeholder = Localization.userWalletListRenamePopupPlaceholder
+            nameTextField?.text = userWallet.name
+            nameTextField?.clearButtonMode = .whileEditing
+            nameTextField?.autocapitalizationType = .sentences
+        }
+
+        let acceptButton = UIAlertAction(title: Localization.commonOk, style: .default) { [weak self, nameTextField] _ in
+            let newName = nameTextField?.text ?? ""
+
+            guard userWallet.name != newName else { return }
+
+            var newUserWallet = userWallet
+            newUserWallet.name = newName
+
+            self?.userWalletRepository.save(newUserWallet)
+        }
+        alert.addAction(acceptButton)
+
+        AppPresenter.shared.show(alert)
+    }
+
+    func didTapDeleteWallet() {
+        // TODO:
+//        Analytics.log(.buttonDeleteWalletTapped)
+
+        showingDeleteConfirmation = true
+    }
+
+    func didConfirmWalletDeletion() {
+        guard let userWalletModel = userWalletRepository.selectedModel else { return }
+
+        userWalletRepository.delete(userWalletModel.userWallet, logoutIfNeeded: true)
     }
 
     // MARK: - Scan card

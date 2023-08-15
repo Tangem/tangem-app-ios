@@ -22,8 +22,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         let headerModel = MainHeaderViewModel(
             infoProvider: model,
             subtitleProvider: subtitleProvider,
-            balanceProvider: model,
-            didEdit:
+            balanceProvider: model
         )
 
         if model.isMultiWallet {
