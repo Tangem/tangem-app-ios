@@ -10,8 +10,12 @@ import Foundation
 import BlockchainSdk
 
 struct SimpleWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry.V2.Entry, keys: [CardDTO.Wallet]) throws -> WalletManager {
-        let blockchain = token.blockchainNetwork.blockchain
+    func makeWalletManager(
+        tokens: [BlockchainSdk.Token],
+        blockchainNetwork: BlockchainNetwork,
+        keys: [CardDTO.Wallet]
+    ) throws -> WalletManager {
+        let blockchain = blockchainNetwork.blockchain
 
         guard let walletPublicKey = keys.first(where: { $0.curve == blockchain.curve })?.publicKey else {
             throw CommonError.noData
@@ -21,7 +25,7 @@ struct SimpleWalletManagerFactory: AnyWalletManagerFactory {
         let publicKey = Wallet.PublicKey(seedKey: walletPublicKey, derivation: .none)
         let walletManager = try factory.makeWalletManager(blockchain: blockchain, publicKey: publicKey)
 
-        walletManager.addTokens(token.tokens)
+        walletManager.addTokens(tokens)
         return walletManager
     }
 }

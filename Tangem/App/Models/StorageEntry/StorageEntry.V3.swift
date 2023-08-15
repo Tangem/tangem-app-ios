@@ -22,7 +22,7 @@ extension StorageEntry {
             case byBalance
         }
 
-        struct Entry: Codable {
+        struct Entry: Codable, Hashable {
             let id: String?
             let networkId: String
             let name: String

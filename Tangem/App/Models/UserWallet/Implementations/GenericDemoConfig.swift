@@ -64,36 +64,38 @@ extension GenericDemoConfig: UserWalletConfig {
 
         let isTestnet = AppEnvironment.current.isTestnet
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
+        let converter = StorageEntriesConverter()
 
-        let entries: [StorageEntry.V3.Entry] = blockchains.map {
+        return blockchains.map { blockchain in
+            let network: BlockchainNetwork
+
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPath(for: derivationStyle)
-                let network = BlockchainNetwork($0, derivationPath: derivationPath)
-                return .init(blockchainNetwork: network, tokens: [])
+                let derivationPath = blockchain.derivationPath(for: derivationStyle)
+                network = BlockchainNetwork(blockchain, derivationPath: derivationPath)
+            } else {
+                network = BlockchainNetwork(blockchain, derivationPath: nil)
             }
 
-            let network = BlockchainNetwork($0, derivationPath: nil)
-            return .init(blockchainNetwork: network, tokens: [])
+            return converter.convert(network)
         }
-
-        return entries
     }
 
     var persistentBlockchains: [StorageEntry.V3.Entry]? {
         let blockchains = DemoUtil().getDemoBlockchains(isTestnet: AppEnvironment.current.isTestnet)
+        let converter = StorageEntriesConverter()
 
-        let entries: [StorageEntry.V3.Entry] = blockchains.map {
+        return blockchains.map { blockchain in
+            let network: BlockchainNetwork
+            
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPath(for: derivationStyle)
-                let network = BlockchainNetwork($0, derivationPath: derivationPath)
-                return .init(blockchainNetwork: network, tokens: [])
+                let derivationPath = blockchain.derivationPath(for: derivationStyle)
+                network = BlockchainNetwork(blockchain, derivationPath: derivationPath)
+            } else {
+                network = BlockchainNetwork(blockchain, derivationPath: nil)
             }
-
-            let network = BlockchainNetwork($0, derivationPath: nil)
-            return .init(blockchainNetwork: network, tokens: [])
+            
+            return converter.convert(network)
         }
-
-        return entries
     }
 
     var embeddedBlockchain: StorageEntry.V3.Entry? {

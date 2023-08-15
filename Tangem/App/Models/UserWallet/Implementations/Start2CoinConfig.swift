@@ -58,8 +58,9 @@ extension Start2CoinConfig: UserWalletConfig {
 
     var defaultBlockchains: [StorageEntry.V3.Entry] {
         let network = BlockchainNetwork(defaultBlockchain, derivationPath: nil)
-        let entry = StorageEntry.V2.Entry(blockchainNetwork: network, tokens: [])
-        return [entry]
+        let converter = StorageEntriesConverter()
+
+        return [converter.convert(network)]
     }
 
     var persistentBlockchains: [StorageEntry.V3.Entry]? {

@@ -56,9 +56,14 @@ struct CommonUserTokensManager {
     }
 
     private func addInternal(_ tokenItems: [TokenItem], derivationPath: DerivationPath?, shouldUpload: Bool) {
-        let entries = tokenItems.map { tokenItem in
-            let blockchainNetwork = makeBlockchainNetwork(for: tokenItem.blockchain, derivationPath: derivationPath)
-            return StorageEntry.V2.Entry(blockchainNetwork: blockchainNetwork, token: tokenItem.token)
+        let converter = StorageEntriesConverter()
+        let entries: [StorageEntry.V3.Entry] = tokenItems.reduce(into: []) { partialResult, element in
+            let blockchainNetwork = makeBlockchainNetwork(for: element.blockchain, derivationPath: derivationPath)
+            partialResult.append(converter.convert(blockchainNetwork))
+
+            if let token = element.token {
+                partialResult.append(converter.convert(token, in: blockchainNetwork))
+            }
         }
 
         userTokenListManager.update(.append(entries), shouldUpload: shouldUpload)
