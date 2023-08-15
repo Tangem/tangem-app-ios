@@ -143,6 +143,7 @@ final class MainViewModel: ObservableObject {
         pages.removeAll { page in
             userWalletIds.contains(page.id.value)
         }
+        // TODO: IOS-4156 what happens if there's no pages left?
         selectedCardIndex = 0
     }
 
