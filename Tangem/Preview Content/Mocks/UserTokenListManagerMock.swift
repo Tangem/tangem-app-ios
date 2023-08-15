@@ -14,13 +14,13 @@ struct UserTokenListManagerMock: UserTokenListManager {
 
     var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
 
-    var userTokens: [StorageEntry] { [] }
+    var userTokens: [StorageEntry.V2.Entry] { [] }
 
-    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
+    var userTokensPublisher: AnyPublisher<[StorageEntry.V2.Entry], Never> { .just(output: []) }
 
     var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
 
-    func contains(_ entry: StorageEntry) -> Bool {
+    func contains(_ entry: StorageEntry.V2.Entry) -> Bool {
         return false
     }
 

@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 protocol AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager
+    func makeWalletManager(for token: StorageEntry.V2.Entry, keys: [CardDTO.Wallet]) throws -> WalletManager
 }
 
 enum AnyWalletManagerFactoryError: Error {

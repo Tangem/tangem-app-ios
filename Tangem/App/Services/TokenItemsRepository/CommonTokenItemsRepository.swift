@@ -30,17 +30,17 @@ class CommonTokenItemsRepository {
 
 extension CommonTokenItemsRepository: TokenItemsRepository {
     var containsFile: Bool {
-        let entries: [StorageEntry]? = try? persistanceStorage.value(for: .wallets(cid: key))
+        let entries: [StorageEntry.V2.Entry]? = try? persistanceStorage.value(for: .wallets(cid: key))
         return entries != nil
     }
 
-    func update(_ entries: [StorageEntry]) {
+    func update(_ entries: [StorageEntry.V2.Entry]) {
         lockQueue.sync {
             save(entries, for: key)
         }
     }
 
-    func append(_ entries: [StorageEntry]) {
+    func append(_ entries: [StorageEntry.V2.Entry]) {
         lockQueue.sync {
             var items = fetch(for: key)
             var hasAppended: Bool = false
@@ -97,7 +97,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
         }
     }
 
-    func getItems() -> [StorageEntry] {
+    func getItems() -> [StorageEntry.V2.Entry] {
         lockQueue.sync {
             return fetch(for: key)
         }
@@ -119,24 +119,24 @@ private extension CommonTokenItemsRepository {
             let tokens = oldData.compactMap { $0.token }
             let groupedTokens = Dictionary(grouping: tokens, by: { $0.blockchain })
 
-            let newData: [StorageEntry] = blockchains.map { blockchain in
+            let newData = blockchains.map { blockchain in
                 let tokens = groupedTokens[blockchain]?.map { $0.newToken } ?? []
                 let network = BlockchainNetwork(
                     blockchain,
                     derivationPath: blockchain.derivationPath(for: .v1)
                 )
-                return StorageEntry(blockchainNetwork: network, tokens: tokens)
+                return StorageEntry.V2.Entry(blockchainNetwork: network, tokens: tokens)
             }
 
             save(newData, for: cardId)
         }
     }
 
-    func fetch(for cardId: String) -> [StorageEntry] {
+    func fetch(for cardId: String) -> [StorageEntry.V2.Entry] {
         return (try? persistanceStorage.value(for: .wallets(cid: cardId))) ?? []
     }
 
-    func save(_ items: [StorageEntry], for cardId: String) {
+    func save(_ items: [StorageEntry.V2.Entry], for cardId: String) {
         do {
             try persistanceStorage.store(value: items, for: .wallets(cid: cardId))
         } catch {
@@ -147,8 +147,8 @@ private extension CommonTokenItemsRepository {
 
 // MARK: - Private Array extension
 
-private extension Array where Element == StorageEntry {
-    mutating func add(entry: StorageEntry) -> Bool {
+private extension Array where Element == StorageEntry.V2.Entry {
+    mutating func add(entry: StorageEntry.V2.Entry) -> Bool {
         guard let existingIndex = firstIndex(where: { $0.blockchainNetwork == entry.blockchainNetwork }) else {
             append(entry)
             return true
@@ -157,7 +157,7 @@ private extension Array where Element == StorageEntry {
         // We already have the blockchainNetwork in storage
         var appended = false
 
-        // Add new tokens in the existing StorageEntry
+        // Add new tokens in the existing StorageEntry.V2.Entry
         entry.tokens.forEach { token in
             if !self[existingIndex].tokens.contains(token) {
                 // Token hasn't been append

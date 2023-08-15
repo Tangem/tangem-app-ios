@@ -91,13 +91,13 @@ final class StorageEntriesMigrator {
             let tokens = v1StorageEntries.compactMap { $0.token }
             let groupedTokens = Dictionary(grouping: tokens, by: { $0.blockchain })
 
-            let v2StorageEntries: [StorageEntry] = blockchains.map { blockchain in
+            let v2StorageEntries: [StorageEntry.V2.Entry] = blockchains.map { blockchain in
                 let tokens = groupedTokens[blockchain]?.map { $0.newToken } ?? []
                 let network = BlockchainNetwork(
                     blockchain,
                     derivationPath: blockchain.derivationPath(for: .v1)
                 )
-                return StorageEntry(blockchainNetwork: network, tokens: tokens)
+                return StorageEntry.V2.Entry(blockchainNetwork: network, tokens: tokens)
             }
             migrateV2StorageEntries(v2StorageEntries, forCardID: cardId)
         }
@@ -119,7 +119,7 @@ final class StorageEntriesMigrator {
         return true
     }
 
-    private func migrateV2StorageEntries(_ v2StorageEntries: [StorageEntry], forCardID cardID: String) {
+    private func migrateV2StorageEntries(_ v2StorageEntries: [StorageEntry.V2.Entry], forCardID cardID: String) {
         let v3StorageEntries: [StorageEntry.V3.Token] = v2StorageEntries
             .reduce(into: []) { partialResult, element in
                 let blockchainNetwork = element.blockchainNetwork
@@ -151,8 +151,8 @@ final class StorageEntriesMigrator {
         storageWriter(v3StorageEntries, cardID)
     }
 
-    private func getV2StorageEntries() -> [StorageEntry]? {
-        let storageEntries: [StorageEntry]? = try? persistanceStorage.value(for: .wallets(cid: cardID))
+    private func getV2StorageEntries() -> [StorageEntry.V2.Entry]? {
+        let storageEntries: [StorageEntry.V2.Entry]? = try? persistanceStorage.value(for: .wallets(cid: cardID))
 
         return storageEntries?.nilIfEmpty
     }

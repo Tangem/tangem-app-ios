@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 struct SimpleWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager {
+    func makeWalletManager(for token: StorageEntry.V2.Entry, keys: [CardDTO.Wallet]) throws -> WalletManager {
         let blockchain = token.blockchainNetwork.blockchain
 
         guard let walletPublicKey = keys.first(where: { $0.curve == blockchain.curve })?.publicKey else {

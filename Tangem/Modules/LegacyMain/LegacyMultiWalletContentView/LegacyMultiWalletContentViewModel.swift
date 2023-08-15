@@ -145,7 +145,7 @@ private extension LegacyMultiWalletContentViewModel {
         )
     }
 
-    func mapToTokenItemViewModels(entry: StorageEntry) -> [LegacyTokenItemViewModel] {
+    func mapToTokenItemViewModels(entry: StorageEntry.V2.Entry) -> [LegacyTokenItemViewModel] {
         let network = entry.blockchainNetwork
         var items: [LegacyTokenItemViewModel] = [
             LegacyTokenItemViewModel(

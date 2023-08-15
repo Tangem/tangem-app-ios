@@ -11,7 +11,7 @@ import TangemSdk
 import BlockchainSdk
 
 struct HDWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager {
+    func makeWalletManager(for token: StorageEntry.V2.Entry, keys: [CardDTO.Wallet]) throws -> WalletManager {
         let seedKeys: [EllipticCurve: Data] = keys.reduce(into: [:]) { partialResult, cardWallet in
             partialResult[cardWallet.curve] = cardWallet.publicKey
         }

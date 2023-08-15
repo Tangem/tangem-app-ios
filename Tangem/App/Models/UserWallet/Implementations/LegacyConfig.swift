@@ -78,11 +78,11 @@ extension LegacyConfig: UserWalletConfig {
         }
     }
 
-    var defaultBlockchains: [StorageEntry] {
+    var defaultBlockchains: [StorageEntry.V2.Entry] {
         if let defaultBlockchain = defaultBlockchain {
             let network = BlockchainNetwork(defaultBlockchain, derivationPath: nil)
             let tokens = defaultToken.map { [$0] } ?? []
-            let entry = StorageEntry(blockchainNetwork: network, tokens: tokens)
+            let entry = StorageEntry.V2.Entry(blockchainNetwork: network, tokens: tokens)
             return [entry]
         } else {
             guard isMultiwallet else { return [] }
@@ -94,12 +94,12 @@ extension LegacyConfig: UserWalletConfig {
             ]
 
             return blockchains.map {
-                StorageEntry(blockchainNetwork: .init($0), token: nil)
+                StorageEntry.V2.Entry(blockchainNetwork: .init($0), token: nil)
             }
         }
     }
 
-    var persistentBlockchains: [StorageEntry]? {
+    var persistentBlockchains: [StorageEntry.V2.Entry]? {
         if isMultiwallet {
             return nil
         }
@@ -107,7 +107,7 @@ extension LegacyConfig: UserWalletConfig {
         return defaultBlockchains
     }
 
-    var embeddedBlockchain: StorageEntry? {
+    var embeddedBlockchain: StorageEntry.V2.Entry? {
         return defaultBlockchains.first
     }
 

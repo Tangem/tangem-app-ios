@@ -11,7 +11,7 @@ import Foundation
 /// Temporary solution to migrate default tokens of old miltiwallet cards to TokenItemsRepository. Remove at Q3-Q4'22
 struct LegacyCardMigrator {
     private let cardId: String
-    private let embeddedEntry: StorageEntry
+    private let embeddedEntry: StorageEntry.V2.Entry
 
     init?(cardId: String, config: UserWalletConfig) {
         guard config.hasFeature(.multiCurrency) else {

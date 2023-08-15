@@ -9,11 +9,11 @@
 import Combine
 import BlockchainSdk
 
-// TODO: Andrey Fedorov - Get rid of `StorageEntry` in this interface (IOS-4152)
+// TODO: Andrey Fedorov - Get rid of `StorageEntry.V2.Entry` in this interface (IOS-4152)
 // TODO: Andrey Fedorov - Replace `UserTokenList` with model from the domain layer (IOS-4152)
 protocol UserTokenListManager: UserTokensSyncService {
-    var userTokens: [StorageEntry] { get }
-    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { get }
+    var userTokens: [StorageEntry.V2.Entry] { get }
+    var userTokensPublisher: AnyPublisher<[StorageEntry.V2.Entry], Never> { get }
     var userTokenList: AnyPublisher<UserTokenList, Never> { get }
 
     func update(with userTokenList: UserTokenList)

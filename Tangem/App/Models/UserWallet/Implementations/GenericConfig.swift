@@ -61,11 +61,11 @@ extension GenericConfig: UserWalletConfig {
         return allBlockchains.filter { card.walletCurves.contains($0.curve) }
     }
 
-    var defaultBlockchains: [StorageEntry] {
+    var defaultBlockchains: [StorageEntry.V2.Entry] {
         let isTestnet = AppEnvironment.current.isTestnet
         let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
 
-        let entries: [StorageEntry] = blockchains.map {
+        let entries: [StorageEntry.V2.Entry] = blockchains.map {
             if let derivationStyle = derivationStyle {
                 let derivationPath = $0.derivationPath(for: derivationStyle)
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
@@ -79,11 +79,11 @@ extension GenericConfig: UserWalletConfig {
         return entries
     }
 
-    var persistentBlockchains: [StorageEntry]? {
+    var persistentBlockchains: [StorageEntry.V2.Entry]? {
         return nil
     }
 
-    var embeddedBlockchain: StorageEntry? {
+    var embeddedBlockchain: StorageEntry.V2.Entry? {
         return nil
     }
 

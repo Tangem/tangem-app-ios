@@ -28,7 +28,7 @@ class CommonUserTokenListManager {
     private var migrated = false
 
     private let initialTokenSyncSubject: CurrentValueSubject<Bool, Never>
-    private var _userTokens: CurrentValueSubject<[StorageEntry], Never>
+    private var _userTokens: CurrentValueSubject<[StorageEntry.V2.Entry], Never>
     private var _userTokenList: CurrentValueSubject<UserTokenList, Never>
 
     init(hasTokenSynchronization: Bool, userWalletId: Data, supportedBlockchains: Set<Blockchain>, hdWalletsSupported: Bool) {
@@ -58,11 +58,11 @@ class CommonUserTokenListManager {
 // MARK: - UserTokenListManager
 
 extension CommonUserTokenListManager: UserTokenListManager {
-    var userTokens: [StorageEntry] {
+    var userTokens: [StorageEntry.V2.Entry] {
         _userTokens.value
     }
 
-    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
+    var userTokensPublisher: AnyPublisher<[StorageEntry.V2.Entry], Never> {
         _userTokens.eraseToAnyPublisher()
     }
 
@@ -193,7 +193,7 @@ private extension CommonUserTokenListManager {
 
     // MARK: - Mapping
 
-    func mapToTokens(entries: [StorageEntry]) -> [UserTokenList.Token] {
+    func mapToTokens(entries: [StorageEntry.V2.Entry]) -> [UserTokenList.Token] {
         entries.reduce(into: []) { result, entry in
             let blockchain = entry.blockchainNetwork.blockchain
             let blockchainToken = UserTokenList.Token(
@@ -227,7 +227,7 @@ private extension CommonUserTokenListManager {
         }
     }
 
-    func mapToEntries(list: UserTokenList) -> [StorageEntry] {
+    func mapToEntries(list: UserTokenList) -> [StorageEntry.V2.Entry] {
         let blockchains = list.tokens
             .filter { $0.contractAddress == nil }
             .compactMap { token -> BlockchainNetwork? in
@@ -238,10 +238,10 @@ private extension CommonUserTokenListManager {
                 return BlockchainNetwork(blockchain, derivationPath: token.derivationPath)
             }
 
-        var entries: [StorageEntry] = []
+        var entries: [StorageEntry.V2.Entry] = []
 
         blockchains.forEach { network in
-            let entry = StorageEntry(
+            let entry = StorageEntry.V2.Entry(
                 blockchainNetwork: network,
                 tokens: list.tokens
                     .filter { $0.contractAddress != nil && $0.networkId == network.blockchain.networkId && $0.derivationPath == network.derivationPath }
@@ -310,7 +310,7 @@ private extension CommonUserTokenListManager {
                 }
 
                 return Future<Bool, Never> { promise in
-                    let entry = StorageEntry(blockchainNetwork: blockchainNetwork, token: token)
+                    let entry = StorageEntry.V2.Entry(blockchainNetwork: blockchainNetwork, token: token)
                     self?.update(.append([entry]), shouldUpload: true)
                     promise(.success(true))
                 }

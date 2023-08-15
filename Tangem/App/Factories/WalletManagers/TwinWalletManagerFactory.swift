@@ -19,7 +19,7 @@ struct TwinWalletManagerFactory {
 }
 
 extension TwinWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager {
+    func makeWalletManager(for token: StorageEntry.V2.Entry, keys: [CardDTO.Wallet]) throws -> WalletManager {
         guard let walletPublicKey = keys.first?.publicKey else {
             throw CommonError.noData
         }

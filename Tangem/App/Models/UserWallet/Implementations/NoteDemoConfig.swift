@@ -47,17 +47,17 @@ extension NoteDemoConfig: UserWalletConfig {
         [defaultBlockchain]
     }
 
-    var defaultBlockchains: [StorageEntry] {
+    var defaultBlockchains: [StorageEntry.V2.Entry] {
         let network = BlockchainNetwork(defaultBlockchain, derivationPath: nil)
-        let entry = StorageEntry(blockchainNetwork: network, tokens: [])
+        let entry = StorageEntry.V2.Entry(blockchainNetwork: network, tokens: [])
         return [entry]
     }
 
-    var persistentBlockchains: [StorageEntry]? {
+    var persistentBlockchains: [StorageEntry.V2.Entry]? {
         return defaultBlockchains
     }
 
-    var embeddedBlockchain: StorageEntry? {
+    var embeddedBlockchain: StorageEntry.V2.Entry? {
         return defaultBlockchains.first
     }
 

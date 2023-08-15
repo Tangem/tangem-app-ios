@@ -10,11 +10,11 @@ import Foundation
 import Combine
 
 class FakeUserTokenListManager: UserTokenListManager {
-    var userTokens: [StorageEntry] {
+    var userTokens: [StorageEntry.V2.Entry] {
         userTokensSubject.value
     }
 
-    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
+    var userTokensPublisher: AnyPublisher<[StorageEntry.V2.Entry], Never> {
         userTokensSubject.eraseToAnyPublisher()
     }
 
@@ -33,7 +33,7 @@ class FakeUserTokenListManager: UserTokenListManager {
     }
 
     private let initialSyncSubject = CurrentValueSubject<Bool, Never>(false)
-    private let userTokensSubject = CurrentValueSubject<[StorageEntry], Never>([])
+    private let userTokensSubject = CurrentValueSubject<[StorageEntry.V2.Entry], Never>([])
     private let userTokenListSubject = CurrentValueSubject<UserTokenList, Never>(UserTokenListStubs.walletUserWalletList)
 
     init() {

@@ -38,7 +38,10 @@ class GroupedTokenListInfoProvider {
             .store(in: &bag)
     }
 
-    private func convertToSectionInfo(from storageEntries: [StorageEntry], and walletModels: [WalletModel]) -> [TokenListSectionInfo] {
+    private func convertToSectionInfo(
+        from storageEntries: [StorageEntry.V2.Entry],
+        and walletModels: [WalletModel]
+    ) -> [TokenListSectionInfo] {
         return storageEntries.reduce([]) { result, entry in
             if walletModels.contains(where: { $0.blockchainNetwork == entry.blockchainNetwork }) {
                 let ids = entry.walletModelIds
@@ -63,7 +66,7 @@ class GroupedTokenListInfoProvider {
         }
     }
 
-    private func mapToListSectionInfo(_ entry: StorageEntry) -> TokenListSectionInfo {
+    private func mapToListSectionInfo(_ entry: StorageEntry.V2.Entry) -> TokenListSectionInfo {
         let blockchainNetwork = entry.blockchainNetwork
         var infoProviders = [
             TokenWithoutDerivationInfoProvider(

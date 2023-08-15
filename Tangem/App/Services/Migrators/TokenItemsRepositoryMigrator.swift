@@ -30,7 +30,7 @@ struct TokenItemsRepositoryMigrator {
             // Remove derivationPath if the card not supported HDWallet
             oldEntries = oldEntries.map {
                 let network = BlockchainNetwork($0.blockchainNetwork.blockchain)
-                return StorageEntry(blockchainNetwork: network, tokens: $0.tokens)
+                return StorageEntry.V2.Entry(blockchainNetwork: network, tokens: $0.tokens)
             }
         }
 

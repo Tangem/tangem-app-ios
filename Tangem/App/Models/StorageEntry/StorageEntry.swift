@@ -8,10 +8,5 @@
 
 import Foundation
 
-extension StorageEntry {
-    enum Version: String, Codable, RawRepresentable {
-        case v1
-        case v2
-        case v3
-    }
-}
+/// A top-level namespace.
+enum StorageEntry {}
