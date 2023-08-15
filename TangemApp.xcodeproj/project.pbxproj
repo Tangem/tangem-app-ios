@@ -454,6 +454,9 @@
 		B68907852A32482F00A0D246 /* ForEach+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68907842A32482F00A0D246 /* ForEach+.swift */; };
 		B68B35692A4ACF8B0069129F /* OrganizeTokensContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */; };
 		B68B356B2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */; };
+		B6957C042A8B17D60092105D /* StorageEntry.V1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C032A8B17D60092105D /* StorageEntry.V1.swift */; };
+		B6957C062A8B17DB0092105D /* StorageEntry.V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C052A8B17DB0092105D /* StorageEntry.V2.swift */; };
+		B6957C082A8B17E10092105D /* StorageEntry.V3.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C072A8B17E10092105D /* StorageEntry.V3.swift */; };
 		B69610982A428C9B00CF88B7 /* OrganizeTokensListSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69610972A428C9A00CF88B7 /* OrganizeTokensListSectionView.swift */; };
 		B696109A2A428CA300CF88B7 /* OrganizeTokensListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */; };
 		B69C9D3A2A7027F100ECD35F /* DragGesture.Value+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */; };
@@ -1585,6 +1588,9 @@
 		B68907842A32482F00A0D246 /* ForEach+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForEach+.swift"; sourceTree = "<group>"; };
 		B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensContainerView.swift; sourceTree = "<group>"; };
 		B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAppearanceBoundaryContainerView.swift; sourceTree = "<group>"; };
+		B6957C032A8B17D60092105D /* StorageEntry.V1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V1.swift; sourceTree = "<group>"; };
+		B6957C052A8B17DB0092105D /* StorageEntry.V2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V2.swift; sourceTree = "<group>"; };
+		B6957C072A8B17E10092105D /* StorageEntry.V3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V3.swift; sourceTree = "<group>"; };
 		B69610972A428C9A00CF88B7 /* OrganizeTokensListSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListSectionView.swift; sourceTree = "<group>"; };
 		B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListItemView.swift; sourceTree = "<group>"; };
 		B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DragGesture.Value+.swift"; sourceTree = "<group>"; };
@@ -2338,6 +2344,7 @@
 				EFD39C8C2A6A87DD0055D215 /* Config */,
 				DC13D03729DEC0F30003895C /* CardDTO */,
 				DC3B49F22893E4F300C207EA /* UserWallet */,
+				B6957C022A8B176E0092105D /* StorageEntry */,
 				5DBAFD1627E085330008B882 /* Coins */,
 				EF914D482A60388F001F00B2 /* Quotes */,
 				5DDFC1F728129E0C005976FE /* Currencies */,
@@ -3823,6 +3830,18 @@
 			path = OrganizeTokens;
 			sourceTree = "<group>";
 		};
+		B6957C022A8B176E0092105D /* StorageEntry */ = {
+			isa = PBXGroup;
+			children = (
+				EFFC861228BCF6C500F863CE /* StorageEntry.swift */,
+				B6957C032A8B17D60092105D /* StorageEntry.V1.swift */,
+				B6957C052A8B17DB0092105D /* StorageEntry.V2.swift */,
+				B6957C072A8B17E10092105D /* StorageEntry.V3.swift */,
+				B655CFF62A88F9FE003012BE /* StorageEntry+WalletModel.swift */,
+			);
+			path = StorageEntry;
+			sourceTree = "<group>";
+		};
 		B6AA135D2A2A36CF00B53937 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -4363,8 +4382,6 @@
 			children = (
 				DC0A582828252FEB0031BECC /* TokenItemsRepository.swift */,
 				5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */,
-				EFFC861228BCF6C500F863CE /* StorageEntry.swift */,
-				B655CFF62A88F9FE003012BE /* StorageEntry+WalletModel.swift */,
 				B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */,
 			);
 			path = TokenItemsRepository;
@@ -6067,6 +6084,7 @@
 				B6ED083A2A7DB99D0090E51F /* OrganizeTokensOptionsConverter.swift in Sources */,
 				DCE5C66C28898B7F000C7F67 /* TangemApiService.swift in Sources */,
 				5DDFC2042812B72C005976FE /* Currency.swift in Sources */,
+				B6957C042A8B17D60092105D /* StorageEntry.V1.swift in Sources */,
 				EFA6B04029532D520090A92F /* CircleActionButton.swift in Sources */,
 				B0C4F77B26F0A05C0086D815 /* BlankCard.swift in Sources */,
 				B06ADFD829B9CEEC00E92E5E /* OnboardingSeedPhraseGenerateView.swift in Sources */,
@@ -6493,6 +6511,7 @@
 				B0F920CC25932DCF007C176C /* WarningListView.swift in Sources */,
 				5DBBAB0B24D853B600E78F1C /* Color+.swift in Sources */,
 				EF11DD9C29378A6F0044B33C /* SwappingTokenListViewModel.swift in Sources */,
+				B6957C082A8B17E10092105D /* StorageEntry.V3.swift in Sources */,
 				EF0DC1072A0BD7F8007E3DA7 /* OptionPicker.swift in Sources */,
 				B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */,
 				B0C87B482566492000F861DE /* TwinData.swift in Sources */,
@@ -6717,6 +6736,7 @@
 				DA2D04D327BB9B07006F1E69 /* ShopOrderProgressView.swift in Sources */,
 				DCF2369129924C0900FE1855 /* AnalyticsContext.swift in Sources */,
 				DAC53CFF27BE63830027147D /* FinishStoryPage.swift in Sources */,
+				B6957C062A8B17DB0092105D /* StorageEntry.V2.swift in Sources */,
 				DC295B482861C4BE006CB7B6 /* DetailsCoordinator.swift in Sources */,
 				DC7D3A0B29E07829007BCD23 /* TwinTangemSdkFactory.swift in Sources */,
 				B02275D72701D9FB004C752B /* PreparePrimaryCardTask.swift in Sources */,

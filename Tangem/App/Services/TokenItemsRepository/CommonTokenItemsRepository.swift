@@ -108,7 +108,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
 
 private extension CommonTokenItemsRepository {
     func migrate() {
-        let wallets: [String: [LegacyStorageEntry]] = persistanceStorage.readAllWallets()
+        let wallets: [String: [StorageEntry.V1.Entry]] = persistanceStorage.readAllWallets()
 
         guard !wallets.isEmpty else {
             return
@@ -194,86 +194,4 @@ private extension Array where Element == StorageEntry {
 
         return false
     }
-}
-
-// MARK: - Legacy storage
-
-private enum LegacyStorageEntry: Codable {
-    case blockchain(Blockchain)
-    case token(LegacyToken)
-
-    var blockchain: Blockchain {
-        switch self {
-        case .blockchain(let blockchain):
-            return blockchain
-        case .token(let token):
-            return token.blockchain
-        }
-    }
-
-    var token: LegacyToken? {
-        switch self {
-        case .blockchain:
-            return nil
-        case .token(let token):
-            return token
-        }
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-
-        if let token = try? container.decode(LegacyToken.self) {
-            self = .token(token)
-            return
-        }
-
-        if let blockchain = try? container.decode(Blockchain.self) {
-            self = .blockchain(blockchain)
-            return
-        }
-
-        if let tokenDto = try? container.decode(LegacyCloudToken.self) {
-            let token = LegacyToken(
-                name: tokenDto.name,
-                symbol: tokenDto.symbol,
-                contractAddress: tokenDto.contractAddress,
-                decimalCount: tokenDto.decimalCount,
-                customIconUrl: tokenDto.customIconUrl,
-                blockchain: .ethereum(testnet: false)
-            )
-            self = .token(token)
-            return
-        }
-
-        throw BlockchainSdkError.decodingFailed
-    }
-}
-
-private struct LegacyToken: Codable {
-    let name: String
-    let symbol: String
-    let contractAddress: String
-    let decimalCount: Int
-    let customIconUrl: String?
-    let blockchain: Blockchain
-
-    var newToken: Token {
-        .init(
-            name: name,
-            symbol: symbol,
-            contractAddress: contractAddress,
-            decimalCount: decimalCount,
-            customIconUrl: customIconUrl
-        )
-    }
-}
-
-private struct LegacyCloudToken: Decodable {
-    let name: String
-    let symbol: String
-    let contractAddress: String
-    let decimalCount: Int
-    let customIcon: String?
-    let customIconUrl: String?
 }
