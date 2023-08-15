@@ -103,22 +103,11 @@ final class MainViewModel: ObservableObject {
 
         guard let userWallet = userWalletRepository.selectedModel?.userWallet else { return }
 
-        let alert = UIAlertController(title: Localization.userWalletListRenamePopupTitle, message: nil, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: Localization.commonCancel, style: .cancel)
-        alert.addAction(cancelAction)
-
-        var nameTextField: UITextField?
-        alert.addTextField { textField in
-            nameTextField = textField
-            nameTextField?.placeholder = Localization.userWalletListRenamePopupPlaceholder
-            nameTextField?.text = userWallet.name
-            nameTextField?.clearButtonMode = .whileEditing
-            nameTextField?.autocapitalizationType = .sentences
-        }
-
-        let acceptButton = UIAlertAction(title: Localization.commonOk, style: .default) { [weak self, nameTextField] _ in
-            let newName = nameTextField?.text ?? ""
-
+        let alert = AlertBuilder.makeAlertControllerWithTextField(
+            title: Localization.userWalletListRenamePopupTitle,
+            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
+            fieldText: userWallet.name
+        ) { [weak self] newName in
             guard userWallet.name != newName else { return }
 
             var newUserWallet = userWallet
@@ -126,7 +115,6 @@ final class MainViewModel: ObservableObject {
 
             self?.userWalletRepository.save(newUserWallet)
         }
-        alert.addAction(acceptButton)
 
         AppPresenter.shared.show(alert)
     }
