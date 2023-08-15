@@ -9,7 +9,7 @@
 import Foundation
 
 final class StorageEntriesMigrator {
-    typealias StorageWriter = (_ tokens: [StorageEntry.V3.Token], _ cardID: String) -> Void
+    typealias StorageWriter = (_ tokens: [StorageEntry.V3.Entry], _ cardID: String) -> Void
 
     private let persistanceStorage: PersistentStorageProtocol
     private let storageWriter: StorageWriter
@@ -119,13 +119,16 @@ final class StorageEntriesMigrator {
         return true
     }
 
-    private func migrateV2StorageEntries(_ v2StorageEntries: [StorageEntry.V2.Entry], forCardID cardID: String) {
-        let v3StorageEntries: [StorageEntry.V3.Token] = v2StorageEntries
+    private func migrateV2StorageEntries(
+        _ v2StorageEntries: [StorageEntry.V2.Entry],
+        forCardID cardID: String
+    ) {
+        let v3StorageEntries: [StorageEntry.V3.Entry] = v2StorageEntries
             .reduce(into: []) { partialResult, element in
                 let blockchainNetwork = element.blockchainNetwork
                 let networkId = element.blockchainNetwork.blockchain.networkId
                 partialResult.append(
-                    StorageEntry.V3.Token(
+                    StorageEntry.V3.Entry(
                         id: element.blockchainNetwork.blockchain.coinId,
                         networkId: networkId,
                         name: element.blockchainNetwork.blockchain.displayName,
@@ -136,7 +139,7 @@ final class StorageEntriesMigrator {
                     )
                 )
                 partialResult += element.tokens.map { token in
-                    StorageEntry.V3.Token(
+                    StorageEntry.V3.Entry(
                         id: token.id,
                         networkId: networkId,
                         name: token.name,
