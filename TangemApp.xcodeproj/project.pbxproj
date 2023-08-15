@@ -461,6 +461,7 @@
 		B6957C0A2A8B1B320092105D /* StorageEntry.Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C092A8B1B320092105D /* StorageEntry.Version.swift */; };
 		B6957C0C2A8B354E0092105D /* _CommonTokenItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C0B2A8B354E0092105D /* _CommonTokenItemsRepository.swift */; };
 		B6957C0E2A8B820D0092105D /* StorageEntry.V3+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C0D2A8B820D0092105D /* StorageEntry.V3+.swift */; };
+		B6957C102A8BB4A90092105D /* StorageEntriesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C0F2A8BB4A90092105D /* StorageEntriesConverter.swift */; };
 		B69610982A428C9B00CF88B7 /* OrganizeTokensListSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69610972A428C9A00CF88B7 /* OrganizeTokensListSectionView.swift */; };
 		B696109A2A428CA300CF88B7 /* OrganizeTokensListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */; };
 		B69C9D3A2A7027F100ECD35F /* DragGesture.Value+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */; };
@@ -1599,6 +1600,7 @@
 		B6957C092A8B1B320092105D /* StorageEntry.Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.Version.swift; sourceTree = "<group>"; };
 		B6957C0B2A8B354E0092105D /* _CommonTokenItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _CommonTokenItemsRepository.swift; sourceTree = "<group>"; };
 		B6957C0D2A8B820D0092105D /* StorageEntry.V3+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEntry.V3+.swift"; sourceTree = "<group>"; };
+		B6957C0F2A8BB4A90092105D /* StorageEntriesConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntriesConverter.swift; sourceTree = "<group>"; };
 		B69610972A428C9A00CF88B7 /* OrganizeTokensListSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListSectionView.swift; sourceTree = "<group>"; };
 		B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListItemView.swift; sourceTree = "<group>"; };
 		B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DragGesture.Value+.swift"; sourceTree = "<group>"; };
@@ -4394,6 +4396,7 @@
 				5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */,
 				B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */,
 				B6957C0B2A8B354E0092105D /* _CommonTokenItemsRepository.swift */,
+				B6957C0F2A8BB4A90092105D /* StorageEntriesConverter.swift */,
 			);
 			path = TokenItemsRepository;
 			sourceTree = "<group>";
@@ -6291,6 +6294,7 @@
 				EF50A5B1288976140081C5BB /* View+ConditionalModifiers.swift in Sources */,
 				2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */,
 				DABA435427BFB63D00718AC6 /* WelcomeStoryPage.swift in Sources */,
+				B6957C102A8BB4A90092105D /* StorageEntriesConverter.swift in Sources */,
 				DAC53CF727BE63830027147D /* StoriesProgressView.swift in Sources */,
 				DA5CD0982A25F4F2008FD876 /* PromotionViewModel.swift in Sources */,
 				B03A9339259877790061FB2D /* WarningsContainer.swift in Sources */,
