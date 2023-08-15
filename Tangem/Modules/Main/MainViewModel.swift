@@ -29,6 +29,7 @@ final class MainViewModel: ObservableObject {
     private weak var coordinator: MainRoutable?
 
     private var bag = Set<AnyCancellable>()
+    private var isLoggingOut = false
 
     // MARK: - Initializers
 
@@ -209,7 +210,7 @@ final class MainViewModel: ObservableObject {
             .sink { [weak self] event in
                 switch event {
                 case .locked:
-                    break
+                    self?.isLoggingOut = true
                 case .scan:
                     // TODO: Do we need to place spinner into Navbar?..
                     break
@@ -219,6 +220,11 @@ final class MainViewModel: ObservableObject {
                 case .updated(let userWalletModel):
                     self?.addNewPage(for: userWalletModel)
                 case .deleted(let userWalletId):
+                    // This model is alive for enough time to receive the "deleted" event
+                    // after the last model has been removed and the application has been logged out
+                    if self?.isLoggingOut == true {
+                        return
+                    }
                     self?.removePage(with: userWalletId)
                 case .selected:
                     break
