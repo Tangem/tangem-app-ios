@@ -454,6 +454,7 @@
 		B68907852A32482F00A0D246 /* ForEach+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68907842A32482F00A0D246 /* ForEach+.swift */; };
 		B68B35692A4ACF8B0069129F /* OrganizeTokensContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */; };
 		B68B356B2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */; };
+		B6957BFE2A8AA8B60092105D /* StorageEntriesMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957BFD2A8AA8B60092105D /* StorageEntriesMigrator.swift */; };
 		B6957C042A8B17D60092105D /* StorageEntry.V1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C032A8B17D60092105D /* StorageEntry.V1.swift */; };
 		B6957C062A8B17DB0092105D /* StorageEntry.V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C052A8B17DB0092105D /* StorageEntry.V2.swift */; };
 		B6957C082A8B17E10092105D /* StorageEntry.V3.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6957C072A8B17E10092105D /* StorageEntry.V3.swift */; };
@@ -1588,6 +1589,7 @@
 		B68907842A32482F00A0D246 /* ForEach+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForEach+.swift"; sourceTree = "<group>"; };
 		B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensContainerView.swift; sourceTree = "<group>"; };
 		B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAppearanceBoundaryContainerView.swift; sourceTree = "<group>"; };
+		B6957BFD2A8AA8B60092105D /* StorageEntriesMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntriesMigrator.swift; sourceTree = "<group>"; };
 		B6957C032A8B17D60092105D /* StorageEntry.V1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V1.swift; sourceTree = "<group>"; };
 		B6957C052A8B17DB0092105D /* StorageEntry.V2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V2.swift; sourceTree = "<group>"; };
 		B6957C072A8B17E10092105D /* StorageEntry.V3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.V3.swift; sourceTree = "<group>"; };
@@ -5603,6 +5605,7 @@
 			children = (
 				EFFC860B28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift */,
 				EFFC860C28BCE87700F863CE /* LegacyCardMigrator.swift */,
+				B6957BFD2A8AA8B60092105D /* StorageEntriesMigrator.swift */,
 			);
 			path = Migrators;
 			sourceTree = "<group>";
@@ -6929,6 +6932,7 @@
 				DAA5E31628D213A4003C0E80 /* CardDTOv4.swift in Sources */,
 				B020A51726F1DD9E00D38596 /* OnboardingTopupViewModel.swift in Sources */,
 				EF9F907F299CFCC7006F638F /* WebViewContainerViewModel.swift in Sources */,
+				B6957BFE2A8AA8B60092105D /* StorageEntriesMigrator.swift in Sources */,
 				5D9DCB0C255199AA0059799C /* SecurityModeViewModel.swift in Sources */,
 				EF862715297182B6007EBFF9 /* SwappingSuccessCoordinatorView.swift in Sources */,
 				B02B74AE29879DA5006473F2 /* WalletConnectV2PersonalSignHandler.swift in Sources */,

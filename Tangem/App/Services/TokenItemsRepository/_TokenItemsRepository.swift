@@ -23,7 +23,12 @@ protocol _TokenItemsRepository {
 }
 
 final class _CommonTokenItemsRepository {
-    @Injected(\.persistentStorage) var persistanceStorage: PersistentStorageProtocol
+    @Injected(\.persistentStorage) private var persistanceStorage: PersistentStorageProtocol
+
+    @AppStorageCompat(StorageKeys.currentStorageVersion)
+    private var currentStorageVersion: StorageEntry.Version = .v3
+
+    private var actualStorageVersion: StorageEntry.Version { .v3 }
 
     private let lockQueue = DispatchQueue(label: "com.tangem.CommonTokenItemsRepository.lockQueue")
     private let key: String
@@ -32,11 +37,37 @@ final class _CommonTokenItemsRepository {
     init(key: String) {
         self.key = key
 
-        lockQueue.sync { /* migrate() */ } // from v1|v2 to v3
+        lockQueue.sync {
+            migrateStorageIfNeeded()
+            updateCurrentStorageVersion()
+        }
     }
 
     deinit {
         AppLog.shared.debug("\(#function) \(objectDescription(self))")
+    }
+
+    private func migrateStorageIfNeeded() {
+        let migrator = StorageEntriesMigrator(
+            persistanceStorage: persistanceStorage,
+            storageWriter: save(_:forCardID:),
+            cardID: key
+        )
+        migrator.migrate(from: currentStorageVersion, to: actualStorageVersion)
+    }
+
+    /// - Warning: MUST BE called only AFTER the storage migration has been performed,
+    /// otherwise user data may be lost.
+    private func updateCurrentStorageVersion() {
+        currentStorageVersion = actualStorageVersion
+    }
+}
+
+// MARK: - Constants
+
+private extension _CommonTokenItemsRepository {
+    enum StorageKeys: String {
+        case currentStorageVersion = "com.tangem.CommonTokenItemsRepository.currentStorageVersion"
     }
 }
 
@@ -159,35 +190,6 @@ extension _CommonTokenItemsRepository: _TokenItemsRepository {
 // MARK: - Private
 
 private extension _CommonTokenItemsRepository {
-    func migrate() {
-        // TODO: Andrey Fedorov - Add actual implementation
-
-        /*
-         let wallets: [String: [LegacyStorageEntry]] = persistanceStorage.readAllWallets()
-
-         guard !wallets.isEmpty else {
-             return
-         }
-
-         wallets.forEach { cardId, oldData in
-             let blockchains = Set(oldData.map { $0.blockchain })
-             let tokens = oldData.compactMap { $0.token }
-             let groupedTokens = Dictionary(grouping: tokens, by: { $0.blockchain })
-
-             let newData: [StorageEntry] = blockchains.map { blockchain in
-                 let tokens = groupedTokens[blockchain]?.map { $0.newToken } ?? []
-                 let network = BlockchainNetwork(
-                     blockchain,
-                     derivationPath: blockchain.derivationPath(for: .v1)
-                 )
-                 return StorageEntry(blockchainNetwork: network, tokens: tokens)
-             }
-
-             save(newData, for: cardId)
-         }
-          */
-    }
-
     func fetch(forCardID cardID: String) -> [StorageEntry.V3.Token] {
         if let cachedItems = cache {
             return cachedItems
