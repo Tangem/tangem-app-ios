@@ -89,20 +89,7 @@ class WalletModel {
             return nil
         }
 
-        let displayValue: Decimal
-        if rawValue.isZero {
-            displayValue = rawValue
-        } else {
-            switch fiatFormattingOptions.roundingType {
-            case .shortestFraction, .none:
-                assertionFailure("Fiat balance must be formatted with default formatter")
-                displayValue = rawValue
-            case .default(let roundingMode, let scale):
-                let minValue = Decimal(1) / pow(10, scale)
-                displayValue = max(rawValue, minValue).rounded(scale: scale, roundingMode: roundingMode)
-            }
-        }
-
+        let displayValue = AmountRounder().round(rawValue, with: fiatFormattingOptions.roundingType)
         return FiatValue(rawValue: rawValue, displayValue: displayValue)
     }
 
