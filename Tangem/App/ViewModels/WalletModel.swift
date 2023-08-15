@@ -73,14 +73,15 @@ class WalletModel {
     }
 
     var fiatBalance: String {
-        let fiatBalance = formatter.formatFiatBalance(fiatValue)
+        let defaultFiatFormattingOption = BalanceFormattingOptions.defaultFiatFormattingOptions
+        let formattingOption = BalanceFormattingOptions(
+            minFractionDigits: defaultFiatFormattingOption.minFractionDigits,
+            maxFractionDigits: defaultFiatFormattingOption.maxFractionDigits,
+            showLessThanSignForSmallNumbers: true,
+            roundingType: defaultFiatFormattingOption.roundingType
+        )
 
-        if let fiatValue,
-           0 < fiatValue, fiatValue < 0.01 {
-            return "< \(fiatBalance)"
-        }
-
-        return fiatBalance
+        return formatter.formatFiatBalance(fiatValue, formattingOptions: formattingOption)
     }
 
     var fiatValue: Decimal? {

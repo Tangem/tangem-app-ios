@@ -57,7 +57,16 @@ struct BalanceFormatter {
         }
 
         let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
-        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(code)"
+        let formattedValue = formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(code)"
+
+        let smallValueThreshold = 1 / pow(10, formattingOptions.maxFractionDigits)
+        if let value,
+           formattingOptions.showLessThanSignForSmallNumbers,
+           0 < value, value < smallValueThreshold {
+            return "< \(formattedValue)"
+        } else {
+            return formattedValue
+        }
     }
 
     /// Format fiat balance string for main page with different font for integer and fractional parts
