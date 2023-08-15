@@ -76,6 +76,9 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func convertToSections(_ sections: [TokenListSectionInfo]) -> [MultiWalletTokenItemsSection] {
+        // TODO: Need to change recreation logic, to prevent crashes when sections are refreshed
+        // Or need to replace `unowned` references to `TokenItemInfoProvider` with `weak` references
+        // Will be done in IOS-4157
         MultiWalletTokenItemsSectionFactory()
             .makeSections(from: sections, tapAction: tokenItemTapped(_:))
     }
