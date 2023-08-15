@@ -368,11 +368,11 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func clearNonSelectedUserWallets() {
-        let selectedUserWallet = selectedModel?.userWallet
+        let selectedModel = selectedModel
         let otherUserWallets = userWallets.filter { $0.userWalletId != selectedUserWalletId }
 
         clearUserWalletStorage()
-        discardSensitiveData(except: selectedUserWallet)
+        discardSensitiveData(except: selectedModel)
 
         sendEvent(.deleted(userWalletIds: otherUserWallets.map { $0.userWalletId }))
     }
@@ -398,17 +398,16 @@ class CommonUserWalletRepository: UserWalletRepository {
         encryptionKeyStorage.clear()
     }
 
-    private func discardSensitiveData(except userWalletToKeep: UserWallet? = nil) {
+    private func discardSensitiveData(except userWalletModelToKeep: CardViewModel? = nil) {
         encryptionKeyByUserWalletId = [:]
 
-        let newModels = models.filter { $0.userWalletId.value == userWalletToKeep?.userWalletId }
-        models = newModels
-
-        var newUserWallets = savedUserWallets(withSensitiveData: false)
-        if let userWalletToKeep, !newUserWallets.contains(where: { $0.userWalletId == userWalletToKeep.userWalletId }) {
-            newUserWallets.append(userWalletToKeep)
+        if let userWalletModelToKeep {
+            models = [userWalletModelToKeep]
+            userWallets = [userWalletModelToKeep.userWallet]
+        } else {
+            models = []
+            userWallets = []
         }
-        userWallets = newUserWallets
     }
 
     // TODO: refactor
