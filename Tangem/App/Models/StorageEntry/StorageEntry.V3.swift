@@ -22,7 +22,7 @@ extension StorageEntry {
             case byBalance
         }
 
-        struct Token: Codable {
+        struct Entry: Codable {
             let id: String?
             let networkId: String
             let name: String
@@ -36,7 +36,7 @@ extension StorageEntry {
             let version: Version
             let grouping: Grouping
             let sorting: Sorting
-            let tokens: [Token]
+            let tokens: [Entry]
         }
     }
 }
