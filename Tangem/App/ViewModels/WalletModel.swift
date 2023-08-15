@@ -77,7 +77,7 @@ class WalletModel {
         let formattingOption = BalanceFormattingOptions(
             minFractionDigits: defaultFiatFormattingOption.minFractionDigits,
             maxFractionDigits: defaultFiatFormattingOption.maxFractionDigits,
-            showLessThanSignForSmallNumbers: true,
+            showLessThanSignForSmallValues: true,
             roundingType: defaultFiatFormattingOption.roundingType
         )
 

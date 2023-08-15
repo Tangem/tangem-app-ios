@@ -61,7 +61,7 @@ struct BalanceFormatter {
 
         let smallValueThreshold = 1 / pow(10, formattingOptions.maxFractionDigits)
         if let value,
-           formattingOptions.showLessThanSignForSmallNumbers,
+           formattingOptions.showLessThanSignForSmallValues,
            0 < value, value < smallValueThreshold {
             return "< \(formattedValue)"
         } else {
