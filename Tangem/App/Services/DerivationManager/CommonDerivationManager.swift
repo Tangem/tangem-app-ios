@@ -33,7 +33,7 @@ class CommonDerivationManager {
             .store(in: &bag)
     }
 
-    private func process(_ entries: [StorageEntry.V2.Entry], _ keys: [CardDTO.Wallet]) {
+    private func process(_ entries: [StorageEntry.V3.Entry], _ keys: [CardDTO.Wallet]) {
         var derivations: [Data: [DerivationPath]] = [:]
 
         entries.forEach { entry in

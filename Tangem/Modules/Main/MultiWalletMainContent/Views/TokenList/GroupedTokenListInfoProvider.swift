@@ -43,7 +43,7 @@ class GroupedTokenListInfoProvider {
     }
 
     private func convertToSectionInfo(
-        from storageEntries: [StorageEntry.V2.Entry],
+        from storageEntries: [StorageEntry.V3.Entry],
         and walletModels: [WalletModel]
     ) -> [TokenListSectionInfo] {
         return storageEntries.reduce([]) { result, entry in

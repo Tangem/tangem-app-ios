@@ -28,7 +28,7 @@ class CommonUserTokenListManager {
     private var migrated = false
 
     private let initialTokenSyncSubject: CurrentValueSubject<Bool, Never>
-    private var _userTokens: CurrentValueSubject<[StorageEntry.V2.Entry], Never>
+    private var _userTokens: CurrentValueSubject<[StorageEntry.V3.Entry], Never>
     private var _userTokenList: CurrentValueSubject<UserTokenList, Never>
 
     init(hasTokenSynchronization: Bool, userWalletId: Data, supportedBlockchains: Set<Blockchain>, hdWalletsSupported: Bool) {
@@ -58,11 +58,11 @@ class CommonUserTokenListManager {
 // MARK: - UserTokenListManager
 
 extension CommonUserTokenListManager: UserTokenListManager {
-    var userTokens: [StorageEntry.V2.Entry] {
+    var userTokens: [StorageEntry.V3.Entry] {
         _userTokens.value
     }
 
-    var userTokensPublisher: AnyPublisher<[StorageEntry.V2.Entry], Never> {
+    var userTokensPublisher: AnyPublisher<[StorageEntry.V3.Entry], Never> {
         _userTokens.eraseToAnyPublisher()
     }
 
@@ -83,7 +83,9 @@ extension CommonUserTokenListManager: UserTokenListManager {
         case .removeBlockchain(let blockchain):
             tokenItemsRepository.remove([blockchain])
         case .removeToken(let token, let network):
-            tokenItemsRepository.remove([token], blockchainNetwork: network)
+            let converter = StorageEntriesConverter()
+            let storageEntry = converter.convert(token, in: network)
+            tokenItemsRepository.remove([storageEntry])
         }
 
         updateUserTokens()
@@ -193,75 +195,38 @@ private extension CommonUserTokenListManager {
 
     // MARK: - Mapping
 
-    func mapToTokens(entries: [StorageEntry.V2.Entry]) -> [UserTokenList.Token] {
-        entries.reduce(into: []) { result, entry in
-            let blockchain = entry.blockchainNetwork.blockchain
-            let blockchainToken = UserTokenList.Token(
-                id: blockchain.coinId,
-                networkId: blockchain.networkId,
-                name: blockchain.displayName,
-                symbol: blockchain.currencySymbol,
-                decimals: blockchain.decimalCount,
+    func mapToTokens(entries: [StorageEntry.V3.Entry]) -> [UserTokenList.Token] {
+        return entries.map { entry in
+            return UserTokenList.Token(
+                id: entry.id,
+                networkId: entry.networkId,
+                name: entry.name,
+                symbol: entry.symbol,
+                decimals: entry.decimals,
                 derivationPath: entry.blockchainNetwork.derivationPath,
-                contractAddress: nil
+                contractAddress: entry.contractAddress
             )
-            if !result.contains(blockchainToken) {
-                result.append(blockchainToken)
-            }
-
-            entry.tokens.forEach { token in
-                let token = UserTokenList.Token(
-                    id: token.id,
-                    networkId: blockchain.networkId,
-                    name: token.name,
-                    symbol: token.symbol,
-                    decimals: token.decimalCount,
-                    derivationPath: entry.blockchainNetwork.derivationPath,
-                    contractAddress: token.contractAddress
-                )
-
-                if !result.contains(token) {
-                    result.append(token)
-                }
-            }
         }
     }
 
-    func mapToEntries(list: UserTokenList) -> [StorageEntry.V2.Entry] {
-        let blockchains = list.tokens
-            .filter { $0.contractAddress == nil }
-            .compactMap { token -> BlockchainNetwork? in
-                guard let blockchain = supportedBlockchains[token.networkId] else {
-                    return nil
-                }
-
-                return BlockchainNetwork(blockchain, derivationPath: token.derivationPath)
+    func mapToEntries(list: UserTokenList) -> [StorageEntry.V3.Entry] {
+        return list.tokens.compactMap { token -> StorageEntry.V3.Entry? in
+            guard let blockchain = supportedBlockchains[token.networkId] else {
+                return nil
             }
 
-        var entries: [StorageEntry.V2.Entry] = []
+            let blockchainNetwork = StorageEntry.V3.BlockchainNetwork(blockchain, derivationPath: token.derivationPath)
 
-        blockchains.forEach { network in
-            let entry = StorageEntry.V2.Entry(
-                blockchainNetwork: network,
-                tokens: list.tokens
-                    .filter { $0.contractAddress != nil && $0.networkId == network.blockchain.networkId && $0.derivationPath == network.derivationPath }
-                    .map { token in
-                        Token(
-                            name: token.name,
-                            symbol: token.symbol,
-                            contractAddress: token.contractAddress!,
-                            decimalCount: token.decimals,
-                            id: token.id
-                        )
-                    }
+            return StorageEntry.V3.Entry(
+                id: token.id,
+                networkId: token.networkId,
+                name: token.name,
+                symbol: token.symbol,
+                decimals: token.decimals,
+                blockchainNetwork: blockchainNetwork,
+                contractAddress: token.contractAddress
             )
-
-            if !entries.contains(entry) {
-                entries.append(entry)
-            }
         }
-
-        return entries
     }
 
     // MARK: - Token upgrading
@@ -274,19 +239,13 @@ private extension CommonUserTokenListManager {
         migrated = true
 
         let items = tokenItemsRepository.getItems()
-        let itemsWithCustomTokens = items.filter { item in
-            return item.tokens.contains(where: { $0.isCustom })
-        }
+        let customTokens = items.filter(\.isCustom)
 
-        if itemsWithCustomTokens.isEmpty {
+        if customTokens.isEmpty {
             return .just
         }
 
-        let publishers: [AnyPublisher<Bool, Never>] = itemsWithCustomTokens.reduce(into: []) { result, item in
-            result += item.tokens.filter { $0.isCustom }.map { token -> AnyPublisher<Bool, Never> in
-                updateCustomToken(token: token, in: item.blockchainNetwork)
-            }
-        }
+        let publishers = customTokens.map(updateCustomToken(_:))
 
         return Publishers.MergeMany(publishers)
             .collect(publishers.count)
@@ -294,10 +253,11 @@ private extension CommonUserTokenListManager {
             .eraseToAnyPublisher()
     }
 
-    func updateCustomToken(token: Token, in blockchainNetwork: BlockchainNetwork) -> AnyPublisher<Bool, Never> {
+    func updateCustomToken(_ storageEntry: StorageEntry.V3.Entry) -> AnyPublisher<Bool, Never> {
+        let blockchainNetwork = storageEntry.blockchainNetwork
         let requestModel = CoinsList.Request(
             supportedBlockchains: [blockchainNetwork.blockchain],
-            contractAddress: token.contractAddress
+            contractAddress: storageEntry.contractAddress
         )
 
         // TODO: refactor, reduce complexity
@@ -305,13 +265,15 @@ private extension CommonUserTokenListManager {
             .loadCoins(requestModel: requestModel)
             .replaceError(with: [])
             .flatMap { [weak self] models -> AnyPublisher<Bool, Never> in
-                guard let token = models.first?.items.compactMap({ $0.token }).first else {
-                    return Just(false).eraseToAnyPublisher()
-                }
-
                 return Future<Bool, Never> { promise in
-                    let entry = StorageEntry.V2.Entry(blockchainNetwork: blockchainNetwork, token: token)
-                    self?.update(.append([entry]), shouldUpload: true)
+                    guard let token = models.first?.items.compactMap({ $0.token }).first else {
+                        promise(.success(false))
+                        return
+                    }
+
+                    let converter = StorageEntriesConverter()
+                    let updatedStorageEntry = converter.convert(token, in: blockchainNetwork)
+                    self?.update(.append([updatedStorageEntry]), shouldUpload: true)
                     promise(.success(true))
                 }
                 .eraseToAnyPublisher()

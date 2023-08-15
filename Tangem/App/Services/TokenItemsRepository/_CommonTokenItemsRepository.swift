@@ -146,13 +146,19 @@ extension _CommonTokenItemsRepository: _TokenItemsRepository {
         }
     }
 
-    func remove(_ tokens: [StorageEntry.V3.Entry], in blockchainNetwork: BlockchainNetwork) {
+    func remove(_ tokens: [StorageEntry.V3.Entry]) {
         lockQueue.sync {
-            let contractAddresses = tokens.map(\.contractAddress).toSet() // may contain `nil` element
+            let deletedTokensKeys = tokens
+                .map { TokenKey(blockchainNetwork: $0.blockchainNetwork, contractAddresses: $0.contractAddress) }
+                .toSet()
+
             let existingItems = fetch(forCardID: key)
             var newItems = existingItems
 
-            newItems.removeAll { $0.blockchainNetwork == blockchainNetwork && contractAddresses.contains($0.contractAddress) }
+            newItems.removeAll { item in
+                let key = TokenKey(blockchainNetwork: item.blockchainNetwork, contractAddresses: item.contractAddress)
+                return deletedTokensKeys.contains(key)
+            }
 
             let hasRemoved = newItems.count != existingItems.count
             if hasRemoved {
@@ -200,5 +206,14 @@ private extension _CommonTokenItemsRepository {
 
     func markCacheAsDirty() {
         cache = nil
+    }
+}
+
+// MARK: - Auxiliary types
+
+private extension _CommonTokenItemsRepository {
+    struct TokenKey: Hashable {
+        let blockchainNetwork: StorageEntry.V3.BlockchainNetwork
+        let contractAddresses: String?
     }
 }

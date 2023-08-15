@@ -14,7 +14,7 @@ struct StorageEntriesConverter {
         _ blockchainNetwork: BlockchainNetwork
     ) -> StorageEntry.V3.Entry {
         return StorageEntry.V3.Entry(
-            id: blockchainNetwork.blockchain.coinId,    // TODO: Andrey Fedorov - can `blockchainNetwork.blockchain.coinId` be used here?
+            id: blockchainNetwork.blockchain.coinId, // TODO: Andrey Fedorov - can `blockchainNetwork.blockchain.coinId` be used here?
             networkId: blockchainNetwork.blockchain.networkId,
             name: blockchainNetwork.blockchain.displayName,
             symbol: blockchainNetwork.blockchain.currencySymbol,

@@ -40,26 +40,37 @@ class CommonWalletManagersRepository {
             .store(in: &bag)
     }
 
-    private func update(with entries: [StorageEntry.V2.Entry], _ keys: [CardDTO.Wallet]) {
+    private func update(with entries: [StorageEntry.V3.Entry], _ keys: [CardDTO.Wallet]) {
+        let entriesGroupedByBlockchainNetwork = Dictionary(grouping: entries, by: \.blockchainNetwork)
+        let converter = StorageEntriesConverter()
         var managers = walletManagers.value
         var hasUpdates = false
 
-        for entry in entries {
-            if let existingWalletManager = walletManagers.value[entry.blockchainNetwork] {
-                let tokensToRemove = Set(existingWalletManager.cardTokens).subtracting(entry.tokens)
+        for (blockchainNetwork, entriesForBlockchainNetwork) in entriesGroupedByBlockchainNetwork {
+            let tokensForBlockchainNetwork = entriesForBlockchainNetwork
+                .compactMap { entry -> BlockchainSdk.Token? in
+                    return converter.convert(entry)
+                }
+
+            if let existingWalletManager = walletManagers.value[blockchainNetwork] {
+                let tokensToRemove = Set(existingWalletManager.cardTokens).subtracting(tokensForBlockchainNetwork)
                 for tokenToRemove in tokensToRemove {
                     existingWalletManager.removeToken(tokenToRemove)
                     hasUpdates = true
                 }
 
-                let tokensToAdd = Set(entry.tokens).subtracting(existingWalletManager.cardTokens)
+                let tokensToAdd = Set(tokensForBlockchainNetwork).subtracting(existingWalletManager.cardTokens)
                 if !tokensToAdd.isEmpty {
                     existingWalletManager.addTokens(Array(tokensToAdd))
                     hasUpdates = true
                 }
 
-            } else if let newWalletManager = makeWalletManager(for: entry, keys) {
-                managers[entry.blockchainNetwork] = newWalletManager
+            } else if let newWalletManager = makeWalletManager(
+                tokens: tokensForBlockchainNetwork,
+                blockchainNetwork: blockchainNetwork,
+                keys: keys
+            ) {
+                managers[blockchainNetwork] = newWalletManager
                 hasUpdates = true
             }
         }
@@ -80,13 +91,21 @@ class CommonWalletManagersRepository {
         }
     }
 
-    private func makeWalletManager(for entry: StorageEntry.V2.Entry, _ keys: [CardDTO.Wallet]) -> WalletManager? {
+    private func makeWalletManager(
+        tokens: [BlockchainSdk.Token],
+        blockchainNetwork: BlockchainNetwork,
+        keys: [CardDTO.Wallet]
+    ) -> WalletManager? {
         do {
-            return try walletManagerFactory.makeWalletManager(for: entry, keys: keys)
+            return try walletManagerFactory.makeWalletManager(
+                tokens: tokens,
+                blockchainNetwork: blockchainNetwork,
+                keys: keys
+            )
         } catch AnyWalletManagerFactoryError.noDerivation {
-            AppLog.shared.debug("‼️ No derivation for \(entry.blockchainNetwork.blockchain.displayName)")
+            AppLog.shared.debug("‼️ No derivation for \(blockchainNetwork.blockchain.displayName)")
         } catch {
-            AppLog.shared.debug("‼️ Failed to create \(entry.blockchainNetwork.blockchain.displayName)")
+            AppLog.shared.debug("‼️ Failed to create \(blockchainNetwork.blockchain.displayName)")
             AppLog.shared.error(error)
         }
 

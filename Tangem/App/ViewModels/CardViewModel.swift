@@ -153,7 +153,7 @@ class CardViewModel: Identifiable, ObservableObject {
         config.tou
     }
 
-    var embeddedEntry: StorageEntry.V2.Entry? {
+    var embeddedEntry: StorageEntry.V3.Entry? {
         config.embeddedBlockchain
     }
 
