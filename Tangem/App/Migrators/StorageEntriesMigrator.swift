@@ -123,32 +123,13 @@ final class StorageEntriesMigrator {
         _ v2StorageEntries: [StorageEntry.V2.Entry],
         forCardID cardID: String
     ) {
+        let converter = StorageEntriesConverter()
         let v3StorageEntries: [StorageEntry.V3.Entry] = v2StorageEntries
             .reduce(into: []) { partialResult, element in
                 let blockchainNetwork = element.blockchainNetwork
-                let networkId = element.blockchainNetwork.blockchain.networkId
-                partialResult.append(
-                    StorageEntry.V3.Entry(
-                        id: element.blockchainNetwork.blockchain.coinId,
-                        networkId: networkId,
-                        name: element.blockchainNetwork.blockchain.displayName,
-                        symbol: element.blockchainNetwork.blockchain.currencySymbol,
-                        decimals: element.blockchainNetwork.blockchain.decimalCount,
-                        blockchainNetwork: blockchainNetwork,
-                        contractAddress: nil
-                    )
-                )
-                partialResult += element.tokens.map { token in
-                    StorageEntry.V3.Entry(
-                        id: token.id,
-                        networkId: networkId,
-                        name: token.name,
-                        symbol: token.symbol,
-                        decimals: token.decimalCount,
-                        blockchainNetwork: blockchainNetwork,
-                        contractAddress: token.contractAddress
-                    )
-                }
+
+                partialResult.append(converter.convert(blockchainNetwork))
+                partialResult += element.tokens.map { converter.convert($0, in: blockchainNetwork) }
             }
 
         storageWriter(v3StorageEntries, cardID)
