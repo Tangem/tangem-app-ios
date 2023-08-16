@@ -98,7 +98,7 @@ extension CommonUserTokensManager: UserTokensManager {
             let converter = StorageEntriesConverter()
             return storageEntries
                 .lazy
-                .compactMap(converter.convert(_:))
+                .compactMap(converter.convertToToken(_:))
                 .contains(token)
         }
     }
@@ -108,7 +108,7 @@ extension CommonUserTokensManager: UserTokensManager {
         return userTokenListManager
             .userTokens
             .filter { $0.blockchainNetwork == blockchainNetwork && $0.isToken }
-            .compactMap(converter.convert(_:))
+            .compactMap(converter.convertToToken(_:))
     }
 
     func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?) async throws -> String {

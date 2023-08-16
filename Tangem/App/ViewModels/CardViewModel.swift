@@ -153,8 +153,8 @@ class CardViewModel: Identifiable, ObservableObject {
         config.tou
     }
 
-    var embeddedEntry: StorageEntry.V3.Entry? {
-        config.embeddedBlockchain
+    var embeddedEntries: [StorageEntry.V3.Entry]? {
+        config.embeddedBlockchains
     }
 
     var canShowSwapping: Bool {

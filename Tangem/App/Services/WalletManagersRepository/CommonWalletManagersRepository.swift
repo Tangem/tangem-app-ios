@@ -47,10 +47,7 @@ class CommonWalletManagersRepository {
         var hasUpdates = false
 
         for (blockchainNetwork, entriesForBlockchainNetwork) in entriesGroupedByBlockchainNetwork {
-            let tokensForBlockchainNetwork = entriesForBlockchainNetwork
-                .compactMap { entry -> BlockchainSdk.Token? in
-                    return converter.convert(entry)
-                }
+            let tokensForBlockchainNetwork = entriesForBlockchainNetwork.compactMap(converter.convertToToken(_:))
 
             if let existingWalletManager = walletManagers.value[blockchainNetwork] {
                 let tokensToRemove = Set(existingWalletManager.cardTokens).subtracting(tokensForBlockchainNetwork)

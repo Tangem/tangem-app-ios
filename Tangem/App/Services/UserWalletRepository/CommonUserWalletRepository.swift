@@ -379,7 +379,7 @@ class CommonUserWalletRepository: UserWalletRepository {
             card: cardInfo.card,
             productType: cardModel.productType,
             userWalletId: cardModel.userWalletId.value,
-            embeddedEntry: cardModel.embeddedEntry
+            embeddedEntries: cardModel.embeddedEntries
         )
 
         analyticsContext.setupContext(with: contextData)
