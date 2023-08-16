@@ -46,48 +46,65 @@ class GroupedTokenListInfoProvider {
         from storageEntries: [StorageEntry.V3.Entry],
         and walletModels: [WalletModel]
     ) -> [TokenListSectionInfo] {
-        return storageEntries.reduce([]) { result, entry in
-            if walletModels.contains(where: { $0.blockchainNetwork == entry.blockchainNetwork }) {
-                let ids = entry.walletModelIds
-                let models: [DefaultTokenItemInfoProvider] = ids.compactMap { id in
-                    guard let model = walletModels.first(where: { $0.id == id }) else {
-                        return nil
-                    }
+        let storageEntriesGroupedByBlockchainNetworks = Dictionary(grouping: storageEntries, by: \.blockchainNetwork)
+        let blockchainNetworksFromStorageEntries = storageEntries
+            .unique(by: \.blockchainNetwork)
+            .map(\.blockchainNetwork)
 
-                    return DefaultTokenItemInfoProvider(walletModel: model)
-                }
+        let walletModelsKeyedByIds = walletModels
+            .keyedFirst(by: \.id)
 
-                let sectionInfo = TokenListSectionInfo(
-                    id: entry.blockchainNetwork.hashValue,
-                    sectionType: .titled(title: title(for: entry.blockchainNetwork)),
-                    infoProviders: models
+        let blockchainNetworksFromWalletModels = walletModelsKeyedByIds
+            .values
+            .unique(by: \.blockchainNetwork)
+            .map(\.blockchainNetwork)
+            .toSet()
+
+        return blockchainNetworksFromStorageEntries.reduce(into: []) { partialResult, element in
+            guard let storageEntries = storageEntriesGroupedByBlockchainNetworks[element] else { return }
+
+            if blockchainNetworksFromWalletModels.contains(element) {
+                let models = storageEntries
+                    .compactMap { walletModelsKeyedByIds[$0.walletModelId] }
+                    .map { DefaultTokenItemInfoProvider(walletModel: $0) }
+
+                partialResult.append(
+                    TokenListSectionInfo(
+                        id: element.hashValue,
+                        sectionType: .titled(title: title(for: element)),
+                        infoProviders: models
+                    )
                 )
-
-                return result + [sectionInfo]
+            } else {
+                partialResult.append(mapToListSectionInfo(storageEntries, in: element))
             }
-
-            return result + [mapToListSectionInfo(entry)]
         }
     }
 
-    private func mapToListSectionInfo(_ entry: StorageEntry.V2.Entry) -> TokenListSectionInfo {
-        let blockchainNetwork = entry.blockchainNetwork
-        var infoProviders = [
-            TokenWithoutDerivationInfoProvider(
-                id: WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .coin).id,
-                tokenItem: .blockchain(blockchainNetwork.blockchain)
-            ),
-        ]
+    private func mapToListSectionInfo(
+        _ storageEntries: [StorageEntry.V3.Entry],
+        in blockchainNetwork: StorageEntry.V3.BlockchainNetwork
+    ) -> TokenListSectionInfo {
+        let converter = StorageEntriesConverter()
 
-        infoProviders += entry.tokens.map {
-            TokenWithoutDerivationInfoProvider(
-                id: WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .token(value: $0)).id,
-                tokenItem: .token($0, blockchainNetwork.blockchain)
+        let infoProviders = storageEntries.map { storageEntry in
+            let walletModelId = storageEntry.walletModelId
+
+            if let token = converter.convertToToken(storageEntry) {
+                return TokenWithoutDerivationInfoProvider(
+                    id: walletModelId,
+                    tokenItem: .token(token, blockchainNetwork.blockchain)
+                )
+            }
+
+            return TokenWithoutDerivationInfoProvider(
+                id: walletModelId,
+                tokenItem: .blockchain(blockchainNetwork.blockchain)
             )
         }
 
         return .init(
-            id: entry.blockchainNetwork.hashValue,
+            id: blockchainNetwork.hashValue,
             sectionType: .titled(title: title(for: blockchainNetwork)),
             infoProviders: infoProviders
         )

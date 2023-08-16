@@ -112,21 +112,32 @@ private extension LegacyMultiWalletContentViewModel {
     }
 
     func collectTokenItemViewModels() -> [LegacyTokenItemViewModel] {
-        let entries = userTokenListManager.userTokens
-        let walletModels = walletModelsManager.walletModels
-        return entries.reduce([]) { result, entry in
-            if walletModels.contains(where: { $0.blockchainNetwork == entry.blockchainNetwork }) {
-                let ids = entry.walletModelIds
-                let models = ids.compactMap { id in
-                    walletModels.first(where: { $0.id == id })
-                }
+        let storageEntries = userTokenListManager.userTokens
+        let storageEntriesGroupedByBlockchainNetworks = Dictionary(grouping: storageEntries, by: \.blockchainNetwork)
+        let blockchainNetworksFromStorageEntries = storageEntries
+            .unique(by: \.blockchainNetwork)
+            .map(\.blockchainNetwork)
 
-                let items = models.map { mapToTokenItemViewModel($0) }
+        let walletModelsKeyedByIds = walletModelsManager
+            .walletModels
+            .keyedFirst(by: \.id)
 
-                return result + items
+        let blockchainNetworksFromWalletModels = walletModelsKeyedByIds
+            .values
+            .unique(by: \.blockchainNetwork)
+            .map(\.blockchainNetwork)
+            .toSet()
+
+        return blockchainNetworksFromStorageEntries.reduce(into: []) { partialResult, element in
+            guard let storageEntries = storageEntriesGroupedByBlockchainNetworks[element] else { return }
+
+            if blockchainNetworksFromWalletModels.contains(element) {
+                partialResult += storageEntries
+                    .compactMap { walletModelsKeyedByIds[$0.walletModelId] }
+                    .map { mapToTokenItemViewModel($0) }
+            } else {
+                partialResult += mapToTokenItemViewModels(storageEntries)
             }
-
-            return result + mapToTokenItemViewModels(entry: entry)
         }
     }
 
@@ -145,28 +156,29 @@ private extension LegacyMultiWalletContentViewModel {
         )
     }
 
-    func mapToTokenItemViewModels(entry: StorageEntry.V2.Entry) -> [LegacyTokenItemViewModel] {
-        let network = entry.blockchainNetwork
-        var items: [LegacyTokenItemViewModel] = [
-            LegacyTokenItemViewModel(
+    func mapToTokenItemViewModels(_ storageEntries: [StorageEntry.V3.Entry]) -> [LegacyTokenItemViewModel] {
+        let converter = StorageEntriesConverter()
+
+        return storageEntries.map { storageEntry in
+            let blockchainNetwork = storageEntry.blockchainNetwork
+
+            if let token = converter.convertToToken(storageEntry) {
+                return LegacyTokenItemViewModel(
+                    state: .noDerivation,
+                    name: token.name,
+                    blockchainNetwork: blockchainNetwork,
+                    amountType: .token(value: token),
+                    isCustom: token.isCustom
+                )
+            }
+
+            return LegacyTokenItemViewModel(
                 state: .noDerivation,
-                name: network.blockchain.displayName,
-                blockchainNetwork: network,
+                name: blockchainNetwork.blockchain.displayName,
+                blockchainNetwork: blockchainNetwork,
                 amountType: .coin,
                 isCustom: false
-            ),
-        ]
-
-        items += entry.tokens.map { token in
-            LegacyTokenItemViewModel(
-                state: .noDerivation,
-                name: token.name,
-                blockchainNetwork: network,
-                amountType: .token(value: token),
-                isCustom: token.isCustom
             )
         }
-
-        return items
     }
 }
