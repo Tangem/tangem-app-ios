@@ -398,7 +398,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         encryptionKeyStorage.clear()
     }
 
-    private func discardSensitiveData(except userWalletModelToKeep: CardViewModel? = nil) {
+    private func discardSensitiveData(except userWalletModelToKeep: UserWalletModel? = nil) {
         encryptionKeyByUserWalletId = [:]
 
         if let userWalletModelToKeep {
