@@ -16,7 +16,7 @@ class CommonUserTokenListManager {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     private let userWalletId: Data
-    private let tokenItemsRepository: TokenItemsRepository
+    private let tokenItemsRepository: _TokenItemsRepository
     private let supportedBlockchains: Set<Blockchain>
 
     private var pendingTokensToUpdate: UserTokenList?
@@ -36,8 +36,8 @@ class CommonUserTokenListManager {
         self.userWalletId = userWalletId
         self.supportedBlockchains = supportedBlockchains
         self.hdWalletsSupported = hdWalletsSupported
-        tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.hexString)
-        initialTokenSyncSubject = CurrentValueSubject(tokenItemsRepository.containsFile)
+        tokenItemsRepository = _CommonTokenItemsRepository(key: userWalletId.hexString)
+        initialTokenSyncSubject = CurrentValueSubject(tokenItemsRepository.isInitialized)
         _userTokens = .init(tokenItemsRepository.getItems())
         _userTokenList = .init(.empty)
         removeInvalidTokens()
@@ -113,7 +113,7 @@ extension CommonUserTokenListManager: UserTokenListManager {
 
 extension CommonUserTokenListManager: UserTokensSyncService {
     var isInitialSyncPerformed: Bool {
-        tokenItemsRepository.containsFile
+        tokenItemsRepository.isInitialized
     }
 
     var initialSyncPublisher: AnyPublisher<Bool, Never> {

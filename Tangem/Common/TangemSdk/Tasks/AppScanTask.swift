@@ -225,7 +225,7 @@ final class AppScanTask: CardSessionRunnable {
         var derivations: [EllipticCurve: [DerivationPath]] = [:]
 
         if let seed = config.userWalletIdSeed {
-            let tokenItemsRepository = CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
+            let tokenItemsRepository = _CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
 
             // Force add blockchains for demo cards
             if let persistentBlockchains = config.persistentBlockchains {

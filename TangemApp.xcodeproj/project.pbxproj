@@ -76,7 +76,6 @@
 		5D5CE1A92625FF00009023EC /* config_prod.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5CE1A72625FF00009023EC /* config_prod.json */; };
 		5D5D013C25CC1F3900DA8616 /* TransparentModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D013B25CC1F3900DA8616 /* TransparentModal.swift */; };
 		5D62446127A7CAB60069DEC2 /* Bool+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D62446027A7CAB60069DEC2 /* Bool+.swift */; };
-		5D6784C325EB8EF000149995 /* CommonTokenItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */; };
 		5D6784CE25EB92F300149995 /* TestnetTokensRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6784CD25EB92F300149995 /* TestnetTokensRepository.swift */; };
 		5D6784D925EBA1D800149995 /* TokenItems+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6784D825EBA1D800149995 /* TokenItems+Array.swift */; };
 		5D6784E425EBC94B00149995 /* Blockchain+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6784E325EBC94B00149995 /* Blockchain+.swift */; };
@@ -617,7 +616,6 @@
 		DC0A5808282501CA0031BECC /* MoonPayKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A5807282501CA0031BECC /* MoonPayKeys.swift */; };
 		DC0A5818282526E30031BECC /* RateAppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A5817282526E30031BECC /* RateAppService.swift */; };
 		DC0A582628252D140031BECC /* FailedScanTrackable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A582528252D140031BECC /* FailedScanTrackable.swift */; };
-		DC0A582928252FEB0031BECC /* TokenItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A582828252FEB0031BECC /* TokenItemsRepository.swift */; };
 		DC0A582E282BCBEB0031BECC /* ShopifyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A582D282BCBEB0031BECC /* ShopifyProtocol.swift */; };
 		DC0A5844282BFDFC0031BECC /* UserWalletRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A5843282BFDFC0031BECC /* UserWalletRepository.swift */; };
 		DC0A584A282C07A20031BECC /* WalletConnectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A5849282C07A20031BECC /* WalletConnectService.swift */; };
@@ -1186,7 +1184,6 @@
 		5D5CE1A72625FF00009023EC /* config_prod.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config_prod.json; path = "tangem-app-config/config_prod.json"; sourceTree = SOURCE_ROOT; };
 		5D5D013B25CC1F3900DA8616 /* TransparentModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentModal.swift; sourceTree = "<group>"; };
 		5D62446027A7CAB60069DEC2 /* Bool+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+.swift"; sourceTree = "<group>"; };
-		5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenItemsRepository.swift; sourceTree = "<group>"; };
 		5D6784CD25EB92F300149995 /* TestnetTokensRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestnetTokensRepository.swift; sourceTree = "<group>"; };
 		5D6784D825EBA1D800149995 /* TokenItems+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenItems+Array.swift"; sourceTree = "<group>"; };
 		5D6784E325EBC94B00149995 /* Blockchain+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Blockchain+.swift"; sourceTree = "<group>"; };
@@ -1760,7 +1757,6 @@
 		DC0A5807282501CA0031BECC /* MoonPayKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPayKeys.swift; sourceTree = "<group>"; };
 		DC0A5817282526E30031BECC /* RateAppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateAppService.swift; sourceTree = "<group>"; };
 		DC0A582528252D140031BECC /* FailedScanTrackable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedScanTrackable.swift; sourceTree = "<group>"; };
-		DC0A582828252FEB0031BECC /* TokenItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenItemsRepository.swift; sourceTree = "<group>"; };
 		DC0A582D282BCBEB0031BECC /* ShopifyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyProtocol.swift; sourceTree = "<group>"; };
 		DC0A5843282BFDFC0031BECC /* UserWalletRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletRepository.swift; sourceTree = "<group>"; };
 		DC0A5849282C07A20031BECC /* WalletConnectService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectService.swift; sourceTree = "<group>"; };
@@ -4396,8 +4392,6 @@
 		DC0A582728252F9D0031BECC /* TokenItemsRepository */ = {
 			isa = PBXGroup;
 			children = (
-				DC0A582828252FEB0031BECC /* TokenItemsRepository.swift */,
-				5D6784C225EB8EF000149995 /* CommonTokenItemsRepository.swift */,
 				B655CFF42A881DC6003012BE /* _TokenItemsRepository.swift */,
 				B6957C0B2A8B354E0092105D /* _CommonTokenItemsRepository.swift */,
 				B6957C0F2A8BB4A90092105D /* StorageEntriesConverter.swift */,
@@ -6120,7 +6114,6 @@
 				DC295B422861C444006CB7B6 /* LegacyTokenDetailsCoordinatorView.swift in Sources */,
 				B0ADFD40298A70FF00EF2869 /* WalletConnectV2SignTransactionHandler.swift in Sources */,
 				B0BA7BC526C4F96B00D7066F /* NonDismissableModalView.swift in Sources */,
-				DC0A582928252FEB0031BECC /* TokenItemsRepository.swift in Sources */,
 				DA43719F2A7D1937006215CA /* LegacyTokenListCoordinator.swift in Sources */,
 				EFA9855529478AF200D1FCB3 /* SwappingTransactionData+Mock.swift in Sources */,
 				DAC53CFC27BE63830027147D /* AweStoryPage.swift in Sources */,
@@ -6407,7 +6400,6 @@
 				B6AD95302A30074300FE845A /* TokenItemViewTrailingComponent.swift in Sources */,
 				EF808438293F3A6D000D91EA /* CurrencyMapper.swift in Sources */,
 				B0E3381C2A7A809600D36727 /* LockedUserTokensManager.swift in Sources */,
-				5D6784C325EB8EF000149995 /* CommonTokenItemsRepository.swift in Sources */,
 				EFEC653D292E1B9400AE8521 /* SwappingRoutable.swift in Sources */,
 				B0C4F76F26F08AB40086D815 /* TwinsOnboardingStep.swift in Sources */,
 				EF4662302924DF0300346B6C /* DefaultWarningRow.swift in Sources */,
