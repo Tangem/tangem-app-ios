@@ -56,7 +56,7 @@ struct StorageEntriesConverter {
     func convert(
         _ storageEntry: StorageEntry.V3.Entry
     ) -> BlockchainNetwork? {
-        guard storageEntry.contractAddress == nil else { return nil }
+        guard !storageEntry.isToken else { return nil }
 
         return storageEntry.blockchainNetwork
     }

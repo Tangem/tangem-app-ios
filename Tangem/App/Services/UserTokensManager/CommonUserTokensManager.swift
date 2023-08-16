@@ -87,27 +87,28 @@ struct CommonUserTokensManager {
 extension CommonUserTokensManager: UserTokensManager {
     func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
         let blockchainNetwork = makeBlockchainNetwork(for: tokenItem.blockchain, derivationPath: derivationPath)
+        let storageEntries = userTokenListManager.userTokens.filter { $0.blockchainNetwork == blockchainNetwork }
 
-        guard let targetEntry = userTokenListManager.userTokens.first(where: { $0.blockchainNetwork == blockchainNetwork }) else {
-            return false
-        }
+        guard !storageEntries.isEmpty else { return false }
 
         switch tokenItem {
         case .blockchain:
             return true
         case .token(let token, _):
-            return targetEntry.tokens.contains(token)
+            let converter = StorageEntriesConverter()
+            return storageEntries
+                .lazy
+                .compactMap(converter.convert(_:))
+                .contains(token)
         }
     }
 
     func getAllTokens(for blockchainNetwork: BlockchainNetwork) -> [Token] {
-        let items = userTokenListManager.userTokens
-
-        if let network = items.first(where: { $0.blockchainNetwork == blockchainNetwork }) {
-            return network.tokens
-        }
-
-        return []
+        let converter = StorageEntriesConverter()
+        return userTokenListManager
+            .userTokens
+            .filter { $0.blockchainNetwork == blockchainNetwork && $0.isToken }
+            .compactMap(converter.convert(_:))
     }
 
     func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?) async throws -> String {
@@ -141,12 +142,10 @@ extension CommonUserTokensManager: UserTokensManager {
         }
 
         let blockchainNetwork = makeBlockchainNetwork(for: tokenItem.blockchain, derivationPath: derivationPath)
+        let hasNoTokens = !userTokenListManager
+            .userTokens
+            .contains { $0.blockchainNetwork == blockchainNetwork && $0.isToken }
 
-        guard let entry = userTokenListManager.userTokens.first(where: { $0.blockchainNetwork == blockchainNetwork }) else {
-            return false
-        }
-
-        let hasNoTokens = entry.tokens.isEmpty
         return hasNoTokens
     }
 

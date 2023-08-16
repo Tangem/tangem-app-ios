@@ -249,7 +249,7 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
             if isMultiWallet {
                 return Localization.cardLabelCardCount(config.cardsCount)
             } else {
-                return config.embeddedBlockchain?.blockchainNetwork.blockchain.displayName ?? ""
+                return config.embeddedBlockchains?.first?.blockchainNetwork.blockchain.displayName ?? ""
             }
         }()
 

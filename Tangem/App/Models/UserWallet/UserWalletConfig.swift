@@ -41,8 +41,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
     /// Blockchains to be added to the tokens list on every scan. E.g. demo blockchains.
     var persistentBlockchains: [StorageEntry.V3.Entry]? { get }
 
-    /// Blockchain which embedded in the card.
-    var embeddedBlockchain: StorageEntry.V3.Entry? { get }
+    /// Blockchains which embedded in the card.
+    var embeddedBlockchains: [StorageEntry.V3.Entry]? { get }
 
     var emailData: [EmailCollectedData] { get }
 

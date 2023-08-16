@@ -67,8 +67,8 @@ extension Start2CoinConfig: UserWalletConfig {
         return defaultBlockchains
     }
 
-    var embeddedBlockchain: StorageEntry.V3.Entry? {
-        return defaultBlockchains.first
+    var embeddedBlockchains: [StorageEntry.V3.Entry]? {
+        return defaultBlockchains
     }
 
     var warningEvents: [WarningEvent] {

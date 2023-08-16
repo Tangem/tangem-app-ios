@@ -86,19 +86,19 @@ extension GenericDemoConfig: UserWalletConfig {
 
         return blockchains.map { blockchain in
             let network: BlockchainNetwork
-            
+
             if let derivationStyle = derivationStyle {
                 let derivationPath = blockchain.derivationPath(for: derivationStyle)
                 network = BlockchainNetwork(blockchain, derivationPath: derivationPath)
             } else {
                 network = BlockchainNetwork(blockchain, derivationPath: nil)
             }
-            
+
             return converter.convert(network)
         }
     }
 
-    var embeddedBlockchain: StorageEntry.V3.Entry? {
+    var embeddedBlockchains: [StorageEntry.V3.Entry]? {
         return nil
     }
 

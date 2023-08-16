@@ -10,4 +10,6 @@ import Foundation
 
 extension StorageEntry.V3.Entry {
     var isCustom: Bool { id == nil }
+
+    var isToken: Bool { contractAddress != nil }
 }

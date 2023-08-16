@@ -31,15 +31,14 @@ extension AnalyticsContextData {
         card: CardDTO,
         productType: Analytics.ProductType,
         userWalletId: Data?,
-        embeddedEntry: StorageEntry.V3.Entry?
+        embeddedEntries: [StorageEntry.V3.Entry]?
     ) {
-        // TODO: Andrey Fedorov - Can `embeddedEntry` be multiple entries (network + tokens)?
         id = userWalletId?.sha256().hexString
         self.productType = productType
         batchId = card.batchId
         firmware = card.firmwareVersion.stringValue
-        baseCurrency = embeddedEntry?.tokens.first?.symbol
-            ?? embeddedEntry?.blockchainNetwork.blockchain.currencySymbol
+        baseCurrency = embeddedEntries?.filter(\.isToken).first?.symbol
+            ?? embeddedEntries?.first?.blockchainNetwork.blockchain.currencySymbol
     }
 
     func copy(with userWalletId: Data) -> Self {

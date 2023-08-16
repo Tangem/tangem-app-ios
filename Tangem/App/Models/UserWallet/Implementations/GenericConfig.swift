@@ -84,7 +84,7 @@ extension GenericConfig: UserWalletConfig {
         return nil
     }
 
-    var embeddedBlockchain: StorageEntry.V3.Entry? {
+    var embeddedBlockchains: [StorageEntry.V3.Entry]? {
         return nil
     }
 
