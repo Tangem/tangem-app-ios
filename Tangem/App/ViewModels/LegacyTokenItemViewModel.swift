@@ -11,7 +11,7 @@ import BlockchainSdk
 import TangemSdk
 import SwiftUI
 
-struct LegacyTokenItemViewModel: Identifiable, Hashable, Equatable, Comparable {
+struct LegacyTokenItemViewModel: Identifiable, Hashable, Comparable {
     var id: Int { hashValue }
 
     let state: WalletModel.State
