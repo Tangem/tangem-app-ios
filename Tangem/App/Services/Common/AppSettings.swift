@@ -33,10 +33,6 @@ class AppSettings {
     @AppStorageCompat(StorageType.didDisplayMainScreenStories)
     var didDisplayMainScreenStories: Bool = false
 
-    // Temp migrated cards storage. Remove with LegacyCardMigrator
-    @AppStorageCompat(StorageType.migratedCardsWithDefaultTokens)
-    var migratedCardsWithDefaultTokens: [String] = []
-
     @AppStorageCompat(StorageType.validatedSignedHashesCards)
     var validatedSignedHashesCards: [String] = []
 

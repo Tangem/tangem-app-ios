@@ -1017,8 +1017,6 @@
 		EFF253B3293DCAA900AEF302 /* SwappingFeeRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF253B1293DCAA900AEF302 /* SwappingFeeRowViewModel.swift */; };
 		EFF253B4293DCAAA00AEF302 /* SwappingFeeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF253B2293DCAA900AEF302 /* SwappingFeeRowView.swift */; };
 		EFF5BA8229B32A5C0070694A /* EthereumGasDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF5BA8129B32A5C0070694A /* EthereumGasDataModel.swift */; };
-		EFFC860D28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC860B28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift */; };
-		EFFC860E28BCE87700F863CE /* LegacyCardMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC860C28BCE87700F863CE /* LegacyCardMigrator.swift */; };
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
@@ -2166,8 +2164,6 @@
 		EFF253B2293DCAA900AEF302 /* SwappingFeeRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwappingFeeRowView.swift; sourceTree = "<group>"; };
 		EFF5BA8129B32A5C0070694A /* EthereumGasDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumGasDataModel.swift; sourceTree = "<group>"; };
 		EFF5CF1928C796B1000EE8DB /* Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Alpha.xcconfig; sourceTree = "<group>"; };
-		EFFC860B28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemsRepositoryMigrator.swift; sourceTree = "<group>"; };
-		EFFC860C28BCE87700F863CE /* LegacyCardMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyCardMigrator.swift; sourceTree = "<group>"; };
 		EFFC861228BCF6C500F863CE /* StorageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.swift; sourceTree = "<group>"; };
 		EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletModel.swift; sourceTree = "<group>"; };
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
@@ -4221,7 +4217,6 @@
 				EF5903A02909283A00C527C9 /* EnvironmentProvider */,
 				EF5A5ACC28D86089002544AC /* TotalBalanceProvider */,
 				EF5A5AD128D86094002544AC /* CardImageProvider */,
-				EFFC860A28BCE87700F863CE /* Migrators */,
 				EFFE2CEA28B8E1A700B9F279 /* DerivationManager */,
 				EF7BD10E28B8B318001B2D59 /* UserWalletModel */,
 				DCE5C66A28898B4D000C7F67 /* TangemApiService */,
@@ -5572,15 +5567,6 @@
 			path = SwappingFeeRowView;
 			sourceTree = "<group>";
 		};
-		EFFC860A28BCE87700F863CE /* Migrators */ = {
-			isa = PBXGroup;
-			children = (
-				EFFC860B28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift */,
-				EFFC860C28BCE87700F863CE /* LegacyCardMigrator.swift */,
-			);
-			path = Migrators;
-			sourceTree = "<group>";
-		};
 		EFFE2CEA28B8E1A700B9F279 /* DerivationManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -6585,7 +6571,6 @@
 				DC22535928A4FD9C0094F30C /* UserWalletConfigFactory.swift in Sources */,
 				B0606E122684A946004004ED /* BlinkingModifier.swift in Sources */,
 				DCBC945D299404510050BC35 /* CommonAnalyticsContext.swift in Sources */,
-				EFFC860E28BCE87700F863CE /* LegacyCardMigrator.swift in Sources */,
 				DC261CA9292CF56600875E64 /* AuthCoordinatorView.swift in Sources */,
 				DAA5E30328D21369003C0E80 /* BiometryLogoImage.swift in Sources */,
 				5D119E85256BF1E50046CAD2 /* Option.swift in Sources */,
@@ -6774,7 +6759,6 @@
 				B053759126CA3EFA0090FCFC /* CheckmarkSwitch.swift in Sources */,
 				DCDBDA062A27C16C0000EBA2 /* LockedUserWallet.swift in Sources */,
 				DC13D04329DF31A60003895C /* WalletOnboardingStepsBuilder.swift in Sources */,
-				EFFC860D28BCE87700F863CE /* TokenItemsRepositoryMigrator.swift in Sources */,
 				DCAB57FE295ECA55005D0F4A /* SendError.swift in Sources */,
 				EF94A86E298A557D008F2C3F /* ExplorerURLProviding.swift in Sources */,
 				B04CD34229122C7D001EA84A /* ReferralRoutable.swift in Sources */,
