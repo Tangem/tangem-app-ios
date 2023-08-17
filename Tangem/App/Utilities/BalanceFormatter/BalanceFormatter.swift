@@ -88,6 +88,19 @@ struct BalanceFormatter {
     }
 
     private func roundDecimal(_ value: Decimal, with roundingType: AmountRoundingType?) -> Decimal {
-        AmountRounder().round(value, with: roundingType)
+        if value == 0 {
+            return 0
+        }
+
+        guard let roundingType = roundingType else {
+            return value
+        }
+
+        switch roundingType {
+        case .shortestFraction(let roundingMode):
+            return SignificantFractionDigitRounder(roundingMode: roundingMode).round(value: value)
+        case .default(let roundingMode, let scale):
+            return max(value, Decimal(1) / pow(10, scale)).rounded(scale: scale, roundingMode: roundingMode)
+        }
     }
 }
