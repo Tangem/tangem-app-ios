@@ -95,7 +95,6 @@ private extension UserWalletStorageAgreementView {
                     .overlay(
                         icon.image
                             .resizable()
-                            .renderingMode(.template)
                             .foregroundColor(Colors.Text.primary1)
                             .padding(.all, 11)
                     )

@@ -75,12 +75,14 @@
 "common_explore_transaction_history" = "Explore transaction history";
 "common_explorer" = "Explorer";
 "common_explorer_format" = "%@ explorer";
+"common_generate_addresses" = "Generate addresses";
 "common_import" = "導入";
 "common_learn_and_earn" = "Learn & Earn";
 "common_like" = "喜歡";
 "common_locked" = "Locked";
 "common_main_network" = "Main network";
 "common_no" = "否";
+"common_no_address" = "No address";
 "common_no_data" = "No data";
 "common_ok" = "OK";
 "common_origin_card" = "主卡片";
@@ -187,6 +189,7 @@
 "main_scan_card_warning_view_subtitle" = "要訪問所有的網路您需要掃描卡片";
 "main_scan_card_warning_view_title" = "掃描卡片";
 "main_tokens" = "代幣";
+"main_warning_missing_derivation_title" = "Some addresses are missing";
 "onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包";
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";

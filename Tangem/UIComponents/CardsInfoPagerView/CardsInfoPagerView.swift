@@ -295,9 +295,14 @@ struct CardsInfoPagerView<
                         )
                 }
             }
-            .readGeometry(\.size, bindTo: $contentSize)
+            .readGeometry(
+                \.size,
+                throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
+                bindTo: $contentSize
+            )
             .readContentOffset(
                 inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
                 bindTo: $verticalContentOffset
             )
 

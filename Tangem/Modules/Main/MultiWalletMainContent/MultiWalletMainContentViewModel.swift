@@ -9,12 +9,16 @@
 import Foundation
 import Combine
 import CombineExt
+import SwiftUI
 
 final class MultiWalletMainContentViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var isLoadingTokenList: Bool = true
     @Published var sections: [MultiWalletTokenItemsSection] = []
+    @Published var missingDerivationNotificationSettings: NotificationView.Settings? = nil
+
+    @Published var isScannerBusy = false
 
     // MARK: - Dependencies
 
@@ -53,7 +57,26 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         }
     }
 
+    func deriveEntriesWithoutDerivation() {
+        Analytics.log(.noticeScanYourCardTapped)
+        isScannerBusy = true
+        userWalletModel.userTokensManager.deriveIfNeeded { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.isScannerBusy = false
+            }
+        }
+    }
+
     private func bind() {
+        userWalletModel.userTokensManager.derivationManager?
+            .pendingDerivationsCount
+            .receive(on: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] pendingDerivationsCount in
+                self?.updateMissingDerivationNotification(for: pendingDerivationsCount)
+            })
+            .store(in: &bag)
+
         sectionsProvider.sectionsPublisher
             .map(convertToSections(_:))
             .assign(to: \.sections, on: self, ownership: .weak)
@@ -89,6 +112,16 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         }
 
         coordinator.openTokenDetails(for: walletModel, userWalletModel: userWalletModel)
+    }
+
+    private func updateMissingDerivationNotification(for pendingDerivationsCount: Int) {
+        guard pendingDerivationsCount > 0 else {
+            missingDerivationNotificationSettings = nil
+            return
+        }
+
+        let factory = NotificationSettingsFactory()
+        missingDerivationNotificationSettings = factory.buildMissingDerivationNotificationSettings(for: pendingDerivationsCount)
     }
 
     func openOrganizeTokens() {

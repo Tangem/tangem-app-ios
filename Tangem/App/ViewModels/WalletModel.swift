@@ -59,7 +59,11 @@ class WalletModel {
     }
 
     var balanceValue: Decimal? {
-        wallet.amounts[amountType]?.value
+        if state.isNoAccount {
+            return 0
+        }
+
+        return wallet.amounts[amountType]?.value
     }
 
     var balance: String {
@@ -229,9 +233,14 @@ class WalletModel {
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .dropFirst()
             .receive(on: updateQueue)
-            .receiveValue { [weak self] _ in
-                self?.loadRates()
+            .flatMap { [weak self] _ in
+                guard let self else {
+                    return Just(()).eraseToAnyPublisher()
+                }
+
+                return loadRates()
             }
+            .sink(receiveValue: {})
             .store(in: &bag)
 
         walletManager.statePublisher
@@ -359,10 +368,9 @@ class WalletModel {
 
     // MARK: - Load Rates
 
-    @discardableResult
-    private func loadRates() -> AnyPublisher<[String: Decimal], Never> {
+    private func loadRates() -> AnyPublisher<Void, Never> {
         guard let currencyId = tokenItem.currencyId else {
-            return .just(output: [:])
+            return .just(output: ())
         }
 
         AppLog.shared.debug("🔄 Start loading rates for \(self)")
@@ -372,6 +380,7 @@ class WalletModel {
             .handleEvents(receiveOutput: { [weak self] _ in
                 AppLog.shared.debug("🔄 Finished loading rates for \(String(describing: self))")
             })
+            .mapVoid()
             .eraseToAnyPublisher()
     }
 

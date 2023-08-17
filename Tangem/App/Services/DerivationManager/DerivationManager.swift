@@ -12,6 +12,7 @@ import TangemSdk
 
 protocol DerivationManager {
     var hasPendingDerivations: AnyPublisher<Bool, Never> { get }
+    var pendingDerivationsCount: AnyPublisher<Int, Never> { get }
 
     func deriveKeys(cardInteractor: CardDerivable, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
 }

@@ -60,6 +60,15 @@ extension CommonDerivationManager: DerivationManager {
             .eraseToAnyPublisher()
     }
 
+    var pendingDerivationsCount: AnyPublisher<Int, Never> {
+        pendingDerivations
+            .map { pending in
+                pending.reduce(0) { $0 + $1.value.count }
+            }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     func deriveKeys(cardInteractor: CardDerivable, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         guard !pendingDerivations.value.isEmpty else {
             completion(.success(()))
