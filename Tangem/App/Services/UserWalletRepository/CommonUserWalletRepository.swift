@@ -187,6 +187,17 @@ class CommonUserWalletRepository: UserWalletRepository {
         userWallets.contains { $0.userWalletId == userWallet.userWalletId }
     }
 
+    func add(_ userWalletModel: UserWalletModel) {
+        if AppSettings.shared.saveUserWallets {
+            save(userWalletModel)
+        } else {
+            models = [userWalletModel]
+            userWallets = [userWalletModel.userWallet]
+        }
+
+        setSelectedUserWalletId(userWalletModel.userWalletId.value, reason: .inserted)
+    }
+
     func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         scanPublisher()
             .receive(on: DispatchQueue.main)
@@ -214,7 +225,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     // TODO: refactor
-    func save(_ cardViewModel: CardViewModel) {
+    func save(_ cardViewModel: UserWalletModel) {
         if models.isEmpty, !userWallets.isEmpty {
             loadModels()
         }
