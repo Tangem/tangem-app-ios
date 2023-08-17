@@ -178,19 +178,22 @@ final class MainViewModel: ObservableObject {
     }
 
     private func removePage(with id: Data) {
-        // TODO: Removal logic will be added in IOS-4156
+        if let index = pages.firstIndex(where: { $0.id.value == id }) {
+            pages.remove(at: index)
+        }
     }
 
     // MARK: - Private functions
 
     private func bind() {
         $selectedCardIndex
+            .dropFirst()
             .sink { [weak self] newIndex in
                 guard let userWalletId = self?.pages[newIndex].id else {
                     return
                 }
 
-                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, reason: .userSelected)
+                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, unlockIfNeeded: false, reason: .userSelected)
             }
             .store(in: &bag)
 
