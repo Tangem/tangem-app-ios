@@ -45,13 +45,6 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var derivationStyle: DerivationStyle? {
-        assert(hasFeature(.hdWallets))
-
-        // Keep in mind, that cards with hasImportedWallets == false must have old derivations
-        if !card.hasImportedWallets {
-            return .v2
-        }
-
         return .v3
     }
 
