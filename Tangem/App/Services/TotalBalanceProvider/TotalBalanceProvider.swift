@@ -101,8 +101,16 @@ private extension TotalBalanceProvider {
                 break
             }
 
+            let roundedTokenFiatValue: Decimal
+            if let tokenFiatValue = token.fiatValue,
+               !tokenFiatValue.isZero {
+                roundedTokenFiatValue = max(0.01, tokenFiatValue)
+            } else {
+                roundedTokenFiatValue = .zero
+            }
+
             let currentValue = balance ?? 0
-            balance = currentValue + (token.fiatValue ?? 0)
+            balance = currentValue + roundedTokenFiatValue
 
             if token.rateFormatted.isEmpty {
                 // Just show warning for custom tokens
