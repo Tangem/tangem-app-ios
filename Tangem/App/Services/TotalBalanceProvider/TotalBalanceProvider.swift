@@ -102,7 +102,7 @@ private extension TotalBalanceProvider {
             }
 
             let currentValue = balance ?? 0
-            balance = currentValue + (token.fiatValue?.displayValue ?? 0)
+            balance = currentValue + (token.fiatValue ?? 0)
 
             if token.rateFormatted.isEmpty {
                 // Just show warning for custom tokens

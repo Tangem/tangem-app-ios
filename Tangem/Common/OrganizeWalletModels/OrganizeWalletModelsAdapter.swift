@@ -169,7 +169,7 @@ final class OrganizeWalletModelsAdapter {
                 case (.none, .some), (.none, .none):
                     return false
                 case (.some(let lhsFiatValue), .some(let rhsFiatValue)):
-                    return lhsFiatValue.rawValue > rhsFiatValue.rawValue
+                    return lhsFiatValue > rhsFiatValue
                 }
             }
         }

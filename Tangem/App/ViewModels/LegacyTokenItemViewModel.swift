@@ -22,7 +22,7 @@ struct LegacyTokenItemViewModel: Identifiable, Hashable, Equatable, Comparable {
     let rate: String
     let amountType: Amount.AmountType
     let blockchainNetwork: BlockchainNetwork
-    let fiatValue: FiatValue
+    let fiatValue: Decimal
     let isCustom: Bool
 
     init(
@@ -31,7 +31,7 @@ struct LegacyTokenItemViewModel: Identifiable, Hashable, Equatable, Comparable {
         balance: String = "",
         fiatBalance: String = "",
         rate: String = "",
-        fiatValue: FiatValue = .zero,
+        fiatValue: Decimal = 0,
         blockchainNetwork: BlockchainNetwork,
         amountType: Amount.AmountType,
         hasTransactionInProgress: Bool = false,
@@ -102,11 +102,11 @@ struct LegacyTokenItemViewModel: Identifiable, Hashable, Equatable, Comparable {
     }
 
     static func < (lhs: LegacyTokenItemViewModel, rhs: LegacyTokenItemViewModel) -> Bool {
-        if lhs.fiatValue.rawValue == 0, rhs.fiatValue.rawValue == 0 {
+        if lhs.fiatValue == 0, rhs.fiatValue == 0 {
             return lhs.name < rhs.name
         }
 
-        return lhs.fiatValue.rawValue > rhs.fiatValue.rawValue
+        return lhs.fiatValue > rhs.fiatValue
     }
 
     static func == (lhs: LegacyTokenItemViewModel, rhs: LegacyTokenItemViewModel) -> Bool {
