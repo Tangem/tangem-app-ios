@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TokenActionType {
+enum TokenActionType: CaseIterable {
     case buy
     case send
     case receive

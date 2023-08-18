@@ -110,6 +110,7 @@
 "common_terms_and_conditions" = "條款和條件";
 "common_transfer" = "Transfer";
 "common_understand" = "我了解";
+"common_unlock_needed" = "Unlock needed";
 "common_unreachable" = "無法觸達";
 "common_warning" = "警告";
 "common_yes" = "是";
@@ -429,6 +430,8 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "這個動作是不可逆的。您將無法訪問舊錢包";
 "twins_scan_twin_with_number" = "將您的 iPhone 靠近編號為 %@ 的雙胞胎卡";
+"unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
+"unlock_wallet_description_short" = "Use %@ or scan a card";
 "user_wallet_list_add_button" = "添加新錢包";
 "user_wallet_list_delete_prompt" = "您確定要刪除此錢包?";
 "user_wallet_list_error_wallet_already_saved" = "此錢包已保存，您可以再添加一個";

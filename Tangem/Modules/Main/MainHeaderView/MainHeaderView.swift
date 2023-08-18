@@ -22,19 +22,26 @@ struct MainHeaderView: View {
                     Text(viewModel.userWalletName)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                    Text(viewModel.balance)
-                        .multilineTextAlignment(.leading)
-                        .truncationMode(.middle)
-                        .scaledToFit()
-                        .minimumScaleFactor(0.5)
-                        .showSensitiveInformation(viewModel.showSensitiveInformation)
-                        .skeletonable(
-                            isShown: viewModel.isUserWalletLocked || viewModel.isLoadingFiatBalance,
-                            size: .init(width: 102, height: 24),
-                            radius: 6
-                        )
-                        .style(Fonts.Bold.title1, color: Colors.Text.primary1)
-                        .frame(minHeight: 34)
+                    if viewModel.isUserWalletLocked {
+                        Colors.Field.primary
+                            .frame(width: 102, height: 24)
+                            .cornerRadiusContinuous(6)
+                            .padding(.vertical, 5)
+                    } else {
+                        Text(viewModel.balance)
+                            .multilineTextAlignment(.leading)
+                            .truncationMode(.middle)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.5)
+                            .showSensitiveInformation(viewModel.showSensitiveInformation)
+                            .skeletonable(
+                                isShown: viewModel.isLoadingFiatBalance,
+                                size: .init(width: 102, height: 24),
+                                radius: 6
+                            )
+                            .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                            .frame(minHeight: 34)
+                    }
 
                     if viewModel.isUserWalletLocked {
                         subtitleText

@@ -109,6 +109,7 @@
 "common_terms_and_conditions" = "условия участия";
 "common_transfer" = "Перевод";
 "common_understand" = "Я понял";
+"common_unlock_needed" = "Необходима разблокировка";
 "common_unreachable" = "Недоступно";
 "common_warning" = "Предупреждение";
 "common_yes" = "Да";
@@ -428,6 +429,8 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
+"unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту, чтобы получить доступ к своему кошельку";
+"unlock_wallet_description_short" = "Используйте %@ или отсканируйте карту";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
 "user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";

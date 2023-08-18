@@ -25,6 +25,10 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             balanceProvider: model
         )
 
+        if model.isUserWalletLocked {
+            return .lockedWallet(id: id, headerModel: headerModel, bodyModel: .init(userWalletModel: model))
+        }
+
         if model.isMultiWallet {
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,

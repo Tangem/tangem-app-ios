@@ -109,6 +109,7 @@
 "common_terms_and_conditions" = "terms and conditions";
 "common_transfer" = "Transfer";
 "common_understand" = "I understand";
+"common_unlock_needed" = "Unlock needed";
 "common_unreachable" = "Unreachable";
 "common_warning" = "Alerte";
 "common_yes" = "Yes";
@@ -428,6 +429,8 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
+"unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
+"unlock_wallet_description_short" = "Use %@ or scan a card";
 "user_wallet_list_add_button" = "Add new wallet";
 "user_wallet_list_delete_prompt" = "Are you sure you want to delete this wallet?";
 "user_wallet_list_error_wallet_already_saved" = "This wallet has already been saved, you can add another one";
