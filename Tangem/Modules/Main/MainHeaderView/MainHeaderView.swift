@@ -13,6 +13,7 @@ struct MainHeaderView: View {
 
     private let imageSize: CGSize = .init(width: 120, height: 106)
     private let horizontalSpacing: CGFloat = 6
+    private let cornerRadius = 14.0
 
     var body: some View {
         GeometryReader { proxy in
@@ -21,19 +22,26 @@ struct MainHeaderView: View {
                     Text(viewModel.userWalletName)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                    Text(viewModel.balance)
-                        .multilineTextAlignment(.leading)
-                        .truncationMode(.middle)
-                        .scaledToFit()
-                        .minimumScaleFactor(0.5)
-                        .showSensitiveInformation(viewModel.showSensitiveInformation)
-                        .skeletonable(
-                            isShown: viewModel.isUserWalletLocked || viewModel.isLoadingFiatBalance,
-                            size: .init(width: 102, height: 24),
-                            radius: 6
-                        )
-                        .style(Fonts.Bold.title1, color: Colors.Text.primary1)
-                        .frame(minHeight: 34)
+                    if viewModel.isUserWalletLocked {
+                        Colors.Field.primary
+                            .frame(width: 102, height: 24)
+                            .cornerRadiusContinuous(6)
+                            .padding(.vertical, 5)
+                    } else {
+                        Text(viewModel.balance)
+                            .multilineTextAlignment(.leading)
+                            .truncationMode(.middle)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.5)
+                            .showSensitiveInformation(viewModel.showSensitiveInformation)
+                            .skeletonable(
+                                isShown: viewModel.isLoadingFiatBalance,
+                                size: .init(width: 102, height: 24),
+                                radius: 6
+                            )
+                            .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                            .frame(minHeight: 34)
+                    }
 
                     if viewModel.isUserWalletLocked {
                         subtitleText
@@ -59,7 +67,8 @@ struct MainHeaderView: View {
         .frame(height: imageSize.height)
         .padding(.horizontal, 14)
         .background(Colors.Background.primary)
-        .cornerRadiusContinuous(14)
+        .cornerRadiusContinuous(cornerRadius)
+        .previewContentShape(cornerRadius: cornerRadius)
     }
 
     private var subtitleText: some View {
@@ -79,6 +88,18 @@ struct MainHeaderView: View {
         }
 
         return max(containerWidth - trailingOffset, 0.0)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func previewContentShape(cornerRadius: Double) -> some View {
+        if #available(iOS 15.0, *) {
+            self
+                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        } else {
+            self
+        }
     }
 }
 

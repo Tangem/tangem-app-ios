@@ -24,7 +24,7 @@ class WalletModel {
 
     /// Listen tx history changes
     var transactionHistoryPublisher: AnyPublisher<TransactionHistoryState, Never> {
-        _transactionsHistory.eraseToAnyPublisher()
+        transactionHistoryState()
     }
 
     var shoudShowFeeSelector: Bool {
@@ -59,7 +59,11 @@ class WalletModel {
     }
 
     var balanceValue: Decimal? {
-        wallet.amounts[amountType]?.value
+        if state.isNoAccount {
+            return 0
+        }
+
+        return wallet.amounts[amountType]?.value
     }
 
     var balance: String {
@@ -115,7 +119,6 @@ class WalletModel {
                 amountType: $0.amount.type,
                 destination: $0.sourceAddress,
                 timeFormatted: "",
-                date: $0.date,
                 transferAmount: formatter.formatCryptoBalance(
                     $0.amount.value,
                     currencyCode: $0.amount.currencySymbol
@@ -132,7 +135,6 @@ class WalletModel {
                 amountType: $0.amount.type,
                 destination: $0.destinationAddress,
                 timeFormatted: "",
-                date: $0.date,
                 transferAmount: formatter.formatCryptoBalance(
                     $0.amount.value,
                     currencyCode: $0.amount.currencySymbol
@@ -141,15 +143,6 @@ class WalletModel {
                 status: .inProgress
             )
         }
-    }
-
-    var transactions: [LegacyTransactionRecord] {
-        // TODO: Remove after transaction history implementation in BlockchainSDK
-        if FeatureStorage().useFakeTxHistory {
-            return Bool.random() ? FakeTransactionHistoryFactory().createFakeTxs(currencyCode: wallet.amounts[.coin]?.currencySymbol ?? "") : []
-        }
-
-        return TransactionHistoryMapper().convertToTransactionRecords(wallet.transactions, for: wallet.addresses)
     }
 
     var isEmptyIncludingPendingIncomingTxs: Bool {
@@ -185,6 +178,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let walletManager: WalletManager
+    private let _transactionHistoryService: TransactionHistoryService?
     private var updateTimer: AnyCancellable?
     private var txHistoryUpdateSubscription: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
@@ -194,7 +188,6 @@ class WalletModel {
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
     private var _rate: CurrentValueSubject<Decimal?, Never> = .init(nil)
-    private var _transactionsHistory: CurrentValueSubject<TransactionHistoryState, Never> = .init(.notLoaded)
 
     private var rate: Decimal? {
         guard let currencyId = tokenItem.currencyId else {
@@ -213,10 +206,12 @@ class WalletModel {
 
     init(
         walletManager: WalletManager,
+        transactionHistoryService: TransactionHistoryService?,
         amountType: Amount.AmountType,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
+        _transactionHistoryService = transactionHistoryService
         self.amountType = amountType
         self.isCustom = isCustom
 
@@ -229,9 +224,14 @@ class WalletModel {
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .dropFirst()
             .receive(on: updateQueue)
-            .receiveValue { [weak self] _ in
-                self?.loadRates()
+            .flatMap { [weak self] _ in
+                guard let self else {
+                    return Just(()).eraseToAnyPublisher()
+                }
+
+                return loadRates()
             }
+            .sink(receiveValue: {})
             .store(in: &bag)
 
         walletManager.statePublisher
@@ -270,9 +270,9 @@ class WalletModel {
     // MARK: - Update wallet model
 
     func generalUpdate(silent: Bool) -> AnyPublisher<Void, Never> {
-        update(silent: silent)
-            .combineLatest(updateTransactionsHistory())
-            .mapVoid()
+        Publishers
+            .CombineLatest(update(silent: silent), updateTransactionsHistory())
+            .mapToVoid()
             .eraseToAnyPublisher()
     }
 
@@ -359,10 +359,9 @@ class WalletModel {
 
     // MARK: - Load Rates
 
-    @discardableResult
-    private func loadRates() -> AnyPublisher<[String: Decimal], Never> {
+    private func loadRates() -> AnyPublisher<Void, Never> {
         guard let currencyId = tokenItem.currencyId else {
-            return .just(output: [:])
+            return .just(output: ())
         }
 
         AppLog.shared.debug("🔄 Start loading rates for \(self)")
@@ -372,6 +371,7 @@ class WalletModel {
             .handleEvents(receiveOutput: { [weak self] _ in
                 AppLog.shared.debug("🔄 Finished loading rates for \(String(describing: self))")
             })
+            .mapVoid()
             .eraseToAnyPublisher()
     }
 
@@ -451,70 +451,40 @@ extension WalletModel {
     }
 }
 
-// MARK: Transaction history
+// MARK: - Transaction history
 
 extension WalletModel {
-    func updateTransactionsHistory() -> AnyPublisher<TransactionHistoryState, Never> {
-        // TODO: Remove after transaction history implementation in BlockchainSDK
-        if FeatureStorage().useFakeTxHistory {
-            return loadFakeTransactionHistory()
-                .replaceError(with: ())
-                .map { self._transactionsHistory.value }
-                .eraseToAnyPublisher()
+    func updateTransactionsHistory() -> AnyPublisher<Void, Never> {
+        guard let transactionHistoryService else {
+            AppLog.shared.debug("TransactionsHistory for \(self) not supported")
+            return .just(output: ())
         }
 
-        return .just(output: .notSupported)
+        return transactionHistoryService
+            .update()
+            .eraseToAnyPublisher()
     }
 
-    // MARK: - Fake tx history related
-
-    private func loadFakeTransactionHistory() -> AnyPublisher<Void, Error> {
-        // TODO: Remove after transaction history implementation in BlockchainSDK
-        guard FeatureStorage().useFakeTxHistory else {
-            return .anyFail(error: "Can't use fake history")
+    private func transactionHistoryState() -> AnyPublisher<WalletModel.TransactionHistoryState, Never> {
+        guard let transactionHistoryService else {
+            return .just(output: .notSupported)
         }
 
-        switch _transactionsHistory.value {
-        case .notLoaded, .notSupported:
-            _transactionsHistory.value = .loading
-            return Just(())
-                .delay(for: 5, scheduler: DispatchQueue.main)
-                .map {
-                    self._transactionsHistory.value = .failedToLoad("Failed to load tx history")
-                    return ()
+        return transactionHistoryService
+            .statePublisher
+            .map { [weak transactionHistoryService] state -> WalletModel.TransactionHistoryState in
+                switch state {
+                case .initial:
+                    return .notLoaded
+                case .loading:
+                    return .loading
+                case .loaded:
+                    return .loaded(items: transactionHistoryService?.items ?? [])
+                case .failedToLoad(let error):
+                    return .error(error)
                 }
-                .eraseError()
-                .eraseToAnyPublisher()
-        case .failedToLoad:
-            _transactionsHistory.value = .loading
-            return Just(())
-                .delay(for: 5, scheduler: DispatchQueue.main)
-                .map {
-                    self._transactionsHistory.value = .loaded
-                    return ()
-                }
-                .eraseError()
-                .eraseToAnyPublisher()
-        case .loaded:
-            _transactionsHistory.value = .loading
-            return Just(())
-                .delay(for: 5, scheduler: DispatchQueue.main)
-                .map {
-                    self._transactionsHistory.value = .notSupported
-                    return ()
-                }
-                .eraseError()
-                .eraseToAnyPublisher()
-        case .loading:
-            return Just(())
-                .delay(for: 5, scheduler: DispatchQueue.main)
-                .map {
-                    self._transactionsHistory.value = .loaded
-                    return ()
-                }
-                .eraseError()
-                .eraseToAnyPublisher()
-        }
+            }
+            .eraseToAnyPublisher()
     }
 }
 
@@ -621,12 +591,27 @@ extension WalletModel: Hashable {
 }
 
 extension WalletModel {
-    enum TransactionHistoryState {
+    enum TransactionHistoryState: CustomStringConvertible {
         case notSupported
         case notLoaded
         case loading
-        case failedToLoad(Error)
-        case loaded
+        case loaded(items: [TransactionRecord])
+        case error(Error)
+
+        var description: String {
+            switch self {
+            case .notSupported:
+                return "TransactionHistoryState.notSupported"
+            case .notLoaded:
+                return "TransactionHistoryState.notLoaded"
+            case .loading:
+                return "TransactionHistoryState.loading"
+            case .loaded(let items):
+                return "TransactionHistoryState.loaded with items: \(items.count)"
+            case .error(let error):
+                return "TransactionHistoryState.error with \(error.localizedDescription)"
+            }
+        }
     }
 }
 
@@ -732,5 +717,9 @@ extension WalletModel {
 
     var ethereumTransactionProcessor: EthereumTransactionProcessor? {
         walletManager as? EthereumTransactionProcessor
+    }
+
+    var transactionHistoryService: TransactionHistoryService? {
+        _transactionHistoryService
     }
 }

@@ -123,4 +123,26 @@ enum AlertBuilder {
             ))
         }
     }
+
+    static func makeAlertControllerWithTextField(title: String, fieldPlaceholder: String, fieldText: String, action: @escaping (String) -> Void) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: Localization.commonCancel, style: .cancel)
+        alert.addAction(cancelAction)
+
+        var nameTextField: UITextField?
+        alert.addTextField { textField in
+            nameTextField = textField
+            nameTextField?.placeholder = fieldPlaceholder
+            nameTextField?.text = fieldText
+            nameTextField?.clearButtonMode = .whileEditing
+            nameTextField?.autocapitalizationType = .sentences
+        }
+
+        let acceptButton = UIAlertAction(title: Localization.commonOk, style: .default) { [nameTextField] _ in
+            action(nameTextField?.text ?? "")
+        }
+        alert.addAction(acceptButton)
+
+        return alert
+    }
 }

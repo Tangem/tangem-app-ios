@@ -462,7 +462,10 @@ class CardViewModel: Identifiable, ObservableObject {
         config = UserWalletConfigFactory(cardInfo).makeConfig()
         _signer = config.tangemSigner
         updateModel()
-        userWalletRepository.save(userWallet)
+        // prevent save until onboarding completed
+        if userWalletRepository.contains(userWallet) {
+            userWalletRepository.save(userWallet)
+        }
         _updatePublisher.send()
     }
 

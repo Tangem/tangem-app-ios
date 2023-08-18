@@ -9,25 +9,26 @@
 import Foundation
 
 struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
-    var id = UUID()
+    let id: AnyHashable
 
     var name: String { tokenIcon.name }
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
 
-    var balance: LoadableTextView.State
-
-    var isNetworkUnreachable: Bool
-    var isDraggable: Bool
+    let balance: LoadableTextView.State
+    let isNetworkUnreachable: Bool
+    let isDraggable: Bool
 
     private let tokenIcon: TokenIconInfo
 
     init(
+        id: AnyHashable,
         tokenIcon: TokenIconInfo,
         balance: LoadableTextView.State,
         isNetworkUnreachable: Bool,
         isDraggable: Bool
     ) {
+        self.id = id
         self.tokenIcon = tokenIcon
         self.balance = balance
         self.isNetworkUnreachable = isNetworkUnreachable

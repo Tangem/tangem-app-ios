@@ -12,6 +12,7 @@ import SwiftUI
 enum MainUserWalletPageBuilder: Identifiable {
     case singleWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: SingleWalletMainContentViewModel)
     case multiWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: MultiWalletMainContentViewModel)
+    case lockedWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: LockedWalletMainContentViewModel)
 
     var id: UserWalletId {
         switch self {
@@ -19,6 +20,15 @@ enum MainUserWalletPageBuilder: Identifiable {
             return id
         case .multiWallet(let id, _, _):
             return id
+        case .lockedWallet(let id, _, _):
+            return id
+        }
+    }
+
+    var isLockedWallet: Bool {
+        switch self {
+        case .lockedWallet: return true
+        case .singleWallet, .multiWallet: return false
         }
     }
 
@@ -28,6 +38,8 @@ enum MainUserWalletPageBuilder: Identifiable {
         case .singleWallet(_, let headerModel, _):
             MainHeaderView(viewModel: headerModel)
         case .multiWallet(_, let headerModel, _):
+            MainHeaderView(viewModel: headerModel)
+        case .lockedWallet(_, let headerModel, _):
             MainHeaderView(viewModel: headerModel)
         }
     }
@@ -41,6 +53,8 @@ enum MainUserWalletPageBuilder: Identifiable {
         case .multiWallet(let id, _, let bodyModel):
             MultiWalletMainContentView(viewModel: bodyModel)
                 .id(id)
+        case .lockedWallet(let id, _, let bodyModel):
+            LockedWalletMainContentView(viewModel: bodyModel)
         }
     }
 }

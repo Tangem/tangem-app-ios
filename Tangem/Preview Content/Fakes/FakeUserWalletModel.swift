@@ -50,8 +50,12 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
         _userWalletNamePublisher = .init(userWalletName)
 
         walletModelsManager = FakeWalletModelsManager(walletManagers: walletManagers)
-        userTokenListManager = FakeUserTokenListManager()
-        userTokensManager = UserTokensManagerMock()
+        let fakeUserTokenListManager = FakeUserTokenListManager()
+        userTokenListManager = fakeUserTokenListManager
+        userTokensManager = FakeUserTokensManager(
+            derivationManager: FakeDerivationManager(pendingDerivationsCount: 5),
+            userTokenListManager: fakeUserTokenListManager
+        )
         totalBalanceProvider = TotalBalanceProviderMock()
 
         self.userWallet = userWallet

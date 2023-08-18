@@ -58,7 +58,7 @@ struct OrganizeTokensView: View {
     @State private var dragAndDropSourceItemFrame: CGRect?
 
     // Stable identity, independent of changes in the underlying model (unlike index paths)
-    @State private var dragAndDropSourceViewModelIdentifier: UUID?
+    @State private var dragAndDropSourceViewModelIdentifier: AnyHashable?
 
     @GestureState private var dragGestureTranslation: CGSize?
 
@@ -128,9 +128,14 @@ struct OrganizeTokensView: View {
                         .padding(.horizontal, Constants.contentHorizontalInset)
                         .coordinateSpace(name: scrollViewContentCoordinateSpaceName)
                         .onTouchesBegan(onTouchesBegan(atLocation:))
-                        .readGeometry(\.frame.maxY, bindTo: $tokenListContentFrameMaxY)
+                        .readGeometry(
+                            \.frame.maxY,
+                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
+                            bindTo: $tokenListContentFrameMaxY
+                        )
                         .readContentOffset(
                             inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
+                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
                             bindTo: $scrollViewContentOffset
                         )
 
@@ -166,9 +171,7 @@ struct OrganizeTokensView: View {
         .onTapGesture {} // allows scroll to work, see https://developer.apple.com/forums/thread/127277 for details
         .gesture(makeDragAndDropGesture())
         .onChange(of: tokenListContentFrameMaxY) { newValue in
-            withAnimation(.easeOut(duration: 0.1)) {
-                isTokenListFooterGradientHidden = newValue < tokenListFooterFrameMinY
-            }
+            isTokenListFooterGradientHidden = newValue < tokenListFooterFrameMinY
         }
         .onChange(of: scrollViewContentOffset) { newValue in
             dragAndDropController.contentOffsetSubject.send(newValue)
@@ -264,6 +267,7 @@ struct OrganizeTokensView: View {
             cornerRadius: Constants.contentCornerRadius,
             horizontalInset: Constants.contentHorizontalInset
         )
+        .animation(.linear(duration: 0.1), value: isTokenListFooterGradientHidden)
         .readGeometry { geometryInfo in
             $tokenListFooterFrameMinY.wrappedValue = geometryInfo.frame.minY
             $scrollViewBottomContentInset.wrappedValue = geometryInfo.size.height + Constants.contentVerticalInset

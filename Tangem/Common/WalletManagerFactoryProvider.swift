@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 import BlockchainSdk
 
 class WalletManagerFactoryProvider {

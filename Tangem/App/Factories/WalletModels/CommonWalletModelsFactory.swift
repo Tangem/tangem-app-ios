@@ -25,6 +25,26 @@ struct CommonWalletModelsFactory {
         let defaultDerivation = blockchain.derivationPath(for: derivationStyle)
         return derivationPath == defaultDerivation
     }
+
+    private func makeTransactionHistoryService(wallet: Wallet) -> TransactionHistoryService? {
+        let blockchain = wallet.blockchain
+        let address = wallet.address
+
+        if FeatureStorage().useFakeTxHistory {
+            return FakeTransactionHistoryService(blockchain: blockchain, address: address)
+        }
+
+        let factory = TransactionHistoryFactoryProvider().factory
+        guard let provider = factory.makeProvider(for: blockchain) else {
+            return nil
+        }
+
+        return CommonTransactionHistoryService(
+            blockchain: blockchain,
+            address: address,
+            transactionHistoryProvider: provider
+        )
+    }
 }
 
 extension CommonWalletModelsFactory: WalletModelsFactory {
@@ -32,13 +52,24 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
         let currentBlockchain = walletManager.wallet.blockchain
         let currentDerivation = walletManager.wallet.publicKey.derivationPath
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
+        let transactionHistoryService = makeTransactionHistoryService(wallet: walletManager.wallet)
 
-        let mainCoinModel = WalletModel(walletManager: walletManager, amountType: .coin, isCustom: isMainCoinCustom)
+        let mainCoinModel = WalletModel(
+            walletManager: walletManager,
+            transactionHistoryService: transactionHistoryService,
+            amountType: .coin,
+            isCustom: isMainCoinCustom
+        )
 
         let tokenModels = walletManager.cardTokens.map { token in
             let amountType: Amount.AmountType = .token(value: token)
             let isTokenCustom = isMainCoinCustom || token.id == nil
-            let tokenModel = WalletModel(walletManager: walletManager, amountType: amountType, isCustom: isTokenCustom)
+            let tokenModel = WalletModel(
+                walletManager: walletManager,
+                transactionHistoryService: transactionHistoryService,
+                amountType: amountType,
+                isCustom: isTokenCustom
+            )
             return tokenModel
         }
 

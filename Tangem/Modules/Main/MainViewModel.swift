@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -20,6 +21,7 @@ final class MainViewModel: ObservableObject {
     @Published var isHorizontalScrollDisabled = false
     @Published var errorAlert: AlertBinder?
     @Published var showTroubleshootingView: Bool = false
+    @Published var showingDeleteConfirmation = false
 
     // MARK: - Dependencies
 
@@ -27,6 +29,7 @@ final class MainViewModel: ObservableObject {
     private weak var coordinator: MainRoutable?
 
     private var bag = Set<AnyCancellable>()
+    private var isLoggingOut = false
 
     // MARK: - Initializers
 
@@ -87,11 +90,48 @@ final class MainViewModel: ObservableObject {
             viewModel.onPullToRefresh(completionHandler: completion)
         case .multiWallet(_, _, let viewModel):
             viewModel.onPullToRefresh(completionHandler: completion)
+        case .lockedWallet:
+            completion()
         }
     }
 
     func updateIsBackupAllowed() {
         // TODO: Will be added in IOS-4165
+    }
+
+    func didTapEditWallet() {
+        // TODO: Analytics
+//        Analytics.log(.buttonEditWalletTapped)
+
+        guard let userWallet = userWalletRepository.selectedModel?.userWallet else { return }
+
+        let alert = AlertBuilder.makeAlertControllerWithTextField(
+            title: Localization.userWalletListRenamePopupTitle,
+            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
+            fieldText: userWallet.name
+        ) { [weak self] newName in
+            guard userWallet.name != newName else { return }
+
+            var newUserWallet = userWallet
+            newUserWallet.name = newName
+
+            self?.userWalletRepository.save(newUserWallet)
+        }
+
+        AppPresenter.shared.show(alert)
+    }
+
+    func didTapDeleteWallet() {
+        // TODO:
+//        Analytics.log(.buttonDeleteWalletTapped)
+
+        showingDeleteConfirmation = true
+    }
+
+    func didConfirmWalletDeletion() {
+        guard let userWalletModel = userWalletRepository.selectedModel else { return }
+
+        userWalletRepository.delete(userWalletModel.userWallet, logoutIfNeeded: true)
     }
 
     // MARK: - Scan card
@@ -143,7 +183,7 @@ final class MainViewModel: ObservableObject {
         pages.removeAll { page in
             userWalletIds.contains(page.id.value)
         }
-        // TODO: IOS-4156 what happens if there's no pages left?
+
         selectedCardIndex = 0
     }
 
@@ -151,12 +191,13 @@ final class MainViewModel: ObservableObject {
 
     private func bind() {
         $selectedCardIndex
+            .dropFirst()
             .sink { [weak self] newIndex in
                 guard let userWalletId = self?.pages[newIndex].id else {
                     return
                 }
 
-                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, reason: .userSelected)
+                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, unlockIfNeeded: false, reason: .userSelected)
             }
             .store(in: &bag)
 
@@ -164,7 +205,7 @@ final class MainViewModel: ObservableObject {
             .sink { [weak self] event in
                 switch event {
                 case .locked:
-                    break
+                    self?.isLoggingOut = true
                 case .scan:
                     // TODO: Do we need to place spinner into Navbar?..
                     break
@@ -174,6 +215,11 @@ final class MainViewModel: ObservableObject {
                 case .updated(let userWalletModel):
                     self?.addNewPage(for: userWalletModel)
                 case .deleted(let userWalletIds):
+                    // This model is alive for enough time to receive the "deleted" event
+                    // after the last model has been removed and the application has been logged out
+                    if self?.isLoggingOut == true {
+                        return
+                    }
                     self?.removePage(with: userWalletIds)
                 case .selected:
                     break

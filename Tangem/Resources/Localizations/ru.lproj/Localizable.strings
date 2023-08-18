@@ -74,12 +74,14 @@
 "common_explore_transaction_history" = "Посмотреть историю транзакций";
 "common_explorer" = "Обозреватель";
 "common_explorer_format" = "%@ обозреватель";
+"common_generate_addresses" = "Сгенерировать адреса";
 "common_import" = "Импортировать";
 "common_learn_and_earn" = "Learn & Earn";
 "common_like" = "Нравится";
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
 "common_no" = "Нет";
+"common_no_address" = "Нет адреса";
 "common_no_data" = "Нет данных";
 "common_ok" = "OK";
 "common_origin_card" = "Основная карта";
@@ -107,6 +109,7 @@
 "common_terms_and_conditions" = "условия участия";
 "common_transfer" = "Перевод";
 "common_understand" = "Я понял";
+"common_unlock_needed" = "Необходима разблокировка";
 "common_unreachable" = "Недоступно";
 "common_warning" = "Предупреждение";
 "common_yes" = "Да";
@@ -186,6 +189,7 @@
 "main_scan_card_warning_view_subtitle" = "Чтобы получить доступ ко всем сетям, вам необходимо отсканировать карту";
 "main_scan_card_warning_view_title" = "Отсканируйте карту";
 "main_tokens" = "Токены";
+"main_warning_missing_derivation_title" = "Некоторые адреса отсутствуют";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
 "onboarding_access_code_feature_1_title" = "Защита";
 "onboarding_access_code_feature_2_description" = "Позже вы сможете установить индивидуальный код доступа для каждой карты";
@@ -224,7 +228,7 @@
 "onboarding_linking_error_card_with_wallets" = "Другой кошелек уже был создан на карте, которую вы пытаетесь добавить. Хотите сбросить его и использовать карту для бэкапа?";
 "onboarding_navbar_save_wallet" = "Сохраните ваш кошелек";
 "onboarding_navbar_title_creating_backup" = "Резервная копия";
-"onboarding_seed_button_read_more" = "Читать про секретную фразу";
+"onboarding_seed_button_read_more" = "Прочитать о секретной фразе";
 "onboarding_seed_generate_message" = "Запишите эти 12 слов в порядке, указанном ниже, и сохраните их в надежном месте.";
 "onboarding_seed_generate_title" = "Ваша секретная фраза";
 "onboarding_seed_import_message" = "Чтобы импортировать кошелек, введите секретную фразу в поле ниже";
@@ -425,6 +429,8 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
+"unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту, чтобы получить доступ к своему кошельку";
+"unlock_wallet_description_short" = "Используйте %@ или отсканируйте карту";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
 "user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";

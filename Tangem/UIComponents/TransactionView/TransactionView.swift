@@ -9,39 +9,39 @@
 import SwiftUI
 
 struct TransactionView: View {
-    let LegacyTransactionRecord: LegacyTransactionRecord
+    let viewModel: TransactionViewModel
 
     var body: some View {
         HStack(spacing: 12) {
             txTypeIcon
                 .renderingMode(.template)
-                .foregroundColor(LegacyTransactionRecord.status.iconColor)
+                .foregroundColor(viewModel.status.iconColor)
                 .padding(10)
-                .background(LegacyTransactionRecord.status.iconBackgroundColor)
+                .background(viewModel.status.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
-                    Text(LegacyTransactionRecord.transactionType.name)
+                    Text(viewModel.transactionType.name)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    if case .inProgress = LegacyTransactionRecord.status {
+                    if case .inProgress = viewModel.status {
                         Assets.pendingTxIndicator.image
                     }
 
                     Spacer()
 
-                    Text(LegacyTransactionRecord.transferAmount)
-                        .style(Fonts.Regular.subheadline, color: LegacyTransactionRecord.transactionType.amountTextColor)
+                    Text(viewModel.transferAmount)
+                        .style(Fonts.Regular.subheadline, color: viewModel.transactionType.amountTextColor)
                 }
 
                 HStack(spacing: 6) {
-                    Text(LegacyTransactionRecord.destination)
+                    Text(viewModel.destination)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
                     Spacer()
 
-                    Text(LegacyTransactionRecord.timeFormatted)
+                    Text(subtitleText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }
@@ -49,7 +49,7 @@ struct TransactionView: View {
     }
 
     private var txTypeIcon: Image {
-        switch LegacyTransactionRecord.transactionType {
+        switch viewModel.transactionType {
         case .receive:
             return Assets.arrowDownMini.image
         case .send:
@@ -62,9 +62,9 @@ struct TransactionView: View {
     }
 
     private var subtitleText: String {
-        switch LegacyTransactionRecord.status {
+        switch viewModel.status {
         case .confirmed:
-            return LegacyTransactionRecord.timeFormatted
+            return viewModel.timeFormatted ?? "-"
         case .inProgress:
             return Localization.transactionHistoryTxInProgress
         }
@@ -72,12 +72,12 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static func destination(for transactionType: LegacyTransactionRecord.TransactionType, address: String) -> String {
+    static func destination(for transactionType: TransactionViewModel.TransactionType, address: String) -> String {
         transactionType.localizeDestination(for: address)
     }
 
-    static let incomingInProgressRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let incomingInProgressRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .receive, address: "0x01230...3feed"),
         timeFormatted: "10:45",
         transferAmount: "+443 wxDAI",
@@ -85,8 +85,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let incomingConfirmedRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let incomingConfirmedRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .receive, address: "0x01230...3feed"),
         timeFormatted: "05:10",
         transferAmount: "+50 wxDAI",
@@ -94,8 +94,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let outgoingInProgressRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let outgoingInProgressRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .receive, address: "0x012...baced"),
         timeFormatted: "00:04",
         transferAmount: "-0.5 wxDAI",
@@ -103,8 +103,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let outgoingConfirmedRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let outgoingConfirmedRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .receive, address: "0x0123...baced"),
         timeFormatted: "15:00",
         transferAmount: "-15 wxDAI",
@@ -112,8 +112,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let incomingSwapRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let incomingSwapRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .swap(type: .buy), address: "0x0123...baced"),
         timeFormatted: "16:23",
         transferAmount: "+0.000000532154 ETH",
@@ -121,8 +121,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .inProgress
     )
 
-    static let outgoingSwapRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let outgoingSwapRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
         timeFormatted: "16:23",
         transferAmount: "-0.532154 USDT",
@@ -130,8 +130,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let approveConfirmedRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let approveConfirmedRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .approval, address: "0x0123...baced"),
         timeFormatted: "18:32",
         transferAmount: "-0.0012 ETH",
@@ -139,8 +139,8 @@ struct TransactionView_Previews: PreviewProvider {
         status: .confirmed
     )
 
-    static let approveInProgressRecord = LegacyTransactionRecord(
-        amountType: .coin,
+    static let approveInProgressRecord = TransactionViewModel(
+        id: UUID().uuidString,
         destination: destination(for: .approval, address: "0x0123...baced"),
         timeFormatted: "18:32",
         transferAmount: "-0.0012 ETH",
@@ -150,14 +150,14 @@ struct TransactionView_Previews: PreviewProvider {
 
     static var previews: some View {
         VStack {
-            TransactionView(LegacyTransactionRecord: incomingInProgressRecord)
-            TransactionView(LegacyTransactionRecord: incomingConfirmedRecord)
-            TransactionView(LegacyTransactionRecord: outgoingInProgressRecord)
-            TransactionView(LegacyTransactionRecord: outgoingConfirmedRecord)
-            TransactionView(LegacyTransactionRecord: incomingSwapRecord)
-            TransactionView(LegacyTransactionRecord: outgoingSwapRecord)
-            TransactionView(LegacyTransactionRecord: approveInProgressRecord)
-            TransactionView(LegacyTransactionRecord: approveConfirmedRecord)
+            TransactionView(viewModel: incomingInProgressRecord)
+            TransactionView(viewModel: incomingConfirmedRecord)
+            TransactionView(viewModel: outgoingInProgressRecord)
+            TransactionView(viewModel: outgoingConfirmedRecord)
+            TransactionView(viewModel: incomingSwapRecord)
+            TransactionView(viewModel: outgoingSwapRecord)
+            TransactionView(viewModel: approveInProgressRecord)
+            TransactionView(viewModel: approveConfirmedRecord)
         }
         .padding()
     }

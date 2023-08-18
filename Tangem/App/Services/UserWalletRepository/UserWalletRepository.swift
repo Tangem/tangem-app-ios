@@ -20,7 +20,7 @@ protocol UserWalletRepository: Initializable {
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> { get }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
-    func setSelectedUserWalletId(_ userWalletId: Data?, reason: UserWalletRepositorySelectionChangeReason)
+    func setSelectedUserWalletId(_ userWalletId: Data?, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
     func logoutIfNeeded()
 
@@ -33,6 +33,13 @@ protocol UserWalletRepository: Initializable {
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool)
     func clearNonSelectedUserWallets()
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo)
+}
+
+extension UserWalletRepository {
+    /// Selecting UserWallet with specified Id and unlocking it if needed
+    func setSelectedUserWalletId(_ userWalletId: Data?, reason: UserWalletRepositorySelectionChangeReason) {
+        setSelectedUserWalletId(userWalletId, unlockIfNeeded: true, reason: reason)
+    }
 }
 
 private struct UserWalletRepositoryKey: InjectionKey {

@@ -30,7 +30,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
     private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
 
-    private var currentlyDraggedSectionIdentifier: UUID?
+    private var currentlyDraggedSectionIdentifier: AnyHashable?
     private var currentlyDraggedSectionItems: [OrganizeTokensListItemViewModel] = []
 
     private let onSave = PassthroughSubject<Void, Never>()
@@ -108,11 +108,15 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
         let tokenIconInfoBuilder = TokenIconInfoBuilder()
         let isListItemsDraggable = isListItemDraggable(sortingOption: sortingOption)
 
-        return walletModelsSections.map { section in
+        // Plain sections use section indices (using `enumerated()`) as a stable identity, but in
+        // reality we always have only one single plain section, so the identity doesn't matter here
+        return walletModelsSections.enumerated().map { index, section in
+            let isListSectionGrouped = isListSectionGrouped(section)
             let items = section.items.map { item in
                 return map(
                     walletModel: item,
                     isDraggable: isListItemsDraggable,
+                    inGroupedSection: isListSectionGrouped,
                     using: tokenIconInfoBuilder
                 )
             }
@@ -120,9 +124,17 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
             switch section.model {
             case .group(let blockchainNetwork):
                 let title = Localization.walletNetworkGroupTitle(blockchainNetwork.blockchain.displayName)
-                return OrganizeTokensListSectionViewModel(style: .draggable(title: title), items: items)
+                return OrganizeTokensListSectionViewModel(
+                    id: blockchainNetwork,
+                    style: .draggable(title: title),
+                    items: items
+                )
             case .plain:
-                return OrganizeTokensListSectionViewModel(style: .invisible, items: items)
+                return OrganizeTokensListSectionViewModel(
+                    id: index,
+                    style: .invisible,
+                    items: items
+                )
             }
         }
     }
@@ -130,14 +142,17 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     private static func map(
         walletModel: WalletModel,
         isDraggable: Bool,
+        inGroupedSection: Bool,
         using tokenIconInfoBuilder: TokenIconInfoBuilder
     ) -> OrganizeTokensListItemViewModel {
         let tokenIcon = tokenIconInfoBuilder.build(
             for: walletModel.amountType,
             in: walletModel.blockchainNetwork.blockchain
         )
+        let identifier = ListItemViewModelIdentifier(walletModelId: walletModel.id, inGroupedSection: inGroupedSection)
 
         return OrganizeTokensListItemViewModel(
+            id: identifier,
             tokenIcon: tokenIcon,
             balance: fiatBalance(for: walletModel),
             isNetworkUnreachable: walletModel.state.isBlockchainUnreachable,
@@ -168,23 +183,34 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
             return false
         }
     }
+
+    private static func isListSectionGrouped(
+        _ section: OrganizeWalletModelsAdapter.Section
+    ) -> Bool {
+        switch section.model {
+        case .group:
+            return true
+        case .plain:
+            return false
+        }
+    }
 }
 
 // MARK: - Drag and drop support
 
 extension OrganizeTokensViewModel {
-    func itemViewModel(for identifier: UUID) -> OrganizeTokensListItemViewModel? {
+    func itemViewModel(for identifier: AnyHashable) -> OrganizeTokensListItemViewModel? {
         return sections
             .flatMap { $0.items }
             .first { $0.id == identifier }
     }
 
-    func sectionViewModel(for identifier: UUID) -> OrganizeTokensListSectionViewModel? {
+    func sectionViewModel(for identifier: AnyHashable) -> OrganizeTokensListSectionViewModel? {
         return sections
             .first { $0.id == identifier }
     }
 
-    func viewModelIdentifier(at indexPath: IndexPath) -> UUID? {
+    func viewModelIdentifier(at indexPath: IndexPath) -> AnyHashable {
         return sectionViewModel(at: indexPath)?.id ?? itemViewModel(at: indexPath).id
     }
 
@@ -221,7 +247,7 @@ extension OrganizeTokensViewModel {
         endDragAndDropSessionForCurrentlyDraggedSectionIfNeeded()
     }
 
-    private func beginDragAndDropSession(forSectionWithIdentifier identifier: UUID) {
+    private func beginDragAndDropSession(forSectionWithIdentifier identifier: AnyHashable) {
         guard let index = index(forSectionWithIdentifier: identifier) else { return }
 
         assert(
@@ -234,7 +260,7 @@ extension OrganizeTokensViewModel {
         sections[index].items.removeAll()
     }
 
-    private func endDragAndDropSession(forSectionWithIdentifier identifier: UUID) {
+    private func endDragAndDropSession(forSectionWithIdentifier identifier: AnyHashable) {
         guard let index = index(forSectionWithIdentifier: identifier) else { return }
 
         sections[index].items = currentlyDraggedSectionItems
@@ -246,7 +272,7 @@ extension OrganizeTokensViewModel {
         currentlyDraggedSectionIdentifier = nil
     }
 
-    private func index(forSectionWithIdentifier identifier: UUID) -> Int? {
+    private func index(forSectionWithIdentifier identifier: AnyHashable) -> Int? {
         return sections.firstIndex { $0.id == identifier }
     }
 
@@ -289,5 +315,14 @@ extension OrganizeTokensViewModel: OrganizeTokensDragAndDropControllerDataSource
         listViewIdentifierForItemAt indexPath: IndexPath
     ) -> AnyHashable {
         return viewModelIdentifier(at: indexPath)
+    }
+}
+
+// MARK: - Auxiliary types
+
+private extension OrganizeTokensViewModel {
+    struct ListItemViewModelIdentifier: Hashable {
+        let walletModelId: WalletModel.ID
+        let inGroupedSection: Bool
     }
 }

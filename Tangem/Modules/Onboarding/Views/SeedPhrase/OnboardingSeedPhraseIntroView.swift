@@ -35,6 +35,7 @@ struct OnboardingSeedPhraseIntroView: View {
                     Fonts.Bold.title1,
                     color: Colors.Text.primary1
                 )
+                .multilineTextAlignment(.center)
                 .padding(.top, 14)
 
             Text(Localization.onboardingSeedIntroMessage)

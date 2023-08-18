@@ -15,9 +15,8 @@ struct OrganizeTokensListSectionViewModel: Hashable, Identifiable {
         case draggable(title: String)
     }
 
-    var id = UUID()
-
-    var style: SectionStyle
+    let id: AnyHashable
+    let style: SectionStyle
     var items: [OrganizeTokensListItemViewModel]
 
     var isDraggable: Bool {
