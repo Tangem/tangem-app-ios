@@ -179,7 +179,7 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePage(with userWalletIds: [Data]) {
+    private func removePages(with userWalletIds: [Data]) {
         pages.removeAll { page in
             userWalletIds.contains(page.id.value)
         }
@@ -220,7 +220,7 @@ final class MainViewModel: ObservableObject {
                     if self?.isLoggingOut == true {
                         return
                     }
-                    self?.removePage(with: userWalletIds)
+                    self?.removePages(with: userWalletIds)
                 case .selected:
                     break
                 }
