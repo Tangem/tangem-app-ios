@@ -94,6 +94,8 @@ class SingleTokenBaseViewModel {
     }
 
     func reloadHistory() {
+        Analytics.log(event: .buttonReload, params: [.token: currencySymbol])
+
         // We should reset transaction history to initial state here
         walletModel.transactionHistoryService?.reset()
 
