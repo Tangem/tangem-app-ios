@@ -517,6 +517,8 @@ extension LegacyTokenDetailsViewModel {
     }
 
     func openSwapping() {
+        Analytics.log(event: .buttonExchange, params: [.token: currencySymbol])
+
         if let disabledLocalizedReason = card.getDisabledLocalizedReason(for: .swapping) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return

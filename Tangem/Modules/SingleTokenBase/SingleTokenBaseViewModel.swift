@@ -290,6 +290,8 @@ extension SingleTokenBaseViewModel {
     }
 
     func openExchange() {
+        Analytics.log(event: .buttonExchange, params: [.token: currencySymbol])
+
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .swapping) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
