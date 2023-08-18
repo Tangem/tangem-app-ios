@@ -55,7 +55,7 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {}
 
-    func clear() {}
+    func clearNonSelectedUserWallets() {}
 
     func initialize() {}
 
