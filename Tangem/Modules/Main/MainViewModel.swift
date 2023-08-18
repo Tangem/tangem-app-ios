@@ -179,9 +179,9 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePage(with id: Data) {
-        if let index = pages.firstIndex(where: { $0.id.value == id }) {
-            pages.remove(at: index)
+    private func removePages(with userWalletIds: [Data]) {
+        pages.removeAll { page in
+            userWalletIds.contains(page.id.value)
         }
     }
 
@@ -212,13 +212,13 @@ final class MainViewModel: ObservableObject {
                     break
                 case .updated(let userWalletModel):
                     self?.addNewPage(for: userWalletModel)
-                case .deleted(let userWalletId):
+                case .deleted(let userWalletIds):
                     // This model is alive for enough time to receive the "deleted" event
                     // after the last model has been removed and the application has been logged out
                     if self?.isLoggingOut == true {
                         return
                     }
-                    self?.removePage(with: userWalletId)
+                    self?.removePages(with: userWalletIds)
                 case .selected:
                     break
                 }

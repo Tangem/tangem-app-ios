@@ -32,7 +32,7 @@ protocol UserWalletRepository: Initializable {
     // use this method for updating. TODO: refactor
     func save(_ userWallet: UserWallet)
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool)
-    func clear()
+    func clearNonSelectedUserWallets()
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo)
 }
 
@@ -76,7 +76,7 @@ enum UserWalletRepositoryEvent {
     case scan(isScanning: Bool)
     case inserted(userWallet: UserWallet)
     case updated(userWalletModel: UserWalletModel)
-    case deleted(userWalletId: Data)
+    case deleted(userWalletIds: [Data])
     case selected(userWallet: UserWallet, reason: UserWalletRepositorySelectionChangeReason)
 }
 
