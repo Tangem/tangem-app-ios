@@ -204,7 +204,7 @@ private extension AppSettingsViewModel {
         // If saved wallets is turn off we should delete access codes too
         if !saveWallets {
             setSaveAccessCodes(false)
-            userWalletRepository.clear()
+            userWalletRepository.clearNonSelectedUserWallets()
         }
     }
 

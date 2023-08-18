@@ -60,8 +60,8 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
                     self?.isScanningCard = isScanning
                 case .updated(let userWalletModel):
                     self?.update(userWalletModel: userWalletModel)
-                case .deleted(let userWalletId):
-                    self?.delete(userWalletId: userWalletId)
+                case .deleted(let userWalletIds):
+                    self?.delete(userWalletIds: userWalletIds)
                 case .selected(let userWallet, let reason):
                     self?.setSelectedWallet(userWallet, reason: reason)
                 case .inserted:
@@ -210,11 +210,11 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
         }
     }
 
-    private func delete(userWalletId: Data) {
+    private func delete(userWalletIds: [Data]) {
         userWalletIdToBeDeleted = nil
 
-        multiCurrencyModels.removeAll { $0.userWalletId == userWalletId }
-        singleCurrencyModels.removeAll { $0.userWalletId == userWalletId }
+        multiCurrencyModels.removeAll { userWalletIds.contains($0.userWalletId) }
+        singleCurrencyModels.removeAll { userWalletIds.contains($0.userWalletId) }
     }
 
     private func updateSelectedWalletModel() {

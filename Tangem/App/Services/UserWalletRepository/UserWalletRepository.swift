@@ -24,14 +24,15 @@ protocol UserWalletRepository: Initializable {
     func updateSelection()
     func logoutIfNeeded()
 
+    func add(_ userWalletModel: UserWalletModel)
     func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void)
     // use this method for saving. TODO: refactor
-    func save(_ cardViewModel: CardViewModel)
+    func save(_ cardViewModel: UserWalletModel)
     func contains(_ userWallet: UserWallet) -> Bool
     // use this method for updating. TODO: refactor
     func save(_ userWallet: UserWallet)
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool)
-    func clear()
+    func clearNonSelectedUserWallets()
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo)
 }
 
@@ -75,7 +76,7 @@ enum UserWalletRepositoryEvent {
     case scan(isScanning: Bool)
     case inserted(userWallet: UserWallet)
     case updated(userWalletModel: UserWalletModel)
-    case deleted(userWalletId: Data)
+    case deleted(userWalletIds: [Data])
     case selected(userWallet: UserWallet, reason: UserWalletRepositorySelectionChangeReason)
 }
 
