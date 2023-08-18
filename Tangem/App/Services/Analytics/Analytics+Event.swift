@@ -74,6 +74,8 @@ extension Analytics {
         case buttonSell = "[Token] Button - Sell"
         case buttonExchange = "[Token] Button - Exchange"
         case buttonSend = "[Token] Button - Send"
+        case buttonReceive = "[Token] Button - Receive"
+        case buttonUnderstand = "[Token] Button - Understand"
         case tokenBought = "[Token] Token Bought"
         case receiveScreenOpened = "[Token / Receive] Receive Screen Opened"
         case buttonCopyAddress = "[Token / Receive] Button - Copy Address"

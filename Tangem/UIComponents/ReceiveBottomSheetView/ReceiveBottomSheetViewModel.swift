@@ -56,18 +56,20 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     }
 
     func understandNetworkRequirements() {
+        Analytics.log(event: .buttonUnderstand, params: [.token: tokenItem.currencySymbol])
+
         AppSettings.shared.understandsAddressNetworkRequirements.append(tokenItem.networkName)
         isUserUnderstandsAddressNetworkRequirements = true
     }
 
     func copyToClipboard() {
-        Analytics.log(.buttonCopyAddress)
+        Analytics.log(event: .buttonCopyAddress, params: [.token: tokenItem.currencySymbol])
         UIPasteboard.general.string = addressInfos[currentIndex].address
         showToast = true
     }
 
     func share() {
-        Analytics.log(.buttonShareAddress)
+        Analytics.log(event: .buttonShareAddress, params: [.token: tokenItem.currencySymbol])
         let address = addressInfos[currentIndex].address
         // TODO: Replace with ShareLinks https://developer.apple.com/documentation/swiftui/sharelink for iOS 16+
         let av = UIActivityViewController(activityItems: [address], applicationActivities: nil)

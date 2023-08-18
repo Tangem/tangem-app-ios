@@ -255,6 +255,8 @@ extension SingleTokenBaseViewModel {
 
 extension SingleTokenBaseViewModel {
     func openReceive() {
+        Analytics.log(event: .buttonReceive, params: [.token: currencySymbol])
+
         let infos = walletModel.wallet.addresses.map { address in
             ReceiveAddressInfo(address: address.value, type: address.type, addressQRImage: QrCodeGenerator.generateQRCode(from: address.value))
         }
