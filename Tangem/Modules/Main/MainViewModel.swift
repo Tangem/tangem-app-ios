@@ -183,8 +183,6 @@ final class MainViewModel: ObservableObject {
         pages.removeAll { page in
             userWalletIds.contains(page.id.value)
         }
-
-        selectedCardIndex = 0
     }
 
     // MARK: - Private functions
