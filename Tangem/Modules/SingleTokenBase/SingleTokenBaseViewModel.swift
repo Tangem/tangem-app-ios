@@ -262,7 +262,7 @@ extension SingleTokenBaseViewModel {
     }
 
     func openBuyCryptoIfPossible() {
-        Analytics.log(.buttonBuy)
+        Analytics.log(event: .buttonBuy, params: [.token: currencySymbol])
         if tangemApiService.geoIpRegionCode == LanguageCode.ru {
             coordinator.openBankWarning { [weak self] in
                 self?.openBuy()
@@ -281,7 +281,7 @@ extension SingleTokenBaseViewModel {
             let cardViewModel = userWalletModel as? CardViewModel
         else { return }
 
-        Analytics.log(.buttonSend)
+        Analytics.log(event: .buttonSend, params: [.token: currencySymbol])
         coordinator.openSend(
             amountToSend: amountToSend,
             blockchainNetwork: blockchainNetwork,
@@ -326,7 +326,7 @@ extension SingleTokenBaseViewModel {
     }
 
     func openSell() {
-        Analytics.log(.buttonSell)
+        Analytics.log(event: .buttonSell, params: [.token: currencySymbol])
 
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
@@ -360,7 +360,7 @@ extension SingleTokenBaseViewModel {
     }
 
     func openExplorer(at url: URL) {
-        Analytics.log(.buttonExplore)
+        Analytics.log(event: .buttonExplore, params: [.token: currencySymbol])
         coordinator.openExplorer(at: url, blockchainDisplayName: blockchainNetwork.blockchain.displayName)
     }
 }
