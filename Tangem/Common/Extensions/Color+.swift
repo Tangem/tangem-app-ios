@@ -30,18 +30,6 @@ extension Color {
         return Color("tangem_blue")
     }
 
-    @nonobjc static var tangemBlue1: Color {
-        return Color("tangem_blue1")
-    }
-
-    @nonobjc static var tangemBlue2: Color {
-        return Color("tangem_blue2")
-    }
-
-    @nonobjc static var tangemBlue3: Color {
-        return Color("tangem_blue3")
-    }
-
     @nonobjc static var tangemCritical: Color {
         return Color(.tangemCritical)
     }
