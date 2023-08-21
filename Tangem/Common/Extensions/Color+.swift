@@ -134,10 +134,6 @@ extension Color {
         return Color("tangem_blue_light")
     }
 
-    @nonobjc static var tangemBlueLight2: Color {
-        return Color("tangem_blue_light2")
-    }
-
     // MARK: Misc
 
     @nonobjc static var underlyingCardBackground1: Color {
