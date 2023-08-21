@@ -16,10 +16,6 @@ extension Color {
         return Color("tangem_green")
     }
 
-    @nonobjc static var tangemGreen1: Color {
-        return Color("tangem_green1")
-    }
-
     @nonobjc static var tangemGreen2: Color {
         return Color("tangem_green2")
     }
