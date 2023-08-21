@@ -9,14 +9,14 @@
 import Foundation
 
 protocol MainUserWalletPageBuilderFactory {
-    func createPage(for model: UserWalletModel) -> MainUserWalletPageBuilder?
-    func createPages(from models: [UserWalletModel]) -> [MainUserWalletPageBuilder]
+    func createPage(for model: UserWalletModel, lockedUserWalletDelegate: MainLockedUserWalletDelegate) -> MainUserWalletPageBuilder?
+    func createPages(from models: [UserWalletModel], lockedUserWalletDelegate: MainLockedUserWalletDelegate) -> [MainUserWalletPageBuilder]
 }
 
 struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory {
     let coordinator: MultiWalletMainContentRoutable & SingleWalletMainContentRoutable
 
-    func createPage(for model: UserWalletModel) -> MainUserWalletPageBuilder? {
+    func createPage(for model: UserWalletModel, lockedUserWalletDelegate: MainLockedUserWalletDelegate) -> MainUserWalletPageBuilder? {
         let id = model.userWalletId
         let subtitleProvider = MainHeaderSubtitleProviderFactory().provider(for: model)
         let headerModel = MainHeaderViewModel(
@@ -26,7 +26,14 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         )
 
         if model.isUserWalletLocked {
-            return .lockedWallet(id: id, headerModel: headerModel, bodyModel: .init(userWalletModel: model))
+            return .lockedWallet(
+                id: id,
+                headerModel: headerModel,
+                bodyModel: .init(
+                    userWalletModel: model,
+                    lockedUserWalletDelegate: lockedUserWalletDelegate
+                )
+            )
         }
 
         if model.isMultiWallet {
@@ -73,7 +80,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         )
     }
 
-    func createPages(from models: [UserWalletModel]) -> [MainUserWalletPageBuilder] {
-        return models.compactMap(createPage(for:))
+    func createPages(from models: [UserWalletModel], lockedUserWalletDelegate: MainLockedUserWalletDelegate) -> [MainUserWalletPageBuilder] {
+        return models.compactMap { createPage(for: $0, lockedUserWalletDelegate: lockedUserWalletDelegate) }
     }
 }

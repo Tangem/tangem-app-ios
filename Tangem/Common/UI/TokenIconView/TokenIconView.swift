@@ -10,6 +10,7 @@ import Foundation
 import Kingfisher
 import SwiftUI
 
+@available(*, deprecated, message: "Use `IconView` instead")
 struct TokenIconView: View {
     private let viewModel: TokenIconViewModel
     private let size: CGSize
@@ -18,7 +19,7 @@ struct TokenIconView: View {
     private let networkIconBorderWidth: Double
     private let networkIconOffset: CGSize
 
-    init(viewModel: TokenIconViewModel, sizeSettings: SizeSettings = .tokenItem) {
+    init(viewModel: TokenIconViewModel, sizeSettings: IconViewSizeSettings = .tokenItem) {
         self.viewModel = viewModel
         size = sizeSettings.iconSize
         networkIconSize = sizeSettings.networkIconSize
@@ -28,14 +29,11 @@ struct TokenIconView: View {
 
     var body: some View {
         KFImage(viewModel.imageURL)
-            .setProcessor(DownsamplingImageProcessor(size: size))
             .placeholder { placeholder }
             .fade(duration: 0.3)
             .cacheOriginalImage()
-            .scaleFactor(UIScreen.main.scale)
             .resizable()
             .scaledToFit()
-            .cornerRadius(5)
             .frame(size: size)
             .overlay(networkIcon.offset(networkIconOffset), alignment: .topTrailing)
     }
@@ -59,48 +57,6 @@ struct TokenIconView: View {
     @ViewBuilder
     private var placeholder: some View {
         CircleImageTextView(name: viewModel.name, color: Colors.Icon.inactive)
-    }
-}
-
-extension TokenIconView {
-    enum SizeSettings {
-        case tokenItem
-        case tokenDetails
-        case tokenDetailsToolbar
-        case receive
-
-        var iconSize: CGSize {
-            switch self {
-            case .tokenItem: return .init(width: 40, height: 40)
-            case .tokenDetails: return .init(bothDimensions: 48)
-            case .tokenDetailsToolbar: return .init(bothDimensions: 24)
-            case .receive: return .init(width: 80, height: 80)
-            }
-        }
-
-        var networkIconSize: CGSize {
-            switch self {
-            case .tokenItem: return .init(width: 16, height: 16)
-            case .tokenDetails, .tokenDetailsToolbar: return .zero
-            case .receive: return .init(width: 32, height: 32)
-            }
-        }
-
-        var networkIconBorderWidth: Double {
-            switch self {
-            case .tokenItem: return 2
-            case .tokenDetails, .tokenDetailsToolbar: return 0
-            case .receive: return 4
-            }
-        }
-
-        var networkIconOffset: CGSize {
-            switch self {
-            case .tokenItem: return .init(width: 4, height: -4)
-            case .tokenDetails, .tokenDetailsToolbar: return .zero
-            case .receive: return .init(width: 9, height: -9)
-            }
-        }
     }
 }
 

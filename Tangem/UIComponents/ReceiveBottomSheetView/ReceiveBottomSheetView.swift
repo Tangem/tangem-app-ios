@@ -30,8 +30,8 @@ struct ReceiveBottomSheetView: View {
     @ViewBuilder
     private var addressNetworkUnderstandingConfirmationView: some View {
         VStack(spacing: 56) {
-            TokenIconView(
-                viewModel: viewModel.tokenIconViewModel,
+            IconView(
+                url: viewModel.iconURL,
                 sizeSettings: .receive
             )
             .padding(.top, 56)

@@ -55,13 +55,6 @@ struct MainView: View {
                 .offset(x: 10)
             }
         })
-        .background(
-            ScanTroubleshootingView(
-                isPresented: $viewModel.showTroubleshootingView,
-                tryAgainAction: viewModel.scanCardAction,
-                requestSupportAction: viewModel.requestSupport
-            )
-        )
         .alert(item: $viewModel.errorAlert) { $0.alert }
         .actionSheet(isPresented: $viewModel.showingDeleteConfirmation) {
             ActionSheet(
@@ -72,6 +65,19 @@ struct MainView: View {
                 ]
             )
         }
+        .bottomSheet(
+            item: $viewModel.unlockWalletBottomSheetViewModel,
+            settings: .init(backgroundColor: Colors.Background.primary)
+        ) { model in
+            UnlockUserWalletBottomSheetView(viewModel: model)
+        }
+        .background(
+            ScanTroubleshootingView(
+                isPresented: $viewModel.showTroubleshootingView,
+                tryAgainAction: viewModel.scanCardAction,
+                requestSupportAction: viewModel.requestSupport
+            )
+        )
     }
 
     var scanCardButton: some View {

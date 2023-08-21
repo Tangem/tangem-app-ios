@@ -14,13 +14,13 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     @Published var isUserUnderstandsAddressNetworkRequirements: Bool
     @Published var showToast: Bool = false
 
-    let tokenIconViewModel: TokenIconViewModel
-
     let addressInfos: [ReceiveAddressInfo]
     let networkWarningMessage: String
 
     let id = UUID()
     let addressIndexUpdateNotifier = PassthroughSubject<Int, Never>()
+
+    let iconURL: URL?
 
     private let tokenItem: TokenItem
 
@@ -33,7 +33,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
 
     init(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
         self.tokenItem = tokenItem
-        tokenIconViewModel = .init(tokenItem: tokenItem)
+        iconURL = tokenItem.id != nil ? TokenIconURLBuilder().iconURL(id: tokenItem.id!) : nil
         self.addressInfos = addressInfos
 
         networkWarningMessage = Localization.receiveBottomSheetWarningMessage(
