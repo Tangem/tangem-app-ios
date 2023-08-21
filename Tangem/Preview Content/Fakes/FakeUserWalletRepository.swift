@@ -35,7 +35,26 @@ class FakeUserWalletRepository: UserWalletRepository {
         self.models = models
     }
 
-    func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
+    func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            guard let model = self.models.first else {
+                completion(.error("No models"))
+                return
+            }
+
+            switch method {
+            case .biometry:
+                completion(.troubleshooting)
+            case .card(let userWallet):
+                if let userWallet, let cardViewModel = CardViewModel(userWallet: userWallet) {
+                    completion(.success(cardViewModel))
+                    return
+                }
+
+                completion(.error("Can't create card view model"))
+            }
+        }
+    }
 
     func setSelectedUserWalletId(_ userWalletId: Data?, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason) {}
 

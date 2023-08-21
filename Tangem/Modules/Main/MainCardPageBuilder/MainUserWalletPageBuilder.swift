@@ -55,6 +55,7 @@ enum MainUserWalletPageBuilder: Identifiable {
                 .id(id)
         case .lockedWallet(let id, _, let bodyModel):
             LockedWalletMainContentView(viewModel: bodyModel)
+                .id(id)
         }
     }
 }

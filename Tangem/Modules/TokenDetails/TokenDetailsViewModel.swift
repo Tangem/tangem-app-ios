@@ -31,6 +31,14 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         }
     }
 
+    var iconUrl: URL? {
+        guard let id = tokenItem.id else {
+            return nil
+        }
+
+        return TokenIconURLBuilder().iconURL(id: id)
+    }
+
     init(
         cardModel: CardViewModel,
         userTokensManager: UserTokensManager,

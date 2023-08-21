@@ -496,7 +496,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
                 if let requiredUserWallet,
                    scannedUserWallet.userWalletId != requiredUserWallet.userWalletId {
-                    completion(.error(TangemSdkError.cardError))
+                    completion(.error(UserWalletRepositoryError.cardWithWrongUserWalletIdScanned))
                     return
                 }
 

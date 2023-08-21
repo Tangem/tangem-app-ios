@@ -143,13 +143,13 @@ struct LockedWalletMainContentView: View {
 struct LockedWalletMainContentView_Previews: PreviewProvider {
     static var previews: some View {
         LockedWalletMainContentView(
-            viewModel: .init(userWalletModel: FakeUserWalletModel.wallet3Cards)
+            viewModel: .init(userWalletModel: FakeUserWalletModel.wallet3Cards, lockedUserWalletDelegate: nil)
         )
         .infinityFrame()
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
 
         LockedWalletMainContentView(
-            viewModel: .init(userWalletModel: FakeUserWalletModel.twins)
+            viewModel: .init(userWalletModel: FakeUserWalletModel.twins, lockedUserWalletDelegate: nil)
         )
         .infinityFrame()
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
