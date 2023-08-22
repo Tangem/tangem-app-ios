@@ -23,6 +23,10 @@ struct IconView: View {
         self.forceKingfisher = forceKingfisher
     }
 
+    init(url: URL?, sizeSettings: IconViewSizeSettings, forceKingfisher: Bool = false) {
+        self.init(url: url, size: sizeSettings.iconSize, forceKingfisher: forceKingfisher)
+    }
+
     var body: some View {
         if forceKingfisher {
             kfImage
@@ -63,11 +67,9 @@ struct IconView: View {
     var kfImage: some View {
         KFImage(url)
             .cancelOnDisappear(true)
-            .setProcessor(DownsamplingImageProcessor(size: size))
             .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }
             .fade(duration: 0.3)
             .cacheOriginalImage()
-            .scaleFactor(UIScreen.main.scale)
             .resizable()
             .scaledToFit()
             .frame(size: size)

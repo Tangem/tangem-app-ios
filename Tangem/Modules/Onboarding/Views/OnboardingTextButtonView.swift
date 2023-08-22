@@ -146,7 +146,7 @@ struct OnboardingTextButtonView_Previews: PreviewProvider {
                     isBusy: false,
                     isEnabled: false,
                     isVisible: true,
-                    color: .grayAlt,
+                    color: .grayAlt3,
                     systemIconName: "plus",
                     iconPosition: .leading
                 )
