@@ -16,10 +16,6 @@ extension Color {
         return Color("tangem_green")
     }
 
-    @nonobjc static var tangemGreen1: Color {
-        return Color("tangem_green1")
-    }
-
     @nonobjc static var tangemGreen2: Color {
         return Color("tangem_green2")
     }
@@ -32,18 +28,6 @@ extension Color {
 
     @nonobjc static var tangemBlue: Color {
         return Color("tangem_blue")
-    }
-
-    @nonobjc static var tangemBlue1: Color {
-        return Color("tangem_blue1")
-    }
-
-    @nonobjc static var tangemBlue2: Color {
-        return Color("tangem_blue2")
-    }
-
-    @nonobjc static var tangemBlue3: Color {
-        return Color("tangem_blue3")
     }
 
     @nonobjc static var tangemCritical: Color {
@@ -124,22 +108,8 @@ extension Color {
         return Color(.tangemBgGray2)
     }
 
-    @nonobjc static var tangemBgGray3: Color {
-        return Color(.tangemBgGray3)
-    }
-
     @nonobjc static var tangemBg: Color {
         return Color("tangem_bg")
-    }
-
-    // MARK: Tints
-
-    @nonobjc static var tangemBlueLight: Color {
-        return Color("tangem_blue_light")
-    }
-
-    @nonobjc static var tangemBlueLight2: Color {
-        return Color("tangem_blue_light2")
     }
 
     // MARK: Misc
@@ -162,10 +132,6 @@ extension UIColor {
 
     @nonobjc static var tangemBgGray2: UIColor {
         return UIColor(named: "tangem_bg_gray2")!
-    }
-
-    @nonobjc static var tangemBgGray3: UIColor {
-        return UIColor(named: "tangem_bg_gray3")!
     }
 
     @nonobjc static var tangemGrayDark4: UIColor {

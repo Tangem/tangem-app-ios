@@ -88,8 +88,6 @@ enum ButtonColorStyle {
     case black
     case gray
     case transparentWhite
-    case grayAlt
-    case grayAlt2
     case grayAlt3
 
     #warning("TODO: add all buttons styles properly")
@@ -98,8 +96,6 @@ enum ButtonColorStyle {
         case .black: return .tangemGrayDark6
         case .gray: return .tangemGrayLight4
         case .transparentWhite: return .clear
-        case .grayAlt: return .tangemBgGray
-        case .grayAlt2: return .tangemBgGray3
         case .grayAlt3: return Colors.Button.secondary
         }
     }
@@ -107,7 +103,7 @@ enum ButtonColorStyle {
     var bgPressedColor: Color {
         switch self {
         case .black: return .tangemGrayDark5
-        case .gray, .grayAlt, .grayAlt2: return .tangemGrayDark
+        case .gray: return .tangemGrayDark
         case .transparentWhite: return .clear
         case .grayAlt3: return Colors.Button.secondary
         }
@@ -115,7 +111,7 @@ enum ButtonColorStyle {
 
     var fgColor: Color {
         switch self {
-        case .transparentWhite, .grayAlt, .grayAlt2, .grayAlt3: return .tangemGrayDark6
+        case .transparentWhite, .grayAlt3: return .tangemGrayDark6
         default: return .white
         }
     }
@@ -131,7 +127,7 @@ enum ButtonColorStyle {
 
     var indicatorColor: UIColor {
         switch self {
-        case .transparentWhite, .grayAlt, .grayAlt2, .grayAlt3: return .tangemGrayDark6
+        case .transparentWhite, .grayAlt3: return .tangemGrayDark6
         default: return .white
         }
     }
@@ -261,7 +257,7 @@ struct ButtonStyles_Previews: PreviewProvider {
 
             Button(action: {}) { Text("Go to shop") }
                 .buttonStyle(TangemButtonStyle(
-                    colorStyle: .grayAlt,
+                    colorStyle: .grayAlt3,
                     layout: .flexibleWidth,
                     font: .system(size: 18)
                 ))
