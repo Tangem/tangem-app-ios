@@ -96,13 +96,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
-                guard let userWalletId = UserWalletIdFactory().userWalletId(config: config) else {
-                    return .justWithError(output: nil)
-                }
-
-                let userWallet = UserWalletFactory().userWallet(from: cardInfo, config: config, userWalletId: userWalletId)
-
-                let cardModel = CardViewModel(userWallet: userWallet)
+                let cardModel = CardViewModel(cardInfo: cardInfo)
                 if let cardModel {
                     initializeServices(for: cardModel, cardInfo: cardInfo)
                     cardModel.initialUpdate()
