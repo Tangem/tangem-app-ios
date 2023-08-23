@@ -32,6 +32,7 @@
 "app_settings_warning_subtitle" = "Перейдите в настройки, чтобы включить биометрическую аутентификацию в приложении Tangem";
 "app_settings_warning_title" = "Включите биометрическую аутентификацию";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт в приложении";
+"button_start_backup_process" = "Начать резервное копирование";
 "card_settings_access_code_recovery_disabled_description" = "Отключите эту опцию, если не хотите, чтобы эта карта использовалась для сброса кодов доступа на другие карты этого кошелька. Обратите внимание, сброс кода также не будет доступен на этой карте.";
 "card_settings_access_code_recovery_enabled_description" = "Использовать эту карту для сброса кода доступа на других картах в этом кошельке";
 "card_settings_access_code_recovery_footer" = "Отключить возможность сброса кода доступа на этой карте или других картах этого кошелька";
@@ -183,7 +184,7 @@
 "main_get_bonus_subtitle" = "Вы успешно прошли все уроки и теперь можете получить 1INCH токены";
 "main_manage_tokens" = "Управление токенами";
 "main_no_backup_warning_subtitle" = "Чтобы защитить свои активы, мы советуем вам выполнить эту процедуру";
-"main_no_backup_warning_title" = "Бэкап кошелька не был произведен";
+"main_no_backup_warning_title" = "Резервное копирование не выполнено";
 "main_page_balance" = "Баланс";
 "main_processing_full_amount" = "В сумме учтены не все монеты";
 "main_promotion_credited" = "1INCH токены будут зачислены на адрес вашего кошелька в сети %@ в течение 48 часов";

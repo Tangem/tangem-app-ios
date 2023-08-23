@@ -30,4 +30,15 @@ struct NotificationSettingsFactory {
             dismissAction: nil
         )
     }
+
+    func missingBackupNotificationSettings() -> NotificationView.Settings {
+        .init(
+            colorScheme: .white,
+            icon: .init(image: Assets.attention.image),
+            title: Localization.mainNoBackupWarningTitle,
+            description: Localization.mainNoBackupWarningSubtitle,
+            isDismissable: false,
+            dismissAction: nil
+        )
+    }
 }

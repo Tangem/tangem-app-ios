@@ -28,6 +28,17 @@ struct MultiWalletMainContentView: View {
                 .transition(notificationTransition)
             }
 
+            if let settings = viewModel.missingBackupNotificationSettings {
+                NotificationView(settings: settings, buttons: [
+                    .init(
+                        title: Localization.buttonStartBackupProcess,
+                        style: .secondary,
+                        size: .notification,
+                        action: viewModel.startBackupProcess
+                    ),
+                ])
+            }
+
             tokensContent
 
             FixedSizeButtonWithLeadingIcon(
