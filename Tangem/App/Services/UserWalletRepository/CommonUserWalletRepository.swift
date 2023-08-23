@@ -96,16 +96,6 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
-                let factory = OnboardingInputFactory(
-                    cardInfo: cardInfo,
-                    cardModel: nil,
-                    sdkFactory: config,
-                    onboardingStepsBuilderFactory: config
-                )
-                if let onboardingInput = factory.makeOnboardingInput() {
-                    return .justWithError(output: .onboarding(onboardingInput))
-                }
-
                 guard let userWalletId = UserWalletIdFactory().userWalletId(config: config) else {
                     return .justWithError(output: nil)
                 }
@@ -118,7 +108,16 @@ class CommonUserWalletRepository: UserWalletRepository {
                     cardModel.initialUpdate()
                 }
 
-                if let cardModel {
+                let factory = OnboardingInputFactory(
+                    cardInfo: cardInfo,
+                    cardModel: cardModel,
+                    sdkFactory: config,
+                    onboardingStepsBuilderFactory: config
+                )
+
+                if let onboardingInput = factory.makeOnboardingInput() {
+                    return .justWithError(output: .onboarding(onboardingInput))
+                } else if let cardModel {
                     return .justWithError(output: .success(cardModel))
                 }
 
