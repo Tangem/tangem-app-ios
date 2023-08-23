@@ -8,6 +8,7 @@
 
 import TangemSdk
 import Combine
+import BlockchainSdk
 
 class CommonDerivationManager {
     weak var delegate: DerivationManagerDelegate?
@@ -39,16 +40,43 @@ class CommonDerivationManager {
         entries.forEach { entry in
             let curve = entry.blockchainNetwork.blockchain.curve
 
-            guard let derivationPath = entry.blockchainNetwork.derivationPath,
-                  let masterKey = keys.first(where: { $0.curve == curve }),
-                  !masterKey.derivedKeys.keys.contains(derivationPath) else {
+            let derivationPaths = derivationPaths(from: entry.blockchainNetwork)
+            guard let masterKey = keys.first(where: { $0.curve == curve }) else {
                 return
             }
 
-            derivations[masterKey.publicKey, default: []].append(derivationPath)
+            let pendingDerivationPaths = derivationPaths.filter { derivationPath in
+                !masterKey.derivedKeys.keys.contains { $0 == derivationPath }
+            }
+
+            if pendingDerivationPaths.isEmpty {
+                return
+            }
+
+            derivations[masterKey.publicKey, default: []] += pendingDerivationPaths
         }
 
         pendingDerivations.send(derivations)
+    }
+
+    private func derivationPaths(from network: BlockchainNetwork) -> [DerivationPath] {
+        guard let derivationPath = network.derivationPath else {
+            return []
+        }
+
+        // If we use the extended cardano then
+        // we should have two derivations for collect correct PublicKey
+        guard case .cardano(let extended) = network.blockchain, extended else {
+            return [derivationPath]
+        }
+
+        do {
+            let extendedPath = try CardanoUtil().extendedDerivationPath(for: derivationPath)
+            return [derivationPath, extendedPath]
+        } catch {
+            AppLog.shared.error(error)
+            return [derivationPath]
+        }
     }
 }
 
