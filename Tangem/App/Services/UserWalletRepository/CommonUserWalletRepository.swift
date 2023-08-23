@@ -90,19 +90,15 @@ class CommonUserWalletRepository: UserWalletRepository {
 
                 let cardDTO = CardDTO(card: response.card)
                 didScan(card: cardDTO, walletData: response.walletData)
-                let cardInfo = response.getCardInfo()
+                var cardInfo = response.getCardInfo()
                 resetServices()
 
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
-                guard let userWalletId = UserWalletIdFactory().userWalletId(config: config) else {
-                    return .justWithError(output: nil)
-                }
+                cardInfo.name = config.cardName
 
-                let userWallet = UserWalletFactory().userWallet(from: cardInfo, config: config, userWalletId: userWalletId)
-
-                let cardModel = CardViewModel(userWallet: userWallet)
+                let cardModel = CardViewModel(cardInfo: cardInfo)
                 if let cardModel {
                     initializeServices(for: cardModel, cardInfo: cardInfo)
                     cardModel.initialUpdate()

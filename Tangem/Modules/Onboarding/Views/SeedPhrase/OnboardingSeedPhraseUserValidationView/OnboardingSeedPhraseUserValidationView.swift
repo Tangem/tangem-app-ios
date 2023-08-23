@@ -55,7 +55,7 @@ struct OnboardingSeedPhraseUserValidationView: View {
 
                 MainButton(
                     title: Localization.onboardingCreateWalletButtonCreateWallet,
-                    icon: .leading(Assets.tangemIcon),
+                    icon: .trailing(Assets.tangemIcon),
                     style: .primary,
                     isLoading: false,
                     isDisabled: !viewModel.isCreateWalletButtonEnabled,

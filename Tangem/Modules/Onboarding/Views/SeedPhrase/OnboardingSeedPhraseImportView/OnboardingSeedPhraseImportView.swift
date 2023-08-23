@@ -47,7 +47,7 @@ struct OnboardingSeedPhraseImportView: View {
 
                 MainButton(
                     title: Localization.commonImport,
-                    icon: .leading(Assets.tangemIcon),
+                    icon: .trailing(Assets.tangemIcon),
                     style: .primary,
                     isLoading: false,
                     isDisabled: !viewModel.isSeedPhraseValid,

@@ -105,6 +105,15 @@ extension SingleCardOnboardingStep: OnboardingButtonsInfoProvider {
         }
     }
 
+    var mainButtonIcon: ImageType? {
+        switch self {
+        case .createWallet:
+            return Assets.tangemIcon
+        default:
+            return nil
+        }
+    }
+
     var isSupplementButtonVisible: Bool {
         switch self {
         case .disclaimer, .topup: return true

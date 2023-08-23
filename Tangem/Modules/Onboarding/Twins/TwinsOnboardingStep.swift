@@ -192,6 +192,15 @@ extension TwinsOnboardingStep: OnboardingButtonsInfoProvider {
         }
     }
 
+    var mainButtonIcon: ImageType? {
+        switch self {
+        case .first, .second, .third:
+            return Assets.tangemIcon
+        default:
+            return nil
+        }
+    }
+
     var supplementButtonTitle: String {
         switch self {
         case .disclaimer: return Localization.commonAccept

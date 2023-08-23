@@ -128,6 +128,15 @@ extension WalletOnboardingStep: OnboardingButtonsInfoProvider {
         }
     }
 
+    var mainButtonIcon: ImageType? {
+        switch self {
+        case .createWallet, .createWalletSelector, .scanPrimaryCard, .selectBackupCards:
+            return Assets.tangemIcon
+        default:
+            return nil
+        }
+    }
+
     var supplementButtonTitle: String {
         switch self {
         case .disclaimer: return Localization.commonAccept

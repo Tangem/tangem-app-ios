@@ -55,6 +55,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     var mainButtonSettings: MainButton.Settings? {
         MainButton.Settings(
             title: mainButtonTitle,
+            icon: mainButtonIcon,
             style: .primary,
             isLoading: isMainButtonBusy,
             action: mainButtonAction
@@ -67,6 +68,14 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
     var mainButtonTitle: String {
         currentStep.mainButtonTitle
+    }
+
+    var mainButtonIcon: MainButton.Icon? {
+        if let icon = currentStep.mainButtonIcon {
+            return .trailing(icon)
+        }
+
+        return nil
     }
 
     var supplementButtonSettings: TangemButtonSettings? {
