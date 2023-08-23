@@ -112,7 +112,7 @@ enum ButtonColorStyle {
     var fgColor: Color {
         switch self {
         case .transparentWhite, .grayAlt3: return .tangemGrayDark6
-        default: return .tangemBg
+        default: return .white
         }
     }
 
@@ -128,7 +128,7 @@ enum ButtonColorStyle {
     var indicatorColor: UIColor {
         switch self {
         case .transparentWhite, .grayAlt3: return .tangemGrayDark6
-        default: return .tangemBg
+        default: return .white
         }
     }
 }

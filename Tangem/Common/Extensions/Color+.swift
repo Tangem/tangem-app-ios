@@ -134,10 +134,6 @@ extension UIColor {
         return UIColor(named: "tangem_bg_gray2")!
     }
 
-    @nonobjc static var tangemBg: UIColor {
-        return UIColor(named: "tangem_bg")!
-    }
-
     @nonobjc static var tangemGrayDark4: UIColor {
         return UIColor(named: "tangem_gray_dark4")!
     }

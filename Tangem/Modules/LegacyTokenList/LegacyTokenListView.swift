@@ -87,7 +87,7 @@ struct LegacyTokenListView: View {
                     Circle().fill(Colors.Button.primary)
 
                     Image(systemName: "plus")
-                        .foregroundColor(Color.tangemBg)
+                        .foregroundColor(.white)
                         .font(.system(size: 13, weight: .bold, design: .default))
                 }
                 .frame(width: 26, height: 26)
@@ -118,7 +118,7 @@ struct LegacyTokenListView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
                 .background(LinearGradient(
-                    colors: [Color.tangemBg, Color.tangemBg, Color.tangemBg.opacity(0)],
+                    colors: [.white, .white, .white.opacity(0)],
                     startPoint: .bottom,
                     endPoint: .top
                 )
