@@ -17,7 +17,7 @@ extension Wallet {
                 value: "0x27a716A260892C789D4E09719BEa1f526eDFc9E9",
                 publicKey: .init(
                     seedKey: Data.randomData(count: 32),
-                    derivation: .ethDerivationStub
+                    derivationType: .plain(.ethDerivationStub)
                 ),
                 type: .default
             ),
@@ -31,7 +31,7 @@ extension Wallet {
                 value: "0x27a716A260892C789D4E09719BEa1f526eDFc9E9",
                 publicKey: .init(
                     seedKey: Data.randomData(count: 32),
-                    derivation: .ethDerivationStub
+                    derivationType: .plain(.ethDerivationStub)
                 ),
                 type: .default
             ),
@@ -46,7 +46,7 @@ extension Wallet {
                 publicKey: .init(
                     seedKey: Data(
                         hexString: "0374D0F81F42DDFE34114D533E95E6AE5FE6EA271C96F1FA505199FDC365AE9720"),
-                    derivation: .btcLegacyDerivationStub
+                    derivationType: .plain(.btcLegacyDerivationStub)
                 ),
                 type: .default
             ),
@@ -55,7 +55,7 @@ extension Wallet {
                 publicKey: .init(
                     seedKey: Data(
                         hexString: "0374D0F81F42DDFE34114D533E95E6AE5FE6EA271C96F1FA505199FDC365AE9720"),
-                    derivation: .btcLegacyDerivationStub
+                    derivationType: .plain(.btcLegacyDerivationStub)
                 ),
                 type: .legacy
             ),
@@ -69,7 +69,7 @@ extension Wallet {
                 value: "rNL1cRHvsiTV1uDRmXNuREVuo9Luuv6Lwt",
                 publicKey: .init(
                     seedKey: Data(hexString: "0374D0F81F42DDFE34114D533E95E6AE5FE6EA271C96F1FA505199FDC365AE9720"),
-                    derivation: .btcSegwitDerivationStub
+                    derivationType: .plain(.btcSegwitDerivationStub)
                 ),
                 type: .default
             ),
