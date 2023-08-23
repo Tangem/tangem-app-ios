@@ -69,7 +69,7 @@ private struct TextInputWithTitle: View {
     var text: Binding<String>
     var keyboardType: UIKeyboardType
     var height: CGFloat = 60
-    var backgroundColor: Color = .white
+    var backgroundColor: Color = Colors.Background.primary
     let isEnabled: Bool
     let isLoading: Bool
 
@@ -96,7 +96,7 @@ private struct TextInputWithTitle: View {
 private struct PickerInputWithTitle: View {
     var title: String
     var height: CGFloat = 60
-    var backgroundColor: Color = .white
+    var backgroundColor: Color = Colors.Background.primary
     @Binding var model: LegacyPickerModel
 
     var body: some View {

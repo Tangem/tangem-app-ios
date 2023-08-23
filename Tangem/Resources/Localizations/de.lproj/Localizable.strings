@@ -32,6 +32,7 @@
 "app_settings_warning_subtitle" = "Go to settings to enable biometric authentication in the Tangem app";
 "app_settings_warning_title" = "Enable biometric authentication";
 "biometry_touch_id_reason" = "Touch ID is used to save your cards in the app";
+"button_start_backup_process" = "Start backup process";
 "card_settings_access_code_recovery_disabled_description" = "Disable this option if you don't want this card to be used to reset access codes on other cards in this wallet. Please note that this will also prevent you from resetting the access code on this card.";
 "card_settings_access_code_recovery_enabled_description" = "Allows you to use this card to reset access code on other cards in this wallet";
 "card_settings_access_code_recovery_footer" = "Disable the ability to reset the access code on this card or other cards in this wallet";
@@ -183,7 +184,7 @@
 "main_get_bonus_subtitle" = "You have completed all of the lessons, and are now eligible to receive your 1INCH tokens";
 "main_manage_tokens" = "Manage tokens";
 "main_no_backup_warning_subtitle" = "To protect your assets, we advise you to carry out this procedure";
-"main_no_backup_warning_title" = "Your wallet has not been backed up";
+"main_no_backup_warning_title" = "Your wallet hasn't been backed up";
 "main_page_balance" = "Total balance";
 "main_processing_full_amount" = "Der Betrag enthält nicht einige Ihrer Mittel";
 "main_promotion_credited" = "1INCH tokens will be credited to your %@ wallet address within 48 hours";

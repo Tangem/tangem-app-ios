@@ -31,6 +31,7 @@
 "app_settings_warning_subtitle" = "轉到設置以在 Tangem 應用程序中啟用生物識別身份驗證";
 "app_settings_warning_title" = "啟用生物識別驗證";
 "biometry_touch_id_reason" = "Touch ID 用於將您的卡片保存在應用程序中";
+"button_start_backup_process" = "Start backup process";
 "card_settings_access_code_recovery_disabled_description" = "如果您不希望使用此卡重置此錢包中其他卡上的訪問密碼，請禁用此選項。請注意，這也會阻止您重置此卡上的訪問密碼。";
 "card_settings_access_code_recovery_enabled_description" = "允許您使用此卡重置此錢包中其他卡上的訪問密碼";
 "card_settings_access_code_recovery_footer" = "禁用重置此卡或此錢包中其他卡上的訪問密碼的功能";

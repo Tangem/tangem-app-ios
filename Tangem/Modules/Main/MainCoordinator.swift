@@ -87,7 +87,6 @@ extension MainCoordinator: MainRoutable {
     func openOnboardingModal(with input: OnboardingInput) {
         let dismissAction: Action = { [weak self] in
             self?.modalOnboardingCoordinator = nil
-            self?.mainViewModel?.updateIsBackupAllowed()
         }
 
         let coordinator = OnboardingCoordinator(dismissAction: dismissAction)

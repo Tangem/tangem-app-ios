@@ -17,6 +17,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     @Published var isLoadingTokenList: Bool = true
     @Published var sections: [MultiWalletTokenItemsSection] = []
     @Published var missingDerivationNotificationSettings: NotificationView.Settings? = nil
+    @Published var missingBackupNotificationSettings: NotificationView.Settings? = nil
 
     @Published var isScannerBusy = false
 
@@ -39,8 +40,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         self.coordinator = coordinator
         self.sectionsProvider = sectionsProvider
 
-        bind()
-        subscribeToTokenListUpdatesIfNeeded()
+        setup()
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
@@ -67,6 +67,25 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         }
     }
 
+    func startBackupProcess() {
+        // TODO: Refactor this along with OnboardingInput generation
+        if let cardViewModel = userWalletModel as? CardViewModel,
+           let input = cardViewModel.backupInput {
+            Analytics.log(.noticeBackupYourWalletTapped)
+            coordinator.openOnboardingModal(with: input)
+        }
+    }
+
+    func openOrganizeTokens() {
+        coordinator.openOrganizeTokens(for: userWalletModel)
+    }
+
+    private func setup() {
+        updateBackupStatus()
+        subscribeToTokenListUpdatesIfNeeded()
+        bind()
+    }
+
     private func bind() {
         userWalletModel.userTokensManager.derivationManager?
             .pendingDerivationsCount
@@ -80,6 +99,12 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         sectionsProvider.sectionsPublisher
             .map(convertToSections(_:))
             .assign(to: \.sections, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        userWalletModel.updatePublisher
+            .sink { [weak self] in
+                self?.updateBackupStatus()
+            }
             .store(in: &bag)
     }
 
@@ -124,7 +149,13 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         missingDerivationNotificationSettings = factory.buildMissingDerivationNotificationSettings(for: pendingDerivationsCount)
     }
 
-    func openOrganizeTokens() {
-        coordinator.openOrganizeTokens(for: userWalletModel)
+    private func updateBackupStatus() {
+        guard userWalletModel.config.hasFeature(.backup) else {
+            missingBackupNotificationSettings = nil
+            return
+        }
+
+        let factory = NotificationSettingsFactory()
+        missingBackupNotificationSettings = factory.missingBackupNotificationSettings()
     }
 }
