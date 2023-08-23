@@ -38,7 +38,7 @@ struct LegacyCoinView: View {
                         Text(model.name)
                             .foregroundColor(.tangemGrayDark6)
                             + Text(symbolFormatted)
-                            .foregroundColor(Color(hex: "#A9A9AD")!)
+                            .foregroundColor(Color(name: "manage_tokens_gray_text"))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
@@ -48,7 +48,7 @@ struct LegacyCoinView: View {
                         if isExpanded {
                             Text(subtitle)
                                 .font(.system(size: 13))
-                                .foregroundColor(Color(hex: "#A9A9AD")!)
+                                .foregroundColor(Color(name: "manage_tokens_gray_text"))
 
                             Spacer()
                         } else {

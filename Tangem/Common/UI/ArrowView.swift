@@ -13,7 +13,7 @@ struct ArrowView: View {
     let position: ItemPosition
     let width: CGFloat
     let height: CGFloat
-    let color = Color(hex: "#DEDEDE")!
+    let color = Color(name: "manage_tokens_arrow")
     var body: some View {
         LineShape(position: position)
             .foregroundColor(color)

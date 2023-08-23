@@ -25,8 +25,8 @@ class LegacyCoinItemViewModel: Identifiable, ObservableObject {
     var imageNameSelected: String { tokenItem.blockchain.iconNameFilled }
     var networkName: String { tokenItem.blockchain.displayName }
     var contractName: String? { tokenItem.contractName }
-    var networkNameForegroundColor: Color { selectedPublisher ? .tangemGrayDark6 : Color(hex: "#848488")! }
-    var contractNameForegroundColor: Color { tokenItem.isBlockchain ? .tangemGreen2 : Color(hex: "#AAAAAD")! }
+    var networkNameForegroundColor: Color { selectedPublisher ? .tangemGrayDark6 : Color(name: "manage_tokens_network_name") }
+    var contractNameForegroundColor: Color { tokenItem.isBlockchain ? .tangemGreen2 : Color(name: "manage_tokens_contract_name") }
     var hasContextMenu: Bool { tokenItem.isToken }
 
     private var bag = Set<AnyCancellable>()
