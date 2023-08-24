@@ -204,37 +204,30 @@ private extension CommonUserTokenListManager {
     // MARK: - Token upgrading
 
     func tryMigrateTokens() -> AnyPublisher<Void, Never> {
-        fatalError()
-        /*
-         if migrated {
-             return .just
-         }
+        if migrated {
+            return .just
+        }
 
-         migrated = true
+        migrated = true
 
-         let items = tokenItemsRepository.getItems()
-         let itemsWithCustomTokens = items.filter { item in
-             return item.tokens.contains(where: { $0.isCustom })
-         }
+        let list = tokenItemsRepository.getList()
+        let customUserTokens = list.entries.filter { $0.isCustom }
 
-         if itemsWithCustomTokens.isEmpty {
-             return .just
-         }
+        if customUserTokens.isEmpty {
+            return .just
+        }
 
-         let publishers: [AnyPublisher<Bool, Never>] = itemsWithCustomTokens.reduce(into: []) { result, item in
-             result += item.tokens.filter { $0.isCustom }.map { token -> AnyPublisher<Bool, Never> in
-                 updateCustomToken(token: token, in: item.blockchainNetwork)
-             }
-         }
+        let publishers = customUserTokens.map(updateCustomToken(_:))
 
-         return Publishers.MergeMany(publishers)
-             .collect(publishers.count)
-             .mapVoid()
-             .eraseToAnyPublisher()
-          */
+        return Publishers.MergeMany(publishers)
+            .collect(publishers.count)
+            .mapVoid()
+            .eraseToAnyPublisher()
     }
 
-    func updateCustomToken(token: Token, in blockchainNetwork: BlockchainNetwork) -> AnyPublisher<Bool, Never> {
+    func updateCustomToken(_ token: StoredUserTokenList.Entry) -> AnyPublisher<Bool, Never> {
+        let blockchainNetwork = token.blockchainNetwork
+
         let requestModel = CoinsList.Request(
             supportedBlockchains: [blockchainNetwork.blockchain],
             contractAddress: token.contractAddress
@@ -245,11 +238,11 @@ private extension CommonUserTokenListManager {
             .loadCoins(requestModel: requestModel)
             .replaceError(with: [])
             .flatMap { [weak self] models -> AnyPublisher<Bool, Never> in
-                guard let token = models.first?.items.compactMap({ $0.token }).first else {
-                    return Just(false).eraseToAnyPublisher()
-                }
-
                 return Future<Bool, Never> { promise in
+                    guard let token = models.first?.items.compactMap({ $0.token }).first else {
+                        promise(.success(false))
+                        return
+                    }
                     let entry = StorageEntry(blockchainNetwork: blockchainNetwork, token: token)
                     self?.update(.append([entry]), shouldUpload: true)
                     promise(.success(true))
@@ -260,7 +253,7 @@ private extension CommonUserTokenListManager {
     }
 
     // Remove tokens with derivation for cards without derivation
-    private func removeInvalidTokens() {
+    func removeInvalidTokens() {
         guard !hdWalletsSupported else {
             return
         }

@@ -41,4 +41,5 @@ struct StorageEntriesList: Codable, Equatable {
 
 extension StoredUserTokenList.Entry {
     var isToken: Bool { contractAddress != nil }
+    var isCustom: Bool { id == nil }
 }

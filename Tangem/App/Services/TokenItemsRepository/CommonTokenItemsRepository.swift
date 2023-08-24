@@ -43,23 +43,64 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
     }
 
     func append(_ entries: [StorageEntriesList.Entry]) {
-        // TODO: Andrey Fedorov - Add actual implementation
-        /*
-         lockQueue.sync {
-             var items = fetch(for: key)
-             var hasAppended: Bool = false
+        lockQueue.sync {
+            var hasChanges = false
+            let existingList = fetch()
+            var existingEntries = existingList.entries
 
-             entries.forEach {
-                 if items.add(entry: $0) {
-                     hasAppended = true
-                 }
-             }
+            var existingBlockchainNetworksToUpdate: [BlockchainNetwork] = []
+            let existingBlockchainNetworks = existingEntries
+                .map(\.blockchainNetwork)
+                .toSet()
 
-             if hasAppended {
-                 save(items, for: key)
-             }
-         }
-          */
+            let newEntriesGroupedByBlockchainNetworks = Dictionary(grouping: entries, by: \.blockchainNetwork)
+            let newBlockchainNetworks = entries.unique(by: \.blockchainNetwork).map(\.blockchainNetwork)
+
+            for newBlockchainNetwork in newBlockchainNetworks {
+                if existingBlockchainNetworks.contains(newBlockchainNetwork) {
+                    // This blockchain network already exists, and it probably needs to be updated with new tokens
+                    existingBlockchainNetworksToUpdate.append(newBlockchainNetwork)
+                } else if let newEntries = newEntriesGroupedByBlockchainNetworks[newBlockchainNetwork] {
+                    // New blockchain network, just appending all entries from it to the end of the existing list
+                    existingEntries.append(contentsOf: newEntries)
+                    hasChanges = true
+                }
+            }
+
+            for blockchainNetwork in existingBlockchainNetworksToUpdate {
+                guard let newEntriesForBlockchainNetwork = newEntriesGroupedByBlockchainNetworks[blockchainNetwork] else {
+                    continue
+                }
+
+                for newEntry in newEntriesForBlockchainNetwork {
+                    // We already have this network, so only tokens are gonna be added
+                    guard newEntry.isToken else { continue }
+
+                    if let index = existingEntries.firstIndex(where: { entry in
+                        return entry.blockchainNetwork == blockchainNetwork && entry.contractAddress == newEntry.contractAddress
+                    }) {
+                        if existingEntries[index].id == nil, newEntry.id != nil {
+                            // Entry has been saved without id, just updating this entry
+                            existingEntries[index] = newEntry // upgrading custom token
+                            hasChanges = true
+                        }
+                    } else {
+                        // Token hasn't been added yet, just appending it to the end of the existing list
+                        existingEntries.append(newEntry)
+                        hasChanges = true
+                    }
+                }
+            }
+
+            if hasChanges {
+                let editedList = StorageEntriesList(
+                    entries: existingEntries,
+                    grouping: existingList.grouping,
+                    sorting: existingList.sorting
+                )
+                save(editedList)
+            }
+        }
     }
 
     func remove(_ blockchainNetworks: [BlockchainNetwork]) {
@@ -158,57 +199,6 @@ private extension CommonTokenItemsRepository {
         } catch {
             assertionFailure("TokenItemsRepository saving error \(error)")
         }
-    }
-}
-
-// MARK: - Private Array extension
-
-private extension Array where Element == StorageEntry {
-    mutating func add(entry: StorageEntry) -> Bool {
-        guard let existingIndex = firstIndex(where: { $0.blockchainNetwork == entry.blockchainNetwork }) else {
-            append(entry)
-            return true
-        }
-
-        // We already have the blockchainNetwork in storage
-        var appended = false
-
-        // Add new tokens in the existing StorageEntry
-        entry.tokens.forEach { token in
-            if !self[existingIndex].tokens.contains(token) {
-                // Token hasn't been append
-                self[existingIndex].tokens.append(token)
-                appended = true
-            } else if let savedTokenIndex = self[existingIndex].tokens.firstIndex(of: token),
-                      self[existingIndex].tokens[savedTokenIndex].id == nil,
-                      token.id != nil {
-                // Token has been saved without id. Just update this token
-                self[existingIndex].tokens[savedTokenIndex] = token // upgrade custom token
-                appended = true
-            }
-        }
-
-        return appended
-    }
-
-    mutating func tryRemove(token: Token, in blockchainNetwork: BlockchainNetwork) -> Bool {
-        if let existingIndex = firstIndex(where: { $0.blockchainNetwork == blockchainNetwork }) {
-            if let tokenIndex = self[existingIndex].tokens.firstIndex(where: { $0 == token }) {
-                self[existingIndex].tokens.remove(at: tokenIndex)
-                return true
-            }
-        }
-
-        return false
-    }
-
-    mutating func tryRemove(blockchainNetwork: BlockchainNetwork) -> Bool {
-        if let existingIndex = firstIndex(where: { $0.blockchainNetwork == blockchainNetwork }) {
-            remove(at: existingIndex)
-            return true
-        }
-
-        return false
     }
 }
 
