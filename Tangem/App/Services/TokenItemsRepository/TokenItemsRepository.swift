@@ -12,12 +12,12 @@ import struct BlockchainSdk.Token
 protocol TokenItemsRepository {
     var containsFile: Bool { get }
 
-    func update(_ list: StorageEntriesList)
-    func append(_ entries: [StorageEntriesList.Entry])
+    func update(_ list: StoredUserTokenList)
+    func append(_ entries: [StoredUserTokenList.Entry])
 
     func remove(_ blockchainNetworks: [BlockchainNetwork])
-    func remove(_ entries: [StorageEntriesList.Entry])
+    func remove(_ entries: [StoredUserTokenList.Entry])
     func removeAll()
 
-    func getList() -> StorageEntriesList
+    func getList() -> StoredUserTokenList
 }

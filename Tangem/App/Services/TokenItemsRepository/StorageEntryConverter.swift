@@ -1,5 +1,5 @@
 //
-//  YetAnotherConverter.swift
+//  StorageEntryConverter.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 24.08.2023.
@@ -9,8 +9,7 @@
 import Foundation
 import struct BlockchainSdk.Token
 
-// TODO: Andrey Fedorov - Improve naming
-struct _Converter {
+struct StorageEntryConverter {
     // MARK: - StoredUserTokenList to StorageEntry
 
     func convertToStorageEntries(_ userTokens: [StoredUserTokenList.Entry]) -> [StorageEntry] {

@@ -12,18 +12,18 @@ import struct BlockchainSdk.Token
 
 class FakeUserTokenListManager: UserTokenListManager {
     var userTokens: [StorageEntry] {
-        let converter = _Converter()
+        let converter = StorageEntryConverter()
         return converter.convertToStorageEntries(userTokensListSubject.value.entries)
     }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
-        let converter = _Converter()
+        let converter = StorageEntryConverter()
         return userTokensListSubject
             .map { converter.convertToStorageEntries($0.entries) }
             .eraseToAnyPublisher()
     }
 
-    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> {
+    var userTokensListPublisher: AnyPublisher<StoredUserTokenList, Never> {
         userTokensListSubject.eraseToAnyPublisher()
     }
 
@@ -36,7 +36,7 @@ class FakeUserTokenListManager: UserTokenListManager {
     }
 
     private let initialSyncSubject = CurrentValueSubject<Bool, Never>(false)
-    private let userTokensListSubject = CurrentValueSubject<StorageEntriesList, Never>(.empty)
+    private let userTokensListSubject = CurrentValueSubject<StoredUserTokenList, Never>(.empty)
 
     init() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
@@ -44,7 +44,7 @@ class FakeUserTokenListManager: UserTokenListManager {
         }
     }
 
-    func update(with userTokenList: StorageEntriesList) {}
+    func update(with userTokenList: StoredUserTokenList) {}
 
     func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
 
@@ -52,7 +52,7 @@ class FakeUserTokenListManager: UserTokenListManager {
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            let converter = _Converter()
+            let converter = StorageEntryConverter()
             let blockchainNetwork = BlockchainNetwork(.ethereum(testnet: false))
             let tokens: [Token] = [
                 .sushiMock,

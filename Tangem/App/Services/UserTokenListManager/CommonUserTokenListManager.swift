@@ -65,12 +65,12 @@ class CommonUserTokenListManager {
 
 extension CommonUserTokenListManager: UserTokenListManager {
     var userTokens: [StorageEntry] {
-        let converter = _Converter()
+        let converter = StorageEntryConverter()
         return converter.convertToStorageEntries(userTokensListSubject.value.entries)
     }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
-        let converter = _Converter()
+        let converter = StorageEntryConverter()
         return userTokensListSubject
             .map { converter.convertToStorageEntries($0.entries) }
             .eraseToAnyPublisher()
@@ -87,7 +87,7 @@ extension CommonUserTokenListManager: UserTokenListManager {
     }
 
     func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {
-        let converter = _Converter()
+        let converter = StorageEntryConverter()
 
         // TODO: Andrey Fedorov - Or update the whole list instead?
         switch type {

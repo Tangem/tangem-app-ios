@@ -26,23 +26,23 @@ class CommonTokenItemsRepository {
     }
 }
 
-// MARK: - TokenItemsRepository protocol conformance
+// MARK: - TokenItemsRepository
 
 extension CommonTokenItemsRepository: TokenItemsRepository {
     var containsFile: Bool {
         lockQueue.sync {
-            let list: StorageEntriesList? = try? persistanceStorage.value(for: .wallets(cid: key))
+            let list: StoredUserTokenList? = try? persistanceStorage.value(for: .wallets(cid: key))
             return list != nil
         }
     }
 
-    func update(_ list: StorageEntriesList) {
+    func update(_ list: StoredUserTokenList) {
         lockQueue.sync {
             save(list)
         }
     }
 
-    func append(_ entries: [StorageEntriesList.Entry]) {
+    func append(_ entries: [StoredUserTokenList.Entry]) {
         lockQueue.sync {
             var hasChanges = false
             let existingList = fetch()
@@ -93,7 +93,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
             }
 
             if hasChanges {
-                let editedList = StorageEntriesList(
+                let editedList = StoredUserTokenList(
                     entries: existingEntries,
                     grouping: existingList.grouping,
                     sorting: existingList.sorting
@@ -114,7 +114,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
 
             let hasRemoved = editedEntries.count != existingEntries.count
             if hasRemoved {
-                let editedList = StorageEntriesList(
+                let editedList = StoredUserTokenList(
                     entries: editedEntries,
                     grouping: existingList.grouping,
                     sorting: existingList.sorting
@@ -124,7 +124,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
         }
     }
 
-    func remove(_ entries: [StorageEntriesList.Entry]) {
+    func remove(_ entries: [StoredUserTokenList.Entry]) {
         lockQueue.sync {
             let deletedEntriesKeys = entries
                 .map { StorageEntryKey(blockchainNetwork: $0.blockchainNetwork, contractAddresses: $0.contractAddress) }
@@ -141,7 +141,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
 
             let hasRemoved = editedEntries.count != existingEntries.count
             if hasRemoved {
-                let editedList = StorageEntriesList(
+                let editedList = StoredUserTokenList(
                     entries: editedEntries,
                     grouping: existingList.grouping,
                     sorting: existingList.sorting
@@ -157,7 +157,7 @@ extension CommonTokenItemsRepository: TokenItemsRepository {
         }
     }
 
-    func getList() -> StorageEntriesList {
+    func getList() -> StoredUserTokenList {
         lockQueue.sync {
             return fetch()
         }
@@ -172,28 +172,28 @@ private extension CommonTokenItemsRepository {
 
         guard let legacyStorageEntries = legacyStorageEntries?.nilIfEmpty else { return }
 
-        let converter = StorageEntriesConverter()
-        let convertedStorageEntries: [StorageEntriesList.Entry] = legacyStorageEntries
+        let converter = LegacyStorageEntriesConverter()
+        let convertedStorageEntries: [StoredUserTokenList.Entry] = legacyStorageEntries
             .reduce(into: []) { partialResult, element in
                 let blockchainNetwork = element.blockchainNetwork
 
                 partialResult.append(converter.convertToStorageEntry(blockchainNetwork))
                 partialResult += element.tokens.map { converter.convertToStorageEntry($0, in: blockchainNetwork) }
             }
-
-        let storageEntriesList = StorageEntriesList(
+        let storageEntriesList = StoredUserTokenList(
             entries: convertedStorageEntries,
-            grouping: StorageEntriesList.empty.grouping,
-            sorting: StorageEntriesList.empty.sorting
+            grouping: StoredUserTokenList.empty.grouping,
+            sorting: StoredUserTokenList.empty.sorting
         )
+
         save(storageEntriesList)
     }
 
-    func fetch() -> StorageEntriesList {
+    func fetch() -> StoredUserTokenList {
         return (try? persistanceStorage.value(for: .wallets(cid: key))) ?? .empty
     }
 
-    func save(_ items: StorageEntriesList) {
+    func save(_ items: StoredUserTokenList) {
         do {
             try persistanceStorage.store(value: items, for: .wallets(cid: key))
         } catch {
@@ -208,6 +208,35 @@ private extension CommonTokenItemsRepository {
 private struct LegacyStorageEntry: Decodable, Hashable {
     let blockchainNetwork: BlockchainNetwork
     let tokens: [BlockchainSdk.Token]
+}
+
+private struct LegacyStorageEntriesConverter {
+    func convertToStorageEntry(
+        _ blockchainNetwork: BlockchainNetwork
+    ) -> StoredUserTokenList.Entry {
+        return StoredUserTokenList.Entry(
+            id: blockchainNetwork.blockchain.coinId,
+            name: blockchainNetwork.blockchain.displayName,
+            symbol: blockchainNetwork.blockchain.currencySymbol,
+            decimalCount: blockchainNetwork.blockchain.decimalCount,
+            blockchainNetwork: blockchainNetwork,
+            contractAddress: nil
+        )
+    }
+
+    func convertToStorageEntry(
+        _ token: BlockchainSdk.Token,
+        in blockchainNetwork: BlockchainNetwork
+    ) -> StoredUserTokenList.Entry {
+        return StoredUserTokenList.Entry(
+            id: token.id,
+            name: token.name,
+            symbol: token.symbol,
+            decimalCount: token.decimalCount,
+            blockchainNetwork: blockchainNetwork,
+            contractAddress: token.contractAddress
+        )
+    }
 }
 
 // MARK: - Auxiliary types

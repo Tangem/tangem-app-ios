@@ -227,23 +227,20 @@ final class AppScanTask: CardSessionRunnable {
         if let seed = config.userWalletIdSeed {
             let tokenItemsRepository = CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
 
-            // why access the low-level repo directly here???
-            // TODO: Andrey Fedorov - Add actual implementation
-            /*
-             // Force add blockchains for demo cards
-             if let persistentBlockchains = config.persistentBlockchains {
-                 tokenItemsRepository.append(persistentBlockchains)
-             }
+            // Force add blockchains for demo cards
+            if let persistentBlockchains = config.persistentBlockchains {
+                let converter = StorageEntryConverter()
+                tokenItemsRepository.append(converter.convertToStoredUserTokens(persistentBlockchains))
+            }
 
-             let savedItems = tokenItemsRepository.getItems()
+            let savedItems = tokenItemsRepository.getList().entries
 
-             savedItems.forEach { item in
-                 if let wallet = card.wallets.first(where: { $0.curve == item.blockchainNetwork.blockchain.curve }),
-                    let path = item.blockchainNetwork.derivationPath {
-                     derivations[wallet.curve, default: []].append(path)
-                 }
-             }
-              */
+            savedItems.forEach { item in
+                if let wallet = card.wallets.first(where: { $0.curve == item.blockchainNetwork.blockchain.curve }),
+                   let path = item.blockchainNetwork.derivationPath {
+                    derivations[wallet.curve, default: []].append(path)
+                }
+            }
         }
 
         if derivations.isEmpty {

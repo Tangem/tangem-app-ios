@@ -21,17 +21,23 @@ struct UserTokenListConverter {
     // MARK: - Stored to Remote
 
     func convertStoredToRemote(_ storedUserTokenList: StoredUserTokenList) -> UserTokenList {
-        let tokens = storedUserTokenList.entries.map { entry in
-            return UserTokenList.Token(
-                id: entry.id,
-                networkId: entry.blockchainNetwork.blockchain.networkId,
-                name: entry.name,
-                symbol: entry.symbol,
-                decimals: entry.decimalCount,
-                derivationPath: entry.blockchainNetwork.derivationPath,
-                contractAddress: entry.contractAddress
-            )
-        }
+        let tokens = storedUserTokenList
+            .entries
+            .compactMap { entry in
+                let blockchainNetwork = entry.blockchainNetwork
+                let id = entry.isToken ? entry.id : blockchainNetwork.blockchain.coinId
+
+                return UserTokenList.Token(
+                    id: id,
+                    networkId: blockchainNetwork.blockchain.networkId,
+                    name: entry.name,
+                    symbol: entry.symbol,
+                    decimals: entry.decimalCount,
+                    derivationPath: blockchainNetwork.derivationPath,
+                    contractAddress: entry.contractAddress
+                )
+            }
+            .unique() /// Additional uniqueness check for remote tokens (replicates old behavior)
 
         return UserTokenList(
             tokens: tokens,
@@ -65,22 +71,36 @@ struct UserTokenListConverter {
     // MARK: - Remote to Stored
 
     func convertRemoteToStored(_ remoteUserTokenList: UserTokenList) -> StoredUserTokenList {
-        let entries = remoteUserTokenList.tokens.compactMap { token -> StoredUserTokenList.Entry? in
-            guard let blockchain = supportedBlockchains[token.networkId] else {
-                return nil
+        var addedTokens: [BlockchainNetwork: Set<String>] = [:]
+
+        let entries = remoteUserTokenList
+            .tokens
+            .compactMap { token -> StoredUserTokenList.Entry? in
+                guard let blockchain = supportedBlockchains[token.networkId] else {
+                    return nil
+                }
+
+                let blockchainNetwork = BlockchainNetwork(blockchain, derivationPath: token.derivationPath)
+
+                let token = StoredUserTokenList.Entry(
+                    id: token.id,
+                    name: token.name,
+                    symbol: token.symbol,
+                    decimalCount: token.decimals,
+                    blockchainNetwork: blockchainNetwork,
+                    contractAddress: token.contractAddress
+                )
+
+                if let contractAddress = token.contractAddress {
+                    /// Additional uniqueness check for remote tokens (replicates old behavior)
+                    if addedTokens[blockchainNetwork, default: []].insert(contractAddress).inserted {
+                        return token
+                    }
+                    return nil // Duplicate detected
+                } else {
+                    return token
+                }
             }
-
-            let blockchainNetwork = BlockchainNetwork(blockchain, derivationPath: token.derivationPath)
-
-            return StoredUserTokenList.Entry(
-                id: token.id,
-                name: token.name,
-                symbol: token.symbol,
-                decimalCount: token.decimals,
-                blockchainNetwork: blockchainNetwork,
-                contractAddress: token.contractAddress
-            )
-        }
 
         return StoredUserTokenList(
             entries: entries,
