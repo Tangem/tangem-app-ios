@@ -95,7 +95,8 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
             .eraseToAnyPublisher()
             .withWeakCaptureOf(self)
             .flatMapLatest { viewModel, _ in
-                viewModel.organizeTokensOptionsEditing.save()
+                // TODO: Andrey Fedorov - Add actual implementation (IOS-4297)
+                viewModel.organizeTokensOptionsEditing.save(reorderedWalletModelIds: [])
             }
             .sink()
             .store(in: &bag)

@@ -21,24 +21,22 @@ struct StorageEntryConverter {
 
         return blockchainNetworks.reduce(into: []) { partialResult, blockchainNetwork in
             let userTokens = userTokensGroupedByBlockchainNetworks[blockchainNetwork] ?? []
-            let tokens = convertToTokens(userTokens)
+            let tokens = userTokens.compactMap(convertToToken(_:))
             let storageEntry = StorageEntry(blockchainNetwork: blockchainNetwork, tokens: tokens)
             partialResult.append(storageEntry)
         }
     }
 
-    private func convertToTokens(_ userTokens: [StoredUserTokenList.Entry]) -> [Token] {
-        return userTokens.compactMap { userToken in
-            guard let contractAddress = userToken.contractAddress else { return nil }
+    func convertToToken(_ userToken: StoredUserTokenList.Entry) -> Token? {
+        guard let contractAddress = userToken.contractAddress else { return nil }
 
-            return Token(
-                name: userToken.name,
-                symbol: userToken.symbol,
-                contractAddress: contractAddress,
-                decimalCount: userToken.decimalCount,
-                id: userToken.id
-            )
-        }
+        return Token(
+            name: userToken.name,
+            symbol: userToken.symbol,
+            contractAddress: contractAddress,
+            decimalCount: userToken.decimalCount,
+            id: userToken.id
+        )
     }
 
     // MARK: - StorageEntry to StoredUserTokenList
@@ -59,23 +57,21 @@ struct StorageEntryConverter {
                 )
             )
 
-            partialResult += convertToStoredUserTokens(entry.tokens, in: blockchainNetwork)
+            partialResult += entry.tokens.map { convertToStoredUserToken($0, in: blockchainNetwork) }
         }
     }
 
-    func convertToStoredUserTokens(
-        _ tokens: [Token],
+    func convertToStoredUserToken(
+        _ token: Token,
         in blockchainNetwork: BlockchainNetwork
-    ) -> [StoredUserTokenList.Entry] {
-        return tokens.map { token in
-            StoredUserTokenList.Entry(
-                id: token.id,
-                name: token.name,
-                symbol: token.symbol,
-                decimalCount: token.decimalCount,
-                blockchainNetwork: blockchainNetwork,
-                contractAddress: token.contractAddress
-            )
-        }
+    ) -> StoredUserTokenList.Entry {
+        return StoredUserTokenList.Entry(
+            id: token.id,
+            name: token.name,
+            symbol: token.symbol,
+            decimalCount: token.decimalCount,
+            blockchainNetwork: blockchainNetwork,
+            contractAddress: token.contractAddress
+        )
     }
 }

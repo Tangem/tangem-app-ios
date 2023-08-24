@@ -10,46 +10,46 @@ import Foundation
 
 struct OrganizeTokensOptionsConverter {
     func convert(
-        _ groupType: UserTokenList.GroupType
+        _ groupType: StoredUserTokenList.Grouping
     ) -> OrganizeTokensOptions.Grouping {
         switch groupType {
         case .none:
             return .none
-        case .network:
+        case .byBlockchainNetwork:
             return .byBlockchainNetwork
         }
     }
 
     func convert(
-        _ sortType: UserTokenList.SortType
+        _ sortType: StoredUserTokenList.Sorting
     ) -> OrganizeTokensOptions.Sorting {
         switch sortType {
         case .manual:
             return .dragAndDrop
-        case .balance:
+        case .byBalance:
             return .byBalance
         }
     }
 
     func convert(
         _ groupType: OrganizeTokensOptions.Grouping
-    ) -> UserTokenList.GroupType {
+    ) -> StoredUserTokenList.Grouping {
         switch groupType {
         case .none:
             return .none
         case .byBlockchainNetwork:
-            return .network
+            return .byBlockchainNetwork
         }
     }
 
     func convert(
         _ sortType: OrganizeTokensOptions.Sorting
-    ) -> UserTokenList.SortType {
+    ) -> StoredUserTokenList.Sorting {
         switch sortType {
         case .dragAndDrop:
             return .manual
         case .byBalance:
-            return .balance
+            return .byBalance
         }
     }
 }

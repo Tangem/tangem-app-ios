@@ -132,12 +132,8 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
             userTokenListManager: userTokenListManager,
             editingThrottleInterval: 1.0
         )
-        let walletModelComponentsBuilder = WalletModelComponentsBuilder(
-            supportedBlockchains: userWalletModel.config.supportedBlockchains
-        )
         let walletModelsAdapter = OrganizeWalletModelsAdapter(
             userTokenListManager: userTokenListManager,
-            walletModelComponentsBuilder: walletModelComponentsBuilder,
             organizeTokensOptionsProviding: optionsManager,
             organizeTokensOptionsEditing: optionsManager
         )

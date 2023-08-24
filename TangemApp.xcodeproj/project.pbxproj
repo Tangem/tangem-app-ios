@@ -481,7 +481,6 @@
 		B6AD95302A30074300FE845A /* TokenItemViewTrailingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD952F2A30074300FE845A /* TokenItemViewTrailingComponent.swift */; };
 		B6AEF9742A796713004663C3 /* OrganizeWalletModelsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AEF9732A796713004663C3 /* OrganizeWalletModelsAdapter.swift */; };
 		B6AEF9762A79EAF5004663C3 /* OrganizeWalletModelsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AEF9752A79EAF5004663C3 /* OrganizeWalletModelsSection.swift */; };
-		B6C19D4D2A844A0300313D02 /* WalletModelComponentsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C19D4C2A844A0300313D02 /* WalletModelComponentsBuilder.swift */; };
 		B6C358632A61352A00AB1946 /* ThreadSafeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C358622A61352A00AB1946 /* ThreadSafeContainer.swift */; };
 		B6C358652A61357100AB1946 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C358642A61357100AB1946 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift */; };
 		B6C358672A61358000AB1946 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C358662A61358000AB1946 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */; };
@@ -1611,7 +1610,6 @@
 		B6AD952F2A30074300FE845A /* TokenItemViewTrailingComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenItemViewTrailingComponent.swift; sourceTree = "<group>"; };
 		B6AEF9732A796713004663C3 /* OrganizeWalletModelsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeWalletModelsAdapter.swift; sourceTree = "<group>"; };
 		B6AEF9752A79EAF5004663C3 /* OrganizeWalletModelsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeWalletModelsSection.swift; sourceTree = "<group>"; };
-		B6C19D4C2A844A0300313D02 /* WalletModelComponentsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModelComponentsBuilder.swift; sourceTree = "<group>"; };
 		B6C358622A61352A00AB1946 /* ThreadSafeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadSafeContainer.swift; sourceTree = "<group>"; };
 		B6C358642A61357100AB1946 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift"; sourceTree = "<group>"; };
 		B6C358662A61358000AB1946 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThreadSafeContainer+ExpressibleByArrayLiteral.swift"; sourceTree = "<group>"; };
@@ -3701,7 +3699,6 @@
 			children = (
 				B0F7D75B2A40487E007FEB2E /* TokenInfoExtractor.swift */,
 				B0DE006B2A431BA6005A77D4 /* LocalizationIconParser.swift */,
-				B6C19D4C2A844A0300313D02 /* WalletModelComponentsBuilder.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -6663,7 +6660,6 @@
 				B04CD3482912AA61001EA84A /* IconWithMessagePlaceholderView.swift in Sources */,
 				B602752B2A7A651000865EA7 /* ShadowAnimatableModifier.swift in Sources */,
 				DA23788427B24222009795A8 /* Checkout.swift in Sources */,
-				B6C19D4D2A844A0300313D02 /* WalletModelComponentsBuilder.swift in Sources */,
 				EF5F1BAC29D1A2BE0093307B /* TotalBalanceProviderMock.swift in Sources */,
 				EF8D7814298281F700B67418 /* SwappingModulesFactory.swift in Sources */,
 				DA23787F27B24222009795A8 /* CheckoutPayload.swift in Sources */,

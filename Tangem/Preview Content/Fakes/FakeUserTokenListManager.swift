@@ -59,10 +59,11 @@ class FakeUserTokenListManager: UserTokenListManager {
                 .shibaInuMock,
                 .tetherMock,
             ]
+            let entries = tokens.map { converter.convertToStoredUserToken($0, in: blockchainNetwork) }
 
             self.userTokensListSubject.send(
                 .init(
-                    entries: converter.convertToStoredUserTokens(tokens, in: blockchainNetwork),
+                    entries: entries,
                     grouping: .none,
                     sorting: .manual
                 )

@@ -12,5 +12,5 @@ import Combine
 protocol OrganizeTokensOptionsEditing {
     func group(by groupingOption: OrganizeTokensOptions.Grouping)
     func sort(by sortingOption: OrganizeTokensOptions.Sorting)
-    func save() -> AnyPublisher<Void, Never>
+    func save(reorderedWalletModelIds: [WalletModel.ID]) -> AnyPublisher<Void, Never>
 }

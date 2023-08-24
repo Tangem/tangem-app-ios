@@ -41,5 +41,16 @@ extension StoredUserTokenList {
 
 extension StoredUserTokenList.Entry {
     var isToken: Bool { contractAddress != nil }
+
     var isCustom: Bool { id == nil }
+
+    var walletModelId: WalletModel.ID {
+        let converter = StorageEntryConverter()
+
+        if let token = converter.convertToToken(self) {
+            return WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .token(value: token)).id
+        }
+
+        return WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: .coin).id
+    }
 }

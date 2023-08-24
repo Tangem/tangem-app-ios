@@ -19,10 +19,3 @@ protocol UserTokenListManager: UserTokensSyncService {
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void)
     func upload()
 }
-
-// FIXME: Andrey Fedorov - Test only, remove when not needed
-extension UserTokenListManager {
-    var userTokenList: AnyPublisher<UserTokenList, Never> {
-        .just(output: .init(tokens: [], group: .none, sort: .manual))
-    }
-}

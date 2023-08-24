@@ -97,8 +97,8 @@ extension CommonUserTokenListManager: UserTokenListManager {
         case .removeBlockchain(let blockchainNetwork):
             tokenItemsRepository.remove([blockchainNetwork])
         case .removeToken(let token, let blockchainNetwork):
-            let storedUserTokens = converter.convertToStoredUserTokens([token], in: blockchainNetwork)
-            tokenItemsRepository.remove(storedUserTokens)
+            let storedUserToken = converter.convertToStoredUserToken(token, in: blockchainNetwork)
+            tokenItemsRepository.remove([storedUserToken])
         }
 
         notifyAboutTokenListUpdates()

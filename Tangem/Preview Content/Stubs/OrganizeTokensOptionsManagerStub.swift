@@ -37,7 +37,7 @@ extension OrganizeTokensOptionsManagerStub: OrganizeTokensOptionsEditing {
         _sortingOption.send(sortingOption)
     }
 
-    func save() -> AnyPublisher<Void, Never> {
+    func save(reorderedWalletModelIds: [WalletModel.ID]) -> AnyPublisher<Void, Never> {
         return .just
     }
 }
