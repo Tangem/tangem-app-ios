@@ -10,6 +10,12 @@ import Foundation
 import Combine
 
 struct UserTokenListManagerMock: UserTokenListManager {
+    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> { fatalError() }
+
+    func update(with userTokenList: StorageEntriesList) {
+        fatalError()
+    }
+
     var isInitialSyncPerformed: Bool { true }
 
     var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
@@ -18,7 +24,7 @@ struct UserTokenListManagerMock: UserTokenListManager {
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
 
-    var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
+    var userTokenList: AnyPublisher<UserTokenList, Never> { fatalError() }
 
     func contains(_ entry: StorageEntry) -> Bool {
         return false

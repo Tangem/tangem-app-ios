@@ -95,7 +95,7 @@ extension OrganizeTokensOptionsManager: OrganizeTokensOptionsEditing {
                         var updatedUserTokenList = userTokenList
                         updatedUserTokenList.group = converter.convert(grouping)
                         updatedUserTokenList.sort = converter.convert(sorting)
-                        userTokenListManager.update(with: updatedUserTokenList) // TODO: Andrey Fedorov - More robust updating logic with background work and retries support (IOS-4152)
+//                        userTokenListManager.update(with: updatedUserTokenList) // TODO: Andrey Fedorov - More robust updating logic with background work and retries support (IOS-4152)
                         promise(.success(()))
                     }
                 }

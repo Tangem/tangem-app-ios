@@ -10,6 +10,12 @@ import Foundation
 import Combine
 
 class FakeUserTokenListManager: UserTokenListManager {
+    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> { fatalError() }
+
+    func update(with userTokenList: StorageEntriesList) {
+        fatalError()
+    }
+
     var userTokens: [StorageEntry] {
         userTokensSubject.value
     }

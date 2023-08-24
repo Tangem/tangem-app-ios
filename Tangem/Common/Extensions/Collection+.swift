@@ -9,6 +9,10 @@
 import Foundation
 
 extension Swift.Collection {
+    var nilIfEmpty: Self? {
+        return isEmpty ? nil : self
+    }
+
     /// Simple extension for checking process in empty collection
     /// Use `allConforms` for check each element to satisfy a condition
     /// `allSatisfy` return `true`, if collection `isEmpty`

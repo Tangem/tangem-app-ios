@@ -9,7 +9,7 @@
 import Foundation
 import struct BlockchainSdk.Token
 
-struct StorageEntry: Hashable, Codable, Equatable {
+struct StorageEntry: Hashable {
     let blockchainNetwork: BlockchainNetwork
     var tokens: [Token]
 

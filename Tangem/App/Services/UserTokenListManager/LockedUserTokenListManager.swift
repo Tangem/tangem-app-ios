@@ -10,6 +10,12 @@ import Foundation
 import Combine
 
 struct LockedUserTokenListManager: UserTokenListManager {
+    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> { fatalError() }
+
+    func update(with userTokenList: StorageEntriesList) {
+        fatalError()
+    }
+
     var isInitialSyncPerformed: Bool { false }
 
     var initialSyncPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
@@ -18,7 +24,7 @@ struct LockedUserTokenListManager: UserTokenListManager {
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
 
-    var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
+    var userTokenList: AnyPublisher<UserTokenList, Never> { fatalError() }
 
     func update(with userTokenList: UserTokenList) {}
 

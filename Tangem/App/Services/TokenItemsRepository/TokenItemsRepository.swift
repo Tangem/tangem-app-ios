@@ -7,29 +7,17 @@
 //
 
 import Foundation
-import BlockchainSdk
+import struct BlockchainSdk.Token
 
 protocol TokenItemsRepository {
     var containsFile: Bool { get }
 
-    func update(_ entries: [StorageEntry])
-    func append(_ entries: [StorageEntry])
+    func update(_ list: StorageEntriesList)
+    func append(_ entries: [StorageEntriesList.Entry])
 
     func remove(_ blockchainNetworks: [BlockchainNetwork])
-    func remove(_ tokens: [Token], blockchainNetwork: BlockchainNetwork)
+    func remove(_ entries: [StorageEntriesList.Entry])
     func removeAll()
 
-    func getItems() -> [StorageEntry]
-}
-
-extension TokenItemsRepository {
-    func append(_ blockchainNetworks: [BlockchainNetwork]) {
-        let entries = blockchainNetworks.map { StorageEntry(blockchainNetwork: $0, tokens: []) }
-        append(entries)
-    }
-
-    func append(_ tokens: [Token], blockchainNetwork: BlockchainNetwork) {
-        let entry = StorageEntry(blockchainNetwork: blockchainNetwork, tokens: tokens)
-        append([entry])
-    }
+    func getList() -> StorageEntriesList
 }
