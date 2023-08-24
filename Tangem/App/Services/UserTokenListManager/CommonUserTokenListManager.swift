@@ -22,7 +22,7 @@ class CommonUserTokenListManager {
 
     private let tokenItemsRepository: TokenItemsRepository
     private let initialTokenSyncSubject: CurrentValueSubject<Bool, Never>
-    private let userTokenListSubject: CurrentValueSubject<StoredUserTokenList, Never>
+    private let userTokensListSubject: CurrentValueSubject<StoredUserTokenList, Never>
 
     private var pendingTokensToUpdate: UserTokenList?
     private var loadTokensCancellable: AnyCancellable?
@@ -44,7 +44,7 @@ class CommonUserTokenListManager {
 
         tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.hexString)
         initialTokenSyncSubject = CurrentValueSubject(tokenItemsRepository.containsFile)
-        userTokenListSubject = CurrentValueSubject(tokenItemsRepository.getList())
+        userTokensListSubject = CurrentValueSubject(tokenItemsRepository.getList())
 
         removeInvalidTokens()
         performInitialSync()
@@ -66,18 +66,18 @@ class CommonUserTokenListManager {
 extension CommonUserTokenListManager: UserTokenListManager {
     var userTokens: [StorageEntry] {
         let converter = _Converter()
-        return converter.convertToStorageEntries(userTokenListSubject.value.entries)
+        return converter.convertToStorageEntries(userTokensListSubject.value.entries)
     }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
         let converter = _Converter()
-        return userTokenListSubject
+        return userTokensListSubject
             .map { converter.convertToStorageEntries($0.entries) }
             .eraseToAnyPublisher()
     }
 
     var userTokensListPublisher: AnyPublisher<StoredUserTokenList, Never> {
-        userTokenListSubject.eraseToAnyPublisher()
+        userTokensListSubject.eraseToAnyPublisher()
     }
 
     func update(with userTokenList: StoredUserTokenList) {
@@ -138,7 +138,7 @@ extension CommonUserTokenListManager: UserTokensSyncService {
 
 private extension CommonUserTokenListManager {
     func notifyAboutTokenListUpdates() {
-        userTokenListSubject.send(tokenItemsRepository.getList())
+        userTokensListSubject.send(tokenItemsRepository.getList())
     }
 
     // MARK: - Requests

@@ -8,20 +8,23 @@
 
 import Foundation
 import Combine
+import struct BlockchainSdk.Token
 
 class FakeUserTokenListManager: UserTokenListManager {
-    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> { fatalError() }
-
-    func update(with userTokenList: StorageEntriesList) {
-        fatalError()
-    }
-
     var userTokens: [StorageEntry] {
-        userTokensSubject.value
+        let converter = _Converter()
+        return converter.convertToStorageEntries(userTokensListSubject.value.entries)
     }
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> {
-        userTokensSubject.eraseToAnyPublisher()
+        let converter = _Converter()
+        return userTokensListSubject
+            .map { converter.convertToStorageEntries($0.entries) }
+            .eraseToAnyPublisher()
+    }
+
+    var userTokensListPublisher: AnyPublisher<StorageEntriesList, Never> {
+        userTokensListSubject.eraseToAnyPublisher()
     }
 
     var isInitialSyncPerformed: Bool {
@@ -32,15 +35,8 @@ class FakeUserTokenListManager: UserTokenListManager {
         initialSyncSubject.eraseToAnyPublisher()
     }
 
-    var userTokenList: AnyPublisher<UserTokenList, Never> {
-        userTokenListSubject
-            .delay(for: 3, scheduler: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
     private let initialSyncSubject = CurrentValueSubject<Bool, Never>(false)
-    private let userTokensSubject = CurrentValueSubject<[StorageEntry], Never>([])
-    private let userTokenListSubject = CurrentValueSubject<UserTokenList, Never>(UserTokenListStubs.walletUserWalletList)
+    private let userTokensListSubject = CurrentValueSubject<StorageEntriesList, Never>(.empty)
 
     init() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
@@ -48,26 +44,29 @@ class FakeUserTokenListManager: UserTokenListManager {
         }
     }
 
-    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
+    func update(with userTokenList: StorageEntriesList) {}
 
-    func update(with userTokenList: UserTokenList) {
-        userTokenListSubject.send(userTokenList)
-    }
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
 
     func upload() {}
 
     func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.userTokensSubject.send([
+            let converter = _Converter()
+            let blockchainNetwork = BlockchainNetwork(.ethereum(testnet: false))
+            let tokens: [Token] = [
+                .sushiMock,
+                .shibaInuMock,
+                .tetherMock,
+            ]
+
+            self.userTokensListSubject.send(
                 .init(
-                    blockchainNetwork: .init(.ethereum(testnet: false)),
-                    tokens: [
-                        .sushiMock,
-                        .shibaInuMock,
-                        .tetherMock,
-                    ]
-                ),
-            ])
+                    entries: converter.convertToStoredUserTokens(tokens, in: blockchainNetwork),
+                    grouping: .none,
+                    sorting: .manual
+                )
+            )
             result(.success(()))
         }
     }

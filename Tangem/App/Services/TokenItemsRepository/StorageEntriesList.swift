@@ -39,7 +39,11 @@ struct StorageEntriesList: Codable, Equatable {
 
 // MARK: - Convenience extensions
 
-extension StoredUserTokenList.Entry {
+extension StorageEntriesList {
+    static var empty: Self { Self(entries: [], grouping: .none, sorting: .manual) }
+}
+
+extension StorageEntriesList.Entry {
     var isToken: Bool { contractAddress != nil }
     var isCustom: Bool { id == nil }
 }

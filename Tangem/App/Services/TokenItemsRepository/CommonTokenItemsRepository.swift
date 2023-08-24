@@ -202,12 +202,6 @@ private extension CommonTokenItemsRepository {
     }
 }
 
-// MARK: - Convenience extensions
-
-private extension StorageEntriesList {
-    static var empty: Self { Self(entries: [], grouping: .none, sorting: .manual) }
-}
-
 // MARK: - Legacy storage
 
 /// Same as `StorageEntry`.
