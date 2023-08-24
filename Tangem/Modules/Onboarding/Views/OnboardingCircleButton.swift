@@ -61,6 +61,7 @@ struct OnboardingCircleButton: View {
     var state: State
     var size: Size = .default
 
+    private let backgroundColor = Colors.Background.plain
     private var buttonSize: CGSize { size.buttonSize }
     private var successButtonSize: CGSize {
         .init(width: buttonSize.width * 0.657, height: buttonSize.height * 0.657)
@@ -73,12 +74,12 @@ struct OnboardingCircleButton: View {
                 refreshAction()
             }, label: {
                 Circle()
-                    .foregroundColor(.white)
+                    .foregroundColor(backgroundColor)
                     .overlay(
                         Assets.Onboarding.refresh.image
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundColor(state == .refreshButton ? .tangemGrayDark6 : .white)
+                            .foregroundColor(state == .refreshButton ? .tangemGrayDark6 : backgroundColor)
                             .frame(size: size.refreshImageSize)
                     )
             })
@@ -89,7 +90,7 @@ struct OnboardingCircleButton: View {
                 color: .tangemGrayDark6
             )
             .frame(size: buttonSize)
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(buttonSize.height / 2)
             .opacity(state == .activityIndicator ? 1.0 : 0.0)
             Circle()
