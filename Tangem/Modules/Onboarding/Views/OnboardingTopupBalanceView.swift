@@ -69,7 +69,7 @@ struct OnboardingTopupBalanceView: View {
             Rectangle()
                 .frame(size: backgroundFrameSize)
                 .cornerRadius(cornerSize)
-                .foregroundColor(Colors.Background.primary)
+                .foregroundColor(Colors.Button.secondary)
                 .opacity(0.8)
                 .offset(backgroundOffset)
             OnboardingTopupBalanceUpdater(

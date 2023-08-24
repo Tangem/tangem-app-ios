@@ -61,7 +61,7 @@ struct OnboardingCircleButton: View {
     var state: State
     var size: Size = .default
 
-    private let backgroundColor = Colors.Background.plain
+    private let backgroundColor = Colors.Background.primary
     private var buttonSize: CGSize { size.buttonSize }
     private var successButtonSize: CGSize {
         .init(width: buttonSize.width * 0.657, height: buttonSize.height * 0.657)
