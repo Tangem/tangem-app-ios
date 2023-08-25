@@ -153,7 +153,13 @@ extension DetailsViewModel {
             return
         }
 
-        coordinator.openReferral(with: cardModel, userWalletId: cardModel.userWalletId.value)
+        let input = ReferralInputModel(
+            userWalletId: cardModel.userWalletId.value,
+            supportedBlockchains: cardModel.config.supportedBlockchains,
+            userTokensManager: cardModel.userTokensManager
+        )
+
+        coordinator.openReferral(input: input)
     }
 
     func onAppear() {

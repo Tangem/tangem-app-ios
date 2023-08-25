@@ -708,6 +708,7 @@
 		DC66BC10285C405C00CDF765 /* CoordinatorObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BC0F285C405C00CDF765 /* CoordinatorObject.swift */; };
 		DC66BC16285C529600CDF765 /* SendRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BC15285C529600CDF765 /* SendRoutable.swift */; };
 		DC66BC18285C65C900CDF765 /* LegacyTokenDetailsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BC17285C65C900CDF765 /* LegacyTokenDetailsRoutable.swift */; };
+		DC6DACFF2A98DF1F00AEBB8C /* ReferralInputModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DACFE2A98DF1F00AEBB8C /* ReferralInputModel.swift */; };
 		DC7127AB2897EC6B00F60F71 /* Start2CoinConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7127AA2897EC6B00F60F71 /* Start2CoinConfig.swift */; };
 		DC7127AD2897ECA100F60F71 /* TwinConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7127AC2897ECA100F60F71 /* TwinConfig.swift */; };
 		DC7127AF2897ECBB00F60F71 /* NoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7127AE2897ECBB00F60F71 /* NoteConfig.swift */; };
@@ -1861,6 +1862,7 @@
 		DC66BC0F285C405C00CDF765 /* CoordinatorObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorObject.swift; sourceTree = "<group>"; };
 		DC66BC15285C529600CDF765 /* SendRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendRoutable.swift; sourceTree = "<group>"; };
 		DC66BC17285C65C900CDF765 /* LegacyTokenDetailsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyTokenDetailsRoutable.swift; sourceTree = "<group>"; };
+		DC6DACFE2A98DF1F00AEBB8C /* ReferralInputModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralInputModel.swift; sourceTree = "<group>"; };
 		DC7127AA2897EC6B00F60F71 /* Start2CoinConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start2CoinConfig.swift; sourceTree = "<group>"; };
 		DC7127AC2897ECA100F60F71 /* TwinConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinConfig.swift; sourceTree = "<group>"; };
 		DC7127AE2897ECBB00F60F71 /* NoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteConfig.swift; sourceTree = "<group>"; };
@@ -3074,6 +3076,7 @@
 				B04CD33F29122C6E001EA84A /* ReferralCoordinator.swift */,
 				B04CD34329122C8D001EA84A /* ReferralCoordinatorView.swift */,
 				B0D7F895295EDCBE00497139 /* ReferralErrors.swift */,
+				DC6DACFE2A98DF1F00AEBB8C /* ReferralInputModel.swift */,
 			);
 			path = Referral;
 			sourceTree = "<group>";
@@ -6447,6 +6450,7 @@
 				DC51185C2860925A004FB954 /* WalletConnectRoutable.swift in Sources */,
 				DC295B522861D9BC006CB7B6 /* SecurityModeCoordinator.swift in Sources */,
 				65B4DECB2881ABA4001524CF /* BottomSheetDismissalTransition.swift in Sources */,
+				DC6DACFF2A98DF1F00AEBB8C /* ReferralInputModel.swift in Sources */,
 				DC66BC04285B6C5F00CDF765 /* SendCoordinator.swift in Sources */,
 				DA43719E2A7D1937006215CA /* LegacyCoinView.swift in Sources */,
 				5D51036B27C534CB0025EA55 /* EIP712TypedData.swift in Sources */,
