@@ -16,6 +16,8 @@ struct MainButton: View {
     private let isDisabled: Bool
     private let action: () -> Void
 
+    private let cornerRadius = 14.0
+
     init(
         title: String,
         icon: Icon? = nil,
@@ -51,7 +53,8 @@ struct MainButton: View {
             content
                 .frame(maxWidth: .infinity, minHeight: size.height, maxHeight: size.height, alignment: .center)
                 .background(style.background(isDisabled: isDisabled))
-                .cornerRadiusContinuous(14)
+                .cornerRadiusContinuous(cornerRadius)
+                .overlay(border)
         }
         .buttonStyle(BorderlessButtonStyle())
         .disabled(isDisabled || isLoading)
@@ -103,6 +106,14 @@ struct MainButton: View {
             .renderingMode(.template)
             .frame(width: 20, height: 20)
             .foregroundColor(style.iconColor(isDisabled: isDisabled))
+    }
+
+    @ViewBuilder
+    private var border: some View {
+        if let borderColor = style.border(isDisabled: isDisabled) {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .stroke(borderColor)
+        }
     }
 }
 
@@ -162,6 +173,14 @@ extension MainButton {
             case .secondary:
                 return Colors.Button.secondary
             }
+        }
+
+        func border(isDisabled: Bool) -> Color? {
+            guard isDisabled else {
+                return nil
+            }
+
+            return Colors.Stroke.primary
         }
     }
 
