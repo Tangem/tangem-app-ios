@@ -120,12 +120,13 @@ private struct WordInputView: View {
             }
         }
         .frame(minHeight: 46)
+        .background(Colors.Field.focused)
+        .cornerRadiusContinuous(14)
         .overlay(
             RoundedRectangle(cornerRadius: 14)
                 .stroke(hasError ? Colors.Icon.warning : .clear, lineWidth: 1)
+                .padding(.horizontal, 1) // offset the border to the inside, otherwise it cuts off
         )
-        .background(Colors.Field.focused)
-        .cornerRadiusContinuous(14)
         .simultaneousGesture(TapGesture().onEnded {
             isResponder = true
         })
