@@ -218,7 +218,7 @@ struct WalletOnboardingView: View {
         })
         .preference(key: ModalSheetPreferenceKey.self, value: viewModel.isModal)
         .onAppear(perform: viewModel.onAppear)
-        .background(Colors.Background.plain.edgesIgnoringSafeArea(.all))
+        .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
     }
 }
 
