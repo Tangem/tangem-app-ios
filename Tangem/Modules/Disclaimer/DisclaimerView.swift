@@ -27,9 +27,9 @@ struct DisclaimerView: View {
         ZStack(alignment: .center) {
             LinearGradient(
                 gradient: Gradient(stops: [
-                    Gradient.Stop(color: Colors.Background.primary.opacity(0.2), location: 0.0),
-                    Gradient.Stop(color: Colors.Background.primary, location: 0.5),
-                    Gradient.Stop(color: Colors.Background.primary, location: 1.0),
+                    Gradient.Stop(color: viewModel.bottomOverlayColor.opacity(0.2), location: 0.0),
+                    Gradient.Stop(color: viewModel.bottomOverlayColor, location: 0.5),
+                    Gradient.Stop(color: viewModel.bottomOverlayColor, location: 1.0),
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
