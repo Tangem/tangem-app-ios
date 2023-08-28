@@ -27,19 +27,14 @@ class AppSettingsCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        switch options {
-        case .default(let userWallet):
-            rootViewModel = AppSettingsViewModel(userWallet: userWallet, coordinator: self)
-        }
+        rootViewModel = AppSettingsViewModel(coordinator: self)
     }
 }
 
 // MARK: - Options
 
 extension AppSettingsCoordinator {
-    enum Options {
-        case `default`(userWallet: CardViewModel)
-    }
+    struct Options {}
 }
 
 // MARK: - AppSettingsRoutable

@@ -97,14 +97,19 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     // MARK: - Main Button setup
 
     override var mainButtonSettings: MainButton.Settings? {
-        MainButton.Settings(
-            title: mainButtonTitle,
-            icon: mainButtonIcon,
-            style: mainButtonStyle,
-            isLoading: isMainButtonBusy,
-            isDisabled: !isMainButtonEnabled,
-            action: mainButtonAction
-        )
+        switch currentStep {
+        case .disclaimer, .seedPhraseIntro:
+            return nil
+        default:
+            return MainButton.Settings(
+                title: mainButtonTitle,
+                icon: mainButtonIcon,
+                style: mainButtonStyle,
+                isLoading: isMainButtonBusy,
+                isDisabled: !isMainButtonEnabled,
+                action: mainButtonAction
+            )
+        }
     }
 
     override var mainButtonTitle: String {

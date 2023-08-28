@@ -16,7 +16,7 @@ protocol DetailsRoutable: AnyObject {
     func openCurrencySelection()
     func openDisclaimer(at url: URL)
     func openScanCardSettings(with userWalletId: Data, sdk: TangemSdk)
-    func openAppSettings(userWallet: CardViewModel)
+    func openAppSettings()
     func openSupportChat(input: SupportChatInputModel)
     func openInSafari(url: URL)
     func openEnvironmentSetup(with cardId: String)

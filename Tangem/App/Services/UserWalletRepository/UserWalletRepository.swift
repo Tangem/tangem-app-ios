@@ -35,6 +35,7 @@ protocol UserWalletRepository: Initializable {
     func clearNonSelectedUserWallets()
     func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo)
     func initialClean()
+    func setSaving(_ enabled: Bool)
 }
 
 extension UserWalletRepository {
