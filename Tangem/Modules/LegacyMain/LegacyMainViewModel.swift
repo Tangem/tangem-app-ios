@@ -394,7 +394,7 @@ class LegacyMainViewModel: ObservableObject {
 // MARK: - Warnings related
 
 extension LegacyMainViewModel {
-    func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
+    func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningView.WarningButton) {
         guard let warning = warnings.warning(at: index, with: priority) else { return }
 
         func registerValidatedSignedHashesCard() {

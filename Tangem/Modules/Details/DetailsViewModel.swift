@@ -144,7 +144,7 @@ extension DetailsViewModel {
     }
 
     func openEnvironmentSetup() {
-        coordinator.openEnvironmentSetup(with: cardModel.cardId)
+        coordinator.openEnvironmentSetup()
     }
 
     func openReferral() {

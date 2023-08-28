@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WarningListView: View {
     var warnings: WarningsContainer
-    var warningButtonAction: (Int, WarningPriority, WarningButton) -> Void
+    var warningButtonAction: (Int, WarningPriority, WarningView.WarningButton) -> Void
     var spacing: CGFloat = 10
 
     private let transition = AnyTransition.scale.combined(with: .opacity)
@@ -38,7 +38,7 @@ struct WarningListView: View {
         }
     }
 
-    private func buttonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
+    private func buttonAction(at index: Int, priority: WarningPriority, button: WarningView.WarningButton) {
         withAnimation {
             warningButtonAction(index, priority, button)
         }

@@ -19,6 +19,6 @@ protocol DetailsRoutable: AnyObject {
     func openAppSettings()
     func openSupportChat(input: SupportChatInputModel)
     func openInSafari(url: URL)
-    func openEnvironmentSetup(with cardId: String)
+    func openEnvironmentSetup()
     func openReferral(input: ReferralInputModel)
 }

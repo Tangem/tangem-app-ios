@@ -30,16 +30,14 @@ class EnvironmentSetupCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        rootViewModel = .init(coordinator: self, cardId: options.cardId)
+        rootViewModel = .init(coordinator: self)
     }
 }
 
 // MARK: - Options
 
 extension EnvironmentSetupCoordinator {
-    struct Options {
-        let cardId: String
-    }
+    struct Options {}
 }
 
 // MARK: - EnvironmentSetupRoutable

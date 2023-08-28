@@ -110,9 +110,9 @@ extension DetailsCoordinator: DetailsRoutable {
         UIApplication.shared.open(url)
     }
 
-    func openEnvironmentSetup(with cardId: String) {
+    func openEnvironmentSetup() {
         let coordinator = EnvironmentSetupCoordinator(popToRootAction: popToRootAction)
-        coordinator.start(with: .init(cardId: cardId))
+        coordinator.start(with: .init())
 
         environmentSetupCoordinator = coordinator
     }

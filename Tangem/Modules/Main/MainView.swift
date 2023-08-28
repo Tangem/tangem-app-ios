@@ -30,6 +30,9 @@ struct MainView: View {
             contentFactory: { info in
                 info.body
             },
+            bottomOverlayFactory: { info in
+                info.bottomOverlay
+            },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )
         .pageSwitchThreshold(0.4)
@@ -39,7 +42,6 @@ struct MainView: View {
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.keyboard)
-        .edgesIgnoringSafeArea(.bottom)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Assets.newTangemLogo.image
