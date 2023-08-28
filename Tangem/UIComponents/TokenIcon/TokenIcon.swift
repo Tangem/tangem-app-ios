@@ -28,6 +28,7 @@ struct TokenIcon: View {
         if let iconName = blockchainIconName {
             NetworkIcon(
                 imageName: iconName,
+                isActive: true,
                 isMainIndicatorVisible: false,
                 size: networkIconSize
             )
