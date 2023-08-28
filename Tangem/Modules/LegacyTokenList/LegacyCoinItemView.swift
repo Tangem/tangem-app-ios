@@ -18,6 +18,7 @@ struct LegacyCoinItemView: View {
     var icon: some View {
         NetworkIcon(
             imageName: model.selectedPublisher ? model.imageNameSelected : model.imageName,
+            isActive: model.selectedPublisher,
             isMainIndicatorVisible: model.isMain
         )
     }
