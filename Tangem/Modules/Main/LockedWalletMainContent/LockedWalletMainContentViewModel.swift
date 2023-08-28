@@ -47,7 +47,7 @@ class LockedWalletMainContentViewModel: ObservableObject {
         self.userWalletModel = userWalletModel
         self.isMultiWallet = isMultiWallet
         self.lockedUserWalletDelegate = lockedUserWalletDelegate
-        
+
         isWithManageTokens = userWalletModel.isMultiWallet
     }
 

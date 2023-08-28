@@ -22,20 +22,13 @@ class ReferralCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        referralViewModel = .init(
-            userWalletId: options.userWalletId,
-            supportedBlockchains: options.supportedBlockchains,
-            userTokensManager: options.userTokensManager,
-            coordinator: self
-        )
+        referralViewModel = .init(input: options.input, coordinator: self)
     }
 }
 
 extension ReferralCoordinator {
     struct Options {
-        let userWalletId: Data
-        let supportedBlockchains: Set<Blockchain>
-        let userTokensManager: UserTokensManager
+        let input: ReferralInputModel
     }
 }
 

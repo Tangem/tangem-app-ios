@@ -95,9 +95,9 @@ extension DetailsCoordinator: DetailsRoutable {
         scanCardSettingsViewModel = ScanCardSettingsViewModel(expectedUserWalletId: userWalletId, sdk: sdk, coordinator: self)
     }
 
-    func openAppSettings(userWallet: CardViewModel) {
+    func openAppSettings() {
         let coordinator = AppSettingsCoordinator(popToRootAction: popToRootAction)
-        coordinator.start(with: .default(userWallet: userWallet))
+        coordinator.start(with: .init())
         appSettingsCoordinator = coordinator
     }
 
@@ -117,17 +117,13 @@ extension DetailsCoordinator: DetailsRoutable {
         environmentSetupCoordinator = coordinator
     }
 
-    func openReferral(with cardModel: CardViewModel, userWalletId: Data) {
+    func openReferral(input: ReferralInputModel) {
         let dismissAction: Action = { [weak self] in
             self?.referralCoordinator = nil
         }
 
         let coordinator = ReferralCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .init(
-            userWalletId: userWalletId,
-            supportedBlockchains: cardModel.config.supportedBlockchains,
-            userTokensManager: cardModel.userTokensManager
-        ))
+        coordinator.start(with: .init(input: input))
         referralCoordinator = coordinator
         Analytics.log(.referralScreenOpened)
     }
