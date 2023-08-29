@@ -22,10 +22,10 @@ struct NetworkIcon: View {
             .overlay(indicatorOverlay)
             .background(background)
     }
-    
+
     private var background: some View {
         Circle()
-            .foregroundColor(isActive ? Color.black : Colors.Button.secondary)
+            .foregroundColor(isActive ? Color.clear : Colors.Button.secondary)
     }
 
     @ViewBuilder
