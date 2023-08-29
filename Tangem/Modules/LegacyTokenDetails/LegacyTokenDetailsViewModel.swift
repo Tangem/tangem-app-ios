@@ -75,9 +75,9 @@ class LegacyTokenDetailsViewModel: ObservableObject {
             let address = wallet.address
             switch amountType {
             case .coin:
-                return exchangeService.getBuyUrl(currencySymbol: blockchainNetwork.blockchain.currencySymbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address)
+                return exchangeService.getBuyUrl(currencySymbol: blockchainNetwork.blockchain.currencySymbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address, useDarkTheme: useExchangeInDarkTheme)
             case .token(let token):
-                return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address)
+                return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address, useDarkTheme: useExchangeInDarkTheme)
             case .reserve:
                 break
             }
@@ -98,9 +98,9 @@ class LegacyTokenDetailsViewModel: ObservableObject {
             let address = wallet.address
             switch amountType {
             case .coin:
-                return exchangeService.getSellUrl(currencySymbol: blockchainNetwork.blockchain.currencySymbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address)
+                return exchangeService.getSellUrl(currencySymbol: blockchainNetwork.blockchain.currencySymbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address, useDarkTheme: useExchangeInDarkTheme)
             case .token(let token):
-                return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address)
+                return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchainNetwork.blockchain, walletAddress: address, useDarkTheme: useExchangeInDarkTheme)
             case .reserve:
                 break
             }
@@ -200,6 +200,10 @@ class LegacyTokenDetailsViewModel: ObservableObject {
 
     private var isCustomToken: Bool {
         amountType.token?.isCustom == true
+    }
+
+    private var useExchangeInDarkTheme: Bool {
+        UITraitCollection.isDarkMode
     }
 
     init(cardModel: CardViewModel, blockchainNetwork: BlockchainNetwork, amountType: Amount.AmountType, coordinator: LegacyTokenDetailsRoutable) {

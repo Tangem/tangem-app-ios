@@ -20,6 +20,7 @@ private enum QueryKey: String {
     case lang
     case fix_currency
     case return_url
+    case theme
 }
 
 private struct MercuryoCurrencyResponse: Decodable {
@@ -52,6 +53,8 @@ class MercuryoService {
     private var networkCodeByCurrencyCode: [String: String] = [:]
 
     private var bag: Set<AnyCancellable> = []
+
+    private let darkThemeName = "1inch"
 
     deinit {
         AppLog.shared.debug("MercuryoService deinit")
@@ -89,7 +92,7 @@ extension MercuryoService: ExchangeService {
         return false
     }
 
-    func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
+    func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String, useDarkTheme: Bool) -> URL? {
         guard
             canBuy(currencySymbol, amountType: amountType, blockchain: blockchain)
         else {
@@ -113,13 +116,17 @@ extension MercuryoService: ExchangeService {
             queryItems.append(.init(key: .lang, value: languageCode))
         }
 
+        if useDarkTheme {
+            queryItems.append(.init(key: .theme, value: darkThemeName))
+        }
+
         urlComponents.percentEncodedQueryItems = queryItems
 
         let url = urlComponents.url
         return url
     }
 
-    func getSellUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
+    func getSellUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String, useDarkTheme: Bool) -> URL? {
         fatalError("TODO: July 2022 - we've decided to only use Mercuryo to buy crypto")
     }
 

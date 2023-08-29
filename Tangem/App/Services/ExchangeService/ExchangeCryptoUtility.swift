@@ -31,9 +31,9 @@ struct ExchangeCryptoUtility {
 
         switch amountType {
         case .coin:
-            return exchangeService.getBuyUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
+            return exchangeService.getBuyUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address, useDarkTheme: useDarkTheme)
         case .token(let token):
-            return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
+            return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address, useDarkTheme: useDarkTheme)
         case .reserve:
             return nil
         }
@@ -46,9 +46,9 @@ struct ExchangeCryptoUtility {
     var sellURL: URL? {
         switch amountType {
         case .coin:
-            return exchangeService.getSellUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
+            return exchangeService.getSellUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address, useDarkTheme: useDarkTheme)
         case .token(let token):
-            return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
+            return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address, useDarkTheme: useDarkTheme)
         case .reserve:
             return nil
         }
@@ -60,5 +60,9 @@ struct ExchangeCryptoUtility {
 
     func extractSellCryptoRequest(from data: String) -> SellCryptoRequest? {
         exchangeService.extractSellCryptoRequest(from: data)
+    }
+
+    private var useDarkTheme: Bool {
+        UITraitCollection.isDarkMode
     }
 }

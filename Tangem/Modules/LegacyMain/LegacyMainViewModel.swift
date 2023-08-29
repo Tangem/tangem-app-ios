@@ -131,7 +131,8 @@ class LegacyMainViewModel: ObservableObject {
                 currencySymbol: wallet.blockchain.currencySymbol,
                 amountType: .coin,
                 blockchain: wallet.blockchain,
-                walletAddress: wallet.address
+                walletAddress: wallet.address,
+                useDarkTheme: useExchangeInDarkTheme
             )
         }
         return nil
@@ -143,7 +144,8 @@ class LegacyMainViewModel: ObservableObject {
                 currencySymbol: wallet.blockchain.currencySymbol,
                 amountType: .coin,
                 blockchain: wallet.blockchain,
-                walletAddress: wallet.address
+                walletAddress: wallet.address,
+                useDarkTheme: useExchangeInDarkTheme
             )
         }
 
@@ -180,6 +182,10 @@ class LegacyMainViewModel: ObservableObject {
         } else {
             return Localization.mainLearnSubtitle(promotionService.awardAmount ?? 0)
         }
+    }
+
+    private var useExchangeInDarkTheme: Bool {
+        UITraitCollection.isDarkMode
     }
 
     init(

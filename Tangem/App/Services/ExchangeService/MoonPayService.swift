@@ -19,6 +19,7 @@ private enum QueryKey: String {
     case currencyCode
     case walletAddress
     case redirectURL
+    case theme
     case baseCurrencyCode
     case refundWalletAddress
     case signature
@@ -136,6 +137,7 @@ class MoonPayService {
     private(set) var canBuyCrypto = true
     private(set) var canSellCrypto = true
     private var bag: Set<AnyCancellable> = []
+    private let darkThemeName = "dark"
 
     deinit {
         AppLog.shared.debug("MoonPay deinit")
@@ -182,7 +184,7 @@ extension MoonPayService: ExchangeService {
         })
     }
 
-    func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
+    func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String, useDarkTheme: Bool) -> URL? {
         guard canBuy(currencySymbol, amountType: amountType, blockchain: blockchain) else {
             return nil
         }
@@ -197,6 +199,11 @@ extension MoonPayService: ExchangeService {
         queryItems.append(.init(key: .walletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: successCloseUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
         queryItems.append(.init(key: .baseCurrencyCode, value: "USD".addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+
+        if useDarkTheme {
+            queryItems.append(.init(key: .theme, value: darkThemeName))
+        }
+
         urlComponents.percentEncodedQueryItems = queryItems
         let signatureItem = makeSignature(for: urlComponents)
         queryItems.append(signatureItem)
@@ -206,7 +213,7 @@ extension MoonPayService: ExchangeService {
         return url
     }
 
-    func getSellUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
+    func getSellUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String, useDarkTheme: Bool) -> URL? {
         guard canSell(currencySymbol, amountType: amountType, blockchain: blockchain) else {
             return nil
         }
@@ -220,6 +227,10 @@ extension MoonPayService: ExchangeService {
         queryItems.append(.init(key: .baseCurrencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .refundWalletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: sellRequestUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
+
+        if useDarkTheme {
+            queryItems.append(.init(key: .theme, value: darkThemeName))
+        }
 
         components.percentEncodedQueryItems = queryItems
         let signature = makeSignature(for: components)
