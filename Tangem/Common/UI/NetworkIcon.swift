@@ -23,9 +23,12 @@ struct NetworkIcon: View {
             .background(background)
     }
 
+    @ViewBuilder
     private var background: some View {
-        Circle()
-            .foregroundColor(isActive ? Color.clear : Colors.Button.secondary)
+        if !isActive {
+            Circle()
+                .foregroundColor(Colors.Button.secondary)
+        }
     }
 
     @ViewBuilder
