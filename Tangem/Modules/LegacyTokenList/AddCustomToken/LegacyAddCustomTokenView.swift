@@ -114,6 +114,7 @@ private struct PickerInputWithTitle: View {
                     }
                 }
                 .id(model.id)
+                .accentColor(Colors.Button.positive)
                 .modifier(PickerStyleModifier())
                 .disabled(!model.isEnabled)
                 .modifier(PickerAlignmentModifier())

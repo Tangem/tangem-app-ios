@@ -53,7 +53,7 @@ struct LegacyCoinItemView: View {
                 if !model.isReadonly {
                     Toggle("", isOn: $model.selectedPublisher)
                         .labelsHidden()
-                        .toggleStyleCompat(.tangemGreen2)
+                        .toggleStyleCompat(Colors.Control.checked)
                         .offset(x: 2)
                         .scaleEffect(0.8)
                 }
