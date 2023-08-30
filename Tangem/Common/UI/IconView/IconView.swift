@@ -12,19 +12,25 @@ import Kingfisher
 struct IconView: View {
     private let url: URL?
     private let size: CGSize
+    private let lowContrastBackgroundColor: UIColor
 
     // TODO: HACK - figure out why CachedAsyncImage is making Manage Tokens screen jump
     // TODO: on 16.2 on the first run of the first time this screen is opened
     private let forceKingfisher: Bool
 
-    init(url: URL?, size: CGSize, forceKingfisher: Bool = false) {
+    private static var defaultLowContrastBackgroundColor: UIColor {
+        UIColor.backgroundPrimary.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+    }
+
+    init(url: URL?, size: CGSize, lowContrastBackgroundColor: UIColor = Self.defaultLowContrastBackgroundColor, forceKingfisher: Bool = false) {
         self.url = url
         self.size = size
+        self.lowContrastBackgroundColor = lowContrastBackgroundColor
         self.forceKingfisher = forceKingfisher
     }
 
-    init(url: URL?, sizeSettings: IconViewSizeSettings, forceKingfisher: Bool = false) {
-        self.init(url: url, size: sizeSettings.iconSize, forceKingfisher: forceKingfisher)
+    init(url: URL?, sizeSettings: IconViewSizeSettings, lowContrastBackgroundColor: UIColor = Self.defaultLowContrastBackgroundColor, forceKingfisher: Bool = false) {
+        self.init(url: url, size: sizeSettings.iconSize, lowContrastBackgroundColor: lowContrastBackgroundColor, forceKingfisher: forceKingfisher)
     }
 
     var body: some View {
@@ -66,6 +72,7 @@ struct IconView: View {
 
     var kfImage: some View {
         KFImage(url)
+            .appendProcessor(ContrastBackgroundImageProcessor(backgroundColor: lowContrastBackgroundColor))
             .cancelOnDisappear(true)
             .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }
             .fade(duration: 0.3)

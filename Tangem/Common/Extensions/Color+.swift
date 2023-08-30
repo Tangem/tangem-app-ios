@@ -124,6 +124,11 @@ extension Color {
 }
 
 extension UIColor {
+    // This is taken from the new palette
+    @nonobjc static var backgroundPrimary: UIColor {
+        return UIColor(named: "BackgroundPrimary")!
+    }
+
     // MARK: Background
 
     @nonobjc static var tangemBgGray: UIColor {
