@@ -32,16 +32,6 @@ struct ContrastBackgroundImageProcessor: ImageProcessor {
             return originalImage
         }
 
-        // TODO: remove
-        let c = ImageCache.default
-        c.clearMemoryCache()
-        c.clearDiskCache()
-
-        let cache = KingfisherManager.shared.cache
-        cache.diskStorage.config.expiration = .expired
-        cache.memoryStorage.config.expiration = .expired
-        // TODO: remove ^^
-
         let canvasSide = max(originalImage.size.width, originalImage.size.height)
         let canvasSize = CGSize(width: canvasSide, height: canvasSide)
         let canvasRect = CGRect(origin: .zero, size: canvasSize)
