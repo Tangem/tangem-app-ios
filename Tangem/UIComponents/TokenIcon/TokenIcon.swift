@@ -19,7 +19,7 @@ struct TokenIcon: View {
     var networkIconBorderWidth: Double = 2
 
     var body: some View {
-        IconView(url: imageURL, size: size)
+        IconView(url: imageURL, size: size, forceKingfisher: true)
             .overlay(networkIcon.offset(x: 4, y: -4), alignment: .topTrailing)
     }
 

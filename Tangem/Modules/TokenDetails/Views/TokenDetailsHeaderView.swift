@@ -22,7 +22,7 @@ struct TokenDetailsHeaderView: View {
 
                 Spacer()
 
-                IconView(url: viewModel.tokenIconModel.imageURL, sizeSettings: .tokenDetails)
+                IconView(url: viewModel.tokenIconModel.imageURL, sizeSettings: .tokenDetails, forceKingfisher: true)
             }
 
             HStack(spacing: 6) {
