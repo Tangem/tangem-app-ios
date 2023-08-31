@@ -63,7 +63,7 @@ struct TokenDetailsView: View {
         .coordinateSpace(name: coorditateSpaceName)
         .toolbar(content: {
             ToolbarItem(placement: .principal) {
-                IconView(url: viewModel.iconUrl, sizeSettings: .tokenDetailsToolbar)
+                IconView(url: viewModel.iconUrl, sizeSettings: .tokenDetailsToolbar, forceKingfisher: true)
                     .opacity(toolbarIconOpacity)
             }
 
