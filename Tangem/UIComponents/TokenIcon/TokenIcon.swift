@@ -32,7 +32,7 @@ struct TokenIcon: View {
                 size: networkIconSize
             )
             .background(
-                Color.white
+                Colors.Background.primary
                     .clipShape(Circle())
                     .frame(size: networkIconSize + CGSize(width: 2 * networkIconBorderWidth, height: 2 * networkIconBorderWidth))
             )
