@@ -56,7 +56,7 @@ struct TokenIconView: View {
 
     @ViewBuilder
     private var placeholder: some View {
-        CircleImageTextView(name: viewModel.name, color: Colors.Icon.inactive)
+        CircleImageTextView(name: viewModel.name, color: Colors.Icon.inactive, size: size)
     }
 }
 

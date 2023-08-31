@@ -11,15 +11,16 @@ import SwiftUI
 struct CircleImageTextView: View {
     var name: String
     var color: Color
-    var size = CGSize(bothDimensions: 40.0)
+
+    let size: CGSize
 
     var body: some View {
         ZStack {
             Circle()
-                .foregroundColor(color)
+                .foregroundColor(Colors.Button.secondary)
             Text(String(name.first ?? " "))
                 .font(Font.system(size: 28, weight: .bold, design: .default))
-                .foregroundColor(Color.white)
+                .foregroundColor(Colors.Text.primary2)
         }
         .frame(size: size)
         .clipped()
@@ -28,6 +29,6 @@ struct CircleImageTextView: View {
 
 struct TokenImage_Previews: PreviewProvider {
     static var previews: some View {
-        CircleImageTextView(name: "Aave (OLD)", color: .gray)
+        CircleImageTextView(name: "Aave (OLD)", color: .gray, size: CGSize(bothDimensions: 40))
     }
 }

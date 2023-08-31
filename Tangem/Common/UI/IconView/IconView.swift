@@ -74,7 +74,7 @@ struct IconView: View {
         KFImage(url)
             .appendProcessor(ContrastBackgroundImageProcessor(backgroundColor: lowContrastBackgroundColor))
             .cancelOnDisappear(true)
-            .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }
+            .placeholder { CircleImageTextView(name: "", color: Colors.Button.secondary, size: size) }
             .fade(duration: 0.3)
             .cacheOriginalImage()
             .resizable()
