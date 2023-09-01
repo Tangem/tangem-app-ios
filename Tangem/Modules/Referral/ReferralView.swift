@@ -54,7 +54,7 @@ struct ReferralView: View {
             }
             .edgesIgnoringSafeArea(.bottom)
             .toast(isPresenting: $viewModel.showCodeCopiedToast) {
-                AlertToast(type: .complete(Color.tangemGreen), title: Localization.referralPromoCodeCopied)
+                AlertToast(type: .complete(Colors.Icon.accent), title: Localization.referralPromoCodeCopied)
             }
         }
         .alert(item: $viewModel.errorAlert, content: { $0.alert })

@@ -42,7 +42,7 @@ private struct MainNetworkIndicator: View {
 
     var body: some View {
         Circle()
-            .foregroundColor(.tangemGreen2)
+            .foregroundColor(Colors.Icon.accent)
             .padding(borderPadding)
             .background(Circle().fill(Colors.Background.primary))
     }
