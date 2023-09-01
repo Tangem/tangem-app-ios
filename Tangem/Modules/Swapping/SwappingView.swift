@@ -77,8 +77,10 @@ struct SwappingView: View {
             } else {
                 Button(action: viewModel.userDidTapSwapSwappingItemsButton) {
                     Assets.swappingIcon.image
+                        .renderingMode(.template)
                         .resizable()
                         .frame(width: 20, height: 20)
+                        .foregroundColor(Colors.Icon.primary1)
                 }
             }
         }
