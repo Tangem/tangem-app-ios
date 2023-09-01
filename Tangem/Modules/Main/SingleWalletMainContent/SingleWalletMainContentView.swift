@@ -20,7 +20,7 @@ struct SingleWalletMainContentView: View {
                 exploreAction: viewModel.openExplorer,
                 reloadButtonAction: viewModel.reloadHistory,
                 isReloadButtonBusy: viewModel.isReloadingTransactionHistory,
-                buyButtonAction: viewModel.canBuyCrypto ? viewModel.openBuy : nil,
+                buyButtonAction: viewModel.canBuyCrypto ? viewModel.openBuyCryptoIfPossible : nil,
                 fetchMore: viewModel.fetchMoreHistory()
             )
             .padding(.bottom, 40)

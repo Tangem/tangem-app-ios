@@ -93,7 +93,7 @@ struct EnvironmentSetupView: View {
 }
 
 struct EnvironmentSetupView_Preview: PreviewProvider {
-    static let viewModel = EnvironmentSetupViewModel(coordinator: EnvironmentSetupRoutableMock(), cardId: "AC01")
+    static let viewModel = EnvironmentSetupViewModel(coordinator: EnvironmentSetupRoutableMock())
 
     static var previews: some View {
         NavigationView {

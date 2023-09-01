@@ -49,8 +49,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                     userTokenListManager: model.userTokenListManager,
                     walletModelsManager: model.walletModelsManager
                 ),
-                // TODO: Will be moved (IOS-4060) into separate view model after IOS-4186
-                isManageTokensAvailable: model.isMultiWallet
+                canManageTokens: model.isMultiWallet // TODO: Andrey Fedorov - More sophisticated logic (IOS-4060)
             )
 
             return .multiWallet(

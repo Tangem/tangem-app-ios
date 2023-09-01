@@ -11,8 +11,8 @@ import Combine
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -47,7 +47,7 @@ class WelcomeCoordinator: CoordinatorObject {
             .eraseToAnyPublisher()
     }
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
@@ -79,7 +79,7 @@ extension WelcomeCoordinator {
 
 extension WelcomeCoordinator: WelcomeRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.pushedOnboardingCoordinator = nil
         }
 
@@ -111,7 +111,7 @@ extension WelcomeCoordinator: WelcomeRoutable {
     }
 
     func openPromotion() {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.promotionCoordinator = nil
         }
 
@@ -121,7 +121,7 @@ extension WelcomeCoordinator: WelcomeRoutable {
     }
 
     func openTokensList() {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenListCoordinator = nil
         }
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)

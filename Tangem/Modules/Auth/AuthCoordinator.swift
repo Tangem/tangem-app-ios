@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 class AuthCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -28,8 +28,8 @@ class AuthCoordinator: CoordinatorObject {
     @Published var mailViewModel: MailViewModel?
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
@@ -54,7 +54,7 @@ extension AuthCoordinator {
 
 extension AuthCoordinator: AuthRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.pushedOnboardingCoordinator = nil
         }
 

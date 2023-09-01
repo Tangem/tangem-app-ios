@@ -11,8 +11,8 @@ import Combine
 import BlockchainSdk
 
 class TokenDetailsCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -31,8 +31,8 @@ class TokenDetailsCoordinator: CoordinatorObject {
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
@@ -158,7 +158,7 @@ extension TokenDetailsCoordinator: TokenDetailsRoutable {
     }
 
     func openSwapping(input: CommonSwappingModulesFactory.InputModel) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.swappingCoordinator = nil
         }
 

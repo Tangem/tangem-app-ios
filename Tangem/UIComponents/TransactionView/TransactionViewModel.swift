@@ -54,8 +54,7 @@ struct TransactionViewModel: Hashable, Identifiable {
         case .approval:
             return nil
         case .transfer, .swap, .custom:
-            let prefix = isOutgoing ? "-" : "+"
-            return prefix + amount
+            return amount
         }
     }
 
@@ -67,9 +66,9 @@ struct TransactionViewModel: Hashable, Identifiable {
         switch interactionAddress {
         case .user(let address):
             if isOutgoing {
-                return Localization.transactionHistoryTransactionFromAddress(address)
-            } else {
                 return Localization.transactionHistoryTransactionToAddress(address)
+            } else {
+                return Localization.transactionHistoryTransactionFromAddress(address)
             }
         case .contract(let address):
             return Localization.transactionHistoryContractAddress(address)

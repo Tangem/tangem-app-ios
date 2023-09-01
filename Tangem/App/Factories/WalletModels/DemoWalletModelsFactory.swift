@@ -19,7 +19,11 @@ struct DemoWalletModelsFactory {
 
 extension DemoWalletModelsFactory: WalletModelsFactory {
     func makeWalletModels(from walletManager: WalletManager) -> [WalletModel] {
-        let models = factory.makeWalletModels(from: walletManager)
+        return factory.makeWalletModels(from: walletManager)
+    }
+
+    func makeWalletModels(for types: [Amount.AmountType], walletManager: WalletManager) -> [WalletModel] {
+        let models = factory.makeWalletModels(for: types, walletManager: walletManager)
 
         let demoUtil = DemoUtil()
 

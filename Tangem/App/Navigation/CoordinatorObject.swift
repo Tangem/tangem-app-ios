@@ -8,8 +8,7 @@
 
 import Foundation
 
-typealias Action = () -> Void
-typealias ParamsAction<Params> = (Params) -> Void
+typealias Action<Params> = (Params) -> Void
 
 struct PopToRootOptions {
     var newScan: Bool = false
@@ -18,24 +17,24 @@ struct PopToRootOptions {
 }
 
 protocol CoordinatorObject: ObservableObject, Identifiable {
-    associatedtype Options
+    associatedtype InputOptions
+    associatedtype OutputOptions
 
-    var dismissAction: Action { get }
-    var popToRootAction: ParamsAction<PopToRootOptions> { get }
+    var dismissAction: Action<OutputOptions> { get }
+    var popToRootAction: Action<PopToRootOptions> { get }
 
-    func start(with options: Options)
-    func dismiss()
+    func start(with options: InputOptions)
 
-    init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>)
+    init(dismissAction: @escaping Action<OutputOptions>, popToRootAction: @escaping Action<PopToRootOptions>)
 }
 
 extension CoordinatorObject {
-    init(dismissAction: @escaping Action = {}, popToRootAction: @escaping ParamsAction<PopToRootOptions> = { _ in }) {
+    init(dismissAction: @escaping Action<OutputOptions> = { _ in }, popToRootAction: @escaping Action<PopToRootOptions> = { _ in }) {
         self.init(dismissAction: dismissAction, popToRootAction: popToRootAction)
     }
 
-    func dismiss() {
-        dismissAction()
+    func dismiss(with options: OutputOptions) {
+        dismissAction(options)
     }
 
     func popToRoot(with options: PopToRootOptions) {
@@ -44,5 +43,11 @@ extension CoordinatorObject {
 
     func popToRoot() {
         popToRootAction(.default)
+    }
+}
+
+extension CoordinatorObject where OutputOptions == Void {
+    func dismiss() {
+        dismissAction(())
     }
 }

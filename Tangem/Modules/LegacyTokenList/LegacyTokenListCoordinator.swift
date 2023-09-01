@@ -9,8 +9,8 @@
 import Foundation
 
 class LegacyTokenListCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -20,7 +20,7 @@ class LegacyTokenListCoordinator: CoordinatorObject {
 
     @Published var addCustomTokenViewModel: LegacyAddCustomTokenViewModel? = nil
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
