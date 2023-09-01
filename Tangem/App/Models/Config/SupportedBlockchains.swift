@@ -9,6 +9,8 @@
 import Foundation
 import BlockchainSdk
 
+typealias SupportedBlockchainsSet = Set<Blockchain>
+
 extension SupportedBlockchains {
     /// All currently supported mainnet blockchains for simple used.
     /// E.g. for the Token list.
@@ -100,6 +102,7 @@ struct SupportedBlockchains {
             .cronos,
             .octa,
             .chia(testnet: false),
+            .ducatus,
         ]
     }
 

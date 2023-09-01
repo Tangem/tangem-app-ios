@@ -11,8 +11,8 @@ import UIKit
 import Combine
 
 class AppCoordinator: CoordinatorObject {
-    var dismissAction: () -> Void = {}
-    var popToRootAction: (PopToRootOptions) -> Void = { _ in }
+    let dismissAction: Action<Void> = { _ in }
+    let popToRootAction: Action<PopToRootOptions> = { _ in }
 
     // MARK: - Injected
 
@@ -62,7 +62,7 @@ class AppCoordinator: CoordinatorObject {
             self?.start()
         }
 
-        let popToRootAction: ParamsAction<PopToRootOptions> = { [weak self] options in
+        let popToRootAction: Action<PopToRootOptions> = { [weak self] options in
             self?.closeAllSheetsIfNeeded(animated: true) {
                 self?.welcomeCoordinator = nil
                 self?.start(with: .init(newScan: options.newScan))
@@ -82,7 +82,7 @@ class AppCoordinator: CoordinatorObject {
             self?.start()
         }
 
-        let popToRootAction: ParamsAction<PopToRootOptions> = { [weak self] options in
+        let popToRootAction: Action<PopToRootOptions> = { [weak self] options in
             self?.closeAllSheetsIfNeeded(animated: true) {
                 self?.authCoordinator = nil
                 self?.start(with: .init(newScan: options.newScan))

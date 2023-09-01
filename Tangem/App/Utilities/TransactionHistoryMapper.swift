@@ -56,9 +56,9 @@ struct TransactionHistoryMapper {
             interactionAddress: interactionAddress(from: record),
             timeFormatted: timeFormatted,
             amount: transferAmount(from: record),
-            isOutgoing: record.type == .send,
+            isOutgoing: record.isOutgoing,
             transactionType: transactionType(from: record),
-            status: record.status == .confirmed ? .confirmed : .inProgress
+            status: status(from: record)
         )
     }
 }
@@ -67,8 +67,7 @@ struct TransactionHistoryMapper {
 
 private extension TransactionHistoryMapper {
     func transferAmount(from record: TransactionRecord) -> String {
-        switch record.type {
-        case .send:
+        if record.isOutgoing {
             let sent: Decimal = {
                 switch record.source {
                 case .single(let source):
@@ -88,9 +87,9 @@ private extension TransactionHistoryMapper {
             }()
 
             let amount = sent - change
-            return balanceFormatter.formatCryptoBalance(amount, currencyCode: currencySymbol)
+            return formatted(amount: amount, isOutgoing: record.isOutgoing)
 
-        case .receive:
+        } else {
             let received: Decimal = {
                 switch record.destination {
                 case .single(let destination):
@@ -100,16 +99,20 @@ private extension TransactionHistoryMapper {
                 }
             }()
 
-            return balanceFormatter.formatCryptoBalance(received, currencyCode: currencySymbol)
+            return formatted(amount: received, isOutgoing: record.isOutgoing)
         }
     }
 
     func interactionAddress(from record: TransactionRecord) -> TransactionViewModel.InteractionAddressType {
         switch record.type {
-        case .send:
+        case .transfer:
+            if record.isOutgoing {
+                return mapToInteractionAddressType(destination: record.destination)
+            } else {
+                return mapToInteractionAddressType(source: record.source)
+            }
+        default:
             return mapToInteractionAddressType(destination: record.destination)
-        case .receive:
-            return mapToInteractionAddressType(source: record.source)
         }
     }
 
@@ -138,11 +141,44 @@ private extension TransactionHistoryMapper {
 
     func transactionType(from record: TransactionRecord) -> TransactionViewModel.TransactionType {
         switch record.type {
-        case .receive:
+        case .transfer:
             return .transfer
-        case .send:
-            return .transfer
+        case .swap, .unoswap:
+            return .swap
+        case .approve:
+            return .approval
+        case .deposit:
+            return .custom(name: "Deposit")
+        case .submit:
+            return .custom(name: "Submit")
+        case .supply:
+            return .custom(name: "Supply")
+        case .withdraw:
+            return .custom(name: "Withdraw")
+        case .custom(let id):
+            return .custom(name: id)
         }
+    }
+
+    func status(from record: TransactionRecord) -> TransactionViewModel.Status {
+        switch record.status {
+        case .confirmed:
+            return .confirmed
+        case .failed:
+            return .failed
+        case .unconfirmed:
+            return .inProgress
+        }
+    }
+
+    func formatted(amount: Decimal, isOutgoing: Bool) -> String {
+        let formatted = balanceFormatter.formatCryptoBalance(amount, currencyCode: currencySymbol)
+        if amount.isZero {
+            return formatted
+        }
+
+        let prefix = isOutgoing ? "-" : "+"
+        return prefix + formatted
     }
 }
 

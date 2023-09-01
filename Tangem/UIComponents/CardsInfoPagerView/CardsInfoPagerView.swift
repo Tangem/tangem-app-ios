@@ -9,10 +9,11 @@
 import SwiftUI
 
 struct CardsInfoPagerView<
-    Data, ID, Header, Body
->: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, Data.Index == Int {
+    Data, ID, Header, Body, BottomOverlay
+>: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, BottomOverlay: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
+    typealias BottomOverlayFactory = (_ element: Data.Element) -> BottomOverlay
     typealias OnPullToRefresh = OnRefresh
 
     private enum ProposedHeaderState {
@@ -31,6 +32,7 @@ struct CardsInfoPagerView<
     private let idProvider: KeyPath<(Data.Index, Data.Element), ID>
     private let headerFactory: HeaderFactory
     private let contentFactory: ContentFactory
+    private let bottomOverlayFactory: BottomOverlayFactory
     private let onPullToRefresh: OnPullToRefresh?
 
     // MARK: - Selected index
@@ -48,6 +50,10 @@ struct CardsInfoPagerView<
     /// instead of the `selectedIndex` (`selectedIndex` is updated just after the drag gesture ends,
     /// whereas `content` part must be updated exactly in the middle of the current gesture/animation).
     @State private var contentSelectedIndex: Int
+
+    private var clampedContentSelectedIndex: Int {
+        return clamp(contentSelectedIndex, min: selectedIndexLowerBound, max: selectedIndexUpperBound)
+    }
 
     @State private var scheduledContentSelectedIndexUpdate: DispatchWorkItem?
 
@@ -102,6 +108,14 @@ struct CardsInfoPagerView<
         )
     }
 
+    private var contentAnimationModifier: some AnimatableModifier {
+        return CardsInfoPagerContentAnimationModifier(
+            progress: pageSwitchProgress,
+            verticalOffset: contentViewVerticalOffset,
+            hasValidIndexToSelect: hasValidIndexToSelect
+        )
+    }
+
     // MARK: - Vertical auto scrolling (collapsible/expandable header)
 
     @StateObject private var scrollDetector = ScrollDetector()
@@ -116,6 +130,7 @@ struct CardsInfoPagerView<
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var headerHeight: CGFloat = .zero
     @State private var verticalContentOffset: CGPoint = .zero
+    @State private var scrollViewBottomContentInset: CGFloat = .zero
     @State private var contentSize: CGSize = .zero
     @State private var viewportSize: CGSize = .zero
 
@@ -196,6 +211,7 @@ struct CardsInfoPagerView<
         selectedIndex: Binding<Int>,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
         @ViewBuilder contentFactory: @escaping ContentFactory,
+        @ViewBuilder bottomOverlayFactory: @escaping BottomOverlayFactory,
         onPullToRefresh: OnPullToRefresh? = nil
     ) {
         self.data = data
@@ -206,6 +222,7 @@ struct CardsInfoPagerView<
         _externalSelectedIndex = selectedIndex
         self.headerFactory = headerFactory
         self.contentFactory = contentFactory
+        self.bottomOverlayFactory = bottomOverlayFactory
         self.onPullToRefresh = onPullToRefresh
     }
 
@@ -252,6 +269,7 @@ struct CardsInfoPagerView<
             .readGeometry(\.size, bindTo: $viewportSize)
             .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         }
+        .overlay(makeBottomOverlay(with: geometryProxy), alignment: .bottom)
     }
 
     @ViewBuilder
@@ -285,14 +303,8 @@ struct CardsInfoPagerView<
                 if data.isEmpty {
                     EmptyView()
                 } else {
-                    contentFactory(data[clamp(contentSelectedIndex, min: selectedIndexLowerBound, max: selectedIndexUpperBound)])
-                        .modifier(
-                            CardsInfoPagerContentAnimationModifier(
-                                progress: pageSwitchProgress,
-                                verticalOffset: contentViewVerticalOffset,
-                                hasValidIndexToSelect: hasValidIndexToSelect
-                            )
-                        )
+                    contentFactory(data[clampedContentSelectedIndex])
+                        .modifier(contentAnimationModifier)
                 }
             }
             .readGeometry(
@@ -310,9 +322,18 @@ struct CardsInfoPagerView<
                 contentSize: contentSize,
                 viewportSize: viewportSize,
                 headerTopInset: Constants.headerVerticalPadding,
-                headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight
+                headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight,
+                bottomContentInset: scrollViewBottomContentInset
             )
         }
+    }
+
+    @ViewBuilder
+    private func makeBottomOverlay(with geometryProxy: GeometryProxy) -> some View {
+        bottomOverlayFactory(data[clampedContentSelectedIndex])
+            .modifier(contentAnimationModifier)
+            .padding(.bottom, geometryProxy.safeAreaInsets.bottom > 0.0 ? 0.0 : 10.0) // Padding is added only on notchless devices
+            .readGeometry(\.size.height, bindTo: $scrollViewBottomContentInset)
     }
 
     // MARK: - Gestures
@@ -536,27 +557,6 @@ struct CardsInfoPagerView<
 
     private func synchronizeContentSelectedIndex() {
         contentSelectedIndex = selectedIndex
-    }
-}
-
-// MARK: - Convenience extensions
-
-extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID == ID {
-    init(
-        data: Data,
-        selectedIndex: Binding<Int>,
-        @ViewBuilder headerFactory: @escaping HeaderFactory,
-        @ViewBuilder contentFactory: @escaping ContentFactory,
-        onPullToRefresh: OnPullToRefresh? = nil
-    ) {
-        self.init(
-            data: data,
-            id: \.1.id,
-            selectedIndex: selectedIndex,
-            headerFactory: headerFactory,
-            contentFactory: contentFactory,
-            onPullToRefresh: onPullToRefresh
-        )
     }
 }
 

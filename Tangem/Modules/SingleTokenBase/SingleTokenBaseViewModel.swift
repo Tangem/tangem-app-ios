@@ -48,7 +48,7 @@ class SingleTokenBaseViewModel {
 
     var canSignLongTransactions: Bool {
         if NFCUtils.isPoorNfcQualityDevice,
-           case .solana = blockchain {
+           blockchain.hasLongTransactions {
             return false
         } else {
             return true
@@ -125,7 +125,7 @@ class SingleTokenBaseViewModel {
             }
     }
 
-    func openBuy() {
+    private func openBuy() {
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return

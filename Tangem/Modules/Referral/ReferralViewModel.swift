@@ -39,14 +39,12 @@ class ReferralViewModel: ObservableObject {
     }
 
     init(
-        userWalletId: Data,
-        supportedBlockchains: Set<Blockchain>,
-        userTokensManager: UserTokensManager,
+        input: ReferralInputModel,
         coordinator: ReferralRoutable
     ) {
-        self.userTokensManager = userTokensManager
-        self.userWalletId = userWalletId
-        self.supportedBlockchains = supportedBlockchains
+        userTokensManager = input.userTokensManager
+        userWalletId = input.userWalletId
+        supportedBlockchains = input.supportedBlockchains
         self.coordinator = coordinator
 
         runTask(in: self) { root in

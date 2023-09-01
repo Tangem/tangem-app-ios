@@ -41,7 +41,7 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var mandatoryCurves: [EllipticCurve] {
-        [.secp256k1, .ed25519, .bip0340, .bls12381_G2_AUG, .ed25519_slip0010]
+        [.secp256k1, .ed25519, .bls12381_G2_AUG, .bip0340, .ed25519_slip0010]
     }
 
     var derivationStyle: DerivationStyle? {

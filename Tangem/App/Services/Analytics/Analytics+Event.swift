@@ -52,7 +52,7 @@ extension Analytics {
         case twinSetupStarted = "[Onboarding / Twins] Twin Setup Started"
         case twinSetupFinished = "[Onboarding / Twins] Twin Setup Finished"
         case onboardingButtonChat = "[Onboarding] Button - Chat"
-        case mainScreenOpened = "[Main Screen] Screen Opened"
+        case mainScreenOpened = "[Main Screen] Screen opened"
         case buttonScanCard = "[Main Screen] Button - Scan Card"
         case buttonMyWallets = "[Main Screen] Button - My Wallets"
         case mainEnableBiometric = "[Main Screen] Enable Biometric"

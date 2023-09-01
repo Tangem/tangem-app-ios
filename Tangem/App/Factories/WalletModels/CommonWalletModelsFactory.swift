@@ -26,21 +26,18 @@ struct CommonWalletModelsFactory {
         return derivationPath == defaultDerivation
     }
 
-    private func makeTransactionHistoryService(wallet: Wallet) -> TransactionHistoryService? {
-        let blockchain = wallet.blockchain
-        let address = wallet.address
-
+    private func makeTransactionHistoryService(tokenItem: TokenItem, address: String) -> TransactionHistoryService? {
         if FeatureStorage().useFakeTxHistory {
-            return FakeTransactionHistoryService(blockchain: blockchain, address: address)
+            return FakeTransactionHistoryService(blockchain: tokenItem.blockchain, address: address)
         }
 
         let factory = TransactionHistoryFactoryProvider().factory
-        guard let provider = factory.makeProvider(for: blockchain) else {
+        guard let provider = factory.makeProvider(for: tokenItem.blockchain) else {
             return nil
         }
 
         return CommonTransactionHistoryService(
-            blockchain: blockchain,
+            tokenItem: tokenItem,
             address: address,
             transactionHistoryProvider: provider
         )
@@ -49,30 +46,50 @@ struct CommonWalletModelsFactory {
 
 extension CommonWalletModelsFactory: WalletModelsFactory {
     func makeWalletModels(from walletManager: WalletManager) -> [WalletModel] {
+        var types: [Amount.AmountType] = [.coin]
+        types += walletManager.cardTokens.map { Amount.AmountType.token(value: $0) }
+        return makeWalletModels(for: types, walletManager: walletManager)
+    }
+
+    func makeWalletModels(for types: [Amount.AmountType], walletManager: WalletManager) -> [WalletModel] {
+        var models: [WalletModel] = []
+
         let currentBlockchain = walletManager.wallet.blockchain
         let currentDerivation = walletManager.wallet.publicKey.derivationPath
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
-        let transactionHistoryService = makeTransactionHistoryService(wallet: walletManager.wallet)
-
-        let mainCoinModel = WalletModel(
-            walletManager: walletManager,
-            transactionHistoryService: transactionHistoryService,
-            amountType: .coin,
-            isCustom: isMainCoinCustom
+        let transactionHistoryService = makeTransactionHistoryService(
+            tokenItem: .blockchain(currentBlockchain),
+            address: walletManager.wallet.address
         )
 
-        let tokenModels = walletManager.cardTokens.map { token in
-            let amountType: Amount.AmountType = .token(value: token)
-            let isTokenCustom = isMainCoinCustom || token.id == nil
-            let tokenModel = WalletModel(
+        if types.contains(.coin) {
+            let mainCoinModel = WalletModel(
                 walletManager: walletManager,
                 transactionHistoryService: transactionHistoryService,
-                amountType: amountType,
-                isCustom: isTokenCustom
+                amountType: .coin,
+                isCustom: isMainCoinCustom
             )
-            return tokenModel
+            models.append(mainCoinModel)
         }
 
-        return [mainCoinModel] + tokenModels
+        walletManager.cardTokens.forEach { token in
+            let amountType: Amount.AmountType = .token(value: token)
+            if types.contains(amountType) {
+                let isTokenCustom = isMainCoinCustom || token.id == nil
+                let transactionHistoryService = makeTransactionHistoryService(
+                    tokenItem: .token(token, currentBlockchain),
+                    address: walletManager.wallet.address
+                )
+                let tokenModel = WalletModel(
+                    walletManager: walletManager,
+                    transactionHistoryService: transactionHistoryService,
+                    amountType: amountType,
+                    isCustom: isTokenCustom
+                )
+                models.append(tokenModel)
+            }
+        }
+
+        return models
     }
 }

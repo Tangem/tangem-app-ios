@@ -51,9 +51,14 @@ struct MainButton: View {
             content
                 .frame(maxWidth: .infinity, minHeight: size.height, maxHeight: size.height, alignment: .center)
                 .background(style.background(isDisabled: isDisabled))
-                .cornerRadiusContinuous(14)
+                .cornerRadiusContinuous(Constants.cornerRadius)
         }
         .buttonStyle(BorderlessButtonStyle())
+        // Prevents an ugly opacity effect when the button is placed on a transparent background and pressed
+        .background(
+            Colors.Background.primary
+                .cornerRadiusContinuous(Constants.cornerRadius)
+        )
         .disabled(isDisabled || isLoading)
     }
 
@@ -222,6 +227,16 @@ extension MainButton {
         }
     }
 }
+
+// MARK: - Constants
+
+private extension MainButton {
+    enum Constants {
+        static let cornerRadius = 14.0
+    }
+}
+
+// MARK: - Previews
 
 struct MainButton_Previews: PreviewProvider {
     static var previews: some View {
