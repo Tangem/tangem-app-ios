@@ -11,8 +11,8 @@ import UIKit
 import TangemSdk
 
 class DetailsCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -39,7 +39,7 @@ class DetailsCoordinator: CoordinatorObject {
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
@@ -64,7 +64,7 @@ extension DetailsCoordinator: DetailsRoutable {
     }
 
     func openOnboardingModal(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
             self?.detailsViewModel?.didFinishOnboarding()
         }
@@ -95,9 +95,9 @@ extension DetailsCoordinator: DetailsRoutable {
         scanCardSettingsViewModel = ScanCardSettingsViewModel(expectedUserWalletId: userWalletId, sdk: sdk, coordinator: self)
     }
 
-    func openAppSettings(userWallet: CardViewModel) {
+    func openAppSettings() {
         let coordinator = AppSettingsCoordinator(popToRootAction: popToRootAction)
-        coordinator.start(with: .default(userWallet: userWallet))
+        coordinator.start(with: .init())
         appSettingsCoordinator = coordinator
     }
 
@@ -110,24 +110,20 @@ extension DetailsCoordinator: DetailsRoutable {
         UIApplication.shared.open(url)
     }
 
-    func openEnvironmentSetup(with cardId: String) {
+    func openEnvironmentSetup() {
         let coordinator = EnvironmentSetupCoordinator(popToRootAction: popToRootAction)
-        coordinator.start(with: .init(cardId: cardId))
+        coordinator.start(with: .init())
 
         environmentSetupCoordinator = coordinator
     }
 
-    func openReferral(with cardModel: CardViewModel, userWalletId: Data) {
-        let dismissAction: Action = { [weak self] in
+    func openReferral(input: ReferralInputModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.referralCoordinator = nil
         }
 
         let coordinator = ReferralCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .init(
-            userWalletId: userWalletId,
-            supportedBlockchains: cardModel.config.supportedBlockchains,
-            userTokensManager: cardModel.userTokensManager
-        ))
+        coordinator.start(with: .init(input: input))
         referralCoordinator = coordinator
         Analytics.log(.referralScreenOpened)
     }

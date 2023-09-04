@@ -71,14 +71,6 @@ struct LockedWalletMainContentView: View {
             .disabled(true)
 
             Spacer()
-
-            if viewModel.isWithManageTokens {
-                MainButton(
-                    title: Localization.mainManageTokens,
-                    isDisabled: true, action: {}
-                )
-                .padding(.bottom, 10)
-            }
         }
     }
 

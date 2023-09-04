@@ -12,8 +12,8 @@ import TangemSwapping
 import UIKit
 
 class SwappingCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -34,8 +34,8 @@ class SwappingCoordinator: CoordinatorObject {
 
     required init(
         factory: SwappingModulesFactory,
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.factory = factory
         self.dismissAction = dismissAction

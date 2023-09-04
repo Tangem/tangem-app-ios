@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 class PromotionCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -22,8 +22,8 @@ class PromotionCoordinator: CoordinatorObject {
     // MARK: - Child view models
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
@@ -48,6 +48,6 @@ extension PromotionCoordinator {
 
 extension PromotionCoordinator: PromotionRoutable {
     func closeModule() {
-        dismissAction()
+        dismiss()
     }
 }

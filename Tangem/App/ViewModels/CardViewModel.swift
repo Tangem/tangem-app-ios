@@ -225,10 +225,6 @@ class CardViewModel: Identifiable, ObservableObject {
         config.hasFeature(.promotion)
     }
 
-    var supportedBlockchains: Set<Blockchain> {
-        config.supportedBlockchains
-    }
-
     var backupInput: OnboardingInput? {
         let factory = OnboardingInputFactory(
             cardInfo: cardInfo,
@@ -595,7 +591,10 @@ extension CardViewModel: DerivationManagerDelegate {
 
 extension CardViewModel: CardDerivableProvider {
     var cardDerivableInteractor: CardDerivable {
-        cardInteractor
+        // TODO: TBD. Use config?
+        let shouldSkipCardId = cardInfo.card.backupStatus?.isActive ?? false
+        let cardId = shouldSkipCardId ? nil : cardInfo.card.cardId
+        return CardInteractor(tangemSdk: config.makeTangemSdk(), cardId: cardId)
     }
 }
 

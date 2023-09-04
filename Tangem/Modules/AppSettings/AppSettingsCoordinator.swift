@@ -11,35 +11,30 @@ import Foundation
 import UIKit
 
 class AppSettingsCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
     @Published private(set) var rootViewModel: AppSettingsViewModel?
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        switch options {
-        case .default(let userWallet):
-            rootViewModel = AppSettingsViewModel(userWallet: userWallet, coordinator: self)
-        }
+        rootViewModel = AppSettingsViewModel(coordinator: self)
     }
 }
 
 // MARK: - Options
 
 extension AppSettingsCoordinator {
-    enum Options {
-        case `default`(userWallet: CardViewModel)
-    }
+    struct Options {}
 }
 
 // MARK: - AppSettingsRoutable

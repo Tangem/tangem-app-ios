@@ -28,9 +28,10 @@ struct CounterView: View {
     }
 }
 
+@available(*, deprecated, message: "Use NotificationView instead")
 struct WarningView: View {
     let warning: AppWarning
-    var buttonAction: (WarningButton) -> Void = { _ in }
+    var buttonAction: (WarningView.WarningButton) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -40,7 +41,7 @@ struct WarningView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 8)
                     .foregroundColor(.white)
-                if warning.event?.canBeDismissed ?? false {
+                if warning.event?.isDismissable ?? false {
                     Spacer()
                     Button(action: { buttonAction(.dismiss) }, label: {
                         Image(systemName: "xmark.circle.fill")
@@ -69,7 +70,7 @@ struct WarningView: View {
         .cornerRadius(6)
     }
 
-    var warningButtons: [WarningButton] {
+    var warningButtons: [WarningView.WarningButton] {
         if let buttons = warning.event?.buttons, !buttons.isEmpty {
             return buttons
         } else {
@@ -101,6 +102,29 @@ struct WarningView: View {
             .padding(EdgeInsets(top: 0, leading: 20, bottom: 12, trailing: 0))
         } else {
             EmptyView()
+        }
+    }
+}
+
+@available(*, deprecated, message: "Use NotificationView instead")
+extension WarningView {
+    enum WarningButton: String, Identifiable {
+        case okGotIt
+        case rateApp
+        case reportProblem
+        case dismiss
+        case learnMore
+
+        var id: String { rawValue }
+
+        var buttonTitle: String {
+            switch self {
+            case .okGotIt: return Localization.warningButtonOk
+            case .rateApp: return Localization.warningButtonReallyCool
+            case .reportProblem: return Localization.warningButtonCanBeBetter
+            case .learnMore: return Localization.warningButtonLearnMore
+            case .dismiss: return ""
+            }
         }
     }
 }

@@ -28,12 +28,10 @@ final class EnvironmentSetupViewModel: ObservableObject {
 
     private let featureStorage = FeatureStorage()
     private unowned let coordinator: EnvironmentSetupRoutable
-    private let cardId: String
     private var bag: Set<AnyCancellable> = []
 
-    init(coordinator: EnvironmentSetupRoutable, cardId: String) {
+    init(coordinator: EnvironmentSetupRoutable) {
         self.coordinator = coordinator
-        self.cardId = cardId
 
         setupView()
     }
@@ -121,18 +119,19 @@ final class EnvironmentSetupViewModel: ObservableObject {
     }
 
     func resetAward() {
-        runTask { [weak self] in
-            guard let self else { return }
-
-            let success = (try? await promotionService.resetAward(cardId: cardId)) != nil
-
-            DispatchQueue.main.async {
-                let feedbackGenerator = UINotificationFeedbackGenerator()
-                feedbackGenerator.notificationOccurred(success ? .success : .error)
-
-                self.updateAwardedPromotionNames()
-            }
-        }
+        // TODO: We can't pass cardId, only userWaleltId. Obtain cardId from scan or refactor to userWaleltId
+//        runTask { [weak self] in
+//            guard let self else { return }
+//
+//            let success = (try? await promotionService.resetAward(cardId: cardId)) != nil
+//
+//            DispatchQueue.main.async {
+//                let feedbackGenerator = UINotificationFeedbackGenerator()
+//                feedbackGenerator.notificationOccurred(success ? .success : .error)
+//
+//                self.updateAwardedPromotionNames()
+//            }
+//        }
     }
 
     func showExitAlert() {

@@ -12,10 +12,10 @@ import Combine
 
 class CardInteractor {
     private let tangemSdk: TangemSdk
-    private var cardId: String
+    private var cardId: String?
     private var cancellable: AnyCancellable?
 
-    internal init(tangemSdk: TangemSdk, cardId: String) {
+    internal init(tangemSdk: TangemSdk, cardId: String?) {
         self.tangemSdk = tangemSdk
         self.cardId = cardId
     }

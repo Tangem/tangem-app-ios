@@ -319,7 +319,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
                 if let walletStep = currentStep as? WalletOnboardingStep {
                     switch walletStep {
-                    case .createWallet:
+                    case .createWallet, .createWalletSelector:
                         Analytics.log(.createWalletScreenOpened)
                     case .backupIntro:
                         Analytics.log(.backupScreenOpened)

@@ -10,32 +10,25 @@ import Foundation
 import BlockchainSdk
 
 class ReferralCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     @Published var referralViewModel: ReferralViewModel? = nil
     @Published var tosViewModel: WebViewContainerViewModel? = nil
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        referralViewModel = .init(
-            userWalletId: options.userWalletId,
-            supportedBlockchains: options.supportedBlockchains,
-            userTokensManager: options.userTokensManager,
-            coordinator: self
-        )
+        referralViewModel = .init(input: options.input, coordinator: self)
     }
 }
 
 extension ReferralCoordinator {
     struct Options {
-        let userWalletId: Data
-        let supportedBlockchains: Set<Blockchain>
-        let userTokensManager: UserTokensManager
+        let input: ReferralInputModel
     }
 }
 

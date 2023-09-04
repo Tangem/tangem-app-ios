@@ -13,6 +13,10 @@ import BlockchainSdk
 class WalletModel {
     @Injected(\.ratesRepository) private var ratesRepository: RatesRepository
 
+    var walletModelId: WalletModel.Id {
+        .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
+    }
+
     /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
     var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {
         _walletDidChangePublisher.eraseToAnyPublisher()

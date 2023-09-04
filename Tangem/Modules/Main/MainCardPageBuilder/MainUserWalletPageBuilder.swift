@@ -58,4 +58,20 @@ enum MainUserWalletPageBuilder: Identifiable {
                 .id(id)
         }
     }
+
+    @ViewBuilder
+    var bottomOverlay: some View {
+        switch self {
+        case .singleWallet:
+            EmptyView()
+        case .multiWallet(_, _, let bodyModel):
+            if let viewModel = bodyModel.bottomOverlayViewModel {
+                MainBottomOverlayView(viewModel: viewModel)
+            }
+        case .lockedWallet(_, _, let bodyModel):
+            if let viewModel = bodyModel.bottomOverlayViewModel {
+                MainBottomOverlayView(viewModel: viewModel)
+            }
+        }
+    }
 }
