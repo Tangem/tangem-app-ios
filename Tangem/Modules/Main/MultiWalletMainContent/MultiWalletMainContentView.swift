@@ -41,16 +41,17 @@ struct MultiWalletMainContentView: View {
 
             tokensContent
 
-            FixedSizeButtonWithLeadingIcon(
-                title: Localization.organizeTokensTitle,
-                icon: Assets.OrganizeTokens.filterIcon.image,
-                action: viewModel.openOrganizeTokens
-            )
-            .infinityFrame(axis: .horizontal)
+            if viewModel.isOrganizeTokensVisible {
+                FixedSizeButtonWithLeadingIcon(
+                    title: Localization.organizeTokensTitle,
+                    icon: Assets.OrganizeTokens.filterIcon.image,
+                    action: viewModel.openOrganizeTokens
+                )
+                .infinityFrame(axis: .horizontal)
+            }
         }
         .animation(.default, value: viewModel.missingDerivationNotificationSettings)
         .padding(.horizontal, 16)
-        .padding(.bottom, 40)
     }
 
     private var tokensContent: some View {
@@ -119,7 +120,8 @@ struct MultiWalletContentView_Preview: PreviewProvider {
         return MultiWalletMainContentViewModel(
             userWalletModel: userWalletModel,
             coordinator: mainCoordinator,
-            sectionsProvider: sectionProvider
+            sectionsProvider: sectionProvider,
+            canManageTokens: userWalletModel.isMultiWallet
         )
     }()
 

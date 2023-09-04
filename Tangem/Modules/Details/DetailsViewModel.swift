@@ -102,7 +102,7 @@ extension DetailsViewModel {
 
     func openWalletConnect() {
         Analytics.log(.buttonWalletConnect)
-        coordinator.openWalletConnect(with: cardModel)
+        coordinator.openWalletConnect(with: cardModel.getDisabledLocalizedReason(for: .walletConnect))
     }
 
     func openCardSettings() {
@@ -112,7 +112,7 @@ extension DetailsViewModel {
 
     func openAppSettings() {
         Analytics.log(.buttonAppSettings)
-        coordinator.openAppSettings(userWallet: cardModel)
+        coordinator.openAppSettings()
     }
 
     func openSupportChat() {
@@ -144,7 +144,7 @@ extension DetailsViewModel {
     }
 
     func openEnvironmentSetup() {
-        coordinator.openEnvironmentSetup(with: cardModel.cardId)
+        coordinator.openEnvironmentSetup()
     }
 
     func openReferral() {
@@ -153,7 +153,13 @@ extension DetailsViewModel {
             return
         }
 
-        coordinator.openReferral(with: cardModel, userWalletId: cardModel.userWalletId.value)
+        let input = ReferralInputModel(
+            userWalletId: cardModel.userWalletId.value,
+            supportedBlockchains: cardModel.config.supportedBlockchains,
+            userTokensManager: cardModel.userTokensManager
+        )
+
+        coordinator.openReferral(input: input)
     }
 
     func onAppear() {

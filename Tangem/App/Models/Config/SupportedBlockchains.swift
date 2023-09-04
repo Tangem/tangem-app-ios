@@ -9,6 +9,8 @@
 import Foundation
 import BlockchainSdk
 
+typealias SupportedBlockchainsSet = Set<Blockchain>
+
 extension SupportedBlockchains {
     /// All currently supported mainnet blockchains for simple used.
     /// E.g. for the Token list.
@@ -62,7 +64,7 @@ struct SupportedBlockchains {
     }
 
     private func mainnetBlockchains() -> Set<Blockchain> {
-        var blockchains: Set<Blockchain> = [
+        [
             .ethereum(testnet: false),
             .ethereumClassic(testnet: false),
             .ethereumPoW(testnet: false),
@@ -70,6 +72,7 @@ struct SupportedBlockchains {
             .litecoin,
             .bitcoin(testnet: false),
             .bitcoinCash(testnet: false),
+            .cardano(extended: version == .v2),
             .xrp(curve: .secp256k1),
             .rsk,
             .binance(testnet: false),
@@ -99,14 +102,8 @@ struct SupportedBlockchains {
             .cronos,
             .octa,
             .chia(testnet: false),
+            .ducatus,
         ]
-
-        // Tempopary support only old not extended cardano
-        if version == .v1 {
-            blockchains.insert(.cardano(extended: false))
-        }
-
-        return blockchains
     }
 
     private func testnetBlockchains() -> Set<Blockchain> {

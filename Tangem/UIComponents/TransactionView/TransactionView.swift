@@ -13,151 +13,129 @@ struct TransactionView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            txTypeIcon
+            viewModel.icon
                 .renderingMode(.template)
-                .foregroundColor(viewModel.status.iconColor)
+                .foregroundColor(viewModel.iconColor)
                 .padding(10)
-                .background(viewModel.status.iconBackgroundColor)
+                .background(viewModel.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
-                    Text(viewModel.transactionType.name)
+                    Text(viewModel.name)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    if case .inProgress = viewModel.status {
+                    if viewModel.inProgress {
                         Assets.pendingTxIndicator.image
                     }
 
                     Spacer()
 
-                    Text(viewModel.transferAmount)
-                        .style(Fonts.Regular.subheadline, color: viewModel.transactionType.amountTextColor)
+                    if let amount = viewModel.formattedAmount {
+                        Text(amount)
+                            .style(Fonts.Regular.subheadline, color: viewModel.amountTextColor)
+                    }
                 }
 
                 HStack(spacing: 6) {
-                    Text(viewModel.destination)
+                    Text(viewModel.localizeDestination)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
 
                     Spacer()
 
-                    Text(subtitleText)
+                    Text(viewModel.subtitleText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }
         }
-    }
-
-    private var txTypeIcon: Image {
-        switch viewModel.transactionType {
-        case .receive:
-            return Assets.arrowDownMini.image
-        case .send:
-            return Assets.arrowUpMini.image
-        case .swap:
-            return Assets.exchangeMini.image
-        case .approval:
-            return Assets.approve.image
-        }
-    }
-
-    private var subtitleText: String {
-        switch viewModel.status {
-        case .confirmed:
-            return viewModel.timeFormatted ?? "-"
-        case .inProgress:
-            return Localization.transactionHistoryTxInProgress
-        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
     }
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static func destination(for transactionType: TransactionViewModel.TransactionType, address: String) -> String {
-        transactionType.localizeDestination(for: address)
-    }
-
-    static let incomingInProgressRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .receive, address: "0x01230...3feed"),
-        timeFormatted: "10:45",
-        transferAmount: "+443 wxDAI",
-        transactionType: .receive,
-        status: .inProgress
-    )
-
-    static let incomingConfirmedRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .receive, address: "0x01230...3feed"),
-        timeFormatted: "05:10",
-        transferAmount: "+50 wxDAI",
-        transactionType: .receive,
-        status: .confirmed
-    )
-
-    static let outgoingInProgressRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .receive, address: "0x012...baced"),
-        timeFormatted: "00:04",
-        transferAmount: "-0.5 wxDAI",
-        transactionType: .send,
-        status: .inProgress
-    )
-
-    static let outgoingConfirmedRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .receive, address: "0x0123...baced"),
-        timeFormatted: "15:00",
-        transferAmount: "-15 wxDAI",
-        transactionType: .send,
-        status: .confirmed
-    )
-
-    static let incomingSwapRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .swap(type: .buy), address: "0x0123...baced"),
-        timeFormatted: "16:23",
-        transferAmount: "+0.000000532154 ETH",
-        transactionType: .swap(type: .buy),
-        status: .inProgress
-    )
-
-    static let outgoingSwapRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .swap(type: .sell), address: "0x0123...baced"),
-        timeFormatted: "16:23",
-        transferAmount: "-0.532154 USDT",
-        transactionType: .swap(type: .sell),
-        status: .confirmed
-    )
-
-    static let approveConfirmedRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .approval, address: "0x0123...baced"),
-        timeFormatted: "18:32",
-        transferAmount: "-0.0012 ETH",
-        transactionType: .approval,
-        status: .confirmed
-    )
-
-    static let approveInProgressRecord = TransactionViewModel(
-        id: UUID().uuidString,
-        destination: destination(for: .approval, address: "0x0123...baced"),
-        timeFormatted: "18:32",
-        transferAmount: "-0.0012 ETH",
-        transactionType: .approval,
-        status: .inProgress
-    )
+    static let previewViewModels: [TransactionViewModel] = [
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "10:45",
+            amount: "443 wxDAI",
+            isOutgoing: false,
+            transactionType: .transfer,
+            status: .inProgress
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "05:10",
+            amount: "50 wxDAI",
+            isOutgoing: false,
+            transactionType: .transfer,
+            status: .confirmed
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .contract("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"),
+            timeFormatted: "00:04",
+            amount: "0 wxDAI",
+            isOutgoing: true,
+            transactionType: .approval,
+            status: .confirmed
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .contract("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"),
+            timeFormatted: "15:00",
+            amount: "15 wxDAI",
+            isOutgoing: true,
+            transactionType: .swap,
+            status: .inProgress
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "16:23",
+            amount: "0.000000532154 ETH",
+            isOutgoing: false,
+            transactionType: .swap,
+            status: .inProgress
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "16:23",
+            amount: "0.532154 USDT",
+            isOutgoing: true,
+            transactionType: .swap,
+            status: .confirmed
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "18:32",
+            amount: "0.0012 ETH",
+            isOutgoing: true,
+            transactionType: .approval,
+            status: .confirmed
+        ),
+        TransactionViewModel(
+            id: UUID().uuidString,
+            interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
+            timeFormatted: "18:32",
+            amount: "0.0012 ETH",
+            isOutgoing: true,
+            transactionType: .approval,
+            status: .inProgress
+        ),
+    ]
 
     static var previews: some View {
         VStack {
-            TransactionView(viewModel: incomingInProgressRecord)
-            TransactionView(viewModel: incomingConfirmedRecord)
-            TransactionView(viewModel: outgoingInProgressRecord)
-            TransactionView(viewModel: outgoingConfirmedRecord)
-            TransactionView(viewModel: incomingSwapRecord)
-            TransactionView(viewModel: outgoingSwapRecord)
-            TransactionView(viewModel: approveInProgressRecord)
-            TransactionView(viewModel: approveConfirmedRecord)
+            ForEach(previewViewModels) {
+                TransactionView(viewModel: $0)
+            }
         }
         .padding()
     }

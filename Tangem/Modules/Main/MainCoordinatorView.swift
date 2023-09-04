@@ -61,6 +61,9 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
                 OrganizeTokensContainerView(viewModel: viewModel)
             }
+            .sheet(item: $coordinator.legacyTokenListCoordinator) {
+                LegacyTokenListCoordinatorView(coordinator: $0)
+            }
 
         NavHolder()
             .bottomSheet(

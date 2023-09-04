@@ -218,7 +218,7 @@
 "onboarding_button_skip_backup" = "Skip for later";
 "onboarding_button_what_does_it_mean" = "How does it work?";
 "onboarding_create_wallet_body" = "Let's generate all the keys on your card and create a secure wallet";
-"onboarding_create_wallet_button_create_wallet" = "Create a wallet";
+"onboarding_create_wallet_button_create_wallet" = "Create wallet";
 "onboarding_create_wallet_options_button_options" = "Other options";
 "onboarding_create_wallet_options_message" = "Your keys will be securely generated inside the card. There is no seed phrase, which means nobody can export or steal it.";
 "onboarding_create_wallet_options_title" = "Generate keys privately";
@@ -308,8 +308,8 @@
 "reset_card_to_factory_button_title" = "Reset the Card";
 "reset_card_with_backup_to_factory_message" = "Factory Reset will completely delete the wallet from the selected card. You will not be able to restore the current wallet or use the card to recover the access code.";
 "reset_card_without_backup_to_factory_message" = "Factory Reset will completely delete the wallet from the selected card and remove it from the app. You will not be able to restore the current wallet.";
-"russian_bank_card_warning_subtitle" = "Do you have a bank card of another country or a UnionPay card?";
-"russian_bank_card_warning_title" = "Russian bank cards are not accepted at the moment";
+"russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";
+"russian_bank_card_warning_title" = "Russian bank cards are not currently accepted";
 "save_user_wallet_agreement_access_description" = "Log into the app and check your balance without scanning the card";
 "save_user_wallet_agreement_access_title" = "Access the app";
 "save_user_wallet_agreement_allow" = "Allow to use %@";
@@ -415,6 +415,7 @@
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "You don't have any transactions yet";
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
+"transaction_history_multiple_addresses" = "Multiple addresses";
 "transaction_history_not_supported_description" = "Transaction history is currently not supported for this blockchain. But don't worry, we're working on it! In the meantime you can check it in the explorer.";
 "transaction_history_title" = "Transactions";
 "transaction_history_transaction_from_address" = "from: %@";

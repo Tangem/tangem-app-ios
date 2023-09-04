@@ -341,7 +341,7 @@ class LegacyMainViewModel: ObservableObject {
 
     func deriveEntriesWithoutDerivation() {
         Analytics.log(.noticeScanYourCardTapped)
-        cardModel.derivationManager?.deriveKeys(cardInteractor: cardModel.cardInteractor, completion: { _ in })
+        cardModel.userTokensManager.deriveIfNeeded(completion: { _ in })
     }
 
     func extractSellCryptoRequest(from response: String) {
@@ -394,7 +394,7 @@ class LegacyMainViewModel: ObservableObject {
 // MARK: - Warnings related
 
 extension LegacyMainViewModel {
-    func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
+    func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningView.WarningButton) {
         guard let warning = warnings.warning(at: index, with: priority) else { return }
 
         func registerValidatedSignedHashesCard() {
@@ -717,8 +717,11 @@ extension LegacyMainViewModel: LegacySingleWalletContentViewModelOutput {
 
 extension LegacyMainViewModel: LegacyMultiWalletContentViewModelOutput {
     func openTokensList() {
+        var blockchains = cardModel.config.supportedBlockchains
+        blockchains.remove(.ducatus)
+
         let settings = LegacyManageTokensSettings(
-            supportedBlockchains: cardModel.supportedBlockchains,
+            supportedBlockchains: blockchains,
             hdWalletsSupported: cardModel.config.hasFeature(.hdWallets),
             longHashesSupported: cardModel.config.hasFeature(.longHashes),
             derivationStyle: cardModel.config.derivationStyle,

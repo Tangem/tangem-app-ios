@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 class EnvironmentSetupCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -22,24 +22,22 @@ class EnvironmentSetupCoordinator: CoordinatorObject {
     @Published var supportedBlockchainsPreferencesViewModel: SupportedBlockchainsPreferencesViewModel?
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        rootViewModel = .init(coordinator: self, cardId: options.cardId)
+        rootViewModel = .init(coordinator: self)
     }
 }
 
 // MARK: - Options
 
 extension EnvironmentSetupCoordinator {
-    struct Options {
-        let cardId: String
-    }
+    struct Options {}
 }
 
 // MARK: - EnvironmentSetupRoutable

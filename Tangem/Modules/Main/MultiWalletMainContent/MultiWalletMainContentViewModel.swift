@@ -21,12 +21,33 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     @Published var isScannerBusy = false
 
+    var bottomOverlayViewModel: MainBottomOverlayViewModel? {
+        guard canManageTokens else { return nil }
+
+        return MainBottomOverlayViewModel(
+            isButtonDisabled: false,
+            buttonTitle: Localization.mainManageTokens,
+            buttonAction: openManageTokens
+        )
+    }
+
+    var isOrganizeTokensVisible: Bool {
+        if sections.isEmpty {
+            return false
+        }
+
+        let numberOfTokens = sections.reduce(0) { $0 + $1.tokenItemModels.count }
+        let requiredNumberOfTokens = 2
+
+        return numberOfTokens >= requiredNumberOfTokens
+    }
+
     // MARK: - Dependencies
 
     private let userWalletModel: UserWalletModel
-
     private unowned let coordinator: MultiWalletMainContentRoutable
     private var sectionsProvider: TokenListInfoProvider
+    private let canManageTokens: Bool // TODO: Andrey Fedorov - More sophisticated logic (IOS-4060)
 
     private var isUpdating = false
     private var bag = Set<AnyCancellable>()
@@ -34,11 +55,13 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     init(
         userWalletModel: UserWalletModel,
         coordinator: MultiWalletMainContentRoutable,
-        sectionsProvider: TokenListInfoProvider
+        sectionsProvider: TokenListInfoProvider,
+        canManageTokens: Bool
     ) {
         self.userWalletModel = userWalletModel
         self.coordinator = coordinator
         self.sectionsProvider = sectionsProvider
+        self.canManageTokens = canManageTokens
 
         setup()
     }
@@ -78,6 +101,22 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     func openOrganizeTokens() {
         coordinator.openOrganizeTokens(for: userWalletModel)
+    }
+
+    // TODO: Andrey Fedorov - More sophisticated logic (IOS-4060)
+    func openManageTokens() {
+        let shouldShowLegacyDerivationAlert = userWalletModel.config.warningEvents.contains(where: { $0 == .legacyDerivation })
+
+        let settings = LegacyManageTokensSettings(
+            supportedBlockchains: userWalletModel.config.supportedBlockchains,
+            hdWalletsSupported: userWalletModel.config.hasFeature(.hdWallets),
+            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+            derivationStyle: userWalletModel.config.derivationStyle,
+            shouldShowLegacyDerivationAlert: shouldShowLegacyDerivationAlert,
+            existingCurves: (userWalletModel as? CardViewModel)?.card.walletCurves ?? []
+        )
+
+        coordinator.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
     }
 
     private func setup() {

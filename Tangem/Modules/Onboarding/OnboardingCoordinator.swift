@@ -9,8 +9,8 @@
 import Foundation
 
 class OnboardingCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<OutputOptions>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view models
 
@@ -37,7 +37,7 @@ class OnboardingCoordinator: CoordinatorObject {
 
     private var options: OnboardingCoordinator.Options!
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<OutputOptions>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
@@ -72,6 +72,10 @@ extension OnboardingCoordinator {
     struct Options {
         let input: OnboardingInput
         let destination: DestinationOnFinish
+    }
+
+    struct OutputOptions {
+        let isSuccessful: Bool
     }
 }
 
@@ -153,16 +157,16 @@ extension OnboardingCoordinator: OnboardingRoutable {
                 return
             }
 
-            closeOnboarding()
+            dismiss(with: .init(isSuccessful: true))
         case .root:
             popToRoot()
         case .dismiss:
-            closeOnboarding()
+            dismiss(with: .init(isSuccessful: true))
         }
     }
 
     func closeOnboarding() {
-        dismiss()
+        dismiss(with: .init(isSuccessful: false))
     }
 
     private func openMain(with cardModel: CardViewModel) {

@@ -12,7 +12,7 @@ import Combine
 import class TangemSwapping.ThreadSafeContainer
 
 class CommonTransactionHistoryService {
-    private let blockchain: Blockchain
+    private let tokenItem: TokenItem
     private let address: String
 
     private let transactionHistoryProvider: TransactionHistoryProvider
@@ -25,11 +25,11 @@ class CommonTransactionHistoryService {
     private var storage: ThreadSafeContainer<[TransactionRecord]> = []
 
     init(
-        blockchain: Blockchain,
+        tokenItem: TokenItem,
         address: String,
         transactionHistoryProvider: TransactionHistoryProvider
     ) {
-        self.blockchain = blockchain
+        self.tokenItem = tokenItem
         self.address = address
         self.transactionHistoryProvider = transactionHistoryProvider
     }
@@ -58,7 +58,7 @@ extension CommonTransactionHistoryService: TransactionHistoryService {
         cancellable = nil
         currentPage = 0
         totalPages = 0
-        updateStorage(records: [])
+        cleanStorage()
         AppLog.shared.debug("\(self) was reset")
     }
 
@@ -87,13 +87,15 @@ private extension CommonTransactionHistoryService {
         _state.send(.loading)
 
         let nextPage = Page(number: currentPage + 1, size: pageSize)
+        let request = TransactionHistory.Request(address: address, page: nextPage, amountType: tokenItem.amountType)
         cancellable = transactionHistoryProvider
-            .loadTransactionHistory(address: address, page: nextPage)
+            .loadTransactionHistory(request: request)
             .sink { [weak self] completion in
                 switch completion {
                 case .failure(let error):
                     self?._state.send(.failedToLoad(error))
                     AppLog.shared.debug("\(String(describing: self)) error: \(error)")
+                    result(.success(()))
                 case .finished:
                     self?._state.send(.loaded)
                 }
@@ -106,9 +108,9 @@ private extension CommonTransactionHistoryService {
             }
     }
 
-    func updateStorage(records: [TransactionRecord]) {
+    func cleanStorage() {
         storage.mutate { value in
-            value = records
+            value.removeAll()
         }
     }
 
@@ -126,7 +128,8 @@ extension CommonTransactionHistoryService: CustomStringConvertible {
         objectDescription(
             self,
             userInfo: [
-                "blockchain": blockchain.displayName,
+                "name": tokenItem.name,
+                "type": tokenItem.isToken ? "Token" : "Coin",
                 "address": address,
                 "totalPages": totalPages,
                 "currentPage": currentPage,

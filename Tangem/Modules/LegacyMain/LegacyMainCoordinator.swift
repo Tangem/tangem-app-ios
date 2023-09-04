@@ -13,8 +13,8 @@ import Combine
 class LegacyMainCoordinator: CoordinatorObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -48,7 +48,7 @@ class LegacyMainCoordinator: CoordinatorObject {
     private var lastInsertedUserWalletId: Data?
     private var bag: Set<AnyCancellable> = []
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
 
@@ -99,7 +99,7 @@ extension LegacyMainCoordinator {
 
 extension LegacyMainCoordinator: LegacyMainRoutable {
     func openOnboardingModal(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
             self?.mainViewModel?.updateIsBackupAllowed()
         }
@@ -172,7 +172,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     }
 
     func openPushTx(for tx: BlockchainSdk.Transaction, blockchainNetwork: BlockchainNetwork, card: CardViewModel) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.pushTxCoordinator = nil
         }
 
@@ -191,7 +191,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     }
 
     func openSettings(cardModel: CardViewModel) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.detailsCoordinator = nil
         }
 
@@ -204,7 +204,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
 
     func openTokenDetails(cardModel: CardViewModel, blockchainNetwork: BlockchainNetwork, amountType: Amount.AmountType) {
         Analytics.log(.tokenIsTapped)
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenDetailsCoordinator = nil
             self?.tokenDetailsCoordinator = nil
         }
@@ -243,7 +243,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
         with settings: LegacyManageTokensSettings,
         userTokensManager: UserTokensManager
     ) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenListCoordinator = nil
         }
 
@@ -291,7 +291,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     }
 
     func openUserWalletList() {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.userWalletListCoordinator = nil
         }
 
@@ -305,7 +305,7 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     func openSwapping(input: CommonSwappingModulesFactory.InputModel) {}
 
     func openPromotion(cardPublicKey: String, cardId: String, walletId: String) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.promotionCoordinator = nil
         }
 
@@ -320,7 +320,7 @@ extension LegacyMainCoordinator: UserWalletListCoordinatorOutput {
     func dismissAndOpenOnboarding(with input: OnboardingInput) {
         userWalletListCoordinator = nil
 
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
             self?.userWalletRepository.updateSelection()
         }

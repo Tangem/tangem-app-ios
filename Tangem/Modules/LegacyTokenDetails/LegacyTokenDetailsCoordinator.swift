@@ -10,8 +10,8 @@ import Foundation
 import BlockchainSdk
 
 class LegacyTokenDetailsCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -29,7 +29,7 @@ class LegacyTokenDetailsCoordinator: CoordinatorObject {
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
@@ -115,7 +115,7 @@ extension LegacyTokenDetailsCoordinator: LegacyTokenDetailsRoutable {
     }
 
     func openPushTx(for tx: BlockchainSdk.Transaction, blockchainNetwork: BlockchainNetwork, card: CardViewModel) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.pushTxCoordinator = nil
         }
 
@@ -155,7 +155,7 @@ extension LegacyTokenDetailsCoordinator: LegacyTokenDetailsRoutable {
     }
 
     func openSwapping(input: CommonSwappingModulesFactory.InputModel) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<Void> = { [weak self] _ in
             self?.swappingCoordinator = nil
         }
 

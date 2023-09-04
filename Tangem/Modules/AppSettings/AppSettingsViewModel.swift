@@ -28,7 +28,6 @@ class AppSettingsViewModel: ObservableObject {
     // MARK: Properties
 
     private var bag: Set<AnyCancellable> = []
-    private let userWallet: CardViewModel
     private var isBiometryAvailable: Bool = true
 
     private var isSavingWallet: Bool {
@@ -45,13 +44,12 @@ class AppSettingsViewModel: ObservableObject {
         }
     }
 
-    init(userWallet: CardViewModel, coordinator: AppSettingsRoutable) {
+    init(coordinator: AppSettingsRoutable) {
         self.coordinator = coordinator
 
         let isSavingWallet = AppSettings.shared.saveUserWallets
         self.isSavingWallet = isSavingWallet
         isSavingAccessCodes = isSavingWallet && AppSettings.shared.saveAccessCodes
-        self.userWallet = userWallet
 
         updateView()
         bind()
@@ -92,7 +90,7 @@ private extension AppSettingsViewModel {
                 updateView()
                 completion(false)
             } else {
-                _ = userWalletRepository.save(userWallet)
+                userWalletRepository.setSaving(true)
                 completion(true)
             }
         }
@@ -204,7 +202,7 @@ private extension AppSettingsViewModel {
         // If saved wallets is turn off we should delete access codes too
         if !saveWallets {
             setSaveAccessCodes(false)
-            userWalletRepository.clearNonSelectedUserWallets()
+            userWalletRepository.setSaving(false)
         }
     }
 

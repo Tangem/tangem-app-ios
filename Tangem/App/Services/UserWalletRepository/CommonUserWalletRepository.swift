@@ -241,6 +241,16 @@ class CommonUserWalletRepository: UserWalletRepository {
         save(cardViewModel.userWallet)
     }
 
+    func setSaving(_ enabled: Bool) {
+        if enabled {
+            if let selectedModel {
+                save(selectedModel)
+            }
+        } else {
+            clearNonSelectedUserWallets()
+        }
+    }
+
     func save(_ userWallet: UserWallet) {
         if models.isEmpty && !userWallets.isEmpty {
             loadModels()

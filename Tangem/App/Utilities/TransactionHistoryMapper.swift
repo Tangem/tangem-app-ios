@@ -32,56 +32,20 @@ struct TransactionHistoryMapper {
     }
 
     func mapTransactionListItem(from records: [TransactionRecord]) -> [TransactionListItem] {
-        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: records, by: { Calendar.current.startOfDay(for: $0.date ?? Date()) })
 
-        var controlDate: Date!
-        var txListItems = [TransactionListItem]()
-        var controlDateTxs = [TransactionViewModel]()
-        records.forEach { record in
-            // Check if this is first transaction. If so add to list.
-            if controlDate == nil {
-                controlDate = record.date
-                let viewModel = mapTransactionViewModel(record)
-                controlDateTxs.append(viewModel)
-                return
-            }
-
-            // If this current transaction was in the same day - add to list
-            // otherwise create day group
-            if let date = record.date, calendar.isDate(date, inSameDayAs: controlDate) {
-                let viewModel = mapTransactionViewModel(record)
-                controlDateTxs.append(viewModel)
-                return
-            }
-
-            // Create transaction list item grouped by day with relative date formatting
-            // all transaction from previous date will be added to list excluding current transaction
-            let listItem = TransactionListItem(
-                header: dateFormatter.string(from: controlDate),
-                items: controlDateTxs
+        return grouped.sorted(by: { $0.key > $1.key }).reduce([]) { result, args in
+            let (key, value) = args
+            let item = TransactionListItem(
+                header: dateFormatter.string(from: key),
+                items: value.map(mapTransactionViewModel)
             )
-            txListItems.append(listItem)
 
-            // Set current transaction date as new control date and create new list with current transaction
-            controlDate = record.date
-            let viewModel = mapTransactionViewModel(record)
-            controlDateTxs = [viewModel]
+            return result + [item]
         }
-
-        // Transactions in the last day group won't be added in forEach loop, so we need to
-        // check if there are any. If so - create a list of transactions for the last day
-        if controlDate != nil, !controlDateTxs.isEmpty {
-            txListItems.append(TransactionListItem(
-                header: dateFormatter.string(from: controlDate),
-                items: controlDateTxs
-            ))
-        }
-
-        return txListItems
     }
 
     func mapTransactionViewModel(_ record: TransactionRecord) -> TransactionViewModel {
-        let type = transactionType(from: record)
         var timeFormatted: String?
         if let date = record.date {
             timeFormatted = timeFormatter.string(from: date)
@@ -89,17 +53,21 @@ struct TransactionHistoryMapper {
 
         return TransactionViewModel(
             id: record.hash,
-            destination: destination(from: record),
+            interactionAddress: interactionAddress(from: record),
             timeFormatted: timeFormatted,
-            transferAmount: "\(type.amountPrefix)\(transferAmount(from: record))",
-            transactionType: type,
-            status: record.status == .confirmed ? .confirmed : .inProgress
+            amount: transferAmount(from: record),
+            isOutgoing: record.isOutgoing,
+            transactionType: transactionType(from: record),
+            status: status(from: record)
         )
     }
+}
 
+// MARK: - TransactionHistoryMapper
+
+private extension TransactionHistoryMapper {
     func transferAmount(from record: TransactionRecord) -> String {
-        switch record.type {
-        case .send:
+        if record.isOutgoing {
             let sent: Decimal = {
                 switch record.source {
                 case .single(let source):
@@ -119,9 +87,9 @@ struct TransactionHistoryMapper {
             }()
 
             let amount = sent - change
-            return balanceFormatter.formatCryptoBalance(amount, currencyCode: currencySymbol)
+            return formatted(amount: amount, isOutgoing: record.isOutgoing)
 
-        case .receive:
+        } else {
             let received: Decimal = {
                 switch record.destination {
                 case .single(let destination):
@@ -131,36 +99,86 @@ struct TransactionHistoryMapper {
                 }
             }()
 
-            return balanceFormatter.formatCryptoBalance(received, currencyCode: currencySymbol)
+            return formatted(amount: received, isOutgoing: record.isOutgoing)
         }
     }
 
-    func destination(from record: TransactionRecord) -> String {
+    func interactionAddress(from record: TransactionRecord) -> TransactionViewModel.InteractionAddressType {
         switch record.type {
-        case .send:
-            switch record.destination {
-            case .single(let destination):
-                return destination.address.string
-            case .multiple(let destinations):
-                return destinations.first(where: { $0.address.string != walletAddress })?.address.string ?? ""
+        case .transfer:
+            if record.isOutgoing {
+                return mapToInteractionAddressType(destination: record.destination)
+            } else {
+                return mapToInteractionAddressType(source: record.source)
             }
-        case .receive:
-            switch record.source {
-            case .single(let source):
-                return source.address
-            case .multiple(let sources):
-                return sources.first(where: { $0.address != walletAddress })?.address ?? ""
+        default:
+            return mapToInteractionAddressType(destination: record.destination)
+        }
+    }
+
+    func mapToInteractionAddressType(source: TransactionRecord.SourceType) -> TransactionViewModel.InteractionAddressType {
+        switch source {
+        case .single(let source):
+            return .user(source.address)
+        case .multiple(let sources):
+            return .multiple(sources.map { $0.address })
+        }
+    }
+
+    func mapToInteractionAddressType(destination: TransactionRecord.DestinationType) -> TransactionViewModel.InteractionAddressType {
+        switch destination {
+        case .single(let destination):
+            switch destination.address {
+            case .user(let address):
+                return .user(address)
+            case .contract(let address):
+                return .contract(address)
             }
+        case .multiple(let destinations):
+            return .multiple(destinations.map { $0.address.string })
         }
     }
 
     func transactionType(from record: TransactionRecord) -> TransactionViewModel.TransactionType {
         switch record.type {
-        case .receive:
-            return .receive
-        case .send:
-            return .send
+        case .transfer:
+            return .transfer
+        case .swap, .unoswap:
+            return .swap
+        case .approve:
+            return .approval
+        case .deposit:
+            return .custom(name: "Deposit")
+        case .submit:
+            return .custom(name: "Submit")
+        case .supply:
+            return .custom(name: "Supply")
+        case .withdraw:
+            return .custom(name: "Withdraw")
+        case .custom(let id):
+            return .custom(name: id)
         }
+    }
+
+    func status(from record: TransactionRecord) -> TransactionViewModel.Status {
+        switch record.status {
+        case .confirmed:
+            return .confirmed
+        case .failed:
+            return .failed
+        case .unconfirmed:
+            return .inProgress
+        }
+    }
+
+    func formatted(amount: Decimal, isOutgoing: Bool) -> String {
+        let formatted = balanceFormatter.formatCryptoBalance(amount, currencyCode: currencySymbol)
+        if amount.isZero {
+            return formatted
+        }
+
+        let prefix = isOutgoing ? "-" : "+"
+        return prefix + formatted
     }
 }
 

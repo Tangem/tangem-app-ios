@@ -21,7 +21,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 433)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 3.3, decimals: 8)),
                 status: .unconfirmed,
-                type: .receive,
+                isOutgoing: false,
+                type: .transfer,
                 date: today
             ),
             TransactionRecord(
@@ -30,7 +31,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 50)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 1.3, decimals: 8)),
                 status: .unconfirmed,
-                type: .receive,
+                isOutgoing: false,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -4, to: today)
             ),
             TransactionRecord(
@@ -39,7 +41,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.5)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .unconfirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -5, to: today)
             ),
             TransactionRecord(
@@ -48,7 +51,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: yesterday
             ),
             TransactionRecord(
@@ -57,7 +61,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .unconfirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -3, to: yesterday)
             ),
             TransactionRecord(
@@ -66,7 +71,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -8, to: yesterday)
             ),
             TransactionRecord(
@@ -75,7 +81,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: yesterday
             ),
             TransactionRecord(
@@ -84,7 +91,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .unconfirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -3, to: yesterday)
             ),
             TransactionRecord(
@@ -93,7 +101,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -8, to: yesterday)
             ),
             TransactionRecord(
@@ -102,7 +111,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: yesterday
             ),
             TransactionRecord(
@@ -111,7 +121,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .unconfirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -3, to: yesterday)
             ),
             TransactionRecord(
@@ -120,7 +131,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: calendar.date(byAdding: .hour, value: -8, to: yesterday)
             ),
             TransactionRecord(
@@ -129,7 +141,8 @@ struct FakeTransactionHistoryFactory {
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
                 status: .confirmed,
-                type: .send,
+                isOutgoing: true,
+                type: .transfer,
                 date: yesterday
             ),
         ]

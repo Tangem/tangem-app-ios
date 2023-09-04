@@ -9,8 +9,8 @@
 import Foundation
 
 class UserWalletListCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -24,8 +24,8 @@ class UserWalletListCoordinator: CoordinatorObject {
 
     required init(
         output: UserWalletListCoordinatorOutput,
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.output = output
         self.dismissAction = dismissAction

@@ -71,12 +71,6 @@ struct LockedWalletMainContentView: View {
             .disabled(true)
 
             Spacer()
-
-            MainButton(
-                title: Localization.mainManageTokens,
-                isDisabled: true, action: {}
-            )
-            .padding(.bottom, 10)
         }
     }
 
@@ -143,13 +137,21 @@ struct LockedWalletMainContentView: View {
 struct LockedWalletMainContentView_Previews: PreviewProvider {
     static var previews: some View {
         LockedWalletMainContentView(
-            viewModel: .init(userWalletModel: FakeUserWalletModel.wallet3Cards, lockedUserWalletDelegate: nil)
+            viewModel: .init(
+                userWalletModel: FakeUserWalletModel.wallet3Cards,
+                isMultiWallet: true,
+                lockedUserWalletDelegate: nil
+            )
         )
         .infinityFrame()
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
 
         LockedWalletMainContentView(
-            viewModel: .init(userWalletModel: FakeUserWalletModel.twins, lockedUserWalletDelegate: nil)
+            viewModel: .init(
+                userWalletModel: FakeUserWalletModel.twins,
+                isMultiWallet: false,
+                lockedUserWalletDelegate: nil
+            )
         )
         .infinityFrame()
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))

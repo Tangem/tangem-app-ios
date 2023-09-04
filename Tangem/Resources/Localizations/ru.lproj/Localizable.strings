@@ -308,7 +308,7 @@
 "reset_card_to_factory_button_title" = "Сбросить карту";
 "reset_card_with_backup_to_factory_message" = "Сброс к заводским настройкам приведет к полному удалению кошелька с выбранной карты. Вы не сможете восстановить текущий кошелек или использовать данную карту для восстановления кода доступа.";
 "reset_card_without_backup_to_factory_message" = "Сброс к заводским настройкам приведет к полному удалению кошелька с выбранной карты. Вы не сможете восстановить текущий кошелек.";
-"russian_bank_card_warning_subtitle" = "У вас есть карта банка другой страны или платежной системы UnionPay?";
+"russian_bank_card_warning_subtitle" = "У вас есть карта банка другой страны, а также вид на жительство или регистрация вне РФ?";
 "russian_bank_card_warning_title" = "Карты банков РФ в данный момент не принимаются";
 "save_user_wallet_agreement_access_description" = "Войдите в приложение и следите за своим балансом без сканирования карты";
 "save_user_wallet_agreement_access_title" = "Доступ в приложение";
@@ -415,6 +415,7 @@
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас еще нет транзакций";
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";
+"transaction_history_multiple_addresses" = "Несколько адресов";
 "transaction_history_not_supported_description" = "История транзакций в настоящее время не поддерживается для этого блокчейна. Но не волнуйтесь, мы работаем над этим! А пока вы можете проверить ее в обозревателе.";
 "transaction_history_title" = "Транзакции";
 "transaction_history_transaction_from_address" = "от: %@";

@@ -307,7 +307,7 @@
 "reset_card_to_factory_button_title" = "重置卡片";
 "reset_card_with_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包。您將無法恢復當前錢包或使用卡恢復訪問密碼";
 "reset_card_without_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包並將其從應用程序中刪除。您將無法恢復當前錢包";
-"russian_bank_card_warning_subtitle" = "您有其他國家的銀行卡或銀聯卡嗎？";
+"russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";
 "russian_bank_card_warning_title" = "目前不接受俄羅斯銀行卡";
 "save_user_wallet_agreement_access_description" = "登錄應用程序並在不掃描卡片的情況下檢查您的資產";
 "save_user_wallet_agreement_access_title" = "訪問應用程序";
@@ -414,6 +414,7 @@
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "您還沒有任何交易";
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
+"transaction_history_multiple_addresses" = "Multiple addresses";
 "transaction_history_not_supported_description" = "Transaction history is currently not supported for this blockchain. But don't worry, we're working on it! In the meantime you can check it in the explorer.";
 "transaction_history_title" = "交易";
 "transaction_history_transaction_from_address" = "from: %@";

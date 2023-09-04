@@ -24,15 +24,15 @@ class WalletConnectViewModel: ObservableObject {
     @MainActor
     var noActiveSessions: Bool { sessions.isEmpty }
 
-    private var cardModel: CardViewModel
+    private let disabledLocalizedReason: String?
     private var bag = Set<AnyCancellable>()
     private var pendingURI: WalletConnectRequestURI?
     private var scannedQRCode: CurrentValueSubject<String?, Never> = .init(nil)
 
     private unowned let coordinator: WalletConnectRoutable
 
-    init(cardModel: CardViewModel, coordinator: WalletConnectRoutable) {
-        self.cardModel = cardModel
+    init(disabledLocalizedReason: String?, coordinator: WalletConnectRoutable) {
+        self.disabledLocalizedReason = disabledLocalizedReason
         self.coordinator = coordinator
     }
 
@@ -78,7 +78,7 @@ class WalletConnectViewModel: ObservableObject {
     func openSession() {
         Analytics.log(.buttonStartWalletConnectSession)
 
-        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .walletConnect) {
+        if let disabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
