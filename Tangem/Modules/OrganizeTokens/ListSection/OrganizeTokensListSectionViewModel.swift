@@ -17,12 +17,4 @@ struct OrganizeTokensListSectionViewModel: Hashable, Identifiable {
 
     let id: AnyHashable
     let style: SectionStyle
-    var items: [OrganizeTokensListItemViewModel]
-
-    var isDraggable: Bool {
-        if case .draggable = style {
-            return true
-        }
-        return false
-    }
 }

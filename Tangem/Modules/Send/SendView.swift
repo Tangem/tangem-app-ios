@@ -103,12 +103,12 @@ struct SendView: View {
                                     Text(viewModel.currencyUnit)
                                         .font(Font.system(size: 38.0, weight: .light, design: .default))
                                         .foregroundColor(!viewModel.isSellingCrypto ?
-                                            Color.tangemBlue : Color.tangemGrayDark6.opacity(0.5))
+                                            Colors.Button.positive : Color.tangemGrayDark6.opacity(0.5))
 
                                     if viewModel.isFiatConvertingAvailable {
                                         Image(systemName: "arrow.up.arrow.down")
                                             .font(Font.system(size: 17.0, weight: .regular, design: .default))
-                                            .foregroundColor(Color.tangemBlue)
+                                            .foregroundColor(Colors.Button.positive)
                                     }
                                 }
                             }
@@ -122,11 +122,15 @@ struct SendView: View {
                                 .foregroundColor((viewModel.amountHint?.isError ?? false) ?
                                     Color.red : Color.tangemGrayDark)
                             Spacer()
-                            Text(viewModel.walletTotalBalanceFormatted)
-                                .font(Font.system(size: 13.0, weight: .medium, design: .default))
-                                .lineLimit(2)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(Color.tangemGrayDark)
+
+                            SensitiveText(
+                                builder: Localization.commonBalance,
+                                sensitive: viewModel.walletTotalBalanceFormatted
+                            )
+                            .font(Font.system(size: 13.0, weight: .medium, design: .default))
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .foregroundColor(Color.tangemGrayDark)
                         }
                     }
                     if viewModel.shouldShowNetworkBlock {
@@ -168,7 +172,7 @@ struct SendView: View {
                                             Text(Localization.sendFeeIncludeDescription)
                                                 .font(Font.system(size: 13.0, weight: .medium, design: .default))
                                                 .foregroundColor(Color.tangemGrayDark6)
-                                        }.tintCompat(.tangemBlue)
+                                        }.tintCompat(Colors.Control.checked)
                                     }
                                 }
                                 .padding(.vertical, 8.0)

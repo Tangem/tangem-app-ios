@@ -16,7 +16,7 @@ protocol UserTokensSyncService {
     var initialSyncPublisher: AnyPublisher<Bool, Never> { get }
 }
 
-protocol UserTokensManager: UserTokensSyncService {
+protocol UserTokensManager: UserTokensSyncService, UserTokensReordering {
     var derivationManager: DerivationManager? { get }
 
     func deriveIfNeeded(completion: @escaping (Result<Void, TangemSdkError>) -> Void)

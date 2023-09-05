@@ -24,19 +24,17 @@ struct Web3StoryPage: View {
 
             VStack(spacing: 16) {
                 Text(Localization.storyWeb3Title)
-                    .font(.system(size: 36, weight: .semibold))
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .title, textBlockAppearance: .almostImmediate)
 
                 Text(Localization.storyWeb3Description)
-                    .font(.system(size: 20))
+                    .style(Fonts.Regular.callout, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .description, textBlockAppearance: .almostImmediate)
             }
+            .padding(.horizontal, 28)
             .fixedSize(horizontal: false, vertical: true)
 
             Color.clear
@@ -67,7 +65,7 @@ struct Web3StoryPage: View {
                     }
                 )
 
-            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }

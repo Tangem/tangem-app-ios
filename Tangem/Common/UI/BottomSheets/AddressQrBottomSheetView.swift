@@ -72,7 +72,7 @@ struct AddressQrBottomSheetContent: View {
                                 .id("2")
                         }
                         .frame(width: 18, height: 18)
-                        .foregroundColor(.tangemGreen)
+                        .foregroundColor(Colors.Icon.accent)
                     }
                     .frame(height: 40)
                     .padding(.horizontal, 16)
@@ -82,7 +82,7 @@ struct AddressQrBottomSheetContent: View {
                 Button(action: { showShareSheet() }, label: {
                     Image(systemName: "arrowshape.turn.up.right")
                         .frame(height: 40)
-                        .foregroundColor(.tangemGreen)
+                        .foregroundColor(Colors.Icon.accent)
                         .padding(.horizontal, 16)
                         .background(Color.tangemBgGray)
                         .cornerRadius(20)

@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import BlockchainSdk
 
+// TODO: https://tangem.atlassian.net/browse/IOS-3525
 class PriceChangeProviderMock: PriceChangeProvider {
     var priceChangePublisher: AnyPublisher<Void, Never> { .just }
 

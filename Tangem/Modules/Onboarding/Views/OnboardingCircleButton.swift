@@ -61,6 +61,7 @@ struct OnboardingCircleButton: View {
     var state: State
     var size: Size = .default
 
+    private let backgroundColor = Colors.Background.primary
     private var buttonSize: CGSize { size.buttonSize }
     private var successButtonSize: CGSize {
         .init(width: buttonSize.width * 0.657, height: buttonSize.height * 0.657)
@@ -73,12 +74,12 @@ struct OnboardingCircleButton: View {
                 refreshAction()
             }, label: {
                 Circle()
-                    .foregroundColor(.white)
+                    .foregroundColor(backgroundColor)
                     .overlay(
                         Assets.Onboarding.refresh.image
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundColor(state == .refreshButton ? .tangemGrayDark6 : .white)
+                            .foregroundColor(state == .refreshButton ? .tangemGrayDark6 : backgroundColor)
                             .frame(size: size.refreshImageSize)
                     )
             })
@@ -89,16 +90,16 @@ struct OnboardingCircleButton: View {
                 color: .tangemGrayDark6
             )
             .frame(size: buttonSize)
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(buttonSize.height / 2)
             .opacity(state == .activityIndicator ? 1.0 : 0.0)
             Circle()
                 .frame(size: buttonSize)
-                .foregroundColor(.tangemGreen)
+                .foregroundColor(Colors.Icon.accent)
                 .opacity(0.2)
                 .cornerRadius(buttonSize.height / 2)
                 .scaleEffect(state == .doneCheckmark ? 1.0 : 0.0001)
-            Color.tangemGreen
+            Colors.Icon.accent
                 .frame(size: successButtonSize)
                 .cornerRadius(successButtonSize.height)
                 .overlay(
@@ -114,7 +115,7 @@ struct OnboardingCircleButton: View {
     var body: some View {
         Circle()
             .strokeBorder(style: StrokeStyle(lineWidth: 1))
-            .foregroundColor(state == .doneCheckmark ? .tangemGreen : .tangemGrayLight4)
+            .foregroundColor(state == .doneCheckmark ? Colors.Icon.accent : .tangemGrayLight4)
             .background(backgroundView)
             .frame(size: buttonSize)
     }

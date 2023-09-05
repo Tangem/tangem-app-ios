@@ -76,5 +76,6 @@ struct NonDismissableModalView<T: View>: UIViewControllerRepresentable {
 extension View {
     func presentation(modal: Bool = true, onDismissalAttempt: (() -> Void)? = nil, onDismissed: (() -> Void)? = nil) -> some View {
         NonDismissableModalView(view: self, modal: modal, onDismissalAttempt: onDismissalAttempt, onDismissed: onDismissed)
+            .edgesIgnoringSafeArea(.bottom) // Otherwise background doesn't stretch all the way
     }
 }

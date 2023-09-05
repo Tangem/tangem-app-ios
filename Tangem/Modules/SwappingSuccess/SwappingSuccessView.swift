@@ -30,7 +30,7 @@ struct SwappingSuccessView: View {
 
                 buttonView
             }
-            .navigationBarTitle(Text(Localization.swappingSwap), displayMode: .inline)
+            .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
         }
     }
 

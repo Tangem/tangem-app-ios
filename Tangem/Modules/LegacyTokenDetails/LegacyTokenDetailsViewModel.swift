@@ -110,38 +110,19 @@ class LegacyTokenDetailsViewModel: ObservableObject {
     }
 
     var canSend: Bool {
-        guard canSignLongTransactions else {
-            return false
-        }
-
-        return wallet?.canSend(amountType: amountType) ?? false
+        walletModel?.canSendTransaction ?? false
     }
 
     var sendBlockedReason: String? {
-        guard
-            let wallet = walletModel?.wallet,
-            let currentAmount = wallet.amounts[amountType],
-            let token = amountType.token
-        else {
+        guard let reason = walletModel?.sendBlockedReason else {
             return nil
         }
 
-        if wallet.hasPendingTx, !wallet.hasPendingTx(for: amountType) { // has pending tx for fee
-            return Localization.tokenDetailsSendBlockedTxFormat(wallet.amounts[.coin]?.currencySymbol ?? "")
+        if case .cantSignLongTransactions = reason {
+            return nil
         }
 
-        // no fee
-        if !wallet.hasPendingTx, !canSend, !currentAmount.isZero {
-            return Localization.tokenDetailsSendBlockedFeeFormat(
-                token.name,
-                wallet.blockchain.displayName,
-                token.name,
-                wallet.blockchain.displayName,
-                wallet.blockchain.currencySymbol
-            )
-        }
-
-        return nil
+        return reason.description
     }
 
     var existentialDepositWarning: String? {
@@ -188,13 +169,7 @@ class LegacyTokenDetailsViewModel: ObservableObject {
     }
 
     private var canSignLongTransactions: Bool {
-        if let blockchain = walletModel?.blockchainNetwork.blockchain,
-           NFCUtils.isPoorNfcQualityDevice,
-           blockchain.hasLongTransactions {
-            return false
-        } else {
-            return true
-        }
+        AppUtils().canSignLongTransactions(network: blockchainNetwork)
     }
 
     private var isCustomToken: Bool {

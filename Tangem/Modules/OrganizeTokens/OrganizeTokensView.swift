@@ -86,6 +86,9 @@ struct OrganizeTokensView: View {
         )
     }
 
+    // TODO: Andrey Fedorov - Temporary workaround for cases when auto scrolling occasionally stops working (IOS-4353)
+    private var throttleInterval: GeometryInfo.ThrottleInterval { hasActiveDrag ? .zero : .aggressive }
+
     // MARK: - Body
 
     var body: some View {
@@ -102,7 +105,7 @@ struct OrganizeTokensView: View {
             Colors.Background.secondary
                 .ignoresSafeArea(edges: .vertical)
         )
-        .onFirstAppear {
+        .onAppear {
             dragAndDropController.dataSource = viewModel
             viewModel.onViewAppear()
         }
@@ -130,12 +133,13 @@ struct OrganizeTokensView: View {
                         .onTouchesBegan(onTouchesBegan(atLocation:))
                         .readGeometry(
                             \.frame.maxY,
-                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
+                            inCoordinateSpace: .global,
+                            throttleInterval: throttleInterval,
                             bindTo: $tokenListContentFrameMaxY
                         )
                         .readContentOffset(
                             inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                            throttleInterval: GeometryInfo.ThrottleInterval.aggressive,
+                            throttleInterval: throttleInterval,
                             bindTo: $scrollViewContentOffset
                         )
 
@@ -144,7 +148,7 @@ struct OrganizeTokensView: View {
                             .id(scrollViewBottomContentInsetSpacerIdentifier)
                     }
                 }
-                .readGeometry(\.frame) { newValue in
+                .readGeometry(\.frame, inCoordinateSpace: .global) { newValue in
                     dragAndDropController.viewportSizeSubject.send(newValue.size)
                     visibleViewportFrame = newValue
                         .divided(atDistance: scrollViewTopContentInset, from: .minYEdge)
@@ -214,7 +218,7 @@ struct OrganizeTokensView: View {
                             indexPath: indexPath,
                             parametersProvider: parametersProvider
                         )
-                        .hidden(itemViewModel.id == dragAndDropSourceViewModelIdentifier)
+                        .hidden(itemViewModel.id.asAnyHashable == dragAndDropSourceViewModelIdentifier)
                         .id(itemViewModel.id)
                         .readGeometry(
                             \.frame,
@@ -226,8 +230,8 @@ struct OrganizeTokensView: View {
                     let indexPath = IndexPath(item: viewModel.sectionHeaderItemIndex, section: sectionIndex)
 
                     makeSection(
-                        viewModel: sectionViewModel,
-                        sectionIndex: sectionIndex,
+                        from: sectionViewModel,
+                        atIndex: sectionIndex,
                         parametersProvider: parametersProvider
                     )
                     .hidden(sectionViewModel.id == dragAndDropSourceViewModelIdentifier)
@@ -268,7 +272,7 @@ struct OrganizeTokensView: View {
             horizontalInset: Constants.contentHorizontalInset
         )
         .animation(.linear(duration: 0.1), value: isTokenListFooterGradientHidden)
-        .readGeometry { geometryInfo in
+        .readGeometry(inCoordinateSpace: .global) { geometryInfo in
             $tokenListFooterFrameMinY.wrappedValue = geometryInfo.frame.minY
             $scrollViewBottomContentInset.wrappedValue = geometryInfo.size.height + Constants.contentVerticalInset
         }
@@ -458,12 +462,12 @@ struct OrganizeTokensView: View {
 
     @ViewBuilder
     private func makeSection(
-        viewModel: OrganizeTokensListSectionViewModel,
-        sectionIndex: Int,
+        from section: OrganizeTokensListSection,
+        atIndex sectionIndex: Int,
         parametersProvider: OrganizeTokensListCornerRadiusParametersProvider
     ) -> some View {
         Group {
-            switch viewModel.style {
+            switch section.model.style {
             case .invisible:
                 EmptyView()
             case .fixed(let title):
@@ -490,15 +494,15 @@ struct OrganizeTokensView: View {
                 cornerRadius: Constants.draggableViewCornerRadius
             )
 
-            if let sectionViewModel = viewModel.sectionViewModel(for: dragAndDropSourceViewModelIdentifier) {
+            if let section = viewModel.section(for: dragAndDropSourceViewModelIdentifier) {
                 makeDraggableView(
                     width: width,
                     indexPath: dragAndDropDestinationIndexPath,
                     itemFrame: dragAndDropSourceItemFrame
                 ) {
                     makeSection(
-                        viewModel: sectionViewModel,
-                        sectionIndex: dragAndDropSourceIndexPath.section,
+                        from: section,
+                        atIndex: dragAndDropSourceIndexPath.section,
                         parametersProvider: parametersProvider
                     )
                 }
@@ -538,7 +542,7 @@ struct OrganizeTokensView: View {
 
         content()
             .frame(width: width)
-            .readGeometry(\.frame, bindTo: $draggedItemFrame)
+            .readGeometry(\.frame, inCoordinateSpace: .global, bindTo: $draggedItemFrame)
             .scaleEffect(Constants.draggableViewScale)
             .offset(y: totalOffsetTransitionValue)
             .transition(
@@ -631,8 +635,8 @@ private extension OrganizeTokensView {
         static var headerAdditionalBottomInset: CGFloat { contentVerticalInset - headerBottomInset }
         static let contentVerticalInset = 14.0
         static let contentHorizontalInset = 16.0
-        static let dragLiftLongPressGestureDuration = 0.5
-        static let dragLiftAnimationDuration = 0.35
+        static let dragLiftLongPressGestureDuration = 0.1
+        static let dragLiftAnimationDuration = 0.25
         static let dropAnimationProgressThresholdForViewRemoval = 0.05
         static let dragAndDropDestinationItemSelectionThresholdRatio = 0.5
         static let draggableViewScale = 1.035

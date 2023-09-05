@@ -154,7 +154,7 @@ extension TwinConfig: UserWalletConfig {
         return CommonWalletModelsFactory(derivationStyle: nil)
     }
 
-    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
         guard let savedPairKey = twinData.pairPublicKey else {
             throw CommonError.noData
         }

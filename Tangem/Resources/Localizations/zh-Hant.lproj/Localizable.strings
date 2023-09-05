@@ -91,6 +91,7 @@
 "common_receive" = "Receive";
 "common_reject" = "拒絕";
 "common_reload" = "Reload";
+"common_rename" = "重新命名";
 "common_retry" = "重試";
 "common_save_changes" = "保存設置";
 "common_search" = "搜索";
@@ -107,8 +108,9 @@
 "common_start" = "開始";
 "common_submit" = "提交";
 "common_success" = "成功";
-"common_swap" = "Swap";
+"common_swap" = "交換";
 "common_terms_and_conditions" = "條款和條件";
+"common_transactions" = "交易";
 "common_transfer" = "Transfer";
 "common_understand" = "我了解";
 "common_unlock_needed" = "Unlock needed";
@@ -181,6 +183,7 @@
 "key_invalidated_warning_description" = "您已更新生物識別登入，掃描您的卡進入";
 "mail_error_no_accounts_body" = "請設置一個帳戶以發送電子郵件";
 "mail_error_no_accounts_title" = "沒有郵件帳戶";
+"main_empty_tokens_list_message" = "To begin tracking your crypto assets and transactions, add tokens.";
 "main_get_bonus_subtitle" = "You have completed all of the lessons, and are now eligible to receive your 1INCH tokens";
 "main_manage_tokens" = "管理代幣";
 "main_no_backup_warning_subtitle" = "為了保護您的資產，我們建議您執行此程序";
@@ -192,6 +195,7 @@
 "main_scan_card_warning_view_title" = "掃描卡片";
 "main_tokens" = "代幣";
 "main_warning_missing_derivation_title" = "Some addresses are missing";
+"notification_title_not_enough_funds" = "Unable to cover %1$@ fee";
 "onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包";
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";
@@ -359,14 +363,6 @@
 "story_finish_title" = "適合每個人的冷錢包";
 "story_learn_description" = "Take three lessons, get a discount on your Tangem Wallet, and receive 1INCH tokens to your wallet";
 "story_learn_learn" = "Learn";
-"story_meet_borrow" = "借入";
-"story_meet_buy" = "購買";
-"story_meet_exchange" = "交易";
-"story_meet_lend" = "借出";
-"story_meet_pay" = "付款";
-"story_meet_send" = "發送";
-"story_meet_stake" = "質押";
-"story_meet_store" = "保存";
 "story_meet_title" = "認識Tangem";
 "story_web3_description" = "交易、購買NFT、自由穿梭於100+去中心化服務";
 "story_web3_title" = "兼容DeFi";
@@ -393,7 +389,6 @@
 "swapping_permit_and_swap" = "許可和交換";
 "swapping_success_view_explorer_button_title" = "在瀏覽器中查看";
 "swapping_success_view_title" = "進行中";
-"swapping_swap" = "交換";
 "swapping_swap_action" = "交易";
 "swapping_swap_of_to" = "交易 %@ 至";
 "swapping_tangem_fee_disclaimer" = "此外，報價包括%@的 Tangem 費用。這有助於我們提供一流的產品";
@@ -414,10 +409,9 @@
 "token_item_no_rate" = "無費用";
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "您還沒有任何交易";
-"transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
+"transaction_history_error_failed_to_load" = "無法加載交易";
 "transaction_history_multiple_addresses" = "Multiple addresses";
 "transaction_history_not_supported_description" = "Transaction history is currently not supported for this blockchain. But don't worry, we're working on it! In the meantime you can check it in the explorer.";
-"transaction_history_title" = "交易";
 "transaction_history_transaction_from_address" = "from: %@";
 "transaction_history_transaction_to_address" = "to: %@";
 "transaction_history_tx_in_progress" = "進行中…";
@@ -438,7 +432,6 @@
 "user_wallet_list_delete_prompt" = "您確定要刪除此錢包?";
 "user_wallet_list_error_wallet_already_saved" = "此錢包已保存，您可以再添加一個";
 "user_wallet_list_multi_header" = "多幣種";
-"user_wallet_list_rename" = "重新命名";
 "user_wallet_list_rename_popup_placeholder" = "錢包名稱";
 "user_wallet_list_rename_popup_title" = "重新命名錢包";
 "user_wallet_list_single_header" = "單一幣種";
@@ -501,6 +494,8 @@
 "wallet_connect_tx_not_found" = "未能找到交易哈希";
 "wallet_currency_subtitle" = "%@ 網路";
 "wallet_error_no_account" = "帳號尚未被創造";
+"wallet_marketplace_block_title" = "%s Market Price";
+"wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";
 "wallet_notification_address_copied" = "地址已復製到剪貼板";
 "wallet_pending_tx_receiving" = "接收中";

@@ -91,6 +91,7 @@
 "common_receive" = "Receive";
 "common_reject" = "Reject";
 "common_reload" = "Reload";
+"common_rename" = "Rename";
 "common_retry" = "Retry";
 "common_save_changes" = "Save changes";
 "common_search" = "Search";
@@ -109,6 +110,7 @@
 "common_success" = "Success";
 "common_swap" = "Swap";
 "common_terms_and_conditions" = "terms and conditions";
+"common_transactions" = "Transactions";
 "common_transfer" = "Transfer";
 "common_understand" = "I understand";
 "common_unlock_needed" = "Unlock needed";
@@ -181,6 +183,7 @@
 "key_invalidated_warning_description" = "You have updated biometrics, scan your card to enter";
 "mail_error_no_accounts_body" = "Please, set up an account to send email";
 "mail_error_no_accounts_title" = "No Mail accounts";
+"main_empty_tokens_list_message" = "To begin tracking your crypto assets and transactions, add tokens.";
 "main_get_bonus_subtitle" = "You have completed all of the lessons, and are now eligible to receive your 1INCH tokens";
 "main_manage_tokens" = "Manage tokens";
 "main_no_backup_warning_subtitle" = "To protect your assets, we advise you to carry out this procedure";
@@ -192,6 +195,7 @@
 "main_scan_card_warning_view_title" = "Scan your card";
 "main_tokens" = "Tokens";
 "main_warning_missing_derivation_title" = "Some addresses are missing";
+"notification_title_not_enough_funds" = "Unable to cover %1$@ fee";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your wallets";
 "onboarding_access_code_feature_1_title" = "Protect";
 "onboarding_access_code_feature_2_description" = "You can set up an individual access code on each card later";
@@ -359,15 +363,7 @@
 "story_finish_title" = "The Wallet for Everyone";
 "story_learn_description" = "Take three lessons, get a discount on your Tangem Wallet, and receive 1INCH tokens to your wallet";
 "story_learn_learn" = "Learn";
-"story_meet_borrow" = "Borrow";
-"story_meet_buy" = "Buy";
-"story_meet_exchange" = "Exchange";
-"story_meet_lend" = "Lend";
-"story_meet_pay" = "Pay";
-"story_meet_send" = "Send";
-"story_meet_stake" = "Stake";
-"story_meet_store" = "Store";
-"story_meet_title" = "Meet\nTangem";
+"story_meet_title" = "Meet Tangem";
 "story_web3_description" = "Exchange, buy NFT's, make loans and deposits in more than 100 different decentralized services";
 "story_web3_title" = "DeFi Compatible";
 "swapping_approve_information_text" = "Approvals are considered an industry standard across all decentralized exchanges and protect your wallet from being accessed by a smart contract without your permission. By design, smart contracts can't access your tokens unless you approve access from your end. By \"unlocking\" your tokens, you are give permission to the 1inch smart contract to spend your assets. The miners of the network are compensated with a gas fee (paid by you) to record this action on the blockchain. Once permission has been granted you will be able to swap your token.";
@@ -393,7 +389,6 @@
 "swapping_permit_and_swap" = "Permit and Swap";
 "swapping_success_view_explorer_button_title" = "View in Explorer";
 "swapping_success_view_title" = "In progress";
-"swapping_swap" = "Swap";
 "swapping_swap_action" = "Swap";
 "swapping_swap_of_to" = "Swap of %@ to";
 "swapping_tangem_fee_disclaimer" = "Quotes include an additional Tangem commission of %@. This helps us deliver a top-of-the-line product.";
@@ -417,7 +412,6 @@
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
 "transaction_history_multiple_addresses" = "Multiple addresses";
 "transaction_history_not_supported_description" = "Transaction history is currently not supported for this blockchain. But don't worry, we're working on it! In the meantime you can check it in the explorer.";
-"transaction_history_title" = "Transactions";
 "transaction_history_transaction_from_address" = "from: %@";
 "transaction_history_transaction_to_address" = "to: %@";
 "transaction_history_tx_in_progress" = "In progress…";
@@ -438,7 +432,6 @@
 "user_wallet_list_delete_prompt" = "Are you sure you want to delete this wallet?";
 "user_wallet_list_error_wallet_already_saved" = "This wallet has already been saved, you can add another one";
 "user_wallet_list_multi_header" = "Multi-currency";
-"user_wallet_list_rename" = "Rename";
 "user_wallet_list_rename_popup_placeholder" = "Wallet name";
 "user_wallet_list_rename_popup_title" = "Rename Wallet";
 "user_wallet_list_single_header" = "Single-currency";
@@ -460,7 +453,7 @@
 "wallet_balance_tx_in_progress" = "Transaction is in progress…";
 "wallet_balance_verified" = "Verified Balance";
 "wallet_button_actions" = "Actions";
-"wallet_choice_wallet_option_title" = "Choice wallet option";
+"wallet_choice_wallet_option_title" = "Choose wallet option";
 "wallet_choose_trade_action" = "Do you want to buy or sell crypto?";
 "wallet_connect_alert_sign_message" = "Requesting to sign a message.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, requesting to\nsign BNB transaction.\n\n%2$@";
@@ -501,6 +494,8 @@
 "wallet_connect_tx_not_found" = "Failed to find transaction hash";
 "wallet_currency_subtitle" = "%@ network";
 "wallet_error_no_account" = "Account is not created";
+"wallet_marketplace_block_title" = "%s Market Price";
+"wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";
 "wallet_notification_address_copied" = "Address was copied to clipboard";
 "wallet_pending_tx_receiving" = "Receiving";

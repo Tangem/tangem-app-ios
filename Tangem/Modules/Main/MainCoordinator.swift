@@ -127,27 +127,19 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
     }
 
     func openOrganizeTokens(for userWalletModel: UserWalletModel) {
-        let userTokenListManager = userWalletModel.userTokenListManager
-        let optionsManager = OrganizeTokensOptionsManager(
-            userTokenListManager: userTokenListManager,
-            editingThrottleInterval: 1.0
-        )
-        let walletModelComponentsBuilder = WalletModelComponentsBuilder(
-            supportedBlockchains: userWalletModel.config.supportedBlockchains
-        )
-        let walletModelsAdapter = OrganizeWalletModelsAdapter(
-            userTokenListManager: userTokenListManager,
-            walletModelComponentsBuilder: walletModelComponentsBuilder,
-            organizeTokensOptionsProviding: optionsManager,
-            organizeTokensOptionsEditing: optionsManager
+        let optionsManager = OrganizeTokensOptionsManager(userTokensReorderer: userWalletModel.userTokensManager)
+        let tokenSectionsAdapter = TokenSectionsAdapter(
+            userTokenListManager: userWalletModel.userTokenListManager,
+            optionsProviding: optionsManager,
+            preservesLastSortedOrderOnSwitchToDragAndDrop: true
         )
 
         organizeTokensViewModel = OrganizeTokensViewModel(
             coordinator: self,
             walletModelsManager: userWalletModel.walletModelsManager,
-            walletModelsAdapter: walletModelsAdapter,
-            organizeTokensOptionsProviding: optionsManager,
-            organizeTokensOptionsEditing: optionsManager
+            tokenSectionsAdapter: tokenSectionsAdapter,
+            optionsProviding: optionsManager,
+            optionsEditing: optionsManager
         )
     }
 
@@ -291,6 +283,10 @@ extension MainCoordinator: SingleWalletMainContentRoutable {}
 
 extension MainCoordinator: OrganizeTokensRoutable {
     func didTapCancelButton() {
+        organizeTokensViewModel = nil
+    }
+
+    func didTapSaveButton() {
         organizeTokensViewModel = nil
     }
 }

@@ -80,7 +80,7 @@ struct LockedWalletMainContentView: View {
 
         VStack(spacing: 0) {
             HStack(spacing: 4) {
-                Text(Localization.transactionHistoryTitle)
+                Text(Localization.commonTransactions)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 Spacer()

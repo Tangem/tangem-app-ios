@@ -154,7 +154,7 @@ extension NoteConfig: UserWalletConfig {
         return CommonWalletModelsFactory(derivationStyle: nil)
     }
 
-    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
         return SimpleWalletManagerFactory()
     }
 }

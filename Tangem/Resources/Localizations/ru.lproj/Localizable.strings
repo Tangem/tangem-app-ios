@@ -91,10 +91,11 @@
 "common_receive" = "Получить";
 "common_reject" = "Отклонить";
 "common_reload" = "Перезагрузить";
+"common_rename" = "Переименовать";
 "common_retry" = "Повторить";
 "common_save_changes" = "Сохранить изменения";
 "common_search" = "Искать";
-"common_search_tokens" = "Поиск валют";
+"common_search_tokens" = "Поиск токенов";
 "common_seed_phrase" = "Seed-фраза";
 "common_select_action" = "Выберите действие";
 "common_sell" = "Продать";
@@ -109,6 +110,7 @@
 "common_success" = "Успешно";
 "common_swap" = "Обмен";
 "common_terms_and_conditions" = "условия участия";
+"common_transactions" = "Транзакции";
 "common_transfer" = "Перевод";
 "common_understand" = "Я понял";
 "common_unlock_needed" = "Необходима разблокировка";
@@ -181,6 +183,7 @@
 "key_invalidated_warning_description" = "Вы обновили данные биометрии, отсканируйте свою карту для входа";
 "mail_error_no_accounts_body" = "Пожалуйста, настройте учетную запись для отправки электронной почты";
 "mail_error_no_accounts_title" = "Нет настроенных почтовых аккаунтов";
+"main_empty_tokens_list_message" = "To begin tracking your crypto assets and transactions, add tokens.";
 "main_get_bonus_subtitle" = "Вы успешно прошли все уроки и теперь можете получить 1INCH токены";
 "main_manage_tokens" = "Управление токенами";
 "main_no_backup_warning_subtitle" = "Чтобы защитить свои активы, мы советуем вам выполнить эту процедуру";
@@ -192,6 +195,7 @@
 "main_scan_card_warning_view_title" = "Отсканируйте карту";
 "main_tokens" = "Токены";
 "main_warning_missing_derivation_title" = "Некоторые адреса отсутствуют";
+"notification_title_not_enough_funds" = "Невозможно покрыть %1$@ комиссию";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
 "onboarding_access_code_feature_1_title" = "Защита";
 "onboarding_access_code_feature_2_description" = "Позже вы сможете установить индивидуальный код доступа для каждой карты";
@@ -359,15 +363,7 @@
 "story_finish_title" = "Кошелек для каждого";
 "story_learn_description" = "Пройдите 3 урока, получите скидку на покупку Tangem Wallet и 1INCH токены";
 "story_learn_learn" = "Пройти обучение";
-"story_meet_borrow" = "Занимайте";
-"story_meet_buy" = "Покупайте";
-"story_meet_exchange" = "Обменивайте";
-"story_meet_lend" = "Вкладывайте";
-"story_meet_pay" = "Расплачивайтесь";
-"story_meet_send" = "Отправляйте";
-"story_meet_stake" = "Стейкайте";
-"story_meet_store" = "Храните";
-"story_meet_title" = "Встречайте\nTangem";
+"story_meet_title" = "Встречайте Tangem";
 "story_web3_description" = "Обменивайте, покупайте NFT, получайте займы и делайте вклады в более чем 100 различных децентрализованных сервисах";
 "story_web3_title" = "Поддержка DeFi";
 "swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
@@ -393,7 +389,6 @@
 "swapping_permit_and_swap" = "Разрешить и обменять";
 "swapping_success_view_explorer_button_title" = "Открыть в обозревателе";
 "swapping_success_view_title" = "В процессе";
-"swapping_swap" = "Обмен";
 "swapping_swap_action" = "Обменять";
 "swapping_swap_of_to" = "Обмен %@ на";
 "swapping_tangem_fee_disclaimer" = "Котировки включают дополнительную комиссию Tangem в размере %@. Это помогает нам предоставлять первоклассный продукт.";
@@ -417,7 +412,6 @@
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";
 "transaction_history_multiple_addresses" = "Несколько адресов";
 "transaction_history_not_supported_description" = "История транзакций в настоящее время не поддерживается для этого блокчейна. Но не волнуйтесь, мы работаем над этим! А пока вы можете проверить ее в обозревателе.";
-"transaction_history_title" = "Транзакции";
 "transaction_history_transaction_from_address" = "от: %@";
 "transaction_history_transaction_to_address" = "на: %@";
 "transaction_history_tx_in_progress" = "В процессе…";
@@ -438,7 +432,6 @@
 "user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";
 "user_wallet_list_multi_header" = "Мультивалютные";
-"user_wallet_list_rename" = "Переименовать";
 "user_wallet_list_rename_popup_placeholder" = "Имя кошелька";
 "user_wallet_list_rename_popup_title" = "Переименование кошелька";
 "user_wallet_list_single_header" = "Одновалютные";
@@ -501,6 +494,8 @@
 "wallet_connect_tx_not_found" = "Не удалось найти хэш транзакции";
 "wallet_currency_subtitle" = "Сеть %@";
 "wallet_error_no_account" = "Аккаунт не создан";
+"wallet_marketplace_block_title" = "Рыночная цена %s";
+"wallet_marketprice_block_update_time" = "за 24 часа";
 "wallet_network_group_title" = "Сеть %@";
 "wallet_notification_address_copied" = "Адрес скопирован в буфер обмена";
 "wallet_pending_tx_receiving" = "Получение";
@@ -534,5 +529,5 @@
 "welcome_interrupted_backup_discard_title" = "Это необратимое действие";
 "welcome_unlock" = "Войти с %@";
 "welcome_unlock_card" = "Сканировать карту";
-"welcome_unlock_description" = "Используйте %@ или код доступа для входа в приложение";
+"welcome_unlock_description" = "Используйте %@ или отсканируйте карту для входа в приложение";
 "welcome_unlock_title" = "C возвращением!";

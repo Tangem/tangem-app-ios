@@ -21,7 +21,7 @@ struct SendCurrencyViewModel: Identifiable {
 
     var balanceString: String {
         let balance = balance.value ?? 0
-        return Localization.commonBalance(balance.groupedFormatted())
+        return balance.groupedFormatted()
     }
 
     var fiatValueString: String {

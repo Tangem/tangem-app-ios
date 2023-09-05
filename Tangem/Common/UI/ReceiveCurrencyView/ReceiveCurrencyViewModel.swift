@@ -17,8 +17,8 @@ struct ReceiveCurrencyViewModel: Identifiable {
 
     let tokenIcon: SwappingTokenIconViewModel
 
-    var balanceString: String? {
-        Localization.commonBalance((balance ?? 0).groupedFormatted())
+    var balanceString: String {
+        (balance ?? 0).groupedFormatted()
     }
 
     var cryptoAmountFormatted: String {

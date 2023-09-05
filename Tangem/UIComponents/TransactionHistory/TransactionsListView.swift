@@ -26,7 +26,7 @@ struct TransactionsListView: View {
     @ViewBuilder
     private var header: some View {
         HStack {
-            Text(Localization.transactionHistoryTitle)
+            Text(Localization.commonTransactions)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
             Spacer()
@@ -41,6 +41,7 @@ struct TransactionsListView: View {
                 }
             }
         }
+        .padding(.horizontal, 16)
     }
 
     @ViewBuilder
@@ -82,7 +83,6 @@ struct TransactionsListView: View {
     private var loadingContent: some View {
         VStack(spacing: 12) {
             header
-                .padding(.horizontal, 16)
 
             ForEach(0 ... 2) { _ in
                 TokenListItemLoadingPlaceholderView(style: .transactionHistory)
@@ -131,20 +131,12 @@ struct TransactionsListView: View {
             noTransactionsContent
         } else {
             LazyVStack(spacing: 12) {
-                header
-                    .padding(.horizontal, 16)
-
-                ForEach(transactionItems, id: \.id) { item in
-                    HStack {
-                        Text(item.header)
-                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16)
+                ForEach(transactionItems.indexed(), id: \.1.id) { sectionIndex, item in
+                    makeSectionHeader(for: item, atIndex: sectionIndex)
 
                     ForEach(item.items, id: \.id) { item in
                         TransactionView(viewModel: item)
+                            .ios14FixedHeight(Constants.ios14ListItemHeight)
                     }
                 }
 
@@ -191,6 +183,35 @@ struct TransactionsListView: View {
         .background(Colors.Button.secondary)
         .cornerRadiusContinuous(10)
     }
+
+    @ViewBuilder
+    private func makeSectionHeader(for item: TransactionListItem, atIndex sectionIndex: Int) -> some View {
+        let sectionHeader = HStack {
+            Text(item.header)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+
+        Group {
+            // Section header for the very first section also includes the header for the list itself
+            if sectionIndex == 0 {
+                VStack(spacing: 0.0) {
+                    header
+
+                    Spacer(minLength: 12.0)
+
+                    sectionHeader
+
+                    Spacer(minLength: 12.0)
+                }
+            } else {
+                sectionHeader
+            }
+        }
+        .ios14FixedHeight(Constants.ios14ListItemHeight)
+    }
 }
 
 extension TransactionsListView {
@@ -206,6 +227,8 @@ extension TransactionsListView {
     enum Constants {
         /// An approximate value from the design
         static let lineSpacing: CGFloat = 3.5
+        @available(iOS, obsoleted: 15.0, message: "Delete when the minimum deployment target reaches 15.0")
+        static let ios14ListItemHeight = 56.0
     }
 }
 

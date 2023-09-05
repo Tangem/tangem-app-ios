@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class DefaultTokenItemInfoProvider {
-    private unowned let walletModel: WalletModel
+    private let walletModel: WalletModel
 
     init(walletModel: WalletModel) {
         self.walletModel = walletModel

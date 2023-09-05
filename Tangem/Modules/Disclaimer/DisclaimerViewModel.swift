@@ -14,6 +14,7 @@ class DisclaimerViewModel: Identifiable {
 
     var showNavBarTitle: Bool { style == .details }
     var bottomOverlayHeight: CGFloat { style.bottomOverlayHeight }
+    var bottomOverlayColor: Color { style.bottomOverlayColor }
 
     private let style: Style
 
@@ -53,6 +54,15 @@ extension DisclaimerViewModel {
                 return 64
             case .details:
                 return .zero
+            }
+        }
+
+        var bottomOverlayColor: Color {
+            switch self {
+            case .onboarding:
+                return Colors.Background.primary
+            case .details:
+                return Colors.Background.plain
             }
         }
 

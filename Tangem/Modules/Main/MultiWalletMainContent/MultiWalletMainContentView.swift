@@ -84,20 +84,10 @@ struct MultiWalletMainContentView: View {
     private var tokensList: some View {
         LazyVStack(spacing: 0) {
             ForEach(viewModel.sections) { section in
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    if let title = section.title {
-                        Text(title)
-                            .style(
-                                Fonts.Bold.footnote,
-                                color: Colors.Text.tertiary
-                            )
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 14)
-                    }
+                TokenSectionView(title: section.model.title)
 
-                    ForEach(section.tokenItemModels) { item in
-                        TokenItemView(viewModel: item)
-                    }
+                ForEach(section.items) { item in
+                    TokenItemView(viewModel: item)
                 }
             }
         }
@@ -106,21 +96,25 @@ struct MultiWalletMainContentView: View {
 }
 
 struct MultiWalletContentView_Preview: PreviewProvider {
-    static var sectionProvider: TokenListInfoProvider = EmptyTokenListInfoProvider()
     static let viewModel: MultiWalletMainContentViewModel = {
         let repo = FakeUserWalletRepository()
         let mainCoordinator = MainCoordinator()
         let userWalletModel = repo.models.first!
+
         InjectedValues[\.userWalletRepository] = FakeUserWalletRepository()
         InjectedValues[\.tangemApiService] = FakeTangemApiService()
-        sectionProvider = GroupedTokenListInfoProvider(
+
+        let optionsManager = OrganizeTokensOptionsManagerStub()
+        let tokenSectionsAdapter = TokenSectionsAdapter(
             userTokenListManager: userWalletModel.userTokenListManager,
-            walletModelsManager: userWalletModel.walletModelsManager
+            optionsProviding: optionsManager,
+            preservesLastSortedOrderOnSwitchToDragAndDrop: false
         )
+
         return MultiWalletMainContentViewModel(
             userWalletModel: userWalletModel,
             coordinator: mainCoordinator,
-            sectionsProvider: sectionProvider,
+            tokenSectionsAdapter: tokenSectionsAdapter,
             canManageTokens: userWalletModel.isMultiWallet
         )
     }()

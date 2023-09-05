@@ -18,19 +18,17 @@ struct UserTokenListManagerMock: UserTokenListManager {
 
     var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
 
-    var userTokenList: AnyPublisher<UserTokenList, Never> { .just(output: .empty) }
+    var userTokensList: StoredUserTokenList { .empty }
 
-    func contains(_ entry: StorageEntry) -> Bool {
-        return false
-    }
+    var userTokensListPublisher: AnyPublisher<StoredUserTokenList, Never> { .just(output: .empty) }
 
-    func update(with userTokenList: UserTokenList) {}
+    func update(with userTokenList: StoredUserTokenList) {}
 
     func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
 
-    func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {}
-
-    func updateUserTokens() {}
+    func updateLocalRepositoryFromServer(result: @escaping (Result<Void, Error>) -> Void) {
+        result(.success(()))
+    }
 
     func upload() {}
 }

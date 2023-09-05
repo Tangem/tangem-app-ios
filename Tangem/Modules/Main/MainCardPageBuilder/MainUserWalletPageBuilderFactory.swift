@@ -40,15 +40,11 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         }
 
         if isMultiWalletPage {
+            let sectionsAdapter = makeSectionsAdapter(for: model)
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,
                 coordinator: coordinator,
-                // TODO: Temp solution. Will be updated in IOS-4207
-                sectionsProvider: GroupedTokenListInfoProvider(
-                    userWalletId: id,
-                    userTokenListManager: model.userTokenListManager,
-                    walletModelsManager: model.walletModelsManager
-                ),
+                tokenSectionsAdapter: sectionsAdapter,
                 canManageTokens: model.isMultiWallet // TODO: Andrey Fedorov - More sophisticated logic (IOS-4060)
             )
 
@@ -86,5 +82,15 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
 
     func createPages(from models: [UserWalletModel], lockedUserWalletDelegate: MainLockedUserWalletDelegate) -> [MainUserWalletPageBuilder] {
         return models.compactMap { createPage(for: $0, lockedUserWalletDelegate: lockedUserWalletDelegate) }
+    }
+
+    private func makeSectionsAdapter(for model: UserWalletModel) -> TokenSectionsAdapter {
+        let optionsManager = OrganizeTokensOptionsManager(userTokensReorderer: model.userTokensManager)
+
+        return TokenSectionsAdapter(
+            userTokenListManager: model.userTokenListManager,
+            optionsProviding: optionsManager,
+            preservesLastSortedOrderOnSwitchToDragAndDrop: false
+        )
     }
 }

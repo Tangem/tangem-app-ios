@@ -29,14 +29,14 @@ class FakeTokenItemInfoProvider: PriceChangeProvider, ObservableObject {
 
     init(walletManagers: [FakeWalletManager]) {
         walletModels = walletManagers.flatMap { $0.walletModels }
-        viewModels = walletModels.map {
+        viewModels = walletModels.map { walletModel in
             TokenItemViewModel(
-                id: $0.id,
-                tokenIcon: makeTokenIconInfo(for: $0),
-                tokenItem: makeTokenItem(for: $0),
-                tokenTapped: modelTapped(with:),
-                infoProvider: DefaultTokenItemInfoProvider(walletModel: $0),
-                priceChangeProvider: self
+                id: walletModel.id,
+                tokenIcon: makeTokenIconInfo(for: walletModel),
+                isTestnetToken: walletModel.blockchainNetwork.blockchain.isTestnet,
+                infoProvider: DefaultTokenItemInfoProvider(walletModel: walletModel),
+                priceChangeProvider: self,
+                tokenTapped: modelTapped(with:)
             )
         }
     }
@@ -64,13 +64,5 @@ class FakeTokenItemInfoProvider: PriceChangeProvider, ObservableObject {
                 for: walletModel.tokenItem.amountType,
                 in: walletModel.blockchainNetwork.blockchain
             )
-    }
-
-    private func makeTokenItem(for walletModel: WalletModel) -> TokenItem {
-        let blockchain = walletModel.blockchainNetwork.blockchain
-        switch walletModel.amountType {
-        case .coin, .reserve: return .blockchain(blockchain)
-        case .token(let value): return .token(value, blockchain)
-        }
     }
 }

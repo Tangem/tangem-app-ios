@@ -17,7 +17,7 @@ struct OrganizeTokensHeaderView: View {
                 FlexySizeButtonWithLeadingIcon(
                     title: viewModel.sortByBalanceButtonTitle,
                     icon: Assets.OrganizeTokens.byBalanceSortIcon.image,
-                    isToggled: viewModel.isSortByBalanceEnabled,
+                    isToggled: !viewModel.isSortByBalanceEnabled,
                     action: viewModel.toggleSortState
                 )
                 // TODO: Andrey Fedorov - Dark mode support for shadows (IOS-3927)
@@ -36,12 +36,12 @@ struct OrganizeTokensHeaderView: View {
                     .primary
                     .cornerRadiusContinuous(10.0)
             )
-            .onFirstAppear(perform: viewModel.onViewAppear)
+            .onAppear(perform: viewModel.onViewAppear)
         }
     }
 
     private var sortByBalanceButtonShadowOpacity: CGFloat {
-        return Constants.buttonShadowOpacity / (viewModel.isSortByBalanceEnabled ? 3.0 : 1.0)
+        return Constants.buttonShadowOpacity / (viewModel.isSortByBalanceEnabled ? 1.0 : 3.0)
     }
 
     private var groupingButtonShadowOpacity: CGFloat {
@@ -63,8 +63,8 @@ struct OrganizeTokensHeaderView_Previews: PreviewProvider {
     static var previews: some View {
         let optionsManager = OrganizeTokensOptionsManagerStub()
         let viewModel = OrganizeTokensHeaderViewModel(
-            organizeTokensOptionsProviding: optionsManager,
-            organizeTokensOptionsEditing: optionsManager
+            optionsProviding: optionsManager,
+            optionsEditing: optionsManager
         )
         return OrganizeTokensHeaderView(viewModel: viewModel)
     }

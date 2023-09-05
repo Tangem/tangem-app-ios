@@ -23,6 +23,7 @@ struct TokenItemViewMiddleComponent: View {
                         color: hasError ? Colors.Text.tertiary : Colors.Text.primary1
                     )
                     .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 if hasPendingTransactions {
                     Assets.pendingTxIndicator.image
@@ -35,7 +36,8 @@ struct TokenItemViewMiddleComponent: View {
                     font: Fonts.Regular.footnote,
                     textColor: Colors.Text.tertiary,
                     loaderSize: .init(width: 52, height: 12),
-                    loaderTopPadding: 4
+                    loaderTopPadding: 4,
+                    isSensitiveText: true
                 )
             }
         }

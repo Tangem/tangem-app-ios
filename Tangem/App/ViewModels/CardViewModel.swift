@@ -296,7 +296,7 @@ class CardViewModel: Identifiable, ObservableObject {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
 
         guard let userWalletIdSeed = config.userWalletIdSeed,
-              let walletManagerFactory = try? config.makeAnyWalletManagerFacrory() else {
+              let walletManagerFactory = try? config.makeAnyWalletManagerFactory() else {
             return nil
         }
 
@@ -306,10 +306,10 @@ class CardViewModel: Identifiable, ObservableObject {
 
         userWalletId = UserWalletId(with: userWalletIdSeed)
         userTokenListManager = CommonUserTokenListManager(
-            hasTokenSynchronization: config.hasFeature(.tokenSynchronization),
             userWalletId: userWalletId.value,
             supportedBlockchains: config.supportedBlockchains,
-            hdWalletsSupported: config.hasFeature(.hdWallets)
+            hdWalletsSupported: config.hasFeature(.hdWallets),
+            hasTokenSynchronization: config.hasFeature(.tokenSynchronization)
         )
 
         walletManagersRepository = CommonWalletManagersRepository(

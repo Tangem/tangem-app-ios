@@ -17,6 +17,7 @@ struct OrganizeTokensListSectionView: View {
             Text(title)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
                 .lineLimit(1)
+                .fixedSize(horizontal: false, vertical: true)
 
             Spacer(minLength: 0.0)
 

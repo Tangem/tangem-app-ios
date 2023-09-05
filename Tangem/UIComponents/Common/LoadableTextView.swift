@@ -19,26 +19,36 @@ struct LoadableTextView: View {
     var loaderTopPadding: CGFloat = 0.0
 
     var lineLimit: Int = 1
+    var isSensitiveText: Bool = false
 
     var body: some View {
         switch state {
         case .initialized:
             Text(" ")
                 .frame(size: loaderSize)
+                .fixedSize(horizontal: false, vertical: true)
         case .noData:
             Text("–")
                 .style(font, color: textColor)
                 .frame(minHeight: loaderSize.height)
+                .fixedSize(horizontal: false, vertical: true)
         case .loading:
             SkeletonView()
                 .frame(size: loaderSize)
                 .cornerRadiusContinuous(loaderCornerRadius)
                 .padding(.top, loaderTopPadding)
         case .loaded(let text):
-            Text(text)
-                .style(font, color: textColor)
-                .lineLimit(lineLimit)
-                .frame(minHeight: loaderSize.height)
+            Group {
+                if isSensitiveText {
+                    SensitiveText(text)
+                } else {
+                    Text(text)
+                }
+            }
+            .style(font, color: textColor)
+            .lineLimit(lineLimit)
+            .frame(minHeight: loaderSize.height)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

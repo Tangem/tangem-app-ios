@@ -14,21 +14,32 @@ struct OrganizeTokensListFooter: View {
     let cornerRadius: CGFloat
     let horizontalInset: CGFloat
 
+    @State private var hasBottomSafeAreaInset = false
+
     var body: some View {
         HStack(spacing: 8.0) {
-            MainButton(
-                title: Localization.commonCancel,
-                style: .secondary,
-                action: viewModel.onCancelButtonTap
-            )
+            Group {
+                MainButton(
+                    title: Localization.commonCancel,
+                    style: .secondary,
+                    action: viewModel.onCancelButtonTap
+                )
 
-            MainButton(
-                title: Localization.commonApply,
-                style: .primary,
-                action: viewModel.onApplyButtonTap
-            )
+                MainButton(
+                    title: Localization.commonApply,
+                    style: .primary,
+                    action: viewModel.onApplyButtonTap
+                )
+            }
+            .padding(.bottom, hasBottomSafeAreaInset ? 0.0 : 10.0) // Padding is added only on notchless devices
         }
         .padding(.horizontal, horizontalInset)
+        .readGeometry(\.safeAreaInsets.bottom) { [oldValue = hasBottomSafeAreaInset] bottomInset in
+            let newValue = bottomInset != 0.0
+            if newValue != oldValue {
+                hasBottomSafeAreaInset = newValue
+            }
+        }
         .background(
             OrganizeTokensListFooterOverlayView()
                 .hidden(isTokenListFooterGradientHidden)

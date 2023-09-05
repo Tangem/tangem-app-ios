@@ -15,7 +15,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var isLoadingTokenList: Bool = true
-    @Published var sections: [MultiWalletTokenItemsSection] = []
+    @Published var sections: [Section] = []
     @Published var missingDerivationNotificationSettings: NotificationView.Settings? = nil
     @Published var missingBackupNotificationSettings: NotificationView.Settings? = nil
 
@@ -36,7 +36,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             return false
         }
 
-        let numberOfTokens = sections.reduce(0) { $0 + $1.tokenItemModels.count }
+        let numberOfTokens = sections.reduce(0) { $0 + $1.items.count }
         let requiredNumberOfTokens = 2
 
         return numberOfTokens >= requiredNumberOfTokens
@@ -46,8 +46,15 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     private let userWalletModel: UserWalletModel
     private unowned let coordinator: MultiWalletMainContentRoutable
-    private var sectionsProvider: TokenListInfoProvider
+    private let tokenSectionsAdapter: TokenSectionsAdapter
     private let canManageTokens: Bool // TODO: Andrey Fedorov - More sophisticated logic (IOS-4060)
+
+    private var cachedTokenItemViewModels: [ObjectIdentifier: TokenItemViewModel] = [:]
+
+    private let mappingQueue = DispatchQueue(
+        label: "com.tangem.MultiWalletMainContentViewModel.mappingQueue",
+        qos: .userInitiated
+    )
 
     private var isUpdating = false
     private var bag = Set<AnyCancellable>()
@@ -55,12 +62,12 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     init(
         userWalletModel: UserWalletModel,
         coordinator: MultiWalletMainContentRoutable,
-        sectionsProvider: TokenListInfoProvider,
+        tokenSectionsAdapter: TokenSectionsAdapter,
         canManageTokens: Bool
     ) {
         self.userWalletModel = userWalletModel
         self.coordinator = coordinator
-        self.sectionsProvider = sectionsProvider
+        self.tokenSectionsAdapter = tokenSectionsAdapter
         self.canManageTokens = canManageTokens
 
         setup()
@@ -135,9 +142,28 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             })
             .store(in: &bag)
 
-        sectionsProvider.sectionsPublisher
-            .map(convertToSections(_:))
+        let walletModelsPublisher = userWalletModel
+            .walletModelsManager
+            .walletModelsPublisher
+
+        let organizedTokensSectionsPublisher = tokenSectionsAdapter
+            .organizedSections(from: walletModelsPublisher, on: mappingQueue)
+            .share(replay: 1)
+
+        organizedTokensSectionsPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, sections in
+                return viewModel.convertToSections(sections)
+            }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.sections, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        organizedTokensSectionsPublisher
+            .withWeakCaptureOf(self)
+            .sink { viewModel, sections in
+                viewModel.removeOldCachedTokenViewModels(sections)
+            }
             .store(in: &bag)
 
         userWalletModel.updatePublisher
@@ -145,6 +171,51 @@ final class MultiWalletMainContentViewModel: ObservableObject {
                 self?.updateBackupStatus()
             }
             .store(in: &bag)
+    }
+
+    private func convertToSections(
+        _ sections: [TokenSectionsAdapter.Section]
+    ) -> [Section] {
+        let factory = MultiWalletTokenItemsSectionFactory()
+
+        return sections.enumerated().map { index, section in
+            let sectionViewModel = factory.makeSectionViewModel(from: section.model, atIndex: index)
+            let itemViewModels = section.items.map { item in
+                switch item {
+                case .default(let walletModel):
+                    // Fetching existing cached View Model for this Wallet Model, if available
+                    let cacheKey = ObjectIdentifier(walletModel)
+                    if let cachedViewModel = cachedTokenItemViewModels[cacheKey] {
+                        return cachedViewModel
+                    }
+                    let viewModel = makeTokenItemViewModel(from: item, using: factory)
+                    cachedTokenItemViewModels[cacheKey] = viewModel
+                    return viewModel
+                case .withoutDerivation:
+                    return makeTokenItemViewModel(from: item, using: factory)
+                }
+            }
+
+            return Section(model: sectionViewModel, items: itemViewModels)
+        }
+    }
+
+    private func makeTokenItemViewModel(
+        from sectionItem: TokenSectionsAdapter.SectionItem,
+        using factory: MultiWalletTokenItemsSectionFactory
+    ) -> TokenItemViewModel {
+        return factory.makeSectionItemViewModel(from: sectionItem) { [weak self] walletModelId in
+            self?.tokenItemTapped(walletModelId)
+        }
+    }
+
+    private func removeOldCachedTokenViewModels(_ sections: [TokenSectionsAdapter.Section]) {
+        let cacheKeys = sections
+            .flatMap(\.walletModels)
+            .map(ObjectIdentifier.init)
+            .toSet()
+
+        cachedTokenItemViewModels = cachedTokenItemViewModels.filter { cacheKeys.contains($0.key) }
     }
 
     private func subscribeToTokenListUpdatesIfNeeded() {
@@ -160,14 +231,6 @@ final class MultiWalletMainContentViewModel: ObservableObject {
                 self?.isLoadingTokenList = false
                 withExtendedLifetime(tokenSyncSubscription) {}
             })
-    }
-
-    private func convertToSections(_ sections: [TokenListSectionInfo]) -> [MultiWalletTokenItemsSection] {
-        // TODO: Need to change recreation logic, to prevent crashes when sections are refreshed
-        // Or need to replace `unowned` references to `TokenItemInfoProvider` with `weak` references
-        // Will be done in IOS-4157
-        MultiWalletTokenItemsSectionFactory()
-            .makeSections(from: sections, tapAction: tokenItemTapped(_:))
     }
 
     private func tokenItemTapped(_ walletModelId: WalletModelId) {
@@ -196,5 +259,35 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
         let factory = NotificationSettingsFactory()
         missingBackupNotificationSettings = factory.missingBackupNotificationSettings()
+    }
+}
+
+// MARK: - Auxiliary types
+
+extension MultiWalletMainContentViewModel {
+    typealias Section = SectionModel<SectionViewModel, TokenItemViewModel>
+
+    struct SectionViewModel: Identifiable {
+        let id: AnyHashable
+        let title: String?
+    }
+}
+
+// MARK: - Convenience extensions
+
+private extension TokenSectionsAdapter.SectionItem {
+    var walletModel: WalletModel? {
+        switch self {
+        case .default(let walletModel):
+            return walletModel
+        case .withoutDerivation:
+            return nil
+        }
+    }
+}
+
+private extension TokenSectionsAdapter.Section {
+    var walletModels: [WalletModel] {
+        return items.compactMap(\.walletModel)
     }
 }

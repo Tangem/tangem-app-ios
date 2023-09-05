@@ -187,8 +187,7 @@ struct CustomTextField: UIViewRepresentable {
         if !toolbarItems.isEmpty {
             let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
             toolbar.items = toolbarItems
-            toolbar.backgroundColor = UIColor.tangemBgGray
-            toolbar.tintColor = UIColor.black
+            toolbar.tintColor = UIColor.inputAccessoryViewTintColor
             textField.inputAccessoryView = toolbar
         }
 

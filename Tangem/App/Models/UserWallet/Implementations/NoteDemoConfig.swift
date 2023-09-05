@@ -156,7 +156,7 @@ extension NoteDemoConfig: UserWalletConfig {
         return DemoWalletModelsFactory(derivationStyle: nil)
     }
 
-    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
         return SimpleWalletManagerFactory()
     }
 }

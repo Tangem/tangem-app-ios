@@ -51,7 +51,7 @@ struct SeedPhraseTextView: UIViewRepresentable {
         if !toolbarItems.isEmpty {
             let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
             toolbar.items = toolbarItems
-            toolbar.tintColor = UIColor(Colors.Button.primary)
+            toolbar.tintColor = UIColor.inputAccessoryViewTintColor
             textView.inputAccessoryView = toolbar
         }
 

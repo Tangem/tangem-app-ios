@@ -118,7 +118,7 @@ struct LegacyTokenListView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
                 .background(LinearGradient(
-                    colors: [Color.tangemBg, Color.tangemBg, Color.tangemBg.opacity(0)],
+                    colors: [Colors.Background.primary, Colors.Background.primary, Colors.Background.primary.opacity(0)],
                     startPoint: .bottom,
                     endPoint: .top
                 )

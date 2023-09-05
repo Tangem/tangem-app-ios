@@ -19,12 +19,7 @@ enum WelcomeStoryPage: CaseIterable {
     case finish
 
     var colorScheme: ColorScheme {
-        switch self {
-        case .learn, .meetTangem, .awe, .finish:
-            return .dark
-        default:
-            return .light
-        }
+        .dark
     }
 
     var duration: Double {

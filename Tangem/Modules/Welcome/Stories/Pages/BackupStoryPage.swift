@@ -14,7 +14,7 @@ struct BackupStoryPage: View {
     let scanCard: () -> Void
     let orderCard: () -> Void
 
-    private let descriptionFontSize: CGFloat = 24
+    private let descriptionFontSize: CGFloat = 16
 
     var body: some View {
         VStack {
@@ -23,19 +23,18 @@ struct BackupStoryPage: View {
 
             VStack(spacing: 14) {
                 Text(Localization.storyBackupTitle)
-                    .font(.system(size: 36, weight: .semibold))
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .title, textBlockAppearance: .almostImmediate)
 
                 Text(TangemRichTextFormatter().format(Localization.storyBackupDescription, fontSize: descriptionFontSize))
                     .font(.system(size: descriptionFontSize))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
+                    .foregroundColor(Colors.Text.tertiary)
                     .storyTextAppearanceModifier(progress: progress, type: .description, textBlockAppearance: .almostImmediate)
             }
+            .padding(.horizontal, 28)
             .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
@@ -90,7 +89,7 @@ struct BackupStoryPage: View {
 
             Spacer()
 
-            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
                 .padding(.bottom)
         }

@@ -31,7 +31,15 @@ class UserWalletModelMock: UserWalletModel {
     var userWalletId: UserWalletId { .init(with: Data()) }
 
     var userWallet: UserWallet {
-        UserWallet(userWalletId: Data(), name: "", card: .init(card: .walletWithBackup), associatedCardIds: [], walletData: .none, artwork: nil, isHDWalletAllowed: false)
+        UserWallet(
+            userWalletId: Data(),
+            name: "",
+            card: .init(card: .walletWithBackup),
+            associatedCardIds: [],
+            walletData: .none,
+            artwork: nil,
+            isHDWalletAllowed: false
+        )
     }
 
     var updatePublisher: AnyPublisher<Void, Never> { .just }

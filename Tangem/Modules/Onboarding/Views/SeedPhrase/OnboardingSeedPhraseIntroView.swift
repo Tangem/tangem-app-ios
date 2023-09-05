@@ -51,6 +51,7 @@ struct OnboardingSeedPhraseIntroView: View {
             Button(action: readMoreAction) {
                 HStack {
                     Assets.arrowRightUpMini.image
+                        .renderingMode(.template)
                         .foregroundColor(Colors.Icon.primary1)
 
                     Text(Localization.onboardingSeedButtonReadMore)

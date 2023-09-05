@@ -12,6 +12,8 @@ import SwiftUI
 struct OnboardingCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: OnboardingCoordinator
 
+    private let bottomSheetBackground = Colors.Background.primary
+
     var body: some View {
         ZStack {
             content
@@ -64,15 +66,12 @@ struct OnboardingCoordinatorView: CoordinatorView {
             }
 
         NavHolder()
-            .bottomSheet(item: $coordinator.addressQrBottomSheetContentViewModel, viewModelSettings: .qr) {
+            .bottomSheet(item: $coordinator.addressQrBottomSheetContentViewModel, settings: .init(backgroundColor: bottomSheetBackground)) {
                 AddressQrBottomSheetContent(viewModel: $0)
             }
 
         NavHolder()
-            .bottomSheet(
-                item: $coordinator.warningBankCardViewModel,
-                viewModelSettings: .warning
-            ) {
+            .bottomSheet(item: $coordinator.warningBankCardViewModel, settings: .init(backgroundColor: bottomSheetBackground)) {
                 WarningBankCardView(viewModel: $0)
             }
     }

@@ -24,7 +24,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     var name: String { tokenIcon.name }
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
-    var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation || tokenItem.blockchain.isTestnet }
+    var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation || isTestnetToken }
     var errorMessage: String? {
         // Don't forget to add check in trailing item in `TokenItemView` when adding new error here
         if missingDerivation {
@@ -39,27 +39,27 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private let tokenIcon: TokenIconInfo
-    private let tokenItem: TokenItem
+    private let isTestnetToken: Bool
     private let tokenTapped: (WalletModelId) -> Void
-    private weak var infoProvider: TokenItemInfoProvider?
-    private weak var priceChangeProvider: PriceChangeProvider?
+    private let infoProvider: TokenItemInfoProvider
+    private let priceChangeProvider: PriceChangeProvider
 
     private var bag = Set<AnyCancellable>()
 
     init(
         id: Int,
         tokenIcon: TokenIconInfo,
-        tokenItem: TokenItem,
-        tokenTapped: @escaping (WalletModelId) -> Void,
+        isTestnetToken: Bool,
         infoProvider: TokenItemInfoProvider,
-        priceChangeProvider: PriceChangeProvider
+        priceChangeProvider: PriceChangeProvider,
+        tokenTapped: @escaping (WalletModelId) -> Void
     ) {
         self.id = id
         self.tokenIcon = tokenIcon
-        self.tokenItem = tokenItem
-        self.tokenTapped = tokenTapped
+        self.isTestnetToken = isTestnetToken
         self.infoProvider = infoProvider
         self.priceChangeProvider = priceChangeProvider
+        self.tokenTapped = tokenTapped
 
         bind()
     }
@@ -69,7 +69,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func bind() {
-        infoProvider?.tokenItemStatePublisher
+        infoProvider.tokenItemStatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newState in
                 guard let self else { return }
@@ -97,7 +97,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             }
             .store(in: &bag)
 
-        priceChangeProvider?.priceChangePublisher
+        priceChangeProvider.priceChangePublisher
             .receive(on: DispatchQueue.main)
             .compactMap { [weak self] _ -> String? in
                 guard let self else { return nil }
@@ -114,14 +114,10 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func updatePendingTransactionsStateIfNeeded() {
-        guard let infoProvider = infoProvider else { return }
-
         hasPendingTransactions = infoProvider.hasPendingTransactions
     }
 
     private func updateBalances() {
-        guard let infoProvider = infoProvider else { return }
-
         balanceCrypto = .loaded(text: infoProvider.balance)
         balanceFiat = .loaded(text: infoProvider.fiatBalance)
     }

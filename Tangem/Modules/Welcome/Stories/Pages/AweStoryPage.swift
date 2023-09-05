@@ -21,46 +21,45 @@ struct AweStoryPage: View {
 
             VStack(spacing: 12) {
                 Text(Localization.storyAweTitle)
-                    .font(.system(size: 36, weight: .semibold))
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .title, textBlockAppearance: .minorDelay)
 
                 Text(Localization.storyAweDescription)
-                    .font(.system(size: 24))
+                    .style(Fonts.Regular.callout, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .description, textBlockAppearance: .minorDelay)
             }
+            .padding(.horizontal, 28)
             .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            Assets.Stories.coinShower.image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .overlay(
-                    LinearGradient(stops: [
-                        Gradient.Stop(color: Color("tangem_story_background").opacity(0), location: 0.5),
-                        Gradient.Stop(color: Color("tangem_story_background"), location: 1),
-                    ], startPoint: .top, endPoint: .bottom)
-                        .frame(minWidth: 1000)
-                )
-                .storyImageAppearanceModifier(
-                    progress: progress,
-                    start: 0,
-                    fastMovementStartCoefficient: 1,
-                    fastMovementSpeedCoefficient: -45,
-                    fastMovementEnd: 0.15,
-                    slowMovementSpeedCoefficient: 0.15
-                )
+            ZStack(alignment: .bottom) {
+                Color.clear
+                    .background(
+                        Assets.Stories.tangemMain.image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .fixedSize(horizontal: false, vertical: true),
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
-                .padding(.horizontal)
-                .padding(.bottom)
+                        alignment: .top
+                    )
+                    .overlay(
+                        LinearGradient(colors: [
+                            .white.opacity(0),
+                            Color("tangem_story_background"),
+                            Color("tangem_story_background"),
+                        ], startPoint: .top, endPoint: .bottom)
+                            .frame(height: 100),
+                        alignment: .bottom
+                    )
+
+                StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))

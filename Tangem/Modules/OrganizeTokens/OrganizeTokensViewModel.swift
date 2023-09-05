@@ -15,21 +15,22 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     var sectionHeaderItemIndex: Int { .min }
 
     private(set) lazy var headerViewModel = OrganizeTokensHeaderViewModel(
-        organizeTokensOptionsProviding: organizeTokensOptionsProviding,
-        organizeTokensOptionsEditing: organizeTokensOptionsEditing
+        optionsProviding: optionsProviding,
+        optionsEditing: optionsEditing
     )
 
-    @Published private(set) var sections: [OrganizeTokensListSectionViewModel] = []
+    @Published private(set) var sections: [OrganizeTokensListSection] = []
 
     let id = UUID()
 
     private unowned let coordinator: OrganizeTokensRoutable
 
     private let walletModelsManager: WalletModelsManager
-    private let walletModelsAdapter: OrganizeWalletModelsAdapter
-    private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
-    private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+    private let tokenSectionsAdapter: TokenSectionsAdapter
+    private let optionsProviding: OrganizeTokensOptionsProviding
+    private let optionsEditing: OrganizeTokensOptionsEditing
 
+    private let dragAndDropActionsCache = OrganizeTokensDragAndDropActionsCache()
     private var currentlyDraggedSectionIdentifier: AnyHashable?
     private var currentlyDraggedSectionItems: [OrganizeTokensListItemViewModel] = []
 
@@ -41,19 +42,20 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     )
 
     private var bag: Set<AnyCancellable> = []
+    private var didBind = false
 
     init(
         coordinator: OrganizeTokensRoutable,
         walletModelsManager: WalletModelsManager,
-        walletModelsAdapter: OrganizeWalletModelsAdapter,
-        organizeTokensOptionsProviding: OrganizeTokensOptionsProviding,
-        organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+        tokenSectionsAdapter: TokenSectionsAdapter,
+        optionsProviding: OrganizeTokensOptionsProviding,
+        optionsEditing: OrganizeTokensOptionsEditing
     ) {
         self.coordinator = coordinator
         self.walletModelsManager = walletModelsManager
-        self.walletModelsAdapter = walletModelsAdapter
-        self.organizeTokensOptionsProviding = organizeTokensOptionsProviding
-        self.organizeTokensOptionsEditing = organizeTokensOptionsEditing
+        self.tokenSectionsAdapter = tokenSectionsAdapter
+        self.optionsProviding = optionsProviding
+        self.optionsEditing = optionsEditing
     }
 
     func onViewAppear() {
@@ -69,8 +71,12 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     }
 
     private func bind() {
+        if didBind { return }
+
         let walletModelsPublisher = walletModelsManager
             .walletModelsPublisher
+            .share(replay: 1)
+            .eraseToAnyPublisher()
 
         let walletModelsDidChangePublisher = walletModelsPublisher
             .receive(on: mappingQueue)
@@ -79,119 +85,122 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
                     .map(\.walletDidChangePublisher)
                     .merge()
             }
-            .debounce(for: 0.3, scheduler: RunLoop.main)
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .withLatestFrom(walletModelsPublisher)
+            .eraseToAnyPublisher()
 
-        walletModelsAdapter
-            .organizedWalletModels(from: walletModelsDidChangePublisher, on: mappingQueue)
-            .withLatestFrom(organizeTokensOptionsProviding.sortingOption) { ($0, $1) }
+        let aggregatedWalletModelsPublisher = [
+            walletModelsPublisher,
+            walletModelsDidChangePublisher,
+        ].merge()
+
+        let organizedTokensSectionsPublisher = tokenSectionsAdapter
+            .organizedSections(from: aggregatedWalletModelsPublisher, on: mappingQueue)
+            .share(replay: 1)
+
+        let cache = dragAndDropActionsCache
+
+        // Resetting drag-and-drop actions cache for grouped sections
+        // when the structure of the underlying model has changed
+        organizedTokensSectionsPublisher
+            .withLatestFrom(optionsProviding.groupingOption) { ($0, $1) }
+            .filter { $0.1.isGrouped }
+            .map(\.0)
+            .pairwise()
+            .sink { cache.resetIfNeeded(sectionsChange: $0, isGroupingEnabled: true) }
+            .store(in: &bag)
+
+        // Resetting drag-and-drop actions cache for plain (non-grouped) sections
+        // when the structure of the underlying model has changed
+        organizedTokensSectionsPublisher
+            .withLatestFrom(optionsProviding.groupingOption) { ($0, $1) }
+            .filter { !$0.1.isGrouped }
+            .map(\.0)
+            .pairwise()
+            .sink { cache.resetIfNeeded(sectionsChange: $0, isGroupingEnabled: false) }
+            .store(in: &bag)
+
+        // Resetting drag-and-drop actions cache unconditionally when sort option is changed
+        optionsProviding
+            .sortingOption
+            .removeDuplicates()
+            .sink { _ in cache.reset() }
+            .store(in: &bag)
+
+        organizedTokensSectionsPublisher
+            .withLatestFrom(
+                optionsProviding.sortingOption,
+                optionsProviding.groupingOption
+            ) { ($0, $1.0, $1.1, cache) }
             .map(Self.map)
             .receive(on: DispatchQueue.main)
             .assign(to: \.sections, on: self, ownership: .weak)
             .store(in: &bag)
 
         onSave
-            .throttle(for: 1.0, scheduler: RunLoop.main, latest: false)
-            .eraseToAnyPublisher()
+            .throttle(for: 1.0, scheduler: DispatchQueue.main, latest: false)
+            .receive(on: mappingQueue)
             .withWeakCaptureOf(self)
             .flatMapLatest { viewModel, _ in
-                viewModel.organizeTokensOptionsEditing.save()
+                let walletModelIds = viewModel
+                    .sections
+                    .flatMap(\.items)
+                    .map(\.id.walletModelId)
+
+                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds)
             }
-            .sink()
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, _ in
+                viewModel.coordinator.didTapSaveButton()
+            }
             .store(in: &bag)
+
+        didBind = true
     }
 
     private static func map(
-        walletModelsSections: [OrganizeWalletModelsAdapter.Section],
-        sortingOption: OrganizeTokensOptions.Sorting
-    ) -> [OrganizeTokensListSectionViewModel] {
+        sections: [TokenSectionsAdapter.Section],
+        sortingOption: UserTokensReorderingOptions.Sorting,
+        groupingOption: UserTokensReorderingOptions.Grouping,
+        dragAndDropActionsCache: OrganizeTokensDragAndDropActionsCache
+    ) -> [OrganizeTokensListSection] {
         let tokenIconInfoBuilder = TokenIconInfoBuilder()
-        let isListItemsDraggable = isListItemDraggable(sortingOption: sortingOption)
+        let listFactory = OrganizeTokensListFactory(tokenIconInfoBuilder: tokenIconInfoBuilder)
 
-        // Plain sections use section indices (using `enumerated()`) as a stable identity, but in
-        // reality we always have only one single plain section, so the identity doesn't matter here
-        return walletModelsSections.enumerated().map { index, section in
+        var listItemViewModels = sections.enumerated().map { index, section in
             let isListSectionGrouped = isListSectionGrouped(section)
+            let isDraggable = section.items.count > 1
             let items = section.items.map { item in
-                return map(
-                    walletModel: item,
-                    isDraggable: isListItemsDraggable,
-                    inGroupedSection: isListSectionGrouped,
-                    using: tokenIconInfoBuilder
+                listFactory.makeListItemViewModel(
+                    sectionItem: item,
+                    isDraggable: isDraggable,
+                    inGroupedSection: isListSectionGrouped
                 )
             }
 
-            switch section.model {
-            case .group(let blockchainNetwork):
-                let title = Localization.walletNetworkGroupTitle(blockchainNetwork.blockchain.displayName)
-                return OrganizeTokensListSectionViewModel(
-                    id: blockchainNetwork,
-                    style: .draggable(title: title),
-                    items: items
-                )
-            case .plain:
-                return OrganizeTokensListSectionViewModel(
-                    id: index,
-                    style: .invisible,
-                    items: items
-                )
-            }
+            return listFactory.makeListSection(from: section.model, with: items, atIndex: index)
         }
-    }
 
-    private static func map(
-        walletModel: WalletModel,
-        isDraggable: Bool,
-        inGroupedSection: Bool,
-        using tokenIconInfoBuilder: TokenIconInfoBuilder
-    ) -> OrganizeTokensListItemViewModel {
-        let tokenIcon = tokenIconInfoBuilder.build(
-            for: walletModel.amountType,
-            in: walletModel.blockchainNetwork.blockchain
-        )
-        let identifier = ListItemViewModelIdentifier(walletModelId: walletModel.id, inGroupedSection: inGroupedSection)
-
-        return OrganizeTokensListItemViewModel(
-            id: identifier,
-            tokenIcon: tokenIcon,
-            balance: fiatBalance(for: walletModel),
-            isNetworkUnreachable: walletModel.state.isBlockchainUnreachable,
-            isDraggable: isDraggable
-        )
-    }
-
-    private static func fiatBalance(for walletModel: WalletModel) -> LoadableTextView.State {
-        guard !walletModel.rateFormatted.isEmpty else { return .noData }
-
-        switch walletModel.state {
-        case .created, .idle, .noAccount, .noDerivation:
-            return .loaded(text: walletModel.fiatBalance)
-        case .loading:
-            return .loading
-        case .failed:
-            return .noData
+        // By design, cached drag-and-drop actions can only be applied when manual sorting is active
+        if !sortingOption.isSorted {
+            dragAndDropActionsCache.applyDragAndDropActions(
+                to: &listItemViewModels,
+                isGroupingEnabled: groupingOption.isGrouped
+            )
         }
-    }
 
-    private static func isListItemDraggable(
-        sortingOption: OrganizeTokensOptions.Sorting
-    ) -> Bool {
-        switch sortingOption {
-        case .dragAndDrop:
-            return true
-        case .byBalance:
-            return false
-        }
+        return listItemViewModels
     }
 
     private static func isListSectionGrouped(
-        _ section: OrganizeWalletModelsAdapter.Section
+        _ section: TokenSectionsAdapter.Section
     ) -> Bool {
         switch section.model {
-        case .group:
-            return true
         case .plain:
             return false
+        case .group:
+            return true
         }
     }
 }
@@ -202,45 +211,62 @@ extension OrganizeTokensViewModel {
     func itemViewModel(for identifier: AnyHashable) -> OrganizeTokensListItemViewModel? {
         return sections
             .flatMap { $0.items }
-            .first { $0.id == identifier }
+            .first { $0.id.asAnyHashable == identifier }
     }
 
-    func sectionViewModel(for identifier: AnyHashable) -> OrganizeTokensListSectionViewModel? {
+    func section(for identifier: AnyHashable) -> OrganizeTokensListSection? {
         return sections
             .first { $0.id == identifier }
     }
 
     func viewModelIdentifier(at indexPath: IndexPath) -> AnyHashable {
-        return sectionViewModel(at: indexPath)?.id ?? itemViewModel(at: indexPath).id
+        return section(at: indexPath)?.id ?? itemViewModel(at: indexPath).id.asAnyHashable
     }
 
     func move(from sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let isGroupingEnabled = headerViewModel.isGroupingEnabled
+
         if sourceIndexPath.item == sectionHeaderItemIndex {
-            assert(sourceIndexPath.item == destinationIndexPath.item, "Can't perform move operation between section and item or vice versa")
-            let diff = sourceIndexPath.section > destinationIndexPath.section ? 0 : 1
-            sections.move(
-                fromOffsets: IndexSet(integer: sourceIndexPath.section),
-                toOffset: destinationIndexPath.section + diff
-            )
+            guard sourceIndexPath.item == destinationIndexPath.item else {
+                assertionFailure("Can't perform move operation between section and item or vice versa")
+                return
+            }
+
+            sections.swapAt(sourceIndexPath.section, destinationIndexPath.section)
+            dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
+                sectionsToMutate.swapAt(sourceIndexPath.section, destinationIndexPath.section)
+            }
         } else {
-            assert(sourceIndexPath.section == destinationIndexPath.section, "Can't perform move operation between section and item or vice versa")
-            let diff = sourceIndexPath.item > destinationIndexPath.item ? 0 : 1
-            sections[sourceIndexPath.section].items.move(
-                fromOffsets: IndexSet(integer: sourceIndexPath.item),
-                toOffset: destinationIndexPath.item + diff
-            )
+            guard sourceIndexPath.section == destinationIndexPath.section else {
+                assertionFailure("Can't perform move operation between section and item or vice versa")
+                return
+            }
+
+            sections[sourceIndexPath.section].items.swapAt(sourceIndexPath.item, destinationIndexPath.item)
+            dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
+                sectionsToMutate[sourceIndexPath.section].items.swapAt(sourceIndexPath.item, destinationIndexPath.item)
+            }
         }
     }
 
     func canStartDragAndDropSession(at indexPath: IndexPath) -> Bool {
-        return sectionViewModel(at: indexPath)?.isDraggable ?? itemViewModel(at: indexPath).isDraggable
+        return section(at: indexPath)?.isDraggable ?? itemViewModel(at: indexPath).isDraggable
     }
 
     func onDragStart(at indexPath: IndexPath) {
+        // A started drag-and-drop session always disables sorting by balance
+        optionsEditing.sort(by: .dragAndDrop)
+
         // Process further only if a section is currently being dragged
         guard indexPath.item == sectionHeaderItemIndex else { return }
 
-        beginDragAndDropSession(forSectionWithIdentifier: sections[indexPath.section].id)
+        // Setting the sort option to `dragAndDrop` will cause an update of SwiftUI view identifiers for all
+        // cells and sections in `OrganizeTokensView`. This update may take a couple render passes, therefore
+        // we must wait for this update to finish before collapsing the dragged section
+        // (by calling `beginDragAndDropSession(forSectionWithIdentifier:)`), otherwise UI glitches may appear
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            self.beginDragAndDropSession(forSectionWithIdentifier: self.sections[indexPath.section].id)
+        }
     }
 
     func onDragAnimationCompletion() {
@@ -280,7 +306,7 @@ extension OrganizeTokensViewModel {
         return sections[indexPath.section].items[indexPath.item]
     }
 
-    private func sectionViewModel(at indexPath: IndexPath) -> OrganizeTokensListSectionViewModel? {
+    private func section(at indexPath: IndexPath) -> OrganizeTokensListSection? {
         guard indexPath.item == sectionHeaderItemIndex else { return nil }
 
         return sections[indexPath.section]
@@ -315,14 +341,5 @@ extension OrganizeTokensViewModel: OrganizeTokensDragAndDropControllerDataSource
         listViewIdentifierForItemAt indexPath: IndexPath
     ) -> AnyHashable {
         return viewModelIdentifier(at: indexPath)
-    }
-}
-
-// MARK: - Auxiliary types
-
-private extension OrganizeTokensViewModel {
-    struct ListItemViewModelIdentifier: Hashable {
-        let walletModelId: WalletModel.ID
-        let inGroupedSection: Bool
     }
 }

@@ -57,7 +57,7 @@ extension View {
     /// in the whole `GeometryInfo` but rather a single property of it.
     func readGeometry<T>(
         _ keyPath: KeyPath<GeometryInfo, T> = \.self,
-        inCoordinateSpace coordinateSpace: CoordinateSpace = .global,
+        inCoordinateSpace coordinateSpace: CoordinateSpace = .local,
         throttleInterval: GeometryInfo.ThrottleInterval = .zero,
         onChange: @escaping (_ value: T) -> Void
     ) -> some View {
@@ -88,7 +88,7 @@ extension View {
     /// ```
     func readGeometry<T>(
         _ keyPath: KeyPath<GeometryInfo, T> = \.self,
-        inCoordinateSpace coordinateSpace: CoordinateSpace = .global,
+        inCoordinateSpace coordinateSpace: CoordinateSpace = .local,
         throttleInterval: GeometryInfo.ThrottleInterval = .zero,
         bindTo value: Binding<T>
     ) -> some View {
@@ -141,7 +141,7 @@ private struct GeometryInfoReaderPreferenceKey: PreferenceKey {
 
     static var defaultValue: Value {
         let defaultValue = GeometryInfo(
-            coordinateSpace: .global,
+            coordinateSpace: .local,
             frame: .zero,
             size: .zero,
             safeAreaInsets: .init()
@@ -158,8 +158,6 @@ private struct TimeStampContainer: Equatable {
     let geometryInfo: GeometryInfo
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        assert(lhs.throttleInterval == rhs.throttleInterval)
-
         if abs(lhs.timeStamp - rhs.timeStamp) < rhs.throttleInterval {
             return true
         }

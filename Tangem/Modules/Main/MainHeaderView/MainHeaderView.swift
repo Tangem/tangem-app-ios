@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainHeaderView: View {
     @ObservedObject var viewModel: MainHeaderViewModel
+    @ObservedObject var sensitiveTextVisibilityService: SensitiveTextVisibilityService = .shared
 
     private let imageSize: CGSize = .init(width: 120, height: 106)
     private let horizontalSpacing: CGFloat = 6
@@ -19,8 +20,7 @@ struct MainHeaderView: View {
         GeometryReader { proxy in
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(viewModel.userWalletName)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    titleView
 
                     if viewModel.isUserWalletLocked {
                         Colors.Field.primary
@@ -28,12 +28,11 @@ struct MainHeaderView: View {
                             .cornerRadiusContinuous(6)
                             .padding(.vertical, 5)
                     } else {
-                        Text(viewModel.balance)
+                        SensitiveText(viewModel.balance)
                             .multilineTextAlignment(.leading)
                             .truncationMode(.middle)
                             .scaledToFit()
                             .minimumScaleFactor(0.5)
-                            .showSensitiveInformation(viewModel.showSensitiveInformation)
                             .skeletonable(
                                 isShown: viewModel.isLoadingFiatBalance,
                                 size: .init(width: 102, height: 24),
@@ -43,13 +42,7 @@ struct MainHeaderView: View {
                             .frame(minHeight: 34)
                     }
 
-                    if viewModel.isUserWalletLocked {
-                        subtitleText
-                    } else {
-                        subtitleText
-                            .showSensitiveInformation(viewModel.showSensitiveSubtitleInformation)
-                            .skeletonable(isShown: viewModel.isLoadingSubtitle, size: .init(width: 52, height: 12), radius: 3)
-                    }
+                    subtitleText
                 }
                 .lineLimit(1)
                 .frame(width: leadingContentWidth(containerWidth: proxy.size.width), alignment: .leading)
@@ -71,13 +64,37 @@ struct MainHeaderView: View {
         .previewContentShape(cornerRadius: cornerRadius)
     }
 
-    private var subtitleText: some View {
-        Text(viewModel.subtitleInfo.message)
-            .style(
-                viewModel.subtitleInfo.formattingOption.font,
-                color: viewModel.subtitleInfo.formattingOption.textColor
-            )
-            .truncationMode(.middle)
+    @ViewBuilder private var titleView: some View {
+        HStack(spacing: 4) {
+            Text(viewModel.userWalletName)
+                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+            Button {
+                sensitiveTextVisibilityService.toggleVisibility()
+            } label: {
+                Image(systemName: sensitiveTextVisibilityService.isHidden ? "eye.slash" : "eye")
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+            }
+        }
+    }
+
+    @ViewBuilder private var subtitleText: some View {
+        Group {
+            if viewModel.subtitleContainsSensitiveInfo {
+                SensitiveText(viewModel.subtitleInfo.message)
+            } else {
+                Text(viewModel.subtitleInfo.message)
+            }
+        }
+        .style(
+            viewModel.subtitleInfo.formattingOption.font,
+            color: viewModel.subtitleInfo.formattingOption.textColor
+        )
+        .truncationMode(.middle)
+        .modifier(if: !viewModel.isUserWalletLocked) {
+            $0.skeletonable(isShown: viewModel.isLoadingSubtitle, size: .init(width: 52, height: 12), radius: 3)
+        }
     }
 
     private func leadingContentWidth(containerWidth: CGFloat) -> CGFloat {

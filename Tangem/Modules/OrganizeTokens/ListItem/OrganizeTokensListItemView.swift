@@ -17,13 +17,13 @@ struct OrganizeTokensListItemView: View {
                 name: viewModel.name,
                 imageURL: viewModel.imageURL,
                 blockchainIconName: viewModel.blockchainIconName,
-                hasMonochromeIcon: viewModel.isNetworkUnreachable
+                hasMonochromeIcon: viewModel.hasMonochromeIcon
             )
 
-            // According to the mockups, network unreachable state on the Organize Tokens screen
-            // looks different than on the main screen
-            if viewModel.isNetworkUnreachable {
-                networkUnreachableMiddleComponent
+            // According to the mockups, error state on the Organize Tokens
+            // screen looks different than on the main screen
+            if let errorMessage = viewModel.errorMessage {
+                makeMiddleComponent(withErrorMessage: errorMessage)
             } else {
                 defaultMiddleComponent
             }
@@ -39,26 +39,26 @@ struct OrganizeTokensListItemView: View {
         .padding(14.0)
     }
 
-    private var networkUnreachableMiddleComponent: some View {
-        VStack(alignment: .leading, spacing: 2.0) {
-            Text(viewModel.name)
-                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-                .lineLimit(2)
-
-            Text(Localization.commonUnreachable)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                .lineLimit(1)
-        }
-        .padding(.vertical, 2.0)
-    }
-
     private var defaultMiddleComponent: some View {
         TokenItemViewMiddleComponent(
             name: viewModel.name,
             balance: viewModel.balance,
             hasPendingTransactions: false, // Pending transactions aren't shown on the Organize Tokens screen
-            hasError: viewModel.isNetworkUnreachable
+            hasError: false // Errors are handled by the dedicated component made in `makeMiddleComponent(withErrorMessage:)`
         )
+    }
+
+    private func makeMiddleComponent(withErrorMessage errorMessage: String) -> some View {
+        VStack(alignment: .leading, spacing: 2.0) {
+            Text(viewModel.name)
+                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                .lineLimit(2)
+
+            Text(errorMessage)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                .lineLimit(1)
+        }
+        .padding(.vertical, 2.0)
     }
 }
 

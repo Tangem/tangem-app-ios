@@ -56,7 +56,7 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     func makeWalletModelsFactory() -> WalletModelsFactory
 
-    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory
 }
 
 extension UserWalletConfig {

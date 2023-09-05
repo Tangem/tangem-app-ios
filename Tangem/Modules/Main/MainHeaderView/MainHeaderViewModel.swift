@@ -18,17 +18,10 @@ final class MainHeaderViewModel: ObservableObject {
     @Published private(set) var balance: NSAttributedString = .init(string: "")
     @Published var isLoadingFiatBalance: Bool = true
     @Published var isLoadingSubtitle: Bool = true
-    @Published var showSensitiveInformation: Bool = true
 
-    var showSensitiveSubtitleInformation: Bool {
-        guard isSubtitleContainsSensitiveInformation else {
-            return true
-        }
-
-        return showSensitiveInformation
+    var subtitleContainsSensitiveInfo: Bool {
+        subtitleProvider.containsSensitiveInfo
     }
-
-    private let isSubtitleContainsSensitiveInformation: Bool
 
     private let infoProvider: MainHeaderInfoProvider
     private let subtitleProvider: MainHeaderSubtitleProvider
@@ -47,7 +40,6 @@ final class MainHeaderViewModel: ObservableObject {
 
         isUserWalletLocked = infoProvider.isUserWalletLocked
         cardImage = infoProvider.cardHeaderImage
-        isSubtitleContainsSensitiveInformation = subtitleProvider.containsSensitiveInfo
         bind()
     }
 

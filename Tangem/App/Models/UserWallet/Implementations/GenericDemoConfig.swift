@@ -197,7 +197,7 @@ extension GenericDemoConfig: UserWalletConfig {
         return DemoWalletModelsFactory(derivationStyle: derivationStyle)
     }
 
-    func makeAnyWalletManagerFacrory() throws -> AnyWalletManagerFactory {
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
         if hasFeature(.hdWallets) {
             return HDWalletManagerFactory()
         } else {

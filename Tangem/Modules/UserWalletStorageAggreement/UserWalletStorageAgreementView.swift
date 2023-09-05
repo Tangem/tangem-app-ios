@@ -21,6 +21,8 @@ struct UserWalletStorageAgreementView: View {
 
             VStack(spacing: 0) {
                 BiometryLogoImage.image.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.inactive)
 
                 FlexibleSpacer(maxHeight: 28)
 
@@ -95,6 +97,7 @@ private extension UserWalletStorageAgreementView {
                     .overlay(
                         icon.image
                             .resizable()
+                            .renderingMode(.template)
                             .foregroundColor(Colors.Text.primary1)
                             .padding(.all, 11)
                     )

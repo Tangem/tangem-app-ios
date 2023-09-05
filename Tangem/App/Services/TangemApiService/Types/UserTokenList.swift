@@ -33,10 +33,6 @@ struct UserTokenList: Codable {
 extension UserTokenList {
     static var initialVersion: Int { 0 }
 
-    static var empty: Self {
-        return Self(tokens: [], group: .none, sort: .manual)
-    }
-
     init(
         tokens: [Token],
         group: GroupType,

@@ -44,23 +44,23 @@
     </dict>
     <key>main_warning_missing_derivation_description</key>
     <dict>
-        <key>NSStringLocalizedFormatKey</key>
-        <string>%#@format@</string>
-        <key>format</key>
-        <dict>
-            <key>NSStringFormatSpecTypeKey</key>
-            <string>NSStringPluralRuleType</string>
-            <key>NSStringFormatValueTypeKey</key>
-            <string>li</string>
-            <key>one</key>
-            <string>Вам надо сгенерировать адрес для %li новой сети, используя вашу карту</string>
-            <key>few</key>
-            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
-            <key>many</key>
-            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
-            <key>other</key>
-            <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
-        </dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Вам надо сгенерировать адрес для %li новой сети, используя вашу карту</string>
+        <key>few</key>
+        <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
+        <key>many</key>
+        <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
+        <key>other</key>
+        <string>Вам надо сгенерировать адреса для %li новых сетей, используя вашу карту</string>
+      </dict>
     </dict>
     <key>referral_number_of_wallets</key>
     <dict>

@@ -68,11 +68,11 @@ struct RefreshableScrollView<Content: View>: View {
                     }
                     .alignmentGuide(
                         .top,
-                        computeValue: { d in (refreshing && frozen) ? (-threshold + 30) : 0.0 }
+                        computeValue: { _ in (refreshing && frozen) ? -threshold : 0.0 }
                     )
 
                     SymbolView(
-                        height: threshold - 30,
+                        height: threshold,
                         loading: refreshing,
                         frozen: frozen,
                         rotation: rotation,
@@ -88,6 +88,7 @@ struct RefreshableScrollView<Content: View>: View {
     }
 
     private func refreshLogic(values: [RefreshableKeyTypes.PrefData]) {
+        // `DispatchQueue.main.async` used here to allow publishing changes during view update
         DispatchQueue.main.async {
             // Calculating scroll offset
             let movingBounds = values.first { $0.vType == .movingView }?.bounds ?? .zero
@@ -102,8 +103,16 @@ struct RefreshableScrollView<Content: View>: View {
             if !refreshing, scrollOffset > threshold, previousScrollOffset <= threshold {
                 refreshing = true
 
-                onRefresh {
-                    refreshing = false
+                // The consumer of this view may and most likely will change view hierarchy in `onRefresh` closure,
+                // which in turn will interfere with view hierarchy changes made by changing our `frozen`/`refreshing`
+                // state variables.
+                // To prevent it, we're notifying the consumer of this view about triggered pull-to-refresh with some delay.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    onRefresh {
+                        withAnimation {
+                            refreshing = false
+                        }
+                    }
                 }
             }
             if refreshing {
@@ -150,7 +159,7 @@ struct RefreshableScrollView<Content: View>: View {
                 if loading { // If loading, show the activity control
                     VStack {
                         Spacer()
-                        ActivityRep()
+                        ProgressView()
                         Spacer()
                     }.frame(height: height).fixedSize()
                         .offset(y: -height + (loading && frozen ? height : 0.0))
@@ -224,23 +233,6 @@ private enum RefreshableKeyTypes {
         }
 
         typealias Value = [PrefData]
-    }
-}
-
-private struct ActivityRep: UIViewRepresentable {
-    func makeUIView(
-        context: UIViewRepresentableContext<ActivityRep>
-    ) -> UIActivityIndicatorView {
-        return UIActivityIndicatorView()
-    }
-
-    func updateUIView(
-        _ uiView: UIActivityIndicatorView,
-        context: UIViewRepresentableContext<ActivityRep>
-    ) {
-        if !uiView.isAnimating {
-            uiView.startAnimating()
-        }
     }
 }
 

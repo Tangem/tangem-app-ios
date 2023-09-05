@@ -25,17 +25,21 @@ final class OrganizeTokensHeaderViewModel: ObservableObject {
             : Localization.organizeTokensGroup
     }
 
-    private let organizeTokensOptionsProviding: OrganizeTokensOptionsProviding
-    private let organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+    private let optionsProviding: OrganizeTokensOptionsProviding
+    private let optionsEditing: OrganizeTokensOptionsEditing
+
+    private let onToggleSortState = PassthroughSubject<Void, Never>()
+    private let onToggleGroupState = PassthroughSubject<Void, Never>()
 
     private var bag: Set<AnyCancellable> = []
+    private var didBind = false
 
     init(
-        organizeTokensOptionsProviding: OrganizeTokensOptionsProviding,
-        organizeTokensOptionsEditing: OrganizeTokensOptionsEditing
+        optionsProviding: OrganizeTokensOptionsProviding,
+        optionsEditing: OrganizeTokensOptionsEditing
     ) {
-        self.organizeTokensOptionsProviding = organizeTokensOptionsProviding
-        self.organizeTokensOptionsEditing = organizeTokensOptionsEditing
+        self.optionsProviding = optionsProviding
+        self.optionsEditing = optionsEditing
     }
 
     func onViewAppear() {
@@ -43,38 +47,48 @@ final class OrganizeTokensHeaderViewModel: ObservableObject {
     }
 
     func toggleSortState() {
-        organizeTokensOptionsEditing.sort(by: isSortByBalanceEnabled ? .dragAndDrop : .byBalance)
+        onToggleSortState.send()
     }
 
     func toggleGroupState() {
-        organizeTokensOptionsEditing.group(by: isGroupingEnabled ? .none : .byBlockchainNetwork)
+        onToggleGroupState.send(())
     }
 
     private func bind() {
-        organizeTokensOptionsProviding
+        if didBind { return }
+
+        optionsProviding
             .groupingOption
-            .map { groupingOption in
-                switch groupingOption {
-                case .none:
-                    return false
-                case .byBlockchainNetwork:
-                    return true
-                }
-            }
+            .map(\.isGrouped)
             .assign(to: \.isGroupingEnabled, on: self, ownership: .weak)
             .store(in: &bag)
 
-        organizeTokensOptionsProviding
+        optionsProviding
             .sortingOption
-            .map { sortingOption in
-                switch sortingOption {
-                case .dragAndDrop:
-                    return false
-                case .byBalance:
-                    return true
-                }
-            }
+            .map(\.isSorted)
             .assign(to: \.isSortByBalanceEnabled, on: self, ownership: .weak)
             .store(in: &bag)
+
+        onToggleSortState
+            .throttle(for: 1.0, scheduler: DispatchQueue.main, latest: false)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.optionsEditing.sort(
+                    by: viewModel.isSortByBalanceEnabled ? .dragAndDrop : .byBalance
+                )
+            }
+            .store(in: &bag)
+
+        onToggleGroupState
+            .throttle(for: 1.0, scheduler: DispatchQueue.main, latest: false)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.optionsEditing.group(
+                    by: viewModel.isGroupingEnabled ? .none : .byBlockchainNetwork
+                )
+            }
+            .store(in: &bag)
+
+        didBind = true
     }
 }

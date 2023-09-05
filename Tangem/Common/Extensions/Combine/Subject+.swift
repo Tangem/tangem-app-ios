@@ -18,3 +18,12 @@ extension CurrentValueSubject {
         )
     }
 }
+
+extension Subject {
+    func asWriteOnlyBinding(_ defaultValue: Output) -> Binding<Output> {
+        return Binding(
+            get: { defaultValue },
+            set: { self.send($0) }
+        )
+    }
+}

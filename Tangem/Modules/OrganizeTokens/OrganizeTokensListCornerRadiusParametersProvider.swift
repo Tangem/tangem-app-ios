@@ -10,11 +10,11 @@ import Foundation
 import struct UIKit.UIRectCorner
 
 struct OrganizeTokensListCornerRadiusParametersProvider {
-    private let sections: [OrganizeTokensListSectionViewModel]
+    private let sections: [OrganizeTokensListSection]
     private let cornerRadius: CGFloat
 
     init(
-        sections: [OrganizeTokensListSectionViewModel],
+        sections: [OrganizeTokensListSection],
         cornerRadius: CGFloat
     ) {
         self.sections = sections
@@ -37,7 +37,7 @@ struct OrganizeTokensListCornerRadiusParametersProvider {
             return cornerRadius
         }
 
-        if case .invisible = sections[indexPath.section].style,
+        if case .invisible = sections[indexPath.section].model.style,
            indexPath.section == 0,
            indexPath.item == 0 {
             return cornerRadius
@@ -57,7 +57,7 @@ struct OrganizeTokensListCornerRadiusParametersProvider {
             rectCorners.insert(.bottomRight)
         }
 
-        if case .invisible = sections[indexPath.section].style,
+        if case .invisible = sections[indexPath.section].model.style,
            indexPath.section == 0,
            indexPath.item == 0 {
             rectCorners.insert(.topLeft)

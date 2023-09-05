@@ -70,6 +70,8 @@ struct CommonUserTokensManager {
     }
 }
 
+// MARK: - UserTokensManager protocol conformance
+
 extension CommonUserTokensManager: UserTokensManager {
     func deriveIfNeeded(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         guard let derivationManager,
@@ -165,6 +167,8 @@ extension CommonUserTokensManager: UserTokensManager {
     }
 }
 
+// MARK: - UserTokensSyncService protocol conformance
+
 extension CommonUserTokensManager: UserTokensSyncService {
     var isInitialSyncPerformed: Bool {
         userTokenListManager.isInitialSyncPerformed
@@ -179,6 +183,80 @@ extension CommonUserTokensManager: UserTokensSyncService {
         userTokenListManager.updateLocalRepositoryFromServer { _ in
             self.walletModelsManager.updateAll(silent: false, completion: {})
         }
+    }
+}
+
+// MARK: - UserTokensReordering protocol conformance
+
+extension CommonUserTokensManager: UserTokensReordering {
+    var orderedWalletModelIds: AnyPublisher<[WalletModel.ID], Never> {
+        return userTokenListManager
+            .userTokensListPublisher
+            .map { $0.entries.map(\.walletModelId) }
+            .eraseToAnyPublisher()
+    }
+
+    var groupingOption: AnyPublisher<UserTokensReorderingOptions.Grouping, Never> {
+        let converter = UserTokensReorderingOptionsConverter()
+        return userTokenListManager
+            .userTokensListPublisher
+            .map { converter.convert($0.grouping) }
+            .eraseToAnyPublisher()
+    }
+
+    var sortingOption: AnyPublisher<UserTokensReorderingOptions.Sorting, Never> {
+        let converter = UserTokensReorderingOptionsConverter()
+        return userTokenListManager
+            .userTokensListPublisher
+            .map { converter.convert($0.sorting) }
+            .eraseToAnyPublisher()
+    }
+
+    func reorder(
+        _ reorderingActions: [UserTokensReorderingAction]
+    ) -> AnyPublisher<Void, Never> {
+        return Deferred { [userTokenListManager = self.userTokenListManager] in
+            Future<Void, Never> { promise in
+                if reorderingActions.isEmpty {
+                    promise(.success(()))
+                    return
+                }
+
+                let converter = UserTokensReorderingOptionsConverter()
+                let existingList = userTokenListManager.userTokensList
+                var entries = existingList.entries
+                var grouping = existingList.grouping
+                var sorting = existingList.sorting
+
+                for action in reorderingActions {
+                    switch action {
+                    case .setGroupingOption(let option):
+                        grouping = converter.convert(option)
+                    case .setSortingOption(let option):
+                        sorting = converter.convert(option)
+                    case .reorder(let reorderedWalletModelIds):
+                        let userTokensKeyedByIds = entries.keyedFirst(by: \.walletModelId)
+                        let reorderedEntries = reorderedWalletModelIds.compactMap { userTokensKeyedByIds[$0] }
+
+                        assert(reorderedEntries.count == entries.count, "Model inconsistency detected")
+                        entries = reorderedEntries
+                    }
+                }
+
+                let editedList = StoredUserTokenList(
+                    entries: entries,
+                    grouping: grouping,
+                    sorting: sorting
+                )
+
+                if editedList != existingList {
+                    userTokenListManager.update(with: editedList)
+                }
+
+                promise(.success(()))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 }
 

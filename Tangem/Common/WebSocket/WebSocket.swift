@@ -238,10 +238,16 @@ class WebSocket {
         case .pongReceived:
             log("<== Pong received")
         case .connnectionError(let error):
-            // If occured connection error Socket delegate will send `disconnected` event
-            // with corresponding closure code. So no need to notify here about disconnection
-            // because this is not actual disconnection.
+            // We need to check if task is still running, and if not - recreate it and start observing messages
+            // Otherwise WC will stuck with not connected state, and only app restart will fix this problem
             log("Connection error: \(error.localizedDescription)")
+            if task?.state != .running {
+                log("URLSessionWebSocketTask is not running. Resetting WebSocket state and attempting to reconnect")
+                state = .notConnected
+                connect()
+                return
+            }
+            log("URLSessionWebSocketTask is running, no action is needed")
         }
     }
 

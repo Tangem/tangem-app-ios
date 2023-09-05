@@ -38,22 +38,7 @@ class SingleTokenBaseViewModel {
 
     var canBuyCrypto: Bool { exchangeUtility.buyAvailable }
 
-    var canSend: Bool {
-        guard canSignLongTransactions else {
-            return false
-        }
-
-        return walletModel.wallet.canSend(amountType: amountType)
-    }
-
-    var canSignLongTransactions: Bool {
-        if NFCUtils.isPoorNfcQualityDevice,
-           blockchain.hasLongTransactions {
-            return false
-        } else {
-            return true
-        }
-    }
+    var canSend: Bool { walletModel.canSendTransaction }
 
     var blockchainNetwork: BlockchainNetwork { walletModel.blockchainNetwork }
 

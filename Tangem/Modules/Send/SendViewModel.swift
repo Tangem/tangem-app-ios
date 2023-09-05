@@ -138,7 +138,7 @@ class SendViewModel: ObservableObject {
     var walletTotalBalanceFormatted: String {
         let amount = walletModel.wallet.amounts[amountToSend.type]
         let value = getDescription(for: amount)
-        return Localization.commonBalance(value)
+        return value
     }
 
     // MARK: Private

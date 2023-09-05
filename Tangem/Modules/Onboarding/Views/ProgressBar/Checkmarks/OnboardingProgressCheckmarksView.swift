@@ -30,7 +30,7 @@ struct OnboardingProgressCheckmarksView: View {
         VStack {
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .foregroundColor(.tangemGreen2)
+                    .foregroundColor(Colors.Icon.accent)
                     .frame(size: .init(width: outerCircleDiameter, height: outerCircleDiameter))
                     .cornerRadius(outerCircleDiameter / 2)
                     .scaleEffect(selectionBackScale)
@@ -46,8 +46,8 @@ struct OnboardingProgressCheckmarksView: View {
                     }
                 Rectangle()
                     .modifier(AnimatableGradient(
-                        backgroundColor: .tangemGreen2,
-                        progressColor: .tangemGreen,
+                        backgroundColor: Colors.Icon.accent,
+                        progressColor: Colors.Icon.accent,
                         gradientStop: currentProgress
                     )
                     )
