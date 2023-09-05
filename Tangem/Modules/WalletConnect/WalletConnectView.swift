@@ -15,7 +15,7 @@ struct WalletConnectView: View {
     var navBarButton: some View {
         NavigationBusyButton(
             isBusy: viewModel.isServiceBusy,
-            color: .tangemBlue,
+            color: UIColor.iconAccent,
             systemImageName: "plus",
             action: viewModel.openSession
         )

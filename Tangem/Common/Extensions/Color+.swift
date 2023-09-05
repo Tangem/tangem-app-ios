@@ -168,6 +168,10 @@ extension UIColor {
     @nonobjc static var tangemCritical: UIColor {
         UIColor(named: "tangem_critical")!
     }
+
+    @nonobjc static var iconAccent: UIColor {
+        UIColor(named: "IconAccent")!
+    }
 }
 
 public extension Color {

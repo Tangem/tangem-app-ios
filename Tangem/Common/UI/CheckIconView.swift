@@ -14,7 +14,7 @@ struct CheckIconView: View {
     var body: some View {
         Assets.check.image
             .resizable()
-            .foregroundColor(Colors.Control.checked)
+            .foregroundColor(Colors.Icon.accent)
             /// Need to cover empty place if unchecking
             .opacity(isSelected ? 1 : 0)
             .frame(width: 20, height: 20)

@@ -21,10 +21,10 @@ struct IconWithMessagePlaceholderView: View {
 
             VStack(alignment: .leading) {
                 Color.white
-                    .skeletonable(isShown: true, size: .init(width: 102, height: 21), radius: 6)
+                    .skeletonable(isShown: true, size: .init(width: 40, height: 11), radius: 3)
 
                 Color.white
-                    .skeletonable(isShown: true, size: .init(width: 40, height: 11), radius: 3)
+                    .skeletonable(isShown: true, size: .init(width: 102, height: 21), radius: 6)
             }
 
             Spacer()

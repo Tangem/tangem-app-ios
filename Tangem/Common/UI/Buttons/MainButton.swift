@@ -12,9 +12,10 @@ struct MainButton: View {
     private let icon: Icon?
     private let style: Style
     private let size: Size
-    private let isLoading: Bool
     private let isDisabled: Bool
     private let action: () -> Void
+
+    private var isLoading: Bool
 
     init(
         title: String,
@@ -242,6 +243,12 @@ extension MainButton {
             hasher.combine(isLoading)
             hasher.combine(isDisabled)
         }
+    }
+}
+
+extension MainButton: Setupable {
+    func setIsLoading(to isLoading: Bool) -> Self {
+        map { $0.isLoading = isLoading }
     }
 }
 

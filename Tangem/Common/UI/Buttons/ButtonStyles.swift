@@ -94,7 +94,7 @@ enum ButtonColorStyle {
     var bgColor: Color {
         switch self {
         case .black: return .tangemGrayDark6
-        case .gray: return .tangemGrayLight4
+        case .gray: return Colors.Button.secondary
         case .transparentWhite: return .clear
         case .grayAlt3: return Colors.Button.secondary
         }
@@ -111,6 +111,8 @@ enum ButtonColorStyle {
 
     var fgColor: Color {
         switch self {
+        case .gray:
+            return Colors.Text.primary1
         case .transparentWhite, .grayAlt3: return .tangemGrayDark6
         default: return .tangemBg
         }

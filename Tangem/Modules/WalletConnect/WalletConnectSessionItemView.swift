@@ -18,7 +18,7 @@ struct WalletConnectSessionItemView: View {
                 Text(dAppName)
                     .font(.system(size: 17, weight: .medium))
                     .padding(.bottom, 2)
-                    .foregroundColor(.tangemGrayDark6)
+                    .foregroundColor(Colors.Text.primary1)
             }
             Spacer()
             TangemButton(title: Localization.commonDisconnect, action: disconnectEvent)

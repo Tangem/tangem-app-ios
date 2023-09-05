@@ -67,7 +67,7 @@ struct IconView: View {
     var kfImage: some View {
         KFImage(url)
             .cancelOnDisappear(true)
-            .placeholder { CircleImageTextView(name: "", color: .tangemSkeletonGray) }
+            .placeholder { CircleImageTextView(name: "", color: Colors.Button.secondary) }
             .fade(duration: 0.3)
             .cacheOriginalImage()
             .resizable()

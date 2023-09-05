@@ -54,6 +54,6 @@ private struct MainNetworkIndicator: View {
         Circle()
             .foregroundColor(Colors.Icon.accent)
             .padding(borderPadding)
-            .background(Circle().fill(Color.white))
+            .background(Circle().fill(Colors.Background.primary))
     }
 }

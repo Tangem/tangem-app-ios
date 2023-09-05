@@ -19,7 +19,7 @@ struct CheckmarkSwitch: View {
         static func defaultCircled(interactable: Bool = true) -> Settings {
             .init(
                 shape: .circle,
-                color: Colors.Icon.accent,
+                color: Colors.Control.checked,
                 borderColor: .tangemGrayDark,
                 checkmarkLineWidth: 2,
                 isInteractable: interactable
@@ -29,7 +29,7 @@ struct CheckmarkSwitch: View {
         static func defaultRoundedRect(interactable: Bool = true) -> Settings {
             .init(
                 shape: .roundedRect(cornerRadius: 3),
-                color: Colors.Icon.accent,
+                color: Colors.Control.checked,
                 borderColor: .tangemGrayDark,
                 checkmarkLineWidth: 2,
                 isInteractable: interactable
