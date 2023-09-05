@@ -13,6 +13,7 @@
 "alert_failed_to_send_email_title" = "發送電子郵件失敗";
 "alert_failed_to_send_transaction_message" = "原因：%@";
 "alert_manage_tokens_addresses_message" = "請注意代幣在不同的網路有不同的地址。請再次檢查正確的地址";
+"alert_manage_tokens_unsupported_curve_message" = "To activate the %1$@ blockchain's cryptographic encryption, you'll need to reset the wallet to factory settings. Please withdraw your funds before doing so to ensure that you don't lose them, and then complete the reset process. Access to the current wallet will not be possible after the reset.";
 "alert_manage_tokens_unsupported_message" = "此卡不支持Solana網路上的代幣因為韌體限制";
 "alert_negative_app_rate_sent_message" = "感謝您的反饋。我們會盡快回复";
 "alert_negative_app_rate_sent_title" = "你的建議已送出";

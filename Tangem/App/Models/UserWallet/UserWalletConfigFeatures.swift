@@ -76,5 +76,9 @@ extension UserWalletFeature {
 
             return false
         }
+
+        static var demoStub: Availability {
+            .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
+        }
     }
 }
