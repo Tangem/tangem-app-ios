@@ -30,11 +30,14 @@ struct UserWalletConfigFactory {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
             }
 
-            if isDemo {
+            let isWallet2 = cardInfo.card.firmwareVersion >= .ed25519Slip0010Available
+
+            switch (isWallet2, isDemo) {
+            case (true, _):
+                return Wallet2Config(card: cardInfo.card, isDemo: isDemo)
+            case (false, true): // TODO: Combine configs
                 return GenericDemoConfig(card: cardInfo.card)
-            } else if cardInfo.card.firmwareVersion >= .ed25519Slip0010Available {
-                return Wallet2Config(card: cardInfo.card)
-            } else {
+            case (false, false):
                 return GenericConfig(card: cardInfo.card)
             }
         case .file(let noteData):

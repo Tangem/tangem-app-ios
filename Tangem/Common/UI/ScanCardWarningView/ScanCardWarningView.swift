@@ -41,7 +41,14 @@ struct ScanCardWarningView: View {
 
     private var icon: some View {
         ZStack(alignment: .topTrailing) {
-            Assets.tangemCircleGrayIcon.image
+            Circle()
+                .fill(Colors.Background.secondary)
+                .frame(size: CGSize(bothDimensions: 42))
+                .overlay(
+                    Assets.tangemIcon.image
+                        .renderingMode(.template)
+                        .foregroundColor(.black)
+                )
 
             Circle()
                 .fill(Colors.Text.attention)
