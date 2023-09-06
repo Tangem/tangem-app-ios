@@ -19,6 +19,15 @@ struct AppSettingsCoordinatorView: CoordinatorView {
     var body: some View {
         if let rootViewModel = coordinator.rootViewModel {
             AppSettingsView(viewModel: rootViewModel)
+                .navigationLinks(links)
         }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.currencySelectViewModel) {
+                CurrencySelectView(viewModel: $0)
+            }
     }
 }

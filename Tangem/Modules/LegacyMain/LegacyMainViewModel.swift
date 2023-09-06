@@ -597,7 +597,7 @@ extension LegacyMainViewModel {
 
 extension LegacyMainViewModel {
     func openSettings() {
-        coordinator.openSettings(cardModel: cardModel)
+        coordinator.openSettings(userWalletModel: cardModel)
     }
 
     func openSend(for amountToSend: Amount) {

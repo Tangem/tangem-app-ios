@@ -68,13 +68,13 @@ extension MainCoordinator {
 // MARK: - MainRoutable protocol conformance
 
 extension MainCoordinator: MainRoutable {
-    func openDetails(for cardModel: CardViewModel) {
+    func openDetails(for userWalletModel: UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.detailsCoordinator = nil
         }
 
         let coordinator = DetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = DetailsCoordinator.Options(cardModel: cardModel)
+        let options = DetailsCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
         coordinator.popToRootAction = popToRootAction
         detailsCoordinator = coordinator

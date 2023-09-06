@@ -26,9 +26,6 @@ struct DetailsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.currencySelectViewModel) {
-                CurrencySelectView(viewModel: $0)
-            }
             .navigation(item: $coordinator.cardSettingsCoordinator) {
                 CardSettingsCoordinatorView(coordinator: $0)
             }

@@ -11,7 +11,7 @@ import BlockchainSdk
 
 protocol LegacyMainRoutable: LegacyTokenDetailsRoutable {
     func close(newScan: Bool)
-    func openSettings(cardModel: CardViewModel)
+    func openSettings(userWalletModel: UserWalletModel)
     func openTokenDetails(cardModel: CardViewModel, blockchainNetwork: BlockchainNetwork, amountType: Amount.AmountType)
     func openOnboardingModal(with input: OnboardingInput)
     func openCurrencySelection(autoDismiss: Bool)

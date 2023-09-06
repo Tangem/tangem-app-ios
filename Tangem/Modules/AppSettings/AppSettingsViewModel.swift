@@ -18,6 +18,7 @@ class AppSettingsViewModel: ObservableObject {
     @Published var warningViewModel: DefaultWarningRowViewModel?
     @Published var savingWalletViewModel: DefaultToggleRowViewModel?
     @Published var savingAccessCodesViewModel: DefaultToggleRowViewModel?
+    @Published var currencySelectionViewModel: DefaultRowViewModel?
 
     @Published var alert: AlertBinder?
 
@@ -44,6 +45,10 @@ class AppSettingsViewModel: ObservableObject {
         }
     }
 
+    /// Change to @AppStorage and move to model with IOS 14.5 minimum deployment target
+    @AppStorageCompat(StorageType.selectedCurrencyCode)
+    private var selectedCurrencyCode: String = "USD"
+
     init(coordinator: AppSettingsRoutable) {
         self.coordinator = coordinator
 
@@ -63,6 +68,13 @@ private extension AppSettingsViewModel {
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 self?.updateView()
+            }
+            .store(in: &bag)
+
+        $selectedCurrencyCode
+            .dropFirst()
+            .sink { [weak self] _ in
+                self?.setupView()
             }
             .store(in: &bag)
     }
@@ -132,6 +144,12 @@ private extension AppSettingsViewModel {
             title: Localization.appSettingsSavedAccessCodes,
             isDisabled: !isBiometryAvailable,
             isOn: isSavingAccessCodesBinding()
+        )
+
+        currencySelectionViewModel = DefaultRowViewModel(
+            title: Localization.detailsRowTitleCurrency,
+            detailsType: .text(selectedCurrencyCode),
+            action: coordinator.openCurrencySelection
         )
     }
 

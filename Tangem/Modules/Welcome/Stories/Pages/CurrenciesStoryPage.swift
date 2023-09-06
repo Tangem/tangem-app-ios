@@ -61,7 +61,7 @@ struct CurrenciesStoryPage: View {
                         GeometryReader { geometry in
                             VStack {
                                 Spacer()
-                                LinearGradient(colors: [.white.opacity(0), Color("tangem_story_background")], startPoint: .top, endPoint: .bottom)
+                                LinearGradient(colors: [.clear, Color("tangem_story_background")], startPoint: .top, endPoint: .bottom)
                                     .frame(height: geometry.size.height / 3)
                             }
                         }

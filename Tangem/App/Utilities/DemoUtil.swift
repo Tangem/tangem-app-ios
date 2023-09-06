@@ -14,12 +14,12 @@ struct DemoUtil {
         demoCardIds.contains(cardId)
     }
 
-    func getDemoBlockchains(isTestnet: Bool) -> [Blockchain] {
+    func getDemoBlockchains(isTestnet: Bool) -> [String] {
         [
-            .bitcoin(testnet: isTestnet),
-            .ethereum(testnet: isTestnet),
-            .dogecoin,
-            .solana(curve: .ed25519, testnet: isTestnet),
+            Blockchain.bitcoin(testnet: isTestnet).coinId,
+            Blockchain.ethereum(testnet: isTestnet).coinId,
+            Blockchain.dogecoin.coinId,
+            Blockchain.solana(curve: .ed25519, testnet: isTestnet).coinId,
         ]
     }
 

@@ -26,6 +26,18 @@ class LockedUserWallet: UserWalletModel {
 
     var updatePublisher: AnyPublisher<Void, Never> { .just }
 
+    var emailData: [EmailCollectedData] {
+        var data = config.emailData
+
+        let userWalletIdItem = EmailCollectedData(type: .card(.userWalletId), data: userWalletId.stringValue)
+        data.append(userWalletIdItem)
+
+        return data
+    }
+
+    let backupInput: OnboardingInput? = nil
+    let twinInput: OnboardingInput? = nil
+
     private(set) var userWallet: UserWallet
 
     init(with userWallet: UserWallet) {

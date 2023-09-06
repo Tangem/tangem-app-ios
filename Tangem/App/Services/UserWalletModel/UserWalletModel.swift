@@ -20,7 +20,9 @@ protocol UserWalletModel: MainHeaderInfoProvider, TotalBalanceProviding, MultiWa
     var userTokenListManager: UserTokenListManager { get }
     var signer: TangemSigner { get }
     var updatePublisher: AnyPublisher<Void, Never> { get }
-
+    var emailData: [EmailCollectedData] { get }
+    var backupInput: OnboardingInput? { get } // TODO: refactor
+    var twinInput: OnboardingInput? { get }
     func initialUpdate()
     func updateWalletName(_ name: String)
 }

@@ -20,6 +20,8 @@ struct AppSettingsView: View {
             Colors.Background.secondary.edgesIgnoringSafeArea(.all)
 
             GroupedScrollView {
+                appCurrencySection
+
                 warningSection
 
                 savingWalletSection
@@ -29,6 +31,13 @@ struct AppSettingsView: View {
         }
         .alert(item: $viewModel.alert) { $0.alert }
         .navigationBarTitle(Text(Localization.appSettingsTitle), displayMode: .inline)
+    }
+
+    @ViewBuilder
+    private var appCurrencySection: some View {
+        GroupedSection(viewModel.currencySelectionViewModel) {
+            DefaultRowView(viewModel: $0)
+        }
     }
 
     @ViewBuilder

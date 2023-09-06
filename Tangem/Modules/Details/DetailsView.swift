@@ -21,11 +21,11 @@ struct DetailsView: View {
             GroupedScrollView {
                 walletConnectSection
 
-                GroupedSection(viewModel.supportSectionModels) {
-                    DefaultRowView(viewModel: $0)
-                }
+                commonSection
 
                 settingsSection
+
+                supportSection
 
                 legalSection
 
@@ -69,6 +69,18 @@ struct DetailsView: View {
 
     private var legalSection: some View {
         GroupedSection(viewModel.legalSectionViewModel) {
+            DefaultRowView(viewModel: $0)
+        }
+    }
+
+    private var supportSection: some View {
+        GroupedSection(viewModel.supportSectionModels) {
+            DefaultRowView(viewModel: $0)
+        }
+    }
+
+    private var commonSection: some View {
+        GroupedSection(viewModel.commonSectionViewModels) {
             DefaultRowView(viewModel: $0)
         }
     }
@@ -118,7 +130,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             DetailsView(
                 viewModel: DetailsViewModel(
-                    cardModel: PreviewCard.tangemWalletEmpty.cardModel,
+                    userWalletModel: PreviewCard.tangemWalletEmpty.cardModel,
                     coordinator: DetailsCoordinator()
                 )
             )

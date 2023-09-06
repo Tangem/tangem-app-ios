@@ -18,6 +18,10 @@ class AppSettingsCoordinator: CoordinatorObject {
 
     @Published private(set) var rootViewModel: AppSettingsViewModel?
 
+    // MARK: - Child view models
+
+    @Published var currencySelectViewModel: CurrencySelectViewModel? = nil
+
     required init(
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions>
@@ -49,5 +53,10 @@ extension AppSettingsCoordinator: AppSettingsRoutable {
         }
 
         UIApplication.shared.open(settingsUrl, completionHandler: { _ in })
+    }
+
+    func openCurrencySelection() {
+        currencySelectViewModel = CurrencySelectViewModel()
+        currencySelectViewModel?.dismissAfterSelection = false
     }
 }

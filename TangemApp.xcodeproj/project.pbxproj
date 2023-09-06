@@ -526,7 +526,6 @@
 		DA129DD3292B4A3D004291EC /* UserWalletListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA129DD2292B4A3D004291EC /* UserWalletListCellViewModel.swift */; };
 		DA129DD5292B8EBB004291EC /* UserWalletEncryptionKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA129DD4292B8EBB004291EC /* UserWalletEncryptionKeyFactory.swift */; };
 		DA19DBD229477E7C00E43675 /* ContinuousCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19DBD129477E7C00E43675 /* ContinuousCornerRadius.swift */; };
-		DA2334392A433E64006D037D /* StoriesPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2334382A433E64006D037D /* StoriesPageView.swift */; };
 		DA23787A27B24222009795A8 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA23786B27B24221009795A8 /* Address.swift */; };
 		DA23787B27B24222009795A8 /* ProductVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA23786C27B24221009795A8 /* ProductVariant.swift */; };
 		DA23787C27B24222009795A8 /* ShopifyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA23786D27B24221009795A8 /* ShopifyService.swift */; };
@@ -1698,7 +1697,6 @@
 		DA129DD2292B4A3D004291EC /* UserWalletListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletListCellViewModel.swift; sourceTree = "<group>"; };
 		DA129DD4292B8EBB004291EC /* UserWalletEncryptionKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletEncryptionKeyFactory.swift; sourceTree = "<group>"; };
 		DA19DBD129477E7C00E43675 /* ContinuousCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCornerRadius.swift; sourceTree = "<group>"; };
-		DA2334382A433E64006D037D /* StoriesPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesPageView.swift; sourceTree = "<group>"; };
 		DA23786B27B24221009795A8 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		DA23786C27B24221009795A8 /* ProductVariant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVariant.swift; sourceTree = "<group>"; };
 		DA23786D27B24221009795A8 /* ShopifyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopifyService.swift; sourceTree = "<group>"; };
@@ -2399,7 +2397,6 @@
 			children = (
 				EF4662372924E00400346B6C /* WalletConnectRow */,
 				DC51185D28609CA5004FB954 /* CardOperation */,
-				5D3951652559A859002CC452 /* CurrencySelect */,
 				5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */,
 				65C9FCAD28644F9D00FDE63E /* DetailsView.swift */,
 				DC66BC07285B6E6400CDF765 /* DetailsRoutable.swift */,
@@ -4316,7 +4313,6 @@
 			children = (
 				DAC53CEF27BE63830027147D /* Pages */,
 				DAC53CEE27BE63830027147D /* StoriesView.swift */,
-				DA2334382A433E64006D037D /* StoriesPageView.swift */,
 				DAC53CED27BE63830027147D /* StoriesViewModel.swift */,
 				DAC53CEB27BE63830027147D /* StoriesProgressView.swift */,
 				DAC53CEC27BE63830027147D /* StoriesTangemLogo.swift */,
@@ -5503,6 +5499,7 @@
 		EF9CFC1B2890223F00329BE0 /* AppSettings */ = {
 			isa = PBXGroup;
 			children = (
+				5D3951652559A859002CC452 /* CurrencySelect */,
 				EF0F99A5289028F8008B01DF /* AppSettingsCoordinator.swift */,
 				EF0F99A6289028F8008B01DF /* AppSettingsCoordinatorView.swift */,
 				EF0F99A9289028F8008B01DF /* AppSettingsRoutable.swift */,
@@ -6421,7 +6418,6 @@
 				B074BAC326779BC8005D641B /* PushTxViewModel.swift in Sources */,
 				EF46621C2924DEEE00346B6C /* DefaultFooterView.swift in Sources */,
 				5D79D3152555ABE700650DD7 /* CardImageLoader.swift in Sources */,
-				DA2334392A433E64006D037D /* StoriesPageView.swift in Sources */,
 				EF92412F2934BB8000C28551 /* MainButton.swift in Sources */,
 				B06C084C2A73FB4D00D982BC /* MainCoordinator.swift in Sources */,
 				B0A0910C26D3628200F46DF5 /* AnimatableGradient.swift in Sources */,

@@ -48,7 +48,7 @@ struct AweStoryPage: View {
                     )
                     .overlay(
                         LinearGradient(colors: [
-                            .white.opacity(0),
+                            .clear,
                             Color("tangem_story_background"),
                             Color("tangem_story_background"),
                         ], startPoint: .top, endPoint: .bottom)

@@ -11,6 +11,9 @@ import Combine
 import BlockchainSdk
 
 class FakeUserWalletModel: UserWalletModel, ObservableObject {
+    let emailData: [EmailCollectedData] = []
+    let backupInput: OnboardingInput? = nil
+    let twinInput: OnboardingInput? = nil
     let walletModelsManager: WalletModelsManager
     let userTokenListManager: UserTokenListManager
     let userTokensManager: UserTokensManager

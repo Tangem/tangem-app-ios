@@ -121,6 +121,8 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
             tokenItem = try enteredTokenItem()
             derivationPath = enteredDerivationPath()
 
+            try validateExistingCurves(for: tokenItem)
+
             if case .token(_, let blockchain) = tokenItem,
                case .solana = blockchain,
                !settings.longHashesSupported {
@@ -286,6 +288,14 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         }
     }
 
+    private func validateExistingCurves(for tokenItem: TokenItem) throws {
+        guard settings.existingCurves.contains(tokenItem.blockchain.curve) else {
+            throw TokenCreationErrors.unsupportedCurve(tokenItem.blockchain)
+        }
+
+        return
+    }
+
     private func enteredBlockchain() throws -> Blockchain {
         guard let blockchain = blockchainByName[blockchainsPicker.selection] else {
             throw TokenCreationErrors.blockchainNotSelected
@@ -442,6 +452,7 @@ private protocol DynamicValidationError {
 private extension LegacyAddCustomTokenViewModel {
     enum TokenCreationErrors: LocalizedError {
         case blockchainNotSelected
+        case unsupportedCurve(Blockchain)
         case emptyFields
         case tokensNotSupported
         case invalidDecimals(precision: Int)
@@ -452,6 +463,8 @@ private extension LegacyAddCustomTokenViewModel {
             switch self {
             case .blockchainNotSelected:
                 return Localization.customTokenCreationErrorNetworkNotSelected
+            case .unsupportedCurve(let blockchain):
+                return Localization.alertManageTokensUnsupportedCurveMessage(blockchain.displayName)
             case .emptyFields:
                 return Localization.customTokenCreationErrorEmptyFields
             case .tokensNotSupported:

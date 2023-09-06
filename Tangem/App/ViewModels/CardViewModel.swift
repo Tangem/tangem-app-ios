@@ -84,15 +84,6 @@ class CardViewModel: Identifiable, ObservableObject {
         config.hasFeature(.displayHashesCount)
     }
 
-    var emailData: [EmailCollectedData] {
-        var data = config.emailData
-
-        let userWalletIdItem = EmailCollectedData(type: .card(.userWalletId), data: userWalletId.stringValue)
-        data.append(userWalletIdItem)
-
-        return data
-    }
-
     var emailConfig: EmailConfig? {
         config.emailConfig
     }
@@ -143,10 +134,6 @@ class CardViewModel: Identifiable, ObservableObject {
 
     var hasBackupCards: Bool {
         cardInfo.card.backupStatus?.isActive ?? false
-    }
-
-    var shouldShowWC: Bool {
-        !config.getFeatureAvailability(.walletConnect).isHidden
     }
 
     var cardDisclaimer: TOU {
@@ -216,38 +203,8 @@ class CardViewModel: Identifiable, ObservableObject {
         config.hasFeature(.withdrawal)
     }
 
-    var canParticipateInReferralProgram: Bool {
-        // TODO: refactor to a single function that any other entity can use to request feature availability
-        !config.getFeatureAvailability(.referralProgram).isHidden
-    }
-
     var canParticipateInPromotion: Bool {
         config.hasFeature(.promotion)
-    }
-
-    var backupInput: OnboardingInput? {
-        let factory = OnboardingInputFactory(
-            cardInfo: cardInfo,
-            cardModel: self,
-            sdkFactory: config,
-            onboardingStepsBuilderFactory: config
-        )
-
-        return factory.makeBackupInput()
-    }
-
-    var twinInput: OnboardingInput? {
-        guard let twinData = cardInfo.walletData.twinData else {
-            return nil
-        }
-
-        let factory = TwinInputFactory(
-            cardInput: .cardModel(self),
-            userWalletToDelete: userWallet,
-            twinData: twinData,
-            sdkFactory: config
-        )
-        return factory.makeTwinInput()
     }
 
     var resetToFactoryAvailability: UserWalletFeature.Availability {
@@ -542,6 +499,40 @@ extension CardViewModel: TangemSdkFactory {
 // MARK: - UserWalletModel
 
 extension CardViewModel: UserWalletModel {
+    var emailData: [EmailCollectedData] {
+        var data = config.emailData
+
+        let userWalletIdItem = EmailCollectedData(type: .card(.userWalletId), data: userWalletId.stringValue)
+        data.append(userWalletIdItem)
+
+        return data
+    }
+
+    var backupInput: OnboardingInput? {
+        let factory = OnboardingInputFactory(
+            cardInfo: cardInfo,
+            cardModel: self,
+            sdkFactory: config,
+            onboardingStepsBuilderFactory: config
+        )
+
+        return factory.makeBackupInput()
+    }
+
+    var twinInput: OnboardingInput? {
+        guard let twinData = cardInfo.walletData.twinData else {
+            return nil
+        }
+
+        let factory = TwinInputFactory(
+            cardInput: .cardModel(self),
+            userWalletToDelete: userWallet,
+            twinData: twinData,
+            sdkFactory: config
+        )
+        return factory.makeTwinInput()
+    }
+
     var updatePublisher: AnyPublisher<Void, Never> {
         _updatePublisher.eraseToAnyPublisher()
     }

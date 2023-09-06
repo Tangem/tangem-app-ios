@@ -80,16 +80,20 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     var persistentBlockchains: [StorageEntry]? {
-        let blockchains = DemoUtil().getDemoBlockchains(isTestnet: AppEnvironment.current.isTestnet)
+        let blockchainIds = DemoUtil().getDemoBlockchains(isTestnet: AppEnvironment.current.isTestnet)
 
-        let entries: [StorageEntry] = blockchains.map {
+        let entries: [StorageEntry] = blockchainIds.compactMap { coinId in
+            guard let blockchain = supportedBlockchains.first(where: { $0.coinId == coinId }) else {
+                return nil
+            }
+
             if let derivationStyle = derivationStyle {
-                let derivationPath = $0.derivationPath(for: derivationStyle)
-                let network = BlockchainNetwork($0, derivationPath: derivationPath)
+                let derivationPath = blockchain.derivationPath(for: derivationStyle)
+                let network = BlockchainNetwork(blockchain, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
             }
 
-            let network = BlockchainNetwork($0, derivationPath: nil)
+            let network = BlockchainNetwork(blockchain, derivationPath: nil)
             return .init(blockchainNetwork: network, tokens: [])
         }
 

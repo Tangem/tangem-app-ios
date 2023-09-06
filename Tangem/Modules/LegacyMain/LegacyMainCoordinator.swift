@@ -190,13 +190,13 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
         popToRoot(with: .init(newScan: newScan))
     }
 
-    func openSettings(cardModel: CardViewModel) {
+    func openSettings(userWalletModel: UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.detailsCoordinator = nil
         }
 
         let coordinator = DetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = DetailsCoordinator.Options(cardModel: cardModel)
+        let options = DetailsCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
         coordinator.popToRootAction = popToRootAction
         detailsCoordinator = coordinator
