@@ -22,7 +22,7 @@ class LegacyMainCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    @Published var sendCoordinator: SendCoordinator? = nil
+    @Published var legacySendCoordinator: LegacySendCoordinator? = nil
     @Published var pushTxCoordinator: PushTxCoordinator? = nil
     @Published var legacyTokenDetailsCoordinator: LegacyTokenDetailsCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
@@ -144,31 +144,31 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     }
 
     func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel) {
-        let coordinator = SendCoordinator { [weak self] in
-            self?.sendCoordinator = nil
+        let coordinator = LegacySendCoordinator { [weak self] in
+            self?.legacySendCoordinator = nil
         }
-        let options = SendCoordinator.Options(
+        let options = LegacySendCoordinator.Options(
             amountToSend: amountToSend,
             destination: nil,
             blockchainNetwork: blockchainNetwork,
             cardViewModel: cardViewModel
         )
         coordinator.start(with: options)
-        sendCoordinator = coordinator
+        legacySendCoordinator = coordinator
     }
 
     func openSendToSell(amountToSend: Amount, destination: String, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel) {
-        let coordinator = SendCoordinator { [weak self] in
-            self?.sendCoordinator = nil
+        let coordinator = LegacySendCoordinator { [weak self] in
+            self?.legacySendCoordinator = nil
         }
-        let options = SendCoordinator.Options(
+        let options = LegacySendCoordinator.Options(
             amountToSend: amountToSend,
             destination: destination,
             blockchainNetwork: blockchainNetwork,
             cardViewModel: cardViewModel
         )
         coordinator.start(with: options)
-        sendCoordinator = coordinator
+        legacySendCoordinator = coordinator
     }
 
     func openPushTx(for tx: BlockchainSdk.Transaction, blockchainNetwork: BlockchainNetwork, card: CardViewModel) {

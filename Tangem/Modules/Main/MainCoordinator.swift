@@ -23,7 +23,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
-    @Published var sendCoordinator: SendCoordinator?
+    @Published var legacySendCoordinator: LegacySendCoordinator?
     @Published var swappingCoordinator: SwappingCoordinator?
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
 
@@ -197,31 +197,31 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel) {
-        let coordinator = SendCoordinator { [weak self] in
-            self?.sendCoordinator = nil
+        let coordinator = LegacySendCoordinator { [weak self] in
+            self?.legacySendCoordinator = nil
         }
-        let options = SendCoordinator.Options(
+        let options = LegacySendCoordinator.Options(
             amountToSend: amountToSend,
             destination: nil,
             blockchainNetwork: blockchainNetwork,
             cardViewModel: cardViewModel
         )
         coordinator.start(with: options)
-        sendCoordinator = coordinator
+        legacySendCoordinator = coordinator
     }
 
     func openSendToSell(amountToSend: Amount, destination: String, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel) {
-        let coordinator = SendCoordinator { [weak self] in
-            self?.sendCoordinator = nil
+        let coordinator = LegacySendCoordinator { [weak self] in
+            self?.legacySendCoordinator = nil
         }
-        let options = SendCoordinator.Options(
+        let options = LegacySendCoordinator.Options(
             amountToSend: amountToSend,
             destination: destination,
             blockchainNetwork: blockchainNetwork,
             cardViewModel: cardViewModel
         )
         coordinator.start(with: options)
-        sendCoordinator = coordinator
+        legacySendCoordinator = coordinator
     }
 
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {

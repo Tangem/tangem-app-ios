@@ -1,5 +1,5 @@
 //
-//  SendRoutable.swift
+//  LegacySendRoutable.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 17.06.2022.
@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-protocol SendRoutable: AnyObject {
+protocol LegacySendRoutable: AnyObject {
     func openMail(with dataCollector: EmailDataCollector, recipient: String)
     func closeModule()
     func openQRScanner(with codeBinding: Binding<String>)

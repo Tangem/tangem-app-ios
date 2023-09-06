@@ -1,5 +1,5 @@
 //
-//  SendView.swift
+//  LegacySendView.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 18.07.2020.
@@ -12,8 +12,8 @@ import TangemSdk
 import BlockchainSdk
 import Moya
 
-struct SendView: View {
-    @ObservedObject var viewModel: SendViewModel
+struct LegacySendView: View {
+    @ObservedObject var viewModel: LegacySendViewModel
 
     private var addressHint: String {
         Localization.sendDestinationHintAddress
@@ -300,7 +300,7 @@ struct SendView: View {
 struct ExtractView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SendView(viewModel: .init(
+            LegacySendView(viewModel: .init(
                 amountToSend: Amount(
                     with: PreviewCard.ethereum.blockchain!,
                     type: .token(value: Token(name: "DAI", symbol: "DAI", contractAddress: "0xdwekdn32jfne", decimalCount: 18)),
@@ -309,11 +309,11 @@ struct ExtractView_Previews: PreviewProvider {
                 destination: "Target",
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
                 cardViewModel: PreviewCard.ethereum.cardModel,
-                coordinator: SendCoordinator()
+                coordinator: LegacySendCoordinator()
             ))
             .previewLayout(.iphone7Zoomed)
 
-            SendView(viewModel: .init(
+            LegacySendView(viewModel: .init(
                 amountToSend: Amount(
                     with: PreviewCard.ethereum.blockchain!,
                     type: .token(value: Token(name: "DAI", symbol: "DAI", contractAddress: "0xdwekdn32jfne", decimalCount: 18)),
@@ -321,7 +321,7 @@ struct ExtractView_Previews: PreviewProvider {
                 ),
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
                 cardViewModel: PreviewCard.ethereum.cardModel,
-                coordinator: SendCoordinator()
+                coordinator: LegacySendCoordinator()
             ))
             .previewLayout(.iphone7Zoomed)
         }

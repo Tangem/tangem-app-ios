@@ -1,5 +1,5 @@
 //
-//  SendViewModel.swift
+//  LegacySendViewModel.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 18.07.2020.
@@ -14,7 +14,7 @@ import TangemSdk
 import stellarsdk
 import AVFoundation
 
-class SendViewModel: ObservableObject {
+class LegacySendViewModel: ObservableObject {
     @Published var showCameraDeniedAlert = false
 
     // MARK: Input
@@ -160,13 +160,13 @@ class SendViewModel: ObservableObject {
     private var lastClipboardChangeCount: Int?
     private var lastDestinationAddressSource: Analytics.DestinationAddressSource?
 
-    private unowned let coordinator: SendRoutable
+    private unowned let coordinator: LegacySendRoutable
 
     init(
         amountToSend: Amount,
         blockchainNetwork: BlockchainNetwork,
         cardViewModel: CardViewModel,
-        coordinator: SendRoutable
+        coordinator: LegacySendRoutable
     ) {
         self.blockchainNetwork = blockchainNetwork
         self.cardViewModel = cardViewModel
@@ -187,7 +187,7 @@ class SendViewModel: ObservableObject {
         destination: String,
         blockchainNetwork: BlockchainNetwork,
         cardViewModel: CardViewModel,
-        coordinator: SendRoutable
+        coordinator: LegacySendRoutable
     ) {
         self.init(
             amountToSend: amountToSend,
@@ -730,7 +730,7 @@ class SendViewModel: ObservableObject {
 
 // MARK: - Private
 
-private extension SendViewModel {
+private extension LegacySendViewModel {
     var analyticsFeeType: Analytics.ParameterValue {
         if shoudShowFeeSelector {
             let feeLevels: [Analytics.ParameterValue] = [
@@ -884,7 +884,7 @@ private extension SendViewModel {
 
 // MARK: - Navigation
 
-extension SendViewModel {
+extension LegacySendViewModel {
     func openMail(with error: Error) {
         guard let transaction else { return }
 

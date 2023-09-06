@@ -1,5 +1,5 @@
 //
-//  SendCoordinator.swift
+//  LegacySendCoordinator.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 16.06.2022.
@@ -10,13 +10,13 @@ import Foundation
 import BlockchainSdk
 import SwiftUI
 
-class SendCoordinator: CoordinatorObject {
+class LegacySendCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
-    @Published private(set) var sendViewModel: SendViewModel? = nil
+    @Published private(set) var sendViewModel: LegacySendViewModel? = nil
 
     // MARK: - Child view models
 
@@ -28,9 +28,9 @@ class SendCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: SendCoordinator.Options) {
+    func start(with options: LegacySendCoordinator.Options) {
         if let destination = options.destination {
-            sendViewModel = SendViewModel(
+            sendViewModel = LegacySendViewModel(
                 amountToSend: options.amountToSend,
                 destination: destination,
                 blockchainNetwork: options.blockchainNetwork,
@@ -38,7 +38,7 @@ class SendCoordinator: CoordinatorObject {
                 coordinator: self
             )
         } else {
-            sendViewModel = SendViewModel(
+            sendViewModel = LegacySendViewModel(
                 amountToSend: options.amountToSend,
                 blockchainNetwork: options.blockchainNetwork,
                 cardViewModel: options.cardViewModel,
@@ -48,7 +48,7 @@ class SendCoordinator: CoordinatorObject {
     }
 }
 
-extension SendCoordinator {
+extension LegacySendCoordinator {
     struct Options {
         let amountToSend: Amount
         let destination: String?
@@ -57,7 +57,7 @@ extension SendCoordinator {
     }
 }
 
-extension SendCoordinator: SendRoutable {
+extension LegacySendCoordinator: LegacySendRoutable {
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
         let logsComposer = LogsComposer(infoProvider: dataCollector)
         mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToSendTx)
