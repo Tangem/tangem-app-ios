@@ -2817,19 +2817,16 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		5DFCCB7224C3817E0014A293 /* Send */ = {
+		5DFCCB7224C3817E0014A293 /* LegacySend */ = {
 			isa = PBXGroup;
 			children = (
 				5DFCCB7324C3819A0014A293 /* LegacySendView.swift */,
 				5DFCCB7524C381A70014A293 /* LegacySendViewModel.swift */,
-				5DCC20BC2500FC58007B467E /* QRScannerView.swift */,
 				DC66BC03285B6C5F00CDF765 /* LegacySendCoordinator.swift */,
 				DC66BC05285B6C7300CDF765 /* LegacySendCoordinatorView.swift */,
 				DC66BC15285C529600CDF765 /* LegacySendRoutable.swift */,
-				B09BB86C259A080900B92000 /* SendAdditionalFields.swift */,
-				DCAB57FD295ECA55005D0F4A /* SendError.swift */,
 			);
-			path = Send;
+			path = LegacySend;
 			sourceTree = "<group>";
 		};
 		652B013D28322CAB00F2E27A /* TotalSumBalance */ = {
@@ -4344,6 +4341,16 @@
 			path = Pages;
 			sourceTree = "<group>";
 		};
+		DAFC3E002AA8A50000D1013F /* Send */ = {
+			isa = PBXGroup;
+			children = (
+				5DCC20BC2500FC58007B467E /* QRScannerView.swift */,
+				B09BB86C259A080900B92000 /* SendAdditionalFields.swift */,
+				DCAB57FD295ECA55005D0F4A /* SendError.swift */,
+			);
+			path = Send;
+			sourceTree = "<group>";
+		};
 		DC064F8429E4105E008C3315 /* TangemSdkFactories */ = {
 			isa = PBXGroup;
 			children = (
@@ -4788,7 +4795,8 @@
 				B06C08442A73FB2C00D982BC /* Main */,
 				DA23788E27B250D3009795A8 /* Shop */,
 				B074BABF26779B14005D641B /* PushTx */,
-				5DFCCB7224C3817E0014A293 /* Send */,
+				5DFCCB7224C3817E0014A293 /* LegacySend */,
+				DAFC3E002AA8A50000D1013F /* Send */,
 				6563B8B72858B912009A8A7D /* SupportChat */,
 				5D384B9224FD51B200C2C92C /* Details */,
 				DA43718D2A7D1937006215CA /* LegacyTokenList */,
