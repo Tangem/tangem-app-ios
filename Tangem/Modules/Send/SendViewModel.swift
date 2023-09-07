@@ -761,7 +761,7 @@ private extension SendViewModel {
             } else {
                 sendTotalSubtitle = Localization.sendTotalSubtitleAssetFormat(
                     transaction.amount.description,
-                    transaction.fee.description
+                    transaction.fee.amount.description
                 )
             }
         } else {
