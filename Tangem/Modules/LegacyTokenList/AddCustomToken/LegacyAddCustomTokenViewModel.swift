@@ -63,12 +63,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
     private var supportedBlockchains: Set<Blockchain> {
         settings.supportedBlockchains
             .filter {
-                guard let derivationStyle = settings.derivationStyle,
-                      $0.derivationPath(for: derivationStyle) != nil else {
-                    return false
-                }
-
-                return true
+                $0.curve.supportsDerivation
             }
     }
 
