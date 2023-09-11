@@ -28,18 +28,13 @@ struct UserCurrenciesProvider {
 
 extension UserCurrenciesProvider: UserCurrenciesProviding {
     func getCurrencies(blockchain swappingBlockchain: SwappingBlockchain) async -> [Currency] {
-        // get user tokens from API with filled in fields
-        let tokens = await getTokens(
-            blockchain: blockchain,
-            ids: walletModelTokens.compactMap { $0.id }
-        )
-
         var currencies: [Currency] = []
         if let coinCurrency = currencyMapper.mapToCurrency(blockchain: blockchain) {
             currencies.append(coinCurrency)
         }
 
-        if walletModelTokens.isEmpty {
+        let tokenIds = walletModelTokens.compactMap(\.id)
+        if tokenIds.isEmpty {
             return currencies
         }
 
@@ -47,7 +42,7 @@ extension UserCurrenciesProvider: UserCurrenciesProviding {
         // For checking exchangeable
         let filledTokens = await getTokens(
             blockchain: blockchain,
-            ids: walletModelTokens.compactMap { $0.id }
+            ids: tokenIds
         )
 
         currencies += filledTokens.compactMap { token in

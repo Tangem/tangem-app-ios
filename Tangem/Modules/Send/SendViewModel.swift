@@ -761,7 +761,7 @@ private extension SendViewModel {
             } else {
                 sendTotalSubtitle = Localization.sendTotalSubtitleAssetFormat(
                     transaction.amount.description,
-                    transaction.fee.description
+                    transaction.fee.amount.description
                 )
             }
         } else {
@@ -821,8 +821,16 @@ private extension SendViewModel {
 
     func getFiat(for amount: Amount?, roundingType: AmountRoundingType) -> Decimal? {
         if let amount = amount {
+            let currencyId: String?
+            switch amount.type {
+            case .coin, .reserve:
+                currencyId = walletModel.blockchainNetwork.blockchain.currencyId
+            case .token:
+                currencyId = walletModel.tokenItem.currencyId
+            }
+
             guard
-                let currencyId = walletModel.tokenItem.currencyId,
+                let currencyId,
                 let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId)
             else {
                 return nil
