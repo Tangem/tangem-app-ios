@@ -111,6 +111,7 @@ struct LegacyTokenListView: View {
 
                 MainButton(
                     title: Localization.commonSaveChanges,
+                    icon: .trailing(Assets.tangemIcon),
                     isLoading: viewModel.isSaving,
                     isDisabled: viewModel.isSaveDisabled,
                     action: viewModel.saveChanges
