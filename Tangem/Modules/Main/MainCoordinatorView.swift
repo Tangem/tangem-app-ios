@@ -64,6 +64,9 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.legacyTokenListCoordinator) {
                 LegacyTokenListCoordinatorView(coordinator: $0)
             }
+            .sheet(item: $coordinator.manageTokensCoordinator) {
+                ManageTokensCoordinatorView(coordinator: $0)
+            }
 
         NavHolder()
             .bottomSheet(
