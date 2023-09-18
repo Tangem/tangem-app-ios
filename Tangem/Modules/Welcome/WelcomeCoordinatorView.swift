@@ -50,9 +50,6 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.tokenListCoordinator) {
                 WelcomeTokenListCoordinatorView(coordinator: $0)
             }
-            .sheet(item: $coordinator.tokenListCoordinator) {
-                WelcomeTokenListCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
