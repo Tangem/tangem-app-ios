@@ -24,7 +24,7 @@ class WelcomeCoordinator: CoordinatorObject {
     @Published var mainCoordinator: MainCoordinator? = nil
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
     @Published var shopCoordinator: ShopCoordinator? = nil
-    @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
+    @Published var tokenListCoordinator: WelcomeTokenListCoordinator? = nil
     @Published var promotionCoordinator: PromotionCoordinator? = nil
 
     // MARK: - Child view models
@@ -40,7 +40,7 @@ class WelcomeCoordinator: CoordinatorObject {
         var publishers: [AnyPublisher<Bool, Never>] = []
         publishers.append($mailViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
         publishers.append($shopCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
-        publishers.append($legacyTokenListCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($tokenListCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
         publishers.append($promotionCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
 
         return Publishers.MergeMany(publishers)
@@ -122,11 +122,11 @@ extension WelcomeCoordinator: WelcomeRoutable {
 
     func openTokensList() {
         let dismissAction: Action<Void> = { [weak self] _ in
-            self?.legacyTokenListCoordinator = nil
+            self?.tokenListCoordinator = nil
         }
-        let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .show)
-        legacyTokenListCoordinator = coordinator
+        let coordinator = WelcomeTokenListCoordinator(dismissAction: dismissAction)
+        coordinator.start()
+        tokenListCoordinator = coordinator
     }
 
     func openShop() {
