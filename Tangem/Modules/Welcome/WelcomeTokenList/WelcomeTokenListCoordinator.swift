@@ -12,7 +12,7 @@ class WelcomeTokenListCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
-    // MARK: - Main view model
+    // MARK: - Published
 
     @Published private(set) var tokenListViewModel: WelcomeTokenListViewModel? = nil
 
