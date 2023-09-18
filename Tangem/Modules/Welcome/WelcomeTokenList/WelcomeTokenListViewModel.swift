@@ -26,10 +26,6 @@ class WelcomeTokenListViewModel: ObservableObject {
         return Localization.commonSearchTokens
     }
 
-    var isReadonlyMode: Bool {
-        return true
-    }
-
     var hasNextPage: Bool {
         loader.canFetchMore
     }
@@ -105,7 +101,7 @@ private extension WelcomeTokenListViewModel {
         let currencyItems = coinModel.items.enumerated().map { index, item in
             LegacyCoinItemViewModel(
                 tokenItem: item,
-                isReadonly: isReadonlyMode,
+                isReadonly: true,
                 isSelected: nil,
                 isCopied: .constant(false),
                 position: .init(with: index, total: coinModel.items.count)

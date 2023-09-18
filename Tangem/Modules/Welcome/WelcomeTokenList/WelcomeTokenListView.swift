@@ -50,10 +50,6 @@ struct WelcomeTokenListView: View {
                             .onAppear(perform: viewModel.fetch)
                     }
                 }
-
-                if !viewModel.isReadonlyMode {
-                    Color.clear.frame(width: 10, height: 58, alignment: .center)
-                }
             }
         }
     }
