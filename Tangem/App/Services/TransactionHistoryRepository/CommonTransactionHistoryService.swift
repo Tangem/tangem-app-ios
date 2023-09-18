@@ -80,6 +80,7 @@ private extension CommonTransactionHistoryService {
 
         guard currentPage == 0 || canFetchMore else {
             AppLog.shared.debug("\(self) reached the end of list")
+            result(.success(()))
             return
         }
 
