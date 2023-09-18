@@ -7,9 +7,7 @@
 //
 
 import SwiftUI
-import BlockchainSdk
 import Combine
-import AlertToast
 
 struct WelcomeTokenListView: View {
     @ObservedObject var viewModel: WelcomeTokenListViewModel

@@ -6,12 +6,8 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 import Combine
-import CombineExt
-import BlockchainSdk
-import TangemSdk
 
 class WelcomeTokenListViewModel: ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
