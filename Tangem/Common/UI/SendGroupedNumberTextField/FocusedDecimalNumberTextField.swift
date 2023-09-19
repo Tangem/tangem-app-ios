@@ -45,6 +45,8 @@ struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
                     isInputActive = false
                 } label: {
                     Assets.hideKeyboard.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.primary1)
                 }
             }
         }
