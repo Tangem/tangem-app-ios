@@ -711,14 +711,14 @@ private extension SwappingViewModel {
 
                 root.swappingInteractor.didSendSwapTransaction(swappingTxData: transactionData)
 
-                await runOnMain {
-                    root.openSuccessView(transactionData: transactionData, transactionID: sendResult.hash)
+                await runOnMain { [weak root] in
+                    root?.openSuccessView(transactionData: transactionData, transactionID: sendResult.hash)
                 }
             } catch TangemSdkError.userCancelled {
                 root.restartTimer()
             } catch {
-                await runOnMain {
-                    root.errorAlert = AlertBinder(title: Localization.commonError, message: error.localizedDescription)
+                await runOnMain { [weak root] in
+                    root?.errorAlert = AlertBinder(title: Localization.commonError, message: error.localizedDescription)
                 }
             }
         }

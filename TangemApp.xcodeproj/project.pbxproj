@@ -4255,6 +4255,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		DA207C212AB89F89005CC5E3 /* AddCustomToken */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AddCustomToken;
+			sourceTree = "<group>";
+		};
 		DA23786A27B241C2009795A8 /* ShopifyService */ = {
 			isa = PBXGroup;
 			children = (
@@ -4918,6 +4925,7 @@
 				6563B8B72858B912009A8A7D /* SupportChat */,
 				5D384B9224FD51B200C2C92C /* Details */,
 				DAD98A752AB2E3240051CFBE /* ManageTokens */,
+				DA207C212AB89F89005CC5E3 /* AddCustomToken */,
 				DA43718D2A7D1937006215CA /* LegacyTokenList */,
 				5DA7C00A25F8FA5200B6E309 /* LegacyTokenDetails */,
 				B0DD16182A331BF300CB23AA /* TokenDetails */,

@@ -14,6 +14,7 @@ class SensitiveTextVisibilityService: ObservableObject {
     static let shared = SensitiveTextVisibilityService()
 
     @Published private(set) var isHidden: Bool
+    private var previousDeviceOrientation: UIDeviceOrientation?
     private var orientationDidChangeBag: AnyCancellable?
 
     private init() {
@@ -45,11 +46,10 @@ private extension SensitiveTextVisibilityService {
     }
 
     func orientationDidChange() {
-        switch UIDevice.current.orientation {
-        case .faceDown:
+        if previousDeviceOrientation == .faceDown {
             toggleVisibility()
-        default:
-            break
         }
+
+        previousDeviceOrientation = UIDevice.current.orientation
     }
 }
