@@ -15,8 +15,15 @@ struct WelcomeTokenListCoordinatorView: CoordinatorView {
         NavigationView {
             if let model = coordinator.tokenListViewModel {
                 WelcomeTokenListView(viewModel: model)
+                    .navigationLinks(links)
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .emptyNavigationLink()
     }
 }

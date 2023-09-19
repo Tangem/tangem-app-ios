@@ -24,16 +24,10 @@ class WelcomeTokenListCoordinator: CoordinatorObject {
     }
 
     func start(with options: WelcomeTokenListCoordinator.Options = .init()) {
-        tokenListViewModel = .init(coordinator: self)
+        tokenListViewModel = .init()
     }
 }
 
 extension WelcomeTokenListCoordinator {
     struct Options {}
-}
-
-extension WelcomeTokenListCoordinator: WelcomeTokenListRoutable {
-    func closeModule() {
-        dismiss()
-    }
 }

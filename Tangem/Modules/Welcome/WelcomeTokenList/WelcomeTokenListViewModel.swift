@@ -13,14 +13,7 @@ class WelcomeTokenListViewModel: ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
     var enteredSearchText = CurrentValueSubject<String, Never>("")
 
-    @Published var coinViewModels: [LegacyCoinViewModel] = []
-
-    @Published var isSaving: Bool = false
-    @Published var isLoading: Bool = true
-
-    var titleKey: String {
-        return Localization.commonSearchTokens
-    }
+    @Published var itemViewModels: [WelcomTokenListSectionViewModel] = []
 
     var hasNextPage: Bool {
         loader.canFetchMore
@@ -29,13 +22,13 @@ class WelcomeTokenListViewModel: ObservableObject {
     private lazy var loader = setupListDataLoader()
     private var bag = Set<AnyCancellable>()
 
-    private unowned let coordinator: WelcomeTokenListRoutable
+    // MARK: - Init
 
-    init(coordinator: WelcomeTokenListRoutable) {
-        self.coordinator = coordinator
-
+    init() {
         bind()
     }
+
+    // MARK: - Implementation
 
     func onAppear() {
         loader.reset(enteredSearchText.value)
@@ -49,14 +42,6 @@ class WelcomeTokenListViewModel: ObservableObject {
 
     func fetch() {
         loader.fetch(enteredSearchText.value)
-    }
-}
-
-// MARK: - Navigation
-
-extension WelcomeTokenListViewModel {
-    func closeModule() {
-        coordinator.closeModule()
     }
 }
 
@@ -83,31 +68,25 @@ private extension WelcomeTokenListViewModel {
         let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
-            .map { [weak self] items -> [LegacyCoinViewModel] in
+            .map { [weak self] items -> [WelcomTokenListSectionViewModel] in
                 items.compactMap { self?.mapToCoinViewModel(coinModel: $0) }
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.coinViewModels, on: self, ownership: .weak)
+            .assign(to: \.itemViewModels, on: self, ownership: .weak)
             .store(in: &bag)
 
         return loader
     }
 
-    func mapToCoinViewModel(coinModel: CoinModel) -> LegacyCoinViewModel {
-        let currencyItems = coinModel.items.enumerated().map { index, item in
-            LegacyCoinItemViewModel(
+    func mapToCoinViewModel(coinModel: CoinModel) -> WelcomTokenListSectionViewModel {
+        let items = coinModel.items.enumerated().map { index, item in
+            WelcomeTokenListItemViewModel(
                 tokenItem: item,
-                isReadonly: true,
                 isSelected: nil,
-                isCopied: .constant(false),
                 position: .init(with: index, total: coinModel.items.count)
             )
         }
 
-        return LegacyCoinViewModel(with: coinModel, items: currencyItems)
-    }
-
-    func isTokenAvailable(_ tokenItem: TokenItem) -> Bool {
-        return true
+        return WelcomTokenListSectionViewModel(with: coinModel, items: items)
     }
 }

@@ -17,7 +17,7 @@ struct WelcomeTokenListView: View {
             list
         }
         .scrollDismissesKeyboardCompat(true)
-        .navigationBarTitle(Text(viewModel.titleKey), displayMode: .automatic)
+        .navigationBarTitle(Text(Localization.commonSearchTokens), displayMode: .automatic)
         .searchableCompat(text: $viewModel.enteredSearchText.value)
         .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
         .onAppear { viewModel.onAppear() }
@@ -35,8 +35,8 @@ struct WelcomeTokenListView: View {
 
                 divider
 
-                ForEach(viewModel.coinViewModels) {
-                    LegacyCoinView(model: $0)
+                ForEach(viewModel.itemViewModels) {
+                    WelcomTokenListSectionView(model: $0)
                         .padding(.horizontal)
 
                     divider
@@ -58,7 +58,7 @@ struct WelcomeTokenListView: View {
     }
 
     @ViewBuilder private var titleView: some View {
-        Text(viewModel.titleKey)
+        Text(Localization.commonSearchTokens)
             .font(Font.system(size: 30, weight: .bold, design: .default))
             .minimumScaleFactor(0.8)
     }
