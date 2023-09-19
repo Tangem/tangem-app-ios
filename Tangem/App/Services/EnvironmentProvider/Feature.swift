@@ -43,7 +43,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
         case .tokenDetailsV2: return .unspecified
-        case .enableBlockchainSdkEvents: return .version("4.11")
+        case .enableBlockchainSdkEvents: return .unspecified
         case .mainV2: return .unspecified
         case .sendV2: return .unspecified
         case .manageTokens: return .unspecified
