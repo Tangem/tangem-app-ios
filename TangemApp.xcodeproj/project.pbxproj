@@ -18,8 +18,6 @@
 		2D727E9D2AB8280D00CD121A /* ManageTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727E982AB8280D00CD121A /* ManageTokensView.swift */; };
 		2D727E9E2AB8280D00CD121A /* ManageTokensViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727E992AB8280D00CD121A /* ManageTokensViewModel.swift */; };
 		2D727EB02AB84F4500CD121A /* WelcomeTokenListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EAB2AB84F4500CD121A /* WelcomeTokenListViewModel.swift */; };
-		2D727EB22AB84F4500CD121A /* WelcomeTokenListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EAD2AB84F4500CD121A /* WelcomeTokenListCoordinator.swift */; };
-		2D727EB32AB84F4500CD121A /* WelcomeTokenListCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EAE2AB84F4500CD121A /* WelcomeTokenListCoordinatorView.swift */; };
 		2D727EB42AB84F4500CD121A /* WelcomeTokenListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */; };
 		2D727EB62AB8999100CD121A /* WelcomeTokenListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB52AB8999100CD121A /* WelcomeTokenListItemViewModel.swift */; };
 		2D727EB82AB8999600CD121A /* WelcomeTokenListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB72AB8999600CD121A /* WelcomeTokenListItemView.swift */; };
@@ -1175,8 +1173,6 @@
 		2D727E982AB8280D00CD121A /* ManageTokensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensView.swift; sourceTree = "<group>"; };
 		2D727E992AB8280D00CD121A /* ManageTokensViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensViewModel.swift; sourceTree = "<group>"; };
 		2D727EAB2AB84F4500CD121A /* WelcomeTokenListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListViewModel.swift; sourceTree = "<group>"; };
-		2D727EAD2AB84F4500CD121A /* WelcomeTokenListCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListCoordinator.swift; sourceTree = "<group>"; };
-		2D727EAE2AB84F4500CD121A /* WelcomeTokenListCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListCoordinatorView.swift; sourceTree = "<group>"; };
 		2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListView.swift; sourceTree = "<group>"; };
 		2D727EB52AB8999100CD121A /* WelcomeTokenListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListItemViewModel.swift; sourceTree = "<group>"; };
 		2D727EB72AB8999600CD121A /* WelcomeTokenListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListItemView.swift; sourceTree = "<group>"; };
@@ -2394,8 +2390,6 @@
 			isa = PBXGroup;
 			children = (
 				2D727EAB2AB84F4500CD121A /* WelcomeTokenListViewModel.swift */,
-				2D727EAD2AB84F4500CD121A /* WelcomeTokenListCoordinator.swift */,
-				2D727EAE2AB84F4500CD121A /* WelcomeTokenListCoordinatorView.swift */,
 				2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */,
 				2D727EB92AB97EAB00CD121A /* WelcomTokenListSectionView.swift */,
 				2D727EBB2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift */,
@@ -6809,7 +6803,6 @@
 				B63140F32A808B45009CAB12 /* OrganizeTokensRoutableStub.swift in Sources */,
 				DA28D57D290AAE2000F0C335 /* ScrollView+.swift in Sources */,
 				5D69E0E325016A10005CFFF4 /* TapSwitchTogglColoredToggleStyleeStyle.swift in Sources */,
-				2D727EB22AB84F4500CD121A /* WelcomeTokenListCoordinator.swift in Sources */,
 				B0C5BF502A31B050005AE2BD /* ActionButtonsProvider.swift in Sources */,
 				B05D063229DEA11E0031C6AB /* AccessCodeRecoverySettingsView.swift in Sources */,
 				DC7127AD2897ECA100F60F71 /* TwinConfig.swift in Sources */,
@@ -7138,7 +7131,6 @@
 				B02275D72701D9FB004C752B /* PreparePrimaryCardTask.swift in Sources */,
 				B06C94C92A3B555000D17E85 /* TokenActionType.swift in Sources */,
 				B029C1DC270229530017C848 /* OnboardingAccessCodeView.swift in Sources */,
-				2D727EB32AB84F4500CD121A /* WelcomeTokenListCoordinatorView.swift in Sources */,
 				B0FC72EB29B7991A001930D4 /* OnboardingSeedPhraseIntroView.swift in Sources */,
 				B0F62C5525DE4F6B005C8BA0 /* DeviceInfoProvider.swift in Sources */,
 				EF8D780F2981458500B67418 /* UserTokenListManagerMock.swift in Sources */,

@@ -47,8 +47,14 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.promotionCoordinator) {
                 PromotionCoordinatorView(coordinator: $0)
             }
-            .sheet(item: $coordinator.tokenListCoordinator) {
-                WelcomeTokenListCoordinatorView(coordinator: $0)
+            .sheet(item: $coordinator.tokenListViewModel) { viewModel in
+                NavigationView {
+                    WelcomeTokenListView(viewModel: viewModel)
+                        .navigationLinks(
+                            NavHolder().emptyNavigationLink()
+                        )
+                }
+                .navigationViewStyle(.stack)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
