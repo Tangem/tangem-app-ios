@@ -80,7 +80,10 @@ extension CommonUserTokensManager: UserTokensManager {
             return
         }
 
-        derivationManager.deriveKeys(cardInteractor: interactor, completion: completion)
+        // Delay to update derivations in derivationManager
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            derivationManager.deriveKeys(cardInteractor: interactor, completion: completion)
+        }
     }
 
     func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {

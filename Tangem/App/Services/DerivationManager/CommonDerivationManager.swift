@@ -118,7 +118,11 @@ extension CommonDerivationManager: DerivationManager {
                 // TODO: refactor storage to single source
                 keysRepository.update(keys: keys)
                 delegate?.onDerived(response)
-                completion(.success(()))
+
+                // delay to get more time to updaеe ui and hide generate addresses shit under thе hood
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    completion(.success(()))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
