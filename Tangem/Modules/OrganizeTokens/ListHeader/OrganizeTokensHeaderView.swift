@@ -23,7 +23,7 @@ struct OrganizeTokensHeaderView: View {
                 FlexySizeButtonWithLeadingIcon(
                     title: viewModel.sortByBalanceButtonTitle,
                     icon: Assets.OrganizeTokens.byBalanceSortIcon.image,
-                    isToggled: !viewModel.isSortByBalanceEnabled,
+                    isToggled: viewModel.isSortByBalanceEnabled,
                     action: viewModel.toggleSortState
                 )
                 .shadow(color: Colors.Icon.inactive.opacity(sortByBalanceButtonShadowOpacity), radius: 4.0)
@@ -45,7 +45,7 @@ struct OrganizeTokensHeaderView: View {
     }
 
     private var sortByBalanceButtonShadowOpacity: CGFloat {
-        return buttonShadowOpacity / (viewModel.isSortByBalanceEnabled ? 1.0 : 3.0)
+        return buttonShadowOpacity / (viewModel.isSortByBalanceEnabled ? 3.0 : 1.0)
     }
 
     private var groupingButtonShadowOpacity: CGFloat {
