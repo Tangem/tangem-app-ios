@@ -33,7 +33,7 @@ class FakeBalanceWithButtonsInfoProvider {
                 .init(title: "Receive", icon: Assets.arrowDownMini, action: {}),
                 .init(title: "Exchange", icon: Assets.exchangeMini, action: {}, disabled: false),
                 .init(title: "Sell your soul", icon: Assets.cryptoCurrencies, action: {}, disabled: false),
-                .init(title: "Dance", icon: Assets.heartMini, action: {}, disabled: false),
+                .init(title: "Dance", icon: Assets.swapHeart, action: {}, disabled: false),
             ],
             delay: 3,
             cryptoBalanceInfo: .init(balance: -1, currencyId: "", currencyCode: "MATIC")

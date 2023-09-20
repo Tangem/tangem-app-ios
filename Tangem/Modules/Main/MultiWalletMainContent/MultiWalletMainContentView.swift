@@ -76,7 +76,7 @@ struct MultiWalletMainContentView: View {
                 }
             }
         }
-        .cornerRadiusContinuous(14)
+        .cornerRadiusContinuous(Constants.cornerRadius)
     }
 
     private var emptyList: some View {
@@ -99,9 +99,15 @@ struct MultiWalletMainContentView: View {
         LazyVStack(spacing: 0) {
             ForEach(viewModel.sections) { section in
                 TokenSectionView(title: section.model.title)
+                    .background(Colors.Background.primary)
 
                 ForEach(section.items) { item in
                     TokenItemView(viewModel: item)
+                        .background(Colors.Background.primary)
+                        .onTapGesture(perform: item.tapAction)
+                        .highlightable(color: Colors.Button.primary.opacity(0.03))
+                        // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
+                        .previewContentShape(cornerRadius: Constants.cornerRadius)
                         .contextMenu {
                             ForEach(viewModel.contextActions(for: item), id: \.self) { menuAction in
                                 contextMenuButton(for: menuAction, tokenItem: item)
@@ -171,5 +177,13 @@ struct MultiWalletContentView_Preview: PreviewProvider {
             MultiWalletMainContentView(viewModel: viewModel)
         }
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
+    }
+}
+
+// MARK: - Constants
+
+private extension MultiWalletMainContentView {
+    enum Constants {
+        static let cornerRadius = 14.0
     }
 }

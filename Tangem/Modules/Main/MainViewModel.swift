@@ -64,6 +64,12 @@ final class MainViewModel: ObservableObject {
 
     func openDetails() {
         let userWalletModel = userWalletRepository.models[selectedCardIndex]
+
+        if userWalletModel.isUserWalletLocked {
+            openUnlockUserWalletBottomSheet(for: userWalletModel)
+            return
+        }
+
         coordinator?.openDetails(for: userWalletModel)
     }
 

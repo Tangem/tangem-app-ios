@@ -53,7 +53,8 @@ class FakeTokenItemInfoProvider: ObservableObject {
         return TokenIconInfoBuilder()
             .build(
                 for: walletModel.tokenItem.amountType,
-                in: walletModel.blockchainNetwork.blockchain
+                in: walletModel.blockchainNetwork.blockchain,
+                isCustom: walletModel.isCustom
             )
     }
 }

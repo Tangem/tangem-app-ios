@@ -28,7 +28,16 @@ struct MultiWalletTokenItemsSectionFactory {
         let infoProvider = makeSectionItemInfoProvider(from: sectionItem)
         let iconInfoBuilder = TokenIconInfoBuilder()
         let tokenItem = infoProvider.tokenItem
-        let tokenIcon = iconInfoBuilder.build(from: tokenItem)
+
+        let isCustom: Bool
+        switch sectionItem {
+        case .default(let walletModel):
+            isCustom = walletModel.isCustom
+        case .withoutDerivation(let userToken):
+            isCustom = userToken.isCustom
+        }
+
+        let tokenIcon = iconInfoBuilder.build(from: tokenItem, isCustom: isCustom)
 
         return TokenItemViewModel(
             id: infoProvider.id,

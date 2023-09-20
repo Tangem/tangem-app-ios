@@ -97,18 +97,6 @@ struct MainHeaderView: View {
     }
 }
 
-private extension View {
-    @ViewBuilder
-    func previewContentShape(cornerRadius: Double) -> some View {
-        if #available(iOS 15.0, *) {
-            self
-                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        } else {
-            self
-        }
-    }
-}
-
 struct CardHeaderView_Previews: PreviewProvider {
     struct CardHeaderPreview: View {
         @ObservedObject var provider: FakeCardHeaderPreviewProvider = .init()

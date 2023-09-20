@@ -454,6 +454,8 @@
 		B6176A7A2A5B743A0062C399 /* CGRect+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6176A792A5B743A0062C399 /* CGRect+.swift */; };
 		B6180C862A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6180C852A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift */; };
 		B618370A2A8398BE00F07C17 /* Transaction+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61837092A8398BE00F07C17 /* Transaction+.swift */; };
+		B61980102AB8BD5200153886 /* PreviewContentShapeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B619800F2AB8BD5200153886 /* PreviewContentShapeModifier.swift */; };
+		B61980122AB98ACE00153886 /* HighlightableViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */; };
 		B61B14CD2A25DD33001AF997 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61B14CC2A25DD33001AF997 /* Lock.swift */; };
 		B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */; };
 		B62E42512A79328A0045AB31 /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E42502A79328A0045AB31 /* Collection+.swift */; };
@@ -1650,6 +1652,8 @@
 		B6176A792A5B743A0062C399 /* CGRect+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+.swift"; sourceTree = "<group>"; };
 		B6180C852A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensPreviewViewModelFactory.swift; sourceTree = "<group>"; };
 		B61837092A8398BE00F07C17 /* Transaction+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+.swift"; sourceTree = "<group>"; };
+		B619800F2AB8BD5200153886 /* PreviewContentShapeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContentShapeModifier.swift; sourceTree = "<group>"; };
+		B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableViewModifier.swift; sourceTree = "<group>"; };
 		B61B14CC2A25DD33001AF997 /* Lock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
 		B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFactory.swift; sourceTree = "<group>"; };
 		B62E42502A79328A0045AB31 /* Collection+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
@@ -3684,6 +3688,8 @@
 				B60275282A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift */,
 				B602752A2A7A651000865EA7 /* ShadowAnimatableModifier.swift */,
 				B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */,
+				B619800F2AB8BD5200153886 /* PreviewContentShapeModifier.swift */,
+				B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
@@ -6452,6 +6458,7 @@
 				DA23787A27B24222009795A8 /* Address.swift in Sources */,
 				5DD4CB5024FAAB1A008F23CC /* KeyboardHeightPublisher.swift in Sources */,
 				5DB862B8252396CD00566AA0 /* TangemSigner.swift in Sources */,
+				B61980102AB8BD5200153886 /* PreviewContentShapeModifier.swift in Sources */,
 				DC0A5844282BFDFC0031BECC /* UserWalletRepository.swift in Sources */,
 				DC7127B32897ECEE00F60F71 /* GenericConfig.swift in Sources */,
 				DC66BBED2859B68100CDF765 /* ShopCoordinator.swift in Sources */,
@@ -6784,6 +6791,7 @@
 				DC261CAB292CF56600875E64 /* AuthViewModel.swift in Sources */,
 				5D39514D2556CDDF002CC452 /* MoonPayService.swift in Sources */,
 				EFAD40AC2A976E7500364D65 /* TransactionListItem.swift in Sources */,
+				B61980122AB98ACE00153886 /* HighlightableViewModifier.swift in Sources */,
 				EF0F99AA289028F8008B01DF /* AppSettingsCoordinator.swift in Sources */,
 				5D5332B125F9091900D32CA5 /* TokenItem.swift in Sources */,
 				B085154F26D77C2400E1A836 /* TwinsOnboardingViewModel.swift in Sources */,

@@ -16,6 +16,7 @@ struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
     var hasMonochromeIcon: Bool { isNetworkUnreachable || !hasDerivation || isTestnet }
+    var isCustom: Bool { tokenIcon.isCustom }
 
     let balance: LoadableTextView.State
 

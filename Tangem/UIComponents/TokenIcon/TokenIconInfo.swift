@@ -12,4 +12,5 @@ struct TokenIconInfo: Hashable {
     let name: String
     let blockchainIconName: String?
     let imageURL: URL?
+    let isCustom: Bool
 }

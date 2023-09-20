@@ -95,19 +95,10 @@ enum SocialNetwork: Hashable, CaseIterable, Identifiable {
         }
     }
 
-    var line: Line {
-        switch self {
-        case .twitter, .telegram, .instagram, .facebook, .linkedin, .youtube:
-            return .first
-        case .discord, .reddit, .github:
-            return .second
-        }
-    }
-}
-
-extension SocialNetwork {
-    enum Line: Int {
-        case first
-        case second
+    static var list: [[SocialNetwork]] {
+        [
+            [.twitter, .telegram, .instagram, .facebook, .linkedin, .youtube],
+            [.discord, .reddit, .github],
+        ]
     }
 }

@@ -72,7 +72,8 @@ struct OrganizeTokensListFactory {
         )
         let tokenIcon = tokenIconInfoBuilder.build(
             for: walletModel.amountType,
-            in: walletModel.blockchainNetwork.blockchain
+            in: walletModel.blockchainNetwork.blockchain,
+            isCustom: walletModel.isCustom
         )
 
         return OrganizeTokensListItemViewModel(
@@ -99,7 +100,11 @@ struct OrganizeTokensListFactory {
         )
 
         if let token = token(from: userToken) {
-            let tokenIcon = tokenIconInfoBuilder.build(for: .token(value: token), in: blockchain)
+            let tokenIcon = tokenIconInfoBuilder.build(
+                for: .token(value: token),
+                in: blockchain,
+                isCustom: token.isCustom
+            )
 
             return OrganizeTokensListItemViewModel(
                 id: identifier,
@@ -112,7 +117,11 @@ struct OrganizeTokensListFactory {
             )
         }
 
-        let tokenIcon = tokenIconInfoBuilder.build(for: .coin, in: blockchain)
+        let tokenIcon = tokenIconInfoBuilder.build(
+            for: .coin,
+            in: blockchain,
+            isCustom: userToken.isCustom
+        )
 
         return OrganizeTokensListItemViewModel(
             id: identifier,

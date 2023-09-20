@@ -17,27 +17,21 @@ struct DetailsView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            GroupedScrollView {
-                walletConnectSection
+        GroupedScrollView {
+            walletConnectSection
 
-                commonSection
+            commonSection
 
-                settingsSection
+            settingsSection
 
-                supportSection
+            supportSection
 
-                legalSection
+            legalSection
 
-                environmentSetupSection
-
-                Color.clear.frame(height: socialNetworksViewSize.height)
-            }
+            environmentSetupSection
 
             socialNetworks
-                .readGeometry(\.size, bindTo: $socialNetworksViewSize)
         }
-        .ignoresSafeArea(.container, edges: .bottom)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .background(
             ScanTroubleshootingView(
@@ -94,15 +88,11 @@ struct DetailsView: View {
 
     private var socialNetworks: some View {
         VStack(alignment: .center, spacing: 16) {
-            HStack(spacing: 16) {
-                ForEach(SocialNetwork.allCases.filter { $0.line == .first }) { network in
-                    socialNetworkView(network: network)
-                }
-            }
-
-            HStack(spacing: 16) {
-                ForEach(SocialNetwork.allCases.filter { $0.line == .second }) { network in
-                    socialNetworkView(network: network)
+            ForEach(SocialNetwork.list, id: \.hashValue) { networks in
+                HStack(spacing: 16) {
+                    ForEach(networks) { network in
+                        socialNetworkView(network: network)
+                    }
                 }
             }
 
@@ -113,8 +103,6 @@ struct DetailsView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 16)
-        .padding(.bottom, max(16, UIApplication.safeAreaInsets.bottom))
-        .background(Colors.Background.secondary)
     }
 
     @ViewBuilder

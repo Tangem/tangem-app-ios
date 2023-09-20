@@ -13,12 +13,14 @@ struct TokenItemViewLeadingComponent: View {
     let imageURL: URL?
     let blockchainIconName: String?
     let hasMonochromeIcon: Bool
+    let isCustom: Bool
 
     var body: some View {
         TokenIcon(
             name: name,
             imageURL: imageURL,
             blockchainIconName: blockchainIconName,
+            isCustom: isCustom,
             size: .init(bothDimensions: 36.0)
         )
         .saturation(hasMonochromeIcon ? 0 : 1)

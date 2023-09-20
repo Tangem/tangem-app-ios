@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 struct TokenIconInfoBuilder {
-    func build(for type: Amount.AmountType, in blockchain: Blockchain) -> TokenIconInfo {
+    func build(for type: Amount.AmountType, in blockchain: Blockchain, isCustom: Bool) -> TokenIconInfo {
         let id: String?
         let name: String
         var blockchainIconName: String?
@@ -31,10 +31,10 @@ struct TokenIconInfoBuilder {
                 .iconURL(id: id, size: .large)
         }
 
-        return .init(name: name, blockchainIconName: blockchainIconName, imageURL: imageURL)
+        return .init(name: name, blockchainIconName: blockchainIconName, imageURL: imageURL, isCustom: isCustom)
     }
 
-    func build(from tokenItem: TokenItem) -> TokenIconInfo {
-        build(for: tokenItem.amountType, in: tokenItem.blockchain)
+    func build(from tokenItem: TokenItem, isCustom: Bool) -> TokenIconInfo {
+        build(for: tokenItem.amountType, in: tokenItem.blockchain, isCustom: isCustom)
     }
 }

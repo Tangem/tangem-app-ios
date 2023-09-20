@@ -19,7 +19,8 @@ struct TokenItemView: View {
                 name: viewModel.name,
                 imageURL: viewModel.imageURL,
                 blockchainIconName: viewModel.blockchainIconName,
-                hasMonochromeIcon: viewModel.hasMonochromeIcon
+                hasMonochromeIcon: viewModel.hasMonochromeIcon,
+                isCustom: viewModel.isCustom
             )
 
             // Fixed size spacer
@@ -49,10 +50,6 @@ struct TokenItemView: View {
         }
         .padding(14.0)
         .readGeometry(\.size.width, bindTo: $totalWidth)
-        // We need this background for correctly handling tap gesture
-        // and because long tap gesture not correctly drawing cell
-        .background(Colors.Background.primary.cornerRadiusContinuous(13))
-        .onTapGesture(perform: viewModel.tapAction)
     }
 }
 
