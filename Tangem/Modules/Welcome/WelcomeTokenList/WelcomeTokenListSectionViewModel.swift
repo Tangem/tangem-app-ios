@@ -1,5 +1,5 @@
 //
-//  WelcomTokenListSectionViewModel.swift
+//  WelcomeTokenListSectionViewModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 19.09.2023.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class WelcomTokenListSectionViewModel: Identifiable, ObservableObject {
+class WelcomeTokenListSectionViewModel: Identifiable, ObservableObject {
     let id: UUID = .init()
     let imageURL: URL?
     let name: String
@@ -40,12 +40,12 @@ class WelcomTokenListSectionViewModel: Identifiable, ObservableObject {
     }
 }
 
-extension WelcomTokenListSectionViewModel: Hashable {
+extension WelcomeTokenListSectionViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 
-    static func == (lhs: WelcomTokenListSectionViewModel, rhs: WelcomTokenListSectionViewModel) -> Bool {
+    static func == (lhs: WelcomeTokenListSectionViewModel, rhs: WelcomeTokenListSectionViewModel) -> Bool {
         lhs.id == rhs.id
     }
 }

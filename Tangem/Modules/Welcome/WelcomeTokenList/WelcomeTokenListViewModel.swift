@@ -15,7 +15,7 @@ class WelcomeTokenListViewModel: ObservableObject, Identifiable {
     // I can't use @Published here, because of swiftui redraw perfomance drop
     var enteredSearchText = CurrentValueSubject<String, Never>("")
 
-    @Published var itemViewModels: [WelcomTokenListSectionViewModel] = []
+    @Published var itemViewModels: [WelcomeTokenListSectionViewModel] = []
 
     var hasNextPage: Bool {
         loader.canFetchMore
@@ -70,7 +70,7 @@ private extension WelcomeTokenListViewModel {
         let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
-            .map { [weak self] items -> [WelcomTokenListSectionViewModel] in
+            .map { [weak self] items -> [WelcomeTokenListSectionViewModel] in
                 items.compactMap { self?.mapToCoinViewModel(coinModel: $0) }
             }
             .receive(on: DispatchQueue.main)
@@ -80,7 +80,7 @@ private extension WelcomeTokenListViewModel {
         return loader
     }
 
-    func mapToCoinViewModel(coinModel: CoinModel) -> WelcomTokenListSectionViewModel {
+    func mapToCoinViewModel(coinModel: CoinModel) -> WelcomeTokenListSectionViewModel {
         let items = coinModel.items.enumerated().map { index, item in
             WelcomeTokenListItemViewModel(
                 tokenItem: item,
@@ -89,6 +89,6 @@ private extension WelcomeTokenListViewModel {
             )
         }
 
-        return WelcomTokenListSectionViewModel(with: coinModel, items: items)
+        return WelcomeTokenListSectionViewModel(with: coinModel, items: items)
     }
 }

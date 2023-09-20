@@ -36,7 +36,7 @@ struct WelcomeTokenListView: View {
                 divider
 
                 ForEach(viewModel.itemViewModels) {
-                    WelcomTokenListSectionView(model: $0)
+                    WelcomeTokenListSectionView(model: $0)
                         .padding(.horizontal)
 
                     divider

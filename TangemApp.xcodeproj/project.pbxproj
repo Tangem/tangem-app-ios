@@ -21,8 +21,8 @@
 		2D727EB42AB84F4500CD121A /* WelcomeTokenListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */; };
 		2D727EB62AB8999100CD121A /* WelcomeTokenListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB52AB8999100CD121A /* WelcomeTokenListItemViewModel.swift */; };
 		2D727EB82AB8999600CD121A /* WelcomeTokenListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB72AB8999600CD121A /* WelcomeTokenListItemView.swift */; };
-		2D727EBA2AB97EAB00CD121A /* WelcomTokenListSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB92AB97EAB00CD121A /* WelcomTokenListSectionView.swift */; };
-		2D727EBC2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EBB2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift */; };
+		2D727EBA2AB97EAB00CD121A /* WelcomeTokenListSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EB92AB97EAB00CD121A /* WelcomeTokenListSectionView.swift */; };
+		2D727EBC2AB97EF400CD121A /* WelcomeTokenListSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D727EBB2AB97EF400CD121A /* WelcomeTokenListSectionViewModel.swift */; };
 		2D805ECA29ADE17100C030F7 /* ExchangeButtonStateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D805EC929ADE17100C030F7 /* ExchangeButtonStateType.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DB43917296EBC6000CBBB1E /* AppsFlyerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */; };
@@ -1176,8 +1176,8 @@
 		2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListView.swift; sourceTree = "<group>"; };
 		2D727EB52AB8999100CD121A /* WelcomeTokenListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListItemViewModel.swift; sourceTree = "<group>"; };
 		2D727EB72AB8999600CD121A /* WelcomeTokenListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListItemView.swift; sourceTree = "<group>"; };
-		2D727EB92AB97EAB00CD121A /* WelcomTokenListSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomTokenListSectionView.swift; sourceTree = "<group>"; };
-		2D727EBB2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomTokenListSectionViewModel.swift; sourceTree = "<group>"; };
+		2D727EB92AB97EAB00CD121A /* WelcomeTokenListSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListSectionView.swift; sourceTree = "<group>"; };
+		2D727EBB2AB97EF400CD121A /* WelcomeTokenListSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeTokenListSectionViewModel.swift; sourceTree = "<group>"; };
 		2D805EC929ADE17100C030F7 /* ExchangeButtonStateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExchangeButtonStateType.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerConfig.swift; sourceTree = "<group>"; };
@@ -2391,8 +2391,8 @@
 			children = (
 				2D727EAB2AB84F4500CD121A /* WelcomeTokenListViewModel.swift */,
 				2D727EAF2AB84F4500CD121A /* WelcomeTokenListView.swift */,
-				2D727EB92AB97EAB00CD121A /* WelcomTokenListSectionView.swift */,
-				2D727EBB2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift */,
+				2D727EB92AB97EAB00CD121A /* WelcomeTokenListSectionView.swift */,
+				2D727EBB2AB97EF400CD121A /* WelcomeTokenListSectionViewModel.swift */,
 				2D727EB72AB8999600CD121A /* WelcomeTokenListItemView.swift */,
 				2D727EB52AB8999100CD121A /* WelcomeTokenListItemViewModel.swift */,
 			);
@@ -6505,7 +6505,7 @@
 				B0CB73B92A82371000D530BA /* TokenItemViewState.swift in Sources */,
 				EF4662352924DFAF00346B6C /* GroupedScrollView.swift in Sources */,
 				EF6EDD7F296C0D40001B21A3 /* IncomingActionManager.swift in Sources */,
-				2D727EBA2AB97EAB00CD121A /* WelcomTokenListSectionView.swift in Sources */,
+				2D727EBA2AB97EAB00CD121A /* WelcomeTokenListSectionView.swift in Sources */,
 				B65E1F092A94CFB000A58DDE /* OrganizeTokensDragAndDropActionsCache.swift in Sources */,
 				5D06E040250A5D54004218D0 /* NSRegualrExpression+.swift in Sources */,
 				B06C08592A73FC3B00D982BC /* MultiWalletMainContentView.swift in Sources */,
@@ -7205,7 +7205,7 @@
 				EFD39C932A6A8AD60055D215 /* SupportedBlockchainsPreferencesViewModel.swift in Sources */,
 				B6ED082E2A7D9EB90090E51F /* OrganizeTokensOptionsProviding.swift in Sources */,
 				DAD98A782AB2E3240051CFBE /* ManageTokensNetworkSelectorViewModel.swift in Sources */,
-				2D727EBC2AB97EF400CD121A /* WelcomTokenListSectionViewModel.swift in Sources */,
+				2D727EBC2AB97EF400CD121A /* WelcomeTokenListSectionViewModel.swift in Sources */,
 				B0C6B4C826CE6B5400FA990B /* OnboardingProgressCheckmarksView.swift in Sources */,
 				B09E518A298104670042998A /* DeprecationServicing.swift in Sources */,
 				B0C4A1D32671F3FC00DCB921 /* TestnetBuyCryptoService.swift in Sources */,

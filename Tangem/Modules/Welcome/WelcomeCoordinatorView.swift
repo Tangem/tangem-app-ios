@@ -50,9 +50,6 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.tokenListViewModel) { viewModel in
                 NavigationView {
                     WelcomeTokenListView(viewModel: viewModel)
-                        .navigationLinks(
-                            NavHolder().emptyNavigationLink()
-                        )
                 }
                 .navigationViewStyle(.stack)
             }

@@ -1,5 +1,5 @@
 //
-//  WelcomTokenListSectionView.swift
+//  WelcomeTokenListSectionView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 19.09.2023.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct WelcomTokenListSectionView: View {
-    @ObservedObject var model: WelcomTokenListSectionViewModel
+struct WelcomeTokenListSectionView: View {
+    @ObservedObject var model: WelcomeTokenListSectionViewModel
     var subtitle: String = Localization.currencySubtitleExpanded
 
     let iconWidth: Double = 46
@@ -95,7 +95,7 @@ struct WelcomTokenListSectionView: View {
     }
 }
 
-struct WelcomTokenListSectionView_Previews: PreviewProvider {
+struct WelcomeTokenListSectionView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             StatefulPreviewWrapper(false) {
