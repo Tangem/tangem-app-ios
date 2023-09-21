@@ -33,7 +33,7 @@ struct WelcomeTokenListSectionView: View {
                         Text(model.name)
                             .foregroundColor(.tangemGrayDark6)
                             + Text(symbolFormatted)
-                            .foregroundColor(Color(name: "manage_tokens_gray_text"))
+                            .foregroundColor(Colors.Text.tertiary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
@@ -43,7 +43,7 @@ struct WelcomeTokenListSectionView: View {
                         if isExpanded {
                             Text(Localization.currencySubtitleExpanded)
                                 .font(Fonts.Regular.footnote)
-                                .foregroundColor(Color(name: "manage_tokens_gray_text"))
+                                .foregroundColor(Colors.Text.tertiary)
 
                             Spacer()
                         } else {
@@ -85,9 +85,8 @@ struct WelcomeTokenListSectionView: View {
 
     private var chevronView: some View {
         Image(systemName: "chevron.down")
-            .font(.system(size: 17, weight: .medium, design: .default))
             .rotationEffect(isExpanded ? Angle(degrees: 180) : .zero)
-            .foregroundColor(Color(hex: "#CCCCCC")!)
+            .foregroundColor(Colors.Icon.informative)
             .padding(.vertical, 4)
     }
 }

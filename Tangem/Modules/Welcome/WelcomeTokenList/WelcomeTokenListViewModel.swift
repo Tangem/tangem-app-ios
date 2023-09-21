@@ -10,8 +10,6 @@ import SwiftUI
 import Combine
 
 class WelcomeTokenListViewModel: ObservableObject, Identifiable {
-    let id: UUID = .init()
-
     // I can't use @Published here, because of swiftui redraw perfomance drop
     var enteredSearchText = CurrentValueSubject<String, Never>("")
 

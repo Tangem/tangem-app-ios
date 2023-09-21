@@ -9,7 +9,6 @@
 import Foundation
 
 class WelcomeTokenListSectionViewModel: Identifiable, ObservableObject {
-    let id: UUID = .init()
     let imageURL: URL?
     let name: String
     let symbol: String
@@ -37,15 +36,5 @@ class WelcomeTokenListSectionViewModel: Identifiable, ObservableObject {
 
             return tokenContractAddress.caseInsensitiveCompare(contractAddress) == .orderedSame
         }
-    }
-}
-
-extension WelcomeTokenListSectionViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    static func == (lhs: WelcomeTokenListSectionViewModel, rhs: WelcomeTokenListSectionViewModel) -> Bool {
-        lhs.id == rhs.id
     }
 }

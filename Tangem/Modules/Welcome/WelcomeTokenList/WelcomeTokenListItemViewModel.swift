@@ -46,13 +46,3 @@ class WelcomeTokenListItemViewModel: Identifiable, ObservableObject {
         selectedPublisher = isSelected.wrappedValue
     }
 }
-
-extension WelcomeTokenListItemViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    static func == (lhs: WelcomeTokenListItemViewModel, rhs: WelcomeTokenListItemViewModel) -> Bool {
-        lhs.id == rhs.id
-    }
-}
