@@ -89,7 +89,7 @@ struct TokenDetailsView: View {
             }
         } label: {
             NavbarDotsImage()
-                .offset(x: 11)
+                .offset(x: 10)
         }
     }
 }

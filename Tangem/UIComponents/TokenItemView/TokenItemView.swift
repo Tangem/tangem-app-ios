@@ -11,8 +11,6 @@ import SwiftUI
 struct TokenItemView: View {
     @ObservedObject var viewModel: TokenItemViewModel
 
-    @State private var totalWidth: CGFloat = .zero
-
     var body: some View {
         HStack(alignment: .center, spacing: 0.0) {
             TokenItemViewLeadingComponent(
@@ -44,12 +42,10 @@ struct TokenItemView: View {
                     balanceFiat: viewModel.balanceFiat,
                     priceChangeState: viewModel.priceChangeState
                 )
-                .frame(maxWidth: totalWidth * 0.3, alignment: .trailing)
                 .fixedSize(horizontal: true, vertical: false)
             }
         }
         .padding(14.0)
-        .readGeometry(\.size.width, bindTo: $totalWidth)
     }
 }
 

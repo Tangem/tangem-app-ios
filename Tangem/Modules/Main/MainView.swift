@@ -52,9 +52,13 @@ struct MainView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 0) {
+                    if #unavailable(iOS 15) {
+                        // Offset didn't work for iOS 14 if there are no other view in toolbar
+                        Spacer()
+                            .frame(width: 10)
+                    }
                     detailsNavigationButton
                 }
-                .offset(x: 10)
             }
         })
         .actionSheet(isPresented: $viewModel.showingDeleteConfirmation) {
@@ -80,6 +84,7 @@ struct MainView: View {
     var detailsNavigationButton: some View {
         Button(action: viewModel.openDetails) {
             NavbarDotsImage()
+                .offset(x: 10)
         }
         .buttonStyle(PlainButtonStyle())
         .animation(nil)

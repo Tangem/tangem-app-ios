@@ -23,14 +23,16 @@ class LockedWalletMainContentViewModel: ObservableObject {
         )
     }()
 
-    lazy var singleWalletButtonsInfo: [ButtonWithIconInfo] = TokenActionType.allCases.map {
-        ButtonWithIconInfo(
-            title: $0.title,
-            icon: $0.icon,
-            action: {},
-            disabled: true
-        )
-    }
+    lazy var singleWalletButtonsInfo: [ButtonWithIconInfo] = TokenActionListBuilder()
+        .buildActionsForLockedSingleWallet()
+        .map {
+            ButtonWithIconInfo(
+                title: $0.title,
+                icon: $0.icon,
+                action: {},
+                disabled: true
+            )
+        }
 
     var footerViewModel: MainFooterViewModel? {
         guard canManageTokens else { return nil }

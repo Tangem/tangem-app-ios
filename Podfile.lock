@@ -266,7 +266,7 @@ DEPENDENCIES:
   - AppsFlyerFramework
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.9`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.19`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-380`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-382`)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
@@ -275,7 +275,7 @@ DEPENDENCIES:
   - Mobile-Buy-SDK
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-7`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-264`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-266`)
   - TangemWalletCore (from `https://github.com/tangem/wallet-core-binaries-ios.git`, tag `3.2.4-tangem1`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.6.17`)
   - web3swift (from `https://github.com/tangem/web3swift.git`, tag `2.2.12`)
@@ -343,7 +343,7 @@ EXTERNAL SOURCES:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-380
+    :tag: develop-382
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -355,7 +355,7 @@ EXTERNAL SOURCES:
     :tag: add-external-signer-7
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-264
+    :tag: develop-266
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
     :tag: 3.2.4-tangem1
@@ -378,7 +378,7 @@ CHECKOUT OPTIONS:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-380
+    :tag: develop-382
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
@@ -390,7 +390,7 @@ CHECKOUT OPTIONS:
     :tag: add-external-signer-7
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-264
+    :tag: develop-266
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
     :tag: 3.2.4-tangem1
@@ -460,6 +460,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 77a62fe6bacc05bb10ff20edce75612fa109fd61
   ZendeskSupportSDK: ba72e90e327635b5fde3d023a3de33242a6ee8ab
 
-PODFILE CHECKSUM: 15244eac9d4da0392699ae8221790940c08b344b
+PODFILE CHECKSUM: fcfa1f631cd3ef866e2d1baa8699fd28b157e738
 
 COCOAPODS: 1.12.1

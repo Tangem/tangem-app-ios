@@ -43,4 +43,13 @@ struct TokenActionListBuilder {
 
         return availableActions
     }
+
+    func buildActionsForLockedSingleWallet() -> [TokenActionType] {
+        [
+            .buy,
+            .send,
+            .receive,
+            .sell,
+        ]
+    }
 }
