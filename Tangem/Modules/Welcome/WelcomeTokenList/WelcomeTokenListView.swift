@@ -13,15 +13,13 @@ struct WelcomeTokenListView: View {
     @ObservedObject var viewModel: WelcomeTokenListViewModel
 
     var body: some View {
-        ZStack {
-            list
-        }
-        .scrollDismissesKeyboardCompat(true)
-        .navigationBarTitle(Text(Localization.commonSearchTokens), displayMode: .automatic)
-        .searchableCompat(text: $viewModel.enteredSearchText.value)
-        .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
-        .onAppear { viewModel.onAppear() }
-        .onDisappear { viewModel.onDisappear() }
+        list
+            .scrollDismissesKeyboardCompat(true)
+            .navigationBarTitle(Text(Localization.commonSearchTokens), displayMode: .automatic)
+            .searchableCompat(text: $viewModel.enteredSearchText.value)
+            .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
+            .onAppear { viewModel.onAppear() }
+            .onDisappear { viewModel.onDisappear() }
     }
 
     private var list: some View {
@@ -54,12 +52,12 @@ struct WelcomeTokenListView: View {
 
     private var divider: some View {
         Divider()
-            .padding([.leading])
+            .padding(.leading)
     }
 
     @ViewBuilder private var titleView: some View {
         Text(Localization.commonSearchTokens)
-            .font(Font.system(size: 30, weight: .bold, design: .default))
+            .font(Fonts.Bold.title1)
             .minimumScaleFactor(0.8)
     }
 }

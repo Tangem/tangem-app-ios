@@ -11,21 +11,11 @@ import SwiftUI
 struct WelcomeTokenListItemView: View {
     @ObservedObject var model: WelcomeTokenListItemViewModel
 
-    let arrowWidth: Double
-
-    var icon: some View {
-        NetworkIcon(
-            imageName: model.selectedPublisher ? model.imageNameSelected : model.imageName,
-            isActive: model.selectedPublisher,
-            isMainIndicatorVisible: model.isMain
-        )
-    }
-
     @State private var size: CGSize = .zero
 
     var body: some View {
         HStack(spacing: 6) {
-            ArrowView(position: model.position, width: arrowWidth, height: size.height)
+            ArrowView(position: model.position, width: Constants.arrowWidth, height: size.height)
 
             HStack(spacing: 0) {
                 icon
@@ -33,13 +23,13 @@ struct WelcomeTokenListItemView: View {
 
                 HStack(alignment: .top, spacing: 2) {
                     Text(model.networkName.uppercased())
-                        .font(.system(size: 14, weight: .semibold, design: .default))
+                        .font(Fonts.Bold.footnote)
                         .foregroundColor(model.networkNameForegroundColor)
                         .lineLimit(2)
 
                     if let contractName = model.contractName {
                         Text(contractName)
-                            .font(.system(size: 14))
+                            .font(Fonts.Regular.footnote)
                             .foregroundColor(model.contractNameForegroundColor)
                             .padding(.leading, 2)
                             .lineLimit(1)
@@ -54,6 +44,20 @@ struct WelcomeTokenListItemView: View {
         .contentShape(Rectangle())
         .readGeometry(\.size, bindTo: $size)
     }
+
+    var icon: some View {
+        NetworkIcon(
+            imageName: model.selectedPublisher ? model.imageNameSelected : model.imageName,
+            isActive: model.selectedPublisher,
+            isMainIndicatorVisible: model.isMain
+        )
+    }
+}
+
+private extension WelcomeTokenListItemView {
+    enum Constants {
+        static let arrowWidth: Double = 46
+    }
 }
 
 struct WelcomeTokenListItemView_Previews: PreviewProvider {
@@ -63,8 +67,7 @@ struct WelcomeTokenListItemView_Previews: PreviewProvider {
                 model: WelcomeTokenListItemViewModel(
                     tokenItem: .blockchain(.ethereum(testnet: false)),
                     isSelected: .constant(false)
-                ),
-                arrowWidth: 46
+                )
             )
 
             WelcomeTokenListItemView(
@@ -72,8 +75,7 @@ struct WelcomeTokenListItemView_Previews: PreviewProvider {
                     tokenItem: .blockchain(.ethereum(testnet: false)),
                     isSelected: .constant(true),
                     position: .last
-                ),
-                arrowWidth: 46
+                )
             )
 
             StatefulPreviewWrapper(false) {
@@ -81,8 +83,7 @@ struct WelcomeTokenListItemView_Previews: PreviewProvider {
                     model: WelcomeTokenListItemViewModel(
                         tokenItem: .blockchain(.ethereum(testnet: false)),
                         isSelected: $0
-                    ),
-                    arrowWidth: 46
+                    )
                 )
             }
 

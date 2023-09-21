@@ -10,9 +10,6 @@ import SwiftUI
 
 struct WelcomeTokenListSectionView: View {
     @ObservedObject var model: WelcomeTokenListSectionViewModel
-    var subtitle: String = Localization.currencySubtitleExpanded
-
-    let iconWidth: Double = 46
 
     @State private var isExpanded = false
 
@@ -28,7 +25,7 @@ struct WelcomeTokenListSectionView: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 0) {
-                IconView(url: model.imageURL, size: CGSize(width: iconWidth, height: iconWidth), forceKingfisher: true)
+                IconView(url: model.imageURL, size: CGSize(width: Constants.iconWidth, height: Constants.iconWidth), forceKingfisher: true)
                     .padding(.trailing, 14)
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -40,12 +37,12 @@ struct WelcomeTokenListSectionView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
-                    .font(.system(size: 17, weight: .medium, design: .default))
+                    .font(Fonts.Bold.body)
 
                     VStack {
                         if isExpanded {
-                            Text(subtitle)
-                                .font(.system(size: 13))
+                            Text(Localization.currencySubtitleExpanded)
+                                .font(Fonts.Regular.footnote)
                                 .foregroundColor(Color(name: "manage_tokens_gray_text"))
 
                             Spacer()
@@ -59,7 +56,7 @@ struct WelcomeTokenListSectionView: View {
                                             .background(Colors.Button.secondary)
                                             .cornerRadiusContinuous(10)
                                     } else {
-                                        WelcomeTokenListItemView(model: model.items[index], arrowWidth: iconWidth).icon
+                                        WelcomeTokenListItemView(model: model.items[index]).icon
                                     }
                                 }
                             }
@@ -78,7 +75,7 @@ struct WelcomeTokenListSectionView: View {
 
             if isExpanded {
                 VStack(spacing: 0) {
-                    ForEach(model.items) { WelcomeTokenListItemView(model: $0, arrowWidth: iconWidth) }
+                    ForEach(model.items) { WelcomeTokenListItemView(model: $0) }
                 }
             }
         }
@@ -146,5 +143,11 @@ struct WelcomeTokenListSectionView_Previews: PreviewProvider {
             isSelected: isSelected,
             position: .first
         ), count: count)
+    }
+}
+
+extension WelcomeTokenListSectionView {
+    private enum Constants {
+        static let iconWidth: Double = 46
     }
 }
