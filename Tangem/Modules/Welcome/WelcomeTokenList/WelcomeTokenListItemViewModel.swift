@@ -10,7 +10,6 @@ import SwiftUI
 import Combine
 
 class WelcomeTokenListItemViewModel: Identifiable, ObservableObject {
-    let id: UUID = .init()
     let tokenItem: TokenItem
     var isSelected: Binding<Bool>?
     let position: ItemPosition
