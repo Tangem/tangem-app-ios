@@ -31,7 +31,7 @@ struct WelcomeTokenListSectionView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Group {
                         Text(model.name)
-                            .foregroundColor(.tangemGrayDark6)
+                            .foregroundColor(Colors.Text.primary1)
                             + Text(symbolFormatted)
                             .foregroundColor(Colors.Text.tertiary)
                     }
@@ -42,8 +42,7 @@ struct WelcomeTokenListSectionView: View {
                     VStack {
                         if isExpanded {
                             Text(Localization.currencySubtitleExpanded)
-                                .font(Fonts.Regular.footnote)
-                                .foregroundColor(Colors.Text.tertiary)
+                                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
                             Spacer()
                         } else {

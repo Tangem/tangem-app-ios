@@ -23,14 +23,12 @@ struct WelcomeTokenListItemView: View {
 
                 HStack(alignment: .top, spacing: 2) {
                     Text(model.networkName.uppercased())
-                        .font(Fonts.Bold.footnote)
-                        .foregroundColor(model.networkNameForegroundColor)
+                        .style(Fonts.Bold.footnote, color: model.networkNameForegroundColor)
                         .lineLimit(2)
 
                     if let contractName = model.contractName {
                         Text(contractName)
-                            .font(Fonts.Regular.footnote)
-                            .foregroundColor(model.contractNameForegroundColor)
+                            .style(Fonts.Regular.footnote, color: model.contractNameForegroundColor)
                             .padding(.leading, 2)
                             .lineLimit(1)
                             .fixedSize()
