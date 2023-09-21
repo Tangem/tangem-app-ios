@@ -43,7 +43,10 @@ class FileLogger: TangemSdkLogger {
                     handler.closeFile()
                 }
 
-                print(String(describing: nsError))
+                if let nsError {
+                    print(nsError)
+                }
+                
             } catch {
                 print(error)
             }
