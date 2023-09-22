@@ -57,7 +57,7 @@ struct WelcomeTokenListView: View {
 
     @ViewBuilder private var titleView: some View {
         Text(Localization.commonSearchTokens)
-            .style(Fonts.Bold.title1, color: .primary)
+            .style(Fonts.Bold.title1, color: Colors.Text.primary1)
             .minimumScaleFactor(0.8)
     }
 }
