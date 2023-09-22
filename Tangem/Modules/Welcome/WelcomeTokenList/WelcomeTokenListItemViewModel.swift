@@ -21,8 +21,8 @@ class WelcomeTokenListItemViewModel: Identifiable, ObservableObject {
     var imageNameSelected: String { tokenItem.blockchain.iconNameFilled }
     var networkName: String { tokenItem.blockchain.displayName }
     var contractName: String? { tokenItem.contractName }
-    var networkNameForegroundColor: Color { selectedPublisher ? .tangemGrayDark6 : Color(name: "manage_tokens_network_name") }
-    var contractNameForegroundColor: Color { tokenItem.isBlockchain ? Colors.Text.accent : Color(name: "manage_tokens_contract_name") }
+    var networkNameForegroundColor: Color { selectedPublisher ? Colors.Text.primary2 : Colors.Text.tertiary }
+    var contractNameForegroundColor: Color { tokenItem.isBlockchain ? Colors.Text.accent : Colors.Text.tertiary }
 
     private var bag = Set<AnyCancellable>()
 
