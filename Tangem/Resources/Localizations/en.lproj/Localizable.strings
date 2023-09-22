@@ -501,6 +501,7 @@
 "wallet_connect_network_not_found_format" = "%@ network not found. Please, add it first and try again.";
 "wallet_connect_no_sessions_message" = "No opened WalletConnect sessions";
 "wallet_connect_no_sessions_title" = "Ooops. No Sessions.";
+"wallet_connect_pairing_error" = "Failed to pairing WalletConnect session: %1$@";
 "wallet_connect_paste_from_clipboard" = "Paste from clipboard";
 "wallet_connect_personal_sign_message" = "Message for %1$@:\n%2$@";
 "wallet_connect_request_session_start" = "Request to start a session for\n%1$@\n\nNETWORK: %2$@\n\nURL: %3$@";

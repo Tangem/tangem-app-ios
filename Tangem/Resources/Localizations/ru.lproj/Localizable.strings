@@ -501,6 +501,7 @@
 "wallet_connect_network_not_found_format" = "Сеть %@ не найдена. Пожалуйста, добавьте её и попробуйте заново.";
 "wallet_connect_no_sessions_message" = "Нет открытых сессий WalletConnect";
 "wallet_connect_no_sessions_title" = "Упс. Нет сессий.";
+"wallet_connect_pairing_error" = "Не удалось создать пару WalletConnect: %1$@";
 "wallet_connect_paste_from_clipboard" = "Вставить из буфера обмена";
 "wallet_connect_personal_sign_message" = "Сообщение для %1$@:\n%2$@";
 "wallet_connect_request_session_start" = "Запрос на открытие сессии для\n%1$@\n\nСЕТЬ: %2$@\n\nURL: %3$@";
