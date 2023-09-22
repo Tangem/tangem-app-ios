@@ -23,6 +23,8 @@ struct MultiWalletTokenItemsSectionFactory {
 
     func makeSectionItemViewModel(
         from sectionItem: TokenSectionsAdapter.SectionItem,
+        contextActionsProvider: TokenItemContextActionsProvider,
+        contextActionsDelegate: TokenItemContextActionDelegate,
         tapAction: @escaping (WalletModel.ID) -> Void
     ) -> TokenItemViewModel {
         let infoProvider = makeSectionItemInfoProvider(from: sectionItem)
@@ -44,7 +46,9 @@ struct MultiWalletTokenItemsSectionFactory {
             tokenIcon: tokenIcon,
             isTestnetToken: tokenItem.blockchain.isTestnet,
             infoProvider: infoProvider,
-            tokenTapped: tapAction
+            tokenTapped: tapAction,
+            contextActionsProvider: contextActionsProvider,
+            contextActionsDelegate: contextActionsDelegate
         )
     }
 

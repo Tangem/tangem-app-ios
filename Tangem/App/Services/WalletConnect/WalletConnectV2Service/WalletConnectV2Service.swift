@@ -80,11 +80,6 @@ final class WalletConnectV2Service {
     }
 
     func openSession(with uri: WalletConnectV2URI) {
-        guard let infoProvider else {
-            log("Failed to open session. Info provider wasn't initialized")
-            return
-        }
-
         canEstablishNewSessionSubject.send(false)
         runTask(withTimeout: 20) { [weak self] in
             await self?.pairClient(with: uri)
@@ -142,7 +137,20 @@ final class WalletConnectV2Service {
             try Task.checkCancellation()
             log("Established pair for \(url)")
         } catch {
+            displayErrorUI(WalletConnectV2Error.pairClientError(error.localizedDescription))
             AppLog.shared.error("[WC 2.0] Failed to connect to \(url) with error: \(error)")
+
+            // Hack to delete the topic from the user default storage inside the WC 2.0 SDK
+            await disconnect(topic: url.topic)
+        }
+    }
+
+    private func disconnect(topic: String) async {
+        do {
+            try await pairApi.disconnect(topic: topic)
+            log("Success disconnect/delete topic \(topic)")
+        } catch {
+            AppLog.shared.error("[WC 2.0] Failed to disconnect/delete topic \(topic) with error: \(error)")
         }
     }
 
