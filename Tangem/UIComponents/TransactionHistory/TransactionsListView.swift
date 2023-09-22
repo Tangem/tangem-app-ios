@@ -96,7 +96,8 @@ struct TransactionsListView: View {
     @ViewBuilder
     private var noTransactionsContent: some View {
         VStack(spacing: 20) {
-            Assets.coinSlot.image
+            Assets.emptyHistory.image
+                .renderingMode(.template)
                 .foregroundColor(Colors.Icon.informative)
 
             Text(Localization.transactionHistoryEmptyTransactions)

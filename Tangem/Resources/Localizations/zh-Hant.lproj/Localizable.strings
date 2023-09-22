@@ -219,6 +219,7 @@
 "manage_tokens_title" = "Coin market cap";
 "manage_tokens_unavailable_description" = "The selected token is currently unavailable for actions within the crypto wallet. But worry not, you can express your interest by upvoting it.";
 "manage_tokens_unavailable_vote" = "Upvote";
+"manage_tokens_wallet_selector_title" = "Choose wallet";
 "notification_title_not_enough_funds" = "Unable to cover %1$@ fee";
 "onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包";
 "onboarding_access_code_feature_1_title" = "保護";

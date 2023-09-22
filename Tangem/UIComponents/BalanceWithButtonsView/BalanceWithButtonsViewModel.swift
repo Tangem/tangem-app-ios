@@ -20,7 +20,6 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     private weak var balanceProvider: BalanceProvider?
     private weak var buttonsProvider: ActionButtonsProvider?
 
-    private var fiatUpdatingTask: Task<Void, Never>?
     private var bag = Set<AnyCancellable>()
 
     init(balanceProvider: BalanceProvider?, buttonsProvider: ActionButtonsProvider?) {
@@ -64,32 +63,8 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     private func updateBalances(for newBalance: BalanceInfo) {
         let formatter = BalanceFormatter()
 
-        cryptoBalance = formatter.formatCryptoBalance(newBalance.balance, currencyCode: newBalance.currencyCode)
-
-        fiatUpdatingTask?.cancel()
-        fiatUpdatingTask = Task { [weak self] in
-            let converter = BalanceConverter()
-
-            do {
-                let fiatBalance: Decimal?
-                if let currencyId = newBalance.currencyId {
-                    fiatBalance = try await converter.convertToFiat(value: newBalance.balance, from: currencyId)
-                } else {
-                    fiatBalance = nil
-                }
-                let formattedFiat = formatter.formatFiatBalance(fiatBalance)
-                let attributedFiatBalance = formatter.formatTotalBalanceForMain(fiatBalance: formattedFiat, formattingOptions: .defaultOptions)
-
-                await runOnMain {
-                    self?.fiatBalance = attributedFiatBalance
-                }
-            } catch {
-                AppLog.shared.debug("Failed to convert from crypto to fiat. Reason: \(error)")
-            }
-
-            await runOnMain {
-                self?.isLoadingFiatBalance = false
-            }
-        }
+        isLoadingFiatBalance = false
+        cryptoBalance = newBalance.balance
+        fiatBalance = formatter.formatTotalBalanceForMain(fiatBalance: newBalance.fiatBalance, formattingOptions: .defaultOptions)
     }
 }

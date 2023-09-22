@@ -10,9 +10,11 @@ import SwiftUI
 
 struct SwappingFeeRowView: View {
     private let viewModel: SwappingFeeRowViewModel
+    @State private var isShowingDisclaimer: Bool
 
     init(viewModel: SwappingFeeRowViewModel) {
         self.viewModel = viewModel
+        isShowingDisclaimer = viewModel.isShowingDisclaimer.value
     }
 
     var body: some View {
@@ -28,8 +30,9 @@ struct SwappingFeeRowView: View {
         .padding(.vertical, 14)
         .background(Colors.Background.primary)
         .contentShape(Rectangle())
+        .connect(state: $isShowingDisclaimer, to: viewModel.isShowingDisclaimer)
         .onTapGesture {
-            viewModel.isShowingDisclaimer.toggle()
+            isShowingDisclaimer.toggle()
         }
     }
 
@@ -56,7 +59,7 @@ struct SwappingFeeRowView: View {
                 Assets.chevronDownMini.image
                     .renderingMode(.template)
                     .foregroundColor(Colors.Icon.informative)
-                    .rotationEffect(.degrees(viewModel.isShowingDisclaimer.value ? -180 : 0))
+                    .rotationEffect(.degrees(isShowingDisclaimer ? -180 : 0))
             }
         }
     }

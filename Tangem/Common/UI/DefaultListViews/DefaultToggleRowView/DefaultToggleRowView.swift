@@ -10,9 +10,11 @@ import SwiftUI
 
 struct DefaultToggleRowView: View {
     private let viewModel: DefaultToggleRowViewModel
+    @State private var isOn: Bool
 
     init(viewModel: DefaultToggleRowViewModel) {
         self.viewModel = viewModel
+        isOn = viewModel.isOn.value
     }
 
     var body: some View {
@@ -25,12 +27,13 @@ struct DefaultToggleRowView: View {
 
             Spacer()
 
-            Toggle("", isOn: viewModel.$isOn)
+            Toggle("", isOn: $isOn)
                 .labelsHidden()
                 .toggleStyleCompat(Colors.Control.checked)
                 .disabled(viewModel.isDisabled)
         }
         .padding(.vertical, 8)
+        .connect(state: $isOn, to: viewModel.isOn)
     }
 }
 

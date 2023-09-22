@@ -172,6 +172,16 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
+    func addOrScan(completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+        if AppSettings.shared.saveUserWallets {
+            add(completion)
+        } else {
+            discardSensitiveData()
+            resetServices()
+            unlockWithCard(nil, completion: completion)
+        }
+    }
+
     func didScan(card: CardDTO, walletData: DefaultWalletData) {
         let cardId = card.cardId
 
@@ -350,36 +360,67 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func delete(_ userWallet: UserWallet, logoutIfNeeded shouldAutoLogout: Bool) {
-        if selectedUserWalletId == userWallet.userWalletId {
+        let userWalletId = userWallet.userWalletId
+        if selectedUserWalletId == userWalletId {
             resetServices()
         }
 
-        let userWalletId = userWallet.userWalletId
-        encryptionKeyByUserWalletId[userWalletId] = nil
-        userWallets.removeAll { $0.userWalletId == userWalletId }
-        models.removeAll { $0.userWalletId.value == userWalletId }
-
-        encryptionKeyStorage.delete(userWallet)
-        saveUserWallets(userWallets)
-
-        if selectedUserWalletId == userWalletId {
-            let sortedModels = models.sorted { $0.isMultiWallet && !$1.isMultiWallet }
-            let unlockedModels = sortedModels.filter { model in
-                guard let userWallet = userWallets.first(where: { $0.userWalletId == model.userWalletId.value }) else { return false }
-
-                return !userWallet.isLocked
+        if FeatureProvider.isAvailable(.mainV2) {
+            let userWalletId = userWallet.userWalletId
+            if selectedUserWalletId == userWalletId {
+                resetServices()
             }
 
-            if let firstUnlockedModel = unlockedModels.first {
-                setSelectedUserWalletId(firstUnlockedModel.userWalletId.value, reason: .deleted)
-            } else if let firstModel = sortedModels.first {
-                setSelectedUserWalletId(firstModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
+            let targetIndex: Int
+            if let currentIndex = models.firstIndex(where: { $0.userWalletId.value == userWalletId }) {
+                targetIndex = currentIndex > 0 ? (currentIndex - 1) : 0
             } else {
-                setSelectedUserWalletId(nil, reason: .deleted)
+                targetIndex = 0
+            }
+
+            encryptionKeyByUserWalletId[userWalletId] = nil
+            userWallets.removeAll { $0.userWalletId == userWalletId }
+            models.removeAll { $0.userWalletId.value == userWalletId }
+
+            encryptionKeyStorage.delete(userWallet)
+            saveUserWallets(userWallets)
+
+            if !models.isEmpty {
+                let newModel = models[targetIndex]
+                setSelectedUserWalletId(newModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
             }
 
             if shouldAutoLogout {
                 logoutIfNeeded()
+            }
+        } else {
+            // TODO: Delete after new design release
+            encryptionKeyByUserWalletId[userWalletId] = nil
+            userWallets.removeAll { $0.userWalletId == userWalletId }
+            models.removeAll { $0.userWalletId.value == userWalletId }
+
+            encryptionKeyStorage.delete(userWallet)
+            saveUserWallets(userWallets)
+
+            if selectedUserWalletId == userWalletId {
+                let sortedModels = models.sorted { $0.isMultiWallet && !$1.isMultiWallet }
+                let unlockedModels = sortedModels.filter { model in
+                    guard let userWallet = userWallets.first(where: { $0.userWalletId == model.userWalletId.value }) else { return false }
+
+                    return !userWallet.isLocked
+                }
+
+                if let firstUnlockedModel = unlockedModels.first {
+                    setSelectedUserWalletId(firstUnlockedModel.userWalletId.value, reason: .deleted)
+                } else if let firstModel = sortedModels.first {
+                    setSelectedUserWalletId(firstModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
+                } else {
+                    setSelectedUserWalletId(nil, reason: .deleted)
+                }
+
+                if shouldAutoLogout {
+                    logoutIfNeeded()
+                }
             }
         }
 
@@ -514,6 +555,11 @@ class CommonUserWalletRepository: UserWalletRepository {
                 encryptionKeyByUserWalletId[scannedUserWallet.userWalletId] = encryptionKey.symmetricKey
                 // We have to refresh a key on every scan because we are unable to check presence of the key
                 encryptionKeyStorage.refreshEncryptionKey(encryptionKey.symmetricKey, for: scannedUserWallet.userWalletId)
+
+                // We need to load UserWallets becaues if repository is logged out all locked UserWallets were cleaned from
+                // memory and they won't be restored while scanning card.
+                loadUserWalletsNotSensitiveDataIfEmpty()
+
                 if models.isEmpty {
                     loadModels()
                 }
@@ -543,6 +589,14 @@ class CommonUserWalletRepository: UserWalletRepository {
                 completion(.success(cardModel))
             }
             .store(in: &bag)
+    }
+
+    private func loadUserWalletsNotSensitiveDataIfEmpty() {
+        guard userWallets.isEmpty else {
+            return
+        }
+
+        userWallets = savedUserWallets(withSensitiveData: false)
     }
 
     private func loadModels() {
@@ -608,7 +662,7 @@ extension CommonUserWalletRepository {
         let savedSelectedUserWalletId = AppSettings.shared.selectedUserWalletId
         selectedUserWalletId = savedSelectedUserWalletId.isEmpty ? nil : savedSelectedUserWalletId
 
-        userWallets = savedUserWallets(withSensitiveData: false)
+        loadUserWalletsNotSensitiveDataIfEmpty()
         AppLog.shared.debug("CommonUserWalletRepository initialized")
     }
 

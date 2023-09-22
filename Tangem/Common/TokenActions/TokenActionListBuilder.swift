@@ -27,18 +27,18 @@ struct TokenActionListBuilder {
         let canSell = exchangeUtility.sellAvailable
 
         var availableActions: [TokenActionType] = [.copyAddress]
+        if canExchange, canBuy {
+            availableActions.append(.buy)
+        }
+
         if canSend {
             availableActions.append(.send)
         }
+
         availableActions.append(.receive)
 
-        if canExchange {
-            if canBuy {
-                availableActions.insert(.buy, at: 0)
-            }
-            if canSell {
-                availableActions.append(.sell)
-            }
+        if canExchange, canSell {
+            availableActions.append(.sell)
         }
 
         availableActions.append(.hide)

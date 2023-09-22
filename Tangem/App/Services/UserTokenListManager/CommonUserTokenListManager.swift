@@ -177,29 +177,30 @@ private extension CommonUserTokenListManager {
 
         self.loadTokensCancellable = loadTokensPublisher
             .combineLatest(upgradeTokensPublisher)
-            .sink { [unowned self] subscriberCompletion in
+            .sink { [weak self] subscriberCompletion in
                 defer {
-                    pendingUpdateLocalRepositoryFromServerCompletions.removeAll()
-                    loadTokensCancellable = nil
+                    self?.pendingUpdateLocalRepositoryFromServerCompletions.removeAll()
+                    self?.loadTokensCancellable = nil
                 }
 
-                var completions = pendingUpdateLocalRepositoryFromServerCompletions
+                var completions = self?.pendingUpdateLocalRepositoryFromServerCompletions ?? []
                 completions.append(completion)
 
                 switch subscriberCompletion {
                 case .finished:
                     completions.forEach { $0(.success(())) }
                 case .failure(let error) where error.code == .notFound:
-                    updateTokensOnServer(completions: completions)
+                    self?.updateTokensOnServer(completions: completions)
                 case .failure(let error):
                     completions.forEach { $0(.failure(error)) }
                 }
-            } receiveValue: { [unowned self] list, _ in
+            } receiveValue: { [weak self] list, _ in
+                guard let self else { return }
                 let converter = UserTokenListConverter(supportedBlockchains: supportedBlockchains)
                 let updatedUserTokenList = converter.convertRemoteToStored(list)
 
-                tokenItemsRepository.update(updatedUserTokenList)
-                notifyAboutTokenListUpdates(with: updatedUserTokenList)
+                self.tokenItemsRepository.update(updatedUserTokenList)
+                self.notifyAboutTokenListUpdates(with: updatedUserTokenList)
             }
     }
 

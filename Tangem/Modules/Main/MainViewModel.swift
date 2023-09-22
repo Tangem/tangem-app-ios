@@ -131,7 +131,12 @@ final class MainViewModel: ObservableObject {
     }
 
     func didConfirmWalletDeletion() {
-        guard let userWalletModel = userWalletRepository.selectedModel else { return }
+        guard
+            let userWalletId = userWalletRepository.selectedUserWalletId,
+            let userWalletModel = userWalletRepository.models.first(where: { $0.userWalletId.value == userWalletId })
+        else {
+            return
+        }
 
         userWalletRepository.delete(userWalletModel.userWallet, logoutIfNeeded: true)
     }
@@ -165,6 +170,15 @@ final class MainViewModel: ObservableObject {
         pages.removeAll { page in
             userWalletIds.contains(page.id.value)
         }
+
+        guard
+            let newSelectedId = userWalletRepository.selectedUserWalletId,
+            let index = pages.firstIndex(where: { $0.id.value == newSelectedId })
+        else {
+            return
+        }
+
+        selectedCardIndex = index
     }
 
     private func recreatePages() {

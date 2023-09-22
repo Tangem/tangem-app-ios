@@ -9,10 +9,12 @@
 import Foundation
 import SwiftUI
 
-struct FeatureStateRowViewModel {
+struct FeatureStateRowViewModel: Hashable, Identifiable {
+    var id: Int { hashValue }
+
     let feature: Feature
     let enabledByDefault: Bool
-    let state: Binding<FeatureState>
+    let state: BindingValue<FeatureState>
 
     var releaseVersionInfo: String {
         feature.releaseVersion.version ?? "Unspecified"
@@ -20,20 +22,5 @@ struct FeatureStateRowViewModel {
 
     var defaultState: String {
         enabledByDefault ? "Enabled" : "Disabled"
-    }
-}
-
-extension FeatureStateRowViewModel: Identifiable {
-    var id: Int { hashValue }
-}
-
-extension FeatureStateRowViewModel: Hashable {
-    static func == (lhs: FeatureStateRowViewModel, rhs: FeatureStateRowViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(feature)
-        hasher.combine(state.wrappedValue)
     }
 }

@@ -68,6 +68,8 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
 
+    func addOrScan(completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
+
     func save(_ cardViewModel: UserWalletModel) {}
 
     func contains(_ userWallet: UserWallet) -> Bool {
