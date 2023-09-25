@@ -32,7 +32,7 @@ struct TransactionView: View {
                     Spacer()
 
                     if let amount = viewModel.formattedAmount {
-                        Text(amount)
+                        SensitiveText(amount)
                             .style(Fonts.Regular.subheadline, color: viewModel.amountTextColor)
                     }
                 }

@@ -43,6 +43,15 @@ struct TokenDetailsView: View {
                         .transition(.scaleOpacity)
                 }
 
+                if viewModel.isMarketPriceAvailable {
+                    MarketPriceView(
+                        currencySymbol: viewModel.currencySymbol,
+                        price: viewModel.rateFormatted,
+                        priceChangeState: viewModel.priceChangeState,
+                        tapAction: nil
+                    )
+                }
+
                 TransactionsListView(
                     state: viewModel.transactionHistoryState,
                     exploreAction: viewModel.openExplorer,

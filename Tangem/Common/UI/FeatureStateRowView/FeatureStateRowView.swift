@@ -10,7 +10,13 @@ import Foundation
 import SwiftUI
 
 struct FeatureStateRowView: View {
-    let viewModel: FeatureStateRowViewModel
+    private let viewModel: FeatureStateRowViewModel
+    @State private var state: FeatureState
+
+    init(viewModel: FeatureStateRowViewModel) {
+        self.viewModel = viewModel
+        state = viewModel.state.value
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,7 +33,7 @@ struct FeatureStateRowView: View {
                 }
             }
 
-            Picker("", selection: viewModel.state) {
+            Picker("", selection: $state) {
                 ForEach(FeatureState.allCases) {
                     Text($0.name).tag($0)
                 }
@@ -36,6 +42,7 @@ struct FeatureStateRowView: View {
             .pickerStyle(.segmented)
         }
         .padding(.vertical, 12)
+        .connect(state: $state, to: viewModel.state)
     }
 }
 
@@ -47,7 +54,7 @@ struct FeatureStateRowView_Preview: PreviewProvider {
                 viewModel: FeatureStateRowViewModel(
                     feature: .exchange,
                     enabledByDefault: true,
-                    state: $state
+                    state: $state.asBindingValue
                 )
             )
         }

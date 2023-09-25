@@ -34,6 +34,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     private let tokenRouter: SingleTokenRoutable
 
     private var isSwapAvailable = false
+    private var percentFormatter = PercentFormatter()
     private var transactionHistoryBag: AnyCancellable?
     private var bag = Set<AnyCancellable>()
 
@@ -51,10 +52,30 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     var amountType: Amount.AmountType { walletModel.amountType }
 
+    var rateFormatted: String { walletModel.rateFormatted }
+
+    var priceChangeState: TokenPriceChangeView.State {
+        guard let quote = walletModel.quote else {
+            return .noData
+        }
+
+        let signType = ChangeSignType(from: quote.change)
+        let percent = percentFormatter.percentFormat(value: quote.change)
+        return .loaded(signType: signType, text: percent)
+    }
+
     var blockchain: Blockchain { blockchainNetwork.blockchain }
 
     var currencySymbol: String {
         amountType.token?.symbol ?? blockchainNetwork.blockchain.currencySymbol
+    }
+
+    var isMarketPriceAvailable: Bool {
+        if case .token(let token) = amountType {
+            return token.id != nil
+        } else {
+            return true
+        }
     }
 
     lazy var transactionHistoryMapper: TransactionHistoryMapper = .init(currencySymbol: currencySymbol, walletAddress: walletModel.defaultAddress)

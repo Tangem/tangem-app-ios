@@ -11,6 +11,7 @@ import SwiftUI
 
 struct SwappingFeeRowViewModel: Identifiable, Hashable {
     var id: Int { hashValue }
+
     private(set) var state: State
     let isShowingDisclaimer: BindingValue<Bool>
 

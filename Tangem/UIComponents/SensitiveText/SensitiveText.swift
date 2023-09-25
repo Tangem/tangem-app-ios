@@ -47,6 +47,6 @@ extension SensitiveText {
 
 extension SensitiveText {
     enum Constants {
-        static let maskedBalanceString: String = "***"
+        static let maskedBalanceString: String = "\u{2217}\u{2217}\u{2217}"
     }
 }

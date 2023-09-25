@@ -10,9 +10,11 @@ import SwiftUI
 
 struct SelectableSwappingFeeRowView: View {
     private let viewModel: SelectableSwappingFeeRowViewModel
+    @State private var isSelected: Bool
 
     init(viewModel: SelectableSwappingFeeRowViewModel) {
         self.viewModel = viewModel
+        isSelected = viewModel.isSelected.value
     }
 
     var body: some View {
@@ -28,8 +30,9 @@ struct SelectableSwappingFeeRowView: View {
         .padding(.vertical, 14)
         .background(Colors.Background.primary)
         .contentShape(Rectangle())
+        .connect(state: $isSelected, to: viewModel.isSelected)
         .onTapGesture {
-            viewModel.isSelected.toggle()
+            isSelected.toggle()
         }
     }
 
@@ -44,7 +47,7 @@ struct SelectableSwappingFeeRowView: View {
                 .renderingMode(.template)
                 .frame(width: 9, height: 9)
                 .foregroundColor(Colors.Icon.accent)
-                .opacity(viewModel.isSelected.value ? 1 : 0)
+                .opacity(isSelected ? 1 : 0)
         }
     }
 }

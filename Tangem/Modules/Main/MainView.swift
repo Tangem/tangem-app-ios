@@ -19,12 +19,14 @@ struct MainView: View {
             headerFactory: { info in
                 info.header
                     .contextMenu {
-                        Button(action: viewModel.didTapEditWallet, label: editButtonLabel)
+                        if !info.isLockedWallet {
+                            Button(action: viewModel.didTapEditWallet, label: editButtonLabel)
 
-                        if #available(iOS 15, *) {
-                            Button(role: .destructive, action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
-                        } else {
-                            Button(action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                            if #available(iOS 15, *) {
+                                Button(role: .destructive, action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                            } else {
+                                Button(action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                            }
                         }
                     }
             },

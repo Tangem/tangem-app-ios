@@ -8,6 +8,17 @@
 
 import SwiftUI
 
+/**
+ When we want to make a cell that has a `Binding View` like `Toggle`.
+
+ 1. Make `@State` inside the cell and work inside the cell only with it.
+ 2. Make `BindingValue<Bool>` inside the `ViewModel`
+ 3. Add `connect(state:to:)` method in the `View` and connect both `Binding`
+
+ Important !!!
+ DON'T add `@Published` to the `Bool` property in the `ScreenViewModel`.
+ It causes `objectWillChange` to be called and the animation  will be aborted.
+ */
 struct BindingValue<Value> {
     private let get: () -> Value
     private let set: (Value) -> Void
@@ -83,5 +94,22 @@ extension BindingValue {
 extension Binding {
     var asBindingValue: BindingValue<Value> {
         BindingValue(get: { wrappedValue }, set: { wrappedValue = $0 })
+    }
+}
+
+// MARK: - View+
+
+extension View {
+    func connect<V: Equatable>(state: Binding<V>, to binding: BindingValue<V>) -> some View {
+        onChange(of: binding.value) { [value = state.wrappedValue] newValue in
+            if value != newValue {
+                state.wrappedValue = newValue
+            }
+        }
+        .onChange(of: state.wrappedValue) { [value = binding.value] newValue in
+            if value != newValue {
+                binding.value = newValue
+            }
+        }
     }
 }

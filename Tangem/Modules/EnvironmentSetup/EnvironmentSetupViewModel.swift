@@ -40,7 +40,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
         appSettingsTogglesViewModels = [
             DefaultToggleRowViewModel(
                 title: "Use testnet",
-                isOn: Binding<Bool>(
+                isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
                     get: { $0.isTestnet },
@@ -49,7 +49,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
             ),
             DefaultToggleRowViewModel(
                 title: "Use dev API",
-                isOn: Binding<Bool>(
+                isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
                     get: { $0.useDevApi },
@@ -58,7 +58,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
             ),
             DefaultToggleRowViewModel(
                 title: "Use fake tx history",
-                isOn: Binding<Bool>(
+                isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
                     get: { $0.useFakeTxHistory },
@@ -71,7 +71,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
             FeatureStateRowViewModel(
                 feature: feature,
                 enabledByDefault: FeatureProvider.isAvailableForReleaseVersion(feature),
-                state: Binding<FeatureState>(
+                state: BindingValue<FeatureState>(
                     root: featureStorage,
                     default: .default,
                     get: { $0.availableFeatures[feature] ?? .default },

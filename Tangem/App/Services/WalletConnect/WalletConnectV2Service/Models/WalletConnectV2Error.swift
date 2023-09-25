@@ -27,6 +27,7 @@ enum WalletConnectV2Error: LocalizedError {
     case missingActiveUserWalletModel
     case userWalletRepositoryIsLocked
     case userWalletIsLocked
+    case pairClientError(String)
 
     case unknown(String)
 
@@ -50,6 +51,7 @@ enum WalletConnectV2Error: LocalizedError {
         case .missingActiveUserWalletModel: return 8016
         case .userWalletRepositoryIsLocked: return 8017
         case .userWalletIsLocked: return 8018
+        case .pairClientError: return 8019
 
         case .unknown: return 8999
         }
@@ -75,6 +77,8 @@ enum WalletConnectV2Error: LocalizedError {
             return Localization.walletConnectErrorTimeout
         case .unsupportedDApp:
             return Localization.walletConnectErrorUnsupportedDapp
+        case .pairClientError(let errorMessage):
+            return Localization.walletConnectPairingError(errorMessage)
         default:
             return Localization.walletConnectGenericErrorWithCode(code)
         }

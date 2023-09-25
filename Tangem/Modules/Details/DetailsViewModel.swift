@@ -175,7 +175,7 @@ extension DetailsViewModel {
     }
 
     func tryAgain() {
-        addNewUserWallet()
+        addOrScanNewUserWallet()
     }
 
     func requestSupport() {
@@ -202,6 +202,12 @@ extension DetailsViewModel {
             .dropFirst()
             .sink { [weak self] _ in
                 self?.setupSettingsSectionViewModels()
+            }
+            .store(in: &bag)
+
+        AppSettings.shared.$saveUserWallets
+            .sink { [weak self] _ in
+                self?.setupCommonSectionViewModels()
             }
             .store(in: &bag)
     }
@@ -271,7 +277,7 @@ extension DetailsViewModel {
             viewModels.append(DefaultRowViewModel(
                 title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton,
                 detailsType: isScanning ? .loader : .none,
-                action: isScanning ? nil : addNewUserWallet
+                action: isScanning ? nil : addOrScanNewUserWallet
             ))
         }
 
@@ -285,11 +291,11 @@ extension DetailsViewModel {
         commonSectionViewModels = viewModels
     }
 
-    func addNewUserWallet() {
+    func addOrScanNewUserWallet() {
         Analytics.beginLoggingCardScan(source: .myWalletsNewCard)
         isScanning = true
 
-        userWalletRepository.add { [weak self] result in
+        userWalletRepository.addOrScan { [weak self] result in
             guard let self else {
                 return
             }

@@ -219,6 +219,7 @@
 "manage_tokens_title" = "Coin market cap";
 "manage_tokens_unavailable_description" = "The selected token is currently unavailable for actions within the crypto wallet. But worry not, you can express your interest by upvoting it.";
 "manage_tokens_unavailable_vote" = "Upvote";
+"manage_tokens_wallet_selector_title" = "Choose wallet";
 "notification_title_not_enough_funds" = "Unable to cover %1$@ fee";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your wallets";
 "onboarding_access_code_feature_1_title" = "Protect";
@@ -501,6 +502,7 @@
 "wallet_connect_network_not_found_format" = "%@ network not found. Please, add it first and try again.";
 "wallet_connect_no_sessions_message" = "No opened WalletConnect sessions";
 "wallet_connect_no_sessions_title" = "Ooops. No Sessions.";
+"wallet_connect_pairing_error" = "Failed to pairing WalletConnect session: %1$@";
 "wallet_connect_paste_from_clipboard" = "Paste from clipboard";
 "wallet_connect_personal_sign_message" = "Message for %1$@:\n%2$@";
 "wallet_connect_request_session_start" = "Request to start a session for\n%1$@\n\nNETWORK: %2$@\n\nURL: %3$@";

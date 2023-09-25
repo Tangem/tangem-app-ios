@@ -103,46 +103,10 @@ struct MultiWalletMainContentView: View {
 
                 ForEach(section.items) { item in
                     TokenItemView(viewModel: item)
-                        .background(Colors.Background.primary)
-                        .onTapGesture(perform: item.tapAction)
-                        .highlightable(color: Colors.Button.primary.opacity(0.03))
-                        // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
-                        .previewContentShape(cornerRadius: Constants.cornerRadius)
-                        .contextMenu {
-                            ForEach(viewModel.contextActions(for: item), id: \.self) { menuAction in
-                                contextMenuButton(for: menuAction, tokenItem: item)
-                            }
-                        }
                 }
             }
         }
         .background(Colors.Background.primary)
-    }
-
-    @ViewBuilder
-    private func contextMenuButton(for actionType: TokenActionType, tokenItem: TokenItemViewModel) -> some View {
-        let action = { viewModel.didTapContextAction(actionType, for: tokenItem) }
-        if #available(iOS 15, *), actionType.isDestructive {
-            Button(
-                role: .destructive,
-                action: action,
-                label: {
-                    labelForContextButton(with: actionType)
-                }
-            )
-        } else {
-            Button(action: action, label: {
-                labelForContextButton(with: actionType)
-            })
-        }
-    }
-
-    private func labelForContextButton(with action: TokenActionType) -> some View {
-        HStack {
-            Text(action.title)
-            action.icon.image
-                .renderingMode(.template)
-        }
     }
 }
 

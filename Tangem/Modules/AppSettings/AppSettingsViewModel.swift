@@ -33,14 +33,12 @@ class AppSettingsViewModel: ObservableObject {
 
     private var isSavingWallet: Bool {
         didSet {
-            savingWalletViewModel?.update(isOn: isSavingWalletBinding())
             AppSettings.shared.saveUserWallets = isSavingWallet
         }
     }
 
     private var isSavingAccessCodes: Bool {
         didSet {
-            savingAccessCodesViewModel?.update(isOn: isSavingAccessCodesBinding())
             AppSettings.shared.saveAccessCodes = isSavingAccessCodes
         }
     }
@@ -153,8 +151,8 @@ private extension AppSettingsViewModel {
         )
     }
 
-    func isSavingWalletBinding() -> Binding<Bool> {
-        Binding<Bool>(
+    func isSavingWalletBinding() -> BindingValue<Bool> {
+        BindingValue<Bool>(
             root: self,
             default: false,
             get: { $0.isSavingWallet },
@@ -165,8 +163,8 @@ private extension AppSettingsViewModel {
         )
     }
 
-    func isSavingAccessCodesBinding() -> Binding<Bool> {
-        Binding<Bool>(
+    func isSavingAccessCodesBinding() -> BindingValue<Bool> {
+        BindingValue<Bool>(
             root: self,
             default: false,
             get: { $0.isSavingAccessCodes },

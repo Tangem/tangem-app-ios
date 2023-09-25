@@ -11,6 +11,14 @@ import BlockchainSdk
 
 typealias WalletModelId = Int
 
+protocol TokenItemContextActionsProvider: AnyObject {
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenActionType]
+}
+
+protocol TokenItemContextActionDelegate: AnyObject {
+    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel)
+}
+
 final class TokenItemViewModel: ObservableObject, Identifiable {
     let id: WalletModelId
 
@@ -18,6 +26,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var balanceFiat: LoadableTextView.State = .loading
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var hasPendingTransactions: Bool = false
+    @Published var contextActions: [TokenActionType] = []
 
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
@@ -27,6 +36,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
     var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation || isTestnetToken }
     var isCustom: Bool { tokenIcon.isCustom }
+    var tokenItem: TokenItem { infoProvider.tokenItem }
 
     var hasError: Bool { missingDerivation || networkUnreachable }
     var errorMessage: String? {
@@ -49,25 +59,35 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
     private var percentFormatter = PercentFormatter()
     private var bag = Set<AnyCancellable>()
+    private weak var contextActionsProvider: TokenItemContextActionsProvider?
+    private weak var contextActionsDelegate: TokenItemContextActionDelegate?
 
     init(
         id: Int,
         tokenIcon: TokenIconInfo,
         isTestnetToken: Bool,
         infoProvider: TokenItemInfoProvider,
-        tokenTapped: @escaping (WalletModelId) -> Void
+        tokenTapped: @escaping (WalletModelId) -> Void,
+        contextActionsProvider: TokenItemContextActionsProvider,
+        contextActionsDelegate: TokenItemContextActionDelegate
     ) {
         self.id = id
         self.tokenIcon = tokenIcon
         self.isTestnetToken = isTestnetToken
         self.infoProvider = infoProvider
         self.tokenTapped = tokenTapped
+        self.contextActionsProvider = contextActionsProvider
+        self.contextActionsDelegate = contextActionsDelegate
 
         bind()
     }
 
     func tapAction() {
         tokenTapped(id)
+    }
+
+    func didTapContextAction(_ actionType: TokenActionType) {
+        contextActionsDelegate?.didTapContextAction(actionType, for: self)
     }
 
     private func bind() {
@@ -98,6 +118,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
                 }
 
                 updatePendingTransactionsStateIfNeeded()
+                buildContextActions()
             }
             .store(in: &bag)
     }
@@ -121,5 +142,9 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         let percent = percentFormatter.percentFormat(value: quote.change)
         priceChangeState = .loaded(signType: signType, text: percent)
+    }
+
+    private func buildContextActions() {
+        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
     }
 }
