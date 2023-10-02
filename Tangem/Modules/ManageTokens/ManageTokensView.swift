@@ -41,6 +41,12 @@ struct ManageTokensView: View {
                         .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
+                // Custom token list
+                ForEach(viewModel.customTokenViewModels) {
+                    ManageTokensCustomItemView(viewModel: $0)
+                }
+
+                // Native token list
                 ForEach(viewModel.tokenViewModels) {
                     ManageTokensItemView(viewModel: $0)
                 }

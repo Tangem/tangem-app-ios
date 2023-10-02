@@ -19,6 +19,7 @@ final class ManageTokensViewModel: ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
     var enteredSearchText = CurrentValueSubject<String, Never>("")
 
+    @Published var customTokenViewModels: [ManageTokensCustomItemViewModel] = []
     @Published var tokenViewModels: [ManageTokensItemViewModel] = []
     @Published var isLoading: Bool = true
     @Published var alert: AlertBinder?
@@ -51,12 +52,35 @@ final class ManageTokensViewModel: ObservableObject {
     func onAppear() {
         Analytics.log(.manageTokensScreenOpened)
         loader.reset(enteredSearchText.value)
+        fetchCustomTokenList()
     }
 
     func onDisappear() {
         DispatchQueue.main.async {
             self.enteredSearchText.value = ""
         }
+    }
+
+    func fetchCustomTokenList() {
+        let storageConverter = StorageEntryConverter()
+
+        let customEntriesList = userWalletRepository.models
+            .map { $0.userTokenListManager }
+            .flatMap { userTokenListManager in
+                userTokenListManager.userTokensList.entries.filter { $0.isCustom }
+            }
+
+        let customTokenItemList = customEntriesList.map {
+            let blockchain = $0.blockchainNetwork.blockchain
+
+            guard let token = storageConverter.convertToToken($0) else {
+                return TokenItem.blockchain(blockchain)
+            }
+
+            return TokenItem.token(token, blockchain)
+        }
+
+        customTokenViewModels = mapToCustomTokenViewModel(tokenItems: customTokenItemList)
     }
 
     func fetch() {
@@ -141,6 +165,12 @@ private extension ManageTokensViewModel {
         return isAlreadyExistToken ? .edit : .add
     }
 
+    private func mapToCustomTokenViewModel(tokenItems: [TokenItem]) -> [ManageTokensCustomItemViewModel] {
+        tokenItems.map {
+            ManageTokensCustomItemViewModel(tokenItem: $0, didTapAction: handleEditActioCustom)
+        }
+    }
+
     private func mapToTokenViewModel(coinModel: CoinModel) -> ManageTokensItemViewModel {
         ManageTokensItemViewModel(
             coinModel: coinModel,
@@ -163,5 +193,9 @@ private extension ManageTokensViewModel {
         case .add, .edit:
             coordinator.openTokenSelectorModule(with: coinModel.items)
         }
+    }
+
+    private func handleEditActioCustom(tokenItem: TokenItem) {
+        print(tokenItem)
     }
 }
