@@ -520,8 +520,7 @@ extension LegacyTokenDetailsViewModel {
             return
         }
 
-        guard FeatureProvider.isAvailable(.exchange),
-              let walletModel = walletModel,
+        guard let walletModel = walletModel,
               let source = sourceCurrency,
               let ethereumNetworkProvider = walletModel.ethereumNetworkProvider,
               let ethereumTransactionProcessor = walletModel.ethereumTransactionProcessor

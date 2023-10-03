@@ -52,7 +52,7 @@ struct FeatureStateRowView_Preview: PreviewProvider {
         var body: some View {
             FeatureStateRowView(
                 viewModel: FeatureStateRowViewModel(
-                    feature: .exchange,
+                    feature: .disableFirmwareVersionLimit,
                     enabledByDefault: true,
                     state: $state.asBindingValue
                 )

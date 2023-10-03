@@ -25,11 +25,6 @@ struct SwappingAvailableUtils {
     ]
 
     func canSwap(amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
-        // Checking that toggle is on
-        guard FeatureProvider.isAvailable(.exchange) else {
-            return false
-        }
-
         guard let blockchain = makeSwappingBlockchain(from: blockchain) else {
             return false
         }
@@ -46,10 +41,8 @@ struct SwappingAvailableUtils {
     }
 
     func canSwapPublisher(amountType: Amount.AmountType, blockchain: Blockchain) -> AnyPublisher<Bool, Error> {
-        guard
-            FeatureProvider.isAvailable(.exchange),
-            let swapBlockchain = makeSwappingBlockchain(from: blockchain),
-            supportedBlockchains.contains(swapBlockchain)
+        guard let swapBlockchain = makeSwappingBlockchain(from: blockchain),
+              supportedBlockchains.contains(swapBlockchain)
         else {
             return .justWithError(output: false)
         }

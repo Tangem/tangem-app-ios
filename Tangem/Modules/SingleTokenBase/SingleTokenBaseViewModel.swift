@@ -189,9 +189,8 @@ extension SingleTokenBaseViewModel {
 
     private func setupActionButtons() {
         let listBuilder = TokenActionListBuilder()
-        let isSwapFeatureAvailable = FeatureProvider.isAvailable(.exchange)
         let canShowSwap = userWalletModel.config.hasFeature(.swapping)
-        availableActions = listBuilder.buildActionsForButtonsList(canShowSwap: canShowSwap && isSwapFeatureAvailable)
+        availableActions = listBuilder.buildActionsForButtonsList(canShowSwap: canShowSwap)
     }
 
     private func bind() {

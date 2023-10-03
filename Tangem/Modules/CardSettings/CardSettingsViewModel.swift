@@ -145,7 +145,7 @@ private extension CardSettingsViewModel {
     }
 
     func setupAccessCodeRecoveryModel(enabled: Bool) {
-        if cardModel.canChangeAccessCodeRecoverySettings, FeatureProvider.isAvailable(.accessCodeRecoverySettings) {
+        if cardModel.canChangeAccessCodeRecoverySettings {
             accessCodeRecoverySection = DefaultRowViewModel(
                 title: Localization.cardSettingsAccessCodeRecoveryTitle,
                 detailsType: .text(enabled ? Localization.commonEnabled : Localization.commonDisabled),

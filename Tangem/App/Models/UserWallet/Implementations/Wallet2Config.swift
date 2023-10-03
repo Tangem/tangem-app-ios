@@ -59,7 +59,7 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var canImportKeys: Bool {
-        card.settings.isKeysImportAllowed && FeatureProvider.isAvailable(.importSeedPhrase)
+        card.settings.isKeysImportAllowed
     }
 
     var supportedBlockchains: Set<Blockchain> {
