@@ -20,6 +20,6 @@ struct UserWalletListSeparatorView: View {
 
     @ViewBuilder
     private func separatorInternal() -> some View {
-        Separator(height: 0.5, padding: 0, color: Colors.Stroke.primary)
+        Separator(height: .minimal, color: Colors.Stroke.primary)
     }
 }

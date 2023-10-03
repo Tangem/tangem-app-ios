@@ -71,6 +71,7 @@ struct SwappingTokenListView: View {
 
                 if items.last?.id != item.id {
                     Separator(color: Colors.Stroke.primary)
+                        .padding(.vertical, 4)
                         .padding(.leading, separatorInset)
                 }
             }

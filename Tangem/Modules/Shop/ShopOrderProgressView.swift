@@ -13,7 +13,7 @@ struct ShopOrderProgressView: View {
     // activity indicator that will appear on the Order webview that will be opened
     // after this view
     var body: some View {
-        Color.white
+        Colors.Background.primary
             .overlay(
                 VStack {
                     SheetDragHandler()

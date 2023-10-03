@@ -39,17 +39,9 @@ extension ManageTokensCoordinator {
 }
 
 extension ManageTokensCoordinator: ManageTokensRoutable {
-    func openTokenSelectorModule(with tokenItems: [TokenItem]) {
+    func openTokenSelector(with tokenItems: [TokenItem]) {
         let coordinator = ManageTokensNetworkSelectorCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .init(tokenItems: tokenItems))
         networkSelectorCoordinator = coordinator
-    }
-}
-
-// MARK: - LegacyAddCustomTokenRoutable
-
-extension ManageTokensCoordinator: LegacyAddCustomTokenRoutable {
-    func closeModule() {
-        dismiss()
     }
 }

@@ -55,7 +55,7 @@ struct ShopView: View {
                 }
             }
         }
-        .background(Color(UIColor.tangemBgGray).edgesIgnoringSafeArea(.all))
+        .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .onAppear(perform: viewModel.didAppear)
         .alert(item: $viewModel.error) { $0.alert }
     }
@@ -65,7 +65,7 @@ struct ShopView: View {
         let secondCardOffset = 12.0
         let thirdCardOffset = 22.0
 
-        Assets.Onboarding.walletCard.image
+        Assets.Shop.card.image
             .resizable()
             .aspectRatio(contentMode: .fit)
             .background(
@@ -99,6 +99,9 @@ struct ShopView: View {
         VStack(spacing: 0) {
             HStack {
                 Assets.Shop.ticket.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.primary1)
+
                 TextField(Localization.shopIHaveAPromoCode, text: $viewModel.discountCode) { editing in
                     if !editing {
                         viewModel.didEnterDiscountCode()
@@ -114,7 +117,7 @@ struct ShopView: View {
             .padding(.horizontal)
             .padding(.vertical, sectionRowVerticalPadding)
 
-            Separator(height: 0.5, padding: 0)
+            Separator(height: .minimal, color: Color.tangemGrayLight5)
 
             HStack {
                 Text(Localization.shopTotal)
@@ -140,7 +143,7 @@ struct ShopView: View {
             .padding(.horizontal)
             .padding(.vertical, sectionRowVerticalPadding)
         }
-        .background(Color.white.cornerRadius(sectionCornerRadius))
+        .background(Colors.Background.action.cornerRadius(sectionCornerRadius))
         .padding(.bottom, 8)
 
         if let notification = viewModel.orderNotification {
@@ -151,7 +154,7 @@ struct ShopView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }
-            .background(Color.white.cornerRadius(sectionCornerRadius))
+            .background(Colors.Background.action.cornerRadius(sectionCornerRadius))
             .padding(.bottom, 8)
         }
     }

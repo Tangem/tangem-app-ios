@@ -42,9 +42,9 @@ enum Feature: String, Hashable, CaseIterable {
         case .accessCodeRecoverySettings: return .version("4.10")
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .tokenDetailsV2: return .unspecified
+        case .tokenDetailsV2: return .version("5.0")
         case .enableBlockchainSdkEvents: return .unspecified
-        case .mainV2: return .unspecified
+        case .mainV2: return .version("5.0")
         case .sendV2: return .unspecified
         case .manageTokens: return .unspecified
         }

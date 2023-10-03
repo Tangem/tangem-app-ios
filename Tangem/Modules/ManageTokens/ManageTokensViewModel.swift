@@ -38,11 +38,13 @@ final class ManageTokensViewModel: ObservableObject {
     private let balanceFormatter = BalanceFormatter()
     private var bag = Set<AnyCancellable>()
     private var loadQuotesSubscribtion: AnyCancellable?
+    private var cacheExistTokenUserList: [TokenItem] = []
 
     init(coordinator: ManageTokensRoutable) {
         self.coordinator = coordinator
 
         bind()
+        fetchAlreadyExistTokenUserList()
     }
 
     func tokenListDidSave() {
@@ -85,6 +87,28 @@ final class ManageTokensViewModel: ObservableObject {
 
     func fetch() {
         loader.fetch(enteredSearchText.value)
+    }
+
+    func fetchAlreadyExistTokenUserList() {
+        let storageConverter = StorageEntryConverter()
+
+        let customEntriesList = userWalletRepository.models
+            .map { $0.userTokenListManager }
+            .flatMap { userTokenListManager in
+                userTokenListManager.userTokensList.entries
+            }
+
+        let tokenItemList = customEntriesList.map {
+            let blockchain = $0.blockchainNetwork.blockchain
+
+            guard let token = storageConverter.convertToToken($0) else {
+                return TokenItem.blockchain(blockchain)
+            }
+
+            return TokenItem.token(token, blockchain)
+        }
+
+        cacheExistTokenUserList = tokenItemList
     }
 }
 
@@ -153,13 +177,8 @@ private extension ManageTokensViewModel {
     }
 
     private func actionType(for coinModel: CoinModel) -> ManageTokensItemViewModel.Action {
-        let userWalletModels = userWalletRepository.models
-
-        let isAlreadyExistToken = userWalletModels.contains(where: { userWalletModel in
-            coinModel.items.contains(where: { tokenItem in
-                userWalletModel.userTokensManager.contains(tokenItem, derivationPath: nil)
-
-            })
+        let isAlreadyExistToken = coinModel.items.contains(where: { tokenItem in
+            cacheExistTokenUserList.contains(tokenItem)
         })
 
         return isAlreadyExistToken ? .edit : .add
@@ -191,7 +210,7 @@ private extension ManageTokensViewModel {
             // TODO: - Set need display alert for setup raiting voice user
             break
         case .add, .edit:
-            coordinator.openTokenSelectorModule(with: coinModel.items)
+            coordinator.openTokenSelector(with: coinModel.items)
         }
     }
 

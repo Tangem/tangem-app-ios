@@ -72,7 +72,7 @@ struct LegacyMultiWalletContentView: View {
                         .disabled(item.state == .noDerivation)
 
                         if viewModels.last != item {
-                            Separator(height: 1, padding: 0, color: .tangemBgGray2)
+                            Separator(height: .exact(1), color: .tangemBgGray2)
                                 .padding(.leading, 68)
                         }
                     }

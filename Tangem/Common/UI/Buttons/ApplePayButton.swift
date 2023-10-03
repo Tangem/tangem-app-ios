@@ -13,7 +13,7 @@ struct ApplePayButton: UIViewRepresentable {
     let action: () -> Void
 
     func makeUIView(context: Context) -> some UIView {
-        let button = PKPaymentButton(paymentButtonType: type, paymentButtonStyle: .black)
+        let button = PKPaymentButton(paymentButtonType: type, paymentButtonStyle: .automatic)
         button.addTarget(
             context.coordinator,
             action: #selector(Coordinator.didTapButton),

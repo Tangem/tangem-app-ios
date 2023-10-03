@@ -22,7 +22,8 @@ struct FilledInputView: View {
             Text(text)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(.tangemGrayDark6)
-            Separator()
+            Separator(color: Color.tangemGrayLight5)
+                .padding(.vertical, 4)
         }
     }
 }
@@ -75,7 +76,8 @@ struct PushTxView: View {
                     }
                     .padding(.top, 15)
 
-                    Separator()
+                    Separator(color: Color.tangemGrayLight5)
+                        .padding(.vertical, 4)
                     HStack {
                         Spacer()
                         SensitiveText(
@@ -131,7 +133,8 @@ struct PushTxView: View {
                             isLoading: viewModel.isFeeLoading,
                             amountText: viewModel.additionalFee
                         )
-                        Separator()
+                        Separator(color: Color.tangemGrayLight5)
+                            .padding(.vertical, 4)
 
                         AmountView(
                             label: Localization.sendTotalLabel,
