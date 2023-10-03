@@ -45,6 +45,7 @@ final class ManageTokensViewModel: ObservableObject {
 
         bind()
         fetchAlreadyExistTokenUserList()
+        fillCustomTokenList()
     }
 
     func tokenListDidSave() {
@@ -54,39 +55,12 @@ final class ManageTokensViewModel: ObservableObject {
     func onAppear() {
         Analytics.log(.manageTokensScreenOpened)
         loader.reset(enteredSearchText.value)
-        fetchCustomTokenList()
     }
 
     func onDisappear() {
         DispatchQueue.main.async {
             self.enteredSearchText.value = ""
         }
-    }
-
-    func fetchCustomTokenList() {
-        let storageConverter = StorageEntryConverter()
-
-        let customEntriesList = userWalletRepository.models
-            .map { $0.userTokenListManager }
-            .flatMap { userTokenListManager in
-                userTokenListManager.userTokensList.entries.filter { $0.isCustom }
-            }
-
-        let customTokenItemList = customEntriesList.map {
-            let blockchain = $0.blockchainNetwork.blockchain
-
-            guard let token = storageConverter.convertToToken($0) else {
-                return TokenItem.blockchain(blockchain)
-            }
-
-            return TokenItem.token(token, blockchain)
-        }
-
-        customTokenViewModels = mapToCustomTokenViewModel(tokenItems: customTokenItemList)
-    }
-
-    func fetch() {
-        loader.fetch(enteredSearchText.value)
     }
 
     func fetchAlreadyExistTokenUserList() {
@@ -109,6 +83,10 @@ final class ManageTokensViewModel: ObservableObject {
         }
 
         cacheExistTokenUserList = tokenItemList
+    }
+
+    func fetch() {
+        loader.fetch(enteredSearchText.value)
     }
 }
 
@@ -165,6 +143,11 @@ private extension ManageTokensViewModel {
     }
 
     // MARK: - Private Implementation
+
+    private func fillCustomTokenList() {
+        let customTokenUserList = cacheExistTokenUserList.filter { $0.token?.isCustom == true }
+        customTokenViewModels = mapToCustomTokenViewModel(tokenItems: customTokenUserList)
+    }
 
     private func displayAlert(title: String, message: String) {
         let okButton = Alert.Button.default(Text(Localization.commonOk))
