@@ -119,10 +119,18 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
+        if isRing {
+            return .ring
+        }
+
+        return card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
     }
 
     var cardHeaderImage: ImageType? {
+        if isRing {
+            return nil
+        }
+
         switch card.batchId {
         // Shiba cards
         case "AF02", "AF03":

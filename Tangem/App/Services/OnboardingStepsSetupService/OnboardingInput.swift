@@ -70,6 +70,18 @@ extension OnboardingInput {
             }
         }
 
+        var isRing: Bool {
+            switch self {
+            case .cardInfo(let cardInfo):
+                let factory = UserWalletConfigFactory(cardInfo)
+                return factory.makeConfig().isRing
+            case .cardModel(let cardModel):
+                return cardModel.config.isRing
+            case .cardId:
+                return false
+            }
+        }
+
         var cardId: String {
             switch self {
             case .cardInfo(let cardInfo):

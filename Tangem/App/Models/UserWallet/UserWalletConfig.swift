@@ -52,6 +52,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var cardHeaderImage: ImageType? { get }
 
+    var isRing: Bool { get }
+
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability
 
     func makeWalletModelsFactory() -> WalletModelsFactory
@@ -116,6 +118,10 @@ protocol CardContainer {
 }
 
 extension UserWalletConfig where Self: CardContainer {
+    var isRing: Bool {
+        card.batchId == "AC17"
+    }
+
     func makeTangemSdk() -> TangemSdk {
         let factory = GenericTangemSdkFactory(isAccessCodeSet: card.isAccessCodeSet)
         return factory.makeTangemSdk()

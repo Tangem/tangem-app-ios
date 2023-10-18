@@ -52,16 +52,9 @@ enum WalletOnboardingStep: Equatable {
         case .disclaimer, .success, .backupCards:
             return .zero
         default:
-            let cardFrame = WalletOnboardingCardLayout.origin.frame(for: self, containerSize: containerSize)
+            let cardFrame = WalletOnboardingCardLayout.origin.frame(for: .createWallet, containerSize: containerSize)
             let diameter = cardFrame.height * 1.242
             return .init(width: diameter, height: diameter)
-        }
-    }
-
-    func cardBackgroundCornerRadius(containerSize: CGSize) -> CGFloat {
-        switch self {
-        case .disclaimer, .success, .backupCards: return 0
-        default: return cardBackgroundFrame(containerSize: containerSize).height / 2
         }
     }
 

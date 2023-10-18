@@ -27,6 +27,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     @Published var isNavBarVisible: Bool = false
     @Published var alert: AlertBinder?
     @Published var cardImage: Image?
+    @Published var ringImage: Image?
     @Published var secondImage: Image?
 
     private var confettiFired: Bool = false

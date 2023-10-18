@@ -323,6 +323,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             canDisplayCardImage = true
         }
 
+        if input.cardInput.isRing {
+            ringImage = Assets.ring.image
+        }
+
         bind()
     }
 
@@ -410,7 +414,17 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     override func goToNextStep() {
         switch currentStep {
         case .createWallet, .createWalletSelector, .seedPhraseUserValidation, .seedPhraseImport:
-            goToStep(.backupIntro)
+            if let backupIntroStepIndex = steps.firstIndex(of: .backupIntro) {
+                let canSkipBackup = cardModel?.canSkipBackup ?? true
+                if canSkipBackup {
+                    goToStep(with: backupIntroStepIndex)
+                } else {
+                    goToStep(with: backupIntroStepIndex + 1)
+                }
+            } else {
+                // impossible case
+                super.goToNextStep()
+            }
         default:
             super.goToNextStep()
         }

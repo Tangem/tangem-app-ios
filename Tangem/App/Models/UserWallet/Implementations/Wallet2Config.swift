@@ -141,11 +141,19 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        .wallet2
+        if isRing {
+            return .ring
+        }
+
+        return .wallet2
     }
 
     var cardHeaderImage: ImageType? {
-        cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
+        if isRing {
+            return nil
+        }
+
+        return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
