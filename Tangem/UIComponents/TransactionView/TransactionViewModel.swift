@@ -42,12 +42,7 @@ struct TransactionViewModel: Hashable, Identifiable {
     }
 
     var subtitleText: String {
-        switch status {
-        case .confirmed, .failed:
-            return timeFormatted ?? "-"
-        case .inProgress:
-            return Localization.transactionHistoryTxInProgress
-        }
+        return timeFormatted ?? "-"
     }
 
     var formattedAmount: String? {
