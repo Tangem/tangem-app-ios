@@ -327,7 +327,7 @@
 "registration_task_alert_message" = "Please hold the card until the operation complete";
 "reset_card_to_factory_button_title" = "Reset the Card";
 "reset_card_to_factory_condition_1" = "I understand that after performing this action, I will no longer have access to the current wallet";
-"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards.";
+"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards of the current wallet";
 "reset_card_with_backup_to_factory_message" = "Factory Reset will completely delete the wallet from the selected card. You will not be able to restore the current wallet or use the card to recover the access code.";
 "reset_card_without_backup_to_factory_message" = "Factory Reset will completely delete the wallet from the selected card and remove it from the app. You will not be able to restore the current wallet.";
 "russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";

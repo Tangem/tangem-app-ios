@@ -328,7 +328,7 @@
 "registration_task_alert_message" = "請持有卡片直至操作完成";
 "reset_card_to_factory_button_title" = "重置卡片";
 "reset_card_to_factory_condition_1" = "我了解執行此操作後，我將無法再訪問當前錢包";
-"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards.";
+"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards of the current wallet";
 "reset_card_with_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包。您將無法恢復當前錢包或使用卡恢復訪問密碼";
 "reset_card_without_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包並將其從應用程序中刪除。您將無法恢復當前錢包";
 "russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";
