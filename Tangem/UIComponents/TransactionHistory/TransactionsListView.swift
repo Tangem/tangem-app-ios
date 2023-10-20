@@ -62,7 +62,8 @@ struct TransactionsListView: View {
     private var notSupportedContent: some View {
         VStack(spacing: 20) {
             Assets.compassBig.image
-                .foregroundColor(Colors.Icon.informative)
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.inactive)
 
             Text(Localization.transactionHistoryNotSupportedDescription)
                 .multilineTextAlignment(.center)
@@ -97,10 +98,10 @@ struct TransactionsListView: View {
         VStack(spacing: 20) {
             Assets.emptyHistory.image
                 .renderingMode(.template)
-                .foregroundColor(Colors.Icon.informative)
+                .foregroundColor(Colors.Icon.inactive)
 
             Text(Localization.transactionHistoryEmptyTransactions)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
         }
         .padding(.vertical, 28)
     }
@@ -109,7 +110,8 @@ struct TransactionsListView: View {
     private var errorContent: some View {
         VStack(spacing: 20) {
             Assets.fileExclamationMark.image
-                .foregroundColor(Colors.Icon.informative)
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.inactive)
 
             Text(Localization.transactionHistoryErrorFailedToLoad)
                 .multilineTextAlignment(.center)

@@ -21,4 +21,6 @@ enum AppConstants {
     static let maximumFractionDigitsForBalance = 8
 
     static let defaultScrollViewKeyboardDismissMode = UIScrollView.KeyboardDismissMode.onDrag
+
+    static let minusSign = "−"
 }

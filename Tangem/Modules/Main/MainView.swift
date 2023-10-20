@@ -81,7 +81,6 @@ struct MainView: View {
     var detailsNavigationButton: some View {
         Button(action: viewModel.openDetails) {
             NavbarDotsImage()
-                .offset(x: 10)
         }
         .buttonStyle(PlainButtonStyle())
         .animation(nil)
