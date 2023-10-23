@@ -609,7 +609,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             setupCardsSettings(animated: true, isContainerSetup: false)
         case .backupCards:
             if backupServiceState == .finished {
-                Analytics.log(event: .backupFinished, params: [.cardsCount: String(backupService.addedBackupCardsCount)])
+                Analytics.log(
+                    event: .backupFinished,
+                    params: [.cardsCount: String((cardModel?.card.backupStatus?.linkedCardsCount ?? 0) + 1)]
+                )
                 goToNextStep()
             } else {
                 setupCardsSettings(animated: true, isContainerSetup: false)
