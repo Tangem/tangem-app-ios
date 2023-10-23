@@ -48,7 +48,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
             tokenItem.networkName
         )
 
-        isUserUnderstandsAddressNetworkRequirements = AppSettings.shared.understandsAddressNetworkRequirements.contains(tokenItem.networkName)
+        isUserUnderstandsAddressNetworkRequirements = true
 
         bind()
     }

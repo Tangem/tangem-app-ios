@@ -59,17 +59,19 @@ struct ResetToFactoryView: View {
 
     private var warningPointsView: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            firstWarning
+            accessToCardWarningMessage
 
-            Spacer(minLength: 16).frame(maxHeight: 24)
+            if viewModel.hasBackupCards {
+                Spacer(minLength: 16).frame(maxHeight: 24)
 
-            secondWarning
+                recoverBackupWarningMessage
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 16)
     }
 
-    private var firstWarning: some View {
+    private var accessToCardWarningMessage: some View {
         Button(action: { viewModel.accessToCardWarningSelected.toggle() }) {
             HStack(spacing: 16) {
                 SelectableIcon(isSelected: $viewModel.accessToCardWarningSelected)
@@ -81,7 +83,7 @@ struct ResetToFactoryView: View {
         .buttonStyle(PlainButtonStyle())
     }
 
-    private var secondWarning: some View {
+    private var recoverBackupWarningMessage: some View {
         Button(action: { viewModel.accessCodeRecoveryWarningSelected.toggle() }) {
             HStack(spacing: 16) {
                 SelectableIcon(isSelected: $viewModel.accessCodeRecoveryWarningSelected)

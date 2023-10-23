@@ -58,7 +58,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .longTransaction:
             return Localization.warningLongTransactionTitle
         case .hasPendingTransactions:
-            return Localization.walletBalanceTxInProgress
+            return Localization.warningSendBlockedPendingTransactionsTitle
         case .notEnoughtFeeForTokenTx(_, _, let blockchainName, _):
             return Localization.warningSendBlockedFundsForFeeTitle(blockchainName)
         }

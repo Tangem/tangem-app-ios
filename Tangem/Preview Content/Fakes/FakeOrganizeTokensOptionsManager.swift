@@ -1,5 +1,5 @@
 //
-//  OrganizeTokensOptionsManagerStub.swift
+//  FakeOrganizeTokensOptionsManager.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 06.08.2023.
@@ -9,14 +9,22 @@
 import Foundation
 import Combine
 
-final class OrganizeTokensOptionsManagerStub {
-    private let _groupingOption = PassthroughSubject<UserTokensReorderingOptions.Grouping, Never>()
-    private let _sortingOption = PassthroughSubject<UserTokensReorderingOptions.Sorting, Never>()
+final class FakeOrganizeTokensOptionsManager {
+    private let _groupingOption: CurrentValueSubject<UserTokensReorderingOptions.Grouping, Never>
+    private let _sortingOption: CurrentValueSubject<UserTokensReorderingOptions.Sorting, Never>
+
+    init(
+        initialGroupingOption groupingOption: UserTokensReorderingOptions.Grouping,
+        initialSortingOption sortingOption: UserTokensReorderingOptions.Sorting
+    ) {
+        _groupingOption = .init(groupingOption)
+        _sortingOption = .init(sortingOption)
+    }
 }
 
 // MARK: - OrganizeTokensOptionsProviding protocol conformance
 
-extension OrganizeTokensOptionsManagerStub: OrganizeTokensOptionsProviding {
+extension FakeOrganizeTokensOptionsManager: OrganizeTokensOptionsProviding {
     var groupingOption: AnyPublisher<UserTokensReorderingOptions.Grouping, Never> {
         return _groupingOption.eraseToAnyPublisher()
     }
@@ -28,7 +36,7 @@ extension OrganizeTokensOptionsManagerStub: OrganizeTokensOptionsProviding {
 
 // MARK: - OrganizeTokensOptionsEditing protocol conformance
 
-extension OrganizeTokensOptionsManagerStub: OrganizeTokensOptionsEditing {
+extension FakeOrganizeTokensOptionsManager: OrganizeTokensOptionsEditing {
     func group(by groupingOption: UserTokensReorderingOptions.Grouping) {
         _groupingOption.send(groupingOption)
     }

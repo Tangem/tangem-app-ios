@@ -43,6 +43,10 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         tokenItem.token?.customTokenColor
     }
 
+    var canHideToken: Bool {
+        userWalletModel.userTokensManager.canRemove(tokenItem, derivationPath: blockchainNetwork.derivationPath)
+    }
+
     init(
         cardModel: CardViewModel,
         walletModel: WalletModel,

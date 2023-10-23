@@ -42,19 +42,14 @@ struct TransactionViewModel: Hashable, Identifiable {
     }
 
     var subtitleText: String {
-        switch status {
-        case .confirmed, .failed:
-            return timeFormatted ?? "-"
-        case .inProgress:
-            return Localization.transactionHistoryTxInProgress
-        }
+        return timeFormatted ?? "-"
     }
 
     var formattedAmount: String? {
         switch transactionType {
         case .approval:
             return nil
-        case .transfer, .swap, .custom:
+        case .transfer, .swap, .operation:
             return amount
         }
     }
@@ -95,7 +90,7 @@ struct TransactionViewModel: Hashable, Identifiable {
         case .transfer: return Localization.commonTransfer
         case .swap: return Localization.commonSwap
         case .approval: return Localization.commonApproval
-        case .custom(name: let name): return name.capitalized
+        case .operation(name: let name): return name
         }
     }
 
@@ -111,7 +106,8 @@ struct TransactionViewModel: Hashable, Identifiable {
             return Assets.exchangeMini.image
         case .approval:
             return Assets.approve.image
-        case .custom:
+        case .operation:
+            // TODO: Updated in https://tangem.atlassian.net/browse/IOS-4836
             return Assets.exchangeMini.image
         }
     }
@@ -147,7 +143,7 @@ extension TransactionViewModel {
         case transfer
         case swap
         case approval
-        case custom(name: String)
+        case operation(name: String)
     }
 
     enum Status {

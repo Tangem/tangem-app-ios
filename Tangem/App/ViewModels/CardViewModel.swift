@@ -24,6 +24,7 @@ class CardViewModel: Identifiable, ObservableObject {
     var userTokensManager: UserTokensManager { _userTokensManager }
 
     private lazy var _userTokensManager = CommonUserTokensManager(
+        persistentTokenItems: config.persistentBlockchains.map { StorageEntryConverter().convertToTokenItems($0) } ?? [],
         userTokenListManager: userTokenListManager,
         walletModelsManager: walletModelsManager,
         derivationStyle: config.derivationStyle,

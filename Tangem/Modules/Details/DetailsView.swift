@@ -59,10 +59,6 @@ struct DetailsView: View {
     private var settingsSection: some View {
         GroupedSection(viewModel.settingsSectionViewModels) {
             DefaultRowView(viewModel: $0)
-        } footer: {
-            if viewModel.canCreateBackup {
-                DefaultFooterView(Localization.detailsRowTitleCreateBackupFooter)
-            }
         }
     }
 
@@ -83,6 +79,10 @@ struct DetailsView: View {
     private var commonSection: some View {
         GroupedSection(viewModel.commonSectionViewModels) {
             DefaultRowView(viewModel: $0)
+        } footer: {
+            if viewModel.canCreateBackup {
+                DefaultFooterView(Localization.detailsRowTitleCreateBackupFooter)
+            }
         }
     }
 

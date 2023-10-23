@@ -90,23 +90,47 @@ private extension OrganizeTokensListItemView {
 // MARK: - Previews
 
 struct OrganizeTokensListItemView_Previews: PreviewProvider {
-    private static let previewProvider = OrganizeTokensPreviewProvider()
+    private static let previewProvider = OrganizeTokensListItemPreviewProvider()
 
     static var previews: some View {
-        VStack {
-            Group {
-                let viewModels = previewProvider
-                    .singleMediumSection()
-                    .flatMap(\.items)
+        let previews = [
+            ("Single Small Headerless Section", previewProvider.singleSmallHeaderlessSection()),
+            ("Single Small Section", previewProvider.singleSmallSection()),
+            ("Single Medium Section", previewProvider.singleMediumSection()),
+            ("Single Large Section", previewProvider.singleLargeSection()),
+            ("Multiple Sections", previewProvider.multipleSections()),
+        ]
 
-                ForEach(viewModels) { viewModel in
-                    OrganizeTokensListItemView(viewModel: viewModel)
+        ForEach(previews, id: \.0) { name, sections in
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0.0) {
+                    Group {
+                        ForEach(sections) { section in
+                            VStack(spacing: 0.0) {
+                                switch section.model.style {
+                                case .draggable(let title), .fixed(let title):
+                                    OrganizeTokensListSectionView(
+                                        title: title,
+                                        identifier: section.id,
+                                        isDraggable: section.isDraggable
+                                    )
+                                case .invisible:
+                                    EmptyView()
+                                }
+
+                                ForEach(section.items) { viewModel in
+                                    OrganizeTokensListItemView(viewModel: viewModel)
+                                }
+                            }
+                        }
+                    }
+                    .background(Colors.Background.primary)
                 }
             }
-            .background(Colors.Background.primary)
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName(name)
+            .background(Colors.Background.secondary.ignoresSafeArea())
         }
-        .padding()
-        .previewLayout(.sizeThatFits)
-        .background(Colors.Background.secondary)
     }
 }

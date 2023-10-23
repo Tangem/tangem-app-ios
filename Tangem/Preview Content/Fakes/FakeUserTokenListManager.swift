@@ -19,7 +19,7 @@ class FakeUserTokenListManager: UserTokenListManager {
         _initialized.eraseToAnyPublisher()
     }
 
-    private let _initialized = CurrentValueSubject<Bool, Never>(false)
+    private let _initialized: CurrentValueSubject<Bool, Never>
 
     var userTokens: [StorageEntry] {
         let converter = StorageEntryConverter()
@@ -39,11 +39,39 @@ class FakeUserTokenListManager: UserTokenListManager {
         userTokensListSubject.eraseToAnyPublisher()
     }
 
-    private let userTokensListSubject = CurrentValueSubject<StoredUserTokenList, Never>(.empty)
+    private let userTokensListSubject: CurrentValueSubject<StoredUserTokenList, Never>
 
-    init() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
-            self._initialized.send(true)
+    init(
+        walletManagers: [FakeWalletManager],
+        isDelayed: Bool
+    ) {
+        let entries = walletManagers
+            .flatMap(\.walletModels)
+            .map { walletModel in
+                StoredUserTokenList.Entry(
+                    id: walletModel.tokenItem.id,
+                    name: walletModel.tokenItem.name,
+                    symbol: walletModel.tokenItem.currencySymbol,
+                    decimalCount: walletModel.tokenItem.blockchain.decimalCount,
+                    blockchainNetwork: walletModel.blockchainNetwork,
+                    contractAddress: walletModel.tokenItem.contractAddress
+                )
+            }
+
+        let userTokenList = StoredUserTokenList(
+            entries: entries,
+            grouping: .none,
+            sorting: .manual
+        )
+
+        userTokensListSubject = .init(isDelayed ? .empty : userTokenList)
+        _initialized = .init(!isDelayed)
+
+        if isDelayed {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
+                self._initialized.send(true)
+                self.userTokensListSubject.send(userTokenList)
+            }
         }
     }
 

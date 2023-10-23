@@ -72,6 +72,10 @@ final class OrganizeTokensDragAndDropController: ObservableObject {
                 .removeDuplicates()
                 .prefix(untilOutputFrom: controller.autoScrollStopSubject)
         }
+    // Fix for SwiftUI preview crashes due to unsafe handling of a recursive lock by the Swift TypeChecker
+    #if targetEnvironment(simulator)
+    .eraseToAnyPublisher()
+    #endif // targetEnvironment(simulator)
 
     var viewportSizeSubject: some Subject<CGSize, Never> { _viewportSizeSubject }
     private let _viewportSizeSubject = CurrentValueSubject<CGSize, Never>(.zero)

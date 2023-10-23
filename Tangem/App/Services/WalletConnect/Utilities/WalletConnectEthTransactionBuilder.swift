@@ -15,6 +15,8 @@ protocol WalletConnectEthTransactionBuilder {
 }
 
 struct CommonWalletConnectEthTransactionBuilder {
+    private let zeroString = "0x0"
+
     private func getGasPrice(for tx: WalletConnectEthTransaction, using gasLoader: EthereumGasLoader) async throws -> Int {
         if let gasPrice = tx.gasPrice?.hexToInteger {
             return gasPrice
@@ -29,10 +31,16 @@ struct CommonWalletConnectEthTransactionBuilder {
             return dappGasLimit
         }
 
+        // If amount is zero it is better to use default zero string `0x0`, because some dApps (app.thorswap.finance) can send
+        // weird values such as `0x00`, `0x00000` and JSON-RPC node won't be able to handle this info
+        // and will return an error. `EthereumUtils` can correctly parse weird values, but it is still better
+        // to send value from dApp instead of creating it yourself. IOS-4865
+        let valueString = amount.value.isZero ? zeroString : tx.value
+
         let gasLimitBigInt = try await gasLoader.getGasLimit(
             to: tx.to,
             from: tx.from,
-            value: tx.value,
+            value: valueString,
             data: tx.data
         ).async()
         return Int(gasLimitBigInt)
@@ -48,7 +56,7 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
         }
 
         let blockchain = walletModel.wallet.blockchain
-        let rawValue = wcTransaction.value ?? "0x0"
+        let rawValue = wcTransaction.value ?? zeroString
         guard let value = EthereumUtils.parseEthereumDecimal(rawValue, decimalsCount: blockchain.decimalCount) else {
             let error = ETHError.failedToParseBalance(value: rawValue, address: "", decimals: blockchain.decimalCount)
             AppLog.shared.error(error)

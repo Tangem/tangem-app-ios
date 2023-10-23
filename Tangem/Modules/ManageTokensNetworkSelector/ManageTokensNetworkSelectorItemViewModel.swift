@@ -1,5 +1,5 @@
 //
-//  ManageTokensNetworkSelectorViewModel.swift
+//  ManageTokensNetworkSelectorItemViewModel.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 13.09.2023.
@@ -10,11 +10,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-class ManageTokensNetworkSelectorViewModel: ObservableObject {
-    var iconName: String {
-        selectedPublisher ? _iconNameSelected : _iconName
-    }
-
+final class ManageTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject {
+    let id: Int
+    var iconName: String { selectedPublisher ? _iconNameSelected : _iconName }
     var isSelected: Binding<Bool>
 
     let networkName: String
@@ -27,7 +25,16 @@ class ManageTokensNetworkSelectorViewModel: ObservableObject {
     private let _iconNameSelected: String
     private var bag = Set<AnyCancellable>()
 
-    init(isMain: Bool, iconName: String, iconNameSelected: String, networkName: String, tokenTypeName: String?, isSelected: Binding<Bool>) {
+    init(
+        id: Int,
+        isMain: Bool,
+        iconName: String,
+        iconNameSelected: String,
+        networkName: String,
+        tokenTypeName: String?,
+        isSelected: Binding<Bool>
+    ) {
+        self.id = id
         self.isMain = isMain
         _iconName = iconName
         _iconNameSelected = iconNameSelected
@@ -44,6 +51,8 @@ class ManageTokensNetworkSelectorViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
+
+    // MARK: - Implementation
 
     func updateSelection(with isSelected: Binding<Bool>) {
         self.isSelected = isSelected

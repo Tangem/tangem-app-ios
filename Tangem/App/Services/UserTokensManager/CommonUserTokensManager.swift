@@ -16,6 +16,7 @@ struct CommonUserTokensManager {
 
     let derivationManager: DerivationManager?
 
+    private let persistentTokenItems: [TokenItem]
     private let userTokenListManager: UserTokenListManager
     private let walletModelsManager: WalletModelsManager
     private let derivationStyle: DerivationStyle?
@@ -24,12 +25,14 @@ struct CommonUserTokensManager {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        persistentTokenItems: [TokenItem],
         userTokenListManager: UserTokenListManager,
         walletModelsManager: WalletModelsManager,
         derivationStyle: DerivationStyle?,
         derivationManager: DerivationManager?,
         cardDerivableProvider: CardDerivableProvider
     ) {
+        self.persistentTokenItems = persistentTokenItems
         self.userTokenListManager = userTokenListManager
         self.walletModelsManager = walletModelsManager
         self.derivationStyle = derivationStyle
@@ -159,6 +162,13 @@ extension CommonUserTokensManager: UserTokensManager {
     }
 
     func canRemove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
+        /// For now it's ok to ignore derivation path for persistent tokens, because we have them
+        /// only on old cards that doen't support custom derivation. If this changed `TokenItem`
+        /// should be refactored to include `BlockchainNetwork` instead of `Blockchain`
+        if persistentTokenItems.contains(tokenItem) {
+            return false
+        }
+
         guard tokenItem.isBlockchain else {
             return true
         }

@@ -24,6 +24,10 @@
 "app_settings_title" = "APP設置";
 "app_settings_warning_subtitle" = "轉到設置以在 Tangem 應用程序中啟用生物識別身份驗證";
 "app_settings_warning_title" = "啟用生物識別驗證";
+"balance_hidden_description" = "To hide or show your balances, simply flip your device screen down, or switch it off in Settings";
+"balance_hidden_do_not_show_button" = "Don't show again";
+"balance_hidden_got_it_button" = "Got it";
+"balance_hidden_title" = "Balances are hidden";
 "biometry_touch_id_reason" = "Touch ID 用於將您的卡片保存在應用程序中";
 "button_start_backup_process" = "Start backup process";
 "card_settings_access_code_recovery_disabled_description" = "如果您不希望使用此卡重置此錢包中其他卡上的訪問密碼，請禁用此選項。請注意，這也會阻止您重置此卡上的訪問密碼。";
@@ -176,7 +180,7 @@
 "feedback_subject_support_tangem" = "Tangem反饋";
 "feedback_subject_tx_failed" = "無法發送交易";
 "feedback_subject_tx_push_failed" = "無法推送交易";
-"home_button_order" = "訂購";
+"home_button_order" = "Order card";
 "home_button_scan" = "掃描卡片";
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
 "initial_message_change_passcode_body" = "要更改密碼，請完全按照上圖所示連接手機和卡";
@@ -196,7 +200,6 @@
 "main_scan_card_warning_view_title" = "掃描卡片";
 "main_tokens" = "代幣";
 "manage_tokens_add" = "Add";
-"manage_tokens_custom" = "Custom";
 "manage_tokens_edit" = "Edit";
 "manage_tokens_network_selector_native_subtitle" = "Blockchain the cryptocurrency was initially created";
 "manage_tokens_network_selector_native_title" = "Native network";
@@ -328,7 +331,7 @@
 "registration_task_alert_message" = "請持有卡片直至操作完成";
 "reset_card_to_factory_button_title" = "重置卡片";
 "reset_card_to_factory_condition_1" = "我了解執行此操作後，我將無法再訪問當前錢包";
-"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards.";
+"reset_card_to_factory_condition_2" = "I realize that I can't use this card to recover my access code on the other cards of the current wallet";
 "reset_card_with_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包。您將無法恢復當前錢包或使用卡恢復訪問密碼";
 "reset_card_without_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包並將其從應用程序中刪除。您將無法恢復當前錢包";
 "russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";
@@ -373,7 +376,7 @@
 "shop_web_checkout_title" = "你的訂單";
 "story_awe_description" = "安全地存儲您的加密貨幣，同時將私鑰保存在您的卡中";
 "story_awe_title" = "創新式的硬體錢包";
-"story_backup_description" = "最多 **3張實體卡片** 到一個錢包";
+"story_backup_description" = "最多 3張實體卡片 到一個錢包";
 "story_backup_title" = "更多的安全備份";
 "story_currencies_description" = "一個冷錢包，可同時將您的比特幣、以太幣和其他幣種-全部存在一張卡中";
 "story_currencies_title" = "千種虛擬貨幣";
@@ -383,7 +386,7 @@
 "story_learn_learn" = "Learn";
 "story_meet_title" = "認識Tangem";
 "story_web3_description" = "交易、購買NFT、自由穿梭於100+去中心化服務";
-"story_web3_title" = "兼容DeFi";
+"story_web3_title" = "兼容Web3.0";
 "swapping_approve_information_text" = "批准被視為所有去中心化交易所的行業標準，並保護您的錢包在未經您許可的情況下不被智能合約訪問。按照設計，智能合約無法訪問您的代幣，除非您從您的終端批准訪問。通過“解鎖”您的代幣，您將獲得 1inch 智能合約使用您的資產的權限。網絡的礦工將獲得Gas Fee（由您支付）作為補償，以在區塊鏈上記錄此操作。一旦獲得許可，您就可以交易您的代幣。";
 "swapping_approve_information_title" = "批准";
 "swapping_error_wrapper" = "錯誤： %@";
@@ -451,7 +454,7 @@
 "user_wallet_list_rename_popup_title" = "重新命名錢包";
 "user_wallet_list_single_header" = "單一幣種";
 "user_wallet_list_title" = "我的錢包";
-"user_wallet_list_unlock_all" = "用 %@ 解鎖全部";
+"user_wallet_list_unlock_all_with" = "用 %@ 解鎖全部";
 "voice_over_close_network_fee_settings" = "關閉網費設置";
 "voice_over_nothing_to_paste" = "沒有可從剪貼板粘貼的內容";
 "voice_over_open_card_details" = "開啟卡片細節";
@@ -509,7 +512,7 @@
 "wallet_connect_tx_not_found" = "未能找到交易哈希";
 "wallet_currency_subtitle" = "%@ 網路";
 "wallet_error_no_account" = "帳號尚未被創造";
-"wallet_marketplace_block_title" = "%s Market Price";
+"wallet_marketplace_block_title" = "%s市場價格";
 "wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";
 "wallet_notification_address_copied" = "地址已復製到剪貼板";
@@ -519,8 +522,9 @@
 "wallet_pending_tx_sending_address_format" = "至%@";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Use %@ or scan a card to unlock access to your wallet";
-"warning_button_can_be_better" = "可以更好";
+"warning_button_could_be_better" = "可以更好";
 "warning_button_learn_more" = "了解更多";
+"warning_button_like_it" = "Like it";
 "warning_button_ok" = "了解";
 "warning_button_really_cool" = "真的很酷！";
 "warning_demo_mode_message" = "You are currently in the Demo mode";
@@ -529,6 +533,7 @@
 "warning_developer_card_title" = "Not for users!";
 "warning_existential_deposit_message" = "%1$@ network requires an Existential Deposit. If your account drops below %2$@, it will be deactivated, and any remaining funds will be destroyed.";
 "warning_existential_deposit_title" = "Network requires Existential Deposit";
+"warning_failed_to_verify_card_message" = "此卡可能是生產樣本或偽造品";
 "warning_failed_to_verify_card_title" = "認證檢查失敗";
 "warning_long_transaction_message" = "iPhone 7/7+ cannot sign transactions on this network. To complete this operation, please use a different phone.";
 "warning_long_transaction_title" = "Transaction signing unavailable";
@@ -537,7 +542,7 @@
 "warning_manage_tokens_legacy_derivation_message" = "Tokens on different networks can have different addresses. Double-check that your address matches the network when you transfer funds.";
 "warning_missing_derivation_title" = "Some addresses are missing";
 "warning_network_unreachable_message" = "The network is currently unreachable. Please try again later.";
-"warning_network_unreachable_title" = "Network is unreachable";
+"warning_network_unreachable_title" = "網路無法使用";
 "warning_no_account_title" = "Top up your wallet";
 "warning_no_backup_message" = "Your wallet hasn't been backed up. Carry out this procedure to protect your assets now.";
 "warning_no_backup_title" = "Missing backup";
@@ -553,7 +558,8 @@
 "warning_send_blocked_funds_for_fee_message" = "%1$@ is a token in the %2$@ network. To make a %3$@ transaction, you must deposit some %4$@ (%5$@) to cover the network fee.";
 "warning_send_blocked_funds_for_fee_title" = "Insufficient %1$@ to cover network fee";
 "warning_send_blocked_pending_transactions_message" = "Sending funds will be available once the %@ transaction is complete";
-"warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
+"warning_send_blocked_pending_transactions_title" = "Transaction pending";
+"warning_solana_rent_fee_message" = "Solana 網絡每 2 天收取 %1$@ 的費用。無法付此費用的帳戶將從網絡中清除。向您的帳戶存入超過 %2$@ 即可免費使用";
 "warning_some_networks_unreachable_message" = "Some networks currently are unreachable. Please try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
 "warning_system_deprecation_title" = "需要系統更新";

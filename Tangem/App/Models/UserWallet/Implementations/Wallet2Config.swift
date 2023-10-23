@@ -145,7 +145,22 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var cardHeaderImage: ImageType? {
-        cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
+        // Wallet 2.0 cards can't be used without backup, so min number of cards = 2
+        // and there can't be more than 3 cards.
+        switch card.batchId {
+        // Tron 37X cards
+        case "AF07":
+            return cardsCount == 2 ? Assets.Cards.tron37xDouble : Assets.Cards.tron37xTriple
+        // Kaspa cards
+        case "AF08":
+            return cardsCount == 2 ? Assets.Cards.kaspaDouble : Assets.Cards.kaspaTriple
+        // BAD Idea cards
+        case "AF09":
+            return cardsCount == 2 ? Assets.Cards.badIdeaDouble : Assets.Cards.badIdeaTriple
+        // Tangem Wallet 2.0
+        default:
+            return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
+        }
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

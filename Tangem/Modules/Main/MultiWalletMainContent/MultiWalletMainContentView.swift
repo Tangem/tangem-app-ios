@@ -58,10 +58,7 @@ struct MultiWalletMainContentView: View {
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokensNotificationInputs)
         .padding(.horizontal, 16)
-        .background(
-            Color.clear
-                .alert(item: $viewModel.error, content: { $0.alert })
-        )
+        .bindAlert($viewModel.error)
     }
 
     private var tokensContent: some View {
@@ -119,7 +116,10 @@ struct MultiWalletContentView_Preview: PreviewProvider {
         InjectedValues[\.userWalletRepository] = FakeUserWalletRepository()
         InjectedValues[\.tangemApiService] = FakeTangemApiService()
 
-        let optionsManager = OrganizeTokensOptionsManagerStub()
+        let optionsManager = FakeOrganizeTokensOptionsManager(
+            initialGroupingOption: .none,
+            initialSortingOption: .dragAndDrop
+        )
         let tokenSectionsAdapter = TokenSectionsAdapter(
             userTokenListManager: userWalletModel.userTokenListManager,
             optionsProviding: optionsManager,

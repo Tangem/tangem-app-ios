@@ -9,10 +9,7 @@
 import SwiftUI
 
 struct GenerateAddressesView: View {
-    let numberOfNetworks: Int
-    let currentWalletNumber: Int
-    let totalWalletNumber: Int
-    let didTapGenerate: () -> Void
+    let viewModel: GenerateAddressesViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -27,17 +24,17 @@ struct GenerateAddressesView: View {
                     Text(Localization.warningMissingDerivationTitle)
                         .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
 
-                    Text(Localization.warningMissingDerivationMessage(numberOfNetworks))
+                    Text(Localization.warningMissingDerivationMessage(viewModel.numberOfNetworks))
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
             }
 
             MainButton(
                 title: Localization.commonGenerateAddresses,
-                subtitle: Localization.manageTokensNumberOfWallets(currentWalletNumber, totalWalletNumber),
+                subtitle: Localization.manageTokensNumberOfWallets(viewModel.currentWalletNumber, viewModel.totalWalletNumber),
                 icon: .trailing(Assets.tangemIcon),
                 style: .primary,
-                action: didTapGenerate
+                action: viewModel.didTapGenerate
             )
         }
         .padding(.horizontal, 16)
@@ -52,7 +49,14 @@ struct GenerateAddressesView: View {
 
 struct GenerateAddressesView_Previews: PreviewProvider {
     static var previews: some View {
-        Colors.Background.primary.ignoresSafeArea()
-            .overlay(GenerateAddressesView(numberOfNetworks: 3, currentWalletNumber: 1, totalWalletNumber: 2, didTapGenerate: {}), alignment: .bottom)
+        let viewModel = GenerateAddressesViewModel(
+            numberOfNetworks: 1,
+            currentWalletNumber: 2,
+            totalWalletNumber: 3,
+            didTapGenerate: {}
+        )
+
+        return Colors.Background.primary.ignoresSafeArea()
+            .overlay(GenerateAddressesView(viewModel: viewModel), alignment: .bottom)
     }
 }

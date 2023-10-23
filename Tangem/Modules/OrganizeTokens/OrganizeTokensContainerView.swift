@@ -69,25 +69,15 @@ struct OrganizeTokensContainerView: View {
 // MARK: - Previews
 
 struct OrganizeTokensContainerView_Preview: PreviewProvider {
-    private static let previewProvider = OrganizeTokensPreviewProvider()
-
     static var previews: some View {
-        // TODO: Andrey Fedorov - Fix broken SwiftUI previews (IOS-4206)
-        let viewModels = [
-            previewProvider.multipleSections(),
-            previewProvider.singleMediumSection(),
-            previewProvider.singleSmallSection(),
-            previewProvider.singleLargeSection(),
-        ]
         let viewModelFactory = OrganizeTokensPreviewViewModelFactory()
 
-        Group {
-            ForEach(viewModels.indexed(), id: \.0.self) { _, _ in
-                let viewModel = viewModelFactory.makeViewModel()
-                OrganizeTokensView(viewModel: viewModel)
-            }
+        ForEach(OrganizeTokensPreviewConfiguration.allCases, id: \.name) { previewConfiguration in
+            let viewModel = viewModelFactory.makeViewModel(for: previewConfiguration)
+            OrganizeTokensContainerView(viewModel: viewModel)
+                .previewLayout(.sizeThatFits)
+                .previewDisplayName(previewConfiguration.name)
         }
-        .previewLayout(.sizeThatFits)
     }
 }
 

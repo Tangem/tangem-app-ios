@@ -21,6 +21,8 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     var selectedUserWalletId: Data?
 
+    var selectedIndexUserWalletModel: Int?
+
     var isEmpty: Bool { models.isEmpty }
 
     var count: Int { models.count }
@@ -39,7 +41,7 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            guard let model = self.models.first else {
+            guard self.models.first != nil else {
                 completion(.error("No models"))
                 return
             }

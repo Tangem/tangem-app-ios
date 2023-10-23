@@ -1,5 +1,5 @@
 //
-//  OrganizeTokensPreviewProvider.swift
+//  OrganizeTokensListItemPreviewProvider.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 08.06.2023.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct OrganizeTokensPreviewProvider {
+struct OrganizeTokensListItemPreviewProvider {
     func singleSmallHeaderlessSection() -> [OrganizeTokensListSection] {
         return [
             .init(

@@ -9,6 +9,8 @@
 import BlockchainSdk
 
 struct TransactionHistoryMapper {
+    @Injected(\.smartContractMethodMapper) private var smartContractMethodMapper: SmartContractMethodMapper
+
     private let currencySymbol: String
     private let addresses: [String]
 
@@ -156,20 +158,21 @@ private extension TransactionHistoryMapper {
         switch record.type {
         case .transfer:
             return .transfer
-        case .swap, .unoswap:
-            return .swap
-        case .approve:
-            return .approval
-        case .deposit:
-            return .custom(name: "Deposit")
-        case .submit:
-            return .custom(name: "Submit")
-        case .supply:
-            return .custom(name: "Supply")
-        case .withdraw:
-            return .custom(name: "Withdraw")
-        case .custom(let id):
-            return .custom(name: id)
+        case .contractMethod(let id):
+            let name = smartContractMethodMapper.getName(for: id)
+
+            switch name {
+            case "transfer":
+                return .transfer
+            case "approval":
+                return .approval
+            case "swap":
+                return .swap
+            case .none:
+                return .operation(name: id)
+            case .some(let name):
+                return .operation(name: name.capitalizingFirstLetter())
+            }
         }
     }
 

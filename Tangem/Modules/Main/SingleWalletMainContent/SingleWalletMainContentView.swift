@@ -32,6 +32,11 @@ struct SingleWalletMainContentView: View {
                 tapAction: nil
             )
 
+            PendingTransactionsListView(
+                items: viewModel.pendingTransactionViews,
+                exploreTransactionAction: viewModel.openTransactionExplorer
+            )
+
             TransactionsListView(
                 state: viewModel.transactionHistoryState,
                 exploreAction: viewModel.openExplorer,
@@ -45,6 +50,7 @@ struct SingleWalletMainContentView: View {
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
         .padding(.horizontal, 16)
+        .bindAlert($viewModel.alert)
     }
 }
 

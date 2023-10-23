@@ -9,7 +9,6 @@
 import Foundation
 
 protocol SwappingProvider {
-    func fetchAmountAllowance(for currency: Currency, walletAddress: String) async throws -> Decimal
     func fetchQuote(items: SwappingItems, amount: String, referrer: SwappingReferrerAccount?) async throws -> SwappingQuoteDataModel
     func fetchSwappingData(
         items: SwappingItems,
@@ -18,6 +17,5 @@ protocol SwappingProvider {
         referrer: SwappingReferrerAccount?
     ) async throws -> SwappingDataModel
 
-    func fetchApproveSwappingData(for currency: Currency, approvePolicy: SwappingApprovePolicy) async throws -> SwappingApprovedDataModel
-    func fetchSpenderAddress(for currency: Currency) async throws -> String
+    func fetchSpenderAddress(for blockchain: SwappingBlockchain) async throws -> String
 }

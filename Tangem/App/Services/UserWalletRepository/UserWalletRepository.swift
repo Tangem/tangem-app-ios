@@ -15,6 +15,7 @@ protocol UserWalletRepository: Initializable {
     var userWallets: [UserWallet] { get }
     var selectedModel: CardViewModel? { get }
     var selectedUserWalletId: Data? { get }
+    var selectedIndexUserWalletModel: Int? { get }
     var isEmpty: Bool { get }
     var count: Int { get }
     var isLocked: Bool { get }
@@ -82,6 +83,7 @@ enum UserWalletRepositoryEvent {
     case updated(userWalletModel: UserWalletModel)
     case deleted(userWalletIds: [Data])
     case selected(userWallet: UserWallet, reason: UserWalletRepositorySelectionChangeReason)
+    case replaced
 }
 
 enum UserWalletRepositorySelectionChangeReason {

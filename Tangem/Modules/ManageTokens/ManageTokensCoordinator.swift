@@ -12,9 +12,13 @@ class ManageTokensCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
-    // MARK: - Published
+    // MARK: - Root Published
 
     @Published private(set) var manageTokensViewModel: ManageTokensViewModel? = nil
+
+    // MARK: - Child ViewModels
+
+    @Published var networkSelectorCoordinator: ManageTokensNetworkSelectorCoordinator? = nil
 
     // MARK: - Init
 
@@ -26,7 +30,7 @@ class ManageTokensCoordinator: CoordinatorObject {
     // MARK: - Implmentation
 
     func start(with options: ManageTokensCoordinator.Options) {
-        manageTokensViewModel = .init()
+        manageTokensViewModel = .init(coordinator: self)
     }
 }
 
@@ -34,4 +38,10 @@ extension ManageTokensCoordinator {
     struct Options {}
 }
 
-extension ManageTokensCoordinator: ManageTokensRoutable {}
+extension ManageTokensCoordinator: ManageTokensRoutable {
+    func openTokenSelector(with tokenItems: [TokenItem]) {
+        let coordinator = ManageTokensNetworkSelectorCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(tokenItems: tokenItems))
+        networkSelectorCoordinator = coordinator
+    }
+}

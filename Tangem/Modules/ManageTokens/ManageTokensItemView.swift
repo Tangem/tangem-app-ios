@@ -32,12 +32,12 @@ struct ManageTokensItemView: View {
                     }
 
                     HStack(spacing: 4) {
-                        Text(viewModel.price)
+                        Text(viewModel.priceValue)
                             .lineLimit(1)
                             .truncationMode(.middle)
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                        TokenPriceChangeView(state: viewModel.priceChange)
+                        TokenPriceChangeView(state: viewModel.priceChangeState)
                     }
                 }
 
@@ -52,7 +52,7 @@ struct ManageTokensItemView: View {
                     .padding(.trailing, 24)
                 }
 
-                manageButton(for: viewModel.action)
+                manageButton(for: viewModel.action, with: viewModel.id)
             }
         }
         .padding(.horizontal, 16)
@@ -62,10 +62,10 @@ struct ManageTokensItemView: View {
     }
 
     @ViewBuilder
-    private func manageButton(for action: ManageTokensItemViewModel.Action) -> some View {
+    private func manageButton(for action: ManageTokensItemViewModel.Action, with id: String) -> some View {
         ZStack {
             Button {
-                viewModel.didTapAction(action)
+                viewModel.didTapAction(action, viewModel.coinModel)
             } label: {
                 switch action {
                 case .add:
@@ -119,69 +119,87 @@ struct CurrencyViewNew_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png")!,
-                name: "Bitcoin",
-                symbol: "BTC",
-                price: "$23,034.83",
-                priceChange: .loaded(signType: .positive, text: "10.5%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Bitcoin",
+                    symbol: "BTC",
+                    items: []
+                ),
+                priceValue: "$23,034.83",
+                priceChangeState: .loaded(signType: .positive, text: "10.5%"),
                 priceHistory: [1, 7, 3, 5, 13],
                 action: .add,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png")!,
-                name: "Ethereum",
-                symbol: "ETH",
-                price: "$1,340.33",
-                priceChange: .loaded(signType: .negative, text: "10.5%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Ethereum",
+                    symbol: "ETH",
+                    items: []
+                ),
+                priceValue: "$1,340.33",
+                priceChangeState: .loaded(signType: .negative, text: "10.5%"),
                 priceHistory: [1, 7, 3, 5, 13].reversed(),
                 action: .add,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png")!,
-                name: "Solana",
-                symbol: "SOL",
-                price: "$33.00",
-                priceChange: .loaded(signType: .positive, text: "1.3%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Solana",
+                    symbol: "SOL",
+                    items: []
+                ),
+                priceValue: "$33.00",
+                priceChangeState: .loaded(signType: .positive, text: "1.3%"),
                 priceHistory: [1, 7, 3, 5, 13],
                 action: .add,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png")!,
-                name: "Polygon",
-                symbol: "MATIC",
-                price: "$34.83",
-                priceChange: .loaded(signType: .positive, text: "0.0%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Polygon",
+                    symbol: "MATIC",
+                    items: []
+                ),
+                priceValue: "$34.83",
+                priceChangeState: .loaded(signType: .positive, text: "0.0%"),
                 priceHistory: [4, 7, 3, 5, 4],
                 action: .edit,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/acalaevm/info/logo.png")!,
-                name: "Very long token name is very long",
-                symbol: "BUS",
-                price: "$23,341,324,034.83",
-                priceChange: .loaded(signType: .positive, text: "1,444,340,340.0%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Very long token name is very long",
+                    symbol: "BUS",
+                    items: []
+                ),
+                priceValue: "$23,341,324,034.83",
+                priceChangeState: .loaded(signType: .positive, text: "1,444,340,340.0%"),
                 priceHistory: [1, 7, 3, 5, 13],
                 action: .info,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             ManageTokensItemView(viewModel: ManageTokensItemViewModel(
-                imageURL: nil,
-                name: "Custom Token",
-                symbol: "CT",
-                price: "$100.83",
-                priceChange: .loaded(signType: .positive, text: "1.0%"),
+                coinModel: CoinModel(
+                    id: "",
+                    name: "Custom Token",
+                    symbol: "CT",
+                    items: []
+                ),
+                priceValue: "$100.83",
+                priceChangeState: .loaded(signType: .positive, text: "1.0%"),
                 priceHistory: nil,
                 action: .add,
-                didTapAction: { _ in }
+                didTapAction: { _, _ in }
             ))
 
             Spacer()

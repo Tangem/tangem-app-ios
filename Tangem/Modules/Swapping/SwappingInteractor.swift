@@ -122,7 +122,7 @@ extension SwappingInteractor {
 
         let permissionType: Analytics.ParameterValue = {
             switch getSwappingApprovePolicy() {
-            case .amount: return .oneTransactionApprove
+            case .specified: return .oneTransactionApprove
             case .unlimited: return .unlimitedApprove
             }
         }()

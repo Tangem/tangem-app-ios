@@ -38,11 +38,7 @@ struct TokenIcon: View {
     private var tokenIcon: some View {
         IconView(url: imageURL, size: size, forceKingfisher: true)
             .overlay(networkIcon, alignment: .topTrailing)
-            .overlay(
-                customTokenIndicator
-                    .frame(size: size, alignment: .bottomTrailing)
-                    .offset(x: 1, y: 1)
-            )
+            .overlay(customTokenIndicator, alignment: .bottomTrailing)
     }
 
     @ViewBuilder
@@ -74,6 +70,7 @@ struct TokenIcon: View {
                         .foregroundColor(Colors.Background.primary)
                         .frame(size: customTokenIndicatorBorderSize)
                 )
+                .offset(x: 1, y: 1)
         }
     }
 
@@ -90,6 +87,7 @@ struct TokenIcon: View {
             )
             .frame(size: size)
             .overlay(networkIcon, alignment: .topTrailing)
+            .overlay(customTokenIndicator, alignment: .bottomTrailing)
     }
 }
 

@@ -21,7 +21,15 @@ class ResetToFactoryViewModel: ObservableObject {
         accessToCardWarningSelected && accessCodeRecoveryWarningSelected
     }
 
-    let message: String
+    var message: String {
+        if hasBackupCards {
+            return Localization.resetCardWithBackupToFactoryMessage
+        } else {
+            return Localization.resetCardWithoutBackupToFactoryMessage
+        }
+    }
+
+    let hasBackupCards: Bool
 
     private let cardInteractor: CardResettable
     private let userWalletId: UserWalletId
@@ -29,10 +37,9 @@ class ResetToFactoryViewModel: ObservableObject {
 
     init(input: ResetToFactoryViewModel.Input, coordinator: ResetToFactoryViewRoutable) {
         cardInteractor = input.cardInteractor
-        self.coordinator = coordinator
         userWalletId = input.userWalletId
-        message = input.hasBackupCards ? Localization.resetCardWithBackupToFactoryMessage
-            : Localization.resetCardWithoutBackupToFactoryMessage
+        hasBackupCards = input.hasBackupCards
+        self.coordinator = coordinator
     }
 
     func didTapMainButton() {

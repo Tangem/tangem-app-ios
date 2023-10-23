@@ -8,4 +8,6 @@
 
 import Foundation
 
-protocol ManageTokensRoutable: AnyObject {}
+protocol ManageTokensRoutable: AnyObject {
+    func openTokenSelector(with tokenItems: [TokenItem])
+}

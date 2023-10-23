@@ -38,6 +38,9 @@ struct SwappingView: View {
         }
         .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
         .alert(item: $viewModel.errorAlert, content: { $0.alert })
+        .onDisappear {
+            viewModel.onDisappear()
+        }
     }
 
     @ViewBuilder

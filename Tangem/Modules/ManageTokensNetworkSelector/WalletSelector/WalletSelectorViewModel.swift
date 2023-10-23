@@ -14,7 +14,7 @@ class WalletSelectorViewModel: ObservableObject {
 
     weak var delegate: WalletSelectorDelegate?
 
-    init(userWallets: [UserWallet], currentUserWalletId: Data) {
+    init(userWallets: [UserWallet], currentUserWalletId: Data?) {
         itemViewModels = userWallets.map { userWallet in
             WalletSelectorItemViewModel(
                 userWallet: userWallet,

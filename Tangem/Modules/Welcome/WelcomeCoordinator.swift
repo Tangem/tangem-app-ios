@@ -127,14 +127,6 @@ extension WelcomeCoordinator: WelcomeRoutable {
             self?.manageTokensCoordinator = nil
         }
 
-        if FeatureProvider.isAvailable(.manageTokens) {
-            let coordinator = ManageTokensCoordinator(dismissAction: dismissAction)
-            let options = ManageTokensCoordinator.Options()
-            coordinator.start(with: options)
-            manageTokensCoordinator = coordinator
-            return
-        }
-
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .show)
         legacyTokenListCoordinator = coordinator

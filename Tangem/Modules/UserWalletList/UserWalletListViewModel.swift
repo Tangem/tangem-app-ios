@@ -26,7 +26,7 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
     // MARK: - Dependencies
 
     var unlockAllButtonTitle: String {
-        Localization.userWalletListUnlockAll(BiometricAuthorizationUtils.biometryType.name)
+        Localization.userWalletListUnlockAllWith(BiometricAuthorizationUtils.biometryType.name)
     }
 
     var isLocked: Bool {
@@ -64,7 +64,7 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
                     self?.delete(userWalletIds: userWalletIds)
                 case .selected(let userWallet, let reason):
                     self?.setSelectedWallet(userWallet, reason: reason)
-                case .inserted:
+                case .inserted, .replaced:
                     break
                 }
             }

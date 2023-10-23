@@ -13,18 +13,23 @@ struct ManageTokensCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: ManageTokensCoordinator
 
     var body: some View {
-        NavigationView {
-            if let model = coordinator.manageTokensViewModel {
-                ManageTokensView(viewModel: model)
-                    .navigationLinks(links)
+        ZStack {
+            NavigationView {
+                if let model = coordinator.manageTokensViewModel {
+                    ManageTokensView(viewModel: model)
+                }
             }
+            .navigationViewStyle(.stack)
+
+            sheets
         }
-        .navigationViewStyle(.stack)
     }
 
     @ViewBuilder
-    private var links: some View {
+    private var sheets: some View {
         NavHolder()
-            .emptyNavigationLink()
+            .sheet(item: $coordinator.networkSelectorCoordinator) {
+                ManageTokensNetworkSelectorCoordinatorView(coordinator: $0)
+            }
     }
 }

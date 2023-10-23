@@ -30,6 +30,7 @@ class FakeWalletManager: WalletManager {
         cardTokens = wallet.amounts.compactMap { $0.key.token }
         walletModels = CommonWalletModelsFactory(derivationStyle: derivationStyle).makeWalletModels(from: self)
         bind()
+        updateWalletModels()
     }
 
     func scheduleSwitchFromLoadingState() {
@@ -95,7 +96,21 @@ class FakeWalletManager: WalletManager {
         case .loading: return .loaded(wallet)
         case .loaded: return .failed("Some Wallet manager error")
         case .failed: return .loading
+        @unknown default:
+            preconditionFailure()
         }
+    }
+
+    private func updateWalletModels() {
+        let updatePublisher = walletModels
+            .map { $0.update(silent: true) }
+            .merge()
+
+        var updateSubscription: AnyCancellable?
+        updateSubscription = updatePublisher
+            .sink { _ in
+                withExtendedLifetime(updateSubscription) {}
+            }
     }
 }
 
@@ -131,8 +146,8 @@ extension FakeWalletManager {
     }()
 
     static let xlmManager: FakeWalletManager = {
-        var wallet = Wallet.xrpWalletStub
-        wallet.add(coinValue: 5828830)
+        var wallet = Wallet.xlmWalletStub
+        wallet.add(coinValue: 390192)
         return FakeWalletManager(wallet: wallet)
     }()
 }

@@ -66,7 +66,10 @@ private extension OrganizeTokensHeaderView {
 
 struct OrganizeTokensHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        let optionsManager = OrganizeTokensOptionsManagerStub()
+        let optionsManager = FakeOrganizeTokensOptionsManager(
+            initialGroupingOption: .none,
+            initialSortingOption: .dragAndDrop
+        )
         let viewModel = OrganizeTokensHeaderViewModel(
             optionsProviding: optionsManager,
             optionsEditing: optionsManager

@@ -17,15 +17,20 @@ class FakeWalletModelsManager: WalletModelsManager {
 
     var walletModelsPublisher: AnyPublisher<[WalletModel], Never> {
         walletModelsSubject
-            .delay(for: 5, scheduler: DispatchQueue.main)
+            .delay(for: isDelayed ? 5.0 : 0.0, scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 
     private let walletModelsSubject: CurrentValueSubject<[WalletModel], Never>
+    private let isDelayed: Bool
     private var updateAllSubscription: AnyCancellable?
 
-    init(walletManagers: [FakeWalletManager]) {
+    init(
+        walletManagers: [FakeWalletManager],
+        isDelayed: Bool
+    ) {
         walletModelsSubject = .init(walletManagers.flatMap { $0.walletModels })
+        self.isDelayed = isDelayed
     }
 
     func updateAll(silent: Bool, completion: @escaping () -> Void) {

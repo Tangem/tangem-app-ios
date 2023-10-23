@@ -36,10 +36,11 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
     private let _updatePublisher: PassthroughSubject<Void, Never> = .init()
     private let _userWalletNamePublisher: CurrentValueSubject<String, Never>
 
-    internal init(
+    init(
         userWalletName: String,
         isMultiWallet: Bool,
         isUserWalletLocked: Bool,
+        isDelayed: Bool,
         cardsCount: Int,
         userWalletId: UserWalletId,
         walletManagers: [FakeWalletManager],
@@ -52,8 +53,8 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
         config = UserWalletConfigFactory(userWallet.cardInfo()).makeConfig()
         _userWalletNamePublisher = .init(userWalletName)
 
-        walletModelsManager = FakeWalletModelsManager(walletManagers: walletManagers)
-        let fakeUserTokenListManager = FakeUserTokenListManager()
+        walletModelsManager = FakeWalletModelsManager(walletManagers: walletManagers, isDelayed: isDelayed)
+        let fakeUserTokenListManager = FakeUserTokenListManager(walletManagers: walletManagers, isDelayed: isDelayed)
         userTokenListManager = fakeUserTokenListManager
         userTokensManager = FakeUserTokensManager(
             derivationManager: FakeDerivationManager(pendingDerivationsCount: 5),
@@ -98,9 +99,32 @@ extension FakeUserWalletModel {
         userWalletName: "William Wallet",
         isMultiWallet: true,
         isUserWalletLocked: false,
+        isDelayed: true,
         cardsCount: 3,
         userWalletId: .init(with: Data.randomData(count: 32)),
-        walletManagers: [.ethWithTokensManager, .btcManager, .polygonWithTokensManager, .xrpManager],
+        walletManagers: [
+            .ethWithTokensManager,
+            .btcManager,
+            .polygonWithTokensManager,
+            .xrpManager,
+        ],
+        userWallet: UserWalletStubs.walletV2Stub
+    )
+
+    static let walletWithoutDelay = FakeUserWalletModel(
+        userWalletName: "Just A Wallet",
+        isMultiWallet: true,
+        isUserWalletLocked: false,
+        isDelayed: false,
+        cardsCount: 1,
+        userWalletId: .init(with: Data.randomData(count: 32)),
+        walletManagers: [
+            .ethWithTokensManager,
+            .btcManager,
+            .polygonWithTokensManager,
+            .xrpManager,
+            .xlmManager,
+        ],
         userWallet: UserWalletStubs.walletV2Stub
     )
 
@@ -108,6 +132,7 @@ extension FakeUserWalletModel {
         userWalletName: "Tangem Twins",
         isMultiWallet: false,
         isUserWalletLocked: true,
+        isDelayed: true,
         cardsCount: 2,
         userWalletId: .init(with: Data.randomData(count: 32)),
         walletManagers: [.btcManager],
@@ -118,6 +143,7 @@ extension FakeUserWalletModel {
         userWalletName: "XRP Note",
         isMultiWallet: false,
         isUserWalletLocked: false,
+        isDelayed: true,
         cardsCount: 1,
         userWalletId: .init(with: Data.randomData(count: 32)),
         walletManagers: [.xrpManager],
@@ -128,6 +154,7 @@ extension FakeUserWalletModel {
         userWalletName: "XLM Bird",
         isMultiWallet: false,
         isUserWalletLocked: false,
+        isDelayed: true,
         cardsCount: 1,
         userWalletId: .init(with: Data.randomData(count: 32)),
         walletManagers: [.xlmManager],

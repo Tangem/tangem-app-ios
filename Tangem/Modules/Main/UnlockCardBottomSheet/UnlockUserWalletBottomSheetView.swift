@@ -30,7 +30,7 @@ struct UnlockUserWalletBottomSheetView: View {
                 .padding(.horizontal, 34)
 
             MainButton(
-                title: Localization.userWalletListUnlockAll(BiometricAuthorizationUtils.biometryType.name),
+                title: Localization.userWalletListUnlockAllWith(BiometricAuthorizationUtils.biometryType.name),
                 action: viewModel.unlockWithBiometry
             )
             .padding(.bottom, 10)

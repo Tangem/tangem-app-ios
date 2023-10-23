@@ -42,7 +42,7 @@ struct SwappingTokenItemView: View {
                 Spacer(minLength: 4)
 
                 if let fiatBalanceFormatted = viewModel.fiatBalanceFormatted {
-                    Text(fiatBalanceFormatted)
+                    SensitiveText(fiatBalanceFormatted)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
                 }
             }
@@ -54,7 +54,7 @@ struct SwappingTokenItemView: View {
                 Spacer(minLength: 4)
 
                 if let balanceFormatted = viewModel.balanceFormatted {
-                    Text(balanceFormatted)
+                    SensitiveText(balanceFormatted)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }

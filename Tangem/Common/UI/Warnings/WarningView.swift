@@ -121,7 +121,7 @@ extension WarningView {
             switch self {
             case .okGotIt: return Localization.warningButtonOk
             case .rateApp: return Localization.warningButtonReallyCool
-            case .reportProblem: return Localization.warningButtonCanBeBetter
+            case .reportProblem: return Localization.warningButtonCouldBeBetter
             case .learnMore: return Localization.warningButtonLearnMore
             case .dismiss: return ""
             }

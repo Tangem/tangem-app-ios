@@ -25,6 +25,8 @@ struct OrganizeTokensView: View {
 
     // MARK: - Content insets and overlay views
 
+    @StateObject private var scrollState = OrganizeTokensScrollState(bottomInset: Constants.headerAdditionalBottomInset)
+
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var scrollViewTopContentInset: CGFloat = 0.0
 
@@ -33,13 +35,6 @@ struct OrganizeTokensView: View {
 
     @State private var scrollViewTopContentInsetSpacerIdentifier: UUID
     @State private var scrollViewBottomContentInsetSpacerIdentifier: UUID
-
-    @State private var tokenListFooterFrameMinY: CGFloat = 0.0
-    @State private var tokenListContentFrameMaxY: CGFloat = 0.0
-    @State private var scrollViewContentOffset: CGPoint = .zero
-
-    @State private var isTokenListFooterGradientHidden = true
-    @State private var isNavigationBarBackgroundHidden = true
 
     // MARK: - Drag and drop support
 
@@ -77,12 +72,9 @@ struct OrganizeTokensView: View {
     private var dragGestureTranslationFix: CGSize {
         return CGSize(
             width: 0.0,
-            height: scrollViewContentOffset.y - scrollViewInitialContentOffset.y
+            height: scrollState.contentOffset.y - scrollViewInitialContentOffset.y
         )
     }
-
-    // TODO: Andrey Fedorov - Temporary workaround for cases when auto scrolling occasionally stops working (IOS-4353)
-    private var throttleInterval: GeometryInfo.ThrottleInterval { hasActiveDrag ? .zero : .aggressive }
 
     // MARK: - Body
 
@@ -104,6 +96,7 @@ struct OrganizeTokensView: View {
         }
         .onAppear {
             viewModel.onViewAppear()
+            scrollState.onViewAppear()
         }
     }
 
@@ -129,13 +122,12 @@ struct OrganizeTokensView: View {
                         .readGeometry(
                             \.frame.maxY,
                             inCoordinateSpace: .global,
-                            throttleInterval: throttleInterval,
-                            bindTo: $tokenListContentFrameMaxY
+                            bindTo: scrollState.tokenListContentFrameMaxYSubject.asWriteOnlyBinding(.zero)
                         )
                         .readContentOffset(
                             inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                            throttleInterval: throttleInterval,
-                            bindTo: $scrollViewContentOffset
+                            throttleInterval: .zero,
+                            bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
                         )
                         .overlay(makeDragAndDropGestureOverlayView())
 
@@ -168,13 +160,9 @@ struct OrganizeTokensView: View {
             )
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-        .onChange(of: tokenListContentFrameMaxY) { newValue in
-            isTokenListFooterGradientHidden = newValue < tokenListFooterFrameMinY
-        }
-        .onChange(of: scrollViewContentOffset) { newValue in
+        .onChange(of: scrollState.contentOffset) { newValue in
             dragAndDropController.contentOffsetSubject.send(newValue)
             updateDragAndDropDestinationIndexPath(using: dragGestureTranslation)
-            isNavigationBarBackgroundHidden = newValue.y - Constants.headerAdditionalBottomInset <= 0.0
         }
         .onChange(of: dragAndDropDestinationIndexPath) { [oldValue = dragAndDropDestinationIndexPath] newValue in
             guard let oldValue = oldValue, let newValue = newValue else { return }
@@ -245,7 +233,7 @@ struct OrganizeTokensView: View {
     private var navigationBarBackground: some View {
         VisualEffectView(style: .systemUltraThinMaterial)
             .edgesIgnoringSafeArea(.top)
-            .hidden(isNavigationBarBackgroundHidden)
+            .hidden(scrollState.isNavigationBarBackgroundHidden)
             .infinityFrame(alignment: .bottom)
     }
 
@@ -264,7 +252,7 @@ struct OrganizeTokensView: View {
     private var tokenListFooter: some View {
         OrganizeTokensListFooter(
             viewModel: viewModel,
-            isTokenListFooterGradientHidden: isTokenListFooterGradientHidden,
+            isTokenListFooterGradientHidden: scrollState.isTokenListFooterGradientHidden,
             cornerRadius: Constants.contentCornerRadius,
             contentInsets: EdgeInsets(
                 top: Constants.contentVerticalInset,
@@ -273,9 +261,9 @@ struct OrganizeTokensView: View {
                 trailing: Constants.contentHorizontalInset
             )
         )
-        .animation(.linear(duration: 0.1), value: isTokenListFooterGradientHidden)
+        .animation(.linear(duration: 0.1), value: scrollState.isTokenListFooterGradientHidden)
         .readGeometry(inCoordinateSpace: .global) { geometryInfo in
-            $tokenListFooterFrameMinY.wrappedValue = geometryInfo.frame.minY + Constants.contentVerticalInset
+            scrollState.tokenListFooterFrameMinYSubject.send(geometryInfo.frame.minY + Constants.contentVerticalInset)
             $scrollViewBottomContentInset.wrappedValue = geometryInfo.size.height
         }
         .infinityFrame(alignment: .bottom)
@@ -424,7 +412,7 @@ struct OrganizeTokensView: View {
                     }
 
                     // One-time assignment before the value of drag gesture changes for the first time
-                    scrollViewInitialContentOffset = scrollViewContentOffset
+                    scrollViewInitialContentOffset = scrollState.contentOffset
 
                     // Set initial state for `dragAndDropSourceIndexPath` after successfully ended long press gesture
                     dragAndDropSourceIndexPath = sourceIndexPath
@@ -628,23 +616,14 @@ private extension OrganizeTokensView {
 // MARK: - Previews
 
 struct OrganizeTokensView_Preview: PreviewProvider {
-    private static let previewProvider = OrganizeTokensPreviewProvider()
-
     static var previews: some View {
-        // TODO: Andrey Fedorov - Fix broken SwiftUI previews (IOS-4206)
-        let viewModels = [
-            previewProvider.multipleSections(),
-            previewProvider.singleMediumSection(),
-            previewProvider.singleSmallSection(),
-            previewProvider.singleLargeSection(),
-        ]
         let viewModelFactory = OrganizeTokensPreviewViewModelFactory()
 
-        Group {
-            ForEach(viewModels.indexed(), id: \.0.self) { _, _ in
-                let viewModel = viewModelFactory.makeViewModel()
-                OrganizeTokensView(viewModel: viewModel)
-            }
+        ForEach(OrganizeTokensPreviewConfiguration.allCases, id: \.name) { previewConfiguration in
+            let viewModel = viewModelFactory.makeViewModel(for: previewConfiguration)
+            OrganizeTokensView(viewModel: viewModel)
+                .previewLayout(.sizeThatFits)
+                .previewDisplayName(previewConfiguration.name)
         }
     }
 }
