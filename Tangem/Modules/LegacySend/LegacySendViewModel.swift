@@ -501,7 +501,7 @@ class LegacySendViewModel: ObservableObject {
 
     func validateAddress(_ address: String) -> Bool {
         let service = AddressServiceFactory(blockchain: walletModel.wallet.blockchain).makeAddressService()
-        return service.validate(address) && !walletModel.wallet.addresses.contains(where: { $0.value == address })
+        return service.validate(address)
     }
 
     func validateDestination(_ destination: String) {
@@ -510,6 +510,15 @@ class LegacySendViewModel: ObservableObject {
         isAdditionalInputEnabled = false
 
         if destination.isEmpty {
+            return
+        }
+
+        if walletModel.wallet.addresses.contains(where: { $0.value == destination }) {
+            destinationHint = TextHint(
+                isError: true,
+                message: Localization.sendErrorAddressSameAsWallet
+            )
+
             return
         }
 

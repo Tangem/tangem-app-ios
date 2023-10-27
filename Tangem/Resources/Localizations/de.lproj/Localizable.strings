@@ -349,6 +349,7 @@
 "scan_card_settings_title" = "Get your card ready!";
 "send_amount_label" = "Betrag";
 "send_destination_hint_address" = "Adresse";
+"send_error_address_same_as_wallet" = "Die Adresse stimmt mit der Adresse Ihrer Brieftasche überein";
 "send_extras_error_invalid_destination_tag" = "Invalid Tag. It won't be added to the transaction.";
 "send_extras_hint_destination_tag" = "Tag";
 "send_extras_hint_memo" = "Memo";
