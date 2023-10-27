@@ -14,6 +14,8 @@
 		2D535E702A0CB4D20081EB76 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6B2A0CB4D20081EB76 /* NotificationView.swift */; };
 		2D535E722A0CB4D20081EB76 /* BottomSheetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */; };
 		2D535E732A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */; };
+		2D5566692AEBDA0500F2866B /* CircleIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5566682AEBDA0500F2866B /* CircleIconView.swift */; };
+		2D55666B2AEBE59B00F2866B /* ManageTokensAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D55666A2AEBE59B00F2866B /* ManageTokensAddCustomItemView.swift */; };
 		2D5EBAA52ADD15EA00A25AC4 /* ManageTokensNetworkSelectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5EBAA02ADD15EA00A25AC4 /* ManageTokensNetworkSelectorCoordinator.swift */; };
 		2D5EBAA62ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5EBAA12ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift */; };
 		2D5EBAA72ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5EBAA22ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift */; };
@@ -1216,6 +1218,8 @@
 		2D535E6B2A0CB4D20081EB76 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoView.swift; sourceTree = "<group>"; };
 		2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoViewModel.swift; sourceTree = "<group>"; };
+		2D5566682AEBDA0500F2866B /* CircleIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleIconView.swift; sourceTree = "<group>"; };
+		2D55666A2AEBE59B00F2866B /* ManageTokensAddCustomItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageTokensAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D5EBAA02ADD15EA00A25AC4 /* ManageTokensNetworkSelectorCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorCoordinator.swift; sourceTree = "<group>"; };
 		2D5EBAA12ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorRoutable.swift; sourceTree = "<group>"; };
 		2D5EBAA22ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -2786,6 +2790,7 @@
 				EF032C522955C725006C1FF3 /* CheckIconView.swift */,
 				EF4B41BC28644982003911F6 /* SkeletonView.swift */,
 				5DBBAB0724D850EA00E78F1C /* CircleView.swift */,
+				2D5566682AEBDA0500F2866B /* CircleIconView.swift */,
 				5DFB499B24E6BAF10037E76F /* MessageView.swift */,
 				5DEC50A425F160930022CE83 /* CircleImageTextView.swift */,
 				5DE2038D24EE8A510044EF46 /* ActivityIndicatorView.swift */,
@@ -4646,6 +4651,7 @@
 				2D727E992AB8280D00CD121A /* ManageTokensViewModel.swift */,
 				DA7046112AAA17E500808FA8 /* ManageTokensItemViewModel.swift */,
 				DA7046122AAA17E500808FA8 /* ManageTokensItemView.swift */,
+				2D55666A2AEBE59B00F2866B /* ManageTokensAddCustomItemView.swift */,
 			);
 			path = ManageTokens;
 			sourceTree = "<group>";
@@ -6764,6 +6770,7 @@
 				EF9F907D299CFCBE006F638F /* WebViewContainer.swift in Sources */,
 				EF053DF12938D4BC006FD13A /* UserWalletListCoordinatorView.swift in Sources */,
 				B02B74B629879F4A006473F2 /* WalletConnectMessageHandler.swift in Sources */,
+				2D5566692AEBDA0500F2866B /* CircleIconView.swift in Sources */,
 				2D5EBAA62ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift in Sources */,
 				B69610982A428C9B00CF88B7 /* OrganizeTokensListSectionView.swift in Sources */,
 				B69E78762A6978E2007E358A /* CardInfoPagePreviewContainerView.swift in Sources */,
@@ -7297,6 +7304,7 @@
 				DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */,
 				EF0B173529F2CDF4002A3C6D /* UIDevice+IPhoneModel.swift in Sources */,
 				EFC7FE9429D6D89F00C39E42 /* SwappingDestinationServicing.swift in Sources */,
+				2D55666B2AEBE59B00F2866B /* ManageTokensAddCustomItemView.swift in Sources */,
 				B6C921C62A49FF960057811F /* VisualEffectView.swift in Sources */,
 				B0EBBB222924C42E00020EC2 /* ReferralParticipationRequestBody.swift in Sources */,
 				DC5118632860A339004FB954 /* SecurityModeRoutable.swift in Sources */,

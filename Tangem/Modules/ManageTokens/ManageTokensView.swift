@@ -37,6 +37,8 @@ struct ManageTokensView: View {
                         .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
+                addCutomToken
+
                 ForEach(viewModel.tokenViewModels) {
                     ManageTokensItemView(viewModel: $0)
                 }
@@ -50,17 +52,25 @@ struct ManageTokensView: View {
             }
         }
     }
-    
-    private var addCutomToken: some View {
-        HStack(spacing: 0) {
-            
-        }
-        .frame(height: 68.0)
-    }
 
-    private var divider: some View {
-        Divider()
-            .padding(.leading)
+    private var addCutomToken: some View {
+        HStack(spacing: 12) {
+            CircleIconView(image: Assets.plusMini.image)
+                .padding(.trailing, 12)
+
+            Text(Localization.addCustomTokenTitle)
+                .lineLimit(1)
+                .layoutPriority(-1)
+                .style(Fonts.Bold.subheadline, color: Colors.Text.tertiary)
+
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.addCustomTokenDidTapAction()
+        }
     }
 
     @ViewBuilder private var titleView: some View {

@@ -10,4 +10,5 @@ import Foundation
 
 protocol ManageTokensRoutable: AnyObject {
     func openTokenSelector(with tokenItems: [TokenItem])
+    func openAddCustomToken()
 }

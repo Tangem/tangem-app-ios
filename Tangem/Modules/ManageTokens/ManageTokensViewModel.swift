@@ -59,9 +59,9 @@ final class ManageTokensViewModel: ObservableObject {
     func fetch() {
         loader.fetch(enteredSearchText.value)
     }
-    
+
     func addCustomTokenDidTapAction() {
-        
+        coordinator.openAddCustomToken()
     }
 }
 
