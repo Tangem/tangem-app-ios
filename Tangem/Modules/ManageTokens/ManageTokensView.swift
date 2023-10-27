@@ -50,6 +50,13 @@ struct ManageTokensView: View {
             }
         }
     }
+    
+    private var addCutomToken: some View {
+        HStack(spacing: 0) {
+            
+        }
+        .frame(height: 68.0)
+    }
 
     private var divider: some View {
         Divider()
