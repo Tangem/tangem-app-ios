@@ -37,11 +37,11 @@ struct ManageTokensView: View {
                         .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
-                addCutomToken
-
                 ForEach(viewModel.tokenViewModels) {
                     ManageTokensItemView(viewModel: $0)
                 }
+                
+                addCutomToken
 
                 if viewModel.hasNextPage {
                     HStack(alignment: .center) {
@@ -65,8 +65,8 @@ struct ManageTokensView: View {
 
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .frame(height: 68)
+        .padding(.horizontal, 32)
         .contentShape(Rectangle())
         .onTapGesture {
             viewModel.addCustomTokenDidTapAction()
