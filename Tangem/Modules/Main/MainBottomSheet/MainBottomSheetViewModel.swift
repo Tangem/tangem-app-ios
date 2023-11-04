@@ -14,7 +14,7 @@ final class MainBottomSheetViewModel: ObservableObject {
     // MARK: - ViewModel
 
     @Published var enteredSearchText: String = ""
-    @Published var bottomSheetViewModel: ManageTokensViewModel?
+    @Published var manageTokensViewModel: ManageTokensViewModel?
 
     // MARK: - Private
 
@@ -25,7 +25,7 @@ final class MainBottomSheetViewModel: ObservableObject {
 
     init(coordinator: MainBottomSheetCoordinator) {
         self.coordinator = coordinator
-        bottomSheetViewModel = .init(coordinator: coordinator, enteredSearchText: enteredSearchText)
+        manageTokensViewModel = .init(coordinator: coordinator, enteredSearchText: enteredSearchText)
     }
 
     // MARK: - Private Implementation
@@ -36,7 +36,7 @@ final class MainBottomSheetViewModel: ObservableObject {
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] string in
-                self?.bottomSheetViewModel?.fetch(searchText: string)
+                self?.manageTokensViewModel?.fetch(searchText: string)
             }
             .store(in: &bag)
     }

@@ -35,7 +35,7 @@ final class ManageTokensViewModel: ObservableObject {
     private var cacheExistListCoinId: [String] = []
     private var pendingDerivationCountByWalletId: [UserWalletId: Int] = [:]
 
-    init(coordinator: ManageTokensRoutable, enteredSearchText: String) {
+    init(coordinator: ManageTokensRoutable, enteredSearchText: String = "") {
         self.coordinator = coordinator
 
         loader.reset(enteredSearchText)
