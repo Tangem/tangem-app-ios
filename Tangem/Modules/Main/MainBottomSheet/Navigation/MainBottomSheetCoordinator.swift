@@ -75,7 +75,7 @@ extension MainBottomSheetCoordinator {
     struct Options {}
 }
 
-extension MainBottomSheetCoordinator: ManageTokensRoutable {
+extension MainBottomSheetCoordinator: MainBottomSheetContentRoutable {
     func openTokenSelector(coinId: String, with tokenItems: [TokenItem]) {
         let coordinator = ManageTokensNetworkSelectorCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .init(coinId: coinId, tokenItems: tokenItems))

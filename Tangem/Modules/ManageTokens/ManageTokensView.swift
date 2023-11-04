@@ -28,11 +28,10 @@ struct ManageTokensView: View {
     }
 
     private var list: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.tokenViewModels) {
-                    ManageTokensItemView(viewModel: $0)
-                }
+        LazyVStack(spacing: 0) {
+            ForEach(viewModel.tokenViewModels) {
+                ManageTokensItemView(viewModel: $0)
+            }
 
 //                if viewModel.hasNextPage {
 //                    HStack(alignment: .center) {
@@ -40,7 +39,6 @@ struct ManageTokensView: View {
 //                            .onAppear(perform: viewModel.fetch)
 //                    }
 //                }
-            }
         }
     }
 

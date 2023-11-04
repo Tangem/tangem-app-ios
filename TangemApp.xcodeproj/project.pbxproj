@@ -33,6 +33,7 @@
 		2D805ECA29ADE17100C030F7 /* ExchangeButtonStateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D805EC929ADE17100C030F7 /* ExchangeButtonStateType.swift */; };
 		2DA639702AF67881003EDE63 /* MainBottomSheetCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA6396F2AF67881003EDE63 /* MainBottomSheetCoordinator.swift */; };
 		2DA639742AF6CEBA003EDE63 /* MainBottomSheetContentCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA639732AF6CEBA003EDE63 /* MainBottomSheetContentCoordinatorView.swift */; };
+		2DA639762AF7010D003EDE63 /* MainBottomSheetContentRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA639752AF7010D003EDE63 /* MainBottomSheetContentRoutable.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DAA9BD02AE9A4D200549886 /* ManageTokensSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAA9BCF2AE9A4D200549886 /* ManageTokensSettings.swift */; };
 		2DB43917296EBC6000CBBB1E /* AppsFlyerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */; };
@@ -1267,6 +1268,7 @@
 		2D805EC929ADE17100C030F7 /* ExchangeButtonStateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExchangeButtonStateType.swift; sourceTree = "<group>"; };
 		2DA6396F2AF67881003EDE63 /* MainBottomSheetCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetCoordinator.swift; sourceTree = "<group>"; };
 		2DA639732AF6CEBA003EDE63 /* MainBottomSheetContentCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetContentCoordinatorView.swift; sourceTree = "<group>"; };
+		2DA639752AF7010D003EDE63 /* MainBottomSheetContentRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetContentRoutable.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAA9BCF2AE9A4D200549886 /* ManageTokensSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageTokensSettings.swift; sourceTree = "<group>"; };
 		2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerConfig.swift; sourceTree = "<group>"; };
@@ -4359,6 +4361,7 @@
 				2DA6396F2AF67881003EDE63 /* MainBottomSheetCoordinator.swift */,
 				B680D37A2AF6EC6600E46F3F /* MainBottomSheetHeaderCoordinatorView.swift */,
 				2DA639732AF6CEBA003EDE63 /* MainBottomSheetContentCoordinatorView.swift */,
+				2DA639752AF7010D003EDE63 /* MainBottomSheetContentRoutable.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -7652,6 +7655,7 @@
 				EF661E2F28BF41D6005769E5 /* Intents.intentdefinition in Sources */,
 				DAF59CC32ACC4D8C004FCA86 /* AddCustomTokenDerivationPathSelectorView.swift in Sources */,
 				EF80843A293F6708000D91EA /* SwappingDestinationService.swift in Sources */,
+				2DA639762AF7010D003EDE63 /* MainBottomSheetContentRoutable.swift in Sources */,
 				DC295B402861C27D006CB7B6 /* LegacyTokenDetailsCoordinator.swift in Sources */,
 				B004C40E298AA9E00029C14A /* WalletConnectV2SendTransactionHandler.swift in Sources */,
 				EF0DC11D2A0CE29E007E3DA7 /* SwappingApproveRoutable.swift in Sources */,
