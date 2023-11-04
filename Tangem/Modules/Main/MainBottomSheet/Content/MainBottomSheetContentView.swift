@@ -14,8 +14,8 @@ struct MainBottomSheetContentView: View {
 
     var body: some View {
         if let viewModel = viewModel.manageTokensViewModel {
-            Color.red.frame(height: 2000.0)
-//            ManageTokensView(viewModel: viewModel)    // this ain't gonna work
+            ManageTokensView(viewModel: viewModel)
+                .onAppear { viewModel.fetch(searchText: "") } // FIXME: Andrey Fedorov - Test only, remove when not needed
         }
     }
 }

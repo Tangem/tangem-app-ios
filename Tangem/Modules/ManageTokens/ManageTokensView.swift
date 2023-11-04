@@ -27,8 +27,17 @@ struct ManageTokensView: View {
         .onAppear { viewModel.onAppear() }
     }
 
-    private var list: some View {
-        ScrollView {
+    @ViewBuilder private var list: some View {
+        // FIXME: Andrey Fedorov - Test only, remove when not needed
+        if FeatureProvider.isAvailable(.mainScreenBottomSheet) {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.tokenViewModels) {
+                        ManageTokensItemView(viewModel: $0)
+                    }
+                }
+            }
+        } else {
             LazyVStack(spacing: 0) {
                 ForEach(viewModel.tokenViewModels) {
                     ManageTokensItemView(viewModel: $0)
