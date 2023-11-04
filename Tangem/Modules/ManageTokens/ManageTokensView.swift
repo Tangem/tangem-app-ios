@@ -23,31 +23,23 @@ struct ManageTokensView: View {
         .scrollDismissesKeyboardCompat(true)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .automatic)
-        .searchableCompat(text: $viewModel.enteredSearchText.value)
         .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
         .onAppear { viewModel.onAppear() }
-        .onDisappear { viewModel.onDisappear() }
     }
 
     private var list: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                if #available(iOS 15.0, *) {} else {
-                    SearchBar(text: $viewModel.enteredSearchText.value, placeholder: Localization.commonSearch)
-                        .padding(.horizontal, 8)
-                        .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
-                }
-
                 ForEach(viewModel.tokenViewModels) {
                     ManageTokensItemView(viewModel: $0)
                 }
 
-                if viewModel.hasNextPage {
-                    HStack(alignment: .center) {
-                        ActivityIndicatorView(color: .gray)
-                            .onAppear(perform: viewModel.fetch)
-                    }
-                }
+//                if viewModel.hasNextPage {
+//                    HStack(alignment: .center) {
+//                        ActivityIndicatorView(color: .gray)
+//                            .onAppear(perform: viewModel.fetch)
+//                    }
+//                }
             }
         }
     }

@@ -16,9 +16,6 @@ final class ManageTokensViewModel: ObservableObject {
     @Injected(\.quotesRepository) private var tokenQuotesRepository: TokenQuotesRepository
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    // I can't use @Published here, because of swiftui redraw perfomance drop
-    var enteredSearchText = CurrentValueSubject<String, Never>("")
-
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [ManageTokensItemViewModel] = []
     @Published var isLoading: Bool = true
@@ -38,8 +35,10 @@ final class ManageTokensViewModel: ObservableObject {
     private var cacheExistListCoinId: [String] = []
     private var pendingDerivationCountByWalletId: [UserWalletId: Int] = [:]
 
-    init(coordinator: ManageTokensRoutable) {
+    init(coordinator: ManageTokensRoutable, enteredSearchText: String) {
         self.coordinator = coordinator
+
+        loader.reset(enteredSearchText)
 
         bind()
         updateAlreadyExistTokenUserList()
@@ -47,17 +46,10 @@ final class ManageTokensViewModel: ObservableObject {
 
     func onAppear() {
         Analytics.log(.manageTokensScreenOpened)
-        loader.reset(enteredSearchText.value)
     }
 
-    func onDisappear() {
-        DispatchQueue.main.async {
-            self.enteredSearchText.value = ""
-        }
-    }
-
-    func fetch() {
-        loader.fetch(enteredSearchText.value)
+    func fetch(searchText: String) {
+        loader.fetch(searchText)
     }
 }
 
@@ -78,20 +70,7 @@ private extension ManageTokensViewModel {
     }
 
     func bind() {
-        enteredSearchText
-            .dropFirst()
-            .debounce(for: 0.5, scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .sink { [weak self] string in
-                if !string.isEmpty {
-                    Analytics.log(.manageTokensSearched)
-                }
-
-                self?.loader.fetch(string)
-            }
-            .store(in: &bag)
-
-        // Used for update state generateAddressesViewModel property
+        // Need for update state generateAddressesViewModel property
         let pendingDerivationsCountPublishers = userWalletRepository.models
             .compactMap { model -> AnyPublisher<(UserWalletId, Int), Never>? in
                 if let derivationManager = model.userTokensManager.derivationManager {

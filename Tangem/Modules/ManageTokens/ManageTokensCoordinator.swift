@@ -30,7 +30,7 @@ class ManageTokensCoordinator: CoordinatorObject {
     // MARK: - Implmentation
 
     func start(with options: ManageTokensCoordinator.Options) {
-        manageTokensViewModel = .init(coordinator: self)
+        manageTokensViewModel = .init(coordinator: self, enteredSearchText: "")
     }
 }
 

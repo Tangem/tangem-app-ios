@@ -21,17 +21,13 @@ class AppCoordinator: CoordinatorObject {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
     // MARK: - Child coordinators
 
     @Published var welcomeCoordinator: WelcomeCoordinator?
     @Published var uncompletedBackupCoordinator: UncompletedBackupCoordinator?
     @Published var authCoordinator: AuthCoordinator?
-
-    // MARK: - Child view models
-
-    @Published private(set) var mainBottomSheetViewModel: MainBottomSheetViewModel?
+    @Published var mainBottomSheetCoordinator: MainBottomSheetCoordinator?
 
     // MARK: - View State
 
@@ -46,6 +42,13 @@ class AppCoordinator: CoordinatorObject {
         userWalletRepository.initialize()
         walletConnectSessionStorageInitializer.initialize()
         bind()
+
+        // This single VM instance is intentionally strongly captured
+        // below in the `map` closure to prevent it from deallocation
+        mainBottomSheetCoordinator = MainBottomSheetCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
+        )
     }
 
     func start(with options: AppCoordinator.Options = .default) {
@@ -127,16 +130,6 @@ class AppCoordinator: CoordinatorObject {
                     self?.handleLock(reason: reason)
                 }
             }
-            .store(in: &bag)
-
-        // This single VM instance is intentionally strongly captured
-        // below in the `map` closure to prevent it from deallocation
-        let mainBottomSheetViewModel = MainBottomSheetViewModel()
-
-        bottomSheetVisibility
-            .isShown
-            .map { $0 ? mainBottomSheetViewModel : nil }
-            .assign(to: \.mainBottomSheetViewModel, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

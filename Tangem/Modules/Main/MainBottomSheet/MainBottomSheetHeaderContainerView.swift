@@ -13,6 +13,6 @@ struct MainBottomSheetHeaderContainerView: View {
     @ObservedObject var viewModel: MainBottomSheetViewModel
 
     var body: some View {
-        MainBottomSheetHeaderView(searchText: $viewModel.searchText, textFieldAllowsHitTesting: true)
+        MainBottomSheetHeaderView(searchText: $viewModel.enteredSearchText, textFieldAllowsHitTesting: true)
     }
 }

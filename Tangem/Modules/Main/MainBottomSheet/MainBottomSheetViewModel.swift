@@ -7,48 +7,37 @@
 //
 
 import Foundation
+import Combine
 
 /// A temporary entity for integration and testing, subject to change.
 final class MainBottomSheetViewModel: ObservableObject {
     // MARK: - ViewModel
 
-    @Published var searchText: String = ""
+    @Published var enteredSearchText: String = ""
+    @Published var bottomSheetViewModel: ManageTokensViewModel?
 
-    // MARK: - Coordinator
+    // MARK: - Private
 
-    @Published var bottomSheet: BottomSheetContainer_Previews.BottomSheetViewModel?
+    private let coordinator: MainBottomSheetCoordinator
+    private var bag = Set<AnyCancellable>()
 
-    // MARK: - Internal
+    // MARK: - Init
 
-    @Published var items: [String] = []
-
-    init() {
-        DispatchQueue.global().async {
-            let items: [String] = (0 ..< 100).reduce(into: []) { result, _ in
-                result.append(Int.random(in: 1_000 ... 1_000_000).description)
-            }
-
-            DispatchQueue.main.async {
-                self.items = items
-            }
-        }
+    init(coordinator: MainBottomSheetCoordinator) {
+        self.coordinator = coordinator
+        bottomSheetViewModel = .init(coordinator: coordinator, enteredSearchText: enteredSearchText)
     }
 
-    func dataSource() -> [String] {
-        if searchText.isEmpty { return items }
+    // MARK: - Private Implementation
 
-        return items.filter {
-            $0.contains(searchText.lowercased())
-        }
-    }
-
-    func toggleItem() {
-        if bottomSheet == nil {
-            bottomSheet = .init { [weak self] in
-                self?.bottomSheet = nil
+    private func bind() {
+        $enteredSearchText
+            .dropFirst()
+            .debounce(for: 0.5, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] string in
+                self?.bottomSheetViewModel?.fetch(searchText: string)
             }
-        } else {
-            bottomSheet = nil
-        }
+            .store(in: &bag)
     }
 }
