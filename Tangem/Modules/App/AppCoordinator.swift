@@ -29,10 +29,6 @@ class AppCoordinator: CoordinatorObject {
     @Published var authCoordinator: AuthCoordinator?
     @Published var mainBottomSheetCoordinator: MainBottomSheetCoordinator?
 
-    // MARK: - View State
-
-    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.mainScreenBottomSheet) }
-
     // MARK: - Private
 
     private var bag: Set<AnyCancellable> = []
@@ -42,13 +38,6 @@ class AppCoordinator: CoordinatorObject {
         userWalletRepository.initialize()
         walletConnectSessionStorageInitializer.initialize()
         bind()
-
-        // This single VM instance is intentionally strongly captured
-        // below in the `map` closure to prevent it from deallocation
-        mainBottomSheetCoordinator = MainBottomSheetCoordinator(
-            dismissAction: dismissAction,
-            popToRootAction: popToRootAction
-        )
     }
 
     func start(with options: AppCoordinator.Options = .default) {
@@ -63,6 +52,8 @@ class AppCoordinator: CoordinatorObject {
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
+
+        setupMainBottomSheetCoordinator()
     }
 
     private func restart(with options: AppCoordinator.Options = .default) {
@@ -120,6 +111,23 @@ class AppCoordinator: CoordinatorObject {
         let coordinator = UncompletedBackupCoordinator(dismissAction: dismissAction)
         coordinator.start()
         uncompletedBackupCoordinator = coordinator
+    }
+
+    private func setupMainBottomSheetCoordinator() {
+        guard FeatureProvider.isAvailable(.mainScreenBottomSheet) else {
+            return
+        }
+
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.mainBottomSheetCoordinator = nil
+        }
+
+        let coordinator = MainBottomSheetCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
+        )
+        coordinator.start()
+        mainBottomSheetCoordinator = coordinator
     }
 
     private func bind() {

@@ -10,11 +10,12 @@ import SwiftUI
 
 /// A temporary entity for integration and testing, subject to change.
 struct MainBottomSheetContentView: View {
-    @ObservedObject var viewModel: MainBottomSheetViewModel
+    @ObservedObject var viewModel: MainBottomSheetContentViewModel
 
     var body: some View {
-        if let bottomSheetViewModel = viewModel.bottomSheetViewModel {
-            ManageTokensView(viewModel: bottomSheetViewModel)
+        if let viewModel = viewModel.manageTokensViewModel {
+            Color.red.frame(height: 2000.0)
+//            ManageTokensView(viewModel: viewModel)    // this ain't gonna work
         }
     }
 }
