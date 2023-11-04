@@ -14,7 +14,8 @@ struct MainBottomSheetContentView: View {
 
     var body: some View {
         if let viewModel = viewModel.manageTokensViewModel {
-            ManageTokensView(viewModel: viewModel) // this ain't gonna work
+            ManageTokensView(viewModel: viewModel)
+                .onAppear { viewModel.onAppear(with: "") }
         }
     }
 }
