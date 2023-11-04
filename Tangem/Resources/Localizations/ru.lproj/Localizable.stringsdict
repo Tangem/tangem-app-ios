@@ -53,13 +53,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>кошелек</string>
+        <string>кошелька</string>
         <key>few</key>
         <string>кошельков</string>
         <key>many</key>
         <string>кошельков</string>
         <key>other</key>
-        <string>кошельки</string>
+        <string>кошельков</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>

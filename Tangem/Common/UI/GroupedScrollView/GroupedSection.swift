@@ -80,6 +80,9 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
                 .frame(maxWidth: .infinity)
                 .frame(height: 1)
                 .padding(.leading, separatorPadding)
+        case .minimum:
+            Separator(height: .minimal, color: Colors.Stroke.primary)
+                .padding(.leading, separatorPadding)
         }
     }
 }
@@ -88,6 +91,7 @@ extension GroupedSection {
     enum SeparatorStyle: Int, Hashable {
         case none
         case single
+        case minimum
     }
 }
 
