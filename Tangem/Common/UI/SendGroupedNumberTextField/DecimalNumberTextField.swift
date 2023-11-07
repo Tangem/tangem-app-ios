@@ -25,15 +25,8 @@ struct DecimalNumberTextField: View {
         self.decimalNumberFormatter = decimalNumberFormatter
     }
 
-    private var textFieldProxyBinding: Binding<String> {
-        Binding<String>(
-            get: { decimalNumberFormatter.format(value: textFieldText) },
-            set: { updateValues(with: $0) }
-        )
-    }
-
     var body: some View {
-        TextField(placeholder, text: textFieldProxyBinding)
+        TextField(placeholder, text: $textFieldText)
             .style(Fonts.Regular.title1, color: Colors.Text.primary1)
             .keyboardType(.decimalPad)
             .tintCompat(Colors.Text.primary1)
@@ -48,6 +41,9 @@ struct DecimalNumberTextField: View {
                     let formattedNewValue = decimalNumberFormatter.format(value: value)
                     updateValues(with: formattedNewValue)
                 }
+            }
+            .onChange(of: textFieldText) { newValue in
+                updateValues(with: newValue)
             }
     }
 
