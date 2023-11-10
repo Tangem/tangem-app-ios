@@ -193,7 +193,7 @@ private extension TransactionHistoryMapper {
             return formatted
         }
 
-        let prefix = isOutgoing ? "-" : "+"
+        let prefix = isOutgoing ? AppConstants.minusSign : "+"
         return prefix + formatted
     }
 }

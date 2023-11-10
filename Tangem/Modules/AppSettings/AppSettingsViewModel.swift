@@ -20,6 +20,7 @@ class AppSettingsViewModel: ObservableObject {
     @Published var savingAccessCodesViewModel: DefaultToggleRowViewModel?
     @Published var currencySelectionViewModel: DefaultRowViewModel?
     @Published var sensitiveTextAvailabilityViewModel: DefaultToggleRowViewModel?
+    @Published var themeSettingsViewModel: DefaultRowViewModel?
     @Published var isSavingWallet: Bool {
         didSet { AppSettings.shared.saveUserWallets = isSavingWallet }
     }
@@ -73,6 +74,13 @@ private extension AppSettingsViewModel {
             .dropFirst()
             .sink { [weak self] _ in
                 self?.setupView()
+            }
+            .store(in: &bag)
+
+        AppSettings.shared.$appTheme
+            .withWeakCaptureOf(self)
+            .sink { viewModel, input in
+                viewModel.setupView()
             }
             .store(in: &bag)
 
@@ -166,6 +174,12 @@ private extension AppSettingsViewModel {
         sensitiveTextAvailabilityViewModel = DefaultToggleRowViewModel(
             title: Localization.detailsRowTitleFlipToHide,
             isOn: isSensitiveTextAvailability()
+        )
+
+        themeSettingsViewModel = DefaultRowViewModel(
+            title: Localization.appSettingsThemeSelectorTitle,
+            detailsType: .text(AppSettings.shared.appTheme.titleForDetails),
+            action: coordinator.openThemeSelection
         )
     }
 

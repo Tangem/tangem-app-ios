@@ -17,7 +17,7 @@ extension View {
     ///     private let name = UUID()
     ///     @State private var contentOffset: CGPoint = .zero
     ///
-    ///     func body(content: Content) -> some View {
+    ///     var body: some View {
     ///         ScrollView {
     ///             LazyVStack() {
     ///                 // Some scrollable content

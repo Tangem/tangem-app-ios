@@ -101,7 +101,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     func deriveEntriesWithoutDerivation() {
-        Analytics.log(.noticeScanYourCardTapped)
+        Analytics.log(.mainNoticeScanYourCardTapped)
         isScannerBusy = true
         userWalletModel.userTokensManager.deriveIfNeeded { [weak self] _ in
             DispatchQueue.main.async {
@@ -114,7 +114,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         // TODO: Refactor this along with OnboardingInput generation
         if let cardViewModel = userWalletModel as? CardViewModel,
            let input = cardViewModel.backupInput {
-            Analytics.log(.noticeBackupYourWalletTapped)
+            Analytics.log(.mainNoticeBackupWalletTapped)
             coordinator.openOnboardingModal(with: input)
         }
     }
@@ -130,31 +130,11 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func bind() {
-        // The contents of the coins and tokens collection for the user wallet
-        let walletModelsPublisher = userWalletModel
-            .walletModelsManager
-            .walletModelsPublisher
-            .share(replay: 1)
-            .eraseToAnyPublisher()
-
-        // Fiat/balance changes for the coins and tokens for the user wallet
-        let walletModelsDidChangePublisher = walletModelsPublisher
-            .flatMap { walletModels in
-                return walletModels
-                    .map(\.walletDidChangePublisher)
-                    .merge()
-            }
-            .debounce(for: Constants.tokensDeliveryDelay, scheduler: DispatchQueue.main)
-            .withLatestFrom(walletModelsPublisher)
-            .eraseToAnyPublisher()
-
-        let aggregatedWalletModelsPublisher = [
-            walletModelsPublisher,
-            walletModelsDidChangePublisher,
-        ].merge()
+        let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
+        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
 
         let organizedTokensSectionsPublisher = tokenSectionsAdapter
-            .organizedSections(from: aggregatedWalletModelsPublisher, on: mappingQueue)
+            .organizedSections(from: tokenSectionsSourcePublisher, on: mappingQueue)
             .share(replay: 1)
 
         organizedTokensSectionsPublisher
@@ -247,10 +227,6 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         var tokenSyncSubscription: AnyCancellable?
         tokenSyncSubscription = userWalletModel.userTokenListManager.initializedPublisher
             .filter { $0 }
-            // We need this delay, because subscription to list items has debounce.
-            // If we didn't add this delay loader view will disappear immedeatly after loading list from backend,
-            // display empty list and after debounce interval display loaded list of items.
-            .delay(for: Constants.tokensDeliveryDelay, scheduler: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.isLoadingTokenList = false
                 withExtendedLifetime(tokenSyncSubscription) {}
@@ -505,11 +481,5 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
         case .hide:
             return
         }
-    }
-}
-
-private extension MultiWalletMainContentViewModel {
-    enum Constants {
-        static let tokensDeliveryDelay: DispatchQueue.SchedulerTimeType.Stride = 0.3
     }
 }

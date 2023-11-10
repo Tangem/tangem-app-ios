@@ -30,6 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let appView = AppCoordinatorView(coordinator: appCoordinator)
             window.rootViewController = UIHostingController(rootView: appView)
             self.window = window
+            window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
             window.makeKeyAndVisible()
         }
     }

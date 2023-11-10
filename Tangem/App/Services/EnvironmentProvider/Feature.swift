@@ -16,6 +16,7 @@ enum Feature: String, Hashable, CaseIterable {
     case mainV2
     case sendV2
     case manageTokens
+    case mainScreenBottomSheet
     case sprinklr
     case dynamicFonts
 
@@ -28,6 +29,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .mainV2: return "Main page 2.0"
         case .sendV2: return "Send screen 2.0"
         case .manageTokens: return "Manage tokens screen [TokenList 2.0]"
+        case .mainScreenBottomSheet: return "Bottom sheet on Main screen 2.0"
         case .sprinklr: return "Sprinklr support chat"
         case .dynamicFonts: return "Dynamic fonts"
         }
@@ -42,6 +44,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .mainV2: return .version("5.0")
         case .sendV2: return .unspecified
         case .manageTokens: return .unspecified
+        case .mainScreenBottomSheet: return .unspecified
         case .sprinklr: return .version("4.11.3")
         case .dynamicFonts: return .unspecified
         }

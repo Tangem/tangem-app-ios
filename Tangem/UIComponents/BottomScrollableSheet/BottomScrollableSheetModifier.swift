@@ -9,23 +9,20 @@
 import SwiftUI
 
 private struct BottomScrollableSheetModifier<SheetHeader, SheetContent>: ViewModifier where SheetHeader: View, SheetContent: View {
+    let isHiddenWhenCollapsed: Bool
     let prefersGrabberVisible: Bool
+    let allowsHitTesting: Bool
 
     @ViewBuilder let sheetHeader: () -> SheetHeader
     @ViewBuilder let sheetContent: () -> SheetContent
 
     @StateObject private var stateObject = BottomScrollableSheetStateObject()
 
-    private var scale: CGFloat {
-        let scale = abs(1.0 - stateObject.progress / 10.0)
-        return scale.isFinite ? scale : 1.0
-    }
-
     func body(content: Content) -> some View {
         ZStack(alignment: .bottom) {
             content
                 .cornerRadius(14.0)
-                .scaleEffect(scale)
+                .scaleEffect(stateObject.scale, anchor: .bottom)
                 .edgesIgnoringSafeArea(.all)
 
             BottomScrollableSheet(
@@ -34,6 +31,8 @@ private struct BottomScrollableSheetModifier<SheetHeader, SheetContent>: ViewMod
                 content: sheetContent
             )
             .prefersGrabberVisible(prefersGrabberVisible)
+            .isHiddenWhenCollapsed(isHiddenWhenCollapsed)
+            .allowsHitTesting(allowsHitTesting)
         }
         .background(Color.black.edgesIgnoringSafeArea(.all))
     }
@@ -43,13 +42,17 @@ private struct BottomScrollableSheetModifier<SheetHeader, SheetContent>: ViewMod
 
 extension View {
     func bottomScrollableSheet<Header, Content>(
-        prefersGrabberVisible: Bool,
+        isHiddenWhenCollapsed: Bool = false,
+        prefersGrabberVisible: Bool = true,
+        allowsHitTesting: Bool = true,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Header: View, Content: View {
         modifier(
             BottomScrollableSheetModifier(
+                isHiddenWhenCollapsed: isHiddenWhenCollapsed,
                 prefersGrabberVisible: prefersGrabberVisible,
+                allowsHitTesting: allowsHitTesting,
                 sheetHeader: header,
                 sheetContent: content
             )

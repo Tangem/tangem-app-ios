@@ -31,24 +31,12 @@ enum ExpressDTO {
         let description: String
     }
 
-    enum TransactionType: String, Codable {
-        case send
-        case swap
-    }
-
-    enum TransactionStatus: String, Codable {
-        case processing
-        case done
-        case failed
-        case refunded
-        case verificationRequired
-    }
-
     // MARK: - Assets
 
     enum Assets {
         struct Request: Encodable {
-            let filter: Currency
+            let tokensList: [Currency]
+            let onlyActive: Bool = true
         }
 
         struct Response: Decodable {
@@ -70,8 +58,8 @@ enum ExpressDTO {
 
     enum Pairs {
         struct Request: Encodable {
-            let from: Currency
-            let to: Currency
+            let from: [Currency]
+            let to: [Currency]
         }
 
         struct Response: Decodable {
@@ -87,14 +75,9 @@ enum ExpressDTO {
         struct Response: Decodable {
             let id: Int
             let name: String
-            let type: ProviderType
+            let type: ExpressProviderType
             let imageLarge: String
             let imageSmall: String
-
-            enum ProviderType: String, Decodable {
-                case dex
-                case cex
-            }
         }
     }
 
@@ -106,7 +89,7 @@ enum ExpressDTO {
             let fromNetwork: String
             let toContractAddress: String
             let toNetwork: String
-            let fromAmount: Int
+            let fromAmount: Decimal
             let providerId: Int
             let rateType: Provider.RateType
         }
@@ -115,7 +98,6 @@ enum ExpressDTO {
             let toAmount: Decimal
             let minAmount: Decimal
             let allowanceContract: String?
-            let error: APIError?
         }
     }
 
@@ -135,12 +117,12 @@ enum ExpressDTO {
 
         struct Response: Decodable {
             let toAmount: Decimal
-            let txType: TransactionType
+            let txType: ExpressTransactionType
             // inner tangem-express transaction id
             let txId: String
             // account for debiting tokens (same as toAddress)
             // for CEX doesn't matter from wich address send
-            let txFrom: String?
+            let txFrom: String
             // swap smart-contract address
             // CEX address for sending transaction
             let txTo: String
@@ -163,7 +145,7 @@ enum ExpressDTO {
         }
 
         struct Response: Decodable {
-            let status: TransactionStatus
+            let status: ExpressTransactionStatus
             let externalStatus: String
             let externalTxUrl: String
             let errorCode: Int

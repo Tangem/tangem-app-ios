@@ -34,7 +34,7 @@ class Toast<V: View> {
     }
 
     func present(layout: Layout, type: PresentationTime, animated: Bool = true) {
-        guard let keyWindow = UIApplication.keyWindow else {
+        guard let keyWindow = UIApplication.shared.windows.last else {
             AppLog.shared.debug("UIApplication.keyWindow not found")
             return
         }

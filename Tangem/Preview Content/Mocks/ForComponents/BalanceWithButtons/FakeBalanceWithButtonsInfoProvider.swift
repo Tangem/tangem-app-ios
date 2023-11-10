@@ -11,8 +11,17 @@ import Combine
 
 class FakeBalanceWithButtonsInfoProvider {
     @Published var models: [BalanceWithButtonsViewModel] = []
+    @Published var modelsWithButtons: [BalanceWithButtonsViewModel] = []
 
-    private let balanceProviders = [
+    private let balanceProvidersWithoutButtons = [
+        FakeTokenBalanceProvider(
+            buttons: [],
+            delay: 0,
+            cryptoBalanceInfo: .init(balance: "1031232431232151004.435432 BTC", fiatBalance: "–")
+        ),
+    ]
+
+    private let balanceProvidersWithButtons = [
         FakeTokenBalanceProvider(
             buttons: [
                 .init(title: "Buy", icon: Assets.plusMini, action: {}, disabled: true),
@@ -20,11 +29,6 @@ class FakeBalanceWithButtonsInfoProvider {
             ],
             delay: 5,
             cryptoBalanceInfo: .init(balance: "1034.435432 ETH", fiatBalance: "–")
-        ),
-        FakeTokenBalanceProvider(
-            buttons: [],
-            delay: 0,
-            cryptoBalanceInfo: .init(balance: "1031232431232151004.435432 BTC", fiatBalance: "–")
         ),
         FakeTokenBalanceProvider(
             buttons: [
@@ -49,11 +53,14 @@ class FakeBalanceWithButtonsInfoProvider {
     ]
 
     init() {
-        models = balanceProviders.map {
-            BalanceWithButtonsViewModel(
-                balanceProvider: $0,
-                buttonsProvider: $0
-            )
-        }
+        models = (balanceProvidersWithoutButtons + balanceProvidersWithButtons).map(map(_:))
+        modelsWithButtons = balanceProvidersWithButtons.map(map(_:))
+    }
+
+    func map(_ provider: FakeTokenBalanceProvider) -> BalanceWithButtonsViewModel {
+        BalanceWithButtonsViewModel(
+            balanceProvider: provider,
+            buttonsProvider: provider
+        )
     }
 }

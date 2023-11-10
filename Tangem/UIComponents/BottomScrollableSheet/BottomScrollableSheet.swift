@@ -14,7 +14,15 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
 
     @ObservedObject private var stateObject: BottomScrollableSheetStateObject
 
+    @State private var isHidden = true
+    private var isHiddenWhenCollapsed = false
+
     private var prefersGrabberVisible = true
+
+    /// The tap gesture is completely disabled when the sheet is expanded.
+    private var headerTapGestureMask: GestureMask { stateObject.state.isBottom ? .all : .none }
+
+    private let coordinateSpaceName = UUID()
 
     init(
         stateObject: BottomScrollableSheetStateObject,
@@ -28,10 +36,11 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
 
     var body: some View {
         GeometryReader { proxy in
-            ZStack(alignment: .bottom) {
+            ZStack {
                 backgroundView
 
                 sheet(proxy: proxy)
+                    .infinityFrame(axis: .vertical, alignment: .bottom)
             }
             .ignoresSafeArea(edges: .bottom)
             .onAppear(perform: stateObject.onAppear)
@@ -40,14 +49,16 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
         .ignoresSafeArea(.keyboard)
     }
 
-    private var dragGesture: some Gesture {
+    private var headerDragGesture: some Gesture {
         DragGesture(coordinateSpace: .global)
-            .onChanged { value in
-                stateObject.headerDragGesture(onChanged: value)
-            }
-            .onEnded { value in
-                stateObject.headerDragGesture(onEnded: value)
-            }
+            .onChanged(stateObject.headerDragGesture(onChanged:))
+            .onEnded(stateObject.headerDragGesture(onEnded:))
+    }
+
+    private var headerTapGesture: some Gesture {
+        // TODO: Andrey Fedorov - Text field in the bottom sheet header should become focused on tap (IOS-4771)
+        TapGesture()
+            .onEnded(stateObject.onHeaderTap)
     }
 
     @ViewBuilder private var backgroundView: some View {
@@ -56,48 +67,74 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
             .ignoresSafeArea()
     }
 
-    @ViewBuilder private var grabber: some View {
-        if prefersGrabberVisible {
-            Capsule(style: .continuous)
-                .fill(Colors.Icon.inactive)
-                .frame(size: Constants.grabberSize)
-                .padding(.vertical, 8.0)
-                .infinityFrame(axis: .horizontal)
-        }
-    }
-
     @ViewBuilder private var scrollView: some View {
-        ScrollViewRepresentable(delegate: stateObject, content: content)
-            .isScrollDisabled(stateObject.scrollViewIsDragging)
+        ScrollView(.vertical) {
+            ZStack {
+                DragGesturePassthroughView(
+                    onChanged: stateObject.scrollViewContentDragGesture(onChanged:),
+                    onEnded: stateObject.scrollViewContentDragGesture(onEnded:)
+                )
+
+                content()
+                    .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
+                    .readContentOffset(
+                        inCoordinateSpace: .named(coordinateSpaceName),
+                        bindTo: stateObject.contentOffsetSubject.asWriteOnlyBinding(.zero)
+                    )
+            }
+            .ios15AndBelowScrollDisabledCompat(stateObject.scrollViewIsDragging)
+        }
+        .ios16AndAboveScrollDisabledCompat(stateObject.scrollViewIsDragging)
+        .coordinateSpace(name: coordinateSpaceName)
     }
 
     @ViewBuilder
     private func sheet(proxy: GeometryProxy) -> some View {
-        VStack(spacing: 0.0) {
-            headerView(proxy: proxy)
+        ZStack {
+            Colors.Background.primary
 
-            scrollView
+            VStack(spacing: 0.0) {
+                headerView(proxy: proxy)
+
+                scrollView
+            }
+            .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
         }
-        .frame(height: stateObject.visibleHeight, alignment: .bottom)
-        .cornerRadius(24.0, corners: [.topLeft, .topRight])
+        .frame(height: stateObject.visibleHeight)
+        .bottomScrollableSheetCornerRadius()
+        .bottomScrollableSheetShadow()
+        .hidden(isHiddenWhenCollapsed ? isHidden : false)
+        .onAnimationStarted(for: stateObject.progress) {
+            if isHidden {
+                isHidden = false
+            }
+        }
+        .onAnimationCompleted(for: stateObject.progress) {
+            if !isHidden, stateObject.progress < .ulpOfOne {
+                isHidden = true
+            }
+        }
+        .overlay(headerGestureOverlayView(proxy: proxy), alignment: .top) // Mustn't be hidden (by the 'isHidden' flag)
     }
 
-    /// Overlay view with reduced hittest area is used here to prevent simultaneous recognition of the drag gesture with the system edge drop gesture.
     @ViewBuilder
-    private func gestureOverlayView(proxy: GeometryProxy) -> some View {
-        let overlayHeight = max(0.0, stateObject.headerHeight - proxy.safeAreaInsets.bottom)
+    private func headerGestureOverlayView(proxy: GeometryProxy) -> some View {
+        // The reduced hittest area is used here to prevent simultaneous recognition of the `headerDragGesture`
+        // or `headerTapGesture` gestures and the system `app switcher` screen edge drag gesture.
+        let overlayViewBottomInset = stateObject.state.isBottom ? proxy.safeAreaInsets.bottom : 0.0
+        let overlayViewHeight = max(0.0, stateObject.headerHeight - overlayViewBottomInset)
         Color.clear
-            .frame(height: overlayHeight, alignment: .top)
+            .frame(height: overlayViewHeight, alignment: .top)
             .contentShape(Rectangle())
-            .gesture(dragGesture)
+            .gesture(headerTapGesture, including: headerTapGestureMask)
+            .simultaneousGesture(headerDragGesture)
     }
 
     @ViewBuilder
     private func headerView(proxy: GeometryProxy) -> some View {
         header()
-            .overlay(grabber, alignment: .top)
+            .if(prefersGrabberVisible) { $0.bottomScrollableSheetGrabber() }
             .readGeometry(\.size.height, bindTo: $stateObject.headerHeight)
-            .overlay(gestureOverlayView(proxy: proxy), alignment: .top)
     }
 }
 
@@ -107,6 +144,10 @@ extension BottomScrollableSheet: Setupable {
     func prefersGrabberVisible(_ visible: Bool) -> Self {
         map { $0.prefersGrabberVisible = visible }
     }
+
+    func isHiddenWhenCollapsed(_ isHidden: Bool) -> Self {
+        map { $0.isHiddenWhenCollapsed = isHidden }
+    }
 }
 
 // MARK: - Constants
@@ -114,6 +155,23 @@ extension BottomScrollableSheet: Setupable {
 private extension BottomScrollableSheet {
     enum Constants {
         static var backgroundViewOpacity: CGFloat { 0.5 }
-        static var grabberSize: CGSize { CGSize(width: 32.0, height: 4.0) }
+    }
+}
+
+// MARK: - Convenience extensions
+
+private extension View {
+    func onAnimationStarted<Value>(
+        for value: Value,
+        completion: @escaping () -> Void
+    ) -> some View where Value: VectorArithmetic, Value: Comparable, Value: ExpressibleByFloatLiteral {
+        modifier(
+            AnimationProgressObserverModifier(
+                observedValue: value,
+                targetValue: 0.0,
+                valueComparator: >,
+                action: completion
+            )
+        )
     }
 }

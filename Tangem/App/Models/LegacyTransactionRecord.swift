@@ -32,7 +32,7 @@ extension LegacyTransactionRecord {
         var amountPrefix: String {
             switch self {
             case .receive: return "+"
-            case .send, .approval: return "-"
+            case .send, .approval: return AppConstants.minusSign
             case .swap(let type): return type.amountPrefix
             }
         }
@@ -103,7 +103,7 @@ extension LegacyTransactionRecord {
         var amountPrefix: String {
             switch self {
             case .buy: return "+"
-            case .sell: return "-"
+            case .sell: return AppConstants.minusSign
             }
         }
     }

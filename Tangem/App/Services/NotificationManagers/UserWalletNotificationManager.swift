@@ -20,6 +20,7 @@ protocol NotificationTapDelegate: AnyObject {
 final class UserWalletNotificationManager {
     @Injected(\.deprecationService) private var deprecationService: DeprecationServicing
 
+    private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
     private let signatureCountValidator: SignatureCountValidator?
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
@@ -31,6 +32,8 @@ final class UserWalletNotificationManager {
     init(userWalletModel: UserWalletModel, signatureCountValidator: SignatureCountValidator?) {
         self.userWalletModel = userWalletModel
         self.signatureCountValidator = signatureCountValidator
+
+        analyticsService.setup(with: self)
     }
 
     private func createNotifications() {

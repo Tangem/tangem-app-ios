@@ -136,6 +136,26 @@ extension WarningEvent: NotificationEvent {
         }
     }
 
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .numberOfSignedHashesIncorrect: return .mainNoticeCardSignedTransactions
+        case .rateApp: return nil
+        case .failedToVerifyCard: return .mainNoticeProductSampleCard
+        case .testnetCard: return .mainNoticeTestnetCard
+        case .demoCard: return .mainNoticeDemoCard
+        case .oldDeviceOldCard: return .mainNoticeOldCard
+        case .oldCard: return .mainNoticeOldCard
+        case .devCard: return .mainNoticeDevelopmentCard
+        case .lowSignatures: return nil
+        case .legacyDerivation: return nil
+        case .systemDeprecationTemporary: return nil
+        case .systemDeprecationPermanent: return nil
+        case .missingDerivation: return .mainNoticeMissingAddress
+        case .walletLocked: return .mainNoticeWalletUnlock
+        case .missingBackup: return .mainNoticeBackupYourWallet
+        }
+    }
+
     func style(tapAction: NotificationView.NotificationAction? = nil, buttonAction: NotificationView.NotificationButtonTapAction? = nil) -> NotificationView.Style {
         switch self {
         case .walletLocked:

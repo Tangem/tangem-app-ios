@@ -38,7 +38,7 @@ struct PagerWithDots<Data, Content>: View
     }
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
                 // render all the content, making sure that each page fills
                 // the entire PagerView
@@ -71,7 +71,7 @@ struct PagerWithDots<Data, Content>: View
             )
 
             if data.count > 1 {
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     ForEach(0 ..< data.count, id: \.id) { index in
                         Circle()
                             .foregroundColor((index == currentIndex) ? Colors.Icon.primary1 : Colors.Icon.informative)

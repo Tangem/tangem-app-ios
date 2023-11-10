@@ -110,8 +110,7 @@ struct NotificationView: View {
                 if let description = settings.event.description {
                     Text(description)
                         .multilineTextAlignment(.leading)
-                        .lineSpacing(3)
-                        .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                         .infinityFrame(axis: .horizontal, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -136,10 +135,22 @@ struct NotificationView_Previews: PreviewProvider {
     class PreviewViewModel: ObservableObject {
         lazy var notificationInputs: [NotificationViewInput] = [
             .init(
-                style: .tappable(action: { [weak self] id in
-                    self?.notificationTapped(with: id)
-                }),
+                style: .withButtons([
+                    .init(action: { _, _ in
+
+                    }, actionType: .backupCard, isWithLoader: false),
+                ]),
                 settings: NotificationView.Settings(event: WarningEvent.missingBackup, dismissAction: { [weak self] id in
+                    self?.removeNotification(with: id)
+                })
+            ),
+            .init(
+                style: .withButtons([
+                    .init(action: { _, _ in
+
+                    }, actionType: .generateAddresses, isWithLoader: false),
+                ]),
+                settings: NotificationView.Settings(event: WarningEvent.missingDerivation(numberOfNetworks: 1), dismissAction: { [weak self] id in
                     self?.removeNotification(with: id)
                 })
             ),

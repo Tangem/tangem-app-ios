@@ -10,6 +10,8 @@ import Foundation
 import Combine
 
 class UncompletedBackupCoordinator: CoordinatorObject {
+    // MARK: - Dependencies
+
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
@@ -20,8 +22,6 @@ class UncompletedBackupCoordinator: CoordinatorObject {
     // MARK: - Child coordinators
 
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
-
-    // MARK: - Child view models
 
     // MARK: - Helpers
 

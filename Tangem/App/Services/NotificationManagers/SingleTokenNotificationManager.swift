@@ -11,7 +11,9 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 
-class SingleTokenNotificationManager {
+final class SingleTokenNotificationManager {
+    private let analyticsService: NotificationsAnalyticsService = .init()
+
     private let walletModel: WalletModel
     private weak var delegate: NotificationTapDelegate?
 
@@ -21,6 +23,8 @@ class SingleTokenNotificationManager {
 
     init(walletModel: WalletModel) {
         self.walletModel = walletModel
+
+        analyticsService.setup(with: self)
     }
 
     private func bind() {

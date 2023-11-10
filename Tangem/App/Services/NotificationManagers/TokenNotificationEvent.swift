@@ -114,4 +114,17 @@ extension TokenNotificationEvent: NotificationEvent {
             return false
         }
     }
+
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .networkUnreachable: return .tokenNoticeNetworkUnreachable
+        case .someNetworksUnreachable: return .mainNoticeNetworksUnreachable
+        case .rentFee: return nil
+        case .noAccount: return nil
+        case .existentialDepositWarning: return nil
+        case .longTransaction: return nil
+        case .hasPendingTransactions: return nil
+        case .notEnoughtFeeForTokenTx: return .tokenNoticeNotEnoughtFee
+        }
+    }
 }

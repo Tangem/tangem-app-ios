@@ -35,6 +35,7 @@ class CardViewModel: Identifiable, ObservableObject {
 
     private let keysRepository: KeysRepository
     private let walletManagersRepository: WalletManagersRepository
+//    private let notificationAnalyticsManager: NotificationsAnalyticsManager
 
     lazy var derivationManager: DerivationManager? = {
         guard config.hasFeature(.hdWallets) else {

@@ -13,4 +13,5 @@ protocol AppSettingsRoutable: AnyObject {
     func openResetSavedCards()
     func openAppSettings()
     func openCurrencySelection()
+    func openThemeSelection()
 }

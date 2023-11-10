@@ -127,7 +127,7 @@ extension FakeCardHeaderPreviewProvider {
 
         init(walletModel: FakeUserWalletModel, tapAction: @escaping (CardInfoProvider) -> Void) {
             self.walletModel = walletModel
-            headerSubtitleProvider = MainHeaderSubtitleProviderFactory().provider(for: walletModel, isMultiWallet: false)
+            headerSubtitleProvider = MainHeaderSubtitleProviderFactory().provider(for: walletModel, isMultiWallet: walletModel.isMultiWallet)
             self.tapAction = tapAction
         }
 

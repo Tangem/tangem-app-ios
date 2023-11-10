@@ -58,11 +58,8 @@ extension Analytics {
         case mainEnableBiometric = "[Main Screen] Enable Biometric"
         case mainScreenWalletChangedBySwipe = "[Main Screen] Wallet Swipe"
         case noticeRateTheAppButtonTapped = "[Main Screen] Notice - Rate The App Button Tapped"
-        case noticeBackupYourWalletTapped = "[Main Screen] Notice - Backup Your Wallet Tapped"
-        case noticeScanYourCardTapped = "[Main Screen] Notice - Scan Your Card Tapped"
         case mainNoticeLearnAndEarn = "[Main Screen] Notice - Learn&Earn"
         case mainNoticeSuccessfulClaim = "[Main Screen] Notice - Successful Claim"
-        case mainNoticeWalletUnlockTapped = "[Main Screen] Notice - Wallet Unlock Tapped"
         case buttonManageTokens = "[Portfolio] Button - Manage Tokens"
         case tokenIsTapped = "[Portfolio] Token is Tapped"
         case mainRefreshed = "[Portfolio] Refreshed"
@@ -193,6 +190,24 @@ extension Analytics {
         fileprivate static var nfcError: String {
             "nfc_error"
         }
+
+        // MARK: - Notifications
+
+        case mainNoticeBackupWalletTapped = "[Main Screen] Notice - Backup Your Wallet Tapped"
+        case mainNoticeScanYourCardTapped = "[Main Screen] Notice - Scan Your Card Tapped"
+        case mainNoticeNetworksUnreachable = "[Main Screen] Notice - Networks  Unreachable"
+        case mainNoticeCardSignedTransactions = "[Main Screen] Notice - Card Signed Transactions"
+        case mainNoticeProductSampleCard = "[Main Screen] Notice - Product Sample Card"
+        case mainNoticeTestnetCard = "[Main Screen] Notice - Testnet Card"
+        case mainNoticeDemoCard = "[Main Screen] Notice - Demo Card"
+        case mainNoticeOldCard = "[Main Screen] Notice - Old Card"
+        case mainNoticeDevelopmentCard = "[Main Screen] Notice - Development Card"
+        case mainNoticeMissingAddress = "[Main Screen] Notice - Missing Addresses"
+        case mainNoticeWalletUnlock = "[Main Screen] Notice - Wallet Unlock"
+        case mainNoticeWalletUnlockTapped = "[Main Screen] Notice - Wallet Unlock Tapped"
+        case mainNoticeBackupYourWallet = "[Main Screen] Notice - Backup Your Wallet"
+        case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
+        case tokenNoticeNotEnoughtFee = "[Token] Notice - Not Enough Fee"
 
         // MARK: - BlockchainSdk exceptions
 

@@ -25,19 +25,18 @@ class MultiWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
 
     var containsSensitiveInfo: Bool { false }
 
-    private var suffix: String {
+    private var suffix: String? {
         if isUserWalletLocked {
-            return separator + Localization.commonLocked
+            return Localization.commonLocked
         }
 
         if areWalletsImported {
-            return separator + Localization.commonSeedPhrase
+            return Localization.commonSeedPhrase
         }
 
-        return ""
+        return nil
     }
 
-    private let separator = " • "
     private let subtitleInfoSubject: CurrentValueSubject<MainHeaderSubtitleInfo, Never> = .init(.empty)
     private let isUserWalletLocked: Bool
     private let areWalletsImported: Bool
@@ -69,7 +68,10 @@ class MultiWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
     private func formatSubtitle() {
         let numberOfCards = dataSource.cardsCount
         let numberOfCardsPrefix = Localization.cardLabelCardCount(numberOfCards)
-        let subtitle = numberOfCardsPrefix + suffix
-        subtitleInfoSubject.send(.init(message: subtitle, formattingOption: .default))
+        var subtitle = [numberOfCardsPrefix]
+        if let suffix {
+            subtitle.append(suffix)
+        }
+        subtitleInfoSubject.send(.init(messages: subtitle, formattingOption: .default))
     }
 }

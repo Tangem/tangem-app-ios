@@ -65,6 +65,7 @@ final class MainHeaderViewModel: ObservableObject {
 
         balanceProvider.totalBalancePublisher()
             .receive(on: DispatchQueue.main)
+            .debounce(for: 0.2, scheduler: DispatchQueue.main) // Hide skeleton and apply state with delay, mimic current behavior
             .sink { [weak self] newValue in
                 guard let self else {
                     return

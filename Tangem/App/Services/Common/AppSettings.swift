@@ -69,6 +69,9 @@ class AppSettings {
     @AppStorageCompat(StorageType.shouldHidingSensitiveInformationSheetShowing)
     var shouldHidingSensitiveInformationSheetShowing: Bool = true
 
+    @AppStorageCompat(StorageType.appTheme)
+    var appTheme: ThemeOption = .system
+
     static let shared: AppSettings = .init()
 
     private init() {}

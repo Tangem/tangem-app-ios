@@ -29,5 +29,8 @@ struct AppSettingsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.currencySelectViewModel) {
                 CurrencySelectView(viewModel: $0)
             }
+            .navigation(item: $coordinator.themeSelectionViewModel) {
+                ThemeSelectionView(viewModel: $0)
+            }
     }
 }

@@ -10,6 +10,8 @@ import Foundation
 import Combine
 
 class AuthCoordinator: CoordinatorObject {
+    // MARK: - Dependencies
+
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 

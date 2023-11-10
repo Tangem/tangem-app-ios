@@ -76,7 +76,8 @@ struct BottomSheetContainer<ContentView: View>: View {
             Capsule(style: .continuous)
                 .fill(Colors.Icon.inactive)
                 .frame(size: indicatorSize)
-                .padding(.vertical, 10)
+                .padding(.top, 8)
+                .padding(.bottom, 10)
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
@@ -149,7 +150,7 @@ extension BottomSheetContainer {
         let animationDuration: Double
 
         init(
-            cornerRadius: CGFloat = 16,
+            cornerRadius: CGFloat = 24,
             backgroundColor: Color = Colors.Background.secondary,
             backgroundOpacity: CGFloat = 0.5,
             distanceToHide: CGFloat = UIScreen.main.bounds.height * 0.1,

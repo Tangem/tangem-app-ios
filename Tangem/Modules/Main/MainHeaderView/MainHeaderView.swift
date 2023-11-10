@@ -20,8 +20,10 @@ struct MainHeaderView: View {
             HStack(spacing: 0) {
                 let contentSettings = contentSettings(containerWidth: proxy.size.width)
 
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 0) {
                     titleView
+
+                    Spacer(minLength: 0)
 
                     if viewModel.isUserWalletLocked {
                         Colors.Field.primary
@@ -32,9 +34,13 @@ struct MainHeaderView: View {
                         BalanceTitleView(balance: viewModel.balance, isLoading: viewModel.isLoadingFiatBalance)
                     }
 
+                    Spacer(minLength: 10)
+
                     subtitleText
                 }
                 .lineLimit(1)
+                .padding(.top, 14)
+                .padding(.bottom, 12)
                 .frame(width: contentSettings.leadingContentWidth, height: imageSize.height, alignment: .leading)
 
                 if let cardImage = viewModel.cardImage, contentSettings.shouldShowTrailingContent {
@@ -60,9 +66,17 @@ struct MainHeaderView: View {
     @ViewBuilder private var subtitleText: some View {
         Group {
             if viewModel.subtitleContainsSensitiveInfo {
-                SensitiveText(viewModel.subtitleInfo.message)
+                SensitiveText(viewModel.subtitleInfo.messages.first ?? "")
             } else {
-                Text(viewModel.subtitleInfo.message)
+                HStack(spacing: 6) {
+                    ForEach(viewModel.subtitleInfo.messages, id: \.self) { message in
+                        Text(message)
+
+                        if message != viewModel.subtitleInfo.messages.last {
+                            SubtitleSeparator()
+                        }
+                    }
+                }
             }
         }
         .style(
@@ -98,6 +112,16 @@ struct MainHeaderView: View {
     }
 }
 
+private extension MainHeaderView {
+    struct SubtitleSeparator: View {
+        var body: some View {
+            Colors.Icon.informative
+                .clipShape(Circle())
+                .frame(size: .init(bothDimensions: 2.5))
+        }
+    }
+}
+
 struct CardHeaderView_Previews: PreviewProvider {
     struct CardHeaderPreview: View {
         @ObservedObject var provider: FakeCardHeaderPreviewProvider = .init()
@@ -120,6 +144,7 @@ struct CardHeaderView_Previews: PreviewProvider {
                         }
                     )
                 }
+                .padding()
             }
         }
     }

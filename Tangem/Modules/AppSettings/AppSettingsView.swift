@@ -29,6 +29,8 @@ struct AppSettingsView: View {
                 savingAccessCodesSection
 
                 sensitiveTextAvailabilitySection
+
+                themeSettingsSection
             }
         }
         .alert(item: $viewModel.alert) { $0.alert }
@@ -78,6 +80,12 @@ struct AppSettingsView: View {
             DefaultToggleRowView(viewModel: $0)
         } footer: {
             DefaultFooterView(Localization.detailsRowDescriptionFlipToHide)
+        }
+    }
+
+    private var themeSettingsSection: some View {
+        GroupedSection(viewModel.themeSettingsViewModel) {
+            DefaultRowView(viewModel: $0)
         }
     }
 }

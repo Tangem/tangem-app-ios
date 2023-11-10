@@ -77,7 +77,9 @@ class UserWalletListCellViewModel: ObservableObject {
     }
 
     private func bind() {
-        userWalletModel.totalBalancePublisher()
+        userWalletModel
+            .totalBalancePublisher()
+            .debounce(for: 0.2, scheduler: DispatchQueue.main) // Hide skeleton and apply state with delay, mimic current behavior
             .sink { [unowned self] loadingValue in
                 switch loadingValue {
                 case .loading:

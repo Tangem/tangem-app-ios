@@ -14,4 +14,5 @@ protocol NotificationEvent: Hashable {
     var colorScheme: NotificationView.ColorScheme { get }
     var icon: NotificationView.MessageIcon { get }
     var isDismissable: Bool { get }
+    var analyticsEvent: Analytics.Event? { get }
 }

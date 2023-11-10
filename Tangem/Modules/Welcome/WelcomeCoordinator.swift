@@ -11,6 +11,8 @@ import Combine
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
+    // MARK: - Dependencies
+
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
@@ -72,11 +74,15 @@ class WelcomeCoordinator: CoordinatorObject {
     }
 }
 
+// MARK: - Options
+
 extension WelcomeCoordinator {
     struct Options {
         let shouldScan: Bool
     }
 }
+
+// MARK: - WelcomeRoutable
 
 extension WelcomeCoordinator: WelcomeRoutable {
     func openOnboarding(with input: OnboardingInput) {

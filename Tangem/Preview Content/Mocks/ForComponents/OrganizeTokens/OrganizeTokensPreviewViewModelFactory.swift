@@ -24,7 +24,7 @@ struct OrganizeTokensPreviewViewModelFactory {
 
         return OrganizeTokensViewModel(
             coordinator: coordinator,
-            walletModelsManager: userWalletModel.walletModelsManager,
+            userWalletModel: userWalletModel,
             tokenSectionsAdapter: tokenSectionsAdapter,
             optionsProviding: optionsManager,
             optionsEditing: optionsManager

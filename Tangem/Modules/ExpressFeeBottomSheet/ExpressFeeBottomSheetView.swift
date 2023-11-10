@@ -16,7 +16,7 @@ struct ExpressFeeBottomSheetView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: .zero) {
             BottomSheetHeaderView(title: Localization.commonFeeSelectorTitle)
 
             GroupedSection(viewModel.feeRowViewModels) {

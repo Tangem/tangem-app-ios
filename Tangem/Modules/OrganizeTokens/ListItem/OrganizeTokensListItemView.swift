@@ -47,15 +47,19 @@ struct OrganizeTokensListItemView: View {
                     )
             }
         }
-        .padding(14.0)
-        .frame(minHeight: 68)
+        .padding(14)
+    }
+
+    @ViewBuilder
+    private var tokenName: some View {
+        Text(viewModel.name)
+            .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+            .lineLimit(1)
     }
 
     @ViewBuilder
     private var defaultMiddleComponent: some View {
-        Text(viewModel.name)
-            .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-            .lineLimit(1)
+        tokenName
 
         LoadableTextView(
             state: viewModel.balance,
@@ -68,9 +72,7 @@ struct OrganizeTokensListItemView: View {
 
     @ViewBuilder
     private func makeMiddleComponent(withErrorMessage errorMessage: String) -> some View {
-        Text(viewModel.name)
-            .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-            .lineLimit(1)
+        tokenName
 
         Text(errorMessage)
             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)

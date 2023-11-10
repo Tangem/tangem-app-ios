@@ -13,15 +13,11 @@ struct MainFooterView: View {
 
     let didScrollToBottom: Bool
 
-    @State private var hasBottomSafeAreaInset = false
-
     private let buttonSize: MainButton.Size = .default
 
     private var buttonPadding: EdgeInsets {
-        // Different padding on devices with/without notch
-        let bottomInset = hasBottomSafeAreaInset ? 6.0 : 12.0
         let horizontalInset = 16.0
-        return EdgeInsets(top: 14.0, leading: horizontalInset, bottom: bottomInset, trailing: horizontalInset)
+        return EdgeInsets(top: 14.0, leading: horizontalInset, bottom: 0.0, trailing: horizontalInset)
     }
 
     private var overlayViewTopPadding: CGFloat {
@@ -30,18 +26,16 @@ struct MainFooterView: View {
     }
 
     var body: some View {
-        MainButton(
-            title: viewModel.buttonTitle,
-            size: buttonSize,
-            isDisabled: viewModel.isButtonDisabled,
-            action: viewModel.buttonAction
-        )
-        .padding(buttonPadding)
-        .readGeometry(\.safeAreaInsets.bottom) { [oldValue = hasBottomSafeAreaInset] bottomInset in
-            let newValue = bottomInset != 0.0
-            if newValue != oldValue {
-                hasBottomSafeAreaInset = newValue
-            }
+        VStack(spacing: 0.0) {
+            MainButton(
+                title: viewModel.buttonTitle,
+                size: buttonSize,
+                isDisabled: viewModel.isButtonDisabled,
+                action: viewModel.buttonAction
+            )
+            .padding(buttonPadding)
+
+            EmptyMainFooterView()
         }
         .background(
             ListFooterOverlayShadowView()

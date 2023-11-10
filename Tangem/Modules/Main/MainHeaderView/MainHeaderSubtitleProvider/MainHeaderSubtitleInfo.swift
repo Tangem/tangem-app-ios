@@ -10,10 +10,10 @@ import Foundation
 import SwiftUI
 
 struct MainHeaderSubtitleInfo {
-    let message: String
+    let messages: [String]
     let formattingOption: MainHeaderSubtitleFormattingOption
 
-    static let empty: MainHeaderSubtitleInfo = .init(message: "", formattingOption: .default)
+    static let empty: MainHeaderSubtitleInfo = .init(messages: [], formattingOption: .default)
 }
 
 extension MainHeaderSubtitleInfo {

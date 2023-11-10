@@ -43,7 +43,12 @@ class TotalSumBalanceViewModel: ObservableObject {
     }
 
     private func bind() {
-        totalBalanceProvider.totalBalancePublisher()
+        let totalBalancePublisher = totalBalanceProvider
+            .totalBalancePublisher()
+            .debounce(for: 0.2, scheduler: DispatchQueue.main) // Hide skeleton and apply state with delay, mimic current behavior
+            .share(replay: 1)
+
+        totalBalancePublisher
             .compactMap { $0.value }
             .map { [unowned self] balance -> NSAttributedString in
                 checkPositiveBalance()
@@ -53,12 +58,12 @@ class TotalSumBalanceViewModel: ObservableObject {
             .store(in: &bag)
 
         // Skeleton subscription
-        totalBalanceProvider.totalBalancePublisher()
+        totalBalancePublisher
             .map { $0.isLoading }
             .assign(to: \.isLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
-        totalBalanceProvider.totalBalancePublisher()
+        totalBalancePublisher
             .compactMap { $0.value?.hasError }
             .removeDuplicates()
             .assign(to: \.hasError, on: self, ownership: .weak)

@@ -13,6 +13,7 @@ import SwiftUI
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
     // MARK: - ViewState
 
@@ -25,13 +26,18 @@ final class MainViewModel: ObservableObject {
 
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
 
+    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.mainScreenBottomSheet) }
+
     // MARK: - Dependencies
 
-    private var mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
+    private let mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
     private weak var coordinator: MainRoutable?
 
-    private var bag = Set<AnyCancellable>()
+    // MARK: - Internal state
+
     private var isLoggingOut = false
+
+    private var bag = Set<AnyCancellable>()
 
     // MARK: - Initializers
 
@@ -65,10 +71,6 @@ final class MainViewModel: ObservableObject {
 
     // MARK: - Internal functions
 
-    func onAppear() {
-        Analytics.log(.mainScreenOpened)
-    }
-
     func openDetails() {
         let userWalletModel = userWalletRepository.models[selectedCardIndex]
 
@@ -78,6 +80,23 @@ final class MainViewModel: ObservableObject {
         }
 
         coordinator?.openDetails(for: userWalletModel)
+    }
+
+    func onViewAppear() {
+        Analytics.log(.mainScreenOpened)
+
+        bottomSheetVisibility.show()
+
+        if isPageSwitchAnimationDisabled {
+            // A small delay to turn on animations back after closing the Details screen
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.isPageSwitchAnimationDisabled = false
+            }
+        }
+    }
+
+    func onViewDisappear() {
+        bottomSheetVisibility.hide()
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
@@ -104,15 +123,6 @@ final class MainViewModel: ObservableObject {
         guard reason == .byGesture else { return }
 
         Analytics.log(.mainScreenWalletChangedBySwipe)
-    }
-
-    func onViewAppear() {
-        if isPageSwitchAnimationDisabled {
-            // A small delay to turn on animations back after closing the Details screen
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.isPageSwitchAnimationDisabled = false
-            }
-        }
     }
 
     func updateIsBackupAllowed() {
@@ -225,7 +235,11 @@ final class MainViewModel: ObservableObject {
                 }
 
                 Analytics.log(.walletOpened)
-                self?.userWalletRepository.setSelectedUserWalletId(userWalletId.value, unlockIfNeeded: false, reason: .userSelected)
+                self?.userWalletRepository.setSelectedUserWalletId(
+                    userWalletId.value,
+                    unlockIfNeeded: false,
+                    reason: .userSelected
+                )
             }
             .store(in: &bag)
 
@@ -286,7 +300,12 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
     func userWalletUnlocked(_ userWalletModel: UserWalletModel) {
         guard
             let index = pages.firstIndex(where: { $0.id == userWalletModel.userWalletId }),
-            let page = mainUserWalletPageBuilderFactory.createPage(for: userWalletModel, lockedUserWalletDelegate: self, mainViewDelegate: self, multiWalletContentDelegate: self)
+            let page = mainUserWalletPageBuilderFactory.createPage(
+                for: userWalletModel,
+                lockedUserWalletDelegate: self,
+                mainViewDelegate: self,
+                multiWalletContentDelegate: self
+            )
         else {
             return
         }

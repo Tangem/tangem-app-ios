@@ -31,7 +31,7 @@ struct GenerateAddressesView: View {
 
             MainButton(
                 title: Localization.commonGenerateAddresses,
-                subtitle: Localization.manageTokensNumberOfWallets(viewModel.currentWalletNumber, viewModel.totalWalletNumber),
+                subtitle: Localization.manageTokensNumberOfWalletsIos(viewModel.currentWalletNumber, viewModel.totalWalletNumber),
                 icon: .trailing(Assets.tangemIcon),
                 style: .primary,
                 action: viewModel.didTapGenerate

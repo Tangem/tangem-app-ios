@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Moya
 
 public struct TangemSwappingFactory {
     public init() {}
@@ -32,4 +33,26 @@ public struct TangemSwappingFactory {
             amount: amount
         )
     }
+
+    public func makeExpressAPIProvider(
+        credential: ExpressAPICredential,
+        configuration: URLSessionConfiguration,
+        logger: SwappingLogger? = nil
+    ) -> ExpressAPIProvider {
+        let authorizationPlugin = ExpressAuthorizationPlugin(
+            apiKey: credential.apiKey,
+            userId: credential.userId,
+            sessionId: credential.sessionId
+        )
+        let provider = MoyaProvider<ExpressAPITarget>(session: Session(configuration: configuration), plugins: [authorizationPlugin])
+        let service = CommonExpressAPIService(provider: provider, logger: logger ?? CommonSwappingLogger())
+        let mapper = ExpressAPIMapper()
+        return CommonExpressAPIProvider(expressAPIService: service, expressAPIMapper: mapper)
+    }
+}
+
+public struct ExpressAPICredential {
+    let apiKey: String
+    let userId: String
+    let sessionId: String
 }

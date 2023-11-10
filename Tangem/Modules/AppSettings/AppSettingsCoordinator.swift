@@ -21,6 +21,7 @@ class AppSettingsCoordinator: CoordinatorObject {
     // MARK: - Child view models
 
     @Published var currencySelectViewModel: CurrencySelectViewModel? = nil
+    @Published var themeSelectionViewModel: ThemeSelectionViewModel? = nil
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -58,5 +59,9 @@ extension AppSettingsCoordinator: AppSettingsRoutable {
     func openCurrencySelection() {
         currencySelectViewModel = CurrencySelectViewModel()
         currencySelectViewModel?.dismissAfterSelection = false
+    }
+
+    func openThemeSelection() {
+        themeSelectionViewModel = ThemeSelectionViewModel()
     }
 }

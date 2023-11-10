@@ -1,5 +1,5 @@
 //
-//  ManageTokensBottomSheetViewModel.swift
+//  MainBottomSheetViewModel.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 01.08.2023.
@@ -8,9 +8,8 @@
 
 import Foundation
 
-#if ALPHA_OR_BETA
-@available(*, deprecated, message: "Test only, remove if not needed")
-final class ManageTokensBottomSheetViewModel: ObservableObject {
+/// A temporary entity for integration and testing, subject to change.
+final class MainBottomSheetViewModel: ObservableObject {
     // MARK: - ViewModel
 
     @Published var searchText: String = ""
@@ -53,4 +52,3 @@ final class ManageTokensBottomSheetViewModel: ObservableObject {
         }
     }
 }
-#endif // ALPHA_OR_BETA

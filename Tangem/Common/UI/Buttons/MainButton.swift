@@ -56,14 +56,14 @@ struct MainButton: View {
             content
                 .frame(maxWidth: .infinity, minHeight: size.height, maxHeight: size.height, alignment: .center)
                 .background(style.background(isDisabled: isDisabled))
-                .cornerRadiusContinuous(Constants.cornerRadius)
+                .cornerRadiusContinuous(style.cornerRadius(for: size))
                 .overlay(border)
         }
         .buttonStyle(BorderlessButtonStyle())
         // Prevents an ugly opacity effect when the button is placed on a transparent background and pressed
         .background(
             Colors.Background.primary
-                .cornerRadiusContinuous(Constants.cornerRadius)
+                .cornerRadiusContinuous(style.cornerRadius(for: size))
         )
         .disabled(isDisabled || isLoading)
     }
@@ -80,13 +80,13 @@ struct MainButton: View {
                     titleView
 
                 case .leading(let icon):
-                    HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .center, spacing: 6) {
                         iconView(icon: icon)
 
                         titleView
                     }
                 case .trailing(let icon):
-                    HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .center, spacing: 6) {
                         titleView
 
                         iconView(icon: icon)
@@ -103,7 +103,7 @@ struct MainButton: View {
     private var titleView: some View {
         Text(title)
             .style(
-                Fonts.Bold.callout,
+                style.titleFont(for: size),
                 color: style.titleColor(isDisabled: isDisabled)
             )
             .lineLimit(1)
@@ -130,7 +130,7 @@ struct MainButton: View {
     @ViewBuilder
     private var border: some View {
         if let borderColor = style.border(isDisabled: isDisabled) {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: style.cornerRadius(for: size), style: .continuous)
                 .stroke(borderColor)
         }
     }
@@ -156,6 +156,15 @@ extension MainButton {
                 return Colors.Icon.primary2
             case .secondary:
                 return Colors.Icon.primary1
+            }
+        }
+
+        func titleFont(for size: MainButton.Size) -> Font {
+            switch size {
+            case .default:
+                return Fonts.Bold.callout
+            case .notification:
+                return Fonts.Bold.subheadline
             }
         }
 
@@ -204,6 +213,15 @@ extension MainButton {
             }
 
             return Colors.Stroke.primary
+        }
+
+        func cornerRadius(for size: MainButton.Size) -> Double {
+            switch size {
+            case .default:
+                return 14
+            case .notification:
+                return 10
+            }
         }
     }
 
@@ -272,14 +290,6 @@ extension MainButton {
 extension MainButton: Setupable {
     func setIsLoading(to isLoading: Bool) -> Self {
         map { $0.isLoading = isLoading }
-    }
-}
-
-// MARK: - Constants
-
-private extension MainButton {
-    enum Constants {
-        static let cornerRadius = 14.0
     }
 }
 

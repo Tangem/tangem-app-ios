@@ -9,13 +9,11 @@
 import Foundation
 import Moya
 
-// TODO: Return values will be added during develop
-
 protocol ExpressAPIService {
-    func assets(request: ExpressDTO.Assets.Request) async throws
-    func pairs(request: ExpressDTO.Pairs.Request) async throws
-    func providers() async throws
-    func exchangeQuote(request: ExpressDTO.ExchangeQuote.Request) async throws
-    func exchangeData(request: ExpressDTO.ExchangeData.Request) async throws
-    func exchangeResult(request: ExpressDTO.ExchangeResult.Request) async throws
+    func assets(request: ExpressDTO.Assets.Request) async throws -> [ExpressDTO.Assets.Response]
+    func pairs(request: ExpressDTO.Pairs.Request) async throws -> [ExpressDTO.Pairs.Response]
+    func providers() async throws -> [ExpressDTO.Providers.Response]
+    func exchangeQuote(request: ExpressDTO.ExchangeQuote.Request) async throws -> ExpressDTO.ExchangeQuote.Response
+    func exchangeData(request: ExpressDTO.ExchangeData.Request) async throws -> ExpressDTO.ExchangeData.Response
+    func exchangeResult(request: ExpressDTO.ExchangeResult.Request) async throws -> ExpressDTO.ExchangeResult.Response
 }

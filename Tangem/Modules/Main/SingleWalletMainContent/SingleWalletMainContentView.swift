@@ -45,7 +45,6 @@ struct SingleWalletMainContentView: View {
                 isReloadButtonBusy: viewModel.isReloadingTransactionHistory,
                 fetchMore: viewModel.fetchMoreHistory()
             )
-            .padding(.bottom, 40)
         }
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)

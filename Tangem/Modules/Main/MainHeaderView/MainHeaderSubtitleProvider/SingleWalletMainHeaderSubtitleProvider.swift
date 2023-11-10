@@ -76,15 +76,15 @@ class SingleWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
         guard let dataSource else { return }
 
         let balance = dataSource.balance
-        subject.send(.init(message: balance, formattingOption: .default))
+        subject.send(.init(messages: [balance], formattingOption: .default))
     }
 
     private func formatErrorMessage() {
-        subject.send(.init(message: BalanceFormatter.defaultEmptyBalanceString, formattingOption: .default))
+        subject.send(.init(messages: [BalanceFormatter.defaultEmptyBalanceString], formattingOption: .default))
     }
 
     private func displayLockedWalletMessage() {
-        subject.send(.init(message: Localization.commonLocked, formattingOption: .default))
+        subject.send(.init(messages: [Localization.commonLocked], formattingOption: .default))
     }
 }
 

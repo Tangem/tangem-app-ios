@@ -25,7 +25,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     private unowned let coordinator: OrganizeTokensRoutable
 
-    private let walletModelsManager: WalletModelsManager
+    private let userWalletModel: UserWalletModel
     private let tokenSectionsAdapter: TokenSectionsAdapter
     private let optionsProviding: OrganizeTokensOptionsProviding
     private let optionsEditing: OrganizeTokensOptionsEditing
@@ -46,13 +46,13 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     init(
         coordinator: OrganizeTokensRoutable,
-        walletModelsManager: WalletModelsManager,
+        userWalletModel: UserWalletModel,
         tokenSectionsAdapter: TokenSectionsAdapter,
         optionsProviding: OrganizeTokensOptionsProviding,
         optionsEditing: OrganizeTokensOptionsEditing
     ) {
         self.coordinator = coordinator
-        self.walletModelsManager = walletModelsManager
+        self.userWalletModel = userWalletModel
         self.tokenSectionsAdapter = tokenSectionsAdapter
         self.optionsProviding = optionsProviding
         self.optionsEditing = optionsEditing
@@ -78,29 +78,11 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
     private func bind() {
         if didBind { return }
 
-        let walletModelsPublisher = walletModelsManager
-            .walletModelsPublisher
-            .share(replay: 1)
-            .eraseToAnyPublisher()
-
-        let walletModelsDidChangePublisher = walletModelsPublisher
-            .receive(on: mappingQueue)
-            .flatMap { walletModels in
-                return walletModels
-                    .map(\.walletDidChangePublisher)
-                    .merge()
-            }
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
-            .withLatestFrom(walletModelsPublisher)
-            .eraseToAnyPublisher()
-
-        let aggregatedWalletModelsPublisher = [
-            walletModelsPublisher,
-            walletModelsDidChangePublisher,
-        ].merge()
+        let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
+        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
 
         let organizedTokensSectionsPublisher = tokenSectionsAdapter
-            .organizedSections(from: aggregatedWalletModelsPublisher, on: mappingQueue)
+            .organizedSections(from: tokenSectionsSourcePublisher, on: mappingQueue)
             .share(replay: 1)
 
         let cache = dragAndDropActionsCache

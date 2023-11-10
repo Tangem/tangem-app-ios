@@ -32,6 +32,17 @@ enum MainUserWalletPageBuilder: Identifiable {
         }
     }
 
+    private var footerViewModel: MainFooterViewModel? {
+        switch self {
+        case .singleWallet:
+            return nil
+        case .multiWallet(_, _, let bodyModel):
+            return bodyModel.footerViewModel
+        case .lockedWallet(_, _, let bodyModel):
+            return bodyModel.footerViewModel
+        }
+    }
+
     @ViewBuilder
     var header: some View {
         switch self {
@@ -60,18 +71,16 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
-    func makeBottomOverlay(didScrollToBottom: Bool) -> some View {
-        switch self {
-        case .singleWallet:
-            Color.clear.frame(height: 0.0)
-        case .multiWallet(_, _, let bodyModel):
-            if let viewModel = bodyModel.footerViewModel {
-                MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
-            }
-        case .lockedWallet(_, _, let bodyModel):
-            if let viewModel = bodyModel.footerViewModel {
-                MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
-            }
+    func makeBottomOverlay(
+        isMainBottomSheetEnabled: Bool,
+        didScrollToBottom: Bool
+    ) -> some View {
+        if isMainBottomSheetEnabled {
+            MainBottomSheetFooterView()
+        } else if let viewModel = footerViewModel {
+            MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
+        } else {
+            EmptyMainFooterView()
         }
     }
 }

@@ -9,7 +9,8 @@
 import Foundation
 import Combine
 
-class MultiWalletNotificationManager {
+final class MultiWalletNotificationManager {
+    private let analyticsService = NotificationsAnalyticsService()
     private let walletModelsManager: WalletModelsManager
 
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
@@ -18,6 +19,7 @@ class MultiWalletNotificationManager {
     init(walletModelsManager: WalletModelsManager) {
         self.walletModelsManager = walletModelsManager
 
+        analyticsService.setup(with: self)
         bind()
     }
 

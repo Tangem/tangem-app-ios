@@ -172,6 +172,7 @@ struct CardsInfoPagerView<
 
                 makeBottomOverlay()
             }
+            .ignoresSafeArea(edges: .bottom)
         }
         .modifier(
             CardsInfoPagerContentSwitchingModifier(

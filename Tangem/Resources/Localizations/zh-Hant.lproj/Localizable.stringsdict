@@ -32,7 +32,7 @@
         <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
       </dict>
     </dict>
-    <key>manage_tokens_number_of_wallets</key>
+    <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%li of %#@total_wallets@</string>

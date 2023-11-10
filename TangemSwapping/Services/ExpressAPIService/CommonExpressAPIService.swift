@@ -25,28 +25,28 @@ struct CommonExpressAPIService {
 }
 
 extension CommonExpressAPIService: ExpressAPIService {
-    func assets(request: ExpressDTO.Assets.Request) async throws {
-        let _: ExpressDTO.Assets.Response = try await _request(target: .assets(request: request))
+    func assets(request: ExpressDTO.Assets.Request) async throws -> [ExpressDTO.Assets.Response] {
+        try await _request(target: .assets(request: request))
     }
 
-    func pairs(request: ExpressDTO.Pairs.Request) async throws {
-        let _: ExpressDTO.Pairs.Response = try await _request(target: .pairs(request: request))
+    func pairs(request: ExpressDTO.Pairs.Request) async throws -> [ExpressDTO.Pairs.Response] {
+        try await _request(target: .pairs(request: request))
     }
 
-    func providers() async throws {
-        let _: ExpressDTO.Providers.Response = try await _request(target: .providers)
+    func providers() async throws -> [ExpressDTO.Providers.Response] {
+        try await _request(target: .providers)
     }
 
-    func exchangeQuote(request: ExpressDTO.ExchangeQuote.Request) async throws {
-        let _: ExpressDTO.ExchangeQuote.Response = try await _request(target: .exchangeQuote(request: request))
+    func exchangeQuote(request: ExpressDTO.ExchangeQuote.Request) async throws -> ExpressDTO.ExchangeQuote.Response {
+        try await _request(target: .exchangeQuote(request: request))
     }
 
-    func exchangeData(request: ExpressDTO.ExchangeData.Request) async throws {
-        let _: ExpressDTO.ExchangeData.Response = try await _request(target: .exchangeData(request: request))
+    func exchangeData(request: ExpressDTO.ExchangeData.Request) async throws -> ExpressDTO.ExchangeData.Response {
+        try await _request(target: .exchangeData(request: request))
     }
 
-    func exchangeResult(request: ExpressDTO.ExchangeResult.Request) async throws {
-        let _: ExpressDTO.ExchangeResult.Response = try await _request(target: .exchangeResult(request: request))
+    func exchangeResult(request: ExpressDTO.ExchangeResult.Request) async throws -> ExpressDTO.ExchangeResult.Response {
+        try await _request(target: .exchangeResult(request: request))
     }
 }
 

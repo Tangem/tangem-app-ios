@@ -9,12 +9,14 @@
 import Foundation
 
 class CardSettingsCoordinator: CoordinatorObject {
-    // MARK: - Injected
-
-    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    // MARK: - Dependencies
 
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
+
+    // MARK: - Injected
+
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     // MARK: - Main view model
 
@@ -47,6 +49,8 @@ class CardSettingsCoordinator: CoordinatorObject {
     }
 }
 
+// MARK: - Options
+
 extension CardSettingsCoordinator {
     struct Options {
         let cardModel: CardViewModel
@@ -67,7 +71,10 @@ extension CardSettingsCoordinator: CardSettingsRoutable {
         }
 
         let hasOtherCards = AppSettings.shared.saveUserWallets && userWalletRepository.models.count > 1
-        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: hasOtherCards ? popToMainAction : popToRootAction)
+        let coordinator = OnboardingCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: hasOtherCards ? popToMainAction : popToRootAction
+        )
         let options = OnboardingCoordinator.Options(input: input, destination: .root)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator

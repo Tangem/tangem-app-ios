@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-protocol NotificationManager {
+protocol NotificationManager: AnyObject {
     var notificationInputs: [NotificationViewInput] { get }
     var notificationPublisher: AnyPublisher<[NotificationViewInput], Never> { get }
 

@@ -25,7 +25,6 @@ struct UnlockUserWalletBottomSheetView: View {
             Text(Localization.unlockWalletDescriptionFull(BiometricAuthorizationUtils.biometryType.name))
                 .style(Fonts.Regular.subheadline, color: Colors.Text.secondary)
                 .multilineTextAlignment(.center)
-                .lineSpacing(3)
                 .padding(.bottom, 56)
                 .padding(.horizontal, 34)
 
@@ -44,7 +43,7 @@ struct UnlockUserWalletBottomSheetView: View {
             )
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 10)
+        .padding(.bottom, 6)
         .alert(item: $viewModel.error) { $0.alert }
         .background(
             ScanTroubleshootingView(
@@ -93,6 +92,9 @@ struct UnlockUserWalletBottomSheetView_Previews: PreviewProvider {
                     .bottomSheet(item: state, settings: .init(backgroundColor: Colors.Background.primary)) { model in
                         UnlockUserWalletBottomSheetView(viewModel: model)
                     }
+            }
+            .onAppear {
+                state.wrappedValue = bottomSheetModel
             }
         })
     }
