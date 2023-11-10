@@ -78,14 +78,18 @@ struct CommonUserTokensManager {
     private mutating func bind() {
         userTokenListManager
             .userTokensListPublisher
-            // We can skip first element, because swap state will be loaded during `sync`
-            // for all token list after loading actual info from backend
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [swapAvailabilityController] tokenList in
+            // We can skip first two elements, because first token list will be received from repository
+            // and the second will be received during token list sync. Swap state will be force reloaded during `sync`
+            .dropFirst(2)
+            .map { tokenList in
                 let converter = StorageEntryConverter()
                 let nonCustomTokens = tokenList.entries.filter { !$0.isCustom }
                 let tokenItems = converter.convertToTokenItem(nonCustomTokens)
+                return tokenItems
+            }
+            // If we receive the same token items array we can skip it and don't attempt to reload swap availability
+            .removeDuplicates()
+            .sink { [swapAvailabilityController] tokenItems in
                 swapAvailabilityController.loadSwapAvailability(for: tokenItems, forceReload: false)
             }
             .store(in: &bag)
