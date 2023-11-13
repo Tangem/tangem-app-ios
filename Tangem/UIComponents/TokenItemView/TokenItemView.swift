@@ -11,7 +11,7 @@ import SwiftUI
 struct TokenItemView: View {
     @ObservedObject var viewModel: TokenItemViewModel
 
-    @State private var viewSize: CGSize = .zero
+    @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
         HStack(alignment: .center, spacing: Constants.spacerLength) {
@@ -38,7 +38,7 @@ struct TokenItemView: View {
                             Assets.pendingTxIndicator.image
                         }
                     }
-                    .frame(minWidth: 0.20 * viewSize.width, alignment: .leading)
+                    .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
 
                     Spacer(minLength: 8)
 
@@ -53,30 +53,44 @@ struct TokenItemView: View {
                             loaderSize: .init(width: 40, height: 12),
                             isSensitiveText: true
                         )
-                        .layoutPriority(1)
+                        .layoutPriority(3)
                     }
                 }
 
                 if !viewModel.hasError {
                     HStack(alignment: .center, spacing: 0) {
-                        LoadableTextView(
-                            state: viewModel.balanceCrypto,
-                            font: Fonts.Regular.footnote,
-                            textColor: Colors.Text.tertiary,
-                            loaderSize: .init(width: 52, height: 12),
-                            isSensitiveText: true
-                        )
+                        HStack(spacing: 6, content: {
+                            LoadableTextView(
+                                state: viewModel.tokenPrice,
+                                font: Fonts.Regular.caption1,
+                                textColor: Colors.Text.tertiary,
+                                loaderSize: .init(width: 52, height: 12)
+                            )
+
+                            TokenPriceChangeView(
+                                state: viewModel.priceChangeState,
+                                showSkeletonWhenLoading: false
+                            )
+                            .layoutPriority(1)
+                        })
+                        .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+                        .layoutPriority(2)
 
                         Spacer(minLength: Constants.spacerLength)
 
-                        TokenPriceChangeView(state: viewModel.priceChangeState)
-                            .frame(minWidth: 0.16 * viewSize.width, alignment: .trailing)
-                            .layoutPriority(1)
+                        LoadableTextView(
+                            state: viewModel.balanceCrypto,
+                            font: Fonts.Regular.caption1,
+                            textColor: Colors.Text.tertiary,
+                            loaderSize: .init(width: 40, height: 12),
+                            isSensitiveText: true
+                        )
+                        .layoutPriority(3)
                     }
                 }
             }
+            .readGeometry(\.size, bindTo: $textBlockSize)
         }
-        .readGeometry(\.size, bindTo: $viewSize)
         .padding(14)
         .background(Colors.Background.primary)
         .onTapGesture(perform: viewModel.tapAction)

@@ -13,6 +13,7 @@ struct Separator: View {
 
     private let height: Height
     private let color: Color
+    private let axis: Axis
 
     private var heightValue: Double {
         switch height {
@@ -24,13 +25,20 @@ struct Separator: View {
     }
 
     var body: some View {
-        color
-            .frame(height: heightValue)
+        switch axis {
+        case .horizontal:
+            color
+                .frame(height: heightValue)
+        case .vertical:
+            color
+                .frame(width: heightValue)
+        }
     }
 
-    init(height: Height = .exact(1), color: Color) {
+    init(height: Height = .exact(1), color: Color, axis: Axis = .horizontal) {
         self.height = height
         self.color = color
+        self.axis = axis
     }
 }
 

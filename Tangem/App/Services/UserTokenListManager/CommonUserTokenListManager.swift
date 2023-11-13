@@ -166,7 +166,7 @@ private extension CommonUserTokenListManager {
         let loadTokensPublisher = tangemApiService.loadTokens(for: userWalletId.hexString)
         let upgradeTokensPublisher = tryMigrateTokens().setFailureType(to: TangemAPIError.self)
 
-        self.loadTokensCancellable = loadTokensPublisher
+        loadTokensCancellable = loadTokensPublisher
             .combineLatest(upgradeTokensPublisher)
             .sink { [weak self] subscriberCompletion in
                 defer {
@@ -215,7 +215,7 @@ private extension CommonUserTokenListManager {
                 case .finished:
                     completions.forEach { $0(.success(())) }
                 case .failure(let error):
-                    self.pendingTokensToUpdate = listToUpdate
+                    pendingTokensToUpdate = listToUpdate
                     completions.forEach { $0(.failure(error)) }
                 }
             }

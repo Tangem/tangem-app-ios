@@ -23,9 +23,7 @@ struct CommonWalletConnectSigner: WalletConnectSigner {
                     with: pubKey.blockchainKey,
                     hash: data
                 ) {
-                    let strSig = "0x" + unmarshalledSig.r.hexString + unmarshalledSig.s.hexString +
-                        unmarshalledSig.v.hexString
-                    return strSig
+                    return unmarshalledSig.data.hexString.addHexPrefix()
                 } else {
                     throw WalletConnectServiceError.signFailed
                 }

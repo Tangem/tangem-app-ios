@@ -84,6 +84,11 @@ extension Analytics {
 
         case balance = "Balance"
 
+        // App theme
+        case system = "System"
+        case light = "Light"
+        case dark = "Dark"
+
         // MARK: - Actions
 
         case scan = "tap_scan_task"

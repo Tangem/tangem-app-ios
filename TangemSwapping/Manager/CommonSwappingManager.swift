@@ -284,7 +284,21 @@ private extension CommonSwappingManager {
             throw SwappingManagerError.contractAddressNotFound
         }
 
-        let data = walletDataProvider.getApproveData(for: swappingItems.source, from: spender, policy: approvePolicy)
+        let approveAmount: Decimal = try {
+            switch approvePolicy {
+            case .specified:
+                if let amount = amount {
+                    return swappingItems.source.convertToWEI(value: amount)
+                }
+
+                throw SwappingManagerError.amountNotFound
+
+            case .unlimited:
+                return .greatestFiniteMagnitude
+            }
+        }()
+
+        let data = walletDataProvider.getApproveData(for: swappingItems.source, from: spender, amount: approveAmount)
         return SwappingApprovedDataModel(data: data, tokenAddress: contractAddress, value: 0)
     }
 

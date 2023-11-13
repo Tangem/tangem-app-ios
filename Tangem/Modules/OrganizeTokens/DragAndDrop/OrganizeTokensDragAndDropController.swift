@@ -74,7 +74,7 @@ final class OrganizeTokensDragAndDropController: ObservableObject {
         }
     // Fix for SwiftUI preview crashes due to unsafe handling of a recursive lock by the Swift TypeChecker
     #if targetEnvironment(simulator)
-    .eraseToAnyPublisher()
+        .eraseToAnyPublisher()
     #endif // targetEnvironment(simulator)
 
     var viewportSizeSubject: some Subject<CGSize, Never> { _viewportSizeSubject }

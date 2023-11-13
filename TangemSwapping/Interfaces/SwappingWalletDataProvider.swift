@@ -23,5 +23,5 @@ public protocol SwappingWalletDataProvider {
     func getBalance(for blockchain: SwappingBlockchain) async throws -> Decimal
 
     func getAllowance(for currency: Currency, from spender: String) async throws -> Decimal
-    func getApproveData(for currency: Currency, from spender: String, policy: SwappingApprovePolicy) -> Data
+    func getApproveData(for currency: Currency, from spender: String, amount: Decimal) -> Data
 }

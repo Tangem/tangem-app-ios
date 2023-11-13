@@ -19,11 +19,10 @@ final class InformationHiddenBalancesViewModel: ObservableObject, Identifiable {
     }
 
     func userDidRequestCloseView() {
-        coordinator.closeInformationHiddenBalancesSheet()
+        coordinator.hiddenBalancesSheetDidRequestClose()
     }
 
     func userDidRequestDoNotShowAgain() {
-        AppSettings.shared.shouldHidingSensitiveInformationSheetShowing = false
-        coordinator.closeInformationHiddenBalancesSheet()
+        coordinator.hiddenBalancesSheetDidRequestDoNotShowAgain()
     }
 }

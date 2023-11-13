@@ -25,7 +25,7 @@
 "app_settings_theme_mode_dark" = "Dark";
 "app_settings_theme_mode_light" = "Light";
 "app_settings_theme_mode_system" = "System default";
-"app_settings_theme_selection_footer" = "If system is selected, the app will auto-adjust based on your device's system settings.";
+"app_settings_theme_selection_footer" = "If system is selected, the app will auto-adjust based on your device's system settings";
 "app_settings_theme_selection_system_short" = "System";
 "app_settings_theme_selector_title" = "Theme";
 "app_settings_title" = "App Settings";
@@ -50,10 +50,7 @@
 "card_settings_security_mode_footer" = "Selected application protection method";
 "card_settings_title" = "Card Settings";
 "chat_button_title" = "Support";
-"chat_user_action_rate_user" = "Rate agent";
 "chat_user_action_send_log" = "Send logs";
-"chat_user_actions_title" = "Please select an action";
-"chat_user_rate_agent_title" = "Please, rate the work of the agent";
 "common_accept" = "J'accepte";
 "common_access_denied" = "Access denied";
 "common_apply" = "Apply";

@@ -26,6 +26,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var balanceCrypto: LoadableTextView.State = .loading
     @Published var balanceFiat: LoadableTextView.State = .loading
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
+    @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
     @Published var contextActions: [TokenActionType] = []
 
@@ -58,8 +59,9 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let isTestnetToken: Bool
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
+    private let percentFormatter = PercentFormatter()
+    private let priceFormatter = BalanceFormatter()
 
-    private var percentFormatter = PercentFormatter()
     private var bag = Set<AnyCancellable>()
     private weak var contextActionsProvider: TokenItemContextActionsProvider?
     private weak var contextActionsDelegate: TokenItemContextActionDelegate?
@@ -145,14 +147,22 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func updatePriceChange() {
-        guard let change = infoProvider.quote?.change else {
-            priceChangeState = .noData
+        guard let quote = infoProvider.quote else {
+            tokenPrice = .noData
+            priceChangeState = .empty
             return
         }
 
-        let signType = ChangeSignType(from: change)
-        let percent = percentFormatter.percentFormat(value: change)
-        priceChangeState = .loaded(signType: signType, text: percent)
+        if let change = quote.change {
+            let signType = ChangeSignType(from: change)
+            let percent = percentFormatter.percentFormat(value: change)
+            priceChangeState = .loaded(signType: signType, text: percent)
+        } else {
+            priceChangeState = .noData
+        }
+
+        let priceText = priceFormatter.formatFiatBalance(quote.price)
+        tokenPrice = .loaded(text: priceText)
     }
 
     private func buildContextActions() {

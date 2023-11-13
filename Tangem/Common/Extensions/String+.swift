@@ -9,6 +9,12 @@
 import Foundation
 
 extension String {
+    var dropTrailingPeriod: SubSequence { hasSuffix(".") ? dropLast(1) : self[...] }
+
+    var hexToInteger: Int? { Int(removeHexPrefix(), radix: 16) }
+
+    var integerToHex: String { .init(Int(self) ?? 0, radix: 16) }
+
     func removeLatestSlash() -> String {
         if last == "/" {
             return String(dropLast())
@@ -40,11 +46,4 @@ extension String {
         let range = NSRange(location: 0, length: count)
         return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "_$1").lowercased()
     }
-}
-
-extension StringProtocol {
-    var drop0xPrefix: SubSequence { hasPrefix("0x") ? dropFirst(2) : self[...] }
-    var dropTrailingPeriod: SubSequence { hasSuffix(".") ? dropLast(1) : self[...] }
-    var hexToInteger: Int? { Int(drop0xPrefix, radix: 16) }
-    var integerToHex: String { .init(Int(self) ?? 0, radix: 16) }
 }

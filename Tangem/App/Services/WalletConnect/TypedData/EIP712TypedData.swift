@@ -150,7 +150,7 @@ private extension EIP712TypedData {
         } else if type.starts(with: "bytes") {
             if let length = Int(type.dropFirst("bytes".count)),
                let value = data?.stringValue {
-                if value.starts(with: "0x") {
+                if value.hasHexPrefix() {
                     let hex = Data(hexString: value)
                     return try? ABIValue(hex, type: .bytes(length))
                 } else {
@@ -243,7 +243,7 @@ private extension EIP712TypedData {
 
 private extension BigInt {
     init?(value: String) {
-        if value.starts(with: "0x") {
+        if value.hasHexPrefix() {
             self.init(String(value.dropFirst(2)), radix: 16)
         } else {
             self.init(value)
@@ -253,7 +253,7 @@ private extension BigInt {
 
 private extension BigUInt {
     init?(value: String) {
-        if value.starts(with: "0x") {
+        if value.hasHexPrefix() {
             self.init(String(value.dropFirst(2)), radix: 16)
         } else {
             self.init(value)

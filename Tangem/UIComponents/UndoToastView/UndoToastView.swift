@@ -14,22 +14,27 @@ struct UndoToastView: View {
     let undoAction: () -> Void
 
     var body: some View {
-        Button(action: undoAction) {
-            HStack(spacing: 8) {
-                titleView
+        HStack(spacing: 0) {
+            titleView
+                .padding(.horizontal, 8)
 
-                Rectangle()
-                    .frame(width: 0.5, height: 12)
-                    .foregroundColor(Colors.Stroke.secondary)
+            Separator(
+                height: .minimal,
+                color: Colors.Stroke.secondary,
+                axis: .vertical
+            )
+            .frame(height: 12)
 
+            Button(action: undoAction) {
                 Text(Localization.toastUndo)
                     .style(Fonts.Regular.footnote, color: Colors.Text.primary2)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Colors.Icon.secondary)
-            .cornerRadiusContinuous(10)
         }
+        .padding(.horizontal, 6)
+        .background(Colors.Icon.secondary)
+        .cornerRadiusContinuous(10)
     }
 
     private var titleView: some View {

@@ -8,16 +8,7 @@
 
 import Foundation
 
-public enum SwappingApprovePolicy: Hashable {
-    case specified(amount: Decimal)
+public enum SwappingApprovePolicy: Hashable, CaseIterable {
     case unlimited
-
-    public var amount: Decimal {
-        switch self {
-        case .specified(let amount):
-            return amount
-        case .unlimited:
-            return .greatestFiniteMagnitude
-        }
-    }
+    case specified
 }

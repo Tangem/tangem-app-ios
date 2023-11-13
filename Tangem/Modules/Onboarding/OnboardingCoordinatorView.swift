@@ -57,7 +57,7 @@ struct OnboardingCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.accessCodeModel) {
                 OnboardingAccessCodeView(viewModel: $0)
             }
-            .sheet(item: $coordinator.supportChatViewModel, fullScreen: SupportChatViewModel.useFullScreen) {
+            .fullScreenCover(item: $coordinator.supportChatViewModel) {
                 SupportChatView(viewModel: $0)
                     .edgesIgnoringSafeArea(.vertical)
             }

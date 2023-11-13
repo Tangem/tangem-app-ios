@@ -122,8 +122,8 @@ extension CommonSwappingWalletDataProvider: SwappingWalletDataProvider {
         return currency.convertFromWEI(value: allowanceInWEI)
     }
 
-    func getApproveData(for currency: Currency, from spender: String, policy: SwappingApprovePolicy) -> Data {
-        ethereumTransactionProcessor.buildForApprove(spender: spender, amount: policy.amount)
+    func getApproveData(for currency: Currency, from spender: String, amount: Decimal) -> Data {
+        ethereumTransactionProcessor.buildForApprove(spender: spender, amount: amount)
     }
 }
 

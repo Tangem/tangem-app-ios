@@ -19,7 +19,7 @@ struct WalletConnectV2PersonalSignHandler {
     private var dataToSign: Data {
         let hexData = Data(hex: message)
         // If received message is not a hex string, then convert it to bytes
-        if hexData.isEmpty, !message.starts(with: "0x") {
+        if hexData.isEmpty, !message.hasHexPrefix() {
             return message.data(using: .utf8) ?? Data()
         } else {
             return hexData

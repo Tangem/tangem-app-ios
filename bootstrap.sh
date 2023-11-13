@@ -4,6 +4,37 @@
 # Install "Command line tools" xcode-select --install
 # Install Homebrew -> https://brew.sh
 
+# Parse options
+
+usage() {
+	echo "Usage: $0 [additional options]"
+	echo
+	echo "  Options:"
+	echo
+	echo "    --skip-cocoapods        -  Skip pod install"
+	echo "    --update-submodule      -  Git submodule update with --remote option"
+	exit 1;
+}
+
+OPT_COCOAPODS=true
+OPT_SUBMODULE=false
+
+while test $# -gt 0
+do
+    case "$1" in
+        --skip-cocoapods)
+			OPT_COCOAPODS=false
+            ;;
+        --update-submodule)
+			OPT_SUBMODULE=true
+            ;;
+        *)
+		usage 1>&2
+        ;;
+    esac
+    shift
+done
+
 echo "🔜 Check & Install dependencies..."
 
 if which -a brew > /dev/null; then
@@ -20,13 +51,24 @@ else
     brew install mint
 fi
 
+echo "🔄 Mint bootstrap dependencies"
 mint bootstrap --mintfile ./Utilites/Mintfile 
 echo "✅ Dependencies succesfully installed"
 
 echo "🚀 Running SwiftFormat"
-mint run swiftformat@0.51.11 . --config .swiftformat
+mint run swiftformat@0.52.8 . --config .swiftformat
 
 echo "🚀 Running SwiftGen"
-mint run swiftgen@6.5.1 config run --config swiftgen.yml 
+mint run swiftgen@6.6.2 config run --config swiftgen.yml 
+
+if [ "$OPT_COCOAPODS" = true ] ; then
+    echo "🚀 Running pod install"
+	pod install
+fi
+
+if [ "$OPT_SUBMODULE" = true ] ; then
+    echo "🚀 Running submodule remote update"
+    git submodule update --remote
+fi
 
 echo "Bootstrap competed 🎉"

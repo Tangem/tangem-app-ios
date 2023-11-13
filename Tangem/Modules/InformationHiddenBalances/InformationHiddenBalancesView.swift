@@ -88,7 +88,11 @@ struct InformationHiddenBalancesView_Preview: PreviewProvider {
             }
         }
 
-        func closeInformationHiddenBalancesSheet() {
+        func hiddenBalancesSheetDidRequestClose() {
+            item = nil
+        }
+
+        func hiddenBalancesSheetDidRequestDoNotShowAgain() {
             item = nil
         }
     }

@@ -67,10 +67,6 @@ extension CommonKeysManager: KeysManager {
         keys.sprinklr
     }
 
-    var zendesk: ZendeskConfig {
-        keys.zendesk
-    }
-
     var amplitudeApiKey: String {
         keys.amplitudeApiKey
     }
@@ -116,7 +112,6 @@ extension CommonKeysManager {
         let bscQuiknodeSubdomain: String
         let shopifyShop: ShopifyShop
         let tangemComAuthorization: String?
-        let zendesk: ZendeskConfig
         let swapReferrerAccount: SwapReferrerAccount?
         let walletConnectProjectId: String
         let sprinklr: SprinklrConfig

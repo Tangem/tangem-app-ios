@@ -182,6 +182,10 @@ extension Analytics {
 
         case onboardingSeedScreenCapture = "[Onboarding / Seed Phrase] Screen Capture"
 
+        // MARK: - App settings
+
+        case appSettingsAppThemeSwitched = "[Settings / App Settings] App Theme Swithed"
+
         // MARK: - Card settings
 
         case cardSettingsButtonAccessCodeRecovery = "[Settings / Card Settings] Button - Access Code Recovery"

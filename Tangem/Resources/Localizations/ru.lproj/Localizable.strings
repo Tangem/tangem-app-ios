@@ -25,8 +25,8 @@
 "app_settings_theme_mode_dark" = "Тёмная";
 "app_settings_theme_mode_light" = "Светлая";
 "app_settings_theme_mode_system" = "Как в системе";
-"app_settings_theme_selection_footer" = "If system is selected, the app will auto-adjust based on your device's system settings.";
-"app_settings_theme_selection_system_short" = "System";
+"app_settings_theme_selection_footer" = "При выборе настройки как в системе приложение будет использовать тему в соответствии с настройками вашего устройства";
+"app_settings_theme_selection_system_short" = "Системная";
 "app_settings_theme_selector_title" = "Тема";
 "app_settings_title" = "Настройки приложения";
 "app_settings_warning_subtitle" = "Перейдите в настройки, чтобы включить биометрическую аутентификацию в приложении Tangem";
@@ -50,10 +50,7 @@
 "card_settings_security_mode_footer" = "Выбранный способ защиты приложения";
 "card_settings_title" = "Настройки карты";
 "chat_button_title" = "Чат";
-"chat_user_action_rate_user" = "Оценить агента";
 "chat_user_action_send_log" = "Отправить логи";
-"chat_user_actions_title" = "Пожалуйста, выберите действие";
-"chat_user_rate_agent_title" = "Пожалуйста, оцените работу агента";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
 "common_apply" = "Применить";

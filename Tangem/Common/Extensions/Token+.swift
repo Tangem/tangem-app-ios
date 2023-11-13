@@ -17,7 +17,7 @@ extension Token {
         guard isCustom else { return nil }
 
         let defaultValue = Color.tangemGrayLight4
-        let hexPart = contractAddress.drop0xPrefix
+        let hexPart = contractAddress.removeHexPrefix()
         let colorPrefix = String(hexPart.prefix(6))
         if colorPrefix.hexToInteger != nil {
             let hex = String(colorPrefix)
@@ -27,7 +27,7 @@ extension Token {
             // This code will be simplified after refactoring token storage on card and on phone
         } else if let hexString = contractAddress.data(using: .utf8)?.map({ return String(format: "%02X", $0) }).joined(),
                   hexString.count >= 8 {
-            return Color(hex: String(hexString.drop0xPrefix.suffix(6))) ?? defaultValue
+            return Color(hex: String(hexString.removeHexPrefix().suffix(6))) ?? defaultValue
         }
         return defaultValue
     }

@@ -35,6 +35,7 @@ class ThemeSelectionViewModel: ObservableObject {
 
     private func bind() {
         themeUpdateSubscription = $currentThemeOption
+            .removeDuplicates()
             .dropFirst()
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, newOption in
@@ -44,6 +45,7 @@ class ThemeSelectionViewModel: ObservableObject {
 
     private func updateTheme(to newOption: ThemeOption) {
         AppSettings.shared.appTheme = newOption
+        Analytics.log(.appSettingsAppThemeSwitched, params: [.state: newOption.analyticsParamValue])
 
         guard let window = UIApplication.keyWindow else {
             return
@@ -86,6 +88,14 @@ enum ThemeOption: String, CaseIterable, Identifiable, Hashable {
     var interfaceStyle: UIUserInterfaceStyle {
         switch self {
         case .system: return .unspecified
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+
+    var analyticsParamValue: Analytics.ParameterValue {
+        switch self {
+        case .system: return .system
         case .light: return .light
         case .dark: return .dark
         }

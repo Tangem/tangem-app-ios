@@ -18,7 +18,6 @@ protocol KeysManager {
     var shopifyShop: ShopifyShop { get }
     var tangemComAuthorization: String? { get }
     var sprinklr: SprinklrConfig { get }
-    var zendesk: ZendeskConfig { get }
     var infuraProjectId: String { get }
     var swapReferrerAccount: SwapReferrerAccount? { get }
     var utorgSID: String { get }

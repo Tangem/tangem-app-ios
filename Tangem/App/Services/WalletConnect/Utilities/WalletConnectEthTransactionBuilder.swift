@@ -82,7 +82,7 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
             destinationAddress: wcTransaction.to
         )
 
-        let contractDataString = wcTransaction.data.drop0xPrefix
+        let contractDataString = wcTransaction.data.removeHexPrefix()
         let wcTxData = Data(hexString: String(contractDataString))
 
         transaction.params = EthereumTransactionParams(
