@@ -139,6 +139,8 @@ private extension Blockchain {
             case .network: return "near-protocol"
             case .coin: return "near"
             }
+        case .decimal:
+            return "decimal"
         }
     }
 
