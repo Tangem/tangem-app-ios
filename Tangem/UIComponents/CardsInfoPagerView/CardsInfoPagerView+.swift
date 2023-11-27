@@ -15,6 +15,7 @@ extension CardsInfoPagerView where BottomOverlay == EmptyView {
         data: Data,
         id idProvider: KeyPath<(Data.Index, Data.Element), ID>,
         selectedIndex: Binding<Int>,
+        discoveryAnimationTrigger: CardsInfoPagerSwipeDiscoveryAnimationTrigger = .dummy,
         configStorageKey: AnyHashable = #fileID,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
         @ViewBuilder contentFactory: @escaping ContentFactory,
@@ -24,6 +25,7 @@ extension CardsInfoPagerView where BottomOverlay == EmptyView {
             data: data,
             id: idProvider,
             selectedIndex: selectedIndex,
+            discoveryAnimationTrigger: discoveryAnimationTrigger,
             configStorageKey: configStorageKey,
             headerFactory: headerFactory,
             contentFactory: contentFactory,
@@ -37,6 +39,7 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
     init(
         data: Data,
         selectedIndex: Binding<Int>,
+        discoveryAnimationTrigger: CardsInfoPagerSwipeDiscoveryAnimationTrigger = .dummy,
         configStorageKey: AnyHashable = #fileID,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
         @ViewBuilder contentFactory: @escaping ContentFactory,
@@ -47,6 +50,7 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
             data: data,
             id: \.1.id,
             selectedIndex: selectedIndex,
+            discoveryAnimationTrigger: discoveryAnimationTrigger,
             configStorageKey: configStorageKey,
             headerFactory: headerFactory,
             contentFactory: contentFactory,
@@ -60,6 +64,7 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
     init(
         data: Data,
         selectedIndex: Binding<Int>,
+        discoveryAnimationTrigger: CardsInfoPagerSwipeDiscoveryAnimationTrigger = .dummy,
         configStorageKey: AnyHashable = #fileID,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
         @ViewBuilder contentFactory: @escaping ContentFactory,
@@ -69,6 +74,7 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
             data: data,
             id: \.1.id,
             selectedIndex: selectedIndex,
+            discoveryAnimationTrigger: discoveryAnimationTrigger,
             configStorageKey: configStorageKey,
             headerFactory: headerFactory,
             contentFactory: contentFactory,
@@ -83,4 +89,10 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
 enum CardsInfoPageChangeReason {
     case byGesture
     case programmatically
+}
+
+// MARK: - Convenience extensions
+
+private extension CardsInfoPagerSwipeDiscoveryAnimationTrigger {
+    static let dummy: CardsInfoPagerSwipeDiscoveryAnimationTrigger = .init()
 }

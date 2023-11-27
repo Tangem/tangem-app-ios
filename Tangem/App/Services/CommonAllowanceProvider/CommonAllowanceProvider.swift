@@ -10,23 +10,26 @@ import Foundation
 import TangemSwapping
 import BlockchainSdk
 
-class CommonAllowanceProvider {
-    private let ethereumNetworkProvider: EthereumNetworkProvider
-    private let ethereumTransactionProcessor: EthereumTransactionProcessor
+class CommonExpressAllowanceProvider {
+    private var ethereumNetworkProvider: EthereumNetworkProvider?
+    private var ethereumTransactionProcessor: EthereumTransactionProcessor?
 
-    init(
-        ethereumNetworkProvider: EthereumNetworkProvider,
-        ethereumTransactionProcessor: EthereumTransactionProcessor
-    ) {
-        self.ethereumNetworkProvider = ethereumNetworkProvider
-        self.ethereumTransactionProcessor = ethereumTransactionProcessor
-    }
+    init() {}
 }
 
 // MARK: - AllowanceProvider
 
-extension CommonAllowanceProvider: AllowanceProvider {
+extension CommonExpressAllowanceProvider: ExpressAllowanceProvider {
+    func setup(wallet: WalletModel) {
+        ethereumNetworkProvider = wallet.ethereumNetworkProvider
+        ethereumTransactionProcessor = wallet.ethereumTransactionProcessor
+    }
+
     func getAllowance(owner: String, to spender: String, contract: String) async throws -> Decimal {
+        guard let ethereumNetworkProvider else {
+            throw AllowanceProviderError.ethereumNetworkProviderNotFound
+        }
+
         let allowance = try await ethereumNetworkProvider.getAllowance(
             owner: owner,
             spender: spender,
@@ -36,7 +39,16 @@ extension CommonAllowanceProvider: AllowanceProvider {
         return allowance
     }
 
-    func makeApproveData(spender: String, amount: Decimal) -> Data {
-        ethereumTransactionProcessor.buildForApprove(spender: spender, amount: amount)
+    func makeApproveData(spender: String, amount: Decimal) throws -> Data {
+        guard let ethereumTransactionProcessor else {
+            throw AllowanceProviderError.ethereumTransactionProcessorNotFound
+        }
+
+        return ethereumTransactionProcessor.buildForApprove(spender: spender, amount: amount)
     }
+}
+
+enum AllowanceProviderError: LocalizedError {
+    case ethereumNetworkProviderNotFound
+    case ethereumTransactionProcessorNotFound
 }

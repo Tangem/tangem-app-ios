@@ -36,9 +36,15 @@ struct ReceiveCurrencyView: View {
 
             Spacer()
 
-            SensitiveText(builder: Localization.commonBalance, sensitive: viewModel.balanceString)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                .fixedSize(horizontal: false, vertical: true)
+            if viewModel.isAvailable {
+                SensitiveText(builder: Localization.commonBalance, sensitive: viewModel.balanceString)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Text(Localization.expressProviderNotAvailable)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.disabled)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 

@@ -16,8 +16,12 @@ public protocol ExpressManager {
     func getAmount() async -> Decimal?
     func updateAmount(amount: Decimal?) async throws -> ExpressManagerState
 
+    func getAllQuotes() async -> [ExpectedQuote]
     func getSelectedQuote() async -> ExpectedQuote?
     func updateSelectedProvider(provider: ExpressProvider) async throws -> ExpressManagerState
 
     func update() async throws -> ExpressManagerState
+
+    /// Use this method for CEX provider
+    func requestData() async throws -> ExpressTransactionData
 }

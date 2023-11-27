@@ -9,10 +9,6 @@
 import SwiftUI
 
 struct FixedSizeButtonWithLeadingIcon: View {
-    let title: String
-    let icon: Image
-    let action: () -> Void
-
     var body: some View {
         let colorConfiguration = ButtonWithLeadingIconContentView.ColorConfiguration(
             textColor: textColor,
@@ -31,6 +27,10 @@ struct FixedSizeButtonWithLeadingIcon: View {
 
     @Environment(\.isEnabled) private var isEnabled
 
+    private let title: String
+    private let icon: Image
+    private let action: () -> Void
+
     private var textColor: Color {
         isEnabled ? Colors.Text.primary1 : Colors.Text.disabled
     }
@@ -40,25 +40,28 @@ struct FixedSizeButtonWithLeadingIcon: View {
     }
 
     private var backgroundColor: Color {
-        isEnabled ? Colors.Button.secondary : Colors.Button.disabled
+        isEnabled ? (backgroundColorOverride ?? Colors.Button.secondary) : Colors.Button.disabled
+    }
+
+    private var backgroundColorOverride: Color?
+
+    init(
+        title: String,
+        icon: Image,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.icon = icon
+        self.action = action
     }
 }
 
 struct FlexySizeButtonWithLeadingIcon: View {
-    let title: String
-    let icon: Image
-    /// A special appearance for cases when this button is used to switch between
-    /// the discrete `On` and `Off` states, like `SwiftUI.Switch` does.
-    /// See [this mockup](https://www.figma.com/file/ZJoUO3kZGCcVgOUbCMQcY4/iOS-%E2%80%93-UI?type=design&node-id=5333-16973&mode=design&t=GAR2V2mQICJTQ6XD-4)
-    /// as an example of such behavior.
-    var isToggled: Bool = false
-    let action: () -> Void
-
     var body: some View {
         let colorConfiguration = ButtonWithLeadingIconContentView.ColorConfiguration(
             textColor: isToggled ? Colors.Text.tertiary : Colors.Text.primary1,
             iconColor: isToggled ? Colors.Icon.informative : Colors.Text.primary1,
-            backgroundColor: Colors.Background.primary
+            backgroundColor: backgroundColorOverride ?? Colors.Background.primary
         )
         ButtonWithLeadingIconContentView(
             title: title,
@@ -69,11 +72,66 @@ struct FlexySizeButtonWithLeadingIcon: View {
             action: action
         )
     }
+
+    private let title: String
+    private let icon: Image
+    /// A special appearance for cases when this button is used to switch between
+    /// the discrete `On` and `Off` states, like `SwiftUI.Switch` does.
+    /// See [this mockup](https://www.figma.com/file/ZJoUO3kZGCcVgOUbCMQcY4/iOS-%E2%80%93-UI?type=design&node-id=5333-16973&mode=design&t=GAR2V2mQICJTQ6XD-4)
+    /// as an example of such behavior.
+    private let isToggled: Bool
+    private let action: () -> Void
+
+    private var backgroundColorOverride: Color?
+
+    init(
+        title: String,
+        icon: Image,
+        isToggled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.icon = icon
+        self.isToggled = isToggled
+        self.action = action
+    }
+}
+
+// MARK: - Setupable protocol conformance
+
+extension FixedSizeButtonWithLeadingIcon: Setupable {
+    func overrideBackgroundColor(_ color: Color) -> Self {
+        return map { $0.backgroundColorOverride = color }
+    }
+}
+
+extension FlexySizeButtonWithLeadingIcon: Setupable {
+    func overrideBackgroundColor(_ color: Color) -> Self {
+        return map { $0.backgroundColorOverride = color }
+    }
+}
+
+// MARK: - Constants
+
+extension FixedSizeButtonWithLeadingIcon {
+    enum Constants {
+        /// - Note: Exposed for consumers of this UI component.
+        static var cornerRadius: CGFloat { ButtonWithLeadingIconContentView.cornerRadius }
+    }
+}
+
+extension FlexySizeButtonWithLeadingIcon {
+    enum Constants {
+        /// - Note: Exposed for consumers of this UI component.
+        static var cornerRadius: CGFloat { ButtonWithLeadingIconContentView.cornerRadius }
+    }
 }
 
 // MARK: - Private implementation
 
 private struct ButtonWithLeadingIconContentView: View {
+    static let cornerRadius = 10.0
+
     struct ColorConfiguration {
         let textColor: Color
         let iconColor: Color
@@ -108,7 +166,7 @@ private struct ButtonWithLeadingIconContentView: View {
             .padding(.vertical, 8)
             .background(colorConfiguration.backgroundColor)
         }
-        .cornerRadiusContinuous(10)
+        .cornerRadiusContinuous(Self.cornerRadius)
         .buttonStyle(.borderless)
     }
 }

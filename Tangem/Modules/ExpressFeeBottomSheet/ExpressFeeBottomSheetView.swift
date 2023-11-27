@@ -59,7 +59,9 @@ struct ExpressFeeBottomSheetView_Preview: PreviewProvider {
     class BottomSheetCoordinator: ObservableObject, ExpressFeeBottomSheetRoutable {
         @Published var item: ExpressFeeBottomSheetViewModel?
 
-        func toggleItem() {}
+        func toggleItem() {
+            // TODO: https://tangem.atlassian.net/browse/IOS-5212
+        }
 
         func closeExpressFeeBottomSheet() {
             item = nil

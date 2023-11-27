@@ -13,6 +13,10 @@ import TangemSwapping
 class CommonExpressPendingTransactionRepository {}
 
 extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRepository {
+    func lastCurrencyTransaction() -> ExpressCurrency? {
+        return nil
+    }
+
     func hasPending(for network: String) -> Bool {
         false
     }

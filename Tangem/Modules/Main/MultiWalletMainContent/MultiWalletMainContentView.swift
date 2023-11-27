@@ -41,19 +41,19 @@ struct MultiWalletMainContentView: View {
         .bindAlert($viewModel.error)
     }
 
+    @ViewBuilder
     private var tokensContent: some View {
-        Group {
-            if viewModel.isLoadingTokenList {
-                TokenListLoadingPlaceholderView()
-            } else {
-                if viewModel.sections.isEmpty {
-                    emptyList
-                } else {
-                    tokensList
-                }
-            }
+        if viewModel.isLoadingTokenList {
+            TokenListLoadingPlaceholderView()
+                .cornerRadiusContinuous(Constants.cornerRadius)
+        } else if viewModel.sections.isEmpty {
+            emptyList
+                .cornerRadiusContinuous(Constants.cornerRadius)
+        } else {
+            // Don't apply `.cornerRadiusContinuous` modifier to this view
+            // This will cause clipping of iOS context menu previews in `TokenItemView` on iOS 17.0 and above
+            tokensList
         }
-        .cornerRadiusContinuous(Constants.cornerRadius)
     }
 
     private var emptyList: some View {
@@ -83,7 +83,7 @@ struct MultiWalletMainContentView: View {
                 }
             }
         }
-        .background(Colors.Background.primary)
+        .background(Colors.Background.primary.cornerRadiusContinuous(Constants.cornerRadius))
     }
 }
 

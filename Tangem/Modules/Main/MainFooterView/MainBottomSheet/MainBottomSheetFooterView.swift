@@ -13,8 +13,8 @@ struct MainBottomSheetFooterView: View {
         VStack(spacing: 0.0) {
             FixedSpacer(height: Constants.spacerLength, length: Constants.spacerLength)
 
-            // `MainBottomSheetHeaderView` is used here as a dummy noninteractive placeholder
-            MainBottomSheetHeaderView(searchText: .constant(""), textFieldAllowsHitTesting: false)
+            // `MainBottomSheetHeaderInputView` is used here as a dummy noninteractive placeholder
+            MainBottomSheetHeaderInputView(searchText: .constant(""), textFieldAllowsHitTesting: false)
                 .bottomScrollableSheetCornerRadius()
                 .bottomScrollableSheetGrabber()
                 .bottomScrollableSheetShadow()

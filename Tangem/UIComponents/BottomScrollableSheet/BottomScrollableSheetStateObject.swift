@@ -24,6 +24,8 @@ final class BottomScrollableSheetStateObject: ObservableObject {
         }
     }
 
+    var topInset: CGFloat { Constants.sheetTopInset }
+
     var geometryInfoSubject: some Subject<GeometryInfo, Never> { _geometryInfoSubject }
     private let _geometryInfoSubject = CurrentValueSubject<GeometryInfo, Never>(.zero)
     private var geometryInfo: GeometryInfo { _geometryInfoSubject.value }

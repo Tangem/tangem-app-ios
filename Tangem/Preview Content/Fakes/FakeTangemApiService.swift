@@ -48,10 +48,6 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
-    func sales(locale: String, shops: String) async throws -> SalesDetails {
-        throw "Not implemented"
-    }
-
     func promotion(programName: String, timeout: TimeInterval?) async throws -> PromotionParameters {
         throw "Not implemented"
     }

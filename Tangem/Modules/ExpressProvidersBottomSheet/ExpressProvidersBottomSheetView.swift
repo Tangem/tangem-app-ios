@@ -60,14 +60,17 @@ struct ExpressProvidersBottomSheetView_Preview: PreviewProvider {
         @Published var item: ExpressProvidersBottomSheetViewModel?
 
         func toggleItem() {
-            if item == nil {
-                item = ExpressProvidersBottomSheetViewModel(coordinator: self)
-            } else {
-                item = nil
-            }
+            /*
+             // TODO: https://tangem.atlassian.net/browse/IOS-5212
+             if item == nil {
+                 item = ExpressProvidersBottomSheetViewModel(coordinator: self)
+             } else {
+                 item = nil
+             }
+             */
         }
 
-        func closeExpressFeeBottomSheet() {
+        func closeExpressProvidersBottomSheet() {
             item = nil
         }
     }

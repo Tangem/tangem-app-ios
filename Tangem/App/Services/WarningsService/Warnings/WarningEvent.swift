@@ -115,15 +115,15 @@ extension WarningEvent: NotificationEvent {
     var icon: NotificationView.MessageIcon {
         switch self {
         case .failedToVerifyCard, .devCard:
-            return .init(image: Assets.redCircleWarning.image)
+            return .init(iconType: .image(Assets.redCircleWarning.image))
         case .numberOfSignedHashesIncorrect, .testnetCard, .oldDeviceOldCard, .oldCard, .lowSignatures, .systemDeprecationPermanent, .missingBackup:
-            return .init(image: Assets.attention.image)
+            return .init(iconType: .image(Assets.attention.image))
         case .demoCard, .legacyDerivation, .systemDeprecationTemporary, .missingDerivation:
-            return .init(image: Assets.blueCircleWarning.image)
+            return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .rateApp:
-            return .init(image: Assets.star.image)
+            return .init(iconType: .image(Assets.star.image))
         case .walletLocked:
-            return .init(image: Assets.lock.image, color: Colors.Icon.primary1)
+            return .init(iconType: .image(Assets.lock.image), color: Colors.Icon.primary1)
         }
     }
 

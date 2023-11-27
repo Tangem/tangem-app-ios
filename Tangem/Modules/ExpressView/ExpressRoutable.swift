@@ -10,8 +10,10 @@ import Foundation
 import TangemSwapping
 
 protocol ExpressRoutable: AnyObject {
+    func presentSwappingTokenList(swapDirection: ExpressTokensListViewModel.SwapDirection)
     func presentFeeSelectorView()
-    func presentSwappingTokenList(walletType: ExpressTokensListViewModel.SwapDirection)
-    func presentSuccessView(inputModel: SwappingSuccessInputModel)
     func presentApproveView()
+    func presentProviderSelectorView()
+    func presentNetworkCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel)
+    func presentSuccessView(data: SentExpressTransactionData)
 }

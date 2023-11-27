@@ -9,6 +9,6 @@
 import TangemSwapping
 
 class SwappingApproveRoutableMock: SwappingApproveRoutable {
-    func didSendApproveTransaction(transactionData: TangemSwapping.SwappingTransactionData) {}
+    func didSendApproveTransaction() {}
     func userDidCancel() {}
 }

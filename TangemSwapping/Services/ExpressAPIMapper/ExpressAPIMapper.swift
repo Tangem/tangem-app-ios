@@ -60,12 +60,13 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
-        guard let minAmount = Decimal(string: response.minAmount) else {
+        guard var minAmount = Decimal(string: response.minAmount) else {
             throw ExpressAPIMapperError.mapToDecimalError(response.minAmount)
         }
 
         fromAmount /= pow(10, response.fromDecimals)
         toAmount /= pow(10, response.toDecimals)
+        minAmount /= pow(10, response.fromDecimals)
 
         return ExpressQuote(
             fromAmount: fromAmount,

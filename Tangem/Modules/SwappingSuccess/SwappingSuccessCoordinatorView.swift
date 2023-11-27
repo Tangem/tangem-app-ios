@@ -17,8 +17,10 @@ struct SwappingSuccessCoordinatorView: CoordinatorView {
 
     var body: some View {
         ZStack {
-            if let rootViewModel = coordinator.rootViewModel {
+            if let rootViewModel = coordinator.legacyRootViewModel {
                 SwappingSuccessView(viewModel: rootViewModel)
+            } else if let rootViewModel = coordinator.rootViewModel {
+                ExpressSuccessSentView(viewModel: rootViewModel)
             }
 
             sheets

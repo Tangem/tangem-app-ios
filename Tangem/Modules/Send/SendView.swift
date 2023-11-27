@@ -13,9 +13,12 @@ struct SendView: View {
 
     @ObservedObject var viewModel: SendViewModel
 
+    private let backButtonStyle: MainButton.Style = .secondary
+    private let backButtonSize: MainButton.Size = .default
+
     var body: some View {
         VStack {
-            title
+            header
 
             currentPage
 
@@ -25,14 +28,21 @@ struct SendView: View {
 
             Color.clear.frame(height: 1)
         }
+        .background(Colors.Background.tertiary.ignoresSafeArea())
         .animation(.easeOut(duration: 0.3), value: viewModel.step)
     }
 
     @ViewBuilder
-    private var title: some View {
-        Text(viewModel.title)
-            .font(.title2)
-            .animation(nil)
+    private var header: some View {
+        VStack {
+            SheetDragHandler()
+                .padding(.bottom, 4)
+
+            Text(viewModel.title)
+                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .animation(nil)
+                .padding(.vertical, 8)
+        }
     }
 
     @ViewBuilder
@@ -53,30 +63,50 @@ struct SendView: View {
     private var navigationButtons: some View {
         HStack {
             if viewModel.showBackButton {
-                Button(action: viewModel.back, label: {
-                    Text("Back")
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.black)
-                        .cornerRadius(10)
-                })
+                SendViewBackButton(
+                    backgroundColor: backButtonStyle.background(isDisabled: false),
+                    cornerRadius: backButtonStyle.cornerRadius(for: backButtonSize),
+                    height: backButtonSize.height,
+                    action: viewModel.back
+                )
             }
 
             if viewModel.showNextButton {
-                Button(action: viewModel.next) {
-                    Text("Next")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(viewModel.currentStepInvalid ? Color.gray : Color.black)
-                        .cornerRadius(10)
-                }
-                .disabled(viewModel.currentStepInvalid)
+                MainButton(
+                    title: Localization.commonNext,
+                    style: .primary,
+                    size: .default,
+                    isDisabled: viewModel.currentStepInvalid,
+                    action: viewModel.next
+                )
             }
         }
         .padding(.horizontal)
     }
 }
+
+// MARK: - Back button
+
+private struct SendViewBackButton: View {
+    let backgroundColor: Color
+    let cornerRadius: CGFloat
+    let height: CGFloat
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            backgroundColor
+                .cornerRadiusContinuous(cornerRadius)
+                .overlay(
+                    Assets.arrowLeftMini
+                        .image
+                )
+                .frame(size: CGSize(bothDimensions: height))
+        }
+    }
+}
+
+// MARK: - Preview
 
 struct SendView_Preview: PreviewProvider {
     static let viewModel = SendViewModel(

@@ -28,7 +28,6 @@ class LegacyMainCoordinator: CoordinatorObject {
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var detailsCoordinator: DetailsCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
-    @Published var manageTokensCoordinator: ManageTokensCoordinator? = nil
     @Published var modalOnboardingCoordinator: OnboardingCoordinator? = nil
 
     // MARK: - Child view models
@@ -246,15 +245,6 @@ extension LegacyMainCoordinator: LegacyMainRoutable {
     ) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenListCoordinator = nil
-            self?.manageTokensCoordinator = nil
-        }
-
-        if FeatureProvider.isAvailable(.manageTokens) {
-            let coordinator = ManageTokensCoordinator(dismissAction: dismissAction)
-            let options = ManageTokensCoordinator.Options()
-            coordinator.start(with: options)
-            manageTokensCoordinator = coordinator
-            return
         }
 
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)

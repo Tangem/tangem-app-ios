@@ -8,4 +8,6 @@
 
 import Foundation
 
-protocol ExpressProvidersBottomSheetRoutable: AnyObject {}
+protocol ExpressProvidersBottomSheetRoutable: AnyObject {
+    func closeExpressProvidersBottomSheet()
+}

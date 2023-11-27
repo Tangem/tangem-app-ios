@@ -12,7 +12,10 @@ struct ProviderRowView: View {
     let viewModel: ProviderRowViewModel
 
     var body: some View {
-        Button(action: viewModel.tapAction) {
+        if let action = viewModel.tapAction {
+            Button(action: action) { content }
+                .disabled(viewModel.isDisabled)
+        } else {
             content
         }
     }
@@ -58,9 +61,11 @@ struct ProviderRowView: View {
                 case .text(let text):
                     Text(text)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        .multilineTextAlignment(.leading)
                 case .percent(let text, let signType):
                     Text(text)
                         .style(Fonts.Regular.footnote, color: signType.textColor)
+                        .multilineTextAlignment(.leading)
                 }
             }
         }

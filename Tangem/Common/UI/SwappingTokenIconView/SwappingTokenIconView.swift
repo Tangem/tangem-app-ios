@@ -59,6 +59,18 @@ struct SwappingTokenIconView: View {
                     .frame(width: 30, height: 14)
             }
 
+        case .notAvailable:
+            VStack(spacing: 4) {
+                Assets.emptyTokenList.image
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(Colors.Icon.inactive)
+                    .frame(size: imageSize)
+
+                Text("-")
+                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
+            }
+
         case .loaded(let imageURL, let networkURL, let symbol):
             VStack(spacing: 4) {
                 image(imageURL: imageURL, networkURL: networkURL)
@@ -132,6 +144,7 @@ struct SwappingTokenIcon_Previews: PreviewProvider {
 extension SwappingTokenIconView {
     enum State: Hashable {
         case loading
+        case notAvailable
         case loaded(imageURL: URL, networkURL: URL? = nil, symbol: String)
         case icon(TokenIconInfo, symbol: String)
     }

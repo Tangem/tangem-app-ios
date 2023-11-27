@@ -13,62 +13,93 @@ import TangemSwapping
 final class ExpressProvidersBottomSheetViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
-    @Published var selectedProvider: ExpressProvider?
     @Published var providerViewModels: [ProviderRowViewModel] = []
 
     // MARK: - Dependencies
 
-    private let providers: [ExpressProvider]
+    private var selectedProviderId: Int? = nil
+    private var quotes: [ExpectedQuote] = []
+
+    private let percentFormatter: PercentFormatter
+    private let expressProviderFormatter: ExpressProviderFormatter
+    private unowned let expressInteractor: ExpressInteractor
     private unowned let coordinator: ExpressProvidersBottomSheetRoutable
+
     private var bag: Set<AnyCancellable> = []
 
-    init(coordinator: ExpressProvidersBottomSheetRoutable) {
+    init(
+        percentFormatter: PercentFormatter,
+        expressProviderFormatter: ExpressProviderFormatter,
+        expressInteractor: ExpressInteractor,
+        coordinator: ExpressProvidersBottomSheetRoutable
+    ) {
+        self.percentFormatter = percentFormatter
+        self.expressProviderFormatter = expressProviderFormatter
+        self.expressInteractor = expressInteractor
         self.coordinator = coordinator
 
-        // Should be pass from manager or something
-        providers = [
-            ExpressProvider(
-                id: 1,
-                name: "ChangeNOW",
-                url: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/changenow_512.png")!,
-                type: .cex
-            ),
-            ExpressProvider(
-                id: 2,
-                name: "1inch",
-                url: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1inch_512.png")!,
-                type: .dex
-            ),
-        ]
-
-        selectedProvider = providers.first
         setupView()
     }
 
     func setupView() {
-        providerViewModels = providers.map { provider in
-            mapToProviderRowViewModel(provider: provider)
+        runTask(in: self) { viewModel in
+            viewModel.quotes = await viewModel.expressInteractor.getAllQuotes()
+            viewModel.selectedProviderId = await viewModel.expressInteractor.getSelectedProvider()?.id
+
+            await runOnMain {
+                viewModel.updateView()
+            }
         }
     }
 
-    func mapToProviderRowViewModel(provider: ExpressProvider) -> ProviderRowViewModel {
-        let detailsType: ProviderRowViewModel.DetailsType? = selectedProvider == provider ? .selected : .none
+    func updateView() {
+        providerViewModels = quotes.map { quote in
+            mapToProviderRowViewModel(quote: quote)
+        }
+    }
+
+    func mapToProviderRowViewModel(quote: ExpectedQuote) -> ProviderRowViewModel {
+        let senderCurrencyCode = expressInteractor.getSender().tokenItem.currencySymbol
+        let destinationCurrencyCode = expressInteractor.getDestination()?.tokenItem.currencySymbol
+        var subtitles: [ProviderRowViewModel.Subtitle] = []
+
+        subtitles.append(
+            expressProviderFormatter.mapToRateSubtitle(
+                quote: quote,
+                senderCurrencyCode: senderCurrencyCode,
+                destinationCurrencyCode: destinationCurrencyCode,
+                option: .exchangeReceivedAmount
+            )
+        )
+
+        if !quote.isBest, let percentSubtitle = makePercentSubtitle(quote: quote) {
+            subtitles.append(percentSubtitle)
+        }
+
+        let provider = quote.provider
 
         return ProviderRowViewModel(
-            provider: .init(
-                iconURL: provider.url,
-                name: provider.name,
-                type: provider.type.rawValue.uppercased()
-            ),
-            isDisabled: false,
+            provider: expressProviderFormatter.mapToProvider(provider: provider),
+            isDisabled: !quote.isAvailable,
             badge: provider.type == .dex ? .permissionNeeded : .none,
-            subtitles: [.text("1 132,46 MATIC")],
-            detailsType: detailsType,
-            // Should be replaced on id
+            subtitles: subtitles,
+            detailsType: selectedProviderId == provider.id ? .selected : .none,
             tapAction: { [weak self] in
-                self?.selectedProvider = provider
-                self?.setupView()
+                self?.selectedProviderId = provider.id
+                self?.expressInteractor.updateProvider(provider: provider)
+                self?.coordinator.closeExpressProvidersBottomSheet()
             }
         )
+    }
+
+    func makePercentSubtitle(quote: ExpectedQuote) -> ProviderRowViewModel.Subtitle? {
+        guard let bestRate = quotes.first(where: { $0.isBest })?.rate, !quote.rate.isZero else {
+            return nil
+        }
+
+        let changePercent = 1 - bestRate / quote.rate
+        let formatted = percentFormatter.expressRatePercentFormat(value: changePercent)
+
+        return .percent(formatted, signType: ChangeSignType(from: changePercent))
     }
 }

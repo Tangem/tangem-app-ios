@@ -14,21 +14,16 @@ final class ExpressTokensListViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
     @Published var searchText: String = ""
-    @Published var availableTokens: [ExpressTokenItemViewModel] = []
-    @Published var unavailableTokens: [ExpressTokenItemViewModel] = []
+    @Published var viewState: ViewState = .idle
 
     var unavailableSectionHeader: String {
         Localization.exchangeTokensUnavailableTokensHeader(swapDirection.name)
     }
 
-    var isEmptyView: Bool {
-        searchText.isEmpty && availableTokens.isEmpty && unavailableTokens.isEmpty
-    }
-
     // MARK: - Dependencies
 
     private let swapDirection: SwapDirection
-    private let walletModels: [WalletModel]
+    private let expressTokensListAdapter: ExpressTokensListAdapter
     private let expressAPIProvider: ExpressAPIProvider
     private unowned let expressInteractor: ExpressInteractor
     private unowned let coordinator: ExpressTokensListRoutable
@@ -41,36 +36,61 @@ final class ExpressTokensListViewModel: ObservableObject, Identifiable {
 
     init(
         swapDirection: SwapDirection,
-        walletModels: [WalletModel],
+        expressTokensListAdapter: ExpressTokensListAdapter,
         expressAPIProvider: ExpressAPIProvider,
         expressInteractor: ExpressInteractor,
         coordinator: ExpressTokensListRoutable
     ) {
         self.swapDirection = swapDirection
-        self.walletModels = walletModels
+        self.expressTokensListAdapter = expressTokensListAdapter
         self.expressAPIProvider = expressAPIProvider
         self.expressInteractor = expressInteractor
         self.coordinator = coordinator
 
         bind()
     }
-
-    func onAppear() {
-        initialSetup()
-    }
 }
 
 // MARK: - Private
 
 private extension ExpressTokensListViewModel {
-    func initialSetup() {
-        runTask(in: self) { viewModel in
-            let availablePairs = try await viewModel.loadAvailablePairs()
-            await viewModel.updateWalletModels(availableCurrencies: availablePairs)
-        }
+    func bind() {
+        expressTokensListAdapter.walletModels()
+            .withWeakCaptureOf(self)
+            .asyncMap { viewModel, walletModels in
+                do {
+                    let availablePairs = try await viewModel.loadAvailablePairs(walletModels: walletModels)
+                    return (walletModels: walletModels, pairs: availablePairs)
+                } catch {
+                    return (walletModels: walletModels, pairs: [])
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] walletModels, pairs in
+                self?.updateWalletModels(walletModels: walletModels, availableCurrencies: pairs)
+            }
+            .store(in: &bag)
+
+        $searchText
+            .removeDuplicates()
+            .dropFirst()
+            .flatMapLatest { searchText in
+                // We don't add debounce for the empty text
+                if searchText.isEmpty {
+                    return Just(searchText).eraseToAnyPublisher()
+                }
+
+                return Just(searchText)
+                    .delay(for: .seconds(0.3), scheduler: DispatchQueue.main)
+                    .eraseToAnyPublisher()
+            }
+            .sink { [weak self] searchText in
+                self?.updateView(searchText: searchText)
+            }
+            .store(in: &bag)
     }
 
-    func loadAvailablePairs() async throws -> [ExpressCurrency] {
+    func loadAvailablePairs(walletModels: [WalletModel]) async throws -> [ExpressCurrency] {
         let currencies = walletModels.map { $0.expressCurrency }
 
         switch swapDirection {
@@ -83,8 +103,7 @@ private extension ExpressTokensListViewModel {
         }
     }
 
-    @MainActor
-    func updateWalletModels(availableCurrencies: [ExpressCurrency]) {
+    func updateWalletModels(walletModels: [WalletModel], availableCurrencies: [ExpressCurrency]) {
         availableWalletModels.removeAll()
         unavailableWalletModels.removeAll()
 
@@ -105,38 +124,24 @@ private extension ExpressTokensListViewModel {
         updateView()
     }
 
-    func bind() {
-        $searchText
-            .removeDuplicates()
-            .dropFirst()
-            .flatMapLatest { searchText in
-                // We don't add debounce for the empty text
-                if searchText.isEmpty {
-                    return Just(searchText).eraseToAnyPublisher()
-                }
-
-                return Just(searchText)
-                    .delay(for: .seconds(0.3), scheduler: DispatchQueue.main)
-                    .eraseToAnyPublisher()
-            }
-            .sink { [weak self] searchText in
-                self?.updateView(searchText: searchText)
-            }
-            .store(in: &bag)
-    }
-
     func updateView(searchText: String = "") {
-        availableTokens = availableWalletModels
+        let availableTokens = availableWalletModels
             .filter { searchText.isEmpty || $0.name.lowercased().contains(searchText.lowercased()) }
             .map { walletModel in
                 mapToExpressTokenItemViewModel(walletModel: walletModel, isDisable: false)
             }
 
-        unavailableTokens = unavailableWalletModels
+        let unavailableTokens = unavailableWalletModels
             .filter { searchText.isEmpty || $0.name.lowercased().contains(searchText.lowercased()) }
             .map { walletModel in
                 mapToExpressTokenItemViewModel(walletModel: walletModel, isDisable: true)
             }
+
+        if searchText.isEmpty, availableTokens.isEmpty, unavailableTokens.isEmpty {
+            viewState = .isEmpty
+        } else {
+            viewState = .loaded(availableTokens: availableTokens, unavailableTokens: unavailableTokens)
+        }
     }
 
     func mapToExpressTokenItemViewModel(walletModel: WalletModel, isDisable: Bool) -> ExpressTokenItemViewModel {
@@ -168,6 +173,13 @@ private extension ExpressTokensListViewModel {
 }
 
 extension ExpressTokensListViewModel {
+    enum ViewState {
+        case idle
+        case loading
+        case isEmpty
+        case loaded(availableTokens: [ExpressTokenItemViewModel], unavailableTokens: [ExpressTokenItemViewModel])
+    }
+
     enum SwapDirection {
         case fromSource(WalletModel)
         case toDestination(WalletModel)

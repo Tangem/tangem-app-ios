@@ -76,6 +76,9 @@ struct CardsInfoPagerView<
 
     // MARK: - Horizontal scrolling
 
+    @ObservedObject private var swipeDiscoveryAnimationTrigger: CardsInfoPagerSwipeDiscoveryAnimationTrigger
+    @State private var isSwipeDiscoveryAnimationActive = false
+
     @GestureState private var isDraggingHorizontally = false
 
     @GestureState private var currentHorizontalTranslation: CGFloat = .zero
@@ -175,7 +178,7 @@ struct CardsInfoPagerView<
             .ignoresSafeArea(edges: .bottom)
         }
         .modifier(
-            CardsInfoPagerContentSwitchingModifier(
+            CardsInfoPagerContentSwitchingAnimationModifier(
                 progress: pageSwitchProgress,
                 finalPageSwitchProgress: finalPageSwitchProgress,
                 initialSelectedIndex: previouslySelectedIndex,
@@ -191,12 +194,15 @@ struct CardsInfoPagerView<
             // and `contentSelectedIndex` properties will be in sync.
             synchronizeContentSelectedIndexIfNeeded()
         }
-        .onPreferenceChange(CardsInfoPagerContentSwitchingModifier.PreferenceKey.self) { newValue in
+        .onPreferenceChange(CardsInfoPagerContentSwitchingAnimationModifier.PreferenceKey.self) { newValue in
             scheduleContentSelectedIndexUpdateIfNeeded(toNewValue: newValue)
         }
         .onChange(of: selectedIndex) { newValue in
             // Synchronizing private and external selected indices
             externalSelectedIndex = newValue
+        }
+        .onChange(of: swipeDiscoveryAnimationTrigger.trigger) { _ in
+            playSwipeDiscoveryAnimation()
         }
     }
 
@@ -206,6 +212,7 @@ struct CardsInfoPagerView<
         data: Data,
         id idProvider: KeyPath<(Data.Index, Data.Element), ID>,
         selectedIndex: Binding<Int>,
+        discoveryAnimationTrigger: CardsInfoPagerSwipeDiscoveryAnimationTrigger,
         configStorageKey: AnyHashable,
         @ViewBuilder headerFactory: @escaping HeaderFactory,
         @ViewBuilder contentFactory: @escaping ContentFactory,
@@ -218,6 +225,7 @@ struct CardsInfoPagerView<
         _previouslySelectedIndex = .init(initialValue: selectedIndex.wrappedValue)
         _contentSelectedIndex = .init(initialValue: selectedIndex.wrappedValue)
         _externalSelectedIndex = selectedIndex
+        swipeDiscoveryAnimationTrigger = discoveryAnimationTrigger
         self.configStorageKey = configStorageKey
         self.headerFactory = headerFactory
         self.contentFactory = contentFactory
@@ -243,6 +251,7 @@ struct CardsInfoPagerView<
         .offset(x: cumulativeHorizontalTranslation)
         // This offset is responsible for the next/previous cell peek
         .offset(x: headerItemPeekHorizontalOffset)
+        .modifier(makeSwipeDiscoveryAnimationModifier(with: proxy))
         .infinityFrame(axis: .horizontal, alignment: .topLeading)
     }
 
@@ -299,7 +308,7 @@ struct CardsInfoPagerView<
                     .id(collapsedHeaderScrollTargetIdentifier)
 
                 if let element = data[safe: clampedContentSelectedIndex] {
-                    contentFactory(data[clampedContentSelectedIndex])
+                    contentFactory(element)
                         .modifier(contentAnimationModifier)
                 }
             }
@@ -331,6 +340,19 @@ struct CardsInfoPagerView<
                     scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
                 }
         }
+    }
+
+    private func makeSwipeDiscoveryAnimationModifier(with geometryProxy: GeometryProxy) -> some AnimatableModifier {
+        // When there is more than one page and the last page is selected, it's animated in a 'reverse' manner
+        // to show the previous page. Otherwise, pages are animated in a 'forward' manner to show the next page
+        let offsetSign = (data.count > 1 && clampedContentSelectedIndex == selectedIndexUpperBound) ? 1.0 : -1.0
+        let offset = geometryProxy.size.width * Constants.swipeDiscoveryOffsetToScreenWidthRatio
+
+        return CardsInfoPagerSwipeDiscoveryAnimationModifier(
+            progress: isSwipeDiscoveryAnimationActive ? 1.0 : 0.0,
+            count: 1,
+            offset: offset * offsetSign
+        )
     }
 
     // MARK: - Gestures
@@ -374,6 +396,13 @@ struct CardsInfoPagerView<
     }
 
     // MARK: - Horizontal scrolling support
+
+    private func playSwipeDiscoveryAnimation() {
+        isSwipeDiscoveryAnimationActive = false
+        withAnimation(animationsFactory.makeSwipeDicoveryAnimation()) {
+            isSwipeDiscoveryAnimationActive = true
+        }
+    }
 
     /// Additional horizontal translation which takes into account horizontal offsets for next/previous cell peeking.
     private func additionalHorizontalTranslation(
@@ -482,7 +511,7 @@ struct CardsInfoPagerView<
 
     // MARK: - Vertical auto scrolling support (collapsible/expandable header)
 
-    func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
+    private func performVerticalScrollIfNeeded(with scrollViewProxy: ScrollViewProxy) {
         let yOffset = scrollState.rawContentOffset.y - Constants.headerVerticalPadding
 
         guard 0.0 <= yOffset, yOffset < headerHeight else { return }
@@ -631,6 +660,7 @@ private extension CardsInfoPagerView {
         static var pageSwitchAnimationDuration: TimeInterval { 0.7 }
         static var minRemainingPageSwitchProgress: CGFloat { 1.0 / 3.0 }
         static var scrollStateBottomContentInsetDiff: CGFloat { 14.0 }
+        static var swipeDiscoveryOffsetToScreenWidthRatio: CGFloat { 0.175 } // Based on mockups
     }
 }
 

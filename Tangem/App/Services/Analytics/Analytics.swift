@@ -51,40 +51,6 @@ class Analytics {
         }
     }
 
-    static func logShopifyOrder(_ order: Order) {
-        var appsFlyerDiscountParams: [String: Any] = [:]
-        var firebaseDiscountParams: [String: Any] = [:]
-        var amplitudeDiscountParams: [ParameterKey: String] = [:]
-
-        if let discountCode = order.discount?.code {
-            appsFlyerDiscountParams[AFEventParamCouponCode] = discountCode
-            firebaseDiscountParams[AnalyticsParameterCoupon] = discountCode
-            amplitudeDiscountParams[.couponCode] = discountCode
-        }
-
-        let sku = order.lineItems.first?.sku ?? "unknown"
-
-        AppsFlyerLib.shared().logEvent(AFEventPurchase, withValues: appsFlyerDiscountParams.merging([
-            AFEventParamContentId: sku,
-            AFEventParamRevenue: order.total,
-            AFEventParamCurrency: order.currencyCode,
-        ], uniquingKeysWith: { $1 }))
-
-        FirebaseAnalytics.Analytics.logEvent(AnalyticsEventPurchase, parameters: firebaseDiscountParams.merging([
-            AnalyticsParameterItems: [
-                [AnalyticsParameterItemID: sku],
-            ],
-            AnalyticsParameterValue: order.total,
-            AnalyticsParameterCurrency: order.currencyCode,
-        ], uniquingKeysWith: { $1 }))
-
-        logEventInternal(.purchased, params: amplitudeDiscountParams.merging([
-            .sku: sku,
-            .count: "\(order.lineItems.count)",
-            .amount: "\(order.total) \(order.currencyCode)",
-        ], uniquingKeysWith: { $1 }))
-    }
-
     static func logDestinationAddress(isAddressValid: Bool, source: DestinationAddressSource) {
         let validationResult: Analytics.ParameterValue = isAddressValid ? .success : .fail
         Analytics.log(

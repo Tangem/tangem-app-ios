@@ -85,6 +85,7 @@ enum ExpressDTO {
             let toContractAddress: String
             let toNetwork: String
             let fromAmount: String
+            let fromDecimals: Int
             let providerId: Int
             let rateType: Provider.RateType
         }
@@ -108,9 +109,9 @@ enum ExpressDTO {
             let toContractAddress: String
             let toNetwork: String
             let fromAmount: String
+            let fromDecimals: Int
             let providerId: Int
             let rateType: Provider.RateType
-            let refundAddress: String // address for refund if something will wrong
             let toAddress: String // address for receiving token
         }
 
@@ -125,7 +126,7 @@ enum ExpressDTO {
             let txId: String
             // account for debiting tokens (same as toAddress)
             // for CEX doesn't matter from wich address send
-            let txFrom: String
+            let txFrom: String?
             // swap smart-contract address
             // CEX address for sending transaction
             let txTo: String
@@ -163,9 +164,23 @@ enum ExpressDTO {
         }
     }
 
-    struct ExpressAPIError: Decodable, Error {
+    struct ExpressAPIError: Decodable, LocalizedError, Error {
         let code: Code?
         let description: String?
+        let value: MinAmountValue?
+
+        struct MinAmountValue: Decodable {
+            let minAmount: String
+            let decimals: Int
+
+            var amount: Decimal? {
+                Decimal(string: minAmount).map { $0 / pow(10, decimals) }
+            }
+        }
+
+        var errorDescription: String? {
+            description
+        }
 
         enum Code: Int, Decodable {
             case badRequest = 2010

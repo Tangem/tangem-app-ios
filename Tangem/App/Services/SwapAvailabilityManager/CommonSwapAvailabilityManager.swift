@@ -17,9 +17,16 @@ class CommonSwapAvailabilityManager: SwapAvailabilityManager {
         loadedSwapableTokenItems.eraseToAnyPublisher()
     }
 
+    private let expressAPIProvider: ExpressAPIProvider
     private var loadedSwapableTokenItems: CurrentValueSubject<[TokenItem: Bool], Never> = .init([:])
 
-    init() {}
+    init() {
+        expressAPIProvider = CommonExpressAPIFactory().makeExpressAPIProvider()
+    }
+
+    func canSwap(tokenItem: TokenItem) -> Bool {
+        loadedSwapableTokenItems.value[tokenItem] ?? false
+    }
 
     func loadSwapAvailability(for items: [TokenItem], forceReload: Bool) {
         if items.isEmpty {
@@ -37,7 +44,16 @@ class CommonSwapAvailabilityManager: SwapAvailabilityManager {
             return
         }
 
-        let requestItem = convertToRequestItem(filteredItemsToRequest)
+        guard FeatureProvider.isAvailable(.express) else {
+            loadSwapableTokens(for: filteredItemsToRequest)
+            return
+        }
+
+        loadExpressAssets(for: filteredItemsToRequest)
+    }
+
+    private func loadSwapableTokens(for items: [TokenItem]) {
+        let requestItem = convertToRequestItem(items)
         var loadSubscription: AnyCancellable?
         loadSubscription = tangemApiService
             .loadCoins(requestModel: .init(supportedBlockchains: requestItem.blockchains, ids: requestItem.ids))
@@ -58,16 +74,38 @@ class CommonSwapAvailabilityManager: SwapAvailabilityManager {
                         $0[$1.tokenItem] = $1.exchangeable
                     }
 
-                var items = loadedSwapableTokenItems.value
-                preparedSwapStates.forEach { key, value in
-                    items.updateValue(value, forKey: key)
-                }
-                loadedSwapableTokenItems.value = items
+                saveTokenItemsAvailability(for: preparedSwapStates)
             })
     }
 
-    func canSwap(tokenItem: TokenItem) -> Bool {
-        loadedSwapableTokenItems.value[tokenItem] ?? false
+    private func loadExpressAssets(for items: [TokenItem]) {
+        let expressCurrencies = items.map {
+            $0.expressCurrency
+        }
+        runTask(in: self, code: { manager in
+            let assets = try await manager.expressAPIProvider.assets(with: expressCurrencies)
+            let factory = ExpressItemsFactory()
+            let requestedBlockchains = items.reduce(into: [String: Blockchain]()) { $0[$1.networkId] = $1.blockchain }
+
+            let preparedExchangeStates: [TokenItem: Bool] = assets
+                .reduce(into: [:]) { partialResult, asset in
+                    guard let tokenItem = factory.convertToTokenItem(asset, availableBlockchains: requestedBlockchains) else {
+                        return
+                    }
+
+                    partialResult[tokenItem] = asset.exchangeAvailable
+                }
+
+            manager.saveTokenItemsAvailability(for: preparedExchangeStates)
+        })
+    }
+
+    private func saveTokenItemsAvailability(for tokenStates: [TokenItem: Bool]) {
+        var items = loadedSwapableTokenItems.value
+        tokenStates.forEach { key, value in
+            items.updateValue(value, forKey: key)
+        }
+        loadedSwapableTokenItems.value = items
     }
 
     private func convertToRequestItem(_ items: [TokenItem]) -> RequestItem {

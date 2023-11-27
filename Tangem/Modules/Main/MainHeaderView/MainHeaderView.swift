@@ -43,10 +43,15 @@ struct MainHeaderView: View {
                 .padding(.bottom, 12)
                 .frame(width: contentSettings.leadingContentWidth, height: imageSize.height, alignment: .leading)
 
-                if let cardImage = viewModel.cardImage, contentSettings.shouldShowTrailingContent {
+                if contentSettings.shouldShowTrailingContent {
                     Spacer(minLength: horizontalSpacing)
 
-                    cardImage.image
+                    // A transparent 1px image is used to preserve the structural identity of the view,
+                    // otherwise visual glitches may ocurr during the header swipe animation
+                    //
+                    // Do not replace nil coalescing operator here with any kind of operators
+                    // that breaks the view's structural identity (`if`, `switch`, etc)
+                    Image(viewModel.cardImage?.name ?? Assets.clearColor1px.name)
                         .frame(size: imageSize)
                 }
             }

@@ -53,7 +53,7 @@ struct TokenPriceChangeView: View {
     @ViewBuilder
     private func styledText(_ text: String, textColor: Color = Colors.Text.tertiary) -> some View {
         Text(text)
-            .style(Fonts.Regular.footnote, color: textColor)
+            .style(Fonts.Regular.caption1, color: textColor)
             .lineLimit(1)
     }
 }

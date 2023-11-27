@@ -37,13 +37,11 @@ final class ExpressFeeBottomSheetViewModel: ObservableObject, Identifiable {
     }
 
     private func setupView() {
-        guard case .readyToSwap(let state, _) = expressInteractor.getState() else {
-            return
-        }
+        let fees = expressInteractor.getState().fees
 
         // Should use the option's array for the correct order
         feeRowViewModels = [FeeOption.market, .fast].compactMap { option in
-            guard let fee = state.fees[option] else {
+            guard let fee = fees[option] else {
                 return nil
             }
 

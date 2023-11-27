@@ -28,8 +28,8 @@ class MainCoordinator: CoordinatorObject {
     @Published var legacySendCoordinator: LegacySendCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var swappingCoordinator: SwappingCoordinator?
+    @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
-    @Published var manageTokensCoordinator: ManageTokensCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -52,11 +52,16 @@ class MainCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        mainViewModel = MainViewModel(
+        let swipeDiscoveryHelper = WalletSwipeDiscoveryHelper()
+        let viewModel = MainViewModel(
             selectedUserWalletId: options.userWalletModel.userWalletId,
             coordinator: self,
+            swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self)
         )
+
+        swipeDiscoveryHelper.delegate = viewModel
+        mainViewModel = viewModel
     }
 }
 
@@ -149,15 +154,6 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
     func openManageTokens(with settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenListCoordinator = nil
-            self?.manageTokensCoordinator = nil
-        }
-
-        if FeatureProvider.isAvailable(.manageTokens) {
-            let coordinator = ManageTokensCoordinator(dismissAction: dismissAction)
-            let options = ManageTokensCoordinator.Options()
-            coordinator.start(with: options)
-            manageTokensCoordinator = coordinator
-            return
         }
 
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
@@ -309,12 +305,57 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         swappingCoordinator = coordinator
     }
 
+    func openExpress(input: CommonExpressModulesFactory.InputModel) {
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.expressCoordinator = nil
+
+            guard let navigationInfo else {
+                return
+            }
+
+            self?.openNetworkCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+        }
+
+        let factory = CommonExpressModulesFactory(inputModel: input)
+        let coordinator = ExpressCoordinator(
+            factory: factory,
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
+        )
+
+        coordinator.start(with: .default)
+
+        expressCoordinator = coordinator
+    }
+
     func openExplorer(at url: URL, blockchainDisplayName: String) {
         modalWebViewModel = WebViewContainerViewModel(
             url: url,
             title: Localization.commonExplorerFormat(blockchainDisplayName),
             withCloseButton: true
         )
+    }
+
+    func openNetworkCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
+        // TODO: Remove this stuff after Send screen refactoring
+        guard let cardViewModel = userWalletModel as? CardViewModel else {
+            return
+        }
+
+        #warning("TODO: Add analytics")
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.tokenDetailsCoordinator = nil
+        }
+        let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
+        coordinator.start(
+            with: .init(
+                cardModel: cardViewModel,
+                walletModel: model,
+                userTokensManager: userWalletModel.userTokensManager
+            )
+        )
+
+        tokenDetailsCoordinator = coordinator
     }
 }
 

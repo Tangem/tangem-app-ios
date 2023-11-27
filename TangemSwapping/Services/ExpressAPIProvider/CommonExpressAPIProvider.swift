@@ -51,6 +51,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toContractAddress: item.destination.contractAddress,
             toNetwork: item.destination.network,
             fromAmount: item.sourceAmountWEI(),
+            fromDecimals: item.source.decimalCount,
             providerId: item.providerId,
             rateType: .float
         )
@@ -67,9 +68,9 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toContractAddress: item.destination.contractAddress,
             toNetwork: item.destination.network,
             fromAmount: item.sourceAmountWEI(),
+            fromDecimals: item.source.decimalCount,
             providerId: item.providerId,
             rateType: .float,
-            refundAddress: item.source.defaultAddress,
             toAddress: item.destination.defaultAddress
         )
 

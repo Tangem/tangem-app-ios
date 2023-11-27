@@ -28,15 +28,11 @@ class AppCoordinator: CoordinatorObject {
     @Published var welcomeCoordinator: WelcomeCoordinator?
     @Published var uncompletedBackupCoordinator: UncompletedBackupCoordinator?
     @Published var authCoordinator: AuthCoordinator?
-
-    // MARK: - Child view models
-
-    @Published private(set) var mainBottomSheetViewModel: MainBottomSheetViewModel?
-    private lazy var __mainBottomSheetViewModel = MainBottomSheetViewModel()
+    @Published var mainBottomSheetCoordinator: MainBottomSheetCoordinator?
 
     // MARK: - View State
 
-    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.mainScreenBottomSheet) }
+    @Published private(set) var isMainBottomSheetShown = false
 
     // MARK: - Private
 
@@ -61,6 +57,8 @@ class AppCoordinator: CoordinatorObject {
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
+
+        setupMainBottomSheetCoordinatorIfNeeded()
     }
 
     private func restart(with options: AppCoordinator.Options = .default) {
@@ -120,6 +118,27 @@ class AppCoordinator: CoordinatorObject {
         uncompletedBackupCoordinator = coordinator
     }
 
+    /// - Note: The coordinator is set up only once and only when the feature toggle is enabled.
+    private func setupMainBottomSheetCoordinatorIfNeeded() {
+        guard
+            FeatureProvider.isAvailable(.mainScreenBottomSheet),
+            mainBottomSheetCoordinator == nil
+        else {
+            return
+        }
+
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.mainBottomSheetCoordinator = nil
+        }
+
+        let coordinator = MainBottomSheetCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
+        )
+        coordinator.start()
+        mainBottomSheetCoordinator = coordinator
+    }
+
     private func bind() {
         userWalletRepository
             .eventProvider
@@ -131,11 +150,8 @@ class AppCoordinator: CoordinatorObject {
             .store(in: &bag)
 
         bottomSheetVisibility
-            .isShown
-            .map { [weak self] isShown in
-                return isShown ? self?.__mainBottomSheetViewModel : nil
-            }
-            .assign(to: \.mainBottomSheetViewModel, on: self, ownership: .weak)
+            .isShownPublisher
+            .assign(to: \.isMainBottomSheetShown, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

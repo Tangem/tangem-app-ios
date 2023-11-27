@@ -52,6 +52,16 @@ struct NotificationsFactory {
         )
     }
 
+    func buildNotificationInput(
+        for event: ExpressNotificationEvent,
+        buttonAction: NotificationView.NotificationButtonTapAction? = nil
+    ) -> NotificationViewInput {
+        return .init(
+            style: expressNotificationStyle(for: event, action: buttonAction),
+            settings: .init(event: event, dismissAction: nil)
+        )
+    }
+
     private func tokenNotificationStyle(
         for event: TokenNotificationEvent,
         action: NotificationView.NotificationButtonTapAction?
@@ -65,6 +75,22 @@ struct NotificationsFactory {
 
         return .withButtons([
             .init(action: action, actionType: actionType, isWithLoader: false),
+        ])
+    }
+
+    private func expressNotificationStyle(
+        for event: ExpressNotificationEvent,
+        action: NotificationView.NotificationButtonTapAction?
+    ) -> NotificationView.Style {
+        guard
+            let action,
+            let actionType = event.buttonActionType
+        else {
+            return .plain
+        }
+
+        return .withButtons([
+            .init(action: action, actionType: actionType, isWithLoader: event.isWithLoader),
         ])
     }
 }

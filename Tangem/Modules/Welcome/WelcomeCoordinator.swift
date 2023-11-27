@@ -27,7 +27,6 @@ class WelcomeCoordinator: CoordinatorObject {
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
     @Published var shopCoordinator: ShopCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
-    @Published var manageTokensCoordinator: ManageTokensCoordinator? = nil
     @Published var promotionCoordinator: PromotionCoordinator? = nil
 
     // MARK: - Child view models
@@ -129,7 +128,6 @@ extension WelcomeCoordinator: WelcomeRoutable {
     func openTokensList() {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.legacyTokenListCoordinator = nil
-            self?.manageTokensCoordinator = nil
         }
 
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)

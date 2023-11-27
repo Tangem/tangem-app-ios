@@ -10,5 +10,5 @@ import Foundation
 
 public protocol AllowanceProvider {
     func getAllowance(owner: String, to spender: String, contract: String) async throws -> Decimal
-    func makeApproveData(spender: String, amount: Decimal) -> Data
+    func makeApproveData(spender: String, amount: Decimal) throws -> Data
 }

@@ -58,7 +58,7 @@ private extension CommonExpressAPIService {
             response = try await provider.asyncRequest(target)
         } catch {
             log(target: target, error: error)
-            throw ExpressAPIServiceError.requestError(error)
+            throw error
         }
 
         do {
@@ -72,21 +72,16 @@ private extension CommonExpressAPIService {
             return try decoder.decode(T.self, from: response.data)
         } catch {
             log(target: target, response: response, error: error)
-            throw ExpressAPIServiceError.decodingError(error)
+            throw error
         }
     }
 
     func handleError(target: ExpressAPITarget, response: Response) throws {
         let decoder = JSONDecoder()
 
-        do {
-            let error = try decoder.decode(ExpressDTO.APIError.Response.self, from: response.data)
-            log(target: target, response: response, error: error.error)
-            throw ExpressAPIServiceError.apiError(error.error)
-        } catch {
-            log(target: target, response: response, error: error)
-            throw ExpressAPIServiceError.decodingError(error)
-        }
+        let error = try decoder.decode(ExpressDTO.APIError.Response.self, from: response.data)
+        log(target: target, response: response, error: error.error)
+        throw error.error
     }
 
     func log(target: TargetType, response: Response? = nil, error: Error? = nil) {

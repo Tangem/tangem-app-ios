@@ -115,16 +115,6 @@ extension Color {
     @nonobjc static var tangemBg: Color {
         return Color("tangem_bg")
     }
-
-    // MARK: Misc
-
-    @nonobjc static var underlyingCardBackground1: Color {
-        return Color("underlying-card-background1")
-    }
-
-    @nonobjc static var underlyingCardBackground2: Color {
-        return Color("underlying-card-background2")
-    }
 }
 
 extension UIColor {

@@ -11,8 +11,14 @@ import SwiftUI
 struct ExpressFeeRowView: View {
     let viewModel: ExpressFeeRowData
 
+    var isTappable: Bool { viewModel.action != nil }
+
     var body: some View {
-        Button(action: viewModel.action) {
+        if let action = viewModel.action {
+            Button(action: action) {
+                content
+            }
+        } else {
             content
         }
     }
@@ -29,21 +35,31 @@ struct ExpressFeeRowView: View {
 
             Spacer()
 
-            Assets.chevron.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.informative)
+            if isTappable {
+                Assets.chevron.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+            }
         }
     }
 }
 
 #Preview("ExpressFeeRowView") {
-    GroupedSection([ExpressFeeRowData(
-        title: "Fee",
-        subtitle: "0.117 MATIC (0.14 $)",
-        action: {}
-    )]) {
+    GroupedSection([
+        ExpressFeeRowData(
+            title: "Fee",
+            subtitle: "0.117 MATIC (0.14 $)",
+            action: {}
+        ),
+        ExpressFeeRowData(
+            title: "Fee",
+            subtitle: "0.117 MATIC (0.14 $)",
+            action: nil
+        ),
+    ]) {
         ExpressFeeRowView(viewModel: $0)
     }
+    .interSectionPadding(14)
     .interSectionPadding(12)
     .padding()
     .background(Colors.Background.secondary.ignoresSafeArea())

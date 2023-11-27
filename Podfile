@@ -6,18 +6,18 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-272'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-273'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-412'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-413'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
   pod 'TangemWalletCore', :git => 'https://github.com/tangem/wallet-core-binaries-ios.git', :tag => '3.2.4-tangem1'
   #pod 'TangemWalletCore', :path => '../wallet-core-binaries-ios'
 
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => 'add-external-signer-8'
+  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => 'add-external-signer-9'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.9'
@@ -41,7 +41,6 @@ target 'Tangem' do
   pod 'Moya'
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.8.4'
   pod 'Kingfisher', '~> 7.9.0'
-  pod 'Mobile-Buy-SDK' # Shopify
 
   # Helpers
   pod 'AlertToast', :git => 'https://github.com/elai950/AlertToast', :commit => 'a437862bb6605080a5816e866cbd4ac8c8657b49'
@@ -51,7 +50,7 @@ target 'Tangem' do
   pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
   
   # Analytics
-  pod 'Amplitude', '~> 8.8.0'
+  pod 'Amplitude'
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
   pod 'AppsFlyerFramework'
@@ -97,7 +96,8 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-
+      config.build_settings['OTHER_LDFLAGS'] ||= ['$(inherited)']
+      config.build_settings['OTHER_LDFLAGS'] << '-Wl,-no_warn_duplicate_libraries' #https://indiestack.com/2023/10/xcode-15-duplicate-library-linker-warnings/
       if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
         target.build_configurations.each do |config|
           config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'

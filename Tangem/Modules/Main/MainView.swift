@@ -16,6 +16,7 @@ struct MainView: View {
         CardsInfoPagerView(
             data: viewModel.pages,
             selectedIndex: $viewModel.selectedCardIndex,
+            discoveryAnimationTrigger: viewModel.swipeDiscoveryAnimationTrigger,
             headerFactory: { info in
                 info.header
                     .contextMenu {
@@ -44,7 +45,6 @@ struct MainView: View {
         .pageSwitchThreshold(0.4)
         .contentViewVerticalOffset(64.0)
         .horizontalScrollDisabled(viewModel.isHorizontalScrollDisabled)
-        .pageSwitchAnimationDuration(viewModel.isPageSwitchAnimationDisabled ? .zero : nil)
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
@@ -111,10 +111,15 @@ struct MainView_Preview: PreviewProvider {
     static let viewModel: MainViewModel = {
         InjectedValues[\.userWalletRepository] = FakeUserWalletRepository()
         let coordinator = MainCoordinator()
-        return .init(
+        let swipeDiscoveryHelper = WalletSwipeDiscoveryHelper()
+        let viewModel = MainViewModel(
             coordinator: coordinator,
+            swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator)
         )
+        swipeDiscoveryHelper.delegate = viewModel
+
+        return viewModel
     }()
 
     static var previews: some View {

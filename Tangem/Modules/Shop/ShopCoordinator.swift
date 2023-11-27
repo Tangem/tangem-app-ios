@@ -12,10 +12,6 @@ class ShopCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
-    // MARK: - Main view model
-
-    @Published private(set) var shopViewModel: ShopViewModel? = nil
-
     // MARK: - Child view models
 
     @Published var pushedWebViewModel: WebViewContainerViewModel? = nil
@@ -36,27 +32,10 @@ class ShopCoordinator: CoordinatorObject {
 
         if let webShopUrl = ShopWebHelper().webShopUrl {
             self.webShopUrl = webShopUrl
-        } else {
-            fatalError("Did you return the availability of Shopify? There's an untested dynamic Shopify system that hasn't been tested yet (IOS-3910)")
-            shopViewModel = ShopViewModel(coordinator: self)
         }
     }
 }
 
 extension ShopCoordinator {
     struct Options {}
-}
-
-extension ShopCoordinator: ShopViewRoutable {
-    func openWebCheckout(at url: URL) {
-        pushedWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.shopWebCheckoutTitle,
-            addLoadingIndicator: true
-        )
-    }
-
-    func closeWebCheckout() {
-        pushedWebViewModel = nil
-    }
 }

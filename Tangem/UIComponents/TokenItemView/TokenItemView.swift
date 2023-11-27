@@ -92,7 +92,7 @@ struct TokenItemView: View {
             .readGeometry(\.size, bindTo: $textBlockSize)
         }
         .padding(14)
-        .background(Colors.Background.primary)
+        .background(Colors.Background.primary.cornerRadiusContinuous(Constants.cornerRadius))
         .onTapGesture(perform: viewModel.tapAction)
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur

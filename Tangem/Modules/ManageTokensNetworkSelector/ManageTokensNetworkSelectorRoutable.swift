@@ -9,6 +9,5 @@
 import Foundation
 
 protocol ManageTokensNetworkSelectorRoutable: AnyObject {
-    func closeModule()
-    func openAddCustomTokenModule()
+    func openWalletSelector(userWallets: [UserWallet], currentUserWalletId: Data?, delegate: WalletSelectorDelegate?)
 }

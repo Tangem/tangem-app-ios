@@ -12,4 +12,5 @@ import TangemSwapping
 
 protocol ExpressTransactionBuilder {
     func makeTransaction(wallet: WalletModel, data: ExpressTransactionData, fee: Fee) async throws -> BlockchainSdk.Transaction
+    func makeApproveTransaction(wallet: WalletModel, data: Data, fee: Fee, contractAddress: String) async throws -> BlockchainSdk.Transaction
 }

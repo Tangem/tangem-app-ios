@@ -16,17 +16,16 @@ enum SendStep {
 }
 
 extension SendStep {
-    #warning("L10n")
     var name: String {
         switch self {
         case .amount:
-            return "Send"
+            return Localization.commonSend
         case .destination:
-            return "Recipient"
+            return Localization.sendRecipient
         case .fee:
-            return "Speed and Fee"
+            return Localization.commonFeeSelectorTitle
         case .summary:
-            return "Send"
+            return Localization.commonSend
         }
     }
 

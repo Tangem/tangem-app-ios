@@ -13,5 +13,11 @@ struct ExpressFeeRowData: Identifiable {
 
     let title: String
     let subtitle: String
-    let action: () -> Void
+    let action: (() -> Void)?
+
+    init(title: String, subtitle: String, action: (() -> Void)? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.action = action
+    }
 }

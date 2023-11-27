@@ -8,11 +8,14 @@
 
 import SwiftUI
 
-struct BottomScrollableSheet<Header: View, Content: View>: View {
+struct BottomScrollableSheet<Header: View, Content: View, Overlay: View>: View {
     @ViewBuilder private let header: () -> Header
     @ViewBuilder private let content: () -> Content
+    @ViewBuilder private let overlay: () -> Overlay
 
     @ObservedObject private var stateObject: BottomScrollableSheetStateObject
+
+    @State private var overlayHeight: CGFloat = .zero
 
     @State private var isHidden = true
     private var isHiddenWhenCollapsed = false
@@ -22,16 +25,20 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
     /// The tap gesture is completely disabled when the sheet is expanded.
     private var headerTapGestureMask: GestureMask { stateObject.state.isBottom ? .all : .none }
 
+    private var scrollViewBottomContentInset: CGFloat { max(overlayHeight, UIApplication.safeAreaInsets.bottom, 6.0) }
+
     private let coordinateSpaceName = UUID()
 
     init(
         stateObject: BottomScrollableSheetStateObject,
         @ViewBuilder header: @escaping () -> Header,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder overlay: @escaping () -> Overlay
     ) {
         self.stateObject = stateObject
         self.header = header
         self.content = content
+        self.overlay = overlay
     }
 
     var body: some View {
@@ -46,7 +53,7 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
             .onAppear(perform: stateObject.onAppear)
             .readGeometry(bindTo: stateObject.geometryInfoSubject.asWriteOnlyBinding(.zero))
         }
-        .ignoresSafeArea(.keyboard)
+        .ignoresSafeArea(edges: .bottom)
     }
 
     private var headerDragGesture: some Gesture {
@@ -75,16 +82,26 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
                     onEnded: stateObject.scrollViewContentDragGesture(onEnded:)
                 )
 
-                content()
-                    .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
-                    .readContentOffset(
-                        inCoordinateSpace: .named(coordinateSpaceName),
-                        bindTo: stateObject.contentOffsetSubject.asWriteOnlyBinding(.zero)
-                    )
+                VStack(spacing: 0.0) {
+                    content()
+                        .readContentOffset(
+                            inCoordinateSpace: .named(coordinateSpaceName),
+                            bindTo: stateObject.contentOffsetSubject.asWriteOnlyBinding(.zero)
+                        )
+
+                    FixedSpacer(height: scrollViewBottomContentInset, length: scrollViewBottomContentInset)
+                        .fixedSize()
+                }
+                .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
             }
             .ios15AndBelowScrollDisabledCompat(stateObject.scrollViewIsDragging)
         }
         .ios16AndAboveScrollDisabledCompat(stateObject.scrollViewIsDragging)
+        .overlay(
+            overlay()
+                .readGeometry(\.size.height, bindTo: $overlayHeight)
+                .infinityFrame(alignment: .bottom)
+        )
         .coordinateSpace(name: coordinateSpaceName)
     }
 
@@ -100,7 +117,7 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
             }
             .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
         }
-        .frame(height: stateObject.visibleHeight)
+        .frame(height: proxy.size.height - stateObject.topInset)
         .bottomScrollableSheetCornerRadius()
         .bottomScrollableSheetShadow()
         .hidden(isHiddenWhenCollapsed ? isHidden : false)
@@ -115,6 +132,7 @@ struct BottomScrollableSheet<Header: View, Content: View>: View {
             }
         }
         .overlay(headerGestureOverlayView(proxy: proxy), alignment: .top) // Mustn't be hidden (by the 'isHidden' flag)
+        .offset(y: proxy.size.height - stateObject.visibleHeight - stateObject.topInset)
     }
 
     @ViewBuilder

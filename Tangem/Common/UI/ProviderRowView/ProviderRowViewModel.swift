@@ -8,28 +8,30 @@
 
 import Foundation
 
-struct ProviderRowViewModel {
+struct ProviderRowViewModel: Identifiable {
+    var id: Int { provider.hashValue }
+
     let provider: Provider
     let isDisabled: Bool
     let badge: Badge?
     let subtitles: [Subtitle]
     let detailsType: DetailsType?
-    let tapAction: () -> Void
-}
+    let tapAction: (() -> Void)?
 
-extension ProviderRowViewModel: Hashable, Identifiable {
-    var id: Int { hashValue }
-
-    static func == (lhs: ProviderRowViewModel, rhs: ProviderRowViewModel) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(provider)
-        hasher.combine(isDisabled)
-        hasher.combine(badge)
-        hasher.combine(subtitles)
-        hasher.combine(detailsType)
+    init(
+        provider: Provider,
+        isDisabled: Bool,
+        badge: Badge?,
+        subtitles: [Subtitle],
+        detailsType: DetailsType?,
+        tapAction: (() -> Void)? = nil
+    ) {
+        self.provider = provider
+        self.isDisabled = isDisabled
+        self.badge = badge
+        self.subtitles = subtitles
+        self.detailsType = detailsType
+        self.tapAction = tapAction
     }
 }
 

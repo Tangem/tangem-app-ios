@@ -14,4 +14,5 @@ public protocol ExpressPendingTransactionRepository {
     func didSendSwapTransaction() // Add data
 
     func hasPending(for network: String) -> Bool
+    func lastCurrencyTransaction() -> ExpressCurrency?
 }

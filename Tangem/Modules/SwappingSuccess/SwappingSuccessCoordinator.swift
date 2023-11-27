@@ -15,34 +15,34 @@ class SwappingSuccessCoordinator: CoordinatorObject {
 
     // MARK: - Root view model
 
-    @Published private(set) var rootViewModel: SwappingSuccessViewModel?
+    @Published private(set) var legacyRootViewModel: SwappingSuccessViewModel?
+    @Published private(set) var rootViewModel: ExpressSuccessSentViewModel?
 
     // MARK: - Child view models
 
     @Published var webViewContainerViewModel: WebViewContainerViewModel?
 
-    private let factory: SwappingModulesFactory
-
-    required init(
-        factory: SwappingModulesFactory,
-        dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions>
-    ) {
-        self.factory = factory
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        rootViewModel = factory.makeSwappingSuccessViewModel(inputModel: options.inputModel, coordinator: self)
+        switch options {
+        case .swapping(let factory, let inputModel):
+            legacyRootViewModel = factory.makeSwappingSuccessViewModel(inputModel: inputModel, coordinator: self)
+        case .express(let factory, let data):
+            rootViewModel = factory.makeExpressSuccessSentViewModel(data: data, coordinator: self)
+        }
     }
 }
 
 // MARK: - Options
 
 extension SwappingSuccessCoordinator {
-    struct Options {
-        let inputModel: SwappingSuccessInputModel
+    enum Options {
+        case swapping(factory: SwappingModulesFactory, SwappingSuccessInputModel)
+        case express(factory: ExpressModulesFactory, SentExpressTransactionData)
     }
 }
 
@@ -59,5 +59,17 @@ extension SwappingSuccessCoordinator: SwappingSuccessRoutable {
             title: Localization.commonExplorerFormat(currencyName),
             withCloseButton: true
         )
+    }
+}
+
+// MARK: - ExpressSuccessSentRoutable
+
+extension SwappingSuccessCoordinator: ExpressSuccessSentRoutable {
+    func openWebView(url: URL?, title: String) {
+        webViewContainerViewModel = WebViewContainerViewModel(url: url, title: title, withCloseButton: true)
+    }
+
+    func close() {
+        dismiss()
     }
 }

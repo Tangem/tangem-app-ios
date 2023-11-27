@@ -1,13 +1,13 @@
 PODS:
   - Alamofire (5.6.2)
   - AlertToast (1.3.7)
-  - Amplitude (8.8.0):
+  - Amplitude (8.17.2):
     - AnalyticsConnector (~> 1.0.0)
-  - AnalyticsConnector (1.0.0)
+  - AnalyticsConnector (1.0.3)
   - AnyCodable-FlightSchool (0.6.7)
-  - AppsFlyerFramework (6.5.4):
-    - AppsFlyerFramework/Main (= 6.5.4)
-  - AppsFlyerFramework/Main (6.5.4)
+  - AppsFlyerFramework (6.12.2):
+    - AppsFlyerFramework/Main (= 6.12.2)
+  - AppsFlyerFramework/Main (6.12.2)
   - BigInt (5.2.0)
   - BinanceChain (1.0.1-beta):
     - BinanceChain/Core (= 1.0.1-beta)
@@ -46,43 +46,43 @@ PODS:
     - web3swift
   - CombineExt (1.8.0)
   - CryptoSwift (1.5.1)
-  - Firebase/Analytics (10.7.0):
+  - Firebase/Analytics (10.18.0):
     - Firebase/Core
-  - Firebase/Core (10.7.0):
+  - Firebase/Core (10.18.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.7.0)
-  - Firebase/CoreOnly (10.7.0):
-    - FirebaseCore (= 10.7.0)
-  - Firebase/Crashlytics (10.7.0):
+    - FirebaseAnalytics (~> 10.18.0)
+  - Firebase/CoreOnly (10.18.0):
+    - FirebaseCore (= 10.18.0)
+  - Firebase/Crashlytics (10.18.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 10.7.0)
-  - FirebaseAnalytics (10.7.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.7.0)
+    - FirebaseCrashlytics (~> 10.18.0)
+  - FirebaseAnalytics (10.18.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.18.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.7.0):
+  - FirebaseAnalytics/AdIdSupport (10.18.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+    - GoogleAppMeasurement (= 10.18.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCore (10.7.0):
+  - FirebaseCore (10.18.0):
     - FirebaseCoreInternal (~> 10.0)
-    - GoogleUtilities/Environment (~> 7.8)
-    - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.7.0):
+    - GoogleUtilities/Environment (~> 7.12)
+    - GoogleUtilities/Logger (~> 7.12)
+  - FirebaseCoreExtension (10.18.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.7.0):
+  - FirebaseCoreInternal (10.18.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseCrashlytics (10.7.0):
+  - FirebaseCrashlytics (10.18.0):
     - FirebaseCore (~> 10.5)
     - FirebaseInstallations (~> 10.0)
     - FirebaseSessions (~> 10.5)
@@ -90,12 +90,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (~> 2.1)
-  - FirebaseInstallations (10.7.0):
+  - FirebaseInstallations (10.18.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseSessions (10.7.0):
+  - FirebaseSessions (10.18.0):
     - FirebaseCore (~> 10.5)
     - FirebaseCoreExtension (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -103,63 +103,62 @@ PODS:
     - GoogleUtilities/Environment (~> 7.10)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesSwift (~> 2.1)
-  - GoogleAppMeasurement (10.7.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - GoogleAppMeasurement (10.18.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.18.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.7.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - GoogleAppMeasurement/AdIdSupport (10.18.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.18.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.7.0):
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.18.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleDataTransport (9.2.1):
+  - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/AppDelegateSwizzler (7.11.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.12.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.11.0):
+  - GoogleUtilities/Environment (7.12.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.11.0):
+  - GoogleUtilities/Logger (7.12.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (7.11.0):
+  - GoogleUtilities/MethodSwizzler (7.12.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (7.11.0):
+  - GoogleUtilities/Network (7.12.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.11.0)"
-  - GoogleUtilities/Reachability (7.11.0):
+  - "GoogleUtilities/NSData+zlib (7.12.0)"
+  - GoogleUtilities/Reachability (7.12.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.11.0):
+  - GoogleUtilities/UserDefaults (7.12.0):
     - GoogleUtilities/Logger
   - HDWalletKit (0.3.6):
     - CryptoSwift
     - secp256k1.swift
   - Kingfisher (7.9.1)
-  - Mobile-Buy-SDK (7.1.0)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
-  - nanopb (2.30909.0):
-    - nanopb/decode (= 2.30909.0)
-    - nanopb/encode (= 2.30909.0)
-  - nanopb/decode (2.30909.0)
-  - nanopb/encode (2.30909.0)
+  - nanopb (2.30909.1):
+    - nanopb/decode (= 2.30909.1)
+    - nanopb/encode (= 2.30909.1)
+  - nanopb/decode (2.30909.1)
+  - nanopb/encode (2.30909.1)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
@@ -172,9 +171,9 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.18.1):
     - PromiseKit/CorePromise
-  - PromisesObjC (2.2.0)
-  - PromisesSwift (2.2.0):
-    - PromisesObjC (= 2.2.0)
+  - PromisesObjC (2.3.1)
+  - PromisesSwift (2.3.1):
+    - PromisesObjC (= 2.3.1)
   - ScaleCodec (0.2.1):
     - BigInt (~> 5.2)
   - secp256k1.swift (0.1.4)
@@ -246,21 +245,20 @@ PODS:
 
 DEPENDENCIES:
   - AlertToast (from `https://github.com/elai950/AlertToast`, commit `a437862bb6605080a5816e866cbd4ac8c8657b49`)
-  - Amplitude (~> 8.8.0)
+  - Amplitude
   - AppsFlyerFramework
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.9`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.19`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-412`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-413`)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - HDWalletKit (from `https://github.com/tangem/hdwallet.git`, tag `0.3.12`)
   - Kingfisher (~> 7.9.0)
-  - Mobile-Buy-SDK
   - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-8`)
+  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-9`)
   - SPRMessengerClient (from `https://github.com/tangem/SPRMessengerClient-binaries-ios.git`, tag `sprinklr-3.6.2-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-272`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-273`)
   - TangemWalletCore (from `https://github.com/tangem/wallet-core-binaries-ios.git`, tag `3.2.4-tangem1`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.8.4`)
   - web3swift (from `https://github.com/tangem/web3swift.git`, tag `2.2.12`)
@@ -287,7 +285,6 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - Kingfisher
-    - Mobile-Buy-SDK
     - Moya
     - nanopb
     - ObjcExceptionBridging
@@ -318,19 +315,19 @@ EXTERNAL SOURCES:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-412
+    :tag: develop-413
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: add-external-signer-8
+    :tag: add-external-signer-9
   SPRMessengerClient:
     :git: https://github.com/tangem/SPRMessengerClient-binaries-ios.git
     :tag: sprinklr-3.6.2-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-272
+    :tag: develop-273
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
     :tag: 3.2.4-tangem1
@@ -353,19 +350,19 @@ CHECKOUT OPTIONS:
     :tag: 0.0.19
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-412
+    :tag: develop-413
   HDWalletKit:
     :git: https://github.com/tangem/hdwallet.git
     :tag: 0.3.12
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: add-external-signer-8
+    :tag: add-external-signer-9
   SPRMessengerClient:
     :git: https://github.com/tangem/SPRMessengerClient-binaries-ios.git
     :tag: sprinklr-3.6.2-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-272
+    :tag: develop-273
   TangemWalletCore:
     :git: https://github.com/tangem/wallet-core-binaries-ios.git
     :tag: 3.2.4-tangem1
@@ -379,36 +376,35 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
   AlertToast: 8c9d5efb2df6ea728b32b62bce99d876ec3e5393
-  Amplitude: 710116f3539c225e86fb70a8abdcd20015683132
-  AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
+  Amplitude: 0485db1968c10d13dc40b7980fb9f83c4e3036ab
+  AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
-  AppsFlyerFramework: e309a6cab366296bf891dc68b175de1e9a44f86c
+  AppsFlyerFramework: 6eb4d89d2eb9a6632317f1055b359d9fd85fd5ff
   BigInt: f668a80089607f521586bbe29513d708491ef2f7
   BinanceChain: b77d4c0e496efbf13bdb1f428621480fd52f4ba1
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
   BlockchainSdk: 9e0a05467275f2f85aa8de3ce7b59bfd3a76419f
   CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   CryptoSwift: c4f2debceb38bf44c80659afe009f71e23e4a082
-  Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
-  FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
-  FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
-  FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
-  FirebaseCoreInternal: 8845798510aae74703467480f71ac613788d0696
-  FirebaseCrashlytics: 35fdd1a433b31e28adcf5c8933f4c526691a1e0b
-  FirebaseInstallations: 59c0e4c7a816a0f76710d83f77e5369b3e45eb96
-  FirebaseSessions: 34e5c084da010ef3802cbc062b822e513c9e6318
-  GoogleAppMeasurement: fe17c92a32207dd5cdd4e8d742767f2da74857f6
-  GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
-  GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
+  Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
+  FirebaseAnalytics: 4d310b35c48eaa4a058ddc04bdca6bdb5dc0fe80
+  FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
+  FirebaseCoreExtension: 62b201498aa10535801cdf3448c7f4db5e24ed80
+  FirebaseCoreInternal: 8eb002e564b533bdcf1ba011f33f2b5c10e2ed4a
+  FirebaseCrashlytics: 86d5bce01f42fa1db265f87ff1d591f04db610ec
+  FirebaseInstallations: e842042ec6ac1fd2e37d7706363ebe7f662afea4
+  FirebaseSessions: f90fe9212ee2818641eda051c0835c9c4e30d9ae
+  GoogleAppMeasurement: 70ce9aa438cff1cfb31ea3e660bcc67734cb716e
+  GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
+  GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   HDWalletKit: 602ec664633cc6bae1c697e4e17af42efb69bfad
   Kingfisher: 1d14e9f59cbe19389f591c929000332bf70efd32
-  Mobile-Buy-SDK: 29812838f06cbf78fd80728d9f84e9eaf49c7843
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
-  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
-  PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
-  PromisesSwift: cf9eb58666a43bbe007302226e510b16c1e10959
+  PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
   ScaleCodec: 5d7d0439940c600f49babad6ea265a09377c404b
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
@@ -427,6 +423,6 @@ SPEC CHECKSUMS:
   web3swift: 93f68f5430c11a78bba2351c139d2d22f2c04b5e
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
-PODFILE CHECKSUM: 3e1b0b52d2f5a71123d77287ef493ad2654ee00f
+PODFILE CHECKSUM: d9c3450e5011f33daec04b5d7697ed886d61fd8a
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.14.3

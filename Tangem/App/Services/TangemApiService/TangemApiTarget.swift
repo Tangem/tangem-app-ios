@@ -35,8 +35,6 @@ struct TangemApiTarget: TargetType {
             return "/referral/\(userWalletId)"
         case .participateInReferralProgram:
             return "/referral"
-        case .sales:
-            return "/sales"
         case .promotion:
             return "/promotion"
         case .validateNewUserPromotionEligibility:
@@ -54,7 +52,7 @@ struct TangemApiTarget: TargetType {
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .sales, .promotion:
+        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -92,14 +90,6 @@ struct TangemApiTarget: TargetType {
             )
         case .participateInReferralProgram(let requestData):
             return .requestURLEncodable(requestData)
-        case .sales(let locale, let shops):
-            return .requestParameters(
-                parameters: [
-                    "locale": locale,
-                    "shops": shops,
-                ],
-                encoding: URLEncoding.default
-            )
         case .promotion(let programName, _):
             return .requestParameters(parameters: ["programName": programName], encoding: URLEncoding.default)
         case .validateNewUserPromotionEligibility(let walletId, let code):
@@ -147,7 +137,6 @@ extension TangemApiTarget {
         case saveUserWalletTokens(key: String, list: UserTokenList)
         case loadReferralProgramInfo(userWalletId: String, expectedAwardsLimit: Int)
         case participateInReferralProgram(userInfo: ReferralParticipationRequestBody)
-        case sales(locale: String, shops: String)
 
         // Promotion
         case promotion(programName: String, timeout: TimeInterval?)
@@ -165,7 +154,7 @@ extension TangemApiTarget {
         var headers: [String: String] {
             [
                 "card_id": cardId,
-                "card_public_key": cardPublicKey.hexString,
+                "card_public_key": cardPublicKey.hex,
             ]
         }
     }

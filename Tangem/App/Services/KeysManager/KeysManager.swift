@@ -15,7 +15,6 @@ protocol KeysManager {
     var mercuryoWidgetId: String { get }
     var mercuryoSecret: String { get }
     var blockchainConfig: BlockchainSdkConfig { get }
-    var shopifyShop: ShopifyShop { get }
     var tangemComAuthorization: String? { get }
     var sprinklr: SprinklrConfig { get }
     var infuraProjectId: String { get }

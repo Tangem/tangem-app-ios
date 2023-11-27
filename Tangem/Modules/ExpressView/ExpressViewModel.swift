@@ -10,6 +10,7 @@ import Combine
 import TangemSwapping
 import UIKit
 import enum TangemSdk.TangemSdkError
+import struct BlockchainSdk.Fee
 
 final class ExpressViewModel: ObservableObject {
     // MARK: - ViewState
@@ -21,37 +22,29 @@ final class ExpressViewModel: ObservableObject {
     @Published var receiveCurrencyViewModel: ReceiveCurrencyViewModel?
 
     // Warnings
-    @Published var refreshWarningRowViewModel: DefaultWarningRowViewModel?
-    @Published var highPriceImpactWarningRowViewModel: DefaultWarningRowViewModel?
-    @Published var pendingTransaction: DefaultWarningRowViewModel?
-    @Published var permissionInfoRowViewModel: DefaultWarningRowViewModel?
-    @Published var feeWarningRowViewModel: DefaultWarningRowViewModel?
+    @Published var notificationInputs: [NotificationViewInput] = []
+
+    // Provider
+    @Published var providerState: ProviderState?
 
     // Fee
     @Published var expressFeeRowViewModel: ExpressFeeRowData?
 
     // Main button
+    @Published var mainButtonIsLoading: Bool = false
     @Published var mainButtonIsEnabled: Bool = false
     @Published var mainButtonState: MainButtonState = .swap
     @Published var errorAlert: AlertBinder?
 
-    // TODO: Think about it
-    var informationSectionViewModels: [DefaultWarningRowViewModel] {
-        [
-            refreshWarningRowViewModel,
-            highPriceImpactWarningRowViewModel,
-            pendingTransaction,
-            permissionInfoRowViewModel,
-            feeWarningRowViewModel,
-        ].compactMap { $0 }
-    }
-
     // MARK: - Dependencies
 
     private let initialWallet: WalletModel
+    private let userWalletModel: UserWalletModel
     private let swappingFeeFormatter: SwappingFeeFormatter
     private let balanceConverter: BalanceConverter
     private let balanceFormatter: BalanceFormatter
+    private let expressProviderFormatter: ExpressProviderFormatter
+    private let notificationManager: NotificationManager
     private unowned let interactor: ExpressInteractor
     private unowned let coordinator: ExpressRoutable
 
@@ -63,16 +56,22 @@ final class ExpressViewModel: ObservableObject {
 
     init(
         initialWallet: WalletModel,
+        userWalletModel: UserWalletModel,
         swappingFeeFormatter: SwappingFeeFormatter,
         balanceConverter: BalanceConverter,
         balanceFormatter: BalanceFormatter,
+        expressProviderFormatter: ExpressProviderFormatter,
+        notificationManager: NotificationManager,
         interactor: ExpressInteractor,
         coordinator: ExpressRoutable
     ) {
         self.initialWallet = initialWallet
+        self.userWalletModel = userWalletModel
         self.swappingFeeFormatter = swappingFeeFormatter
         self.balanceConverter = balanceConverter
         self.balanceFormatter = balanceFormatter
+        self.expressProviderFormatter = expressProviderFormatter
+        self.notificationManager = notificationManager
         self.interactor = interactor
         self.coordinator = coordinator
 
@@ -93,7 +92,6 @@ final class ExpressViewModel: ObservableObject {
 
     func userDidTapSwapSwappingItemsButton() {
         Analytics.log(.swapButtonSwipe)
-        update(restriction: .none)
         interactor.swapPair()
 
         // If we have amount then we should round and update it with new decimalCount
@@ -109,11 +107,11 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapChangeSourceButton() {
-        coordinator.presentSwappingTokenList(walletType: .toDestination(initialWallet))
+        coordinator.presentSwappingTokenList(swapDirection: .toDestination(initialWallet))
     }
 
     func userDidTapChangeDestinationButton() {
-        coordinator.presentSwappingTokenList(walletType: .fromSource(initialWallet))
+        coordinator.presentSwappingTokenList(swapDirection: .fromSource(initialWallet))
     }
 
     func didTapMainButton() {
@@ -135,6 +133,10 @@ final class ExpressViewModel: ObservableObject {
         restartTimer()
     }
 
+    func didCloseFeeSelectorSheet() {
+        restartTimer()
+    }
+
     func didTapWaringRefresh() {
         interactor.refresh(type: .full)
     }
@@ -151,17 +153,45 @@ final class ExpressViewModel: ObservableObject {
 private extension ExpressViewModel {
     @MainActor
     func openSuccessView(resultState: ExpressInteractor.TransactionSendResultState) {
-        // TODO: https://tangem.atlassian.net/browse/IOS-4941
+        guard let destination = interactor.getDestination() else {
+            assertionFailure("Destination isn't found")
+            return
+        }
+
+        let data = SentExpressTransactionData(
+            hash: resultState.hash,
+            source: interactor.getSender(),
+            destination: destination,
+            fee: resultState.fee.amount.value,
+            provider: resultState.provider,
+            date: Date(),
+            expressTransactionData: resultState.data
+        )
+
+        coordinator.presentSuccessView(data: data)
     }
 
     func openApproveView() {
-        guard case .restriction(let type, _) = interactor.getState(),
-              case .permissionRequired = type else {
+        guard case .permissionRequired = interactor.getState() else {
             return
         }
 
         stopTimer()
         coordinator.presentApproveView()
+    }
+
+    func openFeeSelectorView() {
+        // If we have fees for choosing
+        guard !interactor.getState().fees.isEmpty else {
+            return
+        }
+
+        stopTimer()
+        coordinator.presentFeeSelectorView()
+    }
+
+    func presentProviderSelectorView() {
+        coordinator.presentProviderSelectorView()
     }
 }
 
@@ -169,8 +199,6 @@ private extension ExpressViewModel {
 
 private extension ExpressViewModel {
     func setupView() {
-        updateState(state: .idle)
-
         sendCurrencyViewModel = SendCurrencyViewModel(
             maximumFractionDigits: interactor.getSender().decimalCount,
             canChangeCurrency: interactor.getSender().id != initialWallet.id,
@@ -200,8 +228,6 @@ private extension ExpressViewModel {
             })
             .debounce(for: 1, scheduler: DispatchQueue.main)
             .sink { [weak self] amount in
-                // Remove refresh warning if user start typing
-                self?.updateRefreshWarningRowViewModel(message: .none)
                 self?.interactor.update(amount: amount?.value)
 
                 if let amount, amount.value > 0 {
@@ -210,8 +236,13 @@ private extension ExpressViewModel {
             }
             .store(in: &bag)
 
+        notificationManager
+            .notificationPublisher
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.notificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
         interactor.state
-            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateState(state: state)
@@ -293,14 +324,16 @@ private extension ExpressViewModel {
 
     func updateReceiveView(wallet: WalletModel?) {
         guard let wallet = wallet else {
-            receiveCurrencyViewModel?.canChangeCurrency = false
-            receiveCurrencyViewModel?.tokenIconState = .loading
+            receiveCurrencyViewModel?.canChangeCurrency = true
+            receiveCurrencyViewModel?.tokenIconState = .notAvailable
+            receiveCurrencyViewModel?.isAvailable = false
             return
         }
 
-        updateReceiveCurrencyBalance(wallet: wallet)
+        receiveCurrencyViewModel?.isAvailable = true
         receiveCurrencyViewModel?.canChangeCurrency = wallet.id != initialWallet.id
         receiveCurrencyViewModel?.tokenIconState = mapToSwappingTokenIconViewModelState(wallet: wallet)
+        updateReceiveCurrencyBalance(wallet: wallet)
 
         let state = interactor.getState()
         switch state {
@@ -346,7 +379,8 @@ private extension ExpressViewModel {
         receiveCurrencyViewModel?.update(cryptoAmountState: .formatted(formatted))
 
         guard let currencyId = tokenItem?.currencyId else {
-            receiveCurrencyViewModel?.update(fiatAmountState: .formatted(BalanceFormatter.defaultEmptyBalanceString))
+            let formatted = balanceFormatter.formatFiatBalance(0)
+            receiveCurrencyViewModel?.update(fiatAmountState: .formatted(formatted))
             return
         }
 
@@ -373,16 +407,12 @@ private extension ExpressViewModel {
 
     func updateState(state: ExpressInteractor.ExpressInteractorState) {
         updateFeeValue(state: state)
-
-        // The HighPriceImpact warning can't be a restriction
-        // because it can be visible even on readyToSwap state
-        updateHighPriceImpact(state: state)
+        updateProviderView(state: state)
         updateMainButton(state: state)
 
         switch state {
         case .idle:
             isSwapButtonLoading = false
-            update(restriction: .none)
             stopTimer()
 
             updateReceiveCurrencyValue(expectAmount: 0)
@@ -393,143 +423,107 @@ private extension ExpressViewModel {
             // Turn on skeletons only for full update
             guard type == .full else { return }
 
-            refreshWarningRowViewModel?.update(rightView: .loader)
             receiveCurrencyViewModel?.update(cryptoAmountState: .loading)
             receiveCurrencyViewModel?.update(fiatAmountState: .loading)
 
-        case .restriction(let type, let quote):
+        case .restriction(_, let quote):
             isSwapButtonLoading = false
-            update(restriction: type)
-
-            if case .requiredRefresh = type {
-                stopTimer()
-            } else {
-                restartTimer()
-            }
-
+            stopTimer()
             updateReceiveCurrencyValue(expectAmount: quote?.quote?.expectAmount)
 
-        case .readyToSwap(let data, let quote):
+        case .permissionRequired(_, let quote), .previewCEX(_, let quote), .readyToSwap(_, let quote):
             isSwapButtonLoading = false
-            update(restriction: .none)
             restartTimer()
 
             updateReceiveCurrencyValue(expectAmount: quote.quote?.expectAmount)
-            runTask(in: self) { viewModel in
-                try await viewModel.checkForHighPriceImpact(
-                    sourceAmount: data.data.fromAmount,
-                    destinationAmount: data.data.toAmount
-                )
+        }
+    }
+
+    func updateProviderView(state: ExpressInteractor.ExpressInteractorState) {
+        switch state {
+        case .idle:
+            providerState = .none
+        case .loading(let type):
+            if type == .full {
+                providerState = .loading
             }
+        case .restriction(_, let quote):
+            if let quote {
+                let data = mapToProviderRowViewModel(expectedQuote: quote)
+                providerState = .loaded(data: data)
+            } else {
+                providerState = .none
+            }
+
+        case .permissionRequired(_, let quote), .previewCEX(_, let quote), .readyToSwap(_, let quote):
+            providerState = .loaded(data: mapToProviderRowViewModel(expectedQuote: quote))
         }
     }
 
     func updateFeeValue(state: ExpressInteractor.ExpressInteractorState) {
         switch state {
-        case .idle, .restriction:
-            expressFeeRowViewModel = nil
-        case .loading(let type):
-            if type == .full {
-                expressFeeRowViewModel = nil
-            }
+        case .restriction(.notEnoughAmountForFee(let state), _):
+            updateExpressFeeRowViewModel(fees: state.fees)
+        case .previewCEX(let fees, _):
+            updateExpressFeeRowViewModel(fees: fees)
         case .readyToSwap(let state, _):
-            guard let fee = state.fees[interactor.getFeeOption()]?.amount.value else {
-                expressFeeRowViewModel = nil
-                return
-            }
-
-            let tokenItem = interactor.getSender().tokenItem
-            let formattedFee = swappingFeeFormatter.format(
-                fee: fee,
-                currencySymbol: tokenItem.currencySymbol,
-                currencyId: tokenItem.currencyId ?? ""
-            )
-
-            expressFeeRowViewModel = ExpressFeeRowData(title: Localization.sendFeeLabel, subtitle: formattedFee) { [weak self] in
-                self?.coordinator.presentFeeSelectorView()
-            }
+            updateExpressFeeRowViewModel(fees: state.fees)
+        case .idle, .restriction, .loading(.full), .permissionRequired:
+            // We have decided that will not give a choose for .permissionRequired state also
+            expressFeeRowViewModel = nil
+        case .loading(.refreshRates):
+            break
         }
+    }
+
+    func updateExpressFeeRowViewModel(fees: [FeeOption: Fee]) {
+        guard let fee = fees[interactor.getFeeOption()]?.amount.value else {
+            expressFeeRowViewModel = nil
+            return
+        }
+
+        let tokenItem = interactor.getSender().tokenItem
+        let formattedFee = swappingFeeFormatter.format(
+            fee: fee,
+            currencySymbol: tokenItem.currencySymbol,
+            currencyId: tokenItem.currencyId ?? ""
+        )
+
+        var action: (() -> Void)?
+        // If fee is one option then don't open selector
+        if fees.count > 1 {
+            action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
+        }
+
+        expressFeeRowViewModel = ExpressFeeRowData(title: Localization.sendFeeLabel, subtitle: formattedFee, action: action)
     }
 
     func updateMainButton(state: ExpressInteractor.ExpressInteractorState) {
         switch state {
-        case .idle:
+        case .idle, .loading(type: .full):
             mainButtonState = .swap
             mainButtonIsEnabled = false
-        case .loading(let type):
-            if type == .full {
-                mainButtonIsEnabled = false
-            }
+        case .loading(type: .refreshRates):
+            // Do nothing
+            break
         case .restriction(let type, _):
             switch type {
-            case .permissionRequired:
-                mainButtonState = .givePermission
-                mainButtonIsEnabled = true
-
-            case .hasPendingTransaction, .requiredRefresh:
+            case .hasPendingTransaction, .requiredRefresh, .notEnoughAmountForSwapping, .noDestinationTokens:
                 mainButtonState = .swap
                 mainButtonIsEnabled = false
 
-            case .notEnoughAmountForFee, .notEnoughAmountForSwapping, .notEnoughBalanceForSwapping:
+            case .notEnoughAmountForFee, .notEnoughBalanceForSwapping:
                 mainButtonState = .insufficientFunds
                 mainButtonIsEnabled = false
             }
 
-        case .readyToSwap:
+        case .permissionRequired:
+            mainButtonState = .givePermission
+            mainButtonIsEnabled = true
+
+        case .readyToSwap, .previewCEX:
             mainButtonState = .swap
             mainButtonIsEnabled = true
-        }
-    }
-
-    func updateHighPriceImpact(state: ExpressInteractor.ExpressInteractorState) {
-        runTask(in: self) { viewModel in
-            switch state {
-            case .idle, .loading(.full), .restriction(_, nil):
-                await runOnMain {
-                    viewModel.highPriceImpactWarningRowViewModel = nil
-                }
-            case .loading(.refreshRates):
-                // Do nothing
-                break
-            case .restriction(_, let quote):
-                if let quote = quote?.quote {
-                    try await viewModel.checkForHighPriceImpact(
-                        sourceAmount: quote.fromAmount,
-                        destinationAmount: quote.expectAmount
-                    )
-                }
-
-            case .readyToSwap(let data, _):
-                try await viewModel.checkForHighPriceImpact(
-                    sourceAmount: data.data.fromAmount,
-                    destinationAmount: data.data.toAmount
-                )
-            }
-        }
-    }
-
-    func checkForHighPriceImpact(sourceAmount: Decimal, destinationAmount: Decimal) async throws {
-        if sourceAmount.isZero {
-            // No need to calculate price impact with zero input
-            await runOnMain {
-                highPriceImpactWarningRowViewModel = nil
-            }
-            return
-        }
-
-        guard let senderCurrencyId = interactor.getSender().tokenItem.currencyId,
-              let destinationCurrencyId = interactor.getDestination()?.tokenItem.currencyId else {
-            throw CommonError.noData
-        }
-
-        let sourceFiatAmount = try await balanceConverter.convertToFiat(value: sourceAmount, from: senderCurrencyId)
-        let destinationFiatAmount = try await balanceConverter.convertToFiat(value: destinationAmount, from: destinationCurrencyId)
-
-        let lossesInPercents = (1 - destinationFiatAmount / sourceFiatAmount) * 100
-
-        await runOnMain {
-            let isHighPriceImpact = lossesInPercents >= Constants.highPriceImpactWarningLimit
-            updateHighPriceImpact(isHighPriceImpact: isHighPriceImpact)
         }
     }
 }
@@ -561,13 +555,37 @@ private extension ExpressViewModel {
             symbol: wallet.tokenItem.currencySymbol
         )
     }
+
+    func mapToProviderRowViewModel(expectedQuote: ExpectedQuote) -> ProviderRowViewModel {
+        let subtitle = expressProviderFormatter.mapToRateSubtitle(
+            quote: expectedQuote,
+            senderCurrencyCode: interactor.getSender().tokenItem.currencySymbol,
+            destinationCurrencyCode: interactor.getDestination()?.tokenItem.currencySymbol,
+            option: .exchangeRate
+        )
+
+        return ProviderRowViewModel(
+            provider: expressProviderFormatter.mapToProvider(provider: expectedQuote.provider),
+            isDisabled: false,
+            badge: expectedQuote.isBest ? .bestRate : .none,
+            subtitles: [subtitle],
+            detailsType: .chevron
+        ) { [weak self] in
+            self?.presentProviderSelectorView()
+        }
+    }
 }
 
 // MARK: - Methods
 
 private extension ExpressViewModel {
     func sendTransaction() {
+        guard interactor.getState().isAvailableToSendTransaction else {
+            return
+        }
+
         stopTimer()
+        mainButtonIsLoading = true
         runTask(in: self) { root in
             do {
                 let resultState = try await root.interactor.send()
@@ -579,9 +597,13 @@ private extension ExpressViewModel {
             } catch TangemSdkError.userCancelled {
                 root.restartTimer()
             } catch {
-                await runOnMain { [weak root] in
-                    root?.errorAlert = AlertBinder(title: Localization.commonError, message: error.localizedDescription)
+                await runOnMain {
+                    root.errorAlert = AlertBinder(title: Localization.commonError, message: error.localizedDescription)
                 }
+            }
+
+            await runOnMain {
+                root.mainButtonIsLoading = false
             }
         }
     }
@@ -589,121 +611,37 @@ private extension ExpressViewModel {
 
 // MARK: - Restrictions
 
-private extension ExpressViewModel {
-    func update(restriction: ExpressInteractor.RestrictionType?) {
-        switch restriction {
-        case .none:
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
+extension ExpressViewModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId) {}
 
-        case .notEnoughAmountForSwapping:
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
+    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+        guard
+            let notif = notificationInputs.first(where: { $0.id == id }),
+            notif.settings.event is ExpressNotificationEvent
+        else {
+            return
+        }
 
-        case .permissionRequired:
-            updateRequiredPermission(isPermissionRequired: true)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
-
-        case .hasPendingTransaction:
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: true)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
-
-        case .notEnoughBalanceForSwapping:
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
-
-        case .notEnoughAmountForFee:
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: true)
-            updateRefreshWarningRowViewModel(message: .none)
-            updateHighPriceImpact(isHighPriceImpact: false)
-
-        case .requiredRefresh(let error):
-            updateRequiredPermission(isPermissionRequired: false)
-            updatePendingApprovingTransaction(hasPendingTransaction: false)
-            updateEnoughAmountForFee(isNotEnoughAmountForFee: false)
-            updateRefreshWarningRowViewModel(message: mapToMessage(error: error))
-            updateHighPriceImpact(isHighPriceImpact: false)
+        switch action {
+        case .refresh:
+            didTapWaringRefresh()
+        case .openNetworkCurrency:
+            openNetworkCurrency()
+        default: return
         }
     }
 
-    func updateRequiredPermission(isPermissionRequired: Bool) {
-        if isPermissionRequired {
-            let symbol = interactor.getSender().tokenItem.blockchain.currencySymbol
-            permissionInfoRowViewModel = DefaultWarningRowViewModel(
-                title: Localization.swappingGivePermission,
-                subtitle: Localization.swappingPermissionSubheader(symbol),
-                leftView: .icon(Assets.swapLock)
-            )
-        } else {
-            permissionInfoRowViewModel = nil
+    private func openNetworkCurrency() {
+        guard
+            let networkCurrencyWalletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
+                $0.tokenItem == .blockchain(initialWallet.tokenItem.blockchain) && $0.blockchainNetwork == initialWallet.blockchainNetwork
+            })
+        else {
+            assertionFailure("Network currency WalletModel not found")
+            return
         }
-    }
 
-    func updatePendingApprovingTransaction(hasPendingTransaction: Bool) {
-        if hasPendingTransaction {
-            pendingTransaction = DefaultWarningRowViewModel(
-                title: Localization.swappingPendingTransactionTitle,
-                subtitle: Localization.swappingPendingTransactionSubtitle,
-                leftView: .loader
-            )
-        } else {
-            pendingTransaction = nil
-        }
-    }
-
-    func updateEnoughAmountForFee(isNotEnoughAmountForFee: Bool) {
-        if isNotEnoughAmountForFee {
-            let symbol = interactor.getSender().tokenItem.blockchain.currencySymbol
-            feeWarningRowViewModel = DefaultWarningRowViewModel(
-                subtitle: Localization.swappingNotEnoughFundsForFee(symbol, symbol),
-                leftView: .icon(Assets.attention)
-            )
-        } else {
-            feeWarningRowViewModel = nil
-        }
-    }
-
-    func updateRefreshWarningRowViewModel(message: String?) {
-        if let message {
-            refreshWarningRowViewModel = DefaultWarningRowViewModel(
-                subtitle: Localization.swappingErrorWrapper(message.capitalizingFirstLetter()),
-                leftView: .icon(Assets.attention),
-                rightView: .icon(Assets.refreshWarningIcon)
-            ) { [weak self] in
-                self?.didTapWaringRefresh()
-            }
-        } else {
-            refreshWarningRowViewModel = nil
-        }
-    }
-
-    func updateHighPriceImpact(isHighPriceImpact: Bool) {
-        if isHighPriceImpact {
-            highPriceImpactWarningRowViewModel = DefaultWarningRowViewModel(
-                title: Localization.swappingHighPriceImpact,
-                subtitle: Localization.swappingHighPriceImpactDescription,
-                leftView: .icon(Assets.warningIcon)
-            )
-        } else {
-            highPriceImpactWarningRowViewModel = nil
-        }
+        coordinator.presentNetworkCurrency(for: networkCurrencyWalletModel, userWalletModel: userWalletModel)
     }
 }
 
@@ -735,6 +673,20 @@ private extension ExpressViewModel {
 }
 
 extension ExpressViewModel {
+    enum ProviderState: Identifiable {
+        var id: Int {
+            switch self {
+            case .loading:
+                return "loading".hashValue
+            case .loaded(let data):
+                return data.id
+            }
+        }
+
+        case loading
+        case loaded(data: ProviderRowViewModel)
+    }
+
     enum MainButtonState: Hashable, Identifiable {
         var id: Int { hashValue }
 

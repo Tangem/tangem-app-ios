@@ -98,10 +98,7 @@ struct NotificationView: View {
 
     private var messageIconContent: some View {
         HStack(spacing: 12) {
-            settings.event.icon.image
-                .resizable()
-                .foregroundColor(settings.event.icon.color)
-                .frame(size: .init(bothDimensions: 20))
+            icon
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(settings.event.title)
@@ -118,6 +115,22 @@ struct NotificationView: View {
         }
         .infinityFrame(axis: .horizontal, alignment: .leading)
         .padding(.trailing, 20)
+    }
+
+    private var icon: some View {
+        Group {
+            switch settings.event.icon.iconType {
+            case .image(let image):
+                image
+                    .resizable()
+                    .foregroundColor(settings.event.icon.color)
+            case .progressView:
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .foregroundColor(Colors.Icon.informative)
+            }
+        }
+        .frame(size: .init(bothDimensions: 20))
     }
 }
 

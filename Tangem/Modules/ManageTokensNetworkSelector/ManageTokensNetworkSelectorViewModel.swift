@@ -36,7 +36,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
     // MARK: - Private Implementation
 
     private let alertBuilder = ManageTokensNetworkSelectorAlertBuilder()
-    private unowned let coordinator: ManageTokensNetworkSelectorCoordinator
+    private unowned let coordinator: ManageTokensNetworkSelectorRoutable
 
     private var tokenItems: [TokenItem]
     private let coinId: String
@@ -73,7 +73,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
     init(
         coinId: String,
         tokenItems: [TokenItem],
-        coordinator: ManageTokensNetworkSelectorCoordinator
+        coordinator: ManageTokensNetworkSelectorRoutable
     ) {
         self.coinId = coinId
         self.tokenItems = tokenItems
@@ -93,7 +93,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
     func selectWalletActionDidTap() {
         Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
 
-        coordinator.openWalletSelectorModule(
+        coordinator.openWalletSelector(
             userWallets: userWalletRepository.userWallets,
             currentUserWalletId: userWalletRepository.selectedUserWalletId,
             delegate: self

@@ -67,8 +67,13 @@ extension NotificationView {
         }
     }
 
+    enum LeadingIconType {
+        case image(Image)
+        case progressView
+    }
+
     struct MessageIcon {
-        let image: Image
+        let iconType: LeadingIconType
         var color: Color?
     }
 }

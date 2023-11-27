@@ -18,7 +18,7 @@ public struct ExpressTransactionData {
 
     /// account for debiting tokens (same as toAddress)
     /// for CEX doesn't matter from which address send
-    public let sourceAddress: String
+    public let sourceAddress: String?
 
     /// swap smart-contract address as `spender` or `router`
     /// CEX address for sending transaction

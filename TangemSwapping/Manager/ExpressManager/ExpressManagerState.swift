@@ -14,8 +14,11 @@ public enum ExpressManagerState {
     // Final states
     // Restrictions -> Notifications
     // Will be returned after the quote request
-    case restriction(ExpressManagerRestriction)
+    case restriction(ExpressManagerRestriction, quote: ExpectedQuote?)
+
+    // Will be returned for a CEX provider
+    case previewCEX(quote: ExpectedQuote)
 
     // Will be returned after the swap request
-    case ready(data: ExpressTransactionData)
+    case ready(data: ExpressTransactionData, quote: ExpectedQuote)
 }
