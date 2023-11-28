@@ -37,7 +37,12 @@ class SingleTokenRouter: SingleTokenRoutable {
         sendAnalyticsEvent(.buttonReceive, for: walletModel)
 
         let infos = walletModel.wallet.addresses.map { address in
-            ReceiveAddressInfo(address: address.value, type: address.type, addressQRImage: QrCodeGenerator.generateQRCode(from: address.value))
+            ReceiveAddressInfo(
+                address: address.value,
+                type: address.type,
+                localizedName: address.localizedName,
+                addressQRImage: QrCodeGenerator.generateQRCode(from: address.value)
+            )
         }
         coordinator.openReceiveScreen(
             amountType: walletModel.amountType,
