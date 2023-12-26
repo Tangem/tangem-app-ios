@@ -20,7 +20,7 @@ private enum QueryKey: String {
     case walletAddress
     case redirectURL
     case theme
-    case baseCurrencyCode
+    case defaultBaseCurrencyCode
     case refundWalletAddress
     case signature
     case baseCurrencyAmount
@@ -202,7 +202,7 @@ extension MoonPayService: ExchangeService {
         queryItems.append(.init(key: .currencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .walletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: successCloseUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
-        queryItems.append(.init(key: .baseCurrencyCode, value: "USD".addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .defaultBaseCurrencyCode, value: "USD".addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
 
         if useDarkTheme {
             queryItems.append(.init(key: .theme, value: darkThemeName))
@@ -228,7 +228,7 @@ extension MoonPayService: ExchangeService {
 
         var queryItems = [URLQueryItem]()
         queryItems.append(.init(key: .apiKey, value: keys.apiKey.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
-        queryItems.append(.init(key: .baseCurrencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .defaultBaseCurrencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .refundWalletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: sellRequestUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
 
@@ -251,7 +251,7 @@ extension MoonPayService: ExchangeService {
             let url = URL(string: data),
             let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
             let items = components.queryItems,
-            let currencyCode = items.first(where: { $0.name == QueryKey.baseCurrencyCode.rawValue })?.value,
+            let currencyCode = items.first(where: { $0.name == QueryKey.defaultBaseCurrencyCode.rawValue })?.value,
             let amountStr = items.first(where: { $0.name == QueryKey.baseCurrencyAmount.rawValue })?.value,
             let amount = Decimal(string: amountStr),
             let targetAddress = items.first(where: { $0.name == QueryKey.depositWalletAddress.rawValue })?.value
