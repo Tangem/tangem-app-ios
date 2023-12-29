@@ -12,7 +12,9 @@ import BlockiesSwift
 class AddressIconViewModel {
     let size: CGFloat
 
-    lazy var image: UIImage = {
+    lazy var image: UIImage? = {
+        guard !address.isEmpty else { return nil }
+
         let blockies = Blockies(
             seed: address.lowercased(),
             size: numberOfBlocks,
@@ -22,7 +24,7 @@ class AddressIconViewModel {
             spotColor: nil
         )
 
-        return blockies.createImage() ?? UIImage()
+        return blockies.createImage()
     }()
 
     private let address: String

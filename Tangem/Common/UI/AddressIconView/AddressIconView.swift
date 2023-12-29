@@ -12,9 +12,18 @@ struct AddressIconView: View {
     let viewModel: AddressIconViewModel
 
     var body: some View {
-        Image(uiImage: viewModel.image)
+        image
             .clipShape(Circle())
             .frame(width: viewModel.size, height: viewModel.size)
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        if let image = viewModel.image {
+            Image(uiImage: image)
+        } else {
+            Colors.Background.tertiary
+        }
     }
 }
 
