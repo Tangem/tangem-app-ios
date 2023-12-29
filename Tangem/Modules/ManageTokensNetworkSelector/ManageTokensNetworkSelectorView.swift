@@ -52,13 +52,17 @@ struct ManageTokensNetworkSelectorView: View {
 
             Spacer(minLength: 0)
 
-            Text(viewModel.currentWalletName)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+            HStack {
+                Text(viewModel.currentWalletName)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
 
-            Assets.chevron.image
-                .renderingMode(.template)
-                .frame(width: 24, height: 24)
-                .foregroundColor(Colors.Icon.informative)
+                Assets.chevron.image
+                    .renderingMode(.template)
+                    .frame(width: 24, height: 24)
+                    .frame(alignment: .trailing)
+                    .foregroundColor(Colors.Icon.informative)
+            }
+            .offset(x: 8)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
