@@ -139,7 +139,7 @@
 "custom_token_creation_error_invalid_contract_address" = "無效地址";
 "custom_token_creation_error_invalid_derivation_path" = "衍生路徑錯誤";
 "custom_token_creation_error_network_not_selected" = "請選擇網路";
-"custom_token_creation_error_wrong_decimals" = "十進制數必須是有效整數，不大於 %li";
+"custom_token_creation_error_wrong_decimals" = "Decimal must be a valid integer, up to %li";
 "custom_token_custom_derivation" = "Custom derivation";
 "custom_token_custom_derivation_placeholder" = "E. g. m/00'/0000'/0'/0/0";
 "custom_token_custom_derivation_title" = "Enter custom derivation";
@@ -185,8 +185,6 @@
 "disclaimer_error_loading" = "檢查您的網路連接或切換到其他網絡";
 "disclaimer_title" = "服務條款";
 "error_wrong_wallet_tapped" = "您使用了另一個錢包中的卡。點按與此錢包關聯的卡片";
-"exchange_receive_view_header" = "您收到";
-"exchange_send_view_header" = "您發送";
 "exchange_tokens_available_tokens_header" = "My tokens";
 "exchange_tokens_empty_tokens" = "You haven't added any tokens yet. Add tokens via Market to swap";
 "exchange_tokens_unavailable_tokens_header" = "Cannot be swapped for %@";
@@ -201,6 +199,7 @@
 "express_exchange_notification_failed_title" = "Operation failed by provider";
 "express_exchange_notification_verification_text" = "Visit provider’s website for verification";
 "express_exchange_notification_verification_title" = "KYC verification required by provider";
+"express_exchange_status_canceled" = "Canceled";
 "express_exchange_status_confirmed" = "Confirmed";
 "express_exchange_status_confirming" = "Confirming";
 "express_exchange_status_confirming_active" = "Confirming...";
@@ -285,7 +284,6 @@
 "manage_tokens_unavailable_description" = "The selected token is currently unavailable for actions within the crypto wallet. But worry not, you can express your interest by upvoting it.";
 "manage_tokens_unavailable_vote" = "Upvote";
 "manage_tokens_wallet_selector_title" = "Choose wallet";
-"manage_tokens_wallet_support_only_one_network_description" = "%1$@ %2$@ only";
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
 "onboarding_access_code_feature_1_description" = "您必須設置一個單一的訪問代碼來保護您的所有錢包";
 "onboarding_access_code_feature_1_title" = "保護";
@@ -498,6 +496,7 @@
 "swapping_approve_information_text" = "批准被視為所有去中心化交易所的行業標準，並保護您的錢包在未經您許可的情況下不被智能合約訪問。按照設計，智能合約無法訪問您的代幣，除非您從您的終端批准訪問。通過“解鎖”您的代幣，您將獲得 1inch 智能合約使用您的資產的權限。網絡的礦工將獲得Gas Fee（由您支付）作為補償，以在區塊鏈上記錄此操作。一旦獲得許可，您就可以交易您的代幣。";
 "swapping_approve_information_title" = "批准";
 "swapping_error_wrapper" = "錯誤： %@";
+"swapping_from_title" = "You swap";
 "swapping_give_permission" = "賦予權限";
 "swapping_high_price_impact" = "價格影響高!";
 "swapping_high_price_impact_description" = "在此代幣交換的數量將對價格產生重大影響，並降低您收到的數量";
@@ -516,13 +515,12 @@
 "swapping_permission_subheader" = "要繼續，您需要允許 1inch 智能合約使用您的 %@";
 "swapping_permission_unlimited" = "Unlimited";
 "swapping_permit_and_swap" = "許可和交換";
-"swapping_success_from_title" = "You swap";
-"swapping_success_to_title" = "You receive";
 "swapping_success_view_explorer_button_title" = "在瀏覽器中查看";
 "swapping_success_view_title" = "進行中";
 "swapping_swap_action" = "交易";
 "swapping_swap_of_to" = "交易 %@ 至";
 "swapping_tangem_fee_disclaimer" = "此外，報價包括%@的 Tangem 費用。這有助於我們提供一流的產品";
+"swapping_to_title" = "You receive";
 "swapping_token_list_other_tokens" = "其他代幣";
 "swapping_token_list_title" = "選擇代幣";
 "swapping_token_list_your_tokens" = "您的代幣";
@@ -539,7 +537,7 @@
 "token_details_unable_hide_alert_message" = "%1$@ 代幣是 %2$@ 網絡上的主要貨幣，只要列表中還有該網絡上的其他代幣，它就無法被隱藏。";
 "token_details_unable_hide_alert_title" = "無法隱藏 %@";
 "token_item_no_rate" = "無費用";
-"token_swap_promotion_button" = "Exchange now";
+"token_swap_promotion_button" = "Swap now";
 "token_swap_promotion_message" = "Exchange this token for other assets in your portfolio";
 "token_swap_promotion_title" = "Introducing cross-chain swaps";
 "transaction_history_contract_address" = "contract: %@";

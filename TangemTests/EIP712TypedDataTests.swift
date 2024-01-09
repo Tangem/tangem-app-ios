@@ -29,7 +29,7 @@ class EIP712TypedDataTests: XCTestCase {
         let jsonTypedData = try typedData(for: fileName)
         let hashToTest = jsonTypedData.signHash
         let expectedResult = "54140d99a864932cbc40fd8a2d1d1706c3923a79c183a3b151e929ac468064db"
-        XCTAssertEqual(hashToTest.hex.lowercased(), expectedResult)
+        XCTAssertEqual(hashToTest.hexString.lowercased(), expectedResult)
     }
 
     func testDecode() {

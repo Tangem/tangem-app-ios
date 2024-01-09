@@ -9,10 +9,6 @@
 import Foundation
 
 struct NotificationsFactory {
-    func lockedWalletNotificationSettings() -> NotificationView.Settings {
-        .init(event: WarningEvent.walletLocked, dismissAction: nil)
-    }
-
     func buildNotificationInputs(
         for events: [WarningEvent],
         action: @escaping NotificationView.NotificationAction,
@@ -37,18 +33,20 @@ struct NotificationsFactory {
     ) -> NotificationViewInput {
         return NotificationViewInput(
             style: event.style(tapAction: action, buttonAction: buttonAction),
+            severity: event.severity,
             settings: .init(event: event, dismissAction: dismissAction)
         )
     }
 
     func buildNotificationInput(
-        for tokenEvent: TokenNotificationEvent,
+        for event: TokenNotificationEvent,
         buttonAction: NotificationView.NotificationButtonTapAction? = nil,
         dismissAction: NotificationView.NotificationAction? = nil
     ) -> NotificationViewInput {
         return .init(
-            style: tokenNotificationStyle(for: tokenEvent, action: buttonAction),
-            settings: .init(event: tokenEvent, dismissAction: dismissAction)
+            style: tokenNotificationStyle(for: event, action: buttonAction),
+            severity: event.severity,
+            settings: .init(event: event, dismissAction: dismissAction)
         )
     }
 
@@ -58,6 +56,7 @@ struct NotificationsFactory {
     ) -> NotificationViewInput {
         return .init(
             style: expressNotificationStyle(for: event, action: buttonAction),
+            severity: event.severity,
             settings: .init(event: event, dismissAction: nil)
         )
     }

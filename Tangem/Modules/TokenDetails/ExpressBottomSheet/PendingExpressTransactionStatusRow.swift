@@ -119,6 +119,7 @@ struct PendingExpressTransactionStatusRow_Previews: PreviewProvider {
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Exchanging...", state: .loader))
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: false)))
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: true)))
+            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Canceled", state: .cross(passed: false)))
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .empty))
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .checkmark))
             PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Verification required", state: .exclamationMark))

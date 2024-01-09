@@ -315,7 +315,6 @@ struct CardsInfoPagerView<
             .readGeometry(\.size, bindTo: scrollState.contentSizeSubject.asWriteOnlyBinding(.zero))
             .readContentOffset(
                 inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                throttleInterval: .zero,
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
 

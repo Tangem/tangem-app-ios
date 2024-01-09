@@ -18,4 +18,5 @@ public enum ExpressTransactionStatus: String, Codable {
     case failed
     case refunded
     case verifying
+    case expired
 }

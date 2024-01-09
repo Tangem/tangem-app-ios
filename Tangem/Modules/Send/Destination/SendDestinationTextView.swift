@@ -1,5 +1,5 @@
 //
-//  SendDestinationInputView.swift
+//  SendDestinationTextView.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 07.11.2023.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct SendDestinationInputView: View {
-    let viewModel: SendDestinationInputViewModel
+struct SendDestinationTextView: View {
+    @ObservedObject var viewModel: SendDestinationTextViewModel
 
     var body: some View {
         GroupedSection(viewModel) { _ in
@@ -58,16 +58,16 @@ struct SendDestinationInputView: View {
     }
 
     private var addressIconView: some View {
-        AddressIconView(viewModel: AddressIconViewModel(address: viewModel.input.wrappedValue))
+        AddressIconView(viewModel: AddressIconViewModel(address: viewModel.input))
             .frame(size: CGSize(bothDimensions: 36))
     }
 
     private var input: some View {
         HStack {
-            TextField(viewModel.placeholder, text: viewModel.input)
+            TextField(viewModel.placeholder, text: $viewModel.input)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-            if !viewModel.input.wrappedValue.isEmpty {
+            if !viewModel.input.isEmpty {
                 Button(action: viewModel.clearInput) {
                     Assets.clear.image
                         .renderingMode(.template)
@@ -79,11 +79,14 @@ struct SendDestinationInputView: View {
 
     @ViewBuilder
     private var pasteButton: some View {
-        if viewModel.input.wrappedValue.isEmpty {
+        if viewModel.input.isEmpty {
             if #available(iOS 16.0, *) {
                 PasteButton(payloadType: String.self) { strings in
+                    guard let string = strings.first else { return }
+
+                    // We receive the value on the non-GUI thread
                     DispatchQueue.main.async {
-                        viewModel.didPasteAddress(strings)
+                        viewModel.didEnterDestination(string)
                     }
                 }
                 .tint(Color.black)
@@ -106,13 +109,13 @@ struct SendDestinationInputView: View {
 
 #Preview {
     GroupedScrollView {
-        SendDestinationInputView(viewModel: SendDestinationInputViewModel(name: "Recipient", input: .constant(""), showAddressIcon: true, placeholder: "Enter address", description: "Description", didPasteAddress: { _ in }))
+        SendDestinationTextView(viewModel: SendDestinationTextViewModel(style: .address(networkName: "Ethereum"), input: .just(output: ""), errorText: .just(output: nil), didEnterDestination: { _ in }))
 
-        SendDestinationInputView(viewModel: SendDestinationInputViewModel(name: "Recipient", input: .constant("0x391316d97a07027a0702c8A002c8A0C25d8470"), showAddressIcon: true, placeholder: "Enter address", description: "Description", didPasteAddress: { _ in }))
+        SendDestinationTextView(viewModel: SendDestinationTextViewModel(style: .address(networkName: "Ethereum"), input: .just(output: "0x391316d97a07027a0702c8A002c8A0C25d8470"), errorText: .just(output: nil), didEnterDestination: { _ in }))
 
-        SendDestinationInputView(viewModel: SendDestinationInputViewModel(name: "Memo", input: .constant(""), showAddressIcon: false, placeholder: "Optional", description: "Description", didPasteAddress: { _ in }))
+        SendDestinationTextView(viewModel: SendDestinationTextViewModel(style: .additionalField(name: "Memo"), input: .just(output: ""), errorText: .just(output: nil), didEnterDestination: { _ in }))
 
-        SendDestinationInputView(viewModel: SendDestinationInputViewModel(name: "Memo", input: .constant("123456789"), showAddressIcon: false, placeholder: "Optional", description: "Description", didPasteAddress: { _ in }))
+        SendDestinationTextView(viewModel: SendDestinationTextViewModel(style: .additionalField(name: "Memo"), input: .just(output: "123456789"), errorText: .just(output: nil), didEnterDestination: { _ in }))
     }
     .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
 }

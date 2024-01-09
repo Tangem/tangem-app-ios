@@ -21,7 +21,7 @@ class LegacySendCoordinator: CoordinatorObject {
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel? = nil
-    @Published var qrScanViewModel: QRScanViewModel? = nil
+    @Published var qrScanViewModel: LegacyQRScanViewModel? = nil
 
     required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction

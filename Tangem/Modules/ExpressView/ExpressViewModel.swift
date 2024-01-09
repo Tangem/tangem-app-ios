@@ -65,7 +65,7 @@ final class ExpressViewModel: ObservableObject {
     private let expressProviderFormatter: ExpressProviderFormatter
     private let notificationManager: NotificationManager
     private let expressRepository: ExpressRepository
-    private unowned let interactor: ExpressInteractor
+    private let interactor: ExpressInteractor
     private unowned let coordinator: ExpressRoutable
 
     // MARK: - Private
@@ -173,7 +173,6 @@ private extension ExpressViewModel {
             return
         }
 
-        stopTimer()
         coordinator.presentApproveView()
     }
 
@@ -183,7 +182,6 @@ private extension ExpressViewModel {
             return
         }
 
-        stopTimer()
         coordinator.presentFeeSelectorView()
     }
 
@@ -596,24 +594,14 @@ private extension ExpressViewModel {
         }
     }
 
-    func updateLegalText(state: ExpressInteractor.ExpressInteractorState) {
-        switch state {
-        case .idle, .loading(.full), .restriction, .permissionRequired:
-            legalText = nil
+    func updateLegalText(state _: ExpressInteractor.ExpressInteractorState) {
+        runTask(in: self) { viewModel in
+            let text = await viewModel.interactor.getSelectedProvider().flatMap { provider in
+                viewModel.expressProviderFormatter.mapToLegalText(provider: provider.provider)
+            }
 
-        case .loading(.refreshRates), .readyToSwap, .previewCEX:
-            runTask(in: self) { viewModel in
-                let text: NSAttributedString? = await {
-                    if let provider = await viewModel.interactor.getSelectedProvider() {
-                        return viewModel.expressProviderFormatter.mapToLegalText(provider: provider.provider)
-                    }
-
-                    return nil
-                }()
-
-                await runOnMain {
-                    viewModel.legalText = text
-                }
+            await runOnMain {
+                viewModel.legalText = text
             }
         }
     }

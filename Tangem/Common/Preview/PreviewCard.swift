@@ -34,7 +34,7 @@ enum PreviewCard {
                     blockcypherTokens: [],
                     infuraProjectId: "",
                     nowNodesApiKey: "",
-                    getBlockApiKey: "",
+                    getBlockCredentials: .init(credentials: []),
                     kaspaSecondaryApiUrl: nil,
                     tronGridApiKey: "",
                     tonCenterApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),

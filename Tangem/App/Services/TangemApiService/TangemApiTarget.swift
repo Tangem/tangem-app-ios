@@ -154,7 +154,7 @@ extension TangemApiTarget {
         var headers: [String: String] {
             [
                 "card_id": cardId,
-                "card_public_key": cardPublicKey.hex,
+                "card_public_key": cardPublicKey.hexString,
             ]
         }
     }

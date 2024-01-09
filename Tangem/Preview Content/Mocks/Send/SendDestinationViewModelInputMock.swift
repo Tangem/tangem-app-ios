@@ -8,14 +8,15 @@
 
 import SwiftUI
 import Combine
+import BlockchainSdk
 
 class SendDestinationViewModelInputMock: SendDestinationViewModelInput {
-    var destinationTextBinding: Binding<String> {
-        .constant("0x123123")
+    var destinationTextPublisher: AnyPublisher<String, Never> {
+        .just(output: "0x123123")
     }
 
-    var destinationAdditionalFieldTextBinding: Binding<String> {
-        .constant("Memo")
+    var destinationAdditionalFieldTextPublisher: AnyPublisher<String, Never> {
+        .just(output: "Memo")
     }
 
     var destinationError: AnyPublisher<Error?, Never> {
@@ -25,4 +26,39 @@ class SendDestinationViewModelInputMock: SendDestinationViewModelInput {
     var destinationAdditionalFieldError: AnyPublisher<Error?, Never> {
         Just(nil).eraseToAnyPublisher()
     }
+
+    var networkName: String {
+        "Ethereum"
+    }
+
+    var additionalField: SendAdditionalFields? {
+        .memo
+    }
+
+    var blockchainNetwork: BlockchainNetwork {
+        BlockchainNetwork(.ethereum(testnet: false))
+    }
+
+    var walletPublicKey: Wallet.PublicKey {
+        .init(seedKey: Data(), derivationType: nil)
+    }
+
+    var currencySymbol: String {
+        "ETH"
+    }
+
+    var walletAddresses: [String] {
+        []
+    }
+
+    var transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never> {
+        .just(output: .loading)
+    }
+
+    var suggestedWallets: [SendSuggestedDestinationWallet] {
+        []
+    }
+
+    func setDestination(_ address: String) {}
+    func setDestinationAdditionalField(_ additionalField: String) {}
 }

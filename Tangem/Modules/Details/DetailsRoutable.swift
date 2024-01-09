@@ -14,7 +14,7 @@ protocol DetailsRoutable: AnyObject {
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
     func openWalletConnect(with disabledLocalizedReason: String?)
     func openDisclaimer(at url: URL)
-    func openScanCardSettings(with userWalletId: Data, sdk: TangemSdk)
+    func openScanCardSettings(with sessionFilter: SessionFilter, sdk: TangemSdk)
     func openAppSettings()
     func openSupportChat(input: SupportChatInputModel)
     func openInSafari(url: URL)

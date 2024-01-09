@@ -10,6 +10,7 @@ import UIKit
 import SwiftUI
 import TangemSdk
 import BlockchainSdk
+import AppsFlyerLib
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
@@ -17,6 +18,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     private lazy var appCoordinator = AppCoordinator()
+    private var isSceneStarted = false
+
+    // MARK: - Lifecycle
 
     // This method can be called during app close, so we have to move out the one-time initialization code outside.
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -27,12 +31,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
             appCoordinator.start(with: .init(newScan: nil))
-            let appView = AppCoordinatorView(coordinator: appCoordinator)
-            window.rootViewController = UIHostingController(rootView: appView)
+            let weakifyAdapter = StatusBarStyleConfiguratorWeakifyAdapter()
+            let appView = AppCoordinatorView(coordinator: appCoordinator).environment(\.statusBarStyleConfigurator, weakifyAdapter)
+            let rootViewController = RootHostingController(rootView: appView)
+            weakifyAdapter.adaptee = rootViewController
+            window.rootViewController = rootViewController
             self.window = window
             window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
             window.makeKeyAndVisible()
         }
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        guard !isSceneStarted else { return }
+
+        isSceneStarted = true
+
+        PerformanceMonitorConfigurator.configureIfAvailable()
+
+        guard AppEnvironment.current.isProduction else { return }
+
+        AppsFlyerLib.shared().start()
     }
 
     // MARK: - Incoming actions

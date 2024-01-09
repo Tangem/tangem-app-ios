@@ -16,7 +16,7 @@ struct WalletConnectCoordinatorView: CoordinatorView {
         if let model = coordinator.walletConnectViewModel {
             WalletConnectView(viewModel: model)
                 .sheet(item: $coordinator.qrScanViewModel) {
-                    QRScanView(viewModel: $0)
+                    LegacyQRScanView(viewModel: $0)
                         .edgesIgnoringSafeArea(.all)
                 }
         }

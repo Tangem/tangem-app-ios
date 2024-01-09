@@ -121,5 +121,25 @@
    },
    "0xd0e30db0": {
       "name":"deposit"
+   },
+   "0x9f50973e": {
+       "info":"swapExactETCForTokens",
+       "source":"https://etc.blockscout.com/tx/0xc748777532541e51368089c71c93cb0e410bf93c13908bea2d07ecbbb65aa839",
+       "name":"swap"
+   },
+   "0x3417c606": {
+       "info":"swapETCForExactTokens",
+       "source":"https://etc.blockscout.com/tx/0xb2c5a4418112c0b29654642f9c724bf7b2f9056fc6dd2c22209ed89fe982f0af",
+       "name":"swap"
+   },
+   "0x65f705d3": {
+       "info":"swapExactTokensForETC",
+       "source":"https://etc.blockscout.com/tx/0xdd5d372e8d770e436bd44367bbc64b57d02e7339a1f1b849f7a995a57c65f3dd",
+       "name":"swap"
+   },
+   "0xb4bc722b": {
+       "info":"swapTokensForExactETC",
+       "source":"https://etc.blockscout.com/tx/0xd79e03ca6b71529c94d576ff78c55b4371e2ef3ff8f9a47007995e5b9e77f879",
+       "name":"swap"
    }
 }

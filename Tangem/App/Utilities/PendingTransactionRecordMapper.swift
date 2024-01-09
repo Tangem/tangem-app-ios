@@ -21,6 +21,20 @@ struct PendingTransactionRecordMapper {
         self.formatter = formatter
     }
 
+    func mapToTransactionRecord(pending: PendingTransactionRecord) -> TransactionRecord {
+        TransactionRecord(
+            hash: pending.hash,
+            source: .single(.init(address: pending.source, amount: pending.amount.value)),
+            destination: .single(.init(address: .user(pending.destination), amount: pending.amount.value)),
+            fee: pending.fee,
+            status: .unconfirmed,
+            isOutgoing: !pending.isIncoming,
+            type: .transfer,
+            date: pending.date,
+            tokenTransfers: nil
+        )
+    }
+
     func mapToTransactionViewModel(_ transaction: PendingTransactionRecord) -> TransactionViewModel {
         let timeFormatted = timeFormatter.string(from: transaction.date)
 

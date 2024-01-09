@@ -25,8 +25,10 @@ public struct DecodedTransactionDetails: Decodable {
     let txValue: String
     // CEX provider transaction id
     let externalTxId: String?
-    // url of CEX porider exchange status page
+    // url of CEX provider exchange status page
     let externalTxUrl: String?
+    // Address where CEX provider should send the swapped amount
+    let payoutAddress: String
 
     init(
         requestId: String,
@@ -37,7 +39,8 @@ public struct DecodedTransactionDetails: Decodable {
         txData: String?,
         txValue: String,
         externalTxId: String?,
-        externalTxUrl: String?
+        externalTxUrl: String?,
+        payoutAddress: String
     ) {
         self.requestId = requestId
         self.txType = txType
@@ -48,5 +51,6 @@ public struct DecodedTransactionDetails: Decodable {
         self.txValue = txValue
         self.externalTxId = externalTxId
         self.externalTxUrl = externalTxUrl
+        self.payoutAddress = payoutAddress
     }
 }

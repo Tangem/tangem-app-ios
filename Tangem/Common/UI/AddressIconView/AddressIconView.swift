@@ -12,18 +12,23 @@ struct AddressIconView: View {
     let viewModel: AddressIconViewModel
 
     var body: some View {
-        Colors.Background.tertiary
+        image
             .clipShape(Circle())
-            .overlay(
-                Image(systemName: "rectangle.checkered")
-                    .foregroundColor(.blue)
-            )
+            .frame(width: viewModel.size, height: viewModel.size)
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        if let image = viewModel.image {
+            Image(uiImage: image)
+        } else {
+            Colors.Background.tertiary
+        }
     }
 }
 
 struct AddressIconView_Previews: PreviewProvider {
     static var previews: some View {
-        AddressIconView(viewModel: AddressIconViewModel(address: "0x0123123"))
-            .frame(size: .init(bothDimensions: 40))
+        AddressIconView(viewModel: AddressIconViewModel(address: "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359"))
     }
 }

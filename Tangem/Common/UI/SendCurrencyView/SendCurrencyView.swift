@@ -36,7 +36,7 @@ struct SendCurrencyView: View {
         HStack(spacing: 0) {
             switch viewModel.headerState {
             case .header:
-                Text(Localization.exchangeSendViewHeader)
+                Text(Localization.swappingFromTitle)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
             case .insufficientFunds:
                 Text(Localization.swappingInsufficientFunds)

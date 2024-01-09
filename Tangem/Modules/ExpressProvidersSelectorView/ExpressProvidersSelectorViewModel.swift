@@ -23,7 +23,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     private let percentFormatter: PercentFormatter
     private let expressProviderFormatter: ExpressProviderFormatter
     private let expressRepository: ExpressRepository
-    private unowned let expressInteractor: ExpressInteractor
+    private let expressInteractor: ExpressInteractor
     private unowned let coordinator: ExpressProvidersSelectorRoutable
 
     private var stateSubscription: AnyCancellable?

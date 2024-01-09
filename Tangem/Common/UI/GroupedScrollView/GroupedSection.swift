@@ -21,6 +21,7 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
     private var interItemSpacing: CGFloat = 0
     private var interSectionPadding: CGFloat = 0
     private var backgroundColor: Color = Colors.Background.primary
+    private var contentAlignment: HorizontalAlignment = .leading
 
     init(
         _ models: [Model],
@@ -54,7 +55,7 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
                 header()
                     .padding(.horizontal, horizontalPadding)
 
-                VStack(alignment: .leading, spacing: interItemSpacing) {
+                VStack(alignment: contentAlignment, spacing: interItemSpacing) {
                     ForEach(models) { model in
                         content(model)
                             .padding(.horizontal, horizontalPadding)
@@ -126,5 +127,9 @@ extension GroupedSection: Setupable {
 
     func backgroundColor(_ color: Color) -> Self {
         map { $0.backgroundColor = color }
+    }
+
+    func contentAlignment(_ alignment: HorizontalAlignment) -> Self {
+        map { $0.contentAlignment = alignment }
     }
 }

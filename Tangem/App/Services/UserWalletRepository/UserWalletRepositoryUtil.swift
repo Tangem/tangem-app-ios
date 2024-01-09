@@ -135,7 +135,7 @@ class UserWalletRepositoryUtil {
     }
 
     private func userWalletPath(for userWallet: UserWallet) -> URL {
-        return userWalletDirectoryUrl.appendingPathComponent("user_wallet_\(userWallet.userWalletId.hex).bin")
+        return userWalletDirectoryUrl.appendingPathComponent("user_wallet_\(userWallet.userWalletId.hexString.lowercased()).bin")
     }
 
     private func excludeFromBackup(url originalUrl: URL) throws {

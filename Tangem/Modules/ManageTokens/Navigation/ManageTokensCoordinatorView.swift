@@ -26,15 +26,21 @@ struct ManageTokensCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.networkSelectorViewModel) { viewModel in
+            .detentBottomSheet(
+                item: $coordinator.networkSelectorViewModel,
+                detents: [.medium, .large]
+            ) { viewModel in
                 NavigationView {
-                    ZStack {
-                        ManageTokensNetworkSelectorView(viewModel: viewModel)
-
-                        links
-                    }
+                    ManageTokensNetworkSelectorView(viewModel: viewModel)
+                        .navigationLinks(links)
                 }
                 .navigationViewStyle(.stack)
+            }
+            .detentBottomSheet(
+                item: $coordinator.addCustomTokenCoordinator,
+                detents: [.large]
+            ) { coordinator in
+                AddCustomTokenCoordinatorView(coordinator: coordinator)
             }
     }
 

@@ -139,7 +139,7 @@
 "custom_token_creation_error_invalid_contract_address" = "Адрес контракта некорректен";
 "custom_token_creation_error_invalid_derivation_path" = "Путь деривации некорректен";
 "custom_token_creation_error_network_not_selected" = "Пожалуйста, выберите сеть";
-"custom_token_creation_error_wrong_decimals" = "Количество знаков после запятой должно быть корректным числом не больше %li";
+"custom_token_creation_error_wrong_decimals" = "Decimal must be a valid integer, up to %li";
 "custom_token_custom_derivation" = "Своя деривация";
 "custom_token_custom_derivation_placeholder" = "Например m/00'/0000'/0'/0/0";
 "custom_token_custom_derivation_title" = "Введите свою деривацию";
@@ -185,8 +185,6 @@
 "disclaimer_error_loading" = "Проверьте подключение с интернетом или переключитесь на другую сеть";
 "disclaimer_title" = "Условия использования";
 "error_wrong_wallet_tapped" = "Вы использовали карту от другого кошелька. Приложите карту, связанную с этим кошельком.";
-"exchange_receive_view_header" = "Вы получаете";
-"exchange_send_view_header" = "Вы отправляете";
 "exchange_tokens_available_tokens_header" = "Мои токены";
 "exchange_tokens_empty_tokens" = "У вас нет добавленных токенов. Добавьте токены для обмена";
 "exchange_tokens_unavailable_tokens_header" = "Недоступен для обмена с %@";
@@ -201,6 +199,7 @@
 "express_exchange_notification_failed_title" = "Операция не выполнена провайдером";
 "express_exchange_notification_verification_text" = "Посетите сайт провайдера для проверки";
 "express_exchange_notification_verification_title" = "Провайдер запрашивает прохождение верификации";
+"express_exchange_status_canceled" = "Отменен";
 "express_exchange_status_confirmed" = "Подтверждено";
 "express_exchange_status_confirming" = "Подтверждение";
 "express_exchange_status_confirming_active" = "Подтверждение...";
@@ -285,7 +284,6 @@
 "manage_tokens_unavailable_description" = "Выбранный токен не доступен в кошельке на данный момент. Но не переживайте, вы можете выразить свой интерес проголосовав за его добавление.";
 "manage_tokens_unavailable_vote" = "Голосовать";
 "manage_tokens_wallet_selector_title" = "Выберите кошелек";
-"manage_tokens_wallet_support_only_one_network_description" = "%1$@ %2$@ only";
 "manage_tokens_wallet_support_only_one_network_title" = "Кошелёк не поддерживает более одной сети";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
 "onboarding_access_code_feature_1_title" = "Защита";
@@ -499,6 +497,7 @@
 "swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
 "swapping_approve_information_title" = "Подтвердить";
 "swapping_error_wrapper" = "Ошибка: %@";
+"swapping_from_title" = "Вы отправляете";
 "swapping_give_permission" = "Дать разрешение";
 "swapping_high_price_impact" = "Сильные колебания цены!";
 "swapping_high_price_impact_description" = "Обмен этой суммы выбранных токенов может вызвать значительные колебания цены и уменьшить получаемую сумму.";
@@ -517,13 +516,12 @@
 "swapping_permission_subheader" = "Чтобы продолжить, вам нужно разрешить смарт-контракту 1inch использовать ваш %@";
 "swapping_permission_unlimited" = "Безлимитно";
 "swapping_permit_and_swap" = "Разрешить и обменять";
-"swapping_success_from_title" = "Вы отправляете";
-"swapping_success_to_title" = "Вы получите";
 "swapping_success_view_explorer_button_title" = "Открыть в обозревателе";
 "swapping_success_view_title" = "В процессе";
 "swapping_swap_action" = "Обменять";
 "swapping_swap_of_to" = "Обмен %@ на";
 "swapping_tangem_fee_disclaimer" = "Котировки включают дополнительную комиссию Tangem в размере %@. Это помогает нам предоставлять первоклассный продукт.";
+"swapping_to_title" = "Вы получите";
 "swapping_token_list_other_tokens" = "Другие токены";
 "swapping_token_list_title" = "Выберите токен";
 "swapping_token_list_your_tokens" = "Ваши токены";

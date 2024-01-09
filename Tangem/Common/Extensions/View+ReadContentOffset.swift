@@ -30,7 +30,7 @@ extension View {
     /// ```
     func readContentOffset(
         inCoordinateSpace coordinateSpace: CoordinateSpace,
-        throttleInterval: GeometryInfo.ThrottleInterval = .standard,
+        throttleInterval: GeometryInfo.ThrottleInterval = .zero,
         bindTo contentOffset: Binding<CGPoint>
     ) -> some View {
         modifier(

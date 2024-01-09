@@ -11,12 +11,12 @@ import SwiftUI
 import Combine
 
 protocol SendSummaryViewModelInput: AnyObject {
+    var amountText: String { get }
     var canEditAmount: Bool { get }
     var canEditDestination: Bool { get }
 
-    var amountTextBinding: Binding<String> { get }
     var destinationTextBinding: Binding<String> { get }
-    var feeTextBinding: Binding<String> { get }
+    var feeTextPublisher: AnyPublisher<String?, Never> { get }
 
     var isSending: AnyPublisher<Bool, Never> { get }
 
@@ -29,9 +29,9 @@ class SendSummaryViewModel: ObservableObject {
 
     let amountText: String
     let destinationText: String
-    let feeText: String
 
     @Published var isSending = false
+    @Published var feeText: String = ""
 
     weak var router: SendSummaryRoutable?
 
@@ -39,12 +39,12 @@ class SendSummaryViewModel: ObservableObject {
     private weak var input: SendSummaryViewModelInput?
 
     init(input: SendSummaryViewModelInput) {
+        amountText = input.amountText
+
         canEditAmount = input.canEditAmount
         canEditDestination = input.canEditDestination
 
-        amountText = input.amountTextBinding.wrappedValue
         destinationText = input.destinationTextBinding.wrappedValue
-        feeText = input.feeTextBinding.wrappedValue
 
         self.input = input
 
@@ -63,6 +63,14 @@ class SendSummaryViewModel: ObservableObject {
         input
             .isSending
             .assign(to: \.isSending, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        input
+            .feeTextPublisher
+            .map {
+                $0 ?? ""
+            }
+            .assign(to: \.feeText, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

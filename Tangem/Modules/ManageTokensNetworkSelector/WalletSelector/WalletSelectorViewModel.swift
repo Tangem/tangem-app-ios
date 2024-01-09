@@ -12,25 +12,25 @@ import Combine
 class WalletSelectorViewModel: ObservableObject {
     var itemViewModels: [WalletSelectorItemViewModel] = []
 
-    weak var delegate: WalletSelectorDelegate?
+    private weak var dataSource: WalletSelectorDataSource?
+    private var bag = Set<AnyCancellable>()
 
-    init(userWallets: [UserWallet], currentUserWalletId: Data?) {
-        itemViewModels = userWallets.map { userWallet in
-            WalletSelectorItemViewModel(
-                userWallet: userWallet,
-                isSelected: userWallet.userWalletId == currentUserWalletId,
-                cardImageProvider: CardImageProvider()
-            ) { [weak self] in
-                self?.didTapWallet(with: userWallet)
-            }
-        }
+    // MARK: - Init
+
+    init(dataSource: WalletSelectorDataSource?) {
+        self.dataSource = dataSource
+        itemViewModels = dataSource?.itemViewModels ?? []
+
+        bind()
     }
 
-    func didTapWallet(with userWallet: UserWallet) {
-        for itemViewModel in itemViewModels {
-            itemViewModel.isSelected = userWallet.userWalletId == itemViewModel.userWallet.userWalletId
-        }
-
-        delegate?.didSelectWallet(with: userWallet.userWalletId)
+    private func bind() {
+        dataSource?.selectedUserWalletModelPublisher
+            .sink { [weak self] userWalletId in
+                self?.itemViewModels.forEach { item in
+                    item.isSelected = item.userWalletId == userWalletId
+                }
+            }
+            .store(in: &bag)
     }
 }

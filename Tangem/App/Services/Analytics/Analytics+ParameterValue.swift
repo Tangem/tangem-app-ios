@@ -93,7 +93,7 @@ extension Analytics {
         case done = "Done"
         case kyc = "KYC"
         case refunded = "Refunded"
-        case expired = "Expired"
+        case canceled = "Canceled"
 
         // App theme
         case system = "System"

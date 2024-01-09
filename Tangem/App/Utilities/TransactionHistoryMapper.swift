@@ -13,6 +13,7 @@ struct TransactionHistoryMapper {
 
     private let currencySymbol: String
     private let walletAddresses: [String]
+    private let showSign: Bool
 
     private let balanceFormatter = BalanceFormatter()
     private let dateFormatter: DateFormatter = {
@@ -28,9 +29,18 @@ struct TransactionHistoryMapper {
         return formatter
     }()
 
-    init(currencySymbol: String, walletAddresses: [String]) {
+    private let dateTimeFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        dateFormatter.doesRelativeDateFormatting = true
+        return dateFormatter
+    }()
+
+    init(currencySymbol: String, walletAddresses: [String], showSign: Bool) {
         self.currencySymbol = currencySymbol
         self.walletAddresses = walletAddresses
+        self.showSign = showSign
     }
 
     func mapTransactionListItem(from records: [TransactionRecord]) -> [TransactionListItem] {
@@ -61,6 +71,45 @@ struct TransactionHistoryMapper {
             isOutgoing: record.isOutgoing,
             transactionType: transactionType(from: record),
             status: status(from: record)
+        )
+    }
+
+    func mapSuggestedRecord(_ record: TransactionRecord) -> SendSuggestedDestinationTransactionRecord? {
+        guard record.type == .transfer else {
+            return nil
+        }
+
+        let address: String
+        if record.isOutgoing {
+            switch record.destination {
+            case .single(let destination):
+                switch destination.address {
+                case .user(let string):
+                    address = string
+                case .contract:
+                    return nil
+                }
+            case .multiple:
+                return nil
+            }
+        } else {
+            switch record.source {
+            case .single(let source):
+                address = source.address
+            case .multiple:
+                return nil
+            }
+        }
+
+        let amountFormatted = transferAmount(from: record)
+        let dateFormatted = dateTimeFormatter.string(from: record.date ?? Date())
+        let description = "\(amountFormatted), \(dateFormatted)"
+
+        return SendSuggestedDestinationTransactionRecord(
+            address: address,
+            additionalField: nil,
+            isOutgoing: record.isOutgoing,
+            description: description
         )
     }
 }
@@ -196,7 +245,7 @@ private extension TransactionHistoryMapper {
 
     func formatted(amount: Decimal, isOutgoing: Bool) -> String {
         let formatted = balanceFormatter.formatCryptoBalance(amount, currencyCode: currencySymbol)
-        if amount.isZero {
+        if amount.isZero || !showSign {
             return formatted
         }
 

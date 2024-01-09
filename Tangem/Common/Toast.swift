@@ -88,6 +88,10 @@ class Toast<V: View> {
         hostingController.view.center.x = keyWindow.center.x
 
         switch layout {
+        case .top(let padding):
+            let hostingViewHeight = hostingController.view.frame.size.height
+            let topPadding = padding + hostingViewHeight / 2 + keyWindow.safeAreaInsets.top
+            hostingController.view.center.y = topPadding
         case .bottom(let padding):
             let hostingViewHeight = hostingController.view.frame.size.height
             let bottomPadding = padding + hostingViewHeight / 2 + keyWindow.safeAreaInsets.bottom
@@ -103,6 +107,7 @@ extension Toast {
     }
 
     enum Layout {
+        case top(padding: CGFloat = 80)
         case bottom(padding: CGFloat = 80)
     }
 }

@@ -15,7 +15,7 @@ class TokenQuotesRepositoryMock: TokenQuotesRepository {
     var quotesPublisher: AnyPublisher<Quotes, Never> { .just(output: .init()) }
 
     func quote(for currencyId: String) async throws -> TokenQuote {
-        TokenQuote(currencyId: currencyId, change: .zero, price: .zero, currencyCode: "USD")
+        TokenQuote(currencyId: currencyId, change: .zero, price: .zero, prices24h: [0.1, 0.2, 0.3], currencyCode: "USD")
     }
 
     func quote(for item: TokenItem) -> TokenQuote? { nil }

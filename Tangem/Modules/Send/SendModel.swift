@@ -32,6 +32,14 @@ class SendModel {
         .just(output: true)
     }
 
+    var sendError: AnyPublisher<Error?, Never> {
+        _sendError.eraseToAnyPublisher()
+    }
+
+    var isFeeIncluded: Bool {
+        _isFeeIncluded.value
+    }
+
     var transactionFinished: AnyPublisher<Bool, Never> {
         _transactionTime
             .map {
@@ -45,20 +53,26 @@ class SendModel {
 
     private let amount = CurrentValueSubject<Amount?, Never>(nil)
     private let destination = CurrentValueSubject<String?, Never>(nil)
-    private let destinationAdditionalField = CurrentValueSubject<String?, Never>(nil)
     private let fee = CurrentValueSubject<Fee?, Never>(nil)
+
+    private var transactionParameters: TransactionParams?
 
     private let transaction = CurrentValueSubject<BlockchainSdk.Transaction?, Never>(nil)
 
     // MARK: - Raw data
 
-    private var _amountText: String = ""
-    private var _destinationText: String = ""
-    private var _destinationAdditionalFieldText: String = ""
-    private var _feeText: String = ""
+    private var _amount = CurrentValueSubject<Amount?, Never>(nil)
+    private var _destinationText = CurrentValueSubject<String, Never>("")
+    private var _destinationAdditionalFieldText = CurrentValueSubject<String, Never>("")
+    private var _selectedFeeOption = CurrentValueSubject<FeeOption, Never>(.market)
+    private var _feeValues = CurrentValueSubject<[FeeOption: LoadingValue<Fee>], Never>([:])
+    private var _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
     private let _isSending = CurrentValueSubject<Bool, Never>(false)
     private let _transactionTime = CurrentValueSubject<Date?, Never>(nil)
+    private let _transactionURL = CurrentValueSubject<URL?, Never>(nil)
+
+    private let _sendError = PassthroughSubject<Error?, Never>()
 
     // MARK: - Errors (raw implementation)
 
@@ -70,19 +84,22 @@ class SendModel {
 
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
+    private let addressService: SendAddressService
     private let sendType: SendType
+    private var destinationResolutionRequest: Task<Void, Error>?
     private var bag: Set<AnyCancellable> = []
 
     // MARK: - Public interface
 
-    init(walletModel: WalletModel, transactionSigner: TransactionSigner, sendType: SendType) {
+    init(walletModel: WalletModel, transactionSigner: TransactionSigner, addressService: SendAddressService, sendType: SendType) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.sendType = sendType
+        self.addressService = addressService
 
         if let amount = sendType.predefinedAmount {
             #warning("TODO")
-            setAmount("\(amount)")
+            setAmount(amount)
         }
 
         if let destination = sendType.predefinedDestination {
@@ -96,17 +113,28 @@ class SendModel {
     }
 
     func useMaxAmount() {
-        setAmount("1000")
+        let amountType = walletModel.amountType
+        if let amount = walletModel.wallet.amounts[amountType] {
+            setAmount(amount)
+        }
+
+        #warning("TODO: toggle fee inclusion")
+    }
+
+    func currentTransaction() -> BlockchainSdk.Transaction? {
+        transaction.value
     }
 
     func send() {
         guard var transaction = transaction.value else {
+            AppLog.shared.debug("Transaction object hasn't been created")
             return
         }
 
-        #warning("TODO: memo")
         #warning("TODO: loading view")
         #warning("TODO: demo")
+
+        transaction.params = transactionParameters
 
         _isSending.send(true)
         walletModel.send(transaction, signer: transactionSigner)
@@ -116,11 +144,16 @@ class SendModel {
 
                 _isSending.send(false)
 
-                print("SEND FINISH ", completion)
-                #warning("TODO: handle result")
+                if case .failure(let error) = completion,
+                   !error.toTangemSdkError().isUserCancelled {
+                    _sendError.send(error)
+                }
             } receiveValue: { [weak self] result in
                 guard let self else { return }
 
+                if let transactionURL = explorerUrl(from: result.hash) {
+                    _transactionURL.send(transactionURL)
+                }
                 _transactionTime.send(Date())
             }
             .store(in: &bag)
@@ -153,15 +186,19 @@ class SendModel {
             .sink { [weak self] fees in
                 guard let self else { return }
 
-                #warning("TODO: save fee options")
-                fee.send(fees.first)
+                let feeValues = feeValues(fees)
+                _feeValues.send(feeValues)
 
-                print("fetched fees:", fees)
+                if let marketFee = feeValues[.market],
+                   let marketFeeValue = marketFee.value {
+                    fee.send(marketFeeValue)
+                }
             }
             .store(in: &bag)
 
-        Publishers.CombineLatest4(amount, destination, destinationAdditionalField, fee)
-            .map { [weak self] amount, destination, destinationAdditionalField, fee -> BlockchainSdk.Transaction? in
+        #warning("TODO: create TX after a delay")
+        Publishers.CombineLatest3(amount, destination, fee)
+            .map { [weak self] amount, destination, fee -> BlockchainSdk.Transaction? in
                 guard
                     let self,
                     let amount,
@@ -172,11 +209,17 @@ class SendModel {
                 }
 
                 #warning("TODO: Show error alert?")
-                return try? walletModel.createTransaction(
-                    amountToSend: amount,
-                    fee: fee,
-                    destinationAddress: destination
-                )
+                do {
+                    return try walletModel.createTransaction(
+                        amountToSend: amount,
+                        fee: fee,
+                        destinationAddress: destination
+                    )
+                } catch {
+                    AppLog.shared.debug("Failed to create transaction")
+                    AppLog.shared.error(error)
+                    return nil
+                }
             }
             .sink { transaction in
                 self.transaction.send(transaction)
@@ -185,10 +228,18 @@ class SendModel {
             .store(in: &bag)
     }
 
+    private func explorerUrl(from hash: String) -> URL? {
+        let factory = ExternalLinkProviderFactory()
+        let provider = factory.makeProvider(for: walletModel.blockchainNetwork.blockchain)
+        return provider.url(transaction: hash)
+    }
+
     // MARK: - Amount
 
-    private func setAmount(_ amountText: String) {
-        _amountText = amountText
+    func setAmount(_ amount: Amount?) {
+        guard _amount.value != amount else { return }
+
+        _amount.send(amount)
         validateAmount()
     }
 
@@ -197,11 +248,7 @@ class SendModel {
         let error: Error?
 
         #warning("validate")
-        let blockchain = walletModel.blockchainNetwork.blockchain
-        let amountType = walletModel.amountType
-
-        let value = Decimal(string: _amountText, locale: Locale.current) ?? 0
-        amount = Amount(with: blockchain, type: amountType, value: value)
+        amount = _amount.value
         error = nil
 
         self.amount.send(amount)
@@ -210,67 +257,189 @@ class SendModel {
 
     // MARK: - Destination and memo
 
-    private func setDestination(_ destinationText: String) {
-        _destinationText = destinationText
+    func setDestination(_ address: String) {
+        _destinationText.send(address)
         validateDestination()
     }
 
-    private func validateDestination() {
-        let destination: String?
-        let error: Error?
-
-        #warning("validate")
-        destination = _destinationText
-        error = nil
-
-        self.destination.send(destination)
-        _destinationError.send(error)
-    }
-
-    private func setDestinationAdditionalField(_ destinationAdditionalFieldText: String) {
-        _destinationAdditionalFieldText = destinationAdditionalFieldText
+    func setDestinationAdditionalField(_ additionalField: String) {
+        _destinationAdditionalFieldText.send(additionalField)
         validateDestinationAdditionalField()
     }
 
+    private func validateDestination() {
+        #warning("TODO: validate destination after delay and removing duplicates")
+        destinationResolutionRequest?.cancel()
+
+        destination.send(nil)
+        destinationResolutionRequest = runTask(in: self) { `self` in
+            let destination: String?
+            let error: Error?
+            do {
+                destination = try await self.addressService.validate(address: self._destinationText.value)
+
+                guard !Task.isCancelled else { return }
+
+                error = nil
+            } catch let addressError {
+                guard !Task.isCancelled else { return }
+
+                destination = nil
+                error = addressError
+            }
+
+            DispatchQueue.main.async {
+                self.destination.send(destination)
+                self._destinationError.send(error)
+            }
+        }
+    }
+
     private func validateDestinationAdditionalField() {
-        let destinationAdditionalField: String?
         let error: Error?
+        let transactionParameters: TransactionParams?
+        do {
+            let parametersBuilder = SendTransactionParametersBuilder(blockchain: walletModel.blockchainNetwork.blockchain)
+            transactionParameters = try parametersBuilder.transactionParameters(from: _destinationAdditionalFieldText.value)
+            error = nil
+        } catch let transactionParameterError {
+            transactionParameters = nil
+            error = transactionParameterError
+        }
 
-        #warning("validate")
-        destinationAdditionalField = _destinationAdditionalFieldText
-        error = nil
-
-        self.destinationAdditionalField.send(destinationAdditionalField)
+        self.transactionParameters = transactionParameters
         _destinationAdditionalFieldError.send(error)
     }
 
     // MARK: - Fees
 
-    private func setFee(_ feeText: String) {
-        #warning("set and validate")
-        _feeText = feeText
+    func didSelectFeeOption(_ feeOption: FeeOption) {
+        _selectedFeeOption.send(feeOption)
+    }
+
+    private func feeValues(_ fees: [Fee]) -> [FeeOption: LoadingValue<Fee>] {
+        switch fees.count {
+        case 1:
+            return [
+                .market: .loaded(fees[0]),
+            ]
+        case 3:
+            return [
+                .slow: .loaded(fees[0]),
+                .market: .loaded(fees[1]),
+                .fast: .loaded(fees[2]),
+            ]
+        default:
+            return [:]
+        }
     }
 }
 
 // MARK: - Subview model inputs
 
 extension SendModel: SendAmountViewModelInput {
-    var amountTextBinding: Binding<String> { Binding(get: { self._amountText }, set: { self.setAmount($0) }) }
+    var blockchain: BlockchainSdk.Blockchain {
+        walletModel.blockchainNetwork.blockchain
+    }
+
+    var amountType: BlockchainSdk.Amount.AmountType {
+        walletModel.amountType
+    }
+
+    var amountPublisher: AnyPublisher<BlockchainSdk.Amount?, Never> {
+        _amount.eraseToAnyPublisher()
+    }
+
+    #warning("TODO")
+    var errorPublisher: AnyPublisher<Error?, Never> {
+        _amountError.eraseToAnyPublisher()
+    }
+
     var amountError: AnyPublisher<Error?, Never> { _amountError.eraseToAnyPublisher() }
 }
 
 extension SendModel: SendDestinationViewModelInput {
-    var destinationTextBinding: Binding<String> { Binding(get: { self._destinationText }, set: { self.setDestination($0) }) }
-    var destinationAdditionalFieldTextBinding: Binding<String> { Binding(get: { self._destinationAdditionalFieldText }, set: { self.setDestinationAdditionalField($0) }) }
+    var destinationTextPublisher: AnyPublisher<String, Never> { _destinationText.eraseToAnyPublisher() }
+    var destinationAdditionalFieldTextPublisher: AnyPublisher<String, Never> { _destinationAdditionalFieldText.eraseToAnyPublisher() }
+
     var destinationError: AnyPublisher<Error?, Never> { _destinationError.eraseToAnyPublisher() }
     var destinationAdditionalFieldError: AnyPublisher<Error?, Never> { _destinationAdditionalFieldError.eraseToAnyPublisher() }
+
+    var networkName: String { walletModel.blockchainNetwork.blockchain.displayName }
+
+    var additionalField: SendAdditionalFields? {
+        let field = SendAdditionalFields.fields(for: walletModel.blockchainNetwork.blockchain)
+        switch field {
+        case .destinationTag, .memo:
+            return field
+        case .none:
+            return nil
+        }
+    }
+
+    var blockchainNetwork: BlockchainNetwork {
+        walletModel.blockchainNetwork
+    }
+
+    var walletPublicKey: Wallet.PublicKey {
+        walletModel.wallet.publicKey
+    }
+
+    var currencySymbol: String {
+        walletModel.tokenItem.currencySymbol
+    }
+
+    var walletAddresses: [String] {
+        walletModel.wallet.addresses.map { $0.value }
+    }
+
+    var transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never> {
+        walletModel.transactionHistoryPublisher
+    }
 }
 
 extension SendModel: SendFeeViewModelInput {
-    var feeTextBinding: Binding<String> { Binding(get: { self._feeText }, set: { self.setFee($0) }) }
+    var selectedFeeOption: FeeOption {
+        _selectedFeeOption.value
+    }
+
+    #warning("TODO")
+    var feeOptions: [FeeOption] {
+        if walletModel.shoudShowFeeSelector {
+            return [.slow, .market, .fast]
+        } else {
+            return [.market]
+        }
+    }
+
+    var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> {
+        _feeValues.eraseToAnyPublisher()
+    }
+
+    var tokenItem: TokenItem {
+        walletModel.tokenItem
+    }
 }
 
 extension SendModel: SendSummaryViewModelInput {
+    #warning("TODO")
+    var amountText: String {
+        "100"
+    }
+
+    #warning("TODO")
+    var destinationTextBinding: Binding<String> {
+        .constant("0x1234567")
+    }
+
+    var feeTextPublisher: AnyPublisher<String?, Never> {
+        fee
+            .map {
+                $0?.amount.string()
+            }
+            .eraseToAnyPublisher()
+    }
+
     var canEditAmount: Bool {
         sendType.predefinedAmount == nil
     }
@@ -281,5 +450,23 @@ extension SendModel: SendSummaryViewModelInput {
 
     var isSending: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
+    }
+}
+
+extension SendModel: SendFinishViewModelInput {
+    var destinationText: String? {
+        destination.value
+    }
+
+    var feeText: String {
+        fee.value?.amount.string() ?? ""
+    }
+
+    var transactionTime: Date? {
+        _transactionTime.value
+    }
+
+    var transactionURL: URL? {
+        _transactionURL.value
     }
 }

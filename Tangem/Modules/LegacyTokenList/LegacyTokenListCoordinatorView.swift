@@ -19,7 +19,6 @@ struct LegacyTokenListCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
         }
-        .accentColor(Colors.Text.accent)
         .navigationViewStyle(.stack)
     }
 

@@ -18,12 +18,12 @@ final class ScanCardSettingsViewModel: ObservableObject, Identifiable {
     @Published var isLoading: Bool = false
     @Published var alert: AlertBinder?
 
-    private let expectedUserWalletId: Data
+    private let sessionFilter: SessionFilter
     private let sdk: TangemSdk
     private unowned let coordinator: ScanCardSettingsRoutable
 
-    init(expectedUserWalletId: Data, sdk: TangemSdk, coordinator: ScanCardSettingsRoutable) {
-        self.expectedUserWalletId = expectedUserWalletId
+    init(sessionFilter: SessionFilter, sdk: TangemSdk, coordinator: ScanCardSettingsRoutable) {
+        self.sessionFilter = sessionFilter
         self.sdk = sdk
         self.coordinator = coordinator
     }
@@ -54,11 +54,6 @@ extension ScanCardSettingsViewModel {
 
         let userWalletId = UserWalletId(with: userWalletIdSeed)
 
-        guard userWalletId.value == expectedUserWalletId else {
-            showErrorAlert(error: AppError.wrongCardWasTapped)
-            return
-        }
-
         var cardInfo = cardInfo
 
         // TODO: remove with details refactoring https://tangem.atlassian.net/browse/IOS-4184
@@ -80,7 +75,7 @@ extension ScanCardSettingsViewModel {
     func scan(completion: @escaping (Result<CardInfo, Error>) -> Void) {
         isLoading = true
         let task = AppScanTask(shouldAskForAccessCode: true)
-        sdk.startSession(with: task) { [weak self] result in
+        sdk.startSession(with: task, filter: sessionFilter) { [weak self] result in
             self?.isLoading = false
 
             switch result {

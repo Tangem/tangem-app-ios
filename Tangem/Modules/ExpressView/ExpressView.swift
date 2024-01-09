@@ -27,10 +27,18 @@ struct ExpressView: View {
                 feeSection
 
                 informationSection
+
+                legalView
+
+                MainButton(
+                    title: viewModel.mainButtonState.title,
+                    icon: viewModel.mainButtonState.icon,
+                    isLoading: viewModel.mainButtonIsLoading,
+                    isDisabled: !viewModel.mainButtonIsEnabled,
+                    action: viewModel.didTapMainButton
+                )
             }
             .scrollDismissesKeyboardCompat(true)
-
-            mainButton
         }
         .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
         .alert(item: $viewModel.errorAlert, content: { $0.alert })
@@ -132,28 +140,6 @@ struct ExpressView: View {
         .backgroundColor(Colors.Background.action)
         .interSectionPadding(12)
         .verticalPadding(0)
-    }
-
-    @ViewBuilder
-    private var mainButton: some View {
-        VStack(alignment: .center, spacing: 12) {
-            Spacer()
-
-            legalView
-                .padding(.horizontal, 18)
-
-            MainButton(
-                title: viewModel.mainButtonState.title,
-                icon: viewModel.mainButtonState.icon,
-                isLoading: viewModel.mainButtonIsLoading,
-                isDisabled: !viewModel.mainButtonIsEnabled,
-                action: viewModel.didTapMainButton
-            )
-        }
-        .padding(.horizontal, 14)
-        .padding(.bottom, UIApplication.safeAreaInsets.bottom + 10)
-        .edgesIgnoringSafeArea(.bottom)
-        .ignoresSafeArea(.keyboard)
     }
 
     @ViewBuilder

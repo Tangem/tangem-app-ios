@@ -50,11 +50,11 @@ extension CommonTransactionHistoryService: TransactionHistoryService {
         return storage.read()
     }
 
-    var canFetchMore: Bool {
+    var canFetchHistory: Bool {
         currentPage < totalPages
     }
 
-    func reset() {
+    func clearHistory() {
         cancellable = nil
         currentPage = 0
         totalPages = 0
@@ -78,7 +78,7 @@ private extension CommonTransactionHistoryService {
     func fetch(result: @escaping (Result<Void, Never>) -> Void) {
         cancellable = nil
 
-        guard currentPage == 0 || canFetchMore else {
+        guard currentPage == 0 || canFetchHistory else {
             AppLog.shared.debug("\(self) reached the end of list")
             result(.success(()))
             return

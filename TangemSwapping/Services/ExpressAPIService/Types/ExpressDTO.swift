@@ -91,7 +91,6 @@ enum ExpressDTO {
             let fromDecimals: Int
             let toAmount: String
             let toDecimals: Int
-            let minAmount: String
             let allowanceContract: String?
         }
     }

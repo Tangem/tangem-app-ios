@@ -9,7 +9,7 @@
 import Foundation
 
 final class OrganizeTokensDragAndDropActionsCache {
-    typealias DragAndDropAction = (_ sectionsToMutate: inout [OrganizeTokensListSection]) -> Void
+    typealias DragAndDropAction = (_ sectionsToMutate: inout [OrganizeTokensListSection]) throws -> Void
     typealias SectionsChange = (oldValue: [TokenSectionsAdapter.Section], newValue: [TokenSectionsAdapter.Section])
 
     private var cachedPlainListActions: [DragAndDropAction] = []
@@ -25,7 +25,23 @@ final class OrganizeTokensDragAndDropActionsCache {
 
     func applyDragAndDropActions(to sections: inout [OrganizeTokensListSection], isGroupingEnabled: Bool) {
         let actions = isGroupingEnabled ? cachedGroupedListActions : cachedPlainListActions
-        actions.forEach { $0(&sections) }
+        var sectionsToMutate = sections
+
+        for action in actions {
+            do {
+                try action(&sectionsToMutate)
+            } catch {
+                AppLog.shared.error(error)
+                assertionFailure("Model inconsistency detected: \(error)")
+
+                // Model inconsistency detected, full cache reset is needed
+                reset()
+
+                return
+            }
+        }
+
+        sections = sectionsToMutate
     }
 
     func resetIfNeeded(sectionsChange: SectionsChange, isGroupingEnabled: Bool) {

@@ -36,14 +36,3 @@ extension CommonExpressTokensListAdapter: ExpressTokensListAdapter {
             .eraseToAnyPublisher()
     }
 }
-
-private extension TokenSectionsAdapter.SectionItem {
-    var walletModel: WalletModel? {
-        switch self {
-        case .default(let walletModel):
-            return walletModel
-        case .withoutDerivation:
-            return nil
-        }
-    }
-}

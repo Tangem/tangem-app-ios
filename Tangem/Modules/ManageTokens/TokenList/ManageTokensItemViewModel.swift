@@ -20,6 +20,7 @@ class ManageTokensItemViewModel: Identifiable, ObservableObject {
     @Published var priceChangeState: TokenPriceChangeView.State = .noData
     @Published var priceHistory: [Double]? = nil
     @Published var action: Action
+    @Published var isLoading: Bool
 
     // MARK: - Properties
 
@@ -58,6 +59,7 @@ class ManageTokensItemViewModel: Identifiable, ObservableObject {
         priceChangeState: TokenPriceChangeView.State = .loading,
         priceHistory: [Double]? = nil,
         action: Action,
+        state: State,
         didTapAction: @escaping (Action, CoinModel) -> Void
     ) {
         self.coinModel = coinModel
@@ -65,6 +67,7 @@ class ManageTokensItemViewModel: Identifiable, ObservableObject {
         self.priceChangeState = priceChangeState
         self.priceHistory = priceHistory
         self.action = action
+        isLoading = state == .loading
         self.didTapAction = didTapAction
 
         bind()
@@ -92,6 +95,7 @@ class ManageTokensItemViewModel: Identifiable, ObservableObject {
 
         priceChangeState = getPriceChangeState(by: quote)
         priceValue = balanceFormatter.formatFiatBalance(quote.price)
+        priceHistory = quote.prices24h?.map { $0 }
     }
 
     private func getPriceChangeState(by quote: TokenQuote) -> TokenPriceChangeView.State {
@@ -107,5 +111,10 @@ extension ManageTokensItemViewModel {
         case add
         case edit
         case info
+    }
+
+    enum State {
+        case loading
+        case loaded
     }
 }

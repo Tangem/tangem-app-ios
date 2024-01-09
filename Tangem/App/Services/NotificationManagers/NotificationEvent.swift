@@ -13,6 +13,7 @@ protocol NotificationEvent: Hashable {
     var description: String? { get }
     var colorScheme: NotificationView.ColorScheme { get }
     var icon: NotificationView.MessageIcon { get }
+    var severity: NotificationView.Severity { get }
     var isDismissable: Bool { get }
     // TODO: Discuss analytics refactoring, probably we should combine all related data into single struct
     var analyticsEvent: Analytics.Event? { get }

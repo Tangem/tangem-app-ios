@@ -25,6 +25,7 @@ enum WarningEvent: Equatable {
     case walletLocked
     case missingBackup
     case tangemExpressPromotion
+    case supportedOnlySingleCurrencyWallet
 }
 
 // For Notifications
@@ -67,6 +68,8 @@ extension WarningEvent: NotificationEvent {
             return Localization.warningNoBackupTitle
         case .tangemExpressPromotion:
             return Localization.mainSwapPromotionTitle
+        case .supportedOnlySingleCurrencyWallet:
+            return Localization.manageTokensWalletSupportOnlyOneNetworkTitle
         }
     }
 
@@ -105,6 +108,8 @@ extension WarningEvent: NotificationEvent {
             return Localization.warningNoBackupMessage
         case .tangemExpressPromotion:
             return Localization.mainSwapPromotionMessage
+        case .supportedOnlySingleCurrencyWallet:
+            return nil
         }
     }
 
@@ -123,7 +128,7 @@ extension WarningEvent: NotificationEvent {
         switch self {
         case .failedToVerifyCard, .devCard:
             return .init(iconType: .image(Assets.redCircleWarning.image))
-        case .numberOfSignedHashesIncorrect, .testnetCard, .oldDeviceOldCard, .oldCard, .lowSignatures, .systemDeprecationPermanent, .missingBackup:
+        case .numberOfSignedHashesIncorrect, .testnetCard, .oldDeviceOldCard, .oldCard, .lowSignatures, .systemDeprecationPermanent, .missingBackup, .supportedOnlySingleCurrencyWallet:
             return .init(iconType: .image(Assets.attention.image))
         case .demoCard, .legacyDerivation, .systemDeprecationTemporary, .missingDerivation:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -136,9 +141,34 @@ extension WarningEvent: NotificationEvent {
         }
     }
 
+    var severity: NotificationView.Severity {
+        switch self {
+        case .walletLocked,
+             .failedToVerifyCard,
+             .devCard:
+            return .critical
+        case .demoCard,
+             .legacyDerivation,
+             .systemDeprecationTemporary,
+             .missingDerivation,
+             .rateApp,
+             .tangemExpressPromotion:
+            return .info
+        case .numberOfSignedHashesIncorrect,
+             .testnetCard,
+             .oldDeviceOldCard,
+             .oldCard,
+             .lowSignatures,
+             .systemDeprecationPermanent,
+             .missingBackup,
+             .supportedOnlySingleCurrencyWallet:
+            return .warning
+        }
+    }
+
     var isDismissable: Bool {
         switch self {
-        case .failedToVerifyCard, .testnetCard, .devCard, .oldDeviceOldCard, .oldCard, .demoCard, .lowSignatures, .legacyDerivation, .systemDeprecationPermanent, .missingDerivation, .walletLocked, .missingBackup:
+        case .failedToVerifyCard, .testnetCard, .devCard, .oldDeviceOldCard, .oldCard, .demoCard, .lowSignatures, .legacyDerivation, .systemDeprecationPermanent, .missingDerivation, .walletLocked, .missingBackup, .supportedOnlySingleCurrencyWallet:
             return false
         case .rateApp, .numberOfSignedHashesIncorrect, .systemDeprecationTemporary, .tangemExpressPromotion:
             return true
@@ -196,6 +226,7 @@ extension WarningEvent {
         case .walletLocked: return .mainNoticeWalletUnlock
         case .missingBackup: return .mainNoticeBackupYourWallet
         case .tangemExpressPromotion: return nil
+        case .supportedOnlySingleCurrencyWallet: return nil
         }
     }
 

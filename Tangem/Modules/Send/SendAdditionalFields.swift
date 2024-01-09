@@ -24,14 +24,14 @@ enum SendAdditionalFields {
         }
     }
 
-    var name: String {
+    var name: String? {
         switch self {
         case .destinationTag:
             return Localization.sendExtrasHintDestinationTag
         case .memo:
             return Localization.sendExtrasHintMemo
         case .none:
-            return ""
+            return nil
         }
     }
 

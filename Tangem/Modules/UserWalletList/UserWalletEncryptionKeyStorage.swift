@@ -123,7 +123,7 @@ class UserWalletEncryptionKeyStorage {
     }
 
     private func encryptionKeyStorageKey(for userWalletId: Data) -> String {
-        "user_wallet_encryption_key_\(userWalletId.hex)"
+        "user_wallet_encryption_key_\(userWalletId.hexString.lowercased())"
     }
 
     private func addUserWalletId(_ userWallet: UserWallet) throws {

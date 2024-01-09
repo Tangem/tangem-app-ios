@@ -58,27 +58,25 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
-        guard var minAmount = Decimal(string: response.minAmount) else {
-            throw ExpressAPIMapperError.mapToDecimalError(response.minAmount)
-        }
-
         fromAmount /= pow(10, response.fromDecimals)
         toAmount /= pow(10, response.toDecimals)
-        minAmount /= pow(10, response.fromDecimals)
 
         return ExpressQuote(
             fromAmount: fromAmount,
             expectAmount: toAmount,
-            minAmount: minAmount,
             allowanceContract: response.allowanceContract
         )
     }
 
-    func mapToExpressTransactionData(requestId: String, response: ExpressDTO.ExchangeData.Response) throws -> ExpressTransactionData {
+    func mapToExpressTransactionData(request: ExpressDTO.ExchangeData.Request, response: ExpressDTO.ExchangeData.Response) throws -> ExpressTransactionData {
         let txDetails = try exchangeDataDecoder.decode(txDetailsJson: response.txDetailsJson, signature: response.signature)
 
-        guard requestId == txDetails.requestId else {
+        guard request.requestId == txDetails.requestId else {
             throw ExpressAPIMapperError.requestIdNotEqual
+        }
+
+        guard request.toAddress.caseInsensitiveCompare(txDetails.payoutAddress) == .orderedSame else {
+            throw ExpressAPIMapperError.payoutAddressNotEqual
         }
 
         guard var fromAmount = Decimal(string: response.fromAmount) else {
@@ -126,4 +124,5 @@ struct ExpressAPIMapper {
 enum ExpressAPIMapperError: Error {
     case mapToDecimalError(_ string: String)
     case requestIdNotEqual
+    case payoutAddressNotEqual
 }

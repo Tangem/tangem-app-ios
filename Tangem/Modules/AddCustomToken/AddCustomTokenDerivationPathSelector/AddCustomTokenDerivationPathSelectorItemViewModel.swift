@@ -19,7 +19,7 @@ class AddCustomTokenDerivationPathSelectorItemViewModel: ObservableObject {
     }
 
     var derivationPath: String? {
-        option.derivationDath
+        option.rawDerivationDath
     }
 
     @Published var isSelected: Bool

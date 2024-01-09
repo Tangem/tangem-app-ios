@@ -138,6 +138,14 @@ extension UIColor {
         return UIColor(named: "TextAccent")!
     }
 
+    @nonobjc static var textPrimary1: UIColor {
+        return UIColor(named: "TextPrimary1")!
+    }
+
+    @nonobjc static var textDisabled: UIColor {
+        return UIColor(named: "TextDisabled")!
+    }
+
     // ☝️☝️☝️ End of UIColors from the new palette ☝️☝️☝️
 
     // MARK: Background

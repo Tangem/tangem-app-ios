@@ -86,7 +86,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         )
 
         let response = try await expressAPIService.exchangeData(request: request)
-        let data = try expressAPIMapper.mapToExpressTransactionData(requestId: requestId, response: response)
+        let data = try expressAPIMapper.mapToExpressTransactionData(request: request, response: response)
         return data
     }
 

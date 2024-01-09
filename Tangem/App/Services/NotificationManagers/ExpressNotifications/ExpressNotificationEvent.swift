@@ -22,6 +22,7 @@ enum ExpressNotificationEvent {
     case verificationRequired
     case cexOperationFailed
     case feeWillBeSubtractFromSendingAmount
+    case existentialDepositWarning(message: String)
 }
 
 extension ExpressNotificationEvent: NotificationEvent {
@@ -51,6 +52,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationFailedTitle
         case .feeWillBeSubtractFromSendingAmount:
             return Localization.sendNetworkFeeWarningTitle
+        case .existentialDepositWarning:
+            return Localization.warningExistentialDepositTitle
         }
     }
 
@@ -80,12 +83,14 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationFailedText
         case .feeWillBeSubtractFromSendingAmount:
             return Localization.sendNetworkFeeWarningContent
+        case .existentialDepositWarning(let message):
+            return message
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .noDestinationTokens, .highPriceImpact, .feeWillBeSubtractFromSendingAmount:
+        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .noDestinationTokens, .highPriceImpact, .feeWillBeSubtractFromSendingAmount, .existentialDepositWarning:
             return .secondary
         case .notEnoughFeeForTokenTx, .refreshRequired, .verificationRequired, .cexOperationFailed:
             return .primary
@@ -104,8 +109,29 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Image(blockchainIconName)))
         case .notEnoughAmountToSwap, .notEnoughReserveToSwap, .cexOperationFailed:
             return .init(iconType: .image(Assets.redCircleWarning.image))
-        case .hasPendingTransaction:
+        case .hasPendingTransaction, .existentialDepositWarning:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
+        }
+    }
+
+    var severity: NotificationView.Severity {
+        switch self {
+        case .permissionNeeded,
+             .hasPendingTransaction,
+             .hasPendingApproveTransaction,
+             .verificationRequired,
+             .feeWillBeSubtractFromSendingAmount,
+             .existentialDepositWarning:
+            return .info
+        case .notEnoughFeeForTokenTx,
+             .notEnoughAmountToSwap,
+             .notEnoughReserveToSwap,
+             .noDestinationTokens,
+             .highPriceImpact:
+            return .warning
+        case .refreshRequired,
+             .cexOperationFailed:
+            return .critical
         }
     }
 
@@ -135,7 +161,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed:
             return false
-        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughFeeForTokenTx, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .highPriceImpact, .feeWillBeSubtractFromSendingAmount:
+        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughFeeForTokenTx, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .highPriceImpact, .feeWillBeSubtractFromSendingAmount, .existentialDepositWarning:
             return true
         }
     }

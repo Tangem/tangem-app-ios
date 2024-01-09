@@ -50,13 +50,13 @@ extension MutipleAddressTransactionHistoryService: TransactionHistoryService {
         return storage.read()
     }
 
-    var canFetchMore: Bool {
+    var canFetchHistory: Bool {
         addresses.contains {
             currentPage[$0, default: 0] < totalPages[$0, default: 0]
         }
     }
 
-    func reset() {
+    func clearHistory() {
         cancellable = nil
         currentPage = [:]
         totalPages = [:]
@@ -90,7 +90,7 @@ private extension MutipleAddressTransactionHistoryService {
 
         // Collect publishers for the next page if the page is exist
         let publishers: [LoadingPublisher] = addresses.compactMap { address in
-            guard currentPage[address, default: 0] == 0 || canFetchMore else {
+            guard currentPage[address, default: 0] == 0 || canFetchHistory else {
                 AppLog.shared.debug("Address \(address) in \(self) reached the end of list")
                 return nil
             }

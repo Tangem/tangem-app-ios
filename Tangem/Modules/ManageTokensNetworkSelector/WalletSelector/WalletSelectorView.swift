@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct WalletSelectorView: View {
     @ObservedObject var viewModel: WalletSelectorViewModel
@@ -24,13 +25,24 @@ struct WalletSelectorView: View {
 
             Spacer()
         }
-        .background(Colors.Background.secondary.ignoresSafeArea())
+        .background(Colors.Background.tertiary.ignoresSafeArea())
         .navigationBarTitle(Text(Localization.manageTokensWalletSelectorTitle), displayMode: .inline)
     }
 }
 
 struct WalletSelectorView_Previews: PreviewProvider {
+    private class PreviewWalletSelectorDataSource: WalletSelectorDataSource {
+        private var _selectedUserWalletModel: CurrentValueSubject<UserWalletModel?, Never> = .init(nil)
+
+        var itemViewModels: [WalletSelectorItemViewModel] = []
+        var selectedUserWalletModelPublisher: AnyPublisher<UserWalletId?, Never> {
+            _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
+        }
+    }
+
     static var previews: some View {
-        WalletSelectorView(viewModel: WalletSelectorViewModel(userWallets: FakeUserWalletModel.allFakeWalletModels.map { $0.userWallet }, currentUserWalletId: FakeUserWalletModel.allFakeWalletModels.first?.userWallet.userWalletId ?? Data()))
+        WalletSelectorView(
+            viewModel: WalletSelectorViewModel(dataSource: PreviewWalletSelectorDataSource())
+        )
     }
 }

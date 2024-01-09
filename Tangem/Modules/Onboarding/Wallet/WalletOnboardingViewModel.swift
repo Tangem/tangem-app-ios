@@ -684,6 +684,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             case .failure(let error):
                 if !error.toTangemSdkError().isUserCancelled {
                     AppLog.shared.error(error, params: [.action: .preparePrimary])
+                    alert = error.alertBinder
                 }
             }
 
@@ -732,6 +733,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             }
             .combineLatest(NotificationCenter.didBecomeActivePublisher)
             .first()
+            .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
                     self?.processLinkingError(error)
@@ -785,10 +787,15 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             }
             .combineLatest(NotificationCenter.didBecomeActivePublisher)
             .first()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 if case .failure(let error) = completion {
                     AppLog.shared.error(error, params: [.action: .proceedBackup])
                     self?.isMainButtonBusy = false
+
+                    if !error.toTangemSdkError().isUserCancelled {
+                        self?.alert = error.alertBinder
+                    }
                 }
                 self?.stepPublisher = nil
             } receiveValue: { [weak self] (_: Void, _: Notification) in
@@ -813,6 +820,11 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
            let tangemSdkError = error as? TangemSdkError,
            case .backupFailedNotEmptyWallets(let cardId) = tangemSdkError {
             requestResetCard(with: cardId)
+        }
+
+        let sdkError = error.toTangemSdkError()
+        if !sdkError.isUserCancelled {
+            alert = sdkError.alertBinder
         }
     }
 

@@ -30,7 +30,7 @@ struct LegacySendCoordinatorView: CoordinatorView {
                     MailView(viewModel: $0)
                 }
                 .sheet(item: $coordinator.qrScanViewModel) {
-                    QRScanView(viewModel: $0)
+                    LegacyQRScanView(viewModel: $0)
                         .edgesIgnoringSafeArea(.all)
                 }
         }

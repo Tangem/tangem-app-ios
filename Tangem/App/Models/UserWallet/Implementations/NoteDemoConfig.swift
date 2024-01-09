@@ -71,8 +71,6 @@ extension NoteDemoConfig: UserWalletConfig {
         return warnings
     }
 
-    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
-
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: noteData)
     }

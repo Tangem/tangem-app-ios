@@ -15,11 +15,13 @@ protocol MainLockedUserWalletDelegate: AnyObject {
 class LockedWalletMainContentViewModel: ObservableObject {
     lazy var lockedNotificationInput: NotificationViewInput = {
         let factory = NotificationsFactory()
+        let event: WarningEvent = .walletLocked
         return .init(
-            style: .tappable(action: { [weak self] _ in
+            style: .tappable { [weak self] _ in
                 self?.onLockedWalletNotificationTap()
-            }),
-            settings: factory.lockedWalletNotificationSettings()
+            },
+            severity: event.severity,
+            settings: .init(event: event, dismissAction: nil)
         )
     }()
 

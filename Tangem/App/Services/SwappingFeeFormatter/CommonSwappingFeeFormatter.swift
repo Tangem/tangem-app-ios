@@ -52,7 +52,12 @@ extension CommonSwappingFeeFormatter: SwappingFeeFormatter {
         }
 
         let fiatFeeFormatted = balanceFormatter.formatFiatBalance(fiatFee)
-        return "\(feeFormatted) (\(fiatFeeFormatted))"
+        let result = "\(feeFormatted) (\(fiatFeeFormatted))"
+        if fee > 0, tokenItem.blockchain.isFeeApproximate(for: tokenItem.amountType) {
+            return "< " + result
+        } else {
+            return result
+        }
     }
 }
 

@@ -19,7 +19,7 @@ final class AddCustomTokenNetworkSelectorViewModel: ObservableObject {
 
     weak var delegate: AddCustomTokenNetworkSelectorDelegate?
 
-    init(selectedBlockchainNetworkId: String, blockchains: [Blockchain]) {
+    init(selectedBlockchainNetworkId: String?, blockchains: [Blockchain]) {
         itemViewModels = blockchains.map { blockchain in
             AddCustomTokenNetworkSelectorItemViewModel(
                 networkId: blockchain.networkId,

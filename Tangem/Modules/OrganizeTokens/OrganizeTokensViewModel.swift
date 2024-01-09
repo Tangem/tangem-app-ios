@@ -279,7 +279,7 @@ extension OrganizeTokensViewModel {
             )
 
             dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
-                sectionsToMutate.move(
+                try sectionsToMutate.tryMove(
                     fromOffsets: IndexSet(integer: sourceIndexPath.section),
                     toOffset: destinationIndexPath.section + diff
                 )
@@ -297,7 +297,11 @@ extension OrganizeTokensViewModel {
             )
 
             dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
-                sectionsToMutate[sourceIndexPath.section].items.move(
+                guard sectionsToMutate.indices.contains(sourceIndexPath.section) else {
+                    throw Error.sectionOffsetOutOfBound(offset: sourceIndexPath.section, count: sectionsToMutate.count)
+                }
+
+                try sectionsToMutate[sourceIndexPath.section].items.tryMove(
                     fromOffsets: IndexSet(integer: sourceIndexPath.item),
                     toOffset: destinationIndexPath.item + diff
                 )
@@ -387,5 +391,13 @@ extension OrganizeTokensViewModel: OrganizeTokensDragAndDropControllerDataSource
         listViewIdentifierForItemAt indexPath: IndexPath
     ) -> AnyHashable {
         return section(at: indexPath)?.id ?? itemViewModel(at: indexPath).id.asAnyHashable
+    }
+}
+
+// MARK: - Auxiliary types
+
+extension OrganizeTokensViewModel {
+    enum Error: Swift.Error {
+        case sectionOffsetOutOfBound(offset: Int, count: Int)
     }
 }

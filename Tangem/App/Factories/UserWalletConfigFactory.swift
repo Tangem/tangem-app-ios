@@ -31,6 +31,10 @@ struct UserWalletConfigFactory {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
             }
 
+            if FirmwareVersion.visaRange.contains(cardInfo.card.firmwareVersion.doubleValue) {
+                return VisaConfig(card: cardInfo.card)
+            }
+
             let isWallet2 = cardInfo.card.firmwareVersion >= .ed25519Slip0010Available
 
             switch (isWallet2, isDemo) {

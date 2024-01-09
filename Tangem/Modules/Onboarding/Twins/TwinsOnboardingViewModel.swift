@@ -290,6 +290,14 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             }
             .store(in: &bag)
 
+        twinsService
+            .occuredError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                self?.alert = error.alertBinder
+            }
+            .store(in: &bag)
+
         $currentStepIndex
             .removeDuplicates()
             .delay(for: 0.1, scheduler: DispatchQueue.main)

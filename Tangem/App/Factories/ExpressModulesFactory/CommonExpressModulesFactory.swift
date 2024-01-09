@@ -125,7 +125,7 @@ private extension CommonExpressModulesFactory {
         ExpressProviderFormatter(balanceFormatter: balanceFormatter)
     }
 
-    var notificationManager: ExpressNotificationManager {
+    var notificationManager: NotificationManager {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 

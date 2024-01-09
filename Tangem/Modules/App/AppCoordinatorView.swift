@@ -11,6 +11,7 @@ import SwiftUI
 
 struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AppCoordinator
+    @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     var body: some View {
         NavigationView {
@@ -35,13 +36,23 @@ struct AppCoordinatorView: CoordinatorView {
             // Therefore, the `bottomScrollableSheet` view modifier is always applied when the main bottom sheet
             // coordinator exists, but `header`/`content` views are created only when there is a non-nil
             // `mainBottomSheetCoordinator.headerViewModel` or `mainBottomSheetCoordinator.contentViewModel`
-            view.bottomScrollableSheet(
-                isHiddenWhenCollapsed: true,
-                allowsHitTesting: coordinator.isMainBottomSheetShown,
-                header: { MainBottomSheetHeaderCoordinatorView(coordinator: mainBottomSheetCoordinator) },
-                content: { MainBottomSheetContentCoordinatorView(coordinator: mainBottomSheetCoordinator) },
-                overlay: { MainBottomSheetOverlayCoordinatorView(coordinator: mainBottomSheetCoordinator) }
-            )
+            view
+                .bottomScrollableSheet(
+                    header: { MainBottomSheetHeaderCoordinatorView(coordinator: mainBottomSheetCoordinator) },
+                    content: { MainBottomSheetContentCoordinatorView(coordinator: mainBottomSheetCoordinator) },
+                    overlay: { MainBottomSheetOverlayCoordinatorView(coordinator: mainBottomSheetCoordinator) }
+                )
+                .bottomScrollableSheetConfiguration(
+                    isHiddenWhenCollapsed: true,
+                    allowsHitTesting: coordinator.isMainBottomSheetShown
+                )
+                .onBottomScrollableSheetStateChange(mainBottomSheetCoordinator.onBottomScrollableSheetStateChange(_:))
+        }
+        .bottomSheet(
+            item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
+            settings: .init(backgroundColor: Colors.Background.primary)
+        ) {
+            InformationHiddenBalancesView(viewModel: $0)
         }
     }
 }

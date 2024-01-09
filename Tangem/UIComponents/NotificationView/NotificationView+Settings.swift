@@ -12,6 +12,14 @@ extension NotificationView {
     typealias NotificationAction = (NotificationViewId) -> Void
     typealias NotificationButtonTapAction = (NotificationViewId, NotificationButtonActionType) -> Void
 
+    /// Currently, this property isn't used in any way in the UI and acts more like a semantic attribute of the notification.
+    /// - Note: Ideally should mimic standard UNIX syslog severity levels https://en.wikipedia.org/wiki/Syslog
+    enum Severity {
+        case info
+        case warning
+        case critical
+    }
+
     struct Settings: Identifiable, Hashable {
         let event: any NotificationEvent
         let dismissAction: NotificationAction?

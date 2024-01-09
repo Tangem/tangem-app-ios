@@ -368,7 +368,7 @@ class LegacyMainViewModel: ObservableObject {
 
                 if promotionService.promoCode == nil {
                     coordinator.openPromotion(
-                        cardPublicKey: cardModel.cardPublicKey.hex,
+                        cardPublicKey: cardModel.cardPublicKey.hexString,
                         cardId: cardModel.cardId,
                         walletId: cardModel.userWalletId.stringValue
                     )

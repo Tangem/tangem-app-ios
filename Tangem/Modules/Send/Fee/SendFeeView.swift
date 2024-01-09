@@ -10,18 +10,20 @@ import SwiftUI
 
 struct SendFeeView: View {
     let namespace: Namespace.ID
-    let viewModel: SendFeeViewModel
+
+    @ObservedObject var viewModel: SendFeeViewModel
 
     var body: some View {
-        VStack {
-            TextField("fee", text: viewModel.fee)
-                .padding()
-                .border(Color.blue, width: 5)
-                .matchedGeometryEffect(id: "fee", in: namespace)
-
-            Spacer()
+        GroupedScrollView {
+            GroupedSection(viewModel.feeRowViewModels) {
+                FeeRowView(viewModel: $0)
+            } footer: {
+                DefaultFooterView(Localization.commonFeeSelectorFooter)
+            }
+            .verticalPadding(0)
+            .separatorStyle(.minimum)
         }
-        .padding(.horizontal)
+        .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
     }
 }
 

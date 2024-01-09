@@ -38,14 +38,18 @@ extension AddCustomTokenDerivationOption {
         }
     }
 
-    var derivationDath: String? {
+    var derivationPath: DerivationPath? {
         switch self {
         case .custom(let derivationPath):
-            return derivationPath?.rawPath
+            return derivationPath
         case .default(let derivationPath):
-            return derivationPath.rawPath
+            return derivationPath
         case .blockchain(_, let derivationPath):
-            return derivationPath.rawPath
+            return derivationPath
         }
+    }
+
+    var rawDerivationDath: String? {
+        derivationPath?.rawPath
     }
 }

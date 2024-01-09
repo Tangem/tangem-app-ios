@@ -83,6 +83,8 @@ private extension DEXExpressProviderManager {
             )
             try Task.checkCancellation()
 
+            // better make quote from data
+            let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
             return .ready(.init(fee: fee, data: data, quote: quote))
 
         } catch let error as ExpressAPIError {
@@ -97,12 +99,7 @@ private extension DEXExpressProviderManager {
     }
 
     func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, approvePolicy: SwappingApprovePolicy) async -> ExpressProviderManagerState? {
-        // 1. Check MinAmount
-        if request.amount < quote.minAmount {
-            return .restriction(.tooSmallAmount(quote.minAmount), quote: quote)
-        }
-
-        // 2. Check Balance
+        // 1. Check Balance
         do {
             let sourceBalance = try await request.pair.source.getBalance()
             let isNotEnoughBalanceForSwapping = request.amount > sourceBalance
@@ -114,7 +111,7 @@ private extension DEXExpressProviderManager {
             return .error(error, quote: quote)
         }
 
-        // 3. Check Permission
+        // 2. Check Permission
         if let spender = quote.allowanceContract {
             do {
                 let isPermissionRequired = try await allowanceProvider.isPermissionRequired(request: request, for: spender)

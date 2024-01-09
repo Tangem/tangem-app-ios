@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AppsFlyerLib
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -57,11 +56,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        guard AppEnvironment.current.isProduction else { return }
-
-        AppsFlyerLib.shared().start()
     }
 }

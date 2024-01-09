@@ -22,8 +22,11 @@ class CommonExpressPendingTransactionRepository {
     }
 
     private func loadPendingTransactions() {
-        let savedTransactions: [ExpressPendingTransactionRecord] = (try? storage.value(for: .pendingExpressTransactions)) ?? []
-        pendingTransactionSubject.value = savedTransactions
+        do {
+            pendingTransactionSubject.value = try storage.value(for: .pendingExpressTransactions) ?? []
+        } catch {
+            log("Couldn't get the express transactions list from the storage with error \(error)")
+        }
     }
 
     private func addRecordIfNeeded(_ record: ExpressPendingTransactionRecord) {

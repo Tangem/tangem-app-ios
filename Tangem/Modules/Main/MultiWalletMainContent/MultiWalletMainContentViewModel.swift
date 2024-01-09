@@ -55,8 +55,9 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let userWalletNotificationManager: NotificationManager
     private let tokensNotificationManager: NotificationManager
     private let tokenSectionsAdapter: TokenSectionsAdapter
-    private unowned let coordinator: MultiWalletMainContentRoutable
     private let tokenRouter: SingleTokenRoutable
+    private let optionsEditing: OrganizeTokensOptionsEditing
+    private unowned let coordinator: MultiWalletMainContentRoutable
 
     private var canManageTokens: Bool { userWalletModel.isMultiWallet }
 
@@ -74,16 +75,18 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         userWalletModel: UserWalletModel,
         userWalletNotificationManager: NotificationManager,
         tokensNotificationManager: NotificationManager,
-        coordinator: MultiWalletMainContentRoutable,
         tokenSectionsAdapter: TokenSectionsAdapter,
-        tokenRouter: SingleTokenRoutable
+        tokenRouter: SingleTokenRoutable,
+        optionsEditing: OrganizeTokensOptionsEditing,
+        coordinator: MultiWalletMainContentRoutable
     ) {
         self.userWalletModel = userWalletModel
         self.userWalletNotificationManager = userWalletNotificationManager
         self.tokensNotificationManager = tokensNotificationManager
-        self.coordinator = coordinator
         self.tokenSectionsAdapter = tokenSectionsAdapter
         self.tokenRouter = tokenRouter
+        self.optionsEditing = optionsEditing
+        self.coordinator = coordinator
 
         setup()
     }
@@ -151,6 +154,17 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             .sink { viewModel, sections in
                 viewModel.removeOldCachedTokenViewModels(sections)
             }
+            .store(in: &bag)
+
+        organizedTokensSectionsPublisher
+            .map { $0.flatMap(\.items) }
+            .removeDuplicates()
+            .map { $0.map(\.walletModelId) }
+            .withWeakCaptureOf(self)
+            .flatMapLatest { viewModel, walletModelIds in
+                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds)
+            }
+            .sink()
             .store(in: &bag)
 
         userWalletNotificationManager.notificationPublisher
@@ -397,17 +411,6 @@ extension MultiWalletMainContentViewModel {
 }
 
 // MARK: - Convenience extensions
-
-private extension TokenSectionsAdapter.SectionItem {
-    var walletModel: WalletModel? {
-        switch self {
-        case .default(let walletModel):
-            return walletModel
-        case .withoutDerivation:
-            return nil
-        }
-    }
-}
 
 private extension TokenSectionsAdapter.Section {
     var walletModels: [WalletModel] {

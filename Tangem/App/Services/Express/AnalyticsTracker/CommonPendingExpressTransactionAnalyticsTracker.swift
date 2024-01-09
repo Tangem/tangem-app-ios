@@ -44,8 +44,8 @@ extension CommonPendingExpressTransactionAnalyticsTracker {
                 return .refunded
             case .verificationRequired:
                 return .kyc
-            case .expired:
-                return .expired
+            case .canceled:
+                return .canceled
             }
         }
     }

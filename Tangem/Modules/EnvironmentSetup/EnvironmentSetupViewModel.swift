@@ -65,6 +65,15 @@ final class EnvironmentSetupViewModel: ObservableObject {
                     set: { $0.useFakeTxHistory = $1 }
                 )
             ),
+            DefaultToggleRowViewModel(
+                title: "Enable Performance Monitor",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isPerformanceMonitorEnabled },
+                    set: { $0.isPerformanceMonitorEnabled = $1 }
+                )
+            ),
         ]
 
         featureStateViewModels = Feature.allCases.reversed().map { feature in

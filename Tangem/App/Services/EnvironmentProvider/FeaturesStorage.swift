@@ -26,6 +26,9 @@ class FeatureStorage {
 
     @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
     var supportedBlockchainsIds: [String] = []
+
+    @AppStorageCompat(FeatureStorageKeys.performanceMonitorEnabled)
+    var isPerformanceMonitorEnabled = false
 }
 
 // MARK: - Keys
@@ -36,4 +39,5 @@ private enum FeatureStorageKeys: String {
     case useDevApi = "use_dev_api"
     case fakeTxHistory = "fake_transaction_history"
     case supportedBlockchainsIds
+    case performanceMonitorEnabled = "performance_monitor_enabled"
 }

@@ -66,6 +66,8 @@ final class UserWalletListViewModel: ObservableObject, Identifiable {
                     self?.setSelectedWallet(userWallet, reason: reason)
                 case .inserted, .replaced:
                     break
+                case .biometryUnlocked:
+                    break
                 }
             }
             .store(in: &bag)

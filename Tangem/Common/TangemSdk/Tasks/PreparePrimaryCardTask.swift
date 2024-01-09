@@ -79,7 +79,7 @@ class PreparePrimaryCardTask: CardSessionRunnable {
             return
         }
 
-        let command = StartPrimaryCardLinkingTask()
+        let command = StartPrimaryCardLinkingCommand()
         commandBag = command
         command.run(in: session) { result in
             switch result {

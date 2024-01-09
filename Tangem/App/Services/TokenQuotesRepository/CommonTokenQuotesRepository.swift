@@ -101,8 +101,16 @@ private extension CommonTokenQuotesRepository {
         AppLog.shared.debug("Start loading quotes for ids: \(currencyIds)")
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
+
+        // TODO: - Remove when prices24h will be available on production api
+        let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .prices24h] : [.price, .priceChange24h]
+
         // We get here currencyIds. But on in the API model we named it like coinIds
-        let request = QuotesDTO.Request(coinIds: currencyIds, currencyId: currencyCode)
+        let request = QuotesDTO.Request(
+            coinIds: currencyIds,
+            currencyId: currencyCode,
+            fields: fields
+        )
 
         return tangemApiService
             .loadQuotes(requestModel: request)
@@ -125,6 +133,7 @@ private extension CommonTokenQuotesRepository {
                 currencyId: quote.id,
                 change: quote.priceChange,
                 price: quote.price,
+                prices24h: quote.prices24h,
                 currencyCode: currencyCode
             )
         }

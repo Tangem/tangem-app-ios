@@ -51,6 +51,10 @@ class MainBottomSheetCoordinator: CoordinatorObject {
         setupManageTokens()
     }
 
+    func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
+        __headerViewModel.onBottomScrollableSheetStateChange(state)
+    }
+
     private func bind() {
         bottomSheetVisibility
             .isShownPublisher

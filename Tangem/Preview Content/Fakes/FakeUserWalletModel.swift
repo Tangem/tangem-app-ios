@@ -18,7 +18,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
     let userTokenListManager: UserTokenListManager
     let userTokensManager: UserTokensManager
     let totalBalanceProvider: TotalBalanceProviding
-    let signer: TangemSigner = .init(with: "", sdk: .init())
+    let signer: TangemSigner = .init(filter: .cardId(""), sdk: .init(), twinKey: nil)
 
     let config: UserWalletConfig
     let userWallet: UserWallet
@@ -32,6 +32,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
 
     var tokensCount: Int? { walletModelsManager.walletModels.filter { !$0.isMainToken }.count }
     var updatePublisher: AnyPublisher<Void, Never> { _updatePublisher.eraseToAnyPublisher() }
+    var cardImagePublisher: AnyPublisher<CardImageResult, Never>
 
     private let _updatePublisher: PassthroughSubject<Void, Never> = .init()
     private let _userWalletNamePublisher: CurrentValueSubject<String, Never>
@@ -63,6 +64,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
         totalBalanceProvider = TotalBalanceProviderMock()
 
         self.userWallet = userWallet
+        cardImagePublisher = Just(.cached(Assets.Cards.walletSingle.uiImage)).eraseToAnyPublisher()
         initialUpdate()
     }
 

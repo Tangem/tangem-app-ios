@@ -51,15 +51,26 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         let tokenRouter = SingleTokenRouter(userWalletModel: model, coordinator: coordinator)
 
         if isMultiWalletPage {
-            let sectionsAdapter = makeSectionsAdapter(for: model)
-            let multiWalletNotificationManager = MultiWalletNotificationManager(walletModelsManager: model.walletModelsManager, contextDataProvider: model)
+            let optionsManager = OrganizeTokensOptionsManager(
+                userTokensReorderer: model.userTokensManager
+            )
+            let sectionsAdapter = TokenSectionsAdapter(
+                userTokenListManager: model.userTokenListManager,
+                optionsProviding: optionsManager,
+                preservesLastSortedOrderOnSwitchToDragAndDrop: false
+            )
+            let multiWalletNotificationManager = MultiWalletNotificationManager(
+                walletModelsManager: model.walletModelsManager,
+                contextDataProvider: model
+            )
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,
                 userWalletNotificationManager: userWalletNotificationManager,
                 tokensNotificationManager: multiWalletNotificationManager,
-                coordinator: coordinator,
                 tokenSectionsAdapter: sectionsAdapter,
-                tokenRouter: tokenRouter
+                tokenRouter: tokenRouter,
+                optionsEditing: optionsManager,
+                coordinator: coordinator
             )
             viewModel.delegate = multiWalletContentDelegate
             userWalletNotificationManager.setupManager(with: viewModel)
@@ -110,16 +121,6 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 multiWalletContentDelegate: multiWalletContentDelegate
             )
         }
-    }
-
-    private func makeSectionsAdapter(for model: UserWalletModel) -> TokenSectionsAdapter {
-        let optionsManager = OrganizeTokensOptionsManager(userTokensReorderer: model.userTokensManager)
-
-        return TokenSectionsAdapter(
-            userTokenListManager: model.userTokenListManager,
-            optionsProviding: optionsManager,
-            preservesLastSortedOrderOnSwitchToDragAndDrop: false
-        )
     }
 
     private func selectSignatureCountValidator(for userWalletModel: UserWalletModel) -> SignatureCountValidator? {

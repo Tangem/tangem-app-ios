@@ -11,7 +11,16 @@ import Combine
 import CombineExt
 
 final class OrganizeTokensScrollState: ObservableObject {
-    @Published private(set) var contentOffset: CGPoint = .zero
+    private(set) var contentOffset: CGPoint = .zero {
+        willSet {
+            // Publish changes to this property manually and only when there is an active drag-and-drop session,
+            // because we don't need to redraw our observer (view) when the content offset is changed due to normal,
+            // ordinary scrolling (triggered by the user)
+            if isDragActive {
+                objectWillChange.send()
+            }
+        }
+    }
 
     @Published private(set) var isTokenListFooterGradientHidden = true
 
@@ -28,6 +37,16 @@ final class OrganizeTokensScrollState: ObservableObject {
 
     private let bottomInset: CGFloat
 
+    private var isDragActive = false {
+        didSet {
+            // One-time update of the `contentOffset` property to its actual value,
+            // which in turn will publish changes to our observer (view)
+            if isDragActive != oldValue {
+                contentOffset = _contentOffsetSubject.value
+            }
+        }
+    }
+
     private var bag: Set<AnyCancellable> = []
     private var didBind = false
 
@@ -39,6 +58,14 @@ final class OrganizeTokensScrollState: ObservableObject {
 
     func onViewAppear() {
         bind()
+    }
+
+    func onDragStart() {
+        isDragActive = true
+    }
+
+    func onDragEnd() {
+        isDragActive = false
     }
 
     private func bind() {
@@ -65,7 +92,7 @@ final class OrganizeTokensScrollState: ObservableObject {
 
         contentOffsetSubject
             .map { contentOffset in
-                // `CGPoint` doesn't conform to `Comporable`, so we're applying `max(_:_:)` manually here
+                // `CGPoint` doesn't conform to `Comparable`, so we're applying `max(_:_:)` manually here
                 return CGPoint(
                     x: max(contentOffset.x, .zero),
                     y: max(contentOffset.y, .zero)

@@ -15,4 +15,6 @@ struct Quote: Decodable {
     let price: Decimal
     /// Price change in percent
     let priceChange: Decimal?
+    /// Price change in value on 24h
+    let prices24h: [Double]?
 }

@@ -25,7 +25,7 @@ final class ExpressTokensListViewModel: ObservableObject, Identifiable {
     private let swapDirection: SwapDirection
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let expressRepository: ExpressRepository
-    private unowned let expressInteractor: ExpressInteractor
+    private let expressInteractor: ExpressInteractor
     private unowned let coordinator: ExpressTokensListRoutable
 
     // MARK: - Internal

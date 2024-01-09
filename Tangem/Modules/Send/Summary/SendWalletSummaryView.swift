@@ -12,24 +12,24 @@ struct SendWalletSummaryView: View {
     @ObservedObject var viewModel: SendWalletSummaryViewModel
 
     var body: some View {
-        GroupedSection(viewModel) { viewModel in
-            VStack(alignment: .leading, spacing: 8) {
-                Text(viewModel.walletNameTitle(font: UIFonts.Regular.footnote))
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(viewModel.walletNameTitle(font: UIFonts.Regular.footnote))
+                .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
 
-                Text(viewModel.totalBalance)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
-            }
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            Text(viewModel.totalBalance)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
         }
-        .backgroundColor(Colors.Button.disabled)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 #Preview {
     GroupedScrollView {
-        SendWalletSummaryView(viewModel: SendWalletSummaryViewModel(walletName: "Family Wallet", totalBalance: "2 130,88 USDT (2 129,92 $)"))
+        GroupedSection(SendWalletSummaryViewModel(walletName: "Family Wallet", totalBalance: "2 130,88 USDT (2 129,92 $)")) { viewModel in
+            SendWalletSummaryView(viewModel: viewModel)
+        }
+        .backgroundColor(Colors.Button.disabled)
     }
     .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
 }

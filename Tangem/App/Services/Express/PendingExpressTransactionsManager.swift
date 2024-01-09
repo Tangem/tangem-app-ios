@@ -54,8 +54,6 @@ class CommonPendingExpressTransactionsManager {
 
     private func bind() {
         expressPendingTransactionsRepository.transactionsPublisher
-            // We should show only CEX transaction on UI
-
             .withWeakCaptureOf(self)
             .map { manager, txRecords in
                 manager.filterRelatedTokenTransactions(list: txRecords)
@@ -179,6 +177,7 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
+            // We should show only CEX transaction on UI
             guard record.provider.type == .cex else {
                 return false
             }

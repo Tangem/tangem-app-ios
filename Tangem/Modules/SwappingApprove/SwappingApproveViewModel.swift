@@ -33,7 +33,7 @@ final class SwappingApproveViewModel: ObservableObject, Identifiable {
     private let swappingFeeFormatter: SwappingFeeFormatter
     private let pendingTransactionRepository: ExpressPendingTransactionRepository
     private let logger: SwappingLogger
-    private unowned let expressInteractor: ExpressInteractor
+    private let expressInteractor: ExpressInteractor
     private unowned let coordinator: SwappingApproveRoutable
 
     private var didBecomeActiveNotificationCancellable: AnyCancellable?
@@ -102,6 +102,7 @@ private extension SwappingApproveViewModel {
 
         $selectedAction
             .dropFirst()
+            .removeDuplicates()
             .sink { [weak self] policy in
                 self?.expressInteractor.updateApprovePolicy(policy: policy)
             }

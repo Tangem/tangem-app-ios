@@ -13,6 +13,7 @@ struct PendingExpressTransactionFactory {
     private let defaultStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .exchanging, .sendingToUser]
     private let failedStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .failed, .refunded]
     private let verifyingStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .verificationRequired, .sendingToUser]
+    private let canceledStatusesList: [PendingExpressTransactionStatus] = [.canceled]
 
     func buildPendingExpressTransaction(currentExpressStatus: ExpressTransactionStatus, for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
         let currentStatus: PendingExpressTransactionStatus
@@ -38,6 +39,9 @@ struct PendingExpressTransactionFactory {
         case .verifying:
             currentStatus = .verificationRequired
             statusesList = verifyingStatusesList
+        case .expired:
+            currentStatus = .canceled
+            statusesList = canceledStatusesList
         }
 
         transactionRecord.transactionStatus = currentStatus
@@ -48,19 +52,19 @@ struct PendingExpressTransactionFactory {
     }
 
     func buildPendingExpressTransaction(for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
-        var statusesList = defaultStatusesList
-        switch transactionRecord.transactionStatus {
-        case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .expired:
-            break
-        case .failed, .refunded:
-            statusesList = failedStatusesList
-        case .verificationRequired:
-            statusesList = verifyingStatusesList
-        }
+        let statusesList: [PendingExpressTransactionStatus] = {
+            switch transactionRecord.transactionStatus {
+            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done:
+                return defaultStatusesList
+            case .canceled:
+                return canceledStatusesList
+            case .failed, .refunded:
+                return failedStatusesList
+            case .verificationRequired:
+                return verifyingStatusesList
+            }
+        }()
 
-        return .init(
-            transactionRecord: transactionRecord,
-            statuses: statusesList
-        )
+        return .init(transactionRecord: transactionRecord, statuses: statusesList)
     }
 }

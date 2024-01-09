@@ -60,3 +60,15 @@ extension UserWalletConfig where Self: NoteCardOnboardingStepsBuilderFactory {
         )
     }
 }
+
+// MARK: - Visa cards
+
+protocol VisaCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
+
+extension UserWalletConfig where Self: VisaCardOnboardingStepsBuilderFactory {
+    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
+        return VisaOnboardingStepsBuilder(
+            touId: tou.id
+        )
+    }
+}

@@ -13,10 +13,11 @@ enum SendStep {
     case destination
     case fee
     case summary
+    case finish(model: SendFinishViewModel)
 }
 
 extension SendStep {
-    var name: String {
+    var name: String? {
         switch self {
         case .amount:
             return Localization.commonSend
@@ -26,6 +27,8 @@ extension SendStep {
             return Localization.commonFeeSelectorTitle
         case .summary:
             return Localization.commonSend
+        case .finish:
+            return nil
         }
     }
 
@@ -33,7 +36,26 @@ extension SendStep {
         switch self {
         case .amount, .destination, .fee:
             return true
-        case .summary:
+        case .summary, .finish:
+            return false
+        }
+    }
+}
+
+extension SendStep: Equatable {
+    static func== (lhs: SendStep, rhs: SendStep) -> Bool {
+        switch (lhs, rhs) {
+        case (.amount, .amount):
+            return true
+        case (.destination, .destination):
+            return true
+        case (.fee, .fee):
+            return true
+        case (.summary, .summary):
+            return true
+        case (.finish, .finish):
+            return true
+        default:
             return false
         }
     }

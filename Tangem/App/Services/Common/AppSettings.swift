@@ -69,7 +69,7 @@ class AppSettings {
     @AppStorageCompat(StorageType.shouldHidingSensitiveInformationSheetShowing)
     var shouldHidingSensitiveInformationSheetShowing: Bool = true
 
-    @AppStorageCompat(StorageType.appTheme)
+    @AppStorageCompat(StorageType.appTheme, store: .standard)
     var appTheme: ThemeOption = .system
 
     @AppStorageCompat(StorageType.userDidSwipeWalletsOnMainScreen)

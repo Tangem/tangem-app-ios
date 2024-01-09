@@ -83,7 +83,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         }
     }
 
-    lazy var transactionHistoryMapper = TransactionHistoryMapper(currencySymbol: currencySymbol, walletAddresses: walletModel.wallet.addresses.map { $0.value })
+    lazy var transactionHistoryMapper = TransactionHistoryMapper(currencySymbol: currencySymbol, walletAddresses: walletModel.wallet.addresses.map { $0.value }, showSign: true)
     lazy var pendingTransactionRecordMapper = PendingTransactionRecordMapper(formatter: BalanceFormatter())
 
     init(
@@ -127,8 +127,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     }
 
     func fetchMoreHistory() -> FetchMore? {
-        guard let transactionHistoryService = walletModel.transactionHistoryService,
-              transactionHistoryService.canFetchMore else {
+        guard walletModel.canFetchHistory else {
             return nil
         }
 
@@ -165,7 +164,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         Analytics.log(event: .buttonReload, params: [.token: currencySymbol])
 
         // We should reset transaction history to initial state here
-        walletModel.transactionHistoryService?.reset()
+        walletModel.clearHistory()
 
         DispatchQueue.main.async {
             self.isReloadingTransactionHistory = true

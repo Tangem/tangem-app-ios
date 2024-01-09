@@ -9,20 +9,19 @@
 import Foundation
 
 class CommonSmartContractMethodMapper {
-    private lazy var dataSource: [String: ContractMethod] = {
+    private typealias DataSource = [String: ContractMethod]
+
+    private lazy var dataSource: DataSource = {
         do {
-            var json: [String: ContractMethod] = [:]
-            try DispatchQueue.global().sync {
-                json = try JsonUtils.readBundleFile(with: "contract_methods", type: [String: ContractMethod].self)
+            return try DispatchQueue.global().sync {
+                return try JsonUtils.readBundleFile(with: "contract_methods", type: DataSource.self)
             }
-            return json
         } catch {
-            AppLog.shared.debug("Contract methods doesn't found")
+            AppLog.shared.debug("Can't map EVM contract methods data source")
+            AppLog.shared.error(error)
             return [:]
         }
     }()
-
-    init() {}
 }
 
 // MARK: - SmartContractMethodMapper

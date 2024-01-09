@@ -45,7 +45,7 @@ final class AppScanTask: CardSessionRunnable {
 
     private var walletData: DefaultWalletData = .none
     private var primaryCard: PrimaryCard?
-    private var linkingCommand: StartPrimaryCardLinkingTask?
+    private var linkingCommand: StartPrimaryCardLinkingCommand?
 
     init(shouldAskForAccessCode: Bool = false) {
         self.shouldAskForAccessCode = shouldAskForAccessCode
@@ -197,7 +197,7 @@ final class AppScanTask: CardSessionRunnable {
     }
 
     private func readPrimaryCard(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        linkingCommand = StartPrimaryCardLinkingTask()
+        linkingCommand = StartPrimaryCardLinkingCommand()
         linkingCommand!.run(in: session) { result in
             switch result {
             case .success(let primaryCard):

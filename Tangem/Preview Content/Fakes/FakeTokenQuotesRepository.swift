@@ -34,6 +34,10 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
                 currencyId: id,
                 change: Decimal(floatLiteral: Double.random(in: -10 ... 10)),
                 price: Decimal(floatLiteral: Double.random(in: 1 ... 50000)),
+                prices24h: [
+                    Double.random(in: -10 ... 10),
+                    Double.random(in: -10 ... 10),
+                ],
                 currencyCode: AppSettings.shared.selectedCurrencyCode
             )
 
@@ -44,11 +48,11 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
     }
 
     func quote(for item: TokenItem) -> TokenQuote? {
-        TokenQuote(currencyId: item.currencyId!, change: 3.3, price: 1, currencyCode: AppSettings.shared.selectedCurrencyCode)
+        TokenQuote(currencyId: item.currencyId!, change: 3.3, price: 1, prices24h: [1, 2, 3], currencyCode: AppSettings.shared.selectedCurrencyCode)
     }
 
     func quote(for currencyId: String) async throws -> TokenQuote {
-        await TokenQuote(currencyId: currencyId, change: 3.3, price: 1, currencyCode: AppSettings.shared.selectedCurrencyCode)
+        await TokenQuote(currencyId: currencyId, change: 3.3, price: 1, prices24h: [1, 2, 3], currencyCode: AppSettings.shared.selectedCurrencyCode)
     }
 
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {

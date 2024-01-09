@@ -58,6 +58,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var customScanImage: ImageType? { get }
 
+    var cardSessionFilter: SessionFilter { get }
+
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability
 
     func makeWalletModelsFactory() -> WalletModelsFactory
@@ -128,6 +130,22 @@ protocol CardContainer {
 extension UserWalletConfig where Self: CardContainer {
     var walletCurves: [EllipticCurve] {
         card.walletCurves
+    }
+
+    var tangemSigner: TangemSigner {
+        .init(filter: cardSessionFilter, sdk: makeTangemSdk(), twinKey: nil)
+    }
+
+    var cardSessionFilter: SessionFilter {
+        let shouldSkipCardId = card.backupStatus?.isActive ?? false
+
+        if shouldSkipCardId, let userWalletIdSeed {
+            let userWalletId = UserWalletId(with: userWalletIdSeed)
+            let filter = UserWalletIdPreflightReadFilter(userWalletId: userWalletId)
+            return .custom(filter)
+        }
+
+        return .cardId(card.cardId)
     }
 
     func makeTangemSdk() -> TangemSdk {

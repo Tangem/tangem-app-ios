@@ -126,7 +126,6 @@ struct OrganizeTokensView: View {
                         )
                         .readContentOffset(
                             inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                            throttleInterval: .zero,
                             bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
                         )
                         .overlay(makeDragAndDropGestureOverlayView())
@@ -144,8 +143,8 @@ struct OrganizeTokensView: View {
                         .divided(atDistance: scrollViewBottomContentInset, from: .maxYEdge)
                         .remainder
                 }
-                .onChange(of: draggedItemFrame) { draggedItemFrame in
-                    changeAutoScrollStatusIfNeeded(draggedItemFrame: draggedItemFrame)
+                .onChange(of: draggedItemFrame) { newValue in
+                    changeAutoScrollStatusIfNeeded(draggedItemFrame: newValue)
                 }
                 .onReceive(dragAndDropController.autoScrollTargetPublisher) { newValue in
                     withAnimation(.linear(duration: Constants.autoScrollFrequency)) {
@@ -160,7 +159,7 @@ struct OrganizeTokensView: View {
             )
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-        .onChange(of: scrollState.contentOffset) { newValue in
+        .onReceive(scrollState.contentOffsetSubject) { newValue in
             dragAndDropController.contentOffsetSubject.send(newValue)
             updateDragAndDropDestinationIndexPath(using: dragGestureTranslation)
         }
@@ -171,8 +170,11 @@ struct OrganizeTokensView: View {
             viewModel.move(from: oldValue, to: newValue)
         }
         .onChange(of: hasActiveDrag) { newValue in
-            if !newValue {
+            if newValue {
+                scrollState.onDragStart()
+            } else {
                 // Perform required clean-up when the user lifts the finger
+                scrollState.onDragEnd()
                 dragAndDropController.stopAutoScrolling()
                 dragAndDropDestinationIndexPath = nil
                 dragAndDropSourceItemFrame = nil
@@ -195,34 +197,44 @@ struct OrganizeTokensView: View {
                     ForEach(indexed: sectionViewModel.items.indexed()) { itemIndex, itemViewModel in
                         let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
                         let identifier = itemViewModel.id
+                        let isDragged = identifier.asAnyHashable == dragAndDropSourceViewModelIdentifier
 
                         makeCell(
                             viewModel: itemViewModel,
                             indexPath: indexPath,
                             parametersProvider: parametersProvider
                         )
-                        .hidden(identifier.asAnyHashable == dragAndDropSourceViewModelIdentifier)
+                        .hidden(isDragged)
                         .readGeometry(
                             \.frame,
                             inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
-                        ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
+                        ) { frame in
+                            if !isDragged {
+                                dragAndDropController.saveFrame(frame, forItemAt: indexPath)
+                            }
+                        }
                         .id(identifier)
                     }
                 },
                 header: {
                     let indexPath = IndexPath(item: viewModel.sectionHeaderItemIndex, section: sectionIndex)
                     let identifier = sectionViewModel.id
+                    let isDragged = identifier == dragAndDropSourceViewModelIdentifier
 
                     makeSection(
                         from: sectionViewModel,
                         atIndex: sectionIndex,
                         parametersProvider: parametersProvider
                     )
-                    .hidden(identifier == dragAndDropSourceViewModelIdentifier)
+                    .hidden(isDragged)
                     .readGeometry(
                         \.frame,
                         inCoordinateSpace: .named(scrollViewContentCoordinateSpaceName)
-                    ) { dragAndDropController.saveFrame($0, forItemAt: indexPath) }
+                    ) { frame in
+                        if !isDragged {
+                            dragAndDropController.saveFrame(frame, forItemAt: indexPath)
+                        }
+                    }
                     .id(identifier)
                     .padding(.top, sectionIndex == 0 ? 0.0 : Constants.headerBottomInset)
                 }
@@ -345,14 +357,14 @@ struct OrganizeTokensView: View {
         }
 
         let intersection = visibleViewportFrame.intersection(draggedItemFrame)
-        if intersection.isNull || intersection.height < min(visibleViewportFrame.height, draggedItemFrame.height) {
+        if intersection.height < min(visibleViewportFrame.height, draggedItemFrame.height) {
             if draggedItemFrame.minY + Constants.autoScrollTriggerHeightDiff < visibleViewportFrame.minY {
                 dragAndDropController.startAutoScrolling(direction: .top)
             } else if draggedItemFrame.maxY - Constants.autoScrollTriggerHeightDiff > visibleViewportFrame.maxY {
                 dragAndDropController.startAutoScrolling(direction: .bottom)
-            } else {
-                dragAndDropController.stopAutoScrolling()
             }
+        } else if !intersection.isNull {
+            dragAndDropController.stopAutoScrolling()
         }
     }
 

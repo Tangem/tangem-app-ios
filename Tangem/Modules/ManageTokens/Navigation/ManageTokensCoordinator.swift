@@ -25,6 +25,7 @@ class ManageTokensCoordinator: CoordinatorObject {
 
     @Published var networkSelectorViewModel: ManageTokensNetworkSelectorViewModel? = nil
     @Published var walletSelectorViewModel: WalletSelectorViewModel? = nil
+    @Published var addCustomTokenCoordinator: AddCustomTokenCoordinator?
 
     // MARK: - Init
 
@@ -48,8 +49,21 @@ extension ManageTokensCoordinator {
 }
 
 extension ManageTokensCoordinator: ManageTokensRoutable {
-    func openTokenSelector(coinId: String, with tokenItems: [TokenItem]) {
+    func openAddCustomToken(dataSource: ManageTokensDataSource) {
+        guard let userWalletModel = dataSource.defaultUserWalletModel else { return }
+
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.addCustomTokenCoordinator = nil
+        }
+
+        let addCustomTokenCoordinator = AddCustomTokenCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        addCustomTokenCoordinator.start(with: .init(userWalletModel: userWalletModel, dataSource: dataSource))
+        self.addCustomTokenCoordinator = addCustomTokenCoordinator
+    }
+
+    func openTokenSelector(dataSource: ManageTokensDataSource, coinId: String, tokenItems: [TokenItem]) {
         networkSelectorViewModel = ManageTokensNetworkSelectorViewModel(
+            parentDataSource: dataSource,
             coinId: coinId,
             tokenItems: tokenItems,
             coordinator: self
@@ -76,16 +90,7 @@ extension ManageTokensCoordinator: ManageTokensRoutable {
 }
 
 extension ManageTokensCoordinator: ManageTokensNetworkSelectorRoutable {
-    func openWalletSelector(
-        userWallets: [UserWallet],
-        currentUserWalletId: Data?,
-        delegate: WalletSelectorDelegate?
-    ) {
-        walletSelectorViewModel = .init(
-            userWallets: userWallets,
-            currentUserWalletId: currentUserWalletId
-        )
-
-        walletSelectorViewModel?.delegate = delegate
+    func openWalletSelector(with dataSource: WalletSelectorDataSource) {
+        walletSelectorViewModel = WalletSelectorViewModel(dataSource: dataSource)
     }
 }

@@ -117,6 +117,22 @@ extension TokenNotificationEvent: NotificationEvent {
         }
     }
 
+    var severity: NotificationView.Severity {
+        switch self {
+        case .noAccount,
+             .rentFee,
+             .existentialDepositWarning,
+             .hasPendingTransactions,
+             .tangemExpressPromotion:
+            return .info
+        case .networkUnreachable,
+             .someNetworksUnreachable,
+             .notEnoughFeeForTokenTx,
+             .longTransaction:
+            return .warning
+        }
+    }
+
     var isDismissable: Bool {
         switch self {
         case .rentFee, .tangemExpressPromotion:
