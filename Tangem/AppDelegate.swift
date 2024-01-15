@@ -28,7 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window.bringSubviewToFront(view)
             loadingView = view
         }
-    }
+    
+    
 
     func removeLoadingView() {
         loadingView?.removeFromSuperview()
