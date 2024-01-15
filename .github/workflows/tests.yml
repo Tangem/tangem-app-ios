@@ -45,7 +45,7 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}
       with:
         channel: '#development-ios'
-        text: 'Tangem tests #${{ github.run_number }} failed'
+        text: 'Tangem tests #${{ github.event.pull_request.name }} failed'
         color: 'danger'
         fields: |
           [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
