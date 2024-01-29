@@ -438,6 +438,8 @@ class WalletModel {
         return walletManager.send(tx, signer: signer)
             .receive(on: RunLoop.main)
             .handleEvents(receiveOutput: { [weak self] _ in
+                // Force update transactions history with local storage
+                self?.updateTransactionsHistory()
                 self?.startUpdatingTimer()
             })
             .receive(on: DispatchQueue.main)
@@ -503,6 +505,7 @@ extension WalletModel {
             return .just(output: ())
         }
 
+        AppLog.shared.debug("TransactionsHistory for \(self) start the updating")
         return _transactionHistoryService.update()
     }
 
