@@ -516,7 +516,7 @@ extension WalletModel {
         }
 
         return Publishers.Merge(
-            _localPendingTransactionSubject.withLatestFrom(_transactionHistoryService.statePublisher).print("\(self) _localPendingTransactionSubject"),
+            _localPendingTransactionSubject.withLatestFrom(_transactionHistoryService.statePublisher),
             _transactionHistoryService.statePublisher
         )
         .map { [weak self] state -> WalletModel.TransactionHistoryState in
@@ -538,7 +538,7 @@ extension WalletModel {
 
     private func insertPendingTransactionRecordIfNeeded(into items: inout [TransactionRecord]) {
         guard !pendingTransactions.isEmpty else {
-            AppLog.shared.debug("\(self) has not pendingTransactions")
+            AppLog.shared.debug("\(self) has not local pending transactions")
             return
         }
 
