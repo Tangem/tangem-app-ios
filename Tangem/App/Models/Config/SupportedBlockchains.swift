@@ -19,6 +19,12 @@ extension SupportedBlockchains {
         SupportedBlockchains(version: .v1).blockchains()
     }
 
+    static func multicurrencyFiltered(_ set: Set<Blockchain>) -> Set<Blockchain> {
+        var set = set
+        set.remove(.ducatus)
+        return set
+    }
+
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId

@@ -347,11 +347,9 @@ extension MultiWalletMainContentViewModel {
         Analytics.log(.buttonManageTokens)
 
         let shouldShowLegacyDerivationAlert = userWalletModel.config.warningEvents.contains(where: { $0 == .legacyDerivation })
-        var supportedBlockchains = userWalletModel.config.supportedBlockchains
-        supportedBlockchains.remove(.ducatus)
 
         let settings = LegacyManageTokensSettings(
-            supportedBlockchains: supportedBlockchains,
+            supportedBlockchains: userWalletModel.config.supportedBlockchains,
             hdWalletsSupported: userWalletModel.config.hasFeature(.hdWallets),
             longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
             derivationStyle: userWalletModel.config.derivationStyle,

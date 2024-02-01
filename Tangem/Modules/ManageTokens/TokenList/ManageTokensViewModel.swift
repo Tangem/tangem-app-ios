@@ -150,7 +150,7 @@ private extension ManageTokensViewModel {
     }
 
     func setupListDataLoader() -> ListDataLoader {
-        let supportedBlockchains = SupportedBlockchains.all
+        let supportedBlockchains = SupportedBlockchains.multicurrencyFiltered(SupportedBlockchains.all)
         let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
