@@ -23,7 +23,7 @@ class WelcomeViewModel: ObservableObject {
     private var storiesModelSubscription: AnyCancellable?
     private var shouldScanOnAppear: Bool = false
 
-    private unowned let coordinator: WelcomeRoutable
+    private weak var coordinator: WelcomeRoutable?
 
     init(shouldScanOnAppear: Bool, coordinator: WelcomeRoutable) {
         self.shouldScanOnAppear = shouldScanOnAppear
@@ -114,12 +114,12 @@ class WelcomeViewModel: ObservableObject {
 
 extension WelcomeViewModel {
     func openMail() {
-        coordinator.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
     }
 
     func openPromotion() {
         Analytics.log(.introductionProcessLearn)
-        coordinator.openPromotion()
+        coordinator?.openPromotion()
     }
 
     func openTokensList() {
@@ -127,19 +127,19 @@ extension WelcomeViewModel {
         guard !isScanningCard else { return }
 
         Analytics.log(.buttonTokensList)
-        coordinator.openTokensList()
+        coordinator?.openTokensList()
     }
 
     func openShop() {
-        coordinator.openShop()
+        coordinator?.openShop()
     }
 
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboarding(with: input)
+        coordinator?.openOnboarding(with: input)
     }
 
     func openMain(with cardModel: CardViewModel) {
-        coordinator.openMain(with: cardModel)
+        coordinator?.openMain(with: cardModel)
     }
 }
 
@@ -166,7 +166,7 @@ extension WelcomeViewModel: IncomingActionResponder {
         switch action {
         case .start:
             return true
-        case .walletConnect:
+        default:
             return false
         }
     }

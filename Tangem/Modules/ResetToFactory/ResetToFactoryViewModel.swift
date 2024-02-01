@@ -30,7 +30,7 @@ class ResetToFactoryViewModel: ObservableObject {
     private let hasBackupCards: Bool
     private let cardInteractor: CardResettable
     private let userWalletId: UserWalletId
-    private unowned let coordinator: ResetToFactoryViewRoutable
+    private weak var coordinator: ResetToFactoryViewRoutable?
 
     init(input: ResetToFactoryViewModel.Input, coordinator: ResetToFactoryViewRoutable) {
         cardInteractor = input.cardInteractor
@@ -85,7 +85,7 @@ private extension ResetToFactoryViewModel {
             case .success:
                 Analytics.log(.factoryResetFinished)
                 userWalletRepository.delete(userWalletId, logoutIfNeeded: false)
-                coordinator.dismiss()
+                coordinator?.dismiss()
             case .failure(let error):
                 if !error.isUserCancelled {
                     AppLog.shared.error(error, params: [.action: .purgeWallet])

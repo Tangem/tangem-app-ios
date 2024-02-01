@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FeeOption: String, Hashable {
+enum FeeOption: String, Hashable, Equatable {
     case slow
     case market
     case fast

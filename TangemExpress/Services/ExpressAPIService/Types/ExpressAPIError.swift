@@ -30,14 +30,15 @@ public extension ExpressAPIError {
     struct Value: Decodable {
         let currentAllowance: String?
         let minAmount: String?
+        let maxAmount: String?
         let decimals: Int?
 
         var amount: Decimal? {
-            guard let minAmount, let decimals else {
+            guard let amount = minAmount ?? maxAmount, let decimals else {
                 return nil
             }
 
-            return Decimal(string: minAmount).map { $0 / pow(10, decimals) }
+            return Decimal(string: amount).map { $0 / pow(10, decimals) }
         }
     }
 
@@ -64,6 +65,7 @@ public extension ExpressAPIError {
         case exchangeProviderNotAvailableError = 2230
         case exchangeNotPossibleError = 2240
         case exchangeTooSmallAmountError = 2250
+        case exchangeTooBigAmountError = 2251
         case exchangeInvalidAddressError = 2260
         case exchangeNotEnoughBalanceError = 2270
         case exchangeNotEnoughAllowanceError = 2280

@@ -119,6 +119,7 @@ struct SendView: View {
             LinearGradient(colors: [.clear, backgroundColor], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
                 .frame(maxHeight: bottomGradientHeight)
+                .allowsHitTesting(false)
         }
     }
 }

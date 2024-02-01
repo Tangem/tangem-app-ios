@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import BigInt
 import BlockchainSdk
 
 class SendModel {
@@ -74,6 +75,10 @@ class SendModel {
 
     private let _sendError = PassthroughSubject<Error?, Never>()
 
+    private let _customFee = CurrentValueSubject<Fee?, Never>(nil)
+    private let _customFeeGasPrice = CurrentValueSubject<BigUInt?, Never>(nil)
+    private let _customFeeGasLimit = CurrentValueSubject<BigUInt?, Never>(nil)
+
     // MARK: - Errors (raw implementation)
 
     private let _amountError = CurrentValueSubject<Error?, Never>(nil)
@@ -87,6 +92,7 @@ class SendModel {
     private let addressService: SendAddressService
     private let sendType: SendType
     private var destinationResolutionRequest: Task<Void, Error>?
+    private var didSetCustomFee = false
     private var bag: Set<AnyCancellable> = []
 
     // MARK: - Public interface
@@ -199,9 +205,17 @@ class SendModel {
                 let feeValues = feeValues(fees)
                 _feeValues.send(feeValues)
 
-                if let marketFee = feeValues[selectedFeeOption],
-                   let marketFeeValue = marketFee.value {
-                    fee.send(marketFeeValue)
+                if let selectedFee = feeValues[selectedFeeOption],
+                   let selectedFeeValue = selectedFee.value {
+                    fee.send(selectedFeeValue)
+                }
+
+                if let customFee = feeValues[.custom]?.value,
+                   let ethereumFeeParameters = customFee.parameters as? EthereumFeeParameters,
+                   !didSetCustomFee {
+                    _customFee.send(customFee)
+                    _customFeeGasPrice.send(ethereumFeeParameters.gasPrice)
+                    _customFeeGasLimit.send(ethereumFeeParameters.gasLimit)
                 }
             }
             .store(in: &bag)
@@ -345,6 +359,43 @@ class SendModel {
         _isFeeIncluded.send(isFeeIncluded)
     }
 
+    func didChangeCustomFee(_ value: Fee?) {
+        didSetCustomFee = true
+        _customFee.send(value)
+        fee.send(value)
+
+        if let ethereumParams = value?.parameters as? EthereumFeeParameters {
+            _customFeeGasLimit.send(ethereumParams.gasLimit)
+            _customFeeGasPrice.send(ethereumParams.gasPrice)
+        }
+    }
+
+    func didChangeCustomFeeGasPrice(_ value: BigUInt?) {
+        _customFeeGasPrice.send(value)
+        recalculateCustomFee()
+    }
+
+    func didChangeCustomFeeGasLimit(_ value: BigUInt?) {
+        _customFeeGasLimit.send(value)
+        recalculateCustomFee()
+    }
+
+    private func recalculateCustomFee() {
+        let newFee: Fee?
+        if let gasPrice = _customFeeGasPrice.value,
+           let gasLimit = _customFeeGasLimit.value,
+           let gasInWei = (gasPrice * gasLimit).decimal {
+            let amount = Amount(with: blockchain, value: gasInWei / blockchain.decimalValue)
+            newFee = Fee(amount, parameters: EthereumFeeParameters(gasLimit: gasLimit, gasPrice: gasPrice))
+        } else {
+            newFee = nil
+        }
+
+        didSetCustomFee = true
+        _customFee.send(newFee)
+        fee.send(newFee)
+    }
+
     private func feeValues(_ fees: [Fee]) -> [FeeOption: LoadingValue<Fee>] {
         switch fees.count {
         case 1:
@@ -352,11 +403,22 @@ class SendModel {
                 .market: .loaded(fees[0]),
             ]
         case 3:
-            return [
+            var fees: [FeeOption: LoadingValue<Fee>] = [
                 .slow: .loaded(fees[0]),
                 .market: .loaded(fees[1]),
                 .fast: .loaded(fees[2]),
             ]
+
+            if feeOptions.contains(.custom) {
+                if let customFee = _customFee.value,
+                   didSetCustomFee {
+                    fees[.custom] = .loaded(customFee)
+                } else {
+                    fees[.custom] = fees[.market]
+                }
+            }
+
+            return fees
         default:
             return [:]
         }
@@ -434,7 +496,11 @@ extension SendModel: SendFeeViewModelInput {
     #warning("TODO")
     var feeOptions: [FeeOption] {
         if walletModel.shouldShowFeeSelector {
-            return [.slow, .market, .fast]
+            var options: [FeeOption] = [.slow, .market, .fast]
+            if blockchain.isEvm {
+                options.append(.custom)
+            }
+            return options
         } else {
             return [.market]
         }
@@ -442,6 +508,26 @@ extension SendModel: SendFeeViewModelInput {
 
     var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> {
         _feeValues.eraseToAnyPublisher()
+    }
+
+    var tokenItem: TokenItem {
+        walletModel.tokenItem
+    }
+
+    var customGasLimit: BigUInt? {
+        _customFeeGasLimit.value
+    }
+
+    var customFeePublisher: AnyPublisher<Fee?, Never> {
+        _customFee.eraseToAnyPublisher()
+    }
+
+    var customGasPricePublisher: AnyPublisher<BigUInt?, Never> {
+        _customFeeGasPrice.eraseToAnyPublisher()
+    }
+
+    var customGasLimitPublisher: AnyPublisher<BigUInt?, Never> {
+        _customFeeGasLimit.eraseToAnyPublisher()
     }
 
     var canIncludeFeeIntoAmount: Bool {

@@ -9,7 +9,7 @@
 import Moya
 
 struct ExpressAPITarget: Moya.TargetType {
-    let isProduction: Bool
+    let expressAPIType: ExpressAPIType
     let target: Target
 
     enum Target {
@@ -22,11 +22,12 @@ struct ExpressAPITarget: Moya.TargetType {
     }
 
     var baseURL: URL {
-        if isProduction {
+        switch expressAPIType {
+        case .develop:
+            return URL(string: "https://express.tangem.org/v1/")!
+        case .production:
             return URL(string: "https://express.tangem.com/v1/")!
         }
-
-        return URL(string: "https://express.tangem.org/v1/")!
     }
 
     var path: String {

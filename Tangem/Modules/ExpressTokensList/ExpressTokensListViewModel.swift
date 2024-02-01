@@ -26,7 +26,7 @@ final class ExpressTokensListViewModel: ObservableObject, Identifiable {
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let expressRepository: ExpressRepository
     private let expressInteractor: ExpressInteractor
-    private unowned let coordinator: ExpressTokensListRoutable
+    private weak var coordinator: ExpressTokensListRoutable?
 
     // MARK: - Internal
 
@@ -198,7 +198,7 @@ private extension ExpressTokensListViewModel {
         }
 
         selectedWallet = walletModel
-        coordinator.closeExpressTokensList()
+        coordinator?.closeExpressTokensList()
     }
 }
 

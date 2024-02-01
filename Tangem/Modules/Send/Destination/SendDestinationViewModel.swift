@@ -143,12 +143,13 @@ class SendDestinationViewModel: ObservableObject {
                     wallets: suggestedWallets,
                     recentTransactions: recentTransactions
                 ) { [weak self] destination in
+                    let feedbackGenerator = UINotificationFeedbackGenerator()
+                    feedbackGenerator.notificationOccurred(.success)
+
                     self?.input.setDestination(destination.address)
                     if let additionalField = destination.additionalField {
                         self?.input.setDestinationAdditionalField(additionalField)
                     }
-
-                    #warning("TODO: ALERT THE USER")
                 }
             }
             .store(in: &bag)

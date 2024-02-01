@@ -324,20 +324,25 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         stepUpdatesSubscription = twinsService.step
             .receive(on: DispatchQueue.main)
             .combineLatest(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification))
-            .sink(receiveValue: { [unowned self] newStep, _ in
-                switch (currentStep, newStep) {
+            .withWeakCaptureOf(self)
+            .sink { values in
+                let (viewModel, (newStep, _)) = values
+                switch (viewModel.currentStep, newStep) {
                 case (.first, .second):
-                    if let originalUserWallet = input.userWalletToDelete {
-                        userWalletRepository.delete(UserWalletId(value: originalUserWallet.userWalletId), logoutIfNeeded: false)
+                    if let originalUserWallet = viewModel.input.userWalletToDelete {
+                        viewModel.userWalletRepository.delete(
+                            UserWalletId(value: originalUserWallet.userWalletId),
+                            logoutIfNeeded: false
+                        )
                     }
                     fallthrough
                 case (.second, .third), (.third, .done):
                     if case .done(let cardInfo) = newStep {
-                        initializeUserWallet(from: cardInfo)
-                        if input.isStandalone {
-                            fireConfetti()
+                        viewModel.initializeUserWallet(from: cardInfo)
+                        if viewModel.input.isStandalone {
+                            viewModel.fireConfetti()
                         } else {
-                            updateCardBalance()
+                            viewModel.updateCardBalance()
                         }
                     }
 
@@ -349,15 +354,17 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                         }
                     }
                 default:
-                    AppLog.shared.debug("Wrong state while twinning cards: current - \(currentStep), new - \(newStep)")
+                    AppLog.shared.debug(
+                        "Wrong state while twinning cards: current - \(viewModel.currentStep), new - \(newStep)"
+                    )
                 }
 
-                if !retwinMode {
-                    if let pairCardId = twinsService.twinPairCardId {
+                if !viewModel.retwinMode {
+                    if let pairCardId = viewModel.twinsService.twinPairCardId {
                         AppSettings.shared.cardsStartedActivation.insert(pairCardId)
                     }
                 }
-            })
+            }
     }
 
     private func loadSecondTwinImage() {

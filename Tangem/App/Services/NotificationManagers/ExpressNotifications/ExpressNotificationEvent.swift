@@ -15,7 +15,8 @@ enum ExpressNotificationEvent {
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
     case notEnoughFeeForTokenTx(mainTokenName: String, mainTokenSymbol: String, blockchainIconName: String)
-    case notEnoughAmountToSwap(minimumAmountText: String)
+    case tooSmallAmountToSwap(minimumAmountText: String)
+    case tooBigAmountToSwap(maximumAmountText: String)
     case notEnoughReserveToSwap(maximumAmountText: String)
     case noDestinationTokens(sourceTokenName: String)
     case verificationRequired
@@ -37,8 +38,10 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.warningExpressApprovalInProgressTitle
         case .notEnoughFeeForTokenTx(let mainTokenName, _, _):
             return Localization.warningExpressNotEnoughFeeForTokenTxTitle(mainTokenName)
-        case .notEnoughAmountToSwap(let minimumAmountText):
+        case .tooSmallAmountToSwap(let minimumAmountText):
             return Localization.warningExpressTooMinimalAmountTitle(minimumAmountText)
+        case .tooBigAmountToSwap(let maximumAmountText):
+            return Localization.warningExpressTooMaximumAmountTitle(maximumAmountText)
         case .notEnoughReserveToSwap(let maximumAmountText):
             return Localization.sendNotificationInvalidReserveAmountTitle(maximumAmountText)
         case .noDestinationTokens:
@@ -66,8 +69,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.warningExpressApprovalInProgressMessage
         case .notEnoughFeeForTokenTx(let mainTokenName, let mainTokenSymbol, _):
             return Localization.warningExpressNotEnoughFeeForTokenTxDescription(mainTokenName, mainTokenSymbol)
-        case .notEnoughAmountToSwap:
-            return Localization.warningExpressTooMinimalAmountDescription
+        case .tooSmallAmountToSwap, .tooBigAmountToSwap:
+            return Localization.warningExpressWrongAmountDescription
         case .notEnoughReserveToSwap:
             return Localization.sendNotificationInvalidReserveAmountText
         case .noDestinationTokens(let sourceTokenName):
@@ -85,7 +88,15 @@ extension ExpressNotificationEvent: NotificationEvent {
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .noDestinationTokens, .feeWillBeSubtractFromSendingAmount, .existentialDepositWarning:
+        case .permissionNeeded,
+             .hasPendingTransaction,
+             .hasPendingApproveTransaction,
+             .tooSmallAmountToSwap,
+             .tooBigAmountToSwap,
+             .notEnoughReserveToSwap,
+             .noDestinationTokens,
+             .feeWillBeSubtractFromSendingAmount,
+             .existentialDepositWarning:
             return .secondary
         case .notEnoughFeeForTokenTx, .refreshRequired, .verificationRequired, .cexOperationFailed:
             return .primary
@@ -102,7 +113,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .init(iconType: .progressView)
         case .notEnoughFeeForTokenTx(_, _, let blockchainIconName):
             return .init(iconType: .image(Image(blockchainIconName)))
-        case .notEnoughAmountToSwap, .notEnoughReserveToSwap, .cexOperationFailed:
+        case .tooSmallAmountToSwap, .tooBigAmountToSwap, .notEnoughReserveToSwap, .cexOperationFailed:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         case .hasPendingTransaction, .existentialDepositWarning:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -119,7 +130,8 @@ extension ExpressNotificationEvent: NotificationEvent {
              .existentialDepositWarning:
             return .info
         case .notEnoughFeeForTokenTx,
-             .notEnoughAmountToSwap,
+             .tooSmallAmountToSwap,
+             .tooBigAmountToSwap,
              .notEnoughReserveToSwap,
              .noDestinationTokens:
             return .warning
@@ -155,7 +167,15 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed:
             return false
-        case .permissionNeeded, .hasPendingTransaction, .hasPendingApproveTransaction, .notEnoughFeeForTokenTx, .notEnoughAmountToSwap, .notEnoughReserveToSwap, .feeWillBeSubtractFromSendingAmount, .existentialDepositWarning:
+        case .permissionNeeded,
+             .hasPendingTransaction,
+             .hasPendingApproveTransaction,
+             .notEnoughFeeForTokenTx,
+             .tooSmallAmountToSwap,
+             .tooBigAmountToSwap,
+             .notEnoughReserveToSwap,
+             .feeWillBeSubtractFromSendingAmount,
+             .existentialDepositWarning:
             return true
         }
     }

@@ -17,27 +17,4 @@ extension View {
     ) -> some View {
         modifier(LegacyBottomSheetModifier(isPresented: isPresented, viewModelSettings: viewModelSettings, contentView: contentView))
     }
-
-    @available(*, deprecated, message: "Use bottomSheet method with BottomSheetModifier")
-    func bottomSheet<Item: Identifiable, Content: View>(
-        item: Binding<Item?>,
-        viewModelSettings: BottomSheetSettings,
-        @ViewBuilder content: @escaping (Item) -> Content
-    ) -> some View {
-        let isPresented = Binding {
-            item.wrappedValue != nil
-        } set: { value in
-            if !value {
-                item.wrappedValue = nil
-            }
-        }
-
-        return bottomSheet(isPresented: isPresented, viewModelSettings: viewModelSettings) {
-            if let unwrapedItem = item.wrappedValue {
-                content(unwrapedItem)
-            } else {
-                EmptyView()
-            }
-        }
-    }
 }

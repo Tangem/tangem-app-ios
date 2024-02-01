@@ -19,7 +19,7 @@ class CardOperationViewModel: ObservableObject {
     let alert: String
     let actionButtonPressed: (_ completion: @escaping (Result<Void, Error>) -> Void) -> Void
 
-    private unowned let coordinator: CardOperationRoutable
+    private weak var coordinator: CardOperationRoutable?
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -73,10 +73,10 @@ class CardOperationViewModel: ObservableObject {
 
 extension CardOperationViewModel {
     func popToRoot() {
-        coordinator.popToRoot()
+        coordinator?.popToRoot()
     }
 
     func dismissCardOperation() {
-        coordinator.dismissCardOperation()
+        coordinator?.dismissCardOperation()
     }
 }

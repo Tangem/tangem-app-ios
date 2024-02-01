@@ -14,6 +14,10 @@ class TokenDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Root view model
 
     @Published private(set) var tokenDetailsViewModel: TokenDetailsViewModel? = nil
@@ -31,6 +35,8 @@ class TokenDetailsCoordinator: CoordinatorObject {
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
     @Published var pendingExpressTxStatusBottomSheetViewModel: PendingExpressTxStatusBottomSheetViewModel? = nil
+
+    private var safariHandle: SafariHandle?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -109,8 +115,17 @@ extension TokenDetailsCoordinator: TokenDetailsRoutable {
         pendingExpressTxStatusBottomSheetViewModel = .init(
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
-            pendingTransactionsManager: pendingTransactionsManager
+            pendingTransactionsManager: pendingTransactionsManager,
+            router: self
         )
+    }
+}
+
+// MARK: - PendingExpressTxStatusRoutable
+
+extension TokenDetailsCoordinator: PendingExpressTxStatusRoutable {
+    func openPendingExpressTxStatus(at url: URL) {
+        safariManager.openURL(url)
     }
 }
 
@@ -126,20 +141,13 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
     }
 
-    func openBuyCrypto(at url: URL, closeUrl: String, action: @escaping (String) -> Void) {
+    func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
         Analytics.log(.topupScreenOpened)
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonBuy,
-            addLoadingIndicator: true,
-            withCloseButton: true,
-            urlActions: [
-                closeUrl: { [weak self] response in
-                    self?.modalWebViewModel = nil
-                    action(response)
-                },
-            ]
-        )
+
+        safariHandle = safariManager.openURL(url) { [weak self] in
+            self?.safariHandle = nil
+            action()
+        }
     }
 
     func openFeeCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
@@ -284,11 +292,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL, blockchainDisplayName: String) {
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonExplorerFormat(blockchainDisplayName),
-            withCloseButton: true
-        )
+    func openExplorer(at url: URL) {
+        safariManager.openURL(url)
     }
 }

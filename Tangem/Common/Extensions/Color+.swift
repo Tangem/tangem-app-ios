@@ -16,10 +16,6 @@ extension Color {
         return Color("tangem_green")
     }
 
-    @nonobjc static var tangemGreen2: Color {
-        return Color("tangem_green2")
-    }
-
     // MARK: Complimentary
 
     @nonobjc static var tangemWarning: Color {
@@ -52,10 +48,6 @@ extension Color {
         return Color("tangem_gray_dark3")
     }
 
-    @nonobjc static var tangemGrayDark4: Color {
-        return Color("tangem_gray_dark4")
-    }
-
     @nonobjc static var tangemGrayDark5: Color {
         return Color("tangem_gray_dark5")
     }
@@ -72,14 +64,6 @@ extension Color {
 
     @nonobjc static var tangemGrayLight5: Color {
         return Color("tangem_gray_light5")
-    }
-
-    @nonobjc static var tangemGrayLight6: Color {
-        return Color("tangem_gray_light6")
-    }
-
-    @nonobjc static var tangemTextGray: Color {
-        return Color("tangem_text_gray")
     }
 
     @nonobjc static var tangemGrayLight7: Color {

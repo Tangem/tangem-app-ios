@@ -102,11 +102,16 @@ struct SendSuggestedDestinationView: View {
     }
 
     private func addressView(for address: String) -> some View {
-        Text(address)
-            .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-            .truncationMode(.middle)
-            .lineLimit(1)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: 0) {
+            Text(address)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                .truncationMode(.middle)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            // HACK: SwiftUI cannot truncate the text in the middle and align it to the leading edge without a little push
+            Spacer(minLength: 10)
+        }
     }
 }
 

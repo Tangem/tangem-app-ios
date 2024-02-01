@@ -15,7 +15,8 @@ class VisaWalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    var visaBridgeInteractor: VisaBridgeInteractor?
+    private let transactionHistoryService: VisaTransactionHistoryService
+    private var visaBridgeInteractor: VisaBridgeInteractor?
 
     var accountAddress: String { visaBridgeInteractor?.accountAddress ?? .unknown }
 
@@ -39,19 +40,53 @@ class VisaWalletModel {
         limitsSubject.value
     }
 
+    var transactionHistoryStatePublisher: AnyPublisher<TransactionHistoryServiceState, Never> {
+        transactionHistoryService.statePublisher
+    }
+
+    var transactionHistoryItems: [TransactionListItem] {
+        let historyMapper = VisaTransactionHistoryMapper(currencySymbol: tokenItem.currencySymbol)
+        return historyMapper.mapTransactionListItem(from: transactionHistoryService.items)
+    }
+
+    var canFetchMoreTransactionHistory: Bool {
+        transactionHistoryService.canFetchMoreHistory
+    }
+
     let tokenItem: TokenItem
+
+    private let userWalletModel: UserWalletModel
 
     private let balancesSubject = CurrentValueSubject<AppVisaBalances?, Never>(nil)
     private let limitsSubject = CurrentValueSubject<AppVisaLimits?, Never>(nil)
     private let stateSubject = CurrentValueSubject<State, Never>(.notInitialized)
 
     private var updateTask: Task<Void, Never>?
+    private var historyReloadTask: Task<Void, Never>?
 
     init(userWalletModel: UserWalletModel) {
+        self.userWalletModel = userWalletModel
         let utils = VisaUtilities()
         tokenItem = .token(utils.visaToken, utils.visaBlockchain)
 
-        setupBridgeInteractor(using: userWalletModel)
+        let apiService = VisaAPIServiceBuilder().build(
+            isTestnet: true,
+            urlSessionConfiguration: .defaultConfiguration,
+            logger: AppLog.shared
+        )
+        let cardPublicKey: String
+        if let wallet = userWalletModel.userWallet.card.wallets.first(where: { $0.curve == .secp256k1 }) {
+            cardPublicKey = wallet.publicKey.hexString
+        } else {
+            cardPublicKey = "Failed to find secp256k1 key"
+        }
+
+        transactionHistoryService = VisaTransactionHistoryService(
+            cardPublicKey: cardPublicKey,
+            apiService: apiService
+        )
+
+        setupBridgeInteractor()
     }
 
     func exploreURL() -> URL? {
@@ -59,17 +94,16 @@ class VisaWalletModel {
         return linkProvider.url(address: accountAddress, contractAddress: tokenItem.token?.contractAddress)
     }
 
-    func startGeneralUpdate() {
-        guard updateTask == nil else {
-            return
-        }
-
-        updateTask = Task { [weak self] in
-            await self?.generalUpdateAsync()
-        }
+    func transaction(with id: UInt64) -> VisaTransactionRecord? {
+        transactionHistoryService.items.first(where: { $0.id == id })
     }
 
     func generalUpdateAsync() async {
+        if visaBridgeInteractor == nil {
+            await setupBridgeInteractorAsync()
+            return
+        }
+
         await withTaskGroup(of: Void.self) { [weak self] group in
             guard let self else { return }
 
@@ -84,12 +118,42 @@ class VisaWalletModel {
 
             group.addTask { await self.loadBalancesAndLimits() }
 
+            group.addTask { await self.reloadHistoryAsync() }
+
             await group.waitForAll()
             stateSubject.send(.idle)
         }
     }
 
-    private func setupBridgeInteractor(using userWalletModel: UserWalletModel) {
+    func reloadHistory() {
+        guard historyReloadTask == nil else {
+            return
+        }
+
+        historyReloadTask = Task { [weak self] in
+            await self?.reloadHistoryAsync()
+            self?.historyReloadTask = nil
+        }
+    }
+
+    func loadNextHistoryPage() {
+        guard historyReloadTask == nil else {
+            return
+        }
+
+        historyReloadTask = Task { [weak self] in
+            await self?.transactionHistoryService.loadNextPage()
+            self?.historyReloadTask = nil
+        }
+    }
+
+    private func setupBridgeInteractor() {
+        Task { [weak self] in
+            await self?.setupBridgeInteractorAsync()
+        }
+    }
+
+    private func setupBridgeInteractorAsync() async {
         guard let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
             $0.tokenItem == tokenItem
         }) else {
@@ -107,17 +171,13 @@ class VisaWalletModel {
             return
         }
 
-        Task { [weak self] in
-            guard let self else { return }
-
-            let builder = VisaBridgeInteractorBuilder(evmSmartContractInteractor: smartContractInteractor)
-            do {
-                let interactor = try await builder.build(for: walletModel.defaultAddress, logger: AppLog.shared)
-                visaBridgeInteractor = interactor
-                await generalUpdateAsync()
-            } catch {
-                stateSubject.send(.failedToInitialize(.noPaymentAccount))
-            }
+        let builder = VisaBridgeInteractorBuilder(evmSmartContractInteractor: smartContractInteractor)
+        do {
+            let interactor = try await builder.build(for: walletModel.defaultAddress, logger: AppLog.shared)
+            visaBridgeInteractor = interactor
+            await generalUpdateAsync()
+        } catch {
+            stateSubject.send(.failedToInitialize(.noPaymentAccount))
         }
     }
 
@@ -160,6 +220,14 @@ class VisaWalletModel {
         } catch {
             limitsSubject.send(nil)
         }
+    }
+
+    private func reloadHistoryAsync() async {
+        await transactionHistoryService.reloadHistory()
+    }
+
+    private func log(_ message: @autoclosure () -> String) {
+        AppLog.shared.debug("\n\n[VisaWalletModel] \(message())\n\n")
     }
 }
 

@@ -38,7 +38,7 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
     private let balanceFormatter: BalanceFormatter
     private let providerFormatter: ExpressProviderFormatter
     private let feeFormatter: FeeFormatter
-    private unowned let coordinator: ExpressSuccessSentRoutable
+    private weak var coordinator: ExpressSuccessSentRoutable?
 
     init(
         data: SentExpressTransactionData,
@@ -75,8 +75,7 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
         }
 
         Analytics.log(event: .swapButtonExplore, params: [.token: initialWallet.tokenItem.currencySymbol])
-        let title = Localization.commonExplorerFormat(data.source.name)
-        coordinator.openWebView(url: exploreURL, title: title)
+        coordinator?.openWebView(url: exploreURL)
     }
 
     func openCEXStatus() {
@@ -85,13 +84,11 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
         }
 
         Analytics.log(event: .swapButtonStatus, params: [.token: initialWallet.tokenItem.currencySymbol])
-
-        let title = Localization.commonExplorerFormat(data.source.name)
-        coordinator.openWebView(url: externalTxUrl, title: title)
+        coordinator?.openWebView(url: externalTxUrl)
     }
 
     func closeView() {
-        coordinator.close()
+        coordinator?.close()
     }
 }
 

@@ -9,12 +9,15 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemVisa
 
 class MainCoordinator: CoordinatorObject {
-    // MARK: - Dependencies
-
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
+
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
 
     // MARK: - Root view model
 
@@ -36,11 +39,16 @@ class MainCoordinator: CoordinatorObject {
     @Published var warningBankCardViewModel: WarningBankCardViewModel?
     @Published var modalWebViewModel: WebViewContainerViewModel?
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel?
-    @Published var organizeTokensViewModel: OrganizeTokensViewModel? = nil
+    @Published var organizeTokensViewModel: OrganizeTokensViewModel?
+    @Published var rateAppBottomSheetViewModel: RateAppBottomSheetViewModel?
+
+    @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel? = nil
 
     // MARK: - Helpers
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
+    @Published var isAppStoreReviewRequested = false
+    private var safariHandle: SafariHandle?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -165,7 +173,7 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
     }
 }
 
-// MARK: - SingleTokenRoutable
+// MARK: - SingleTokenBaseRoutable
 
 extension MainCoordinator: SingleTokenBaseRoutable {
     func openReceiveScreen(amountType: Amount.AmountType, blockchain: Blockchain, addressInfos: [ReceiveAddressInfo]) {
@@ -179,20 +187,13 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
     }
 
-    func openBuyCrypto(at url: URL, closeUrl: String, action: @escaping (String) -> Void) {
+    func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
         Analytics.log(.topupScreenOpened)
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonBuy,
-            addLoadingIndicator: true,
-            withCloseButton: true,
-            urlActions: [
-                closeUrl: { [weak self] response in
-                    self?.modalWebViewModel = nil
-                    action(response)
-                },
-            ]
-        )
+
+        safariHandle = safariManager.openURL(url) { [weak self] in
+            self?.safariHandle = nil
+            action()
+        }
     }
 
     func openSellCrypto(at url: URL, sellRequestUrl: String, action: @escaping (String) -> Void) {
@@ -315,12 +316,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL, blockchainDisplayName: String) {
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonExplorerFormat(blockchainDisplayName),
-            withCloseButton: true
-        )
+    func openExplorer(at url: URL) {
+        safariManager.openURL(url)
     }
 
     func openFeeCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
@@ -361,4 +358,28 @@ extension MainCoordinator: OrganizeTokensRoutable {
 
 // MARK: - VisaWalletRoutable
 
-extension MainCoordinator: VisaWalletRoutable {}
+extension MainCoordinator: VisaWalletRoutable {
+    func openTransactionDetails(tokenItem: TokenItem, for record: VisaTransactionRecord) {
+        visaTransactionDetailsViewModel = .init(tokenItem: tokenItem, transaction: record)
+    }
+}
+
+// MARK: - RateAppRoutable protocol conformance
+
+extension MainCoordinator: RateAppRoutable {
+    func openAppRateDialog(with viewModel: RateAppBottomSheetViewModel) {
+        rateAppBottomSheetViewModel = viewModel
+    }
+
+    func closeAppRateDialog() {
+        rateAppBottomSheetViewModel = nil
+    }
+
+    func openFeedbackMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
+        openMail(with: dataCollector, emailType: emailType, recipient: recipient)
+    }
+
+    func openAppStoreReview() {
+        isAppStoreReviewRequested = true
+    }
+}

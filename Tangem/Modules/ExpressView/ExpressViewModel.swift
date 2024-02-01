@@ -447,7 +447,7 @@ private extension ExpressViewModel {
             break
         case .restriction(let type, _):
             switch type {
-            case .hasPendingTransaction, .hasPendingApproveTransaction, .requiredRefresh, .notEnoughAmountForSwapping, .noDestinationTokens:
+            case .hasPendingTransaction, .hasPendingApproveTransaction, .requiredRefresh, .tooSmallAmountForSwapping, .tooBigAmountForSwapping, .noDestinationTokens:
                 mainButtonState = .swap
                 mainButtonIsEnabled = false
 

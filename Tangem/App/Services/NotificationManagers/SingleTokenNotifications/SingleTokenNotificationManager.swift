@@ -83,11 +83,14 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if let sendBlockedReason = walletModel.sendBlockedReason {
+        if let sendBlockedReason = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
             }
-            events.append(.event(for: sendBlockedReason, isFeeCurrencyPurchaseAllowed: isFeeCurrencyPurchaseAllowed))
+
+            if let event = TokenNotificationEvent.event(for: sendBlockedReason, isFeeCurrencyPurchaseAllowed: isFeeCurrencyPurchaseAllowed) {
+                events.append(event)
+            }
         }
 
         let inputs = events.map {

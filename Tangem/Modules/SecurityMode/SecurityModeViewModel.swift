@@ -26,7 +26,7 @@ class SecurityModeViewModel: ObservableObject {
 
     private let cardModel: CardViewModel
     private var bag = Set<AnyCancellable>()
-    private unowned let coordinator: SecurityModeRoutable
+    private weak var coordinator: SecurityModeRoutable?
 
     init(cardModel: CardViewModel, coordinator: SecurityModeRoutable) {
         self.cardModel = cardModel
@@ -139,7 +139,7 @@ enum SecurityModeOption: String, CaseIterable, Identifiable, Equatable {
 
 extension SecurityModeViewModel {
     func openPinChange(option: SecurityModeOption) {
-        coordinator.openPinChange(with: option.title) { [weak self] coordinatorCompletion in
+        coordinator?.openPinChange(with: option.title) { [weak self] coordinatorCompletion in
             guard let self = self else { return }
 
             cardModel.changeSecurityOption(option) { [weak self] result in

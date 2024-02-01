@@ -22,7 +22,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var isReloadingTransactionHistory: Bool = false
     @Published var actionButtons: [ButtonWithIconInfo] = []
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
-    @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
 
     lazy var testnetBuyCryptoService: TestnetBuyCryptoService = .init()
 
@@ -44,14 +43,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     private var transactionHistoryBag: AnyCancellable?
     private var updateSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
-
-    var canSend: Bool {
-        guard userWalletModel.config.hasFeature(.send) else {
-            return false
-        }
-
-        return walletModel.canSendTransaction
-    }
 
     var blockchainNetwork: BlockchainNetwork { walletModel.blockchainNetwork }
 
@@ -216,7 +207,6 @@ extension SingleTokenBaseViewModel {
         bind()
         setupActionButtons()
         updateActionButtons()
-        updatePendingTransactionView()
         loadHistory()
     }
 
@@ -233,7 +223,6 @@ extension SingleTokenBaseViewModel {
             .sink { _ in } receiveValue: { [weak self] newState in
                 AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
                 self?.updateActionButtons()
-                self?.updatePendingTransactionView()
             }
             .store(in: &bag)
 
@@ -253,18 +242,6 @@ extension SingleTokenBaseViewModel {
             .debounce(for: 0.1, scheduler: DispatchQueue.main)
             .assign(to: \.tokenNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
-    }
-
-    private func updatePendingTransactionView() {
-        // Only if the transaction history isn't supported
-        guard !walletModel.isSupportedTransactionHistory else {
-            pendingTransactionViews = []
-            return
-        }
-
-        pendingTransactionViews = walletModel.pendingTransactions.map { transaction in
-            pendingTransactionRecordMapper.mapToTransactionViewModel(transaction)
-        }
     }
 
     private func updateActionButtons() {
@@ -309,7 +286,7 @@ extension SingleTokenBaseViewModel {
         case .buy:
             return !exchangeUtility.buyAvailable
         case .send:
-            return !canSend
+            return sendIsDisabled()
         case .receive:
             return false
         case .exchange:
@@ -331,6 +308,19 @@ extension SingleTokenBaseViewModel {
         case .copyAddress, .hide: return nil
         }
     }
+
+    private func sendIsDisabled() -> Bool {
+        guard userWalletModel.config.hasFeature(.send) else {
+            return true
+        }
+
+        switch walletModel.sendingRestrictions {
+        case .zeroWalletBalance, .cantSignLongTransactions, .zeroFeeCurrencyBalance:
+            return true
+        case .none, .hasPendingTransaction:
+            return false
+        }
+    }
 }
 
 // MARK: - Navigation
@@ -350,7 +340,16 @@ extension SingleTokenBaseViewModel {
     }
 
     func openSend() {
-        tokenRouter.openSend(walletModel: walletModel)
+        switch walletModel.sendingRestrictions {
+        case .hasPendingTransaction:
+            if let message = walletModel.sendingRestrictions?.description {
+                alert = .init(title: Localization.warningSendBlockedPendingTransactionsTitle, message: message)
+            }
+        case .cantSignLongTransactions, .zeroWalletBalance, .zeroFeeCurrencyBalance:
+            assertionFailure("Send Button have to be disabled")
+        case .none:
+            tokenRouter.openSend(walletModel: walletModel)
+        }
     }
 
     func openExchangeAndLogAnalytics() {

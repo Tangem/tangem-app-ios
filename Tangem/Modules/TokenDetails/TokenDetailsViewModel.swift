@@ -22,7 +22,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: tokenItem)
 
-    private unowned let coordinator: TokenDetailsRoutable
+    private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
 
     private var bag = Set<AnyCancellable>()
@@ -203,7 +203,7 @@ private extension TokenDetailsViewModel {
             return
         }
 
-        coordinator.openPendingExpressTransactionDetails(
+        coordinator?.openPendingExpressTransactionDetails(
             for: pendingTransaction,
             tokenItem: tokenItem,
             pendingTransactionsManager: pendingExpressTransactionsManager
@@ -215,7 +215,7 @@ private extension TokenDetailsViewModel {
 
 private extension TokenDetailsViewModel {
     func dismiss() {
-        coordinator.dismiss()
+        coordinator?.dismiss()
     }
 
     func openFeeCurrency() {
@@ -226,7 +226,7 @@ private extension TokenDetailsViewModel {
             return
         }
 
-        coordinator.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
+        coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
     }
 }
 

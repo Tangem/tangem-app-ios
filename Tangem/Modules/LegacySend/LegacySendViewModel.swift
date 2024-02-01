@@ -173,7 +173,7 @@ class LegacySendViewModel: ObservableObject {
     private var lastClipboardChangeCount: Int?
     private var lastDestinationAddressSource: Analytics.DestinationAddressSource?
 
-    private unowned let coordinator: LegacySendRoutable
+    private weak var coordinator: LegacySendRoutable?
 
     init(
         amountToSend: Amount,
@@ -964,11 +964,11 @@ extension LegacySendViewModel {
         )
 
         let recipient = cardViewModel.emailConfig?.recipient ?? EmailConfig.default.recipient
-        coordinator.openMail(with: emailDataCollector, recipient: recipient)
+        coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
     func close() {
-        coordinator.closeModule()
+        coordinator?.closeModule()
     }
 
     func openQRScanner() {
@@ -985,7 +985,7 @@ extension LegacySendViewModel {
                 }
             )
 
-            coordinator.openQRScanner(with: binding)
+            coordinator?.openQRScanner(with: binding)
         }
     }
 }

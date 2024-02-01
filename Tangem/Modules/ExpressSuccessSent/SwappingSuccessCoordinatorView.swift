@@ -16,20 +16,8 @@ struct SwappingSuccessCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        ZStack {
-            if let rootViewModel = coordinator.rootViewModel {
-                ExpressSuccessSentView(viewModel: rootViewModel)
-            }
-
-            sheets
+        if let rootViewModel = coordinator.rootViewModel {
+            ExpressSuccessSentView(viewModel: rootViewModel)
         }
-    }
-
-    @ViewBuilder
-    private var sheets: some View {
-        NavHolder()
-            .sheet(item: $coordinator.webViewContainerViewModel) {
-                WebViewContainer(viewModel: $0)
-            }
     }
 }

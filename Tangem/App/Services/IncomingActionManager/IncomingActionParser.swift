@@ -12,13 +12,21 @@ import UIKit
 public class IncomingActionParser {
     @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
 
+    private var incomingActionURLParsers: [IncomingActionURLParser] = [
+        DismissSafariActionURLHelper(),
+    ]
+
     public init() {}
 
     public func parseDeeplink(_ url: URL) -> IncomingAction? {
         guard validateURL(url) else { return nil }
 
-        if url.absoluteString.starts(with: Constants.ndefURL) {
+        if url.absoluteString.starts(with: IncomingActionConstants.ndefURL) {
             return .start
+        }
+
+        if let action = parseActionURL(url) {
+            return action
         }
 
         let parser = WalletConnectURLParser()
@@ -42,25 +50,28 @@ public class IncomingActionParser {
     private func validateURL(_ url: URL) -> Bool {
         let urlString = url.absoluteString
 
-        if urlString.starts(with: Constants.tangemDomain)
-            || urlString.starts(with: Constants.appTangemDomain)
-            || urlString.starts(with: Constants.universalLinkScheme) {
+        if urlString.starts(with: IncomingActionConstants.tangemDomain)
+            || urlString.starts(with: IncomingActionConstants.appTangemDomain)
+            || urlString.starts(with: IncomingActionConstants.universalLinkScheme) {
             return true
         }
 
         return false
+    }
+
+    private func parseActionURL(_ url: URL) -> IncomingAction? {
+        for parser in incomingActionURLParsers {
+            if let action = parser.parse(url) {
+                return action
+            }
+        }
+
+        return nil
     }
 }
 
 private extension IncomingActionParser {
     enum AppIntent: String {
         case scanCard = "ScanTangemCardIntent"
-    }
-
-    enum Constants {
-        static var appTangemDomain = "https://app.tangem.com"
-        static var universalLinkScheme = "tangem://"
-        static var tangemDomain = AppConstants.tangemDomainUrl.absoluteString
-        static var ndefURL = "\(appTangemDomain)/ndef"
     }
 }

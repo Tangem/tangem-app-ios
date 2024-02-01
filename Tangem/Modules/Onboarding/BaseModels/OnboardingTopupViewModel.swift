@@ -58,10 +58,9 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
         refreshButtonState = .activityIndicator
         walletModelUpdateCancellable = walletModel.update(silent: false)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] walletModelState in
-                guard let self = self else { return }
-
-                updateCardBalanceText(for: walletModel)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, walletModelState in
+                viewModel.updateCardBalanceText(for: walletModel)
                 switch walletModelState {
                 case .noAccount(let message):
                     AppLog.shared.debug(message)
@@ -71,25 +70,25 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        !walletModel.isZeroAmount {
                         Analytics.logTopUpIfNeeded(balance: walletModel.fiatValue ?? 0)
-                        goToNextStep()
-                        walletModelUpdateCancellable = nil
+                        viewModel.goToNextStep()
+                        viewModel.walletModelUpdateCancellable = nil
                         return
                     }
 
-                    resetRefreshButtonState()
+                    viewModel.resetRefreshButtonState()
                 case .failed(let error):
-                    resetRefreshButtonState()
+                    viewModel.resetRefreshButtonState()
 
                     // Need check is display alert yet, because not to present an error if it is already shown
-                    guard alert == nil else {
+                    guard viewModel.alert == nil else {
                         return
                     }
 
-                    alert = error.alertBinder
+                    viewModel.alert = error.alertBinder
                 case .loading, .created, .noDerivation:
                     return
                 }
-                walletModelUpdateCancellable = nil
+                viewModel.walletModelUpdateCancellable = nil
             }
     }
 
@@ -121,7 +120,7 @@ extension OnboardingTopupViewModel {
         Analytics.log(.buttonBuyCrypto)
 
         if tangemApiService.geoIpRegionCode == LanguageCode.ru {
-            coordinator.openBankWarning {
+            coordinator?.openBankWarning {
                 self.openBuyCrypto()
             } declineCallback: {
                 self.openP2PTutorial()
@@ -134,18 +133,18 @@ extension OnboardingTopupViewModel {
     func openQR() {
         Analytics.log(.onboardingButtonShowTheWalletAddress)
 
-        coordinator.openQR(shareAddress: shareAddress, address: walletAddress, qrNotice: qrNoticeMessage)
+        coordinator?.openQR(shareAddress: shareAddress, address: walletAddress, qrNotice: qrNoticeMessage)
     }
 
     private func openBuyCrypto() {
         guard let url = buyCryptoURL else { return }
 
-        coordinator.openCryptoShop(at: url, closeUrl: buyCryptoCloseUrl) { [weak self] _ in
+        coordinator?.openCryptoShop(at: url) { [weak self] in
             self?.updateCardBalance()
         }
     }
 
     private func openP2PTutorial() {
-        coordinator.openP2PTutorial()
+        coordinator?.openP2PTutorial()
     }
 }

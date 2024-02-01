@@ -70,5 +70,6 @@ extension Analytics {
         case provider = "Provider"
         case commission = "Commission"
         case place = "Place"
+        case result = "Result"
     }
 }

@@ -738,8 +738,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
         stepPublisher =
             Deferred {
-                Future { [unowned self] promise in
-                    backupService.addBackupCard { result in
+                Future { [weak self] promise in
+                    self?.backupService.addBackupCard { result in
                         switch result {
                         case .success:
                             promise(.success(()))
@@ -777,9 +777,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
         stepPublisher =
             Deferred {
-                Future { [unowned self] promise in
-                    backupService.proceedBackup { result in
+                Future { [weak self] promise in
+                    guard let self else { return }
 
+                    backupService.proceedBackup { result in
                         // Ring onboarding. Reset to defaults
                         self.backupService.config.style.scanTagImage = .genericCard
 
@@ -896,7 +897,7 @@ extension WalletOnboardingViewModel {
         }
         let baseUrl = AppEnvironment.current.tangemComBaseUrl
         let url = baseUrl.appendingPathComponent("seed-phrase-\(websiteLanguageCode).html")
-        coordinator.openWebView(with: url)
+        coordinator?.openWebView(with: url)
         Analytics.log(.onboardingSeedButtonReadMore)
     }
 
@@ -954,7 +955,7 @@ extension WalletOnboardingViewModel {
 
 extension WalletOnboardingViewModel {
     func openAccessCode() {
-        coordinator.openAccessCodeView(callback: saveAccessCode)
+        coordinator?.openAccessCodeView(callback: saveAccessCode)
     }
 }
 

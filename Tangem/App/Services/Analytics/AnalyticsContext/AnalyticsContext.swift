@@ -20,7 +20,7 @@ protocol AnalyticsContext {
     func removeValue(forKey storageKey: AnalyticsStorageKey, scope: AnalyticsContextScope)
 }
 
-// MARK: - DI
+// MARK: - Dependencies
 
 private struct AnalyticsContextKey: InjectionKey {
     static var currentValue: AnalyticsContext = CommonAnalyticsContext()

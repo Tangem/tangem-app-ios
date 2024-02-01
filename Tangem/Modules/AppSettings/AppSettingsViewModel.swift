@@ -33,7 +33,7 @@ class AppSettingsViewModel: ObservableObject {
 
     // MARK: Dependencies
 
-    private unowned let coordinator: AppSettingsRoutable
+    private weak var coordinator: AppSettingsRoutable?
 
     // MARK: Properties
 
@@ -168,7 +168,7 @@ private extension AppSettingsViewModel {
         currencySelectionViewModel = DefaultRowViewModel(
             title: Localization.detailsRowTitleCurrency,
             detailsType: .text(selectedCurrencyCode),
-            action: coordinator.openCurrencySelection
+            action: coordinator?.openCurrencySelection
         )
 
         sensitiveTextAvailabilityViewModel = DefaultToggleRowViewModel(
@@ -179,7 +179,7 @@ private extension AppSettingsViewModel {
         themeSettingsViewModel = DefaultRowViewModel(
             title: Localization.appSettingsThemeSelectorTitle,
             detailsType: .text(AppSettings.shared.appTheme.titleForDetails),
-            action: coordinator.openThemeSelection
+            action: coordinator?.openThemeSelection
         )
     }
 
@@ -294,15 +294,15 @@ private extension AppSettingsViewModel {
 
 extension AppSettingsViewModel {
     func openTokenSynchronization() {
-        coordinator.openTokenSynchronization()
+        coordinator?.openTokenSynchronization()
     }
 
     func openResetSavedCards() {
-        coordinator.openResetSavedCards()
+        coordinator?.openResetSavedCards()
     }
 
     func openBiometrySettings() {
         Analytics.log(.buttonEnableBiometricAuthentication)
-        coordinator.openAppSettings()
+        coordinator?.openAppSettings()
     }
 }

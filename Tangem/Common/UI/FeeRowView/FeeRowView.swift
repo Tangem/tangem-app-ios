@@ -25,10 +25,12 @@ struct FeeRowView: View {
 
                 Spacer()
 
-                Text(viewModel.subtitleText)
-                    .style(font, color: Colors.Text.primary1)
-                    .frame(minWidth: viewModel.isLoading ? 70 : 0)
-                    .skeletonable(isShown: viewModel.isLoading)
+                if let subtitleText = viewModel.subtitleText {
+                    Text(subtitleText)
+                        .style(font, color: Colors.Text.primary1)
+                        .frame(minWidth: viewModel.isLoading ? 70 : 0)
+                        .skeletonable(isShown: viewModel.isLoading)
+                }
             }
             .padding(.vertical, 12)
         }

@@ -180,42 +180,8 @@ class WalletModel {
         return Localization.addressQrCodeMessageFormat(currencyName, symbol, wallet.blockchain.displayName)
     }
 
-    var canSendTransaction: Bool {
-        guard AppUtils().canSignLongTransactions(network: blockchainNetwork) else {
-            return false
-        }
-
-        return wallet.canSend(amountType: amountType)
-    }
-
-    var sendBlockedReason: SendBlockedReason? {
-        if !AppUtils().canSignLongTransactions(network: blockchainNetwork) {
-            return .cantSignLongTransactions
-        }
-
-        guard let currentAmount = wallet.amounts[amountType] else {
-            return nil
-        }
-
-        // has pending tx
-        if wallet.hasPendingTx {
-            return .hasPendingOutgoingTransaction(blockchain: blockchainNetwork.blockchain)
-        }
-
-        // no fee
-        if !wallet.hasFeeCurrency(amountType: amountType), !currentAmount.isZero {
-            return .notEnoughFeeForTransaction(
-                configuration: .init(
-                    transactionAmountTypeName: tokenItem.name,
-                    feeAmountTypeName: feeTokenItem.name,
-                    feeAmountTypeCurrencySymbol: feeTokenItem.currencySymbol,
-                    feeAmountTypeIconName: feeTokenItem.blockchain.iconNameFilled,
-                    networkName: tokenItem.networkName
-                )
-            )
-        }
-
-        return nil
+    var sendingRestrictions: TransactionSendAvailabilityProvider.SendingRestrictions? {
+        TransactionSendAvailabilityProvider().sendingRestrictions(walletModel: self)
     }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {

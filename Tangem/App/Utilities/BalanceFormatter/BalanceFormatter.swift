@@ -57,32 +57,55 @@ struct BalanceFormatter {
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
     }
 
-    /// Format fiat balance using `BalanceFormattingOptions`
+    /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
     ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
     func formatFiatBalance(_ value: Decimal?, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
+        return formatFiatBalance(value, currencyCode: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
+    }
+
+    /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
+    /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
+    /// - Parameters:
+    ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
+    ///   - numericCurrencyCode: Numeric currency code according to ISO4217. If failed to find numeric currency code will be used as number in formatted string
+    ///   - formattingOptions: Options for number formatter and rounding
+    /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
+    func formatFiatBalance(_ value: Decimal?, numericCurrencyCode: Int, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
+        let iso4217Converter = ISO4217CodeConverter.shared
+        let code = iso4217Converter.convertToStringCode(numericCode: numericCurrencyCode) ?? "???"
+        return formatFiatBalance(value, currencyCode: code, formattingOptions: formattingOptions)
+    }
+
+    /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
+    /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
+    /// - Parameters:
+    ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
+    ///   - currencyCode: Fiat currency code
+    ///   - formattingOptions: Options for number formatter and rounding
+    /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
+    func formatFiatBalance(_ value: Decimal?, currencyCode: String, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
         guard let balance = value else {
             return Self.defaultEmptyBalanceString
         }
 
-        let code = AppSettings.shared.selectedCurrencyCode
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
-        formatter.currencyCode = code
+        formatter.currencyCode = currencyCode
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
-        if code == "RUB" {
+        if currencyCode == "RUB" {
             formatter.currencySymbol = "₽"
         }
 
         let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
-        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(code)"
+        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
     }
 
     /// Format fiat balance string for main page with different font for integer and fractional parts

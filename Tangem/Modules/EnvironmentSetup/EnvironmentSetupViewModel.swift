@@ -27,7 +27,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
     // MARK: - Dependencies
 
     private let featureStorage = FeatureStorage()
-    private unowned let coordinator: EnvironmentSetupRoutable
+    private weak var coordinator: EnvironmentSetupRoutable?
     private var bag: Set<AnyCancellable> = []
 
     init(coordinator: EnvironmentSetupRoutable) {
@@ -48,12 +48,21 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "Use dev API",
+                title: "[Tangem] Use develop API",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
                     get: { $0.useDevApi },
                     set: { $0.useDevApi = $1 }
+                )
+            ),
+            DefaultToggleRowViewModel(
+                title: "[Express] Use develop API",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.useDevApiExpress },
+                    set: { $0.useDevApiExpress = $1 }
                 )
             ),
             DefaultToggleRowViewModel(
@@ -98,7 +107,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
 
         additionalSettingsViewModels = [
             DefaultRowViewModel(title: "Supported Blockchains") { [weak self] in
-                self?.coordinator.openSupportedBlockchainsPreferences()
+                self?.coordinator?.openSupportedBlockchainsPreferences()
             },
         ]
 

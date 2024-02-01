@@ -25,8 +25,7 @@ struct SendCurrencyView: View {
         ExpressCurrencyView(viewModel: viewModel.expressCurrencyViewModel) {
             SendDecimalNumberTextField(
                 decimalValue: $decimalValue,
-                maximumFractionDigits: viewModel.maximumFractionDigits,
-                font: Fonts.Regular.title1
+                maximumFractionDigits: viewModel.maximumFractionDigits
             )
             .maximumFractionDigits(viewModel.maximumFractionDigits)
             .maxAmountAction(maxAmountAction)

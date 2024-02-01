@@ -94,3 +94,29 @@ enum MainUserWalletPageBuilder: Identifiable {
         }
     }
 }
+
+// MARK: - MainViewPage protocol conformance
+
+extension MainUserWalletPageBuilder: MainViewPage {
+    func onPageAppear() {
+        switch self {
+        case .singleWallet(_, _, let bodyModel):
+            bodyModel.onPageAppear()
+        case .multiWallet(_, _, let bodyModel):
+            bodyModel.onPageAppear()
+        case .lockedWallet, .visaWallet:
+            break
+        }
+    }
+
+    func onPageDisappear() {
+        switch self {
+        case .singleWallet(_, _, let bodyModel):
+            bodyModel.onPageDisappear()
+        case .multiWallet(_, _, let bodyModel):
+            bodyModel.onPageDisappear()
+        case .lockedWallet, .visaWallet:
+            break
+        }
+    }
+}

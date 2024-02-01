@@ -45,7 +45,7 @@ extension WalletConnectURLParser {
     }
 }
 
-public enum WalletConnectRequestURI {
+public enum WalletConnectRequestURI: Equatable {
     case v2(WalletConnectV2URI)
 
     var debugString: String {

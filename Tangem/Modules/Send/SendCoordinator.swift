@@ -15,6 +15,10 @@ class SendCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Root view model
 
     @Published private(set) var rootViewModel: SendViewModel?
@@ -24,7 +28,6 @@ class SendCoordinator: CoordinatorObject {
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel? = nil
-    @Published var modalWebViewModel: WebViewContainerViewModel?
     @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
 
     required init(
@@ -68,7 +71,7 @@ extension SendCoordinator: SendRoutable {
     }
 
     func explore(url: URL) {
-        modalWebViewModel = WebViewContainerViewModel(url: url, title: Localization.commonExplorer, withCloseButton: true)
+        safariManager.openURL(url)
     }
 
     func share(url: URL) {

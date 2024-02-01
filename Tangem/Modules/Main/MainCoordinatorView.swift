@@ -64,6 +64,9 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.legacyTokenListCoordinator) {
                 LegacyTokenListCoordinatorView(coordinator: $0)
             }
+            .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
+                VisaTransactionDetailsView(viewModel: $0)
+            }
 
         NavHolder()
             .bottomSheet(
@@ -79,5 +82,14 @@ struct MainCoordinatorView: CoordinatorView {
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }
+            .bottomSheet(
+                item: $coordinator.rateAppBottomSheetViewModel,
+                backgroundColor: Colors.Background.primary
+            ) { viewModel in
+                RateAppBottomSheetView(viewModel: viewModel)
+            }
+
+        NavHolder()
+            .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
     }
 }

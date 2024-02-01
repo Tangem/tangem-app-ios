@@ -57,7 +57,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     private var bag: Set<AnyCancellable> = []
     private let dataSource: ManageTokensNetworkDataSource
 
-    private unowned let coordinator: AddCustomTokenRoutable
+    private weak var coordinator: AddCustomTokenRoutable?
 
     init(
         userWalletModel: UserWalletModel,
@@ -107,7 +107,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     }
 
     func didTapWalletSelector() {
-        coordinator.openWalletSelector(with: dataSource)
+        coordinator?.openWalletSelector(with: dataSource)
     }
 
     func setSelectedWallet(userWalletModel: UserWalletModel) {
@@ -119,7 +119,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     }
 
     func didTapNetworkSelector() {
-        coordinator.openNetworkSelector(
+        coordinator?.openNetworkSelector(
             selectedBlockchainNetworkId: selectedBlockchainNetworkId,
             blockchains: settings.supportedBlockchains
         )
@@ -154,7 +154,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             return AddCustomTokenDerivationOption.blockchain(name: $0.displayName, derivationPath: derivationPath)
         }
 
-        coordinator.openDerivationSelector(
+        coordinator?.openDerivationSelector(
             selectedDerivationOption: selectedDerivationOption,
             defaultDerivationPath: defaultDerivationPath,
             blockchainDerivationOptions: blockchainDerivationOptions
@@ -180,14 +180,15 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
                 self.userWalletModel = userWalletModel
                 setSelectedWallet(userWalletModel: userWalletModel)
-                coordinator.closeWalletSelector()
+                coordinator?.closeWalletSelector()
             }
             .store(in: &bag)
 
         $contractAddress.removeDuplicates()
             .dropFirst()
             .debounce(for: 0.5, scheduler: RunLoop.main)
-            .flatMap { [unowned self] contractAddress -> AnyPublisher<[CoinModel], Never> in
+            .withWeakCaptureOf(self)
+            .flatMap { viewModel, contractAddress -> AnyPublisher<[CoinModel], Never> in
                 let result: AnyPublisher<[CoinModel], Never>
                 let contractAddressError: Error?
 
@@ -196,12 +197,14 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
                         result = .just(output: [])
                         contractAddressError = nil
                     } else {
-                        let enteredContractAddress = try enteredContractAddress(in: enteredBlockchain())
+                        let enteredContractAddress = try viewModel.enteredContractAddress(
+                            in: viewModel.enteredBlockchain()
+                        )
 
-                        result = findToken(contractAddress: enteredContractAddress)
+                        result = viewModel.findToken(contractAddress: enteredContractAddress)
                         contractAddressError = nil
 
-                        isLoading = true
+                        viewModel.isLoading = true
                     }
                 } catch {
                     result = .just(output: [])
@@ -457,7 +460,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
 extension AddCustomTokenViewModel {
     func closeModule() {
-        coordinator.dismiss()
+        coordinator?.dismiss()
     }
 }
 

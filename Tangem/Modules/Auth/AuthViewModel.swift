@@ -26,7 +26,7 @@ final class AuthViewModel: ObservableObject {
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     private var unlockOnStart: Bool
-    private unowned let coordinator: AuthRoutable
+    private weak var coordinator: AuthRoutable?
 
     init(
         unlockOnStart: Bool,
@@ -143,15 +143,15 @@ final class AuthViewModel: ObservableObject {
 
 extension AuthViewModel {
     func openMail() {
-        coordinator.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
     }
 
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboarding(with: input)
+        coordinator?.openOnboarding(with: input)
     }
 
     func openMain(with cardModel: CardViewModel) {
-        coordinator.openMain(with: cardModel)
+        coordinator?.openMain(with: cardModel)
     }
 }
 
@@ -168,7 +168,7 @@ extension AuthViewModel: IncomingActionResponder {
         switch action {
         case .start:
             return true
-        case .walletConnect:
+        default:
             return false
         }
     }

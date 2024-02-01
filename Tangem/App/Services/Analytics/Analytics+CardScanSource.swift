@@ -12,10 +12,7 @@ extension Analytics {
     enum CardScanSource {
         case welcome
         case auth
-        case main
         case mainUnlock
-        case myWalletsNewCard
-        case myWalletsUnlock
         case settings
 
         var cardScanButtonEvent: Analytics.Event {
@@ -24,12 +21,6 @@ extension Analytics {
                 return .introductionProcessButtonScanCard
             case .auth:
                 return .buttonCardSignIn
-            case .main:
-                return .buttonScanCard
-            case .myWalletsNewCard:
-                return .myWalletsButtonScanNewCardMyWallets
-            case .myWalletsUnlock:
-                return .walletUnlockTapped
             case .settings:
                 return .buttonScanNewCardSettings
             case .mainUnlock:
@@ -43,10 +34,8 @@ extension Analytics {
                 return .scanSourceWelcome
             case .auth:
                 return .scanSourceAuth
-            case .main, .mainUnlock:
+            case .mainUnlock:
                 return .main
-            case .myWalletsNewCard, .myWalletsUnlock:
-                return .scanSourceMyWallets
             case .settings:
                 return .scanSourceSettings
             }

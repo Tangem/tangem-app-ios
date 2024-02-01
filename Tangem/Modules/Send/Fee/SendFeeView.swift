@@ -23,6 +23,15 @@ struct SendFeeView: View {
                 DefaultFooterView(Localization.commonFeeSelectorFooter)
             }
 
+            if viewModel.showCustomFeeFields,
+               let customFeeModel = viewModel.customFeeModel,
+               let customFeeGasPriceModel = viewModel.customFeeGasPriceModel,
+               let customFeeGasLimitModel = viewModel.customFeeGasLimitModel {
+                SendCustomFeeInputField(viewModel: customFeeModel)
+                SendCustomFeeInputField(viewModel: customFeeGasPriceModel)
+                SendCustomFeeInputField(viewModel: customFeeGasLimitModel)
+            }
+
             GroupedSection(viewModel.subtractFromAmountModel) {
                 DefaultToggleRowView(viewModel: $0)
             } footer: {
@@ -50,6 +59,7 @@ struct SendFeeView_Previews: PreviewProvider {
     static let walletInfo = SendWalletInfo(
         walletName: "Wallet",
         balance: "12013",
+        blockchain: .ethereum(testnet: false),
         currencyId: "tether",
         feeCurrencySymbol: "ETH",
         feeCurrencyId: "ethereum",
@@ -59,7 +69,9 @@ struct SendFeeView_Previews: PreviewProvider {
         cryptoCurrencyCode: "USDT",
         fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
         fiatCurrencyCode: "USD",
-        amountFractionDigits: 6
+        amountFractionDigits: 6,
+        feeFractionDigits: 6,
+        feeAmountType: .coin
     )
 
     static var previews: some View {

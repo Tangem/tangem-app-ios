@@ -20,6 +20,13 @@ extension UIApplication {
         return UIApplication.shared.windows.first { $0.isKeyWindow }
     }
 
+    static var activeScene: UIWindowScene? {
+        return UIApplication
+            .shared
+            .connectedScenes.first { $0.activationState == .foregroundActive && $0 is UIWindowScene }
+            .flatMap { $0 as? UIWindowScene }
+    }
+
     static var topViewController: UIViewController? {
         return keyWindow?.topViewController
     }

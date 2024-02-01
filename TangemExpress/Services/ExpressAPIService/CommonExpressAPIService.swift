@@ -10,18 +10,18 @@ import Moya
 
 struct CommonExpressAPIService {
     private let provider: MoyaProvider<ExpressAPITarget>
-    private let isProduction: Bool
+    private let expressAPIType: ExpressAPIType
     private let logger: Logger
     private let decoder = JSONDecoder()
 
-    init(provider: MoyaProvider<ExpressAPITarget>, isProduction: Bool, logger: Logger) {
+    init(provider: MoyaProvider<ExpressAPITarget>, expressAPIType: ExpressAPIType, logger: Logger) {
         assert(
             provider.plugins.contains(where: { $0 is ExpressAuthorizationPlugin }),
             "Should contains ExpressHeaderMoyaPlugin"
         )
 
         self.provider = provider
-        self.isProduction = isProduction
+        self.expressAPIType = expressAPIType
         self.logger = logger
     }
 }
@@ -54,7 +54,7 @@ extension CommonExpressAPIService: ExpressAPIService {
 
 private extension CommonExpressAPIService {
     func _request<T: Decodable>(target: ExpressAPITarget.Target) async throws -> T {
-        let request = ExpressAPITarget(isProduction: isProduction, target: target)
+        let request = ExpressAPITarget(expressAPIType: expressAPIType, target: target)
         var response: Response
 
         do {

@@ -94,6 +94,7 @@ struct SendSummaryView_Previews: PreviewProvider {
     static let walletInfo = SendWalletInfo(
         walletName: "Wallet",
         balance: "12013",
+        blockchain: .ethereum(testnet: false),
         currencyId: "tether",
         feeCurrencySymbol: "ETH",
         feeCurrencyId: "ethereum",
@@ -103,7 +104,9 @@ struct SendSummaryView_Previews: PreviewProvider {
         cryptoCurrencyCode: "USDT",
         fiatIconURL: nil,
         fiatCurrencyCode: "USD",
-        amountFractionDigits: 6
+        amountFractionDigits: 6,
+        feeFractionDigits: 6,
+        feeAmountType: .coin
     )
 
     static var previews: some View {

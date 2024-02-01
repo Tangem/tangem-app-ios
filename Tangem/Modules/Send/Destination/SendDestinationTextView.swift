@@ -69,8 +69,15 @@ struct SendDestinationTextView: View {
                 .hidden()
 
             HStack {
-                TextField(viewModel.placeholder, text: $viewModel.input)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                Group {
+                    if #available(iOS 16, *) {
+                        TextField(viewModel.placeholder, text: $viewModel.input, axis: .vertical)
+                            .lineLimit(2, reservesSpace: false)
+                    } else {
+                        TextField(viewModel.placeholder, text: $viewModel.input)
+                    }
+                }
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
                 if !viewModel.input.isEmpty {
                     Button(action: viewModel.clearInput) {

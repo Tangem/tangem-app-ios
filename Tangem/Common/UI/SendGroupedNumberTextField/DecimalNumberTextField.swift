@@ -11,24 +11,37 @@ import SwiftUI
 struct DecimalNumberTextField: View {
     @Binding private var decimalValue: DecimalValue?
     @State private var textFieldText: String = ""
+    @State private var size: CGSize = .zero
 
     private let placeholder: String = "0"
     private var decimalNumberFormatter: DecimalNumberFormatter
-    private let font: Font
+    private var font: Font = Fonts.Regular.title1
     private var decimalSeparator: Character { decimalNumberFormatter.decimalSeparator }
     private var groupingSeparator: Character { decimalNumberFormatter.groupingSeparator }
 
     init(
         decimalValue: Binding<DecimalValue?>,
-        decimalNumberFormatter: DecimalNumberFormatter,
-        font: Font
+        decimalNumberFormatter: DecimalNumberFormatter
     ) {
         _decimalValue = decimalValue
         self.decimalNumberFormatter = decimalNumberFormatter
-        self.font = font
     }
 
     var body: some View {
+        ZStack(alignment: .leading) {
+            Text(textFieldText.isEmpty ? placeholder : textFieldText)
+                .font(font)
+                .opacity(0)
+                .layoutPriority(1)
+                .readGeometry(\.frame.size, bindTo: $size)
+
+            textField
+                .frame(width: size.width)
+        }
+        .lineLimit(1)
+    }
+
+    private var textField: some View {
         TextField(placeholder, text: $textFieldText)
             .style(font, color: Colors.Text.primary1)
             .keyboardType(.decimalPad)
@@ -96,6 +109,10 @@ extension DecimalNumberTextField: Setupable {
     func maximumFractionDigits(_ digits: Int) -> Self {
         map { $0.decimalNumberFormatter.update(maximumFractionDigits: digits) }
     }
+
+    func font(_ font: Font) -> Self {
+        map { $0.font = font }
+    }
 }
 
 struct DecimalNumberTextField_Previews: PreviewProvider {
@@ -104,8 +121,7 @@ struct DecimalNumberTextField_Previews: PreviewProvider {
     static var previews: some View {
         DecimalNumberTextField(
             decimalValue: $decimalValue,
-            decimalNumberFormatter: DecimalNumberFormatter(maximumFractionDigits: 8),
-            font: Fonts.Regular.title1
+            decimalNumberFormatter: DecimalNumberFormatter(maximumFractionDigits: 8)
         )
     }
 }

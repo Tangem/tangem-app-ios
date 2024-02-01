@@ -11,9 +11,7 @@ import Foundation
 enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
-    case tokenDetailsV2
     case enableBlockchainSdkEvents
-    case mainV2
     case sendV2
     case mainScreenBottomSheet
     case dynamicFonts
@@ -22,9 +20,7 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
         case .learnToEarn: return "Learn to Earn"
-        case .tokenDetailsV2: return "Token details 2.0"
         case .enableBlockchainSdkEvents: return "Enable send BlockchainSdk events"
-        case .mainV2: return "Main page 2.0"
         case .sendV2: return "Send screen 2.0"
         case .mainScreenBottomSheet: return "Bottom sheet on Main screen 2.0"
         case .dynamicFonts: return "Dynamic fonts"
@@ -35,9 +31,7 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .tokenDetailsV2: return .version("5.0")
         case .enableBlockchainSdkEvents: return .unspecified
-        case .mainV2: return .version("5.0")
         case .sendV2: return .unspecified
         case .mainScreenBottomSheet: return .unspecified
         case .dynamicFonts: return .unspecified

@@ -12,7 +12,7 @@ import SwiftUI
 enum TokenNotificationEvent: Hashable {
     struct NotEnoughFeeConfiguration: Hashable {
         let isFeeCurrencyPurchaseAllowed: Bool
-        let eventConfiguration: WalletModel.SendBlockedReason.NotEnoughFeeConfiguration
+        let eventConfiguration: TransactionSendAvailabilityProvider.SendingRestrictions.NotEnoughFeeConfiguration
     }
 
     case networkUnreachable(currencySymbol: String)
@@ -26,16 +26,21 @@ enum TokenNotificationEvent: Hashable {
     case tangemExpressPromotion
 
     static func event(
-        for reason: WalletModel.SendBlockedReason,
+        for reason: TransactionSendAvailabilityProvider.SendingRestrictions,
         isFeeCurrencyPurchaseAllowed: Bool
-    ) -> TokenNotificationEvent {
-        let message = reason.description
+    ) -> TokenNotificationEvent? {
+        guard let message = reason.description else {
+            return nil
+        }
+
         switch reason {
+        case .zeroWalletBalance:
+            return nil
         case .cantSignLongTransactions:
             return .longTransaction(message: message)
-        case .hasPendingOutgoingTransaction:
+        case .hasPendingTransaction:
             return .hasPendingTransactions(message: message)
-        case .notEnoughFeeForTransaction(let eventConfiguration):
+        case .zeroFeeCurrencyBalance(let eventConfiguration):
             let configuration = NotEnoughFeeConfiguration(
                 isFeeCurrencyPurchaseAllowed: isFeeCurrencyPurchaseAllowed,
                 eventConfiguration: eventConfiguration

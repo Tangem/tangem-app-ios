@@ -39,7 +39,7 @@ public struct TangemExpressFactory {
     public func makeExpressAPIProvider(
         credential: ExpressAPICredential,
         configuration: URLSessionConfiguration,
-        isProduction: Bool,
+        expressAPIType: ExpressAPIType,
         exchangeDataDecoder: ExpressExchangeDataDecoder,
         logger: Logger? = nil
     ) -> ExpressAPIProvider {
@@ -49,7 +49,7 @@ public struct TangemExpressFactory {
             sessionId: credential.sessionId
         )
         let provider = MoyaProvider<ExpressAPITarget>(session: Session(configuration: configuration), plugins: [authorizationPlugin])
-        let service = CommonExpressAPIService(provider: provider, isProduction: isProduction, logger: logger ?? CommonLogger())
+        let service = CommonExpressAPIService(provider: provider, expressAPIType: expressAPIType, logger: logger ?? CommonLogger())
         let mapper = ExpressAPIMapper(exchangeDataDecoder: exchangeDataDecoder)
         return CommonExpressAPIProvider(expressAPIService: service, expressAPIMapper: mapper)
     }
@@ -67,4 +67,9 @@ public struct ExpressAPICredential {
         self.userId = userId
         self.sessionId = sessionId
     }
+}
+
+public enum ExpressAPIType: String, Hashable {
+    case develop
+    case production
 }

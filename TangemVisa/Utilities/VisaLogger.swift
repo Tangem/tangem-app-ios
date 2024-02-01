@@ -13,7 +13,7 @@ public protocol VisaLogger {
     func debug<T>(_ message: @autoclosure () -> T)
 }
 
-class InternalLogger {
+struct InternalLogger {
     private let logger: VisaLogger
 
     init(logger: VisaLogger) {
@@ -33,5 +33,6 @@ extension InternalLogger {
     enum Subsystem: String {
         case bridgeInteractorBuilder = "[Visa] Bridge Interactor Builder - "
         case bridgeInteractor = "[Visa] Bridge Interactor - "
+        case apiService = "[VisaAPIService]\n"
     }
 }

@@ -21,6 +21,7 @@ protocol KeysManager {
     var utorgSID: String { get }
     var walletConnectProjectId: String { get }
     var expressKeys: ExpressKeys { get }
+    var devExpressKeys: ExpressKeys? { get }
 }
 
 private struct KeysManagerKey: InjectionKey {

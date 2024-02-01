@@ -34,7 +34,7 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     private let pendingTransactionRepository: ExpressPendingTransactionRepository
     private let logger: Logger
     private let expressInteractor: ExpressInteractor
-    private unowned let coordinator: ExpressApproveRoutable
+    private weak var coordinator: ExpressApproveRoutable?
 
     private var didBecomeActiveNotificationCancellable: AnyCancellable?
     private var bag: Set<AnyCancellable> = []
@@ -69,7 +69,7 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
 
     func didTapCancel() {
         Analytics.log(.swapButtonPermissionCancel)
-        coordinator.userDidCancel()
+        coordinator?.userDidCancel()
     }
 }
 
@@ -83,8 +83,9 @@ extension ExpressApproveViewModel {
             .default
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .delay(for: 0.3, scheduler: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.coordinator.didSendApproveTransaction()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.coordinator?.didSendApproveTransaction()
             }
     }
 }
@@ -95,16 +96,18 @@ private extension ExpressApproveViewModel {
     func bind() {
         expressInteractor.state
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                self?.updateView(for: state)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, state in
+                viewModel.updateView(for: state)
             }
             .store(in: &bag)
 
         $selectedAction
             .dropFirst()
             .removeDuplicates()
-            .sink { [weak self] policy in
-                self?.expressInteractor.updateApprovePolicy(policy: policy)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, policy in
+                viewModel.expressInteractor.updateApprovePolicy(policy: policy)
             }
             .store(in: &bag)
     }

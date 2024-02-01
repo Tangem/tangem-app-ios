@@ -64,11 +64,12 @@ extension View {
     ///   - value: The value to observe for animations.
     ///   - completion: The completion callback to call once the animation completes.
     /// - Returns: A modified `View` instance with the observer attached.
+    @ViewBuilder
     func onAnimationCompleted<Value: VectorArithmetic>(
         for value: Value,
         completion: @escaping () -> Void
     ) -> some View {
-        return modifier(AnimationProgressObserverModifier(observedValue: value, action: completion))
+        modifier(AnimationProgressObserverModifier(observedValue: value, action: completion))
     }
 
     @ViewBuilder
@@ -81,5 +82,39 @@ extension View {
         } else {
             self
         }
+    }
+
+    @ViewBuilder
+    func onAnimationCompleted(
+        for value: Bool,
+        completion: @escaping () -> Void
+    ) -> some View {
+        let value = VectorArithmeticBox(wrapped: value ? 1.0 : 0.0)
+        modifier(AnimationProgressObserverModifier(observedValue: value, action: completion))
+    }
+}
+
+// MARK: - Private implementation
+
+/// Some animatable types, like `Bool` for example, don't conform to the `VectorArithmetic` protocol
+/// and therefore can't be used with the `.onAnimationCompleted` helper.
+/// This wrapper helps to overcome this issue.
+struct VectorArithmeticBox<T>: VectorArithmetic where T: VectorArithmetic {
+    static var zero: Self { Self(wrapped: T.zero) }
+
+    var wrapped: T
+
+    var magnitudeSquared: Double { wrapped.magnitudeSquared }
+
+    static func - (lhs: Self, rhs: Self) -> Self {
+        return Self(wrapped: lhs.wrapped - rhs.wrapped)
+    }
+
+    static func + (lhs: Self, rhs: Self) -> Self {
+        return Self(wrapped: lhs.wrapped + rhs.wrapped)
+    }
+
+    mutating func scale(by rhs: Double) {
+        wrapped.scale(by: rhs)
     }
 }

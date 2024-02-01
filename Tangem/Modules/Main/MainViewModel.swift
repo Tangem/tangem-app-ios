@@ -7,11 +7,14 @@
 //
 
 import Foundation
-import Combine
 import UIKit
 import SwiftUI
+import Combine
+import CombineExt
 
 final class MainViewModel: ObservableObject {
+    private typealias UserWalletIdData = Data
+
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
@@ -37,7 +40,7 @@ final class MainViewModel: ObservableObject {
 
     // MARK: - Internal state
 
-    private var pendingUserWalletIdsToUpdate: Set<Data> = []
+    private var pendingUserWalletIdsToUpdate: Set<UserWalletIdData> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
 
@@ -59,9 +62,10 @@ final class MainViewModel: ObservableObject {
         pages = mainUserWalletPageBuilderFactory.createPages(
             from: userWalletRepository.models,
             lockedUserWalletDelegate: self,
-            mainViewDelegate: self,
+            singleWalletContentDelegate: self,
             multiWalletContentDelegate: self
         )
+
         bind()
     }
 
@@ -229,7 +233,7 @@ final class MainViewModel: ObservableObject {
             let userWalletModels = pendingUserWalletModelsToAdd
             pendingUserWalletModelsToAdd.removeAll()
 
-            var processedUserWalletIds: Set<Data> = []
+            var processedUserWalletIds: Set<UserWalletIdData> = []
             for userWalletModel in userWalletModels {
                 processedUserWalletIds.insert(userWalletModel.userWallet.userWalletId)
                 addNewPage(for: userWalletModel)
@@ -257,7 +261,7 @@ final class MainViewModel: ObservableObject {
             let newPage = mainUserWalletPageBuilderFactory.createPage(
                 for: userWalletModel,
                 lockedUserWalletDelegate: self,
-                mainViewDelegate: self,
+                singleWalletContentDelegate: self,
                 multiWalletContentDelegate: self
             )
         else {
@@ -269,10 +273,8 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePages(with userWalletIds: [Data]) {
-        pages.removeAll { page in
-            userWalletIds.contains(page.id.value)
-        }
+    private func removePages(with userWalletIds: [UserWalletIdData]) {
+        pages.removeAll { userWalletIds.contains($0.id.value) }
 
         guard
             let newSelectedId = userWalletRepository.selectedUserWalletId,
@@ -298,7 +300,7 @@ final class MainViewModel: ObservableObject {
         pages = mainUserWalletPageBuilderFactory.createPages(
             from: userWalletRepository.models,
             lockedUserWalletDelegate: self,
-            mainViewDelegate: self,
+            singleWalletContentDelegate: self,
             multiWalletContentDelegate: self
         )
     }
@@ -319,6 +321,18 @@ final class MainViewModel: ObservableObject {
                     unlockIfNeeded: false,
                     reason: .userSelected
                 )
+            }
+            .store(in: &bag)
+
+        $selectedCardIndex
+            .removeDuplicates()
+            .prepend(-1) // A dummy value to trigger initial index change event
+            .pairwise()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, input in
+                let (previousCardIndex, currentCardIndex) = input
+                viewModel.pages[safe: previousCardIndex]?.onPageDisappear()
+                viewModel.pages[safe: currentCardIndex]?.onPageAppear()
             }
             .store(in: &bag)
 
@@ -386,7 +400,7 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
             let page = mainUserWalletPageBuilderFactory.createPage(
                 for: userWalletModel,
                 lockedUserWalletDelegate: self,
-                mainViewDelegate: self,
+                singleWalletContentDelegate: self,
                 multiWalletContentDelegate: self
             )
         else {
@@ -399,19 +413,19 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType) {
         unlockWalletBottomSheetViewModel = nil
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.coordinator?.openMail(with: dataCollector, emailType: emailType, recipient: recipient)
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.feedbackRequestDelay) { [weak self] in
+            self?.coordinator?.openMail(with: dataCollector, emailType: emailType, recipient: recipient)
         }
     }
 }
 
-extension MainViewModel: MultiWalletContentDelegate {
+extension MainViewModel: MultiWalletMainContentDelegate {
     func displayAddressCopiedToast() {
         showAddressCopiedToast = true
     }
 }
 
-extension MainViewModel: MainViewDelegate {
+extension MainViewModel: SingleWalletMainContentDelegate {
     func present(actionSheet: ActionSheetBinder) {
         self.actionSheet = actionSheet
     }
@@ -439,5 +453,6 @@ private extension MainViewModel {
     private enum Constants {
         /// A small delay for animated addition of newly inserted wallet(s) after the main view becomes visible.
         static let pendingWalletsInsertionDelay = 1.0
+        static let feedbackRequestDelay = 0.7
     }
 }

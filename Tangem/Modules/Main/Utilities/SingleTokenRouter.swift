@@ -26,7 +26,7 @@ class SingleTokenRouter: SingleTokenRoutable {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
     private let userWalletModel: UserWalletModel
-    private unowned let coordinator: SingleTokenBaseRoutable
+    private weak var coordinator: SingleTokenBaseRoutable?
 
     init(userWalletModel: UserWalletModel, coordinator: SingleTokenBaseRoutable) {
         self.userWalletModel = userWalletModel
@@ -44,7 +44,7 @@ class SingleTokenRouter: SingleTokenRoutable {
                 addressQRImage: QrCodeGenerator.generateQRCode(from: address.value)
             )
         }
-        coordinator.openReceiveScreen(
+        coordinator?.openReceiveScreen(
             amountType: walletModel.amountType,
             blockchain: walletModel.blockchainNetwork.blockchain,
             addressInfos: infos
@@ -54,10 +54,10 @@ class SingleTokenRouter: SingleTokenRoutable {
     func openBuyCryptoIfPossible(walletModel: WalletModel) {
         sendAnalyticsEvent(.buttonBuy, for: walletModel)
         if tangemApiService.geoIpRegionCode == LanguageCode.ru {
-            coordinator.openBankWarning { [weak self] in
+            coordinator?.openBankWarning { [weak self] in
                 self?.openBuy(for: walletModel)
             } declineCallback: { [weak self] in
-                self?.coordinator.openP2PTutorial()
+                self?.coordinator?.openP2PTutorial()
             }
         } else {
             openBuy(for: walletModel)
@@ -72,7 +72,7 @@ class SingleTokenRouter: SingleTokenRoutable {
         else { return }
 
         sendAnalyticsEvent(.buttonSend, for: walletModel)
-        coordinator.openSend(
+        coordinator?.openSend(
             amountToSend: amountToSend,
             blockchainNetwork: walletModel.blockchainNetwork,
             cardViewModel: cardViewModel,
@@ -82,7 +82,7 @@ class SingleTokenRouter: SingleTokenRoutable {
 
     func openExchange(walletModel: WalletModel) {
         let input = CommonExpressModulesFactory.InputModel(userWalletModel: userWalletModel, initialWalletModel: walletModel)
-        coordinator.openExpress(input: input)
+        coordinator?.openExpress(input: input)
     }
 
     func openSell(for walletModel: WalletModel) {
@@ -93,7 +93,7 @@ class SingleTokenRouter: SingleTokenRoutable {
             return
         }
 
-        coordinator.openSellCrypto(at: url, sellRequestUrl: exchangeUtility.sellCryptoCloseURL) { [weak self] response in
+        coordinator?.openSellCrypto(at: url, sellRequestUrl: exchangeUtility.sellCryptoCloseURL) { [weak self] response in
             if let request = exchangeUtility.extractSellCryptoRequest(from: response) {
                 self?.openSendToSell(with: request, for: walletModel)
             }
@@ -108,7 +108,7 @@ class SingleTokenRouter: SingleTokenRoutable {
 
         let blockchainNetwork = walletModel.blockchainNetwork
         let amount = Amount(with: blockchainNetwork.blockchain, value: request.amount)
-        coordinator.openSendToSell(
+        coordinator?.openSendToSell(
             amountToSend: amount,
             destination: request.targetAddress,
             blockchainNetwork: blockchainNetwork,
@@ -119,7 +119,7 @@ class SingleTokenRouter: SingleTokenRoutable {
 
     func openExplorer(at url: URL, for walletModel: WalletModel) {
         sendAnalyticsEvent(.buttonExplore, for: walletModel)
-        coordinator.openExplorer(at: url, blockchainDisplayName: walletModel.blockchainNetwork.blockchain.displayName)
+        coordinator?.openExplorer(at: url)
     }
 
     private func openBuy(for walletModel: WalletModel) {
@@ -136,7 +136,7 @@ class SingleTokenRouter: SingleTokenRoutable {
 
         guard let url = exchangeUtility.buyURL else { return }
 
-        coordinator.openBuyCrypto(at: url, closeUrl: exchangeUtility.buyCryptoCloseURL) { [weak self] _ in
+        coordinator?.openBuyCrypto(at: url) { [weak self] in
             self?.sendAnalyticsEvent(.tokenBought, for: walletModel)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

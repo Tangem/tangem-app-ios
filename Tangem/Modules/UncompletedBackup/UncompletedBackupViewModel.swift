@@ -15,7 +15,7 @@ final class UncompletedBackupViewModel: ObservableObject {
     @Published var discardAlert: ActionSheetBinder?
     @Published var error: AlertBinder?
 
-    private unowned let coordinator: UncompletedBackupRoutable
+    private weak var coordinator: UncompletedBackupRoutable?
 
     private lazy var backupHelper = BackupHelper()
 
@@ -79,10 +79,10 @@ final class UncompletedBackupViewModel: ObservableObject {
 
 extension UncompletedBackupViewModel {
     func openBackup(with input: OnboardingInput) {
-        coordinator.openOnboardingModal(with: input)
+        coordinator?.openOnboardingModal(with: input)
     }
 
     func dismiss() {
-        coordinator.dismiss()
+        coordinator?.dismiss()
     }
 }

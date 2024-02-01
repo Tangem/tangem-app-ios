@@ -25,7 +25,7 @@ final class ManageTokensViewModel: ObservableObject {
         loader.canFetchMore
     }
 
-    private unowned let coordinator: ManageTokensRoutable
+    private weak var coordinator: ManageTokensRoutable?
 
     private var dataSource: ManageTokensDataSource
     private lazy var loader = setupListDataLoader()
@@ -58,7 +58,7 @@ final class ManageTokensViewModel: ObservableObject {
     }
 
     func addCustomTokenDidTapAction() {
-        coordinator.openAddCustomToken(dataSource: dataSource)
+        coordinator?.openAddCustomToken(dataSource: dataSource)
     }
 }
 
@@ -214,7 +214,7 @@ private extension ManageTokensViewModel {
             let event: Analytics.Event = action == .add ? .manageTokensButtonAdd : .manageTokensButtonEdit
             Analytics.log(event: event, params: [.token: coinModel.id])
 
-            coordinator.openTokenSelector(
+            coordinator?.openTokenSelector(
                 dataSource: dataSource,
                 coinId: coinModel.id,
                 tokenItems: coinModel.items.map { $0.tokenItem }
@@ -226,7 +226,7 @@ private extension ManageTokensViewModel {
         let countWalletPendingDerivation = pendingDerivationCountByWalletId.filter { $0.value > 0 }.count
 
         guard countWalletPendingDerivation > 0 else {
-            coordinator.hideGenerateAddressesWarning()
+            coordinator?.hideGenerateAddressesWarning()
             return
         }
 
@@ -235,7 +235,7 @@ private extension ManageTokensViewModel {
             params: [.cardsCount: String(countWalletPendingDerivation)]
         )
 
-        coordinator.showGenerateAddressesWarning(
+        coordinator?.showGenerateAddressesWarning(
             numberOfNetworks: pendingDerivationCountByWalletId.map(\.value).reduce(0, +),
             currentWalletNumber: pendingDerivationCountByWalletId.filter { $0.value > 0 }.count,
             totalWalletNumber: dataSource.userWalletModels.count,

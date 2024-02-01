@@ -22,26 +22,6 @@
         <string>%li карт</string>
       </dict>
     </dict>
-    <key>main_learn_subtitle</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токен на свой кошелек</string>
-        <key>few</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токена на свой кошелек</string>
-        <key>many</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
-        <key>other</key>
-        <string>Пройдите 3 урока и получите %li 1INCH токенов на свой кошелек</string>
-      </dict>
-    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -100,26 +80,6 @@
         <string>%li кошельков</string>
         <key>other</key>
         <string>%li кошельков</string>
-      </dict>
-    </dict>
-    <key>token_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li токен</string>
-        <key>few</key>
-        <string>%li токена</string>
-        <key>many</key>
-        <string>%li токенов</string>
-        <key>other</key>
-        <string>%li токенов</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>

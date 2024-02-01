@@ -211,7 +211,9 @@ private extension CommonUserTokenListManager {
 
         saveTokensCancellable = tangemApiService
             .saveTokens(list: listToUpdate, for: userWalletId.hexString)
-            .receiveCompletion { [unowned self] subscriberCompletion in
+            .receiveCompletion { [weak self] subscriberCompletion in
+                guard let self else { return }
+
                 switch subscriberCompletion {
                 case .finished:
                     completions.forEach { $0(.success(())) }

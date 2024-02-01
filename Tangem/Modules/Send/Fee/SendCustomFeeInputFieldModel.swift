@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import BigInt
 import SwiftUI
 
 class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
@@ -15,22 +16,44 @@ class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
     let fractionDigits: Int
     let footer: String
 
-    var amount: Binding<DecimalNumberTextField.DecimalValue?>
+    @Published var amount: DecimalNumberTextField.DecimalValue? = nil
     @Published var amountAlternative: String?
 
     private var bag: Set<AnyCancellable> = []
+    private let onFieldChange: (DecimalNumberTextField.DecimalValue?) -> Void
 
     init(
         title: String,
-        amount: Binding<DecimalNumberTextField.DecimalValue?>,
+        amountPublisher: AnyPublisher<DecimalNumberTextField.DecimalValue?, Never>,
         fractionDigits: Int,
         amountAlternativePublisher: AnyPublisher<String?, Never>,
-        footer: String
+        footer: String,
+        onFieldChange: @escaping (DecimalNumberTextField.DecimalValue?) -> Void
     ) {
         self.title = title
-        self.amount = amount
         self.fractionDigits = fractionDigits
         self.footer = footer
+        self.onFieldChange = onFieldChange
+
+        amountPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { (self, amount) in
+                guard amount?.value != self.amount?.value else { return }
+                self.amount = amount
+            }
+            .store(in: &bag)
+
+        $amount
+            .removeDuplicates { $0?.value == $1?.value }
+            .dropFirst()
+            .filter { $0?.isInternal ?? true }
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { (self, value) in
+                self.onFieldChange(value)
+            }
+            .store(in: &bag)
 
         amountAlternativePublisher
             .assign(to: \.amountAlternative, on: self, ownership: .weak)

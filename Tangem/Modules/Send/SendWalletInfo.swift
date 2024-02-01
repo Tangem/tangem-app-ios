@@ -7,10 +7,13 @@
 //
 
 import Foundation
+import BlockchainSdk
 
+#warning("TODO: reformat, regroup, refactor?")
 struct SendWalletInfo {
     let walletName: String
     let balance: String
+    let blockchain: Blockchain
     let currencyId: String?
     let feeCurrencySymbol: String
     let feeCurrencyId: String
@@ -21,4 +24,6 @@ struct SendWalletInfo {
     let fiatIconURL: URL?
     let fiatCurrencyCode: String
     let amountFractionDigits: Int
+    let feeFractionDigits: Int
+    let feeAmountType: Amount.AmountType
 }

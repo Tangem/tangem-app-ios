@@ -16,7 +16,7 @@ struct FeeRowViewModel: Identifiable {
     let option: FeeOption
     let isSelected: BindingValue<Bool>
 
-    var subtitleText: String {
+    var subtitleText: String? {
         switch subtitle {
         case .loading:
             return ""
@@ -31,11 +31,11 @@ struct FeeRowViewModel: Identifiable {
         subtitle.isLoading
     }
 
-    private let subtitle: LoadingValue<String>
+    private let subtitle: LoadingValue<String?>
 
     init(
         option: FeeOption,
-        subtitle: LoadingValue<String>,
+        subtitle: LoadingValue<String?>,
         isSelected: BindingValue<Bool>
     ) {
         self.option = option

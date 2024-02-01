@@ -78,6 +78,9 @@ struct TransactionViewModel: Hashable, Identifiable {
                     Localization.transactionHistoryMultipleAddresses
                 )
             }
+        // Temp solution for Visa
+        case .custom(let message):
+            return message
         }
     }
 
@@ -136,6 +139,8 @@ extension TransactionViewModel {
         case user(_ address: String)
         case contract(_ address: String)
         case multiple(_ addresses: [String])
+        // Temp solution for Visa
+        case custom(message: String)
     }
 
     enum TransactionType: Hashable {

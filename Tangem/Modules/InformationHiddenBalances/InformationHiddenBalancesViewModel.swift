@@ -12,17 +12,17 @@ import SwiftUI
 final class InformationHiddenBalancesViewModel: ObservableObject, Identifiable {
     // MARK: - Dependencies
 
-    private unowned let coordinator: InformationHiddenBalancesRoutable
+    private weak var coordinator: InformationHiddenBalancesRoutable?
 
     init(coordinator: InformationHiddenBalancesRoutable) {
         self.coordinator = coordinator
     }
 
     func userDidRequestCloseView() {
-        coordinator.hiddenBalancesSheetDidRequestClose()
+        coordinator?.hiddenBalancesSheetDidRequestClose()
     }
 
     func userDidRequestDoNotShowAgain() {
-        coordinator.hiddenBalancesSheetDidRequestDoNotShowAgain()
+        coordinator?.hiddenBalancesSheetDidRequestDoNotShowAgain()
     }
 }

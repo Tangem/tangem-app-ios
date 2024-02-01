@@ -78,6 +78,10 @@ extension CommonKeysManager: KeysManager {
         keys.express
     }
 
+    var devExpressKeys: ExpressKeys? {
+        keys.devExpress
+    }
+
     var walletConnectProjectId: String {
         keys.walletConnectProjectId
     }
@@ -110,5 +114,6 @@ extension CommonKeysManager {
         let walletConnectProjectId: String
         let sprinklr: SprinklrConfig
         let express: ExpressKeys
+        let devExpress: ExpressKeys?
     }
 }

@@ -366,62 +366,27 @@ class CommonUserWalletRepository: UserWalletRepository {
             resetServices()
         }
 
-        if FeatureProvider.isAvailable(.mainV2) {
-            if selectedUserWalletId == userWalletId.value {
-                resetServices()
-            }
-
-            let targetIndex: Int
-            if let currentIndex = models.firstIndex(where: { $0.userWalletId == userWalletId }) {
-                targetIndex = currentIndex > 0 ? (currentIndex - 1) : 0
-            } else {
-                targetIndex = 0
-            }
-
-            encryptionKeyByUserWalletId[userWalletId.value] = nil
-            userWallets.removeAll { $0.userWalletId == userWalletId.value }
-            models.removeAll { $0.userWalletId == userWalletId }
-
-            encryptionKeyStorage.delete(userWallet)
-            saveUserWallets(userWallets)
-
-            if !models.isEmpty {
-                let newModel = models[targetIndex]
-                setSelectedUserWalletId(newModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
-            }
-
-            if shouldAutoLogout {
-                logoutIfNeeded()
-            }
+        let targetIndex: Int
+        if let currentIndex = models.firstIndex(where: { $0.userWalletId == userWalletId }) {
+            targetIndex = currentIndex > 0 ? (currentIndex - 1) : 0
         } else {
-            // TODO: Delete after new design release
-            encryptionKeyByUserWalletId[userWalletId.value] = nil
-            userWallets.removeAll { $0.userWalletId == userWalletId.value }
-            models.removeAll { $0.userWalletId == userWalletId }
+            targetIndex = 0
+        }
 
-            encryptionKeyStorage.delete(userWallet)
-            saveUserWallets(userWallets)
+        encryptionKeyByUserWalletId[userWalletId.value] = nil
+        userWallets.removeAll { $0.userWalletId == userWalletId.value }
+        models.removeAll { $0.userWalletId == userWalletId }
 
-            if selectedUserWalletId == userWalletId.value {
-                let sortedModels = models.sorted { $0.isMultiWallet && !$1.isMultiWallet }
-                let unlockedModels = sortedModels.filter { model in
-                    guard let userWallet = userWallets.first(where: { $0.userWalletId == model.userWalletId.value }) else { return false }
+        encryptionKeyStorage.delete(userWallet)
+        saveUserWallets(userWallets)
 
-                    return !userWallet.isLocked
-                }
+        if !models.isEmpty {
+            let newModel = models[targetIndex]
+            setSelectedUserWalletId(newModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
+        }
 
-                if let firstUnlockedModel = unlockedModels.first {
-                    setSelectedUserWalletId(firstUnlockedModel.userWalletId.value, reason: .deleted)
-                } else if let firstModel = sortedModels.first {
-                    setSelectedUserWalletId(firstModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
-                } else {
-                    setSelectedUserWalletId(nil, reason: .deleted)
-                }
-
-                if shouldAutoLogout {
-                    logoutIfNeeded()
-                }
-            }
+        if shouldAutoLogout {
+            logoutIfNeeded()
         }
 
         walletConnectService.disconnectAllSessionsForUserWallet(with: userWalletId.stringValue)

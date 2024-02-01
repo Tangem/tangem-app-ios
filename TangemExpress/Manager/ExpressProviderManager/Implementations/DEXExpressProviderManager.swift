@@ -85,14 +85,21 @@ private extension DEXExpressProviderManager {
 
             // better make quote from data
             let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
-            return .ready(.init(fee: fee, data: data, quote: quote))
+            return .ready(.init(fee: fee, data: data, quote: quoteData))
 
         } catch let error as ExpressAPIError {
-            if error.errorCode == .exchangeTooSmallAmountError, let minAmount = error.value?.amount {
-                return .restriction(.tooSmallAmount(minAmount), quote: .none)
+            guard let amount = error.value?.amount else {
+                return .error(error, quote: .none)
             }
 
-            return .error(error, quote: .none)
+            switch error.errorCode {
+            case .exchangeTooSmallAmountError:
+                return .restriction(.tooSmallAmount(amount), quote: .none)
+            case .exchangeTooBigAmountError:
+                return .restriction(.tooBigAmount(amount), quote: .none)
+            default:
+                return .error(error, quote: .none)
+            }
         } catch {
             return .error(error, quote: .none)
         }

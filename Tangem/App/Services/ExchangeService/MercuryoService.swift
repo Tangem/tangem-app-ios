@@ -19,8 +19,9 @@ private enum QueryKey: String {
     case signature
     case lang
     case fix_currency
-    case return_url
+    case redirect_url
     case theme
+    case network
 }
 
 private struct MercuryoCurrencyResponse: Decodable {
@@ -33,7 +34,13 @@ private struct MercuryoData: Decodable {
 }
 
 private struct MercuryoConfig: Decodable {
-    let base: [String: String]
+    let cryptoCurrencies: [MercuryoCryptoCurrency]
+}
+
+private struct MercuryoCryptoCurrency: Decodable {
+    let currency: String
+    let network: String
+    let contract: String?
 }
 
 class MercuryoService {
@@ -53,8 +60,7 @@ class MercuryoService {
         UITraitCollection.isDarkMode
     }
 
-    private var availableCryptoCurrencyCodes: [String] = []
-    private var networkCodeByCurrencyCode: [String: String] = [:]
+    private var cryptoCurrencies: [MercuryoCryptoCurrency] = []
 
     private var bag: Set<AnyCancellable> = []
 
@@ -68,28 +74,13 @@ class MercuryoService {
 extension MercuryoService: ExchangeService {
     var initializationPublisher: Published<Bool>.Publisher { $initialized }
 
-    var successCloseUrl: String { "https://success.tangem.com" }
+    var successCloseUrl: String { DismissSafariActionURLHelper().buildURL(scheme: .redirectLink).absoluteString }
 
     var sellRequestUrl: String { "" }
 
+    // TODO: we don't need a currencySymbol actually
     func canBuy(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
-        guard availableCryptoCurrencyCodes.contains(currencySymbol) else {
-            return false
-        }
-
-        switch blockchain {
-        case .binance, .arbitrum, .optimism:
-            return false
-        default:
-            break
-        }
-
-        if let mercuryoNetworkCurrencyCode = networkCodeByCurrencyCode[currencySymbol],
-           mercuryoNetworkCurrencyCode.caseInsensitiveCompare(blockchain.currencySymbol) == .orderedSame {
-            return true
-        } else {
-            return false
-        }
+        getCryptoCurrency(amountType: amountType, blockchain: blockchain) != nil
     }
 
     func canSell(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
@@ -97,24 +88,21 @@ extension MercuryoService: ExchangeService {
     }
 
     func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
-        guard
-            canBuy(currencySymbol, amountType: amountType, blockchain: blockchain)
-        else {
+        guard let cryptoCurrency = getCryptoCurrency(amountType: amountType, blockchain: blockchain) else {
             return nil
         }
-
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "exchange.mercuryo.io"
-
         var queryItems = [URLQueryItem]()
         queryItems.append(.init(key: .widget_id, value: widgetId.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .type, value: "buy"))
-        queryItems.append(.init(key: .currency, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .currency, value: cryptoCurrency.currency.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .network, value: cryptoCurrency.network.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .address, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .signature, value: signature(for: walletAddress).addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .fix_currency, value: "true"))
-        queryItems.append(.init(key: .return_url, value: successCloseUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
+        queryItems.append(.init(key: .redirect_url, value: successCloseUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
 
         if let languageCode = Locale.current.languageCode {
             queryItems.append(.init(key: .lang, value: languageCode))
@@ -149,15 +137,16 @@ extension MercuryoService: ExchangeService {
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         config.urlCache = nil
 
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
         URLSession(configuration: config).dataTaskPublisher(for: request)
             .map(\.data)
-            .decode(type: MercuryoCurrencyResponse.self, decoder: JSONDecoder())
-            .sink { _ in
-
-            } receiveValue: { [unowned self] response in
-                availableCryptoCurrencyCodes = response.data.crypto
-                networkCodeByCurrencyCode = response.data.config.base
-                initialized = true
+            .decode(type: MercuryoCurrencyResponse.self, decoder: decoder)
+            .withWeakCaptureOf(self)
+            .receiveValue { service, response in
+                service.cryptoCurrencies = response.data.config.cryptoCurrencies
+                service.initialized = true
             }
             .store(in: &bag)
     }
@@ -165,10 +154,86 @@ extension MercuryoService: ExchangeService {
     private func signature(for address: String) -> String {
         (address + secret).sha512()
     }
+
+    private func getCryptoCurrency(amountType: Amount.AmountType, blockchain: Blockchain) -> MercuryoCryptoCurrency? {
+        let symbol = amountType.token?.symbol ?? blockchain.currencySymbol
+
+        guard let mercuryoNetwork = blockchain.mercuryoNetwork else {
+            return nil
+        }
+
+        let cryptoCurrency = cryptoCurrencies.first(where: {
+            let contract = amountType.token?.contractAddress.lowercased() ?? ""
+            let cryptoCurrencyContract = $0.contract?.lowercased() ?? ""
+
+            return $0.currency == symbol.uppercased()
+                && $0.network == mercuryoNetwork
+                && contract == cryptoCurrencyContract
+        })
+
+        return cryptoCurrency
+    }
 }
 
 private extension URLQueryItem {
     init(key: QueryKey, value: String?) {
         self.init(name: key.rawValue, value: value)
+    }
+}
+
+private extension Blockchain {
+    var mercuryoNetwork: String? {
+        switch self {
+        case .algorand:
+            return "ALGORAND"
+        case .arbitrum:
+            return "ARBITRUM"
+        case .avalanche:
+            return "AVALANCHE"
+        case .bsc:
+            return "BINANCESMARTCHAIN"
+        case .bitcoin:
+            return "BITCOIN"
+        case .bitcoinCash:
+            return "BITCOINCASH"
+        case .cardano:
+            return "CARDANO"
+        case .cosmos:
+            return "COSMOS"
+        case .dash:
+            return "DASH"
+        case .dogecoin:
+            return "DOGECOIN"
+        case .ethereum:
+            return "ETHEREUM"
+        case .fantom:
+            return "FANTOM"
+        case .kusama:
+            return "KUSAMA"
+        case .litecoin:
+            return "LITECOIN"
+        case .near:
+            return "NEAR_PROTOCOL"
+        case .ton:
+            return "NEWTON"
+        case .optimism:
+            return "OPTIMISM"
+        case .polkadot:
+            return "POLKADOT"
+        case .polygon:
+            return "POLYGON"
+        case .xrp:
+            return "RIPPLE"
+        case .solana:
+            return "SOLANA"
+        case .stellar:
+            return "STELLAR"
+        case .tezos:
+            return "TEZOS"
+        case .tron:
+            return "TRON"
+        default:
+            return nil
+        }
     }
 }

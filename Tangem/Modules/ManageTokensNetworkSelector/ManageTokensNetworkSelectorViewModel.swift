@@ -35,7 +35,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
 
     private var bag = Set<AnyCancellable>()
     private let alertBuilder = ManageTokensNetworkSelectorAlertBuilder()
-    private unowned let coordinator: ManageTokensNetworkSelectorRoutable
+    private weak var coordinator: ManageTokensNetworkSelectorRoutable?
 
     /// CoinId from parent data source embedded on selected UserWalletModel
     private let parentEmbeddedCoinId: String?
@@ -77,7 +77,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
 
     func selectWalletActionDidTap() {
         Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
-        coordinator.openWalletSelector(with: dataSource)
+        coordinator?.openWalletSelector(with: dataSource)
     }
 
     func displayNonNativeNetworkAlert() {
@@ -356,22 +356,22 @@ private extension ManageTokensNetworkSelectorViewModel {
         if canRemove(tokenItem) {
             alert = alertBuilder.successCanRemoveAlertDeleteTokenIfNeeded(
                 tokenItem: tokenItem,
-                cancelAction: { [unowned self] in
-                    updateSelection(tokenItem)
+                cancelAction: { [weak self] in
+                    self?.updateSelection(tokenItem)
                 },
-                hideAction: { [unowned self] in
+                hideAction: { [weak self] in
                     do {
-                        try onSelect(isSelected, tokenItem)
+                        try self?.onSelect(isSelected, tokenItem)
                     } catch {
-                        displayAlertAndUpdateSelection(for: tokenItem, error: error as? LocalizedError)
+                        self?.displayAlertAndUpdateSelection(for: tokenItem, error: error as? LocalizedError)
                     }
                 }
             )
         } else {
             alert = alertBuilder.errorCanRemoveAlertDeleteTokenIfNeeded(
                 tokenItem: tokenItem,
-                dissmisAction: { [unowned self] item in
-                    updateSelection(item)
+                dissmisAction: { [weak self] item in
+                    self?.updateSelection(item)
                 }
             )
         }

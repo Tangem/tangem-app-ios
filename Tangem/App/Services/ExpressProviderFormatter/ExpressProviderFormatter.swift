@@ -29,6 +29,13 @@ struct ExpressProviderFormatter {
 
             let formatted = balanceFormatter.formatCryptoBalance(minAmount, currencyCode: senderCurrencyCode)
             return .text(Localization.expressProviderMinAmount(formatted))
+        case .restriction(.tooBigAmount(let maxAmount), .none):
+            guard let senderCurrencyCode else {
+                return .text(CommonError.noData.localizedDescription)
+            }
+
+            let formatted = balanceFormatter.formatCryptoBalance(maxAmount, currencyCode: senderCurrencyCode)
+            return .text(Localization.expressProviderMaxAmount(formatted))
         default:
             guard let quote = state.quote else {
                 return .text(AppConstants.minusSign)

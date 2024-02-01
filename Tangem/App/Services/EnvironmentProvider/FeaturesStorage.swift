@@ -20,6 +20,9 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.useDevApi)
     var useDevApi = false
 
+    @AppStorageCompat(FeatureStorageKeys.useDevApiExpress)
+    var useDevApiExpress = false
+
     // TODO: Remove after transaction history implementation in BlockchainSDK
     @AppStorageCompat(FeatureStorageKeys.fakeTxHistory)
     var useFakeTxHistory = false
@@ -37,6 +40,7 @@ private enum FeatureStorageKeys: String {
     case testnet
     case availableFeatures = "integrated_features"
     case useDevApi = "use_dev_api"
+    case useDevApiExpress = "use_dev_api_express"
     case fakeTxHistory = "fake_transaction_history"
     case supportedBlockchainsIds
     case performanceMonitorEnabled = "performance_monitor_enabled"

@@ -200,8 +200,6 @@ private extension Analytics.Event {
     var canBeLoggedDirectly: Bool {
         switch self {
         case .introductionProcessButtonScanCard,
-             .buttonScanCard,
-             .myWalletsButtonScanNewCardMyWallets,
              .buttonScanNewCardSettings,
              .buttonCardSignIn,
              .cardWasScanned,

@@ -147,6 +147,7 @@ private extension Blockchain {
             case .network: return "xdc-network"
             case .coin: return "xdce-crowd-sale"
             }
+        case .algorand: return "algorand"
         }
     }
 

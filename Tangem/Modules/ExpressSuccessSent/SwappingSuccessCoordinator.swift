@@ -13,13 +13,13 @@ class SwappingSuccessCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Root view model
 
     @Published private(set) var rootViewModel: ExpressSuccessSentViewModel?
-
-    // MARK: - Child view models
-
-    @Published var webViewContainerViewModel: WebViewContainerViewModel?
 
     required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
@@ -45,8 +45,10 @@ extension SwappingSuccessCoordinator {
 // MARK: - ExpressSuccessSentRoutable
 
 extension SwappingSuccessCoordinator: ExpressSuccessSentRoutable {
-    func openWebView(url: URL?, title: String) {
-        webViewContainerViewModel = WebViewContainerViewModel(url: url, title: title, withCloseButton: true)
+    func openWebView(url: URL?) {
+        if let url {
+            safariManager.openURL(url)
+        }
     }
 
     func close() {

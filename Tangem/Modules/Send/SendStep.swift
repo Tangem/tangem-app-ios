@@ -20,13 +20,13 @@ extension SendStep {
     var name: String? {
         switch self {
         case .amount:
-            return Localization.commonSend
+            return Localization.sendAmountLabel
         case .destination:
-            return Localization.sendRecipient
+            return Localization.sendRecipientLabel
         case .fee:
             return Localization.commonFeeSelectorTitle
         case .summary:
-            return Localization.commonSend
+            return Localization.sendConfirmLabel
         case .finish:
             return nil
         }

@@ -23,7 +23,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     let id = UUID()
 
-    private unowned let coordinator: OrganizeTokensRoutable
+    private weak var coordinator: OrganizeTokensRoutable?
 
     private let userWalletModel: UserWalletModel
     private let tokenSectionsAdapter: TokenSectionsAdapter
@@ -68,7 +68,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     func onCancelButtonTap() {
         Analytics.log(.organizeTokensButtonCancel)
-        coordinator.didTapCancelButton()
+        coordinator?.didTapCancelButton()
     }
 
     func onApplyButtonTap() {
@@ -142,7 +142,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, _ in
-                viewModel.coordinator.didTapSaveButton()
+                viewModel.coordinator?.didTapSaveButton()
             }
             .store(in: &bag)
 

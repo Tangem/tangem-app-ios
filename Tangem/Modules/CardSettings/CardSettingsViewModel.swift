@@ -44,7 +44,7 @@ class CardSettingsViewModel: ObservableObject {
 
     // MARK: Dependencies
 
-    private unowned let coordinator: CardSettingsRoutable
+    private weak var coordinator: CardSettingsRoutable?
     private let cardModel: CardViewModel
 
     // MARK: Private
@@ -89,7 +89,7 @@ private extension CardSettingsViewModel {
 
     func prepareTwinOnboarding() {
         if let twinInput = cardModel.twinInput {
-            coordinator.openOnboarding(with: twinInput)
+            coordinator?.openOnboarding(with: twinInput)
         }
     }
 
@@ -163,7 +163,7 @@ extension CardSettingsViewModel {
 
     func openSecurityMode() {
         Analytics.log(.buttonChangeSecurityMode)
-        coordinator.openSecurityMode(cardModel: cardModel)
+        coordinator?.openSecurityMode(cardModel: cardModel)
     }
 
     func openResetCard() {
@@ -180,12 +180,12 @@ extension CardSettingsViewModel {
                 hasBackupCards: cardModel.hasBackupCards,
                 userWalletId: cardModel.userWalletId
             )
-            coordinator.openResetCardToFactoryWarning(with: input)
+            coordinator?.openResetCardToFactoryWarning(with: input)
         }
     }
 
     func openAccessCodeSettings() {
         Analytics.log(.cardSettingsButtonAccessCodeRecovery)
-        coordinator.openAccessCodeRecoverySettings(using: cardModel)
+        coordinator?.openAccessCodeRecoverySettings(using: cardModel)
     }
 }

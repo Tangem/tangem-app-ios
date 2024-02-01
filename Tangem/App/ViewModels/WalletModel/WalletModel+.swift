@@ -9,44 +9,6 @@
 import Foundation
 import BlockchainSdk
 
-extension WalletModel {
-    enum SendBlockedReason {
-        struct NotEnoughFeeConfiguration: Hashable {
-            let transactionAmountTypeName: String
-            let feeAmountTypeName: String
-            let feeAmountTypeCurrencySymbol: String
-            let feeAmountTypeIconName: String
-            let networkName: String
-        }
-
-        case cantSignLongTransactions
-        case hasPendingOutgoingTransaction(blockchain: Blockchain)
-        case notEnoughFeeForTransaction(configuration: NotEnoughFeeConfiguration)
-
-        var description: String {
-            switch self {
-            case .cantSignLongTransactions:
-                return Localization.warningLongTransactionMessage
-            case .hasPendingOutgoingTransaction(let blockchain):
-                switch blockchain.feePaidCurrency {
-                case .coin:
-                    return Localization.warningSendBlockedPendingTransactionsMessage(blockchain.currencySymbol)
-                case .token, .sameCurrency:
-                    return Localization.warningSendBlockedPendingTransactionsInBlockchainMessage(blockchain.displayName)
-                }
-            case .notEnoughFeeForTransaction(let configuration):
-                return Localization.warningSendBlockedFundsForFeeMessage(
-                    configuration.transactionAmountTypeName,
-                    configuration.networkName,
-                    configuration.transactionAmountTypeName,
-                    configuration.feeAmountTypeName,
-                    configuration.feeAmountTypeCurrencySymbol
-                )
-            }
-        }
-    }
-}
-
 extension WalletModel: Equatable {
     static func == (lhs: WalletModel, rhs: WalletModel) -> Bool {
         lhs.id == rhs.id

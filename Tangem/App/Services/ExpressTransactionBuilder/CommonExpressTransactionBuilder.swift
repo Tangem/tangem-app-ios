@@ -116,6 +116,9 @@ private extension CommonExpressTransactionBuilder {
         case .cosmos, .terraV1, .terraV2:
             return CosmosTransactionParams(memo: extraDestinationId)
 
+        case .algorand:
+            return AlgorandTransactionParams(nonce: extraDestinationId)
+
         case .bitcoin,
              .litecoin,
              .ethereum,

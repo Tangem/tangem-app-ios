@@ -212,6 +212,7 @@ class UIQRScannerView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .black
         doInitialSetup()
     }
 

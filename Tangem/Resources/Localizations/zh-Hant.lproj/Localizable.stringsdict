@@ -16,22 +16,6 @@
         <string>%li 卡片</string>
       </dict>
     </dict>
-    <key>main_learn_subtitle</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Complete three lessons and receive %li 1INCH token to your wallet</string>
-        <key>other</key>
-        <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
-      </dict>
-    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -76,20 +60,6 @@
         <string>li</string>
         <key>other</key>
         <string>%li 錢包</string>
-      </dict>
-    </dict>
-    <key>token_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>other</key>
-        <string>%li 代幣</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>

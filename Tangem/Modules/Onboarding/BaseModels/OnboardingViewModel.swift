@@ -135,7 +135,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
     var isFromMain: Bool = false
     private(set) var containerSize: CGSize = .zero
-    unowned let coordinator: Coordinator
+    weak var coordinator: Coordinator?
 
     var cardModel: CardViewModel?
 
@@ -360,13 +360,13 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
 extension OnboardingViewModel {
     func onboardingDidFinish() {
-        coordinator.onboardingDidFinish(userWallet: cardModel)
+        coordinator?.onboardingDidFinish(userWallet: cardModel)
     }
 
     func closeOnboarding() {
         // reset services before exit
         userWalletRepository.updateSelection()
-        coordinator.closeOnboarding()
+        coordinator?.closeOnboarding()
     }
 
     func openSupportChat() {
@@ -380,7 +380,7 @@ extension OnboardingViewModel {
             userWalletEmailData: input.cardInput.emailData
         )
 
-        coordinator.openSupportChat(input: .init(
+        coordinator?.openSupportChat(input: .init(
             logsComposer: .init(infoProvider: dataCollector)
         ))
     }

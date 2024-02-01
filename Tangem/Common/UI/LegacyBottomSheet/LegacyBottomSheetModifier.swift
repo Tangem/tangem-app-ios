@@ -32,11 +32,7 @@ struct LegacyBottomSheetModifier<ContentView: View>: ViewModifier {
     }
 
     private func updatePresentation(_ isPresented: Bool) {
-        let windowScene = UIApplication.shared.connectedScenes.first(where: {
-            $0.activationState == .foregroundActive
-        })
-
-        guard let windowScene = windowScene as? UIWindowScene,
+        guard let windowScene = UIApplication.activeScene,
               let rootWindow = (windowScene.delegate as? UIWindowSceneDelegate)?.window,
               let root = rootWindow?.rootViewController else {
             return

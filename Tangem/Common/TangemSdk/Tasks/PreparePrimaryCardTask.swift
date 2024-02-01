@@ -17,6 +17,9 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     private let mnemonic: Mnemonic?
     private var commandBag: (any CardSessionRunnable)?
 
+    private var initializedCard: Card?
+    private var primaryCard: PrimaryCard?
+
     init(curves: [EllipticCurve], mnemonic: Mnemonic?, shouldReset: Bool) {
         self.curves = curves
         self.shouldReset = shouldReset
@@ -61,6 +64,8 @@ class PreparePrimaryCardTask: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success:
+                // save the card with derived wallets
+                self.initializedCard = session.environment.card
                 self.checkIfAllWalletsCreated(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -69,6 +74,16 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     }
 
     private func checkIfAllWalletsCreated(in session: CardSession, completion: @escaping CompletionResult<PreparePrimaryCardTaskResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard card.firmwareVersion >= .multiwalletAvailable else {
+            complete(completion)
+            return
+        }
+
         let command = ReadWalletsListCommand()
         commandBag = command
         command.run(in: session) { result in
@@ -103,13 +118,8 @@ class PreparePrimaryCardTask: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success(let primaryCard):
-                guard let card = session.environment.card else {
-                    completion(.failure(.missingPreflightRead))
-                    return
-                }
-
-                let response = PreparePrimaryCardTaskResponse(card: card, primaryCard: primaryCard)
-                completion(.success(response))
+                self.primaryCard = primaryCard
+                self.complete(completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -127,6 +137,16 @@ class PreparePrimaryCardTask: CardSessionRunnable {
                 completion(.failure(error))
             }
         }
+    }
+
+    private func complete(_ completion: @escaping CompletionResult<PreparePrimaryCardTaskResponse>) {
+        guard let card = initializedCard else {
+            completion(.failure(.unknownError))
+            return
+        }
+
+        let response = PreparePrimaryCardTaskResponse(card: card, primaryCard: primaryCard)
+        completion(.success(response))
     }
 }
 

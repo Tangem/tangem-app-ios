@@ -20,7 +20,7 @@ final class ScanCardSettingsViewModel: ObservableObject, Identifiable {
 
     private let sessionFilter: SessionFilter
     private let sdk: TangemSdk
-    private unowned let coordinator: ScanCardSettingsRoutable
+    private weak var coordinator: ScanCardSettingsRoutable?
 
     init(sessionFilter: SessionFilter, sdk: TangemSdk, coordinator: ScanCardSettingsRoutable) {
         self.sessionFilter = sessionFilter
@@ -65,7 +65,7 @@ extension ScanCardSettingsViewModel {
             return
         }
 
-        coordinator.openCardSettings(cardModel: newCardViewModel)
+        coordinator?.openCardSettings(cardModel: newCardViewModel)
     }
 }
 

@@ -24,7 +24,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     private let expressProviderFormatter: ExpressProviderFormatter
     private let expressRepository: ExpressRepository
     private let expressInteractor: ExpressInteractor
-    private unowned let coordinator: ExpressProvidersSelectorRoutable
+    private weak var coordinator: ExpressProvidersSelectorRoutable?
 
     private var stateSubscription: AnyCancellable?
 
@@ -145,7 +145,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         stateSubscription?.cancel()
         Analytics.log(event: .swapProviderChosen, params: [.provider: provider.provider.name])
         expressInteractor.updateProvider(provider: provider)
-        coordinator.closeExpressProvidersSelector()
+        coordinator?.closeExpressProvidersSelector()
     }
 
     func makePercentSubtitle(provider: ExpressAvailableProvider) async -> ProviderRowViewModel.Subtitle? {

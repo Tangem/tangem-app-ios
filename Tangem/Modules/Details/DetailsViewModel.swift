@@ -62,7 +62,7 @@ class DetailsViewModel: ObservableObject {
 
     private let userWalletModel: UserWalletModel
     private var bag = Set<AnyCancellable>()
-    private unowned let coordinator: DetailsRoutable
+    private weak var coordinator: DetailsRoutable?
 
     /// Change to @AppStorage and move to model with IOS 14.5 minimum deployment target
     @AppStorageCompat(StorageType.selectedCurrencyCode)
@@ -88,7 +88,7 @@ class DetailsViewModel: ObservableObject {
 
 extension DetailsViewModel {
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboardingModal(with: input)
+        coordinator?.openOnboardingModal(with: input)
     }
 
     func openMail() {
@@ -101,7 +101,7 @@ extension DetailsViewModel {
             userWalletEmailData: userWalletModel.emailData
         )
 
-        coordinator.openMail(
+        coordinator?.openMail(
             with: dataCollector,
             recipient: emailConfig.recipient,
             emailType: .appFeedback(subject: emailConfig.subject)
@@ -110,17 +110,17 @@ extension DetailsViewModel {
 
     func openWalletConnect() {
         Analytics.log(.buttonWalletConnect)
-        coordinator.openWalletConnect(with: userWalletModel.config.getDisabledLocalizedReason(for: .walletConnect))
+        coordinator?.openWalletConnect(with: userWalletModel.config.getDisabledLocalizedReason(for: .walletConnect))
     }
 
     func openCardSettings() {
         Analytics.log(.buttonCardSettings)
-        coordinator.openScanCardSettings(with: userWalletModel.config.cardSessionFilter, sdk: userWalletModel.config.makeTangemSdk()) // TODO: refactor.
+        coordinator?.openScanCardSettings(with: userWalletModel.config.cardSessionFilter, sdk: userWalletModel.config.makeTangemSdk()) // TODO: refactor.
     }
 
     func openAppSettings() {
         Analytics.log(.buttonAppSettings)
-        coordinator.openAppSettings()
+        coordinator?.openAppSettings()
     }
 
     func openSupportChat() {
@@ -131,13 +131,13 @@ extension DetailsViewModel {
             userWalletEmailData: userWalletModel.emailData
         )
 
-        coordinator.openSupportChat(input: .init(
+        coordinator?.openSupportChat(input: .init(
             logsComposer: .init(infoProvider: dataCollector)
         ))
     }
 
     func openDisclaimer() {
-        coordinator.openDisclaimer(at: userWalletModel.config.tou.url)
+        coordinator?.openDisclaimer(at: userWalletModel.config.tou.url)
     }
 
     func openSocialNetwork(network: SocialNetwork) {
@@ -148,11 +148,11 @@ extension DetailsViewModel {
         Analytics.log(event: .buttonSocialNetwork, params: [
             .network: network.name,
         ])
-        coordinator.openInSafari(url: url)
+        coordinator?.openInSafari(url: url)
     }
 
     func openEnvironmentSetup() {
-        coordinator.openEnvironmentSetup()
+        coordinator?.openEnvironmentSetup()
     }
 
     func openReferral() {
@@ -167,7 +167,7 @@ extension DetailsViewModel {
             userTokensManager: userWalletModel.userTokensManager
         )
 
-        coordinator.openReferral(input: input)
+        coordinator?.openReferral(input: input)
     }
 
     func onAppear() {
@@ -181,7 +181,7 @@ extension DetailsViewModel {
     func requestSupport() {
         Analytics.log(.buttonRequestSupport)
         failedCardScanTracker.resetCounter()
-        coordinator.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient, emailType: .failedToScanCard)
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient, emailType: .failedToScanCard)
     }
 }
 
@@ -273,13 +273,11 @@ extension DetailsViewModel {
     func setupCommonSectionViewModels() {
         var viewModels: [DefaultRowViewModel] = []
 
-        if FeatureProvider.isAvailable(.mainV2) {
-            viewModels.append(DefaultRowViewModel(
-                title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton,
-                detailsType: isScanning ? .loader : .none,
-                action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet)
-            ))
-        }
+        viewModels.append(DefaultRowViewModel(
+            title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton,
+            detailsType: isScanning ? .loader : .none,
+            action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet)
+        ))
 
         if canCreateBackup {
             viewModels.append(DefaultRowViewModel(
@@ -308,7 +306,7 @@ extension DetailsViewModel {
             case .troubleshooting:
                 showTroubleshootingView = true
             case .onboarding(let input):
-                coordinator.openOnboardingModal(with: input)
+                coordinator?.openOnboardingModal(with: input)
             case .error(let error):
                 if let userWalletRepositoryError = error as? UserWalletRepositoryError {
                     alert = userWalletRepositoryError.alertBinder
@@ -316,7 +314,7 @@ extension DetailsViewModel {
                     alert = error.alertBinder
                 }
             case .success, .partial:
-                coordinator.dismiss()
+                coordinator?.dismiss()
             }
         }
     }
