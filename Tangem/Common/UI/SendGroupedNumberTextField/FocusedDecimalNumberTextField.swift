@@ -14,12 +14,15 @@ import SwiftUI
 struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
     @Binding private var decimalValue: DecimalNumberTextField.DecimalValue?
     @FocusState private var isInputActive: Bool
+    @State private var textFieldSize: CGSize = .zero
     private let toolbarButton: () -> ToolbarButton
 
+    private var shouldFocusOnAppear: Bool = true
     private var maximumFractionDigits: Int
     private var placeholderColor: Color = Colors.Text.disabled
     private var textColor: Color = Colors.Text.primary1
     private var font: Font = Fonts.Regular.title1
+    private var alignment: Alignment = .leading
     private var suffix: String? = nil
     private var suffixColor: Color {
         switch decimalValue {
@@ -41,16 +44,30 @@ struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
     }
 
     var body: some View {
-        HStack(alignment: .bottom, spacing: 8) {
-            textField
+        ZStack(alignment: alignment) {
+            HStack(alignment: .center, spacing: 8) {
+                textField
+                    .border(Color.orange)
 
-            if let suffix {
-                Text(suffix)
-                    .style(font, color: suffixColor)
-                    .onTapGesture {
-                        isInputActive = true
-                    }
+                if let suffix {
+                    Text(suffix)
+                        .style(font, color: suffixColor)
+                        .onTapGesture {
+                            isInputActive = true
+                        }
+                }
             }
+            .readGeometry(\.frame.size, bindTo: $textFieldSize)
+
+            // Expand the tappable area
+            Color.clear
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .frame(height: textFieldSize.height)
+                .border(Color.green)
+                .onTapGesture {
+                    isInputActive = true
+                }
         }
         .lineLimit(1)
     }
@@ -80,7 +97,9 @@ struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
             }
         }
         .onAppear {
-            isInputActive = true
+            if shouldFocusOnAppear {
+                isInputActive = true
+            }
         }
     }
 }
@@ -100,6 +119,14 @@ extension FocusedDecimalNumberTextField: Setupable {
     func suffix(_ suffix: String?) -> Self {
         map { $0.suffix = suffix }
     }
+
+    func alignment(_ alignment: Alignment) -> Self {
+        map { $0.alignment = alignment }
+    }
+
+    func shouldFocusOnAppear(_ shouldFocusOnAppear: Bool) -> Self {
+        map { $0.shouldFocusOnAppear = shouldFocusOnAppear }
+    }
 }
 
 @available(iOS 15.0, *)
@@ -109,8 +136,14 @@ struct FocusedNumberTextField_Previews: PreviewProvider {
     static var previews: some View {
         StatefulPreviewWrapper(decimalValue) { decimalValue in
             FocusedDecimalNumberTextField(decimalValue: decimalValue, maximumFractionDigits: 8) {}
+                .suffix("USDT")
+                .alignment(.center)
+                .padding()
+                .background(Colors.Background.action)
+                .padding()
         }
+        .frame(maxWidth: .infinity)
         .padding()
-        .border(Color.purple)
+        .background(Colors.Background.tertiary)
     }
 }

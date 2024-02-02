@@ -12,10 +12,12 @@ import SwiftUI
 struct SendDecimalNumberTextField: View {
     @Binding private var decimalValue: DecimalNumberTextField.DecimalValue?
 
+    private var shouldFocusOnAppear: Bool = true
     private var maximumFractionDigits: Int
     private var maxAmountAction: (() -> Void)?
     private var suffix: String? = nil
     private var font: Font = Fonts.Regular.title1
+    private var alignment: Alignment = .leading
 
     init(decimalValue: Binding<DecimalNumberTextField.DecimalValue?>, maximumFractionDigits: Int) {
         _decimalValue = decimalValue
@@ -35,6 +37,8 @@ struct SendDecimalNumberTextField: View {
             .maximumFractionDigits(maximumFractionDigits)
             .font(font)
             .suffix(suffix)
+            .alignment(alignment)
+            .shouldFocusOnAppear(shouldFocusOnAppear)
         } else {
             DecimalNumberTextField(
                 decimalValue: $decimalValue,
@@ -63,6 +67,14 @@ extension SendDecimalNumberTextField: Setupable {
 
     func font(_ font: Font) -> Self {
         map { $0.font = font }
+    }
+
+    func alignment(_ alignment: Alignment) -> Self {
+        map { $0.alignment = alignment }
+    }
+
+    func shouldFocusOnAppear(_ shouldFocusOnAppear: Bool) -> Self {
+        map { $0.shouldFocusOnAppear = shouldFocusOnAppear }
     }
 }
 
@@ -93,6 +105,7 @@ struct SendDecimalNumberTextField_Previews: PreviewProvider {
                 SendDecimalNumberTextField(decimalValue: $decimalValue, maximumFractionDigits: 8)
                     .suffix("USDT")
                     .font(Fonts.Regular.body)
+                    .alignment(.leading)
                     .padding()
                     .background(Colors.Background.action)
             }

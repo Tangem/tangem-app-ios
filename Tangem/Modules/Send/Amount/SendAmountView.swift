@@ -39,6 +39,7 @@ struct SendAmountView: View {
                         decimalValue: $viewModel.amount,
                         maximumFractionDigits: viewModel.amountFractionDigits
                     )
+                    .alignment(.center)
                     .suffix(viewModel.useFiatCalculation ? viewModel.fiatCurrencyCode : viewModel.cryptoCurrencyCode)
                     .padding(.top, 16)
 

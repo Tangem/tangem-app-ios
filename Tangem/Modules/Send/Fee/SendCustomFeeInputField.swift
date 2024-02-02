@@ -23,6 +23,7 @@ struct SendCustomFeeInputField: View {
                         decimalValue: $viewModel.amount,
                         maximumFractionDigits: viewModel.fractionDigits
                     )
+                    .shouldFocusOnAppear(false)
                     .suffix("WEI")
                     .font(Fonts.Regular.subheadline)
 
