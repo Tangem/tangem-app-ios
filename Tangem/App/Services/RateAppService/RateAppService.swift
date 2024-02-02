@@ -12,21 +12,26 @@ import Combine
 final class RateAppService {
     var rateAppAction: AnyPublisher<RateAppAction, Never> { rateAppActionSubject.eraseToAnyPublisher() }
 
-    @AppStorageCompat(StorageKeys.systemReviewPromptRequestDates)
-    private var systemReviewPromptRequestDates: [Date] = []
+    @AppStorageCompat(StorageKeys.didAttemptMigrationFromLegacyRateApp)
+    private var didAttemptMigrationFromLegacyRateApp: Bool = false
 
-    @AppStorageCompat(StorageKeys.lastRequestedReviewDate)
-    private var lastRequestedReviewDate: Date = .distantPast
+    @AppStorageCompat(StorageKeys.positiveBalanceAppearanceDate)
+    private var positiveBalanceAppearanceDate: Date? = nil
 
-    @AppStorageCompat(StorageKeys.lastRequestedReviewLaunchCount)
-    private var lastRequestedReviewLaunchCount: Int = 0
+    @AppStorageCompat(StorageKeys.positiveBalanceAppearanceLaunchCount)
+    private var positiveBalanceAppearanceLaunchCount: Int? = nil
 
-    @AppStorageCompat(StorageKeys.userDismissedLastRequestedReview)
-    private var userDismissedLastRequestedReview: Bool = false
+    @AppStorageCompat(StorageKeys.userRespondedToLastRequestedReview)
+    private var userRespondedToLastRequestedReview: Bool = false
 
-    private var positiveBalanceAppearanceDate: Date? {
-        get { AppSettings.shared.positiveBalanceAppearanceDate }
-        set { AppSettings.shared.positiveBalanceAppearanceDate = newValue }
+    @AppStorageCompat(StorageKeys.userDismissedLastRequestedReviewDate)
+    private var userDismissedLastRequestedReviewDate: Date? = nil
+
+    @AppStorageCompat(StorageKeys.userDismissedLastRequestedReviewLaunchCount)
+    private var userDismissedLastRequestedReviewLaunchCount: Int? = nil
+
+    private var userDismissedLastRequestedReview: Bool {
+        return userDismissedLastRequestedReviewDate != nil && userDismissedLastRequestedReviewLaunchCount != nil
     }
 
     private var currentLaunchCount: Int { AppSettings.shared.numberOfLaunches }
@@ -37,12 +42,10 @@ final class RateAppService {
             : Constants.normalReviewRequestNumberOfLaunchesInterval
     }
 
-    private lazy var calendar = Calendar(identifier: .gregorian)
-
     private let rateAppActionSubject = PassthroughSubject<RateAppAction, Never>()
 
     init() {
-        trimStorageIfNeeded()
+        migrateFromLegacyRateAppIfNeeded()
     }
 
     func registerBalances(of walletModels: [WalletModel]) {
@@ -54,9 +57,14 @@ final class RateAppService {
         }
 
         positiveBalanceAppearanceDate = Date()
+        positiveBalanceAppearanceLaunchCount = currentLaunchCount
     }
 
     func requestRateAppIfAvailable(with request: RateAppRequest) {
+        if userRespondedToLastRequestedReview {
+            return
+        }
+
         if request.isLocked {
             return
         }
@@ -69,25 +77,21 @@ final class RateAppService {
             return
         }
 
-        guard abs(lastRequestedReviewDate.timeIntervalSinceNow) >= Constants.reviewRequestTimeInterval else {
+        guard
+            let date = (userDismissedLastRequestedReviewDate ?? positiveBalanceAppearanceDate),
+            abs(date.timeIntervalSinceNow) >= Constants.reviewRequestTimeInterval
+        else {
             return
         }
 
-        guard currentLaunchCount - lastRequestedReviewLaunchCount >= requiredNumberOfLaunches else {
+        guard
+            let launchCount = (userDismissedLastRequestedReviewLaunchCount ?? positiveBalanceAppearanceLaunchCount),
+            currentLaunchCount - launchCount >= requiredNumberOfLaunches
+        else {
             return
         }
 
         if request.displayedNotifications.contains(where: { Constants.forbiddenSeverityLevels.contains($0.severity) }) {
-            return
-        }
-
-        guard let referenceDate = calendar.date(byAdding: .year, value: -Constants.systemReviewPromptTimeWindowSize, to: Date()) else {
-            return
-        }
-
-        let systemReviewPromptRequestDatesWithinLastYear = systemReviewPromptRequestDates.filter { $0 >= referenceDate }
-
-        guard systemReviewPromptRequestDatesWithinLastYear.count < Constants.systemReviewPromptMaxCountPerYear else {
             return
         }
 
@@ -99,12 +103,14 @@ final class RateAppService {
 
         switch response {
         case .positive:
-            systemReviewPromptRequestDates.append(Date())
+            userRespondedToLastRequestedReview = true
             rateAppActionSubject.send(.openAppStoreReview)
         case .negative:
+            userRespondedToLastRequestedReview = true
             rateAppActionSubject.send(.openFeedbackMailWithEmailType(emailType: .negativeRateAppFeedback))
         case .dismissed:
-            userDismissedLastRequestedReview = true
+            userDismissedLastRequestedReviewDate = Date()
+            userDismissedLastRequestedReviewLaunchCount = currentLaunchCount
         }
     }
 
@@ -124,16 +130,32 @@ final class RateAppService {
     }
 
     private func requestRateApp() {
-        lastRequestedReviewDate = Date()
-        lastRequestedReviewLaunchCount = currentLaunchCount
-        userDismissedLastRequestedReview = false
+        userDismissedLastRequestedReviewDate = nil
+        userDismissedLastRequestedReviewLaunchCount = nil
         rateAppActionSubject.send(.openAppRateDialog)
     }
 
-    private func trimStorageIfNeeded() {
-        let storageMaxSize = Constants.systemReviewPromptRequestDatesMaxSize
-        if systemReviewPromptRequestDates.count > storageMaxSize {
-            systemReviewPromptRequestDates = systemReviewPromptRequestDates.suffix(storageMaxSize)
+    private func migrateFromLegacyRateAppIfNeeded() {
+        if didAttemptMigrationFromLegacyRateApp {
+            return
+        }
+
+        didAttemptMigrationFromLegacyRateApp = true
+
+        // A fresh install without using the old version with legacy `RateAppService`
+        if currentLaunchCount <= 1 {
+            return
+        }
+
+        // An upgrade from the previous version with legacy `RateAppService`, therefore we have to
+        // postpone the upcoming rate app request even if all conditions for it are met
+
+        if positiveBalanceAppearanceDate != nil {
+            positiveBalanceAppearanceDate = Date()
+        }
+
+        if positiveBalanceAppearanceLaunchCount != nil {
+            positiveBalanceAppearanceLaunchCount = currentLaunchCount
         }
     }
 }
@@ -142,10 +164,12 @@ final class RateAppService {
 
 private extension RateAppService {
     enum StorageKeys: String, RawRepresentable {
-        case systemReviewPromptRequestDates = "system_review_prompt_request_dates"
-        case lastRequestedReviewDate = "last_requested_review_date"
-        case lastRequestedReviewLaunchCount = "last_requested_review_launch_count"
-        case userDismissedLastRequestedReview = "user_dismissed_last_requested_review"
+        case positiveBalanceAppearanceDate = "tangem_tap_positive_balace_appearance_date"
+        case positiveBalanceAppearanceLaunchCount = "tangem_tap_positive_balance_appearance_launch"
+        case userDismissedLastRequestedReviewDate = "user_dismissed_last_requested_review_date"
+        case userDismissedLastRequestedReviewLaunchCount = "user_dismissed_last_requested_review_launch_count"
+        case userRespondedToLastRequestedReview = "user_responded_to_last_requested_review"
+        case didAttemptMigrationFromLegacyRateApp = "did_attempt_migration_from_legacy_rate_app"
     }
 }
 
@@ -166,14 +190,5 @@ private extension RateAppService {
             .warning,
             .critical,
         ]
-
-        // MARK: - Constants that control the behavior of the system rate app prompt (`SKStoreReviewController`)
-
-        /// See https://developer.apple.com/documentation/storekit/requesting_app_store_reviews for details.
-        static let systemReviewPromptMaxCountPerYear = 3
-        /// Years, see https://developer.apple.com/documentation/storekit/requesting_app_store_reviews for details.
-        static let systemReviewPromptTimeWindowSize = 1
-        /// For storage trimming.
-        static let systemReviewPromptRequestDatesMaxSize = 5
     }
 }

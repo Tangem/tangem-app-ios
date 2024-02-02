@@ -103,6 +103,31 @@ extension AppStorageCompat where Value: PropertyListObjectRepresentable {
     }
 }
 
+extension AppStorageCompat where Value: PropertyListObjectRepresentable, Value: OptionalProtocol {
+    /// Creates a property that can read and write to a user default value of
+    /// the optional type that conforms `PropertyListObjectRepresentable`.
+    ///
+    /// - Parameters:
+    ///   - wrappedValue: The default value if value is not specified for the given key.
+    ///   - key: The key to read and write the value to in the user defaults store.
+    ///   - store: The user defaults store to read and write to. A value
+    ///     of `nil` will use the user default store from the environment.
+    init(wrappedValue: Value, _ key: Key, store: UserDefaults? = .defaultStore) {
+        let store = (store ?? .standard)
+        let initialValue = store.value(forKey: key.rawValue) as? Value ?? wrappedValue
+        self.init(value: initialValue, store: store, key: key, transform: {
+            $0 as? Value
+        }, saveValue: { newValue in
+            switch newValue.wrapped {
+            case .none:
+                store.removeObject(forKey: key.rawValue)
+            case .some:
+                store.setValue(newValue, forKey: key.rawValue)
+            }
+        })
+    }
+}
+
 extension AppStorageCompat where Value: RawRepresentable, Value.RawValue: PropertyListObjectRepresentable {
     /// Creates a property that can read and write to an integer user default,
     /// transforming that to `RawRepresentable` data type.

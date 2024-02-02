@@ -74,7 +74,7 @@ class MercuryoService {
 extension MercuryoService: ExchangeService {
     var initializationPublisher: Published<Bool>.Publisher { $initialized }
 
-    var successCloseUrl: String { DismissSafariActionURLHelper().buildURL(scheme: .redirectLink).absoluteString }
+    var successCloseUrl: String { IncomingActionConstants.externalSuccessURL }
 
     var sellRequestUrl: String { "" }
 

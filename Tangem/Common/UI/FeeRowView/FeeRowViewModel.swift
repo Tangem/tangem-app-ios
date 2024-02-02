@@ -23,7 +23,7 @@ struct FeeRowViewModel: Identifiable {
         case .loaded(let value):
             return value
         case .failedToLoad:
-            return AppConstants.minusSign
+            return AppConstants.dashSign
         }
     }
 

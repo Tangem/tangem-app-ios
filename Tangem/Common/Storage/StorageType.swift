@@ -17,7 +17,6 @@ enum StorageType: String {
     case twinCardOnboardingDisplayed = "tangem_tap_twin_card_onboarding_displayed"
     case numberOfAppLaunches = "tangem_tap_number_of_launches"
     case readWarningHashes = "tangem_tap_read_warnings"
-    case positiveBalanceAppearanceDate = "tangem_tap_positive_balace_appearance_date"
     case searchedCards = "tangem_tap_searched_cards" // for tokens search
     case isMigratedToNewUserDefaults = "tangem_tap_migrate_to_new_defaults"
     case cardsStartedActivation = "tangem_cards_started_activation"

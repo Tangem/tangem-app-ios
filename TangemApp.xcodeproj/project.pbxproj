@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0790546DD7D84EA886A5CA2B /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496FCB163C6C7B695D32344 /* Pods_Tangem.framework */; };
-		08D1BFE63ED4C8460B515074 /* Pods_TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EEAA84A3A777019AA95E14D /* Pods_TangemExpress.framework */; };
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1146A62ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1146A42ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemView.swift */; };
@@ -53,8 +51,6 @@
 		2DDF91942A14DA2700B31113 /* TokenItemMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDF91932A14DA2700B31113 /* TokenItemMenuActions.swift */; };
 		2DF5A81D2B13C33800AA5E73 /* WalletSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF5A81C2B13C33700AA5E73 /* WalletSelectorDataSource.swift */; };
 		2DF5A81F2B13C33D00AA5E73 /* ManageTokensNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */; };
-		32F12922418574C788DDCBAA /* Pods_TangemVisa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30A06D41F64221A062A1735B /* Pods_TangemVisa.framework */; };
-		4EBED35C4CCD2B5561B1721B /* Pods_TangemVisa_TangemVisaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0EA35D3FD9D6B268C2119D /* Pods_TangemVisa_TangemVisaTests.framework */; };
 		5D00FCD1261738C5004626DE /* WalletConnectEthTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */; };
 		5D06E040250A5D54004218D0 /* NSRegualrExpression+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */; };
 		5D09381425E6CB2D0049B8F0 /* HorizontalButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D09381325E6CB2D0049B8F0 /* HorizontalButtonStack.swift */; };
@@ -160,7 +156,6 @@
 		5DFCCB7824C389740014A293 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCCB7724C389740014A293 /* CardViewModel.swift */; };
 		5DFCE54C274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE54B274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift */; };
 		5DFE855724EF051400194106 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE855624EF051400194106 /* Error+.swift */; };
-		5E47821CE8757EEDE0271BB6 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6FE28D8D383F3A0A9C2DC36 /* Pods_Tangem_TangemUITests.framework */; };
 		65469D3A28AA64520092138F /* ResizableSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65469D3928AA64520092138F /* ResizableSheetView.swift */; };
 		65469D3C28AA6B710092138F /* ResizableBottomSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65469D3B28AA6B710092138F /* ResizableBottomSheetModifier.swift */; };
 		6563B8B92858B92A009A8A7D /* SupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6563B8B82858B92A009A8A7D /* SupportChatView.swift */; };
@@ -177,7 +172,11 @@
 		65B4DEE22885719C001524CF /* BottomSheetWrappedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B4DEE12885719C001524CF /* BottomSheetWrappedView.swift */; };
 		65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCAD28644F9D00FDE63E /* DetailsView.swift */; };
 		65D87499287DA0F6009D0448 /* BottomSheetSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D87498287DA0F6009D0448 /* BottomSheetSettings.swift */; };
-		69CCECB835AF9124635A8740 /* Pods_TangemTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBDE239B0009448AD39245C8 /* Pods_TangemTests.framework */; };
+		6B167B3FA8E76655A7058409 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598508885C9480B372F95E01 /* Pods_Tangem_TangemUITests.framework */; };
+		6D07D2A88D8751E636E67A5A /* Pods_TangemTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100DDDD24B6101238491450A /* Pods_TangemTests.framework */; };
+		84D4DF785F31D24B30E5FA9F /* Pods_TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 625DBBC85C532EE4862F1BCD /* Pods_TangemExpress.framework */; };
+		864EA087ACE8E822871AE99D /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1431B7976C38C68B441C4732 /* Pods_Tangem.framework */; };
+		A1263EC5D0A8E7440449B8B0 /* Pods_TangemExpressTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A09DCEF56EE85F47A6DDE945 /* Pods_TangemExpressTests.framework */; };
 		B00307042AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00307032AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift */; };
 		B00371BE2A8A5E5900D77A4B /* FakeUserTokensManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00371BD2A8A5E5900D77A4B /* FakeUserTokensManager.swift */; };
 		B00371C02A8A5ECE00D77A4B /* FakeTangemApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00371BF2A8A5ECE00D77A4B /* FakeTangemApiService.swift */; };
@@ -542,7 +541,6 @@
 		B0FE0B3529712C170046EE2C /* WalletConnectV2Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */; };
 		B0FE0B37297138CC0046EE2C /* WalletConnectSavedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B36297138CC0046EE2C /* WalletConnectSavedSession.swift */; };
 		B0FE0B3A297140D10046EE2C /* WalletConnectV2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */; };
-		B2DA76CC5888EDCC2B545A98 /* Pods_TangemExpressTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40B8F6D27FF7480F2AA35B0D /* Pods_TangemExpressTests.framework */; };
 		B60275292A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60275282A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift */; };
 		B602752B2A7A651000865EA7 /* ShadowAnimatableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B602752A2A7A651000865EA7 /* ShadowAnimatableModifier.swift */; };
 		B605224B2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605224A2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift */; };
@@ -606,6 +604,7 @@
 		B68907852A32482F00A0D246 /* ForEach+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68907842A32482F00A0D246 /* ForEach+.swift */; };
 		B68B35692A4ACF8B0069129F /* OrganizeTokensContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */; };
 		B68B356B2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */; };
+		B68B442C2B6C7C9C00CF95AB /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B442B2B6C7C9C00CF95AB /* OptionalProtocol.swift */; };
 		B68E5E7F2A9526BD00216281 /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68E5E7E2A9526BD00216281 /* SectionModel.swift */; };
 		B68EF4822A9C22B800E2AC5B /* LockedWalletMainContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EF4812A9C22B700E2AC5B /* LockedWalletMainContentViewModel.swift */; };
 		B691A8C02AFE43CE0059D182 /* CardsInfoPagerSwipeDiscoveryAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B691A8BF2AFE43CE0059D182 /* CardsInfoPagerSwipeDiscoveryAnimationModifier.swift */; };
@@ -900,6 +899,7 @@
 		DC3B49F42893E50700C207EA /* UserWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3B49F32893E50700C207EA /* UserWallet.swift */; };
 		DC3B49F62893E51B00C207EA /* UserWalletConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3B49F52893E51B00C207EA /* UserWalletConfig.swift */; };
 		DC3B49FA2893EEA600C207EA /* UserWalletConfigFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3B49F92893EEA600C207EA /* UserWalletConfigFeatures.swift */; };
+		DC3D9AB9020CE0F15B9666D1 /* Pods_TangemVisa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75834F3AF059EC398CC28BD0 /* Pods_TangemVisa.framework */; };
 		DC3DCAD72A40AA4B00F72554 /* WalletModelsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DCAD62A40AA4B00F72554 /* WalletModelsFactory.swift */; };
 		DC3DCADB2A40AACF00F72554 /* DemoWalletModelsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DCADA2A40AACF00F72554 /* DemoWalletModelsFactory.swift */; };
 		DC3DCADD2A40AB9D00F72554 /* CommonWalletModelsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DCADC2A40AB9D00F72554 /* CommonWalletModelsFactory.swift */; };
@@ -1286,6 +1286,7 @@
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
+		F3691398A8AE876170C9F7B8 /* Pods_TangemVisa_TangemVisaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29AA6BD6E6A750899CFE9F6B /* Pods_TangemVisa_TangemVisaTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1373,15 +1374,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		015D6DEE4627C4F5CA839A5A /* Pods-Tangem.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		0496FCB163C6C7B695D32344 /* Pods_Tangem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		053D659053757DB4377B8863 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
+		067BD95883E03A21093FAC42 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		08A4E270E441BF7BFB96B8A3 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		09624AF443B2CDD9E2EF49F5 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
-		0B4ED5E2880744768F9A4451 /* Pods-TangemSwapping.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		173A8A87B1DFAACD93EBF493 /* Pods-TangemExpress.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(beta).xcconfig"; sourceTree = "<group>"; };
-		187DB39FEB3E514F0C172A42 /* Pods-TangemTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		1EBD417ABE67BAC4A999BCF7 /* Pods-TangemSwapping.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.debug(production).xcconfig"; sourceTree = "<group>"; };
-		2224D1E70296ADA1AD9F2E08 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
-		2B3884B87B218CBC2D1C6843 /* Pods-TangemExpressTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		0FA101035A40E1BFAB7A5034 /* Pods-TangemTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		100DDDD24B6101238491450A /* Pods_TangemTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		141C71133EF9F30E9278CAC8 /* Pods-TangemTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(production).xcconfig"; sourceTree = "<group>"; };
+		1431B7976C38C68B441C4732 /* Pods_Tangem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		24F54093E659BD0262930336 /* Pods-TangemExpressTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		29AA6BD6E6A750899CFE9F6B /* Pods_TangemVisa_TangemVisaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisa_TangemVisaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericWalletManagerFactory.swift; sourceTree = "<group>"; };
 		2D1146A42ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorItemView.swift; sourceTree = "<group>"; };
 		2D1146A52ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorItemViewModel.swift; sourceTree = "<group>"; };
@@ -1389,6 +1392,7 @@
 		2D535E6B2A0CB4D20081EB76 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoView.swift; sourceTree = "<group>"; };
 		2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoViewModel.swift; sourceTree = "<group>"; };
+		2D59441E8681CFE9E4FA280D /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
 		2D5EBAA12ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorRoutable.swift; sourceTree = "<group>"; };
 		2D5EBAA22ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D5EBAA32ADD15EA00A25AC4 /* ManageTokensNetworkSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorView.swift; sourceTree = "<group>"; };
@@ -1425,16 +1429,12 @@
 		2DDF91932A14DA2700B31113 /* TokenItemMenuActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemMenuActions.swift; sourceTree = "<group>"; };
 		2DF5A81C2B13C33700AA5E73 /* WalletSelectorDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorDataSource.swift; sourceTree = "<group>"; };
 		2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkDataSource.swift; sourceTree = "<group>"; };
-		2E0EA35D3FD9D6B268C2119D /* Pods_TangemVisa_TangemVisaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisa_TangemVisaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		30A06D41F64221A062A1735B /* Pods_TangemVisa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		312309F588D6E26BA0F793DB /* Pods-TangemExpressTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		33ADD77262A88FB18703D47F /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
-		3E39D83D2E16EC6056E5A89D /* Pods-TangemVisa.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(beta).xcconfig"; sourceTree = "<group>"; };
-		40B8F6D27FF7480F2AA35B0D /* Pods_TangemExpressTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpressTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		425937FE1F8F15AA6A30D2CB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		477AF3E30506F71429E09004 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		57BFFF25B906DB6F72EAFE64 /* Pods-TangemExpress.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		5A7C9D60893F2D582271600D /* Pods-TangemSwappingTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		32F980B934315927C3BAC661 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		48D5A54B6852CA9F6E84F8AE /* Pods-Tangem.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(beta).xcconfig"; sourceTree = "<group>"; };
+		5649B08FFA72A76E0BD8AAC1 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		597BB15A16B7AF397F66D297 /* Pods-TangemExpress.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		598508885C9480B372F95E01 /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CC9E9E7A68394BA86EDDA5C /* Pods-TangemExpress.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(beta).xcconfig"; sourceTree = "<group>"; };
 		5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectEthTransaction.swift; sourceTree = "<group>"; };
 		5D011A262530E76000758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegualrExpression+.swift"; sourceTree = "<group>"; };
@@ -1468,7 +1468,6 @@
 		5D39515825597DA5002CC452 /* WalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModel.swift; sourceTree = "<group>"; };
 		5D39516025597DB1002CC452 /* BalanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceViewModel.swift; sourceTree = "<group>"; };
 		5D3951662559A87E002CC452 /* CurrencySelectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySelectViewModel.swift; sourceTree = "<group>"; };
-		5D3B8671EF2BD04C6036C38B /* Pods-TangemTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		5D3F77C224BF56D800E8695B /* Tangem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tangem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D3F77C524BF56D800E8695B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5D3F77CB24BF56DC00E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -1511,6 +1510,7 @@
 		5D79D3142555ABE700650DD7 /* CardImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageLoader.swift; sourceTree = "<group>"; };
 		5D80ED412550172A0008DEF0 /* UIApplication+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+.swift"; sourceTree = "<group>"; };
 		5D80ED462550186A0008DEF0 /* View+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+.swift"; sourceTree = "<group>"; };
+		5D82E9D80E82B775CE2CAD07 /* Pods-TangemVisa.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		5D84352725B84E8C0085C9D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D84DBEC270E26B90013A813 /* WelcomeBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeBackgroundView.swift; sourceTree = "<group>"; };
 		5D84DBEE270EEADA0013A813 /* TwinIntroBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinIntroBackgroundView.swift; sourceTree = "<group>"; };
@@ -1556,6 +1556,8 @@
 		5DFCCB7724C389740014A293 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		5DFCE54B274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactorySettingsTask.swift; sourceTree = "<group>"; };
 		5DFE855624EF051400194106 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
+		5FC8DFB879AFACD602D83530 /* Pods-TangemExpressTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		625DBBC85C532EE4862F1BCD /* Pods_TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		65469D3928AA64520092138F /* ResizableSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableSheetView.swift; sourceTree = "<group>"; };
 		65469D3B28AA6B710092138F /* ResizableBottomSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableBottomSheetModifier.swift; sourceTree = "<group>"; };
 		6563B8B82858B92A009A8A7D /* SupportChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportChatView.swift; sourceTree = "<group>"; };
@@ -1573,27 +1575,22 @@
 		65C9FCAD28644F9D00FDE63E /* DetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportChatViewModel.swift; sourceTree = "<group>"; };
 		65D87498287DA0F6009D0448 /* BottomSheetSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSettings.swift; sourceTree = "<group>"; };
-		668A523E51B51641CA24E421 /* Pods-TangemVisa.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(production).xcconfig"; sourceTree = "<group>"; };
-		68A19F71232D205924728D01 /* Pods-TangemVisa.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		6A5EDD54FFF1FB0C14D29C29 /* Pods-TangemExpress.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		6DF19E41CF8FB42D761D09AC /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		6EEAA84A3A777019AA95E14D /* Pods_TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6F8576D25357E9065454C8B8 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		735800DCADBFD4DB02254687 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		7780A56D10C48A025B75F276 /* Pods-TangemSwappingTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		8199B604575CC104C6709FED /* Pods-Tangem.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(beta).xcconfig"; sourceTree = "<group>"; };
-		8BB495D8FCBDEE9F5DF09F6F /* Pods-TangemVisa.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		8C390600B80AB4DDCD26B677 /* Pods-TangemSwappingTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		8C4DF77683A5CBAD41D03966 /* Pods-TangemSwapping.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		8CED5CCF1CC0741D1A51F7E7 /* Pods-TangemTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		8D2D1639D7CE4E08554C739B /* Pods-TangemSwapping.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.release(production).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.release(production).xcconfig"; sourceTree = "<group>"; };
-		9CC2AA18343C123E8B7EBEE2 /* Pods-TangemSwappingTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		A152C0FD12A4FBCCAFCA9603 /* Pods-TangemExpressTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		A3D62B28B293BDAF653E04FE /* Pods-TangemVisa.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(production).xcconfig"; sourceTree = "<group>"; };
-		A440C7993F122962DFADF8D9 /* Pods-TangemSwapping.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		A81424F4DF28987CBF1494D7 /* Pods-TangemExpress.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		AC539C3DDD41A50D340E67EB /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		AE25DC957F12A412F8800143 /* Pods-TangemExpressTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		6C6753DBE5C7EBAE497B32E1 /* Pods-TangemExpressTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		6CCDC41C705C736EA38A08A5 /* Pods-TangemExpress.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(production).xcconfig"; sourceTree = "<group>"; };
+		6EB0F692814F64A9949D32B3 /* Pods-TangemExpress.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		75834F3AF059EC398CC28BD0 /* Pods_TangemVisa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		81C6244A7F13980528590B30 /* Pods-TangemVisa.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(production).xcconfig"; sourceTree = "<group>"; };
+		87F5FDAF1B529E7997840247 /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
+		8B5C09B989CB3DF625374D85 /* Pods-Tangem.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		8D2821629B0E8A47B984AA6C /* Pods-Tangem.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		93AFFF97582E889BF246C5AA /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		989C373A7357463D2FC9F750 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		9AF931FCE69227E0F6F46A21 /* Pods-TangemVisa.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(production).xcconfig"; sourceTree = "<group>"; };
+		9CDEE8BD423E7F91896C4EC6 /* Pods-TangemExpressTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(production).xcconfig"; sourceTree = "<group>"; };
+		A09DCEF56EE85F47A6DDE945 /* Pods_TangemExpressTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpressTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A21E205336B77789755D1A06 /* Pods-TangemTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		AC9C77EF75D649325DBED39F /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		AD6472250031D0B6E6E374F3 /* Pods-TangemVisa.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		B00307032AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+WalletConnectDebugEvent.swift"; sourceTree = "<group>"; };
 		B00371BD2A8A5E5900D77A4B /* FakeUserTokensManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeUserTokensManager.swift; sourceTree = "<group>"; };
 		B00371BF2A8A5ECE00D77A4B /* FakeTangemApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeTangemApiService.swift; sourceTree = "<group>"; };
@@ -2032,6 +2029,7 @@
 		B68907842A32482F00A0D246 /* ForEach+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForEach+.swift"; sourceTree = "<group>"; };
 		B68B35682A4ACF8B0069129F /* OrganizeTokensContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensContainerView.swift; sourceTree = "<group>"; };
 		B68B356A2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAppearanceBoundaryContainerView.swift; sourceTree = "<group>"; };
+		B68B442B2B6C7C9C00CF95AB /* OptionalProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
 		B68E5E7E2A9526BD00216281 /* SectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModel.swift; sourceTree = "<group>"; };
 		B68EF4812A9C22B700E2AC5B /* LockedWalletMainContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockedWalletMainContentViewModel.swift; sourceTree = "<group>"; };
 		B691A8BF2AFE43CE0059D182 /* CardsInfoPagerSwipeDiscoveryAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerSwipeDiscoveryAnimationModifier.swift; sourceTree = "<group>"; };
@@ -2106,15 +2104,12 @@
 		B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfiguratorWeakifyAdapter.swift; sourceTree = "<group>"; };
 		B6FB04EA2B1FF022000BB59E /* StatusBarStyleConfigurator+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatusBarStyleConfigurator+Environment.swift"; sourceTree = "<group>"; };
 		B6FF1EFD2A57E59100B208E4 /* Subject+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subject+.swift"; sourceTree = "<group>"; };
-		B92CC5C46156E71BFBFF97A5 /* Pods-TangemSwappingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		BDA8FCF6A5558BAD5F1FB12A /* Pods-TangemExpress.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(production).xcconfig"; sourceTree = "<group>"; };
-		C022BAFAF750ACD50AF690E4 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		C81047A2E8B7B2795E890285 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		CC72A51924645F4D6F105583 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		CCB86CBD9BBD630EDD2FA5A8 /* Pods-TangemExpressTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		D2C7B26A91D18117383CB132 /* Pods-TangemExpressTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		D612C92AE2B99EE97031B064 /* Pods-Tangem.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		D6FE28D8D383F3A0A9C2DC36 /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B890D20E30AA2F985750AD34 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		BD2F86DB81387E370C143B3F /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		C126DC19860D6CDFAEFC4E28 /* Pods-TangemExpress.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		C66E9361172BB1E250B04150 /* Pods-TangemTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		D3DB7A6CE55ED43FF178B0DA /* Pods-TangemVisa.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(beta).xcconfig"; sourceTree = "<group>"; };
+		D8B455D888137B74426EBE7D /* Pods-TangemVisa.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatView.swift; sourceTree = "<group>"; };
 		DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatViewModel.swift; sourceTree = "<group>"; };
 		DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrConfig.swift; sourceTree = "<group>"; };
@@ -2275,7 +2270,6 @@
 		DAF72F412B0F480A0006B44F /* SendFinishRoutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFinishRoutable.swift; sourceTree = "<group>"; };
 		DAF72F452B0F49800006B44F /* SendFinishViewModelInputMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFinishViewModelInputMock.swift; sourceTree = "<group>"; };
 		DAFD691527CDEB7F00B36C71 /* CombinedExchangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedExchangeService.swift; sourceTree = "<group>"; };
-		DBAD97B12E17861F00858ECD /* Pods-TangemTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		DC0A57D42822A3C80031BECC /* InjectionKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectionKey.swift; sourceTree = "<group>"; };
 		DC0A57D52822A3C80031BECC /* InjectedValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectedValues.swift; sourceTree = "<group>"; };
 		DC0A57D62822A3C80031BECC /* InjectedWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectedWrapper.swift; sourceTree = "<group>"; };
@@ -2435,10 +2429,12 @@
 		DCF8972C28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkConfigFactory.swift; sourceTree = "<group>"; };
 		DCFCA17428F4232F0037586C /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		DCFE143D294B31C00053106B /* AppPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPresenter.swift; sourceTree = "<group>"; };
-		E239F9304FDC2B5DD539CAC5 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		E5C6CC12D719E1F33C847923 /* Pods-TangemVisa.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		DD72E18767BB639B0402DF85 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; sourceTree = "<group>"; };
+		E01FD1CD620193B996230208 /* Pods-Tangem.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		E2CFD8257668964B96197D57 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		E7FBEBEA0F7C1EFE1A5B2B65 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+.swift"; sourceTree = "<group>"; };
-		EC5D4E62935504626E8BF053 /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
+		EA8B09F82CF18E3C9F4B75CC /* Pods-TangemExpress.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(production).xcconfig"; sourceTree = "<group>"; };
 		EF0295582A9DCDEE000B2142 /* SensitiveText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveText.swift; sourceTree = "<group>"; };
 		EF032C4E2955C59E006C1FF3 /* DefaultSelectableRowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultSelectableRowViewModel.swift; sourceTree = "<group>"; };
 		EF032C4F2955C59E006C1FF3 /* DefaultSelectableRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultSelectableRowView.swift; sourceTree = "<group>"; };
@@ -2742,14 +2738,8 @@
 		EFFC861228BCF6C500F863CE /* StorageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.swift; sourceTree = "<group>"; };
 		EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletModel.swift; sourceTree = "<group>"; };
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
-		F1C52DCAB767131BB8E88395 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		F90E59661F107D2C0FA0A056 /* Pods-Tangem.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		F9B08290B365259A1A1A10E9 /* Pods-TangemSwapping.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwapping.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemSwapping/Pods-TangemSwapping.release(beta).xcconfig"; sourceTree = "<group>"; };
-		FBDE239B0009448AD39245C8 /* Pods_TangemTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FD201C410E0686B6F260B797 /* Pods-TangemExpress.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(production).xcconfig"; sourceTree = "<group>"; };
-		FE89229C8C2587A244BE9191 /* Pods-TangemSwappingTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSwappingTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemSwappingTests/Pods-TangemSwappingTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		FF6ABEA01A10CCDECD05E370 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		FFF10B895AAEAF8525C79E45 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		FB16ABE027A2C81B8BC3A992 /* Pods-TangemExpressTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		FE405A61797AB7D501EF8F2E /* Pods-TangemExpressTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2759,8 +2749,8 @@
 			files = (
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
-				0790546DD7D84EA886A5CA2B /* Pods_Tangem.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
+				864EA087ACE8E822871AE99D /* Pods_Tangem.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2768,7 +2758,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69CCECB835AF9124635A8740 /* Pods_TangemTests.framework in Frameworks */,
+				6D07D2A88D8751E636E67A5A /* Pods_TangemTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2776,7 +2766,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E47821CE8757EEDE0271BB6 /* Pods_Tangem_TangemUITests.framework in Frameworks */,
+				6B167B3FA8E76655A7058409 /* Pods_Tangem_TangemUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2784,7 +2774,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32F12922418574C788DDCBAA /* Pods_TangemVisa.framework in Frameworks */,
+				DC3D9AB9020CE0F15B9666D1 /* Pods_TangemVisa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2793,7 +2783,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B099337F2B5517E800240CDB /* TangemVisa.framework in Frameworks */,
-				4EBED35C4CCD2B5561B1721B /* Pods_TangemVisa_TangemVisaTests.framework in Frameworks */,
+				F3691398A8AE876170C9F7B8 /* Pods_TangemVisa_TangemVisaTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2801,7 +2791,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08D1BFE63ED4C8460B515074 /* Pods_TangemExpress.framework in Frameworks */,
+				84D4DF785F31D24B30E5FA9F /* Pods_TangemExpress.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2810,7 +2800,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF9E299D2B4F0C9100418559 /* TangemExpress.framework in Frameworks */,
-				B2DA76CC5888EDCC2B545A98 /* Pods_TangemExpressTests.framework in Frameworks */,
+				A1263EC5D0A8E7440449B8B0 /* Pods_TangemExpressTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2959,13 +2949,13 @@
 				5DAC08832513917F00B73E8B /* CoreNFC.framework */,
 				B066822426564ADB00CB86CF /* Intents.framework */,
 				B066822F26564ADB00CB86CF /* IntentsUI.framework */,
-				0496FCB163C6C7B695D32344 /* Pods_Tangem.framework */,
-				D6FE28D8D383F3A0A9C2DC36 /* Pods_Tangem_TangemUITests.framework */,
-				FBDE239B0009448AD39245C8 /* Pods_TangemTests.framework */,
-				6EEAA84A3A777019AA95E14D /* Pods_TangemExpress.framework */,
-				40B8F6D27FF7480F2AA35B0D /* Pods_TangemExpressTests.framework */,
-				30A06D41F64221A062A1735B /* Pods_TangemVisa.framework */,
-				2E0EA35D3FD9D6B268C2119D /* Pods_TangemVisa_TangemVisaTests.framework */,
+				1431B7976C38C68B441C4732 /* Pods_Tangem.framework */,
+				598508885C9480B372F95E01 /* Pods_Tangem_TangemUITests.framework */,
+				625DBBC85C532EE4862F1BCD /* Pods_TangemExpress.framework */,
+				A09DCEF56EE85F47A6DDE945 /* Pods_TangemExpressTests.framework */,
+				100DDDD24B6101238491450A /* Pods_TangemTests.framework */,
+				75834F3AF059EC398CC28BD0 /* Pods_TangemVisa.framework */,
+				29AA6BD6E6A750899CFE9F6B /* Pods_TangemVisa_TangemVisaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -3435,6 +3425,7 @@
 				B675A1E92A1E068D00F624B6 /* Clamp.swift */,
 				B6A8DAA42A4C96C4004CB1E7 /* ObjectDescription.swift */,
 				EFE5EC542AEC2AF400C5ADC3 /* Toast.swift */,
+				B68B442B2B6C7C9C00CF95AB /* OptionalProtocol.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -5190,60 +5181,48 @@
 		BBA154748909F0AB4121528D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				33ADD77262A88FB18703D47F /* Pods-Tangem.debug(production).xcconfig */,
-				D612C92AE2B99EE97031B064 /* Pods-Tangem.debug(beta).xcconfig */,
-				F90E59661F107D2C0FA0A056 /* Pods-Tangem.debug(alpha).xcconfig */,
-				EC5D4E62935504626E8BF053 /* Pods-Tangem.release(production).xcconfig */,
-				8199B604575CC104C6709FED /* Pods-Tangem.release(beta).xcconfig */,
-				015D6DEE4627C4F5CA839A5A /* Pods-Tangem.release(alpha).xcconfig */,
-				425937FE1F8F15AA6A30D2CB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */,
-				FF6ABEA01A10CCDECD05E370 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */,
-				6F8576D25357E9065454C8B8 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */,
-				2224D1E70296ADA1AD9F2E08 /* Pods-Tangem-TangemUITests.release(production).xcconfig */,
-				CC72A51924645F4D6F105583 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */,
-				FFF10B895AAEAF8525C79E45 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */,
-				1EBD417ABE67BAC4A999BCF7 /* Pods-TangemSwapping.debug(production).xcconfig */,
-				A440C7993F122962DFADF8D9 /* Pods-TangemSwapping.debug(beta).xcconfig */,
-				8C4DF77683A5CBAD41D03966 /* Pods-TangemSwapping.debug(alpha).xcconfig */,
-				8D2D1639D7CE4E08554C739B /* Pods-TangemSwapping.release(production).xcconfig */,
-				F9B08290B365259A1A1A10E9 /* Pods-TangemSwapping.release(beta).xcconfig */,
-				0B4ED5E2880744768F9A4451 /* Pods-TangemSwapping.release(alpha).xcconfig */,
-				5A7C9D60893F2D582271600D /* Pods-TangemSwappingTests.debug(production).xcconfig */,
-				9CC2AA18343C123E8B7EBEE2 /* Pods-TangemSwappingTests.debug(beta).xcconfig */,
-				8C390600B80AB4DDCD26B677 /* Pods-TangemSwappingTests.debug(alpha).xcconfig */,
-				7780A56D10C48A025B75F276 /* Pods-TangemSwappingTests.release(production).xcconfig */,
-				FE89229C8C2587A244BE9191 /* Pods-TangemSwappingTests.release(beta).xcconfig */,
-				B92CC5C46156E71BFBFF97A5 /* Pods-TangemSwappingTests.release(alpha).xcconfig */,
-				DBAD97B12E17861F00858ECD /* Pods-TangemTests.debug(production).xcconfig */,
-				E239F9304FDC2B5DD539CAC5 /* Pods-TangemTests.debug(beta).xcconfig */,
-				5D3B8671EF2BD04C6036C38B /* Pods-TangemTests.debug(alpha).xcconfig */,
-				187DB39FEB3E514F0C172A42 /* Pods-TangemTests.release(production).xcconfig */,
-				C022BAFAF750ACD50AF690E4 /* Pods-TangemTests.release(beta).xcconfig */,
-				8CED5CCF1CC0741D1A51F7E7 /* Pods-TangemTests.release(alpha).xcconfig */,
-				FD201C410E0686B6F260B797 /* Pods-TangemExpress.debug(production).xcconfig */,
-				57BFFF25B906DB6F72EAFE64 /* Pods-TangemExpress.debug(beta).xcconfig */,
-				6A5EDD54FFF1FB0C14D29C29 /* Pods-TangemExpress.debug(alpha).xcconfig */,
-				BDA8FCF6A5558BAD5F1FB12A /* Pods-TangemExpress.release(production).xcconfig */,
-				173A8A87B1DFAACD93EBF493 /* Pods-TangemExpress.release(beta).xcconfig */,
-				A81424F4DF28987CBF1494D7 /* Pods-TangemExpress.release(alpha).xcconfig */,
-				CCB86CBD9BBD630EDD2FA5A8 /* Pods-TangemExpressTests.debug(production).xcconfig */,
-				2B3884B87B218CBC2D1C6843 /* Pods-TangemExpressTests.debug(beta).xcconfig */,
-				AE25DC957F12A412F8800143 /* Pods-TangemExpressTests.debug(alpha).xcconfig */,
-				A152C0FD12A4FBCCAFCA9603 /* Pods-TangemExpressTests.release(production).xcconfig */,
-				D2C7B26A91D18117383CB132 /* Pods-TangemExpressTests.release(beta).xcconfig */,
-				312309F588D6E26BA0F793DB /* Pods-TangemExpressTests.release(alpha).xcconfig */,
-				668A523E51B51641CA24E421 /* Pods-TangemVisa.debug(production).xcconfig */,
-				8BB495D8FCBDEE9F5DF09F6F /* Pods-TangemVisa.debug(beta).xcconfig */,
-				E5C6CC12D719E1F33C847923 /* Pods-TangemVisa.debug(alpha).xcconfig */,
-				A3D62B28B293BDAF653E04FE /* Pods-TangemVisa.release(production).xcconfig */,
-				3E39D83D2E16EC6056E5A89D /* Pods-TangemVisa.release(beta).xcconfig */,
-				68A19F71232D205924728D01 /* Pods-TangemVisa.release(alpha).xcconfig */,
-				6DF19E41CF8FB42D761D09AC /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */,
-				F1C52DCAB767131BB8E88395 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */,
-				AC539C3DDD41A50D340E67EB /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */,
-				477AF3E30506F71429E09004 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */,
-				735800DCADBFD4DB02254687 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */,
-				C81047A2E8B7B2795E890285 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */,
+				87F5FDAF1B529E7997840247 /* Pods-Tangem.debug(production).xcconfig */,
+				E01FD1CD620193B996230208 /* Pods-Tangem.debug(beta).xcconfig */,
+				8B5C09B989CB3DF625374D85 /* Pods-Tangem.debug(alpha).xcconfig */,
+				2D59441E8681CFE9E4FA280D /* Pods-Tangem.release(production).xcconfig */,
+				48D5A54B6852CA9F6E84F8AE /* Pods-Tangem.release(beta).xcconfig */,
+				8D2821629B0E8A47B984AA6C /* Pods-Tangem.release(alpha).xcconfig */,
+				08A4E270E441BF7BFB96B8A3 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */,
+				989C373A7357463D2FC9F750 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */,
+				09624AF443B2CDD9E2EF49F5 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */,
+				053D659053757DB4377B8863 /* Pods-Tangem-TangemUITests.release(production).xcconfig */,
+				E2CFD8257668964B96197D57 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */,
+				B890D20E30AA2F985750AD34 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */,
+				6CCDC41C705C736EA38A08A5 /* Pods-TangemExpress.debug(production).xcconfig */,
+				6EB0F692814F64A9949D32B3 /* Pods-TangemExpress.debug(beta).xcconfig */,
+				C126DC19860D6CDFAEFC4E28 /* Pods-TangemExpress.debug(alpha).xcconfig */,
+				EA8B09F82CF18E3C9F4B75CC /* Pods-TangemExpress.release(production).xcconfig */,
+				5CC9E9E7A68394BA86EDDA5C /* Pods-TangemExpress.release(beta).xcconfig */,
+				597BB15A16B7AF397F66D297 /* Pods-TangemExpress.release(alpha).xcconfig */,
+				6C6753DBE5C7EBAE497B32E1 /* Pods-TangemExpressTests.debug(production).xcconfig */,
+				5FC8DFB879AFACD602D83530 /* Pods-TangemExpressTests.debug(beta).xcconfig */,
+				24F54093E659BD0262930336 /* Pods-TangemExpressTests.debug(alpha).xcconfig */,
+				9CDEE8BD423E7F91896C4EC6 /* Pods-TangemExpressTests.release(production).xcconfig */,
+				FB16ABE027A2C81B8BC3A992 /* Pods-TangemExpressTests.release(beta).xcconfig */,
+				FE405A61797AB7D501EF8F2E /* Pods-TangemExpressTests.release(alpha).xcconfig */,
+				C66E9361172BB1E250B04150 /* Pods-TangemTests.debug(production).xcconfig */,
+				AC9C77EF75D649325DBED39F /* Pods-TangemTests.debug(beta).xcconfig */,
+				0FA101035A40E1BFAB7A5034 /* Pods-TangemTests.debug(alpha).xcconfig */,
+				141C71133EF9F30E9278CAC8 /* Pods-TangemTests.release(production).xcconfig */,
+				E7FBEBEA0F7C1EFE1A5B2B65 /* Pods-TangemTests.release(beta).xcconfig */,
+				A21E205336B77789755D1A06 /* Pods-TangemTests.release(alpha).xcconfig */,
+				81C6244A7F13980528590B30 /* Pods-TangemVisa.debug(production).xcconfig */,
+				5D82E9D80E82B775CE2CAD07 /* Pods-TangemVisa.debug(beta).xcconfig */,
+				D8B455D888137B74426EBE7D /* Pods-TangemVisa.debug(alpha).xcconfig */,
+				9AF931FCE69227E0F6F46A21 /* Pods-TangemVisa.release(production).xcconfig */,
+				D3DB7A6CE55ED43FF178B0DA /* Pods-TangemVisa.release(beta).xcconfig */,
+				AD6472250031D0B6E6E374F3 /* Pods-TangemVisa.release(alpha).xcconfig */,
+				93AFFF97582E889BF246C5AA /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */,
+				067BD95883E03A21093FAC42 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */,
+				BD2F86DB81387E370C143B3F /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */,
+				DD72E18767BB639B0402DF85 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */,
+				5649B08FFA72A76E0BD8AAC1 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */,
+				32F980B934315927C3BAC661 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -7235,7 +7214,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77EC24BF56DC00E8695B /* Build configuration list for PBXNativeTarget "Tangem" */;
 			buildPhases = (
-				AB478CFA341E43B7AC23C530 /* [CP] Check Pods Manifest.lock */,
+				CC333131733229DF0A84020A /* [CP] Check Pods Manifest.lock */,
 				EFA18E73290FBA1B00CF1AE4 /* Run SwiftFormat */,
 				DAD2B95229B60131000282F7 /* Sort strings */,
 				DC751ADF2ABB9EBB0039A4D2 /* Headers */,
@@ -7244,8 +7223,8 @@
 				5D3F77C024BF56D800E8695B /* Resources */,
 				B066823E26564ADB00CB86CF /* Embed Foundation Extensions */,
 				EFD32AE229DF1DCB0026353E /* Strip Binary Symbols */,
-				2FB680954A2686E4C41DFA95 /* [CP] Embed Pods Frameworks */,
 				EF9E29632B4F0BB500418559 /* Embed Frameworks */,
+				2CE3DDB21AB4853B31A902BC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7263,7 +7242,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77EF24BF56DC00E8695B /* Build configuration list for PBXNativeTarget "TangemTests" */;
 			buildPhases = (
-				C6DCEBF4E192D43FF2FD8E09 /* [CP] Check Pods Manifest.lock */,
+				D6010A9E6D87D3ED43B5CDA5 /* [CP] Check Pods Manifest.lock */,
 				5D3F77D424BF56DC00E8695B /* Sources */,
 				5D3F77D524BF56DC00E8695B /* Frameworks */,
 				5D3F77D624BF56DC00E8695B /* Resources */,
@@ -7282,11 +7261,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77F224BF56DC00E8695B /* Build configuration list for PBXNativeTarget "TangemUITests" */;
 			buildPhases = (
-				2A6B85FF9C197EB5A699F5A5 /* [CP] Check Pods Manifest.lock */,
+				49ED54455C5FFD7A53077A41 /* [CP] Check Pods Manifest.lock */,
 				5D3F77DF24BF56DC00E8695B /* Sources */,
 				5D3F77E024BF56DC00E8695B /* Frameworks */,
 				5D3F77E124BF56DC00E8695B /* Resources */,
-				45245A9AF9EDA9EFAA9F06B6 /* [CP] Embed Pods Frameworks */,
+				2CD540295D14CE7F9695BD16 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7302,7 +7281,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B09933982B5517EE00240CDB /* Build configuration list for PBXNativeTarget "TangemVisa" */;
 			buildPhases = (
-				B3332ABC665BBC0D92097923 /* [CP] Check Pods Manifest.lock */,
+				9E8C06AA2D9319D355935328 /* [CP] Check Pods Manifest.lock */,
 				B09933722B5517E300240CDB /* Headers */,
 				B09933732B5517E300240CDB /* Sources */,
 				B09933742B5517E300240CDB /* Frameworks */,
@@ -7321,11 +7300,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B09933992B5517EE00240CDB /* Build configuration list for PBXNativeTarget "TangemVisaTests" */;
 			buildPhases = (
-				58FE78BCA12BAF2A97D82B09 /* [CP] Check Pods Manifest.lock */,
+				F722C7887DE2205C2A05F5C6 /* [CP] Check Pods Manifest.lock */,
 				B099337A2B5517E600240CDB /* Sources */,
 				B099337B2B5517E600240CDB /* Frameworks */,
 				B099337C2B5517E600240CDB /* Resources */,
-				13F0467F3B7B1CA3E99EAE54 /* [CP] Embed Pods Frameworks */,
+				43A5846699BB41834370FA23 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -7341,7 +7320,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF9E29AA2B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpress" */;
 			buildPhases = (
-				12ED806B875088DAF0A5CD55 /* [CP] Check Pods Manifest.lock */,
+				A60A1412985F60ADC426AF4E /* [CP] Check Pods Manifest.lock */,
 				EF9E298E2B4F0C8800418559 /* Headers */,
 				EF9E298F2B4F0C8800418559 /* Sources */,
 				EF9E29902B4F0C8800418559 /* Frameworks */,
@@ -7360,7 +7339,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF9E29B12B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpressTests" */;
 			buildPhases = (
-				AF71BF5CDC0E9F8A79E25D6C /* [CP] Check Pods Manifest.lock */,
+				B5FF958203017BFF7D9148ED /* [CP] Check Pods Manifest.lock */,
 				EF9E29982B4F0C8C00418559 /* Sources */,
 				EF9E29992B4F0C8C00418559 /* Frameworks */,
 				EF9E299A2B4F0C8C00418559 /* Resources */,
@@ -7537,29 +7516,41 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		12ED806B875088DAF0A5CD55 /* [CP] Check Pods Manifest.lock */ = {
+		2CD540295D14CE7F9695BD16 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemExpress-checkManifestLockResult.txt",
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		13F0467F3B7B1CA3E99EAE54 /* [CP] Embed Pods Frameworks */ = {
+		2CE3DDB21AB4853B31A902BC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		43A5846699BB41834370FA23 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7576,7 +7567,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2A6B85FF9C197EB5A699F5A5 /* [CP] Check Pods Manifest.lock */ = {
+		49ED54455C5FFD7A53077A41 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7598,107 +7589,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2FB680954A2686E4C41DFA95 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		45245A9AF9EDA9EFAA9F06B6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		58FE78BCA12BAF2A97D82B09 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemVisa-TangemVisaTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AB478CFA341E43B7AC23C530 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Tangem-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AF71BF5CDC0E9F8A79E25D6C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemExpressTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B3332ABC665BBC0D92097923 /* [CP] Check Pods Manifest.lock */ = {
+		9E8C06AA2D9319D355935328 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7720,7 +7611,73 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C6DCEBF4E192D43FF2FD8E09 /* [CP] Check Pods Manifest.lock */ = {
+		A60A1412985F60ADC426AF4E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TangemExpress-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B5FF958203017BFF7D9148ED /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TangemExpressTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CC333131733229DF0A84020A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Tangem-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D6010A9E6D87D3ED43B5CDA5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7798,6 +7755,28 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/bash\nset -e\n\n# Read more: https://www.emergetools.com/blog/posts/how-xcode14-unintentionally-increases-app-size\n# Only do this for \"install builds\"(archive)\n\necho \"🟢 Start strip binary symbols 🧹\"\n\n# Path to the app directory\nAPP_DIR_PATH=\"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}\"\n# Strip main binary\nstrip -rSTx \"${APP_DIR_PATH}/${EXECUTABLE_NAME}\"\n# Path to the Frameworks directory\nAPP_FRAMEWORKS_DIR=\"${APP_DIR_PATH}/Frameworks\"\n\n# Strip symbols from frameworks, if Frameworks/ exists at all\n# ... as long as the framework is NOT signed by Apple\nif [ -d \"$APP_FRAMEWORKS_DIR\" ]; then\n    find \"$APP_FRAMEWORKS_DIR\" -type f -perm +111 -maxdepth 2 -mindepth 2 -exec bash -c 'codesign -v -R=\"anchor apple\" \"{}\" &> /dev/null || (printf \"%s\\\\n\" \"{}\" && strip -rSTx \"{}\")' \\;\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F722C7887DE2205C2A05F5C6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TangemVisa-TangemVisaTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -8742,6 +8721,7 @@
 				DA559C3C2B0261F400F59584 /* SendSummaryView.swift in Sources */,
 				B09381052B29E705001C11E4 /* VisaOnboardingStepsBuilder.swift in Sources */,
 				B0B2DF6026E1FD5400BC0934 /* AnimatedView.swift in Sources */,
+				B68B442C2B6C7C9C00CF95AB /* OptionalProtocol.swift in Sources */,
 				DCD9CBA529F7F4EF00440C93 /* LogFileProvider.swift in Sources */,
 				65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */,
 				EF4535372976C1D80030639A /* FixedSpacer.swift in Sources */,
@@ -9316,13 +9296,13 @@
 		};
 		5D3F77ED24BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 33ADD77262A88FB18703D47F /* Pods-Tangem.debug(production).xcconfig */;
+			baseConfigurationReference = 87F5FDAF1B529E7997840247 /* Pods-Tangem.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -9469,13 +9449,13 @@
 		};
 		5D3F77EE24BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EC5D4E62935504626E8BF053 /* Pods-Tangem.release(production).xcconfig */;
+			baseConfigurationReference = 2D59441E8681CFE9E4FA280D /* Pods-Tangem.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -9622,7 +9602,7 @@
 		};
 		5D3F77F024BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DBAD97B12E17861F00858ECD /* Pods-TangemTests.debug(production).xcconfig */;
+			baseConfigurationReference = C66E9361172BB1E250B04150 /* Pods-TangemTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -9645,7 +9625,7 @@
 		};
 		5D3F77F124BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 187DB39FEB3E514F0C172A42 /* Pods-TangemTests.release(production).xcconfig */;
+			baseConfigurationReference = 141C71133EF9F30E9278CAC8 /* Pods-TangemTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -9669,7 +9649,7 @@
 		};
 		5D3F77F324BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 425937FE1F8F15AA6A30D2CB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */;
+			baseConfigurationReference = 08A4E270E441BF7BFB96B8A3 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -9691,7 +9671,7 @@
 		};
 		5D3F77F424BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2224D1E70296ADA1AD9F2E08 /* Pods-Tangem-TangemUITests.release(production).xcconfig */;
+			baseConfigurationReference = 053D659053757DB4377B8863 /* Pods-Tangem-TangemUITests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -9714,7 +9694,7 @@
 		};
 		B099338C2B5517EE00240CDB /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 668A523E51B51641CA24E421 /* Pods-TangemVisa.debug(production).xcconfig */;
+			baseConfigurationReference = 81C6244A7F13980528590B30 /* Pods-TangemVisa.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -9809,7 +9789,7 @@
 		};
 		B099338D2B5517EE00240CDB /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8BB495D8FCBDEE9F5DF09F6F /* Pods-TangemVisa.debug(beta).xcconfig */;
+			baseConfigurationReference = 5D82E9D80E82B775CE2CAD07 /* Pods-TangemVisa.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -9903,7 +9883,7 @@
 		};
 		B099338E2B5517EE00240CDB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E5C6CC12D719E1F33C847923 /* Pods-TangemVisa.debug(alpha).xcconfig */;
+			baseConfigurationReference = D8B455D888137B74426EBE7D /* Pods-TangemVisa.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -9997,7 +9977,7 @@
 		};
 		B099338F2B5517EE00240CDB /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A3D62B28B293BDAF653E04FE /* Pods-TangemVisa.release(production).xcconfig */;
+			baseConfigurationReference = 9AF931FCE69227E0F6F46A21 /* Pods-TangemVisa.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -10085,7 +10065,7 @@
 		};
 		B09933902B5517EE00240CDB /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3E39D83D2E16EC6056E5A89D /* Pods-TangemVisa.release(beta).xcconfig */;
+			baseConfigurationReference = D3DB7A6CE55ED43FF178B0DA /* Pods-TangemVisa.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -10173,7 +10153,7 @@
 		};
 		B09933912B5517EE00240CDB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 68A19F71232D205924728D01 /* Pods-TangemVisa.release(alpha).xcconfig */;
+			baseConfigurationReference = AD6472250031D0B6E6E374F3 /* Pods-TangemVisa.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -10261,7 +10241,7 @@
 		};
 		B09933922B5517EE00240CDB /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6DF19E41CF8FB42D761D09AC /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */;
+			baseConfigurationReference = 93AFFF97582E889BF246C5AA /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10339,7 +10319,7 @@
 		};
 		B09933932B5517EE00240CDB /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1C52DCAB767131BB8E88395 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */;
+			baseConfigurationReference = 067BD95883E03A21093FAC42 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10417,7 +10397,7 @@
 		};
 		B09933942B5517EE00240CDB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC539C3DDD41A50D340E67EB /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */;
+			baseConfigurationReference = BD2F86DB81387E370C143B3F /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10495,7 +10475,7 @@
 		};
 		B09933952B5517EE00240CDB /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 477AF3E30506F71429E09004 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */;
+			baseConfigurationReference = DD72E18767BB639B0402DF85 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10566,7 +10546,7 @@
 		};
 		B09933962B5517EE00240CDB /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 735800DCADBFD4DB02254687 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */;
+			baseConfigurationReference = 5649B08FFA72A76E0BD8AAC1 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10637,7 +10617,7 @@
 		};
 		B09933972B5517EE00240CDB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C81047A2E8B7B2795E890285 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */;
+			baseConfigurationReference = 32F980B934315927C3BAC661 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -10774,13 +10754,13 @@
 		};
 		EF2EFDD22865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D612C92AE2B99EE97031B064 /* Pods-Tangem.debug(beta).xcconfig */;
+			baseConfigurationReference = E01FD1CD620193B996230208 /* Pods-Tangem.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEPLOYMENT_POSTPROCESSING = NO;
@@ -10925,7 +10905,7 @@
 		};
 		EF2EFDD32865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E239F9304FDC2B5DD539CAC5 /* Pods-TangemTests.debug(beta).xcconfig */;
+			baseConfigurationReference = AC9C77EF75D649325DBED39F /* Pods-TangemTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -10948,7 +10928,7 @@
 		};
 		EF2EFDD42865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF6ABEA01A10CCDECD05E370 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */;
+			baseConfigurationReference = 989C373A7357463D2FC9F750 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -11031,13 +11011,13 @@
 		};
 		EF2EFDD72865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8199B604575CC104C6709FED /* Pods-Tangem.release(beta).xcconfig */;
+			baseConfigurationReference = 48D5A54B6852CA9F6E84F8AE /* Pods-Tangem.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -11184,7 +11164,7 @@
 		};
 		EF2EFDD82865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C022BAFAF750ACD50AF690E4 /* Pods-TangemTests.release(beta).xcconfig */;
+			baseConfigurationReference = E7FBEBEA0F7C1EFE1A5B2B65 /* Pods-TangemTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -11208,7 +11188,7 @@
 		};
 		EF2EFDD92865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CC72A51924645F4D6F105583 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */;
+			baseConfigurationReference = E2CFD8257668964B96197D57 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -11231,7 +11211,7 @@
 		};
 		EF9E29AB2B4F0C9D00418559 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FD201C410E0686B6F260B797 /* Pods-TangemExpress.debug(production).xcconfig */;
+			baseConfigurationReference = 6CCDC41C705C736EA38A08A5 /* Pods-TangemExpress.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11323,7 +11303,7 @@
 		};
 		EF9E29AC2B4F0C9D00418559 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57BFFF25B906DB6F72EAFE64 /* Pods-TangemExpress.debug(beta).xcconfig */;
+			baseConfigurationReference = 6EB0F692814F64A9949D32B3 /* Pods-TangemExpress.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11415,7 +11395,7 @@
 		};
 		EF9E29AD2B4F0C9D00418559 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6A5EDD54FFF1FB0C14D29C29 /* Pods-TangemExpress.debug(alpha).xcconfig */;
+			baseConfigurationReference = C126DC19860D6CDFAEFC4E28 /* Pods-TangemExpress.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11507,7 +11487,7 @@
 		};
 		EF9E29AE2B4F0C9D00418559 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BDA8FCF6A5558BAD5F1FB12A /* Pods-TangemExpress.release(production).xcconfig */;
+			baseConfigurationReference = EA8B09F82CF18E3C9F4B75CC /* Pods-TangemExpress.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11592,7 +11572,7 @@
 		};
 		EF9E29AF2B4F0C9D00418559 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 173A8A87B1DFAACD93EBF493 /* Pods-TangemExpress.release(beta).xcconfig */;
+			baseConfigurationReference = 5CC9E9E7A68394BA86EDDA5C /* Pods-TangemExpress.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11677,7 +11657,7 @@
 		};
 		EF9E29B02B4F0C9D00418559 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A81424F4DF28987CBF1494D7 /* Pods-TangemExpress.release(alpha).xcconfig */;
+			baseConfigurationReference = 597BB15A16B7AF397F66D297 /* Pods-TangemExpress.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -11762,7 +11742,7 @@
 		};
 		EF9E29B22B4F0C9D00418559 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCB86CBD9BBD630EDD2FA5A8 /* Pods-TangemExpressTests.debug(production).xcconfig */;
+			baseConfigurationReference = 6C6753DBE5C7EBAE497B32E1 /* Pods-TangemExpressTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -11840,7 +11820,7 @@
 		};
 		EF9E29B32B4F0C9D00418559 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B3884B87B218CBC2D1C6843 /* Pods-TangemExpressTests.debug(beta).xcconfig */;
+			baseConfigurationReference = 5FC8DFB879AFACD602D83530 /* Pods-TangemExpressTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -11918,7 +11898,7 @@
 		};
 		EF9E29B42B4F0C9D00418559 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE25DC957F12A412F8800143 /* Pods-TangemExpressTests.debug(alpha).xcconfig */;
+			baseConfigurationReference = 24F54093E659BD0262930336 /* Pods-TangemExpressTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -11996,7 +11976,7 @@
 		};
 		EF9E29B52B4F0C9D00418559 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A152C0FD12A4FBCCAFCA9603 /* Pods-TangemExpressTests.release(production).xcconfig */;
+			baseConfigurationReference = 9CDEE8BD423E7F91896C4EC6 /* Pods-TangemExpressTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -12067,7 +12047,7 @@
 		};
 		EF9E29B62B4F0C9D00418559 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D2C7B26A91D18117383CB132 /* Pods-TangemExpressTests.release(beta).xcconfig */;
+			baseConfigurationReference = FB16ABE027A2C81B8BC3A992 /* Pods-TangemExpressTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -12138,7 +12118,7 @@
 		};
 		EF9E29B72B4F0C9D00418559 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 312309F588D6E26BA0F793DB /* Pods-TangemExpressTests.release(alpha).xcconfig */;
+			baseConfigurationReference = FE405A61797AB7D501EF8F2E /* Pods-TangemExpressTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -12275,13 +12255,13 @@
 		};
 		EFF5CF1028C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F90E59661F107D2C0FA0A056 /* Pods-Tangem.debug(alpha).xcconfig */;
+			baseConfigurationReference = 8B5C09B989CB3DF625374D85 /* Pods-Tangem.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEPLOYMENT_POSTPROCESSING = NO;
@@ -12426,7 +12406,7 @@
 		};
 		EFF5CF1228C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D3B8671EF2BD04C6036C38B /* Pods-TangemTests.debug(alpha).xcconfig */;
+			baseConfigurationReference = 0FA101035A40E1BFAB7A5034 /* Pods-TangemTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -12449,7 +12429,7 @@
 		};
 		EFF5CF1328C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6F8576D25357E9065454C8B8 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */;
+			baseConfigurationReference = 09624AF443B2CDD9E2EF49F5 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -12532,13 +12512,13 @@
 		};
 		EFF5CF1528C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 015D6DEE4627C4F5CA839A5A /* Pods-Tangem.release(alpha).xcconfig */;
+			baseConfigurationReference = 8D2821629B0E8A47B984AA6C /* Pods-Tangem.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CODE_SIGN_ENTITLEMENTS = $ENTITLEMENTS_PATH;
+				CODE_SIGN_ENTITLEMENTS = "$ENTITLEMENTS_PATH";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -12685,7 +12665,7 @@
 		};
 		EFF5CF1728C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CED5CCF1CC0741D1A51F7E7 /* Pods-TangemTests.release(alpha).xcconfig */;
+			baseConfigurationReference = A21E205336B77789755D1A06 /* Pods-TangemTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -12709,7 +12689,7 @@
 		};
 		EFF5CF1828C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFF10B895AAEAF8525C79E45 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */;
+			baseConfigurationReference = B890D20E30AA2F985750AD34 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";

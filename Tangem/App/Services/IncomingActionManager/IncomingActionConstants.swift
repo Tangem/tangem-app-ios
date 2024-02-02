@@ -15,5 +15,6 @@ enum IncomingActionConstants {
     static let ndefURL = "\(appTangemDomain)/ndef"
     static let externalRedirectURL = "\(tangemDomain)/redirect"
     static let universalLinkRedirectURL = "\(universalLinkScheme)redirect"
+    static let externalSuccessURL = "\(tangemDomain)/success"
     static let incoimingActionName = "action"
 }
