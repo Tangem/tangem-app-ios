@@ -47,7 +47,6 @@ struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
         ZStack(alignment: alignment) {
             HStack(alignment: .center, spacing: 8) {
                 textField
-                    .border(Color.orange)
 
                 if let suffix {
                     Text(suffix)
@@ -64,7 +63,6 @@ struct FocusedDecimalNumberTextField<ToolbarButton: View>: View {
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
                 .frame(height: textFieldSize.height)
-                .border(Color.green)
                 .onTapGesture {
                     isInputActive = true
                 }
