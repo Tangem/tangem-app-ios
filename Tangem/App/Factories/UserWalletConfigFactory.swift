@@ -22,7 +22,7 @@ struct UserWalletConfigFactory {
     func makeConfig() -> UserWalletConfig {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
-        let isRing = cardInfo.card.batchId == "AC17"
+        let isRing = cardInfo.card.batchId == "AC17" || cardInfo.card.batchId == "BA01"
 
         switch cardInfo.walletData {
         case .none:
