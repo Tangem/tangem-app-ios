@@ -36,10 +36,12 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
     )
 
     let userTokenListManager: UserTokenListManager
-
-    private let keysRepository: KeysRepository
+    let keysRepository: KeysRepository
     private let walletManagersRepository: WalletManagersRepository
     private let cardImageProvider = CardImageProvider()
+
+    private var associatedCardIds: Set<String>
+    private var hasBackupErrors: Bool
 
     lazy var derivationManager: DerivationManager? = {
         guard config.hasFeature(.hdWallets) else {
@@ -75,10 +77,6 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
         config.emailConfig
     }
 
-    var name: String {
-        cardInfo.name
-    }
-
     let userWalletId: UserWalletId
 
     lazy var totalBalanceProvider: TotalBalanceProviding = TotalBalanceProvider(
@@ -89,18 +87,6 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
     private(set) var cardInfo: CardInfo
     private var tangemSdk: TangemSdk?
     var config: UserWalletConfig
-
-    var userWallet: StoredUserWallet {
-        StoredUserWalletFactory().userWallet(from: cardInfo, config: config, userWalletId: userWalletId)
-    }
-
-    private var isActive: Bool {
-        if let selectedUserWalletId = userWalletRepository.selectedUserWalletId {
-            return selectedUserWalletId == userWalletId.value
-        } else {
-            return true
-        }
-    }
 
     private let _updatePublisher: PassthroughSubject<Void, Never> = .init()
     private let _userWalletNamePublisher: CurrentValueSubject<String, Never>
@@ -117,11 +103,15 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
     convenience init?(userWallet: StoredUserWallet) {
         let cardInfo = userWallet.cardInfo()
         self.init(cardInfo: cardInfo)
+        hasBackupErrors = userWallet.hasBackupErrors ?? false
+        let allIds = associatedCardIds.union(userWallet.associatedCardIds)
+        associatedCardIds = allIds
     }
 
     init?(cardInfo: CardInfo) {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
-
+        associatedCardIds = [cardInfo.card.cardId]
+        hasBackupErrors = false
         guard let userWalletIdSeed = config.userWalletIdSeed,
               let walletManagerFactory = try? config.makeAnyWalletManagerFactory() else {
             return nil
@@ -173,10 +163,26 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
     }
 
     func validate() -> Bool {
-        if userWallet.hasBackupErrors == true {
+        if hasBackupErrors {
             return false
         }
 
+        return validateInternal(cardInfo.card)
+    }
+
+    private func validateInternal(_ card: CardDTO) -> Bool {
+        guard validateCurves(card.wallets.map { $0.curve }) else {
+            return false
+        }
+
+        guard validateBackup(card.backupStatus, wallets: card.wallets) else {
+            return false
+        }
+
+        return true
+    }
+
+    private func validateCurves(_ curves: [EllipticCurve]) -> Bool {
         var expectedCurves = config.mandatoryCurves
         /// Since the curve `bls12381_G2_AUG` was added later into first generation of wallets,, we cannot determine whether this curve is missing due to an error or because the user did not want to recreate the wallet.
         if config is GenericConfig {
@@ -184,12 +190,16 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
         }
 
         let curvesValidator = CurvesValidator(expectedCurves: expectedCurves)
-        if !curvesValidator.validate(card.wallets.map { $0.curve }) {
+        if !curvesValidator.validate(curves) {
             return false
         }
 
+        return true
+    }
+
+    private func validateBackup(_ backupStatus: Card.BackupStatus?, wallets: [CardDTO.Wallet]) -> Bool {
         let backupValidator = BackupValidator()
-        if !backupValidator.validate(backupStatus: card.backupStatus, wallets: cardInfo.card.wallets) {
+        if !backupValidator.validate(backupStatus: card.backupStatus, wallets: wallets) {
             return false
         }
 
@@ -222,8 +232,8 @@ class CommonUserWalletModel: Identifiable, ObservableObject {
         _signer = config.tangemSigner
         updateModel()
         // prevent save until onboarding completed
-        if userWalletRepository.contains(userWallet) {
-            userWalletRepository.save(userWallet)
+        if userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) != nil {
+            userWalletRepository.save()
         }
         _updatePublisher.send()
     }
@@ -262,6 +272,14 @@ extension CommonUserWalletModel: TangemSdkFactory {
 // MARK: - UserWalletModel
 
 extension CommonUserWalletModel: UserWalletModel {
+    var name: String {
+        cardInfo.name
+    }
+
+    var totalSignedHashes: Int {
+        cardInfo.card.wallets.compactMap { $0.totalSignedHashes }.reduce(0, +)
+    }
+
     var analyticsContextData: AnalyticsContextData {
         AnalyticsContextData(
             card: cardInfo.card,
@@ -315,7 +333,7 @@ extension CommonUserWalletModel: UserWalletModel {
         let factory = TwinInputFactory(
             firstCardId: cardInfo.card.cardId,
             cardInput: .userWalletModel(self),
-            userWalletToDelete: userWallet,
+            userWalletToDelete: userWalletId,
             twinData: twinData,
             sdkFactory: config
         )
@@ -349,6 +367,7 @@ extension CommonUserWalletModel: UserWalletModel {
     func updateWalletName(_ name: String) {
         cardInfo.name = name
         _userWalletNamePublisher.send(name)
+        userWalletRepository.save()
     }
 
     func onBackupCreated(_ card: Card) {
@@ -361,6 +380,22 @@ extension CommonUserWalletModel: UserWalletModel {
         cardInfo.card.backupStatus = card.backupStatus
         onUpdate()
     }
+
+    func addAssociatedCard(_ card: Card) {
+        let cardDTO = CardDTO(card: card)
+        let cardInfo = CardInfo(card: cardDTO, walletData: .none, name: "")
+        guard let userWalletId = UserWalletIdFactory().userWalletId(from: cardInfo),
+              userWalletId == self.userWalletId,
+              !associatedCardIds.contains(card.cardId) else {
+            return
+        }
+
+        associatedCardIds.insert(card.cardId)
+
+        if !validateInternal(cardDTO) {
+            hasBackupErrors = true
+        }
+    }
 }
 
 extension CommonUserWalletModel: MainHeaderSupplementInfoProvider {
@@ -370,7 +405,7 @@ extension CommonUserWalletModel: MainHeaderSupplementInfoProvider {
 }
 
 extension CommonUserWalletModel: MainHeaderUserWalletStateInfoProvider {
-    var isUserWalletLocked: Bool { userWallet.isLocked }
+    var isUserWalletLocked: Bool { false }
 
     var isTokensListEmpty: Bool { userTokenListManager.userTokensList.entries.isEmpty }
 }
@@ -385,7 +420,7 @@ extension CommonUserWalletModel: DerivationManagerDelegate {
             }
         }
 
-        userWalletRepository.save(userWallet)
+        userWalletRepository.save()
     }
 }
 
@@ -409,5 +444,23 @@ extension CommonUserWalletModel: AnalyticsContextDataProvider {
             userWalletId: userWalletId.value,
             embeddedEntry: config.embeddedBlockchain
         )
+    }
+}
+
+extension CommonUserWalletModel: UserWalletSerializable {
+    func serialize() -> StoredUserWallet {
+        let name = name.isEmpty ? config.cardName : name
+
+        let newStoredUserWallet = StoredUserWallet(
+            userWalletId: userWalletId.value,
+            name: name,
+            card: cardInfo.card,
+            associatedCardIds: associatedCardIds,
+            walletData: cardInfo.walletData,
+            artwork: cardInfo.artwork.artworkInfo,
+            hasBackupErrors: hasBackupErrors
+        )
+
+        return newStoredUserWallet
     }
 }

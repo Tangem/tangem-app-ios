@@ -16,18 +16,21 @@ protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProvidin
     var hasBackupCards: Bool { get }
     var config: UserWalletConfig { get }
     var userWalletId: UserWalletId { get }
-    var userWallet: StoredUserWallet { get }
     var tangemApiAuthData: TangemApiTarget.AuthData { get }
     var walletModelsManager: WalletModelsManager { get }
     var userTokensManager: UserTokensManager { get }
     var userTokenListManager: UserTokenListManager { get }
+    var keysRepository: KeysRepository { get }
     var signer: TangemSigner { get }
     var updatePublisher: AnyPublisher<Void, Never> { get }
     var emailData: [EmailCollectedData] { get }
     var backupInput: OnboardingInput? { get } // TODO: refactor
     var twinInput: OnboardingInput? { get }
     var cardImagePublisher: AnyPublisher<CardImageResult, Never> { get }
-    func updateWalletName(_ name: String)
+    var totalSignedHashes: Int { get }
+    var name: String { get }
     func validate() -> Bool
     func onBackupCreated(_ card: Card)
+    func updateWalletName(_ name: String)
+    func addAssociatedCard(_ card: Card)
 }

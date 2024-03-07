@@ -17,7 +17,7 @@ struct OnboardingInput { // TODO: Split to coordinator options and input
     let cardInput: CardInput
     let twinData: TwinData?
     var isStandalone = false
-    var userWalletToDelete: StoredUserWallet? // for twins. TODO: refactor UserWalletRepository to remove this
+    var userWalletToDelete: UserWalletId? // for twins. TODO: refactor UserWalletRepository to remove this
 }
 
 extension OnboardingInput {

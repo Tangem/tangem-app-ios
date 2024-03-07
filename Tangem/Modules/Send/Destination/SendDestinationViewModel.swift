@@ -82,7 +82,7 @@ class SendDestinationViewModel: ObservableObject {
                 guard let walletModel else { return nil }
 
                 return SendSuggestedDestinationWallet(
-                    name: userWalletModel.userWallet.name,
+                    name: userWalletModel.name,
                     address: walletModel.defaultAddress
                 )
             }

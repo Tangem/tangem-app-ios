@@ -71,7 +71,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
         self.dataSource = networkDataSource
         self.userWalletModel = userWalletModel
         canSelectWallet = networkDataSource.userWalletModels.count > 1
-        selectedWalletName = userWalletModel.userWallet.name
+        selectedWalletName = userWalletModel.name
 
         bind()
     }
@@ -109,7 +109,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     }
 
     func setSelectedWallet(userWalletModel: UserWalletModel) {
-        selectedWalletName = userWalletModel.userWallet.name
+        selectedWalletName = userWalletModel.name
         settings = Self.makeSettings(userWalletModel: userWalletModel)
 
         updateDefaultDerivationOption()

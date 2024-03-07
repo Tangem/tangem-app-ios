@@ -160,10 +160,8 @@ final class UserWalletNotificationManager {
 
     // TODO: Move this logic into separate entity (IOS-4430)
     private func validateHashesCount() {
-        let card = userWalletModel.userWallet.card
         let config = userWalletModel.config
-        let cardId = card.cardId
-        let cardSignedHashes = card.walletSignedHashes
+        let cardSignedHashes = userWalletModel.totalSignedHashes
         let isMultiWallet = config.hasFeature(.multiCurrency)
         let canCountHashes = config.hasFeature(.signedHashesCounter)
 
@@ -171,7 +169,7 @@ final class UserWalletNotificationManager {
             AppLog.shared.debug("⚠️ Hashes counted")
         }
 
-        guard !AppSettings.shared.validatedSignedHashesCards.contains(cardId) else {
+        guard !AppSettings.shared.validatedSignedHashesCards.contains(userWalletModel.userWalletId.stringValue) else {
             didFinishCountingHashes()
             return
         }
@@ -244,8 +242,7 @@ final class UserWalletNotificationManager {
     }
 
     private func recordUserWalletHashesCountValidation() {
-        let cardId = userWalletModel.userWallet.card.cardId
-        AppSettings.shared.validatedSignedHashesCards.append(cardId)
+        AppSettings.shared.validatedSignedHashesCards.append(userWalletModel.userWalletId.stringValue)
     }
 
     private func recordDeprecationNotificationDismissal() {

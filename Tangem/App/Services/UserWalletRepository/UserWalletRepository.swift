@@ -12,28 +12,18 @@ import Combine
 protocol UserWalletRepository: Initializable {
     var hasSavedWallets: Bool { get }
     var models: [UserWalletModel] { get }
-    var userWallets: [StoredUserWallet] { get }
     var selectedModel: UserWalletModel? { get }
     var selectedUserWalletId: Data? { get }
     var selectedIndexUserWalletModel: Int? { get }
-    var isEmpty: Bool { get }
-    var count: Int { get }
-    var isLocked: Bool { get }
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> { get }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func setSelectedUserWalletId(_ userWalletId: Data?, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
     func logoutIfNeeded()
-
     func add(_ userWalletModel: UserWalletModel)
-    func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void)
-    // use this method for saving. TODO: refactor
-    func save(_ userWalletModel: UserWalletModel)
-    func contains(_ userWallet: StoredUserWallet) -> Bool
-    // use this method for updating. TODO: refactor
-    func save(_ userWallet: StoredUserWallet)
     func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool)
+    func save()
     func clearNonSelectedUserWallets()
     func initializeServices(for userWalletModel: UserWalletModel)
     func initialClean()
@@ -80,11 +70,11 @@ enum UserWalletRepositoryEvent {
     case locked(reason: UserWalletRepositoryLockReason)
     case biometryUnlocked
     case scan(isScanning: Bool)
-    case inserted(userWallet: StoredUserWallet)
-    case updated(userWalletModel: UserWalletModel)
-    case deleted(userWalletIds: [Data])
-    case selected(userWallet: StoredUserWallet, reason: UserWalletRepositorySelectionChangeReason)
-    case replaced(userWallet: StoredUserWallet)
+    case inserted(userWalletId: UserWalletId)
+    case updated(userWalletId: UserWalletId)
+    case deleted(userWalletIds: [UserWalletId])
+    case selected(userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason)
+    case replaced(userWalletId: UserWalletId)
 }
 
 enum UserWalletRepositorySelectionChangeReason {
@@ -100,7 +90,7 @@ enum UserWalletRepositoryLockReason {
 
 enum UserWalletRepositoryUnlockMethod {
     case biometry
-    case card(userWallet: StoredUserWallet?)
+    case card(userWalletId: UserWalletId?)
 }
 
 enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {

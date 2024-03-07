@@ -11,12 +11,13 @@ import Combine
 import TangemSdk
 
 class UserWalletModelMock: UserWalletModel {
+    var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var name: String { "" }
     var hasBackupCards: Bool { false }
     var emailConfig: EmailConfig? { nil }
     var tokensCount: Int? { 7 }
     var config: UserWalletConfig { fatalError("UserWalletConfigMock doesn't exist") }
     var userWalletId: UserWalletId { .init(value: Data()) }
-    var userWallet: StoredUserWallet { fatalError("UserWalletMock doesn't exist") }
 
     var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
 
@@ -66,6 +67,8 @@ class UserWalletModelMock: UserWalletModel {
         CommonWalletConnectWalletModelProvider(walletModelsManager: walletModelsManager)
     }
 
+    var totalSignedHashes: Int { 0 }
+
     func updateWalletName(_ name: String) {}
 
     func getAnalyticsContextData() -> AnalyticsContextData? { nil }
@@ -73,4 +76,6 @@ class UserWalletModelMock: UserWalletModel {
     func validate() -> Bool { true }
 
     func onBackupCreated(_ card: Card) {}
+
+    func addAssociatedCard(_ card: Card) {}
 }

@@ -90,7 +90,7 @@ class OnboardingInputFactory {
 
 class TwinInputFactory {
     private let cardInput: OnboardingInput.CardInput
-    private let userWalletToDelete: StoredUserWallet? // Delete on retwin
+    private let userWalletToDelete: UserWalletId? // Delete on retwin
     private let twinData: TwinData
     private let sdkFactory: TangemSdkFactory & BackupServiceFactory
     private let firstCardId: String
@@ -98,7 +98,7 @@ class TwinInputFactory {
     init(
         firstCardId: String,
         cardInput: OnboardingInput.CardInput,
-        userWalletToDelete: StoredUserWallet?,
+        userWalletToDelete: UserWalletId?,
         twinData: TwinData,
         sdkFactory: TangemSdkFactory & BackupServiceFactory
     ) {

@@ -278,7 +278,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     private let backupService: BackupService
     private var cardInitializer: CardInitializable?
-    private var backupContextManager: BackupContextManager?
 
     // MARK: - Initializer
 
@@ -301,10 +300,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
         if let customOnboardingImage = input.cardInput.config?.customOnboardingImage {
             self.customOnboardingImage = customOnboardingImage.image
-        }
-
-        if let userWalletModel {
-            backupContextManager = BackupContextManager(userWalletModel: userWalletModel)
         }
 
         bind()
@@ -654,10 +649,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             case .success(let cardInfo):
                 initializeUserWallet(from: cardInfo)
 
-                if let userWalletModel {
-                    backupContextManager = BackupContextManager(userWalletModel: userWalletModel)
-                }
-
                 if let primaryCard = cardInfo.primaryCard {
                     backupService.setPrimaryCard(primaryCard)
                 }
@@ -765,10 +756,9 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                         switch result {
                         case .success(let updatedCard):
-                            self.backupContextManager?.onProceedBackup(updatedCard)
+                            self.userWalletModel?.addAssociatedCard(updatedCard)
                             if updatedCard.cardId == self.backupService.primaryCard?.cardId {
                                 self.userWalletModel?.onBackupCreated(updatedCard)
-                                self.backupContextManager?.onCompleteBackup()
                             }
 
                             if self.backupServiceState == .finished {

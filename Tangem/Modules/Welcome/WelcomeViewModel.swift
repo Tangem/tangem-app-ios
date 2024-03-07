@@ -78,7 +78,7 @@ class WelcomeViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .welcome)
 
-        userWalletRepository.unlock(with: .card(userWallet: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil)) { [weak self] result in
             self?.isScanningCard = false
 
             if result?.isSuccess != true {

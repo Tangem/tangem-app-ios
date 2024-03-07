@@ -62,7 +62,7 @@ final class AuthViewModel: ObservableObject {
                 let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeBiometrics.rawValue,
-                    .walletsCount: "\(userWalletRepository.count)",
+                    .walletsCount: "\(userWalletRepository.models.count)",
                     .walletHasBackup: walletHasBackup.rawValue,
                 ])
             default:
@@ -75,7 +75,7 @@ final class AuthViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .auth)
 
-        userWalletRepository.unlock(with: .card(userWallet: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil)) { [weak self] result in
             guard let self else { return }
 
             didFinishUnlocking(result)
@@ -85,7 +85,7 @@ final class AuthViewModel: ObservableObject {
                 let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
-                    .walletsCount: "\(userWalletRepository.count)",
+                    .walletsCount: "\(userWalletRepository.models.count)",
                     .walletHasBackup: walletHasBackup.rawValue,
                 ])
             default:

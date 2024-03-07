@@ -75,7 +75,7 @@ class VisaWalletModel {
             logger: AppLog.shared
         )
         let cardPublicKey: String
-        if let wallet = userWalletModel.userWallet.card.wallets.first(where: { $0.curve == .secp256k1 }) {
+        if let wallet = userWalletModel.keysRepository.keys.first(where: { $0.curve == .secp256k1 }) {
             cardPublicKey = wallet.publicKey.hexString
         } else {
             cardPublicKey = "Failed to find secp256k1 key"
