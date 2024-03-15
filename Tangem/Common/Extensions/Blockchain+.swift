@@ -49,16 +49,6 @@ extension Blockchain {
 
     /// Should be used to get a filled icon from the`Tokens.xcassets` file
     var iconNameFilled: String { "\(iconName).fill" }
-
-    // We can't sign transactions at legacy devices for this blockchains
-    var hasLongTransactions: Bool {
-        switch self {
-        case .solana, .chia:
-            return true
-        default:
-            return false
-        }
-    }
 }
 
 // MARK: - Blockchain ID

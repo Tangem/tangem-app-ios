@@ -132,7 +132,40 @@ final class WalletConnectV2Service {
         }
     }
 
+    private func checkSocketConnection() async -> Bool {
+        guard let socket = factory.lastCreatetSocket else {
+            return false
+        }
+
+        if socket.currentState == .connected {
+            return true
+        }
+
+        do {
+            let newState = try await socket.statePublisher
+                .filter { $0 == .connected }
+                .eraseError()
+                .timeout(.seconds(10), scheduler: DispatchQueue.main, customError: {
+                    WalletConnectV2Error.socketConnectionTimeout
+                })
+                .eraseToAnyPublisher()
+                .async()
+
+            return newState == .connected
+        } catch {
+            log("Failed to get new connection state.\nError: \(error)")
+            return false
+        }
+    }
+
     private func pairClient(with url: WalletConnectURI) async {
+        guard await checkSocketConnection() else {
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionTimeout)
+            displayErrorUI(WalletConnectV2Error.socketIsNotConnected)
+            canEstablishNewSessionSubject.send(true)
+            return
+        }
+
         log("Trying to pair client: \(url)")
         do {
             try await pairApi.pair(uri: url)
