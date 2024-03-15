@@ -67,23 +67,16 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             throw WalletConnectV2Error.missingTransaction
         }
 
-        _ = try await walletModel.send(transaction, signer: signer).async()
+        let txResult = try await walletModel.send(transaction, signer: signer).async()
 
         Analytics.log(.transactionSent, params: [.commonSource: .transactionSourceWalletConnect])
 
-        let selectedAction = await uiDelegate.getResponseFromUser(with: WalletConnectAsyncUIRequest<RPCResult>(
+        uiDelegate.showScreen(with: .init(
             event: .success,
             message: Localization.sendTransactionSuccess,
-            approveAction: { [weak self] in
-                guard let lastTx = self?.walletModel.wallet.pendingTransactions.last else {
-                    throw WalletConnectV2Error.transactionSentButNotFoundInManager
-                }
-
-                return RPCResult.response(AnyCodable(lastTx.hash))
-            },
-            rejectAction: { throw WalletConnectV2Error.unknown("Impossible case") }
+            approveAction: {}
         ))
 
-        return try await selectedAction()
+        return RPCResult.response(AnyCodable(txResult.hash))
     }
 }

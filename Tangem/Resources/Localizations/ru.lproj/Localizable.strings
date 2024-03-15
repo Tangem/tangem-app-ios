@@ -709,6 +709,8 @@
 "warning_send_blocked_pending_transactions_in_blockchain_message" = "Отправка средств станет доступной после завершения транзакции(-ий) в сети %@";
 "warning_send_blocked_pending_transactions_message" = "Отправка средств станет доступной после завершения транзакции %@";
 "warning_send_blocked_pending_transactions_title" = "Транзакция в обработке";
+"warning_solana_fee_message" = "Из-за высокой загрузки сети Solana обработка транзакций может занимать значительное время.";
+"warning_solana_fee_title" = "Оповещение сети Солана";
 "warning_solana_rent_fee_message" = "Сеть Solana взимает арендную плату в размере %1$@ каждые 2 дня. Аккаунты, которые не могут позволить себе арендную плату, удаляются из сети. Пополните свой счет более чем на %2$@, чтобы не платить арендную плату.";
 "warning_some_networks_unreachable_message" = "Некоторые сети в настоящее время недоступны. Пожалуйста, повторите попытку позже.";
 "warning_some_networks_unreachable_title" = "Некоторые сети недоступны";

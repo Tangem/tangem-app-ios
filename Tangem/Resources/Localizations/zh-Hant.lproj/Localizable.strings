@@ -709,6 +709,8 @@
 "warning_send_blocked_pending_transactions_in_blockchain_message" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
 "warning_send_blocked_pending_transactions_message" = "Sending funds will be available once the %@ transaction is complete";
 "warning_send_blocked_pending_transactions_title" = "Transaction pending";
+"warning_solana_fee_message" = "Due to high Solana network congestion, transaction processing may be significantly delayed.";
+"warning_solana_fee_title" = "Solana Network Alert";
 "warning_solana_rent_fee_message" = "Solana 網絡每 2 天收取 %1$@ 的費用。無法付此費用的帳戶將從網絡中清除。向您的帳戶存入超過 %2$@ 即可免費使用";
 "warning_some_networks_unreachable_message" = "Some networks currently are unreachable. Please try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";

@@ -10,11 +10,11 @@ import Foundation
 import TangemSdk
 
 struct AppUtils {
-    func canSignLongTransactions(network: BlockchainNetwork) -> Bool {
+    func canSignLongTransactions(tokenItem: TokenItem) -> Bool {
         guard NFCUtils.isPoorNfcQualityDevice else {
             return true
         }
 
-        return !network.blockchain.hasLongTransactions
+        return !tokenItem.hasLongTransactions
     }
 }

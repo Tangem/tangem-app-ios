@@ -119,4 +119,16 @@ enum TokenItem: Hashable, Codable {
             return blockchainNetwork.blockchain.decimalCount
         }
     }
+
+    // We can't sign transactions at legacy devices for this blockchains
+    var hasLongTransactions: Bool {
+        switch blockchain {
+        case .solana:
+            return isToken ? true : false
+        case .chia:
+            return true
+        default:
+            return false
+        }
+    }
 }

@@ -12,8 +12,9 @@ extension Analytics {
     enum WalletConnectDebugEvent {
         case webSocketConnected
         case webSocketDisconnected(closeCode: String, connectionState: String)
-        case webSocketReceiveText
-        case webSocketConnectionError(error: Error)
+        case webSocketReceiveText(connectionState: String)
+        case webSocketConnectionError(source: ConnectionErrorSource, error: Error)
+        case webSocketConnectionTimeout
         case attemptingToOpenSession(url: String)
         case receiveSessionProposal(name: String, dAppURL: String)
         case receiveRequestFromDApp(method: String)
@@ -37,6 +38,8 @@ extension Analytics.WalletConnectDebugEvent: AnalyticsDebugEvent {
             suffix = webSocketPrefix + "receive text"
         case .webSocketConnectionError:
             suffix = webSocketPrefix + "receive connection error"
+        case .webSocketConnectionTimeout:
+            suffix = webSocketPrefix + "not connected and timeout for reconnection"
         case .attemptingToOpenSession:
             suffix = "Attempting to open new session"
         case .receiveSessionProposal:
@@ -56,15 +59,22 @@ extension Analytics.WalletConnectDebugEvent: AnalyticsDebugEvent {
 
     var analyticsParams: [String: Any] {
         switch self {
-        case .webSocketConnected, .webSocketReceiveText, .attemptingToWriteMessageMultipleTimes:
+        case .webSocketConnected, .attemptingToWriteMessageMultipleTimes, .webSocketConnectionTimeout:
             return [:]
+        case .webSocketReceiveText(let connectionState):
+            return [
+                ParamKey.webSocketState.rawValue: connectionState,
+            ]
         case .webSocketDisconnected(let closeCode, let connectionState):
             return [
                 ParamKey.webSocketCloseCode.rawValue: closeCode,
                 ParamKey.webSocketState.rawValue: connectionState,
             ]
-        case .webSocketConnectionError(let error):
-            return [ParamKey.webSocketConnectionError.rawValue: error.localizedDescription]
+        case .webSocketConnectionError(let source, let error):
+            return [
+                ParamKey.connectionErrorSource.rawValue: source.rawValue,
+                ParamKey.webSocketConnectionError.rawValue: error.localizedDescription,
+            ]
         case .attemptingToOpenSession(let url):
             return [ParamKey.dAppPairingURL.rawValue: url]
         case .receiveSessionProposal(let name, let dAppURL):
@@ -88,6 +98,15 @@ extension Analytics.WalletConnectDebugEvent: AnalyticsDebugEvent {
     }
 }
 
+extension Analytics.WalletConnectDebugEvent {
+    enum ConnectionErrorSource: String {
+        case send
+        case receive
+        case pingPong
+        case webSocketConnectionDelegate
+    }
+}
+
 private extension Analytics.WalletConnectDebugEvent {
     enum ParamKey: String {
         case webSocketCloseCode
@@ -99,5 +118,6 @@ private extension Analytics.WalletConnectDebugEvent {
         case requestMethod
         case errorShownToTheUser
         case connectionSetupMessage
+        case connectionErrorSource
     }
 }
