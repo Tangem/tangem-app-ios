@@ -709,6 +709,8 @@
 "warning_send_blocked_pending_transactions_in_blockchain_message" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
 "warning_send_blocked_pending_transactions_message" = "Sending funds will be available once the %@ transaction is complete";
 "warning_send_blocked_pending_transactions_title" = "Transaction pending";
+"warning_solana_fee_message" = "Due to high Solana network congestion, transaction processing may be significantly delayed.";
+"warning_solana_fee_title" = "Solana Network Alert";
 "warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
 "warning_some_networks_unreachable_message" = "Some networks currently are unreachable. Please try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
