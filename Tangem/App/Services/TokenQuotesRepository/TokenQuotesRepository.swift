@@ -24,7 +24,7 @@ protocol TokenQuotesRepository: AnyObject {
 
 extension TokenQuotesRepository {
     func loadQuotes(currencyIds: [String]) async {
-        return await loadQuotes(currencyIds: currencyIds).async()
+        try? await loadQuotes(currencyIds: currencyIds).async()
     }
 
     func quote(for item: TokenItem) -> TokenQuote? {

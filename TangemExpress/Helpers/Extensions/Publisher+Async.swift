@@ -8,7 +8,7 @@
 
 import Combine
 
-extension Publisher where Failure: Error {
+public extension Publisher {
     func async() async throws -> Output {
         var didSendValue = false
         let cancellableWrapper = CancellableWrapper()
