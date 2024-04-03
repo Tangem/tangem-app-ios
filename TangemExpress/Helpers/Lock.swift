@@ -8,20 +8,21 @@
 
 import Foundation
 
-final class Lock {
+// TODO: Move to Foundation
+public final class Lock {
     private let lock: NSLocking
 
-    init(isRecursive: Bool) {
+    public init(isRecursive: Bool) {
         lock = isRecursive ? NSRecursiveLock() : NSLock()
     }
 
-    func withLock<R>(_ body: () throws -> R) rethrows -> R {
+    public func withLock<R>(_ body: () throws -> R) rethrows -> R {
         lock.lock()
         defer { lock.unlock() }
         return try body()
     }
 
-    func callAsFunction<R>(_ body: () throws -> R) rethrows -> R {
+    public func callAsFunction<R>(_ body: () throws -> R) rethrows -> R {
         try withLock(body)
     }
 }
