@@ -1087,6 +1087,7 @@
 		EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1E97FC2B03F93300D4B511 /* CommonExpressDestinationService.swift */; };
 		EF2D9BF32BBC2A490055C485 /* Publisher+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9BF22BBC2A490055C485 /* Publisher+Async.swift */; };
 		EF2D9C2C2BBD9E9E0055C485 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9C2B2BBD9E9E0055C485 /* Lock.swift */; };
+		EF2D9C342BBD9F110055C485 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9C332BBD9F110055C485 /* Lock.swift */; };
 		EF39A6532AD5A70D00AAB518 /* SmartContractMethodMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF39A6522AD5A70D00AAB518 /* SmartContractMethodMapper.swift */; };
 		EF39A6562AD5A90300AAB518 /* contract_methods.json in Resources */ = {isa = PBXBuildFile; fileRef = EF39A6552AD5A90300AAB518 /* contract_methods.json */; };
 		EF39A6582AD5AC3800AAB518 /* CommonSmartContractMethodMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF39A6572AD5AC3800AAB518 /* CommonSmartContractMethodMapper.swift */; };
@@ -2579,6 +2580,7 @@
 		EF1E97FC2B03F93300D4B511 /* CommonExpressDestinationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressDestinationService.swift; sourceTree = "<group>"; };
 		EF2D9BF22BBC2A490055C485 /* Publisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+Async.swift"; sourceTree = "<group>"; };
 		EF2D9C2B2BBD9E9E0055C485 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
+		EF2D9C332BBD9F110055C485 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
 		EF2EFDE12865C05D00798051 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		EF2EFDE22865C07100798051 /* Beta.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Beta.xcconfig; sourceTree = "<group>"; };
 		EF39A6522AD5A70D00AAB518 /* SmartContractMethodMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartContractMethodMapper.swift; sourceTree = "<group>"; };
@@ -4029,6 +4031,7 @@
 		B05145072B5933FA00EDAD1E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				EF2D9C332BBD9F110055C485 /* Lock.swift */,
 				B050F4F72B60F52700B2E53C /* MoyaProvider+AsyncRequest.swift */,
 				EF2D9BF22BBC2A490055C485 /* Publisher+Async.swift */,
 				B06F033E2B5A8C4600F04F0E /* Decimal+.swift */,
@@ -9346,6 +9349,7 @@
 				B050F4F42B5FB03F00B2E53C /* VisaAPIService.swift in Sources */,
 				B050F4FC2B60F9F300B2E53C /* VisaAPITarget.swift in Sources */,
 				B050F4FE2B60FA1800B2E53C /* CommonVisaAPIService.swift in Sources */,
+				EF2D9C342BBD9F110055C485 /* Lock.swift in Sources */,
 				B050F5002B60FCE500B2E53C /* VisaAPIServiceBuilder.swift in Sources */,
 				B050F4FA2B60F60600B2E53C /* VisaAPIError.swift in Sources */,
 				B06F033D2B5A8C1200F04F0E /* LimitsResponseParser.swift in Sources */,

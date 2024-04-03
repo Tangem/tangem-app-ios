@@ -8,6 +8,7 @@
 
 import Combine
 
+// TODO: Remove it when Foundation was add
 extension Publisher {
     func async() async throws -> Output {
         var didSendValue = false
@@ -22,7 +23,7 @@ extension Publisher {
                     return
                 }
 
-                cancellableWrapper.cancellable = first()
+                cancellableWrapper.value = first()
                     .handleEvents(receiveCancel: {
                         // We don't get a cancel error when cancelling a publisher, so we need
                         // to handle if the publisher was cancelled from the
@@ -40,7 +41,7 @@ extension Publisher {
                     }
             }
         } onCancel: {
-            cancellableWrapper.cancellable?.cancel()
+            cancellableWrapper.cancel()
         }
     }
 }
@@ -49,6 +50,18 @@ enum AsyncError: Error {
     case valueWasNotEmittedBeforeCompletion
 }
 
-private class CancellableWrapper {
-    var cancellable: AnyCancellable?
+/// Closures in `withTaskCancellationHandler(handler:operation:)` may be called on different threads,
+/// this wrapper provides required synchronization.
+private final class CancellableWrapper {
+    var value: Cancellable? {
+        get { criticalSection { innerCancellable } }
+        set { criticalSection { innerCancellable = newValue } }
+    }
+
+    private var innerCancellable: Cancellable?
+    private let criticalSection = Lock(isRecursive: false)
+
+    func cancel() {
+        criticalSection { innerCancellable?.cancel() }
+    }
 }

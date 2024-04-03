@@ -8,6 +8,7 @@
 
 import Moya
 
+// TODO: Remove it when Foundation was add
 extension MoyaProvider {
     func asyncRequest(_ target: Target) async throws -> Response {
         let asyncRequestWrapper = AsyncMoyaRequestWrapper<Response> { [weak self] continuation in
