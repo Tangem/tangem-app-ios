@@ -217,7 +217,7 @@ DEPENDENCIES:
   - Amplitude
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-548`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, branch `bugfix/IOS-6491_fix_polkadot_health_check_on_empty_account`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics
@@ -276,8 +276,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
   BlockchainSdk:
+    :branch: bugfix/IOS-6491_fix_polkadot_health_check_on_empty_account
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-548
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem5
@@ -299,8 +299,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
   BlockchainSdk:
+    :commit: fc0ae1d6565761e635238d02c1ad507e2b426d89
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-548
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem5
@@ -353,6 +353,6 @@ SPEC CHECKSUMS:
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: c1c2c2fbd0495860baf71515be1b943f0c5dce0c
 
-PODFILE CHECKSUM: 74aa2f8d1cb5077dc131af4668b571a5c0307062
+PODFILE CHECKSUM: 841e7dc5da432c7e821ed39893c4f125672f93e5
 
 COCOAPODS: 1.15.2
