@@ -152,9 +152,16 @@ final class PolkadotAccountHealthChecker {
                 return
             }
 
-            // `accountInfo.nonceCount` can be equal to or greater than the count of extrinsics,
-            // but can't it be less (unless the account has been reset)
-            sendAccountHealthMetric(.hasBeenReset(value: accountInfo.nonceCount < accountInfo.extrinsicCount))
+            switch accountInfo {
+            case .nonExistentAccount:
+                // We intentionally don't send the `hasBeenReset` account health metric for empty (i.e. w/o transactions) accounts
+                break
+            case .existingAccount(let extrinsicCount, let nonceCount):
+                // `accountInfo.nonceCount` can be equal to or greater than the count of extrinsics,
+                // but can't it be less (unless the account has been reset)
+                sendAccountHealthMetric(.hasBeenReset(value: nonceCount < extrinsicCount))
+            }
+
             runOnMain { analyzedForResetAccounts.append(account) }
             AppLog.shared.debugDetailed("Finished checking account '\(account)' for reset")
         } catch {
