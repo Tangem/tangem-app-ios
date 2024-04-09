@@ -65,6 +65,7 @@ struct TransactionHistoryMapper {
 
         return TransactionViewModel(
             hash: record.hash,
+            index: record.index,
             interactionAddress: interactionAddress(from: record),
             timeFormatted: timeFormatted,
             amount: transferAmount(from: record),
@@ -75,30 +76,11 @@ struct TransactionHistoryMapper {
     }
 
     func mapSuggestedRecord(_ record: TransactionRecord) -> SendSuggestedDestinationTransactionRecord? {
-        guard record.type == .transfer else {
+        guard
+            record.type == .transfer,
+            case .user(let address) = interactionAddress(from: record)
+        else {
             return nil
-        }
-
-        let address: String
-        if record.isOutgoing {
-            switch record.destination {
-            case .single(let destination):
-                switch destination.address {
-                case .user(let string):
-                    address = string
-                case .contract:
-                    return nil
-                }
-            case .multiple:
-                return nil
-            }
-        } else {
-            switch record.source {
-            case .single(let source):
-                address = source.address
-            case .multiple:
-                return nil
-            }
         }
 
         let amountFormatted = transferAmount(from: record)

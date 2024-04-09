@@ -30,7 +30,7 @@ class PushTxCoordinator: CoordinatorObject {
         pushTxViewModel = PushTxViewModel(
             transaction: options.tx,
             blockchainNetwork: options.blockchainNetwork,
-            cardViewModel: options.cardModel,
+            userWalletModel: options.userWalletModel,
             coordinator: self
         )
     }
@@ -40,7 +40,7 @@ extension PushTxCoordinator {
     struct Options {
         let tx: PendingTransactionRecord
         let blockchainNetwork: BlockchainNetwork
-        let cardModel: CardViewModel
+        let userWalletModel: UserWalletModel
     }
 }
 

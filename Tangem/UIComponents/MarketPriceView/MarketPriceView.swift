@@ -75,6 +75,8 @@ struct MarketPriceView_Previews: PreviewProvider {
 
             MarketPriceView(currencySymbol: "ETH", price: "1 847.90$", priceChangeState: .loaded(signType: .positive, text: "0,08 %"), tapAction: {})
 
+            MarketPriceView(currencySymbol: "ETH", price: "1 234.50$", priceChangeState: .loaded(signType: .neutral, text: "0,0 %"), tapAction: {})
+
             MarketPriceView(currencySymbol: "XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP", price: "1 000 000 000 000 000 000 000 000 000 000 000,33 $", priceChangeState: .loaded(signType: .positive, text: "100000000000,33%"), tapAction: {})
 
             Spacer()

@@ -7,14 +7,14 @@
 //
 
 import Moya
+import TangemFoundation
 
 struct CommonExpressAPIService {
     private let provider: MoyaProvider<ExpressAPITarget>
     private let expressAPIType: ExpressAPIType
-    private let logger: Logger
     private let decoder = JSONDecoder()
 
-    init(provider: MoyaProvider<ExpressAPITarget>, expressAPIType: ExpressAPIType, logger: Logger) {
+    init(provider: MoyaProvider<ExpressAPITarget>, expressAPIType: ExpressAPIType) {
         assert(
             provider.plugins.contains(where: { $0 is ExpressAuthorizationPlugin }),
             "Should contains ExpressHeaderMoyaPlugin"
@@ -22,7 +22,6 @@ struct CommonExpressAPIService {
 
         self.provider = provider
         self.expressAPIType = expressAPIType
-        self.logger = logger
     }
 }
 
@@ -57,16 +56,10 @@ private extension CommonExpressAPIService {
         let request = ExpressAPITarget(expressAPIType: expressAPIType, target: target)
         var response: Response
 
-        do {
-            response = try await provider.asyncRequest(request)
-        } catch {
-            log(target: request, error: error)
-            throw error
-        }
+        response = try await provider.requestPublisher(request).async()
 
         do {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
-            log(target: request, response: response)
         } catch {
             if let expressError = tryMapError(target: request, response: response) {
                 throw expressError
@@ -75,39 +68,15 @@ private extension CommonExpressAPIService {
             throw error
         }
 
-        do {
-            return try decoder.decode(T.self, from: response.data)
-        } catch {
-            log(target: request, response: response, error: error)
-            throw error
-        }
+        return try decoder.decode(T.self, from: response.data)
     }
 
     func tryMapError(target: ExpressAPITarget, response: Response) -> ExpressAPIError? {
         do {
             let error = try JSONDecoder().decode(ExpressDTO.APIError.Response.self, from: response.data)
-            log(target: target, response: response, error: error.error)
             return error.error
         } catch {
-            log(target: target, response: response, error: error)
             return nil
         }
-    }
-
-    func log(target: TargetType, response: Response? = nil, error: Error? = nil) {
-        var info = ""
-        if let response {
-            info = String(data: response.data, encoding: .utf8)!
-        }
-
-        logger.debug(
-            """
-            [ExpressAPIService]
-            Request to target: \(target.path)
-            task: \(target.task)
-            ended with response: \(info)
-            Error: \(String(describing: error))
-            """
-        )
     }
 }

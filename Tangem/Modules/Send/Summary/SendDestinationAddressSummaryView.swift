@@ -18,7 +18,7 @@ struct SendDestinationAddressSummaryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text(Localization.sendRecipient)
                 .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                 .matchedGeometryEffectOptional(id: SendViewNamespaceId.addressTitle.rawValue, in: namespace)
@@ -41,7 +41,7 @@ struct SendDestinationAddressSummaryView: View {
                     .matchedGeometryEffectOptional(id: SendViewNamespaceId.addressClearButton.rawValue, in: namespace)
             }
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 14)
     }
 }
 

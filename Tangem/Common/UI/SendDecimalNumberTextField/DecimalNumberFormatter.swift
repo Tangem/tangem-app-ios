@@ -9,14 +9,12 @@
 import Foundation
 
 struct DecimalNumberFormatter {
-    public var maximumFractionDigits: Int { numberFormatter.maximumFractionDigits }
     public var decimalSeparator: Character { Character(numberFormatter.decimalSeparator) }
-    public var groupingSeparator: Character { Character(numberFormatter.groupingSeparator) }
 
     private let numberFormatter: NumberFormatter
 
     init(
-        numberFormatter: NumberFormatter = NumberFormatter(),
+        numberFormatter: NumberFormatter = .init(),
         maximumFractionDigits: Int
     ) {
         self.numberFormatter = numberFormatter
@@ -27,7 +25,7 @@ struct DecimalNumberFormatter {
         numberFormatter.maximumFractionDigits = maximumFractionDigits
     }
 
-    mutating func update(maximumFractionDigits: Int) {
+    func update(maximumFractionDigits: Int) {
         numberFormatter.maximumFractionDigits = maximumFractionDigits
     }
 
@@ -65,7 +63,7 @@ struct DecimalNumberFormatter {
 
         // Convert formatted string to correct decimal number
         let formattedValue = string
-            .replacingOccurrences(of: String(groupingSeparator), with: "")
+            .replacingOccurrences(of: String(numberFormatter.groupingSeparator), with: "")
             .replacingOccurrences(of: String(decimalSeparator), with: ".")
 
         // We can't use here the NumberFormatter because it work with the NSNumber
@@ -91,6 +89,7 @@ private extension DecimalNumberFormatter {
 
         let beforeComma = String(string[string.startIndex ..< commaIndex])
         var afterComma = string[commaIndex ..< string.endIndex]
+        let maximumFractionDigits = numberFormatter.maximumFractionDigits
 
         // Check to maximumFractionDigits and reduce if needed
         let maximumWithComma = maximumFractionDigits + 1

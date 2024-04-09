@@ -29,7 +29,7 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .sendV2: return .unspecified
+        case .sendV2: return .version("5.9")
         case .mainScreenBottomSheet: return .unspecified
         case .dynamicFonts: return .unspecified
         }

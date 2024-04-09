@@ -35,7 +35,7 @@ class IncomingActionsTests: XCTestCase {
 
     func testWC2Link() {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse(URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
+        let uri = parser.parse(url: URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
 
         switch uri {
         case .v2:
@@ -47,7 +47,7 @@ class IncomingActionsTests: XCTestCase {
 
     func testWC2LinkFromString() {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse("wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
+        let uri = parser.parse(uriString: "wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
 
         switch uri {
         case .v2:

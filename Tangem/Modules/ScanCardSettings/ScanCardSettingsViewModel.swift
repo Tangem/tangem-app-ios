@@ -54,35 +54,40 @@ extension ScanCardSettingsViewModel {
 
         let userWalletId = UserWalletId(with: userWalletIdSeed)
 
-        var cardInfo = cardInfo
-
-        // TODO: remove with details refactoring https://tangem.atlassian.net/browse/IOS-5193
-        if let existingCardModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) as? CardViewModel {
-            cardInfo.name = existingCardModel.name
-        }
-
-        guard let newCardViewModel = CardViewModel(cardInfo: cardInfo) else {
-            return
-        }
-
         let input = CardSettingsViewModel.Input(
-            userWalletId: newCardViewModel.userWalletId,
-            recoveryInteractor: UserCodeRecoveringCardInteractor(with: newCardViewModel.cardInfo),
-            securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: newCardViewModel.cardInfo),
-            factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: newCardViewModel.cardInfo),
-            isResetToFactoryAvailable: !newCardViewModel.config.getFeatureAvailability(.resetToFactory).isHidden,
-            hasBackupCards: newCardViewModel.hasBackupCards,
-            canTwin: newCardViewModel.config.hasFeature(.twinning),
-            twinInput: newCardViewModel.twinInput,
-            cardIdFormatted: newCardViewModel.cardInfo.cardIdFormatted,
-            cardIssuer: newCardViewModel.cardInfo.card.issuer.name,
-            canDisplayHashesCount: newCardViewModel.config.hasFeature(.displayHashesCount),
-            cardSignedHashes: newCardViewModel.cardInfo.card.walletSignedHashes,
-            canChangeAccessCodeRecoverySettings: newCardViewModel.config.hasFeature(.accessCodeRecoverySettings),
-            resetTofactoryDisabledLocalizedReason: newCardViewModel.config.getDisabledLocalizedReason(for: .resetToFactory)
+            userWalletId: userWalletId,
+            recoveryInteractor: UserCodeRecoveringCardInteractor(with: cardInfo),
+            securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
+            factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
+            isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
+            hasBackupCards: cardInfo.card.backupStatus?.isActive ?? false,
+            canTwin: config.hasFeature(.twinning),
+            twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
+            cardIdFormatted: cardInfo.cardIdFormatted,
+            cardIssuer: cardInfo.card.issuer.name,
+            canDisplayHashesCount: config.hasFeature(.displayHashesCount),
+            cardSignedHashes: cardInfo.card.walletSignedHashes,
+            canChangeAccessCodeRecoverySettings: config.hasFeature(.accessCodeRecoverySettings),
+            resetTofactoryDisabledLocalizedReason: config.getDisabledLocalizedReason(for: .resetToFactory)
         )
 
         coordinator?.openCardSettings(with: input)
+    }
+
+    private func makeTwinInput(from cardInfo: CardInfo, config: UserWalletConfig, userWalletId: UserWalletId) -> OnboardingInput? {
+        guard let twinData = cardInfo.walletData.twinData,
+              let existingModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) else {
+            return nil
+        }
+
+        let factory = TwinInputFactory(
+            firstCardId: cardInfo.card.cardId,
+            cardInput: .userWalletModel(existingModel),
+            userWalletToDelete: userWalletId,
+            twinData: twinData,
+            sdkFactory: config
+        )
+        return factory.makeTwinInput()
     }
 }
 

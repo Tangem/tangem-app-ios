@@ -368,6 +368,14 @@ private extension Blockchain {
         case .playa3ullGames: return nil
         case .pulsechain: return nil
         case .aurora: return nil
+        case .manta: return nil
+        case .zkSync: return nil
+        case .moonbeam: return nil
+        case .polygonZkEVM: return nil
+        case .moonriver: return nil
+        case .mantle: return nil
+        case .flare: return nil
+        case .taraxa: return nil
         }
     }
 
@@ -425,6 +433,14 @@ private extension Blockchain {
         case .playa3ullGames: return nil
         case .pulsechain: return nil
         case .aurora: return nil
+        case .manta: return nil
+        case .zkSync: return nil
+        case .moonbeam: return nil
+        case .polygonZkEVM: return nil
+        case .moonriver: return nil
+        case .mantle: return nil
+        case .flare: return nil
+        case .taraxa: return nil
         }
     }
 }

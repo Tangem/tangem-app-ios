@@ -69,6 +69,9 @@ class AppSettings {
     @AppStorageCompat(StorageType.tokenPromotionDismissed)
     var tokenPromotionDismissed: [String] = []
 
+    @AppStorageCompat(StorageType.userDidTapSendScreenSummary)
+    var userDidTapSendScreenSummary: Bool = false
+
     static let shared: AppSettings = .init()
 
     private init() {}

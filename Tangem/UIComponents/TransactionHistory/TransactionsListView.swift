@@ -122,7 +122,7 @@ struct TransactionsListView: View {
             HStack(spacing: 8.0) {
                 makeReloadTransactionHistoryButton()
 
-                makeExploreTransactionHistoryButton(withTitle: Localization.commonExploreHistory, hasFixedSize: false)
+                makeExploreTransactionHistoryButton(withTitle: Localization.commonExplore, hasFixedSize: false)
             }
             .padding(.horizontal, 16.0)
         }

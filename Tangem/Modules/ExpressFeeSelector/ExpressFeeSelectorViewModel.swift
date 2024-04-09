@@ -64,11 +64,11 @@ final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
 
     private func makeFeeRowViewModel(option: FeeOption, fee: Fee) -> FeeRowViewModel {
         let tokenItem = expressInteractor.getSender().feeTokenItem
-        let formatedFee = feeFormatter.format(fee: fee.amount.value, tokenItem: tokenItem)
+        let formattedFeeComponents = feeFormatter.formattedFeeComponents(fee: fee.amount.value, tokenItem: tokenItem)
 
         return FeeRowViewModel(
             option: option,
-            subtitle: .loaded(formatedFee),
+            formattedFeeComponents: .loaded(formattedFeeComponents),
             isSelected: .init(root: self, default: false, get: { root in
                 root.selectedFeeOption == option
             }, set: { root, newValue in

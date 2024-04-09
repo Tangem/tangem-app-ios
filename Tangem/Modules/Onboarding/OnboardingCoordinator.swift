@@ -164,11 +164,11 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
 // MARK: - OnboardingRoutable
 
 extension OnboardingCoordinator: OnboardingRoutable {
-    func onboardingDidFinish(userWallet: CardViewModel?) {
+    func onboardingDidFinish(userWalletModel: UserWalletModel?) {
         switch options.destination {
         case .main:
-            if let userWallet {
-                openMain(with: userWallet)
+            if let userWalletModel {
+                openMain(with: userWalletModel)
                 return
             }
 
@@ -184,9 +184,9 @@ extension OnboardingCoordinator: OnboardingRoutable {
         dismiss(with: .init(isSuccessful: false))
     }
 
-    private func openMain(with cardModel: CardViewModel) {
+    private func openMain(with userWalletModel: UserWalletModel) {
         let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-        let options = MainCoordinator.Options(userWalletModel: cardModel)
+        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
         mainCoordinator = coordinator
     }

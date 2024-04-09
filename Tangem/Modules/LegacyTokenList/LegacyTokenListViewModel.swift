@@ -213,27 +213,27 @@ private extension LegacyTokenListViewModel {
             return
         }
 
-        if selected,
-           case .token(_, let blockchainNetwork) = tokenItem,
-           case .solana = blockchainNetwork.blockchain,
-           !settings.longHashesSupported {
-            displayAlertAndUpdateSelection(
-                for: tokenItem,
-                title: Localization.commonAttention,
-                message: Localization.alertManageTokensUnsupportedMessage(blockchainNetwork.blockchain.displayName)
-            )
+        if selected {
+            if tokenItem.hasLongTransactions,
+               !settings.longHashesSupported {
+                displayAlertAndUpdateSelection(
+                    for: tokenItem,
+                    title: Localization.commonAttention,
+                    message: Localization.alertManageTokensUnsupportedMessage(tokenItem.blockchain.displayName)
+                )
 
-            return
-        }
+                return
+            }
 
-        if selected, !settings.existingCurves.contains(tokenItem.blockchain.curve) {
-            displayAlertAndUpdateSelection(
-                for: tokenItem,
-                title: Localization.commonAttention,
-                message: Localization.alertManageTokensUnsupportedCurveMessage(tokenItem.blockchain.displayName)
-            )
+            if !settings.existingCurves.contains(tokenItem.blockchain.curve) {
+                displayAlertAndUpdateSelection(
+                    for: tokenItem,
+                    title: Localization.commonAttention,
+                    message: Localization.alertManageTokensUnsupportedCurveMessage(tokenItem.blockchain.displayName)
+                )
 
-            return
+                return
+            }
         }
 
         sendAnalyticsOnChangeTokenState(tokenIsSelected: selected, tokenItem: tokenItem)
@@ -300,9 +300,8 @@ private extension LegacyTokenListViewModel {
     }
 
     func showWarningDeleteAlertIfNeeded(isSelected: Bool, tokenItem: TokenItem) {
-        guard !isSelected,
-              !pendingAdd.contains(tokenItem),
-              isTokenAvailable(tokenItem) else {
+        guard !isSelected, let userTokensManager = mode.userTokensManager,
+              userTokensManager.contains(tokenItem) else {
             onSelect(isSelected, tokenItem)
             return
         }
@@ -342,24 +341,6 @@ private extension LegacyTokenListViewModel {
                 })
             ))
         }
-    }
-
-    func isTokenAvailable(_ tokenItem: TokenItem) -> Bool {
-        guard let settings = mode.settings else {
-            return false
-        }
-
-        if case .token(_, let blockchainNetwork) = tokenItem,
-           case .solana = blockchainNetwork.blockchain,
-           !settings.longHashesSupported {
-            return false
-        }
-
-        if !settings.existingCurves.contains(tokenItem.blockchain.curve) {
-            return false
-        }
-
-        return true
     }
 
     func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {

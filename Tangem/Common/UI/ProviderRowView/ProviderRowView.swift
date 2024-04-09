@@ -22,7 +22,7 @@ struct ProviderRowView: View {
 
     private var content: some View {
         HStack(spacing: 12) {
-            IconView(url: viewModel.provider.iconURL, size: CGSize(bothDimensions: 36))
+            IconView(url: viewModel.provider.iconURL, size: CGSize(bothDimensions: 36), forceKingfisher: true)
                 .saturation(viewModel.isDisabled ? 0 : 1)
                 .opacity(viewModel.isDisabled ? 0.4 : 1)
 

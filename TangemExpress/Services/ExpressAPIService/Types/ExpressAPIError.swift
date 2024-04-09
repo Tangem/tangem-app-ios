@@ -63,6 +63,7 @@ public extension ExpressAPIError {
         case exchangeProviderNotFoundError = 2210
         case exchangeProviderNotActiveError = 2220
         case exchangeProviderNotAvailableError = 2230
+        case exchangeProviderProviderInternalError = 2231
         case exchangeNotPossibleError = 2240
         case exchangeTooSmallAmountError = 2250
         case exchangeTooBigAmountError = 2251

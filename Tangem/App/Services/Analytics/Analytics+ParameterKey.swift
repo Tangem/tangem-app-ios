@@ -73,5 +73,6 @@ extension Analytics {
         case place = "Place"
         case result = "Result"
         case input = "Input"
+        case passphrase = "Passphrase"
     }
 }

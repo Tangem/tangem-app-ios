@@ -21,7 +21,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
     var walletModelUpdateCancellable: AnyCancellable?
 
     var buyCryptoURL: URL? {
-        if let wallet = cardModel?.walletModelsManager.walletModels.first?.wallet {
+        if let wallet = userWalletModel?.walletModelsManager.walletModels.first?.wallet {
             return exchangeService.getBuyUrl(
                 currencySymbol: wallet.blockchain.currencySymbol,
                 amountType: .coin,
@@ -36,22 +36,22 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
     var buyCryptoCloseUrl: String { exchangeService.successCloseUrl.removeLatestSlash() }
 
     private var shareAddress: String {
-        cardModel?.walletModelsManager.walletModels.first?.shareAddressString(for: 0) ?? ""
+        userWalletModel?.walletModelsManager.walletModels.first?.shareAddressString(for: 0) ?? ""
     }
 
     private var walletAddress: String {
-        cardModel?.walletModelsManager.walletModels.first?.displayAddress(for: 0) ?? ""
+        userWalletModel?.walletModelsManager.walletModels.first?.displayAddress(for: 0) ?? ""
     }
 
     private var qrNoticeMessage: String {
-        cardModel?.walletModelsManager.walletModels.first?.qrReceiveMessage ?? ""
+        userWalletModel?.walletModelsManager.walletModels.first?.qrReceiveMessage ?? ""
     }
 
     private var refreshButtonDispatchWork: DispatchWorkItem?
 
     func updateCardBalance(shouldGoToNextStep: Bool = true) {
         guard
-            let walletModel = cardModel?.walletModelsManager.walletModels.first,
+            let walletModel = userWalletModel?.walletModelsManager.walletModels.first,
             walletModelUpdateCancellable == nil
         else { return }
 
@@ -62,14 +62,14 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
             .sink { viewModel, walletModelState in
                 viewModel.updateCardBalanceText(for: walletModel)
                 switch walletModelState {
-                case .noAccount(let message):
+                case .noAccount(let message, _):
                     AppLog.shared.debug(message)
                     fallthrough
                 case .idle:
                     if shouldGoToNextStep,
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        !walletModel.isZeroAmount {
-                        if let userWalletId = viewModel.cardModel?.userWalletId {
+                        if let userWalletId = viewModel.userWalletModel?.userWalletId {
                             Analytics.logTopUpIfNeeded(balance: walletModel.fiatValue ?? 0, for: userWalletId)
                         }
                         viewModel.goToNextStep()

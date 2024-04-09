@@ -14,13 +14,5 @@ protocol UserTokensReordering {
     var groupingOption: AnyPublisher<UserTokensReorderingOptions.Grouping, Never> { get }
     var sortingOption: AnyPublisher<UserTokensReorderingOptions.Sorting, Never> { get }
 
-    func reorder(_ reorderingActions: [UserTokensReorderingAction]) -> AnyPublisher<Void, Never>
-}
-
-// MARK: - Convenience extensions
-
-extension UserTokensReordering {
-    func reorder(_ reorderingActions: UserTokensReorderingAction...) -> AnyPublisher<Void, Never> {
-        return reorder(reorderingActions.map { $0 })
-    }
+    func reorder(_ actions: [UserTokensReorderingAction], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never>
 }

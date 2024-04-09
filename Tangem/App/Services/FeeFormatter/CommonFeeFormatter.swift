@@ -25,19 +25,36 @@ struct CommonFeeFormatter {
 // MARK: - FeeFormatter
 
 extension CommonFeeFormatter: FeeFormatter {
-    func format(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> String {
-        let feeFormatted = balanceFormatter.formatCryptoBalance(fee, currencyCode: currencySymbol)
+    func formattedFeeComponents(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> FormattedFeeComponents {
+        let cryptoFeeFormatted = balanceFormatter.formatCryptoBalance(fee, currencyCode: currencySymbol)
+        let fiatFeeFormatted: String?
 
-        guard let currencyId, let fiatFee = balanceConverter.convertToFiat(value: fee, from: currencyId) else {
-            return feeFormatted
+        if let currencyId, let fiatFee = balanceConverter.convertToFiat(value: fee, from: currencyId) {
+            fiatFeeFormatted = balanceFormatter.formatFiatBalance(fiatFee)
+        } else {
+            fiatFeeFormatted = nil
         }
 
-        let fiatFeeFormatted = balanceFormatter.formatFiatBalance(fiatFee)
-        let result = "\(feeFormatted) (\(fiatFeeFormatted))"
-        if fee > 0, isFeeApproximate {
-            return "< " + result
+        let useApproximationSymbol = fee > 0 && isFeeApproximate
+
+        return FormattedFeeComponents(
+            cryptoFee: useApproximationSymbol ? ("< " + cryptoFeeFormatted) : cryptoFeeFormatted,
+            fiatFee: fiatFeeFormatted
+        )
+    }
+
+    func format(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> String {
+        let formattedFee: FormattedFeeComponents = formattedFeeComponents(
+            fee: fee,
+            currencySymbol: currencySymbol,
+            currencyId: currencyId,
+            isFeeApproximate: isFeeApproximate
+        )
+
+        if let fiatFee = formattedFee.fiatFee {
+            return "\(formattedFee.cryptoFee) (\(fiatFee))"
         } else {
-            return result
+            return formattedFee.cryptoFee
         }
     }
 }

@@ -11,18 +11,19 @@ import TangemSdk
 
 struct OnboardingInput { // TODO: Split to coordinator options and input
     let backupService: BackupService
+    let primaryCardId: String
     let cardInitializer: CardInitializable?
     let steps: OnboardingSteps
     let cardInput: CardInput
     let twinData: TwinData?
     var isStandalone = false
-    var userWalletToDelete: UserWallet? // for twins. TODO: refactor UserWalletRepository to remove this
+    var userWalletToDelete: UserWalletId? // for twins. TODO: refactor UserWalletRepository to remove this
 }
 
 extension OnboardingInput {
     enum CardInput {
         case cardInfo(_ cardInfo: CardInfo)
-        case cardModel(_ cardModel: CardViewModel)
+        case userWalletModel(_ userWalletModel: UserWalletModel)
         case cardId(_ cardId: String)
 
         var emailData: [EmailCollectedData] {
@@ -30,8 +31,8 @@ extension OnboardingInput {
             case .cardInfo(let cardInfo):
                 let factory = UserWalletConfigFactory(cardInfo)
                 return factory.makeConfig().emailData
-            case .cardModel(let cardModel):
-                return cardModel.emailData
+            case .userWalletModel(let userWalletModel):
+                return userWalletModel.emailData
             case .cardId:
                 return []
             }
@@ -42,8 +43,8 @@ extension OnboardingInput {
             case .cardInfo(let cardInfo):
                 let factory = UserWalletConfigFactory(cardInfo)
                 return factory.makeConfig().getFeatureAvailability(.backup).disabledLocalizedReason
-            case .cardModel(let cardModel):
-                return cardModel.config.getDisabledLocalizedReason(for: .backup)
+            case .userWalletModel(let userWalletModel):
+                return userWalletModel.config.getDisabledLocalizedReason(for: .backup)
             case .cardId:
                 return nil
             }
@@ -54,17 +55,17 @@ extension OnboardingInput {
             case .cardInfo(let cardInfo):
                 let factory = UserWalletConfigFactory(cardInfo)
                 return factory.makeConfig().tou
-            case .cardModel(let cardModel):
-                return cardModel.cardDisclaimer
+            case .userWalletModel(let userWalletModel):
+                return userWalletModel.config.tou
             case .cardId:
                 return nil
             }
         }
 
-        var cardModel: CardViewModel? {
+        var userWalletModel: UserWalletModel? {
             switch self {
-            case .cardModel(let cardModel):
-                return cardModel
+            case .userWalletModel(let userWalletModel):
+                return userWalletModel
             default:
                 return nil
             }
@@ -75,21 +76,10 @@ extension OnboardingInput {
             case .cardInfo(let cardInfo):
                 let factory = UserWalletConfigFactory(cardInfo)
                 return factory.makeConfig()
-            case .cardModel(let cardModel):
-                return cardModel.config
+            case .userWalletModel(let userWalletModel):
+                return userWalletModel.config
             case .cardId:
                 return nil
-            }
-        }
-
-        var cardId: String {
-            switch self {
-            case .cardInfo(let cardInfo):
-                return cardInfo.card.cardId
-            case .cardModel(let cardModel):
-                return cardModel.cardId
-            case .cardId(let cardId):
-                return cardId
             }
         }
 
@@ -102,11 +92,11 @@ extension OnboardingInput {
                     cardId: cardInfo.card.cardId,
                     cardPublicKey: cardInfo.card.cardPublicKey
                 )
-            case .cardModel(let cardModel):
+            case .userWalletModel(let userWalletModel):
                 return .init(
-                    supportsOnlineImage: cardModel.supportsOnlineImage,
-                    cardId: cardModel.cardId,
-                    cardPublicKey: cardModel.cardPublicKey
+                    supportsOnlineImage: userWalletModel.config.hasFeature(.onlineImage),
+                    cardId: userWalletModel.tangemApiAuthData.cardId,
+                    cardPublicKey: userWalletModel.tangemApiAuthData.cardPublicKey
                 )
             case .cardId(let cardId):
                 return .init(

@@ -200,7 +200,7 @@ final class SingleTokenNotificationManager {
     private func loadRentNotificationIfNeeded() async -> NotificationViewInput? {
         guard walletModel.hasRent else { return nil }
 
-        guard let rentMessage = await walletModel.updateRentWarning().async() else {
+        guard let rentMessage = try? await walletModel.updateRentWarning().async() else {
             return nil
         }
 

@@ -18,7 +18,7 @@ struct ProviderRowViewModel: Identifiable {
     var providerTitle: Title {
         switch titleFormat {
         case .prefixAndName:
-            let text = Localization.expressByProvider(provider.name)
+            let text = Localization.expressByProviderPlaceholder(provider.name)
 
             let attributeContainer = AttributeContainer()
             var attributedString = AttributedString(text, attributes: attributeContainer)

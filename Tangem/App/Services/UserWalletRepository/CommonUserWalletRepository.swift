@@ -17,17 +17,17 @@ class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
 
-    var selectedModel: CardViewModel? {
+    var selectedModel: UserWalletModel? {
         return models.first {
-            $0.userWalletId.value == selectedUserWalletId
-        } as? CardViewModel
+            $0.userWalletId == selectedUserWalletId
+        }
     }
 
-    var selectedUserWalletId: Data?
+    var selectedUserWalletId: UserWalletId?
 
     var selectedIndexUserWalletModel: Int? {
         models.firstIndex {
-            $0.userWallet.userWalletId == selectedUserWalletId
+            $0.userWalletId == selectedUserWalletId
         }
     }
 
@@ -36,11 +36,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     var isEmpty: Bool {
-        userWallets.isEmpty
-    }
-
-    var count: Int {
-        userWallets.count
+        models.isEmpty
     }
 
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> {
@@ -48,11 +44,10 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private(set) var models = [UserWalletModel]()
-    private(set) var userWallets: [UserWallet] = []
 
-    var isLocked: Bool { userWallets.contains { $0.isLocked } }
+    var isLocked: Bool { models.contains { $0.isUserWalletLocked } }
 
-    private var encryptionKeyByUserWalletId: [Data: SymmetricKey] = [:]
+    private var encryptionKeyByUserWalletId: [UserWalletId: UserWalletEncryptionKey] = [:]
 
     private let encryptionKeyStorage = UserWalletEncryptionKeyStorage()
 
@@ -98,9 +93,8 @@ class CommonUserWalletRepository: UserWalletRepository {
                 failedCardScanTracker.resetCounter()
                 sendEvent(.scan(isScanning: false))
 
-                let cardDTO = CardDTO(card: response.card)
-                didScan(card: cardDTO, walletData: response.walletData)
                 var cardInfo = response.getCardInfo()
+                updateAssociatedCard(for: cardInfo)
                 resetServices()
                 initializeAnalyticsContext(with: cardInfo)
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
@@ -108,22 +102,22 @@ class CommonUserWalletRepository: UserWalletRepository {
 
                 cardInfo.name = config.cardName
 
-                let cardModel = CardViewModel(cardInfo: cardInfo)
-                if let cardModel {
-                    initializeServices(for: cardModel, cardInfo: cardInfo)
+                let userWalletModel = CommonUserWalletModel(cardInfo: cardInfo)
+                if let userWalletModel {
+                    initializeServices(for: userWalletModel)
                 }
 
                 let factory = OnboardingInputFactory(
                     cardInfo: cardInfo,
-                    cardModel: cardModel,
+                    userWalletModel: userWalletModel,
                     sdkFactory: config,
                     onboardingStepsBuilderFactory: config
                 )
 
                 if let onboardingInput = factory.makeOnboardingInput() {
                     return .justWithError(output: .onboarding(onboardingInput))
-                } else if let cardModel {
-                    return .justWithError(output: .success(cardModel))
+                } else if let userWalletModel {
+                    return .justWithError(output: .success(userWalletModel))
                 }
 
                 return .anyFail(error: "Unknown error")
@@ -171,8 +165,8 @@ class CommonUserWalletRepository: UserWalletRepository {
         switch method {
         case .biometry:
             unlockWithBiometry(completion: completion)
-        case .card(let userWallet):
-            unlockWithCard(userWallet, completion: completion)
+        case .card(let userWalletId):
+            unlockWithCard(userWalletId, completion: completion)
         }
     }
 
@@ -184,26 +178,14 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func didScan(card: CardDTO, walletData: DefaultWalletData) {
-        let cardId = card.cardId
-
-        let cardInfo = CardInfo(card: card, walletData: walletData, name: "")
-
-        guard
-            let userWalletId = UserWalletIdFactory().userWalletId(from: cardInfo)?.value,
-            card.hasWallets,
-            var userWallet = userWallets.first(where: { $0.userWalletId == userWalletId }),
-            !userWallet.associatedCardIds.contains(cardId)
-        else {
+    private func updateAssociatedCard(for cardInfo: CardInfo) {
+        guard let userWalletId = UserWalletIdFactory().userWalletId(from: cardInfo),
+              let existing = models.first(where: { $0.userWalletId == userWalletId }) else {
             return
         }
 
-        userWallet.associatedCardIds.insert(cardId)
-        save(userWallet)
-    }
-
-    func contains(_ userWallet: UserWallet) -> Bool {
-        userWallets.contains { $0.userWalletId == userWallet.userWalletId }
+        existing.addAssociatedCard(cardInfo.card, validationMode: .light)
+        save()
     }
 
     func add(_ userWalletModel: UserWalletModel) {
@@ -211,10 +193,9 @@ class CommonUserWalletRepository: UserWalletRepository {
             save(userWalletModel)
         } else {
             models = [userWalletModel]
-            userWallets = [userWalletModel.userWallet]
         }
 
-        setSelectedUserWalletId(userWalletModel.userWalletId.value, reason: .inserted)
+        setSelectedUserWalletId(userWalletModel.userWalletId, unlockIfNeeded: true, reason: .inserted)
     }
 
     func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void) {
@@ -224,18 +205,16 @@ class CommonUserWalletRepository: UserWalletRepository {
                 guard let self else { return }
 
                 switch result {
-                case .success(let cardModel):
-                    let userWallet = cardModel.userWallet
-
-                    if !contains(userWallet) {
-                        save(cardModel)
+                case .success(let userWalletModel):
+                    if !models.contains(where: { $0.userWalletId == userWalletModel.userWalletId }) {
+                        save(userWalletModel)
                         completion(result)
                     } else {
                         completion(.error(UserWalletRepositoryError.duplicateWalletAdded))
                         return
                     }
 
-                    setSelectedUserWalletId(userWallet.userWalletId, reason: .inserted)
+                    setSelectedUserWalletId(userWalletModel.userWalletId, unlockIfNeeded: true, reason: .inserted)
                 default:
                     completion(result)
                 }
@@ -243,20 +222,32 @@ class CommonUserWalletRepository: UserWalletRepository {
             .store(in: &bag)
     }
 
+    func save() {
+        let serialized = models.compactMap { $0.userWallet }
+        UserWalletRepositoryUtil().saveUserWallets(serialized)
+    }
+
     // TODO: refactor
-    func save(_ cardViewModel: UserWalletModel) {
-        if models.isEmpty, !userWallets.isEmpty {
-            loadModels()
-        }
-
-        if let index = models.firstIndex(where: { $0.userWalletId == cardViewModel.userWalletId }) {
-            models[index] = cardViewModel
+    func save(_ userWalletModel: UserWalletModel) {
+        if let index = models.firstIndex(where: { $0.userWalletId == userWalletModel.userWalletId }) {
+            models[index] = userWalletModel
         } else {
-            models.append(cardViewModel)
-            sendEvent(.inserted(userWallet: cardViewModel.userWallet))
+            models.append(userWalletModel)
+            sendEvent(.inserted(userWalletId: userWalletModel.userWalletId))
         }
 
-        save(cardViewModel.userWallet)
+        if let userWalletIdSeed = userWalletModel.config.userWalletIdSeed {
+            encryptionKeyStorage.add(userWalletModel.userWalletId, encryptionKey: UserWalletEncryptionKey(userWalletIdSeed: userWalletIdSeed))
+            save()
+        } else {
+            AppLog.shared.debug("Failed to get encryption key for UserWallet")
+        }
+
+        sendEvent(.updated(userWalletId: userWalletModel.userWalletId))
+
+        if selectedUserWalletId == nil {
+            setSelectedUserWalletId(userWalletModel.userWalletId, unlockIfNeeded: true, reason: .inserted)
+        }
     }
 
     func setSaving(_ enabled: Bool) {
@@ -269,91 +260,49 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func save(_ userWallet: UserWallet) {
-        if models.isEmpty && !userWallets.isEmpty {
-            loadModels()
-        }
-
-        if let index = userWallets.firstIndex(where: { $0.userWalletId == userWallet.userWalletId }) {
-            userWallets[index] = userWallet
-        } else {
-            userWallets.append(userWallet)
-        }
-
-        encryptionKeyStorage.add(userWallet)
-
-        saveUserWallets(userWallets)
-
-        let userWalletModel: UserWalletModel?
-        if let index = models.firstIndex(where: { $0.userWalletId.value == userWallet.userWalletId }) {
-            userWalletModel = models[index]
-            userWalletModel?.updateWalletName(userWallet.name)
-        } else {
-            userWalletModel = nil
-        }
-
-        guard let userWalletModel else { return }
-
-        sendEvent(.updated(userWalletModel: userWalletModel))
-
-        if userWallets.isEmpty || selectedUserWalletId == nil {
-            setSelectedUserWalletId(userWallet.userWalletId, reason: .inserted)
-        }
-    }
-
     func updateSelection() {
         initializeServicesForSelectedModel()
     }
 
     func logoutIfNeeded() {
-        if userWallets.contains(where: { !$0.isLocked }) {
+        if models.contains(where: { !$0.isUserWalletLocked }) {
             return
         }
 
         lock(reason: .nothingToDisplay)
     }
 
-    func setSelectedUserWalletId(_ userWalletId: Data?, reason: UserWalletRepositorySelectionChangeReason) {
-        setSelectedUserWalletId(userWalletId, unlockIfNeeded: true, reason: reason)
-    }
-
-    func setSelectedUserWalletId(_ userWalletId: Data?, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason) {
+    func setSelectedUserWalletId(_ userWalletId: UserWalletId, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason) {
         guard selectedUserWalletId != userWalletId else { return }
 
-        if userWalletId == nil {
-            selectedUserWalletId = nil
-            AppSettings.shared.selectedUserWalletId = Data()
-            return
-        }
-
-        guard let userWallet = userWallets.first(where: {
+        guard let model = models.first(where: {
             $0.userWalletId == userWalletId
         }) else {
             return
         }
 
-        let updateSelection: (UserWallet) -> Void = { [weak self] userWallet in
-            self?.selectedUserWalletId = userWallet.userWalletId
-            AppSettings.shared.selectedUserWalletId = userWallet.userWalletId
+        let updateSelection: (UserWalletModel) -> Void = { [weak self] userWalletModel in
+            self?.selectedUserWalletId = userWalletModel.userWalletId
+            AppSettings.shared.selectedUserWalletId = userWalletModel.userWalletId.value
             self?.initializeServicesForSelectedModel()
-            self?.sendEvent(.selected(userWallet: userWallet, reason: reason))
+            self?.sendEvent(.selected(userWalletId: userWalletModel.userWalletId, reason: reason))
         }
 
-        if !userWallet.isLocked || !unlockIfNeeded {
-            updateSelection(userWallet)
+        if !model.isUserWalletLocked || !unlockIfNeeded {
+            updateSelection(model)
             return
         }
 
-        unlock(with: .card(userWallet: userWallet)) { [weak self] result in
+        unlock(with: .card(userWalletId: userWalletId)) { [weak self] result in
             guard
                 let self,
                 case .success = result,
-                let selectedModel = models.first(where: { $0.userWalletId.value == userWallet.userWalletId })
+                let selectedModel = models.first(where: { $0.userWalletId == userWalletId })
             else {
                 return
             }
 
-            updateSelection(selectedModel.userWallet)
+            updateSelection(selectedModel)
         }
     }
 
@@ -362,7 +311,7 @@ class CommonUserWalletRepository: UserWalletRepository {
             return
         }
 
-        if selectedUserWalletId == userWalletId.value {
+        if selectedUserWalletId == userWalletId {
             resetServices()
         }
 
@@ -373,16 +322,25 @@ class CommonUserWalletRepository: UserWalletRepository {
             targetIndex = 0
         }
 
-        encryptionKeyByUserWalletId[userWalletId.value] = nil
-        userWallets.removeAll { $0.userWalletId == userWalletId.value }
+        encryptionKeyByUserWalletId[userWalletId] = nil
         models.removeAll { $0.userWalletId == userWalletId }
 
-        encryptionKeyStorage.delete(userWallet)
-        saveUserWallets(userWallets)
+        encryptionKeyStorage.delete(userWalletId)
+
+        if AppSettings.shared.saveAccessCodes {
+            do {
+                let accessCodeRepository = AccessCodeRepository()
+                try accessCodeRepository.deleteAccessCode(for: Array(userWallet.associatedCardIds))
+            } catch {
+                AppLog.shared.error(error)
+            }
+        }
+
+        save()
 
         if !models.isEmpty {
             let newModel = models[targetIndex]
-            setSelectedUserWalletId(newModel.userWalletId.value, unlockIfNeeded: false, reason: .deleted)
+            setSelectedUserWalletId(newModel.userWalletId, unlockIfNeeded: false, reason: .deleted)
         }
 
         if shouldAutoLogout {
@@ -390,7 +348,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
 
         walletConnectService.disconnectAllSessionsForUserWallet(with: userWalletId.stringValue)
-        sendEvent(.deleted(userWalletIds: [userWalletId.value]))
+        sendEvent(.deleted(userWalletIds: [userWalletId]))
     }
 
     func lock(reason: UserWalletRepositoryLockReason) {
@@ -404,7 +362,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     func clearNonSelectedUserWallets() {
         let selectedModel = selectedModel
-        let otherUserWallets = userWallets.filter { $0.userWalletId != selectedUserWalletId }
+        let otherUserWallets = models.filter { $0.userWalletId != selectedUserWalletId }
 
         clearUserWalletStorage()
         discardSensitiveData(except: selectedModel)
@@ -412,10 +370,10 @@ class CommonUserWalletRepository: UserWalletRepository {
         sendEvent(.deleted(userWalletIds: otherUserWallets.map { $0.userWalletId }))
     }
 
-    func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {
-        initializeAnalyticsContext(with: cardInfo)
-        tangemApiService.setAuthData(cardInfo.card.tangemApiAuthData)
-        walletConnectService.initialize(with: cardModel)
+    func initializeServices(for userWalletModel: UserWalletModel) {
+        analyticsContext.setupContext(with: userWalletModel.analyticsContextData)
+        tangemApiService.setAuthData(userWalletModel.tangemApiAuthData)
+        walletConnectService.initialize(with: userWalletModel)
     }
 
     // we can initialize it right after scan for more accurate analytics
@@ -443,10 +401,8 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         if let userWalletModelToKeep {
             models = [userWalletModelToKeep]
-            userWallets = [userWalletModelToKeep.userWallet]
         } else {
             models = []
-            userWallets = []
         }
     }
 
@@ -473,14 +429,14 @@ class CommonUserWalletRepository: UserWalletRepository {
                     }
 
                     self.encryptionKeyByUserWalletId = keys
-                    self.userWallets = self.savedUserWallets(withSensitiveData: true)
                     self.loadModels()
                     self.initializeServicesForSelectedModel()
 
                     self.sendEvent(.biometryUnlocked)
 
-                    if let selectedModel = self.selectedModel {
-                        if keys.count == self.userWallets.count {
+                    if let selectedModel = self.selectedModel { // TODO: WTF?
+                        let savedUserWallets = self.savedUserWallets(withSensitiveData: false)
+                        if keys.count == savedUserWallets.count {
                             completion(.success(selectedModel))
                         } else {
                             completion(.partial(selectedModel, UserWalletRepositoryError.biometricsChanged))
@@ -493,108 +449,91 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
-    private func unlockWithCard(_ requiredUserWallet: UserWallet?, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+    private func unlockWithCard(_ requiredUserWalletId: UserWalletId?, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         scanPublisher()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] result in
                 guard
                     let self,
-                    case .success(let cardModel) = result
+                    case .success(let userWalletModel) = result
                 else {
                     completion(result)
                     return
                 }
 
                 if !AppSettings.shared.saveUserWallets {
-                    userWallets = [cardModel.userWallet]
-                    models = [cardModel]
-                    selectedUserWalletId = cardModel.userWalletId.value
-                    sendEvent(.replaced(userWallet: cardModel.userWallet))
+                    models = [userWalletModel]
+                    selectedUserWalletId = userWalletModel.userWalletId
+                    sendEvent(.replaced(userWalletId: userWalletModel.userWalletId))
                     completion(result)
                     return
                 }
 
-                let scannedUserWallet = cardModel.userWallet
-                guard let encryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(from: cardModel.cardInfo) else {
+                guard let userWalletIdSeed = userWalletModel.config.userWalletIdSeed else {
                     completion(.error(TangemSdkError.cardError))
                     return
                 }
 
-                if let requiredUserWallet,
-                   scannedUserWallet.userWalletId != requiredUserWallet.userWalletId {
+                if let requiredUserWalletId, userWalletModel.userWalletId != requiredUserWalletId {
                     completion(.error(UserWalletRepositoryError.cardWithWrongUserWalletIdScanned))
                     return
                 }
 
-                encryptionKeyByUserWalletId[scannedUserWallet.userWalletId] = encryptionKey.symmetricKey
+                let encryptionKey = UserWalletEncryptionKey(userWalletIdSeed: userWalletIdSeed)
+                encryptionKeyByUserWalletId[userWalletModel.userWalletId] = encryptionKey
                 // We have to refresh a key on every scan because we are unable to check presence of the key
-                encryptionKeyStorage.refreshEncryptionKey(encryptionKey.symmetricKey, for: scannedUserWallet.userWalletId)
-
-                // We need to load UserWallets becaues if repository is logged out all locked UserWallets were cleaned from
-                // memory and they won't be restored while scanning card.
-                loadUserWalletsNotSensitiveDataIfEmpty()
+                encryptionKeyStorage.refreshEncryptionKey(encryptionKey, for: userWalletModel.userWalletId)
 
                 if models.isEmpty {
                     loadModels()
                 }
 
-                let savedUserWallet: UserWallet
-                if contains(scannedUserWallet) {
-                    guard let userWallet = self.savedUserWallet(with: scannedUserWallet.userWalletId) else { return }
-
-                    loadModel(for: userWallet)
-                    savedUserWallet = userWallet
+                if models.contains(where: { $0.userWalletId == userWalletModel.userWalletId }) {
+                    // unlock current card
+                    loadModel(for: userWalletModel.userWalletId)
                 } else {
-                    save(cardModel)
-                    savedUserWallet = scannedUserWallet
+                    // add
+                    save(userWalletModel)
                 }
 
+                // TODO: We have to create userWalletModel twice. First on scan and second - during restoring from a storage. Shoul be refactored.
                 guard
-                    let cardModel = models.first(where: { $0.userWalletId.value == savedUserWallet.userWalletId }) as? CardViewModel
+                    let userWalletModel = models.first(where: { $0.userWalletId == userWalletModel.userWalletId })
                 else {
                     return
                 }
 
-                setSelectedUserWalletId(savedUserWallet.userWalletId, reason: .userSelected)
+                setSelectedUserWalletId(userWalletModel.userWalletId, unlockIfNeeded: true, reason: .userSelected)
                 initializeServicesForSelectedModel()
 
-                sendEvent(.updated(userWalletModel: cardModel))
-                completion(.success(cardModel))
+                sendEvent(.updated(userWalletId: userWalletModel.userWalletId))
+                completion(.success(userWalletModel))
             }
             .store(in: &bag)
     }
 
-    private func loadUserWalletsNotSensitiveDataIfEmpty() {
-        guard userWallets.isEmpty else {
-            return
-        }
-
-        userWallets = savedUserWallets(withSensitiveData: false)
-    }
-
     private func loadModels() {
-        let models: [UserWalletModel] = userWallets.map { userWalletStorageItem in
-            if let userWallet = CardViewModel(userWallet: userWalletStorageItem) {
+        let savedUserWallets = savedUserWallets(withSensitiveData: true)
+
+        models = savedUserWallets.map { userWalletStorageItem in
+            if let userWallet = CommonUserWalletModel(userWallet: userWalletStorageItem) {
                 return userWallet
             } else {
-                return LockedUserWallet(with: userWalletStorageItem)
+                return LockedUserWalletModel(with: userWalletStorageItem)
             }
         }
-
-        self.models = models
     }
 
-    private func loadModel(for userWallet: UserWallet) {
-        guard let index = userWallets.firstIndex(where: { $0.userWalletId == userWallet.userWalletId }) else { return }
+    private func loadModel(for userWalletId: UserWalletId) {
+        // find locked to replace
+        guard let index = models.firstIndex(where: { $0.userWalletId == userWalletId }) else { return }
 
-        userWallets[index] = userWallet
-
-        guard index < models.count,
-              let cardModel = CardViewModel(userWallet: userWallet) else {
+        guard let savedUserWallet = savedUserWallet(with: userWalletId),
+              let userWalletModel = CommonUserWalletModel(userWallet: savedUserWallet) else {
             return
         }
 
-        models[index] = cardModel
+        models[index] = userWalletModel
     }
 
     private func initializeServicesForSelectedModel() {
@@ -602,36 +541,32 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         guard let selectedModel else { return }
 
-        let cardInfo = selectedModel.cardInfo
-        initializeServices(for: selectedModel, cardInfo: cardInfo)
+        initializeServices(for: selectedModel)
     }
 
     private func sendEvent(_ event: UserWalletRepositoryEvent) {
         eventSubject.send(event)
     }
 
-    private func savedUserWallets(withSensitiveData loadSensitiveData: Bool) -> [UserWallet] {
+    private func savedUserWallets(withSensitiveData loadSensitiveData: Bool) -> [StoredUserWallet] {
         let keys = loadSensitiveData ? encryptionKeyByUserWalletId : [:]
         return UserWalletRepositoryUtil().savedUserWallets(encryptionKeyByUserWalletId: keys)
     }
 
-    private func savedUserWallet(with userWalletId: Data) -> UserWallet? {
+    private func savedUserWallet(with userWalletId: UserWalletId) -> StoredUserWallet? {
         let keys = encryptionKeyByUserWalletId.filter { $0.key == userWalletId }
         let userWallets = UserWalletRepositoryUtil().savedUserWallets(encryptionKeyByUserWalletId: keys)
-        return userWallets.first { $0.userWalletId == userWalletId }
-    }
-
-    private func saveUserWallets(_ userWallets: [UserWallet]) {
-        UserWalletRepositoryUtil().saveUserWallets(userWallets)
+        return userWallets.first { $0.userWalletId == userWalletId.value }
     }
 }
 
 extension CommonUserWalletRepository {
     func initialize() {
         let savedSelectedUserWalletId = AppSettings.shared.selectedUserWalletId
-        selectedUserWalletId = savedSelectedUserWalletId.isEmpty ? nil : savedSelectedUserWalletId
+        if !savedSelectedUserWalletId.isEmpty {
+            selectedUserWalletId = UserWalletId(value: savedSelectedUserWalletId)
+        }
 
-        loadUserWalletsNotSensitiveDataIfEmpty()
         AppLog.shared.debug("CommonUserWalletRepository initialized")
     }
 
@@ -639,5 +574,11 @@ extension CommonUserWalletRepository {
         // Removing UserWallet-related data from Keychain
         AppLog.shared.debug("Clean CommonUserWalletRepository")
         clearUserWalletStorage()
+    }
+}
+
+private extension UserWalletModel {
+    var userWallet: StoredUserWallet? {
+        (self as? UserWalletSerializable)?.serialize()
     }
 }

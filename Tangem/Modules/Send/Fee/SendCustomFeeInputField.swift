@@ -11,6 +11,12 @@ import SwiftUI
 struct SendCustomFeeInputField: View {
     @ObservedObject var viewModel: SendCustomFeeInputFieldModel
 
+    private var onFocusChanged: ((Bool) -> Void)?
+
+    init(viewModel: SendCustomFeeInputFieldModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         GroupedSection(viewModel) { viewModel in
             VStack(alignment: .leading, spacing: 4) {
@@ -19,12 +25,10 @@ struct SendCustomFeeInputField: View {
                     .lineLimit(1)
 
                 HStack {
-                    SendDecimalNumberTextField(
-                        decimalValue: $viewModel.amount,
-                        maximumFractionDigits: viewModel.fractionDigits
-                    )
-                    .suffix(viewModel.fieldSuffix)
-                    .font(Fonts.Regular.subheadline)
+                    SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+                        .prefixSuffixOptions(.suffix(text: "WEI", hasSpace: true))
+                        .appearance(.init(font: Fonts.Regular.subheadline))
+                        .onFocusChanged(onFocusChanged)
 
                     Spacer()
 
@@ -44,12 +48,18 @@ struct SendCustomFeeInputField: View {
     }
 }
 
+extension SendCustomFeeInputField: Setupable {
+    func onFocusChanged(_ action: ((Bool) -> Void)?) -> Self {
+        map { $0.onFocusChanged = action }
+    }
+}
+
 #Preview {
     GroupedScrollView {
         SendCustomFeeInputField(
             viewModel: SendCustomFeeInputFieldModel(
                 title: "Fee up to",
-                amountPublisher: .just(output: .internal(1234)),
+                amountPublisher: .just(output: 1234),
                 fieldSuffix: "WEI",
                 fractionDigits: 2,
                 amountAlternativePublisher: .just(output: "0.41 $"),
@@ -61,7 +71,7 @@ struct SendCustomFeeInputField: View {
         SendCustomFeeInputField(
             viewModel: SendCustomFeeInputFieldModel(
                 title: "Fee up to",
-                amountPublisher: .just(output: .internal(1234)),
+                amountPublisher: .just(output: 1234),
                 fieldSuffix: "WEI",
                 fractionDigits: 2,
                 amountAlternativePublisher: .just(output: nil),

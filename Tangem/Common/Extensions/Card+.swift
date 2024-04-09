@@ -18,12 +18,4 @@ extension CardDTO {
     var walletCurves: [EllipticCurve] {
         wallets.compactMap { $0.curve }
     }
-
-    var hasWallets: Bool {
-        !wallets.isEmpty
-    }
-
-    var tangemApiAuthData: TangemApiTarget.AuthData {
-        .init(cardId: cardId, cardPublicKey: cardPublicKey)
-    }
 }

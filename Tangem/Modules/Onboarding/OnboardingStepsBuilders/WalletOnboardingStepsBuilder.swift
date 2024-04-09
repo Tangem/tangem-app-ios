@@ -41,7 +41,9 @@ struct WalletOnboardingStepsBuilder {
 
         var steps: [WalletOnboardingStep] = []
 
-        steps.append(.backupIntro)
+        if canSkipBackup {
+            steps.append(.backupIntro)
+        }
 
         if hasWallets, !backupService.primaryCardIsSet {
             steps.append(.scanPrimaryCard)
@@ -88,7 +90,7 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
         }
 
         if hasWallets {
-            let forceBackup = !canSkipBackup && !hasBackup
+            let forceBackup = !canSkipBackup && !hasBackup && canBackup // canBackup is false for cardLinked state
 
             if AppSettings.shared.cardsStartedActivation.contains(cardId) || forceBackup {
                 steps.append(contentsOf: backupSteps + userWalletSavingSteps + [.success])

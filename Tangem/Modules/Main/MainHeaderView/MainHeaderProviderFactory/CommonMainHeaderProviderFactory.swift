@@ -23,7 +23,7 @@ struct CommonMainHeaderProviderFactory: MainHeaderProviderFactory {
         if isMultiWallet {
             return MultiWalletMainHeaderSubtitleProvider(
                 isUserWalletLocked: userWalletModel.isUserWalletLocked,
-                areWalletsImported: userWalletModel.userWallet.card.wallets.contains(where: { $0.isImported ?? false }),
+                areWalletsImported: userWalletModel.keysRepository.keys.contains(where: { $0.isImported ?? false }),
                 dataSource: userWalletModel
             )
         }

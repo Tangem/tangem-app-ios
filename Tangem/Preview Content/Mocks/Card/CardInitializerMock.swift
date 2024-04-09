@@ -12,7 +12,7 @@ import TangemSdk
 class CardInitializerMock: CardInitializable {
     var shouldReset: Bool = false
 
-    func initializeCard(mnemonic: Mnemonic?, completion: @escaping (Result<CardInfo, TangemSdkError>) -> Void) {
+    func initializeCard(mnemonic: Mnemonic?, passphrase: String?, completion: @escaping (Result<CardInfo, TangemSdkError>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             let cardInfo = CardInfo(
                 card: .init(card: .walletWithBackup),

@@ -16,6 +16,15 @@ class CommonExpressAPIProvider {
         self.expressAPIService = expressAPIService
         self.expressAPIMapper = expressAPIMapper
     }
+
+    private func refundAddress(item: ExpressSwappableItem) -> String? {
+        switch item.providerInfo.type {
+        case .dex:
+            return nil
+        case .cex:
+            return item.source.defaultAddress
+        }
+    }
 }
 
 // MARK: - ExpressAPIProvider
@@ -55,7 +64,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toDecimals: item.destination.decimalCount,
             fromAmount: item.sourceAmountWEI(),
             fromDecimals: item.source.decimalCount,
-            providerId: item.providerId,
+            providerId: item.providerInfo.id,
             rateType: .float
         )
 
@@ -71,6 +80,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     func exchangeData(item: ExpressSwappableItem) async throws -> ExpressTransactionData {
         let requestId: String = UUID().uuidString
+        let refundAddress = refundAddress(item: item)
         let request = ExpressDTO.ExchangeData.Request(
             requestId: requestId,
             fromContractAddress: item.source.expressCurrency.contractAddress,
@@ -80,9 +90,11 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toDecimals: item.destination.decimalCount,
             fromAmount: item.sourceAmountWEI(),
             fromDecimals: item.source.decimalCount,
-            providerId: item.providerId,
+            providerId: item.providerInfo.id,
             rateType: .float,
-            toAddress: item.destination.defaultAddress
+            toAddress: item.destination.defaultAddress,
+            refundAddress: refundAddress,
+            refundExtraId: nil // There is no memo on the client side
         )
 
         let response = try await expressAPIService.exchangeData(request: request)

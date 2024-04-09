@@ -52,7 +52,7 @@ struct LimitsResponseParser {
         let timeIntervalWhenLimitEnds = EthereumUtils.parseEthereumDecimal(limitItems.removeLast(), decimalsCount: 0)
         let dueDate = Date(timeIntervalSince1970: timeIntervalWhenLimitEnds?.doubleValue ?? 0)
 
-        let decimalCount = VisaUtilities().visaBlockchain.decimalCount
+        let decimalCount = VisaUtilities().visaToken.decimalCount
         var values = limitItems.map { EthereumUtils.parseEthereumDecimal($0, decimalsCount: decimalCount) }
 
         guard values.count == amountsCount else {

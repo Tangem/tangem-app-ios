@@ -113,7 +113,6 @@ extension WarningView {
         case rateApp
         case reportProblem
         case dismiss
-        case learnMore
 
         var id: String { rawValue }
 
@@ -122,7 +121,6 @@ extension WarningView {
             case .okGotIt: return Localization.warningButtonOk
             case .rateApp: return Localization.warningButtonReallyCool
             case .reportProblem: return Localization.warningButtonCouldBeBetter
-            case .learnMore: return Localization.warningButtonLearnMore
             case .dismiss: return ""
             }
         }

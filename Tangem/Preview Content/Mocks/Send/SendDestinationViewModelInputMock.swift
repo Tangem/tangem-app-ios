@@ -71,6 +71,6 @@ class SendDestinationViewModelInputMock: SendDestinationViewModelInput {
         []
     }
 
-    func setDestination(_ address: String) {}
+    func setDestination(_ address: SendAddress) {}
     func setDestinationAdditionalField(_ additionalField: String) {}
 }

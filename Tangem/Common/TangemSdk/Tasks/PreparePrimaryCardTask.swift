@@ -15,15 +15,17 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     private let curves: [EllipticCurve]
     private let shouldReset: Bool
     private let mnemonic: Mnemonic?
+    private let passphrase: String?
     private var commandBag: (any CardSessionRunnable)?
 
     private var initializedCard: Card?
     private var primaryCard: PrimaryCard?
 
-    init(curves: [EllipticCurve], mnemonic: Mnemonic?, shouldReset: Bool) {
+    init(curves: [EllipticCurve], mnemonic: Mnemonic?, passphrase: String?, shouldReset: Bool) {
         self.curves = curves
         self.shouldReset = shouldReset
         self.mnemonic = mnemonic
+        self.passphrase = passphrase
     }
 
     deinit {
@@ -59,7 +61,7 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     }
 
     private func createMultiWallet(in session: CardSession, completion: @escaping CompletionResult<PreparePrimaryCardTaskResponse>) {
-        let command = CreateMultiWalletTask(curves: curves, mnemonic: mnemonic)
+        let command = CreateMultiWalletTask(curves: curves, mnemonic: mnemonic, passphrase: passphrase)
         commandBag = command
         command.run(in: session) { result in
             switch result {

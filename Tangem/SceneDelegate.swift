@@ -10,7 +10,6 @@ import UIKit
 import SwiftUI
 import TangemSdk
 import BlockchainSdk
-import AppsFlyerLib
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
@@ -50,8 +49,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         PerformanceMonitorConfigurator.configureIfAvailable()
 
         guard AppEnvironment.current.isProduction else { return }
-
-        AppsFlyerLib.shared().start()
     }
 
     // MARK: - Incoming actions

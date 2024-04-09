@@ -16,6 +16,10 @@ class SendFeeViewModelInputMock: SendFeeViewModelInput {
         nil
     }
 
+    var customGasPrice: BigUInt? {
+        nil
+    }
+
     var customFeePublisher: AnyPublisher<Fee?, Never> {
         .just(output: nil)
     }

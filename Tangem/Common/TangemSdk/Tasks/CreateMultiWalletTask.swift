@@ -12,10 +12,12 @@ import TangemSdk
 class CreateMultiWalletTask: CardSessionRunnable {
     private let curves: [EllipticCurve]
     private let mnemonic: Mnemonic?
+    private let passphrase: String?
 
-    init(curves: [EllipticCurve] = [.secp256k1, .ed25519], mnemonic: Mnemonic? = nil) {
+    init(curves: [EllipticCurve] = [.secp256k1, .ed25519], mnemonic: Mnemonic? = nil, passphrase: String? = nil) {
         self.curves = curves
         self.mnemonic = mnemonic
+        self.passphrase = passphrase
     }
 
     func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
@@ -37,7 +39,7 @@ class CreateMultiWalletTask: CardSessionRunnable {
         let createWalletTask: CreateWalletTask
         if let mnemonic = mnemonic {
             do {
-                let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: "")
+                let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase ?? "")
                 let privateKey = try factory.makeMasterKey(for: curve)
                 createWalletTask = .init(curve: curve, privateKey: privateKey)
             } catch {

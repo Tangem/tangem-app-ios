@@ -13,7 +13,7 @@ struct WalletOnboardingView: View {
 
     private let screenSize: CGSize = UIScreen.main.bounds.size
     private let infoPagerHeight: CGFloat = 146
-    private let progressBarHeight: CGFloat = 5
+    private let progressBarHeight: CGFloat = 4
     private let progressBarPadding: CGFloat = 10
     private let disclaimerTopPadding: CGFloat = 8
 
@@ -45,14 +45,13 @@ struct WalletOnboardingView: View {
         case .seedPhraseIntro:
             OnboardingSeedPhraseIntroView(
                 readMoreAction: viewModel.openReadMoreAboutSeedPhraseScreen,
-                generateSeedAction: viewModel.mainButtonAction,
+                generateSeedAction: viewModel.generateSeedPhrase,
                 importWalletAction: viewModel.supplementButtonAction
             )
         case .seedPhraseGeneration:
-            OnboardingSeedPhraseGenerateView(
-                words: viewModel.seedPhrase,
-                continueAction: viewModel.mainButtonAction
-            )
+            if let model = viewModel.generateSeedPhraseModel {
+                OnboardingSeedPhraseGenerateView(viewModel: model)
+            }
         case .seedPhraseImport:
             if let model = viewModel.importSeedPhraseModel {
                 OnboardingSeedPhraseImportView(viewModel: model)
@@ -115,7 +114,7 @@ struct WalletOnboardingView: View {
                             rightItems: {
                                 SupportButton(
                                     height: viewModel.navbarSize.height,
-                                    isVisible: true,
+                                    isVisible: viewModel.isSupportButtonVisible,
                                     isEnabled: true
                                 ) {
                                     viewModel.openSupport()
@@ -214,7 +213,6 @@ struct WalletOnboardingView: View {
                     ) {
                         viewModel.closeOnboarding()
                     }
-                    .padding(.horizontal, 40)
                     .padding(.top, 8)
                 }
             }

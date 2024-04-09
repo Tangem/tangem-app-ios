@@ -100,10 +100,12 @@ struct DetailsView: View {
             if let applicationInfoFooter = viewModel.applicationInfoFooter {
                 Text(applicationInfoFooter)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    .padding(.top, 8)
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 16)
+        .padding(.top, 24)
+        .padding(.bottom, 8)
     }
 
     @ViewBuilder
@@ -132,7 +134,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             DetailsView(
                 viewModel: DetailsViewModel(
-                    userWalletModel: PreviewCard.tangemWalletEmpty.cardModel,
+                    userWalletModel: PreviewCard.tangemWalletEmpty.userWalletModel,
                     coordinator: DetailsCoordinator()
                 )
             )

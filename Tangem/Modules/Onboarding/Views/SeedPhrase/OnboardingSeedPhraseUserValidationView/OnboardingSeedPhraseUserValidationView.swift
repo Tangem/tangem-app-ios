@@ -61,7 +61,7 @@ struct OnboardingSeedPhraseUserValidationView: View {
                     isDisabled: !viewModel.isCreateWalletButtonEnabled,
                     action: viewModel.createWallet
                 )
-                .padding(.bottom, 10)
+                .padding(.bottom, 8)
             }
             .readGeometry(\.size) { contentSize in
                 if self.contentSize == .zero {
@@ -120,7 +120,7 @@ private struct WordInputView: View {
             }
         }
         .frame(minHeight: 46)
-        .background(Colors.Field.focused)
+        .background(Colors.Field.primary)
         .cornerRadiusContinuous(14)
         .overlay(
             RoundedRectangle(cornerRadius: 14)

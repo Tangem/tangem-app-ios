@@ -18,7 +18,7 @@ struct UserTokensManagerMock: UserTokensManager {
 
     func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
-    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem]) {}
+    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem]) throws {}
 
     func addTokenItemPrecondition(_ tokenItem: TokenItem) throws {}
 
@@ -56,5 +56,5 @@ extension UserTokensManagerMock: UserTokensReordering {
 
     var sortingOption: AnyPublisher<UserTokensReorderingOptions.Sorting, Never> { .just(output: .dragAndDrop) }
 
-    func reorder(_ reorderingActions: [UserTokensReorderingAction]) -> AnyPublisher<Void, Never> { .just }
+    func reorder(_ actions: [UserTokensReorderingAction], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never> { .just }
 }

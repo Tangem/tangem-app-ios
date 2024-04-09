@@ -31,7 +31,7 @@ class UserWalletRepositoryUtil {
         }
     }
 
-    func savedUserWallets(encryptionKeyByUserWalletId: [Data: SymmetricKey]) -> [UserWallet] {
+    func savedUserWallets(encryptionKeyByUserWalletId: [UserWalletId: UserWalletEncryptionKey]) -> [StoredUserWallet] {
         do {
             guard fileManager.fileExists(atPath: userWalletListPath().path) else {
                 AppLog.shared.debug("Detected empty saved user wallets")
@@ -42,18 +42,18 @@ class UserWalletRepositoryUtil {
 
             let userWalletsPublicDataEncrypted = try Data(contentsOf: userWalletListPath())
             let userWalletsPublicData = try decrypt(userWalletsPublicDataEncrypted, with: publicDataEncryptionKey())
-            var userWallets = try decoder.decode([UserWallet].self, from: userWalletsPublicData)
+            var userWallets = try decoder.decode([StoredUserWallet].self, from: userWalletsPublicData)
 
             for i in 0 ..< userWallets.count {
                 let userWallet = userWallets[i]
-
-                guard let userWalletEncryptionKey = encryptionKeyByUserWalletId[userWallet.userWalletId] else {
+                let userWalletId = UserWalletId(value: userWallet.userWalletId)
+                guard let userWalletEncryptionKey = encryptionKeyByUserWalletId[userWalletId] else {
                     continue
                 }
 
-                let sensitiveInformationEncryptedData = try Data(contentsOf: userWalletPath(for: userWallet))
+                let sensitiveInformationEncryptedData = try Data(contentsOf: userWalletPath(for: userWalletId))
                 let sensitiveInformationData = try decrypt(sensitiveInformationEncryptedData, with: userWalletEncryptionKey)
-                let sensitiveInformation = try decoder.decode(UserWallet.SensitiveInformation.self, from: sensitiveInformationData)
+                let sensitiveInformation = try decoder.decode(StoredUserWallet.SensitiveInformation.self, from: sensitiveInformationData)
 
                 var card = userWallet.card
                 card.wallets = sensitiveInformation.wallets
@@ -67,7 +67,7 @@ class UserWalletRepositoryUtil {
         }
     }
 
-    func saveUserWallets(_ userWallets: [UserWallet]) {
+    func saveUserWallets(_ userWallets: [StoredUserWallet]) {
         let encoder = JSONEncoder.tangemSdkEncoder
 
         do {
@@ -80,7 +80,7 @@ class UserWalletRepositoryUtil {
 
             try fileManager.createDirectory(at: userWalletDirectoryUrl, withIntermediateDirectories: true)
 
-            let userWalletsWithoutSensitiveInformation: [UserWallet] = userWallets.map {
+            let userWalletsWithoutSensitiveInformation: [StoredUserWallet] = userWallets.map {
                 var card = $0.card
                 card.wallets = []
 
@@ -95,17 +95,14 @@ class UserWalletRepositoryUtil {
             try excludeFromBackup(url: userWalletListPath())
 
             for userWallet in userWallets {
-                let cardInfo = userWallet.cardInfo()
-                let userWalletEncryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(from: cardInfo)
-
-                guard let encryptionKey = userWalletEncryptionKey else {
-                    AppLog.shared.debug("User wallet \(userWallet.card.cardId) failed to generate encryption key")
+                guard let encryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(for: userWallet) else {
+                    AppLog.shared.debug("User wallet \(userWallet.userWalletId) failed to generate encryption key")
                     continue
                 }
 
-                let sensitiveInformation = UserWallet.SensitiveInformation(wallets: userWallet.card.wallets)
-                let sensitiveDataEncoded = try encrypt(encoder.encode(sensitiveInformation), with: encryptionKey.symmetricKey)
-                let sensitiveDataPath = userWalletPath(for: userWallet)
+                let sensitiveInformation = StoredUserWallet.SensitiveInformation(wallets: userWallet.card.wallets)
+                let sensitiveDataEncoded = try encrypt(encoder.encode(sensitiveInformation), with: encryptionKey)
+                let sensitiveDataPath = userWalletPath(for: UserWalletId(value: userWallet.userWalletId))
                 try sensitiveDataEncoded.write(to: sensitiveDataPath, options: .atomic)
                 try excludeFromBackup(url: sensitiveDataPath)
             }
@@ -116,26 +113,26 @@ class UserWalletRepositoryUtil {
         }
     }
 
-    private func publicDataEncryptionKey() throws -> SymmetricKey {
+    private func publicDataEncryptionKey() throws -> UserWalletEncryptionKey {
         let secureStorage = SecureStorage()
 
         let encryptionKeyData = try secureStorage.get(publicDataEncryptionKeyStorageKey)
         if let encryptionKeyData = encryptionKeyData {
             let symmetricKey: SymmetricKey = .init(data: encryptionKeyData)
-            return symmetricKey
+            return UserWalletEncryptionKey(symmetricKey: symmetricKey)
         }
 
         let newEncryptionKey = SymmetricKey(size: .bits256)
         try secureStorage.store(newEncryptionKey.dataRepresentationWithHexConversion, forKey: publicDataEncryptionKeyStorageKey)
-        return newEncryptionKey
+        return UserWalletEncryptionKey(symmetricKey: newEncryptionKey)
     }
 
     private func userWalletListPath() -> URL {
         userWalletDirectoryUrl.appendingPathComponent("user_wallets.bin")
     }
 
-    private func userWalletPath(for userWallet: UserWallet) -> URL {
-        return userWalletDirectoryUrl.appendingPathComponent("user_wallet_\(userWallet.userWalletId.hexString.lowercased()).bin")
+    private func userWalletPath(for userWalletId: UserWalletId) -> URL {
+        return userWalletDirectoryUrl.appendingPathComponent("user_wallet_\(userWalletId.stringValue.lowercased()).bin")
     }
 
     private func excludeFromBackup(url originalUrl: URL) throws {
@@ -146,14 +143,14 @@ class UserWalletRepositoryUtil {
         try url.setResourceValues(resourceValues)
     }
 
-    private func decrypt(_ data: Data, with key: SymmetricKey) throws -> Data {
+    private func decrypt(_ data: Data, with key: UserWalletEncryptionKey) throws -> Data {
         let sealedBox = try ChaChaPoly.SealedBox(combined: data)
-        let decryptedData = try ChaChaPoly.open(sealedBox, using: key)
+        let decryptedData = try ChaChaPoly.open(sealedBox, using: key.symmetricKey)
         return decryptedData
     }
 
-    private func encrypt(_ data: Data, with key: SymmetricKey) throws -> Data {
-        let sealedBox = try ChaChaPoly.seal(data, using: key)
+    private func encrypt(_ data: Data, with key: UserWalletEncryptionKey) throws -> Data {
+        let sealedBox = try ChaChaPoly.seal(data, using: key.symmetricKey)
         let sealedData = sealedBox.combined
         return sealedData
     }

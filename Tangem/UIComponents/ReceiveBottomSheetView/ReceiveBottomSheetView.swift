@@ -16,45 +16,12 @@ struct ReceiveBottomSheetView: View {
 
     var body: some View {
         VStack {
-            if viewModel.isUserUnderstandsAddressNetworkRequirements {
-                mainContent
-            } else {
-                addressNetworkUnderstandingConfirmationView
-            }
+            mainContent
         }
         .toast(isPresenting: $viewModel.showToast, alert: {
             AlertToast(type: .complete(Colors.Icon.accent), title: Localization.walletNotificationAddressCopied)
         })
         .onAppear(perform: viewModel.onViewAppear)
-    }
-
-    @ViewBuilder
-    private var addressNetworkUnderstandingConfirmationView: some View {
-        VStack(spacing: 56) {
-            TokenIcon(
-                tokenIconInfo: .init(
-                    name: "",
-                    blockchainIconName: nil,
-                    imageURL: viewModel.iconURL,
-                    isCustom: false,
-                    customTokenColor: viewModel.customTokenColor
-                ),
-                size: IconViewSizeSettings.receive.iconSize
-            )
-            .padding(.top, 56)
-
-            Text(viewModel.networkWarningMessage)
-                .multilineTextAlignment(.center)
-                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
-                .padding(.horizontal, 60)
-
-            MainButton(
-                title: Localization.commonUnderstand,
-                action: viewModel.understandNetworkRequirements
-            )
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-        }
     }
 
     @ViewBuilder

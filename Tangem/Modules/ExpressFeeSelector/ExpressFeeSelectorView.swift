@@ -32,7 +32,7 @@ struct ExpressFeeSelectorView: View {
 
     private var footerAttributedString: AttributedString {
         let readMore = Localization.commonReadMore
-        var attributed = AttributedString(Localization.commonFeeSelectorFooter + " " + readMore)
+        var attributed = AttributedString(Localization.commonFeeSelectorFooter(readMore))
         attributed.foregroundColor = Colors.Text.tertiary
         attributed.font = Fonts.Regular.caption1
 

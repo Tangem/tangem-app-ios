@@ -17,52 +17,14 @@ class VisaTransactionDetailsViewModel: ObservableObject, Identifiable {
     @Injected(\.safariManager) private var safariManager: SafariManager
 
     var fiatTransactionInfo: VisaTransactionDetailsView.CommonTransactionInfo {
-        .init(
-            idTitle: .id,
-            transactionId: "\(transaction.id)",
-            date: dateFormatter.string(from: transaction.date ?? Date()),
-            type: transaction.type,
-            status: transaction.status,
-            blockchainAmount: balanceFormatter.formatCryptoBalance(transaction.blockchainAmount, currencyCode: tokenItem.currencySymbol),
-            blockchainFee: balanceFormatter.formatCryptoBalance(transaction.blockchainFee, currencyCode: tokenItem.currencySymbol),
-            transactionAmount: balanceFormatter.formatFiatBalance(transaction.transactionAmount, numericCurrencyCode: transaction.transactionCurrencyCode),
-            currencyCode: iso4217CodeConverter.convertToStringCode(numericCode: transaction.transactionCurrencyCode) ?? "\(transaction.transactionCurrencyCode)"
-        )
+        transactionHistoryMapper.mapCommonTransactionInfo(from: transaction)
     }
 
     var cryptoRequests: [VisaTransactionDetailsView.CryptoRequestInfo] {
         transaction.requests.map { request in
-            let commonInfo = VisaTransactionDetailsView.CommonTransactionInfo(
-                idTitle: .requestId,
-                transactionId: "\(request.id)",
-                date: dateFormatter.string(from: request.date),
-                type: request.type,
-                status: request.status,
-                blockchainAmount: balanceFormatter.formatCryptoBalance(request.blockchainAmount, currencyCode: tokenItem.currencySymbol),
-                blockchainFee: balanceFormatter.formatCryptoBalance(request.blockchainFee, currencyCode: tokenItem.currencySymbol),
-                transactionAmount: balanceFormatter.formatFiatBalance(request.transactionAmount, numericCurrencyCode: request.transactionCurrencyCode),
-                currencyCode: iso4217CodeConverter.convertToStringCode(numericCode: request.transactionCurrencyCode) ?? "\(request.transactionCurrencyCode)"
-            )
-
-            let exploreAction: (() -> Void)?
-            let hashToDisplay: String
-            if let transactionHash = request.transactionHash {
-                hashToDisplay = transactionHash
-                exploreAction = { [weak self] in
-                    self?.exploreTransactionRequest(with: hashToDisplay)
-                }
-            } else {
-                exploreAction = nil
-                hashToDisplay = AppConstants.dashSign
-            }
-
-            return .init(
-                commonTransactionInfo: commonInfo,
-                errorCode: "\(request.errorCode)",
-                hash: hashToDisplay,
-                status: request.status,
-                exploreAction: exploreAction
-            )
+            transactionHistoryMapper.mapCryptoRequestInfo(from: request, exploreAction: { [weak self] transactionHash in
+                self?.exploreTransactionRequest(with: transactionHash)
+            })
         }
     }
 
@@ -92,15 +54,14 @@ class VisaTransactionDetailsViewModel: ObservableObject, Identifiable {
         return dateFormatter
     }()
 
-    private let iso4217CodeConverter = ISO4217CodeConverter.shared
-    private let balanceFormatter = BalanceFormatter()
-    private let balanceConverter = BalanceConverter()
+    private let transactionHistoryMapper: VisaTransactionHistoryMapper
     private let tokenItem: TokenItem
     private let transaction: VisaTransactionRecord
 
     init(tokenItem: TokenItem, transaction: VisaTransactionRecord) {
         self.tokenItem = tokenItem
         self.transaction = transaction
+        transactionHistoryMapper = VisaTransactionHistoryMapper(currencySymbol: tokenItem.currencySymbol)
     }
 
     private func exploreTransactionRequest(with hash: TransactionHash) {

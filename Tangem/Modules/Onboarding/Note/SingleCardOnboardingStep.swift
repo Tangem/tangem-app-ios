@@ -124,9 +124,18 @@ extension SingleCardOnboardingStep: OnboardingButtonsInfoProvider {
     var supplementButtonTitle: String {
         switch self {
         case .disclaimer: return Localization.commonAccept
-        case .createWallet: return Localization.onboardingButtonWhatDoesItMean
+        case .createWallet: return Localization.onboardingCreateWalletButtonCreateWallet
         case .topup: return Localization.onboardingTopUpButtonShowWalletAddress
-        case .successTopup, .saveUserWallet, .success: return ""
+        case .successTopup: return Localization.commonContinue
+        case .success: return successButtonTitle
+        case .saveUserWallet: return ""
+        }
+    }
+
+    var supplementButtonIcon: ImageType? {
+        switch self {
+        case .createWallet: return Assets.tangemIcon
+        default: return nil
         }
     }
 

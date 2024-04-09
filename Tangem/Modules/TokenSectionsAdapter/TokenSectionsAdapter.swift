@@ -209,6 +209,28 @@ final class TokenSectionsAdapter {
             // Keeping existing sort order
             return sectionItems
         case .byBalance:
+            let allWalletModels = sectionItems
+                .compactMap(\.walletModel)
+
+            // We don't sort section items by balance if some of them don't have balance information
+            let hasWalletModelsWithoutBalanceInfo = allWalletModels
+                .contains { $0.balanceValue == nil }
+
+            if hasWalletModelsWithoutBalanceInfo {
+                return sectionItems
+            }
+
+            // We don't sort section items by balance if some of them don't have quotes information
+            // This rule doesn't apply to custom wallet models (with `canUseQuotes` == false),
+            // because such wallet models can't have quotes
+            let hasWalletModelsWithoutQuotesInfo = allWalletModels
+                .filter { $0.canUseQuotes }
+                .contains { $0.quote == nil }
+
+            if hasWalletModelsWithoutQuotesInfo {
+                return sectionItems
+            }
+
             // The underlying sorting algorithm is guaranteed to be stable in Swift 5.0 and above
             // For cases when both lhs and rhs values are w/o derivation we also maintain a stable order of such elements
             return sectionItems.sorted { lhs, rhs in

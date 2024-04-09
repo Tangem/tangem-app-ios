@@ -127,11 +127,11 @@ class LegacySendViewModel: ObservableObject {
 
     @Published var error: AlertBinder?
 
-    let cardViewModel: CardViewModel
+    let userWalletModel: CommonUserWalletModel
 
     var walletModel: WalletModel {
         let id = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: amountToSend.type).id
-        return cardViewModel.walletModelsManager.walletModels.first(where: { $0.id == id })!
+        return userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == id })!
     }
 
     var bag = Set<AnyCancellable>()
@@ -178,11 +178,11 @@ class LegacySendViewModel: ObservableObject {
     init(
         amountToSend: Amount,
         blockchainNetwork: BlockchainNetwork,
-        cardViewModel: CardViewModel,
+        userWalletModel: UserWalletModel,
         coordinator: LegacySendRoutable
     ) {
         self.blockchainNetwork = blockchainNetwork
-        self.cardViewModel = cardViewModel
+        self.userWalletModel = userWalletModel as! CommonUserWalletModel
         self.amountToSend = amountToSend
         self.coordinator = coordinator
         isSellingCrypto = false
@@ -200,13 +200,13 @@ class LegacySendViewModel: ObservableObject {
         destination: String,
         tag: String?,
         blockchainNetwork: BlockchainNetwork,
-        cardViewModel: CardViewModel,
+        userWalletModel: UserWalletModel,
         coordinator: LegacySendRoutable
     ) {
         self.init(
             amountToSend: amountToSend,
             blockchainNetwork: blockchainNetwork,
-            cardViewModel: cardViewModel,
+            userWalletModel: userWalletModel,
             coordinator: coordinator
         )
         isSellingCrypto = true
@@ -240,14 +240,6 @@ class LegacySendViewModel: ObservableObject {
 
     func bind() {
         bag = Set<AnyCancellable>()
-
-        cardViewModel
-            .objectWillChange
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.objectWillChange.send()
-            }
-            .store(in: &bag)
 
         $destination // destination validation
             .debounce(for: 1.0, scheduler: DispatchQueue.main, options: nil)
@@ -457,21 +449,28 @@ class LegacySendViewModel: ObservableObject {
 
         scannedQRCode
             .compactMap { $0 }
-            .sink { [unowned self] qrCodeString in
-                let withoutPrefix = qrCodeString.remove(contentsOf: walletModel.wallet.blockchain.qrPrefixes)
-                let splitted = withoutPrefix.split(separator: "?")
-                lastDestinationAddressSource = .qrCode
-                destination = splitted.first.map { String($0) } ?? withoutPrefix
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, qrCodeString in
+                let parser = QRCodeParser(
+                    amountType: viewModel.amountToSend.type,
+                    blockchain: viewModel.walletModel.blockchainNetwork.blockchain,
+                    decimalCount: viewModel.walletModel.decimalCount
+                )
 
-                if splitted.count > 1 {
-                    let queryItems = splitted[1].lowercased().split(separator: "&")
-                    for queryItem in queryItems {
-                        if queryItem.contains("amount") {
-                            amountText = queryItem.replacingOccurrences(of: "amount=", with: "")
-                            break
-                        }
-                    }
+                return parser.parse(qrCodeString)
+            }
+            .withWeakCaptureOf(self)
+            .sink { viewModel, result in
+                if let parsedAmountText = result.amountText {
+                    viewModel.amountText = parsedAmountText
                 }
+
+                if let parsedMemo = result.memo {
+                    viewModel.memo = parsedMemo
+                }
+
+                viewModel.destination = result.destination
+                viewModel.lastDestinationAddressSource = .qrCode
             }
             .store(in: &bag)
     }
@@ -734,7 +733,7 @@ class LegacySendViewModel: ObservableObject {
 
         let isDemo = walletModel.isDemo
 
-        walletModel.send(tx, signer: cardViewModel.signer)
+        walletModel.send(tx, signer: userWalletModel.signer)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
@@ -750,7 +749,21 @@ class LegacySendViewModel: ObservableObject {
                         .blockchain: walletModel.wallet.blockchain.displayName,
                         .action: Analytics.ParameterValue.sendTx.rawValue,
                     ])
-                    self.error = SendError(error, openMailAction: openMail).alertBinder
+
+                    let fullErrorDescription: String
+                    if let blockchainSdkError = error as? BlockchainSdkError {
+                        fullErrorDescription = blockchainSdkError.errorDescriptionWithCode
+                    } else {
+                        fullErrorDescription = error.localizedDescription
+                    }
+
+                    self.error = SendError(
+                        title: Localization.feedbackSubjectTxFailed,
+                        message: Localization.alertFailedToSendTransactionMessage(fullErrorDescription.dropTrailingPeriod),
+                        error: error,
+                        openMailAction: openMail
+                    )
+                    .alertBinder
                 } else {
                     if !isDemo {
                         let sourceValue: Analytics.ParameterValue = isSellingCrypto ? .transactionSourceSell : .transactionSourceSend
@@ -762,7 +775,7 @@ class LegacySendViewModel: ObservableObject {
                             .memo: retrieveAnalyticsMemoValue().rawValue,
                         ])
 
-                        Analytics.log(.selectedCurrency, params: [
+                        Analytics.log(.sendSelectedCurrency, params: [
                             .commonType: isFiatCalculation ? .selectedCurrencyApp : .token,
                         ])
                     }
@@ -782,7 +795,7 @@ class LegacySendViewModel: ObservableObject {
     func warningButtonAction(at index: Int, priority: WarningPriority, button: WarningView.WarningButton) {
         guard let warning = warnings.warning(at: index, with: priority) else { return }
 
-        cardViewModel.warningsService.hideWarning(warning)
+        userWalletModel.warningsService.hideWarning(warning)
     }
 
     func openSystemSettings() {
@@ -794,7 +807,7 @@ class LegacySendViewModel: ObservableObject {
     }
 
     private func setupWarnings() {
-        warnings = cardViewModel.warningsService.warnings(for: .send)
+        warnings = userWalletModel.warningsService.warnings(for: .send)
     }
 }
 
@@ -969,7 +982,7 @@ extension LegacySendViewModel {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         let emailDataCollector = SendScreenDataCollector(
-            userWalletEmailData: cardViewModel.emailData,
+            userWalletEmailData: userWalletModel.emailData,
             walletModel: walletModel,
             fee: transaction.fee.amount,
             destination: destination,
@@ -978,7 +991,7 @@ extension LegacySendViewModel {
             lastError: error
         )
 
-        let recipient = cardViewModel.emailConfig?.recipient ?? EmailConfig.default.recipient
+        let recipient = userWalletModel.emailConfig?.recipient ?? EmailConfig.default.recipient
         coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
@@ -987,7 +1000,7 @@ extension LegacySendViewModel {
     }
 
     func openQRScanner() {
-        Analytics.log(.buttonQRCode)
+        Analytics.log(.sendButtonQRCode)
         if case .denied = AVCaptureDevice.authorizationStatus(for: .video) {
             showCameraDeniedAlert = true
         } else {

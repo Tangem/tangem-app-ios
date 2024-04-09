@@ -50,7 +50,6 @@ struct BalanceFormatter {
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
         formatter.currencySymbol = currencyCode
-        formatter.alwaysShowsDecimalSeparator = true
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 

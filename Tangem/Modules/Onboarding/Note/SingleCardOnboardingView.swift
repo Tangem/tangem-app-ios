@@ -13,7 +13,7 @@ struct SingleCardOnboardingView: View {
 
     private let horizontalPadding: CGFloat = 16
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let progressBarHeight: CGFloat = 5
+    private let progressBarHeight: CGFloat = 4
     private let progressBarPadding: CGFloat = 10
     private let disclaimerTopPadding: CGFloat = 8
 
@@ -79,7 +79,7 @@ struct SingleCardOnboardingView: View {
                             rightItems: {
                                 SupportButton(
                                     height: viewModel.navbarSize.height,
-                                    isVisible: true,
+                                    isVisible: viewModel.isSupportButtonVisible,
                                     isEnabled: true
                                 ) {
                                     viewModel.openSupport()
@@ -168,7 +168,6 @@ struct SingleCardOnboardingView: View {
                     ) {
                         viewModel.closeOnboarding()
                     }
-                    .padding(.horizontal, 40)
                 }
             }
         }

@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import Firebase
-import AppsFlyerLib
 import Amplitude
 import BlockchainSdk
 
@@ -38,7 +37,6 @@ class ServicesManager {
 
         if !AppEnvironment.current.isDebug {
             configureFirebase()
-            configureAppsFlyer()
             configureAmplitude()
         }
 
@@ -62,22 +60,7 @@ class ServicesManager {
         FirebaseApp.configure(options: options)
     }
 
-    private func configureAppsFlyer() {
-        guard AppEnvironment.current.isProduction else {
-            return
-        }
-
-        do {
-            let keysManager = try CommonKeysManager()
-            AppsFlyerLib.shared().appsFlyerDevKey = keysManager.appsFlyer.appsFlyerDevKey
-            AppsFlyerLib.shared().appleAppID = keysManager.appsFlyer.appsFlyerAppID
-        } catch {
-            assertionFailure("CommonKeysManager not initialized with error: \(error.localizedDescription)")
-        }
-    }
-
     private func configureAmplitude() {
-        Amplitude.instance().trackingSessionEvents = true
         Amplitude.instance().initializeApiKey(try! CommonKeysManager().amplitudeApiKey)
     }
 

@@ -8,6 +8,8 @@
 
 import Foundation
 import Moya
+import TangemSdk
+import BlockchainSdk
 
 public struct TangemExpressFactory {
     public init() {}
@@ -51,9 +53,13 @@ public struct TangemExpressFactory {
                 sessionId: credential.sessionId
             ),
             ExpressDeviceInfoPlugin(deviceInfo: deviceInfo),
+            TangemNetworkLoggerPlugin(configuration: .init(
+                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
+                logOptions: .verbose
+            )),
         ]
         let provider = MoyaProvider<ExpressAPITarget>(session: Session(configuration: configuration), plugins: plugins)
-        let service = CommonExpressAPIService(provider: provider, expressAPIType: expressAPIType, logger: logger ?? CommonLogger())
+        let service = CommonExpressAPIService(provider: provider, expressAPIType: expressAPIType)
         let mapper = ExpressAPIMapper(exchangeDataDecoder: exchangeDataDecoder)
         return CommonExpressAPIProvider(expressAPIService: service, expressAPIMapper: mapper)
     }

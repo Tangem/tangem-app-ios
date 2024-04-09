@@ -47,7 +47,7 @@ struct BackButton: View {
             }
         })
         .allowsHitTesting(isEnabled)
-        .opacity(isVisible ? 1.0 : 0.0)
+        .hidden(!isVisible)
         .frame(height: height)
         .foregroundColor(isEnabled ? color : color.opacity(0.5))
         .padding(.horizontal, hPadding)
@@ -129,7 +129,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
                 .foregroundColor(settings.titleColor)
         }
         .padding(.horizontal, settings.horizontalPadding)
-        .frame(width: UIScreen.main.bounds.size.width, height: settings.height)
+        .frame(height: settings.height)
         .background(settings.backgroundColor.edgesIgnoringSafeArea(.all))
     }
 }

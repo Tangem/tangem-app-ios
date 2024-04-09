@@ -32,6 +32,36 @@
         <string>%li wallets</string>
       </dict>
     </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>按照下面給出的順序寫下這 %li 個單詞，並將它們存放在安全秘密的地方。</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string></string>
+        <key>other</key>
+        <string>%li words</string>
+      </dict>
+    </dict>
     <key>referral_number_of_wallets</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>

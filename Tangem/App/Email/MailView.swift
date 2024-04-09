@@ -8,6 +8,7 @@
 
 import SwiftUI
 import MessageUI
+import ZIPFoundation
 
 struct MailView: UIViewControllerRepresentable {
     let viewModel: MailViewModel
@@ -66,8 +67,21 @@ struct MailView: UIViewControllerRepresentable {
         messageBody.append("\n\n")
         vc.setMessageBody(messageBody, isHTML: false)
 
-        viewModel.logsComposer.getLogsData().forEach {
-            vc.addAttachmentData($0.value, mimeType: "text/plain", fileName: $0.key)
+        let logFiles = viewModel.logsComposer.getLogFiles()
+        let fileManager = FileManager.default
+        logFiles.forEach { originalURL in
+            let archiveName = originalURL.appendingPathExtension(for: .zip).lastPathComponent
+            let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
+            do {
+                try? fileManager.removeItem(at: destinationURL)
+                try fileManager.zipItem(at: originalURL, to: destinationURL, compressionMethod: .deflate)
+                let data = try Data(contentsOf: destinationURL)
+                vc.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
+            } catch {
+                if let data = try? Data(contentsOf: originalURL) {
+                    vc.addAttachmentData(data, mimeType: "text/plain", fileName: originalURL.lastPathComponent)
+                }
+            }
         }
 
         return vc

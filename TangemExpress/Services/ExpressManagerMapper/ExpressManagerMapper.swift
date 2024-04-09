@@ -9,12 +9,16 @@
 import Foundation
 
 struct ExpressManagerMapper {
-    func makeExpressSwappableItem(request: ExpressManagerSwappingPairRequest, providerId: ExpressProvider.Id) -> ExpressSwappableItem {
+    func makeExpressSwappableItem(
+        request: ExpressManagerSwappingPairRequest,
+        providerId: ExpressProvider.Id,
+        providerType: ExpressProviderType
+    ) -> ExpressSwappableItem {
         ExpressSwappableItem(
             source: request.pair.source,
             destination: request.pair.destination,
             amount: request.amount,
-            providerId: providerId
+            providerInfo: .init(id: providerId, type: providerType)
         )
     }
 }

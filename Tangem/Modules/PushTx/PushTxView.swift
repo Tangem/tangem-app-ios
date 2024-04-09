@@ -196,7 +196,7 @@ struct PushTxView_Previews: PreviewProvider {
                     isIncoming: false
                 ),
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
-                cardViewModel: PreviewCard.ethereum.cardModel,
+                userWalletModel: PreviewCard.ethereum.userWalletModel,
                 coordinator: PushTxCoordinator()
             )
         )

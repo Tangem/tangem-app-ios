@@ -15,7 +15,7 @@ struct DismissSafariActionURLHelper: IncomingActionURLHelper {
 
     func buildURL(scheme: IncomingActionScheme) -> URL {
         var urlComponents = URLComponents(string: scheme.baseScheme)!
-        urlComponents.percentEncodedQueryItems = [.init(name: IncomingActionConstants.incoimingActionName, value: actionValue)]
+        urlComponents.percentEncodedQueryItems = [.init(name: IncomingActionConstants.incomingActionName, value: actionValue)]
         return urlComponents.url!
     }
 
@@ -24,7 +24,7 @@ struct DismissSafariActionURLHelper: IncomingActionURLHelper {
             return nil
         }
 
-        if let action = components.queryItems?.first(where: { $0.name == IncomingActionConstants.incoimingActionName }),
+        if let action = components.queryItems?.first(where: { $0.name == IncomingActionConstants.incomingActionName }),
            action.value == actionValue {
             return .dismissSafari(url)
         }

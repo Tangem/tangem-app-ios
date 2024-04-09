@@ -87,9 +87,7 @@ extension OrganizeTokensOptionsManager: OrganizeTokensOptionsEditing {
         editedSortingOption.send(sortingOption)
     }
 
-    func save(
-        reorderedWalletModelIds: [WalletModel.ID]
-    ) -> AnyPublisher<Void, Never> {
+    func save(reorderedWalletModelIds: [WalletModel.ID], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never> {
         return .just
             .withLatestFrom(userTokensReorderer.orderedWalletModelIds, groupingOptionToSave, sortingOptionToSave)
             .withWeakCaptureOf(self)
@@ -109,7 +107,7 @@ extension OrganizeTokensOptionsManager: OrganizeTokensOptionsEditing {
                     reorderingActions.append(.reorder(reorderedWalletModelIds: reorderedWalletModelIds))
                 }
 
-                return manager.userTokensReorderer.reorder(reorderingActions)
+                return manager.userTokensReorderer.reorder(reorderingActions, source: source)
             }
             .eraseToAnyPublisher()
     }

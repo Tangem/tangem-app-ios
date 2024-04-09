@@ -38,7 +38,7 @@ class PushTxViewModel: ObservableObject {
 
     var walletModel: WalletModel {
         let id = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: amountToSend.type).id
-        return cardViewModel.walletModelsManager.walletModels.first(where: { $0.id == id })!
+        return userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == id })!
     }
 
     var previousFeeAmount: Amount { transaction.fee.amount }
@@ -72,7 +72,7 @@ class PushTxViewModel: ObservableObject {
 
     @Published var shouldAmountBlink: Bool = false
 
-    let cardViewModel: CardViewModel
+    let userWalletModel: CommonUserWalletModel
     let blockchainNetwork: BlockchainNetwork
     var transaction: PendingTransactionRecord
 
@@ -92,12 +92,12 @@ class PushTxViewModel: ObservableObject {
     init(
         transaction: PendingTransactionRecord,
         blockchainNetwork: BlockchainNetwork,
-        cardViewModel: CardViewModel,
+        userWalletModel: UserWalletModel,
         coordinator: PushTxRoutable
     ) {
         self.coordinator = coordinator
         self.blockchainNetwork = blockchainNetwork
-        self.cardViewModel = cardViewModel
+        self.userWalletModel = userWalletModel as! CommonUserWalletModel
         self.transaction = transaction
         amountToSend = transaction.amount
         additionalFee = emptyValue
@@ -131,7 +131,7 @@ class PushTxViewModel: ObservableObject {
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.addLoadingView()
-        pusher.pushTransaction(with: transaction.hash, newTransaction: tx, signer: cardViewModel.signer)
+        pusher.pushTransaction(with: transaction.hash, newTransaction: tx, signer: userWalletModel.signer)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self else { return }
@@ -146,7 +146,14 @@ class PushTxViewModel: ObservableObject {
                         .blockchain: walletModel.wallet.blockchain.displayName,
                         .action: Analytics.ParameterValue.pushTx.rawValue,
                     ])
-                    sendError = SendError(error, openMailAction: openMail).alertBinder
+
+                    sendError = SendError(
+                        title: Localization.feedbackSubjectTxFailed,
+                        message: Localization.alertFailedToSendTransactionMessage(String(error.localizedDescription.dropTrailingPeriod)),
+                        error: error,
+                        openMailAction: openMail
+                    )
+                    .alertBinder
                 } else {
                     walletModel.startUpdatingTimer()
                     callback()
@@ -378,7 +385,7 @@ class PushTxViewModel: ObservableObject {
 extension PushTxViewModel {
     func openMail(with error: Error) {
         let emailDataCollector = PushScreenDataCollector(
-            userWalletEmailData: cardViewModel.emailData,
+            userWalletEmailData: userWalletModel.emailData,
             walletModel: walletModel,
             fee: newTransaction?.fee.amount,
             pushingFee: selectedFee?.amount,
@@ -389,7 +396,7 @@ extension PushTxViewModel {
             lastError: error
         )
 
-        let recipient = cardViewModel.emailConfig?.recipient ?? EmailConfig.default.recipient
+        let recipient = userWalletModel.emailConfig?.recipient ?? EmailConfig.default.recipient
         coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 

@@ -13,8 +13,6 @@ import Combine
 import CombineExt
 
 final class MainViewModel: ObservableObject {
-    private typealias UserWalletIdData = Data
-
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
@@ -40,7 +38,7 @@ final class MainViewModel: ObservableObject {
 
     // MARK: - Internal state
 
-    private var pendingUserWalletIdsToUpdate: Set<UserWalletIdData> = []
+    private var pendingUserWalletIdsToUpdate: Set<UserWalletId> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
 
@@ -153,19 +151,16 @@ final class MainViewModel: ObservableObject {
     func didTapEditWallet() {
         Analytics.log(.buttonEditWalletTapped)
 
-        guard let userWallet = userWalletRepository.selectedModel?.userWallet else { return }
+        guard let userWalletModel = userWalletRepository.selectedModel else { return }
 
         let alert = AlertBuilder.makeAlertControllerWithTextField(
             title: Localization.userWalletListRenamePopupTitle,
             fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWallet.name
-        ) { [weak self] newName in
-            guard userWallet.name != newName else { return }
+            fieldText: userWalletModel.name
+        ) { newName in
+            guard userWalletModel.name != newName else { return }
 
-            var newUserWallet = userWallet
-            newUserWallet.name = newName
-
-            self?.userWalletRepository.save(newUserWallet)
+            userWalletModel.updateWalletName(newName)
         }
 
         AppPresenter.shared.show(alert)
@@ -185,10 +180,7 @@ final class MainViewModel: ObservableObject {
     }
 
     func didConfirmWalletDeletion() {
-        guard
-            let userWalletId = userWalletRepository.selectedUserWalletId,
-            let userWalletModel = userWalletRepository.models.first(where: { $0.userWalletId.value == userWalletId })
-        else {
+        guard let userWalletModel = userWalletRepository.selectedModel else {
             return
         }
 
@@ -198,19 +190,23 @@ final class MainViewModel: ObservableObject {
     // MARK: - User wallets pages management
 
     /// Marks the given user wallet as 'dirty' (needs to be updated).
-    private func setNeedsUpdateUserWallet(_ userWallet: UserWallet) {
-        pendingUserWalletIdsToUpdate.insert(userWallet.userWalletId)
+    private func setNeedsUpdateUserWallet(_ userWalletId: UserWalletId) {
+        pendingUserWalletIdsToUpdate.insert(userWalletId)
     }
 
     /// Checks if the given user wallet is 'dirty' (needs to be updated).
-    private func userWalletAwaitsPendingUpdate(_ userWallet: UserWallet) -> Bool {
-        return pendingUserWalletIdsToUpdate.contains(userWallet.userWalletId)
+    private func userWalletAwaitsPendingUpdate(_ userWalletId: UserWalletId) -> Bool {
+        return pendingUserWalletIdsToUpdate.contains(userWalletId)
     }
 
     /// Postpones the creation of a new page for a given user wallet model if its
     /// user wallet is marked for update. Otherwise, the new page is added immediately.
-    private func processUpdatedUserWalletModel(_ userWalletModel: UserWalletModel) {
-        if userWalletAwaitsPendingUpdate(userWalletModel.userWallet) {
+    private func processUpdatedUserWallet(_ userWalletId: UserWalletId) {
+        guard let userWalletModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) else {
+            return
+        }
+
+        if userWalletAwaitsPendingUpdate(userWalletId) {
             pendingUserWalletModelsToAdd.append(userWalletModel)
         } else {
             addNewPage(for: userWalletModel)
@@ -233,9 +229,9 @@ final class MainViewModel: ObservableObject {
             let userWalletModels = pendingUserWalletModelsToAdd
             pendingUserWalletModelsToAdd.removeAll()
 
-            var processedUserWalletIds: Set<UserWalletIdData> = []
+            var processedUserWalletIds: Set<UserWalletId> = []
             for userWalletModel in userWalletModels {
-                processedUserWalletIds.insert(userWalletModel.userWallet.userWalletId)
+                processedUserWalletIds.insert(userWalletModel.userWalletId)
                 addNewPage(for: userWalletModel)
             }
             pendingUserWalletIdsToUpdate.subtract(processedUserWalletIds)
@@ -273,12 +269,12 @@ final class MainViewModel: ObservableObject {
         selectedCardIndex = newPageIndex
     }
 
-    private func removePages(with userWalletIds: [UserWalletIdData]) {
-        pages.removeAll { userWalletIds.contains($0.id.value) }
+    private func removePages(with userWalletIds: [UserWalletId]) {
+        pages.removeAll { userWalletIds.contains($0.id) }
 
         guard
             let newSelectedId = userWalletRepository.selectedUserWalletId,
-            let index = pages.firstIndex(where: { $0.id.value == newSelectedId })
+            let index = pages.firstIndex(where: { $0.id == newSelectedId })
         else {
             return
         }
@@ -288,8 +284,8 @@ final class MainViewModel: ObservableObject {
 
     /// Postpones pages re-creation if a given user wallet is marked for update.
     /// Otherwise, re-creates pages immediately.
-    private func recreatePagesIfNeeded(for userWallet: UserWallet) {
-        if userWalletAwaitsPendingUpdate(userWallet) {
+    private func recreatePagesIfNeeded(for userWalletId: UserWalletId) {
+        if userWalletAwaitsPendingUpdate(userWalletId) {
             shouldRecreatePagesAfterAddingPendingWalletModels = true
         } else {
             recreatePages()
@@ -317,7 +313,7 @@ final class MainViewModel: ObservableObject {
 
                 Analytics.log(.walletOpened)
                 self?.userWalletRepository.setSelectedUserWalletId(
-                    userWalletId.value,
+                    userWalletId,
                     unlockIfNeeded: false,
                     reason: .userSelected
                 )
@@ -346,10 +342,10 @@ final class MainViewModel: ObservableObject {
                     isLoggingOut = true
                 case .scan:
                     break
-                case .inserted(let userWallet):
-                    setNeedsUpdateUserWallet(userWallet)
-                case .updated(let userWalletModel):
-                    processUpdatedUserWalletModel(userWalletModel)
+                case .inserted(let userWalletId):
+                    setNeedsUpdateUserWallet(userWalletId)
+                case .updated(let userWalletId):
+                    processUpdatedUserWallet(userWalletId)
                 case .deleted(let userWalletIds):
                     // This model is alive for enough time to receive the "deleted" event
                     // after the last model has been removed and the application has been logged out

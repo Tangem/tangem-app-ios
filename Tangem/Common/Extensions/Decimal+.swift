@@ -1,5 +1,5 @@
 //
-//  Decimal_.swift
+//  Decimal+.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 02.09.2020.

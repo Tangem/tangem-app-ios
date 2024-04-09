@@ -16,30 +16,40 @@ struct FeeRowViewModel: Identifiable {
     let option: FeeOption
     let isSelected: BindingValue<Bool>
 
-    var subtitleText: String? {
-        switch subtitle {
+    var cryptoAmount: String? {
+        switch formattedFeeComponents {
         case .loading:
             return ""
         case .loaded(let value):
-            return value
+            return value?.cryptoFee
         case .failedToLoad:
             return AppConstants.dashSign
         }
     }
 
-    var isLoading: Bool {
-        subtitle.isLoading
+    var fiatAmount: String? {
+        switch formattedFeeComponents {
+        case .loading, .failedToLoad:
+            // Corresponding UI will be displayed by the cryptoAmount field
+            return nil
+        case .loaded(let value):
+            return value?.fiatFee
+        }
     }
 
-    private let subtitle: LoadingValue<String?>
+    var isLoading: Bool {
+        formattedFeeComponents.isLoading
+    }
+
+    private let formattedFeeComponents: LoadingValue<FormattedFeeComponents?>
 
     init(
         option: FeeOption,
-        subtitle: LoadingValue<String?>,
+        formattedFeeComponents: LoadingValue<FormattedFeeComponents?>,
         isSelected: BindingValue<Bool>
     ) {
         self.option = option
-        self.subtitle = subtitle
+        self.formattedFeeComponents = formattedFeeComponents
         self.isSelected = isSelected
     }
 }
@@ -47,7 +57,9 @@ struct FeeRowViewModel: Identifiable {
 extension FeeRowViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(option)
-        hasher.combine(subtitle.value)
+        hasher.combine(formattedFeeComponents.isLoading)
+        hasher.combine(formattedFeeComponents.value)
+        hasher.combine(formattedFeeComponents.error != nil)
         hasher.combine(isSelected)
     }
 

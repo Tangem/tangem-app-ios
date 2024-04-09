@@ -41,7 +41,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .sendingToUser: return Localization.expressExchangeStatusSendingActive
         case .done: return Localization.commonDone
         case .failed: return Localization.expressExchangeStatusFailed
-        case .refunded: return Localization.expressExchangeStatusRefundedActive
+        case .refunded: return Localization.expressExchangeStatusRefunded
         case .verificationRequired: return Localization.expressExchangeStatusVerifying
         case .canceled: return Localization.expressExchangeStatusCanceled
         }
@@ -56,7 +56,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .done: return Localization.commonDone
         case .failed: return Localization.expressExchangeStatusFailed
         case .refunded: return Localization.expressExchangeStatusRefunded
-        case .verificationRequired: return Localization.expressExchangeStatusVerified
+        case .verificationRequired: return Localization.expressExchangeStatusVerifying
         case .canceled: return Localization.expressExchangeStatusCanceled
         }
     }

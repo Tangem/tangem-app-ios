@@ -33,20 +33,16 @@ class FileLogger: TangemSdkLogger {
 
         loggerSerialQueue.async {
             let formattedMessage = "\n\(level.emoji) \(self.dateFormatter.string(from: Date())):\(level.prefix) \(message)"
-            let messageData = formattedMessage.data(using: .utf8)!
+
+            guard let messageData = formattedMessage.data(using: .utf8) else {
+                return
+            }
 
             do {
                 let handler = try FileHandle(forWritingTo: self.logFileURL)
-                let nsException = nsTryCatch {
-                    handler.seekToEndOfFile()
-                    handler.write(messageData)
-                    handler.closeFile()
-                }
-
-                if let nsException {
-                    print(nsException)
-                }
-
+                try handler.seekToEnd()
+                try handler.write(contentsOf: messageData)
+                try handler.close()
             } catch {
                 print(error)
             }

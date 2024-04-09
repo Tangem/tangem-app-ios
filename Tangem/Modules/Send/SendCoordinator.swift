@@ -89,6 +89,8 @@ extension SendCoordinator: SendRoutable {
     }
 
     func openQRScanner(with codeBinding: Binding<String>, networkName: String) {
+        Analytics.log(.sendButtonQRCode)
+
         let qrScanViewCoordinator = QRScanViewCoordinator { [weak self] in
             self?.qrScanViewCoordinator = nil
         }

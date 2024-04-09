@@ -27,7 +27,7 @@ enum SendAdditionalFields {
     var name: String? {
         switch self {
         case .destinationTag:
-            return Localization.sendExtrasHintDestinationTag
+            return Localization.sendDestinationTagField
         case .memo:
             return Localization.sendExtrasHintMemo
         case .none:

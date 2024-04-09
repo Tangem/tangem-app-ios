@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 import Combine
-import class TangemExpress.ThreadSafeContainer
+import TangemFoundation
 
 class MultipleAddressTransactionHistoryService {
     private let tokenItem: TokenItem
@@ -155,10 +155,11 @@ private extension MultipleAddressTransactionHistoryService {
         for record in newRecords {
             // If we already have the transaction record
             // Just append new sources and new destinations in the record
-            if let index = records.firstIndex(where: { $0.hash == record.hash }) {
+            if let index = records.firstIndex(where: { $0.hash == record.hash && $0.index == record.index }) {
                 let oldRecord = records[index]
                 records[index] = TransactionRecord(
                     hash: record.hash,
+                    index: record.index,
                     source: oldRecord.source + record.source,
                     destination: oldRecord.destination + record.destination,
                     fee: oldRecord.fee,

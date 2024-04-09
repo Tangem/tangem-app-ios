@@ -10,32 +10,9 @@ import Foundation
 import SwiftUI
 
 struct TransactionViewModel: Hashable, Identifiable {
-    var id: String { hash }
-    let hash: String
-    private let interactionAddress: InteractionAddressType
-    private let timeFormatted: String?
-    private let amount: String
-    private let isOutgoing: Bool
-    private let transactionType: TransactionType
-    private let status: Status
+    var id: ViewModelId { ViewModelId(hash: hash, index: index) }
 
-    init(
-        hash: String,
-        interactionAddress: InteractionAddressType,
-        timeFormatted: String?,
-        amount: String,
-        isOutgoing: Bool,
-        transactionType: TransactionViewModel.TransactionType,
-        status: TransactionViewModel.Status
-    ) {
-        self.hash = hash
-        self.interactionAddress = interactionAddress
-        self.timeFormatted = timeFormatted
-        self.amount = amount
-        self.isOutgoing = isOutgoing
-        self.transactionType = transactionType
-        self.status = status
-    }
+    let hash: String
 
     var inProgress: Bool {
         status == .inProgress
@@ -132,9 +109,45 @@ struct TransactionViewModel: Hashable, Identifiable {
         default: return Colors.Text.primary1
         }
     }
+
+    /// Index of an individual transaction within the parent transaction (if applicable).
+    /// For example, a single EVM transaction may consist of multiple token transactions (with indices 0, 1, 2 and so on)
+    private let index: Int
+    private let interactionAddress: InteractionAddressType
+    private let timeFormatted: String?
+    private let amount: String
+    private let isOutgoing: Bool
+    private let transactionType: TransactionType
+    private let status: Status
+
+    init(
+        hash: String,
+        index: Int,
+        interactionAddress: InteractionAddressType,
+        timeFormatted: String?,
+        amount: String,
+        isOutgoing: Bool,
+        transactionType: TransactionViewModel.TransactionType,
+        status: TransactionViewModel.Status
+    ) {
+        self.hash = hash
+        self.index = index
+        self.interactionAddress = interactionAddress
+        self.timeFormatted = timeFormatted
+        self.amount = amount
+        self.isOutgoing = isOutgoing
+        self.transactionType = transactionType
+        self.status = status
+    }
 }
 
 extension TransactionViewModel {
+    /// An opaque unique identity for use with the `Identifiable` protocol.
+    struct ViewModelId: Hashable {
+        fileprivate let hash: String
+        fileprivate let index: Int
+    }
+
     enum InteractionAddressType: Hashable {
         case user(_ address: String)
         case contract(_ address: String)

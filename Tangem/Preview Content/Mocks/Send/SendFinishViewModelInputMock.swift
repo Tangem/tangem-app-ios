@@ -16,6 +16,7 @@ class SendFinishViewModelInputMock: SendFinishViewModelInput {
     var additionalField: (SendAdditionalFields, String)? { (.memo, "123123") }
     var userInputAmountValue: BlockchainSdk.Amount? { .init(with: .ethereum(testnet: false), type: .coin, value: 1) }
     var feeValue: BlockchainSdk.Fee? { .init(Amount(with: .ethereum(testnet: false), value: 0.003)) }
+    var selectedFeeOption: FeeOption { .market }
     var amountText: String { "100,00" }
     var feeText: String { "Fee" }
     var transactionTime: Date? { Date() }

@@ -7,20 +7,24 @@
 //
 
 import Foundation
+import TangemFoundation
 
 class CommonAnalyticsContext: AnalyticsContext {
-    private(set) var contextData: AnalyticsContextData?
+    var contextData: AnalyticsContextData? {
+        contextDataContainer.read()
+    }
 
+    private let contextDataContainer = ThreadSafeContainer<AnalyticsContextData?>(nil)
     private var analyticsStorage = AnalyticsStorage()
 
     init() {}
 
     func setupContext(with contextData: AnalyticsContextData) {
-        self.contextData = contextData
+        contextDataContainer.mutate { $0 = contextData }
     }
 
     func clearContext() {
-        contextData = nil
+        contextDataContainer.mutate { $0 = nil }
     }
 
     func clearSession() {

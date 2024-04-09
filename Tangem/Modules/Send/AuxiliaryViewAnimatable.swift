@@ -7,7 +7,33 @@
 //
 
 import Foundation
+import SwiftUI
 
-protocol AuxiliaryViewAnimatable {
-    func setAnimatingAuxiliaryViewsOnAppear(_ animatingAuxiliaryViewsOnAppear: Bool)
+protocol AuxiliaryViewAnimatable: AnyObject {
+    var didProperlyDisappear: Bool { get set }
+    var animatingAuxiliaryViewsOnAppear: Bool { get set }
+
+    func onAuxiliaryViewAppear()
+    func onAuxiliaryViewDisappear()
+    func setAnimatingAuxiliaryViewsOnAppear()
+}
+
+extension AuxiliaryViewAnimatable {
+    func onAuxiliaryViewAppear() {
+        didProperlyDisappear = false
+
+        if animatingAuxiliaryViewsOnAppear {
+            withAnimation(SendView.Constants.defaultAnimation) {
+                animatingAuxiliaryViewsOnAppear = false
+            }
+        }
+    }
+
+    func onAuxiliaryViewDisappear() {
+        didProperlyDisappear = true
+    }
+
+    func setAnimatingAuxiliaryViewsOnAppear() {
+        animatingAuxiliaryViewsOnAppear = didProperlyDisappear
+    }
 }

@@ -120,11 +120,6 @@ extension MainCoordinator: MainRoutable {
 
 extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
-        // TODO: Remove this stuff after Send screen refactoring
-        guard let cardViewModel = userWalletModel as? CardViewModel else {
-            return
-        }
-
         Analytics.log(.tokenIsTapped)
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
@@ -133,7 +128,7 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
         let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
         coordinator.start(
             with: .init(
-                cardModel: cardViewModel,
+                userWalletModel: userWalletModel,
                 walletModel: model,
                 userTokensManager: userWalletModel.userTokensManager
             )
@@ -198,7 +193,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel, walletModel: WalletModel) {
+    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard FeatureProvider.isAvailable(.sendV2) else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
@@ -208,7 +203,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
                 destination: nil,
                 tag: nil,
                 blockchainNetwork: blockchainNetwork,
-                cardViewModel: cardViewModel
+                userWalletModel: userWalletModel
             )
             coordinator.start(with: options)
             legacySendCoordinator = coordinator
@@ -227,18 +222,18 @@ extension MainCoordinator: SingleTokenBaseRoutable {
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
-            walletName: cardViewModel.userWallet.name,
-            emailDataProvider: cardViewModel,
+            walletName: userWalletModel.name,
+            emailDataProvider: userWalletModel,
             walletModel: walletModel,
-            userWalletModel: cardViewModel,
-            transactionSigner: cardViewModel.signer,
+            userWalletModel: userWalletModel,
+            transactionSigner: userWalletModel.signer,
             type: .send
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel, walletModel: WalletModel) {
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard FeatureProvider.isAvailable(.sendV2) else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
@@ -248,7 +243,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
                 destination: destination,
                 tag: tag,
                 blockchainNetwork: blockchainNetwork,
-                cardViewModel: cardViewModel
+                userWalletModel: userWalletModel
             )
             coordinator.start(with: options)
             legacySendCoordinator = coordinator
@@ -267,11 +262,11 @@ extension MainCoordinator: SingleTokenBaseRoutable {
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
-            walletName: cardViewModel.userWallet.name,
-            emailDataProvider: cardViewModel,
+            walletName: userWalletModel.name,
+            emailDataProvider: userWalletModel,
             walletModel: walletModel,
-            userWalletModel: cardViewModel,
-            transactionSigner: cardViewModel.signer,
+            userWalletModel: userWalletModel,
+            transactionSigner: userWalletModel.signer,
             type: .sell(amount: amountToSend, destination: destination, tag: tag)
         )
         coordinator.start(with: options)
@@ -331,11 +326,6 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openFeeCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
-        // TODO: Remove this stuff after Send screen refactoring
-        guard let cardViewModel = userWalletModel as? CardViewModel else {
-            return
-        }
-
         #warning("TODO: Add analytics")
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
@@ -344,7 +334,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
         coordinator.start(
             with: .init(
-                cardModel: cardViewModel,
+                userWalletModel: userWalletModel,
                 walletModel: model,
                 userTokensManager: userWalletModel.userTokensManager
             )

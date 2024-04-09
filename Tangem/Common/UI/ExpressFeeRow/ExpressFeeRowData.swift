@@ -21,3 +21,9 @@ struct ExpressFeeRowData: Identifiable {
         self.action = action
     }
 }
+
+extension ExpressFeeRowData: Equatable {
+    static func == (lhs: ExpressFeeRowData, rhs: ExpressFeeRowData) -> Bool {
+        lhs.id == rhs.id
+    }
+}

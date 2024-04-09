@@ -28,7 +28,6 @@ class CommonUserTokenListManager {
     private let userTokensListSubject: CurrentValueSubject<StoredUserTokenList, Never>
 
     private var pendingTokensToUpdate: UserTokenList?
-    private var pendingUpdateLocalRepositoryFromServerCompletions: [Completion] = []
     private var loadTokensCancellable: AnyCancellable?
     private var saveTokensCancellable: AnyCancellable?
     private var initializedSubject: CurrentValueSubject<Bool, Never>
@@ -49,7 +48,7 @@ class CommonUserTokenListManager {
         self.hasTokenSynchronization = hasTokenSynchronization
         self.defaultBlockchains = defaultBlockchains
         tokenItemsRepository = CommonTokenItemsRepository(key: userWalletId.hexString)
-        initializedSubject = .init(tokenItemsRepository.containsFile)
+        initializedSubject = CurrentValueSubject(tokenItemsRepository.containsFile)
         userTokensListSubject = CurrentValueSubject(tokenItemsRepository.getList())
 
         removeInvalidTokens()
@@ -138,10 +137,8 @@ private extension CommonUserTokenListManager {
         let updatedUserTokenList = userTokenList ?? tokenItemsRepository.getList()
         userTokensListSubject.send(updatedUserTokenList)
 
-        DispatchQueue.main.async {
-            if !self.initialized, self.tokenItemsRepository.containsFile {
-                self.initializedSubject.send(true)
-            }
+        if !initialized, tokenItemsRepository.containsFile {
+            initializedSubject.send(true)
         }
     }
 
@@ -152,15 +149,9 @@ private extension CommonUserTokenListManager {
             let converter = UserTokenListConverter(supportedBlockchains: supportedBlockchains)
 
             tokenItemsRepository.update(converter.convertRemoteToStored(list))
-            updateTokensOnServer(list: list, completions: [completion])
+            updateTokensOnServer(list: list, completion: completion)
             pendingTokensToUpdate = nil
 
-            return
-        }
-
-        // Non-nil `loadTokensCancellable` means that there is an ongoing 'load tokens' request and we should re-use it
-        guard loadTokensCancellable == nil else {
-            pendingUpdateLocalRepositoryFromServerCompletions.append(completion)
             return
         }
 
@@ -169,20 +160,12 @@ private extension CommonUserTokenListManager {
 
         loadTokensCancellable = loadTokensPublisher
             .combineLatest(upgradeTokensPublisher)
-            .sink { [weak self] subscriberCompletion in
-                defer {
-                    self?.pendingUpdateLocalRepositoryFromServerCompletions.removeAll()
-                    self?.loadTokensCancellable = nil
-                }
-
-                var completions = self?.pendingUpdateLocalRepositoryFromServerCompletions ?? []
-                completions.append(completion)
-
+            .sink { subscriberCompletion in
                 switch subscriberCompletion {
                 case .finished:
-                    completions.forEach { $0(.success(())) }
+                    completion(.success(()))
                 case .failure(let error):
-                    completions.forEach { $0(.failure(error)) }
+                    completion(.failure(error))
                 }
             } receiveValue: { [weak self] list, _ in
                 guard let self else { return }
@@ -201,9 +184,9 @@ private extension CommonUserTokenListManager {
             }
     }
 
-    func updateTokensOnServer(list: UserTokenList? = nil, completions: [Completion] = []) {
+    func updateTokensOnServer(list: UserTokenList? = nil, completion: Completion? = nil) {
         guard hasTokenSynchronization else {
-            completions.forEach { $0(.success(())) }
+            completion?(.success(()))
             return
         }
 
@@ -216,10 +199,10 @@ private extension CommonUserTokenListManager {
 
                 switch subscriberCompletion {
                 case .finished:
-                    completions.forEach { $0(.success(())) }
+                    completion?(.success(()))
                 case .failure(let error):
                     pendingTokensToUpdate = listToUpdate
-                    completions.forEach { $0(.failure(error)) }
+                    completion?(.failure(error))
                 }
             }
     }

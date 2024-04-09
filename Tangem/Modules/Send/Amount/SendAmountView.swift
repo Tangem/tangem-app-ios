@@ -18,54 +18,7 @@ struct SendAmountView: View {
     var body: some View {
         GroupedScrollView(spacing: 14) {
             GroupedSection(viewModel) { viewModel in
-                VStack(spacing: 0) {
-                    Text(viewModel.walletName)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                        .lineLimit(1)
-                        .padding(.top, 18)
-                        .matchedGeometryEffect(id: SendViewNamespaceId.amountTitle.rawValue, in: namespace)
-
-                    if !viewModel.animatingAuxiliaryViewsOnAppear {
-                        SensitiveText(viewModel.balance)
-                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                            .lineLimit(1)
-                            .padding(.top, 4)
-                            .transition(SendView.Constants.auxiliaryViewTransition)
-                    }
-
-                    TokenIcon(
-                        tokenIconInfo: viewModel.tokenIconInfo,
-                        size: iconSize
-                    )
-                    .matchedGeometryEffect(id: SendViewNamespaceId.tokenIcon.rawValue, in: namespace)
-                    .padding(.top, 34)
-
-                    SendDecimalNumberTextField(
-                        decimalValue: $viewModel.amount,
-                        maximumFractionDigits: viewModel.amountFractionDigits
-                    )
-                    // A small delay must be introduced to fix a glitch in a transition animation when changing screens
-                    .initialFocusBehavior(.delayedFocus(duration: 2 * SendView.Constants.animationDuration))
-                    .alignment(.center)
-                    .suffix(viewModel.useFiatCalculation ? viewModel.fiatCurrencyCode : viewModel.cryptoCurrencyCode)
-                    .matchedGeometryEffect(id: SendViewNamespaceId.amountCryptoText.rawValue, in: namespace)
-                    .padding(.top, 16)
-
-                    // Keep empty text so that the view maintains its place in the layout
-                    Text(viewModel.amountAlternative ?? " ")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                        .lineLimit(1)
-                        .matchedGeometryEffect(id: SendViewNamespaceId.amountFiatText.rawValue, in: namespace)
-                        .padding(.top, 6)
-
-                    // Keep empty text so that the view maintains its place in the layout
-                    Text(viewModel.error ?? " ")
-                        .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-                        .lineLimit(1)
-                        .padding(.top, 6)
-                        .padding(.bottom, 12)
-                }
-                .frame(maxWidth: .infinity)
+                amountSectionContent
             }
             .contentAlignment(.center)
             .backgroundColor(Colors.Background.action, id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace)
@@ -85,13 +38,56 @@ struct SendAmountView: View {
                     }
 
                     MainButton(title: Localization.sendMaxAmount, style: .secondary, action: viewModel.didTapMaxAmount)
-                        .frame(width: viewModel.windowWidth / 3)
+                        .disabled(viewModel.userInputDisabled)
+                        .frame(width: 108)
                 }
                 .transition(SendView.Constants.auxiliaryViewTransition)
             }
         }
-        .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .onAppear(perform: viewModel.onAppear)
+        .onAppear(perform: viewModel.onAuxiliaryViewAppear)
+        .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
+    }
+
+    private var amountSectionContent: some View {
+        VStack(spacing: 0) {
+            if !viewModel.animatingAuxiliaryViewsOnAppear {
+                SendWalletInfoView(namespace: namespace, walletName: viewModel.walletName, walletBalance: viewModel.balance)
+                    .padding(.top, 18)
+            }
+
+            TokenIcon(
+                tokenIconInfo: viewModel.tokenIconInfo,
+                size: iconSize
+            )
+            .matchedGeometryEffect(id: SendViewNamespaceId.tokenIcon.rawValue, in: namespace)
+            .padding(.top, 34)
+
+            SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+                // A small delay must be introduced to fix a glitch in a transition animation when changing screens
+                .initialFocusBehavior(.delayedFocus(duration: 2 * SendView.Constants.animationDuration))
+                .alignment(.center)
+                .prefixSuffixOptions(viewModel.currentFieldOptions)
+                .disabled(viewModel.userInputDisabled)
+                .frame(maxWidth: .infinity)
+                .matchedGeometryEffect(id: SendViewNamespaceId.amountCryptoText.rawValue, in: namespace)
+                .padding(.top, 18)
+
+            // Keep empty text so that the view maintains its place in the layout
+            Text(viewModel.amountAlternative ?? " ")
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                .lineLimit(1)
+                .matchedGeometryEffect(id: SendViewNamespaceId.amountFiatText.rawValue, in: namespace)
+                .padding(.top, 6)
+
+            // Keep empty text so that the view maintains its place in the layout
+            Text(viewModel.error ?? " ")
+                .style(Fonts.Regular.caption1, color: Colors.Text.warning)
+                .lineLimit(1)
+                .padding(.top, 6)
+                .padding(.bottom, 12)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -107,9 +103,9 @@ struct SendAmountView_Previews: PreviewProvider {
     )
 
     static let walletInfo = SendWalletInfo(
-        walletName: "Wallet",
-        balanceValue: 12013,
-        balance: "12013",
+        walletName: "Family Wallet",
+        balanceValue: 2130.88,
+        balance: "2 130,88 USDT (2 129,92 $)",
         blockchain: .ethereum(testnet: false),
         currencyId: "tether",
         feeCurrencySymbol: "ETH",
@@ -125,7 +121,13 @@ struct SendAmountView_Previews: PreviewProvider {
         feeAmountType: .coin
     )
 
+    static let viewModel = SendAmountViewModel(
+        input: SendAmountViewModelInputMock(),
+        fiatCryptoAdapter: SendFiatCryptoAdapterMock(),
+        walletInfo: walletInfo
+    )
+
     static var previews: some View {
-        SendAmountView(namespace: namespace, viewModel: SendAmountViewModel(input: SendAmountViewModelInputMock(), walletInfo: walletInfo))
+        SendAmountView(namespace: namespace, viewModel: viewModel)
     }
 }

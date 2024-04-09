@@ -16,7 +16,7 @@ class UserWalletEncryptionKeyStorage {
     private let biometricsStorage = BiometricsStorage()
     private let userWalletIdsStorageKey = "user_wallet_ids"
 
-    func fetch(completion: @escaping (Result<[Data: SymmetricKey], Error>) -> Void) {
+    func fetch(completion: @escaping (Result<[UserWalletId: UserWalletEncryptionKey], Error>) -> Void) {
         do {
             let userWalletIds = try userWalletIds()
 
@@ -29,13 +29,13 @@ class UserWalletEncryptionKeyStorage {
                     completion(.failure(error))
                 case .success(let context):
                     do {
-                        var keys: [Data: SymmetricKey] = [:]
+                        var keys: [UserWalletId: UserWalletEncryptionKey] = [:]
 
                         for userWalletId in userWalletIds {
                             let storageKey = encryptionKeyStorageKey(for: userWalletId)
                             let encryptionKeyData = try biometricsStorage.get(storageKey, context: context)
                             if let encryptionKeyData = encryptionKeyData {
-                                keys[userWalletId] = SymmetricKey(data: encryptionKeyData)
+                                keys[userWalletId] = UserWalletEncryptionKey(symmetricKey: SymmetricKey(data: encryptionKeyData))
                             }
                         }
 
@@ -51,24 +51,17 @@ class UserWalletEncryptionKeyStorage {
         }
     }
 
-    func add(_ userWallet: UserWallet) {
-        let cardInfo = userWallet.cardInfo()
-
-        guard let encryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(from: cardInfo) else {
-            AppLog.shared.debug("Failed to get encryption key for UserWallet")
-            return
-        }
-
+    func add(_ userWalletId: UserWalletId, encryptionKey: UserWalletEncryptionKey) {
         do {
             let userWalletIds = try userWalletIds()
-            if userWalletIds.contains(userWallet.userWalletId) {
+            if userWalletIds.contains(userWalletId) {
                 return
             }
 
-            try addUserWalletId(userWallet)
+            try addUserWalletId(userWalletId)
 
             let encryptionKeyData = encryptionKey.symmetricKey.dataRepresentationWithHexConversion
-            try biometricsStorage.store(encryptionKeyData, forKey: encryptionKeyStorageKey(for: userWallet))
+            try biometricsStorage.store(encryptionKeyData, forKey: encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to add UserWallet ID to the list")
             AppLog.shared.error(error)
@@ -76,26 +69,20 @@ class UserWalletEncryptionKeyStorage {
         }
     }
 
-    func delete(_ userWallet: UserWallet) {
+    func delete(_ userWalletId: UserWalletId) {
         do {
-            try deleteUserWalletId(userWallet)
-
-            try biometricsStorage.delete(encryptionKeyStorageKey(for: userWallet))
-
-            if AppSettings.shared.saveAccessCodes {
-                let accessCodeRepository = AccessCodeRepository()
-                try accessCodeRepository.deleteAccessCode(for: Array(userWallet.associatedCardIds))
-            }
+            try deleteUserWalletId(userWalletId)
+            try biometricsStorage.delete(encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to delete user wallet list encryption key")
             AppLog.shared.error(error)
         }
     }
 
-    func refreshEncryptionKey(_ key: SymmetricKey, for userWalletId: Data) {
+    func refreshEncryptionKey(_ key: UserWalletEncryptionKey, for userWalletId: UserWalletId) {
         do {
             try biometricsStorage.delete(encryptionKeyStorageKey(for: userWalletId))
-            let encryptionKeyData = key.dataRepresentationWithHexConversion
+            let encryptionKeyData = key.symmetricKey.dataRepresentationWithHexConversion
             try biometricsStorage.store(encryptionKeyData, forKey: encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to refresh an encryption key")
@@ -118,38 +105,36 @@ class UserWalletEncryptionKeyStorage {
 
     // MARK: - Saving the list of UserWallet IDs
 
-    private func encryptionKeyStorageKey(for userWallet: UserWallet) -> String {
-        encryptionKeyStorageKey(for: userWallet.userWalletId)
+    private func encryptionKeyStorageKey(for userWalletId: UserWalletId) -> String {
+        "user_wallet_encryption_key_\(userWalletId.stringValue.lowercased())"
     }
 
-    private func encryptionKeyStorageKey(for userWalletId: Data) -> String {
-        "user_wallet_encryption_key_\(userWalletId.hexString.lowercased())"
-    }
-
-    private func addUserWalletId(_ userWallet: UserWallet) throws {
+    private func addUserWalletId(_ userWalletId: UserWalletId) throws {
         var ids = try userWalletIds()
-        ids.insert(userWallet.userWalletId)
+        ids.insert(userWalletId)
         try saveUserWalletIds(ids)
     }
 
-    private func deleteUserWalletId(_ userWallet: UserWallet) throws {
+    private func deleteUserWalletId(_ userWalletId: UserWalletId) throws {
         var ids = try userWalletIds()
-        ids.remove(userWallet.userWalletId)
+        ids.remove(userWalletId)
         try saveUserWalletIds(ids)
     }
 
-    private func userWalletIds() throws -> Set<Data> {
+    private func userWalletIds() throws -> Set<UserWalletId> {
         guard let data = try secureStorage.get(userWalletIdsStorageKey) else {
             return []
         }
-        return try JSONDecoder().decode(Set<Data>.self, from: data)
+
+        let decoded = try JSONDecoder().decode(Set<Data>.self, from: data)
+        return Set(decoded.map { UserWalletId(value: $0) })
     }
 
-    private func saveUserWalletIds(_ userWalletIds: Set<Data>) throws {
+    private func saveUserWalletIds(_ userWalletIds: Set<UserWalletId>) throws {
         if userWalletIds.isEmpty {
             try secureStorage.delete(userWalletIdsStorageKey)
         } else {
-            let data = try JSONEncoder().encode(userWalletIds)
+            let data = try JSONEncoder().encode(userWalletIds.map { $0.value })
             try secureStorage.store(data, forKey: userWalletIdsStorageKey)
         }
     }

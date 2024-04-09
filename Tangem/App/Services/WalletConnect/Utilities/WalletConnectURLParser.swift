@@ -9,7 +9,7 @@
 import Foundation
 
 public struct WalletConnectURLParser {
-    func parse(_ uriString: String) -> WalletConnectRequestURI? {
+    func parse(uriString: String) -> WalletConnectRequestURI? {
         if let wcURI = WalletConnectV2URI(string: uriString) {
             return .v2(wcURI)
         }
@@ -17,12 +17,12 @@ public struct WalletConnectURLParser {
         return nil
     }
 
-    func parse(_ url: URL) -> WalletConnectRequestURI? {
+    func parse(url: URL) -> WalletConnectRequestURI? {
         guard let uri = extractURI(from: url) else {
             return nil
         }
 
-        return parse(uri)
+        return parse(uriString: uri)
     }
 
     private func extractURI(from url: URL) -> String? {
@@ -33,6 +33,16 @@ public struct WalletConnectURLParser {
         }
 
         return components.query?.remove(Constants.uriPrefix)
+    }
+}
+
+extension WalletConnectURLParser: IncomingActionURLParser {
+    public func parse(_ url: URL) -> IncomingAction? {
+        if let uri = parse(url: url) {
+            return .walletConnect(uri)
+        }
+
+        return nil
     }
 }
 

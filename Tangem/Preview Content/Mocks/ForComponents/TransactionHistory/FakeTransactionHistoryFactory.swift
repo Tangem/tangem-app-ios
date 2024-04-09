@@ -17,6 +17,7 @@ struct FakeTransactionHistoryFactory {
         return [
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 433)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 433)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 3.3, decimals: 8)),
@@ -27,6 +28,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 50)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 50)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 1.3, decimals: 8)),
@@ -37,6 +39,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.5)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.5)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -47,6 +50,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 15)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -57,6 +61,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.000000532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -67,6 +72,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -77,6 +83,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 15)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -87,6 +94,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.000000532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -97,6 +105,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -107,6 +116,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 15)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -117,6 +127,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.000000532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.000000532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -127,6 +138,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 0.532154)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 0.532154)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),
@@ -137,6 +149,7 @@ struct FakeTransactionHistoryFactory {
             ),
             TransactionRecord(
                 hash: UUID().uuidString,
+                index: 0,
                 source: .single(.init(address: address, amount: 15)),
                 destination: .single(.init(address: .user("0x01230...3feed"), amount: 15)),
                 fee: Fee(.init(type: .coin, currencySymbol: currencyCode, value: 2.1, decimals: 8)),

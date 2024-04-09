@@ -81,9 +81,9 @@ struct TangemApiTarget: TargetType {
                 encoding: URLEncoding.default
             )
         case .coins(let pageModel):
-            return .requestURLEncodable(pageModel)
+            return .requestParameters(pageModel)
         case .quotes(let pageModel):
-            return .requestURLEncodable(pageModel)
+            return .requestParameters(pageModel)
         case .currencies, .geo, .getUserWalletTokens:
             return .requestPlain
         case .saveUserWalletTokens(_, let list):
@@ -96,9 +96,9 @@ struct TangemApiTarget: TargetType {
                 encoding: URLEncoding.default
             )
         case .participateInReferralProgram(let requestData):
-            return .requestURLEncodable(requestData)
+            return .requestParameters(requestData)
         case .promotion(let request):
-            return .requestURLEncodable(request)
+            return .requestParameters(request)
         case .validateNewUserPromotionEligibility(let walletId, let code):
             return .requestParameters(parameters: [
                 "walletId": walletId,

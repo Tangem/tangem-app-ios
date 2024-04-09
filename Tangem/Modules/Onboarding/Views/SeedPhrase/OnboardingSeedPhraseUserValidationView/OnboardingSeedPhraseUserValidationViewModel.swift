@@ -54,15 +54,15 @@ class OnboardingSeedPhraseUserValidationViewModel: ObservableObject {
         root[keyPath: inputKeyPath]
             .dropFirst()
             .removeDuplicates()
-            .map { newText in
-                root[keyPath: errorKeyParh] = false
+            .map { [weak root] newText in
+                root?[keyPath: errorKeyParh] = false
                 return newText
             }
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] newText in
+            .sink { _ in } receiveValue: { [weak self, weak root] newText in
                 if !newText.isEmpty,
                    newText != targetWord {
-                    root[keyPath: errorKeyParh] = true
+                    root?[keyPath: errorKeyParh] = true
                 }
 
                 self?.updateButtonState()

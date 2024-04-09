@@ -180,15 +180,9 @@ extension TwinsOnboardingStep: OnboardingMessagesProvider {
 extension TwinsOnboardingStep: OnboardingButtonsInfoProvider {
     var mainButtonTitle: String {
         switch self {
-        case .disclaimer: return ""
-        case .intro: return Localization.commonContinue
-        case .first, .third: return Localization.twinsRecreateButtonFormat("1")
-        case .second: return Localization.twinsRecreateButtonFormat("2")
         case .topup: return Localization.onboardingTopUpButtonButCrypto
-        case .done: return Localization.commonContinue
         case .saveUserWallet: return BiometricAuthorizationUtils.allowButtonTitle
-        case .success: return successButtonTitle
-        case .alert: return Localization.commonContinue
+        default: return ""
         }
     }
 
@@ -205,7 +199,20 @@ extension TwinsOnboardingStep: OnboardingButtonsInfoProvider {
         switch self {
         case .disclaimer: return Localization.commonAccept
         case .topup: return Localization.onboardingTopUpButtonShowWalletAddress
+        case .first, .third: return Localization.twinsRecreateButtonFormat("1")
+        case .second: return Localization.twinsRecreateButtonFormat("2")
+        case .success: return successButtonTitle
+        case .done, .alert, .intro: return Localization.commonContinue
         default: return ""
+        }
+    }
+
+    var supplementButtonIcon: ImageType? {
+        switch self {
+        case .first, .second, .third:
+            return Assets.tangemIcon
+        default:
+            return nil
         }
     }
 

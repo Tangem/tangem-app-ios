@@ -31,7 +31,7 @@ struct ManageTokensView: View {
                 .lineLimit(1)
 
             if viewModel.isShowAddCustomToken {
-                Text(Localization.manageTokensListHeaderSubtitle)
+                Text(Localization.manageTokensNothingFound)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                     .lineLimit(1)
             }

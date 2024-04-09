@@ -78,7 +78,7 @@ class WelcomeViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .welcome)
 
-        userWalletRepository.unlock(with: .card(userWallet: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil)) { [weak self] result in
             self?.isScanningCard = false
 
             if result?.isSuccess != true {
@@ -98,13 +98,13 @@ class WelcomeViewModel: ObservableObject {
                 openOnboarding(with: input)
             case .error(let error):
                 self.error = error.alertBinder
-            case .success(let cardModel), .partial(let cardModel, _): // partial unlock is impossible in this case
+            case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
                     .walletsCount: "1", // we don't have any saved wallets, just log one,
-                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: cardModel.hasBackupCards).rawValue,
+                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards).rawValue,
                 ])
-                openMain(with: cardModel)
+                openMain(with: model)
             }
         }
     }
@@ -138,8 +138,8 @@ extension WelcomeViewModel {
         coordinator?.openOnboarding(with: input)
     }
 
-    func openMain(with cardModel: CardViewModel) {
-        coordinator?.openMain(with: cardModel)
+    func openMain(with userWalletModel: UserWalletModel) {
+        coordinator?.openMain(with: userWalletModel)
     }
 }
 

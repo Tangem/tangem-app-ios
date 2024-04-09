@@ -12,31 +12,26 @@ import Combine
 class CurrencySelectViewModel: ObservableObject {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
-    var dismissAfterSelection: Bool = true
+    @Published var state: LoadingValue<[CurrenciesResponse.Currency]> = .loading
 
-    @Published var loading: Bool = false
-    @Published var currencies: [CurrenciesResponse.Currency] = []
-    @Published var error: AlertBinder?
+    private var loadCurrenciesCancellable: AnyCancellable?
 
-    private var bag = Set<AnyCancellable>()
+    init() {}
 
     func onAppear() {
-        loading = true
-        tangemApiService
+        state = .loading
+
+        loadCurrenciesCancellable = tangemApiService
             .loadCurrencies()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
-                    self?.error = error.alertBinder
+                    self?.state = .failedToLoad(error: error)
                 }
-                self?.loading = false
             }, receiveValue: { [weak self] currencies in
-                self?.currencies = currencies
-                    .sorted {
-                        $0.description < $1.description
-                    }
+                let currencies = currencies.sorted { $0.description < $1.description }
+                self?.state = .loaded(currencies)
             })
-            .store(in: &bag)
     }
 
     func isSelected(_ currency: CurrenciesResponse.Currency) -> Bool {

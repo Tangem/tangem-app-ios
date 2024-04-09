@@ -80,7 +80,7 @@ private extension TotalBalanceProvider {
                 }
 
                 balanceProvider.updateTotalBalance(
-                    withСurrencyCode: currencyCode,
+                    withCurrencyCode: currencyCode,
                     walletModels: walletModels,
                     hasEntriesWithoutDerivation: hasEntriesWithoutDerivation
                 )
@@ -102,7 +102,7 @@ private extension TotalBalanceProvider {
             .sink { balanceProvider, input in
                 let (walletModels, hasEntriesWithoutDerivation) = input
                 balanceProvider.updateTotalBalance(
-                    withСurrencyCode: AppSettings.shared.selectedCurrencyCode,
+                    withCurrencyCode: AppSettings.shared.selectedCurrencyCode,
                     walletModels: walletModels,
                     hasEntriesWithoutDerivation: hasEntriesWithoutDerivation
                 )
@@ -110,7 +110,7 @@ private extension TotalBalanceProvider {
     }
 
     func updateTotalBalance(
-        withСurrencyCode currencyCode: String,
+        withCurrencyCode currencyCode: String,
         walletModels: [WalletModel],
         hasEntriesWithoutDerivation: Bool
     ) {
@@ -141,7 +141,7 @@ private extension TotalBalanceProvider {
                 hasCryptoError = true
             }
 
-            if !token.state.isSuccesfullyLoaded {
+            if !token.state.isSuccessfullyLoaded {
                 balance = nil
                 break
             }

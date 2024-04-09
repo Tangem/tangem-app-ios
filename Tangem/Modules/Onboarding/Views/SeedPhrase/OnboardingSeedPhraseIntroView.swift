@@ -14,39 +14,39 @@ struct OnboardingSeedPhraseIntroView: View {
     let importWalletAction: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 32) {
             Spacer()
+
             Assets.Onboarding.listWithPencil.image
-                .foregroundColor(Colors.Icon.informative)
+                .foregroundColor(Colors.Icon.inactive)
 
-            Text(Localization.onboardingSeedPhraseIntroLegacy)
-                .style(
-                    Fonts.Bold.caption2,
-                    color: Colors.Icon.warning
-                )
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-                .background(Colors.Icon.warning.opacity(0.12))
-                .cornerRadiusContinuous(8)
-                .padding(.top, 28)
+            VStack(spacing: 14) {
+                Text(Localization.onboardingSeedPhraseIntroLegacy)
+                    .style(
+                        Fonts.Bold.caption2,
+                        color: Colors.Icon.warning
+                    )
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 10)
+                    .background(Colors.Icon.warning.opacity(0.12))
+                    .cornerRadiusContinuous(8)
 
-            Text(Localization.onboardingSeedIntroTitle)
-                .style(
-                    Fonts.Bold.title1,
-                    color: Colors.Text.primary1
-                )
-                .multilineTextAlignment(.center)
-                .padding(.top, 14)
+                Text(Localization.onboardingSeedIntroTitle)
+                    .style(
+                        Fonts.Bold.title1,
+                        color: Colors.Text.primary1
+                    )
+                    .multilineTextAlignment(.center)
 
-            Text(Localization.onboardingSeedIntroMessage)
-                .style(
-                    Fonts.Regular.callout,
-                    color: Colors.Text.secondary
-                )
-                .multilineTextAlignment(.center)
-                .lineSpacing(2)
-                .padding(.horizontal, 44)
-                .padding(.top, 14)
+                Text(Localization.onboardingSeedIntroMessage)
+                    .style(
+                        Fonts.Regular.callout,
+                        color: Colors.Text.secondary
+                    )
+                    .lineSpacing(2)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 44)
+            }
 
             Button(action: readMoreAction) {
                 HStack {
@@ -67,7 +67,7 @@ struct OnboardingSeedPhraseIntroView: View {
                         .stroke(Colors.Field.focused, lineWidth: 1)
                 )
             }
-            .padding(.top, 26)
+            .padding(.top, 12)
 
             Spacer()
 

@@ -17,7 +17,6 @@ protocol SendAmountViewModelInput {
     var userInputAmountValue: Amount? { get }
     var amountError: AnyPublisher<Error?, Never> { get }
 
-    func setAmount(_ decimal: Decimal?)
     func didChangeFeeInclusion(_ isFeeIncluded: Bool)
 }
 
@@ -30,43 +29,56 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     let cryptoCurrencyCode: String
     let fiatIconURL: URL?
     let fiatCurrencyCode: String
+    let fiatCurrencySymbol: String
     let amountFractionDigits: Int
-    let windowWidth: CGFloat
 
-    @Published var amount: DecimalNumberTextField.DecimalValue? = nil
+    @Published var userInputDisabled = true
+    @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var useFiatCalculation = false
     @Published var amountAlternative: String?
     @Published var error: String?
     @Published var animatingAuxiliaryViewsOnAppear = false
 
-    private var fiatCryptoAdapter: SendFiatCryptoAdapter?
+    var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions {
+        useFiatCalculation ? fiatFieldOptions : cryptoFieldOptions
+    }
+
+    var didProperlyDisappear = false
+
+    private weak var fiatCryptoAdapter: SendFiatCryptoAdapter?
 
     private let input: SendAmountViewModelInput
+    private let cryptoFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
+    private let fiatFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     private let balanceValue: Decimal?
     private var bag: Set<AnyCancellable> = []
 
-    init(input: SendAmountViewModelInput, walletInfo: SendWalletInfo) {
+    init(input: SendAmountViewModelInput, fiatCryptoAdapter: SendFiatCryptoAdapter, walletInfo: SendWalletInfo) {
         self.input = input
+        self.fiatCryptoAdapter = fiatCryptoAdapter
         balanceValue = walletInfo.balanceValue
         walletName = walletInfo.walletName
         balance = walletInfo.balance
         tokenIconInfo = walletInfo.tokenIconInfo
         amountFractionDigits = walletInfo.amountFractionDigits
-        windowWidth = UIApplication.shared.windows.first?.frame.width ?? 400
+        decimalNumberTextFieldViewModel = .init(maximumFractionDigits: walletInfo.amountFractionDigits)
 
         showCurrencyPicker = walletInfo.currencyId != nil
+
         cryptoIconURL = walletInfo.cryptoIconURL
         cryptoCurrencyCode = walletInfo.cryptoCurrencyCode
+
+        let localizedCurrencySymbol = Locale.current.localizedCurrencySymbol(forCurrencyCode: walletInfo.fiatCurrencyCode)
         fiatIconURL = walletInfo.fiatIconURL
         fiatCurrencyCode = walletInfo.fiatCurrencyCode
+        fiatCurrencySymbol = localizedCurrencySymbol ?? walletInfo.fiatCurrencyCode
 
-        fiatCryptoAdapter = SendFiatCryptoAdapter(
-            cryptoCurrencyId: walletInfo.currencyId,
-            currencySymbol: walletInfo.cryptoCurrencyCode,
-            decimals: walletInfo.amountFractionDigits,
-            input: self,
-            output: self
+        let factory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
+            cryptoCurrencyCode: walletInfo.cryptoCurrencyCode,
+            fiatCurrencyCode: walletInfo.fiatCurrencyCode
         )
+        cryptoFieldOptions = factory.makeCryptoOptions()
+        fiatFieldOptions = factory.makeFiatOptions()
 
         bind(from: input)
     }
@@ -75,18 +87,24 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         fiatCryptoAdapter?.setCrypto(input.userInputAmountValue?.value)
 
         if animatingAuxiliaryViewsOnAppear {
-            withAnimation(SendView.Constants.defaultAnimation) {
-                animatingAuxiliaryViewsOnAppear = false
-            }
+            Analytics.log(.sendScreenReopened, params: [.source: .amount])
+        } else {
+            Analytics.log(.sendAmountScreenOpened)
         }
     }
 
-    func setUserInputAmount(_ userInputAmount: DecimalNumberTextField.DecimalValue?) {
-        amount = userInputAmount
+    func setUserInputDisabled(_ userInputDisabled: Bool) {
+        self.userInputDisabled = userInputDisabled
+    }
+
+    func setUserInputAmount(_ userInputAmount: Decimal?) {
+        decimalNumberTextFieldViewModel.update(value: userInputAmount)
     }
 
     func didTapMaxAmount() {
         guard let balanceValue else { return }
+
+        Analytics.log(.sendMaxAmountTapped)
 
         provideButtonHapticFeedback()
 
@@ -100,9 +118,8 @@ class SendAmountViewModel: ObservableObject, Identifiable {
             .assign(to: \.error, on: self, ownership: .weak)
             .store(in: &bag)
 
-        $amount
-            .removeDuplicates { $0?.value == $1?.value }
-            .dropFirst()
+        decimalNumberTextFieldViewModel
+            .valuePublisher
             .sink { [weak self] decimal in
                 self?.fiatCryptoAdapter?.setAmount(decimal)
             }
@@ -111,14 +128,17 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         $useFiatCalculation
             .dropFirst()
             .removeDuplicates()
-            .sink { [weak self] useFiatCalculation in
-                self?.provideSelectionHapticFeedback()
-                self?.fiatCryptoAdapter?.setUseFiatCalculation(useFiatCalculation)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, useFiatCalculation in
+                let maximumFractionDigits = useFiatCalculation ? 2 : viewModel.amountFractionDigits
+                viewModel.decimalNumberTextFieldViewModel.update(maximumFractionDigits: maximumFractionDigits)
+                viewModel.provideSelectionHapticFeedback()
+                viewModel.fiatCryptoAdapter?.setUseFiatCalculation(useFiatCalculation)
             }
             .store(in: &bag)
 
         fiatCryptoAdapter?
-            .amountAlternative
+            .formattedAmountAlternativePublisher
             .assign(to: \.amountAlternative, on: self, ownership: .weak)
             .store(in: &bag)
     }
@@ -134,20 +154,10 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     }
 }
 
-extension SendAmountViewModel: AuxiliaryViewAnimatable {
-    func setAnimatingAuxiliaryViewsOnAppear(_ animatingAuxiliaryViewsOnAppear: Bool) {
-        self.animatingAuxiliaryViewsOnAppear = animatingAuxiliaryViewsOnAppear
-    }
-}
+extension SendAmountViewModel: AuxiliaryViewAnimatable {}
 
 extension SendAmountViewModel: SendFiatCryptoAdapterInput {
-    var amountPublisher: AnyPublisher<DecimalNumberTextField.DecimalValue?, Never> {
-        $amount.eraseToAnyPublisher()
-    }
-}
-
-extension SendAmountViewModel: SendFiatCryptoAdapterOutput {
-    func setAmount(_ decimal: Decimal?) {
-        input.setAmount(decimal)
+    var amountPublisher: AnyPublisher<Decimal?, Never> {
+        decimalNumberTextFieldViewModel.valuePublisher
     }
 }

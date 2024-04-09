@@ -137,7 +137,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
                     .flatMap(\.items)
                     .map(\.id.walletModelId)
 
-                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds)
+                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds, source: .organizeTokens)
             }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 import TangemExpress
 import BlockchainSdk
 
@@ -87,6 +88,10 @@ extension ExpressInteractor {
 
     func getDestination() -> WalletModel? {
         _swappingPair.value.destination.value
+    }
+
+    func getDestinationValue() -> LoadingValue<WalletModel> {
+        _swappingPair.value.destination
     }
 
     func getFeeOption() -> FeeOption {

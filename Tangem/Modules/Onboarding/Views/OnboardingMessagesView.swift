@@ -17,29 +17,25 @@ struct OnboardingMessagesView: View {
         VStack(spacing: 0) {
             Text(title)
                 .frame(maxWidth: .infinity)
-//                .background(Color.red)
                 .font(.system(size: 28, weight: .bold))
                 .multilineTextAlignment(.center)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
                 .foregroundColor(.tangemGrayDark6)
                 .padding(.bottom, 14)
-                .onTapGesture {
-                    // TODO: Remove before create PR. This is debug feature.
-                    // onTitleTapCallback?()
-                }
                 .transition(.opacity)
                 .id("onboarding_title_\(title)")
+
             Text(subtitle)
                 .frame(maxWidth: .infinity)
                 .fixedSize(horizontal: false, vertical: true)
-//                .background(Color.yellow)
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.8)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(Colors.Text.secondary)
                 .frame(maxWidth: .infinity)
                 .transition(.opacity)
+                .padding(.horizontal, 20)
                 .id("onboarding_subtitle_\(subtitle)")
         }
     }

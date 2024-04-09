@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import class TangemExpress.ThreadSafeContainer
+import TangemFoundation
 
 class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransactionAnalyticsTracker {
     typealias PendingTransactionId = String

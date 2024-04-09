@@ -35,14 +35,14 @@ class LegacySendCoordinator: CoordinatorObject {
                 destination: destination,
                 tag: options.tag,
                 blockchainNetwork: options.blockchainNetwork,
-                cardViewModel: options.cardViewModel,
+                userWalletModel: options.userWalletModel,
                 coordinator: self
             )
         } else {
             sendViewModel = LegacySendViewModel(
                 amountToSend: options.amountToSend,
                 blockchainNetwork: options.blockchainNetwork,
-                cardViewModel: options.cardViewModel,
+                userWalletModel: options.userWalletModel,
                 coordinator: self
             )
         }
@@ -55,7 +55,7 @@ extension LegacySendCoordinator {
         let destination: String?
         let tag: String?
         let blockchainNetwork: BlockchainNetwork
-        let cardViewModel: CardViewModel
+        let userWalletModel: UserWalletModel
     }
 }
 

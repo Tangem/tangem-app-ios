@@ -11,14 +11,14 @@ import Combine
 
 class SendCurrencyViewModel: ObservableObject, Identifiable {
     @Published private(set) var expressCurrencyViewModel: ExpressCurrencyViewModel
-    @Published private(set) var maximumFractionDigits: Int
+    @Published private(set) var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
 
     init(
         expressCurrencyViewModel: ExpressCurrencyViewModel,
-        maximumFractionDigits: Int
+        decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     ) {
         self.expressCurrencyViewModel = expressCurrencyViewModel
-        self.maximumFractionDigits = maximumFractionDigits
+        self.decimalNumberTextFieldViewModel = decimalNumberTextFieldViewModel
     }
 
     func textFieldDidTapped() {
@@ -27,7 +27,7 @@ class SendCurrencyViewModel: ObservableObject, Identifiable {
 
     func update(wallet: WalletModel, initialWalletId: Int) {
         expressCurrencyViewModel.update(wallet: .loaded(wallet), initialWalletId: initialWalletId)
-        maximumFractionDigits = wallet.decimalCount
+        decimalNumberTextFieldViewModel.update(maximumFractionDigits: wallet.decimalCount)
     }
 
     func updateSendFiatValue(amount: Decimal?, tokenItem: TokenItem) {

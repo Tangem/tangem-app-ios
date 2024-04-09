@@ -110,6 +110,8 @@ enum ExpressDTO {
             let providerId: Provider.Id
             let rateType: Provider.RateType
             let toAddress: String // address for receiving token
+            let refundAddress: String?
+            let refundExtraId: String? // typically it's a memo or tag
         }
 
         struct Response: Decodable {

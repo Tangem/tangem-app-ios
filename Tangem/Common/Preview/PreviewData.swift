@@ -14,9 +14,10 @@ struct PreviewData {
     static var previewNoteCardOnboardingInput: OnboardingInput {
         OnboardingInput(
             backupService: .init(sdk: .init()),
+            primaryCardId: "",
             cardInitializer: nil,
             steps: .singleWallet([.createWallet, .success]),
-            cardInput: .cardModel(PreviewCard.ethEmptyNote.cardModel),
+            cardInput: .userWalletModel(PreviewCard.ethEmptyNote.userWalletModel),
             twinData: nil
         )
     }
@@ -24,6 +25,7 @@ struct PreviewData {
     static var previewTwinOnboardingInput: OnboardingInput {
         .init(
             backupService: .init(sdk: .init()),
+            primaryCardId: "",
             cardInitializer: nil,
             steps: .twins([
                 .intro(pairNumber: "0128"),
@@ -33,7 +35,7 @@ struct PreviewData {
                 .topup,
                 .done,
             ]),
-            cardInput: .cardModel(PreviewCard.twin.cardModel),
+            cardInput: .userWalletModel(PreviewCard.twin.userWalletModel),
             twinData: .init(series: TwinCardSeries.cb61)
         )
     }
@@ -41,9 +43,10 @@ struct PreviewData {
     static var previewWalletOnboardingInput: OnboardingInput {
         .init(
             backupService: .init(sdk: .init()),
+            primaryCardId: "",
             cardInitializer: nil,
             steps: .wallet([.createWallet, .backupIntro, .selectBackupCards, .backupCards, .success]),
-            cardInput: .cardModel(PreviewCard.tangemWalletEmpty.cardModel),
+            cardInput: .userWalletModel(PreviewCard.tangemWalletEmpty.userWalletModel),
             twinData: nil
         )
     }

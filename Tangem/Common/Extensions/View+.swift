@@ -34,6 +34,10 @@ extension View {
         opacity(shouldHide ? 0.0 : 1.0)
     }
 
+    func visible(_ shouldShow: Bool) -> some View {
+        opacity(shouldShow ? 1 : 0)
+    }
+
     /// Two separate methods exist for iOS <16.0 and >=16.0 because they must be applied at the different levels
     /// of the view hierarchy in order to work.
     ///

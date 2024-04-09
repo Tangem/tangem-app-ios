@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BSDK_SUITE_NAME</key>
+	<string>$(BSDK_SUITE_NAME)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -28,6 +30,15 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>tangem</string>
+				<string>bitcoin</string>
+				<string>ethereum</string>
+				<string>litecoin</string>
+				<string>xrpl</string>
+				<string>ripple</string>
+				<string>xrp</string>
+				<string>bnb</string>
+				<string>doge</string>
+				<string>dogecoin</string>
 			</array>
 		</dict>
 	</array>
@@ -55,8 +66,6 @@
 	</array>
 	<key>SUITE_NAME</key>
 	<string>$(SUITE_NAME)</string>
-	<key>BSDK_SUITE_NAME</key>
-	<string>$(BSDK_SUITE_NAME)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

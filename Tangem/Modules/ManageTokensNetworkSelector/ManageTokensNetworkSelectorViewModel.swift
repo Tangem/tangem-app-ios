@@ -157,12 +157,12 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
         }
     }
 
-    private func saveChanges() {
+    private func saveChanges() throws {
         guard let userTokensManager = dataSource.selectedUserWalletModel?.userTokensManager else {
             return
         }
 
-        userTokensManager.update(
+        try userTokensManager.update(
             itemsToRemove: pendingRemove,
             itemsToAdd: pendingAdd
         )
@@ -199,7 +199,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
             }
         }
 
-        saveChanges()
+        try saveChanges()
     }
 
     private func bindSelection(_ tokenItem: TokenItem) -> Binding<Bool> {

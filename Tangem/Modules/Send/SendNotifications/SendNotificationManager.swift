@@ -144,21 +144,6 @@ class CommonSendNotificationManager: SendNotificationManager {
             }
             .store(in: &bag)
 
-        Publishers.CombineLatest3(input.isFeeIncludedPublisher, input.feeValuePublisher, input.amountPublisher)
-            .sink { [weak self] isFeeIncluded, fee, amount in
-                if isFeeIncluded,
-                   let feeAmount = fee?.amount,
-                   let amount {
-                    let formatter = BalanceFormatter()
-                    let feeAmountFormatted = formatter.formatCryptoBalance(feeAmount.value, currencyCode: feeAmount.currencySymbol)
-                    let transactionAmountFormatted = formatter.formatCryptoBalance(amount.value, currencyCode: amount.currencySymbol)
-                    self?.updateEventVisibility(true, event: .feeCoverage(feeAmount: feeAmountFormatted, transactionAmount: transactionAmountFormatted))
-                } else {
-                    self?.updateEventVisibility(false, event: .feeCoverage(feeAmount: "", transactionAmount: ""))
-                }
-            }
-            .store(in: &bag)
-
         input
             .transactionCreationError
             .map {

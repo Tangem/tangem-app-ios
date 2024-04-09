@@ -314,7 +314,7 @@ struct ExtractView_Previews: PreviewProvider {
                 destination: "Target",
                 tag: "Tag",
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
-                cardViewModel: PreviewCard.ethereum.cardModel,
+                userWalletModel: PreviewCard.ethereum.userWalletModel,
                 coordinator: LegacySendCoordinator()
             ))
             .previewLayout(.iphone7Zoomed)
@@ -326,7 +326,7 @@ struct ExtractView_Previews: PreviewProvider {
                     value: 0.0
                 ),
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
-                cardViewModel: PreviewCard.ethereum.cardModel,
+                userWalletModel: PreviewCard.ethereum.userWalletModel,
                 coordinator: LegacySendCoordinator()
             ))
             .previewLayout(.iphone7Zoomed)

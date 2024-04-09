@@ -44,6 +44,7 @@ extension CommonKeysManager: KeysManager {
             kaspaSecondaryApiUrl: keys.kaspaSecondaryApiUrl,
             tronGridApiKey: keys.tronGridApiKey,
             hederaArkhiaApiKey: keys.hederaArkhiaKey,
+            polygonScanApiKey: keys.polygonScanApiKey,
             tonCenterApiKeys: .init(mainnetApiKey: keys.tonCenterApiKey.mainnet, testnetApiKey: keys.tonCenterApiKey.testnet),
             fireAcademyApiKeys: .init(mainnetApiKey: keys.chiaFireAcademyApiKey, testnetApiKey: keys.chiaFireAcademyApiKey),
             chiaTangemApiKeys: .init(mainnetApiKey: keys.chiaTangemApiKey),
@@ -112,6 +113,7 @@ extension CommonKeysManager {
         let quiknodeSubdomain: String
         let bscQuiknodeApiKey: String
         let bscQuiknodeSubdomain: String
+        let polygonScanApiKey: String
         let tangemComAuthorization: String?
         let walletConnectProjectId: String
         let sprinklr: SprinklrConfig

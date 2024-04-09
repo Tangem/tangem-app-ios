@@ -16,8 +16,8 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        NetworkLoggerPlugin(configuration: .init(
-            output: NetworkLoggerPlugin.tangemSdkLoggerOutput,
+        TangemNetworkLoggerPlugin(configuration: .init(
+            output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),
     ])
@@ -37,7 +37,7 @@ class CommonTangemApiService {
 
     private func request<D: Decodable>(for type: TangemApiTarget.TargetType, decoder: JSONDecoder = .init()) async throws -> D {
         let target = TangemApiTarget(type: type, authData: authData)
-        return try await provider.asyncRequest(for: target).mapAPIResponse(decoder: decoder)
+        return try await provider.asyncRequest(target).mapAPIResponse(decoder: decoder)
     }
 }
 
@@ -174,7 +174,7 @@ extension CommonTangemApiService: TangemApiService {
             type: .loadReferralProgramInfo(userWalletId: userWalletId, expectedAwardsLimit: expectedAwardsLimit),
             authData: authData
         )
-        let response = try await provider.asyncRequest(for: target)
+        let response = try await provider.asyncRequest(target)
         let filteredResponse = try response.filterSuccessfulStatusAndRedirectCodes()
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }
@@ -194,7 +194,7 @@ extension CommonTangemApiService: TangemApiService {
             type: .participateInReferralProgram(userInfo: userInfo),
             authData: authData
         )
-        let response = try await provider.asyncRequest(for: target)
+        let response = try await provider.asyncRequest(target)
         let filteredResponse = try response.filterSuccessfulStatusAndRedirectCodes()
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }

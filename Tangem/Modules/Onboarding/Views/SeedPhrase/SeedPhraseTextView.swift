@@ -11,9 +11,11 @@ import Combine
 
 struct SeedPhraseTextView: UIViewRepresentable {
     private unowned var inputProcessor: SeedPhraseInputProcessor
+    private let shouldBecomeFirstResponderAtStart: Bool
 
-    init(inputProcessor: SeedPhraseInputProcessor) {
+    init(inputProcessor: SeedPhraseInputProcessor, shouldBecomeFirstResponderAtStart: Bool) {
         self.inputProcessor = inputProcessor
+        self.shouldBecomeFirstResponderAtStart = shouldBecomeFirstResponderAtStart
     }
 
     func makeUIView(context: UIViewRepresentableContext<SeedPhraseTextView>) -> UITextView {
@@ -53,6 +55,10 @@ struct SeedPhraseTextView: UIViewRepresentable {
             toolbar.items = toolbarItems
             toolbar.tintColor = UIColor.inputAccessoryViewTintColor
             textView.inputAccessoryView = toolbar
+        }
+
+        if shouldBecomeFirstResponderAtStart {
+            textView.becomeFirstResponder()
         }
 
         return textView

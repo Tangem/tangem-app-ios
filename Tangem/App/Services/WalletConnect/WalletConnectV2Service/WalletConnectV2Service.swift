@@ -408,7 +408,7 @@ final class WalletConnectV2Service {
             return
         }
 
-        if userWalletRepository.isLocked, userWalletRepository.models.isEmpty {
+        if userWalletRepository.models.isEmpty {
             log("User wallet repository is locked")
             await respond(with: .userWalletRepositoryIsLocked, session: nil, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
@@ -426,7 +426,7 @@ final class WalletConnectV2Service {
             return
         }
 
-        if userWallet.userWallet.isLocked {
+        if userWallet.isUserWalletLocked {
             log("Attempt to handle message with locked user wallet")
             await respond(with: .userWalletIsLocked, session: session, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return

@@ -26,7 +26,7 @@ extension WalletModel {
             }
         }
 
-        var isSuccesfullyLoaded: Bool {
+        var isSuccessfullyLoaded: Bool {
             switch self {
             case .idle, .noAccount:
                 return true

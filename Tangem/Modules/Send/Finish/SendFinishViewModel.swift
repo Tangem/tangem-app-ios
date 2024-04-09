@@ -16,6 +16,7 @@ protocol SendFinishViewModelInput: AnyObject {
     var destinationText: String? { get }
     var additionalField: (SendAdditionalFields, String)? { get }
     var feeValue: Fee? { get }
+    var selectedFeeOption: FeeOption { get }
 
     var transactionTime: Date? { get }
     var transactionURL: URL? { get }
@@ -28,14 +29,14 @@ class SendFinishViewModel: ObservableObject {
     let transactionTime: String
 
     let destinationViewTypes: [SendDestinationSummaryViewType]
-    let amountSummaryViewData: AmountSummaryViewData?
-    let feeSummaryViewData: DefaultTextWithTitleRowViewData?
+    let amountSummaryViewData: SendAmountSummaryViewData?
+    let feeSummaryViewData: SendFeeSummaryViewModel?
 
     weak var router: SendFinishRoutable?
 
     private let transactionURL: URL
 
-    init?(input: SendFinishViewModelInput, walletInfo: SendWalletInfo) {
+    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, walletInfo: SendWalletInfo) {
         guard
             let destinationText = input.destinationText,
             let transactionTime = input.transactionTime,
@@ -56,8 +57,11 @@ class SendFinishViewModel: ObservableObject {
             address: destinationText,
             additionalField: input.additionalField
         )
-        amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(from: input.userInputAmountValue)
-        feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: input.feeValue)
+        amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(
+            from: fiatCryptoValueProvider.formattedAmount,
+            amountAlternative: fiatCryptoValueProvider.formattedAmountAlternative
+        )
+        feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: input.feeValue, feeOption: input.selectedFeeOption, animateTitleOnAppear: false)
 
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -67,19 +71,21 @@ class SendFinishViewModel: ObservableObject {
     }
 
     func onAppear() {
+        Analytics.log(.sendTransactionSentScreenOpened)
+
         showHeader = true
         showButtons = true
     }
 
     func explore() {
+        Analytics.log(.sendButtonExplore)
+
         router?.explore(url: transactionURL)
     }
 
     func share() {
-        router?.share(url: transactionURL)
-    }
+        Analytics.log(.sendButtonShare)
 
-    func close() {
-        router?.dismiss()
+        router?.share(url: transactionURL)
     }
 }

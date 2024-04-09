@@ -24,6 +24,7 @@ struct PendingTransactionRecordMapper {
     func mapToTransactionRecord(pending: PendingTransactionRecord) -> TransactionRecord {
         TransactionRecord(
             hash: pending.hash,
+            index: 0,
             source: .single(.init(address: pending.source, amount: pending.amount.value)),
             destination: .single(.init(address: .user(pending.destination), amount: pending.amount.value)),
             fee: pending.fee,
@@ -40,6 +41,7 @@ struct PendingTransactionRecordMapper {
 
         return TransactionViewModel(
             hash: transaction.hash,
+            index: 0,
             interactionAddress: interactionAddress(for: transaction),
             timeFormatted: timeFormatted,
             amount: amount(for: transaction),

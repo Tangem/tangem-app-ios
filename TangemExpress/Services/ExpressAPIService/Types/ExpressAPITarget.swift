@@ -7,6 +7,7 @@
 //
 
 import Moya
+import TangemFoundation
 
 struct ExpressAPITarget: Moya.TargetType {
     let expressAPIType: ExpressAPIType

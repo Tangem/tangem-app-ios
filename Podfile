@@ -24,7 +24,7 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-282'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-286'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
@@ -40,7 +40,7 @@ def blockchain_sdk_pods
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
   #pod 'BinanceChain', :path => '../SwiftBinanceChain'
   
-  pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.19'
+  pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
   #pod 'BitcoinCore.swift', :path => '../bitcoincore'
 end
 
@@ -74,8 +74,7 @@ target 'Tangem' do
   pod 'Amplitude'
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
-  pod 'AppsFlyerFramework'
-  
+
   target 'TangemTests' do
     inherit! :search_paths
     # Pods for testing
@@ -102,6 +101,14 @@ target 'TangemVisa' do
 
   target 'TangemVisaTests' do
     blockchain_sdk_pods
+  end
+end
+
+target 'TangemFoundation' do
+  pod 'Moya'
+
+  target 'TangemFoundationTests' do
+    inherit! :search_paths
   end
 end
 

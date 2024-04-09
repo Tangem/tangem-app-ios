@@ -73,38 +73,6 @@ extension Publisher where Output == Void, Failure == Never {
     }
 }
 
-extension Publisher {
-    func asyncMap<T>(
-        _ transform: @escaping (Output) async throws -> T
-    ) -> Publishers.FlatMap<Future<T, Error>, Self> {
-        flatMap { value in
-            Future { promise in
-                Task {
-                    do {
-                        let output = try await transform(value)
-                        promise(.success(output))
-                    } catch {
-                        promise(.failure(error))
-                    }
-                }
-            }
-        }
-    }
-
-    func asyncMap<T>(
-        _ transform: @escaping (Output) async -> T
-    ) -> Publishers.FlatMap<Future<T, Never>, Self> {
-        flatMap { value in
-            Future { promise in
-                Task {
-                    let output = await transform(value)
-                    promise(.success(output))
-                }
-            }
-        }
-    }
-}
-
 @available(iOS, deprecated: 15.0, message: "AsyncCompatibilityKit is only useful when targeting iOS versions earlier than 15")
 public extension Publisher where Failure == Never {
     /// Convert this publisher into an `AsyncStream` that can

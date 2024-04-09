@@ -28,6 +28,8 @@ struct LoadingProvidersRow: View {
     private var progressView: some View {
         ProgressView()
             .controlSize(.small)
+            .frame(width: 16, height: 16)
+            .padding(.vertical, 2)
     }
 }
 

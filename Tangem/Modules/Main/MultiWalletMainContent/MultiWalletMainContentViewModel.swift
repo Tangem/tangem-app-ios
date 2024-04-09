@@ -93,7 +93,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         self.optionsEditing = optionsEditing
         self.coordinator = coordinator
 
-        setup()
+        bind()
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
@@ -119,9 +119,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     func startBackupProcess() {
-        // TODO: Refactor this along with OnboardingInput generation
-        if let cardViewModel = userWalletModel as? CardViewModel,
-           let input = cardViewModel.backupInput {
+        if let input = userWalletModel.backupInput {
             Analytics.log(.mainNoticeBackupWalletTapped)
             coordinator?.openOnboardingModal(with: input)
         }
@@ -132,11 +130,6 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         openOrganizeTokens()
     }
 
-    private func setup() {
-        subscribeToTokenListUpdatesIfNeeded()
-        bind()
-    }
-
     private func bind() {
         let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
         let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
@@ -145,12 +138,15 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             .organizedSections(from: tokenSectionsSourcePublisher, on: mappingQueue)
             .share(replay: 1)
 
-        organizedTokensSectionsPublisher
+        let sectionsPublisher = organizedTokensSectionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, sections in
                 return viewModel.convertToSections(sections)
             }
             .receive(on: DispatchQueue.main)
+            .share(replay: 1)
+
+        sectionsPublisher
             .assign(to: \.sections, on: self, ownership: .weak)
             .store(in: &bag)
 
@@ -167,7 +163,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             .map { $0.map(\.walletModelId) }
             .withWeakCaptureOf(self)
             .flatMapLatest { viewModel, walletModelIds in
-                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds)
+                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds, source: .mainScreen)
             }
             .sink()
             .store(in: &bag)
@@ -191,6 +187,8 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             notificationsPublisher1: $notificationInputs,
             notificationsPublisher2: $tokensNotificationInputs
         )
+
+        subscribeToTokenListSync(with: sectionsPublisher)
     }
 
     private func convertToSections(
@@ -245,19 +243,22 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         cachedTokenItemViewModels = cachedTokenItemViewModels.filter { cacheKeys.contains($0.key) }
     }
 
-    private func subscribeToTokenListUpdatesIfNeeded() {
-        if userWalletModel.userTokenListManager.initialized {
-            isLoadingTokenList = false
-            return
-        }
-
-        var tokenSyncSubscription: AnyCancellable?
-        tokenSyncSubscription = userWalletModel.userTokenListManager.initializedPublisher
+    private func subscribeToTokenListSync(with sectionsPublisher: some Publisher<[Section], Never>) {
+        let tokenListSyncPublisher = userWalletModel
+            .userTokenListManager
+            .initializedPublisher
             .filter { $0 }
-            .sink(receiveValue: { [weak self] _ in
-                self?.isLoadingTokenList = false
-                withExtendedLifetime(tokenSyncSubscription) {}
-            })
+
+        let sectionsPublisher = sectionsPublisher
+            .replaceEmpty(with: [])
+
+        var tokenListSyncSubscription: AnyCancellable?
+        tokenListSyncSubscription = Publishers.Zip(tokenListSyncPublisher, sectionsPublisher)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.isLoadingTokenList = false
+                withExtendedLifetime(tokenListSyncSubscription) {}
+            }
     }
 
     private func tokenItemTapped(_ walletModelId: WalletModelId) {
@@ -335,7 +336,7 @@ extension MultiWalletMainContentViewModel {
             longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
             derivationStyle: userWalletModel.config.derivationStyle,
             shouldShowLegacyDerivationAlert: shouldShowLegacyDerivationAlert,
-            existingCurves: (userWalletModel as? CardViewModel)?.card.walletCurves ?? []
+            existingCurves: userWalletModel.config.walletCurves
         )
 
         coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)

@@ -42,7 +42,7 @@ struct DefaultSelectableRowView<ID: Hashable>: View {
 
                 CheckIconView(isSelected: isSelectedProxy.wrappedValue)
             }
-            .padding(.vertical, 12)
+            .padding(.vertical, 14)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

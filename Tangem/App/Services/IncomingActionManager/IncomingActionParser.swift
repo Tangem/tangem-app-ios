@@ -13,8 +13,11 @@ public class IncomingActionParser {
     @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
 
     private var incomingActionURLParsers: [IncomingActionURLParser] = [
+        NDEFURLParser(),
         DismissSafariActionURLHelper(),
         SellActionURLHelper(),
+        WalletConnectURLParser(),
+        BlockchainURLSchemesParser(),
     ]
 
     public init() {}
@@ -22,17 +25,10 @@ public class IncomingActionParser {
     public func parseDeeplink(_ url: URL) -> IncomingAction? {
         guard validateURL(url) else { return nil }
 
-        if url.absoluteString.starts(with: IncomingActionConstants.ndefURL) {
-            return .start
-        }
-
-        if let action = parseActionURL(url) {
-            return action
-        }
-
-        let parser = WalletConnectURLParser()
-        if let uri = parser.parse(url) {
-            return .walletConnect(uri)
+        for parser in incomingActionURLParsers {
+            if let action = parser.parse(url) {
+                return action
+            }
         }
 
         return nil
@@ -53,26 +49,27 @@ public class IncomingActionParser {
 
         if urlString.starts(with: IncomingActionConstants.tangemDomain)
             || urlString.starts(with: IncomingActionConstants.appTangemDomain)
-            || urlString.starts(with: IncomingActionConstants.universalLinkScheme) {
+            || url.absoluteString.starts(with: IncomingActionConstants.universalLinkScheme)
+            || SupportedURLSchemeCheck.isURLSchemeSupported(for: url) {
             return true
         }
 
         return false
-    }
-
-    private func parseActionURL(_ url: URL) -> IncomingAction? {
-        for parser in incomingActionURLParsers {
-            if let action = parser.parse(url) {
-                return action
-            }
-        }
-
-        return nil
     }
 }
 
 private extension IncomingActionParser {
     enum AppIntent: String {
         case scanCard = "ScanTangemCardIntent"
+    }
+}
+
+enum SupportedURLSchemeCheck {
+    static func isURLSchemeSupported(for url: URL) -> Bool {
+        guard let supportedSchemes: [[String]] = InfoDictionaryUtils.bundleURLSchemes.value() else {
+            // impossible case
+            return false
+        }
+        return supportedSchemes.flatMap { $0 }.contains(url.scheme ?? "")
     }
 }

@@ -8,12 +8,16 @@
 
 import Foundation
 import Combine
+import TangemSdk
 
 class UserWalletModelMock: UserWalletModel {
+    var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var name: String { "" }
+    var hasBackupCards: Bool { false }
+    var emailConfig: EmailConfig? { nil }
     var tokensCount: Int? { 7 }
     var config: UserWalletConfig { fatalError("UserWalletConfigMock doesn't exist") }
     var userWalletId: UserWalletId { .init(value: Data()) }
-    var userWallet: UserWallet { fatalError("UserWalletMock doesn't exist") }
 
     var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
 
@@ -27,9 +31,11 @@ class UserWalletModelMock: UserWalletModel {
 
     var emailData: [EmailCollectedData] { [] }
 
-    var backupInput: OnboardingInput? { nil }
+    var tangemApiAuthData: TangemApiTarget.AuthData {
+        .init(cardId: "", cardPublicKey: Data())
+    }
 
-    var twinInput: OnboardingInput? { nil }
+    var backupInput: OnboardingInput? { nil }
 
     var cardImagePublisher: AnyPublisher<CardImageResult, Never> { Empty().eraseToAnyPublisher() }
 
@@ -45,9 +51,28 @@ class UserWalletModelMock: UserWalletModel {
 
     var isTokensListEmpty: Bool { false }
 
+    var analyticsContextData: AnalyticsContextData {
+        .init(
+            productType: .other,
+            batchId: "",
+            firmware: "",
+            baseCurrency: ""
+        )
+    }
+
+    var wcWalletModelProvider: WalletConnectWalletModelProvider {
+        CommonWalletConnectWalletModelProvider(walletModelsManager: walletModelsManager)
+    }
+
+    var totalSignedHashes: Int { 0 }
+
     func updateWalletName(_ name: String) {}
 
     func getAnalyticsContextData() -> AnalyticsContextData? { nil }
 
     func validate() -> Bool { true }
+
+    func onBackupCreated(_ card: Card) {}
+
+    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {}
 }

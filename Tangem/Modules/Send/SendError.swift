@@ -10,20 +10,23 @@ import Foundation
 import SwiftUI
 
 struct SendError: Error, BindableError {
+    private let title: String
+    private let message: String
     private let error: Error
+
     private let openMailAction: (Error) -> Void
 
-    init(_ error: Error, openMailAction: @escaping (Error) -> Void) {
+    init(title: String, message: String, error: Error, openMailAction: @escaping (Error) -> Void) {
+        self.title = title
+        self.message = message
         self.error = error
         self.openMailAction = openMailAction
     }
 
     var alertBinder: AlertBinder {
-        let errorDescription = String(error.localizedDescription.dropTrailingPeriod)
-
         let alert = Alert(
-            title: Text(Localization.feedbackSubjectTxFailed),
-            message: Text(Localization.alertFailedToSendTransactionMessage(errorDescription)),
+            title: Text(title),
+            message: Text(message),
             primaryButton: .default(Text(Localization.alertButtonRequestSupport), action: { openMailAction(error) }),
             secondaryButton: .default(Text(Localization.commonCancel))
         )

@@ -8,262 +8,142 @@
 
 import SwiftUI
 
-private struct AccessCodeFeature {
+private struct AccessCodeFeature: Identifiable, Hashable {
+    let id = UUID()
     let title: String
     let description: String
     let icon: ImageType
 }
 
-struct OnboardingAccessCodeViewModel: Identifiable {
-    let id: UUID = .init()
-    let successHandler: (String) -> Void
-}
-
 struct OnboardingAccessCodeView: View {
-    let viewModel: OnboardingAccessCodeViewModel
+    @ObservedObject var viewModel: OnboardingAccessCodeViewModel
 
-    @State private var state: ViewState = .intro
-    @State private var firstEnteredCode: String = ""
-    @State private var secondEnteredCode: String = ""
-    @State private var error: AccessCodeError = .none
-
-    @ViewBuilder
-    var content: some View {
-        switch state {
-        case .intro:
-            Spacer()
-            Assets.Onboarding.inputWithLock.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.primary1)
-                .scaleEffect(AppConstants.isSmallScreen ? 0.7 : 1)
-            Spacer()
-            VStack(alignment: .leading, spacing: 20) {
-                ForEach(0 ..< 3) { index in
-                    let feature = ViewState.featuresDescription[index]
-                    HStack(alignment: .customTop, spacing: 20) {
-                        feature.icon.image
-                            .renderingMode(.template)
-                            .foregroundColor(Colors.Icon.primary1)
-                            .alignmentGuide(.customTop) { d in d[VerticalAlignment.top] - 4 }
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(feature.title)
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.tangemGrayDark6)
-                            Text(feature.description)
-                                .font(.system(size: 16, weight: .regular))
-                                .foregroundColor(.tangemGrayDark2)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .alignmentGuide(.customTop) { d in d[VerticalAlignment.top] }
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, AppConstants.isSmallScreen ? 0 : 10)
-        case .inputCode, .repeatCode:
-            inputContent
-        }
-    }
-
-    @ViewBuilder
-    var inputContent: some View {
-        Text(Localization.onboardingAccessCodeHint)
-            .font(.system(size: 16, weight: .regular))
-            .foregroundColor(.tangemGrayDark6)
-            .padding(.bottom, 32)
-            .padding(.top, 13)
-            .multilineTextAlignment(.center)
-        CustomPasswordTextField(
-            placeholder: Localization.detailsManageSecurityAccessCode,
-            color: .tangemGrayDark6,
-            password: state == .inputCode ? $firstEnteredCode : $secondEnteredCode,
-            onCommit: {}
-        )
-        .frame(height: 44)
-    }
+    private let navbarHeight: CGFloat = 54
 
     var body: some View {
-        VStack {
-            Text(state.title)
-                .minimumScaleFactor(0.3)
-                .font(.system(size: 32, weight: .bold))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 10)
-                .foregroundColor(.tangemGrayDark6)
-                .padding(.top, AppConstants.isSmallScreen ? 20 : 72)
-                .lineLimit(2)
-                .id("title_\(state.rawValue)")
-                .onTapGesture {
-                    withAnimation {
-                        state = .intro
-                        firstEnteredCode = ""
-                        secondEnteredCode = ""
+        VStack(spacing: 0) {
+            NavigationBar(
+                title: "",
+                settings: .init(backgroundColor: .clear, height: navbarHeight),
+                leftItems: {
+                    BackButton(
+                        height: navbarHeight,
+                        isVisible: viewModel.state.isBackButtonVisible,
+                        isEnabled: true
+                    ) {
+                        viewModel.backButtonAction()
                     }
-                }
+                },
+                rightItems: {}
+            )
 
             content
 
-            Text(error.description)
-                .id("error_\(error.rawValue)")
-                .multilineTextAlignment(.center)
-                .font(.system(size: 15, weight: .regular))
-                .opacity(error.errorOpacity)
-                .foregroundColor(.tangemCritical)
             Spacer()
-            MainButton(title: state.buttonTitle) {
-                let nextState: ViewState
-                switch state {
-                case .intro:
-                    Analytics.log(.settingAccessCodeStarted)
-                    nextState = .inputCode
-                case .inputCode:
-                    guard isAccessCodeValid() else {
-                        return
-                    }
 
-                    Analytics.log(.accessCodeEntered)
-                    nextState = .repeatCode
-                case .repeatCode:
-                    guard isAccessCodeValid() else {
-                        return
-                    }
-
-                    Analytics.log(.accessCodeReEntered)
-                    viewModel.successHandler(secondEnteredCode)
-                    return
-                }
-
-                state = nextState
-            }
-            .padding(.bottom, 16)
+            MainButton(title: viewModel.state.buttonTitle, action: viewModel.mainButtonAction)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
         }
-        .padding(.horizontal, 40)
-        .onDisappear {
-            DispatchQueue.main.async {
-                error = .none
+        .onDisappear(perform: viewModel.onDissappearAction)
+        .animation(.default, value: viewModel.error)
+        .animation(.default, value: viewModel.state)
+    }
+
+    private var titleView: some View {
+        VStack(spacing: 10) {
+            Text(viewModel.state.title)
+                .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                .minimumScaleFactor(0.3)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 50)
+                .lineLimit(2)
+                .id("title_\(viewModel.state.rawValue)")
+
+            if let hint = viewModel.state.hint {
+                Text(hint)
+                    .style(Fonts.Regular.callout, color: Colors.Text.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
             }
         }
     }
-
-    private func isAccessCodeValid() -> Bool {
-        var error: AccessCodeError = .none
-        switch state {
-        case .intro: break
-        case .inputCode:
-            error = firstEnteredCode.count >= 4 ? .none : .tooShort
-        case .repeatCode:
-            error = firstEnteredCode == secondEnteredCode ? .none : .dontMatch
-        }
-
-        withAnimation {
-            self.error = error
-        }
-        return error == .none
-    }
-}
-
-struct CustomPasswordTextField: View {
-    let placeholder: String
-    let color: Color
-    var backgroundColor: Color = .tangemBgGray2
-
-    var password: Binding<String>
-
-    var onEditingChanged: (Bool) -> Void = { _ in }
-    var onCommit: () -> Void = {}
-    /// iOS15+
-    var shouldBecomeFirstResponder: Bool = true
-
-    @State var isSecured: Bool = true
 
     @ViewBuilder
-    var input: some View {
-        FocusableTextField(
-            isSecured: isSecured,
-            shouldBecomeFirstResponder: shouldBecomeFirstResponder,
-            placeholder: placeholder,
-            text: password,
-            onEditingChanged: onEditingChanged,
-            onCommit: onCommit
-        )
+    private var content: some View {
+        switch viewModel.state {
+        case .intro:
+            VStack(spacing: 0) {
+                Assets.Onboarding.inputWithLock.image
+                    .renderingMode(.template)
+                    .foregroundStyle(Colors.Icon.inactive)
+                    .scaleEffect(AppConstants.isSmallScreen ? 0.7 : 1)
+
+                titleView
+                    .padding(.top, 12)
+
+                featuresView
+                    .padding(.top, 44)
+                    .padding(.horizontal, 36)
+
+                Spacer()
+            }
+            .padding(.top, AppConstants.isSmallScreen ? 0 : 20)
+
+        case .inputCode, .repeatCode:
+            VStack(spacing: 0) {
+                titleView
+
+                inputContent
+                    .padding(.top, 32)
+                    .padding(.horizontal, 16)
+
+                Spacer()
+            }
+            .padding(.top, AppConstants.isSmallScreen ? 0 : 30)
+        }
     }
 
-    var body: some View {
-        GeometryReader { geom in
-            HStack(spacing: 8) {
-                input
-                    .autocapitalization(.none)
-                    .transition(.opacity)
-                    .foregroundColor(color)
-                    .keyboardType(.default)
-                    .disableAutocorrection(true)
-                Button(action: {
-                    withAnimation {
-                        isSecured.toggle()
+    private var inputContent: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            CustomPasswordTextField(
+                placeholder: Localization.detailsManageSecurityAccessCode,
+                color: Colors.Text.primary1,
+                password: viewModel.state == .inputCode ? $viewModel.firstEnteredCode : $viewModel.secondEnteredCode,
+                onCommit: {}
+            )
+            .frame(height: 46)
+
+            Text(viewModel.error.description)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .style(Fonts.Regular.footnote, color: Colors.Text.warning)
+                .id("error_\(viewModel.error.rawValue)")
+                .hidden(viewModel.error.isErrorHidden)
+        }
+    }
+
+    private var featuresView: some View {
+        VStack(alignment: .leading, spacing: 28) {
+            ForEach(ViewState.featuresDescription, id: \.self) { feature in
+                HStack(alignment: .center, spacing: 16) {
+                    feature.icon.image
+                        .renderingMode(.template)
+                        .foregroundStyle(Colors.Icon.primary1)
+                        .frame(width: 42, height: 42, alignment: .center)
+                        .background(
+                            Colors.Background.secondary
+                                .clipShape(Circle())
+                        )
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(feature.title)
+                            .style(Fonts.Bold.callout, color: Colors.Icon.primary1)
+
+                        Text(feature.description)
+                            .style(Fonts.Regular.subheadline, color: Colors.Text.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                }, label: {
-                    Image(systemName: isSecured ? "eye" : "eye.slash")
-                        .foregroundColor(color)
-                        .frame(width: geom.size.height, height: geom.size.height, alignment: .center)
-                })
-            }
-            .padding(.leading, 16)
-            .background(Color.tangemBgGray2)
-            .cornerRadius(10)
-        }
-    }
-}
-
-private extension CustomPasswordTextField {
-    enum Field: Hashable {
-        case secure
-        case plain
-    }
-
-    struct FocusableTextField: View {
-        let isSecured: Bool
-        let shouldBecomeFirstResponder: Bool
-        let placeholder: String
-        let text: Binding<String>
-        var onEditingChanged: (Bool) -> Void = { _ in }
-        var onCommit: () -> Void = {}
-
-        @FocusState private var focusedField: Field?
-
-        var body: some View {
-            ZStack {
-                if isSecured {
-                    SecureField(
-                        placeholder,
-                        text: text,
-                        onCommit: onCommit
-                    )
-                    .focused($focusedField, equals: .secure)
-                } else {
-                    TextField(
-                        placeholder,
-                        text: text,
-                        onEditingChanged: onEditingChanged,
-                        onCommit: onCommit
-                    )
-                    .focused($focusedField, equals: .plain)
-                }
-            }
-            .keyboardType(.default)
-            .onAppear(perform: onAppear)
-            .onChange(of: isSecured) { newValue in
-                setFocus(for: newValue)
-            }
-        }
-
-        private func setFocus(for value: Bool) {
-            focusedField = value ? .secure : .plain
-        }
-
-        private func onAppear() {
-            if shouldBecomeFirstResponder {
-                // Works only with huge delay
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    setFocus(for: isSecured)
                 }
             }
         }
@@ -283,11 +163,26 @@ extension OnboardingAccessCodeView {
             }
         }
 
+        var hint: String? {
+            switch self {
+            case .intro: return nil
+            case .inputCode: return Localization.onboardingAccessCodeHint
+            case .repeatCode: return Localization.onboardingAccessCodeRepeatCodeHint
+            }
+        }
+
         var buttonTitle: String {
             switch self {
-            case .intro: return Localization.commonContinue
+            case .intro: return Localization.commonCreate
             case .inputCode: return Localization.commonContinue
             case .repeatCode: return Localization.commonSubmit
+            }
+        }
+
+        var isBackButtonVisible: Bool {
+            switch self {
+            case .intro, .inputCode: return false
+            case .repeatCode: return true
             }
         }
 
@@ -296,17 +191,17 @@ extension OnboardingAccessCodeView {
                 .init(
                     title: Localization.onboardingAccessCodeFeature1Title,
                     description: Localization.onboardingAccessCodeFeature1Description,
-                    icon: Assets.Onboarding.accessCodeFeature1
+                    icon: Assets.lock24
                 ),
                 .init(
                     title: Localization.onboardingAccessCodeFeature2Title,
                     description: Localization.onboardingAccessCodeFeature2Description,
-                    icon: Assets.Onboarding.accessCodeFeature2
+                    icon: Assets.cog24
                 ),
                 .init(
                     title: Localization.onboardingAccessCodeFeature3Title,
                     description: Localization.onboardingAccessCodeFeature3Description,
-                    icon: Assets.Onboarding.accessCodeFeature3
+                    icon: Assets.roundArrow24
                 ),
             ]
         }
@@ -325,10 +220,10 @@ extension OnboardingAccessCodeView {
             }
         }
 
-        var errorOpacity: Double {
+        var isErrorHidden: Bool {
             switch self {
-            case .none: return 0
-            default: return 1
+            case .none: return true
+            default: return false
             }
         }
     }

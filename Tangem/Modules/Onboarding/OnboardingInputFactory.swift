@@ -11,18 +11,18 @@ import TangemSdk
 
 class OnboardingInputFactory {
     private let cardInfo: CardInfo
-    private let cardModel: CardViewModel?
+    private let userWalletModel: UserWalletModel?
     private let sdkFactory: TangemSdkFactory & BackupServiceFactory
     private let onboardingStepsBuilderFactory: OnboardingStepsBuilderFactory
 
     init(
         cardInfo: CardInfo,
-        cardModel: CardViewModel?,
+        userWalletModel: UserWalletModel?,
         sdkFactory: TangemSdkFactory & BackupServiceFactory,
         onboardingStepsBuilderFactory: OnboardingStepsBuilderFactory
     ) {
         self.cardInfo = cardInfo
-        self.cardModel = cardModel
+        self.userWalletModel = userWalletModel
         self.sdkFactory = sdkFactory
         self.onboardingStepsBuilderFactory = onboardingStepsBuilderFactory
     }
@@ -46,6 +46,7 @@ class OnboardingInputFactory {
 
         return .init(
             backupService: backupService,
+            primaryCardId: cardInfo.card.cardId,
             cardInitializer: cardInitializer,
             steps: steps,
             cardInput: makeCardInput(),
@@ -54,7 +55,7 @@ class OnboardingInputFactory {
     }
 
     func makeBackupInput() -> OnboardingInput? {
-        guard let cardModel else { return nil }
+        guard let userWalletModel else { return nil }
 
         let backupService = sdkFactory.makeBackupService()
 
@@ -69,17 +70,18 @@ class OnboardingInputFactory {
 
         return .init(
             backupService: backupService,
+            primaryCardId: cardInfo.card.cardId,
             cardInitializer: nil,
             steps: steps,
-            cardInput: .cardModel(cardModel),
+            cardInput: .userWalletModel(userWalletModel),
             twinData: nil,
             isStandalone: true
         )
     }
 
     private func makeCardInput() -> OnboardingInput.CardInput {
-        if let cardModel {
-            return .cardModel(cardModel)
+        if let userWalletModel {
+            return .userWalletModel(userWalletModel)
         }
 
         return .cardInfo(cardInfo)
@@ -88,16 +90,19 @@ class OnboardingInputFactory {
 
 class TwinInputFactory {
     private let cardInput: OnboardingInput.CardInput
-    private let userWalletToDelete: UserWallet? // Delete on retwin
+    private let userWalletToDelete: UserWalletId? // Delete on retwin
     private let twinData: TwinData
     private let sdkFactory: TangemSdkFactory & BackupServiceFactory
+    private let firstCardId: String
 
     init(
+        firstCardId: String,
         cardInput: OnboardingInput.CardInput,
-        userWalletToDelete: UserWallet?,
+        userWalletToDelete: UserWalletId?,
         twinData: TwinData,
         sdkFactory: TangemSdkFactory & BackupServiceFactory
     ) {
+        self.firstCardId = firstCardId
         self.cardInput = cardInput
         self.userWalletToDelete = userWalletToDelete
         self.twinData = twinData
@@ -107,6 +112,7 @@ class TwinInputFactory {
     func makeTwinInput() -> OnboardingInput {
         return .init(
             backupService: sdkFactory.makeBackupService(),
+            primaryCardId: firstCardId,
             cardInitializer: nil,
             steps: .twins(TwinsOnboardingStep.twinningSteps),
             cardInput: cardInput,
@@ -131,6 +137,7 @@ class ResumeBackupInputFactory {
     func makeBackupInput() -> OnboardingInput {
         return .init(
             backupService: backupServiceFactory.makeBackupService(),
+            primaryCardId: cardId,
             cardInitializer: nil,
             steps: .wallet(WalletOnboardingStep.resumeBackupSteps),
             cardInput: .cardId(cardId),

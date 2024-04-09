@@ -42,6 +42,46 @@
         <string>%li кошельков</string>
       </dict>
     </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string></string>
+        <key>few</key>
+        <string>Запишите эти %li слова в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+        <key>many</key>
+        <string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+        <key>other</key>
+        <string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string></string>
+        <key>few</key>
+        <string>%li слова</string>
+        <key>many</key>
+        <string>%li слов</string>
+        <key>other</key>
+        <string>%li слов</string>
+      </dict>
+    </dict>
     <key>referral_number_of_wallets</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
