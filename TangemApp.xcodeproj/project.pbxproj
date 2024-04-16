@@ -8364,7 +8364,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "find . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
+			shellScript = "find . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n\necho `/usr/bin/xcodebuild -version`\n";
 		};
 		DDC93D0961EDB67EB3B998DC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
