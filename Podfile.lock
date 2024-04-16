@@ -226,7 +226,7 @@ DEPENDENCIES:
   - Kingfisher (~> 7.9.0)
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem5`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-287`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-287-test`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.8.4`)
 
 SPEC REPOS:
@@ -283,7 +283,7 @@ EXTERNAL SOURCES:
     :tag: 1.2.0-tangem5
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-287
+    :tag: develop-287-test
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.8.4
@@ -306,7 +306,7 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0-tangem5
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-287
+    :tag: develop-287-test
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.8.4
@@ -353,6 +353,6 @@ SPEC CHECKSUMS:
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: c1c2c2fbd0495860baf71515be1b943f0c5dce0c
 
-PODFILE CHECKSUM: ee5d8c57b7a9691ef7c2d62484eec83355e27f07
+PODFILE CHECKSUM: 086270b3168d0fd0d1301a19be63665e24873c39
 
 COCOAPODS: 1.15.2
