@@ -749,7 +749,6 @@ extension SendViewModel: NotificationTapDelegate {
 
 private extension SendStep {
     var updateFeeOnLeave: Bool {
-        let updateFee: Bool
         switch self {
         case .destination, .amount:
             return true

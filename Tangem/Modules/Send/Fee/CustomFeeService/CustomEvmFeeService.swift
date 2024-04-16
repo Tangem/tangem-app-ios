@@ -73,7 +73,6 @@ class CustomEvmFeeService {
     }
 
     private func recalculateFee(gasPrice: BigUInt?, gasLimit: BigUInt?) -> Fee? {
-        let newFee: Fee?
         if let gasPrice,
            let gasLimit,
            let gasInWei = (gasPrice * gasLimit).decimal {
