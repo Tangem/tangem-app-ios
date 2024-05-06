@@ -88,8 +88,10 @@ struct SendSummaryView: View {
                                 }
                             }
                     }
+                    // Fee uses a regular background regardless of whether it's enabled or not
                     .backgroundColor(Colors.Background.action, id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace)
                     .contentShape(Rectangle())
+                    .allowsHitTesting(viewModel.canEditFee)
                     .onTapGesture {
                         viewModel.didTapSummary(for: .fee)
                     }

@@ -29,6 +29,7 @@ protocol SendSummaryViewModelInput: AnyObject {
 class SendSummaryViewModel: ObservableObject {
     let canEditAmount: Bool
     let canEditDestination: Bool
+    @Published var canEditFee: Bool = true
 
     var destinationBackground: Color {
         sectionBackground(canEdit: canEditDestination)
@@ -196,6 +197,7 @@ class SendSummaryViewModel: ObservableObject {
 
                 self.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
                 self.deselectedFeeRowViewModels = deselectedFeeRowViewModels
+                canEditFee = feeValues.allSatisfy { $0.value.error == nil }
             }
             .store(in: &bag)
 
