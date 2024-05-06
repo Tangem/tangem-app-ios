@@ -58,7 +58,6 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingAmountOnAppear = false
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
-    @Published var showNotifications = true
     @Published var transactionDescription: String?
     @Published var showTransactionDescription = true
 
@@ -114,7 +113,6 @@ class SendSummaryViewModel: ObservableObject {
         }
 
         showHint = false
-        showNotifications = false
         showTransactionDescription = false
     }
 
@@ -125,7 +123,6 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.showNotifications = !self.notificationInputs.isEmpty
             self.showTransactionDescription = self.transactionDescription != nil
         }
 

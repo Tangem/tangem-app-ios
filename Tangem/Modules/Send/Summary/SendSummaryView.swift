@@ -106,11 +106,9 @@ struct SendSummaryView: View {
                     .transition(SendView.Constants.hintViewTransition)
                 }
 
-                if viewModel.showNotifications {
-                    ForEach(viewModel.notificationInputs) { input in
-                        NotificationView(input: input)
-                            .padding(.top, spacing)
-                    }
+                ForEach(viewModel.notificationInputs) { input in
+                    NotificationView(input: input)
+                        .padding(.top, spacing)
                 }
             }
 
