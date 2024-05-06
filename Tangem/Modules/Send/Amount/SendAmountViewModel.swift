@@ -32,7 +32,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     let fiatCurrencySymbol: String
     let amountFractionDigits: Int
 
-    @Published var userInputDisabled = true
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var useFiatCalculation = false
     @Published var amountAlternative: String?
@@ -91,10 +90,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         } else {
             Analytics.log(.sendAmountScreenOpened)
         }
-    }
-
-    func setUserInputDisabled(_ userInputDisabled: Bool) {
-        self.userInputDisabled = userInputDisabled
     }
 
     func setUserInputAmount(_ userInputAmount: Decimal?) {

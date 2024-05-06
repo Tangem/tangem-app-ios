@@ -92,7 +92,6 @@ struct SendView: View {
                                 .renderingMode(.template)
                                 .foregroundColor(Colors.Icon.primary1)
                         }
-                        .disabled(viewModel.updatingFees)
                     }
                 }
                 .layoutPriority(1)

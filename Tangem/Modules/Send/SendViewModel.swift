@@ -21,7 +21,6 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonType: SendMainButtonType
     @Published var mainButtonLoading: Bool = false
     @Published var mainButtonDisabled: Bool = false
-    @Published var updatingFees = false
     @Published var canDismiss: Bool = false
     @Published var alert: AlertBinder?
 
@@ -350,10 +349,7 @@ final class SendViewModel: ObservableObject {
             .assign(to: \.canDismiss, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.CombineLatest($updatingFees, sendModel.isSending)
-            .map { updatingFees, isSending in
-                updatingFees || isSending
-            }
+        sendModel.isSending
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
@@ -370,13 +366,6 @@ final class SendViewModel: ObservableObject {
                 return false
             }
             .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        $updatingFees
-            .sink { [weak self] updatingFees in
-                self?.sendDestinationViewModel.setUserInputDisabled(updatingFees)
-                self?.sendAmountViewModel.setUserInputDisabled(updatingFees)
-            }
             .store(in: &bag)
 
         sendModel
@@ -557,26 +546,13 @@ final class SendViewModel: ObservableObject {
     }
 
     private func updateFee(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) {
-        updatingFees = true
-
         feeUpdateSubscription = sendModel.updateFees()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                self?.updatingFees = false
-
-                guard case .failure = completion else { return }
-
-                self?.alert = SendAlertBuilder.makeFeeRetryAlert {
-                    self?.updateFee(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
-                }
-            } receiveValue: { [weak self] result in
-                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, feeUpdatePolicy: nil)
-            }
+            .sink()
     }
 
     private func cancelUpdatingFee() {
         feeUpdateSubscription = nil
-        updatingFees = false
     }
 
     private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, feeUpdatePolicy: FeeUpdatePolicy?) {
