@@ -62,9 +62,14 @@ extension Wallet2Config: UserWalletConfig {
 
     var isWalletsCreated: Bool {
         let validator = CurvesValidator(expectedCurves: createWalletCurves)
+
         /// It is allowed to skip backup In the case of demo cards and cards with `cardLinked` backup status .
         /// To handle cards with incorrectly created wallets in these cases, a check for backup status was added.
-        return validator.validate(card.walletCurves) && card.backupStatus == .noBackup
+        if card.backupStatus == .noBackup {
+            return validator.validate(card.walletCurves)
+        } else {
+            return !card.wallets.isEmpty
+        }
     }
 
     var canImportKeys: Bool {
