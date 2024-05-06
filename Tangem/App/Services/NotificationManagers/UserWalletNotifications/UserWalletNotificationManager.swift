@@ -67,9 +67,7 @@ final class UserWalletNotificationManager {
             )
         }
 
-        if userWalletModel.config.hasFeature(.multiCurrency) {
-            setupTangemExpressPromotionNotification(dismissAction: dismissAction)
-        }
+        setupPromotionNotification(dismissAction: dismissAction)
 
         inputs.append(contentsOf: factory.buildNotificationInputs(
             for: deprecationService.deprecationWarnings,
@@ -114,16 +112,15 @@ final class UserWalletNotificationManager {
         validateHashesCount()
     }
 
-    private func setupTangemExpressPromotionNotification(
-        dismissAction: @escaping NotificationView.NotificationAction
-    ) {
+    private func setupPromotionNotification(dismissAction: @escaping NotificationView.NotificationAction) {
         promotionUpdateTask?.cancel()
         promotionUpdateTask = Task { [weak self] in
             guard let self, !Task.isCancelled else {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(place: .main) else {
+            let name: PromotionProgramName = .travala
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main) else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
@@ -286,6 +283,8 @@ extension UserWalletNotificationManager: NotificationManager {
             switch event {
             case .changelly:
                 bannerPromotionService.hide(promotion: .changelly, on: .main)
+            case .travala:
+                bannerPromotionService.hide(promotion: .travala, on: .main)
             }
         }
 

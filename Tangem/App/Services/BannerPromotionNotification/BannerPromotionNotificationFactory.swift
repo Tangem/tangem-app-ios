@@ -12,11 +12,12 @@ import UIKit
 struct BannerPromotionNotificationFactory {
     func buildMainBannerNotificationInput(
         promotion: ActivePromotionInfo,
+        tapAction: NotificationView.NotificationAction? = nil,
         dismissAction: @escaping NotificationView.NotificationAction
     ) -> NotificationViewInput {
         let event = event(for: promotion, place: .main)
         return NotificationViewInput(
-            style: .plain,
+            style: tapAction.map { .tappable(action: $0) } ?? .plain,
             severity: .info,
             settings: .init(event: event, dismissAction: dismissAction)
         )
@@ -42,6 +43,8 @@ struct BannerPromotionNotificationFactory {
                 title: changellyTitle(place: place),
                 description: changellyDescription(promotion: promotion, place: place)
             )
+        case .travala:
+            return .travala
         }
     }
 

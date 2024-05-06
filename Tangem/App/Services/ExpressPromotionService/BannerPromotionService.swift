@@ -9,8 +9,7 @@
 import Foundation
 
 protocol BannerPromotionService {
-    func activePromotion(place: BannerPromotionPlace) async -> ActivePromotionInfo?
-
+    func activePromotion(promotion: PromotionProgramName, on place: BannerPromotionPlace) async -> ActivePromotionInfo?
     func isHidden(promotion: PromotionProgramName, on place: BannerPromotionPlace) -> Bool
     func hide(promotion: PromotionProgramName, on place: BannerPromotionPlace)
 }
@@ -37,5 +36,8 @@ enum BannerPromotionPlace: String, Hashable {
 }
 
 enum PromotionProgramName: String, Hashable {
+    // The promotion has ended
     case changelly
+    // Estimated dates 13/05 - 13/06
+    case travala
 }

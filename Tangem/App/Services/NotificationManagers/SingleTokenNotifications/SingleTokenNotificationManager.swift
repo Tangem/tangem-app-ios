@@ -138,7 +138,7 @@ final class SingleTokenNotificationManager {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(place: .tokenDetails) else {
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: .changelly, on: .tokenDetails) else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
@@ -246,6 +246,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         case .changelly:
             Analytics.log(.swapPromoButtonClose)
             bannerPromotionService.hide(promotion: .changelly, on: .tokenDetails)
+        case .travala:
+            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
         }
 
         notificationInputsSubject.value.removeAll(where: { $0.id == id })

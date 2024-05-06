@@ -17,8 +17,7 @@ class CommonBannerPromotionService {
 // MARK: - PromotionService
 
 extension CommonBannerPromotionService: BannerPromotionService {
-    func activePromotion(place: BannerPromotionPlace) async -> ActivePromotionInfo? {
-        let promotion = PromotionProgramName.changelly
+    func activePromotion(promotion: PromotionProgramName, on place: BannerPromotionPlace) async -> ActivePromotionInfo? {
         guard !isHidden(promotion: promotion, on: place) else {
             return nil
         }
