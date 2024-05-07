@@ -56,10 +56,10 @@ class ExpressNotificationManager {
             notificationInputsSubject.value = []
 
         case .previewCEX(let preview, _):
-            notificationInputsSubject.value = []
-
-            setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: preview.subtractFee)
-            setupWithdrawalSuggestion(suggestion: preview.suggestion)
+            notificationInputsSubject.value = [
+                setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: preview.subtractFee),
+                setupWithdrawalSuggestion(suggestion: preview.suggestion),
+            ].compactMap { $0 }
         }
     }
 
@@ -167,17 +167,14 @@ class ExpressNotificationManager {
         notificationInputsSubject.value = [notification]
     }
 
-    private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) {
-        let event = ExpressNotificationEvent.feeWillBeSubtractFromSendingAmount
-
+    private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) -> NotificationViewInput? {
         guard subtractFee > 0 else {
-            notificationInputsSubject.value.removeAll(where: { $0.settings.event.id == event.id })
-            return
+            return nil
         }
 
-        let factory = NotificationsFactory()
-        let notification = factory.buildNotificationInput(for: event)
-        notificationInputsSubject.value.appendIfNotContains(notification)
+        let event = ExpressNotificationEvent.feeWillBeSubtractFromSendingAmount
+        let notification = NotificationsFactory().buildNotificationInput(for: event)
+        return notification
     }
 
     private func makeNotEnoughFeeForTokenTx(sender: WalletModel) -> ExpressNotificationEvent? {
@@ -192,10 +189,10 @@ class ExpressNotificationManager {
         )
     }
 
-    private func setupWithdrawalSuggestion(suggestion: WithdrawalSuggestion?) {
+    private func setupWithdrawalSuggestion(suggestion: WithdrawalSuggestion?) -> NotificationViewInput? {
         switch suggestion {
         case .none:
-            break
+            return nil
         case .feeIsTooHigh(let reduceAmountBy):
             guard let interactor = expressInteractor else { return }
 
@@ -208,7 +205,7 @@ class ExpressNotificationManager {
             let notification = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
                 self?.delegate?.didTapNotificationButton(with: id, action: actionType)
             }
-            notificationInputsSubject.value.appendIfNotContains(notification)
+            return notification
         }
     }
 }
