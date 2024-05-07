@@ -10,6 +10,16 @@ import Foundation
 import SwiftUI
 
 enum SendAlertBuilder {
+    static func makeDismissAlert(dismissAction: @escaping () -> Void) -> AlertBinder {
+        let dismissButton = Alert.Button.default(Text(Localization.commonOk), action: dismissAction)
+        return AlertBuilder.makeAlert(
+            title: "",
+            message: Localization.sendDismissMessage,
+            primaryButton: dismissButton,
+            secondaryButton: .cancel()
+        )
+    }
+
     static func makeFeeRetryAlert(retryAction: @escaping () -> Void) -> AlertBinder {
         let retryButton = Alert.Button.default(Text(Localization.commonRetry), action: retryAction)
         return AlertBuilder.makeAlert(

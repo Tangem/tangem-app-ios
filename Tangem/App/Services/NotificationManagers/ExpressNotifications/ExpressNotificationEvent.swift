@@ -24,7 +24,7 @@ enum ExpressNotificationEvent {
     case feeWillBeSubtractFromSendingAmount
     case existentialDepositWarning(blockchainName: String, amount: String)
     case dustAmount(minimumAmountText: String, minimumChangeText: String)
-    case withdrawalOptionalAmountChange(amount: Decimal, amountFormatted: String)
+    case withdrawalOptionalAmountChange(amount: Decimal, amountFormatted: String, blockchainName: String)
     case withdrawalMandatoryAmountChange(amount: Decimal, amountFormatted: String, blockchainName: String, maxUtxo: Int)
     case notEnoughReceivedAmountForReserve(amountFormatted: String)
 }
@@ -97,8 +97,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.warningExistentialDepositMessage(blockchainName, amount)
         case .dustAmount(let minimumAmountText, let minimumChangeText):
             return Localization.warningExpressDustMessage(minimumAmountText, minimumChangeText)
-        case .withdrawalOptionalAmountChange(_, let amount):
-            return Localization.sendNotificationHighFeeText(amount)
+        case .withdrawalOptionalAmountChange(_, let amount, let blockchainName):
+            return Localization.sendNotificationHighFeeText(amount, blockchainName)
         case .withdrawalMandatoryAmountChange(_, let amountFormatted, let blockchainName, let maxUtxo):
             return Localization.sendNotificationTransactionLimitText(blockchainName, maxUtxo, amountFormatted)
         }
@@ -189,7 +189,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .refresh
         case .verificationRequired, .cexOperationFailed:
             return .goToProvider
-        case .withdrawalOptionalAmountChange(let amount, let amountFormatted):
+        case .withdrawalOptionalAmountChange(let amount, let amountFormatted, _):
             return .reduceAmountBy(amount: amount, amountFormatted: amountFormatted)
         case .withdrawalMandatoryAmountChange(let amount, let amountFormatted, _, _):
             return .reduceAmountTo(amount: amount, amountFormatted: amountFormatted)

@@ -197,7 +197,14 @@ class ExpressNotificationManager {
         case .none:
             break
         case .feeIsTooHigh(let reduceAmountBy):
-            let event: ExpressNotificationEvent = .withdrawalOptionalAmountChange(amount: reduceAmountBy.value, amountFormatted: reduceAmountBy.string())
+            guard let interactor = expressInteractor else { return }
+
+            let sourceTokenItem = interactor.getSender().tokenItem
+            let event: ExpressNotificationEvent = .withdrawalOptionalAmountChange(
+                amount: reduceAmountBy.value,
+                amountFormatted: reduceAmountBy.string(),
+                blockchainName: sourceTokenItem.blockchain.displayName
+            )
             let notification = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
                 self?.delegate?.didTapNotificationButton(with: id, action: actionType)
             }

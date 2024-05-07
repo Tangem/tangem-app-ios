@@ -20,7 +20,7 @@ enum SendNotificationEvent {
     case customFeeTooHigh(orderOfMagnitude: Int)
     case customFeeTooLow
     case minimumAmount(value: String)
-    case withdrawalOptionalAmountChange(amount: Decimal, amountFormatted: String)
+    case withdrawalOptionalAmountChange(amount: Decimal, amountFormatted: String, blockchainName: String)
     case withdrawalMandatoryAmountChange(amount: Decimal, amountFormatted: String, blockchainName: String, maxUtxo: Int)
 }
 
@@ -74,8 +74,8 @@ extension SendNotificationEvent: NotificationEvent {
             return Localization.sendNotificationTransactionDelayText
         case .minimumAmount(let value):
             return Localization.sendNotificationInvalidMinimumAmountText(value, value)
-        case .withdrawalOptionalAmountChange(_, let amount):
-            return Localization.sendNotificationHighFeeText(amount)
+        case .withdrawalOptionalAmountChange(_, let amount, let blockchainName):
+            return Localization.sendNotificationHighFeeText(blockchainName, amount)
         case .withdrawalMandatoryAmountChange(_, let amountFormatted, let blockchainName, let maxUtxo):
             return Localization.sendNotificationTransactionLimitText(blockchainName, maxUtxo, amountFormatted)
         }
@@ -167,7 +167,7 @@ extension SendNotificationEvent {
             return .refreshFee
         case .feeExceedsBalance(let configuration):
             return .openFeeCurrency(currencySymbol: configuration.feeAmountTypeCurrencySymbol)
-        case .withdrawalOptionalAmountChange(let amount, let amountFormatted), .existentialDeposit(let amount, let amountFormatted):
+        case .withdrawalOptionalAmountChange(let amount, let amountFormatted, _), .existentialDeposit(let amount, let amountFormatted):
             return .reduceAmountBy(amount: amount, amountFormatted: amountFormatted)
         case .withdrawalMandatoryAmountChange(let amount, let amountFormatted, _, _):
             return .reduceAmountTo(amount: amount, amountFormatted: amountFormatted)

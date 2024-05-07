@@ -39,7 +39,7 @@ struct SendView: View {
         .background(backgroundColor.ignoresSafeArea())
         .animation(Constants.defaultAnimation, value: viewModel.step)
         .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
-        .interactiveDismissDisabled(!viewModel.canDismiss)
+        .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
     }
 
     private var pageContentTransition: AnyTransition {
@@ -61,11 +61,8 @@ struct SendView: View {
         if let title = viewModel.title {
             HStack {
                 HStack(spacing: 0) {
-                    Button(action: viewModel.dismiss) {
-                        Assets.crossBlack.image
-                            .renderingMode(.template)
-                            .foregroundColor(Colors.Icon.primary1)
-                    }
+                    Button(Localization.commonClose, action: viewModel.dismiss)
+                        .foregroundColor(Colors.Text.primary1)
 
                     Spacer()
                 }

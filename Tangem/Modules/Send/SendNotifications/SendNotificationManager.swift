@@ -101,12 +101,13 @@ class CommonSendNotificationManager: SendNotificationManager {
                 case .feeIsTooHigh(let newAmount):
                     let event = SendNotificationEvent.withdrawalOptionalAmountChange(
                         amount: newAmount.value,
-                        amountFormatted: newAmount.string()
+                        amountFormatted: newAmount.string(),
+                        blockchainName: tokenItem.blockchain.displayName
                     )
                     updateEventVisibility(true, event: event)
                 case nil:
                     let events = [
-                        SendNotificationEvent.withdrawalOptionalAmountChange(amount: .zero, amountFormatted: ""),
+                        SendNotificationEvent.withdrawalOptionalAmountChange(amount: .zero, amountFormatted: "", blockchainName: ""),
                     ]
                     for event in events {
                         updateEventVisibility(false, event: event)

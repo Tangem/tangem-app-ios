@@ -21,7 +21,7 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonType: SendMainButtonType
     @Published var mainButtonLoading: Bool = false
     @Published var mainButtonDisabled: Bool = false
-    @Published var canDismiss: Bool = false
+    @Published var updatingFees = false
     @Published var alert: AlertBinder?
 
     var title: String? {
@@ -51,6 +51,14 @@ final class SendViewModel: ObservableObject {
         case .amount, .fee, .summary, .finish:
             return false
         }
+    }
+
+    var shouldShowDismissAlert: Bool {
+        if case .finish = step {
+            return false
+        }
+
+        return didReachSummaryScreen
     }
 
     let sendAmountViewModel: SendAmountViewModel
@@ -245,7 +253,13 @@ final class SendViewModel: ObservableObject {
             .valid: .affirmativeOrNegative(for: !mainButtonDisabled),
         ])
 
-        coordinator?.dismiss()
+        if shouldShowDismissAlert {
+            alert = SendAlertBuilder.makeDismissAlert { [coordinator] in
+                coordinator?.dismiss()
+            }
+        } else {
+            coordinator?.dismiss()
+        }
     }
 
     func next() {
@@ -331,25 +345,10 @@ final class SendViewModel: ObservableObject {
     }
 
     private func bind() {
-        Publishers.CombineLatest3($step, sendModel.amountPublisher, sendModel.isSending)
-            .map { step, amount, isSending in
-                if isSending {
-                    return false
-                }
-
-                switch step {
-                case .destination, .fee, .summary:
-                    return false
-                case .amount:
-                    return amount == nil
-                case .finish:
-                    return true
-                }
+        Publishers.CombineLatest($updatingFees, sendModel.isSending)
+            .map { updatingFees, isSending in
+                updatingFees || isSending
             }
-            .assign(to: \.canDismiss, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        sendModel.isSending
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
@@ -599,7 +598,7 @@ final class SendViewModel: ObservableObject {
 
         DispatchQueue.main.async {
             self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
-            self.showTransactionButtons = step.isFinish
+            self.showTransactionButtons = self.sendModel.transactionURL != nil
             self.step = step
         }
     }

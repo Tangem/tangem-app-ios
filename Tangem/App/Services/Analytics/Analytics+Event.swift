@@ -102,7 +102,7 @@ extension Analytics {
         case sendTransactionSentScreenOpened = "[Token / Send] Transaction Sent Screen Opened"
         case sendButtonShare = "[Token / Send] Button - Share"
         case sendButtonExplore = "[Token / Send] Button - Explore"
-        case sendNoticeTransactionDelaysArePossible = "[Token / Send] Notice - Transaction Delays Are Possible."
+        case sendNoticeTransactionDelaysArePossible = "[Token / Send] Notice - Transaction Delays Are Possible"
         case sendErrorTransactionRejected = "[Token / Send] Error - Transaction Rejected"
         case sendButtonClose = "[Token / Send] Button - Close"
 

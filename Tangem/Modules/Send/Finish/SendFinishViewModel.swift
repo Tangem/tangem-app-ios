@@ -32,13 +32,10 @@ class SendFinishViewModel: ObservableObject {
     let amountSummaryViewData: SendAmountSummaryViewData?
     let feeSummaryViewData: SendFeeSummaryViewModel?
 
-    private let transactionURL: URL
-
     init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo) {
         guard
             let destinationText = input.destinationText,
             let transactionTime = input.transactionTime,
-            let transactionURL = input.transactionURL,
             let feeValue = input.feeValue
         else {
             return nil
@@ -66,7 +63,6 @@ class SendFinishViewModel: ObservableObject {
         formatter.dateStyle = .long
         formatter.timeStyle = .short
         self.transactionTime = formatter.string(from: transactionTime)
-        self.transactionURL = transactionURL
 
         self.addressTextViewHeightModel = addressTextViewHeightModel
     }

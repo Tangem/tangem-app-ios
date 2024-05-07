@@ -119,9 +119,10 @@ struct SendSummaryView: View {
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
-                    .padding(.bottom, bottomSpacing + 14)
                     .visible(viewModel.showTransactionDescription)
             }
+
+            FixedSpacer(height: bottomSpacing)
         }
         .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .alert(item: $viewModel.alert) { $0.alert }
