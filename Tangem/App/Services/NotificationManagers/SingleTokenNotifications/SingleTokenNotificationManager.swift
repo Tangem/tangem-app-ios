@@ -143,12 +143,16 @@ final class SingleTokenNotificationManager {
                 return
             }
 
-            let input = BannerPromotionNotificationFactory().buildTokenBannerNotificationInput(
+            let factory = BannerPromotionNotificationFactory()
+            let button = factory.buildNotificationButton(actionType: .exchange) { [weak self] id, actionType in
+                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                self?.dismissNotification(with: id)
+            }
+
+            let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
-                buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
-                    self?.dismissNotification(with: id)
-                }, dismissAction: { [weak self] id in
+                button: button,
+                dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
                 }
             )

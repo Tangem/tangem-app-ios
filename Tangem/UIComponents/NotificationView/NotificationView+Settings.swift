@@ -83,8 +83,12 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .changellyPromotion, .travalaPromotion: // TODO:
+            case .changellyPromotion:
                 Assets.swapBannerBackground.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            case .travalaPromotion:
+                Assets.travalaBannerBackground.image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
@@ -94,7 +98,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Icon.inactive
-            case .changellyPromotion, .travalaPromotion: // TODO:
+            case .changellyPromotion, .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -103,7 +107,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.primary1
-            case .changellyPromotion, .travalaPromotion: // TODO:
+            case .changellyPromotion, .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }

@@ -48,7 +48,8 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
             )
         case .travala:
             return .init(
-                iconType: .image(Assets.swapBannerIcon.image), // TODO:
+                iconType: .image(Assets.travalaBannerIcon.image),
+                color: .black.opacity(0.01),
                 size: CGSize(bothDimensions: 34)
             )
         }

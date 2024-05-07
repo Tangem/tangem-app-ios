@@ -10,27 +10,21 @@ import Foundation
 import UIKit
 
 struct BannerPromotionNotificationFactory {
-    func buildMainBannerNotificationInput(
-        promotion: ActivePromotionInfo,
-        tapAction: NotificationView.NotificationAction? = nil,
-        dismissAction: @escaping NotificationView.NotificationAction
-    ) -> NotificationViewInput {
-        let event = event(for: promotion, place: .main)
-        return NotificationViewInput(
-            style: tapAction.map { .tappable(action: $0, withChevron: false) } ?? .plain,
-            severity: .info,
-            settings: .init(event: event, dismissAction: dismissAction)
-        )
+    func buildNotificationButton(
+        actionType: NotificationButtonActionType,
+        action: @escaping NotificationView.NotificationButtonTapAction
+    ) -> NotificationView.NotificationButton {
+        NotificationView.NotificationButton(action: action, actionType: actionType, isWithLoader: false)
     }
 
-    func buildTokenBannerNotificationInput(
+    func buildBannerNotificationInput(
         promotion: ActivePromotionInfo,
-        buttonAction: @escaping NotificationView.NotificationButtonTapAction,
+        button: NotificationView.NotificationButton?,
         dismissAction: @escaping NotificationView.NotificationAction
     ) -> NotificationViewInput {
         let event = event(for: promotion, place: .tokenDetails)
         return NotificationViewInput(
-            style: .withButtons([.init(action: buttonAction, actionType: .exchange, isWithLoader: false)]),
+            style: button.map { .withButtons([$0]) } ?? .plain,
             severity: .info,
             settings: .init(event: event, dismissAction: dismissAction)
         )

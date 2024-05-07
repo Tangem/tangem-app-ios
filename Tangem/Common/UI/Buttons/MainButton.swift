@@ -146,6 +146,7 @@ extension MainButton {
         case primary
         case secondary
         case exchangePromotionWhite
+        case whiteTransparent
 
         func iconColor(isDisabled: Bool) -> Color {
             if isDisabled {
@@ -157,7 +158,7 @@ extension MainButton {
                 return Colors.Icon.primary2
             case .secondary:
                 return Colors.Icon.primary1
-            case .exchangePromotionWhite:
+            case .exchangePromotionWhite, .whiteTransparent:
                 return Colors.Text.expressPromotionButton
             }
         }
@@ -181,7 +182,7 @@ extension MainButton {
                 return Colors.Text.primary2
             case .secondary:
                 return Colors.Text.primary1
-            case .exchangePromotionWhite:
+            case .exchangePromotionWhite, .whiteTransparent:
                 return Colors.Text.expressPromotionButton
             }
         }
@@ -194,7 +195,7 @@ extension MainButton {
             switch self {
             case .primary:
                 return Colors.Text.primary2
-            case .secondary, .exchangePromotionWhite:
+            case .secondary, .exchangePromotionWhite, .whiteTransparent:
                 return Colors.Text.primary1
             }
         }
@@ -211,6 +212,8 @@ extension MainButton {
                 return Colors.Button.secondary
             case .exchangePromotionWhite:
                 return Colors.Button.expressPromotion
+            case .whiteTransparent:
+                return Color.white.opacity(0.3)
             }
         }
 
