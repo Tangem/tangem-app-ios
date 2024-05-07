@@ -544,7 +544,7 @@ final class SendViewModel: ObservableObject {
         }
     }
 
-    private func updateFee(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) {
+    private func updateFee() {
         feeUpdateSubscription = sendModel.updateFees()
             .receive(on: DispatchQueue.main)
             .sink()
@@ -564,20 +564,24 @@ final class SendViewModel: ObservableObject {
         }
     }
 
+    private func hideKeyboard(nextStep: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) {
+        keyboardVisibilityService.hideKeyboard { [weak self] in
+            // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.openStep(nextStep, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
+            }
+        }
+    }
+
     private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
-        let hideKeyboard = (keyboardVisibilityService.keyboardVisible && !step.opensKeyboardByDefault)
+        if updateFee {
+            self.updateFee()
+            hideKeyboard(nextStep: step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
+            return
+        }
 
-        if updateFee || hideKeyboard {
-            if updateFee {
-                self.updateFee(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
-            }
-
-            keyboardVisibilityService.hideKeyboard { [weak self] in
-                // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
-                }
-            }
+        if keyboardVisibilityService.keyboardVisible, !step.opensKeyboardByDefault {
+            hideKeyboard(nextStep: step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
             return
         }
 
