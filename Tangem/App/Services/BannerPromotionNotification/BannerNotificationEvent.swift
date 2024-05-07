@@ -15,7 +15,7 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
     var title: NotificationView.Title {
         switch self {
         case .travala:
-            return .string("Book your holidays with Tangem and pay in crypto")
+            return .string(Localization.mainTravalaPromotionTitle)
         case .changelly(let title, _):
             return title
         }
@@ -26,7 +26,7 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
         case .changelly(_, let description):
             return description
         case .travala:
-            return "Save 50 USDT while booking via our partner Travala"
+            return Localization.mainTravalaPromotionDescription
         }
     }
 

@@ -17,7 +17,7 @@ struct BannerPromotionNotificationFactory {
     ) -> NotificationViewInput {
         let event = event(for: promotion, place: .main)
         return NotificationViewInput(
-            style: tapAction.map { .tappable(action: $0) } ?? .plain,
+            style: tapAction.map { .tappable(action: $0, withChevron: false) } ?? .plain,
             severity: .info,
             settings: .init(event: event, dismissAction: dismissAction)
         )
