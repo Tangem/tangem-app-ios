@@ -137,10 +137,7 @@ class CommonSendFiatCryptoAdapter: SendFiatCryptoAdapter {
             maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
             roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
         )
-        return formatter.formatFiatBalance(
-            amount,
-            formattingOptions: fiatFormattingOptions
-        )
+        return formatter.formatFiatBalance(amount, formattingOptions: .default)
     }
 }
 

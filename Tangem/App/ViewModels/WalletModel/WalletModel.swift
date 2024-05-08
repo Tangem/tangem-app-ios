@@ -141,7 +141,7 @@ class WalletModel {
             return BalanceFormatter.defaultEmptyBalanceString
         }
 
-        return formatter.formatFiatBalance(rate, formattingOptions: .defaultFiatFormattingOptions)
+        return formatter.formatFiatBalance(rate, formattingOptions: .defaultLowPriceValueOptions)
     }
 
     /// Quotes can't be fetched for custom tokens.

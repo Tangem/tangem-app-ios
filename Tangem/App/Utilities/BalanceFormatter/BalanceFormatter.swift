@@ -63,8 +63,12 @@ struct BalanceFormatter {
     ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
     ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatFiatBalance(_ value: Decimal?, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
-        return formatFiatBalance(value, currencyCode: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
+    func formatFiatBalance(_ value: Decimal?, formattingOptions: FiatBalanceFormattingOptions = .defaultLowPriceValueOptions) -> String {
+        return formatFiatBalance(
+            value,
+            currencyCode: AppSettings.shared.selectedCurrencyCode,
+            formattingOptions: formattingOptions.options(with: value)
+        )
     }
 
     /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
@@ -74,10 +78,10 @@ struct BalanceFormatter {
     ///   - numericCurrencyCode: Numeric currency code according to ISO4217. If failed to find numeric currency code will be used as number in formatted string
     ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatFiatBalance(_ value: Decimal?, numericCurrencyCode: Int, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
+    func formatFiatBalance(_ value: Decimal?, numericCurrencyCode: Int, formattingOptions: FiatBalanceFormattingOptions = .defaultLowPriceValueOptions) -> String {
         let iso4217Converter = ISO4217CodeConverter.shared
         let code = iso4217Converter.convertToStringCode(numericCode: numericCurrencyCode) ?? "???"
-        return formatFiatBalance(value, currencyCode: code, formattingOptions: formattingOptions)
+        return formatFiatBalance(value, currencyCode: code, formattingOptions: formattingOptions.options(with: value))
     }
 
     /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
