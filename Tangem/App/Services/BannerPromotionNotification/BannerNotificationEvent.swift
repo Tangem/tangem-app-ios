@@ -9,8 +9,8 @@
 import Foundation
 
 enum BannerNotificationEvent: Hashable, NotificationEvent {
-    case changelly(title: NotificationView.Title, description: String?)
-    case travala
+    case changelly(title: NotificationView.Title, description: String)
+    case travala(description: String)
 
     var title: NotificationView.Title {
         switch self {
@@ -25,8 +25,8 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
         switch self {
         case .changelly(_, let description):
             return description
-        case .travala:
-            return Localization.mainTravalaPromotionDescription
+        case .travala(let description):
+            return description
         }
     }
 
@@ -49,7 +49,6 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
         case .travala:
             return .init(
                 iconType: .image(Assets.travalaBannerIcon.image),
-                color: .black.opacity(0.01),
                 size: CGSize(bothDimensions: 34)
             )
         }

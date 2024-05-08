@@ -47,8 +47,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.sendNotificationReduceBy(amountFormatted)
         case .reduceAmountTo(_, let amountFormatted):
             return Localization.sendNotificationReduceTo(amountFormatted)
-        case .bookNow: // TODO:
-            return "Book now"
+        case .bookNow:
+            return Localization.mainTravalaPromotionButton
         }
     }
 
@@ -67,7 +67,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         switch self {
         case .generateAddresses:
             return .primary
-        case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo, .bookNow:
+        case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo:
             return .secondary
         case .bookNow:
             return .whiteTransparent

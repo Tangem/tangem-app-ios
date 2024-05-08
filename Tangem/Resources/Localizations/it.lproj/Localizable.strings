@@ -261,7 +261,8 @@
 "main_swap_changelly_promotion_message" = "Enjoy %1$@ service fees on swaps via Changelly from February %2$@-%3$@";
 "main_swap_changelly_promotion_title" = "Swap with Changelly, %@ fees";
 "main_tokens" = "Tokens";
-"main_travala_promotion_description" = "Save 50 USDT while booking via our partner Travala";
+"main_travala_promotion_button" = "Book now";
+"main_travala_promotion_description" = "Save 50 USDT while booking via our partner Travala\n%1@ - %2@";
 "main_travala_promotion_title" = "Book your holidays with Tangem and pay in crypto";
 "manage_tokens_add" = "Add";
 "manage_tokens_edit" = "Edit";

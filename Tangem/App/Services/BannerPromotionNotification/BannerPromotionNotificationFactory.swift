@@ -38,7 +38,7 @@ struct BannerPromotionNotificationFactory {
                 description: changellyDescription(promotion: promotion, place: place)
             )
         case .travala:
-            return .travala
+            return .travala(description: travalaDescription(promotion: promotion))
         }
     }
 
@@ -64,7 +64,7 @@ struct BannerPromotionNotificationFactory {
         return .attributed(attributed)
     }
 
-    func changellyDescription(promotion: ActivePromotionInfo, place: BannerPromotionPlace) -> String? {
+    func changellyDescription(promotion: ActivePromotionInfo, place: BannerPromotionPlace) -> String {
         let percent = changellyZeroPercent()
         let formatter = DateFormatter()
         formatter.dateFormat = "dd"
@@ -83,6 +83,16 @@ struct BannerPromotionNotificationFactory {
                 formatter.string(from: promotion.timeline.end)
             )
         }
+    }
+
+    func travalaDescription(promotion: ActivePromotionInfo) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMMM"
+
+        return Localization.mainTravalaPromotionDescription(
+            formatter.string(from: promotion.timeline.start),
+            formatter.string(from: promotion.timeline.end)
+        )
     }
 
     func changellyZeroPercent() -> String {
