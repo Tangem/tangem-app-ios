@@ -120,15 +120,16 @@ final class UserWalletNotificationManager {
             }
 
             let name: PromotionProgramName = .travala
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main) else {
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main),
+                  let promotionLink = promotion.link else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
 
             let factory = BannerPromotionNotificationFactory()
-            let button = factory.buildNotificationButton(actionType: .bookNow) { [weak self] id, action in
+            let button = factory.buildNotificationButton(actionType: .bookNow(promotionLink: promotionLink)) { [weak self] id, action in
                 var parameters = BannerNotificationEvent.travala(description: "").analyticsParams
-                parameters[.action] = Analytics.ParameterValue.clicked
+                parameters[.action] = Analytics.ParameterValue.clicked.rawValue
                 Analytics.log(event: .promotionBannerClicked, params: parameters)
 
                 self?.delegate?.didTapNotificationButton(with: id, action: action)
@@ -295,7 +296,7 @@ extension UserWalletNotificationManager: NotificationManager {
                 bannerPromotionService.hide(promotion: .changelly, on: .main)
             case .travala:
                 var parameters = event.analyticsParams
-                parameters[.action] = Analytics.ParameterValue.closed
+                parameters[.action] = Analytics.ParameterValue.closed.rawValue
                 Analytics.log(event: .promotionBannerClicked, params: parameters)
 
                 bannerPromotionService.hide(promotion: .travala, on: .main)

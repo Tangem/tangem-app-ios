@@ -19,7 +19,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case exchange
     case reduceAmountBy(amount: Decimal, amountFormatted: String)
     case reduceAmountTo(amount: Decimal, amountFormatted: String)
-    case bookNow
+    case bookNow(promotionLink: URL)
 
     var id: Int { hashValue }
 

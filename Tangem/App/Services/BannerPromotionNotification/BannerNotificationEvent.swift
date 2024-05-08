@@ -65,14 +65,15 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
             return .promotionBannerAppeared
         }
     }
+
     var analyticsParams: [Analytics.ParameterKey: String] {
         switch self {
         case .changelly:
             return [:]
         case .travala:
             return [
-                .programName: Analytics.ParameterValue.travala,
-                .source: Analytics.ParameterValue.main
+                .programName: Analytics.ParameterValue.travala.rawValue,
+                .source: Analytics.ParameterValue.main.rawValue,
             ]
         }
     }

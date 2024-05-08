@@ -28,6 +28,7 @@ extension InjectedValues {
 struct ActivePromotionInfo: Hashable {
     let bannerPromotion: PromotionProgramName
     let timeline: Timeline
+    let link: URL?
 }
 
 enum BannerPromotionPlace: String, Hashable {

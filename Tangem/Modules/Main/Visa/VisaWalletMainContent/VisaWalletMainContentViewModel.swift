@@ -13,7 +13,7 @@ import TangemVisa
 
 protocol VisaWalletRoutable: AnyObject {
     func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo])
-    func openExplorer(at url: URL)
+    func openInSafari(url: URL)
     func openTransactionDetails(tokenItem: TokenItem, for record: VisaTransactionRecord)
 }
 
@@ -79,7 +79,7 @@ class VisaWalletMainContentViewModel: ObservableObject {
             return
         }
 
-        coordinator?.openExplorer(at: url)
+        coordinator?.openInSafari(url: url)
     }
 
     func exploreTransaction(with id: String) {

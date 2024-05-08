@@ -26,7 +26,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
             let promotionInfo = try await tangemApiService.expressPromotion(request: .init(programName: promotion.rawValue))
             let now = Date()
             if promotionInfo.all.status == .active, now < promotionInfo.all.timeline.end {
-                return .init(bannerPromotion: promotion, timeline: promotionInfo.all.timeline)
+                return .init(bannerPromotion: promotion, timeline: promotionInfo.all.timeline, link: promotionInfo.all.link)
             }
         } catch {
             AppLog.shared.debug("Check promotions catch error \(error)")
