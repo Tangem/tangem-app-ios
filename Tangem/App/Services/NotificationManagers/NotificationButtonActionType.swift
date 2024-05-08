@@ -65,12 +65,10 @@ enum NotificationButtonActionType: Identifiable, Hashable {
 
     var style: MainButton.Style {
         switch self {
-        case .generateAddresses:
+        case .generateAddresses, .bookNow:
             return .primary
         case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo:
             return .secondary
-        case .bookNow:
-            return .whiteTransparent
         case .exchange:
             return .exchangePromotionWhite
         }

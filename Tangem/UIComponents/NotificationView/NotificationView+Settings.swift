@@ -88,9 +88,11 @@ extension NotificationView {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             case .travalaPromotion:
-                Assets.travalaBannerBackground.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+                ZStack(alignment: .topLeading) {
+                    Color.black
+
+                    Assets.travalaBannerIcon.image
+                }
             }
         }
 

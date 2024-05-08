@@ -47,9 +47,11 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
                 size: CGSize(bothDimensions: 34)
             )
         case .travala:
+            // Just for hold the place. The icon will be on the background
             return .init(
-                iconType: .image(Assets.travalaBannerIcon.image),
-                size: CGSize(bothDimensions: 34)
+                iconType: .image(Assets.travalaBannerIcon.image.renderingMode(.template)),
+                color: .clear,
+                size: CGSize(bothDimensions: 60)
             )
         }
     }

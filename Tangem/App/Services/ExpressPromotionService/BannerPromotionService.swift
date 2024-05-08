@@ -38,6 +38,7 @@ enum BannerPromotionPlace: String, Hashable {
 
 enum PromotionProgramName: String, Hashable {
     // The promotion has ended
+    // Will be deleted: https://tangem.atlassian.net/browse/IOS-6831
     case changelly
     // Estimated dates 13/05 - 13/06
     case travala
