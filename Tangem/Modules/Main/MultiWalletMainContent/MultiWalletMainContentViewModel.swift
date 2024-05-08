@@ -343,6 +343,10 @@ extension MultiWalletMainContentViewModel {
         coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
     }
 
+    private func openTravalaPromotionURL() {
+        // TODO: Open URL
+    }
+
     private func openOrganizeTokens() {
         coordinator?.openOrganizeTokens(for: userWalletModel)
     }
@@ -389,6 +393,8 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             deriveEntriesWithoutDerivation()
         case .backupCard:
             startBackupProcess()
+        case .bookNow:
+            openTravalaPromotionURL()
         default:
             return
         }

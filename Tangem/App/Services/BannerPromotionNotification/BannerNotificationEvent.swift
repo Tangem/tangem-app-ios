@@ -56,7 +56,26 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
 
     var severity: NotificationView.Severity { .info }
     var isDismissable: Bool { true }
-    var analyticsEvent: Analytics.Event? { nil }
-    var analyticsParams: [Analytics.ParameterKey: String] { [:] }
+
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .changelly:
+            return nil
+        case .travala:
+            return .promotionBannerAppeared
+        }
+    }
+    var analyticsParams: [Analytics.ParameterKey: String] {
+        switch self {
+        case .changelly:
+            return [:]
+        case .travala:
+            return [
+                .programName: Analytics.ParameterValue.travala,
+                .source: Analytics.ParameterValue.main
+            ]
+        }
+    }
+
     var isOneShotAnalyticsEvent: Bool { true }
 }
