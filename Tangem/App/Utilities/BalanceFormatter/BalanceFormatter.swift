@@ -104,8 +104,16 @@ struct BalanceFormatter {
             formatter.currencySymbol = "₽"
         }
 
-        let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
-        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
+        let minimum: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
+
+        if 0 < balance, balance < minimum {
+            let minimumFormatted = formatter.string(from: minimum as NSDecimalNumber) ?? "\(minimum) \(currencyCode)"
+            return "<\(minimumFormatted)"
+        } else {
+            let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
+            let formattedValue = formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
+            return formattedValue
+        }
     }
 
     /// Format fiat balance string for main page with different font for integer and fractional parts.
