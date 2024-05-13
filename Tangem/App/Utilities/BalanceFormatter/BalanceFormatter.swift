@@ -104,11 +104,12 @@ struct BalanceFormatter {
             formatter.currencySymbol = "₽"
         }
 
-        let minimum: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
+        let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
-        if 0 < balance, balance < minimum {
-            let minimumFormatted = formatter.string(from: minimum as NSDecimalNumber) ?? "\(minimum) \(currencyCode)"
-            return "<\(minimumFormatted)"
+        if 0 < balance, balance < lowestRepresentableValue {
+            let minimumFormatted = formatter.string(from: lowestRepresentableValue as NSDecimalNumber) ?? "\(lowestRepresentableValue) \(currencyCode)"
+            let nbsp = " "
+            return "<\(nbsp)\(minimumFormatted)"
         } else {
             let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
             let formattedValue = formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
