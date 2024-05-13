@@ -564,24 +564,22 @@ final class SendViewModel: ObservableObject {
         }
     }
 
-    private func hideKeyboard(nextStep: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) {
-        keyboardVisibilityService.hideKeyboard { [weak self] in
+    private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
+        let openStepAfterDelay = { [weak self] in
             // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.openStep(nextStep, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
+                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
             }
         }
-    }
 
-    private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
         if updateFee {
             self.updateFee()
-            hideKeyboard(nextStep: step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
+            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
             return
         }
 
         if keyboardVisibilityService.keyboardVisible, !step.opensKeyboardByDefault {
-            hideKeyboard(nextStep: step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
+            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
             return
         }
 
