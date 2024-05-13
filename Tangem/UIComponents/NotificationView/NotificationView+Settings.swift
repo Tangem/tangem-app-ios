@@ -48,7 +48,7 @@ extension NotificationView {
     }
 
     enum Style: Equatable {
-        case tappable(action: NotificationAction, withChevron: Bool = true)
+        case tappable(action: NotificationAction)
         case withButtons([NotificationButton])
         case plain
 
