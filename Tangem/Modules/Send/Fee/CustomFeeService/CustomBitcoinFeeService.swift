@@ -88,7 +88,7 @@ class CustomBitcoinFeeService {
 
 extension CustomBitcoinFeeService: CustomFeeService {
     var customFeeDescription: String? {
-        nil
+        Localization.sendBitcoinCustomFeeFooter
     }
 
     var readOnlyCustomFee: Bool {

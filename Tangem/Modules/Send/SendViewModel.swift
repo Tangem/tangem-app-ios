@@ -666,7 +666,7 @@ final class SendViewModel: ObservableObject {
     private func openNetworkCurrency() {
         guard
             let networkCurrencyWalletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
-                $0.tokenItem == .blockchain(walletModel.tokenItem.blockchainNetwork) && $0.blockchainNetwork == walletModel.blockchainNetwork
+                $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
             })
         else {
             assertionFailure("Network currency WalletModel not found")

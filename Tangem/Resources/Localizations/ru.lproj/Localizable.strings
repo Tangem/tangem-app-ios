@@ -91,6 +91,7 @@
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
 "common_network_fee_title" = "Сетевая комиссия";
+"common_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "common_next" = "Далее";
 "common_no" = "Нет";
 "common_no_address" = "Нет адреса";
@@ -423,12 +424,14 @@
 "send_alert_transaction_failed_text" = "Причина: %1$@\nКод: %2$@";
 "send_alert_transaction_failed_title" = "Транзакция не выполнена";
 "send_amount_label" = "Сумма";
+"send_bitcoin_custom_fee_footer" = "Вы можете установить комиссию за транзакцию, изменив значение в поле Satoshi per vByte.";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_hint_address" = "Адрес";
 "send_destination_tag_field" = "Код назначения";
 "send_dismiss_message" = "Are you sure you want to leave this page? Any changes made will be lost.";
 "send_enter_address_field" = "Введите адрес";
 "send_error_address_same_as_wallet" = "Адрес совпадает с адресом кошелька";
+"send_evm_custom_fee_footer" = "Комиссия, которая будет взята за вашу транзакцию. Вы можете выставить своё собственное значение.";
 "send_extras_error_invalid_destination_tag" = "Недопустимый Tag. Он не будет добавлен в транзакцию.";
 "send_extras_hint_destination_tag" = "Tag";
 "send_extras_hint_memo" = "Memo";
@@ -446,9 +449,7 @@
 "send_max_amount" = "Всё";
 "send_max_amount_label" = "Максимальная сумма";
 "send_max_fee" = "Комиссия не превысит ";
-"send_max_fee_footer" = "Комиссия, которая будет взята за вашу транзакцию. Вы можете выставить своё собственное значение.";
 "send_memo_destination_tag_error" = "Допустим ввод только цифр";
-"send_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "send_network_fee_warning_title" = "Покрытие сетевой комиссии";
 "send_notification_exceed_balance_text" = "Недостаточно средств для перевода, так как сумма комиссии и сумма перевода в совокупности больше имеющегося баланса";
 "send_notification_exceed_balance_title" = "Недостаточно средств";
@@ -515,7 +516,6 @@
 "swapping_give_permission" = "Дать разрешение";
 "swapping_high_price_impact_description" = "Обмен этой суммы выбранных токенов может вызвать значительные колебания цены и уменьшить получаемую сумму.";
 "swapping_insufficient_funds" = "Недостаточно средств";
-"swapping_network_fee_warning_content" = "Сумма отправки будет уменьшена для покрытия выбранного уровня комиссии";
 "swapping_permission_buttons_approve" = "Подтвердить";
 "swapping_permission_current_transaction" = "Текущая транзакция";
 "swapping_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для обмена.";

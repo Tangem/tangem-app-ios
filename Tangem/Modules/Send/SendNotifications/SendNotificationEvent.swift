@@ -15,7 +15,7 @@ enum SendNotificationEvent {
     case totalExceedsBalance
     // When fee currency is different
     case feeExceedsBalance(configuration: TransactionSendAvailabilityProvider.SendingRestrictions.NotEnoughFeeConfiguration)
-    case feeWillBeSubtractFromSendingAmount
+    case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
     case existentialDeposit(amount: Decimal, amountFormatted: String)
     case customFeeTooHigh(orderOfMagnitude: Int)
     case customFeeTooLow
@@ -32,7 +32,7 @@ extension SendNotificationEvent: NotificationEvent {
         case .totalExceedsBalance:
             return .string(Localization.sendNotificationExceedBalanceTitle)
         case .feeExceedsBalance(let configuration):
-            return .string(Localization.warningSendBlockedFundsForFeeTitle(configuration.networkName))
+            return .string(Localization.warningSendBlockedFundsForFeeTitle(configuration.feeAmountTypeName))
         case .feeWillBeSubtractFromSendingAmount:
             return .string(Localization.sendNetworkFeeWarningTitle)
         case .existentialDeposit:
@@ -56,8 +56,8 @@ extension SendNotificationEvent: NotificationEvent {
             return Localization.sendFeeUnreachableErrorText
         case .totalExceedsBalance:
             return Localization.sendNotificationExceedBalanceText
-        case .feeWillBeSubtractFromSendingAmount:
-            return Localization.swappingNetworkFeeWarningContent
+        case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
+            return Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
         case .feeExceedsBalance(let configuration):
             return Localization.warningSendBlockedFundsForFeeMessage(
                 configuration.transactionAmountTypeName,
