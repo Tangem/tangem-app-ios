@@ -75,7 +75,9 @@ private struct TextViewWrapper: UIViewRepresentable {
 
         // @State members of the SwiftUI view cannot be updated synchronously
         DispatchQueue.main.async {
-            uiView.attributedText = newAttributedText
+            if uiView.attributedText.string != newAttributedText.string {
+                uiView.attributedText = newAttributedText
+            }
             uiView.textColor = color
 
             showPlaceholder = text.isEmpty

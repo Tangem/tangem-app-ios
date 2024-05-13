@@ -168,15 +168,23 @@ class ExpressNotificationManager {
     }
 
     private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) {
-        let event = ExpressNotificationEvent.feeWillBeSubtractFromSendingAmount
-
-        guard subtractFee > 0 else {
-            notificationInputsSubject.value.removeAll(where: { $0.settings.event.id == event.id })
+        guard let interactor = expressInteractor, subtractFee > 0 else {
             return
         }
 
-        let factory = NotificationsFactory()
-        let notification = factory.buildNotificationInput(for: event)
+        let feeTokenItem = interactor.getSender().feeTokenItem
+        let feeFiatValue = BalanceConverter().convertToFiat(value: subtractFee, from: feeTokenItem.currencyId ?? "")
+
+        let formatter = BalanceFormatter()
+        let cryptoAmountFormatted = formatter.formatCryptoBalance(subtractFee, currencyCode: feeTokenItem.currencySymbol)
+        let fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+        let event = ExpressNotificationEvent.feeWillBeSubtractFromSendingAmount(
+            cryptoAmountFormatted: cryptoAmountFormatted,
+            fiatAmountFormatted: fiatAmountFormatted
+        )
+
+        let notification = NotificationsFactory().buildNotificationInput(for: event)
         notificationInputsSubject.value.appendIfNotContains(notification)
     }
 

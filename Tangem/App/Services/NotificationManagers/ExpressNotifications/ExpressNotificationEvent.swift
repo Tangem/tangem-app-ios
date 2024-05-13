@@ -21,7 +21,7 @@ enum ExpressNotificationEvent {
     case noDestinationTokens(sourceTokenName: String)
     case verificationRequired
     case cexOperationFailed
-    case feeWillBeSubtractFromSendingAmount
+    case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
     case existentialDepositWarning(blockchainName: String, amount: String)
     case dustAmount(minimumAmountText: String, minimumChangeText: String)
     case withdrawalOptionalAmountChange(amount: Decimal, amountFormatted: String, blockchainName: String)
@@ -91,8 +91,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationVerificationText
         case .cexOperationFailed:
             return Localization.expressExchangeNotificationFailedText
-        case .feeWillBeSubtractFromSendingAmount:
-            return Localization.swappingNetworkFeeWarningContent
+        case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
+            return Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
         case .existentialDepositWarning(let blockchainName, let amount):
             return Localization.warningExistentialDepositMessage(blockchainName, amount)
         case .dustAmount(let minimumAmountText, let minimumChangeText):
