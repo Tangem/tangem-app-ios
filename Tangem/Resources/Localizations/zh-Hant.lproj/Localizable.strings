@@ -428,7 +428,7 @@
 "send_date_format" = "%1$@, %2$@";
 "send_destination_hint_address" = "地址";
 "send_destination_tag_field" = "Destination Tag";
-"send_dismiss_message" = "Are you sure you want to leave this page? Any changes made will be lost.";
+"send_dismiss_message" = "Are you sure you want to close the send screen?";
 "send_enter_address_field" = "Enter address";
 "send_error_address_same_as_wallet" = "地址與錢包地址相同";
 "send_evm_custom_fee_footer" = "The fee that will be charged for your transaction. You can set your own value.";

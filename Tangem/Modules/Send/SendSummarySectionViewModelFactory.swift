@@ -35,7 +35,8 @@ struct SendSummarySectionViewModelFactory {
         var destinationViewTypes: [SendDestinationSummaryViewType] = []
 
         let addressCorners: UIRectCorner
-        if let (additionalFieldType, additionalFieldValue) = additionalField {
+        if let (additionalFieldType, additionalFieldValue) = additionalField,
+           !additionalFieldValue.isEmpty {
             addressCorners = [.topLeft, .topRight]
             destinationViewTypes.append(.additionalField(type: additionalFieldType, value: additionalFieldValue))
         } else {
