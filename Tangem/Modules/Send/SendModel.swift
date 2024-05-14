@@ -165,8 +165,16 @@ class SendModel {
 
         didSetCustomFee = true
         _customFee.send(customFee)
+
         if case .custom = selectedFeeOption {
             fee.send(customFee)
+        }
+
+        var feeValues = _feeValues.value
+        if feeValues[.custom]?.value != customFee,
+           let customFee {
+            feeValues[.custom] = .loaded(customFee)
+            _feeValues.send(feeValues)
         }
     }
 
