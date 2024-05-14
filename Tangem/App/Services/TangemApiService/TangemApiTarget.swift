@@ -29,6 +29,8 @@ struct TangemApiTarget: TargetType {
             return "/quotes"
         case .geo:
             return "/geo"
+        case .features:
+            return "/features"
         case .getUserWalletTokens(let key), .saveUserWalletTokens(let key, _):
             return "/user-tokens/\(key)"
         case .loadReferralProgramInfo(let userWalletId, _):
@@ -54,7 +56,7 @@ struct TangemApiTarget: TargetType {
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion:
+        case .rates, .currencies, .coins, .quotes, .geo, .features, .getUserWalletTokens, .loadReferralProgramInfo, .promotion:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -84,7 +86,7 @@ struct TangemApiTarget: TargetType {
             return .requestParameters(pageModel)
         case .quotes(let pageModel):
             return .requestParameters(pageModel)
-        case .currencies, .geo, .getUserWalletTokens:
+        case .currencies, .geo, .features, .getUserWalletTokens:
             return .requestPlain
         case .saveUserWalletTokens(_, let list):
             return .requestJSONEncodable(list)
@@ -142,6 +144,7 @@ extension TangemApiTarget {
         case coins(_ requestModel: CoinsList.Request)
         case quotes(_ requestModel: QuotesDTO.Request)
         case geo
+        case features
         case getUserWalletTokens(key: String)
         case saveUserWalletTokens(key: String, list: UserTokenList)
         case loadReferralProgramInfo(userWalletId: String, expectedAwardsLimit: Int)
@@ -173,7 +176,7 @@ extension TangemApiTarget {
 extension TangemApiTarget: CachePolicyProvider {
     var cachePolicy: URLRequest.CachePolicy {
         switch type {
-        case .geo:
+        case .geo, .features:
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy

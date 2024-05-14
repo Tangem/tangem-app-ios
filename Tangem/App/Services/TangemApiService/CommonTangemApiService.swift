@@ -26,6 +26,8 @@ class CommonTangemApiService {
 
     private let fallbackRegionCode = Locale.current.regionCode?.lowercased() ?? ""
     private var _geoIpRegionCode: String?
+    private let fallbackFeatures: [String: Bool] = [:]
+    private var _features: [String: Bool]?
     private var authData: TangemApiTarget.AuthData?
 
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
@@ -46,6 +48,10 @@ class CommonTangemApiService {
 extension CommonTangemApiService: TangemApiService {
     var geoIpRegionCode: String {
         return _geoIpRegionCode ?? fallbackRegionCode
+    }
+
+    var features: [String: Bool] {
+        return _features ?? fallbackFeatures
     }
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError> {
@@ -247,6 +253,16 @@ extension CommonTangemApiService: TangemApiService {
             .replaceError(with: fallbackRegionCode)
             .subscribe(on: DispatchQueue.global())
             .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        provider
+            .requestPublisher(TangemApiTarget(type: .features, authData: authData))
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(FeaturesResponse.self)
+            .map(Optional.some)
+            .replaceError(with: fallbackFeatures)
+            .subscribe(on: DispatchQueue.global())
+            .assign(to: \._features, on: self, ownership: .weak)
             .store(in: &bag)
 
         AppLog.shared.debug("CommonTangemApiService initialized")

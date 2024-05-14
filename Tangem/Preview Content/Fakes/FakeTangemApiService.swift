@@ -11,6 +11,7 @@ import Combine
 
 class FakeTangemApiService: TangemApiService {
     var geoIpRegionCode: String
+    var features: [String: Bool] = [:]
 
     init(geoIpRegionCode: String = "us") {
         self.geoIpRegionCode = geoIpRegionCode
