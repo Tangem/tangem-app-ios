@@ -32,7 +32,10 @@ class SendFinishViewModel: ObservableObject {
     let amountSummaryViewData: SendAmountSummaryViewData?
     let feeSummaryViewData: SendFeeSummaryViewModel?
 
-    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo) {
+    private let feeTypeAnalyticsParameter: Analytics.ParameterValue
+    private let walletInfo: SendWalletInfo
+
+    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, feeTypeAnalyticsParameter: Analytics.ParameterValue, walletInfo: SendWalletInfo) {
         guard
             let destinationText = input.destinationText,
             let transactionTime = input.transactionTime,
@@ -65,10 +68,15 @@ class SendFinishViewModel: ObservableObject {
         self.transactionTime = formatter.string(from: transactionTime)
 
         self.addressTextViewHeightModel = addressTextViewHeightModel
+        self.feeTypeAnalyticsParameter = feeTypeAnalyticsParameter
+        self.walletInfo = walletInfo
     }
 
     func onAppear() {
-        Analytics.log(.sendTransactionSentScreenOpened)
+        Analytics.log(event: .sendTransactionSentScreenOpened, params: [
+            .token: walletInfo.cryptoCurrencyCode,
+            .feeType: feeTypeAnalyticsParameter.rawValue,
+        ])
 
         withAnimation(SendView.Constants.defaultAnimation) {
             showHeader = true

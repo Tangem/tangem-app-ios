@@ -40,6 +40,7 @@ struct SendView: View {
         .animation(Constants.defaultAnimation, value: viewModel.step)
         .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
+        .scrollDismissesKeyboardCompat(true)
     }
 
     private var pageContentTransition: AnyTransition {
@@ -62,7 +63,8 @@ struct SendView: View {
             HStack {
                 HStack(spacing: 0) {
                     Button(Localization.commonClose, action: viewModel.dismiss)
-                        .foregroundColor(Colors.Text.primary1)
+                        .foregroundColor(viewModel.closeButtonColor)
+                        .disabled(viewModel.closeButtonDisabled)
 
                     Spacer()
                 }

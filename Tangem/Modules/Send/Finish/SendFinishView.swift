@@ -134,6 +134,7 @@ struct SendFinishView_Previews: PreviewProvider {
         input: SendFinishViewModelInputMock(),
         fiatCryptoValueProvider: SendFiatCryptoValueProviderMock(),
         addressTextViewHeightModel: .init(),
+        feeTypeAnalyticsParameter: .transactionFeeFixed,
         walletInfo: walletInfo
     )!
 
