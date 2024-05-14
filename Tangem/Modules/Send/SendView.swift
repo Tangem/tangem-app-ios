@@ -40,6 +40,7 @@ struct SendView: View {
         .animation(Constants.defaultAnimation, value: viewModel.step)
         .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
+        .scrollDismissesKeyboardCompat(true)
     }
 
     private var pageContentTransition: AnyTransition {
