@@ -106,7 +106,8 @@ struct BalanceFormatter {
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
-        if 0 < balance, balance < lowestRepresentableValue {
+        if formattingOptions.formatEpsilonAsLowestRepresentableValue,
+           0 < balance, balance < lowestRepresentableValue {
             let minimumFormatted = formatter.string(from: lowestRepresentableValue as NSDecimalNumber) ?? "\(lowestRepresentableValue) \(currencyCode)"
             let nbsp = " "
             return "<\(nbsp)\(minimumFormatted)"

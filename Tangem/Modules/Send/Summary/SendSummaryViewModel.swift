@@ -245,9 +245,15 @@ class SendSummaryViewModel: ObservableObject {
             totalInFiat = nil
         }
 
+        let formattingOptions = BalanceFormattingOptions(
+            minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
+            maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
+            formatEpsilonAsLowestRepresentableValue: true,
+            roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
+        )
         let formatter = BalanceFormatter()
-        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat)
+        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
+        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
 
         return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
     }

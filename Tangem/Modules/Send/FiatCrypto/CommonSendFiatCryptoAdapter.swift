@@ -119,6 +119,7 @@ class CommonSendFiatCryptoAdapter: SendFiatCryptoAdapter {
         let cryptoFormattingOption = BalanceFormattingOptions(
             minFractionDigits: minCryptoFractionDigits,
             maxFractionDigits: decimals,
+            formatEpsilonAsLowestRepresentableValue: false,
             roundingType: BalanceFormattingOptions.defaultCryptoFormattingOptions.roundingType
         )
         return formatter.formatCryptoBalance(
@@ -135,6 +136,7 @@ class CommonSendFiatCryptoAdapter: SendFiatCryptoAdapter {
         let fiatFormattingOptions = BalanceFormattingOptions(
             minFractionDigits: minFiatFractionDigits,
             maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
+            formatEpsilonAsLowestRepresentableValue: false,
             roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
         )
         return formatter.formatFiatBalance(

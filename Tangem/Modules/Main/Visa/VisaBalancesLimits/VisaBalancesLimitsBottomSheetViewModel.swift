@@ -32,7 +32,7 @@ class VisaBalancesLimitsBottomSheetViewModel: ObservableObject, Identifiable {
 
     private let emptyAmount = BalanceFormatter.defaultEmptyBalanceString
     private let formatter: BalanceFormatter = .init()
-    private let balanceFormattingOptions: BalanceFormattingOptions = .init(minFractionDigits: 2, maxFractionDigits: 2, roundingType: .default(roundingMode: .down, scale: 2))
+    private let balanceFormattingOptions: BalanceFormattingOptions = .init(minFractionDigits: 2, maxFractionDigits: 2, formatEpsilonAsLowestRepresentableValue: false, roundingType: .default(roundingMode: .down, scale: 2))
 
     init(balances: AppVisaBalances, limit: AppVisaLimit) {
         let tokenCurrencyCode = VisaUtilities().visaToken.symbol
