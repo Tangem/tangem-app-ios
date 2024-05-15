@@ -14,11 +14,11 @@ struct BalanceFormattingOptions {
     let formatEpsilonAsLowestRepresentableValue: Bool
     let roundingType: AmountRoundingType?
 
-    static var defaultFiatFormattingOptions: BalanceFormattingOptions {
+    static func defaultFiatFormattingOptions(formatEpsilonAsLowestRepresentableValue: Bool = false) -> BalanceFormattingOptions {
         .init(
             minFractionDigits: 2,
             maxFractionDigits: 2,
-            formatEpsilonAsLowestRepresentableValue: false,
+            formatEpsilonAsLowestRepresentableValue: formatEpsilonAsLowestRepresentableValue,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
     }
