@@ -170,11 +170,9 @@ class SendModel {
             fee.send(customFee)
         }
 
-        var feeValues = _feeValues.value
-        if feeValues[.custom]?.value != customFee,
+        if _feeValues.value[.custom]?.value != customFee,
            let customFee {
-            feeValues[.custom] = .loaded(customFee)
-            _feeValues.send(feeValues)
+            _feeValues.value[.custom] = .loaded(customFee)
         }
     }
 
