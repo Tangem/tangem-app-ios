@@ -138,17 +138,21 @@ final class SingleTokenNotificationManager {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(place: .tokenDetails) else {
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: .changelly, on: .tokenDetails) else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
 
-            let input = BannerPromotionNotificationFactory().buildTokenBannerNotificationInput(
+            let factory = BannerPromotionNotificationFactory()
+            let button = factory.buildNotificationButton(actionType: .exchange) { [weak self] id, actionType in
+                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                self?.dismissNotification(with: id)
+            }
+
+            let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
-                buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
-                    self?.dismissNotification(with: id)
-                }, dismissAction: { [weak self] id in
+                button: button,
+                dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
                 }
             )
@@ -246,6 +250,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         case .changelly:
             Analytics.log(.swapPromoButtonClose)
             bannerPromotionService.hide(promotion: .changelly, on: .tokenDetails)
+        case .travala:
+            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
         }
 
         notificationInputsSubject.value.removeAll(where: { $0.id == id })

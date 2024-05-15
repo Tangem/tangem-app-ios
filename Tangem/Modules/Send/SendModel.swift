@@ -644,13 +644,9 @@ extension SendModel: SendSummaryViewModelInput {
     var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> {
         _destinationAdditionalFieldText
             .map { [weak self] in
-                guard
-                    !$0.isEmpty,
-                    let additionalFields = self?.additionalFieldType
-                else {
-                    return nil
-                }
-                return (additionalFields, $0)
+                guard let additionalFieldType = self?.additionalFieldType else { return nil }
+
+                return (additionalFieldType, $0)
             }
             .eraseToAnyPublisher()
     }

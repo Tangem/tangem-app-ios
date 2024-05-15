@@ -9,6 +9,7 @@
 import Foundation
 
 struct DecimalNumberFormatter {
+    public var isDecimal: Bool { numberFormatter.maximumFractionDigits > 0 }
     public var decimalSeparator: Character { Character(numberFormatter.decimalSeparator) }
 
     private let numberFormatter: NumberFormatter
@@ -37,12 +38,13 @@ struct DecimalNumberFormatter {
             return ""
         }
 
-        // If string contains decimalSeparator will format it separately
-        if value.contains(decimalSeparator) {
-            return formatIntegerAndFractionSeparately(string: value)
+        let (beforeComma, afterComma) = separateStringByDecimalSeparator(string: value)
+
+        if isDecimal {
+            return formatInteger(value: beforeComma) + afterComma
         }
 
-        return formatInteger(value: value)
+        return formatInteger(value: beforeComma)
     }
 
     public func format(value: Decimal) -> String {
@@ -82,9 +84,9 @@ struct DecimalNumberFormatter {
 // MARK: - Private
 
 private extension DecimalNumberFormatter {
-    func formatIntegerAndFractionSeparately(string: String) -> String {
+    func separateStringByDecimalSeparator(string: String) -> (beforeComma: String, afterComma: String) {
         guard let commaIndex = string.firstIndex(of: decimalSeparator) else {
-            return string
+            return (beforeComma: string, afterComma: "")
         }
 
         let beforeComma = String(string[string.startIndex ..< commaIndex])
@@ -98,7 +100,7 @@ private extension DecimalNumberFormatter {
             afterComma = afterComma[afterComma.startIndex ... lastAcceptableIndex]
         }
 
-        return format(value: beforeComma) + afterComma
+        return (beforeComma: beforeComma, afterComma: String(afterComma))
     }
 
     /// In this case the NumberFormatter works fine ONLY with integer values

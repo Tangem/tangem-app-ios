@@ -19,6 +19,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case exchange
     case reduceAmountBy(amount: Decimal, amountFormatted: String)
     case reduceAmountTo(amount: Decimal, amountFormatted: String)
+    case bookNow(promotionLink: URL)
 
     var id: Int { hashValue }
 
@@ -46,6 +47,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.sendNotificationReduceBy(amountFormatted)
         case .reduceAmountTo(_, let amountFormatted):
             return Localization.sendNotificationReduceTo(amountFormatted)
+        case .bookNow:
+            return Localization.mainTravalaPromotionButton
         }
     }
 
@@ -55,14 +58,14 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return .trailing(Assets.tangemIcon)
         case .exchange:
             return .leading(Assets.exchangeMini)
-        case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo:
+        case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo, .bookNow:
             return nil
         }
     }
 
     var style: MainButton.Style {
         switch self {
-        case .generateAddresses:
+        case .generateAddresses, .bookNow:
             return .primary
         case .backupCard, .buyCrypto, .openFeeCurrency, .refresh, .refreshFee, .goToProvider, .reduceAmountBy, .reduceAmountTo:
             return .secondary

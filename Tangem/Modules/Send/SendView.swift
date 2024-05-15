@@ -40,6 +40,7 @@ struct SendView: View {
         .animation(Constants.defaultAnimation, value: viewModel.step)
         .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
+        .scrollDismissesKeyboardCompat(true)
     }
 
     private var pageContentTransition: AnyTransition {
@@ -62,7 +63,8 @@ struct SendView: View {
             HStack {
                 HStack(spacing: 0) {
                     Button(Localization.commonClose, action: viewModel.dismiss)
-                        .foregroundColor(Colors.Text.primary1)
+                        .foregroundColor(viewModel.closeButtonColor)
+                        .disabled(viewModel.closeButtonDisabled)
 
                     Spacer()
                 }
@@ -120,11 +122,11 @@ struct SendView: View {
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
-            SendDestinationView(namespace: namespace, viewModel: viewModel.sendDestinationViewModel, bottomSpacing: bottomGradientHeight)
+            SendDestinationView(namespace: namespace, viewModel: viewModel.sendDestinationViewModel, bottomButtonsHeight: bottomButtonsHeight)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .fee:
-            SendFeeView(namespace: namespace, viewModel: viewModel.sendFeeViewModel, bottomSpacing: bottomGradientHeight, bottomButtonsHeight: bottomButtonsHeight)
+            SendFeeView(namespace: namespace, viewModel: viewModel.sendFeeViewModel, bottomButtonsHeight: bottomButtonsHeight)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .summary:
@@ -193,6 +195,7 @@ struct SendView: View {
         LinearGradient(colors: [.clear, backgroundColor], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea()
             .frame(maxHeight: bottomGradientHeight)
+            .padding(.horizontal, 16)
             .allowsHitTesting(false)
     }
 }

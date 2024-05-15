@@ -46,8 +46,8 @@ extension SendType {
         switch self {
         case .send:
             return nil
-        case .sell(_, let destination, _):
-            return destination
+        case .sell(_, _, let tag):
+            return tag
         }
     }
 

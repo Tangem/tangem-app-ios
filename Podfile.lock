@@ -170,7 +170,7 @@ PODS:
   - SwiftCBOR (0.4.5)
   - SwiftDate (7.0.0)
   - SwiftyJSON (5.0.1)
-  - TangemSdk (3.9.0)
+  - TangemSdk (3.10.0)
   - TweetNacl (1.0.2)
   - WalletConnectSwiftV2 (1.8.4):
     - WalletConnectSwiftV2/WalletConnect (= 1.8.4)
@@ -227,7 +227,7 @@ DEPENDENCIES:
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem6`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-291`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-295`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.8.4`)
 
 SPEC REPOS:
@@ -286,7 +286,7 @@ EXTERNAL SOURCES:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-291
+    :tag: develop-295
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.8.4
@@ -312,7 +312,7 @@ CHECKOUT OPTIONS:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-291
+    :tag: develop-295
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.8.4
@@ -355,10 +355,10 @@ SPEC CHECKSUMS:
   SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
-  TangemSdk: c141ae9d17337c53d892142e94247225d59b5c09
+  TangemSdk: 4a188873f9dbed6340cca9ad6a010240af6df432
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: c1c2c2fbd0495860baf71515be1b943f0c5dce0c
 
-PODFILE CHECKSUM: b4ae8905fbc4973a255f46ad0cdc4c13867c80ee
+PODFILE CHECKSUM: c29cf2ff5fb52bcc056888970c771faf6a7ed0d9
 
 COCOAPODS: 1.15.2
