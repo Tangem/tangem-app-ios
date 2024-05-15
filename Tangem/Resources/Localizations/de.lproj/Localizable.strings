@@ -262,6 +262,9 @@
 "main_swap_changelly_promotion_message" = "Enjoy %1$@ service fees on swaps via Changelly from February %2$@-%3$@";
 "main_swap_changelly_promotion_title" = "Swap with Changelly, %@ fees";
 "main_tokens" = "Tokens";
+"main_travala_promotion_button" = "Book now";
+"main_travala_promotion_description" = "Save **$50** while booking via our partner Travala: **%1@ - %2@**";
+"main_travala_promotion_title" = "Book your holidays with Tangem and pay in crypto";
 "manage_tokens_add" = "Add";
 "manage_tokens_edit" = "Edit";
 "manage_tokens_list_header_title" = "Coin market cap";
@@ -475,7 +478,7 @@
 "send_recent_transactions" = "Recent";
 "send_recipient" = "Recipient";
 "send_recipient_address_error" = "Not a valid address";
-"send_recipient_address_footer" = "Ensure that you are sending funds to an %@ wallet address. Errors may result in the loss of your tokens";
+"send_recipient_address_footer" = "Ensure the receiving wallet address is on the %@ network to avoid losing your tokens";
 "send_recipient_label" = "Send to";
 "send_recipient_memo_footer" = "A Memo/Destination Tag is a unique ID for differentiating transactions sent to the same recipient on the same network. Caution: Omitting a memo may lead to misplaced funds";
 "send_recipient_wallets_title" = "My wallets";
@@ -484,7 +487,7 @@
 "send_sending" = "Sending...";
 "send_summary_tap_hint" = "Tap any field to change it";
 "send_summary_title" = "Send %@";
-"send_summary_transaction_description" = "You are sending %1$@ including a network fee of %2$@";
+"send_summary_transaction_description" = "You are sending **%1$@** including a network fee of %2$@";
 "send_title_currency_format" = "Sending %@";
 "send_total_label" = "Gesamt";
 "send_total_subtitle_asset_format" = "%1$@ und %2$@ werden gesendet";

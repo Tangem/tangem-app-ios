@@ -26,7 +26,7 @@ protocol SendDestinationViewModelInput {
     var blockchainNetwork: BlockchainNetwork { get }
 
     var additionalFieldType: SendAdditionalFields? { get }
-    var additionalFieldEmbeddedInAddress: AnyPublisher<Bool, Never> { get }
+    var canChangeAdditionalField: AnyPublisher<Bool, Never> { get }
 
     var currencySymbol: String { get }
     var walletAddresses: [String] { get }
@@ -118,7 +118,7 @@ class SendDestinationViewModel: ObservableObject {
                 style: .additionalField(name: name),
                 input: input.destinationAdditionalFieldTextPublisher,
                 isValidating: .just(output: false),
-                isDisabled: input.additionalFieldEmbeddedInAddress,
+                isDisabled: input.canChangeAdditionalField.map { !$0 }.eraseToAnyPublisher(),
                 addressTextViewHeightModel: .init(),
                 errorText: input.destinationAdditionalFieldError
             ) { [weak self] in

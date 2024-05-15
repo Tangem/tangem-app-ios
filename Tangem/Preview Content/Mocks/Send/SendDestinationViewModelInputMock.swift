@@ -43,7 +43,7 @@ class SendDestinationViewModelInputMock: SendDestinationViewModelInput {
         .memo
     }
 
-    var additionalFieldEmbeddedInAddress: AnyPublisher<Bool, Never> {
+    var canChangeAdditionalField: AnyPublisher<Bool, Never> {
         .just(output: true)
     }
 

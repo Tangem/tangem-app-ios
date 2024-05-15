@@ -17,8 +17,7 @@ class CommonBannerPromotionService {
 // MARK: - PromotionService
 
 extension CommonBannerPromotionService: BannerPromotionService {
-    func activePromotion(place: BannerPromotionPlace) async -> ActivePromotionInfo? {
-        let promotion = PromotionProgramName.changelly
+    func activePromotion(promotion: PromotionProgramName, on place: BannerPromotionPlacement) async -> ActivePromotionInfo? {
         guard !isHidden(promotion: promotion, on: place) else {
             return nil
         }
@@ -27,7 +26,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
             let promotionInfo = try await tangemApiService.expressPromotion(request: .init(programName: promotion.rawValue))
             let now = Date()
             if promotionInfo.all.status == .active, now < promotionInfo.all.timeline.end {
-                return .init(bannerPromotion: promotion, timeline: promotionInfo.all.timeline)
+                return .init(bannerPromotion: promotion, timeline: promotionInfo.all.timeline, link: promotionInfo.all.link)
             }
         } catch {
             AppLog.shared.debug("Check promotions catch error \(error)")
@@ -37,7 +36,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
         return nil
     }
 
-    func isHidden(promotion: PromotionProgramName, on place: BannerPromotionPlace) -> Bool {
+    func isHidden(promotion: PromotionProgramName, on place: BannerPromotionPlacement) -> Bool {
         switch place {
         case .main:
             return AppSettings.shared.mainPromotionDismissed.contains(promotion.rawValue)
@@ -46,7 +45,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
         }
     }
 
-    func hide(promotion: PromotionProgramName, on place: BannerPromotionPlace) {
+    func hide(promotion: PromotionProgramName, on place: BannerPromotionPlacement) {
         switch place {
         case .main:
             AppSettings.shared.mainPromotionDismissed.insert(promotion.rawValue)

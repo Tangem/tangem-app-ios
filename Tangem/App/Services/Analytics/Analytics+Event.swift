@@ -260,5 +260,10 @@ extension Analytics {
 
         case healthCheckPolkadotAccountReset = "[Token] Polkadot Account Reset"
         case healthCheckPolkadotImmortalTransactions = "[Token] Polkadot Immortal Transactions"
+
+        // MARK: - Promotion
+
+        case promotionBannerAppeared = "[Promotion] Notice - Promotion Banner"
+        case promotionBannerClicked = "[Promotion] Promo Banner Clicked"
     }
 }

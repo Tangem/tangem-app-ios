@@ -262,6 +262,9 @@
 "main_swap_changelly_promotion_message" = "Обменивайте свои токены с %1$@ комиссии провайдера через Changelly с %2$@ по %3$@ февраля.";
 "main_swap_changelly_promotion_title" = "Обмен с Changelly, %@ комиссии";
 "main_tokens" = "Токены";
+"main_travala_promotion_button" = "Забронировать";
+"main_travala_promotion_description" = "Оплатите его криптой и сэкономьте **50 долларов** через нашего партнера Travala: **%1@ - %2@**";
+"main_travala_promotion_title" = "Забронируйте отпуск с Tangem";
 "manage_tokens_add" = "Добавить";
 "manage_tokens_edit" = "Изменить";
 "manage_tokens_list_header_title" = "Рыночная капитализация";
@@ -475,7 +478,7 @@
 "send_recent_transactions" = "Последние";
 "send_recipient" = "Получатель";
 "send_recipient_address_error" = "Неверный адрес";
-"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов";
+"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов.";
 "send_recipient_label" = "Отправить";
 "send_recipient_memo_footer" = "Мемо/ Код назначения - это код, разделяющий транзакции к общему получателю в сети криптовалют. Внимание: отсутствие мемо может привести к потере средств.";
 "send_recipient_wallets_title" = "Мои кошельки";
@@ -484,7 +487,7 @@
 "send_sending" = "Отправка";
 "send_summary_tap_hint" = "Нажмите на любое поле, чтобы изменить его";
 "send_summary_title" = "Отправка %@";
-"send_summary_transaction_description" = "Вы отправляете %1$@, включая комиссию сети %2$@";
+"send_summary_transaction_description" = "Вы отправляете **%1$@**, включая комиссию сети %2$@";
 "send_title_currency_format" = "Отправка %@";
 "send_total_label" = "Всего";
 "send_total_subtitle_asset_format" = "%1$@ и %2$@ будет отправлено";

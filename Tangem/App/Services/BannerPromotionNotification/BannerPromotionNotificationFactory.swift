@@ -10,42 +10,51 @@ import Foundation
 import UIKit
 
 struct BannerPromotionNotificationFactory {
-    func buildMainBannerNotificationInput(
-        promotion: ActivePromotionInfo,
-        dismissAction: @escaping NotificationView.NotificationAction
-    ) -> NotificationViewInput {
-        let event = event(for: promotion, place: .main)
-        return NotificationViewInput(
-            style: .plain,
-            severity: .info,
-            settings: .init(event: event, dismissAction: dismissAction)
-        )
+    private static let changellyDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd"
+        return formatter
+    }()
+
+    private static let travalaDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMMM"
+        return formatter
+    }()
+
+    func buildNotificationButton(
+        actionType: NotificationButtonActionType,
+        action: @escaping NotificationView.NotificationButtonTapAction
+    ) -> NotificationView.NotificationButton {
+        NotificationView.NotificationButton(action: action, actionType: actionType, isWithLoader: false)
     }
 
-    func buildTokenBannerNotificationInput(
+    func buildBannerNotificationInput(
         promotion: ActivePromotionInfo,
-        buttonAction: @escaping NotificationView.NotificationButtonTapAction,
+        button: NotificationView.NotificationButton?,
         dismissAction: @escaping NotificationView.NotificationAction
     ) -> NotificationViewInput {
         let event = event(for: promotion, place: .tokenDetails)
         return NotificationViewInput(
-            style: .withButtons([.init(action: buttonAction, actionType: .exchange, isWithLoader: false)]),
+            style: button.map { .withButtons([$0]) } ?? .plain,
             severity: .info,
             settings: .init(event: event, dismissAction: dismissAction)
         )
     }
 
-    private func event(for promotion: ActivePromotionInfo, place: BannerPromotionPlace) -> BannerNotificationEvent {
+    private func event(for promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> BannerNotificationEvent {
         switch promotion.bannerPromotion {
         case .changelly:
             return .changelly(
                 title: changellyTitle(place: place),
                 description: changellyDescription(promotion: promotion, place: place)
             )
+        case .travala:
+            return .travala(description: travalaDescription(promotion: promotion))
         }
     }
 
-    private func changellyTitle(place: BannerPromotionPlace) -> NotificationView.Title {
+    private func changellyTitle(place: BannerPromotionPlacement) -> NotificationView.Title {
         let percent = changellyZeroPercent()
         let string: String = {
             switch place {
@@ -67,25 +76,30 @@ struct BannerPromotionNotificationFactory {
         return .attributed(attributed)
     }
 
-    func changellyDescription(promotion: ActivePromotionInfo, place: BannerPromotionPlace) -> String? {
+    func changellyDescription(promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> String {
         let percent = changellyZeroPercent()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd"
 
         switch place {
         case .main:
             return Localization.mainSwapChangellyPromotionMessage(
                 percent,
-                formatter.string(from: promotion.timeline.start),
-                formatter.string(from: promotion.timeline.end)
+                Self.changellyDateFormatter.string(from: promotion.timeline.start),
+                Self.changellyDateFormatter.string(from: promotion.timeline.end)
             )
         case .tokenDetails:
             return Localization.tokenSwapChangellyPromotionMessage(
                 percent,
-                formatter.string(from: promotion.timeline.start),
-                formatter.string(from: promotion.timeline.end)
+                Self.changellyDateFormatter.string(from: promotion.timeline.start),
+                Self.changellyDateFormatter.string(from: promotion.timeline.end)
             )
         }
+    }
+
+    func travalaDescription(promotion: ActivePromotionInfo) -> String {
+        Localization.mainTravalaPromotionDescription(
+            Self.travalaDateFormatter.string(from: promotion.timeline.start),
+            Self.travalaDateFormatter.string(from: promotion.timeline.end)
+        )
     }
 
     func changellyZeroPercent() -> String {

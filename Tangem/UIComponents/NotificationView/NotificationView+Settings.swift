@@ -72,7 +72,10 @@ extension NotificationView {
         case primary
         case secondary
         case action
-        case tangemExpressPromotion
+
+        // Customs
+        case changellyPromotion
+        case travalaPromotion
 
         @ViewBuilder
         var color: some View {
@@ -80,10 +83,16 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .tangemExpressPromotion:
+            case .changellyPromotion:
                 Assets.swapBannerBackground.image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+            case .travalaPromotion:
+                ZStack(alignment: .topLeading) {
+                    Color.black
+
+                    Assets.travalaBannerIcon.image
+                }
             }
         }
 
@@ -91,7 +100,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Icon.inactive
-            case .tangemExpressPromotion:
+            case .changellyPromotion, .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -100,7 +109,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.primary1
-            case .tangemExpressPromotion:
+            case .changellyPromotion, .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -109,7 +118,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.tertiary
-            case .tangemExpressPromotion:
+            case .changellyPromotion, .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }

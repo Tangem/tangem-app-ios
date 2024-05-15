@@ -16,7 +16,7 @@ protocol SendAddressService {
     var validationInProgressPublisher: AnyPublisher<Bool, Never> { get }
 
     func validate(address: String) async throws -> String?
-    func hasEmbeddedAdditionalField(address: String) -> Bool
+    func canEmbedAdditionalField(into address: String) -> Bool
 }
 
 // MARK: - Default implementation
@@ -58,9 +58,9 @@ class DefaultSendAddressService: SendAddressService {
         return address
     }
 
-    func hasEmbeddedAdditionalField(address: String) -> Bool {
-        if let addressAdditionalFieldParser = addressService as? AddressAdditionalFieldParser {
-            return addressAdditionalFieldParser.hasAdditionalField(address)
+    func canEmbedAdditionalField(into address: String) -> Bool {
+        if let addressAdditionalFieldService = addressService as? AddressAdditionalFieldService {
+            return addressAdditionalFieldService.canEmbedAdditionalField(into: address)
         } else {
             return false
         }
@@ -107,8 +107,8 @@ class SendResolvableAddressService: SendAddressService {
         }
     }
 
-    func hasEmbeddedAdditionalField(address: String) -> Bool {
-        defaultSendAddressService.hasEmbeddedAdditionalField(address: address)
+    func canEmbedAdditionalField(into address: String) -> Bool {
+        defaultSendAddressService.canEmbedAdditionalField(into: address)
     }
 }
 
