@@ -46,7 +46,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         case .reduceAmountBy(_, let amountFormatted):
             return Localization.sendNotificationReduceBy(amountFormatted)
         case .reduceAmountTo(_, let amountFormatted):
-            return Localization.sendNotificationReduceTo(amountFormatted)
+            return Localization.sendNotificationLeaveButton(amountFormatted)
         case .bookNow:
             return Localization.mainTravalaPromotionButton
         }

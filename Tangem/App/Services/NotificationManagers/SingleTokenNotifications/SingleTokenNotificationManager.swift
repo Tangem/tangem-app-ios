@@ -76,6 +76,10 @@ final class SingleTokenNotificationManager {
             events.append(.solanaHighImpact)
         }
 
+        if case .binance = walletModel.tokenItem.blockchain {
+            events.append(.bnbBeaconChainRetirement)
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -184,6 +188,12 @@ final class SingleTokenNotificationManager {
     }
 
     private func setupNoAccountNotification(with message: String) {
+        // Skip displaying the BEP2 account creation top-up notification
+        // since it will be deprecated shortly due to the network shutdown
+        if case .binance = walletModel.tokenItem.blockchain {
+            return
+        }
+
         let factory = NotificationsFactory()
         let event = TokenNotificationEvent.noAccount(message: message)
 

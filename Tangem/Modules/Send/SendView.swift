@@ -65,6 +65,7 @@ struct SendView: View {
                     Button(Localization.commonClose, action: viewModel.dismiss)
                         .foregroundColor(viewModel.closeButtonColor)
                         .disabled(viewModel.closeButtonDisabled)
+                        .fixedSize(horizontal: true, vertical: false)
 
                     Spacer()
                 }
