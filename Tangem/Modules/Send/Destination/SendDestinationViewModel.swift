@@ -41,7 +41,6 @@ class SendDestinationViewModel: ObservableObject {
     var addressViewModel: SendDestinationTextViewModel?
     var additionalFieldViewModel: SendDestinationTextViewModel?
 
-    @Published var userInputDisabled = false
     @Published var destinationErrorText: String?
     @Published var destinationAdditionalFieldErrorText: String?
     @Published var suggestedDestinationViewModel: SendSuggestedDestinationViewModel?
@@ -139,10 +138,6 @@ class SendDestinationViewModel: ObservableObject {
         }
     }
 
-    func setUserInputDisabled(_ userInputDisabled: Bool) {
-        self.userInputDisabled = userInputDisabled
-    }
-
     private func bind() {
         input
             .destinationError
@@ -180,9 +175,16 @@ class SendDestinationViewModel: ObservableObject {
                     return []
                 }
 
-                return records.compactMap { record in
-                    self.transactionHistoryMapper.mapSuggestedRecord(record)
-                }
+                let transactions = records
+                    .sorted {
+                        ($0.date ?? Date()) > ($1.date ?? Date())
+                    }
+                    .compactMap { record in
+                        self.transactionHistoryMapper.mapSuggestedRecord(record)
+                    }
+                    .prefix(Constants.numberOfRecentTransactions)
+
+                return Array(transactions)
             }
             .sink { [weak self] recentTransactions in
                 guard let self else { return }
@@ -219,5 +221,11 @@ private extension SendSuggestedDestination.`Type` {
         case .recentAddress:
             return .recentAddress
         }
+    }
+}
+
+private extension SendDestinationViewModel {
+    enum Constants {
+        static let numberOfRecentTransactions = 10
     }
 }

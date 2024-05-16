@@ -465,8 +465,8 @@
 "send_notification_invalid_minimum_amount_text" = "Минимальная сумма отправки - %1$@. Пожалуйста, убедитесь, что остаток после отправки также не будет меньше %2$@.";
 "send_notification_invalid_reserve_amount_text" = "Адрес получателя не активирован. \nПожалуйста, измените сумму отправки, чтобы продолжить.";
 "send_notification_invalid_reserve_amount_title" = "Сумма отправки не может быть менее %@";
+"send_notification_leave_button" = "Оставить %@";
 "send_notification_reduce_by" = "Уменьшить на %@";
-"send_notification_reduce_to" = "Уменьшить до %@";
 "send_notification_transaction_delay_text" = "Обратите внимание, что при определенных параметрах комиссии возможны задержки по вашей транзакции";
 "send_notification_transaction_delay_title" = "Возможны задержки по транзакции";
 "send_notification_transaction_limit_text" = "Из-за ограничений %1$@ в одну транзакцию может поместиться только %2$@ UTXO. Это означает, что вы можете отправить только %3$@ или меньше. Вам нужно уменьшить сумму.";
@@ -622,6 +622,8 @@
 "warning_access_denied_message" = "Используйте %@ или отсканируйте карту, чтобы разблокировать доступ к вашему кошельку";
 "warning_backup_errors_message" = "Пожалуйста, выведите все средства из этого кошелька, сбросьте его к заводским настройкам и создайте новый. Доступ к текущему кошельку будет утерян.";
 "warning_backup_errors_title" = "Ошибка активации";
+"warning_bnb_retirement_message" = "По решению разработчиков сети BNB, стандарт BEP-2 перестанет поддерживаться в июне 2024 года. Чтобы не потерять свои активы, их необходимо преобразовать в стандарт BEP-20. Используйте функцию обмена в приложении или cторонние сервисы, чтобы перевести их в cеть BNB Smart Chain.";
+"warning_bnb_retirement_title" = "Отключение сети BNB Beacon Chain";
 "warning_button_could_be_better" = "Можно лучше";
 "warning_button_ok" = "Понятно!";
 "warning_button_really_cool" = "Очень круто!";

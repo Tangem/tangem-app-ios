@@ -84,6 +84,10 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
+    func loadFeatures() async throws -> [String: Bool] {
+        throw "Not implemented"
+    }
+
     func setAuthData(_ authData: TangemApiTarget.AuthData) {}
 
     func initialize() {}

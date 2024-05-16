@@ -88,8 +88,10 @@ struct SendSummaryView: View {
                                 }
                             }
                     }
+                    // Fee uses a regular background regardless of whether it's enabled or not
                     .backgroundColor(Colors.Background.action, id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace)
                     .contentShape(Rectangle())
+                    .allowsHitTesting(viewModel.canEditFee)
                     .onTapGesture {
                         viewModel.didTapSummary(for: .fee)
                     }
@@ -106,11 +108,9 @@ struct SendSummaryView: View {
                     .transition(SendView.Constants.hintViewTransition)
                 }
 
-                if viewModel.showNotifications {
-                    ForEach(viewModel.notificationInputs) { input in
-                        NotificationView(input: input)
-                            .padding(.top, spacing)
-                    }
+                ForEach(viewModel.notificationInputs) { input in
+                    NotificationView(input: input)
+                        .padding(.top, spacing)
                 }
             }
 

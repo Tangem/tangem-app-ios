@@ -29,7 +29,6 @@ struct SendDestinationView: View {
                         .setIconNamespaceId(SendViewNamespaceId.addressIcon.rawValue)
                         .setTextNamespaceId(SendViewNamespaceId.addressText.rawValue)
                         .setClearButtonNamespaceId(SendViewNamespaceId.addressClearButton.rawValue)
-                        .disabled(viewModel.userInputDisabled)
                         .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                         .background(
                             Colors.Background.action
@@ -57,7 +56,6 @@ struct SendDestinationView: View {
                         .setIconNamespaceId(SendViewNamespaceId.addressAdditionalFieldIcon.rawValue)
                         .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
                         .setClearButtonNamespaceId(SendViewNamespaceId.addressAdditionalFieldClearButton.rawValue)
-                        .disabled(viewModel.userInputDisabled)
                         .padding(.vertical, 2)
                         .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                         .background(

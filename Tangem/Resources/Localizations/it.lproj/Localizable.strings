@@ -465,8 +465,8 @@
 "send_notification_invalid_minimum_amount_text" = "The minimum sending amount is %1$@. Please ensure that the remaining balance after sending will not be less than %2$@.";
 "send_notification_invalid_reserve_amount_text" = "Target account is not created. Please change the amount to send.";
 "send_notification_invalid_reserve_amount_title" = "The amount to send must be at least %@";
+"send_notification_leave_button" = "Leave %@";
 "send_notification_reduce_by" = "Reduce by %@";
-"send_notification_reduce_to" = "Reduce to %@";
 "send_notification_transaction_delay_text" = "Kindly be aware that your transaction may experience delays under specific fee settings";
 "send_notification_transaction_delay_title" = "Transaction delays are possible";
 "send_notification_transaction_limit_text" = "Due to %1$@ limitations only %2$@ UTXOs can fit in a single transaction. This means you can only send %3$@ or less. You need to reduce the amount.";
@@ -622,6 +622,8 @@
 "warning_access_denied_message" = "Use %@ or scan a card to unlock access to your wallet";
 "warning_backup_errors_message" = "Please withdraw all funds from this wallet, reset it to factory settings, and create a new one. Access to the current wallet will be lost.";
 "warning_backup_errors_title" = "Activation error";
+"warning_bnb_retirement_message" = "BNB network developers will end support for the BEP-2 standard in June 2024. To avoid losing assets on this standard, please swap them in the app to the BNB Smart Chain (BEP-20) or use third-party services.";
+"warning_bnb_retirement_title" = "BNB Beacon Chain will shut down";
 "warning_button_could_be_better" = "Could be better";
 "warning_button_ok" = "Ok, ho capito!";
 "warning_button_really_cool" = "Really cool!";
