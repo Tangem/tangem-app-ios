@@ -9,10 +9,26 @@
 import Foundation
 
 #warning("TODO: remove with LegacySendViewModel")
-enum SendFeatureProvider {
-    @Injected(\.tangemApiService) private static var tangemApiService: TangemApiService
+class SendFeatureProvider {
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
-    static var isAvailable: Bool {
-        FeatureProvider.isAvailable(.sendV2) && tangemApiService.features["send"] == true
+    static let shared: SendFeatureProvider = .init()
+
+    var isAvailable: Bool {
+        let isSendAvailableRemote = features["send"] ?? true
+
+        return FeatureProvider.isAvailable(.sendV2) && isSendAvailableRemote
+    }
+
+    private(set) var features: [String: Bool] = [:]
+
+    private init() {}
+
+    func loadFeaturesAvailability() {
+        runTask { [weak self] in
+            guard let self else { return }
+
+            features = (try? await tangemApiService.loadFeatures()) ?? [:]
+        }
     }
 }

@@ -11,7 +11,6 @@ import Combine
 
 class FakeTangemApiService: TangemApiService {
     var geoIpRegionCode: String
-    var features: [String: Bool] = [:]
 
     init(geoIpRegionCode: String = "us") {
         self.geoIpRegionCode = geoIpRegionCode
@@ -78,6 +77,10 @@ class FakeTangemApiService: TangemApiService {
     }
 
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult {
+        throw "Not implemented"
+    }
+
+    func loadFeatures() async throws -> [String: Bool] {
         throw "Not implemented"
     }
 

@@ -10,8 +10,8 @@ import Foundation
 import Combine
 
 protocol TangemApiService: AnyObject, Initializable {
+    // TODO: Refactor https://tangem.atlassian.net/browse/IOS-6869
     var geoIpRegionCode: String { get }
-    var features: [String: Bool] { get }
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error>
@@ -43,6 +43,8 @@ protocol TangemApiService: AnyObject, Initializable {
     func awardOldUser(walletId: String, address: String, programName: String) async throws -> PromotionAwardResult
     @discardableResult
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult
+
+    func loadFeatures() async throws -> [String: Bool]
 
     func setAuthData(_ authData: TangemApiTarget.AuthData)
 }

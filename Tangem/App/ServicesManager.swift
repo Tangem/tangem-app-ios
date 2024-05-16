@@ -46,6 +46,7 @@ class ServicesManager {
         exchangeService.initialize()
         tangemApiService.initialize()
         accountHealthChecker.initialize()
+        SendFeatureProvider.shared.loadFeaturesAvailability()
     }
 
     private func configureFirebase() {
