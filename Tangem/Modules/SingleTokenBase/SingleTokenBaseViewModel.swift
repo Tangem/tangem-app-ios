@@ -366,7 +366,7 @@ extension SingleTokenBaseViewModel {
             }
         case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable:
             return true
-        case .none, .zeroFeeCurrencyBalance:
+        case .none:
             return false
         }
     }
