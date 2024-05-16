@@ -110,7 +110,8 @@ struct NotificationView: View {
                 }
 
                 if let description = settings.event.description {
-                    Text(description)
+                    // We use the `LocalizedStringKey` here for the `RichText` support
+                    Text(LocalizedStringKey(description))
                         .multilineTextAlignment(.leading)
                         .style(Fonts.Regular.footnote, color: settings.event.colorScheme.messageColor)
                         .infinityFrame(axis: .horizontal, alignment: .leading)

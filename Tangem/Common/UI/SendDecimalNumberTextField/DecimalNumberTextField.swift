@@ -78,20 +78,22 @@ struct DecimalNumberTextField: View {
 
         var numberString = newValue
 
-        // If user start enter number with `decimalSeparator` add zero before it
-        if numberString == String(decimalSeparator) {
-            numberString.insert("0", at: numberString.startIndex)
-        }
+        if viewModel.isDecimal() {
+            // If user start enter number with `decimalSeparator` add zero before it
+            if numberString == String(decimalSeparator) {
+                numberString.insert("0", at: numberString.startIndex)
+            }
 
-        // If user double tap on zero, add `decimalSeparator` to continue enter number
-        if numberString == "00" {
-            numberString.insert(decimalSeparator, at: numberString.index(before: numberString.endIndex))
-        }
+            // If user double tap on zero, add `decimalSeparator` to continue enter number
+            if numberString == "00" {
+                numberString.insert(decimalSeparator, at: numberString.index(before: numberString.endIndex))
+            }
 
-        // If text already have `decimalSeparator` remove last one
-        if numberString.last == decimalSeparator,
-           numberString.prefix(numberString.count - 1).contains(decimalSeparator) {
-            numberString.removeLast()
+            // If text already have `decimalSeparator` remove last one
+            if numberString.last == decimalSeparator,
+               numberString.prefix(numberString.count - 1).contains(decimalSeparator) {
+                numberString.removeLast()
+            }
         }
 
         // Format the string and reduce the tail
@@ -173,6 +175,10 @@ extension DecimalNumberTextField {
         }
 
         // MARK: - Fileprivate only for DecimalNumberTextField
+
+        fileprivate func isDecimal() -> Bool {
+            decimalNumberFormatter.isDecimal
+        }
 
         fileprivate func decimalSeparator() -> Character {
             decimalNumberFormatter.decimalSeparator

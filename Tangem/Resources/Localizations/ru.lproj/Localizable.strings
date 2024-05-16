@@ -262,6 +262,9 @@
 "main_swap_changelly_promotion_message" = "Обменивайте свои токены с %1$@ комиссии провайдера через Changelly с %2$@ по %3$@ февраля.";
 "main_swap_changelly_promotion_title" = "Обмен с Changelly, %@ комиссии";
 "main_tokens" = "Токены";
+"main_travala_promotion_button" = "Забронировать";
+"main_travala_promotion_description" = "Оплатите его криптой и сэкономьте **50 долларов** через нашего партнера Travala: **%1@ - %2@**";
+"main_travala_promotion_title" = "Забронируйте отпуск с Tangem";
 "manage_tokens_add" = "Добавить";
 "manage_tokens_edit" = "Изменить";
 "manage_tokens_list_header_title" = "Рыночная капитализация";
@@ -464,8 +467,8 @@
 "send_notification_invalid_minimum_amount_text" = "Минимальная сумма отправки - %1$@. Пожалуйста, убедитесь, что остаток после отправки также не будет меньше %2$@.";
 "send_notification_invalid_reserve_amount_text" = "Адрес получателя не активирован. \nПожалуйста, измените сумму отправки, чтобы продолжить.";
 "send_notification_invalid_reserve_amount_title" = "Сумма отправки не может быть менее %@";
+"send_notification_leave_button" = "Оставить %@";
 "send_notification_reduce_by" = "Уменьшить на %@";
-"send_notification_reduce_to" = "Уменьшить до %@";
 "send_notification_transaction_delay_text" = "Обратите внимание, что при определенных параметрах комиссии возможны задержки по вашей транзакции";
 "send_notification_transaction_delay_title" = "Возможны задержки по транзакции";
 "send_notification_transaction_limit_text" = "Из-за ограничений %1$@ в одну транзакцию может поместиться только %2$@ UTXO. Это означает, что вы можете отправить только %3$@ или меньше. Вам нужно уменьшить сумму.";
@@ -475,7 +478,7 @@
 "send_recent_transactions" = "Последние";
 "send_recipient" = "Получатель";
 "send_recipient_address_error" = "Неверный адрес";
-"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов";
+"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов.";
 "send_recipient_label" = "Отправить";
 "send_recipient_memo_footer" = "Мемо/ Код назначения - это код, разделяющий транзакции к общему получателю в сети криптовалют. Внимание: отсутствие мемо может привести к потере средств.";
 "send_recipient_wallets_title" = "Мои кошельки";
@@ -484,7 +487,7 @@
 "send_sending" = "Отправка";
 "send_summary_tap_hint" = "Нажмите на любое поле, чтобы изменить его";
 "send_summary_title" = "Отправка %@";
-"send_summary_transaction_description" = "Вы отправляете %1$@, включая комиссию сети %2$@";
+"send_summary_transaction_description" = "Вы отправляете **%1$@**, включая комиссию сети %2$@";
 "send_title_currency_format" = "Отправка %@";
 "send_total_label" = "Всего";
 "send_total_subtitle_asset_format" = "%1$@ и %2$@ будет отправлено";
@@ -616,6 +619,8 @@
 "warning_access_denied_message" = "Используйте %@ или отсканируйте карту, чтобы разблокировать доступ к вашему кошельку";
 "warning_backup_errors_message" = "Пожалуйста, выведите все средства из этого кошелька, сбросьте его к заводским настройкам и создайте новый. Доступ к текущему кошельку будет утерян.";
 "warning_backup_errors_title" = "Ошибка активации";
+"warning_bnb_retirement_message" = "По решению разработчиков сети BNB, стандарт BEP-2 перестанет поддерживаться в июне 2024 года. Чтобы не потерять свои активы, их необходимо преобразовать в стандарт BEP-20. Используйте функцию обмена в приложении или cторонние сервисы, чтобы перевести их в cеть BNB Smart Chain.";
+"warning_bnb_retirement_title" = "Отключение сети BNB Beacon Chain";
 "warning_button_could_be_better" = "Можно лучше";
 "warning_button_ok" = "Понятно!";
 "warning_button_really_cool" = "Очень круто!";

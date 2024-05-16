@@ -61,7 +61,7 @@ final class UserWalletNotificationManager {
         }
 
         if userWalletModel.config.hasFeature(.multiCurrency) {
-            setupTangemExpressPromotionNotification(dismissAction: dismissAction)
+            setupPromotionNotification(dismissAction: dismissAction)
         }
 
         inputs.append(contentsOf: factory.buildNotificationInputs(
@@ -107,22 +107,32 @@ final class UserWalletNotificationManager {
         validateHashesCount()
     }
 
-    private func setupTangemExpressPromotionNotification(
-        dismissAction: @escaping NotificationView.NotificationAction
-    ) {
+    private func setupPromotionNotification(dismissAction: @escaping NotificationView.NotificationAction) {
         promotionUpdateTask?.cancel()
         promotionUpdateTask = Task { [weak self] in
             guard let self, !Task.isCancelled else {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(place: .main) else {
+            let name: PromotionProgramName = .travala
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main),
+                  let promotionLink = promotion.link else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
 
-            let input = BannerPromotionNotificationFactory().buildMainBannerNotificationInput(
+            let factory = BannerPromotionNotificationFactory()
+            let button = factory.buildNotificationButton(actionType: .bookNow(promotionLink: promotionLink)) { [weak self] id, action in
+                var parameters = BannerNotificationEvent.travala(description: "").analyticsParams
+                parameters[.action] = Analytics.ParameterValue.clicked.rawValue
+                Analytics.log(event: .promotionBannerClicked, params: parameters)
+
+                self?.delegate?.didTapNotificationButton(with: id, action: action)
+            }
+
+            let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
+                button: button,
                 dismissAction: dismissAction
             )
 
@@ -279,6 +289,12 @@ extension UserWalletNotificationManager: NotificationManager {
             switch event {
             case .changelly:
                 bannerPromotionService.hide(promotion: .changelly, on: .main)
+            case .travala:
+                var parameters = event.analyticsParams
+                parameters[.action] = Analytics.ParameterValue.closed.rawValue
+                Analytics.log(event: .promotionBannerClicked, params: parameters)
+
+                bannerPromotionService.hide(promotion: .travala, on: .main)
             }
         }
 

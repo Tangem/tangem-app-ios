@@ -149,12 +149,12 @@ extension SendNotificationEvent {
         case summary
     }
 
-    var location: Location {
+    var locations: [Location] {
         switch self {
         case .networkFeeUnreachable:
-            return .feeLevels
+            return [.feeLevels, .summary]
         case .feeWillBeSubtractFromSendingAmount, .minimumAmount, .existentialDeposit, .withdrawalOptionalAmountChange, .withdrawalMandatoryAmountChange, .totalExceedsBalance, .customFeeTooHigh, .customFeeTooLow, .feeExceedsBalance:
-            return .summary
+            return [.summary]
         }
     }
 }

@@ -262,6 +262,9 @@
 "main_swap_changelly_promotion_message" = "Enjoy %1$@ service fees on swaps via Changelly from February %2$@-%3$@";
 "main_swap_changelly_promotion_title" = "Swap with Changelly, %@ fees";
 "main_tokens" = "Tokens";
+"main_travala_promotion_button" = "Book now";
+"main_travala_promotion_description" = "Save **$50** while booking via our partner Travala: **%1@ - %2@**";
+"main_travala_promotion_title" = "Book your holidays with Tangem and pay in crypto";
 "manage_tokens_add" = "Add";
 "manage_tokens_edit" = "Edit";
 "manage_tokens_list_header_title" = "Coin market cap";
@@ -464,8 +467,8 @@
 "send_notification_invalid_minimum_amount_text" = "The minimum sending amount is %1$@. Please ensure that the remaining balance after sending will not be less than %2$@.";
 "send_notification_invalid_reserve_amount_text" = "Target account is not created. Please change the amount to send.";
 "send_notification_invalid_reserve_amount_title" = "The amount to send must be at least %@";
+"send_notification_leave_button" = "Leave %@";
 "send_notification_reduce_by" = "Reduce by %@";
-"send_notification_reduce_to" = "Reduce to %@";
 "send_notification_transaction_delay_text" = "Kindly be aware that your transaction may experience delays under specific fee settings";
 "send_notification_transaction_delay_title" = "Transaction delays are possible";
 "send_notification_transaction_limit_text" = "Due to %1$@ limitations only %2$@ UTXOs can fit in a single transaction. This means you can only send %3$@ or less. You need to reduce the amount.";
@@ -475,7 +478,7 @@
 "send_recent_transactions" = "Recent";
 "send_recipient" = "Recipient";
 "send_recipient_address_error" = "Not a valid address";
-"send_recipient_address_footer" = "Ensure that you are sending funds to an %@ wallet address. Errors may result in the loss of your tokens";
+"send_recipient_address_footer" = "Ensure the receiving wallet address is on the %@ network to avoid losing your tokens";
 "send_recipient_label" = "Send to";
 "send_recipient_memo_footer" = "A Memo/Destination Tag is a unique ID for differentiating transactions sent to the same recipient on the same network. Caution: Omitting a memo may lead to misplaced funds";
 "send_recipient_wallets_title" = "My wallets";
@@ -484,7 +487,7 @@
 "send_sending" = "Sending...";
 "send_summary_tap_hint" = "Tap any field to change it";
 "send_summary_title" = "Send %@";
-"send_summary_transaction_description" = "You are sending %1$@ including a network fee of %2$@";
+"send_summary_transaction_description" = "You are sending **%1$@** including a network fee of %2$@";
 "send_title_currency_format" = "Sending %@";
 "send_total_label" = "Gesamt";
 "send_total_subtitle_asset_format" = "%1$@ und %2$@ werden gesendet";
@@ -616,6 +619,8 @@
 "warning_access_denied_message" = "Use %@ or scan a card to unlock access to your wallet";
 "warning_backup_errors_message" = "Please withdraw all funds from this wallet, reset it to factory settings, and create a new one. Access to the current wallet will be lost.";
 "warning_backup_errors_title" = "Activation error";
+"warning_bnb_retirement_message" = "BNB network developers will end support for the BEP-2 standard in June 2024. To avoid losing assets on this standard, please swap them in the app to the BNB Smart Chain (BEP-20) or use third-party services.";
+"warning_bnb_retirement_title" = "BNB Beacon Chain will shut down";
 "warning_button_could_be_better" = "Could be better";
 "warning_button_ok" = "OK, ich hab's!";
 "warning_button_really_cool" = "Really cool!";

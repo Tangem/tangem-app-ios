@@ -22,6 +22,7 @@ extension ExpressPromotion {
         struct Info: Decodable {
             let timeline: Timeline
             let status: Status
+            let link: URL?
         }
 
         enum Status: String, Decodable {
