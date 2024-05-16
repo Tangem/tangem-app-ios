@@ -41,7 +41,6 @@ class SendDestinationViewModel: ObservableObject {
     var addressViewModel: SendDestinationTextViewModel?
     var additionalFieldViewModel: SendDestinationTextViewModel?
 
-    @Published var userInputDisabled = false
     @Published var destinationErrorText: String?
     @Published var destinationAdditionalFieldErrorText: String?
     @Published var suggestedDestinationViewModel: SendSuggestedDestinationViewModel?
@@ -137,10 +136,6 @@ class SendDestinationViewModel: ObservableObject {
         } else {
             Analytics.log(.sendAddressScreenOpened)
         }
-    }
-
-    func setUserInputDisabled(_ userInputDisabled: Bool) {
-        self.userInputDisabled = userInputDisabled
     }
 
     private func bind() {
