@@ -76,6 +76,10 @@ final class SingleTokenNotificationManager {
             events.append(.solanaHighImpact)
         }
 
+        if case .binance = walletModel.tokenItem.blockchain {
+            events.append(.bnbBeaconChainRetirement)
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -138,17 +142,21 @@ final class SingleTokenNotificationManager {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(place: .tokenDetails) else {
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: .changelly, on: .tokenDetails) else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
             }
 
-            let input = BannerPromotionNotificationFactory().buildTokenBannerNotificationInput(
+            let factory = BannerPromotionNotificationFactory()
+            let button = factory.buildNotificationButton(actionType: .exchange) { [weak self] id, actionType in
+                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                self?.dismissNotification(with: id)
+            }
+
+            let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
-                buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
-                    self?.dismissNotification(with: id)
-                }, dismissAction: { [weak self] id in
+                button: button,
+                dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
                 }
             )
@@ -180,6 +188,12 @@ final class SingleTokenNotificationManager {
     }
 
     private func setupNoAccountNotification(with message: String) {
+        // Skip displaying the BEP2 account creation top-up notification
+        // since it will be deprecated shortly due to the network shutdown
+        if case .binance = walletModel.tokenItem.blockchain {
+            return
+        }
+
         let factory = NotificationsFactory()
         let event = TokenNotificationEvent.noAccount(message: message)
 
@@ -246,6 +260,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         case .changelly:
             Analytics.log(.swapPromoButtonClose)
             bannerPromotionService.hide(promotion: .changelly, on: .tokenDetails)
+        case .travala:
+            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
         }
 
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
