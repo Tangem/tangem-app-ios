@@ -26,7 +26,6 @@ class CommonTangemApiService {
 
     private let fallbackRegionCode = Locale.current.regionCode?.lowercased() ?? ""
     private var _geoIpRegionCode: String?
-    private var _features: [String: Bool]?
     private var authData: TangemApiTarget.AuthData?
 
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
