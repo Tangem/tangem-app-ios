@@ -180,7 +180,7 @@ class SendDestinationViewModel: ObservableObject {
                     return []
                 }
 
-                return records
+                let transactions = records
                     .sorted {
                         ($0.date ?? Date()) > ($1.date ?? Date())
                     }
@@ -188,6 +188,8 @@ class SendDestinationViewModel: ObservableObject {
                         self.transactionHistoryMapper.mapSuggestedRecord(record)
                     }
                     .prefix(Constants.numberOfRecentTransactions)
+
+                return Array(transactions)
             }
             .sink { [weak self] recentTransactions in
                 guard let self else { return }
