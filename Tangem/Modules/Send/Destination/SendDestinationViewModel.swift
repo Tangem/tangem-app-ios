@@ -180,12 +180,10 @@ class SendDestinationViewModel: ObservableObject {
                     return []
                 }
 
-                let numberOfRecentTransactions = 10
-
                 let transactions = records.compactMap { record in
                     self.transactionHistoryMapper.mapSuggestedRecord(record)
                 }
-                .prefix(numberOfRecentTransactions)
+                .prefix(Constants.numberOfRecentTransactions)
 
                 return Array(transactions)
             }
@@ -224,5 +222,11 @@ private extension SendSuggestedDestination.`Type` {
         case .recentAddress:
             return .recentAddress
         }
+    }
+}
+
+private extension SendDestinationViewModel {
+    enum Constants {
+        static let numberOfRecentTransactions = 10
     }
 }
