@@ -301,7 +301,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL) {
+    func openInSafari(url: URL) {
         safariManager.openURL(url)
     }
 }

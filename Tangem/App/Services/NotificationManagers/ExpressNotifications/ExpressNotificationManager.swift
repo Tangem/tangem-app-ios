@@ -56,10 +56,10 @@ class ExpressNotificationManager {
             notificationInputsSubject.value = []
 
         case .previewCEX(let preview, _):
-            notificationInputsSubject.value = []
-
-            setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: preview.subtractFee)
-            setupWithdrawalSuggestion(suggestion: preview.suggestion)
+            notificationInputsSubject.value = [
+                setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: preview.subtractFee),
+                setupWithdrawalSuggestion(suggestion: preview.suggestion),
+            ].compactMap { $0 }
         }
     }
 
@@ -167,9 +167,9 @@ class ExpressNotificationManager {
         notificationInputsSubject.value = [notification]
     }
 
-    private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) {
+    private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) -> NotificationViewInput? {
         guard let interactor = expressInteractor, subtractFee > 0 else {
-            return
+            return nil
         }
 
         let feeTokenItem = interactor.getSender().feeTokenItem
@@ -185,7 +185,7 @@ class ExpressNotificationManager {
         )
 
         let notification = NotificationsFactory().buildNotificationInput(for: event)
-        notificationInputsSubject.value.appendIfNotContains(notification)
+        return notification
     }
 
     private func makeNotEnoughFeeForTokenTx(sender: WalletModel) -> ExpressNotificationEvent? {
@@ -200,12 +200,14 @@ class ExpressNotificationManager {
         )
     }
 
-    private func setupWithdrawalSuggestion(suggestion: WithdrawalSuggestion?) {
+    private func setupWithdrawalSuggestion(suggestion: WithdrawalSuggestion?) -> NotificationViewInput? {
         switch suggestion {
         case .none:
-            break
+            return nil
         case .feeIsTooHigh(let reduceAmountBy):
-            guard let interactor = expressInteractor else { return }
+            guard let interactor = expressInteractor else {
+                return nil
+            }
 
             let sourceTokenItem = interactor.getSender().tokenItem
             let event: ExpressNotificationEvent = .withdrawalOptionalAmountChange(
@@ -216,7 +218,7 @@ class ExpressNotificationManager {
             let notification = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
                 self?.delegate?.didTapNotificationButton(with: id, action: actionType)
             }
-            notificationInputsSubject.value.appendIfNotContains(notification)
+            return notification
         }
     }
 }

@@ -111,6 +111,20 @@ class DecimalNumberFormatterTests: XCTestCase {
                 decimal: "1000.123456789012345678",
                 string: "1.000,12345678"
             ),
+            TestCase(
+                groupingSeparator: ".",
+                decimalSeparator: ",",
+                digits: 0,
+                decimal: "1000.123456789012345678",
+                string: "1.000"
+            ),
+            TestCase(
+                groupingSeparator: ".",
+                decimalSeparator: ",",
+                digits: 0,
+                decimal: "1000.123456789012345678",
+                string: "1.000"
+            ),
         ]
 
         cases.forEach { testCase in

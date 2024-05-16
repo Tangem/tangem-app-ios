@@ -452,6 +452,10 @@ final class SendViewModel: ObservableObject {
                 } else {
                     logTransactionAnalytics()
                 }
+
+                if let address = sendModel.destinationText {
+                    UserWalletFinder().addTokenItem(walletModel.tokenItem, for: address)
+                }
             }
             .store(in: &bag)
 

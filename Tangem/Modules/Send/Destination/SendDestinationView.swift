@@ -12,7 +12,11 @@ struct SendDestinationView: View {
     let namespace: Namespace.ID
     @ObservedObject var viewModel: SendDestinationViewModel
 
-    let bottomSpacing: CGFloat
+    let bottomButtonsHeight: CGFloat
+
+    private var safeAreaBottomSpacing: CGFloat {
+        bottomButtonsHeight + SendCustomFeeInputField.Constants.fieldPadding + GroupedSectionConstants.headerFooterSpacing
+    }
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
@@ -77,12 +81,13 @@ struct SendDestinationView: View {
                 SendSuggestedDestinationView(viewModel: suggestedDestinationViewModel)
                     .transition(.opacity)
             }
-
-            Spacer(minLength: bottomSpacing)
         }
         .onAppear(perform: viewModel.onAppear)
         .onAppear(perform: viewModel.onAuxiliaryViewAppear)
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
+        .safeAreaInset(edge: .bottom, spacing: safeAreaBottomSpacing) {
+            EmptyView().frame(height: 0)
+        }
     }
 }
 
@@ -90,6 +95,6 @@ struct SendDestinationView_Previews: PreviewProvider {
     @Namespace static var namespace
 
     static var previews: some View {
-        SendDestinationView(namespace: namespace, viewModel: SendDestinationViewModel(input: SendDestinationViewModelInputMock(), addressTextViewHeightModel: .init()), bottomSpacing: 150)
+        SendDestinationView(namespace: namespace, viewModel: SendDestinationViewModel(input: SendDestinationViewModelInputMock(), addressTextViewHeightModel: .init()), bottomButtonsHeight: 0)
     }
 }
