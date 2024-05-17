@@ -336,7 +336,7 @@ extension SingleTokenBaseViewModel {
 
         switch walletModel.sendingRestrictions {
         case .zeroFeeCurrencyBalance:
-            guard FeatureProvider.isAvailable(.sendV2) else {
+            guard SendFeatureProvider.shared.isAvailable else {
                 return true
             }
 
@@ -379,7 +379,7 @@ extension SingleTokenBaseViewModel {
         case .cantSignLongTransactions, .zeroWalletBalance:
             assertionFailure("Send Button have to be disabled")
         case .zeroFeeCurrencyBalance:
-            guard FeatureProvider.isAvailable(.sendV2) else {
+            guard SendFeatureProvider.shared.isAvailable else {
                 assertionFailure("Send Button have to be disabled")
                 return
             }

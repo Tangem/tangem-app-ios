@@ -56,8 +56,11 @@ class CommonSendNotificationManager: SendNotificationManager {
         notificationPublisher
             .map {
                 $0.filter { input in
-                    let sendNotificationEvent = input.settings.event as? SendNotificationEvent
-                    return sendNotificationEvent?.location == location
+                    guard let sendNotificationEvent = input.settings.event as? SendNotificationEvent else {
+                        return false
+                    }
+
+                    return sendNotificationEvent.locations.contains(location)
                 }
             }
             .removeDuplicates()
