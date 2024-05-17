@@ -134,8 +134,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .someNetworksUnreachable,
              .notEnoughFeeForTransaction,
              .solanaHighImpact:
-             .bnbBeaconChainRetirement:
-            return .warning
+            .bnbBeaconChainRetirement:
+                return .warning
         }
     }
 

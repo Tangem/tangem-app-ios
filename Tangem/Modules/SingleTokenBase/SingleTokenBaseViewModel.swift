@@ -353,20 +353,9 @@ extension SingleTokenBaseViewModel {
         }
 
         switch walletModel.sendingRestrictions {
-        case .zeroFeeCurrencyBalance:
-            guard SendFeatureProvider.shared.isAvailable else {
-                return true
-            }
-
-            if case .token = walletModel.amountType,
-               !walletModel.isFeeCurrency {
-                return false
-            } else {
-                return true
-            }
         case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable:
             return true
-        case .none:
+        case .none, .zeroFeeCurrencyBalance:
             return false
         }
     }
