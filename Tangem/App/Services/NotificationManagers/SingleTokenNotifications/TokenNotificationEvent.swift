@@ -133,9 +133,9 @@ extension TokenNotificationEvent: NotificationEvent {
         case .networkUnreachable,
              .someNetworksUnreachable,
              .notEnoughFeeForTransaction,
-             .solanaHighImpact:
-            .bnbBeaconChainRetirement:
-                return .warning
+             .solanaHighImpact,
+             .bnbBeaconChainRetirement:
+            return .warning
         }
     }
 
