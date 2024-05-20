@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import enum BlockchainSdk.AssetRequirementsCondition
 
 struct SingleTokenAlertBuilder {
     var cantSignLongTransactionAlert: AlertBinder {
@@ -15,6 +16,18 @@ struct SingleTokenAlertBuilder {
 
     var tryAgainLaterAlert: AlertBinder {
         .init(title: "", message: Localization.tokenButtonUnavailabilityGenericDescription)
+    }
+
+    func receiveAlert(for requirementsCondition: AssetRequirementsCondition?) -> AlertBinder? {
+        switch requirementsCondition {
+        case .paidTransaction,
+             .paidTransactionWithFee:
+            return AlertBinder(title: "", message: Localization.warningReceiveBlockedHederaTokenAssociationRequiredMessage)
+        case .none:
+            break
+        }
+
+        return nil
     }
 
     func sendAlert(for sendingRestrictions: TransactionSendAvailabilityProvider.SendingRestrictions?) -> AlertBinder? {
@@ -76,5 +89,34 @@ struct SingleTokenAlertBuilder {
 
     func buyUnavailableAlert(for tokenItem: TokenItem) -> AlertBinder {
         .init(title: "", message: Localization.tokenButtonUnavailabilityReasonBuyUnavailable(tokenItem.name))
+    }
+
+    func fulfillAssetRequirementsAlert(
+        for requirementsCondition: AssetRequirementsCondition?,
+        feeTokenItem: TokenItem,
+        hasFeeCurrency: Bool
+    ) -> AlertBinder? {
+        switch requirementsCondition {
+        case .paidTransaction where !hasFeeCurrency:
+            return AlertBinder(
+                title: "",
+                message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
+            )
+        case .paidTransactionWithFee(let feeAmount) where !hasFeeCurrency:
+            assert(
+                feeAmount.type == feeTokenItem.amountType,
+                "Incorrect fee token item received: expected '\(feeAmount.currencySymbol)', got '\(feeTokenItem.currencySymbol)'"
+            )
+            return AlertBinder(
+                title: "",
+                message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
+            )
+        case .paidTransaction,
+             .paidTransactionWithFee,
+             .none:
+            break
+        }
+
+        return nil
     }
 }

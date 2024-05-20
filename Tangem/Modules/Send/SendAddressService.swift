@@ -16,7 +16,7 @@ protocol SendAddressService {
     var validationInProgressPublisher: AnyPublisher<Bool, Never> { get }
 
     func validate(address: String) async throws -> String?
-    func hasEmbeddedAdditionalField(address: String) -> Bool
+    func canEmbedAdditionalField(into address: String) -> Bool
 }
 
 // MARK: - Default implementation
@@ -24,6 +24,7 @@ protocol SendAddressService {
 class DefaultSendAddressService: SendAddressService {
     private let walletAddresses: [Address]
     private let addressService: AddressService
+    private let supportSameAsWalletAddressTransfer: Bool
 
     var validationInProgressPublisher: AnyPublisher<Bool, Never> {
         validationInProgressSubject.eraseToAnyPublisher()
@@ -31,9 +32,10 @@ class DefaultSendAddressService: SendAddressService {
 
     private var validationInProgressSubject = CurrentValueSubject<Bool, Never>(false)
 
-    init(walletAddresses: [Address], addressService: AddressService) {
+    init(walletAddresses: [Address], addressService: AddressService, supportSameAsWalletAddressTransfer: Bool) {
         self.walletAddresses = walletAddresses
         self.addressService = addressService
+        self.supportSameAsWalletAddressTransfer = supportSameAsWalletAddressTransfer
     }
 
     func validate(address: String) async throws -> String? {
@@ -47,7 +49,7 @@ class DefaultSendAddressService: SendAddressService {
             return nil
         }
 
-        if walletAddresses.contains(where: { $0.value == address }) {
+        if !supportSameAsWalletAddressTransfer, walletAddresses.contains(where: { $0.value == address }) {
             throw SendAddressServiceError.sameAsWalletAddress
         }
 
@@ -58,9 +60,9 @@ class DefaultSendAddressService: SendAddressService {
         return address
     }
 
-    func hasEmbeddedAdditionalField(address: String) -> Bool {
-        if let addressAdditionalFieldParser = addressService as? AddressAdditionalFieldParser {
-            return addressAdditionalFieldParser.hasAdditionalField(address)
+    func canEmbedAdditionalField(into address: String) -> Bool {
+        if let addressAdditionalFieldService = addressService as? AddressAdditionalFieldService {
+            return addressAdditionalFieldService.canEmbedAdditionalField(into: address)
         } else {
             return false
         }
@@ -107,8 +109,8 @@ class SendResolvableAddressService: SendAddressService {
         }
     }
 
-    func hasEmbeddedAdditionalField(address: String) -> Bool {
-        defaultSendAddressService.hasEmbeddedAdditionalField(address: address)
+    func canEmbedAdditionalField(into address: String) -> Bool {
+        defaultSendAddressService.canEmbedAdditionalField(into: address)
     }
 }
 

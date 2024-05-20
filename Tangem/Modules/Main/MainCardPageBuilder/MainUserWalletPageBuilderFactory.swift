@@ -15,7 +15,7 @@ protocol MainUserWalletPageBuilderFactory {
         lockedUserWalletDelegate: MainLockedUserWalletDelegate,
         singleWalletContentDelegate: SingleWalletMainContentDelegate,
         multiWalletContentDelegate: MultiWalletMainContentDelegate?
-    ) -> MainUserWalletPageBuilder?
+    ) -> MainUserWalletPageBuilder
 
     func createPages(
         from models: [UserWalletModel],
@@ -34,7 +34,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         lockedUserWalletDelegate: MainLockedUserWalletDelegate,
         singleWalletContentDelegate: SingleWalletMainContentDelegate,
         multiWalletContentDelegate: MultiWalletMainContentDelegate?
-    ) -> MainUserWalletPageBuilder? {
+    ) -> MainUserWalletPageBuilder {
         if model.config is VisaConfig {
             return createVisaPage(userWalletModel: model, lockedUserWalletDelegate: lockedUserWalletDelegate)
         }
@@ -115,7 +115,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         }
 
         guard let walletModel = model.walletModelsManager.walletModels.first else {
-            return nil
+            return .singleWallet(id: id, headerModel: headerModel, bodyModel: nil)
         }
 
         let singleWalletNotificationManager = SingleTokenNotificationManager(

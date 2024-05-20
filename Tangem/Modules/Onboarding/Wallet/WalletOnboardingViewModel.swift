@@ -783,7 +783,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             .sink { [weak self] completion in
                 if case .failure(let error) = completion {
                     AppLog.shared.error(error, params: [.action: .proceedBackup])
-                    self?.processBackupError(error)
+                    let sdkError = error.toTangemSdkError()
+                    if !sdkError.isUserCancelled {
+                        self?.alert = sdkError.alertBinder
+                    }
                     self?.isMainButtonBusy = false
                 }
                 self?.stepPublisher = nil

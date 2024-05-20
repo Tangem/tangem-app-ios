@@ -9,7 +9,6 @@
 import SwiftUI
 import BlockchainSdk
 import Combine
-import AlertToast
 
 struct LegacyTokenListView: View {
     @ObservedObject var viewModel: LegacyTokenListViewModel
@@ -24,9 +23,6 @@ struct LegacyTokenListView: View {
         .navigationBarTitle(Text(viewModel.titleKey), displayMode: .automatic)
         .navigationBarItems(trailing: addCustomView)
         .alert(item: $viewModel.alert, content: { $0.alert })
-        .toast(isPresenting: $viewModel.showToast) {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.contractAddressCopiedMessage)
-        }
         .searchable(text: $viewModel.enteredSearchText.value, placement: .navigationBarDrawer(displayMode: .always))
         .keyboardType(.alphabet)
         .autocorrectionDisabled()

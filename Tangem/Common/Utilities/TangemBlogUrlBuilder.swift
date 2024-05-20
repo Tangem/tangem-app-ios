@@ -26,6 +26,7 @@ struct TangemBlogUrlBuilder {
 extension TangemBlogUrlBuilder {
     enum Post {
         case fee
+        case scanCard
     }
 }
 
@@ -34,6 +35,8 @@ private extension TangemBlogUrlBuilder.Post {
         switch self {
         case .fee:
             "what-is-a-transaction-fee-and-why-do-we-need-it"
+        case .scanCard:
+            "scan-tangem-card"
         }
     }
 }

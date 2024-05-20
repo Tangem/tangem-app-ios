@@ -95,7 +95,8 @@ struct SendTransactionParametersBuilder {
              .flare,
              .taraxa,
              .radiant,
-             .base:
+             .base,
+             .joystream:
             return nil
         }
     }

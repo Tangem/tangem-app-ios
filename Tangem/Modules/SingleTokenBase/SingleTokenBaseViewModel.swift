@@ -162,13 +162,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         performLoadHistory()
     }
 
-    private func performLoadHistory() {
-        transactionHistoryBag = walletModel
-            .updateTransactionsHistory()
-            .receive(on: DispatchQueue.main)
-            .receiveCompletion { [weak self] _ in
-                self?.isReloadingTransactionHistory = false
-            }
+    func copyDefaultAddress() {
+        UIPasteboard.general.string = walletModel.defaultAddress
+        let heavyImpactGenerator = UIImpactFeedbackGenerator(style: .heavy)
+        heavyImpactGenerator.impactOccurred()
     }
 
     // We need to keep this not in extension because we may want to override this logic and
@@ -181,20 +178,55 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCryptoIfPossible()
-        case .exchange:
-            Analytics.log(event: .swapPromoButtonExchangeNow, params: [.token: walletModel.tokenItem.currencySymbol])
-            openExchange()
+        case .addHederaTokenAssociation:
+            fulfillAssetRequirements()
         default:
             break
         }
     }
 
-    private func openAddressExplorer(at index: Int) {
-        guard let url = walletModel.exploreURL(for: index, token: amountType.token) else {
+    private func performLoadHistory() {
+        transactionHistoryBag = walletModel
+            .updateTransactionsHistory()
+            .receive(on: DispatchQueue.main)
+            .receiveCompletion { [weak self] _ in
+                self?.isReloadingTransactionHistory = false
+            }
+    }
+
+    private func fulfillAssetRequirements() {
+        func sendAnalytics(isSuccessful: Bool) {
+            let status: Analytics.ParameterValue = isSuccessful ? .sent : .error
+
+            Analytics.log(
+                event: .buttonAddTokenTrustline,
+                params: [
+                    .token: walletModel.tokenItem.currencySymbol,
+                    .blockchain: blockchain.displayName,
+                    .status: status.rawValue,
+                ]
+            )
+        }
+
+        let alertBuilder = SingleTokenAlertBuilder()
+        let requirementsCondition = walletModel.assetRequirementsManager?.requirementsCondition(for: amountType)
+
+        if let fulfillAssetRequirementsAlert = alertBuilder.fulfillAssetRequirementsAlert(
+            for: requirementsCondition,
+            feeTokenItem: walletModel.feeTokenItem,
+            hasFeeCurrency: walletModel.feeCurrencyHasPositiveBalance
+        ) {
+            sendAnalytics(isSuccessful: false)
+            alert = fulfillAssetRequirementsAlert
+
             return
         }
 
-        openExplorer(at: url)
+        sendAnalytics(isSuccessful: true)
+        walletModel
+            .fulfillRequirements(signer: userWalletModel.signer)
+            .sink()
+            .store(in: &bag)
     }
 }
 
@@ -272,10 +304,12 @@ extension SingleTokenBaseViewModel {
                 title: type.title,
                 icon: type.icon,
                 disabled: false,
-                style: isDisabled ? .disabled : .default
-            ) { [weak self] in
-                self?.action(for: type)?()
-            }
+                style: isDisabled ? .disabled : .default,
+                action: { [weak self] in
+                    self?.action(for: type)?()
+                },
+                longPressAction: longTapAction(for: type)
+            )
         }
 
         actionButtons = buttons.sorted(by: { lhs, rhs in
@@ -312,7 +346,7 @@ extension SingleTokenBaseViewModel {
         case .send:
             return sendIsDisabled()
         case .receive:
-            return false
+            return isReceiveDisabled()
         case .exchange:
             return isSwapDisabled()
         case .sell:
@@ -330,6 +364,15 @@ extension SingleTokenBaseViewModel {
         case .exchange: return openExchangeAndLogAnalytics
         case .sell: return openSell
         case .copyAddress, .hide: return nil
+        }
+    }
+
+    private func longTapAction(for buttonType: TokenActionType) -> (() -> Void)? {
+        switch buttonType {
+        case .receive:
+            return weakify(self, forFunction: SingleTokenBaseViewModel.copyDefaultAddress)
+        case .buy, .send, .exchange, .sell, .copyAddress, .hide:
+            return nil
         }
     }
 
@@ -360,12 +403,26 @@ extension SingleTokenBaseViewModel {
 
         return !swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem)
     }
+
+    private func isReceiveDisabled() -> Bool {
+        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
+            return false
+        }
+
+        return assetRequirementsManager.hasRequirements(for: amountType)
+    }
 }
 
 // MARK: - Navigation
 
 extension SingleTokenBaseViewModel {
     func openReceive() {
+        let requirementsCondition = walletModel.assetRequirementsManager?.requirementsCondition(for: amountType)
+        if let receiveUnavailableAlert = SingleTokenAlertBuilder().receiveAlert(for: requirementsCondition) {
+            alert = receiveUnavailableAlert
+            return
+        }
+
         tokenRouter.openReceive(walletModel: walletModel)
     }
 
@@ -463,6 +520,14 @@ extension SingleTokenBaseViewModel {
 
     func openExplorer(at url: URL) {
         tokenRouter.openExplorer(at: url, for: walletModel)
+    }
+
+    private func openAddressExplorer(at index: Int) {
+        guard let url = walletModel.exploreURL(for: index, token: amountType.token) else {
+            return
+        }
+
+        openExplorer(at: url)
     }
 }
 

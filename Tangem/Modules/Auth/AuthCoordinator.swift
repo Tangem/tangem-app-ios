@@ -15,6 +15,8 @@ class AuthCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     var isNavigationBarHidden: Bool {
         viewState?.isMain == false
     }
@@ -82,6 +84,10 @@ extension AuthCoordinator: AuthRoutable {
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
         let logsComposer = LogsComposer(infoProvider: dataCollector)
         mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToScanCard)
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
 }
 

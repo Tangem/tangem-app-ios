@@ -25,6 +25,7 @@ enum AppConstants {
 
     static let minusSign = "−" // shorter stick
     static let dashSign = "—" // longer stick (em-dash)
+    static let unbreakableSpace = "\u{00a0}"
 
     static let sessionId = UUID().uuidString
 

@@ -344,10 +344,12 @@ class CommonUserWalletRepository: UserWalletRepository {
     // we can initialize it right after scan for more accurate analytics
     func initializeAnalyticsContext(with cardInfo: CardInfo) {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
+        let userWalletId = UserWalletIdFactory().userWalletId(config: config)
         let contextData = AnalyticsContextData(
             card: cardInfo.card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
 
         analyticsContext.setupContext(with: contextData)

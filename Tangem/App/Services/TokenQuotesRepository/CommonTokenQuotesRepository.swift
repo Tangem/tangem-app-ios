@@ -96,6 +96,17 @@ private extension CommonTokenQuotesRepository {
                 items.forEach { $0.didLoadPublisher.send(()) }
             })
             .store(in: &bag)
+
+        NotificationCenter.default
+            .publisher(for: UIApplication.didBecomeActiveNotification)
+            .withWeakCaptureOf(self)
+            .flatMap { repository, _ in
+                // Reload saved quotes
+                repository
+                    .loadQuotes(currencyIds: Array(repository._quotes.value.keys))
+            }
+            .sink()
+            .store(in: &bag)
     }
 
     func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {

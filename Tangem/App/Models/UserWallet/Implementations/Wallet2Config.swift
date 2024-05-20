@@ -196,6 +196,15 @@ extension Wallet2Config: UserWalletConfig {
         // Wallet satoshi friends
         case "AF19":
             return cardsCount == 2 ? Assets.Cards.satoshiFriendsDouble : Assets.Cards.satoshiFriendsTriple
+        // New World Elite (NWE)
+        case "AF26":
+            return cardsCount == 2 ? Assets.Cards.newWorldEliteDouble : Assets.Cards.newWorldEliteTriple
+        // Vechain
+        case "AF29":
+            return cardsCount == 2 ? Assets.Cards.vechainWalletDouble : Assets.Cards.vechainWalletTriple
+        // Pizza Day Wallet
+        case "AF33":
+            return cardsCount == 2 ? Assets.Cards.pizzaDayWalletDouble : Assets.Cards.pizzaDayWalletTriple
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple

@@ -24,7 +24,6 @@ class LegacyTokenListViewModel: ObservableObject {
     @Published var alert: AlertBinder?
     @Published var pendingAdd: [TokenItem] = []
     @Published var pendingRemove: [TokenItem] = []
-    @Published var showToast: Bool = false
 
     var titleKey: String {
         switch mode {
@@ -276,10 +275,14 @@ private extension LegacyTokenListViewModel {
     }
 
     func bindCopy() -> Binding<Bool> {
-        let binding = Binding<Bool> { [weak self] in
-            self?.showToast ?? false
-        } set: { [weak self] isSelected in
-            self?.showToast = isSelected
+        let binding = Binding<Bool> {
+            false
+        } set: { _ in
+            Toast(view: SuccessToast(text: Localization.contractAddressCopiedMessage))
+                .present(
+                    layout: .bottom(padding: 80),
+                    type: .temporary()
+                )
         }
 
         return binding
@@ -329,6 +332,7 @@ private extension LegacyTokenListViewModel {
             let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.blockchain.currencySymbol)
 
             let message = Localization.tokenDetailsUnableHideAlertMessage(
+                tokenItem.name,
                 tokenItem.blockchain.currencySymbol,
                 tokenItem.blockchain.displayName
             )

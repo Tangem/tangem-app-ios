@@ -133,6 +133,10 @@ extension WelcomeCoordinator: WelcomeRoutable {
         Analytics.log(.shopScreenOpened)
         safariManager.openURL(AppConstants.webShopUrl)
     }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
 }
 
 // MARK: ViewState

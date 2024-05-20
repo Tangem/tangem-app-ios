@@ -11,10 +11,6 @@ import SwiftUI
 import Combine
 
 extension View {
-    func toAnyView() -> AnyView {
-        AnyView(self)
-    }
-
     @ViewBuilder
     func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {

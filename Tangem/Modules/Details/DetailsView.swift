@@ -38,7 +38,8 @@ struct DetailsView: View {
             ScanTroubleshootingView(
                 isPresented: $viewModel.showTroubleshootingView,
                 tryAgainAction: viewModel.tryAgain,
-                requestSupportAction: viewModel.requestSupport
+                requestSupportAction: viewModel.requestSupport,
+                openScanCardManualAction: viewModel.openScanCardManual
             )
         )
         .alert(item: $viewModel.alert) { $0.alert }

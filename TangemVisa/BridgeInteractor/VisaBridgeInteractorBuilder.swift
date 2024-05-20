@@ -11,17 +11,18 @@ import BlockchainSdk
 
 public struct VisaBridgeInteractorBuilder {
     private let evmSmartContractInteractor: EVMSmartContractInteractor
+    private let logger: InternalLogger
 
-    public init(evmSmartContractInteractor: EVMSmartContractInteractor) {
+    public init(evmSmartContractInteractor: EVMSmartContractInteractor, logger: VisaLogger) {
         self.evmSmartContractInteractor = evmSmartContractInteractor
+        self.logger = .init(logger: logger)
     }
 
-    public func build(for cardAddress: String, logger: VisaLogger) async throws -> VisaBridgeInteractor {
-        let logger = InternalLogger(logger: logger)
+    public func build(for cardAddress: String) async throws -> VisaBridgeInteractor {
         var paymentAccount: String?
-        logger.debug(subsystem: .bridgeInteractorBuilder, "Start searching PaymentAccount for card with address: \(cardAddress)")
+        log("Start searching PaymentAccount for card with address: \(cardAddress)")
         let registryAddress = VisaUtilities().registryAddress
-        logger.debug(subsystem: .bridgeInteractorBuilder, "Requesting PaymentAccount from bridge with address \(registryAddress)")
+        log("Requesting PaymentAccount from bridge with address \(registryAddress)")
         let request = VisaSmartContractRequest(
             contractAddress: registryAddress,
             method: GetPaymentAccountByCardMethod(cardWalletAddress: cardAddress)
@@ -30,31 +31,49 @@ public struct VisaBridgeInteractorBuilder {
         do {
             let response = try await evmSmartContractInteractor.ethCall(request: request).async()
             paymentAccount = try AddressParser().parseAddressResponse(response)
-            logger.debug(subsystem: .bridgeInteractorBuilder, "PaymentAccount founded: \(paymentAccount ?? .unknown)")
+            log("PaymentAccount founded: \(paymentAccount ?? .unknown)")
         } catch {
-            logger.debug(subsystem: .bridgeInteractorBuilder, "Failed to receive PaymentAccount. Reason: \(error)")
+            log("Failed to receive PaymentAccount. Reason: \(error)")
         }
 
         guard let paymentAccount else {
-            logger.debug(subsystem: .bridgeInteractorBuilder, "No payment account for card address: \(cardAddress)")
+            log("No payment account for card address: \(cardAddress)")
             throw VisaBridgeInteractorBuilderError.failedToFindPaymentAccount
         }
 
-        logger.debug(subsystem: .bridgeInteractorBuilder, "Creating Bridge interactor for founded PaymentAccount")
+        log("Start loading token info")
+        let tokenInfoLoader = VisaTokenInfoLoader(
+            evmSmartContractInteractor: evmSmartContractInteractor,
+            logger: logger
+        )
+        let visaToken = try await tokenInfoLoader.loadTokenInfo(for: paymentAccount)
+
+        log("Creating Bridge interactor for founded PaymentAccount")
         return CommonBridgeInteractor(
+            visaToken: visaToken,
             evmSmartContractInteractor: evmSmartContractInteractor,
             paymentAccount: paymentAccount,
             logger: logger
         )
     }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        logger.debug(subsystem: .bridgeInteractorBuilder, message())
+    }
 }
 
 public extension VisaBridgeInteractorBuilder {
-    enum VisaBridgeInteractorBuilderError: String, LocalizedError {
+    enum VisaBridgeInteractorBuilderError: LocalizedError {
         case failedToFindPaymentAccount
+        case failedToLoadTokenInfo(error: LocalizedError)
 
         public var errorDescription: String? {
-            rawValue
+            switch self {
+            case .failedToFindPaymentAccount:
+                return "Failed to find payment account"
+            case .failedToLoadTokenInfo(let error):
+                return "Failed to load token info: \(error.errorDescription ?? "unknown")"
+            }
         }
     }
 }

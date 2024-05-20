@@ -186,7 +186,13 @@ extension DetailsViewModel {
     }
 
     func tryAgain() {
+        Analytics.log(.cantScanTheCardTryAgainButton, params: [.source: .settings])
         addOrScanNewUserWallet()
+    }
+
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .settings])
+        coordinator?.openScanCardManual()
     }
 
     func requestSupport() {
@@ -311,6 +317,7 @@ extension DetailsViewModel {
             case .none:
                 break
             case .troubleshooting:
+                Analytics.log(.cantScanTheCard, params: [.source: .settings])
                 showTroubleshootingView = true
             case .onboarding(let input):
                 coordinator?.openOnboardingModal(with: input)

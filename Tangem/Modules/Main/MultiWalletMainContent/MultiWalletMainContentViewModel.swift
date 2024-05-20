@@ -283,13 +283,13 @@ private extension MultiWalletMainContentViewModel {
         if userWalletModel.userTokensManager.canRemove(tokenItem) {
             showHideWarningAlert(tokenItem: tokenItem)
         } else {
-            showUnableToHideAlert(currencySymbol: tokenItem.currencySymbol, blockchainName: tokenItem.blockchain.displayName)
+            showUnableToHideAlert(name: tokenItem.name, currencySymbol: tokenItem.currencySymbol, blockchainName: tokenItem.blockchain.displayName)
         }
     }
 
     func showHideWarningAlert(tokenItem: TokenItem) {
         error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsHideAlertTitle(tokenItem.currencySymbol),
+            title: Localization.tokenDetailsHideAlertTitle(tokenItem.name),
             message: Localization.tokenDetailsHideAlertMessage,
             primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide)) { [weak self] in
                 self?.hideToken(tokenItem: tokenItem)
@@ -298,14 +298,15 @@ private extension MultiWalletMainContentViewModel {
         )
     }
 
-    func showUnableToHideAlert(currencySymbol: String, blockchainName: String) {
+    func showUnableToHideAlert(name: String, currencySymbol: String, blockchainName: String) {
         let message = Localization.tokenDetailsUnableHideAlertMessage(
+            name,
             currencySymbol,
             blockchainName
         )
 
         error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsUnableHideAlertTitle(currencySymbol),
+            title: Localization.tokenDetailsUnableHideAlertTitle(name),
             message: message,
             primaryButton: .default(Text(Localization.commonOk))
         )
@@ -341,6 +342,10 @@ extension MultiWalletMainContentViewModel {
         )
 
         coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
+    }
+
+    private func openTravalaPromotion(url: URL) {
+        coordinator?.openInSafari(url: url)
     }
 
     private func openOrganizeTokens() {
@@ -389,6 +394,8 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             deriveEntriesWithoutDerivation()
         case .backupCard:
             startBackupProcess()
+        case .bookNow(let url):
+            openTravalaPromotion(url: url)
         default:
             return
         }

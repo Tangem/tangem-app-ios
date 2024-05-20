@@ -56,7 +56,8 @@ class UserWalletModelMock: UserWalletModel {
             productType: .other,
             batchId: "",
             firmware: "",
-            baseCurrency: ""
+            baseCurrency: "",
+            userWalletId: userWalletId
         )
     }
 

@@ -392,6 +392,12 @@ class WalletModel {
         }
     }
 
+    private func updateAfterSendingTransaction() {
+        // Force update transactions history to take a new pending transaction from the local storage
+        _localPendingTransactionSubject.send(())
+        startUpdatingTimer()
+    }
+
     // MARK: - Load Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
@@ -442,14 +448,14 @@ class WalletModel {
                 .eraseToAnyPublisher()
         }
 
-        return walletManager.send(tx, signer: signer)
+        return walletManager
+            .send(tx, signer: signer)
             .receive(on: DispatchQueue.main)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                // Force update transactions history to take a new pending transaction from the local storage
-                self?._localPendingTransactionSubject.send(())
-                self?.startUpdatingTimer()
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
             })
-            .receive(on: DispatchQueue.main)
+            .map(\.1)
             .eraseToAnyPublisher()
     }
 
@@ -496,6 +502,23 @@ extension WalletModel {
 
     func getDecimalBalance(for type: Amount.AmountType) -> Decimal? {
         return wallet.amounts[type]?.value
+    }
+
+    /// A convenience wrapper for `AssetRequirementsManager.fulfillRequirements(for:signer:)`
+    /// that automatically triggers the update of the internal state of this wallet model.
+    func fulfillRequirements(signer: any TransactionSigner) -> some Publisher<Void, Error> {
+        return assetRequirementsManager
+            .publisher
+            .withWeakCaptureOf(self)
+            .flatMap { walletModel, assetRequirementsManager in
+                assetRequirementsManager.fulfillRequirements(for: walletModel.amountType, signer: signer)
+            }
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
+            })
+            .mapToVoid()
     }
 }
 
@@ -661,6 +684,10 @@ extension WalletModel {
 
     var existentialDepositProvider: ExistentialDepositProvider? {
         walletManager as? ExistentialDepositProvider
+    }
+
+    var assetRequirementsManager: AssetRequirementsManager? {
+        walletManager as? AssetRequirementsManager
     }
 }
 

@@ -46,7 +46,7 @@ struct PendingTransactionRecordMapper {
             timeFormatted: timeFormatted,
             amount: amount(for: transaction),
             isOutgoing: !transaction.isIncoming,
-            transactionType: .transfer,
+            transactionType: transactionType(for: transaction),
             status: .inProgress
         )
     }
@@ -68,5 +68,14 @@ struct PendingTransactionRecordMapper {
         }
 
         return .user(transaction.destination)
+    }
+
+    private func transactionType(for transaction: PendingTransactionRecord) -> TransactionViewModel.TransactionType {
+        switch transaction.transactionType {
+        case .transfer:
+            return .transfer
+        case .operation:
+            return .operation(name: Localization.transactionHistoryOperation)
+        }
     }
 }

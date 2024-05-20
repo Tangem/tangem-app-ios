@@ -273,7 +273,8 @@ extension CommonUserWalletModel: UserWalletModel {
         AnalyticsContextData(
             card: cardInfo.card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 
@@ -410,7 +411,8 @@ extension CommonUserWalletModel: AnalyticsContextDataProvider {
         return AnalyticsContextData(
             card: card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 }

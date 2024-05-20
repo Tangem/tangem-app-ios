@@ -25,7 +25,6 @@ final class SingleTokenNotificationManager {
     private var rentFeeNotification: NotificationViewInput?
     private var bag: Set<AnyCancellable> = []
     private var notificationsUpdateTask: Task<Void, Never>?
-    private var promotionUpdateTask: Task<Void, Never>?
 
     init(
         walletModel: WalletModel,
@@ -71,9 +70,12 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .solana = walletModel.tokenItem.blockchain,
-           !walletModel.isZeroAmount {
+        if case .solana = walletModel.tokenItem.blockchain, !walletModel.isZeroAmount {
             events.append(.solanaHighImpact)
+        }
+
+        if case .binance = walletModel.tokenItem.blockchain {
+            events.append(.bnbBeaconChainRetirement)
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -85,6 +87,8 @@ final class SingleTokenNotificationManager {
                 events.append(event)
             }
         }
+
+        events += makeAssetRequirementsNotificationEvents()
 
         let inputs = events.map {
             factory.buildNotificationInput(
@@ -101,7 +105,6 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject.send(inputs)
 
         setupRentFeeNotification()
-        setupTangemExpressPromotionNotification()
     }
 
     private func setupRentFeeNotification() {
@@ -131,43 +134,6 @@ final class SingleTokenNotificationManager {
         }
     }
 
-    private func setupTangemExpressPromotionNotification() {
-        promotionUpdateTask?.cancel()
-        promotionUpdateTask = Task { [weak self] in
-            guard let self, let expressDestinationService, !Task.isCancelled else {
-                return
-            }
-
-            guard let promotion = await bannerPromotionService.activePromotion(place: .tokenDetails) else {
-                notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
-                return
-            }
-
-            let input = BannerPromotionNotificationFactory().buildTokenBannerNotificationInput(
-                promotion: promotion,
-                buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
-                    self?.dismissNotification(with: id)
-                }, dismissAction: { [weak self] id in
-                    self?.dismissNotification(with: id)
-                }
-            )
-
-            guard await expressDestinationService.canBeSwapped(wallet: walletModel) else {
-                notificationInputsSubject.value.removeAll { $0.id == input.id }
-                return
-            }
-
-            guard !notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
-                return
-            }
-
-            await runOnMain {
-                self.notificationInputsSubject.value.insert(input, at: 0)
-            }
-        }
-    }
-
     private func setupNetworkUnreachable() {
         let factory = NotificationsFactory()
         notificationInputsSubject
@@ -180,6 +146,12 @@ final class SingleTokenNotificationManager {
     }
 
     private func setupNoAccountNotification(with message: String) {
+        // Skip displaying the BEP2 account creation top-up notification
+        // since it will be deprecated shortly due to the network shutdown
+        if case .binance = walletModel.tokenItem.blockchain {
+            return
+        }
+
         let factory = NotificationsFactory()
         let event = TokenNotificationEvent.noAccount(message: message)
 
@@ -215,6 +187,32 @@ final class SingleTokenNotificationManager {
         )
         return input
     }
+
+    private func makeAssetRequirementsNotificationEvents() -> [TokenNotificationEvent] {
+        let asset = walletModel.amountType
+
+        guard
+            !walletModel.hasPendingTransactions,
+            let assetRequirementsManager = walletModel.assetRequirementsManager,
+            assetRequirementsManager.hasRequirements(for: asset)
+        else {
+            return []
+        }
+
+        switch assetRequirementsManager.requirementsCondition(for: asset) {
+        case .paidTransaction:
+            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: nil))]
+        case .paidTransactionWithFee(let feeAmount):
+            let balanceFormatter = BalanceFormatter()
+            let associationFee = TokenNotificationEvent.UnfulfilledRequirementsConfiguration.HederaTokenAssociationFee(
+                formattedValue: balanceFormatter.formatDecimal(feeAmount.value),
+                currencySymbol: feeAmount.currencySymbol
+            )
+            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: associationFee))]
+        case .none:
+            return []
+        }
+    }
 }
 
 extension SingleTokenNotificationManager: NotificationManager {
@@ -243,9 +241,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         }
 
         switch event {
-        case .changelly:
-            Analytics.log(.swapPromoButtonClose)
-            bannerPromotionService.hide(promotion: .changelly, on: .tokenDetails)
+        case .travala:
+            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
         }
 
         notificationInputsSubject.value.removeAll(where: { $0.id == id })

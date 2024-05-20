@@ -8,6 +8,8 @@
 
 import Foundation
 
+// For more info read: https://klundberg.com/blog/capturing-objects-weakly-in-instance-method-references-in-swift/
+
 func weakify<Owner: AnyObject>(_ owner: Owner, forFunction builder: @escaping (Owner) -> () -> Void) -> () -> Void {
     return { [weak owner] in
         if let owner = owner {

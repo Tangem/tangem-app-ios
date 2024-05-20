@@ -15,6 +15,8 @@ class DetailsCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Main view model
 
     @Published private(set) var detailsViewModel: DetailsViewModel? = nil
@@ -125,6 +127,10 @@ extension DetailsCoordinator: DetailsRoutable {
         coordinator.start(with: .init(input: input))
         referralCoordinator = coordinator
         Analytics.log(.referralScreenOpened)
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
 }
 

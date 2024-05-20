@@ -13,7 +13,7 @@
 "alert_manage_tokens_unsupported_message" = "Токены в сети %1$@ не поддерживаются этой картой из-за ограничений прошивки.";
 "alert_negative_app_rate_sent_message" = "Спасибо за ваш отзыв. Мы ответим в кратчайшие сроки.";
 "alert_negative_app_rate_sent_title" = "Ваши предложения отправлены";
-"alert_troubleshooting_scan_card_message" = "Пожалуйста, попробуйте приложить карту в точности, как показано на анимации, или запросите поддержку.";
+"alert_troubleshooting_scan_card_message" = "Пожалуйста, попробуйте приложить карту в точности, как показано на анимации, либо прочтите руководство по сканированию. Если проблема осталась, то запросите поддержку.";
 "alert_troubleshooting_scan_card_title" = "У вас возникли трудности со сканированием карты?";
 "app_settings_default_fee" = "Default Fee";
 "app_settings_default_fee_footer" = "Подключите функцию комиссии по умолчанию и при формировании транзакции на отправку средств комиссия будет выставлена автоматически, а экран комиссии пропущен. Вы всегда сможете на него вернуться.";
@@ -91,6 +91,7 @@
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
 "common_network_fee_title" = "Сетевая комиссия";
+"common_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "common_next" = "Далее";
 "common_no" = "Нет";
 "common_no_address" = "Нет адреса";
@@ -258,9 +259,10 @@
 "main_manage_tokens" = "Управление токенами";
 "main_scan_card_warning_view_subtitle" = "Чтобы получить доступ ко всем сетям, вам необходимо отсканировать карту";
 "main_scan_card_warning_view_title" = "Отсканируйте карту";
-"main_swap_changelly_promotion_message" = "Обменивайте свои токены с %1$@ комиссии провайдера через Changelly с %2$@ по %3$@ февраля.";
-"main_swap_changelly_promotion_title" = "Обмен с Changelly, %@ комиссии";
 "main_tokens" = "Токены";
+"main_travala_promotion_button" = "Забронировать";
+"main_travala_promotion_description" = "Оплатите его криптой и сэкономьте **50 долларов** через нашего партнера Travala: **%1@ - %2@**";
+"main_travala_promotion_title" = "Забронируйте отпуск с Tangem";
 "manage_tokens_add" = "Добавить";
 "manage_tokens_edit" = "Изменить";
 "manage_tokens_list_header_title" = "Рыночная капитализация";
@@ -423,12 +425,14 @@
 "send_alert_transaction_failed_text" = "Причина: %1$@\nКод: %2$@";
 "send_alert_transaction_failed_title" = "Транзакция не выполнена";
 "send_amount_label" = "Сумма";
+"send_bitcoin_custom_fee_footer" = "Вы можете установить комиссию за транзакцию, изменив значение в поле Satoshi per vByte.";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_hint_address" = "Адрес";
 "send_destination_tag_field" = "Код назначения";
-"send_dismiss_message" = "Are you sure you want to leave this page? Any changes made will be lost.";
+"send_dismiss_message" = "Вы действительно хотите закрыть экран отправки транзакции?";
 "send_enter_address_field" = "Введите адрес";
 "send_error_address_same_as_wallet" = "Адрес совпадает с адресом кошелька";
+"send_evm_custom_fee_footer" = "Комиссия, которая будет взята за вашу транзакцию. Вы можете выставить своё собственное значение.";
 "send_extras_error_invalid_destination_tag" = "Недопустимый Tag. Он не будет добавлен в транзакцию.";
 "send_extras_hint_destination_tag" = "Tag";
 "send_extras_hint_memo" = "Memo";
@@ -446,9 +450,7 @@
 "send_max_amount" = "Всё";
 "send_max_amount_label" = "Максимальная сумма";
 "send_max_fee" = "Комиссия не превысит ";
-"send_max_fee_footer" = "Комиссия, которая будет взята за вашу транзакцию. Вы можете выставить своё собственное значение.";
 "send_memo_destination_tag_error" = "Допустим ввод только цифр";
-"send_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "send_network_fee_warning_title" = "Покрытие сетевой комиссии";
 "send_notification_exceed_balance_text" = "Недостаточно средств для перевода, так как сумма комиссии и сумма перевода в совокупности больше имеющегося баланса";
 "send_notification_exceed_balance_title" = "Недостаточно средств";
@@ -463,8 +465,8 @@
 "send_notification_invalid_minimum_amount_text" = "Минимальная сумма отправки - %1$@. Пожалуйста, убедитесь, что остаток после отправки также не будет меньше %2$@.";
 "send_notification_invalid_reserve_amount_text" = "Адрес получателя не активирован. \nПожалуйста, измените сумму отправки, чтобы продолжить.";
 "send_notification_invalid_reserve_amount_title" = "Сумма отправки не может быть менее %@";
+"send_notification_leave_button" = "Оставить %@";
 "send_notification_reduce_by" = "Уменьшить на %@";
-"send_notification_reduce_to" = "Уменьшить до %@";
 "send_notification_transaction_delay_text" = "Обратите внимание, что при определенных параметрах комиссии возможны задержки по вашей транзакции";
 "send_notification_transaction_delay_title" = "Возможны задержки по транзакции";
 "send_notification_transaction_limit_text" = "Из-за ограничений %1$@ в одну транзакцию может поместиться только %2$@ UTXO. Это означает, что вы можете отправить только %3$@ или меньше. Вам нужно уменьшить сумму.";
@@ -474,7 +476,7 @@
 "send_recent_transactions" = "Последние";
 "send_recipient" = "Получатель";
 "send_recipient_address_error" = "Неверный адрес";
-"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов";
+"send_recipient_address_footer" = "Убедитесь, что вы отправляете средства на адрес кошелька %@. Ошибки могут привести к потере ваших токенов.";
 "send_recipient_label" = "Отправить";
 "send_recipient_memo_footer" = "Мемо/ Код назначения - это код, разделяющий транзакции к общему получателю в сети криптовалют. Внимание: отсутствие мемо может привести к потере средств.";
 "send_recipient_wallets_title" = "Мои кошельки";
@@ -483,7 +485,7 @@
 "send_sending" = "Отправка";
 "send_summary_tap_hint" = "Нажмите на любое поле, чтобы изменить его";
 "send_summary_title" = "Отправка %@";
-"send_summary_transaction_description" = "Вы отправляете %1$@, включая комиссию сети %2$@";
+"send_summary_transaction_description" = "Вы отправляете **%1$@**, включая комиссию сети %2$@";
 "send_title_currency_format" = "Отправка %@";
 "send_total_label" = "Всего";
 "send_total_subtitle_asset_format" = "%1$@ и %2$@ будет отправлено";
@@ -515,7 +517,6 @@
 "swapping_give_permission" = "Дать разрешение";
 "swapping_high_price_impact_description" = "Обмен этой суммы выбранных токенов может вызвать значительные колебания цены и уменьшить получаемую сумму.";
 "swapping_insufficient_funds" = "Недостаточно средств";
-"swapping_network_fee_warning_content" = "Сумма отправки будет уменьшена для покрытия выбранного уровня комиссии";
 "swapping_permission_buttons_approve" = "Подтвердить";
 "swapping_permission_current_transaction" = "Текущая транзакция";
 "swapping_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для обмена.";
@@ -547,11 +548,8 @@
 "token_details_hide_alert_title" = "Скрыть %@";
 "token_details_hide_token" = "Скрыть токен";
 "token_details_token_type_subtitle" = "%1$@ токен в сети %%image%% %2$@";
-"token_details_unable_hide_alert_message" = "Токен %1$@ является основной валютой в сети %2$@ и не может быть скрыт до тех пор, пока у вас в списке есть другие токены этой сети.";
+"token_details_unable_hide_alert_message" = "Токен %1$@ (%2$@) является основной валютой в сети %3$@ и не может быть скрыт до тех пор, пока у вас в списке есть другие токены этой сети";
 "token_details_unable_hide_alert_title" = "Невозможно скрыть %@";
-"token_swap_changelly_promotion_message" = "Обменивайте этот токен на другие с %1$@ комиссии за обслуживание с %2$@ по %3$@ февраля.";
-"token_swap_changelly_promotion_title" = "Обмен с Changelly, %@ комиссии";
-"token_swap_promotion_button" = "Обменять";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас еще нет транзакций";
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";
@@ -624,6 +622,8 @@
 "warning_access_denied_message" = "Используйте %@ или отсканируйте карту, чтобы разблокировать доступ к вашему кошельку";
 "warning_backup_errors_message" = "Пожалуйста, выведите все средства из этого кошелька, сбросьте его к заводским настройкам и создайте новый. Доступ к текущему кошельку будет утерян.";
 "warning_backup_errors_title" = "Ошибка активации";
+"warning_bnb_retirement_message" = "По решению разработчиков сети BNB, стандарт BEP-2 перестанет поддерживаться в июне 2024 года. Чтобы не потерять свои активы, их необходимо преобразовать в стандарт BEP-20. Используйте функцию обмена в приложении или cторонние сервисы, чтобы перевести их в cеть BNB Smart Chain.";
+"warning_bnb_retirement_title" = "Отключение сети BNB Beacon Chain";
 "warning_button_could_be_better" = "Можно лучше";
 "warning_button_ok" = "Понятно!";
 "warning_button_really_cool" = "Очень круто!";
@@ -650,6 +650,11 @@
 "warning_express_wrong_amount_description" = "Пожалуйста, измените сумму для обмена";
 "warning_failed_to_verify_card_message" = "Возможно, данная карта - образец или подделка";
 "warning_failed_to_verify_card_title" = "Ошибка проверки подлинности";
+"warning_hedera_missing_token_association_button_title" = "Ассоциировать";
+"warning_hedera_missing_token_association_message" = "Этот токен должен быть ассоциирован с вашей учетной записью Hedera, прежде чем вы сможете его принять. Стоимость ассоциации ~%1$@ %2$@ ";
+"warning_hedera_missing_token_association_message_brief" = "Этот токен должен быть ассоциирован с вашей учетной записью Hedera, прежде чем вы сможете его принять";
+"warning_hedera_missing_token_association_title" = "Ассоциируете свой токен";
+"warning_hedera_token_association_not_enough_hbar_message" = "Недостаточно %@. Пополните ваш аккаунт Hedera для ассоциации этого токена";
 "warning_long_transaction_message" = "iPhone 7/7+ не может подписывать транзакции в данной сети. Для завершения этой операции, пожалуйста, используйте другой телефон";
 "warning_long_transaction_title" = "Невозможно подписать транзакцию";
 "warning_low_signatures_message" = "На этой карте осталось всего %@ подписей. Вам следует вывести все ваши средства.";
@@ -669,6 +674,7 @@
 "warning_old_device_old_card_title" = "Устройство несовместимо";
 "warning_rate_app_message" = "Ваш отзыв мотивирует нас сделать кошелек Tangem еще лучше";
 "warning_rate_app_title" = "Нравится Tangem?";
+"warning_receive_blocked_hedera_token_association_required_message" = "Вам необходимо провести ассоциацию токена для того, чтобы иметь возможность принимать его";
 "warning_rent_fee_title" = "Необходима плата за аренду сети";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ - это монета в сети %2$@. Для совершения транзакции %3$@, вам необходимо внести немного %4$@ (%5$@), чтобы покрыть комиссию сети.";
 "warning_send_blocked_funds_for_fee_title" = "Недостаточно %1$@ для оплаты комиссии сети";

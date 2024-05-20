@@ -34,22 +34,21 @@ class VisaBalancesLimitsBottomSheetViewModel: ObservableObject, Identifiable {
     private let formatter: BalanceFormatter = .init()
     private let balanceFormattingOptions: BalanceFormattingOptions = .init(minFractionDigits: 2, maxFractionDigits: 2, roundingType: .default(roundingMode: .down, scale: 2))
 
-    init(balances: AppVisaBalances, limit: AppVisaLimit) {
-        let tokenCurrencyCode = VisaUtilities().visaToken.symbol
-        totalAmount = formatter.formatCryptoBalance(balances.totalBalance, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        amlVerifiedAmount = formatter.formatCryptoBalance(balances.verifiedBalance, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        availableAmount = formatter.formatCryptoBalance(balances.available, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        blockedAmount = formatter.formatCryptoBalance(balances.blocked, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        debtAmount = formatter.formatCryptoBalance(balances.debt, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        pendingRefundAmount = formatter.formatCryptoBalance(balances.pendingRefund, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
+    init(balances: AppVisaBalances, limit: AppVisaLimit, currencySymbol: String) {
+        totalAmount = formatter.formatCryptoBalance(balances.totalBalance, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        amlVerifiedAmount = formatter.formatCryptoBalance(balances.verifiedBalance, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        availableAmount = formatter.formatCryptoBalance(balances.available, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        blockedAmount = formatter.formatCryptoBalance(balances.blocked, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        debtAmount = formatter.formatCryptoBalance(balances.debt, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        pendingRefundAmount = formatter.formatCryptoBalance(balances.pendingRefund, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
 
-        singleTransactionAmount = formatter.formatCryptoBalance(limit.singleTransaction, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
+        singleTransactionAmount = formatter.formatCryptoBalance(limit.singleTransaction, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.YYYY"
         availabilityDescription = "Available till \(dateFormatter.string(from: limit.actualExpirationDate))"
-        remainingOTPAmount = formatter.formatCryptoBalance(limit.remainingOTPAmount, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
-        remainingNoOtpAmount = formatter.formatCryptoBalance(limit.remainingNoOTPAmount, currencyCode: tokenCurrencyCode, formattingOptions: balanceFormattingOptions)
+        remainingOTPAmount = formatter.formatCryptoBalance(limit.remainingOTPAmount, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
+        remainingNoOtpAmount = formatter.formatCryptoBalance(limit.remainingNoOTPAmount, currencyCode: currencySymbol, formattingOptions: balanceFormattingOptions)
     }
 
     func openBalancesInfo() {

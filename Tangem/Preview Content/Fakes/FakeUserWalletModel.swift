@@ -38,7 +38,8 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
             productType: .other,
             batchId: "",
             firmware: "",
-            baseCurrency: ""
+            baseCurrency: "",
+            userWalletId: userWalletId
         )
     }
 

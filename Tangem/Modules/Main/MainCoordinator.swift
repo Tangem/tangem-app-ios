@@ -114,6 +114,10 @@ extension MainCoordinator: MainRoutable {
     func close(newScan: Bool) {
         popToRoot(with: .init(newScan: newScan))
     }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
 }
 
 // MARK: - MultiWalletMainContentRoutable protocol conformance
@@ -194,7 +198,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
+        guard SendFeatureProvider.shared.isAvailable else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
             }
@@ -234,7 +238,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
+        guard SendFeatureProvider.shared.isAvailable else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
             }
@@ -321,7 +325,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL) {
+    func openInSafari(url: URL) {
         safariManager.openURL(url)
     }
 

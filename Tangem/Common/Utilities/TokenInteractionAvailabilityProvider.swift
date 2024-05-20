@@ -22,7 +22,8 @@ struct TokenInteractionAvailabilityProvider {
     }
 
     func isContextMenuAvailable() -> Bool {
-        return defaultInteractionAvailability()
+        let hasRequirements = walletModel.assetRequirementsManager?.hasRequirements(for: walletModel.amountType) ?? false
+        return !hasRequirements && defaultInteractionAvailability()
     }
 
     func isTokenDetailsAvailable() -> Bool {
@@ -91,7 +92,8 @@ struct TokenInteractionAvailabilityProvider {
              .flare,
              .taraxa,
              .radiant,
-             .base:
+             .base,
+             .joystream:
 
             // Checking that we have at least one valid (non-empty) address
             //

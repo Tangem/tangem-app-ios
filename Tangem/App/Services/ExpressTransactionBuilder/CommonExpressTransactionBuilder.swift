@@ -173,7 +173,8 @@ private extension CommonExpressTransactionBuilder {
              .flare,
              .taraxa,
              .radiant,
-             .base:
+             .base,
+             .joystream:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }

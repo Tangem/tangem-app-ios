@@ -15,13 +15,13 @@ import CombineExt
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     // MARK: - ViewState
 
     @Published var pages: [MainUserWalletPageBuilder] = []
     @Published var selectedCardIndex = 0
     @Published var isHorizontalScrollDisabled = false
-    @Published var showAddressCopiedToast = false
     @Published var actionSheet: ActionSheetBinder?
 
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
@@ -63,6 +63,8 @@ final class MainViewModel: ObservableObject {
             singleWalletContentDelegate: self,
             multiWalletContentDelegate: self
         )
+
+        assert(pages.count == userWalletRepository.models.count, "Number of pages must be equal to number of UserWalletModels")
 
         bind()
     }
@@ -124,7 +126,7 @@ final class MainViewModel: ObservableObject {
 
         switch page {
         case .singleWallet(_, _, let viewModel):
-            viewModel.onPullToRefresh(completionHandler: completion)
+            viewModel?.onPullToRefresh(completionHandler: completion)
         case .multiWallet(_, _, let viewModel):
             viewModel.onPullToRefresh(completionHandler: completion)
         case .lockedWallet:
@@ -253,16 +255,12 @@ final class MainViewModel: ObservableObject {
             return
         }
 
-        guard
-            let newPage = mainUserWalletPageBuilderFactory.createPage(
-                for: userWalletModel,
-                lockedUserWalletDelegate: self,
-                singleWalletContentDelegate: self,
-                multiWalletContentDelegate: self
-            )
-        else {
-            return
-        }
+        let newPage = mainUserWalletPageBuilderFactory.createPage(
+            for: userWalletModel,
+            lockedUserWalletDelegate: self,
+            singleWalletContentDelegate: self,
+            multiWalletContentDelegate: self
+        )
 
         let newPageIndex = pages.count
         pages.append(newPage)
@@ -364,6 +362,52 @@ final class MainViewModel: ObservableObject {
                 }
             }
             .store(in: &bag)
+
+        // We need to check if some pages are missing body model. This can happen due to not loaded API list
+        // In this case we need to recreate this pages after API list loaded and WalletModelsManager publishes list of models
+        let indexesToRecreate: [Int] = pages.indexed().compactMap { $1.missingBodyModel ? $0 : nil }
+        if !indexesToRecreate.isEmpty {
+            let walletModelPublishers = indexesToRecreate.map { userWalletRepository.models[$0].walletModelsManager.walletModelsPublisher }
+            walletModelPublishers.combineLatest()
+                .combineLatest(apiListProvider.apiListPublisher)
+                .receive(on: DispatchQueue.main)
+                .withWeakCaptureOf(self)
+                .sink { viewModel, tuple in
+                    let (_, apiList) = tuple
+
+                    if apiList.isEmpty {
+                        return
+                    }
+
+                    var currentPages = viewModel.pages
+                    for (index, page) in currentPages.indexed() {
+                        // Double check that body model is still missing
+                        guard
+                            page.missingBodyModel,
+                            index < viewModel.userWalletRepository.models.count
+                        else {
+                            continue
+                        }
+
+                        let userWalletModel = viewModel.userWalletRepository.models[index]
+                        let updatedPage = viewModel.mainUserWalletPageBuilderFactory.createPage(
+                            for: userWalletModel,
+                            lockedUserWalletDelegate: viewModel,
+                            singleWalletContentDelegate: viewModel,
+                            multiWalletContentDelegate: viewModel
+                        )
+
+                        if updatedPage.missingBodyModel {
+                            continue
+                        }
+
+                        currentPages[index] = updatedPage
+                    }
+
+                    viewModel.pages = currentPages
+                }
+                .store(in: &bag)
+        }
     }
 
     private func log(_ message: String) {
@@ -389,18 +433,16 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
     }
 
     func userWalletUnlocked(_ userWalletModel: UserWalletModel) {
-        guard
-            let index = pages.firstIndex(where: { $0.id == userWalletModel.userWalletId }),
-            let page = mainUserWalletPageBuilderFactory.createPage(
-                for: userWalletModel,
-                lockedUserWalletDelegate: self,
-                singleWalletContentDelegate: self,
-                multiWalletContentDelegate: self
-            )
-        else {
+        guard let index = pages.firstIndex(where: { $0.id == userWalletModel.userWalletId }) else {
             return
         }
 
+        let page = mainUserWalletPageBuilderFactory.createPage(
+            for: userWalletModel,
+            lockedUserWalletDelegate: self,
+            singleWalletContentDelegate: self,
+            multiWalletContentDelegate: self
+        )
         pages[index] = page
         unlockWalletBottomSheetViewModel = nil
     }
@@ -411,11 +453,19 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
             self?.coordinator?.openMail(with: dataCollector, emailType: emailType, recipient: recipient)
         }
     }
+
+    func openScanCardManual() {
+        coordinator?.openScanCardManual()
+    }
 }
 
 extension MainViewModel: MultiWalletMainContentDelegate {
     func displayAddressCopiedToast() {
-        showAddressCopiedToast = true
+        Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
+            .present(
+                layout: .bottom(padding: 80),
+                type: .temporary()
+            )
     }
 }
 

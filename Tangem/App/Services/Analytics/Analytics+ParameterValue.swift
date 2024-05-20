@@ -37,6 +37,7 @@ extension Analytics {
         case onboarding = "Onboarding"
         case settings = "Settings"
         case signIn = "Sign In"
+        case receive = "Receive"
 
         case transactionSourceSend = "Send"
         case transactionSourceSwap = "Swap"
@@ -89,6 +90,9 @@ extension Analytics {
 
         case balance = "Balance"
 
+        // Transaction is sent
+        case sent = "Sent"
+
         // MARK: - Express
 
         case status = "Status"
@@ -129,6 +133,16 @@ extension Analytics {
         case readPrimary = "read_primary"
         case addbackup = "add_backup"
         case proceedBackup = "proceed_backup"
+
+        // MARK: - Promotion banners
+
+        case oneInch = "1inch"
+        case changelly = "Changelly"
+        case changeNow = "ChangeNow"
+        case travala = "Travala"
+
+        case clicked = "Clicked"
+        case closed = "Closed"
 
         // MARK: - Rate the app response
 

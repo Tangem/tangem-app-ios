@@ -241,6 +241,10 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .apiList)
     }
 
+    func loadFeatures() async throws -> [String: Bool] {
+        try await request(for: .features)
+    }
+
     func initialize() {
         provider
             .requestPublisher(TangemApiTarget(type: .geo, authData: authData))

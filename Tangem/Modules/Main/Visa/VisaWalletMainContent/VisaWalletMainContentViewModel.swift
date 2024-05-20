@@ -13,7 +13,7 @@ import TangemVisa
 
 protocol VisaWalletRoutable: AnyObject {
     func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo])
-    func openExplorer(at url: URL)
+    func openInSafari(url: URL)
     func openTransactionDetails(tokenItem: TokenItem, for record: VisaTransactionRecord)
 }
 
@@ -48,7 +48,11 @@ class VisaWalletMainContentViewModel: ObservableObject {
     }
 
     func openDeposit() {
-        Analytics.log(event: .buttonReceive, params: [.token: visaWalletModel.tokenItem.currencySymbol])
+        guard let tokenItem = visaWalletModel.tokenItem else {
+            return
+        }
+
+        Analytics.log(event: .buttonReceive, params: [.token: tokenItem.currencySymbol])
 
         let addressType = AddressType.default
         let addressInfo = ReceiveAddressInfo(
@@ -58,7 +62,7 @@ class VisaWalletMainContentViewModel: ObservableObject {
             addressQRImage: QrCodeGenerator.generateQRCode(from: visaWalletModel.accountAddress)
         )
         coordinator?.openReceiveScreen(
-            tokenItem: visaWalletModel.tokenItem,
+            tokenItem: tokenItem,
             addressInfos: [addressInfo]
         )
     }
@@ -66,12 +70,13 @@ class VisaWalletMainContentViewModel: ObservableObject {
     func openBalancesAndLimits() {
         guard
             let balances = visaWalletModel.balances,
-            let limit = visaWalletModel.limits?.currentLimit
+            let limit = visaWalletModel.limits?.currentLimit,
+            let tokenItem = visaWalletModel.tokenItem
         else {
             return
         }
 
-        balancesAndLimitsViewModel = .init(balances: balances, limit: limit)
+        balancesAndLimitsViewModel = .init(balances: balances, limit: limit, currencySymbol: tokenItem.currencySymbol)
     }
 
     func openExplorer() {
@@ -79,18 +84,19 @@ class VisaWalletMainContentViewModel: ObservableObject {
             return
         }
 
-        coordinator?.openExplorer(at: url)
+        coordinator?.openInSafari(url: url)
     }
 
     func exploreTransaction(with id: String) {
         guard
             let transactionId = UInt64(id),
-            let transactionRecord = visaWalletModel.transaction(with: transactionId)
+            let transactionRecord = visaWalletModel.transaction(with: transactionId),
+            let tokenItem = visaWalletModel.tokenItem
         else {
             return
         }
 
-        coordinator?.openTransactionDetails(tokenItem: visaWalletModel.tokenItem, for: transactionRecord)
+        coordinator?.openTransactionDetails(tokenItem: tokenItem, for: transactionRecord)
         AppLog.shared.debug("[Visa Main Content View Model] Explore transaction with id: \(transactionId)")
     }
 
@@ -165,14 +171,17 @@ class VisaWalletMainContentViewModel: ObservableObject {
     }
 
     private func updateLimits() {
-        guard let limits = visaWalletModel.limits else {
+        guard
+            let limits = visaWalletModel.limits,
+            let tokenItem = visaWalletModel.tokenItem
+        else {
             return
         }
 
         let balanceFormatter = BalanceFormatter()
         let currentLimit = limits.currentLimit
         let remainingSummary = currentLimit.remainingOTPAmount ?? 0
-        cryptoLimitText = balanceFormatter.formatCryptoBalance(remainingSummary, currencyCode: visaWalletModel.tokenItem.currencySymbol)
+        cryptoLimitText = balanceFormatter.formatCryptoBalance(remainingSummary, currencyCode: tokenItem.currencySymbol)
 
         let remainingTimeSeconds = Date().distance(to: currentLimit.actualExpirationDate)
         let remainingDays = Int(remainingTimeSeconds / 3600 / 24)

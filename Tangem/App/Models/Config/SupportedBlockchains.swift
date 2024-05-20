@@ -60,6 +60,7 @@ struct SupportedBlockchains {
         [
             .mantle(testnet: false),
             .manta(testnet: false),
+            .radiant(testnet: false),
         ]
     }
 
@@ -123,6 +124,7 @@ struct SupportedBlockchains {
             .moonriver(testnet: false),
             .flare(testnet: false),
             .taraxa(testnet: false),
+            .joystream(curve: ed25519Curve(for: version)),
         ]
     }
 

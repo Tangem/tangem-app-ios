@@ -25,8 +25,8 @@ struct PercentFormatter {
     func percentFormat(value: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        formatter.maximumFractionDigits = 1
-        formatter.minimumFractionDigits = 1
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
         formatter.positivePrefix = ""
         formatter.negativePrefix = ""
 

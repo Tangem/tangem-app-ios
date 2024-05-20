@@ -66,7 +66,8 @@ class LockedUserWalletModel: UserWalletModel {
         AnalyticsContextData(
             card: userWallet.cardInfo().card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 
@@ -130,7 +131,8 @@ extension LockedUserWalletModel: AnalyticsContextDataProvider {
             productType: config.productType,
             batchId: cardInfo.card.batchId,
             firmware: cardInfo.card.firmwareVersion.stringValue,
-            baseCurrency: baseCurrency
+            baseCurrency: baseCurrency,
+            userWalletId: userWalletId
         )
     }
 }

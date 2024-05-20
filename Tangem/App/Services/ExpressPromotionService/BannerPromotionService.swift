@@ -9,10 +9,9 @@
 import Foundation
 
 protocol BannerPromotionService {
-    func activePromotion(place: BannerPromotionPlace) async -> ActivePromotionInfo?
-
-    func isHidden(promotion: PromotionProgramName, on place: BannerPromotionPlace) -> Bool
-    func hide(promotion: PromotionProgramName, on place: BannerPromotionPlace)
+    func activePromotion(promotion: PromotionProgramName, on place: BannerPromotionPlacement) async -> ActivePromotionInfo?
+    func isHidden(promotion: PromotionProgramName, on place: BannerPromotionPlacement) -> Bool
+    func hide(promotion: PromotionProgramName, on place: BannerPromotionPlacement)
 }
 
 private struct BannerPromotionServiceKey: InjectionKey {
@@ -29,13 +28,16 @@ extension InjectedValues {
 struct ActivePromotionInfo: Hashable {
     let bannerPromotion: PromotionProgramName
     let timeline: Timeline
+    let link: URL?
 }
 
-enum BannerPromotionPlace: String, Hashable {
+enum BannerPromotionPlacement: String, Hashable {
     case main
     case tokenDetails
 }
 
 enum PromotionProgramName: String, Hashable {
-    case changelly
+    // Estimated dates 13/05 - 13/06
+    // Will be deleted: https://tangem.atlassian.net/browse/IOS-6842
+    case travala
 }

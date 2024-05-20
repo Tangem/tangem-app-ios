@@ -31,8 +31,9 @@ struct InternalLogger {
 
 extension InternalLogger {
     enum Subsystem: String {
-        case bridgeInteractorBuilder = "[Visa] Bridge Interactor Builder - "
-        case bridgeInteractor = "[Visa] Bridge Interactor - "
-        case apiService = "[VisaAPIService]\n"
+        case bridgeInteractorBuilder = "[Visa] [Bridge Interactor Builder]:\n"
+        case bridgeInteractor = "[Visa] [Bridge Interactor]:\n"
+        case apiService = "[Visa] [API Service]\n"
+        case tokenInfoLoader = "[Visa] [TokenInfoLoader]:\n"
     }
 }

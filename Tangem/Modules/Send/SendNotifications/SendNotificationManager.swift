@@ -10,6 +10,7 @@ import Combine
 import BlockchainSdk
 
 protocol SendNotificationManagerInput {
+    var feeValuePublisher: AnyPublisher<BlockchainSdk.Fee?, Never> { get }
     var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
     var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }
     var customFeePublisher: AnyPublisher<Fee?, Never> { get }
@@ -55,8 +56,11 @@ class CommonSendNotificationManager: SendNotificationManager {
         notificationPublisher
             .map {
                 $0.filter { input in
-                    let sendNotificationEvent = input.settings.event as? SendNotificationEvent
-                    return sendNotificationEvent?.location == location
+                    guard let sendNotificationEvent = input.settings.event as? SendNotificationEvent else {
+                        return false
+                    }
+
+                    return sendNotificationEvent.locations.contains(location)
                 }
             }
             .removeDuplicates()
@@ -156,12 +160,14 @@ class CommonSendNotificationManager: SendNotificationManager {
             }
             .store(in: &bag)
 
-        input
-            .isFeeIncludedPublisher
-            .sink { [weak self] isFeeIncluded in
-                self?.updateEventVisibility(isFeeIncluded, event: .feeWillBeSubtractFromSendingAmount)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            input.isFeeIncludedPublisher,
+            input.feeValuePublisher.map(\.?.amount.value)
+        )
+        .sink { [weak self] isFeeIncluded, feeValue in
+            self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)
+        }
+        .store(in: &bag)
 
         Publishers.CombineLatest(
             input.amountError.compactMap { [$0].compactMap { $0 } },
@@ -176,6 +182,33 @@ class CommonSendNotificationManager: SendNotificationManager {
         }
         .assign(to: \.value, on: validationErrorInputsSubject, ownership: .weak)
         .store(in: &bag)
+    }
+
+    private func updateFeeInclusionEvent(isFeeIncluded: Bool, feeCryptoValue: Decimal?) {
+        let cryptoAmountFormatted: String
+        let fiatAmountFormatted: String
+        let visible: Bool
+        if let feeCryptoValue, isFeeIncluded {
+            let converter = BalanceConverter()
+            let feeFiatValue = converter.convertToFiat(value: feeCryptoValue, from: feeTokenItem.currencyId ?? "")
+
+            let formatter = BalanceFormatter()
+            cryptoAmountFormatted = formatter.formatCryptoBalance(feeCryptoValue, currencyCode: feeTokenItem.currencySymbol)
+            fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+            visible = true
+        } else {
+            cryptoAmountFormatted = ""
+            fiatAmountFormatted = ""
+            visible = false
+        }
+
+        let event = SendNotificationEvent.feeWillBeSubtractFromSendingAmount(
+            cryptoAmountFormatted: cryptoAmountFormatted,
+            fiatAmountFormatted: fiatAmountFormatted
+        )
+
+        updateEventVisibility(visible, event: event)
     }
 
     private func notificationInputs(from error: Error?) -> [NotificationViewInput] {

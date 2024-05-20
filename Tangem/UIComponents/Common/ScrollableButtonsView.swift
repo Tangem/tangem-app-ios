@@ -23,7 +23,8 @@ struct ScrollableButtonsView: View {
                         title: button.title,
                         icon: button.icon.image,
                         style: button.style,
-                        action: button.action
+                        action: button.action,
+                        longPressAction: button.longPressAction
                     )
                     .disabled(button.disabled)
                 }

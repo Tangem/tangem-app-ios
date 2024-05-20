@@ -16,6 +16,7 @@ final class SendViewModel: ObservableObject {
 
     @Published var stepAnimation: SendView.StepAnimation
     @Published var step: SendStep
+    @Published var closeButtonDisabled = false
     @Published var showBackButton = false
     @Published var showTransactionButtons = false
     @Published var mainButtonType: SendMainButtonType
@@ -34,6 +35,10 @@ final class SendViewModel: ObservableObject {
 
     var subtitle: String? {
         step.description(for: sendStepParameters)
+    }
+
+    var closeButtonColor: Color {
+        closeButtonDisabled ? Colors.Text.disabled : Colors.Text.primary1
     }
 
     var mainButtonTitle: String {
@@ -280,12 +285,12 @@ final class SendViewModel: ObservableObject {
             let openingSummary = (nextStep == .summary)
             let stepAnimation: SendView.StepAnimation = openingSummary ? .moveAndFade : .slideForward
 
-            let feeUpdatePolicy = FeeUpdatePolicy.fromTransition(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: stepAnimation, feeUpdatePolicy: feeUpdatePolicy)
+            let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
+            openStep(nextStep, stepAnimation: stepAnimation, updateFee: updateFee)
         case .continue:
             let nextStep = SendStep.summary
-            let feeUpdatePolicy = FeeUpdatePolicy.fromTransition(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: .moveAndFade, feeUpdatePolicy: feeUpdatePolicy)
+            let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
+            openStep(nextStep, stepAnimation: .moveAndFade, updateFee: updateFee)
         case .send:
             send()
         case .close:
@@ -299,7 +304,7 @@ final class SendViewModel: ObservableObject {
             return
         }
 
-        openStep(previousStep, stepAnimation: .slideBackward, feeUpdatePolicy: nil)
+        openStep(previousStep, stepAnimation: .slideBackward, updateFee: false)
     }
 
     func share() {
@@ -345,6 +350,10 @@ final class SendViewModel: ObservableObject {
     }
 
     private func bind() {
+        sendModel.isSending
+            .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
         Publishers.CombineLatest($updatingFees, sendModel.isSending)
             .map { updatingFees, isSending in
                 updatingFees || isSending
@@ -365,13 +374,6 @@ final class SendViewModel: ObservableObject {
                 return false
             }
             .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        $updatingFees
-            .sink { [weak self] updatingFees in
-                self?.sendDestinationViewModel.setUserInputDisabled(updatingFees)
-                self?.sendAmountViewModel.setUserInputDisabled(updatingFees)
-            }
             .store(in: &bag)
 
         sendModel
@@ -440,11 +442,13 @@ final class SendViewModel: ObservableObject {
                         self.coordinator?.dismiss()
                     }
                     alert = AlertBuilder.makeAlert(title: "", message: Localization.alertDemoFeatureDisabled, primaryButton: button)
+                } else {
+                    logTransactionAnalytics()
                 }
 
-                Analytics.log(.sendSelectedCurrency, params: [
-                    .commonType: sendAmountViewModel.useFiatCalculation ? .selectedCurrencyApp : .token,
-                ])
+                if let address = sendModel.destinationText {
+                    UserWalletFinder().addTokenItem(walletModel.tokenItem, for: address)
+                }
             }
             .store(in: &bag)
 
@@ -456,6 +460,27 @@ final class SendViewModel: ObservableObject {
                 Analytics.logDestinationAddress(isAddressValid: destination.value != nil, source: destination.source)
             }
             .store(in: &bag)
+    }
+
+    private func logTransactionAnalytics() {
+        let sourceValue: Analytics.ParameterValue
+        switch sendType {
+        case .send:
+            sourceValue = .transactionSourceSend
+        case .sell:
+            sourceValue = .transactionSourceSell
+        }
+        Analytics.log(event: .transactionSent, params: [
+            .source: sourceValue.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.blockchainNetwork.blockchain.displayName,
+            .feeType: selectedFeeTypeAnalyticsParameter().rawValue,
+            .memo: additionalFieldAnalyticsParameter().rawValue,
+        ])
+
+        Analytics.log(.sendSelectedCurrency, params: [
+            .commonType: sendAmountViewModel.useFiatCalculation ? .selectedCurrencyApp : .token,
+        ])
     }
 
     private func nextStep(after step: SendStep) -> SendStep? {
@@ -509,13 +534,13 @@ final class SendViewModel: ObservableObject {
                     ])
 
                     alert = SendAlertBuilder.makeCustomFeeTooLowAlert { [weak self] in
-                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, feeUpdatePolicy: nil)
+                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, updateFee: false)
                     }
 
                     return true
                 case .customFeeTooHigh(let orderOfMagnitude):
                     alert = SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude) { [weak self] in
-                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, feeUpdatePolicy: nil)
+                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, updateFee: false)
                     }
 
                     return true
@@ -551,46 +576,42 @@ final class SendViewModel: ObservableObject {
         }
     }
 
-    private func updateFee(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) {
-        updatingFees = true
-
+    private func updateFee() {
         feeUpdateSubscription = sendModel.updateFees()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                self?.updatingFees = false
-
-                guard case .failure = completion else { return }
-
-                self?.alert = SendAlertBuilder.makeFeeRetryAlert {
-                    self?.updateFee(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
-                }
-            } receiveValue: { [weak self] result in
-                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, feeUpdatePolicy: nil)
-            }
+            .sink()
     }
 
     private func cancelUpdatingFee() {
         feeUpdateSubscription = nil
-        updatingFees = false
     }
 
-    private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, feeUpdatePolicy: FeeUpdatePolicy?) {
-        if feeUpdatePolicy == .updateBeforeChangingStep {
-            updateFee(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee)
-            keyboardVisibilityService.hideKeyboard {
-                // No matter how long it takes to get the fees when we try to open the step again we will check if the keyboard is open
-                // If it's in the process of being hidden we will wait for it to finish
+    private func shouldUpdateFee(currentStep: SendStep, nextStep: SendStep) -> Bool {
+        if nextStep == .summary, currentStep.updateFeeOnLeave {
+            return true
+        } else if nextStep.updateFeeOnOpen {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
+        let openStepAfterDelay = { [weak self] in
+            // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
             }
+        }
+
+        if updateFee {
+            self.updateFee()
+            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
             return
         }
 
         if keyboardVisibilityService.keyboardVisible, !step.opensKeyboardByDefault {
-            keyboardVisibilityService.hideKeyboard { [weak self] in
-                // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, feeUpdatePolicy: feeUpdatePolicy)
-                }
-            }
+            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
             return
         }
 
@@ -613,21 +634,16 @@ final class SendViewModel: ObservableObject {
             self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
             self.showTransactionButtons = self.sendModel.transactionURL != nil
             self.step = step
-
-            if feeUpdatePolicy == .updateAfterChangingStep {
-                self.feeUpdateSubscription = self.sendModel.updateFees()
-                    .sink()
-            }
         }
     }
 
     private func openFinishPage() {
-        guard let sendFinishViewModel = SendFinishViewModel(input: sendModel, fiatCryptoValueProvider: fiatCryptoAdapter, addressTextViewHeightModel: addressTextViewHeightModel, walletInfo: walletInfo) else {
+        guard let sendFinishViewModel = SendFinishViewModel(input: sendModel, fiatCryptoValueProvider: fiatCryptoAdapter, addressTextViewHeightModel: addressTextViewHeightModel, feeTypeAnalyticsParameter: selectedFeeTypeAnalyticsParameter(), walletInfo: walletInfo) else {
             assertionFailure("WHY?")
             return
         }
 
-        openStep(.finish(model: sendFinishViewModel), stepAnimation: .moveAndFade, feeUpdatePolicy: nil)
+        openStep(.finish(model: sendFinishViewModel), stepAnimation: .moveAndFade, updateFee: false)
     }
 
     private func parseQRCode(_ code: String) {
@@ -676,11 +692,21 @@ final class SendViewModel: ObservableObject {
         }
     }
 
+    private func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
+        // If the blockchain doesn't support additional field -- return null
+        // Otherwise return full / empty
+        guard let additionalField = sendModel.additionalField else {
+            return .null
+        }
+
+        return additionalField.1.isEmpty ? .empty : .full
+    }
+
     // TODO: Andrey Fedorov - Re-use fee currency & redirect logic from Token Details & Send (IOS-5710)
     private func openNetworkCurrency() {
         guard
             let networkCurrencyWalletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
-                $0.tokenItem == .blockchain(walletModel.tokenItem.blockchainNetwork) && $0.blockchainNetwork == walletModel.blockchainNetwork
+                $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
             })
         else {
             assertionFailure("Network currency WalletModel not found")
@@ -702,8 +728,8 @@ extension SendViewModel: SendSummaryRoutable {
             auxiliaryViewAnimatable.setAnimatingAuxiliaryViewsOnAppear()
         }
 
-        let feeUpdatePolicy = FeeUpdatePolicy.fromTransition(currentStep: self.step, nextStep: step)
-        openStep(step, stepAnimation: .moveAndFade, feeUpdatePolicy: feeUpdatePolicy)
+        let updateFee = shouldUpdateFee(currentStep: self.step, nextStep: step)
+        openStep(step, stepAnimation: .moveAndFade, updateFee: updateFee)
     }
 
     func send() {
@@ -766,27 +792,30 @@ extension SendViewModel: NotificationTapDelegate {
             reduceAmountBy(amount)
         case .reduceAmountTo(let amount, _):
             reduceAmountTo(amount)
-        default:
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refresh,
+             .goToProvider,
+             .addHederaTokenAssociation,
+             .bookNow:
             assertionFailure("Notification tap not handled")
         }
     }
 
     private func reduceAmountBy(_ amount: Decimal) {
-        guard var newAmount = sendModel.validatedAmountValue else { return }
+        guard let currentAmount = sendModel.validatedAmountValue?.value else { return }
 
-        newAmount = newAmount - Amount(with: walletModel.tokenItem.blockchain, type: walletModel.amountType, value: amount)
-
-        fiatCryptoAdapter.setCrypto(newAmount.value)
-    }
-
-    private func reduceAmountTo(_ amount: Decimal) {
-        var newAmount = amount
-
+        var newAmount = currentAmount - amount
         if sendModel.isFeeIncluded, let feeValue = sendModel.feeValue?.amount.value {
-            newAmount = newAmount + feeValue
+            newAmount = newAmount - feeValue
         }
 
         fiatCryptoAdapter.setCrypto(newAmount)
+    }
+
+    private func reduceAmountTo(_ amount: Decimal) {
+        fiatCryptoAdapter.setCrypto(amount)
     }
 }
 
@@ -831,27 +860,6 @@ private extension SendStep {
             return .summary
         case .finish:
             return .finish
-        }
-    }
-}
-
-// MARK: - FeeUpdatePolicy
-
-private extension SendViewModel {
-    enum FeeUpdatePolicy {
-        case updateBeforeChangingStep
-        case updateAfterChangingStep
-    }
-}
-
-extension SendViewModel.FeeUpdatePolicy {
-    static func fromTransition(currentStep: SendStep, nextStep: SendStep) -> SendViewModel.FeeUpdatePolicy? {
-        if nextStep == .summary, currentStep.updateFeeOnLeave {
-            return .updateBeforeChangingStep
-        } else if nextStep.updateFeeOnOpen {
-            return .updateAfterChangingStep
-        } else {
-            return nil
         }
     }
 }

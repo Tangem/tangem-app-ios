@@ -114,7 +114,7 @@ final class SingleTokenRouter: SingleTokenRoutable {
 
     func openExplorer(at url: URL, for walletModel: WalletModel) {
         sendAnalyticsEvent(.buttonExplore, for: walletModel)
-        coordinator?.openExplorer(at: url)
+        coordinator?.openInSafari(url: url)
     }
 
     private func openBuy(for walletModel: WalletModel) {

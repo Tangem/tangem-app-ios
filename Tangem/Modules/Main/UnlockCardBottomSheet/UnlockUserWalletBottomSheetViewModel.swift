@@ -13,6 +13,7 @@ protocol UnlockUserWalletBottomSheetDelegate: AnyObject {
     func unlockedWithBiometry()
     func userWalletUnlocked(_ userWalletModel: UserWalletModel)
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
+    func openScanCardManual()
 }
 
 class UnlockUserWalletBottomSheetViewModel: ObservableObject, Identifiable {
@@ -58,6 +59,7 @@ class UnlockUserWalletBottomSheetViewModel: ObservableObject, Identifiable {
                 case .error(let error), .partial(_, let error):
                     self?.error = error.alertBinder
                 case .troubleshooting:
+                    Analytics.log(.cantScanTheCard, params: [.source: .main])
                     self?.showTroubleshooting()
                 default:
                     break
@@ -70,6 +72,11 @@ class UnlockUserWalletBottomSheetViewModel: ObservableObject, Identifiable {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.showTroubleshootingView = true
         }
+    }
+
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .main])
+        delegate?.openScanCardManual()
     }
 
     func requestSupport() {

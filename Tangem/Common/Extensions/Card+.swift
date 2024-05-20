@@ -16,6 +16,6 @@ extension CardDTO {
     }
 
     var walletCurves: [EllipticCurve] {
-        wallets.compactMap { $0.curve }
+        wallets.map { $0.curve }
     }
 }

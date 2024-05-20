@@ -82,7 +82,6 @@ extension CommonAPIListProvider: APIListProvider {
     var apiListPublisher: AnyPublisher<APIList, Never> {
         apiListSubject
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }

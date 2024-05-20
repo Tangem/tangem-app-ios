@@ -9,7 +9,6 @@
 import SwiftUI
 import Combine
 import BlockchainSdk
-import AlertToast
 
 struct ManageTokensView: View {
     @ObservedObject var viewModel: ManageTokensViewModel

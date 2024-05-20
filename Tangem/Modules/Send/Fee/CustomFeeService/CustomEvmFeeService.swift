@@ -103,7 +103,7 @@ class CustomEvmFeeService {
 
 extension CustomEvmFeeService: CustomFeeService {
     var customFeeDescription: String? {
-        Localization.sendMaxFeeFooter
+        Localization.sendEvmCustomFeeFooter
     }
 
     var readOnlyCustomFee: Bool {

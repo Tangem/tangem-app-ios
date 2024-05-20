@@ -174,7 +174,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     }
 
     func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
+        guard SendFeatureProvider.shared.isAvailable else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
             }
@@ -214,7 +214,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     }
 
     func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
+        guard SendFeatureProvider.shared.isAvailable else {
             let coordinator = LegacySendCoordinator { [weak self] in
                 self?.legacySendCoordinator = nil
             }
@@ -301,7 +301,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL) {
+    func openInSafari(url: URL) {
         safariManager.openURL(url)
     }
 }

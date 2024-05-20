@@ -56,6 +56,15 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         delegate?.present(actionSheet: actionSheet)
     }
 
+    override func copyDefaultAddress() {
+        super.copyDefaultAddress()
+        Analytics.log(event: .buttonCopyAddress, params: [
+            .token: walletModel.tokenItem.currencySymbol,
+            .source: Analytics.ParameterValue.main.rawValue,
+        ])
+        delegate?.displayAddressCopiedToast()
+    }
+
     private func bind() {
         userWalletNotificationManager
             .notificationPublisher

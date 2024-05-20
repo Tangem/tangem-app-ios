@@ -1,5 +1,5 @@
 //
-//  ScanTroublehootingView.swift
+//  ScanTroubleshootingView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 20/02/21.
@@ -13,6 +13,7 @@ struct ScanTroubleshootingView: View {
 
     var tryAgainAction: () -> Void
     var requestSupportAction: () -> Void
+    var openScanCardManualAction: () -> Void
 
     var body: some View {
         Color.clear
@@ -23,6 +24,7 @@ struct ScanTroubleshootingView: View {
                     message: Text(Localization.alertTroubleshootingScanCardMessage),
                     buttons: [
                         .default(Text(Localization.alertButtonTryAgain), action: tryAgainAction),
+                        .default(Text(Localization.commonReadMore), action: openScanCardManualAction),
                         .default(Text(Localization.alertButtonRequestSupport), action: requestSupportAction),
                         .cancel(),
                     ]
