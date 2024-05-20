@@ -61,17 +61,16 @@ extension CommonFeeFormatter: FeeFormatter {
     // MARK: - Private Implementation
 
     private func fiatFeeFormatter(fee value: Decimal) -> String {
-        if value > Constants.feeLowBoundaryDecimalValue {
+        if value > Constants.fiatFeeLowBoundaryDecimalValue {
             return balanceFormatter.formatFiatBalance(value)
         } else {
-            return Constants.fiatFeeLowBoundaryStringValue
+            return "<\(Constants.fiatFeeLowBoundaryDecimalValue)"
         }
     }
 }
 
 extension CommonFeeFormatter {
     enum Constants {
-        static let feeLowBoundaryDecimalValue: Decimal = 0.01
-        static let fiatFeeLowBoundaryStringValue = "<0.01"
+        static let fiatFeeLowBoundaryDecimalValue: Decimal = 0.01
     }
 }
