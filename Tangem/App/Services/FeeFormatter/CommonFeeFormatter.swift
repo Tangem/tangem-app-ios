@@ -30,7 +30,7 @@ extension CommonFeeFormatter: FeeFormatter {
         let fiatFeeFormatted: String?
 
         if let currencyId, let fiatFee = balanceConverter.convertToFiat(value: fee, from: currencyId) {
-            fiatFeeFormatted = balanceFormatter.formatFiatBalance(fiatFee)
+            fiatFeeFormatted = fiatFeeFormatter(fee: fiatFee)
         } else {
             fiatFeeFormatted = nil
         }
@@ -56,5 +56,22 @@ extension CommonFeeFormatter: FeeFormatter {
         } else {
             return formattedFee.cryptoFee
         }
+    }
+
+    // MARK: - Private Implementation
+
+    private func fiatFeeFormatter(fee value: Decimal) -> String {
+        if value > Constants.feeLowBoundaryDecimalValue {
+            return balanceFormatter.formatFiatBalance(value)
+        } else {
+            return Constants.fiatFeeLowBoundaryStringValue
+        }
+    }
+}
+
+extension CommonFeeFormatter {
+    enum Constants {
+        static let feeLowBoundaryDecimalValue: Decimal = 0.01
+        static let fiatFeeLowBoundaryStringValue = "<0.01"
     }
 }
