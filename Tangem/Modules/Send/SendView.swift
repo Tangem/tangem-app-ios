@@ -192,7 +192,7 @@ struct SendView: View {
 
     @ViewBuilder
     private var bottomOverlay: some View {
-        LinearGradient(colors: [.clear, backgroundColor], startPoint: .top, endPoint: .bottom)
+        LinearGradient(colors: [backgroundColor.opacity(0), backgroundColor], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea()
             .frame(maxHeight: bottomGradientHeight)
             .padding(.horizontal, 16)
