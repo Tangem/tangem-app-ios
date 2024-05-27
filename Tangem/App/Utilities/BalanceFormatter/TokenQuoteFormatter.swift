@@ -20,6 +20,7 @@ struct PercentFormatter {
         formatter.numberStyle = .percent
         formatter.maximumFractionDigits = Constants.maximumFractionDigitsExpress
         formatter.minimumFractionDigits = 1
+        formatter.locale = locale
 
         if let formatted = formatter.string(from: value as NSDecimalNumber) {
             return formatted
@@ -35,6 +36,7 @@ struct PercentFormatter {
         formatter.minimumFractionDigits = 2
         formatter.positivePrefix = ""
         formatter.negativePrefix = ""
+        formatter.locale = locale
 
         // The formatter will format value 0.12 as 12%
         // But in our case 0.12 it's 0.12%
