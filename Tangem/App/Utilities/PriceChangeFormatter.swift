@@ -9,7 +9,11 @@
 import Foundation
 
 struct PriceChangeFormatter {
-    private let percentFormatter = PercentFormatter()
+    private let percentFormatter: PercentFormatter
+
+    init(percentFormatter: PercentFormatter = .init()) {
+        self.percentFormatter = percentFormatter
+    }
 
     func format(value: Decimal) -> PriceChangeFormatter.Result {
         let roundedValue = value.rounded(scale: PercentFormatter.Constants.maximumFractionDigits, roundingMode: .plain)

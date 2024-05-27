@@ -9,6 +9,12 @@
 import Foundation
 
 struct PercentFormatter {
+    private let locale: Locale
+
+    init(locale: Locale = .current) {
+        self.locale = locale
+    }
+
     func expressRatePercentFormat(value: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
