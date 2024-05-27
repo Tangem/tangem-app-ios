@@ -132,7 +132,7 @@ class TangemTests: XCTestCase {
     }
 
     func testPriceChangeFormatter() {
-        let formatter = PriceChangeFormatter()
+        let formatter = PriceChangeFormatter(percentFormatter: .init(locale: .init(identifier: "en_US")))
 
         let result = formatter.format(value: 0.00000001)
         XCTAssertEqual(result.formattedText, "0,00 %")
