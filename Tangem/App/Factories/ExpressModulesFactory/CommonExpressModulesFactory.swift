@@ -87,7 +87,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         coordinator: ExpressProvidersSelectorRoutable
     ) -> ExpressProvidersSelectorViewModel {
         ExpressProvidersSelectorViewModel(
-            percentFormatter: percentFormatter,
+            priceChangeFormatter: priceChangeFormatter,
             expressProviderFormatter: expressProviderFormatter,
             expressRepository: expressRepository,
             expressInteractor: expressInteractor,
@@ -126,7 +126,7 @@ private extension CommonExpressModulesFactory {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var percentFormatter: PercentFormatter { .init() }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }

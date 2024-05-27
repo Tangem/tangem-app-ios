@@ -20,7 +20,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     private var allProviders: [ExpressAvailableProvider] = []
     private var selectedProvider: ExpressAvailableProvider?
 
-    private let percentFormatter: PercentFormatter
+    private let priceChangeFormatter: PriceChangeFormatter
     private let expressProviderFormatter: ExpressProviderFormatter
     private let expressRepository: ExpressRepository
     private let expressInteractor: ExpressInteractor
@@ -29,13 +29,13 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     private var stateSubscription: AnyCancellable?
 
     init(
-        percentFormatter: PercentFormatter,
+        priceChangeFormatter: PriceChangeFormatter,
         expressProviderFormatter: ExpressProviderFormatter,
         expressRepository: ExpressRepository,
         expressInteractor: ExpressInteractor,
         coordinator: ExpressProvidersSelectorRoutable
     ) {
-        self.percentFormatter = percentFormatter
+        self.priceChangeFormatter = priceChangeFormatter
         self.expressProviderFormatter = expressProviderFormatter
         self.expressRepository = expressRepository
         self.expressInteractor = expressInteractor
@@ -164,9 +164,8 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         }
 
         let changePercent = quote.rate / selectedRate - 1
-        let formatted = percentFormatter.expressRatePercentFormat(value: changePercent)
-
-        return .percent(formatted, signType: ChangeSignType(from: changePercent))
+        let result = priceChangeFormatter.formatExpress(value: changePercent)
+        return .percent(result.formattedText, signType: result.signType)
     }
 }
 

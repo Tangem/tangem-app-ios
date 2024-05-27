@@ -34,7 +34,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private var bag = Set<AnyCancellable>()
 
-    private var percentFormatter = PercentFormatter()
+    private var priceChangeFormatter = PriceChangeFormatter()
     private let priceFormatter = CommonTokenPriceFormatter()
 
     // MARK: - Helpers
@@ -99,10 +99,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     private func getPriceChangeState(by quote: TokenQuote) -> TokenPriceChangeView.State {
-        let signType = ChangeSignType(from: quote.change ?? 0)
-
-        let percent = percentFormatter.percentFormat(value: quote.change ?? 0)
-        return .loaded(signType: signType, text: percent)
+        let change = quote.change ?? 0
+        let result = priceChangeFormatter.format(value: change)
+        return .loaded(signType: result.signType, text: result.formattedText)
     }
 }
 

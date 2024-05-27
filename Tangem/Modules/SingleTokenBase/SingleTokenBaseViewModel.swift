@@ -36,7 +36,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     private let tokenRouter: SingleTokenRoutable
 
-    private var percentFormatter = PercentFormatter()
+    private var priceChangeFormatter = PriceChangeFormatter()
     private var transactionHistoryBag: AnyCancellable?
     private var updateSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -52,9 +52,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return .noData
         }
 
-        let signType = ChangeSignType(from: change)
-        let percent = percentFormatter.percentFormat(value: change)
-        return .loaded(signType: signType, text: percent)
+        let result = priceChangeFormatter.format(value: change)
+        return .loaded(signType: result.signType, text: result.formattedText)
     }
 
     var blockchain: Blockchain { blockchainNetwork.blockchain }
