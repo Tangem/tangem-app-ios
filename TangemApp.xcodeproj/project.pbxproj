@@ -1073,6 +1073,7 @@
 		DC9A4A2D2AB4ADD30031C7C2 /* UserCodeRecovering.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */; };
 		DC9A4A302AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */; };
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
+		DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */; };
 		DCAB57FE295ECA55005D0F4A /* SendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FD295ECA55005D0F4A /* SendError.swift */; };
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
@@ -2693,6 +2694,7 @@
 		DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecovering.swift; sourceTree = "<group>"; };
 		DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecoveringCardInteractor.swift; sourceTree = "<group>"; };
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
+		DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeFormatterTests.swift; sourceTree = "<group>"; };
 		DCAB57FD295ECA55005D0F4A /* SendError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendError.swift; sourceTree = "<group>"; };
 		DCAB57FF295EE820005D0F4A /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
 		DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -3504,6 +3506,7 @@
 		5D3F77DB24BF56DC00E8695B /* TangemTests */ = {
 			isa = PBXGroup;
 			children = (
+				DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */,
 				0A1992A52B5FBDF800344312 /* CurrencyTests.swift */,
 				5D3F77DC24BF56DC00E8695B /* TangemTests.swift */,
 				DC4BF174298A4B810052EC19 /* IncomingActionsTests.swift */,
@@ -10051,6 +10054,7 @@
 			files = (
 				5D51037B27C53E6E0025EA55 /* EIP712TypedDataTests.swift in Sources */,
 				DA19D8C82B39AE6C001C91C4 /* QRCodeParserTests.swift in Sources */,
+				DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */,
 				B03AC9932BD8DB26000CBC50 /* APIListTests.swift in Sources */,
 				DC4BF175298A4B810052EC19 /* IncomingActionsTests.swift in Sources */,
 				0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */,
