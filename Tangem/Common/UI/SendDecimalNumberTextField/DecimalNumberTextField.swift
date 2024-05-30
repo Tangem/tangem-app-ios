@@ -12,7 +12,7 @@ import Combine
 struct DecimalNumberTextField: View {
     @ObservedObject private var viewModel: ViewModel
 
-    // Septupable properties
+    // Setupable properties
     private var placeholder: String = "0"
     private var appearance: Appearance = .init()
 

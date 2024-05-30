@@ -126,8 +126,10 @@ struct SendDecimalNumberTextField: View {
                 }
             }
             .onAppear {
-                guard !isInputActive,
-                      let focusDelayDuration = initialFocusBehavior.delayDuration else {
+                guard
+                    !isInputActive,
+                    let focusDelayDuration = initialFocusBehavior.delayDuration
+                else {
                     return
                 }
 
