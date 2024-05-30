@@ -17,11 +17,15 @@ struct DecimalNumberTextField: View {
     private var appearance: Appearance = .init()
 
     // Internal state
-    @State private var textFieldText: String = ""
+    @Binding private var textFieldText: String
     @State private var size: CGSize = .zero
 
-    init(viewModel: ViewModel) {
+    init(
+        viewModel: ViewModel,
+        textFieldText: Binding<String>
+    ) {
         self.viewModel = viewModel
+        _textFieldText = textFieldText
     }
 
     var body: some View {
@@ -124,7 +128,10 @@ extension DecimalNumberTextField: Setupable {
 
 struct DecimalNumberTextField_Previews: PreviewProvider {
     static var previews: some View {
-        DecimalNumberTextField(viewModel: .init(maximumFractionDigits: 8))
+        DecimalNumberTextField(
+            viewModel: .init(maximumFractionDigits: 8),
+            textFieldText: .constant("")
+        )
     }
 }
 
