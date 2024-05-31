@@ -99,6 +99,7 @@ struct SendDecimalNumberTextField: View {
     private var textSizeMeasurer: some View {
         Text(textToMeasure)
             .font(appearance.font)
+            .lineLimit(1)
             .fixedSize()
             .hidden(true) // Native `.hidden()` may affect layout
             .readGeometry(\.size, bindTo: $measuredTextSize)
