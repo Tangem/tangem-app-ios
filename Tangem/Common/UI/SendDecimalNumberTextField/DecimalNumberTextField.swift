@@ -29,7 +29,7 @@ struct DecimalNumberTextField: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            // Hidden view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
+            // A dummy invisible view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
             Text(textFieldText.isEmpty ? placeholder : textFieldText)
                 .font(appearance.font)
                 .hidden(true)

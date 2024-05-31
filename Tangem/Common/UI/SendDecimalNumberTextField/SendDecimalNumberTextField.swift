@@ -95,6 +95,15 @@ struct SendDecimalNumberTextField: View {
         }
     }
 
+    /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
+    ///
+    /// Other approaches have some issues and disadvantages:
+    /// 1. `NSAttributedString.boundingRect(with:options:context:)` and `CTFramesetterSuggestFrameSizeWithConstraints(_:_:_:_:_:)`
+    /// don't work correctly if the string contains spaces
+    /// 2. `NSLayoutManager.usedRect(for:)` works just fine, but it doesn't support SwiftUI attributes for `NSAttributedString`
+    /// (including the most important one, `font`), and these attributes must be converted to their UIKit counterparts.
+    /// Which is very finicky and fragile since it uses runtime reflection, see https://movingparts.io/fonts-in-swiftui
+    /// and https://github.com/LeoNatan/LNSwiftUIUtils for example.
     @ViewBuilder
     private var textSizeMeasurer: some View {
         Text(textToMeasure)
