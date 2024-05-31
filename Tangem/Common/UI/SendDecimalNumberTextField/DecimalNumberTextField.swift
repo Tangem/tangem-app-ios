@@ -18,7 +18,6 @@ struct DecimalNumberTextField: View {
 
     // Internal state
     @Binding private var textFieldText: String
-    @State private var size: CGSize = .zero
 
     init(
         viewModel: ViewModel,
@@ -30,17 +29,15 @@ struct DecimalNumberTextField: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
+            // Hidden view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
             Text(textFieldText.isEmpty ? placeholder : textFieldText)
                 .font(appearance.font)
-                .opacity(0)
+                .hidden(true)
                 .layoutPriority(1)
-                .readGeometry(\.frame.size, bindTo: $size)
 
             textField
-                .frame(width: size.width)
         }
         .lineLimit(1)
-        .animation(.none, value: size.width)
     }
 
     private var textField: some View {
