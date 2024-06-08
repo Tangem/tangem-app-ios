@@ -170,6 +170,9 @@ PODS:
   - SwiftDate (7.0.0)
   - SwiftyJSON (5.0.1)
   - TangemSdk (3.10.0)
+  - TonSwift (1.0.10):
+    - BigInt
+    - TweetNacl
   - TweetNacl (1.0.2)
   - WalletConnectSwiftV2 (1.18.7):
     - WalletConnectSwiftV2/WalletConnect (= 1.18.7)
@@ -227,6 +230,7 @@ DEPENDENCIES:
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem7`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-298`)
+  - TonSwift (from `https://github.com/tangem/ton-swift.git`, tag `1.0.10-tangem1`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
@@ -283,6 +287,9 @@ EXTERNAL SOURCES:
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-298
+  TonSwift:
+    :git: https://github.com/tangem/ton-swift.git
+    :tag: 1.0.10-tangem1
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -306,6 +313,9 @@ CHECKOUT OPTIONS:
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-298
+  TonSwift:
+    :git: https://github.com/tangem/ton-swift.git
+    :tag: 1.0.10-tangem1
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -348,9 +358,10 @@ SPEC CHECKSUMS:
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
   TangemSdk: 4a188873f9dbed6340cca9ad6a010240af6df432
+  TonSwift: 4bec2e932ae922f1e0419bdfd6d59dace5c63a31
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 5942cf6e4071151bc205a7f1dffa2516de962dab
+PODFILE CHECKSUM: db9b4708734085f2b187b3ce338601ad7d2ad28b
 
 COCOAPODS: 1.15.2
