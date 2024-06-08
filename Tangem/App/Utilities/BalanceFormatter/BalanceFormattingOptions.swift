@@ -18,7 +18,7 @@ struct BalanceFormattingOptions {
         .init(
             minFractionDigits: 2,
             maxFractionDigits: 2,
-            formatEpsilonAsLowestRepresentableValue: false,
+            formatEpsilonAsLowestRepresentableValue: true,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
     }

@@ -16,7 +16,7 @@ struct TokenDetailsView: View {
         headerTopPadding: Constants.headerTopPadding
     )
 
-    private let coorditateSpaceName = UUID()
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         RefreshableScrollView(onRefresh: viewModel.onPullToRefresh(completionHandler:)) {
@@ -61,7 +61,7 @@ struct TokenDetailsView: View {
             }
             .padding(.top, Constants.headerTopPadding)
             .readContentOffset(
-                inCoordinateSpace: .named(coorditateSpaceName),
+                inCoordinateSpace: .named(coordinateSpaceName),
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
@@ -75,7 +75,7 @@ struct TokenDetailsView: View {
         .onAppear(perform: scrollState.onViewAppear)
         .alert(item: $viewModel.alert) { $0.alert }
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
-        .coordinateSpace(name: coorditateSpaceName)
+        .coordinateSpace(name: coordinateSpaceName)
         .toolbar(content: {
             ToolbarItem(placement: .principal) {
                 TokenIcon(
@@ -128,7 +128,6 @@ private extension TokenDetailsView {
     let notifManager = SingleTokenNotificationManager(
         walletModel: walletModel,
         walletModelsManager: userWalletModel.walletModelsManager,
-        expressDestinationService: nil,
         contextDataProvider: nil
     )
     let pendingTxsManager = CommonPendingExpressTransactionsManager(

@@ -176,6 +176,13 @@ extension TokenItemView {
                 bottomLeadingRadius: cornerRadius,
                 bottomTrailingRadius: cornerRadius
             )
+        case .all:
+            roundedCornersConfiguration = RoundedCornersConfiguration(
+                topLeadingRadius: cornerRadius,
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: cornerRadius,
+                topTrailingRadius: cornerRadius
+            )
         case .none:
             roundedCornersConfiguration = nil
         }
@@ -199,6 +206,7 @@ extension TokenItemView {
     enum RoundedCornersVerticalEdge {
         case topEdge
         case bottomEdge
+        case all
     }
 
     private struct RoundedCornersConfiguration {

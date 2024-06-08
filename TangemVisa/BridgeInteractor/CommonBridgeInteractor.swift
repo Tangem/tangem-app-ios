@@ -13,14 +13,15 @@ import TangemFoundation
 struct CommonBridgeInteractor {
     private let logger: InternalLogger
 
+    let visaToken: Token
+
     private let evmSmartContractInteractor: EVMSmartContractInteractor
     private let paymentAccount: String
-    private let decimalCount: Int
 
-    init(evmSmartContractInteractor: EVMSmartContractInteractor, paymentAccount: String, logger: InternalLogger) {
+    init(visaToken: Token, evmSmartContractInteractor: EVMSmartContractInteractor, paymentAccount: String, logger: InternalLogger) {
+        self.visaToken = visaToken
         self.evmSmartContractInteractor = evmSmartContractInteractor
         self.paymentAccount = paymentAccount
-        decimalCount = VisaUtilities().visaToken.decimalCount
         self.logger = logger
     }
 }
@@ -34,7 +35,7 @@ extension CommonBridgeInteractor: VisaBridgeInteractor {
         do {
             async let totalBalance = try await evmSmartContractInteractor.ethCall(
                 request: VisaSmartContractRequest(
-                    contractAddress: VisaUtilities().visaToken.contractAddress,
+                    contractAddress: visaToken.contractAddress,
                     method: GetTotalBalanceMethod(paymentAccountAddress: paymentAccount)
                 )
             ).async()
@@ -68,7 +69,7 @@ extension CommonBridgeInteractor: VisaBridgeInteractor {
             let limitsResponse = try await evmSmartContractInteractor.ethCall(request: amountRequest(for: .limits)).async()
             logger.debug(subsystem: .bridgeInteractor, "Received limits response for \(accountAddress).\n\nResponse: \(limitsResponse)\n\nAttempting to parse...")
             let parser = LimitsResponseParser()
-            let limits = try parser.parseResponse(limitsResponse)
+            let limits = try parser.parseResponse(limitsResponse, decimalCount: visaToken.decimalCount)
             logger.debug(subsystem: .bridgeInteractor, "Limits sucessfully loaded: \(limits)")
             return limits
         } catch {
@@ -85,7 +86,7 @@ private extension CommonBridgeInteractor {
     }
 
     func convertToDecimal(_ value: String) -> Decimal? {
-        let decimal = EthereumUtils.parseEthereumDecimal(value, decimalsCount: decimalCount)
+        let decimal = EthereumUtils.parseEthereumDecimal(value, decimalsCount: visaToken.decimalCount)
         logger.debug(subsystem: .bridgeInteractor, "Reponse \(value) converted into \(String(describing: decimal))")
         return decimal
     }

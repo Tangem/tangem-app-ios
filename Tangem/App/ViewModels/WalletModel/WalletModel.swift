@@ -392,6 +392,12 @@ class WalletModel {
         }
     }
 
+    private func updateAfterSendingTransaction() {
+        // Force update transactions history to take a new pending transaction from the local storage
+        _localPendingTransactionSubject.send(())
+        startUpdatingTimer()
+    }
+
     // MARK: - Load Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
@@ -433,23 +439,25 @@ class WalletModel {
         }
     }
 
-    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, Error> {
+    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         if isDemo {
             let hash = Data.randomData(count: 32)
             return signer.sign(hash: hash, walletPublicKey: wallet.publicKey)
+                .mapSendError(tx: hash.hexString)
                 .map { _ in TransactionSendResult(hash: hash.hexString) }
                 .receive(on: DispatchQueue.main)
+                .eraseSendError()
                 .eraseToAnyPublisher()
         }
 
-        return walletManager.send(tx, signer: signer)
+        return walletManager
+            .send(tx, signer: signer)
             .receive(on: DispatchQueue.main)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                // Force update transactions history to take a new pending transaction from the local storage
-                self?._localPendingTransactionSubject.send(())
-                self?.startUpdatingTimer()
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
             })
-            .receive(on: DispatchQueue.main)
+            .map(\.1)
             .eraseToAnyPublisher()
     }
 
@@ -496,6 +504,23 @@ extension WalletModel {
 
     func getDecimalBalance(for type: Amount.AmountType) -> Decimal? {
         return wallet.amounts[type]?.value
+    }
+
+    /// A convenience wrapper for `AssetRequirementsManager.fulfillRequirements(for:signer:)`
+    /// that automatically triggers the update of the internal state of this wallet model.
+    func fulfillRequirements(signer: any TransactionSigner) -> some Publisher<Void, Error> {
+        return assetRequirementsManager
+            .publisher
+            .withWeakCaptureOf(self)
+            .flatMap { walletModel, assetRequirementsManager in
+                assetRequirementsManager.fulfillRequirements(for: walletModel.amountType, signer: signer)
+            }
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
+            })
+            .mapToVoid()
     }
 }
 
@@ -631,10 +656,6 @@ extension WalletModel {
         walletManager as? BitcoinTransactionFeeCalculator
     }
 
-    var ethereumGasLoader: EthereumGasLoader? {
-        walletManager as? EthereumGasLoader
-    }
-
     var ethereumTransactionSigner: EthereumTransactionSigner? {
         walletManager as? EthereumTransactionSigner
     }
@@ -643,8 +664,8 @@ extension WalletModel {
         walletManager as? EthereumNetworkProvider
     }
 
-    var ethereumTransactionProcessor: EthereumTransactionProcessor? {
-        walletManager as? EthereumTransactionProcessor
+    var ethereumTransactionDataBuilder: EthereumTransactionDataBuilder? {
+        walletManager as? EthereumTransactionDataBuilder
     }
 
     var signatureCountValidator: SignatureCountValidator? {
@@ -655,8 +676,8 @@ extension WalletModel {
         walletManager as? AddressResolver
     }
 
-    var withdrawalSuggestionProvider: WithdrawalSuggestionProvider? {
-        walletManager as? WithdrawalSuggestionProvider
+    var withdrawalNotificationProvider: WithdrawalNotificationProvider? {
+        walletManager as? WithdrawalNotificationProvider
     }
 
     var hasRent: Bool {
@@ -665,6 +686,10 @@ extension WalletModel {
 
     var existentialDepositProvider: ExistentialDepositProvider? {
         walletManager as? ExistentialDepositProvider
+    }
+
+    var assetRequirementsManager: AssetRequirementsManager? {
+        walletManager as? AssetRequirementsManager
     }
 }
 

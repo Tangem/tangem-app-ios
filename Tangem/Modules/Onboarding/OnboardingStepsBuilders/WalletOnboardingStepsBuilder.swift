@@ -58,6 +58,10 @@ struct WalletOnboardingStepsBuilder {
         return steps
     }
 
+    private var addTokensSteps: [WalletOnboardingStep] {
+        FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
+    }
+
     init(
         cardId: String,
         hasWallets: Bool,
@@ -93,7 +97,7 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
             let forceBackup = !canSkipBackup && !hasBackup && canBackup // canBackup is false for cardLinked state
 
             if AppSettings.shared.cardsStartedActivation.contains(cardId) || forceBackup {
-                steps.append(contentsOf: backupSteps + userWalletSavingSteps + [.success])
+                steps.append(contentsOf: backupSteps + userWalletSavingSteps + addTokensSteps + [.success])
             } else {
                 steps.append(contentsOf: userWalletSavingSteps)
             }
@@ -105,7 +109,7 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
             } else {
                 initialSteps = [.createWallet]
             }
-            steps.append(contentsOf: initialSteps + backupSteps + userWalletSavingSteps + [.success])
+            steps.append(contentsOf: initialSteps + backupSteps + userWalletSavingSteps + addTokensSteps + [.success])
         }
 
         return .wallet(steps)

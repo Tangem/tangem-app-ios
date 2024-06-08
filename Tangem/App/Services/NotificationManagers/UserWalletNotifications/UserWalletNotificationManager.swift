@@ -57,7 +57,14 @@ final class UserWalletNotificationManager {
         var inputs: [NotificationViewInput] = []
 
         if !userWalletModel.validate() {
-            Analytics.log(.mainNoticeBackupErrors)
+            inputs.append(
+                factory.buildNotificationInput(
+                    for: .backupErrors,
+                    action: action,
+                    buttonAction: buttonAction,
+                    dismissAction: dismissAction
+                )
+            )
         }
 
         if userWalletModel.config.hasFeature(.multiCurrency) {
@@ -295,8 +302,6 @@ extension UserWalletNotificationManager: NotificationManager {
 
         if let event = notification.settings.event as? BannerNotificationEvent {
             switch event {
-            case .changelly:
-                bannerPromotionService.hide(promotion: .changelly, on: .main)
             case .travala:
                 var parameters = event.analyticsParams
                 parameters[.action] = Analytics.ParameterValue.closed.rawValue

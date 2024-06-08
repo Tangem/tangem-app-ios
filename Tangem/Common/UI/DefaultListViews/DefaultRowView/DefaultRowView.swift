@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct DefaultRowView: View {
-    // TODO: Make @ObservedObject
-    private let viewModel: DefaultRowViewModel
+    @ObservedObject private var viewModel: DefaultRowViewModel
+    private var appearance: Appearance = .init()
 
     init(viewModel: DefaultRowViewModel) {
         self.viewModel = viewModel
@@ -34,13 +34,13 @@ struct DefaultRowView: View {
     private var content: some View {
         HStack {
             Text(viewModel.title)
-                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                .style(appearance.font, color: appearance.textColor)
 
             Spacer()
 
             detailsView
 
-            if isTappable {
+            if isTappable, appearance.isChevronVisible {
                 Assets.chevron.image
             }
         }
@@ -58,9 +58,39 @@ struct DefaultRowView: View {
             ActivityIndicatorView(style: .medium, color: .gray)
         case .text(let string):
             Text(string)
-                .style(Fonts.Regular.body, color: Colors.Text.tertiary)
+                .style(appearance.font, color: appearance.detailsColor)
         case .icon(let imageType):
             imageType.image
+        }
+    }
+}
+
+extension DefaultRowView: Setupable {
+    func appearance(_ appearance: Appearance) -> Self {
+        map { $0.appearance = appearance }
+    }
+}
+
+extension DefaultRowView {
+    struct Appearance {
+        let isChevronVisible: Bool
+        let font: Font
+        let textColor: Color
+        let detailsColor: Color
+
+        static let destructiveButton = Appearance(isChevronVisible: false, textColor: Colors.Text.warning)
+        static let accentButton = Appearance(isChevronVisible: false, textColor: Colors.Text.accent)
+
+        init(
+            isChevronVisible: Bool = true,
+            font: Font = Fonts.Regular.body,
+            textColor: Color = Colors.Text.primary1,
+            detailsColor: Color = Colors.Text.tertiary
+        ) {
+            self.isChevronVisible = isChevronVisible
+            self.font = font
+            self.textColor = textColor
+            self.detailsColor = detailsColor
         }
     }
 }

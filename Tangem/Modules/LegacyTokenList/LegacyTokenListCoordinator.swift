@@ -25,8 +25,15 @@ class LegacyTokenListCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with mode: LegacyTokenListViewModel.Mode) {
-        tokenListViewModel = .init(mode: mode, coordinator: self)
+    func start(with options: Options) {
+        tokenListViewModel = .init(settings: options.settings, userTokensManager: options.userTokensManager, coordinator: self)
+    }
+}
+
+extension LegacyTokenListCoordinator {
+    struct Options {
+        let settings: LegacyManageTokensSettings
+        let userTokensManager: UserTokensManager
     }
 }
 

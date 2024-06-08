@@ -22,10 +22,6 @@ struct SendCurrencyPicker: View {
 
     private let iconSize: CGFloat = 18
 
-    private static var defaultLowContrastBackgroundColor: UIColor {
-        UIColor.backgroundPrimary.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
-    }
-
     // Can't use buttons because that interferes with the drag gesture
     var body: some View {
         HStack(spacing: 0) {

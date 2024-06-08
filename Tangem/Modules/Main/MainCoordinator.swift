@@ -89,9 +89,7 @@ extension MainCoordinator: MainRoutable {
         }
 
         let coordinator = DetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = DetailsCoordinator.Options(userWalletModel: userWalletModel)
-        coordinator.start(with: options)
-        coordinator.popToRootAction = popToRootAction
+        coordinator.start(with: .default)
         detailsCoordinator = coordinator
     }
 
@@ -113,6 +111,10 @@ extension MainCoordinator: MainRoutable {
 
     func close(newScan: Bool) {
         popToRoot(with: .init(newScan: newScan))
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
 }
 
@@ -160,7 +162,7 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
         }
 
         let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .add(
+        coordinator.start(with: .init(
             settings: settings,
             userTokensManager: userTokensManager
         ))
@@ -319,6 +321,10 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         coordinator.start(with: .default)
 
         expressCoordinator = coordinator
+    }
+
+    func openStaking(wallet: WalletModel) {
+        assertionFailure()
     }
 
     func openInSafari(url: URL) {

@@ -12,7 +12,7 @@ import BlockchainSdk
 
 class CommonExpressAllowanceProvider {
     private var ethereumNetworkProvider: EthereumNetworkProvider?
-    private var ethereumTransactionProcessor: EthereumTransactionProcessor?
+    private var ethereumTransactionDataBuilder: EthereumTransactionDataBuilder?
     private let logger: Logger
 
     private var spendersAwaitingApprove = Set<String>()
@@ -27,7 +27,7 @@ class CommonExpressAllowanceProvider {
 extension CommonExpressAllowanceProvider: ExpressAllowanceProvider {
     func setup(wallet: WalletModel) {
         ethereumNetworkProvider = wallet.ethereumNetworkProvider
-        ethereumTransactionProcessor = wallet.ethereumTransactionProcessor
+        ethereumTransactionDataBuilder = wallet.ethereumTransactionDataBuilder
     }
 
     func didSendApproveTransaction(for spender: String) {
@@ -80,10 +80,10 @@ extension CommonExpressAllowanceProvider: ExpressAllowanceProvider {
     }
 
     func makeApproveData(spender: String, amount: Decimal) throws -> Data {
-        guard let ethereumTransactionProcessor else {
+        guard let ethereumTransactionDataBuilder else {
             throw AllowanceProviderError.ethereumTransactionProcessorNotFound
         }
 
-        return ethereumTransactionProcessor.buildForApprove(spender: spender, amount: amount)
+        return ethereumTransactionDataBuilder.buildForApprove(spender: spender, amount: amount)
     }
 }

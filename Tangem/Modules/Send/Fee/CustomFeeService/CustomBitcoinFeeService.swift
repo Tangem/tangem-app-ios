@@ -91,10 +91,6 @@ extension CustomBitcoinFeeService: CustomFeeService {
         Localization.sendBitcoinCustomFeeFooter
     }
 
-    var readOnlyCustomFee: Bool {
-        true
-    }
-
     func inputFieldModels() -> [SendCustomFeeInputFieldModel] {
         let satoshiPerBytePublisher = satoshiPerByte
             .map { intValue -> Decimal? in
@@ -124,9 +120,5 @@ extension CustomBitcoinFeeService: CustomFeeService {
         }
 
         return [customFeeSatoshiPerByteModel]
-    }
-
-    func setCustomFee(value: Decimal?) {
-        assertionFailure("WHY")
     }
 }

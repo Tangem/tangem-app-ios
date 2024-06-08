@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import Firebase
-import Amplitude
 import BlockchainSdk
 
 class ServicesManager {
@@ -17,6 +16,7 @@ class ServicesManager {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     private var bag = Set<AnyCancellable>()
 
@@ -37,7 +37,6 @@ class ServicesManager {
 
         if !AppEnvironment.current.isDebug {
             configureFirebase()
-            configureAmplitude()
         }
 
         configureBlockchainSdkExceptionHandler()
@@ -46,6 +45,7 @@ class ServicesManager {
         exchangeService.initialize()
         tangemApiService.initialize()
         accountHealthChecker.initialize()
+        apiListProvider.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
     }
 
@@ -59,10 +59,6 @@ class ServicesManager {
         }
 
         FirebaseApp.configure(options: options)
-    }
-
-    private func configureAmplitude() {
-        Amplitude.instance().initializeApiKey(try! CommonKeysManager().amplitudeApiKey)
     }
 
     private func configureBlockchainSdkExceptionHandler() {

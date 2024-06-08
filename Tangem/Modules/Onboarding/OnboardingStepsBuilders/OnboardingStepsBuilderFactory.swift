@@ -21,7 +21,7 @@ extension UserWalletConfig where Self: WalletOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
         return WalletOnboardingStepsBuilder(
             cardId: card.cardId,
-            hasWallets: !card.wallets.isEmpty,
+            hasWallets: isWalletsCreated,
             isBackupAllowed: card.settings.isBackupAllowed,
             isKeysImportAllowed: canImportKeys,
             canBackup: card.backupStatus?.canBackup ?? false,
@@ -42,7 +42,8 @@ extension UserWalletConfig where Self: SingleCardOnboardingStepsBuilderFactory {
         return SingleCardOnboardingStepsBuilder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
-            touId: tou.id
+            touId: tou.id,
+            isMultiCurrency: hasFeature(.multiCurrency)
         )
     }
 }

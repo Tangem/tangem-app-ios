@@ -40,7 +40,13 @@ class WelcomeViewModel: ObservableObject {
     }
 
     func tryAgain() {
+        Analytics.log(.cantScanTheCardTryAgainButton, params: [.source: .introduction])
         scanCard()
+    }
+
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .introduction])
+        coordinator?.openScanCardManual()
     }
 
     func requestSupport() {
@@ -78,7 +84,7 @@ class WelcomeViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .welcome)
 
-        userWalletRepository.unlock(with: .card(userWalletId: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
             self?.isScanningCard = false
 
             if result?.isSuccess != true {
@@ -93,6 +99,7 @@ class WelcomeViewModel: ObservableObject {
 
             switch result {
             case .troubleshooting:
+                Analytics.log(.cantScanTheCard, params: [.source: .introduction])
                 showTroubleshootingView = true
             case .onboarding(let input):
                 openOnboarding(with: input)

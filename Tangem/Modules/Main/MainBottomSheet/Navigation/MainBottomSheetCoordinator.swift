@@ -22,7 +22,7 @@ class MainBottomSheetCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    @Published var manageTokensCoordinator: ManageTokensCoordinator?
+    @Published var marketsCoordinator: MarketsCoordinator?
     @Published var shouldDissmis: Bool = false
 
     // MARK: - Child view models
@@ -54,7 +54,7 @@ class MainBottomSheetCoordinator: CoordinatorObject {
 
     func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
         __headerViewModel.onBottomScrollableSheetStateChange(state)
-        manageTokensCoordinator?.onBottomScrollableSheetStateChange(state)
+        marketsCoordinator?.onBottomScrollableSheetStateChange(state)
     }
 
     private func bind() {
@@ -72,19 +72,19 @@ class MainBottomSheetCoordinator: CoordinatorObject {
             self?.shouldDissmis = true
         }
 
-        let coordinator = ManageTokensCoordinator(
+        let coordinator = MarketsCoordinator(
             dismissAction: dismissAction,
             popToRootAction: popToRootAction
         )
         coordinator.delegate = self
         coordinator.start(with: .init(searchTextPublisher: __headerViewModel.enteredSearchTextPublisher))
-        manageTokensCoordinator = coordinator
+        marketsCoordinator = coordinator
     }
 }
 
 // MARK: - ManageTokensCoordinatorDelegate protocol conformance
 
-extension MainBottomSheetCoordinator: ManageTokensCoordinatorDelegate {
+extension MainBottomSheetCoordinator: MarketsCoordinatorDelegate {
     func showGenerateAddressesWarning(
         numberOfNetworks: Int,
         currentWalletNumber: Int,

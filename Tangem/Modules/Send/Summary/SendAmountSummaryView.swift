@@ -30,6 +30,7 @@ struct SendAmountSummaryView: View {
             VStack(spacing: 6) {
                 Text(data.amount)
                     .style(Fonts.Regular.title1, color: Colors.Text.primary1)
+                    .truncationMode(.tail)
                     .frame(maxWidth: .infinity)
                     .matchedGeometryEffectOptional(id: amountCryptoNamespaceId, in: namespace)
 

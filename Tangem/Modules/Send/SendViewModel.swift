@@ -29,10 +29,6 @@ final class SendViewModel: ObservableObject {
         step.name(for: sendStepParameters)
     }
 
-    var hasSubtitle: Bool {
-        subtitle != nil
-    }
-
     var subtitle: String? {
         step.description(for: sendStepParameters)
     }
@@ -284,12 +280,14 @@ final class SendViewModel: ObservableObject {
             let openingSummary = (nextStep == .summary)
             let stepAnimation: SendView.StepAnimation = openingSummary ? .moveAndFade : .slideForward
 
+            let checkCustomFee = shouldCheckCustomFee(currentStep: step)
             let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: stepAnimation, updateFee: updateFee)
+            openStep(nextStep, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: updateFee)
         case .continue:
             let nextStep = SendStep.summary
+            let checkCustomFee = shouldCheckCustomFee(currentStep: step)
             let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: .moveAndFade, updateFee: updateFee)
+            openStep(nextStep, stepAnimation: .moveAndFade, checkCustomFee: checkCustomFee, updateFee: updateFee)
         case .send:
             send()
         case .close:
@@ -402,6 +400,8 @@ final class SendViewModel: ObservableObject {
                         type: walletModel.amountType,
                         value: amount
                     ).string()
+
+                    #warning("Use TransactionValidator async validate to get this warning before send tx")
                     let title = Localization.sendNotificationInvalidReserveAmountTitle(amountFormatted)
                     let message = Localization.sendNotificationInvalidReserveAmountText
 
@@ -418,7 +418,7 @@ final class SendViewModel: ObservableObject {
                     alert = SendError(
                         title: Localization.sendAlertTransactionFailedTitle,
                         message: Localization.sendAlertTransactionFailedText(reason, errorCode),
-                        error: error,
+                        error: (error as? SendTxError) ?? SendTxError(error: error),
                         openMailAction: openMail
                     )
                     .alertBinder
@@ -502,7 +502,7 @@ final class SendViewModel: ObservableObject {
         return steps[currentStepIndex - 1]
     }
 
-    private func openMail(with error: Error) {
+    private func openMail(with error: SendTxError) {
         guard let transaction = sendModel.currentTransaction() else { return }
 
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
@@ -581,6 +581,15 @@ final class SendViewModel: ObservableObject {
 
     private func cancelUpdatingFee() {
         feeUpdateSubscription = nil
+    }
+
+    private func shouldCheckCustomFee(currentStep: SendStep) -> Bool {
+        switch currentStep {
+        case .fee:
+            return true
+        default:
+            return false
+        }
     }
 
     private func shouldUpdateFee(currentStep: SendStep, nextStep: SendStep) -> Bool {
@@ -785,19 +794,31 @@ extension SendViewModel: NotificationTapDelegate {
                 .sink()
         case .openFeeCurrency:
             openNetworkCurrency()
-        case .reduceAmountBy(let amount, _), .leaveAmount(let amount, _):
-            reduceAmountBy(amount)
+        case .leaveAmount(let amount, _):
+            reduceAmountBy(amount, from: walletInfo.balanceValue)
+        case .reduceAmountBy(let amount, _):
+            reduceAmountBy(amount, from: sendModel.validatedAmountValue?.value)
         case .reduceAmountTo(let amount, _):
             reduceAmountTo(amount)
-        default:
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refresh,
+             .goToProvider,
+             .addHederaTokenAssociation,
+             .bookNow,
+             .stake:
             assertionFailure("Notification tap not handled")
         }
     }
 
-    private func reduceAmountBy(_ amount: Decimal) {
-        guard let currentAmount = sendModel.validatedAmountValue?.value else { return }
+    private func reduceAmountBy(_ amount: Decimal, from source: Decimal?) {
+        guard let source else {
+            assertionFailure("WHY")
+            return
+        }
 
-        var newAmount = currentAmount - amount
+        var newAmount = source - amount
         if sendModel.isFeeIncluded, let feeValue = sendModel.feeValue?.amount.value {
             newAmount = newAmount - feeValue
         }
@@ -863,7 +884,17 @@ private extension ValidationError {
         case .invalidAmount, .balanceNotFound:
             // Shouldn't happen as we validate and cover amount errors separately, synchronously
             return nil
-        case .amountExceedsBalance, .invalidFee, .feeExceedsBalance, .maximumUTXO, .reserve, .dustAmount, .dustChange, .minimumBalance, .totalExceedsBalance:
+        case .amountExceedsBalance,
+             .invalidFee,
+             .feeExceedsBalance,
+             .maximumUTXO,
+             .reserve,
+             .dustAmount,
+             .dustChange,
+             .minimumBalance,
+             .totalExceedsBalance,
+             .cardanoHasTokens,
+             .cardanoInsufficientBalanceToSendToken:
             return .summary
         }
     }

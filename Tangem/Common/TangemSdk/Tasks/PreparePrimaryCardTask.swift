@@ -91,6 +91,7 @@ class PreparePrimaryCardTask: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success(let response):
+                // We can use createWalletCurves for validation here because of the new setup
                 let validator = CurvesValidator(expectedCurves: self.curves)
 
                 if validator.validate(response.wallets.map { $0.curve }) {

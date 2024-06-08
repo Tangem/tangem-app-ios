@@ -237,9 +237,21 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .resetAward(cardId: cardId))
     }
 
+    func loadAPIList() async throws -> APIListDTO {
+        try await request(for: .apiList)
+    }
+
     func loadFeatures() async throws -> [String: Bool] {
         try await request(for: .features)
     }
+
+    // MARK: - Markets Implementation
+
+    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        try await request(for: .marketsGeneral(requestModel))
+    }
+
+    // MARK: - Init
 
     func initialize() {
         provider

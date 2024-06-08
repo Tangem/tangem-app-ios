@@ -32,6 +32,9 @@ class FeatureStorage {
 
     @AppStorageCompat(FeatureStorageKeys.performanceMonitorEnabled)
     var isPerformanceMonitorEnabled = false
+
+    @AppStorageCompat(FeatureStorageKeys.mockedCardScannerEnabled)
+    var isMockedCardScannerEnabled = true
 }
 
 // MARK: - Keys
@@ -44,4 +47,5 @@ private enum FeatureStorageKeys: String {
     case fakeTxHistory = "fake_transaction_history"
     case supportedBlockchainsIds
     case performanceMonitorEnabled = "performance_monitor_enabled"
+    case mockedCardScannerEnabled = "mocked_card_scanner_enabled"
 }

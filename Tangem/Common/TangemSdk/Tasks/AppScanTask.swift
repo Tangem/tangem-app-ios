@@ -43,12 +43,17 @@ struct AppScanTaskResponse {
 final class AppScanTask: CardSessionRunnable {
     let shouldAskForAccessCode: Bool
 
+    private let performDerivations: Bool
     private var walletData: DefaultWalletData = .none
     private var primaryCard: PrimaryCard?
     private var linkingCommand: StartPrimaryCardLinkingCommand?
 
-    init(shouldAskForAccessCode: Bool = false) {
+    init(
+        shouldAskForAccessCode: Bool = false,
+        performDerivations: Bool = true
+    ) {
         self.shouldAskForAccessCode = shouldAskForAccessCode
+        self.performDerivations = performDerivations
     }
 
     deinit {
@@ -215,7 +220,9 @@ final class AppScanTask: CardSessionRunnable {
             return
         }
 
-        guard !plainCard.wallets.isEmpty, plainCard.settings.isHDWalletAllowed else {
+        guard performDerivations,
+              !plainCard.wallets.isEmpty,
+              plainCard.settings.isHDWalletAllowed else {
             runScanTask(session, completion)
             return
         }

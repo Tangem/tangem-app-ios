@@ -74,7 +74,6 @@ extension NotificationView {
         case action
 
         // Customs
-        case changellyPromotion
         case travalaPromotion
 
         @ViewBuilder
@@ -83,10 +82,6 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .changellyPromotion:
-                Assets.swapBannerBackground.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
             case .travalaPromotion:
                 ZStack(alignment: .topLeading) {
                     Color.black
@@ -100,7 +95,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Icon.inactive
-            case .changellyPromotion, .travalaPromotion:
+            case .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -109,7 +104,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.primary1
-            case .changellyPromotion, .travalaPromotion:
+            case .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -118,7 +113,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.tertiary
-            case .changellyPromotion, .travalaPromotion:
+            case .travalaPromotion:
                 return Colors.Text.constantWhite
             }
         }
@@ -126,6 +121,7 @@ extension NotificationView {
 
     enum LeadingIconType {
         case image(Image)
+        case icon(TokenIconInfo)
         case progressView
     }
 

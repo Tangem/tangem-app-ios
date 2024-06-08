@@ -16,6 +16,7 @@ protocol SingleTokenRoutable {
     func openBuyCryptoIfPossible(walletModel: WalletModel)
     func openSend(walletModel: WalletModel)
     func openExchange(walletModel: WalletModel)
+    func openStaking(walletModel: WalletModel)
     func openSell(for walletModel: WalletModel)
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel)
     func openExplorer(at url: URL, for walletModel: WalletModel)
@@ -78,6 +79,10 @@ final class SingleTokenRouter: SingleTokenRoutable {
     func openExchange(walletModel: WalletModel) {
         let input = CommonExpressModulesFactory.InputModel(userWalletModel: userWalletModel, initialWalletModel: walletModel)
         coordinator?.openExpress(input: input)
+    }
+
+    func openStaking(walletModel: WalletModel) {
+        coordinator?.openStaking(wallet: walletModel)
     }
 
     func openSell(for walletModel: WalletModel) {

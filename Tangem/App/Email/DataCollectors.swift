@@ -14,7 +14,7 @@ protocol EmailDataCollector: LogFileProvider {}
 
 extension EmailDataCollector {
     var fileName: String {
-        "infoLogs.txt"
+        LogFilesNames.infoLogs
     }
 
     func prepareLogFile() -> URL {
@@ -64,6 +64,7 @@ struct SendScreenDataCollector: EmailDataCollector {
             break
         }
 
+        // Did display current wallet manager curreny host by provider
         data.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
 
         if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
@@ -87,19 +88,13 @@ struct SendScreenDataCollector: EmailDataCollector {
             EmailCollectedData(type: .send(.isFeeIncluded), data: "\(isFeeIncluded)"),
         ])
 
-        if let txHex = txHex {
+        // The last retry attempt by the host caused an error with txHex string
+        if let exceptionHost = lastError?.lastRetryHost, let txHex = lastError?.tx {
+            data.append(EmailCollectedData(type: .wallet(.exceptionWalletManagerHost), data: exceptionHost))
             data.append(EmailCollectedData(type: .send(.transactionHex), data: txHex))
         }
 
         return formatData(data)
-    }
-
-    private var txHex: String? {
-        if let sendError = lastError as? SendTxError {
-            return sendError.tx
-        }
-
-        return nil
     }
 
     private let userWalletEmailData: [EmailCollectedData]
@@ -108,9 +103,9 @@ struct SendScreenDataCollector: EmailDataCollector {
     private let destination: String
     private let amount: Amount
     private let isFeeIncluded: Bool
-    private let lastError: Error?
+    private let lastError: SendTxError?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: Error?) {
+    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: SendTxError?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
         self.fee = fee

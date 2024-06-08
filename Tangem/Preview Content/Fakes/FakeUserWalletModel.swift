@@ -38,7 +38,8 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
             productType: .other,
             batchId: "",
             firmware: "",
-            baseCurrency: ""
+            baseCurrency: "",
+            userWalletId: userWalletId
         )
     }
 
@@ -95,7 +96,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
     }
 
     func onBackupCreated(_ card: Card) {}
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {}
+    func addAssociatedCard(_ cardId: String) {}
 }
 
 extension FakeUserWalletModel: MainHeaderSupplementInfoProvider {

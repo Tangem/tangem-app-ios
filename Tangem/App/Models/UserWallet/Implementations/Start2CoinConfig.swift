@@ -48,7 +48,7 @@ extension Start2CoinConfig: UserWalletConfig {
         "Start2Coin"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1]
     }
 
@@ -129,7 +129,7 @@ extension Start2CoinConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

@@ -56,7 +56,8 @@ class UserWalletModelMock: UserWalletModel {
             productType: .other,
             batchId: "",
             firmware: "",
-            baseCurrency: ""
+            baseCurrency: "",
+            userWalletId: userWalletId
         )
     }
 
@@ -74,5 +75,5 @@ class UserWalletModelMock: UserWalletModel {
 
     func onBackupCreated(_ card: Card) {}
 
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {}
+    func addAssociatedCard(_ cardId: String) {}
 }

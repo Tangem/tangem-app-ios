@@ -24,20 +24,20 @@ class FakeBalanceWithButtonsInfoProvider {
     private let balanceProvidersWithButtons = [
         FakeTokenBalanceProvider(
             buttons: [
-                .init(title: "Buy", icon: Assets.plusMini, action: {}, disabled: true),
-                .init(title: "Send", icon: Assets.arrowUpMini, action: {}, disabled: false),
+                .init(title: "Buy", icon: Assets.plusMini, disabled: true, action: {}),
+                .init(title: "Send", icon: Assets.arrowUpMini, disabled: false, action: {}),
             ],
             delay: 5,
             cryptoBalanceInfo: .init(balance: "1034.435432 ETH", fiatBalance: "–")
         ),
         FakeTokenBalanceProvider(
             buttons: [
-                .init(title: "Buy", icon: Assets.plusMini, action: {}, disabled: false),
-                .init(title: "Send", icon: Assets.arrowUpMini, action: {}, disabled: false),
+                .init(title: "Buy", icon: Assets.plusMini, disabled: false, action: {}),
+                .init(title: "Send", icon: Assets.arrowUpMini, disabled: false, action: {}),
                 .init(title: "Receive", icon: Assets.arrowDownMini, action: {}),
-                .init(title: "Exchange", icon: Assets.exchangeMini, action: {}, disabled: false),
-                .init(title: "Sell your soul", icon: Assets.cryptoCurrencies, action: {}, disabled: false),
-                .init(title: "Dance", icon: Assets.swapHeart, action: {}, disabled: false),
+                .init(title: "Exchange", icon: Assets.exchangeMini, disabled: false, action: {}),
+                .init(title: "Sell your soul", icon: Assets.cryptoCurrencies, disabled: false, action: {}),
+                .init(title: "Dance", icon: Assets.swapHeart, disabled: false, action: {}),
             ],
             delay: 3,
             cryptoBalanceInfo: .init(balance: "-1 MATIC", fiatBalance: "–")

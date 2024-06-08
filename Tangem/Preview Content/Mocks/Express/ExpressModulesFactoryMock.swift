@@ -75,7 +75,7 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         coordinator: ExpressProvidersSelectorRoutable
     ) -> ExpressProvidersSelectorViewModel {
         ExpressProvidersSelectorViewModel(
-            percentFormatter: percentFormatter,
+            priceChangeFormatter: priceChangeFormatter,
             expressProviderFormatter: expressProviderFormatter,
             expressRepository: expressRepository,
             expressInteractor: expressInteractor,
@@ -114,7 +114,7 @@ private extension ExpressModulesFactoryMock {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var percentFormatter: PercentFormatter { .init() }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
@@ -164,6 +164,7 @@ private extension ExpressModulesFactoryMock {
             expressPendingTransactionRepository: pendingTransactionRepository,
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
+            expressAPIProvider: expressAPIProvider,
             signer: signer,
             logger: logger
         )

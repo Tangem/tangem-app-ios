@@ -32,7 +32,7 @@ extension QuotesDTO {
         enum Fields: String, Encodable {
             case priceChange24h
             case price
-            case prices24h
+            case lastUpdatedAt
         }
 
         enum CodingKeys: CodingKey {

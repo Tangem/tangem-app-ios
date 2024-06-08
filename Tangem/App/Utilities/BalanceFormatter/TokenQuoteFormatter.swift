@@ -9,11 +9,18 @@
 import Foundation
 
 struct PercentFormatter {
+    private let locale: Locale
+
+    init(locale: Locale = .current) {
+        self.locale = locale
+    }
+
     func expressRatePercentFormat(value: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        formatter.maximumFractionDigits = 1
+        formatter.maximumFractionDigits = Constants.maximumFractionDigitsExpress
         formatter.minimumFractionDigits = 1
+        formatter.locale = locale
 
         if let formatted = formatter.string(from: value as NSDecimalNumber) {
             return formatted
@@ -25,10 +32,11 @@ struct PercentFormatter {
     func percentFormat(value: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        formatter.maximumFractionDigits = 1
-        formatter.minimumFractionDigits = 1
+        formatter.maximumFractionDigits = Constants.maximumFractionDigits
+        formatter.minimumFractionDigits = 2
         formatter.positivePrefix = ""
         formatter.negativePrefix = ""
+        formatter.locale = locale
 
         // The formatter will format value 0.12 as 12%
         // But in our case 0.12 it's 0.12%
@@ -38,5 +46,12 @@ struct PercentFormatter {
         }
 
         return "\(value)%"
+    }
+}
+
+extension PercentFormatter {
+    enum Constants {
+        static let maximumFractionDigits = 2
+        static let maximumFractionDigitsExpress = 1
     }
 }

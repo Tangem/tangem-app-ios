@@ -10,6 +10,6 @@ import Foundation
 
 extension CommonUserWalletModel {
     static let mock = CommonUserWalletModel(
-        cardInfo: CardInfo(card: .init(card: .walletWithBackup), walletData: .none, name: "", artwork: .noArtwork, primaryCard: nil)
+        cardInfo: CardMock.wallet.cardInfo
     )
 }

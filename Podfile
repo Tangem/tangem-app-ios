@@ -24,14 +24,14 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-296'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-298'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-548.17'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-592'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
@@ -52,12 +52,11 @@ target 'Tangem' do
   
   # Pods for Tangem
   pod 'Moya'
-  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.8.4'
+  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
   pod 'TonSwift', :git => 'https://github.com/tangem/ton-swift.git', :tag => '1.0.10-tangem1'
 
   # Helpers
-  pod 'AlertToast', :git => 'https://github.com/elai950/AlertToast', :commit => 'a437862bb6605080a5816e866cbd4ac8c8657b49'
   pod 'BlockiesSwift', '~> 0.1.2'
   pod 'CombineExt', '~> 1.8.0'
 
@@ -74,7 +73,7 @@ target 'Tangem' do
 #  pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
   
   # Analytics
-  pod 'Amplitude', '8.17.2'
+  pod 'AmplitudeSwift'
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
 
@@ -104,6 +103,15 @@ target 'TangemVisa' do
 
   target 'TangemVisaTests' do
     blockchain_sdk_pods
+  end
+end
+
+target 'TangemStaking' do
+  blockchain_sdk_pods
+  pod 'Moya'
+
+  target 'TangemStakingTests' do
+    inherit! :search_paths
   end
 end
 

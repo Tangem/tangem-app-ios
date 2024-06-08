@@ -34,6 +34,7 @@ class ExpressInteractor {
     private let expressPendingTransactionRepository: ExpressPendingTransactionRepository
     private let expressDestinationService: ExpressDestinationService
     private let expressTransactionBuilder: ExpressTransactionBuilder
+    private let expressAPIProvider: ExpressAPIProvider
     private let signer: TransactionSigner
     private let logger: Logger
 
@@ -55,6 +56,7 @@ class ExpressInteractor {
         expressPendingTransactionRepository: ExpressPendingTransactionRepository,
         expressDestinationService: ExpressDestinationService,
         expressTransactionBuilder: ExpressTransactionBuilder,
+        expressAPIProvider: ExpressAPIProvider,
         signer: TransactionSigner,
         logger: Logger
     ) {
@@ -67,6 +69,7 @@ class ExpressInteractor {
         self.expressPendingTransactionRepository = expressPendingTransactionRepository
         self.expressDestinationService = expressDestinationService
         self.expressTransactionBuilder = expressTransactionBuilder
+        self.expressAPIProvider = expressAPIProvider
         self.signer = signer
         self.logger = logger
 
@@ -209,6 +212,10 @@ extension ExpressInteractor {
             }
         }()
 
+        // Ignore error here
+        let expressSentResult = ExpressTransactionSentResult(hash: result.hash, source: getSender(), data: result.data)
+        try? await expressAPIProvider.exchangeSent(result: expressSentResult)
+
         updateState(.idle)
         let sentTransactionData = SentExpressTransactionData(
             hash: result.hash,
@@ -223,6 +230,7 @@ extension ExpressInteractor {
 
         logTransactionSentAnalyticsEvent(data: sentTransactionData)
         expressPendingTransactionRepository.swapTransactionDidSend(sentTransactionData, userWalletId: userWalletId)
+
         return sentTransactionData
     }
 
@@ -290,10 +298,6 @@ extension ExpressInteractor {
 
 private extension ExpressInteractor {
     func mapState(state: ExpressManagerState) async throws -> State {
-        if hasPendingTransaction() {
-            return .restriction(.hasPendingTransaction, quote: state.quote)
-        }
-
         switch state {
         case .idle:
             return .idle
@@ -314,12 +318,24 @@ private extension ExpressInteractor {
             return .restriction(.notEnoughAmountForFee(.idle), quote: quote)
 
         case .permissionRequired(let permissionRequired):
+            if hasPendingTransaction() {
+                return .restriction(.hasPendingTransaction, quote: permissionRequired.quote)
+            }
+
             return try await map(permissionRequired: permissionRequired)
 
         case .previewCEX(let previewCEX):
+            if hasPendingTransaction() {
+                return .restriction(.hasPendingTransaction, quote: previewCEX.quote)
+            }
+
             return try await map(previewCEX: previewCEX)
 
         case .ready(let ready):
+            if hasPendingTransaction() {
+                return .restriction(.hasPendingTransaction, quote: ready.quote)
+            }
+
             return try await map(ready: ready)
         }
     }
@@ -398,8 +414,8 @@ private extension ExpressInteractor {
         let fee = try selectedFee(fees: fees)
         let amount = makeAmount(value: previewCEX.quote.fromAmount)
 
-        let withdrawalSuggestionProvider = getSender().withdrawalSuggestionProvider
-        let suggestion = withdrawalSuggestionProvider?.withdrawalSuggestion(amount: amount, fee: fee.amount)
+        let withdrawalNotificationProvider = getSender().withdrawalNotificationProvider
+        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee.amount)
 
         // Check on the minimum received amount
         // Almost impossible case because the providers check it on their side
@@ -412,7 +428,7 @@ private extension ExpressInteractor {
             )
         }
 
-        let previewCEXState = PreviewCEXState(subtractFee: previewCEX.subtractFee, fees: fees, suggestion: suggestion)
+        let previewCEXState = PreviewCEXState(subtractFee: previewCEX.subtractFee, fees: fees, notification: notification)
         let correctState: State = .previewCEX(previewCEXState, quote: previewCEX.quote)
 
         return await validate(amount: amount, fee: fee, correctState: correctState)
@@ -817,7 +833,7 @@ extension ExpressInteractor {
     struct PreviewCEXState {
         let subtractFee: Decimal
         let fees: [FeeOption: Fee]
-        let suggestion: WithdrawalSuggestion?
+        let notification: WithdrawalNotification?
     }
 
     struct ReadyToSwapState {

@@ -25,12 +25,14 @@ struct ExpressApproveView: View {
                 } footer: {
                     DefaultFooterView(Localization.swappingPermissionPolicyTypeFooter)
                 }
+                .backgroundColor(Colors.Background.action)
 
                 GroupedSection(viewModel.feeRowViewModel) {
                     DefaultRowView(viewModel: $0)
                 } footer: {
                     DefaultFooterView(Localization.swappingPermissionFeeFooter)
                 }
+                .backgroundColor(Colors.Background.action)
 
                 buttons
             }

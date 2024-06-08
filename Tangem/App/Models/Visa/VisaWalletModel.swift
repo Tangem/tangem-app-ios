@@ -14,6 +14,7 @@ import TangemVisa
 class VisaWalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.keysManager) private var keysManager: KeysManager
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     private let transactionHistoryService: VisaTransactionHistoryService
     private var visaBridgeInteractor: VisaBridgeInteractor?
@@ -45,7 +46,7 @@ class VisaWalletModel {
     }
 
     var transactionHistoryItems: [TransactionListItem] {
-        let historyMapper = VisaTransactionHistoryMapper(currencySymbol: tokenItem.currencySymbol)
+        let historyMapper = VisaTransactionHistoryMapper(currencySymbol: currencySymbol)
         return historyMapper.mapTransactionListItem(from: transactionHistoryService.items)
     }
 
@@ -53,7 +54,11 @@ class VisaWalletModel {
         transactionHistoryService.canFetchMoreHistory
     }
 
-    let tokenItem: TokenItem
+    var currencySymbol: String {
+        tokenItem?.currencySymbol ?? "Not loaded"
+    }
+
+    var tokenItem: TokenItem?
 
     private let userWalletModel: UserWalletModel
 
@@ -66,8 +71,6 @@ class VisaWalletModel {
 
     init(userWalletModel: UserWalletModel) {
         self.userWalletModel = userWalletModel
-        let utils = VisaUtilities()
-        tokenItem = .token(utils.visaToken, .init(utils.visaBlockchain, derivationPath: nil))
 
         let apiService = VisaAPIServiceBuilder().build(
             isTestnet: true,
@@ -75,8 +78,8 @@ class VisaWalletModel {
             logger: AppLog.shared
         )
         let cardPublicKey: String
-        if let wallet = userWalletModel.keysRepository.keys.first(where: { $0.curve == .secp256k1 }) {
-            cardPublicKey = wallet.publicKey.hexString
+        if let publicKey = VisaAppUtilities().getPublicKeyData(from: userWalletModel.keysRepository.keys) {
+            cardPublicKey = publicKey.hexString
         } else {
             cardPublicKey = "Failed to find secp256k1 key"
         }
@@ -90,8 +93,8 @@ class VisaWalletModel {
     }
 
     func exploreURL() -> URL? {
-        let linkProvider = ExternalLinkProviderFactory().makeProvider(for: tokenItem.blockchain)
-        return linkProvider.url(address: accountAddress, contractAddress: tokenItem.token?.contractAddress)
+        let linkProvider = ExternalLinkProviderFactory().makeProvider(for: VisaUtilities().visaBlockchain)
+        return linkProvider.url(address: accountAddress, contractAddress: tokenItem?.token?.contractAddress)
     }
 
     func transaction(with id: UInt64) -> VisaTransactionRecord? {
@@ -109,7 +112,7 @@ class VisaWalletModel {
 
             stateSubject.send(.loading)
             group.addTask {
-                guard let currencyId = self.tokenItem.currencyId else {
+                guard let currencyId = self.tokenItem?.currencyId else {
                     return
                 }
 
@@ -154,30 +157,39 @@ class VisaWalletModel {
     }
 
     private func setupBridgeInteractorAsync() async {
-        guard let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
-            $0.tokenItem == tokenItem
-        }) else {
-            stateSubject.send(.failedToInitialize(.missingRequiredBlockchain))
-            return
-        }
-
         stateSubject.send(.loading)
+
+        let blockchain = VisaUtilities().visaBlockchain
+        let factory = EVMSmartContractInteractorFactory(config: keysManager.blockchainConfig)
+
         let smartContractInteractor: EVMSmartContractInteractor
         do {
-            let factory = EVMSmartContractInteractorFactory(config: keysManager.blockchainConfig)
-            smartContractInteractor = try factory.makeInteractor(for: tokenItem.blockchain)
+            let apiList = try await apiListProvider.apiListPublisher.async()
+            smartContractInteractor = try factory.makeInteractor(for: blockchain, apiInfo: apiList[blockchain.networkId] ?? [])
         } catch {
+            log("Failed to setup bridge. Error: \(error)")
             stateSubject.send(.failedToInitialize(.invalidBlockchain))
             return
         }
 
-        let builder = VisaBridgeInteractorBuilder(evmSmartContractInteractor: smartContractInteractor)
+        let appUtilities = VisaAppUtilities()
+        guard let walletPublicKey = appUtilities.makeBlockchainKey(using: userWalletModel.keysRepository.keys) else {
+            stateSubject.send(.failedToInitialize(.failedToGenerateAddress))
+            return
+        }
+
         do {
-            let interactor = try await builder.build(for: walletModel.defaultAddress, logger: AppLog.shared)
+            let address = try AddressServiceFactory(blockchain: blockchain)
+                .makeAddressService()
+                .makeAddress(for: walletPublicKey, with: .default)
+            let builder = VisaBridgeInteractorBuilder(evmSmartContractInteractor: smartContractInteractor, logger: AppLog.shared)
+            let interactor = try await builder.build(for: address.value)
             visaBridgeInteractor = interactor
+            tokenItem = .token(interactor.visaToken, .init(blockchain, derivationPath: nil))
             await generalUpdateAsync()
         } catch {
-            stateSubject.send(.failedToInitialize(.noPaymentAccount))
+            log("Failed to create address from provided public key. Error: \(error)")
+            stateSubject.send(.failedToInitialize(.failedToGenerateAddress))
         }
     }
 
@@ -243,7 +255,7 @@ extension VisaWalletModel: VisaWalletMainHeaderSubtitleDataSource {
     private var fiatValue: Decimal? {
         guard
             let balanceValue = balancesSubject.value?.available,
-            let currencyId = tokenItem.currencyId
+            let currencyId = tokenItem?.currencyId
         else {
             return nil
         }
@@ -267,7 +279,7 @@ extension VisaWalletModel: MainHeaderBalanceProvider {
                 case .failedToInitialize(let error):
                     return .failedToLoad(error: error)
                 case .idle:
-                    if let balances {
+                    if let balances, let tokenItem {
                         let balanceFormatter = BalanceFormatter()
                         let formattedBalance = balanceFormatter.formatCryptoBalance(balances.available, currencyCode: tokenItem.currencySymbol)
                         let formattedForMain = balanceFormatter.formatAttributedTotalBalance(fiatBalance: formattedBalance)
@@ -293,12 +305,16 @@ extension VisaWalletModel {
         case missingRequiredBlockchain
         case invalidBlockchain
         case noPaymentAccount
+        case missingPublicKey
+        case failedToGenerateAddress
 
         var notificationEvent: VisaNotificationEvent {
             switch self {
             case .missingRequiredBlockchain: return .missingRequiredBlockchain
             case .invalidBlockchain: return .notValidBlockchain
             case .noPaymentAccount: return .failedToLoadPaymentAccount
+            case .missingPublicKey: return .missingPublicKey
+            case .failedToGenerateAddress: return .failedToGenerateAddress
             }
         }
     }

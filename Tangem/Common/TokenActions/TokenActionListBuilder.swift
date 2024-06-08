@@ -31,8 +31,10 @@ struct TokenActionListBuilder {
 
     func buildTokenContextActions(
         canExchange: Bool,
+        canSignTransactions: Bool,
         canSend: Bool,
         canSwap: Bool,
+        canStake: Bool,
         canHide: Bool,
         isBlockchainReachable: Bool,
         exchangeUtility: ExchangeCryptoUtility
@@ -48,8 +50,12 @@ struct TokenActionListBuilder {
             availableActions.append(.send)
         }
 
-        if isBlockchainReachable, canSwap {
+        if canSignTransactions, isBlockchainReachable, canSwap {
             availableActions.append(.exchange)
+        }
+
+        if canSignTransactions, isBlockchainReachable, canStake {
+            availableActions.append(.stake)
         }
 
         // TODO: Fix naming for canExchange
@@ -57,7 +63,7 @@ struct TokenActionListBuilder {
             availableActions.append(.buy)
         }
 
-        if isBlockchainReachable, canExchange, canSell {
+        if canSend, canExchange, canSell {
             availableActions.append(.sell)
         }
 

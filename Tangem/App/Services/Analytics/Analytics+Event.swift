@@ -80,6 +80,7 @@ extension Analytics {
         case receiveScreenOpened = "[Token / Receive] Receive Screen Opened"
         case buttonCopyAddress = "[Token / Receive] Button - Copy Address"
         case buttonShareAddress = "[Token / Receive] Button - Share Address"
+        case buttonAddTokenTrustline = "[Token] Button - Token Trustline"
 
         // MARK: - Send
 
@@ -95,7 +96,10 @@ extension Analytics {
         case sendFeeScreenOpened = "[Token / Send] Fee Screen Opened"
         case sendFeeSelected = "[Token / Send] Fee Selected"
         case sendCustomFeeClicked = "[Token / Send] Custom Fee Clicked"
-        case sendGasPriceInserted = "[Token / Send] Gas Price Inserted"
+        case sendCustomFeeInserted = "[Token / Send] Custom Fee Inserted"
+        case sendGasLimitInserted = "[Token / Send] Gas Limit Inserted"
+        case sendMaxFeeInserted = "[Token / Send] Max Fee Inserted"
+        case sendPriorityFeeInserted = "[Token / Send] Priority Fee Inserted"
         case sendSubstractFromAmount = "[Token / Send] Substract From Amount"
         case sendConfirmScreenOpened = "[Token / Send] Confirm Screen Opened"
         case sendScreenReopened = "[Token / Send] Screen Reopened"
@@ -144,6 +148,7 @@ extension Analytics {
         case buttonScanNewCardSettings = "[Settings] Button - Scan New Card"
         case buttonFactoryReset = "[Settings / Card Settings] Button - Factory Reset"
         case factoryResetFinished = "[Settings / Card Settings] Factory Reset Finished"
+        case factoryResetCancelled = "[Settings / Card Settings] Factory Reset Cancelled"
         case buttonChangeUserCode = "[Settings / Card Settings] Button - Change User Code"
         case userCodeChanged = "[Settings / Card Settings] User Code Changed"
         case buttonChangeSecurityMode = "[Settings / Card Settings] Button - Change Security Mode"
@@ -247,11 +252,6 @@ extension Analytics {
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
 
-        // MARK: - Swap promo
-
-        case swapPromoButtonExchangeNow = "[Swap Promo] Button - Exchange Now"
-        case swapPromoButtonClose = "[Swap Promo] Button - Close"
-
         // MARK: - BlockchainSdk exceptions
 
         case blockchainSdkException = "[BlockchainSdk] Exception"
@@ -265,5 +265,11 @@ extension Analytics {
 
         case promotionBannerAppeared = "[Promotion] Notice - Promotion Banner"
         case promotionBannerClicked = "[Promotion] Promo Banner Clicked"
+
+        // MARK: - Errors
+
+        case cantScanTheCard = "[Errors] Cant Scan The Card"
+        case cantScanTheCardButtonBlog = "[Errors] Cant Scan The Card - Button Blog"
+        case cantScanTheCardTryAgainButton = "[Errors] Cant Scan The Card - Try Again Button"
     }
 }

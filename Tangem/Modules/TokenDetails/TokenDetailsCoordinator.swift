@@ -58,15 +58,9 @@ class TokenDetailsCoordinator: CoordinatorObject {
             logger: AppLog.shared
         )
 
-        let expressDestinationService = CommonExpressDestinationService(
-            walletModelsManager: options.userWalletModel.walletModelsManager,
-            expressRepository: CommonExpressRepository(walletModelsManager: options.userWalletModel.walletModelsManager, expressAPIProvider: provider)
-        )
-
         let notificationManager = SingleTokenNotificationManager(
             walletModel: options.walletModel,
             walletModelsManager: options.userWalletModel.walletModelsManager,
-            expressDestinationService: expressDestinationService,
             contextDataProvider: options.userWalletModel
         )
 
@@ -299,6 +293,10 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         coordinator.start(with: .default)
 
         expressCoordinator = coordinator
+    }
+
+    func openStaking(wallet: WalletModel) {
+        assertionFailure()
     }
 
     func openInSafari(url: URL) {

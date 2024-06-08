@@ -18,6 +18,9 @@ protocol TangemApiService: AnyObject, Initializable {
     func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
+    /// Get general market data for a list of tokens
+    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
+
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError>
     func saveTokens(list: UserTokenList, for key: String) -> AnyPublisher<Void, TangemAPIError>
 
@@ -45,6 +48,10 @@ protocol TangemApiService: AnyObject, Initializable {
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult
 
     func loadFeatures() async throws -> [String: Bool]
+
+    // MARK: - Configs
+
+    func loadAPIList() async throws -> APIListDTO
 
     func setAuthData(_ authData: TangemApiTarget.AuthData)
 }

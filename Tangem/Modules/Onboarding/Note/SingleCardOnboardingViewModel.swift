@@ -70,7 +70,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer:
+        case .saveUserWallet, .disclaimer, .addTokens:
             return true
         default:
             return false
@@ -79,7 +79,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     var isButtonsVisible: Bool {
         switch currentStep {
-        case .saveUserWallet: return false
+        case .saveUserWallet, .addTokens: return false
         default: return true
         }
     }
@@ -185,7 +185,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     override func mainButtonAction() {
         switch currentStep {
-        case .disclaimer, .createWallet, .saveUserWallet, .success, .successTopup:
+        case .disclaimer, .createWallet, .saveUserWallet, .success, .successTopup, .addTokens:
             break
         case .topup:
             if canBuyCrypto {

@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct ReferralView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -53,9 +52,6 @@ struct ReferralView: View {
                 .frame(minHeight: geometry.size.height + geometry.safeAreaInsets.bottom)
             }
             .edgesIgnoringSafeArea(.bottom)
-            .toast(isPresenting: $viewModel.showCodeCopiedToast) {
-                AlertToast(type: .complete(Colors.Icon.accent), title: Localization.referralPromoCodeCopied)
-            }
         }
         .alert(item: $viewModel.errorAlert, content: { $0.alert })
         .navigationBarTitle(Text(Localization.detailsReferralTitle), displayMode: .inline)

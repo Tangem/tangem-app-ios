@@ -9,6 +9,9 @@
 import Foundation
 
 enum SendViewNamespaceId {
+    // Container
+    case containerTitle
+
     // Destination
     case destinationContainer
 
@@ -55,6 +58,8 @@ extension SendViewNamespaceId {
 
     private var baseValue: String {
         switch self {
+        case .containerTitle:
+            "containerTitle"
         case .destinationContainer:
             "destinationContainer"
         case .addressContainer:

@@ -24,6 +24,8 @@ enum WalletOnboardingStep: Equatable {
     case seedPhraseUserValidation
     case seedPhraseImport
 
+    case addTokens
+
     case success
 
     var isInitialBackupStep: Bool {
@@ -61,6 +63,7 @@ enum WalletOnboardingStep: Equatable {
             return Localization.onboardingCreateWalletButtonCreateWallet
         case .seedPhraseImport:
             return Localization.onboardingSeedIntroButtonImport
+        case .addTokens: return Localization.onboardingAddTokens
         }
     }
 
@@ -70,7 +73,7 @@ enum WalletOnboardingStep: Equatable {
 
     func cardBackgroundFrame(containerSize: CGSize) -> CGSize {
         switch self {
-        case .disclaimer, .success, .backupCards:
+        case .disclaimer, .success, .backupCards, .addTokens:
             return .zero
         default:
             let cardFrame = WalletOnboardingCardLayout.origin.frame(for: .createWallet, containerSize: containerSize)
@@ -99,7 +102,7 @@ extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
         case .success: return successTitle
         case .createWalletSelector:
             return Localization.onboardingCreateWalletOptionsTitle
-        case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation:
+        case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation, .addTokens:
             return nil
         }
     }
@@ -115,7 +118,7 @@ extension WalletOnboardingStep: OnboardingMessagesProvider, SuccessStep {
         case .success: return Localization.onboardingSubtitleSuccessTangemWalletOnboarding
         case .createWalletSelector:
             return Localization.onboardingCreateWalletOptionsMessage
-        case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation:
+        case .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseImport, .seedPhraseUserValidation, .addTokens:
             return nil
         }
     }

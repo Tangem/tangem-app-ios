@@ -11,8 +11,8 @@ import SwiftUI
 struct FixedSizeButtonWithLeadingIcon: View {
     var body: some View {
         let colorConfiguration = ButtonWithLeadingIconContentView.ColorConfiguration(
-            textColor: textColor,
-            iconColor: iconColor,
+            textColor: stateRelatedStyle.textColor,
+            iconColor: stateRelatedStyle.iconColor,
             backgroundColor: backgroundColor
         )
         ButtonWithLeadingIconContentView(
@@ -21,7 +21,8 @@ struct FixedSizeButtonWithLeadingIcon: View {
             colorConfiguration: colorConfiguration,
             spacing: 4,
             maintainsIdealSize: true,
-            action: action
+            action: action,
+            longPressAction: longPressAction
         )
     }
 
@@ -29,18 +30,17 @@ struct FixedSizeButtonWithLeadingIcon: View {
 
     private let title: String
     private let icon: Image
+    private let style: Style
     private let action: () -> Void
+    private let longPressAction: (() -> Void)?
 
-    private var textColor: Color {
-        isEnabled ? Colors.Text.primary1 : Colors.Text.disabled
-    }
-
-    private var iconColor: Color {
-        isEnabled ? Colors.Icon.primary1 : Colors.Icon.inactive
+    private var stateRelatedStyle: Style {
+        isEnabled ? style : .disabled
     }
 
     private var backgroundColor: Color {
-        isEnabled ? (backgroundColorOverride ?? Colors.Button.secondary) : Colors.Button.disabled
+        let styleColor = style.backgroundColor
+        return isEnabled ? backgroundColorOverride ?? styleColor : styleColor
     }
 
     private var backgroundColorOverride: Color?
@@ -48,11 +48,49 @@ struct FixedSizeButtonWithLeadingIcon: View {
     init(
         title: String,
         icon: Image,
-        action: @escaping () -> Void
+        style: Style,
+        action: @escaping () -> Void,
+        longPressAction: (() -> Void)? = nil
     ) {
         self.title = title
         self.icon = icon
+        self.style = style
         self.action = action
+        self.longPressAction = longPressAction
+    }
+}
+
+extension FixedSizeButtonWithLeadingIcon {
+    enum Style: Hashable {
+        case `default`
+        case disabled
+
+        var textColor: Color {
+            switch self {
+            case .default:
+                return Colors.Text.primary1
+            case .disabled:
+                return Colors.Text.disabled
+            }
+        }
+
+        var iconColor: Color {
+            switch self {
+            case .default:
+                return Colors.Icon.primary1
+            case .disabled:
+                return Colors.Icon.inactive
+            }
+        }
+
+        var backgroundColor: Color {
+            switch self {
+            case .default:
+                return Colors.Button.secondary
+            case .disabled:
+                return Colors.Button.disabled
+            }
+        }
     }
 }
 
@@ -69,7 +107,8 @@ struct FlexySizeButtonWithLeadingIcon: View {
             colorConfiguration: colorConfiguration,
             spacing: 6,
             maintainsIdealSize: false,
-            action: action
+            action: action,
+            longPressAction: nil
         )
     }
 
@@ -144,29 +183,67 @@ private struct ButtonWithLeadingIconContentView: View {
     let spacing: Double
     let maintainsIdealSize: Bool
     let action: () -> Void
+    let longPressAction: (() -> Void)?
+
+    @State private var disabled: Bool = false
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: spacing) {
-                icon
-                    .renderingMode(.template)
-                    .resizable()
-                    .frame(size: .init(bothDimensions: 20))
-                    .foregroundColor(colorConfiguration.iconColor)
+        buttonWithActionHandlers
+            .cornerRadiusContinuous(Self.cornerRadius)
+            .buttonStyle(.borderless)
+            .disabled(disabled)
+    }
 
-                if !title.isEmpty {
-                    Text(title)
-                        .style(Fonts.Bold.subheadline, color: colorConfiguration.textColor)
-                        .lineLimit(1)
-                }
+    @ViewBuilder
+    private var buttonWithActionHandlers: some View {
+        switch longPressAction {
+        case .some(let longPressAction):
+            Button(action: {}) { buttonContent }
+                .simultaneousGesture(
+                    LongPressGesture()
+                        .onEnded { _ in
+                            longPressAction()
+                        }
+                )
+                .highPriorityGesture(
+                    TapGesture()
+                        .onEnded(executeMainAction)
+                )
+        case .none:
+            Button(action: executeMainAction) {
+                buttonContent
             }
-            .frame(maxWidth: maintainsIdealSize ? nil : .infinity)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(colorConfiguration.backgroundColor)
         }
-        .cornerRadiusContinuous(Self.cornerRadius)
-        .buttonStyle(.borderless)
+    }
+
+    private var buttonContent: some View {
+        HStack(spacing: spacing) {
+            icon
+                .renderingMode(.template)
+                .resizable()
+                .frame(size: .init(bothDimensions: 20))
+                .foregroundColor(colorConfiguration.iconColor)
+
+            if !title.isEmpty {
+                Text(title)
+                    .style(Fonts.Bold.subheadline, color: colorConfiguration.textColor)
+                    .lineLimit(1)
+            }
+        }
+        .frame(maxWidth: maintainsIdealSize ? nil : .infinity)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(colorConfiguration.backgroundColor)
+    }
+
+    private func executeMainAction() {
+        disabled = true
+        action()
+
+        // We need to add a delay to prevent the button from being clicked multiple times
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            disabled = false
+        }
     }
 }
 
@@ -182,31 +259,36 @@ struct ButtonWithLeadingIcon_Previews: PreviewProvider {
             VStack {
                 FixedSizeButtonWithLeadingIcon(
                     title: "Buy",
-                    icon: Assets.plusMini.image
+                    icon: Assets.plusMini.image,
+                    style: .default
                 ) {}
 
                 FixedSizeButtonWithLeadingIcon(
                     title: "Exchange",
                     icon: Assets.exchangeMini.image,
+                    style: .default,
                     action: {}
                 )
                 .disabled(true)
 
                 FixedSizeButtonWithLeadingIcon(
                     title: "Organize tokens",
-                    icon: Assets.sliders.image
+                    icon: Assets.sliders.image,
+                    style: .disabled
                 ) {}
 
                 FixedSizeButtonWithLeadingIcon(
                     title: "",
                     icon: Assets.horizontalDots.image,
+                    style: .disabled,
                     action: {}
                 )
                 .disabled(true)
 
                 FixedSizeButtonWithLeadingIcon(
                     title: "LongTitle_LongTitle_LongTitle_LongTitle_LongTitle",
-                    icon: Assets.infoIconMini.image
+                    icon: Assets.infoIconMini.image,
+                    style: .default
                 ) {}
 
                 FlexySizeButtonWithLeadingIcon(

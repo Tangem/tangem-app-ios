@@ -16,7 +16,7 @@ struct DefaultHeaderView: View {
     }
 
     var body: some View {
-        Text(title.uppercased())
-            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        Text(title)
+            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
     }
 }

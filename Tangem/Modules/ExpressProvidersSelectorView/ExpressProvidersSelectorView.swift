@@ -28,6 +28,7 @@ struct ExpressProvidersSelectorView: View {
             }
             .interItemSpacing(14)
             .innerContentPadding(12)
+            .backgroundColor(Colors.Background.action)
             .padding(.vertical, 10)
 
             moreProvidersInformationView

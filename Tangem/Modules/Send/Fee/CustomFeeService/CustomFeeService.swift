@@ -10,8 +10,10 @@ import Foundation
 
 protocol CustomFeeService: AnyObject {
     var customFeeDescription: String? { get }
-    var readOnlyCustomFee: Bool { get }
 
     func inputFieldModels() -> [SendCustomFeeInputFieldModel]
+}
+
+protocol EditableCustomFeeService: CustomFeeService {
     func setCustomFee(value: Decimal?)
 }

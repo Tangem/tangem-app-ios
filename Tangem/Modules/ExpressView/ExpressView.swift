@@ -46,11 +46,22 @@ struct ExpressView: View {
 
                 bottomView
             }
-            .scrollDismissesKeyboardCompat(true)
+            .scrollDismissesKeyboardCompat(.interactively)
         }
         .readGeometry(bindTo: $viewGeometryInfo)
         .ignoresSafeArea(.keyboard)
         .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    viewModel.didTapCloseButton()
+                } label: {
+                    Assets.crossBlack.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.primary1)
+                }
+            }
+        }
         .alert(item: $viewModel.alert) { $0.alert }
         // For animate button below informationSection
         .animation(.easeInOut, value: viewModel.providerState?.id)
@@ -68,6 +79,7 @@ struct ExpressView: View {
                         .didTapChangeCurrency(viewModel.userDidTapChangeSourceButton)
                 }
                 .innerContentPadding(12)
+                .backgroundColor(Colors.Background.action)
 
                 GroupedSection(viewModel.receiveCurrencyViewModel) {
                     ReceiveCurrencyView(viewModel: $0)
@@ -75,6 +87,7 @@ struct ExpressView: View {
                         .didTapNetworkFeeInfoButton(viewModel.userDidTapPriceChangeInfoButton)
                 }
                 .innerContentPadding(12)
+                .backgroundColor(Colors.Background.action)
             }
 
             swappingButton
@@ -121,6 +134,7 @@ struct ExpressView: View {
             ExpressFeeRowView(viewModel: $0)
         }
         .innerContentPadding(12)
+        .backgroundColor(Colors.Background.action)
     }
 
     @ViewBuilder
@@ -134,6 +148,7 @@ struct ExpressView: View {
             }
         }
         .innerContentPadding(12)
+        .backgroundColor(Colors.Background.action)
     }
 
     @ViewBuilder

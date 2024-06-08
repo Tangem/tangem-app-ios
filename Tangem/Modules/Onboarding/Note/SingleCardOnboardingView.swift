@@ -32,6 +32,10 @@ struct SingleCardOnboardingView: View {
         switch viewModel.currentStep {
         case .saveUserWallet:
             UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+        case .addTokens:
+            if let addTokensViewModel = viewModel.addTokensViewModel {
+                OnboardingAddTokensView(viewModel: addTokensViewModel)
+            }
         default:
             EmptyView()
         }

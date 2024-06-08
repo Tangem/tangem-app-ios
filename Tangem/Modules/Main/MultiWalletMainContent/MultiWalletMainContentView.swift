@@ -30,6 +30,7 @@ struct MultiWalletMainContentView: View {
                 FixedSizeButtonWithLeadingIcon(
                     title: Localization.organizeTokensTitle,
                     icon: Assets.OrganizeTokens.filterIcon.image,
+                    style: .default,
                     action: viewModel.onOpenOrganizeTokensButtonTap
                 )
                 .infinityFrame(axis: .horizontal)
@@ -98,7 +99,8 @@ struct MultiWalletMainContentView: View {
                         let isLastItem = sectionIndex == viewModel.sections.count - 1 && itemIndex == section.items.count - 1
 
                         if isFirstItem {
-                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: .topEdge)
+                            let isSingleItem = section.items.count == 1
+                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: isSingleItem ? .all : .topEdge)
                         } else if isLastItem {
                             TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: .bottomEdge)
                         } else {

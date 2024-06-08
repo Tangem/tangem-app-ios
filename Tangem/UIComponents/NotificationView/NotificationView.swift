@@ -130,6 +130,8 @@ struct NotificationView: View {
                 image
                     .resizable()
                     .foregroundColor(settings.event.icon.color)
+            case .icon(let tokenIconInfo):
+                TokenIcon(tokenIconInfo: tokenIconInfo, size: settings.event.icon.size)
             case .progressView:
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())

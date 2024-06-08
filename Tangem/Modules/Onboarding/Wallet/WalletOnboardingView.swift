@@ -60,6 +60,10 @@ struct WalletOnboardingView: View {
             if let model = viewModel.validationUserSeedPhraseModel {
                 OnboardingSeedPhraseUserValidationView(viewModel: model)
             }
+        case .addTokens:
+            if let model = viewModel.addTokensViewModel {
+                OnboardingAddTokensView(viewModel: model)
+            }
         default:
             EmptyView()
         }

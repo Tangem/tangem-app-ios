@@ -21,7 +21,8 @@ struct WelcomeView: View {
                 ScanTroubleshootingView(
                     isPresented: $viewModel.showTroubleshootingView,
                     tryAgainAction: viewModel.tryAgain,
-                    requestSupportAction: viewModel.requestSupport
+                    requestSupportAction: viewModel.requestSupport,
+                    openScanCardManualAction: viewModel.openScanCardManual
                 )
             )
     }

@@ -17,32 +17,27 @@ struct OnboardingCoordinatorView: CoordinatorView {
     var body: some View {
         ZStack {
             content
-                .navigationBarHidden(true)
-                .transition(.withoutOpacity)
-                .navigationLinks(links)
-
             sheets
         }
+        .navigationBarHidden(coordinator.isNavigationBarHidden)
+        .animation(.default, value: coordinator.transitionAnimationValue)
+        .transition(.opacity)
     }
 
     @ViewBuilder
     private var content: some View {
-        if let singleCardViewModel = coordinator.singleCardViewModel {
-            SingleCardOnboardingView(viewModel: singleCardViewModel)
-        } else if let twinsViewModel = coordinator.twinsViewModel {
-            TwinsOnboardingView(viewModel: twinsViewModel)
-        } else if let walletViewModel = coordinator.walletViewModel {
-            WalletOnboardingView(viewModel: walletViewModel)
+        switch coordinator.viewState {
+        case .singleCard(let singleCardOnboardingViewModel):
+            SingleCardOnboardingView(viewModel: singleCardOnboardingViewModel)
+        case .twins(let twinsOnboardingViewModel):
+            TwinsOnboardingView(viewModel: twinsOnboardingViewModel)
+        case .wallet(let walletOnboardingViewModel):
+            WalletOnboardingView(viewModel: walletOnboardingViewModel)
+        case .main(let mainCoordinator):
+            MainCoordinatorView(coordinator: mainCoordinator)
+        case .none:
+            EmptyView()
         }
-    }
-
-    @ViewBuilder
-    private var links: some View {
-        NavHolder()
-            .navigation(item: $coordinator.mainCoordinator) {
-                MainCoordinatorView(coordinator: $0)
-            }
-            .emptyNavigationLink()
     }
 
     @ViewBuilder

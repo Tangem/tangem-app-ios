@@ -558,9 +558,9 @@ class LegacySendViewModel: ObservableObject {
     }
 
     func validateWithdrawal(_ transaction: BlockchainSdk.Transaction, _ totalAmount: Amount) {
-        #warning("TODO: remove  WithdrawalSuggestionProvider.validate")
+        #warning("TODO: remove  WithdrawalNotificationProvider.validate")
         guard
-            let validator = walletModel.withdrawalSuggestionProvider,
+            let validator = walletModel.withdrawalNotificationProvider,
             let warning = validator.validateWithdrawalWarning(amount: transaction.amount, fee: transaction.fee.amount),
             error == nil
         else {
@@ -976,7 +976,7 @@ private extension LegacySendViewModel {
 // MARK: - Navigation
 
 extension LegacySendViewModel {
-    func openMail(with error: Error) {
+    func openMail(with error: SendTxError) {
         guard let transaction else { return }
 
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])

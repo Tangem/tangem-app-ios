@@ -15,17 +15,23 @@ struct AppCoordinatorView: CoordinatorView {
 
     var body: some View {
         NavigationView {
-            if let welcomeCoordinator = coordinator.welcomeCoordinator {
+            switch coordinator.viewState {
+            case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-            } else if let uncompletedBackupCoordinator = coordinator.uncompletedBackupCoordinator {
+            case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-            } else if let authCoordinator = coordinator.authCoordinator {
+            case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .if(coordinator.mainBottomSheetCoordinator != nil) { view in
                         view.animation(nil) // Fixes weird animations on appear when the view has a bottom scrollable sheet
                     }
+            case .main(let mainCoordinator):
+                MainCoordinatorView(coordinator: mainCoordinator)
+            case .none:
+                EmptyView()
             }
         }
+        .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
         .modifier(ifLet: coordinator.mainBottomSheetCoordinator) { view, mainBottomSheetCoordinator in

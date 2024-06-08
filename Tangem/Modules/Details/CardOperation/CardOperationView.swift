@@ -9,41 +9,44 @@
 import Foundation
 import SwiftUI
 
-// TODO: Update to new style
-// https://tangem.atlassian.net/browse/IOS-5788
 struct CardOperationView: View {
     @ObservedObject var viewModel: CardOperationViewModel
 
     var body: some View {
-        VStack(spacing: 24.0) {
+        VStack(spacing: .zero) {
             Spacer()
-            Image(systemName: "exclamationmark.circle")
-                .font(.system(size: 120.0, weight: .regular, design: .default))
-                .foregroundColor(.tangemWarning)
-            Text(Localization.commonWarning.uppercased())
-                .font(.system(size: 40.0, weight: .medium, design: .default))
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .foregroundColor(.tangemWarning)
-                .padding(.horizontal, 16.0)
-            Text(viewModel.alert)
-                .font(.system(size: 29.0, weight: .regular, design: .default))
-                .minimumScaleFactor(0.6)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.tangemGrayDark6)
-                .padding(.horizontal, 36.0)
+
+            content
+
             Spacer()
+
             MainButton(
                 title: viewModel.buttonTitle,
                 isLoading: viewModel.isLoading,
                 action: viewModel.onTap
             )
-            .alert(item: $viewModel.error) { $0.alert }
-            .padding(.horizontal, 16.0)
-            .padding(.bottom, 16.0)
         }
-        .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
+        .padding([.horizontal, .bottom], 16)
+        .background(Colors.Background.secondary.ignoresSafeArea())
         .navigationBarTitle(viewModel.title)
+        .alert(item: $viewModel.error) { $0.alert }
+    }
+
+    private var content: some View {
+        VStack(spacing: 28) {
+            Image(systemName: "exclamationmark.circle")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .foregroundColor(Colors.Icon.attention)
+
+            Text(Localization.commonWarning.uppercased())
+                .style(Fonts.Regular.largeTitle, color: Colors.Icon.attention)
+
+            Text(viewModel.alert)
+                .style(Fonts.Regular.title2, color: Colors.Text.primary1)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, 30)
     }
 }
 

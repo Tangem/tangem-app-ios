@@ -8,15 +8,16 @@
 
 import Foundation
 import SwiftUI
+import BlockchainSdk
 
 struct SendError: Error, BindableError {
     private let title: String
     private let message: String
-    private let error: Error
+    private let error: SendTxError
 
-    private let openMailAction: (Error) -> Void
+    private let openMailAction: (SendTxError) -> Void
 
-    init(title: String, message: String, error: Error, openMailAction: @escaping (Error) -> Void) {
+    init(title: String, message: String, error: SendTxError, openMailAction: @escaping (SendTxError) -> Void) {
         self.title = title
         self.message = message
         self.error = error

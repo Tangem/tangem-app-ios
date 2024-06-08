@@ -86,6 +86,15 @@ final class EnvironmentSetupViewModel: ObservableObject {
                     set: { $0.isPerformanceMonitorEnabled = $1 }
                 )
             ),
+            DefaultToggleRowViewModel(
+                title: "Mocked CardScanner Enabled",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isMockedCardScannerEnabled },
+                    set: { $0.isMockedCardScannerEnabled = $1 }
+                )
+            ),
         ]
 
         featureStateViewModels = Feature.allCases.reversed().map { feature in

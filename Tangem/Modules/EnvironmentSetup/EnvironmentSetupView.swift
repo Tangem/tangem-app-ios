@@ -22,20 +22,14 @@ struct EnvironmentSetupView: View {
             GroupedScrollView(spacing: 16) {
                 GroupedSection(viewModel.appSettingsTogglesViewModels) {
                     DefaultToggleRowView(viewModel: $0)
-                } header: {
-                    DefaultHeaderView("App settings")
                 }
 
                 GroupedSection(viewModel.additionalSettingsViewModels) { viewModel in
                     DefaultRowView(viewModel: viewModel)
-                } header: {
-                    DefaultHeaderView("Additional settings")
                 }
 
                 GroupedSection(viewModel.featureStateViewModels) { viewModel in
                     FeatureStateRowView(viewModel: viewModel)
-                } header: {
-                    DefaultHeaderView("Feature toggles")
                 }
 
                 demoCardIdControls

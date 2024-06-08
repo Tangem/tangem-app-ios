@@ -134,6 +134,7 @@ class SendDestinationViewModel: ObservableObject {
         input
             .destinationValid
             .removeDuplicates()
+            .delay(for: 0.01, scheduler: DispatchQueue.main) // HACK: making sure it doesn't interfere with textview's updates
             .sink { [weak self] destinationValid in
                 withAnimation(SendView.Constants.defaultAnimation) {
                     self?.showSuggestedDestinations = !destinationValid

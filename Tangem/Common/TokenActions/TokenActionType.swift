@@ -13,6 +13,7 @@ enum TokenActionType {
     case send
     case receive
     case exchange
+    case stake
     case sell
     case copyAddress
     case hide
@@ -23,6 +24,7 @@ enum TokenActionType {
         case .send: return Localization.commonSend
         case .receive: return Localization.commonReceive
         case .exchange: return Localization.swappingSwapAction
+        case .stake: return Localization.commonStake
         case .sell: return Localization.commonSell
         case .copyAddress: return Localization.commonCopyAddress
         case .hide: return Localization.tokenDetailsHideToken
@@ -35,6 +37,7 @@ enum TokenActionType {
         case .send: return Assets.arrowUpMini
         case .receive: return Assets.arrowDownMini
         case .exchange: return Assets.exchangeMini
+        case .stake: return Assets.dollarMini
         case .sell: return Assets.dollarMini
         case .copyAddress: return Assets.copy
         case .hide: return Assets.minusCircle

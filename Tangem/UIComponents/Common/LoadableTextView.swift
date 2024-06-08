@@ -15,6 +15,7 @@ struct LoadableTextView: View {
     let loaderSize: CGSize
     var loaderCornerRadius: CGFloat = 3.0
 
+    var prefix: String? = nil
     var lineLimit: Int = 1
     var isSensitiveText: Bool = false
 
@@ -39,7 +40,11 @@ struct LoadableTextView: View {
                     .cornerRadiusContinuous(loaderCornerRadius)
             }
         case .loaded(let text):
-            styledText(text, isSensitive: isSensitiveText)
+            if let prefix {
+                styledText("\(prefix)\(AppConstants.unbreakableSpace)\(text)", isSensitive: isSensitiveText)
+            } else {
+                styledText(text, isSensitive: isSensitiveText)
+            }
         }
     }
 

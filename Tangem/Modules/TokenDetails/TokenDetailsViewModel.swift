@@ -26,7 +26,6 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
 
     private var bag = Set<AnyCancellable>()
-    private var notificatioChangeSubscription: AnyCancellable?
 
     var iconUrl: URL? {
         guard let id = walletModel.tokenItem.id else {
@@ -78,13 +77,37 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         switch action {
         case .openFeeCurrency:
             openFeeCurrency()
-        default:
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refresh,
+             .refreshFee,
+             .goToProvider,
+             .reduceAmountBy,
+             .reduceAmountTo,
+             .addHederaTokenAssociation,
+             .leaveAmount,
+             .bookNow,
+             .stake:
             super.didTapNotificationButton(with: id, action: action)
         }
     }
 
     override func presentActionSheet(_ actionSheet: ActionSheetBinder) {
         self.actionSheet = actionSheet
+    }
+
+    override func copyDefaultAddress() {
+        super.copyDefaultAddress()
+        Analytics.log(event: .buttonCopyAddress, params: [
+            .token: walletModel.tokenItem.currencySymbol,
+            .source: Analytics.ParameterValue.token.rawValue,
+        ])
+        Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
+            .present(
+                layout: .bottom(padding: 80),
+                type: .temporary()
+            )
     }
 }
 
@@ -100,13 +123,15 @@ extension TokenDetailsViewModel {
     }
 
     private func showUnableToHideAlert() {
+        let tokenName = walletModel.tokenItem.name
         let message = Localization.tokenDetailsUnableHideAlertMessage(
+            tokenName,
             currencySymbol,
             blockchain.displayName
         )
 
         alert = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsUnableHideAlertTitle(currencySymbol),
+            title: Localization.tokenDetailsUnableHideAlertTitle(tokenName),
             message: message,
             primaryButton: .default(Text(Localization.commonOk))
         )
@@ -114,7 +139,7 @@ extension TokenDetailsViewModel {
 
     private func showHideWarningAlert() {
         alert = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsHideAlertTitle(currencySymbol),
+            title: Localization.tokenDetailsHideAlertTitle(walletModel.tokenItem.name),
             message: Localization.tokenDetailsHideAlertMessage,
             primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide)) { [weak self] in
                 self?.hideToken()

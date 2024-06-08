@@ -143,7 +143,7 @@ extension QRCodeParser {
     struct Result {
         var destination: String
         var amount: Amount?
-        @available(*, deprecated, message: "For use in Legacy Send only, use `amount` instead")
+        @available(*, deprecated, message: "For use in Legacy Send only, use `amount` instead. Remove with LegacySendView")
         var amountText: String?
         var memo: String?
     }

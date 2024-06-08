@@ -68,19 +68,16 @@ struct MailView: UIViewControllerRepresentable {
         vc.setMessageBody(messageBody, isHTML: false)
 
         let logFiles = viewModel.logsComposer.getLogFiles()
-        let fileManager = FileManager.default
+
         logFiles.forEach { originalURL in
-            let archiveName = originalURL.appendingPathExtension(for: .zip).lastPathComponent
-            let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
+            guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
+                attachPlainTextData(at: originalURL, to: vc)
+                return
+            }
             do {
-                try? fileManager.removeItem(at: destinationURL)
-                try fileManager.zipItem(at: originalURL, to: destinationURL, compressionMethod: .deflate)
-                let data = try Data(contentsOf: destinationURL)
-                vc.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
+                try attachZipData(at: originalURL, to: vc)
             } catch {
-                if let data = try? Data(contentsOf: originalURL) {
-                    vc.addAttachmentData(data, mimeType: "text/plain", fileName: originalURL.lastPathComponent)
-                }
+                attachPlainTextData(at: originalURL, to: vc)
             }
         }
 
@@ -91,6 +88,22 @@ struct MailView: UIViewControllerRepresentable {
         _ uiViewController: UIViewController,
         context: UIViewControllerRepresentableContext<MailView>
     ) {}
+
+    private func attachPlainTextData(at url: URL, to viewController: MFMailComposeViewController) {
+        if let data = try? Data(contentsOf: url) {
+            viewController.addAttachmentData(data, mimeType: "text/plain", fileName: url.lastPathComponent)
+        }
+    }
+
+    private func attachZipData(at url: URL, to viewController: MFMailComposeViewController) throws {
+        let fileManager = FileManager.default
+        let archiveName = url.appendingPathExtension(for: .zip).lastPathComponent
+        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
+        try? fileManager.removeItem(at: destinationURL)
+        try fileManager.zipItem(at: url, to: destinationURL, shouldKeepParent: false, compressionMethod: .deflate)
+        let data = try Data(contentsOf: destinationURL)
+        viewController.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
+    }
 }
 
 private struct MailViewPlaceholder: View {

@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 
 class FactorySettingsResettingMock: FactorySettingsResetting {
-    func resetCard(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func resetCard(headerMessage: String?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             completion(.success(()))
         }

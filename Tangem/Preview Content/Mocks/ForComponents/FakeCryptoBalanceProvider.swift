@@ -10,21 +10,21 @@ import Foundation
 import Combine
 
 class FakeTokenBalanceProvider: BalanceProvider, ActionButtonsProvider {
-    private let buttons: [ButtonWithIconInfo]
+    private let buttons: [FixedSizeButtonWithIconInfo]
     private let delay: TimeInterval
     private let cryptoBalanceInfo: BalanceInfo
 
     private let valueSubject = CurrentValueSubject<LoadingValue<BalanceInfo>, Never>(.loading)
-    private let buttonsSubject: CurrentValueSubject<[ButtonWithIconInfo], Never>
+    private let buttonsSubject: CurrentValueSubject<[FixedSizeButtonWithIconInfo], Never>
 
     var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> {
         scheduleSendingValue()
         return valueSubject.eraseToAnyPublisher()
     }
 
-    var buttonsPublisher: AnyPublisher<[ButtonWithIconInfo], Never> { buttonsSubject.eraseToAnyPublisher() }
+    var buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never> { buttonsSubject.eraseToAnyPublisher() }
 
-    init(buttons: [ButtonWithIconInfo], delay: TimeInterval, cryptoBalanceInfo: BalanceInfo) {
+    init(buttons: [FixedSizeButtonWithIconInfo], delay: TimeInterval, cryptoBalanceInfo: BalanceInfo) {
         self.buttons = buttons
         buttonsSubject = .init(buttons)
         self.delay = delay
@@ -51,9 +51,9 @@ class FakeTokenBalanceProvider: BalanceProvider, ActionButtonsProvider {
         }
     }
 
-    private func disabledButtons() -> [ButtonWithIconInfo] {
+    private func disabledButtons() -> [FixedSizeButtonWithIconInfo] {
         buttons.map { button in
-            .init(title: button.title, icon: button.icon, action: button.action, disabled: true)
+            .init(title: button.title, icon: button.icon, disabled: true, action: button.action)
         }
     }
 }

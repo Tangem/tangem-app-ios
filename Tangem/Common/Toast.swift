@@ -44,8 +44,11 @@ class Toast<V: View> {
             break
 
         case .temporary(let interval):
-            Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-                self?.dismiss(animated: true)
+            Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { _ in
+                self.dismiss(animated: true) {
+                    // Retain a reference to `self` to prevent its deallocation before the dismissal animation completes.
+                    withExtendedLifetime(self) {}
+                }
             }
         }
 

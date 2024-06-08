@@ -10,11 +10,18 @@ import Foundation
 import FirebaseAnalytics
 import FirebaseCrashlytics
 import BlockchainSdk
-import Amplitude
+import AmplitudeSwift
 import TangemSdk
 
 class Analytics {
     @Injected(\.analyticsContext) private static var analyticsContext: AnalyticsContext
+    private static var amplitude: Amplitude? = {
+        guard !AppEnvironment.current.isDebug else {
+            return nil
+        }
+
+        return Amplitude(configuration: Configuration(apiKey: try! CommonKeysManager().amplitudeApiKey))
+    }()
 
     private init() {}
 
@@ -110,7 +117,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "WalletConnect Error",
                 code: 0,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else if let sdkError = error as? TangemSdkError {
@@ -118,7 +125,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "Tangem SDK Error #\(sdkError.code)",
                 code: sdkError.code,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else if let detailedDescription = (error as? DetailedError)?.detailedDescription {
@@ -126,7 +133,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "DetailedError",
                 code: 1,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else {
@@ -169,7 +176,7 @@ class Analytics {
 
         logInternal(
             event.rawValue,
-            params: params.firebaseParams,
+            params: params.dictionaryParams,
             analyticsSystems: analyticsSystems
         )
     }
@@ -185,7 +192,7 @@ class Analytics {
 
         var params = params
 
-        if let contextualParams = analyticsContext.contextData?.analyticsParams.firebaseParams {
+        if let contextualParams = analyticsContext.contextData?.analyticsParams.dictionaryParams {
             params.merge(contextualParams, uniquingKeysWith: { old, _ in old })
         }
 
@@ -197,7 +204,7 @@ class Analytics {
                 let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
             case .amplitude:
-                Amplitude.instance().logEvent(event, withEventProperties: params)
+                amplitude?.track(eventType: event, eventProperties: params)
             }
         }
 
@@ -213,7 +220,7 @@ class Analytics {
 // MARK: - Private
 
 private extension Dictionary where Key == Analytics.ParameterKey, Value == String {
-    var firebaseParams: [String: Any] {
+    var dictionaryParams: [String: Any] {
         var convertedParams = [String: Any]()
         forEach { convertedParams[$0.key.rawValue] = $0.value }
         return convertedParams

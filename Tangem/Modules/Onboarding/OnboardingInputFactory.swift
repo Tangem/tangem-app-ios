@@ -42,7 +42,7 @@ class OnboardingInputFactory {
         }
 
         let tangemSdk = sdkFactory.makeTangemSdk()
-        let cardInitializer = CardInitializer(tangemSdk: tangemSdk, cardInfo: cardInfo)
+        let cardInitializer = CommonCardInitializer(tangemSdk: tangemSdk, cardInfo: cardInfo)
 
         return .init(
             backupService: backupService,

@@ -55,7 +55,9 @@ class SendFeeViewModel: ObservableObject {
     private let walletInfo: SendWalletInfo
     private let customFeeService: CustomFeeService?
     private let customFeeInFiat = CurrentValueSubject<String?, Never>("")
-    private var customGasPriceBeforeEditing: BigUInt?
+    // Save this values to compare it when the focus changed and send analytics
+    private var customFeeValue: Decimal?
+    private var customFeeBeforeEditing: Decimal?
     private var bag: Set<AnyCancellable> = []
 
     private lazy var balanceFormatter = BalanceFormatter()
@@ -109,16 +111,28 @@ class SendFeeViewModel: ObservableObject {
     private func createCustomFeeModels() {
         guard let customFeeService else { return }
 
+        let editableCustomFeeService = customFeeService as? EditableCustomFeeService
+        let onCustomFeeFieldChange: ((Decimal?) -> Void)?
+        if let editableCustomFeeService {
+            onCustomFeeFieldChange = { [weak self] value in
+                self?.customFeeValue = value
+                editableCustomFeeService.setCustomFee(value: value)
+            }
+        } else {
+            onCustomFeeFieldChange = nil
+        }
+
         let customFeeModel = SendCustomFeeInputFieldModel(
             title: Localization.sendMaxFee,
             amountPublisher: input.customFeePublisher.decimalPublisher,
-            disabled: customFeeService.readOnlyCustomFee,
+            disabled: editableCustomFeeService == nil,
             fieldSuffix: walletInfo.feeCurrencySymbol,
             fractionDigits: walletInfo.feeFractionDigits,
             amountAlternativePublisher: customFeeInFiat.eraseToAnyPublisher(),
-            footer: customFeeService.customFeeDescription
-        ) { value in
-            customFeeService.setCustomFee(value: value)
+            footer: customFeeService.customFeeDescription,
+            onFieldChange: onCustomFeeFieldChange
+        ) { [weak self] focused in
+            self?.onCustomFeeChanged(focused)
         }
 
         customFeeModels = [customFeeModel] + customFeeService.inputFieldModels()
@@ -174,10 +188,6 @@ class SendFeeViewModel: ObservableObject {
 
     private func makeFeeRowViewModels(_ feeValues: [FeeOption: LoadingValue<Fee>]) -> [FeeRowViewModel] {
         let formattedFeeValuePairs: [(FeeOption, LoadingValue<FormattedFeeComponents?>)] = feeValues.map { feeOption, feeValue in
-            guard feeOption != .custom else {
-                return (feeOption, .loaded(nil))
-            }
-
             let result: LoadingValue<FormattedFeeComponents?>
             switch feeValue {
             case .loading:
@@ -199,7 +209,7 @@ class SendFeeViewModel: ObservableObject {
 
         let formattedFeeValues = Dictionary(uniqueKeysWithValues: formattedFeeValuePairs)
         return feeOptions.map { option in
-            let value = formattedFeeValues[option] ?? .loading
+            let value = formattedFeeValues[option] ?? .failedToLoad(error: WalletError.failedToGetFee)
 
             return FeeRowViewModel(
                 option: option,
@@ -223,6 +233,18 @@ class SendFeeViewModel: ObservableObject {
         selectedFeeOption = feeOption
         input.didSelectFeeOption(feeOption)
         showCustomFeeFields = feeOption == .custom
+    }
+
+    private func onCustomFeeChanged(_ focused: Bool) {
+        if focused {
+            customFeeBeforeEditing = customFeeValue
+        } else {
+            if customFeeValue != customFeeBeforeEditing {
+                Analytics.log(.sendPriorityFeeInserted)
+            }
+
+            customFeeBeforeEditing = nil
+        }
     }
 }
 

@@ -32,16 +32,19 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
 
         // For EVM networks we've decided increase gas limit for estimatedFee just in case
         fees = fees.map { fee in
-            guard let parameters = fee.parameters as? EthereumFeeParameters else {
+            guard let parameters = fee.parameters as? EthereumEIP1559FeeParameters else {
                 return fee
             }
 
             let gasLimit = parameters.gasLimit * BigUInt(112) / BigUInt(100)
-            let feeValue = gasLimit * parameters.gasPrice
-            let feeValueDecimal = (feeValue.decimal ?? Decimal(Int(feeValue)))
-            let fee = feeValueDecimal / wallet.tokenItem.blockchain.decimalValue
-            let amount = Amount(with: wallet.tokenItem.blockchain, value: fee)
-            return Fee(amount, parameters: EthereumFeeParameters(gasLimit: gasLimit, gasPrice: parameters.gasPrice))
+            let feeParameters = EthereumEIP1559FeeParameters(
+                gasLimit: gasLimit,
+                maxFeePerGas: parameters.maxFeePerGas,
+                priorityFee: parameters.priorityFee
+            )
+            let feeValue = feeParameters.caclulateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
+            let amount = Amount(with: wallet.tokenItem.blockchain, value: feeValue)
+            return Fee(amount, parameters: feeParameters)
         }
 
         return try mapToExpressFee(fees: fees)

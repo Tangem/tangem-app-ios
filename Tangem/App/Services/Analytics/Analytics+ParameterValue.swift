@@ -37,6 +37,7 @@ extension Analytics {
         case onboarding = "Onboarding"
         case settings = "Settings"
         case signIn = "Sign In"
+        case receive = "Receive"
 
         case transactionSourceSend = "Send"
         case transactionSourceSwap = "Swap"
@@ -88,6 +89,9 @@ extension Analytics {
         case sortTypeManual = "Manually"
 
         case balance = "Balance"
+
+        // Transaction is sent
+        case sent = "Sent"
 
         // MARK: - Express
 

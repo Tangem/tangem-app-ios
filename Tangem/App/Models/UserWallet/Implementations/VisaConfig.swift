@@ -36,7 +36,7 @@ extension VisaConfig: UserWalletConfig {
         "Tangem Visa"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [defaultBlockchain.curve]
     }
 
@@ -46,8 +46,7 @@ extension VisaConfig: UserWalletConfig {
 
     var defaultBlockchains: [StorageEntry] {
         let network = BlockchainNetwork(defaultBlockchain, derivationPath: nil)
-        let visaToken = VisaUtilities().visaToken
-        let entry = StorageEntry(blockchainNetwork: network, tokens: [visaToken])
+        let entry = StorageEntry(blockchainNetwork: network, tokens: [])
         return [entry]
     }
 

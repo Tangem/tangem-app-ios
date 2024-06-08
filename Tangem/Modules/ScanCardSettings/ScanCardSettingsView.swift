@@ -16,26 +16,17 @@ struct ScanCardSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            ScrollView {
-                VStack(alignment: .center, spacing: 0) {
-                    Assets.cards.image
-                        .padding(.vertical, 32)
+        ZStack(alignment: .bottom) {
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(alignment: .center, spacing: 40) {
+                        topView
+                            .frame(height: proxy.size.height / 2, alignment: .bottom)
 
-                    VStack(alignment: .center, spacing: 16) {
-                        Text(Localization.scanCardSettingsTitle)
-                            .style(Fonts.Bold.title1, color: Colors.Text.primary1)
-                            .multilineTextAlignment(.center)
-
-                        Text(Localization.scanCardSettingsMessage)
-                            .style(Fonts.Regular.callout, color: Colors.Text.secondary)
-                            .multilineTextAlignment(.center)
+                        bottomView
                     }
                 }
-                .padding(.horizontal, 40)
             }
-
-            Spacer()
 
             MainButton(
                 title: Localization.scanCardSettingsButton,
@@ -47,16 +38,65 @@ struct ScanCardSettingsView: View {
         }
         .padding(.bottom, 16)
         .alert(item: $viewModel.alert) { $0.alert }
-        .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
-        .navigationBarTitle(Text(Localization.cardSettingsTitle), displayMode: .inline)
+        .background(Colors.Background.tertiary.ignoresSafeArea())
+    }
+
+    @ViewBuilder
+    private var topView: some View {
+        ZStack(alignment: .center) {
+            Circle()
+                .fill(Colors.Button.secondary)
+                .padding(.horizontal, 30)
+
+            image
+        }
+        .padding(.horizontal, 30)
+    }
+
+    @ViewBuilder
+    private var bottomView: some View {
+        VStack(alignment: .center, spacing: 16) {
+            Text(Localization.scanCardSettingsTitle)
+                .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+
+            Text(Localization.scanCardSettingsMessage)
+                .style(Fonts.Regular.callout, color: Colors.Text.secondary)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, 40)
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        switch viewModel.icon {
+        case .loading:
+            Color.clear
+        case .loaded(let image):
+            image.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+
+        case .failedToLoad:
+            Assets.Onboarding.darkCard.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
     }
 }
 
 struct ScanCardSettingsView_Preview: PreviewProvider {
-    static let viewModel = ScanCardSettingsViewModel(sessionFilter: .cardId(""), sdk: .init(), coordinator: DetailsCoordinator())
+    static let viewModel = ScanCardSettingsViewModel(
+        input: .init(
+            cardImagePublisher: .just(output: .embedded(Assets.Onboarding.walletCard.uiImage)),
+            cardScanner: CommonCardScanner()
+        ),
+        coordinator: UserWalletSettingsCoordinator()
+    )
 
     static var previews: some View {
-        ScanCardSettingsView(viewModel: viewModel)
-            .deviceForPreview(.iPhone7)
+        NavHolder()
+            .sheet(item: .constant(viewModel)) {
+                ScanCardSettingsView(viewModel: $0)
+            }
     }
 }

@@ -23,7 +23,7 @@ class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
     let onFocusChanged: ((Bool) -> Void)?
 
     private var bag: Set<AnyCancellable> = []
-    private let onFieldChange: (Decimal?) -> Void
+    private let onFieldChange: ((Decimal?) -> Void)?
 
     init(
         title: String,
@@ -33,7 +33,7 @@ class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
         fractionDigits: Int,
         amountAlternativePublisher: AnyPublisher<String?, Never>,
         footer: String?,
-        onFieldChange: @escaping (Decimal?) -> Void,
+        onFieldChange: ((Decimal?) -> Void)?,
         onFocusChanged: ((Bool) -> Void)? = nil
     ) {
         self.title = title
@@ -55,13 +55,15 @@ class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
             }
             .store(in: &bag)
 
-        decimalNumberTextFieldViewModel
-            .valuePublisher
-            .withWeakCaptureOf(self)
-            .sink { (self, value) in
-                self.onFieldChange(value)
-            }
-            .store(in: &bag)
+        if let onFieldChange {
+            decimalNumberTextFieldViewModel
+                .valuePublisher
+                .withWeakCaptureOf(self)
+                .sink { (self, value) in
+                    onFieldChange(value)
+                }
+                .store(in: &bag)
+        }
 
         amountAlternativePublisher
             .assign(to: \.amountAlternative, on: self, ownership: .weak)

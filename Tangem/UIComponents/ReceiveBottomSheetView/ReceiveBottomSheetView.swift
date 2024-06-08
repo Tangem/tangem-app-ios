@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct ReceiveBottomSheetView: View {
     @ObservedObject var viewModel: ReceiveBottomSheetViewModel
@@ -18,9 +17,6 @@ struct ReceiveBottomSheetView: View {
         VStack {
             mainContent
         }
-        .toast(isPresenting: $viewModel.showToast, alert: {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.walletNotificationAddressCopied)
-        })
         .onAppear(perform: viewModel.onViewAppear)
     }
 

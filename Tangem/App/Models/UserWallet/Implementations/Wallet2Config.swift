@@ -44,7 +44,7 @@ extension Wallet2Config: UserWalletConfig {
         "Wallet"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1, .ed25519, .bls12381_G2_AUG, .bip0340, .ed25519_slip0010]
     }
 
@@ -58,6 +58,19 @@ extension Wallet2Config: UserWalletConfig {
         }
 
         return false
+    }
+
+    var isWalletsCreated: Bool {
+        // Temporary disable strict checking because of possible usecases with activated wallet2 cards with legacy apps
+        // let validator = CurvesValidator(expectedCurves: createWalletCurves)
+
+        /// It is allowed to skip backup In the case of demo cards and cards with `cardLinked` backup status .
+        /// To handle cards with incorrectly created wallets in these cases, a check for backup status was added.
+//        if card.backupStatus == .noBackup {
+//            return validator.validate(card.walletCurves)
+//        } else {
+        return !card.wallets.isEmpty
+//        }
     }
 
     var canImportKeys: Bool {

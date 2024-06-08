@@ -49,6 +49,10 @@ extension CommonExpressAPIService: ExpressAPIService {
     func exchangeStatus(request: ExpressDTO.ExchangeStatus.Request) async throws -> ExpressDTO.ExchangeStatus.Response {
         try await _request(target: .exchangeStatus(request: request))
     }
+
+    func exchangeSent(request: ExpressDTO.ExchangeSent.Request) async throws -> ExpressDTO.ExchangeSent.Response {
+        try await _request(target: .exchangeSent(request: request))
+    }
 }
 
 private extension CommonExpressAPIService {

@@ -10,5 +10,5 @@ import Foundation
 import Combine
 
 protocol ActionButtonsProvider: AnyObject {
-    var buttonsPublisher: AnyPublisher<[ButtonWithIconInfo], Never> { get }
+    var buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never> { get }
 }

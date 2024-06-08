@@ -204,7 +204,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport:
+        case .saveUserWallet, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens:
             return true
         default: return false
         }
@@ -212,7 +212,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     var isButtonsVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport: return false
+        case .saveUserWallet, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens: return false
         default: return true
         }
     }
@@ -281,7 +281,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     @Published private var previewBackupState: BackupService.State = .finalizingPrimaryCard
 
     private let backupService: BackupService
-    private var cardInitializer: CardInitializable?
+    private var cardInitializer: CardInitializer?
+    private let pendingBackupManager = PendingBackupManager()
 
     // MARK: - Initializer
 
@@ -442,6 +443,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             Analytics.log(.backupSkipped)
             if steps.contains(.saveUserWallet) {
                 goToStep(.saveUserWallet)
+            } else if steps.contains(.addTokens) {
+                goToStep(.addTokens)
             } else {
                 jumpToLatestStep()
             }
@@ -503,10 +506,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 targetSettings: settings,
                 intermediateSettings: (backupCardsAddedCount > 1 && secondBackupCardStackIndex == backupCardsAddedCount && animated) ? prehideSettings : nil
             )
-        case .saveUserWallet:
-            mainCardSettings = .zero
-            supplementCardSettings = .zero
-            thirdCardSettings = .zero
         default:
             mainCardSettings = WalletOnboardingCardLayout.origin.animSettings(at: currentStep, in: containerSize, fanStackCalculator: fanStackCalculator, animated: animated)
             supplementCardSettings = WalletOnboardingCardLayout.firstBackup.animSettings(at: currentStep, in: containerSize, fanStackCalculator: fanStackCalculator, animated: animated)
@@ -755,15 +754,17 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                         switch result {
                         case .success(let updatedCard):
-                            self.userWalletModel?.addAssociatedCard(CardDTO(card: updatedCard), validationMode: .full)
+                            self.userWalletModel?.addAssociatedCard(updatedCard.cardId)
+                            self.pendingBackupManager.onProceedBackup(updatedCard)
                             if updatedCard.cardId == self.backupService.primaryCard?.cardId {
                                 self.userWalletModel?.onBackupCreated(updatedCard)
                             }
 
                             if self.backupServiceState == .finished {
+                                self.pendingBackupManager.onBackupCompleted()
                                 Analytics.log(
                                     event: .backupFinished,
-                                    params: [.cardsCount: String((updatedCard.backupStatus?.linkedCardsCount ?? 0) + 1)]
+                                    params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
                                 )
                             }
 

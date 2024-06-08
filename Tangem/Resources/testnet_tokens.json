@@ -701,6 +701,18 @@
             ]
         },
         {
+            "id": "radiant",
+            "symbol": "RXD",
+            "name": "Radiant",
+            "networks":
+            [
+                {
+                    "networkId": "radiant/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
             "id": "base-ethereum",
             "symbol": "ETH",
             "name": "Base",

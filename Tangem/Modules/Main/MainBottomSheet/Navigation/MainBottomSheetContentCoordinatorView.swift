@@ -16,8 +16,8 @@ struct MainBottomSheetContentCoordinatorView: CoordinatorView {
     @Environment(\.bottomScrollableSheetStateController) private var bottomScrollableSheetStateController
 
     var body: some View {
-        if let manageTokensCoordinator = coordinator.manageTokensCoordinator {
-            ManageTokensCoordinatorView(coordinator: manageTokensCoordinator)
+        if let marketsCoordinator = coordinator.marketsCoordinator {
+            MarketsCoordinatorView(coordinator: marketsCoordinator)
                 .onChange(of: coordinator.shouldDissmis, perform: { newValue in
                     if newValue {
                         bottomScrollableSheetStateController?.collapse()

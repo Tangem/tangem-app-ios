@@ -16,7 +16,7 @@ struct SendFeeView: View {
     let bottomButtonsHeight: CGFloat
 
     private var safeAreaBottomSpacing: CGFloat {
-        bottomButtonsHeight + SendCustomFeeInputField.Constants.fieldPadding + GroupedSectionConstants.headerFooterSpacing
+        bottomButtonsHeight + SendCustomFeeInputField.Constants.fieldPadding + GroupedSectionConstants.footerSpacing
     }
 
     var body: some View {

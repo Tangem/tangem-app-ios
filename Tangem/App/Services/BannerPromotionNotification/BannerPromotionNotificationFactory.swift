@@ -10,12 +10,6 @@ import Foundation
 import UIKit
 
 struct BannerPromotionNotificationFactory {
-    private static let changellyDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd"
-        return formatter
-    }()
-
     private static let travalaDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMMM"
@@ -41,57 +35,15 @@ struct BannerPromotionNotificationFactory {
             settings: .init(event: event, dismissAction: dismissAction)
         )
     }
+}
 
-    private func event(for promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> BannerNotificationEvent {
+// MARK: - Private
+
+private extension BannerPromotionNotificationFactory {
+    func event(for promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> BannerNotificationEvent {
         switch promotion.bannerPromotion {
-        case .changelly:
-            return .changelly(
-                title: changellyTitle(place: place),
-                description: changellyDescription(promotion: promotion, place: place)
-            )
         case .travala:
             return .travala(description: travalaDescription(promotion: promotion))
-        }
-    }
-
-    private func changellyTitle(place: BannerPromotionPlacement) -> NotificationView.Title {
-        let percent = changellyZeroPercent()
-        let string: String = {
-            switch place {
-            case .main:
-                return Localization.mainSwapChangellyPromotionTitle(percent)
-            case .tokenDetails:
-                return Localization.tokenSwapChangellyPromotionTitle(percent)
-            }
-        }()
-
-        var attributed = AttributedString(string)
-        attributed.font = Fonts.Bold.footnote
-        attributed.foregroundColor = Colors.Text.constantWhite
-
-        if let range = attributed.range(of: percent) {
-            attributed[range.lowerBound...].foregroundColor = .init(red: 233, green: 253, blue: 2)
-        }
-
-        return .attributed(attributed)
-    }
-
-    func changellyDescription(promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> String {
-        let percent = changellyZeroPercent()
-
-        switch place {
-        case .main:
-            return Localization.mainSwapChangellyPromotionMessage(
-                percent,
-                Self.changellyDateFormatter.string(from: promotion.timeline.start),
-                Self.changellyDateFormatter.string(from: promotion.timeline.end)
-            )
-        case .tokenDetails:
-            return Localization.tokenSwapChangellyPromotionMessage(
-                percent,
-                Self.changellyDateFormatter.string(from: promotion.timeline.start),
-                Self.changellyDateFormatter.string(from: promotion.timeline.end)
-            )
         }
     }
 
@@ -100,19 +52,5 @@ struct BannerPromotionNotificationFactory {
             Self.travalaDateFormatter.string(from: promotion.timeline.start),
             Self.travalaDateFormatter.string(from: promotion.timeline.end)
         )
-    }
-
-    func changellyZeroPercent() -> String {
-        let value = 0 as NSDecimalNumber
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        formatter.maximumFractionDigits = 0
-        formatter.minimumFractionDigits = 0
-
-        if let formatted = formatter.string(from: value) {
-            return formatted
-        }
-
-        return "\(value)%"
     }
 }

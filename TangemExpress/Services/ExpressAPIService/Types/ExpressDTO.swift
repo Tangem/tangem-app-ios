@@ -100,6 +100,7 @@ enum ExpressDTO {
     enum ExchangeData {
         struct Request: Encodable {
             let requestId: String
+            let fromAddress: String
             let fromContractAddress: String
             let fromNetwork: String
             let toContractAddress: String
@@ -136,8 +137,24 @@ enum ExpressDTO {
         struct Response: Decodable {
             let providerId: Provider.Id
             let externalTxId: String
-            let externalTxStatus: ExpressTransactionStatus
+            let status: ExpressTransactionStatus
             let externalTxUrl: String
+        }
+    }
+
+    enum ExchangeSent {
+        struct Request: Encodable {
+            let txHash: String
+            let txId: String
+            let fromNetwork: String
+            let fromAddress: String
+            let payinAddress: String
+            let payinExtraId: String?
+        }
+
+        struct Response: Decodable {
+            let txId: String
+            let status: ExpressTransactionStatus
         }
     }
 

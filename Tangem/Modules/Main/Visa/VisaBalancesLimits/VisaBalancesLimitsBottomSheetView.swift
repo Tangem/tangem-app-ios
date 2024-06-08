@@ -127,7 +127,8 @@ private struct PreviewBottomSheet: View {
                 spentOTPAmount: 59.45,
                 noOTPLimit: 50.0,
                 spentNoOTPAmount: 12.5
-            )
+            ),
+            currencySymbol: "Demo"
         )
     }
 }

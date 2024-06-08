@@ -189,7 +189,7 @@ class SendSummaryViewModel: ObservableObject {
                 var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
                 for feeOption in input.feeOptions {
-                    let feeValue = feeValues[feeOption] ?? .loading
+                    let feeValue = feeValues[feeOption] ?? .failedToLoad(error: WalletError.failedToGetFee)
 
                     if feeOption == selectedFeeOption {
                         selectedFeeSummaryViewModel = sectionViewModelFactory.makeFeeViewData(

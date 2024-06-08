@@ -14,12 +14,15 @@ enum SingleCardOnboardingStep: Equatable {
     case topup
     case successTopup
     case saveUserWallet
+    case addTokens
     case success
 
     var navbarTitle: String {
         switch self {
         case .disclaimer:
             return Localization.disclaimerTitle
+        case .addTokens:
+            return Localization.onboardingAddTokens
         default:
             return Localization.onboardingTitle
         }
@@ -27,7 +30,7 @@ enum SingleCardOnboardingStep: Equatable {
 
     func cardBackgroundOffset(containerSize: CGSize) -> CGSize {
         switch self {
-        case .createWallet:
+        case .createWallet, .addTokens:
             return .init(width: 0, height: containerSize.height * 0.103)
         case .topup, .successTopup:
             return defaultBackgroundOffset(in: containerSize)
@@ -38,14 +41,14 @@ enum SingleCardOnboardingStep: Equatable {
 
     var balanceStackOpacity: Double {
         switch self {
-        case .disclaimer, .createWallet, .saveUserWallet, .success: return 0
+        case .disclaimer, .createWallet, .saveUserWallet, .addTokens, .success: return 0
         case .topup, .successTopup: return 1
         }
     }
 
     func cardBackgroundFrame(containerSize: CGSize) -> CGSize {
         switch self {
-        case .disclaimer, .saveUserWallet, .success: return .zero
+        case .disclaimer, .saveUserWallet, .addTokens, .success: return .zero
         case .createWallet:
             let diameter = SingleCardOnboardingCardsLayout.main.frame(for: self, containerSize: containerSize).height * 1.317
             return .init(width: diameter, height: diameter)
@@ -56,7 +59,7 @@ enum SingleCardOnboardingStep: Equatable {
 
     func cardBackgroundCornerRadius(containerSize: CGSize) -> CGFloat {
         switch self {
-        case .disclaimer, .saveUserWallet, .success: return 0
+        case .disclaimer, .saveUserWallet, .addTokens, .success: return 0
         case .createWallet: return cardBackgroundFrame(containerSize: containerSize).height / 2
         case .topup, .successTopup: return 8
         }
@@ -73,6 +76,7 @@ extension SingleCardOnboardingStep: OnboardingMessagesProvider {
         case .topup: return Localization.onboardingTopupTitle
         case .saveUserWallet: return nil
         case .successTopup: return Localization.onboardingDoneHeader
+        case .addTokens: return nil
         case .success: return successTitle
         }
     }
@@ -84,6 +88,7 @@ extension SingleCardOnboardingStep: OnboardingMessagesProvider {
         case .topup: return Localization.onboardingTopUpBody
         case .saveUserWallet: return nil
         case .successTopup: return Localization.onboardingDoneBody
+        case .addTokens: return nil
         case .success: return Localization.onboardingDoneBody
         }
     }
@@ -101,6 +106,7 @@ extension SingleCardOnboardingStep: OnboardingButtonsInfoProvider {
         case .successTopup: return Localization.commonContinue
         case .disclaimer: return ""
         case .saveUserWallet: return BiometricAuthorizationUtils.allowButtonTitle
+        case .addTokens: return ""
         case .success: return successButtonTitle
         }
     }
@@ -117,7 +123,7 @@ extension SingleCardOnboardingStep: OnboardingButtonsInfoProvider {
     var isSupplementButtonVisible: Bool {
         switch self {
         case .disclaimer, .topup: return true
-        case .successTopup, .success, .createWallet, .saveUserWallet: return false
+        case .successTopup, .success, .createWallet, .saveUserWallet, .addTokens: return false
         }
     }
 
@@ -129,6 +135,7 @@ extension SingleCardOnboardingStep: OnboardingButtonsInfoProvider {
         case .successTopup: return Localization.commonContinue
         case .success: return successButtonTitle
         case .saveUserWallet: return ""
+        case .addTokens: return ""
         }
     }
 

@@ -160,6 +160,10 @@ final class ExpressViewModel: ObservableObject {
     func didCloseFeeSelectorSheet() {
         restartTimer()
     }
+
+    func didTapCloseButton() {
+        coordinator?.closeSwappingView()
+    }
 }
 
 // MARK: - Navigation
@@ -639,7 +643,21 @@ extension ExpressViewModel: NotificationTapDelegate {
             updateSendDecimalValue(to: value - amount)
         case .reduceAmountTo(let amount, _):
             updateSendDecimalValue(to: amount)
-        default:
+        case .leaveAmount(let amount, _):
+            guard let balance = try? interactor.getSender().getBalance() else {
+                AppLog.shared.debug("[Express] Couldn't find sender balance")
+                return
+            }
+
+            updateSendDecimalValue(to: balance - amount)
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refreshFee,
+             .goToProvider,
+             .addHederaTokenAssociation,
+             .bookNow,
+             .stake:
             return
         }
     }

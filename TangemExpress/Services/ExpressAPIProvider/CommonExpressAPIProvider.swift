@@ -83,6 +83,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         let refundAddress = refundAddress(item: item)
         let request = ExpressDTO.ExchangeData.Request(
             requestId: requestId,
+            fromAddress: item.source.defaultAddress,
             fromContractAddress: item.source.expressCurrency.contractAddress,
             fromNetwork: item.source.expressCurrency.network,
             toContractAddress: item.destination.expressCurrency.contractAddress,
@@ -107,5 +108,18 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         let response = try await expressAPIService.exchangeStatus(request: request)
         let transaction = expressAPIMapper.mapToExpressTransaction(response: response)
         return transaction
+    }
+
+    func exchangeSent(result: ExpressTransactionSentResult) async throws {
+        let request = ExpressDTO.ExchangeSent.Request(
+            txHash: result.hash,
+            txId: result.data.expressTransactionId,
+            fromNetwork: result.source.expressCurrency.network,
+            fromAddress: result.source.defaultAddress,
+            payinAddress: result.data.destinationAddress,
+            payinExtraId: result.data.extraDestinationId
+        )
+
+        _ = try await expressAPIService.exchangeSent(request: request)
     }
 }

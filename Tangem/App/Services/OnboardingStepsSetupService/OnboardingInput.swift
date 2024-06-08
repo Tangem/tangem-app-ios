@@ -12,7 +12,7 @@ import TangemSdk
 struct OnboardingInput { // TODO: Split to coordinator options and input
     let backupService: BackupService
     let primaryCardId: String
-    let cardInitializer: CardInitializable?
+    let cardInitializer: CardInitializer?
     let steps: OnboardingSteps
     let cardInput: CardInput
     let twinData: TwinData?
