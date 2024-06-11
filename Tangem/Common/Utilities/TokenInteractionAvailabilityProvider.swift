@@ -93,6 +93,7 @@ struct TokenInteractionAvailabilityProvider {
              .taraxa,
              .radiant,
              .base,
+             .bittensor,
              .joystream:
 
             // Checking that we have at least one valid (non-empty) address
