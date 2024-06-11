@@ -85,7 +85,7 @@ class CustomEvmFeeService {
         }
 
         let parameters = EthereumEIP1559FeeParameters(gasLimit: gasLimit, maxFeePerGas: maxFeePerGas, priorityFee: priorityFee)
-        let fee = parameters.caclulateFee(decimalValue: feeTokenItem.decimalValue)
+        let fee = parameters.calculateFee(decimalValue: feeTokenItem.decimalValue)
         let amount = Amount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee)
 
         return Fee(amount, parameters: parameters)
@@ -105,7 +105,7 @@ class CustomEvmFeeService {
 
         let maxFeePerGas = (enteredFeeInSmallestDenomination / currentGasLimit)
         let parameters = EthereumEIP1559FeeParameters(gasLimit: currentGasLimit, maxFeePerGas: maxFeePerGas, priorityFee: currentPriorityFee)
-        let fee = parameters.caclulateFee(decimalValue: feeTokenItem.decimalValue)
+        let fee = parameters.calculateFee(decimalValue: feeTokenItem.decimalValue)
         let amount = Amount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee)
 
         return Fee(amount, parameters: parameters)
