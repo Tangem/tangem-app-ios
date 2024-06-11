@@ -31,13 +31,13 @@ class CommonXPUBGenerator {
         self.cardInteractor = cardInteractor
     }
 
-    private func makeDerivations() async throws {
+    private func prepareKeys() async throws {
         let pendingDerivations = getPendingDerivations()
         guard !pendingDerivations.isEmpty else {
             return
         }
 
-        let derivedKeys = try await getDerivations(for: pendingDerivations)
+        let derivedKeys = try await deriveKeys(for: pendingDerivations)
 
         if childKey.extendedPublicKey == nil {
             guard let extendedPublicKey = derivedKeys[childKey.derivationPath] else {
@@ -70,7 +70,7 @@ class CommonXPUBGenerator {
         return pendingDerivations
     }
 
-    private func getDerivations(for paths: [DerivationPath]) async throws -> DerivedKeys {
+    private func deriveKeys(for paths: [DerivationPath]) async throws -> DerivedKeys {
         let result = try await cardInteractor.deriveKeys(derivations: [seedKey: paths])
         return result[seedKey] ?? [:]
     }
@@ -103,7 +103,7 @@ class CommonXPUBGenerator {
 
 extension CommonXPUBGenerator: XPUBGenerator {
     func generateXPUB() async throws -> String {
-        try await makeDerivations()
+        try await prepareKeys()
         let extendedPublicKey = try makeExtendedKey()
         let xpub = try extendedPublicKey.serialize(for: isTestnet ? .testnet : .mainnet)
         return xpub
