@@ -16,6 +16,7 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
     let header: Header?
     let footer: Footer?
 
+    private var contentOffsetObserver: Binding<CGPoint>? = nil
     private let bottomPadding: CGFloat
 
     init(
@@ -39,6 +40,8 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
         header = nil
         footer = nil
     }
+
+    private let namespace = UUID()
 
     var body: some View {
         ScrollView {
@@ -64,6 +67,18 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
                 }
             }
             .padding(.bottom, bottomPadding)
+            .readContentOffset(inCoordinateSpace: .named(namespace)) { value in
+                contentOffsetObserver?.wrappedValue = value
+            }
+        }
+        .coordinateSpace(name: namespace)
+    }
+}
+
+extension ManageTokensListView: Setupable {
+    func addContentOffsetObserver(_ observer: Binding<CGPoint>) -> Self {
+        map {
+            $0.contentOffsetObserver = observer
         }
     }
 }

@@ -24,6 +24,7 @@ struct WalletConnectV2Utils {
             }
 
             let blockchains = proposals.chains?.compactMap(createBlockchain(for:))
+
             if blockchains?.count != proposals.chains?.count {
                 return false
             }
@@ -110,8 +111,8 @@ struct WalletConnectV2Utils {
             }
 
             let sessionNamespace = SessionNamespace(
-                chains: supportedChains,
-                accounts: Set(accounts.reduce([], +)),
+                chains: Array(supportedChains),
+                accounts: accounts.reduce([], +),
                 methods: proposalNamespace.methods,
                 events: proposalNamespace.events
             )
@@ -146,21 +147,22 @@ struct WalletConnectV2Utils {
             }
 
             let sessionNamespace = SessionNamespace(
-                chains: supportedChains,
-                accounts: Set(flattenedAccounts),
+                chains: Array(supportedChains),
+                accounts: flattenedAccounts,
                 methods: proposalNamespace.methods,
                 events: proposalNamespace.events
             )
 
             // TODO: TBF WTF? :)
             if let existingNamespace = sessionNamespaces[namespace] {
-                let unionChains = existingNamespace.chains?.union(sessionNamespace.chains ?? [])
-                let unionAccounts = existingNamespace.accounts.union(sessionNamespace.accounts)
-                let unionMethods = existingNamespace.methods.union(sessionNamespace.methods)
-                let unionEvents = existingNamespace.events.union(sessionNamespace.events)
+                let unionChains = Set(existingNamespace.chains ?? []).union(sessionNamespace.chains ?? [])
+                let unionAccounts = Set(existingNamespace.accounts).union(sessionNamespace.accounts)
+                let unionMethods = Set(existingNamespace.methods).union(sessionNamespace.methods)
+                let unionEvents = Set(existingNamespace.events).union(sessionNamespace.events)
+
                 sessionNamespaces[namespace] = SessionNamespace(
-                    chains: unionChains,
-                    accounts: unionAccounts,
+                    chains: Array(unionChains),
+                    accounts: Array(unionAccounts),
                     methods: unionMethods,
                     events: unionEvents
                 )

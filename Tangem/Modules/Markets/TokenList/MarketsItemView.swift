@@ -15,59 +15,34 @@ struct MarketsItemView: View {
     private let iconSize = CGSize(bothDimensions: 36)
 
     var body: some View {
-        HStack {
-            HStack(spacing: 12) {
-                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
-                    .skeletonable(isShown: viewModel.isLoading, radius: iconSize.height / 2)
+        HStack(spacing: 12) {
+            IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
-                tokenInfo
+            VStack {
+                tokenInfoView
             }
 
-            Spacer(minLength: 24)
+            Spacer()
 
-            priceHistoryView
+            VStack {
+                HStack(spacing: 10) {
+                    tokenPriceView
 
-            manageButton(for: viewModel.action, with: viewModel.id)
-                .skeletonable(isShown: viewModel.isLoading)
+                    priceHistoryView
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 15)
         .animation(nil) // Disable animations on scroll reuse
     }
 
-    @ViewBuilder
-    private func manageButton(for action: MarketsItemViewModel.Action, with id: String) -> some View {
-        ZStack {
-            Button {
-                viewModel.didTapAction(action, viewModel.coinModel)
-            } label: {
-                switch action {
-                case .add:
-                    AddButtonView()
-                case .edit:
-                    EditButtonView()
-                case .info:
-                    Assets.infoIconMini.image
-                        .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.informative)
-                }
-            }
-
-            AddButtonView()
-                .hidden()
-
-            EditButtonView()
-                .hidden()
-        }
-    }
-
-    private var tokenInfo: some View {
+    private var tokenInfoView: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstBaselineCustom, spacing: 4) {
                 Text(viewModel.name)
                     .lineLimit(1)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-                    .skeletonable(isShown: viewModel.isLoading, radius: 3)
 
                 Text(viewModel.symbol)
                     .lineLimit(1)
@@ -75,157 +50,63 @@ struct MarketsItemView: View {
             }
 
             HStack(spacing: 6) {
-                Text(viewModel.priceValue)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    .skeletonable(isShown: viewModel.isLoading, radius: 3)
+                Text(viewModel.marketRating)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                    .padding(.horizontal, 5)
+                    .background(Colors.Field.primary)
+                    .cornerRadiusContinuous(4)
 
-                if !viewModel.isLoading {
-                    TokenPriceChangeView(state: viewModel.priceChangeState)
-                }
+                Text(viewModel.marketCap)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
+        }
+    }
+
+    private var tokenPriceView: some View {
+        VStack(alignment: .trailing, spacing: 3) {
+            Text(viewModel.priceValue)
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+
+            TokenPriceChangeView(state: viewModel.priceChangeState)
         }
     }
 
     private var priceHistoryView: some View {
         VStack {
-            if let priceHistory = viewModel.priceHistory {
+            if let charts = viewModel.charts {
                 LineChartView(
-                    color: viewModel.priceHistoryChangeType.textColor,
-                    data: priceHistory
+                    color: viewModel.priceChangeState.signType?.textColor ?? Colors.Text.tertiary,
+                    data: charts
                 )
+            } else {
+                // TODO: - Need insert to skeleton
             }
         }
-        .frame(width: 50, height: 37, alignment: .center)
-        .padding(.trailing, 24)
+        .frame(width: 56, height: 32, alignment: .center)
     }
 }
 
-private struct AddButtonView: View {
-    var body: some View {
-        TextButtonView(text: Localization.manageTokensAdd, foreground: Colors.Text.primary2, background: Colors.Button.primary)
-    }
-}
+#Preview {
+    let tokens = DummyMarketTokenModelFactory().list()
 
-private struct EditButtonView: View {
-    var body: some View {
-        TextButtonView(text: Localization.manageTokensEdit, foreground: Colors.Text.primary1, background: Colors.Button.secondary)
-    }
-}
-
-private struct TextButtonView: View {
-    let text: String
-    let foreground: Color
-    let background: Color
-
-    var body: some View {
-        Text(text)
-            .style(Fonts.Bold.caption1, color: foreground)
-            .frame(size: .init(width: 24, height: 16))
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(background)
+    return ScrollView(.vertical) {
+        ForEach(tokens) { token in
+            MarketsItemView(
+                viewModel: MarketsItemViewModel(
+                    .init(
+                        id: token.id,
+                        imageURL: token.imageUrl,
+                        name: token.name,
+                        symbol: token.symbol,
+                        marketCap: token.marketCap,
+                        marketRating: token.marketRating,
+                        priceValue: token.currentPrice,
+                        priceChangeStateValue: token.priceChangePercentage[.day]
+                    )
+                )
             )
-    }
-}
-
-struct MarketsItemView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Bitcoin",
-                    symbol: "BTC",
-                    items: []
-                ),
-                priceValue: "$23,034.83",
-                priceChangeState: .loaded(signType: .positive, text: "10.5%"),
-                priceHistory: [1, 7, 3, 5, 13],
-                action: .add,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Ethereum",
-                    symbol: "ETH",
-                    items: []
-                ),
-                priceValue: "$1,340.33",
-                priceChangeState: .loaded(signType: .negative, text: "10.5%"),
-                priceHistory: [1, 7, 3, 5, 13].reversed(),
-                action: .add,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Solana",
-                    symbol: "SOL",
-                    items: []
-                ),
-                priceValue: "$33.00",
-                priceChangeState: .loaded(signType: .positive, text: "1.3%"),
-                priceHistory: [1, 7, 3, 5, 13],
-                action: .add,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Polygon",
-                    symbol: "MATIC",
-                    items: []
-                ),
-                priceValue: "$34.83",
-                priceChangeState: .loaded(signType: .positive, text: "0.0%"),
-                priceHistory: [4, 7, 3, 5, 4],
-                action: .edit,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Very long token name is very long",
-                    symbol: "BUS",
-                    items: []
-                ),
-                priceValue: "$23,341,324,034.83",
-                priceChangeState: .loaded(signType: .positive, text: "1,444,340,340.0%"),
-                priceHistory: [1, 7, 3, 5, 13],
-                action: .info,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            MarketsItemView(viewModel: MarketsItemViewModel(
-                coinModel: CoinModel(
-                    id: "",
-                    name: "Custom Token",
-                    symbol: "CT",
-                    items: []
-                ),
-                priceValue: "$100.83",
-                priceChangeState: .loaded(signType: .positive, text: "1.0%"),
-                priceHistory: nil,
-                action: .add,
-                state: .loaded,
-                didTapAction: { _, _ in }
-            ))
-
-            Spacer()
         }
     }
 }

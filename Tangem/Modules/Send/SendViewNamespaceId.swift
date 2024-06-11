@@ -44,12 +44,13 @@ enum SendViewNamespaceId {
     case feeTitle
     case feeOption(feeOption: FeeOption)
     case feeAmount(feeOption: FeeOption)
+    case feeSeparator(feeOption: FeeOption)
 }
 
 extension SendViewNamespaceId {
     var rawValue: String {
         switch self {
-        case .feeOption(let feeOption), .feeAmount(let feeOption):
+        case .feeOption(let feeOption), .feeAmount(let feeOption), .feeSeparator(let feeOption):
             return "\(baseValue)-\(feeOption.id)"
         default:
             return baseValue
@@ -106,6 +107,8 @@ extension SendViewNamespaceId {
             "feeOption"
         case .feeAmount:
             "feeAmount"
+        case .feeSeparator:
+            "feeSeparator"
         }
     }
 }

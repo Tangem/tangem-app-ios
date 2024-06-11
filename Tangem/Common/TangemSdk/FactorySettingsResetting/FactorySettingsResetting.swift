@@ -10,5 +10,5 @@ import Foundation
 import TangemSdk
 
 protocol FactorySettingsResetting: AnyObject {
-    func resetCard(completion: @escaping (Result<Void, TangemSdkError>) -> Void)
+    func resetCard(headerMessage: String?, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
 }

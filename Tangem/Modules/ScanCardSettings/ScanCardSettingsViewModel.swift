@@ -98,7 +98,7 @@ extension ScanCardSettingsViewModel {
             securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
             factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
             isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
-            hasBackupCards: cardInfo.card.backupStatus?.isActive ?? false,
+            linkedCardsCount: cardInfo.card.backupStatus?.linkedCardsCount ?? 0,
             canTwin: config.hasFeature(.twinning),
             twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
             cardIdFormatted: cardInfo.cardIdFormatted,

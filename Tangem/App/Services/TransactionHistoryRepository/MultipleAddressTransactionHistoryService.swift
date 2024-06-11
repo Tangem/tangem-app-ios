@@ -18,7 +18,7 @@ class MultipleAddressTransactionHistoryService {
     private let transactionHistoryProviders: [String: TransactionHistoryProvider]
 
     private var _state = CurrentValueSubject<TransactionHistoryServiceState, Never>(.initial)
-    private let pageSize: Int = 20
+    private let pageSize: Int = 100
     private var cancellable: AnyCancellable?
     private var storage: ThreadSafeContainer<[TransactionRecord]> = []
 

@@ -15,14 +15,15 @@ struct StakeKitMapper {
         }
 
         return try YieldInfo(
-            item: mapToStakingTokenItem(from: response.token),
+            id: response.id,
             apy: response.apy,
-            rewardRate: response.rewardRate,
             rewardType: mapToRewardType(from: response.rewardType),
-            unbonding: mapToPeriod(from: response.metadata.cooldownPeriod),
+            rewardRate: response.rewardRate,
             minimumRequirement: enterAction.args.amount.minimum,
-            rewardClaimingType: mapToRewardClaimingType(from: response.metadata.rewardClaiming),
+            item: mapToStakingTokenItem(from: response.token),
+            unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
+            rewardClaimingType: mapToRewardClaimingType(from: response.metadata.rewardClaiming),
             rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule)
         )
     }
@@ -30,7 +31,7 @@ struct StakeKitMapper {
     // MARK: - Inner types
 
     func mapToStakingTokenItem(from token: StakeKitDTO.Token) -> StakingTokenItem {
-        StakingTokenItem(network: token.network, contractAdress: token.address)
+        StakingTokenItem(coinId: token.coinGeckoId, contractAdress: token.address)
     }
 
     func mapToRewardType(from rewardType: StakeKitDTO.Yield.Info.Response.RewardType) -> RewardType {

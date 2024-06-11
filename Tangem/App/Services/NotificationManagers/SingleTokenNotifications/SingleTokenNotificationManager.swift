@@ -10,14 +10,16 @@ import Foundation
 import Combine
 import TangemSdk
 import BlockchainSdk
+import TangemStaking
 
 final class SingleTokenNotificationManager {
     @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
+    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
+
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
     private let walletModelsManager: WalletModelsManager
-    private let expressDestinationService: ExpressDestinationService?
     private weak var delegate: NotificationTapDelegate?
 
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
@@ -29,12 +31,10 @@ final class SingleTokenNotificationManager {
     init(
         walletModel: WalletModel,
         walletModelsManager: WalletModelsManager,
-        expressDestinationService: ExpressDestinationService?,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
         self.walletModel = walletModel
         self.walletModelsManager = walletModelsManager
-        self.expressDestinationService = expressDestinationService
 
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
@@ -66,6 +66,11 @@ final class SingleTokenNotificationManager {
         let factory = NotificationsFactory()
 
         var events = [TokenNotificationEvent]()
+
+        if let event = makeStakingNotificationEvent() {
+            events.append(event)
+        }
+
         if let existentialWarning = walletModel.existentialDepositWarning {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
@@ -212,6 +217,27 @@ final class SingleTokenNotificationManager {
         case .none:
             return []
         }
+    }
+
+    func makeStakingNotificationEvent() -> TokenNotificationEvent? {
+        guard FeatureProvider.isAvailable(.staking) else {
+            return nil
+        }
+
+        guard let yield = stakingRepositoryProxy.getYield(item: walletModel.stakingTokenItem) else {
+            return nil
+        }
+
+        let days = 2
+        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
+        let rewardPeriodDaysFormatted = days.formatted()
+
+        return .staking(
+            tokenSymbol: walletModel.tokenItem.currencySymbol,
+            tokenIconInfo: TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom),
+            earnUpToFormatted: apyFormatted,
+            rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
+        )
     }
 }
 

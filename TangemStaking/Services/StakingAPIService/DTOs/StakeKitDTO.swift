@@ -17,8 +17,8 @@ enum StakeKitDTO {
     }
 
     struct Token: Codable {
-        let coinGeckoId: String?
-        let network: String
+        let coinGeckoId: String
+        let network: String?
         let name: String?
         let decimals: Int?
         let address: String?

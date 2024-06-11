@@ -40,6 +40,8 @@ class SendFeeViewModel: ObservableObject {
 
     var didProperlyDisappear = true
 
+    var lastFeeOption: FeeOption? { feeOptions.last }
+
     private(set) var customFeeModels: [SendCustomFeeInputFieldModel] = []
 
     @Published private var isFeeIncluded: Bool = false

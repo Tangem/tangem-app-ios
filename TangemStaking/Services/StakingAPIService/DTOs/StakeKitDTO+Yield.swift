@@ -26,13 +26,14 @@ extension StakeKitDTO {
                 let token: Token
                 let tokens: [Token]?
                 let args: Actions
-                let status: Status
+                let status: Status?
+
                 let apy: Decimal
                 let rewardRate: Decimal
                 let rewardType: RewardType
+
                 let metadata: Metadata
                 let validators: [Validator]
-                let isAvailable: Bool?
 
                 struct Actions: Decodable {
                     let enter: Action?
@@ -96,10 +97,8 @@ extension StakeKitDTO {
                     let withdrawPeriod: Period?
                     let rewardClaiming: RewardClaiming
                     let defaultValidator: String?
-                    let supportsMultipleValidators: Bool?
-                    let supportsLedgerWalletApi: Bool?
+                    let supportsMultipleValidators: Bool
                     let revshare: Enabled
-                    let fee: Enabled?
 
                     enum MetadataType: String, Decodable {
                         case staking

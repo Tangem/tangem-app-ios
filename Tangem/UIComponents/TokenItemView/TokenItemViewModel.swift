@@ -154,7 +154,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
         }
 
         if let change = quote.change {
-            let result = priceChangeFormatter.format(value: change)
+            let result = priceChangeFormatter.format(change, option: .priceChange)
             priceChangeState = .loaded(signType: result.signType, text: result.formattedText)
         } else {
             priceChangeState = .noData

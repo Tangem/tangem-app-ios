@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import Firebase
 import BlockchainSdk
+import TangemStaking
 
 class ServicesManager {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
@@ -17,6 +18,7 @@ class ServicesManager {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
+    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     private var bag = Set<AnyCancellable>()
 
@@ -47,6 +49,9 @@ class ServicesManager {
         accountHealthChecker.initialize()
         apiListProvider.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
+        if FeatureProvider.isAvailable(.staking) {
+            stakingRepositoryProxy.initialize()
+        }
     }
 
     private func configureFirebase() {

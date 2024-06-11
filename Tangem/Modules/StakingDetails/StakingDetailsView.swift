@@ -39,6 +39,7 @@ struct StakingDetailsView: View {
             .background(Colors.Background.secondary)
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: viewModel.onAppear)
         }
     }
 
@@ -82,28 +83,8 @@ struct StakingDetailsView: View {
 
 struct StakingDetailsView_Preview: PreviewProvider {
     static let viewModel = StakingDetailsViewModel(
-        inputData: .init(
-            tokenItem: .blockchain(
-                .init(
-                    .solana(
-                        curve: .ed25519_slip0010,
-                        testnet: false
-                    ),
-                    derivationPath: .none
-                )
-            ),
-            monthEstimatedProfit: 56.25,
-            available: 15,
-            staked: 0,
-            minAPR: 3.54,
-            maxAPR: 5.06,
-            unbonding: .days(3),
-            minimumRequirement: 0.000028,
-            rewardClaimingType: .auto,
-            rewardType: .apr,
-            warmupPeriod: .days(3),
-            rewardScheduleType: .block
-        ),
+        wallet: .mockETH,
+        manager: StakingManagerMock(),
         coordinator: StakingDetailsCoordinator()
     )
 

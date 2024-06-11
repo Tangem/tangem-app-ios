@@ -14,15 +14,17 @@ import TangemStaking
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
-    var title: String { Localization.stakingDetailsTitle(inputData.tokenItem.name) }
+    var title: String { Localization.stakingDetailsTitle(wallet.name) }
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
 
     // MARK: - Dependencies
 
-    private let inputData: StakingDetailsData
+    private let wallet: WalletModel
+    private let manager: StakingManager
     private weak var coordinator: StakingDetailsRoutable?
+
     private let balanceFormatter = BalanceFormatter()
     private let percentFormatter = PercentFormatter()
     private let daysFormatter: DateComponentsFormatter = {
@@ -33,67 +35,87 @@ final class StakingDetailsViewModel: ObservableObject {
     }()
 
     init(
-        inputData: StakingDetailsData,
+        wallet: WalletModel,
+        manager: StakingManager,
         coordinator: StakingDetailsRoutable
     ) {
-        self.inputData = inputData
+        self.wallet = wallet
+        self.manager = manager
         self.coordinator = coordinator
-
-        setupAverageRewardingViewData()
-        setupDetailsSection()
-        setupRewardViewData()
     }
 
     func userDidTapBanner() {}
     func userDidTapActionButton() {}
+
+    func onAppear() {
+        runTask(in: self) { viewModel in
+            let yield = try await viewModel.manager.getYield()
+            await viewModel.setupView(yield: yield)
+        }
+    }
 }
 
 private extension StakingDetailsViewModel {
-    func aprFormatted() -> String {
-        let minAPRFormatted = percentFormatter.percentFormat(value: inputData.minAPR)
-        let maxAPRFormatted = percentFormatter.percentFormat(value: inputData.maxAPR)
-        let aprFormatted = "\(minAPRFormatted) - \(maxAPRFormatted)"
-        return aprFormatted
+    @MainActor
+    func setupView(yield: YieldInfo) {
+        setupView(
+            inputData: StakingDetailsData(
+                available: wallet.balanceValue ?? 0, // Maybe add skeleton?
+                staked: 0, // TBD
+                rewardType: yield.rewardType,
+                rewardRate: yield.rewardRate,
+                minimumRequirement: yield.minimumRequirement,
+                warmupPeriod: yield.warmupPeriod,
+                unbondingPeriod: yield.unbondingPeriod,
+                rewardClaimingType: yield.rewardClaimingType,
+                rewardScheduleType: yield.rewardScheduleType
+            )
+        )
     }
 
-    func setupAverageRewardingViewData() {
-        let profitFormatted = balanceFormatter.formatFiatBalance(inputData.monthEstimatedProfit)
-        let days = 30 // TODO: Will be calculated somehow
+    func setupView(inputData: StakingDetailsData) {
+        setupAverageRewardingViewData(inputData: inputData)
+        setupDetailsSection(inputData: inputData)
+    }
+
+    func setupAverageRewardingViewData(inputData: StakingDetailsData) {
+        let days = 30
         let periodProfitFormatted = daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
+
+        let profitFormatted = wallet.balanceValue.map { balanceValue in
+            let profit = StakingCalculator().earnValue(
+                invest: balanceValue,
+                apr: inputData.rewardRate,
+                period: .days(days)
+            )
+            return balanceFormatter.formatFiatBalance(profit)
+        }
 
         averageRewardingViewData = .init(
             rewardType: inputData.rewardType.title,
-            rewardFormatted: aprFormatted(),
+            rewardFormatted: percentFormatter.format(inputData.rewardRate, option: .staking),
             periodProfitFormatted: periodProfitFormatted,
-            profitFormatted: profitFormatted
+            profitFormatted: profitFormatted.map { .loaded(text: $0) } ?? .noData
         )
     }
 
-    func setupRewardViewData() {
-        let fiatFormatted = balanceFormatter.formatFiatBalance(inputData.monthEstimatedProfit)
-        let cryptoFormatted = balanceFormatter.formatCryptoBalance(
-            inputData.staked,
-            currencyCode: inputData.tokenItem.currencySymbol
-        )
-
-        rewardViewData = .init(state: .rewards(fiatFormatted: fiatFormatted, cryptoFormatted: cryptoFormatted))
-    }
-
-    func setupDetailsSection() {
+    func setupDetailsSection(inputData: StakingDetailsData) {
         let availableFormatted = balanceFormatter.formatCryptoBalance(
             inputData.available,
-            currencyCode: inputData.tokenItem.currencySymbol
+            currencyCode: wallet.tokenItem.currencySymbol
         )
 
         let stakedFormatted = balanceFormatter.formatCryptoBalance(
             inputData.staked,
-            currencyCode: inputData.tokenItem.currencySymbol
+            currencyCode: wallet.tokenItem.currencySymbol
         )
 
-        let unbondingFormatted = inputData.unbonding.formatted(formatter: daysFormatter)
+        let rewardRateFormatted = percentFormatter.format(inputData.rewardRate, option: .staking)
+
+        let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
         let minimumFormatted = balanceFormatter.formatCryptoBalance(
             inputData.minimumRequirement,
-            currencyCode: inputData.tokenItem.currencySymbol
+            currencyCode: wallet.tokenItem.currencySymbol
         )
 
         let warmupFormatted = inputData.warmupPeriod.formatted(formatter: daysFormatter)
@@ -101,7 +123,7 @@ private extension StakingDetailsViewModel {
         detailsViewModels = [
             DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted)),
-            DefaultRowViewModel(title: inputData.rewardType.title, detailsType: .text(aprFormatted())),
+            DefaultRowViewModel(title: inputData.rewardType.title, detailsType: .text(rewardRateFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsUnbondingPeriod, detailsType: .text(unbondingFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsMinimumRequirement, detailsType: .text(minimumFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsRewardClaiming, detailsType: .text(inputData.rewardClaimingType.title)),
@@ -111,19 +133,18 @@ private extension StakingDetailsViewModel {
     }
 }
 
-struct StakingDetailsData {
-    let tokenItem: TokenItem
-    let monthEstimatedProfit: Decimal
-    let available: Decimal
-    let staked: Decimal
-    let minAPR: Decimal
-    let maxAPR: Decimal
-    let unbonding: Period
-    let minimumRequirement: Decimal
-    let rewardClaimingType: RewardClaimingType
-    let rewardType: RewardType
-    let warmupPeriod: Period
-    let rewardScheduleType: RewardScheduleType
+extension StakingDetailsViewModel {
+    struct StakingDetailsData {
+        let available: Decimal
+        let staked: Decimal
+        let rewardType: RewardType
+        let rewardRate: Decimal
+        let minimumRequirement: Decimal
+        let warmupPeriod: Period
+        let unbondingPeriod: Period
+        let rewardClaimingType: RewardClaimingType
+        let rewardScheduleType: RewardScheduleType
+    }
 }
 
 private extension Period {

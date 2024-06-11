@@ -22,9 +22,6 @@ struct AppCoordinatorView: CoordinatorView {
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
-                    .if(coordinator.mainBottomSheetCoordinator != nil) { view in
-                        view.animation(nil) // Fixes weird animations on appear when the view has a bottom scrollable sheet
-                    }
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
             case .none:

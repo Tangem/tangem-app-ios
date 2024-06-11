@@ -13,9 +13,11 @@ import TangemSdk
 import BlockchainSdk
 import TangemExpress
 import CombineExt
+import TangemStaking
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     @Published var alert: AlertBinder? = nil
     @Published var transactionHistoryState: TransactionsListView.State = .loading
@@ -52,7 +54,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return .noData
         }
 
-        let result = priceChangeFormatter.format(value: change)
+        let result = priceChangeFormatter.format(change, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
@@ -168,17 +170,19 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     }
 
     // We need to keep this not in extension because we may want to override this logic and
-    // implementation from extensions can't be overriden
+    // implementation from extensions can't be overridden
     func didTapNotification(with id: NotificationViewId) {}
 
     // We need to keep this not in extension because we may want to override this logic and
-    // implementation from extensions can't be overriden
+    // implementation from extensions can't be overridden
     func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .buyCrypto:
             openBuyCryptoIfPossible()
         case .addHederaTokenAssociation:
             fulfillAssetRequirements()
+        case .stake:
+            openStaking()
         default:
             break
         }
@@ -350,7 +354,7 @@ extension SingleTokenBaseViewModel {
             return isSwapDisabled()
         case .sell:
             return sendIsDisabled() || !exchangeUtility.sellAvailable
-        case .copyAddress, .hide:
+        case .copyAddress, .hide, .stake:
             return true
         }
     }
@@ -362,7 +366,7 @@ extension SingleTokenBaseViewModel {
         case .receive: return openReceive
         case .exchange: return openExchangeAndLogAnalytics
         case .sell: return openSell
-        case .copyAddress, .hide: return nil
+        case .copyAddress, .hide, .stake: return nil
         }
     }
 
@@ -370,7 +374,7 @@ extension SingleTokenBaseViewModel {
         switch buttonType {
         case .receive:
             return weakify(self, forFunction: SingleTokenBaseViewModel.copyDefaultAddress)
-        case .buy, .send, .exchange, .sell, .copyAddress, .hide:
+        case .buy, .send, .exchange, .sell, .copyAddress, .hide, .stake:
             return nil
         }
     }
@@ -474,6 +478,10 @@ extension SingleTokenBaseViewModel {
         }
 
         tokenRouter.openExchange(walletModel: walletModel)
+    }
+
+    func openStaking() {
+        tokenRouter.openStaking(walletModel: walletModel)
     }
 
     func openSell() {

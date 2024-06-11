@@ -28,6 +28,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
+    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -58,15 +59,9 @@ class TokenDetailsCoordinator: CoordinatorObject {
             logger: AppLog.shared
         )
 
-        let expressDestinationService = CommonExpressDestinationService(
-            walletModelsManager: options.userWalletModel.walletModelsManager,
-            expressRepository: CommonExpressRepository(walletModelsManager: options.userWalletModel.walletModelsManager, expressAPIProvider: provider)
-        )
-
         let notificationManager = SingleTokenNotificationManager(
             walletModel: options.walletModel,
             walletModelsManager: options.userWalletModel.walletModelsManager,
-            expressDestinationService: expressDestinationService,
             contextDataProvider: options.userWalletModel
         )
 
@@ -299,6 +294,16 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         coordinator.start(with: .default)
 
         expressCoordinator = coordinator
+    }
+
+    func openStaking(wallet: WalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.stakingDetailsCoordinator = nil
+        }
+
+        let coordinator = StakingDetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        coordinator.start(with: .init(wallet: wallet))
+        stakingDetailsCoordinator = coordinator
     }
 
     func openInSafari(url: URL) {

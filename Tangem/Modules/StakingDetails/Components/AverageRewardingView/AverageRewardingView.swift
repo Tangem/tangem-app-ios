@@ -37,8 +37,12 @@ struct AverageRewardingView: View {
             Text(Localization.stakingDetailsEstimatedProfit(data.periodProfitFormatted))
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            Text(data.profitFormatted)
-                .style(Fonts.Regular.callout, color: Colors.Text.primary1)
+            LoadableTextView(
+                state: data.profitFormatted,
+                font: Fonts.Regular.callout,
+                textColor: Colors.Text.primary1,
+                loaderSize: CGSize(width: 40, height: 14)
+            )
         }
         .lineLimit(1)
         .infinityFrame(axis: .horizontal, alignment: .leading)
@@ -49,12 +53,20 @@ struct AverageRewardingView: View {
     ZStack {
         Colors.Background.secondary.ignoresSafeArea()
 
-        GroupedSection(AverageRewardingViewData(
-            rewardType: "APR",
-            rewardFormatted: "4.23%",
-            periodProfitFormatted: "30 days",
-            profitFormatted: "13.57$"
-        )) {
+        GroupedSection([
+            AverageRewardingViewData(
+                rewardType: "APR",
+                rewardFormatted: "4.23%",
+                periodProfitFormatted: "30 days",
+                profitFormatted: .loaded(text: "13.57$")
+            ),
+            AverageRewardingViewData(
+                rewardType: "APR",
+                rewardFormatted: "4.23%",
+                periodProfitFormatted: "30 days",
+                profitFormatted: .noData
+            ),
+        ]) {
             AverageRewardingView(data: $0)
         }
         .innerContentPadding(12)

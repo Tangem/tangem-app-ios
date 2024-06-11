@@ -19,6 +19,7 @@ protocol DetailsRoutable: AnyObject {
     func openSupportChat(input: SupportChatInputModel)
     func openDisclaimer(url: URL)
     func openScanCardManual()
+    func openShop()
     func openSocialNetwork(url: URL)
 
     func openEnvironmentSetup()

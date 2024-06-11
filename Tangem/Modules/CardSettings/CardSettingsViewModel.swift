@@ -27,7 +27,7 @@ class CardSettingsViewModel: ObservableObject {
     }
 
     var resetToFactoryFooterMessage: String {
-        if input.hasBackupCards {
+        if input.linkedCardsCount > 0 {
             return Localization.resetCardWithBackupToFactoryMessage
         } else {
             return Localization.resetCardWithoutBackupToFactoryMessage
@@ -178,7 +178,7 @@ extension CardSettingsViewModel {
         } else {
             let input = ResetToFactoryViewModel.Input(
                 cardInteractor: input.factorySettingsResettingCardInteractor,
-                hasBackupCards: input.hasBackupCards,
+                linkedCardsCount: input.linkedCardsCount,
                 userWalletId: input.userWalletId
             )
             coordinator?.openResetCardToFactoryWarning(with: input)
@@ -198,7 +198,7 @@ extension CardSettingsViewModel {
         let securityOptionChangeInteractor: SecurityOptionChanging
         let factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor
         let isResetToFactoryAvailable: Bool
-        let hasBackupCards: Bool
+        let linkedCardsCount: Int
         let canTwin: Bool
         let twinInput: OnboardingInput?
         let cardIdFormatted: String

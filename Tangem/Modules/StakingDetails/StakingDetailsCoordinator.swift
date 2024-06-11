@@ -29,13 +29,18 @@ class StakingDetailsCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: Options) {}
+    func start(with options: Options) {
+        let factory = StakingModulesFactory(wallet: options.wallet)
+        rootViewModel = factory.makeStakingDetailsViewModel(coordinator: self)
+    }
 }
 
 // MARK: - Options
 
 extension StakingDetailsCoordinator {
-    enum Options {}
+    struct Options {
+        let wallet: WalletModel
+    }
 }
 
 // MARK: - StakingDetailsRoutable

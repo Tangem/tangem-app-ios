@@ -9,11 +9,16 @@
 import Foundation
 
 public protocol StakingWallet {
-    var item: StakingTokenItem { get }
+    var stakingTokenItem: StakingTokenItem { get }
     var defaultAddress: String { get }
 }
 
 public struct StakingTokenItem: Hashable {
-    let network: String
+    let coinId: String
     let contractAdress: String?
+
+    public init(coinId: String, contractAdress: String?) {
+        self.coinId = coinId
+        self.contractAdress = contractAdress
+    }
 }

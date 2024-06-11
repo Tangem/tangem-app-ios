@@ -22,6 +22,7 @@ class UserWalletSettingsCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var cardSettingsCoordinator: CardSettingsCoordinator?
     @Published var referralCoordinator: ReferralCoordinator?
+    @Published var manageTokensCoordinator: ManageTokensCoordinator?
 
     // MARK: - Child view models
 
@@ -84,6 +85,16 @@ extension UserWalletSettingsCoordinator: UserWalletSettingsRoutable {
         coordinator.start(with: .init(input: input))
         referralCoordinator = coordinator
         Analytics.log(.referralScreenOpened)
+    }
+
+    func openManageTokens(userWalletModel: any UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.manageTokensCoordinator = nil
+        }
+
+        let coordinator = ManageTokensCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(userWalletModel: userWalletModel))
+        manageTokensCoordinator = coordinator
     }
 }
 

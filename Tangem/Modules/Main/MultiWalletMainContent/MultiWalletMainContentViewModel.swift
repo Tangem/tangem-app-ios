@@ -10,9 +10,11 @@ import Foundation
 import SwiftUI
 import Combine
 import CombineExt
+import TangemStaking
 
 final class MultiWalletMainContentViewModel: ObservableObject {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.stakingRepositoryProxy) private var stakingRepository: StakingRepositoryProxy
 
     // MARK: - ViewState
 
@@ -57,7 +59,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokenSectionsAdapter: TokenSectionsAdapter
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
-    private let rateAppController: RateAppController
+    private let rateAppController: RateAppInteractionController
     private weak var coordinator: MultiWalletMainContentRoutable?
 
     private var canManageTokens: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
@@ -78,7 +80,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         userWalletModel: UserWalletModel,
         userWalletNotificationManager: NotificationManager,
         tokensNotificationManager: NotificationManager,
-        rateAppController: RateAppController,
+        rateAppController: RateAppInteractionController,
         tokenSectionsAdapter: TokenSectionsAdapter,
         tokenRouter: SingleTokenRoutable,
         optionsEditing: OrganizeTokensOptionsEditing,
@@ -396,8 +398,12 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             startBackupProcess()
         case .bookNow(let url):
             openTravalaPromotion(url: url)
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
         default:
-            return
+            break
         }
     }
 
@@ -443,6 +449,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
         // On the Main view we have to hide send button if we have any sending restrictions
         let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
         let canSwap = userWalletModel.config.isFeatureVisible(.swapping) && swapAvailabilityProvider.canSwap(tokenItem: tokenItem.tokenItem) && !walletModel.isCustom
+        let canStake = canStake(walletModel: walletModel)
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
 
@@ -451,10 +458,20 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
             canSignTransactions: canSignTransactions,
             canSend: canSend,
             canSwap: canSwap,
+            canStake: canStake,
             canHide: canManageTokens,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility
         )
+    }
+
+    private func canStake(walletModel: WalletModel) -> Bool {
+        [
+            FeatureProvider.isAvailable(.staking),
+            userWalletModel.config.isFeatureVisible(.staking),
+            stakingRepository.getYield(item: walletModel.stakingTokenItem) != nil,
+            !walletModel.isCustom,
+        ].allConforms { $0 }
     }
 }
 
@@ -485,6 +502,8 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
         case .exchange:
             Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openExchange(walletModel: walletModel)
+        case .stake:
+            tokenRouter.openStaking(walletModel: walletModel)
         case .hide:
             return
         }

@@ -77,6 +77,9 @@ struct SendSummaryView: View {
                 if !viewModel.animatingFeeOnAppear {
                     GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
                         feeSectionContent(data: data)
+                            .overlay(alignment: .bottom) {
+                                feeRowViewSeparator(for: data.feeOption)
+                            }
                             .overlay {
                                 ForEach(viewModel.deselectedFeeRowViewModels) { model in
                                     FeeRowView(viewModel: model)
@@ -85,6 +88,9 @@ struct SendSummaryView: View {
                                         .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: model.option).rawValue)
                                         .allowsHitTesting(false)
                                         .opacity(0)
+                                        .overlay(alignment: .bottom) {
+                                            feeRowViewSeparator(for: model.option)
+                                        }
                                 }
                             }
                     }
@@ -128,6 +134,13 @@ struct SendSummaryView: View {
         .alert(item: $viewModel.alert) { $0.alert }
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
+    }
+
+    private func feeRowViewSeparator(for option: FeeOption) -> some View {
+        Separator(height: .minimal, color: Colors.Stroke.primary)
+            .padding(.leading, GroupedSectionConstants.defaultHorizontalPadding)
+            .opacity(0)
+            .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: option).rawValue, in: namespace)
     }
 
     private func amountSectionContent(data: SendAmountSummaryViewData) -> some View {

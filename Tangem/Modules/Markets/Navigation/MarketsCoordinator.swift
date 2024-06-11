@@ -67,7 +67,7 @@ extension MarketsCoordinator: MarketsRoutable {
         }
 
         let addCustomTokenCoordinator = AddCustomTokenCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        addCustomTokenCoordinator.start(with: .init(userWalletModel: userWalletModel, dataSource: dataSource))
+        addCustomTokenCoordinator.start(with: .init(userWalletModel: userWalletModel))
         self.addCustomTokenCoordinator = addCustomTokenCoordinator
     }
 

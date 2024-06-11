@@ -13,6 +13,8 @@ struct TangemApiTarget: TargetType {
     let type: TargetType
     let authData: AuthData?
 
+    // MARK: - TargetType
+
     var baseURL: URL {
         AppEnvironment.current.apiBaseUrl
     }
@@ -53,12 +55,14 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
+        case .marketsGeneral:
+            return "/market_general"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features:
+        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features, .marketsGeneral:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -133,11 +137,26 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
+        case .marketsGeneral(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
         }
     }
 
     var headers: [String: String]? {
-        authData?.headers
+        var headers: [String: String] = [:]
+
+        if let authData {
+            headers["card_id"] = authData.cardId
+            headers["card_public_key"] = authData.cardPublicKey.hexString
+        }
+
+        if let appVersion: String = InfoDictionaryUtils.version.value() {
+            headers["version"] = appVersion
+        }
+
+        headers["platform"] = "ios"
+
+        return headers
     }
 }
 
@@ -162,6 +181,7 @@ extension TangemApiTarget {
         case awardNewUser(walletId: String, address: String, code: String)
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
+        case marketsGeneral(_ requestModel: MarketsDTO.General.Request)
 
         // Configs
         case apiList
@@ -170,20 +190,13 @@ extension TangemApiTarget {
     struct AuthData {
         let cardId: String
         let cardPublicKey: Data
-
-        var headers: [String: String] {
-            [
-                "card_id": cardId,
-                "card_public_key": cardPublicKey.hexString,
-            ]
-        }
     }
 }
 
 extension TangemApiTarget: CachePolicyProvider {
     var cachePolicy: URLRequest.CachePolicy {
         switch type {
-        case .geo, .features:
+        case .geo, .features, .apiList:
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy

@@ -148,6 +148,7 @@ extension Analytics {
         case buttonScanNewCardSettings = "[Settings] Button - Scan New Card"
         case buttonFactoryReset = "[Settings / Card Settings] Button - Factory Reset"
         case factoryResetFinished = "[Settings / Card Settings] Factory Reset Finished"
+        case factoryResetCancelled = "[Settings / Card Settings] Factory Reset Cancelled"
         case buttonChangeUserCode = "[Settings / Card Settings] Button - Change User Code"
         case userCodeChanged = "[Settings / Card Settings] User Code Changed"
         case buttonChangeSecurityMode = "[Settings / Card Settings] Button - Change Security Mode"

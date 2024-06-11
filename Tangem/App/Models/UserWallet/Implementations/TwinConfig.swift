@@ -151,7 +151,7 @@ extension TwinConfig: UserWalletConfig {
         case .onlineImage:
             return .available
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

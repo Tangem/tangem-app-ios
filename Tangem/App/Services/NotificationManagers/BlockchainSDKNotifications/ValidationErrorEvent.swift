@@ -63,12 +63,12 @@ extension ValidationErrorEvent: NotificationEvent {
                 configuration.feeAmountTypeCurrencySymbol
             )
         case .dustRestriction(let minimumAmountText, let minimumChangeText):
-            return Localization.warningExpressDustMessage(minimumAmountText, minimumChangeText)
+            return Localization.sendNotificationInvalidMinimumAmountText(minimumAmountText, minimumChangeText)
         case .existentialDeposit(_, let amountFormatted):
             return Localization.sendNotificationExistentialDepositText(amountFormatted)
         case .amountExceedMaximumUTXO(_, let amountFormatted, let blockchainName, let maxUtxo):
             return Localization.sendNotificationTransactionLimitText(blockchainName, maxUtxo, amountFormatted)
-        case .insufficientAmountToReserveAtDestination(let maximumAmountText):
+        case .insufficientAmountToReserveAtDestination:
             return Localization.sendNotificationInvalidReserveAmountText
         case .cardanoCannotBeSentBecauseHasTokens:
             return Localization.cardanoMaxAmountHasTokenDescription

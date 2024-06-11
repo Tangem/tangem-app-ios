@@ -180,7 +180,7 @@ extension GenericDemoConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .topup:
             return .available
         case .tokenSynchronization:

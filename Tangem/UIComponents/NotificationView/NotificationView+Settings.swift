@@ -121,6 +121,7 @@ extension NotificationView {
 
     enum LeadingIconType {
         case image(Image)
+        case icon(TokenIconInfo)
         case progressView
     }
 

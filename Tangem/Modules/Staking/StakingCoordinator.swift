@@ -29,13 +29,17 @@ class StakingCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: Options) {}
+    func start(with options: Options) {
+        rootViewModel = StakingViewModel(coordinator: self)
+    }
 }
 
 // MARK: - Options
 
 extension StakingCoordinator {
-    enum Options {}
+    enum Options {
+        case `default`
+    }
 }
 
 // MARK: - StakingRoutable

@@ -32,6 +32,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
+    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -40,7 +41,6 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalWebViewModel: WebViewContainerViewModel?
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel?
     @Published var organizeTokensViewModel: OrganizeTokensViewModel?
-    @Published var rateAppBottomSheetViewModel: RateAppBottomSheetViewModel?
 
     @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel? = nil
 
@@ -323,6 +323,16 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
+    func openStaking(wallet: WalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.stakingDetailsCoordinator = nil
+        }
+
+        let coordinator = StakingDetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        coordinator.start(with: .init(wallet: wallet))
+        stakingDetailsCoordinator = coordinator
+    }
+
     func openInSafari(url: URL) {
         safariManager.openURL(url)
     }
@@ -369,14 +379,6 @@ extension MainCoordinator: VisaWalletRoutable {
 // MARK: - RateAppRoutable protocol conformance
 
 extension MainCoordinator: RateAppRoutable {
-    func openAppRateDialog(with viewModel: RateAppBottomSheetViewModel) {
-        rateAppBottomSheetViewModel = viewModel
-    }
-
-    func closeAppRateDialog() {
-        rateAppBottomSheetViewModel = nil
-    }
-
     func openFeedbackMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
         openMail(with: dataCollector, emailType: emailType, recipient: recipient)
     }

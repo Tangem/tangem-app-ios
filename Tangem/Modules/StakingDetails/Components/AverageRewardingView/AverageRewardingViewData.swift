@@ -15,5 +15,5 @@ struct AverageRewardingViewData: Hashable, Identifiable {
     let rewardFormatted: String
 
     let periodProfitFormatted: String
-    let profitFormatted: String
+    let profitFormatted: LoadableTextView.State
 }

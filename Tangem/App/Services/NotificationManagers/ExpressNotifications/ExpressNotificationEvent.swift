@@ -89,6 +89,9 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationFailedText
         case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
             return Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
+        // Only for dustRestriction we have to use different desription
+        case .validationErrorEvent(.dustRestriction(let minimumAmountFormatted, let minimumChangeFormatted)):
+            return Localization.warningExpressDustMessage(minimumAmountFormatted, minimumChangeFormatted)
         case .withdrawalNotificationEvent(let event):
             return event.description
         case .validationErrorEvent(let event):

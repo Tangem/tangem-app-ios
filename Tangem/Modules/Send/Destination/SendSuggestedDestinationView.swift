@@ -26,8 +26,10 @@ struct SendSuggestedDestinationView: View {
                 cellView(for: cellViewModel.type, index: index)
             }
         }
+        .backgroundColor(Colors.Background.action)
         .interItemSpacing(0)
         .separatorStyle(.none)
+        .backgroundColor(Colors.Background.action)
     }
 
     @ViewBuilder

@@ -67,6 +67,9 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)
             }
+            .sheet(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
 
         NavHolder()
             .bottomSheet(
@@ -78,15 +81,9 @@ struct MainCoordinatorView: CoordinatorView {
             }
             .bottomSheet(
                 item: $coordinator.receiveBottomSheetViewModel,
-                backgroundColor: Colors.Background.primary
+                settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
-            }
-            .bottomSheet(
-                item: $coordinator.rateAppBottomSheetViewModel,
-                backgroundColor: Colors.Background.primary
-            ) { viewModel in
-                RateAppBottomSheetView(viewModel: viewModel)
             }
 
         NavHolder()

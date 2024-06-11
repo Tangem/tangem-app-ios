@@ -21,10 +21,16 @@ class SendModel {
             .eraseToAnyPublisher()
     }
 
+    var destinationValidValue: Bool {
+        // ⚠️ Any changes must be reflected in 'destinationValid'
+        validatedDestination.value?.value != nil && _destinationAdditionalFieldError.value == nil
+    }
+
     var destinationValid: AnyPublisher<Bool, Never> {
         Publishers.CombineLatest(validatedDestination, destinationAdditionalFieldError)
-            .map {
-                $0?.value != nil && $1 == nil
+            .map { validatedDestination, destinationAdditionalFieldError in
+                // ⚠️ Any changes must be reflected in 'destinationAdditionalFieldValid'
+                validatedDestination?.value != nil && destinationAdditionalFieldError == nil
             }
             .eraseToAnyPublisher()
     }
@@ -517,12 +523,11 @@ class SendModel {
     // MARK: - Fees
 
     func didSelectFeeOption(_ feeOption: FeeOption) {
-        guard let newFee = _feeValues.value[feeOption]?.value else {
-            return
-        }
-
         _selectedFeeOption.send(feeOption)
-        fee.send(newFee)
+
+        if let newFee = _feeValues.value[feeOption]?.value {
+            fee.send(newFee)
+        }
     }
 
     func didChangeFeeInclusion(_ isFeeIncluded: Bool) {

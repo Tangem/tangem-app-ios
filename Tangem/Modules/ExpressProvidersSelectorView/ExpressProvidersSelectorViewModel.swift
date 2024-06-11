@@ -164,7 +164,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         }
 
         let changePercent = quote.rate / selectedRate - 1
-        let result = priceChangeFormatter.formatExpress(value: changePercent)
+        let result = priceChangeFormatter.format(changePercent, option: .express)
         return .percent(result.formattedText, signType: result.signType)
     }
 }

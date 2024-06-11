@@ -115,6 +115,10 @@ extension DetailsCoordinator: DetailsRoutable {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
 
+    func openShop() {
+        safariManager.openURL(AppConstants.webShopUrl)
+    }
+
     func openSocialNetwork(url: URL) {
         UIApplication.shared.open(url)
     }

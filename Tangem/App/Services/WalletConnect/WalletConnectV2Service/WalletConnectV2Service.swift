@@ -32,7 +32,10 @@ final class WalletConnectV2Service {
     private var messagesSubscriptions = Set<AnyCancellable>()
 
     private lazy var pairApi: PairingInteracting = Pair.instance
-    private lazy var signApi: SignClient = Sign.instance
+    private lazy var signApi: SignClient = {
+        Sign.configure(crypto: WalletConnectCryptoProvider())
+        return Sign.instance
+    }()
 
     var canEstablishNewSessionPublisher: AnyPublisher<Bool, Never> {
         canEstablishNewSessionSubject
@@ -57,6 +60,7 @@ final class WalletConnectV2Service {
         self.wcHandlersService = wcHandlersService
 
         Networking.configure(
+            groupIdentifier: AppEnvironment.current.suiteName,
             projectId: keysManager.walletConnectProjectId,
             socketFactory: factory,
             socketConnectionType: .automatic
@@ -65,7 +69,8 @@ final class WalletConnectV2Service {
             name: "Tangem iOS",
             description: "Tangem is a card-shaped self-custodial cold hardware wallet",
             url: "tangem.com",
-            icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"]
+            icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"],
+            redirect: .init(native: IncomingActionConstants.universalLinkScheme, universal: IncomingActionConstants.tangemDomain)
         ))
 
         setupSessionSubscriptions()
@@ -133,7 +138,7 @@ final class WalletConnectV2Service {
     }
 
     private func checkSocketConnection() async -> Bool {
-        guard let socket = factory.lastCreatetSocket else {
+        guard let socket = factory.lastCreatedSocket else {
             return false
         }
 
@@ -366,7 +371,7 @@ final class WalletConnectV2Service {
     private func sessionRejected(with proposal: Session.Proposal) {
         runTask { [weak self] in
             do {
-                try await self?.signApi.reject(proposalId: proposal.id, reason: .userRejected)
+                try await self?.signApi.rejectSession(proposalId: proposal.id, reason: .userRejected)
                 self?.log("User reject WC connection")
             } catch {
                 AppLog.shared.error("[WC 2.0] Failed to reject WC connection with error: \(error)")

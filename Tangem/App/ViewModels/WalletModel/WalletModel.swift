@@ -15,6 +15,7 @@ class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
+    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     var walletModelId: WalletModel.Id {
         .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
@@ -212,10 +213,11 @@ class WalletModel {
     }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
-        swapAvailabilityProvider
-            .tokenItemsAvailableToSwapPublisher
-            .mapToVoid()
-            .eraseToAnyPublisher()
+        Publishers.Merge(
+            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
+            stakingRepositoryProxy.enabledYieldsPuiblisher.mapToVoid()
+        )
+        .eraseToAnyPublisher()
     }
 
     var isDemo: Bool { demoBalance != nil }

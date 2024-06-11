@@ -39,6 +39,7 @@ class DefaultRowViewModel: ObservableObject, Identifiable {
 
 extension DefaultRowViewModel {
     enum DetailsType: Hashable {
+        case loadable(state: LoadableTextView.State)
         case text(_ string: String)
         case loader
         case icon(_ image: ImageType)

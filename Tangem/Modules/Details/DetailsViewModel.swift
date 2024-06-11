@@ -29,6 +29,7 @@ class DetailsViewModel: ObservableObject {
         return viewModels
     }
 
+    @Published var buyWalletViewModel: DefaultRowViewModel?
     @Published var appSettingsViewModel: DefaultRowViewModel?
     @Published var supportSectionModels: [DefaultRowViewModel] = []
     @Published var environmentSetupViewModel: DefaultRowViewModel?
@@ -119,6 +120,11 @@ extension DetailsViewModel {
         coordinator?.openAppSettings()
     }
 
+    func openBuyWallet() {
+        Analytics.log(.shopScreenOpened)
+        coordinator?.openShop()
+    }
+
     func openSupportChat() {
         guard let selectedUserWalletModel else {
             return
@@ -186,6 +192,7 @@ private extension DetailsViewModel {
     func setupView() {
         setupWalletConnectRowViewModel()
         setupUserWalletViewModels()
+        setupBuyWalletViewModel()
         setupAppSettingsViewModel()
         setupSupportSectionModels()
         setupEnvironmentSetupSection()
@@ -246,6 +253,13 @@ private extension DetailsViewModel {
         addOrScanNewUserWalletViewModel?.update(title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton)
         addOrScanNewUserWalletViewModel?.update(detailsType: isScanning ? .loader : .none)
         addOrScanNewUserWalletViewModel?.update(action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet))
+    }
+
+    func setupBuyWalletViewModel() {
+        buyWalletViewModel = DefaultRowViewModel(
+            title: Localization.detailsBuyWallet,
+            action: weakify(self, forFunction: DetailsViewModel.openBuyWallet)
+        )
     }
 
     func setupAppSettingsViewModel() {

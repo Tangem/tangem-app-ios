@@ -1,5 +1,5 @@
 //
-//  UserWalletNotificationService.swift
+//  UserWalletNotificationManager.swift
 //  Tangem
 //
 //  Created by Andrew Son on 26/08/23.
@@ -24,20 +24,24 @@ final class UserWalletNotificationManager {
     private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
     private let signatureCountValidator: SignatureCountValidator?
+    private let rateAppController: RateAppNotificationController
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
 
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
     private var promotionUpdateTask: Task<Void, Never>?
+    private var showAppRateNotification = false
 
     init(
         userWalletModel: UserWalletModel,
         signatureCountValidator: SignatureCountValidator?,
+        rateAppController: RateAppNotificationController,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
         self.userWalletModel = userWalletModel
         self.signatureCountValidator = signatureCountValidator
+        self.rateAppController = rateAppController
 
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
@@ -109,6 +113,17 @@ final class UserWalletNotificationManager {
             )
         }
 
+        if showAppRateNotification {
+            inputs.append(
+                factory.buildNotificationInput(
+                    for: .rateApp,
+                    action: action,
+                    buttonAction: buttonAction,
+                    dismissAction: dismissAction
+                )
+            )
+        }
+
         notificationInputsSubject.send(inputs)
 
         validateHashesCount()
@@ -161,6 +176,11 @@ final class UserWalletNotificationManager {
         }
     }
 
+    private func showAppRateNotificationIfNeeded(_ shouldShow: Bool) {
+        showAppRateNotification = shouldShow
+        createNotifications()
+    }
+
     private func bind() {
         bag.removeAll()
 
@@ -173,6 +193,11 @@ final class UserWalletNotificationManager {
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: weakify(self, forFunction: UserWalletNotificationManager.addMissingDerivationWarningIfNeeded(pendingDerivationsCount:)))
+            .store(in: &bag)
+
+        rateAppController
+            .showAppRateNotificationPublisher
+            .sink(receiveValue: weakify(self, forFunction: UserWalletNotificationManager.showAppRateNotificationIfNeeded(_:)))
             .store(in: &bag)
     }
 
@@ -295,6 +320,8 @@ extension UserWalletNotificationManager: NotificationManager {
                 recordDeprecationNotificationDismissal()
             case .numberOfSignedHashesIncorrect:
                 recordUserWalletHashesCountValidation()
+            case .rateApp:
+                rateAppController.dismissAppRate()
             default:
                 break
             }

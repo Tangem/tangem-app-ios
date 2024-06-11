@@ -21,7 +21,7 @@ final class UserWalletSettingsViewModel: ObservableObject {
     @Published var backupViewModel: DefaultRowViewModel?
 
     var commonSectionModels: [DefaultRowViewModel] {
-        [cardSettingsViewModel, refferalViewModel].compactMap { $0 }
+        [manageTokensViewModel, cardSettingsViewModel, refferalViewModel].compactMap { $0 }
     }
 
     @Published var forgetViewModel: DefaultRowViewModel?
@@ -31,6 +31,7 @@ final class UserWalletSettingsViewModel: ObservableObject {
 
     // MARK: - Private
 
+    @Published private var manageTokensViewModel: DefaultRowViewModel?
     @Published private var cardSettingsViewModel: DefaultRowViewModel?
     @Published private var refferalViewModel: DefaultRowViewModel?
 
@@ -78,6 +79,13 @@ private extension UserWalletSettingsViewModel {
             )
         } else {
             backupViewModel = nil
+        }
+
+        if FeatureProvider.isAvailable(.markets) {
+            manageTokensViewModel = .init(
+                title: Localization.mainManageTokens,
+                action: weakify(self, forFunction: UserWalletSettingsViewModel.openManageTokens)
+            )
         }
 
         cardSettingsViewModel = DefaultRowViewModel(
@@ -152,6 +160,14 @@ private extension UserWalletSettingsViewModel {
 private extension UserWalletSettingsViewModel {
     func openOnboarding(with input: OnboardingInput) {
         coordinator?.openOnboardingModal(with: input)
+    }
+
+    func openManageTokens() {
+        guard FeatureProvider.isAvailable(.markets) else {
+            return
+        }
+
+        coordinator?.openManageTokens(userWalletModel: userWalletModel)
     }
 
     func openCardSettings() {

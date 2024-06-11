@@ -97,6 +97,11 @@ class FakeTangemApiService: TangemApiService {
     func setAuthData(_ authData: TangemApiTarget.AuthData) {}
 
     func initialize() {}
+
+    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        let provider = FakeMarketListProvider()
+        return try provider.parseCoinResponse()
+    }
 }
 
 private struct FakeCoinListProvider {
@@ -105,5 +110,14 @@ private struct FakeCoinListProvider {
         let mapper = CoinsResponseMapper(supportedBlockchains: Set(Blockchain.allMainnetCases))
         let coinModels = mapper.mapToCoinModels(response)
         return coinModels
+    }
+}
+
+// MARK: - Markets Implementation
+
+private struct FakeMarketListProvider {
+    func parseCoinResponse() throws -> MarketsDTO.General.Response {
+        // Implement in https://tangem.atlassian.net/browse/IOS-6998 because we need a working endpoint
+        throw "Not implemented"
     }
 }

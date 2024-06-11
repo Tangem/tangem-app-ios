@@ -28,12 +28,6 @@ struct MarketsView: View {
             Text(Localization.manageTokensListHeaderTitle)
                 .style(Fonts.Bold.title3, color: Colors.Text.primary1)
                 .lineLimit(1)
-
-            if viewModel.isShowAddCustomToken {
-                Text(Localization.manageTokensNothingFound)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                    .lineLimit(1)
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 16)
@@ -43,10 +37,6 @@ struct MarketsView: View {
         LazyVStack(spacing: 0) {
             ForEach(viewModel.tokenViewModels) {
                 MarketsItemView(viewModel: $0)
-            }
-
-            if viewModel.isShowAddCustomToken {
-                addCustomTokenView
             }
 
             if viewModel.hasNextPage, viewModel.viewDidAppear {

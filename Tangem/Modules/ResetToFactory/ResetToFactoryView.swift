@@ -128,7 +128,7 @@ struct ResetToFactoryView_Previews: PreviewProvider {
     static let viewModel = ResetToFactoryViewModel(
         input: .init(
             cardInteractor: FactorySettingsResettingMock(),
-            hasBackupCards: false,
+            linkedCardsCount: 0,
             userWalletId: UserWalletId(value: Data())
         ),
         coordinator: CardSettingsCoordinator()

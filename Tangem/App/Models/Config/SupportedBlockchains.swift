@@ -59,8 +59,6 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .mantle(testnet: false),
-            .manta(testnet: false),
-            .radiant(testnet: false),
         ]
     }
 
@@ -125,6 +123,8 @@ struct SupportedBlockchains {
             .flare(testnet: false),
             .taraxa(testnet: false),
             .joystream(curve: ed25519Curve(for: version)),
+            .manta(testnet: false),
+            .radiant(testnet: false),
         ]
     }
 

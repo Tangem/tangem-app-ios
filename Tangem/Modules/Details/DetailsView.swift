@@ -21,7 +21,9 @@ struct DetailsView: View {
 
             userWalletsSection
 
-            settingsSection
+            buyWalletSection
+
+            appSettingsSection
 
             supportSection
 
@@ -63,7 +65,14 @@ struct DetailsView: View {
         }
     }
 
-    private var settingsSection: some View {
+    private var buyWalletSection: some View {
+        GroupedSection(viewModel.buyWalletViewModel) {
+            DefaultRowView(viewModel: $0)
+                .appearance(.accentButton)
+        }
+    }
+
+    private var appSettingsSection: some View {
         GroupedSection(viewModel.appSettingsViewModel) {
             DefaultRowView(viewModel: $0)
         }

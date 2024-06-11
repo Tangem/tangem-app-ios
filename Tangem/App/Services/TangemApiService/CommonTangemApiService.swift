@@ -245,6 +245,14 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .features)
     }
 
+    // MARK: - Markets Implementation
+
+    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        try await request(for: .marketsGeneral(requestModel))
+    }
+
+    // MARK: - Init
+
     func initialize() {
         provider
             .requestPublisher(TangemApiTarget(type: .geo, authData: authData))

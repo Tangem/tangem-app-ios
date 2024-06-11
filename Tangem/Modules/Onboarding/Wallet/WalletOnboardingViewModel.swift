@@ -764,7 +764,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                                 self.pendingBackupManager.onBackupCompleted()
                                 Analytics.log(
                                     event: .backupFinished,
-                                    params: [.cardsCount: String((updatedCard.backupStatus?.linkedCardsCount ?? 0) + 1)]
+                                    params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
                                 )
                             }
 

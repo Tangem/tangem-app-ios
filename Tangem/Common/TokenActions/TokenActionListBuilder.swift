@@ -9,6 +9,7 @@
 import Foundation
 
 struct TokenActionListBuilder {
+    /// Uses for decide visibility on the hotizontal action buttons list on `TokenDetails/SingleWalletMain`
     func buildActionsForButtonsList(canShowBuySell: Bool, canShowSwap: Bool) -> [TokenActionType] {
         var actions: [TokenActionType] = []
 
@@ -29,11 +30,13 @@ struct TokenActionListBuilder {
         return actions
     }
 
+    /// Uses for decide visibility on the long tap menu action buttons list on `TokenItemView`
     func buildTokenContextActions(
         canExchange: Bool,
         canSignTransactions: Bool,
         canSend: Bool,
         canSwap: Bool,
+        canStake: Bool,
         canHide: Bool,
         isBlockchainReachable: Bool,
         exchangeUtility: ExchangeCryptoUtility
@@ -51,6 +54,10 @@ struct TokenActionListBuilder {
 
         if canSignTransactions, isBlockchainReachable, canSwap {
             availableActions.append(.exchange)
+        }
+
+        if canSignTransactions, isBlockchainReachable, canStake {
+            availableActions.append(.stake)
         }
 
         // TODO: Fix naming for canExchange

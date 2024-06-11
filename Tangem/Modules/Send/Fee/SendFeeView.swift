@@ -48,6 +48,7 @@ struct SendFeeView: View {
                 }
             }
             .backgroundColor(Colors.Background.action, id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace)
+            .separatorStyle(.none)
 
             if !viewModel.animatingAuxiliaryViewsOnAppear {
                 ForEach(viewModel.feeLevelsNotificationInputs) { input in
@@ -80,11 +81,18 @@ struct SendFeeView: View {
         }
     }
 
-    private func feeRowView(_ viewModel: FeeRowViewModel) -> FeeRowView {
-        FeeRowView(viewModel: viewModel)
+    private func feeRowView(_ feeRowViewModel: FeeRowViewModel) -> some View {
+        FeeRowView(viewModel: feeRowViewModel)
             .setNamespace(namespace)
-            .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: viewModel.option).rawValue)
-            .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: viewModel.option).rawValue)
+            .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: feeRowViewModel.option).rawValue)
+            .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: feeRowViewModel.option).rawValue)
+            .overlay(alignment: .bottom) {
+                if feeRowViewModel.option != viewModel.lastFeeOption {
+                    Separator(height: .minimal, color: Colors.Stroke.primary)
+                        .padding(.trailing, -GroupedSectionConstants.defaultHorizontalPadding)
+                        .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: feeRowViewModel.option).rawValue, in: namespace)
+                }
+            }
     }
 
     private var feeSelectorFooter: some View {

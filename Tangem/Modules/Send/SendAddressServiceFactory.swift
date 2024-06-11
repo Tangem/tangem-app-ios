@@ -21,7 +21,7 @@ struct SendAddressServiceFactory {
         let defaultSendAddressService = DefaultSendAddressService(
             walletAddresses: walletModel.wallet.addresses,
             addressService: addressService,
-            supportSameAsWalletAddressTransfer: walletModel.wallet.blockchain.supportSameAsWalletAddressTransfer
+            supportsCompound: walletModel.wallet.blockchain.supportsCompound
         )
 
         if let addressResolver = walletModel.addressResolver {
@@ -33,14 +33,16 @@ struct SendAddressServiceFactory {
 }
 
 private extension Blockchain {
-    var supportSameAsWalletAddressTransfer: Bool {
+    var supportsCompound: Bool {
         switch self {
         case .bitcoin,
              .bitcoinCash,
              .litecoin,
              .dogecoin,
              .dash,
-             .kaspa:
+             .kaspa,
+             .ravencoin,
+             .ducatus:
             return true
         default:
             return false

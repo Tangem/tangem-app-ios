@@ -134,7 +134,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
             }
 
             let percentFormatter = PercentFormatter()
-            let formatted = percentFormatter.expressRatePercentFormat(value: -result.lossesInPercents)
+            let formatted = percentFormatter.format(-result.lossesInPercents, option: .express)
             await runOnMain {
                 viewModel.priceChangeState = .percent(formatted)
             }
