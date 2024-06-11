@@ -30,7 +30,7 @@ struct XPUBGeneratorFactory {
         )
 
         let parentKey = CommonXPUBGenerator.Key(
-            derivationPath: childKey.derivationPath.droppingLastNode(count: 1),
+            derivationPath: childKey.derivationPath.dropLastNode(count: 1),
             extendedPublicKey: nil
         )
 
@@ -52,7 +52,7 @@ struct XPUBGeneratorFactory {
             return CommonXPUBGenerator.Key(derivationPath: derivationPath, extendedPublicKey: extendedPublicKey)
         }
 
-        let derivationPath = derivationPath.droppingLastNode(count: 2)
+        let derivationPath = derivationPath.dropLastNode(count: 2)
         return CommonXPUBGenerator.Key(derivationPath: derivationPath, extendedPublicKey: nil)
     }
 }
@@ -60,7 +60,7 @@ struct XPUBGeneratorFactory {
 // MARK: - DerivationPath+
 
 private extension DerivationPath {
-    func droppingLastNode(count: Int) -> DerivationPath {
+    func dropLastNode(count: Int) -> DerivationPath {
         return DerivationPath(nodes: nodes.dropLast(count))
     }
 }
