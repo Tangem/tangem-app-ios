@@ -11,6 +11,7 @@ import Combine
 import TangemSdk
 
 class UserWalletModelMock: UserWalletModel {
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
     var name: String { "" }
     var hasBackupCards: Bool { false }

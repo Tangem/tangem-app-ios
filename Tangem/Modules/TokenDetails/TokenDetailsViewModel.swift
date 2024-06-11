@@ -24,7 +24,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
-
+    private let xpubGenerator: XPUBGenerator?
     private var bag = Set<AnyCancellable>()
 
     var iconUrl: URL? {
@@ -41,17 +41,23 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     var canHideToken: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
 
+    var canGenerateXPUB: Bool { xpubGenerator != nil }
+
+    var hasDotsMenu: Bool { canHideToken || canGenerateXPUB }
+
     init(
         userWalletModel: UserWalletModel,
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
         pendingExpressTransactionsManager: PendingExpressTransactionsManager,
+        xpubGenerator: XPUBGenerator?,
         coordinator: TokenDetailsRoutable,
         tokenRouter: SingleTokenRoutable
     ) {
         self.coordinator = coordinator
         self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
+        self.xpubGenerator = xpubGenerator
         super.init(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
@@ -121,6 +127,23 @@ extension TokenDetailsViewModel {
             showHideWarningAlert()
         } else {
             showUnableToHideAlert()
+        }
+    }
+
+    func generateXPUBButtonAction() {
+        guard let xpubGenerator else { return }
+
+        runTask { [weak self] in
+            do {
+                let xpub = try await xpubGenerator.generateXPUB()
+                let viewController = await UIActivityViewController(activityItems: [xpub], applicationActivities: nil)
+                AppPresenter.shared.show(viewController)
+            } catch {
+                let sdkError = error.toTangemSdkError()
+                if !sdkError.isUserCancelled {
+                    self?.alert = error.alertBinder
+                }
+            }
         }
     }
 

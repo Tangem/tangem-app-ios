@@ -80,6 +80,8 @@ class LockedUserWalletModel: UserWalletModel {
     }
 
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingCardInteractor(with: userWallet.cardInfo()) }
+
     var name: String { userWallet.cardInfo().name }
 
     let backupInput: OnboardingInput? = nil

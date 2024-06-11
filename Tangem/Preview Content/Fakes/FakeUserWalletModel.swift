@@ -12,6 +12,7 @@ import TangemSdk
 import BlockchainSdk
 
 class FakeUserWalletModel: UserWalletModel, ObservableObject {
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
     var name: String { "" }
     let emailData: [EmailCollectedData] = []
