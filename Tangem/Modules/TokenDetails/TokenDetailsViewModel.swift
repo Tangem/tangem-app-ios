@@ -88,7 +88,9 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .addHederaTokenAssociation,
              .leaveAmount,
              .bookNow,
-             .stake:
+             .stake,
+             .openFeedbackMail,
+             .openAppStoreReview:
             super.didTapNotificationButton(with: id, action: action)
         }
     }

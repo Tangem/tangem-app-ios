@@ -151,7 +151,7 @@ extension Analytics {
         /// Feedback email (`RateAppResponse.negative`).
         case feedbackEmail = "Feedback"
         /// The review sheet dismissed w/o further interactions (`RateAppResponse.dismissed`).
-        case appRateSheetDismissed = "Close"
+        case appRateDismissed = "Close"
 
         static func toggleState(for boolean: Bool) -> ParameterValue {
             return boolean ? .on : .off

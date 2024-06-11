@@ -54,10 +54,17 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             balanceProvider: balanceProvider
         )
 
+        let rateAppController = CommonRateAppController(
+            rateAppService: RateAppService(),
+            userWalletModel: model,
+            coordinator: coordinator
+        )
+
         let signatureCountValidator = selectSignatureCountValidator(for: model)
         let userWalletNotificationManager = UserWalletNotificationManager(
             userWalletModel: model,
             signatureCountValidator: signatureCountValidator,
+            rateAppController: rateAppController,
             contextDataProvider: model
         )
 
@@ -72,12 +79,6 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 )
             )
         }
-
-        let rateAppController = CommonRateAppController(
-            rateAppService: RateAppService(),
-            userWalletModel: model,
-            coordinator: coordinator
-        )
 
         let tokenRouter = SingleTokenRouter(userWalletModel: model, coordinator: coordinator)
 
@@ -139,7 +140,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             tokenRouter: tokenRouter,
             delegate: singleWalletContentDelegate
         )
-        userWalletNotificationManager.setupManager()
+        userWalletNotificationManager.setupManager(with: viewModel)
         singleWalletNotificationManager.setupManager(with: viewModel)
 
         return .singleWallet(

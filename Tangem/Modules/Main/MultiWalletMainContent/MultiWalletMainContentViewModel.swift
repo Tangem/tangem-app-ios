@@ -59,7 +59,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokenSectionsAdapter: TokenSectionsAdapter
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
-    private let rateAppController: RateAppController
+    private let rateAppController: RateAppInteractionController
     private weak var coordinator: MultiWalletMainContentRoutable?
 
     private var canManageTokens: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
@@ -80,7 +80,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         userWalletModel: UserWalletModel,
         userWalletNotificationManager: NotificationManager,
         tokensNotificationManager: NotificationManager,
-        rateAppController: RateAppController,
+        rateAppController: RateAppInteractionController,
         tokenSectionsAdapter: TokenSectionsAdapter,
         tokenRouter: SingleTokenRoutable,
         optionsEditing: OrganizeTokensOptionsEditing,
@@ -398,8 +398,12 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             startBackupProcess()
         case .bookNow(let url):
             openTravalaPromotion(url: url)
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
         default:
-            return
+            break
         }
     }
 

@@ -110,8 +110,6 @@ struct WarningView: View {
 extension WarningView {
     enum WarningButton: String, Identifiable {
         case okGotIt
-        case rateApp
-        case reportProblem
         case dismiss
 
         var id: String { rawValue }
@@ -119,8 +117,6 @@ extension WarningView {
         var buttonTitle: String {
             switch self {
             case .okGotIt: return Localization.warningButtonOk
-            case .rateApp: return Localization.warningButtonReallyCool
-            case .reportProblem: return Localization.warningButtonCouldBeBetter
             case .dismiss: return ""
             }
         }

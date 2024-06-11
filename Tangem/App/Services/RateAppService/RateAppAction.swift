@@ -8,9 +8,10 @@
 
 import Foundation
 
+/// Service to controller commands.
 enum RateAppAction {
-    /// An in-app (not provided by System or StoreKit) dialog/alert/sheet/etc.
-    case openAppRateDialog
+    case requestAppRate
+    case dismissAppRate
     case openFeedbackMailWithEmailType(emailType: EmailType)
     case openAppStoreReview
 }
