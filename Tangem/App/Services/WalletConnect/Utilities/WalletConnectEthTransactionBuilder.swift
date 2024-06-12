@@ -62,7 +62,7 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
         async let gasLimit = getGasLimit(for: wcTransaction, with: valueAmount, using: ethereumNetworkProvider)
 
         let feeParameters = try await EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
-        let feeValue = feeParameters.caclulateFee(decimalValue: blockchain.decimalValue)
+        let feeValue = feeParameters.calculateFee(decimalValue: blockchain.decimalValue)
         let gasAmount = Amount(with: blockchain, value: feeValue)
 
         let fee = Fee(gasAmount, parameters: feeParameters)

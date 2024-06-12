@@ -32,7 +32,7 @@ struct SendAddressServiceFactory {
     }
 }
 
-private extension Blockchain {
+extension Blockchain {
     var supportsCompound: Bool {
         switch self {
         case .bitcoin,

@@ -87,7 +87,7 @@ private extension CommonExpressFeeProvider {
             maxFeePerGas: parameters.maxFeePerGas,
             priorityFee: parameters.priorityFee
         )
-        let feeValue = feeParameters.caclulateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
+        let feeValue = feeParameters.calculateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
         let amount = Amount(with: wallet.tokenItem.blockchain, value: feeValue)
         return Fee(amount, parameters: feeParameters)
     }

@@ -72,7 +72,12 @@ class SendDestinationViewModel: ObservableObject {
             showSign: false
         )
 
-        suggestedWallets = Self.suggestedWallets(for: input.blockchainNetwork.blockchain, ignoringAddesses: input.walletAddresses)
+        let addressesToIgnore = input.blockchainNetwork.blockchain.supportsCompound ? [] : input.walletAddresses
+
+        suggestedWallets = Self.suggestedWallets(
+            for: input.blockchainNetwork.blockchain,
+            ignoringAddesses: addressesToIgnore
+        )
 
         addressViewModel = SendDestinationTextViewModel(
             style: .address(networkName: input.networkName),
