@@ -31,7 +31,7 @@ end
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-600'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :branch => 'IOS-6796_bittensor'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
@@ -71,7 +71,7 @@ target 'Tangem' do
 
   # support chat
 #  pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
-  
+
   # Analytics
   pod 'AmplitudeSwift'
   pod 'Firebase/Crashlytics'
@@ -87,7 +87,7 @@ target 'Tangem' do
   end
 end
 
-target 'TangemExpress' do 
+target 'TangemExpress' do
   blockchain_sdk_pods
   pod 'Moya'
 

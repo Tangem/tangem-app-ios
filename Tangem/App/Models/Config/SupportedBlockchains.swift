@@ -173,6 +173,7 @@ struct SupportedBlockchains {
             .flare(testnet: true),
             .taraxa(testnet: true),
             .base(testnet: true),
+            .bittensor(curve: ed25519Curve(for: version)),
         ]
     }
 
