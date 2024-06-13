@@ -29,11 +29,11 @@ struct MarketsEmptyAddTokenView: View {
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 10) {
-                Text("My portfolio")
+                Text(Localization.marketsCommonMyPortfolio)
                     .lineLimit(1)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                Text("To start buying, exchanging or receiving this asset, add this token to at least 1 network")
+                Text(Localization.marketsAddToMyPortfolioDescription)
                     .lineLimit(2)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
@@ -43,10 +43,8 @@ struct MarketsEmptyAddTokenView: View {
     }
 
     private var buttonView: some View {
-        VStack(alignment: .leading) {
-            MainButton(title: "Add to portfolio ") {
-                didTapAction?()
-            }
+        MainButton(title: Localization.marketsAddToPortfolioButton) {
+            didTapAction?()
         }
     }
 }

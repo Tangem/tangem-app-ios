@@ -64,6 +64,7 @@
 "cardano_max_amount_has_token_title" = "Not enough ADA";
 "common_accept" = "Accetta";
 "common_access_denied" = "Access denied";
+"common_allow" = "Allow";
 "common_apply" = "Apply";
 "common_approval" = "Approval";
 "common_attention" = "Attention";
@@ -114,6 +115,7 @@
 "common_passphrase" = "Passphrase";
 "common_paste" = "Paste";
 "common_push" = "Push";
+"common_range" = "%1$@-%2$@";
 "common_read_more" = "Read more";
 "common_receive" = "Receive";
 "common_reject" = "Reject";
@@ -133,6 +135,7 @@
 "common_sign" = "Sign";
 "common_sign_and_send" = "Sign and send";
 "common_stake" = "Stake";
+"common_staking" = "Staking";
 "common_start" = "Start";
 "common_submit" = "Submit";
 "common_success" = "Con successo";
@@ -198,6 +201,7 @@
 "details_row_title_issuer" = "Emittente";
 "details_row_title_signed_hashes" = "Firmato";
 "details_security_management_warning" = "If you forget the code you will lose access to your funds. Code recovery is not possible.";
+"details_send_feedback" = "Send feedback";
 "details_title" = "Requisiti";
 "disclaimer_title" = "Termini del servizio";
 "error_wrong_wallet_tapped" = "You have used a card from another wallet. Tap the card associated with this wallet";
@@ -306,6 +310,12 @@
 "manage_tokens_unavailable_vote" = "Upvote";
 "manage_tokens_wallet_selector_title" = "Choose wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
+"markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
+"markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_common_my_portfolio" = "My portfolio";
+"markets_common_title" = "Market";
+"markets_sort_by_title" = "Sort By";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
 "onboarding_access_code_feature_1_title" = "Protect";
 "onboarding_access_code_feature_2_description" = "You can set up an individual access code on each card later";
@@ -525,9 +535,13 @@
 "settings_forget_wallet" = "Forget wallet";
 "settings_forget_wallet_footer" = "This will remove the wallet from the application. The wallet itself can be added again.";
 "settings_wallet_name_title" = "Name";
+"staking_details_apr" = "APR";
+"staking_details_apy" = "APY";
 "staking_details_available" = "Available";
 "staking_details_average_reward_rate" = "Average Reward Rate";
 "staking_details_estimated_profit" = "%@ est. profit";
+"staking_details_market_rating" = "Market rating";
+"staking_details_metrics_block_header" = "Metrics";
 "staking_details_minimum_requirement" = "Minimum Requirement";
 "staking_details_no_rewards_to_claim" = "No rewards to claim";
 "staking_details_on_stake" = "On stake";
@@ -584,6 +598,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Selling funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_pending_transaction_send" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_sell_unavailable" = "Selling %@ is not available at the moment. Please check our updates.";
+"token_button_unavailability_reason_staking_unavailable" = "Staking %s is not available at the moment. Please check our updates.";
 "token_details_choose_address" = "Choose address";
 "token_details_generate_xpub" = "Generate XPUB";
 "token_details_hide_alert_hide" = "Hide";
@@ -616,6 +631,9 @@
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
 "unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
+"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
+"user_push_notification_agreement_argument_two" = "Be able to get important market notifications";
+"user_push_notification_agreement_header" = "Would you like to usePush-notifications?";
 "user_wallet_list_add_button" = "Add new wallet";
 "user_wallet_list_delete_prompt" = "Are you sure you want to delete this wallet?";
 "user_wallet_list_error_wallet_already_saved" = "This wallet has already been saved, you can add another one";

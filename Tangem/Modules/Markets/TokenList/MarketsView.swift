@@ -15,9 +15,6 @@ struct MarketsView: View {
 
     var body: some View {
         VStack {
-            MarketsEmptyAddTokenView()
-                .padding(.horizontal, 16)
-
             header
 
             list
