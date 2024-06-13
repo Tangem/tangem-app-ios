@@ -50,18 +50,6 @@ extension OnboardingInput {
             }
         }
 
-        var disclaimer: TOU? {
-            switch self {
-            case .cardInfo(let cardInfo):
-                let factory = UserWalletConfigFactory(cardInfo)
-                return factory.makeConfig().tou
-            case .userWalletModel(let userWalletModel):
-                return userWalletModel.config.tou
-            case .cardId:
-                return nil
-            }
-        }
-
         var userWalletModel: UserWalletModel? {
             switch self {
             case .userWalletModel(let userWalletModel):

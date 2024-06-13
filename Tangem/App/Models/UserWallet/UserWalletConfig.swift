@@ -13,8 +13,6 @@ import BlockchainSdk
 protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, TangemSdkFactory {
     var emailConfig: EmailConfig? { get }
 
-    var tou: TOU { get }
-
     var cardsCount: Int { get }
 
     var cardSetLabel: String? { get }
@@ -89,11 +87,6 @@ extension UserWalletConfig {
 
     func getDisabledLocalizedReason(for feature: UserWalletFeature) -> String? {
         getFeatureAvailability(feature).disabledLocalizedReason
-    }
-
-    var tou: TOU {
-        let url = URL(string: "https://tangem.com/tangem_tos.html")!
-        return TOU(id: url.absoluteString, url: url)
     }
 
     var emailConfig: EmailConfig? {

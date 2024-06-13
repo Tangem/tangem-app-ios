@@ -21,7 +21,6 @@ protocol AuxiliaryViewAnimatable: AnyObject {
 extension AuxiliaryViewAnimatable {
     func onAuxiliaryViewAppear() {
         didProperlyDisappear = false
-
         if animatingAuxiliaryViewsOnAppear {
             withAnimation(SendView.Constants.defaultAnimation) {
                 animatingAuxiliaryViewsOnAppear = false

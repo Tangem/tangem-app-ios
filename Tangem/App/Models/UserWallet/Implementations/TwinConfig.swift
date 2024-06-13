@@ -187,8 +187,7 @@ extension TwinConfig: UserWalletConfig {
         return TwinOnboardingStepsBulder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
-            twinData: twinData,
-            touId: tou.id
+            twinData: twinData
         )
     }
 

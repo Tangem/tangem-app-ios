@@ -26,12 +26,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     private var cardIdDisplayFormat: CardIdDisplayFormat = .lastMasked(4)
 
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
-
     override var navbarTitle: String {
         currentStep.navbarTitle
     }
@@ -99,7 +93,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override var mainButtonSettings: MainButton.Settings? {
         switch currentStep {
-        case .createWallet, .disclaimer, .seedPhraseIntro, .backupCards, .success, .scanPrimaryCard:
+        case .createWallet, .pushNotifications, .seedPhraseIntro, .backupCards, .success, .scanPrimaryCard:
             return nil
         default:
             return MainButton.Settings(
@@ -164,7 +158,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override var supplementButtonStyle: MainButton.Style {
         switch currentStep {
-        case .createWallet, .selectBackupCards, .scanPrimaryCard, .backupCards, .success, .disclaimer:
+        case .createWallet, .selectBackupCards, .scanPrimaryCard, .backupCards, .success:
             return .primary
         default:
             return .secondary
@@ -204,16 +198,9 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens:
+        case .saveUserWallet, .pushNotifications, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens:
             return true
         default: return false
-        }
-    }
-
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens: return false
-        default: return true
         }
     }
 
@@ -461,9 +448,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             } else {
                 openAccessCode()
             }
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         case .backupCards:
             backupCard()
         case .success:
@@ -523,8 +507,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override func backButtonAction() {
         switch currentStep {
-        case .disclaimer:
-            back()
         case .seedPhraseIntro:
             goToStep(.createWalletSelector)
         case .seedPhraseGeneration:

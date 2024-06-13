@@ -30,6 +30,7 @@ class WelcomeCoordinator: CoordinatorObject {
 
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
     @Published var promotionCoordinator: PromotionCoordinator? = nil
+    @Published var welcomeOnboardingCoordinator: WelcomeOnboardingCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -46,6 +47,7 @@ class WelcomeCoordinator: CoordinatorObject {
         publishers.append($mailViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
         publishers.append($searchTokensViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
         publishers.append($promotionCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($welcomeOnboardingCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
 
         return Publishers.MergeMany(publishers)
             .eraseToAnyPublisher()
@@ -59,6 +61,7 @@ class WelcomeCoordinator: CoordinatorObject {
     func start(with options: WelcomeCoordinator.Options) {
         viewState = .welcome(WelcomeViewModel(shouldScanOnAppear: options.shouldScan, coordinator: self))
         subscribeToWelcomeLifecycle()
+        showWelcomeOnboardingIfNeeded()
     }
 
     private func subscribeToWelcomeLifecycle() {
@@ -72,6 +75,19 @@ class WelcomeCoordinator: CoordinatorObject {
                     viewState?.welcomeViewModel?.resignActve()
                 }
             }
+    }
+
+    private func showWelcomeOnboardingIfNeeded() {
+        let builder = WelcomeOnboaringStepsBuilder()
+        let steps = builder.buildSteps()
+
+        let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
+            self?.welcomeOnboardingCoordinator = nil
+        }
+
+        let coordinator = WelcomeOnboardingCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(steps: steps))
+        welcomeOnboardingCoordinator = coordinator
     }
 }
 
@@ -120,10 +136,6 @@ extension WelcomeCoordinator: WelcomeRoutable {
     }
 
     func openTokensList() {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.searchTokensViewModel = nil
-        }
-
         searchTokensViewModel = .init()
     }
 

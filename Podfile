@@ -71,7 +71,7 @@ target 'Tangem' do
 
   # support chat
 #  pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
-
+  
   # Analytics
   pod 'AmplitudeSwift'
   pod 'Firebase/Crashlytics'
@@ -87,7 +87,7 @@ target 'Tangem' do
   end
 end
 
-target 'TangemExpress' do
+target 'TangemExpress' do 
   blockchain_sdk_pods
   pod 'Moya'
 

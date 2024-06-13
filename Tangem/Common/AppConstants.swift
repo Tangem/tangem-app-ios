@@ -32,4 +32,6 @@ enum AppConstants {
 
     #warning("TODO: use TangemBlogUrlBuilder")
     static let feeExplanationTangemBlogURL = URL(string: "https://tangem.com/en/blog/post/what-is-a-transaction-fee-and-why-do-we-need-it/")!
+
+    static let tosURL = URL(string: "https://tangem.com/tangem_tos.html")!
 }

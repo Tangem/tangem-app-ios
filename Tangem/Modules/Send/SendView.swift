@@ -9,16 +9,13 @@
 import SwiftUI
 
 struct SendView: View {
-    @Namespace var namespace
-
     @ObservedObject var viewModel: SendViewModel
+    @Namespace private var namespace
 
     private let backButtonStyle: MainButton.Style = .secondary
     private let backButtonSize: MainButton.Size = .default
     private let backgroundColor = Colors.Background.tertiary
     private let bottomGradientHeight: CGFloat = 150
-
-    @State private var bottomButtonsHeight: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 14) {
@@ -26,21 +23,20 @@ struct SendView: View {
 
             ZStack(alignment: .bottom) {
                 currentPage
-                    .overlay(bottomOverlay, alignment: .bottom)
                     .transition(pageContentTransition)
 
-                bottomButtons
-                    .readGeometry(\.size.height, bindTo: $bottomButtonsHeight)
-
-                NavHolder()
-                    .alert(item: $viewModel.alert) { $0.alert }
+                bottomOverlay
             }
         }
         .background(backgroundColor.ignoresSafeArea())
         .animation(Constants.defaultAnimation, value: viewModel.step)
-        .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
         .scrollDismissesKeyboardCompat(.immediately)
+        .alert(item: $viewModel.alert) { $0.alert }
+        .safeAreaInset(edge: .bottom) {
+            bottomContainer
+                .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
+        }
     }
 
     private var pageContentTransition: AnyTransition {
@@ -126,27 +122,48 @@ struct SendView: View {
     private var currentPage: some View {
         switch viewModel.step {
         case .amount:
-            SendAmountView(namespace: namespace, viewModel: viewModel.sendAmountViewModel)
+            SendAmountView(viewModel: viewModel.sendAmountViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
-            SendDestinationView(namespace: namespace, viewModel: viewModel.sendDestinationViewModel, bottomButtonsHeight: bottomButtonsHeight)
+            SendDestinationView(viewModel: viewModel.sendDestinationViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .fee:
-            SendFeeView(namespace: namespace, viewModel: viewModel.sendFeeViewModel, bottomButtonsHeight: bottomButtonsHeight)
+            SendFeeView(viewModel: viewModel.sendFeeViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .summary:
-            SendSummaryView(namespace: namespace, viewModel: viewModel.sendSummaryViewModel, bottomSpacing: bottomButtonsHeight)
+            SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onSummaryAppear)
                 .onDisappear(perform: viewModel.onSummaryDisappear)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .finish(let sendFinishViewModel):
-            SendFinishView(namespace: namespace, viewModel: sendFinishViewModel, bottomSpacing: bottomButtonsHeight)
+            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
+        }
+    }
+
+    @ViewBuilder
+    private var bottomContainer: some View {
+        VStack(alignment: .center, spacing: 14) {
+            description
+
+            bottomButtons
+        }
+    }
+
+    @ViewBuilder
+    private var description: some View {
+        if let transactionDescription = viewModel.transactionDescription {
+            Text(.init(transactionDescription))
+                .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
+                .visible(viewModel.transactionDescriptionIsVisisble)
+                .animation(Constants.defaultAnimation, value: viewModel.step)
         }
     }
 
@@ -234,7 +251,7 @@ private struct SendViewBackButton: View {
 extension SendView {
     enum Constants {
         static let animationDuration: TimeInterval = 0.3
-        static let defaultAnimation: Animation = .spring(duration: 0.3)
+        static let defaultAnimation: Animation = .spring(duration: animationDuration)
         static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
         static let sectionContentAnimation: Animation = .easeOut(duration: animationDuration)
         static let hintViewTransition: AnyTransition = .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
