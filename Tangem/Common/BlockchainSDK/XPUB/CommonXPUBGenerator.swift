@@ -123,7 +123,7 @@ extension CommonXPUBGenerator {
 }
 
 extension CommonXPUBGenerator {
-    enum Error: String, Swift.Error, LocalizedError {
+    enum Error: String, LocalizedError {
         case failedToGenerateXPUB
 
         var errorDescription: String? {
