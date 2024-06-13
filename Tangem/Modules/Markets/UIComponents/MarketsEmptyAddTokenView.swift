@@ -22,7 +22,7 @@ struct MarketsEmptyAddTokenView: View {
             buttonView
         }
         .padding(14)
-        .background(Colors.Background.secondary)
+        .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
     }
 
