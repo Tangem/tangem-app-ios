@@ -15,7 +15,6 @@ struct WalletOnboardingView: View {
     private let infoPagerHeight: CGFloat = 146
     private let progressBarHeight: CGFloat = 4
     private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
 
     var currentStep: WalletOnboardingStep {
         viewModel.currentStep
@@ -64,17 +63,10 @@ struct WalletOnboardingView: View {
             if let model = viewModel.addTokensViewModel {
                 OnboardingAddTokensView(viewModel: model)
             }
+        case .pushNotifications:
+            OnboardingPushNotificationsView(viewModel: viewModel.pushNotificationsViewModel)
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -84,12 +76,6 @@ struct WalletOnboardingView: View {
                 .allowsHitTesting(false)
                 .frame(maxWidth: screenSize.width)
                 .zIndex(110)
-
-            disclaimerContent
-                .layoutPriority(1)
-                .readGeometry(\.size) { size in
-                    viewModel.setupContainer(with: size)
-                }
 
             VStack(spacing: 0) {
                 GeometryReader { geom in
@@ -204,7 +190,7 @@ struct WalletOnboardingView: View {
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,

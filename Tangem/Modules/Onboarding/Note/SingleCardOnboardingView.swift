@@ -15,7 +15,6 @@ struct SingleCardOnboardingView: View {
     private let screenSize: CGSize = UIScreen.main.bounds.size
     private let progressBarHeight: CGFloat = 4
     private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
 
     var currentStep: SingleCardOnboardingStep { viewModel.currentStep }
 
@@ -36,17 +35,10 @@ struct SingleCardOnboardingView: View {
             if let addTokensViewModel = viewModel.addTokensViewModel {
                 OnboardingAddTokensView(viewModel: addTokensViewModel)
             }
+        case .pushNotifications:
+            OnboardingPushNotificationsView(viewModel: viewModel.pushNotificationsViewModel)
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -56,12 +48,6 @@ struct SingleCardOnboardingView: View {
                 .allowsHitTesting(false)
                 .frame(maxWidth: screenSize.width)
                 .zIndex(100)
-
-            disclaimerContent
-                .layoutPriority(1)
-                .readGeometry(\.size) { size in
-                    viewModel.setupContainer(with: size)
-                }
 
             VStack(spacing: 0) {
                 GeometryReader { proxy in
@@ -159,7 +145,7 @@ struct SingleCardOnboardingView: View {
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,

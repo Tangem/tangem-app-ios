@@ -206,6 +206,27 @@ extension Wallet2Config: UserWalletConfig {
         // Pizza Day Wallet
         case "AF33":
             return cardsCount == 2 ? Assets.Cards.pizzaDayWalletDouble : Assets.Cards.pizzaDayWalletTriple
+        // Red panda
+        case "AF34":
+            return cardsCount == 2 ? Assets.Cards.redPandaDouble : Assets.Cards.redPandaTriple
+        // Cryptoseth
+        case "AF32":
+            return cardsCount == 2 ? Assets.Cards.cryptosethDouble : Assets.Cards.cryptosethTriple
+        // Kishu
+        case "AF52":
+            return cardsCount == 2 ? Assets.Cards.kishuDouble : Assets.Cards.kishuTriple
+        // Baby Doge
+        case "AF51":
+            return cardsCount == 2 ? Assets.Cards.babyDogeDouble : Assets.Cards.babyDogeTriple
+        // TG-COQ
+        case "AF28":
+            return cardsCount == 2 ? Assets.Cards.tgDouble : Assets.Cards.tgTriple
+        // Coin Metrica
+        case "AF27":
+            return cardsCount == 2 ? Assets.Cards.coinMetricaDouble : Assets.Cards.coinMetricaTriple
+        // Volt Inu
+        case "AF35":
+            return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple

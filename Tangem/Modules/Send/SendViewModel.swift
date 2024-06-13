@@ -24,6 +24,8 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonDisabled: Bool = false
     @Published var updatingFees = false
     @Published var alert: AlertBinder?
+    @Published var transactionDescription: String?
+    @Published var transactionDescriptionIsVisisble: Bool = false
 
     var title: String? {
         step.name(for: sendStepParameters)
@@ -161,6 +163,7 @@ final class SendViewModel: ObservableObject {
         didReachSummaryScreen = (firstStep == .summary)
         mainButtonType = Self.mainButtonType(for: firstStep, didReachSummaryScreen: didReachSummaryScreen)
         stepAnimation = (firstStep == .summary) ? .moveAndFade : .slideForward
+        transactionDescriptionIsVisisble = firstStep == .summary
 
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
         let cryptoIconURL: URL?
@@ -462,6 +465,22 @@ final class SendViewModel: ObservableObject {
                 Analytics.logDestinationAddress(isAddressValid: destination.value != nil, source: destination.source)
             }
             .store(in: &bag)
+
+        Publishers
+            .CombineLatest(sendModel.transactionAmountPublisher, sendModel.feeValuePublisher)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, args in
+                let (amount, fee) = args
+
+                let helper = SendTransactionSummaryDestinationHelper()
+                viewModel.transactionDescription = helper.makeTransactionDescription(
+                    amount: amount?.value,
+                    fee: fee?.amount.value,
+                    amountCurrencyId: viewModel.walletInfo.currencyId,
+                    feeCurrencyId: viewModel.walletInfo.feeCurrencyId
+                )
+            }
+            .store(in: &bag)
     }
 
     private func logTransactionAnalytics() {
@@ -645,6 +664,7 @@ final class SendViewModel: ObservableObject {
             self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
             self.showTransactionButtons = self.sendModel.transactionURL != nil
             self.step = step
+            self.transactionDescriptionIsVisisble = step == .summary
         }
     }
 
@@ -904,5 +924,42 @@ private extension ValidationError {
              .cardanoInsufficientBalanceToSendToken:
             return .summary
         }
+    }
+}
+
+struct SendTransactionSummaryDestinationHelper {
+    // TODO: Remove optional
+    func makeTransactionDescription(amount: Decimal?, fee: Decimal?, amountCurrencyId: String?, feeCurrencyId: String?) -> String? {
+        guard
+            let amount,
+            let fee,
+            let amountCurrencyId,
+            let feeCurrencyId
+        else {
+            return nil
+        }
+
+        let converter = BalanceConverter()
+        let amountInFiat = converter.convertToFiat(value: amount, from: amountCurrencyId)
+        let feeInFiat = converter.convertToFiat(value: fee, from: feeCurrencyId)
+
+        let totalInFiat: Decimal?
+        if let amountInFiat, let feeInFiat {
+            totalInFiat = amountInFiat + feeInFiat
+        } else {
+            totalInFiat = nil
+        }
+
+        let formattingOptions = BalanceFormattingOptions(
+            minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
+            maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
+            formatEpsilonAsLowestRepresentableValue: true,
+            roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
+        )
+        let formatter = BalanceFormatter()
+        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
+        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
+
+        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
     }
 }
