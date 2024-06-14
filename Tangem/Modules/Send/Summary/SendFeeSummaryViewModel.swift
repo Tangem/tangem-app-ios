@@ -10,10 +10,7 @@ import Foundation
 import SwiftUI
 
 class SendFeeSummaryViewModel: ObservableObject, Identifiable {
-    let id = UUID()
-
     let title: String
-
     @Published var titleVisible = true
 
     var feeName: String {

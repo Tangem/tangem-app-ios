@@ -20,12 +20,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     var retwinMode: Bool = false
 
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
-
     override var navbarTitle: String {
         currentStep.navbarTitle
     }
@@ -111,7 +105,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     override var supplementButtonStyle: MainButton.Style {
         switch currentStep {
-        case .disclaimer, .intro, .success, .first, .second, .third, .done, .alert:
+        case .intro, .success, .first, .second, .third, .done, .alert:
             return .primary
         default:
             return super.supplementButtonStyle
@@ -128,17 +122,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer:
+        case .saveUserWallet, .pushNotifications:
             return true
         default:
             return false
-        }
-    }
-
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet: return false
-        default: return true
         }
     }
 
@@ -229,7 +216,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     override func mainButtonAction() {
         switch currentStep {
-        case .disclaimer, .first, .second, .third, .saveUserWallet, .done, .intro, .success, .alert:
+        case .pushNotifications, .first, .second, .third, .saveUserWallet, .done, .intro, .success, .alert:
             break
         case .topup:
             if canBuy {
@@ -250,9 +237,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             withAnimation {
                 openQR()
             }
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         case .first:
             if !retwinMode {
                 AppSettings.shared.cardsStartedActivation.insert(twinsService.firstTwinCid)

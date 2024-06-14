@@ -43,7 +43,6 @@ class ServicesManager {
 
         configureBlockchainSdkExceptionHandler()
 
-        S2CTOUMigrator().migrate()
         exchangeService.initialize()
         tangemApiService.initialize()
         accountHealthChecker.initialize()
