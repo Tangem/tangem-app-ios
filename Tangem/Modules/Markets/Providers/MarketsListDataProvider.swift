@@ -136,7 +136,7 @@ private extension MarketsListDataProvider {
 
         AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
-        return try await tangemApiService.loadMarkets(requestModel: requestModel)
+        return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }
 }
 

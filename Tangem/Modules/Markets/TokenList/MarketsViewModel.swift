@@ -30,6 +30,7 @@ final class MarketsViewModel: ObservableObject {
 
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
+    private let chartsPreviewProvider = MarketsListChartsPreviewProvider()
 
 //    private lazy var loader = setupListDataLoader()
 
@@ -51,6 +52,7 @@ final class MarketsViewModel: ObservableObject {
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         dataProviderBind()
+        chartsPreviewProviderBind()
     }
 
     func onBottomAppear() {
@@ -113,8 +115,9 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { provider, items in
-                provider.tokenViewModels = items.compactMap { provider.mapToTokenViewModel(tokenItemModel: $0) }
+            .sink(receiveValue: { viewModel, items in
+                viewModel.tokenViewModels = items.compactMap { viewModel.mapToTokenViewModel(tokenItemModel: $0) }
+                viewModel.chartsPreviewProvider.fetch(for: ["Bitcoin"], with: viewModel.filterProvider.currentFilterValue.interval)
             })
             .store(in: &bag)
 
@@ -126,6 +129,21 @@ private extension MarketsViewModel {
                 if isLoading {
                     // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
                     viewModel.setNeedDisplayTokensListSkeletonView()
+                }
+            })
+            .store(in: &bag)
+    }
+
+    func chartsPreviewProviderBind() {
+        chartsPreviewProvider.$items
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, items in
+                for chartPreviewItem in items {
+                    let chartsDecimalValues: [Decimal] = chartPreviewItem.value.prices.values.map { $0 }
+                    let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+                    viewModel.tokenViewModels.first(where: { $0.id == chartPreviewItem.key })?.charts = chartsDoubleConvertedValues
                 }
             })
             .store(in: &bag)

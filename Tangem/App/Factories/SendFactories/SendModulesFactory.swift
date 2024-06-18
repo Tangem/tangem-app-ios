@@ -132,10 +132,10 @@ struct SendModulesFactory {
 
     // MARK: - Dependencies
 
-    private var emailDataProvider: EmailDataProvider { 
+    private var emailDataProvider: EmailDataProvider {
         userWalletModel
     }
-    
+
     private var transactionSigner: TransactionSigner {
         userWalletModel.signer
     }
