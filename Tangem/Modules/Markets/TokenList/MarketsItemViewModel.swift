@@ -64,6 +64,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             priceChangeState = .loading
         }
 
+        charts = data.charts
+
         bind()
     }
 
@@ -83,6 +85,7 @@ extension MarketsItemViewModel {
         let marketRating: UInt64?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
+        let charts: [Double]?
         let isLoading: Bool
     }
 

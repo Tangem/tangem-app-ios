@@ -45,7 +45,7 @@ struct SendModulesStepsBuilder {
         )
     }
 
-    func makeSuggestedWallets(userWalletModels: [UserWalletModel]) -> [SendDestinationViewModel.InputModel.SuggestedWallet] {
+    func makeSuggestedWallets(userWalletModels: [UserWalletModel]) -> [SendDestinationViewModel.InitialModel.SuggestedWallet] {
         userWalletModels.reduce([]) { result, userWalletModel in
             let walletModels = userWalletModel.walletModelsManager.walletModels
             return result + walletModels

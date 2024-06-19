@@ -9,8 +9,6 @@
 import Foundation
 import Combine
 
-protocol MarketsListDataFilterProviderDelegate {}
-
 class MarketsListDataFilterProvider {
     // MARK: - Private Properties
 

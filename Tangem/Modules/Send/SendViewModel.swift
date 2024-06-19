@@ -94,6 +94,7 @@ final class SendViewModel: ObservableObject {
     private let sendStepParameters: SendStep.Parameters
     private let keyboardVisibilityService: KeyboardVisibilityService
     private let factory: SendModulesFactory
+    private let processor: SendDestinationProcessor
 
     private weak var coordinator: SendRoutable?
 
@@ -120,6 +121,7 @@ final class SendViewModel: ObservableObject {
             sendModel.feeValid,
             summaryValid
         )
+        .receive(on: DispatchQueue.main)
         .map { destinationValid, amountValid, feeValid, summaryValid in
             var validSteps: [SendStep] = []
             if destinationValid {
@@ -152,6 +154,7 @@ final class SendViewModel: ObservableObject {
         fiatCryptoAdapter: CommonSendFiatCryptoAdapter,
         keyboardVisibilityService: KeyboardVisibilityService,
         factory: SendModulesFactory,
+        processor: SendDestinationProcessor,
         coordinator: SendRoutable
     ) {
         self.walletInfo = walletInfo
@@ -165,6 +168,7 @@ final class SendViewModel: ObservableObject {
         self.customFeeService = customFeeService
         self.fiatCryptoAdapter = fiatCryptoAdapter
         self.keyboardVisibilityService = keyboardVisibilityService
+        self.processor = processor
         self.factory = factory
 
         steps = sendType.steps
@@ -182,10 +186,14 @@ final class SendViewModel: ObservableObject {
             fiatCryptoAdapter: fiatCryptoAdapter,
             walletInfo: walletInfo
         )
+
         sendDestinationViewModel = factory.makeSendDestinationViewModel(
-            sendModel: sendModel,
+            input: sendModel,
+            output: sendModel,
+            sendType: sendType,
             addressTextViewHeightModel: addressTextViewHeightModel
         )
+
         sendFeeViewModel = factory.makeSendFeeViewModel(
             sendModel: sendModel,
             notificationManager: notificationManager,
@@ -337,6 +345,7 @@ final class SendViewModel: ObservableObject {
             .store(in: &bag)
 
         Publishers.CombineLatest(validSteps, $step)
+            .receive(on: DispatchQueue.main)
             .map { validSteps, step in
                 #warning("TODO: invert the logic and publish INVALID steps instead (?)")
                 switch step {
@@ -351,17 +360,12 @@ final class SendViewModel: ObservableObject {
 
         sendModel
             .destinationPublisher
-            .sink { [weak self] destination in
-                guard
-                    let self,
-                    sendModel.destinationValidValue
-                else {
-                    return
-                }
-
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, destination in
                 switch destination?.source {
                 case .myWallet, .recentAddress:
-                    next()
+                    viewModel.next()
                 default:
                     break
                 }
@@ -370,6 +374,7 @@ final class SendViewModel: ObservableObject {
 
         sendModel
             .sendError
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] error in
                 guard let self, let error else { return }
 
@@ -432,18 +437,10 @@ final class SendViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        sendModel
-            .destinationPublisher
-            .sink { destination in
-                guard let destination else { return }
-
-                Analytics.logDestinationAddress(isAddressValid: destination.value != nil, source: destination.source)
-            }
-            .store(in: &bag)
-
         Publishers
             .CombineLatest(sendModel.transactionAmountPublisher, sendModel.feeValuePublisher)
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
                 let (amount, fee) = args
 
@@ -663,12 +660,8 @@ final class SendViewModel: ObservableObject {
             return
         }
 
-        sendModel.setDestination(SendAddress(value: result.destination, source: .qrCode))
+        sendDestinationViewModel.update(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
         sendModel.setAmount(result.amount)
-
-        if let memo = result.memo {
-            sendModel.setDestinationAdditionalField(memo)
-        }
     }
 
     private func logNextStepAnalytics() {

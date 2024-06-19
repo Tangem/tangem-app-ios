@@ -116,8 +116,14 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
-                viewModel.tokenViewModels = items.compactMap { viewModel.mapToTokenViewModel(tokenItemModel: $0) }
-                viewModel.chartsPreviewProvider.fetch(for: ["Bitcoin"], with: viewModel.filterProvider.currentFilterValue.interval)
+                viewModel.tokenViewModels = items.compactMap { item in
+                    // If chartPreviewItem already exist cache value in chartsPreviewProvider
+                    let chartPreviewItem = viewModel.chartsPreviewProvider.items.first(where: { item.id == $0.key })?.value
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: chartPreviewItem)
+                    return tokenViewModel
+                }
+
+                viewModel.chartsPreviewProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
             })
             .store(in: &bag)
 
@@ -141,8 +147,7 @@ private extension MarketsViewModel {
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
                 for chartPreviewItem in items {
-                    let chartsDecimalValues: [Decimal] = chartPreviewItem.value.prices.values.map { $0 }
-                    let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+                    let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chartPreviewItem.value)
                     viewModel.tokenViewModels.first(where: { $0.id == chartPreviewItem.key })?.charts = chartsDoubleConvertedValues
                 }
             })
@@ -172,6 +177,7 @@ private extension MarketsViewModel {
                 marketRating: dummyTokenItemModel.marketRating,
                 priceValue: dummyTokenItemModel.currentPrice,
                 priceChangeStateValue: dummyTokenItemModel.priceChangePercentage.first?.value,
+                charts: nil,
                 isLoading: true
             )
 
@@ -181,7 +187,12 @@ private extension MarketsViewModel {
         tokenViewModels.append(contentsOf: skeletonTokenViewModels)
     }
 
-    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
+    private func mapToTokenViewModel(
+        tokenItemModel: MarketsTokenModel,
+        with chartPreviewItem: MarketsHistoryPreviewItemModel?
+    ) -> MarketsItemViewModel {
+        let chartsDoubleConvertedValues = mapHistoryPreviewItemModelToChartsList(chartPreviewItem)
+
         let inputData = MarketsItemViewModel.InputData(
             id: tokenItemModel.id,
             name: tokenItemModel.name,
@@ -190,10 +201,19 @@ private extension MarketsViewModel {
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
             priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue],
+            charts: chartsDoubleConvertedValues,
             isLoading: false
         )
 
         return MarketsItemViewModel(inputData)
+    }
+
+    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsHistoryPreviewItemModel?) -> [Double]? {
+        guard let chartPreviewItem else { return nil }
+
+        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
+        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+        return chartsDoubleConvertedValues
     }
 }
 

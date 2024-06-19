@@ -158,6 +158,10 @@ class WalletModel {
 
     var wallet: Wallet { walletManager.wallet }
 
+    var addresses: [String] {
+        wallet.addresses.map { $0.value }
+    }
+
     var addressNames: [String] {
         wallet.addresses.map { $0.localizedName }
     }

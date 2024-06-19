@@ -12,10 +12,6 @@ import Combine
 import CombineExt
 import SwiftUI
 
-protocol MarketsListOrderBottonSheetViewModelDelegate: AnyObject {
-    func didSelect(option: MarketsListOrderType)
-}
-
 class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
     @Published var listOptionViewModel: [DefaultSelectableRowViewModel<MarketsListOrderType>]
     @Published var currentOrderType: MarketsListOrderType
@@ -23,7 +19,6 @@ class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
     // MARK: - Private Properties
 
     private var subscription: AnyCancellable?
-    private weak var delegate: MarketsListOrderBottonSheetViewModelDelegate?
     private var dissmis: (() -> Void)?
 
     private let provider: MarketsListDataFilterProvider

@@ -17,6 +17,8 @@ struct SendModulesFactory {
     private let walletModel: WalletModel
     private let builder: SendModulesStepsBuilder
 
+    private var tokenItem: TokenItem { walletModel.tokenItem }
+
     init(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         self.userWalletModel = userWalletModel
         self.walletModel = walletModel
@@ -44,26 +46,39 @@ struct SendModulesFactory {
             fiatCryptoAdapter: makeSendFiatCryptoAdapter(walletInfo: walletInfo),
             keyboardVisibilityService: KeyboardVisibilityService(),
             factory: self,
+            processor: makeSendDestinationProcessor(),
             coordinator: coordinator
         )
     }
 
     func makeSendDestinationViewModel(
-        sendModel: SendModel,
+        input: SendDestinationInput,
+        output: SendDestinationOutput,
+        sendType: SendType,
         addressTextViewHeightModel: AddressTextViewHeightModel
     ) -> SendDestinationViewModel {
+        let suggestedWallets = builder.makeSuggestedWallets(userWalletModels: userWalletRepository.models)
+        let additionalFieldType = SendAdditionalFields.fields(for: tokenItem.blockchain)
+        let initial = SendDestinationViewModel.InitialModel(
+            networkName: tokenItem.networkName,
+            additionalFieldType: additionalFieldType,
+            suggestedWallets: suggestedWallets,
+            transactionHistoryPublisher: walletModel.transactionHistoryPublisher,
+            predefinedDestination: sendType.predefinedDestination,
+            predefinedTag: sendType.predefinedTag
+        )
+
         let transactionHistoryMapper = TransactionHistoryMapper(
-            currencySymbol: sendModel.currencySymbol,
-            walletAddresses: sendModel.walletAddresses,
+            currencySymbol: tokenItem.currencySymbol,
+            walletAddresses: walletModel.addresses,
             showSign: false
         )
 
-        let suggestedWallets = builder.makeSuggestedWallets(userWalletModels: userWalletRepository.models)
-        let inputModel = SendDestinationViewModel.InputModel(suggestedWallets: suggestedWallets)
-
         return SendDestinationViewModel(
-            inputModel: inputModel,
-            input: sendModel,
+            initial: initial,
+            input: input,
+            output: output,
+            processor: makeSendDestinationProcessor(),
             addressTextViewHeightModel: addressTextViewHeightModel,
             transactionHistoryMapper: transactionHistoryMapper
         )
@@ -74,7 +89,7 @@ struct SendModulesFactory {
         fiatCryptoAdapter: CommonSendFiatCryptoAdapter,
         walletInfo: SendWalletInfo
     ) -> SendAmountViewModel {
-        SendAmountViewModel(
+        return SendAmountViewModel(
             input: sendModel,
             fiatCryptoAdapter: fiatCryptoAdapter,
             walletInfo: walletInfo
@@ -87,7 +102,7 @@ struct SendModulesFactory {
         customFeeService: CustomFeeService?,
         walletInfo: SendWalletInfo
     ) -> SendFeeViewModel {
-        SendFeeViewModel(
+        return SendFeeViewModel(
             input: sendModel,
             notificationManager: notificationManager,
             customFeeService: customFeeService,
@@ -102,7 +117,7 @@ struct SendModulesFactory {
         addressTextViewHeightModel: AddressTextViewHeightModel,
         walletInfo: SendWalletInfo
     ) -> SendSummaryViewModel {
-        SendSummaryViewModel(
+        return SendSummaryViewModel(
             input: sendModel,
             notificationManager: notificationManager,
             fiatCryptoValueProvider: fiatCryptoAdapter,
@@ -120,7 +135,7 @@ struct SendModulesFactory {
         feeTypeAnalyticsParameter: Analytics.ParameterValue,
         walletInfo: SendWalletInfo
     ) -> SendFinishViewModel? {
-        SendFinishViewModel(
+        return SendFinishViewModel(
             input: sendModel,
             fiatCryptoValueProvider: fiatCryptoAdapter,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -133,28 +148,23 @@ struct SendModulesFactory {
     // MARK: - Dependencies
 
     private var emailDataProvider: EmailDataProvider {
-        userWalletModel
+        return userWalletModel
     }
 
     private var transactionSigner: TransactionSigner {
-        userWalletModel.signer
-    }
-
-    private var sendAddressService: SendAddressService {
-        SendAddressServiceFactory(walletModel: walletModel).makeService()
+        return userWalletModel.signer
     }
 
     private func makeSendModel(type: SendType) -> SendModel {
-        SendModel(
+        return SendModel(
             walletModel: walletModel,
             transactionSigner: transactionSigner,
-            addressService: sendAddressService,
             sendType: type
         )
     }
 
     private func makeSendNotificationManager(sendModel: SendModel) -> SendNotificationManager {
-        CommonSendNotificationManager(
+        return CommonSendNotificationManager(
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             input: sendModel
@@ -162,11 +172,11 @@ struct SendModulesFactory {
     }
 
     private func makeCustomFeeService(sendModel: SendModel) -> CustomFeeService? {
-        CustomFeeServiceFactory(input: sendModel, output: sendModel, walletModel: walletModel).makeService()
+        return CustomFeeServiceFactory(input: sendModel, output: sendModel, walletModel: walletModel).makeService()
     }
 
     private func makeSendFiatCryptoAdapter(walletInfo: SendWalletInfo) -> CommonSendFiatCryptoAdapter {
-        CommonSendFiatCryptoAdapter(
+        return CommonSendFiatCryptoAdapter(
             cryptoCurrencyId: walletInfo.currencyId,
             currencySymbol: walletInfo.cryptoCurrencyCode,
             decimals: walletInfo.amountFractionDigits
@@ -174,12 +184,52 @@ struct SendModulesFactory {
     }
 
     private func makeSendSummarySectionViewModelFactory(walletInfo: SendWalletInfo) -> SendSummarySectionViewModelFactory {
-        SendSummarySectionViewModelFactory(
+        return SendSummarySectionViewModelFactory(
             feeCurrencySymbol: walletInfo.feeCurrencySymbol,
             feeCurrencyId: walletInfo.feeCurrencyId,
             isFeeApproximate: walletInfo.isFeeApproximate,
             currencyId: walletInfo.currencyId,
             tokenIconInfo: walletInfo.tokenIconInfo
         )
+    }
+
+    private func makeSendDestinationProcessor() -> SendDestinationProcessor {
+        let parametersBuilder = SendTransactionParametersBuilder(blockchain: tokenItem.blockchain)
+
+        return CommonSendDestinationProcessor(
+            validator: makeSendDestinationValidator(),
+            addressResolver: walletModel.addressResolver,
+            additionalFieldType: .fields(for: tokenItem.blockchain),
+            parametersBuilder: parametersBuilder
+        )
+    }
+
+    private func makeSendDestinationValidator() -> SendDestinationValidator {
+        let addressService = AddressServiceFactory(blockchain: walletModel.wallet.blockchain).makeAddressService()
+        let validator = CommonSendDestinationValidator(
+            walletAddresses: walletModel.addresses,
+            addressService: addressService,
+            supportsCompound: walletModel.wallet.blockchain.supportsCompound
+        )
+
+        return validator
+    }
+}
+
+private extension Blockchain {
+    var supportsCompound: Bool {
+        switch self {
+        case .bitcoin,
+             .bitcoinCash,
+             .litecoin,
+             .dogecoin,
+             .dash,
+             .kaspa,
+             .ravencoin,
+             .ducatus:
+            return true
+        default:
+            return false
+        }
     }
 }

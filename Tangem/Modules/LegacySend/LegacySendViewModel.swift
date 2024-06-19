@@ -80,7 +80,7 @@ class LegacySendViewModel: ObservableObject {
         additionalInputFields != .none
     }
 
-    var additionalInputFields: SendAdditionalFields {
+    var additionalInputFields: SendAdditionalFields? {
         .fields(for: blockchainNetwork.blockchain)
     }
 
@@ -964,7 +964,7 @@ private extension LegacySendViewModel {
     }
 
     func retrieveAnalyticsMemoValue() -> Analytics.ParameterValue {
-        guard !additionalInputFields.isEmpty else {
+        guard additionalInputFields != nil else {
             return .null
         }
 
