@@ -19,11 +19,13 @@ struct SendAmountView: View {
             if !viewModel.animatingAuxiliaryViewsOnAppear {
                 HStack {
                     SendCurrencyPicker(
-                        cryptoIconURL: viewModel.cryptoIconURL,
-                        cryptoCurrencyCode: viewModel.cryptoCurrencyCode,
-                        fiatIconURL: viewModel.fiatIconURL,
-                        fiatCurrencyCode: viewModel.fiatCurrencyCode,
-                        disabled: viewModel.currencyPickerDisabled,
+                        data: .init(
+                            cryptoIconURL: viewModel.cryptoIconURL,
+                            cryptoCurrencyCode: viewModel.cryptoCurrencyCode,
+                            fiatIconURL: viewModel.fiatIconURL,
+                            fiatCurrencyCode: viewModel.fiatCurrencyCode,
+                            disabled: viewModel.currencyPickerDisabled
+                        ),
                         useFiatCalculation: $viewModel.useFiatCalculation
                     )
 

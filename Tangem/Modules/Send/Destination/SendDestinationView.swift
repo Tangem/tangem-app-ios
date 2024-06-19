@@ -68,16 +68,18 @@ struct SendDestinationView: View {
     }
 }
 
-struct SendDestinationView_Previews: PreviewProvider {
-    @Namespace static var namespace
+/*
+ struct SendDestinationView_Previews: PreviewProvider {
+     @Namespace static var namespace
 
-    static var previews: some View {
-        SendDestinationView(
-            viewModel: SendDestinationViewModel(
-                input: SendDestinationViewModelInputMock(),
-                addressTextViewHeightModel: .init()
-            ),
-            namespace: namespace
-        )
-    }
-}
+     static var previews: some View {
+         SendDestinationView(
+             viewModel: SendDestinationViewModel(
+                 input: SendDestinationViewModelInputMock(),
+                 addressTextViewHeightModel: .init()
+             ),
+             namespace: namespace
+         )
+     }
+ }
+ */

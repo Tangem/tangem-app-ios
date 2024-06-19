@@ -56,28 +56,21 @@ class SendDestinationViewModel: ObservableObject {
 
     private var bag: Set<AnyCancellable> = []
 
-    // MARK: - Dependencies
-
-    @Injected(\.userWalletRepository) private static var userWalletRepository: UserWalletRepository
-
     // MARK: - Methods
 
-    init(input: SendDestinationViewModelInput, addressTextViewHeightModel: AddressTextViewHeightModel) {
+    init(
+        inputModel: SendDestinationViewModel.InputModel,
+        input: SendDestinationViewModelInput,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        transactionHistoryMapper: TransactionHistoryMapper
+    ) {
         self.input = input
         self.addressTextViewHeightModel = addressTextViewHeightModel
+        self.transactionHistoryMapper = transactionHistoryMapper
 
-        transactionHistoryMapper = TransactionHistoryMapper(
-            currencySymbol: input.currencySymbol,
-            walletAddresses: input.walletAddresses,
-            showSign: false
-        )
-
-        let addressesToIgnore = input.blockchainNetwork.blockchain.supportsCompound ? [] : input.walletAddresses
-
-        suggestedWallets = Self.suggestedWallets(
-            for: input.blockchainNetwork.blockchain,
-            ignoringAddesses: addressesToIgnore
-        )
+        suggestedWallets = inputModel.suggestedWallets.map { wallet in
+            SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
+        }
 
         addressViewModel = SendDestinationTextViewModel(
             style: .address(networkName: input.networkName),
@@ -192,33 +185,17 @@ class SendDestinationViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
-
-    private static func suggestedWallets(for blockchain: Blockchain, ignoringAddesses ignoredAddresses: [String]) -> [SendSuggestedDestinationWallet] {
-        var suggestedWallets: [SendSuggestedDestinationWallet] = []
-        for userWalletModel in Self.userWalletRepository.models {
-            let walletModels = userWalletModel.walletModelsManager.walletModels
-            let suggestedDestinationWallets = walletModels
-                .filter { walletModel in
-                    // Disregarding the difference between testnet and mainnet blockchains
-                    // See https://github.com/tangem/tangem-app-ios/pull/3079#discussion_r1553709671
-                    return walletModel.blockchainNetwork.blockchain.networkId == blockchain.networkId
-                        && walletModel.isMainToken
-                        && !ignoredAddresses.contains(walletModel.defaultAddress)
-                }
-                .map { walletModel in
-                    SendSuggestedDestinationWallet(
-                        name: userWalletModel.name,
-                        address: walletModel.defaultAddress
-                    )
-                }
-
-            suggestedWallets.append(contentsOf: suggestedDestinationWallets)
-        }
-        return suggestedWallets
-    }
 }
 
 extension SendDestinationViewModel: AuxiliaryViewAnimatable {}
+
+extension SendDestinationViewModel {
+    struct InputModel {
+        typealias SuggestedWallet = (name: String, address: String)
+
+        let suggestedWallets: [SuggestedWallet]
+    }
+}
 
 private extension SendSuggestedDestination.`Type` {
     var source: Analytics.DestinationAddressSource {

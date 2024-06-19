@@ -241,7 +241,7 @@ private struct ButtonWithLeadingIconContentView: View {
         action()
 
         // We need to add a delay to prevent the button from being clicked multiple times
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             disabled = false
         }
     }

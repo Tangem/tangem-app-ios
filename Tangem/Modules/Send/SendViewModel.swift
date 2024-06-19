@@ -69,6 +69,15 @@ final class SendViewModel: ObservableObject {
     let sendFeeViewModel: SendFeeViewModel
     let sendSummaryViewModel: SendSummaryViewModel
 
+    lazy var sendFinishViewModel: SendFinishViewModel? = factory.makeSendFinishViewModel(
+        sendModel: sendModel,
+        notificationManager: notificationManager,
+        fiatCryptoAdapter: fiatCryptoAdapter,
+        addressTextViewHeightModel: addressTextViewHeightModel,
+        feeTypeAnalyticsParameter: selectedFeeTypeAnalyticsParameter(),
+        walletInfo: walletInfo
+    )
+
     // MARK: - Dependencies
 
     private let sendModel: SendModel
@@ -78,12 +87,13 @@ final class SendViewModel: ObservableObject {
     private let userWalletModel: UserWalletModel
     private let emailDataProvider: EmailDataProvider
     private let walletInfo: SendWalletInfo
-    private let notificationManager: CommonSendNotificationManager
+    private let notificationManager: SendNotificationManager
     private let addressTextViewHeightModel: AddressTextViewHeightModel
     private let customFeeService: CustomFeeService?
     private let fiatCryptoAdapter: CommonSendFiatCryptoAdapter
     private let sendStepParameters: SendStep.Parameters
     private let keyboardVisibilityService: KeyboardVisibilityService
+    private let factory: SendModulesFactory
 
     private weak var coordinator: SendRoutable?
 
@@ -130,102 +140,67 @@ final class SendViewModel: ObservableObject {
     }
 
     init(
-        walletName: String,
+        walletInfo: SendWalletInfo,
         walletModel: WalletModel,
         userWalletModel: UserWalletModel,
         transactionSigner: TransactionSigner,
         sendType: SendType,
         emailDataProvider: EmailDataProvider,
-        canUseFiatCalculation: Bool,
+        sendModel: SendModel,
+        notificationManager: SendNotificationManager,
+        customFeeService: CustomFeeService?,
+        fiatCryptoAdapter: CommonSendFiatCryptoAdapter,
+        keyboardVisibilityService: KeyboardVisibilityService,
+        factory: SendModulesFactory,
         coordinator: SendRoutable
     ) {
+        self.walletInfo = walletInfo
         self.coordinator = coordinator
         self.sendType = sendType
         self.walletModel = walletModel
         self.userWalletModel = userWalletModel
         self.emailDataProvider = emailDataProvider
+        self.sendModel = sendModel
+        self.notificationManager = notificationManager
+        self.customFeeService = customFeeService
+        self.fiatCryptoAdapter = fiatCryptoAdapter
+        self.keyboardVisibilityService = keyboardVisibilityService
+        self.factory = factory
 
-        let addressService = SendAddressServiceFactory(walletModel: walletModel).makeService()
-        #warning("TODO: pass SendModel and NotificationManager as dependencies")
-        sendModel = SendModel(
-            walletModel: walletModel,
-            transactionSigner: transactionSigner,
-            addressService: addressService,
-            sendType: sendType
-        )
-
-        let steps = sendType.steps
-        guard let firstStep = steps.first else {
-            fatalError("No steps provided for the send type")
-        }
-        self.steps = steps
-        step = firstStep
-        didReachSummaryScreen = (firstStep == .summary)
-        mainButtonType = Self.mainButtonType(for: firstStep, didReachSummaryScreen: didReachSummaryScreen)
-        stepAnimation = (firstStep == .summary) ? .moveAndFade : .slideForward
-        transactionDescriptionIsVisisble = firstStep == .summary
-
-        let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
-        let cryptoIconURL: URL?
-        if let tokenId = walletModel.tokenItem.id {
-            cryptoIconURL = IconURLBuilder().tokenIconURL(id: tokenId)
-        } else {
-            cryptoIconURL = nil
-        }
-
-        let fiatIconURL = IconURLBuilder().fiatIconURL(currencyCode: AppSettings.shared.selectedCurrencyCode)
-
-        walletInfo = SendWalletInfo(
-            walletName: walletName,
-            balanceValue: walletModel.balanceValue,
-            balance: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            currencyId: walletModel.tokenItem.currencyId,
-            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
-            feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: walletModel.tokenItem.blockchain.isFeeApproximate(for: walletModel.amountType),
-            tokenIconInfo: tokenIconInfo,
-            cryptoIconURL: cryptoIconURL,
-            cryptoCurrencyCode: walletModel.tokenItem.currencySymbol,
-            fiatIconURL: fiatIconURL,
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode,
-            amountFractionDigits: walletModel.tokenItem.decimalCount,
-            feeFractionDigits: walletModel.feeTokenItem.decimalCount,
-            feeAmountType: walletModel.feeTokenItem.amountType,
-            canUseFiatCalculation: canUseFiatCalculation
-        )
-
-        notificationManager = CommonSendNotificationManager(
-            tokenItem: walletModel.tokenItem,
-            feeTokenItem: walletModel.feeTokenItem,
-            input: sendModel
-        )
-
-        let customFeeServiceFactory = CustomFeeServiceFactory(
-            input: sendModel,
-            output: sendModel,
-            walletModel: walletModel
-        )
-        customFeeService = customFeeServiceFactory.makeService()
-
-        fiatCryptoAdapter = CommonSendFiatCryptoAdapter(
-            cryptoCurrencyId: walletInfo.currencyId,
-            currencySymbol: walletInfo.cryptoCurrencyCode,
-            decimals: walletInfo.amountFractionDigits
-        )
-        fiatCryptoAdapter.setAmount(sendType.predefinedAmount?.value)
-
-        keyboardVisibilityService = KeyboardVisibilityService()
-
+        steps = sendType.steps
+        step = sendType.firstStep
+        didReachSummaryScreen = sendType.firstStep == .summary
+        transactionDescriptionIsVisisble = sendType.firstStep == .summary
+        mainButtonType = Self.mainButtonType(for: sendType.firstStep, didReachSummaryScreen: didReachSummaryScreen)
+        stepAnimation = sendType.firstStep == .summary ? .moveAndFade : .slideForward
         sendStepParameters = SendStep.Parameters(currencyName: walletModel.tokenItem.name, walletName: walletInfo.walletName)
 
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
-        self.addressTextViewHeightModel = addressTextViewHeightModel
-        sendAmountViewModel = SendAmountViewModel(input: sendModel, fiatCryptoAdapter: fiatCryptoAdapter, walletInfo: walletInfo)
-        sendDestinationViewModel = SendDestinationViewModel(input: sendModel, addressTextViewHeightModel: addressTextViewHeightModel)
-        sendFeeViewModel = SendFeeViewModel(input: sendModel, notificationManager: notificationManager, customFeeService: customFeeService, walletInfo: walletInfo)
-        sendSummaryViewModel = SendSummaryViewModel(input: sendModel, notificationManager: notificationManager, fiatCryptoValueProvider: fiatCryptoAdapter, addressTextViewHeightModel: addressTextViewHeightModel, walletInfo: walletInfo)
+        // TODO: Sepate by steps and inject it
+        addressTextViewHeightModel = .init()
+        sendAmountViewModel = factory.makeSendAmountViewModel(
+            sendModel: sendModel,
+            fiatCryptoAdapter: fiatCryptoAdapter,
+            walletInfo: walletInfo
+        )
+        sendDestinationViewModel = factory.makeSendDestinationViewModel(
+            sendModel: sendModel,
+            addressTextViewHeightModel: addressTextViewHeightModel
+        )
+        sendFeeViewModel = factory.makeSendFeeViewModel(
+            sendModel: sendModel,
+            notificationManager: notificationManager,
+            customFeeService: customFeeService,
+            walletInfo: walletInfo
+        )
+        sendSummaryViewModel = factory.makeSendSummaryViewModel(
+            sendModel: sendModel,
+            notificationManager: notificationManager,
+            fiatCryptoAdapter: fiatCryptoAdapter,
+            addressTextViewHeightModel: addressTextViewHeightModel,
+            walletInfo: walletInfo
+        )
 
+        fiatCryptoAdapter.setAmount(sendType.predefinedAmount?.value)
         fiatCryptoAdapter.setInput(sendAmountViewModel)
         fiatCryptoAdapter.setOutput(sendModel)
 
@@ -669,8 +644,7 @@ final class SendViewModel: ObservableObject {
     }
 
     private func openFinishPage() {
-        guard let sendFinishViewModel = SendFinishViewModel(input: sendModel, fiatCryptoValueProvider: fiatCryptoAdapter, addressTextViewHeightModel: addressTextViewHeightModel, feeTypeAnalyticsParameter: selectedFeeTypeAnalyticsParameter(), walletInfo: walletInfo) else {
-            assertionFailure("WHY?")
+        guard let sendFinishViewModel = sendFinishViewModel else {
             return
         }
 

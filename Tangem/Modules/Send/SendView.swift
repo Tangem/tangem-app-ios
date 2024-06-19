@@ -285,28 +285,30 @@ extension SendView {
 
 // MARK: - Preview
 
-struct SendView_Preview: PreviewProvider {
-    static let card = FakeUserWalletModel.wallet3Cards
+/*
+ struct SendView_Preview: PreviewProvider {
+     static let card = FakeUserWalletModel.wallet3Cards
 
-    static let viewModel = SendViewModel(
-        walletName: card.userWalletName,
-        walletModel: card.walletModelsManager.walletModels.first!,
-        userWalletModel: card,
-        transactionSigner: TransactionSignerMock(),
-        sendType: .send,
-        emailDataProvider: EmailDataProviderMock(),
-        canUseFiatCalculation: true,
-        coordinator: SendRoutableMock()
-    )
+     static let viewModel = SendViewModel(
+         walletName: card.userWalletName,
+         walletModel: card.walletModelsManager.walletModels.first!,
+         userWalletModel: card,
+         transactionSigner: TransactionSignerMock(),
+         sendType: .send,
+         emailDataProvider: EmailDataProviderMock(),
+         canUseFiatCalculation: true,
+         coordinator: SendRoutableMock()
+     )
 
-    static var previews: some View {
-        SendView(viewModel: viewModel)
-            .previewDisplayName("Full screen")
+     static var previews: some View {
+         SendView(viewModel: viewModel)
+             .previewDisplayName("Full screen")
 
-        NavHolder()
-            .sheet(isPresented: .constant(true)) {
-                SendView(viewModel: viewModel)
-            }
-            .previewDisplayName("Sheet")
-    }
-}
+         NavHolder()
+             .sheet(isPresented: .constant(true)) {
+                 SendView(viewModel: viewModel)
+             }
+             .previewDisplayName("Sheet")
+     }
+ }
+ */

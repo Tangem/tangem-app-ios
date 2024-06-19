@@ -7,9 +7,8 @@
 //
 
 import SwiftUI
-import Kingfisher
 
-struct SendCurrencyPicker: View {
+struct SendCurrencyPickerData {
     let cryptoIconURL: URL?
     let cryptoCurrencyCode: String
 
@@ -17,7 +16,10 @@ struct SendCurrencyPicker: View {
     let fiatCurrencyCode: String
 
     let disabled: Bool
+}
 
+struct SendCurrencyPicker: View {
+    let data: SendCurrencyPickerData
     @Binding var useFiatCalculation: Bool
 
     private let iconSize: CGFloat = 18
@@ -25,11 +27,11 @@ struct SendCurrencyPicker: View {
     // Can't use buttons because that interferes with the drag gesture
     var body: some View {
         HStack(spacing: 0) {
-            selectorItem(with: cryptoCurrencyCode, url: cryptoIconURL, iconRadius: 2, selected: !useFiatCalculation) {
+            selectorItem(with: data.cryptoCurrencyCode, url: data.cryptoIconURL, iconRadius: 2, selected: !useFiatCalculation) {
                 Colors.Button.secondary
             }
 
-            selectorItem(with: fiatCurrencyCode, url: fiatIconURL, iconRadius: iconSize / 2, selected: useFiatCalculation) {
+            selectorItem(with: data.fiatCurrencyCode, url: data.fiatIconURL, iconRadius: iconSize / 2, selected: useFiatCalculation) {
                 Assets.fiatIconPlaceholder
                     .image
                     .renderingMode(.template)
@@ -42,13 +44,13 @@ struct SendCurrencyPicker: View {
                     selectorItemHitBox(fiatItem: false)
                     selectorItemHitBox(fiatItem: true)
                 }
-                .allowsHitTesting(!disabled)
+                .allowsHitTesting(!data.disabled)
                 .gesture(handleDragGesture(containerSize: reader.size))
             }
         )
         .background(
             GeometryReader { reader in
-                if disabled {
+                if data.disabled {
                     handle(containerSize: reader.size)
                 } else {
                     handle(containerSize: reader.size)
@@ -66,7 +68,7 @@ struct SendCurrencyPicker: View {
         ZStack {
             HStack(spacing: 6) {
                 IconView(url: url, size: CGSize(bothDimensions: iconSize), cornerRadius: iconRadius, forceKingfisher: true, placeholder: placeholder)
-                    .saturation(disabled ? 0 : 1)
+                    .saturation(data.disabled ? 0 : 1)
 
                 ZStack {
                     selectorItemText(with: name, selected: selected)
@@ -85,7 +87,7 @@ struct SendCurrencyPicker: View {
         Text(name)
             .style(
                 selected ? Fonts.Bold.footnote : Fonts.Regular.footnote,
-                color: disabled ? Colors.Text.disabled : Colors.Text.primary1
+                color: data.disabled ? Colors.Text.disabled : Colors.Text.primary1
             )
             .lineLimit(1)
     }
@@ -130,11 +132,13 @@ private struct PickerExample: View {
     var body: some View {
         VStack {
             SendCurrencyPicker(
-                cryptoIconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/solana.png")!,
-                cryptoCurrencyCode: "SOL",
-                fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
-                fiatCurrencyCode: "USD",
-                disabled: true,
+                data: .init(
+                    cryptoIconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
+                    cryptoCurrencyCode: "USDT",
+                    fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
+                    fiatCurrencyCode: "USD",
+                    disabled: false
+                ),
                 useFiatCalculation: $useFiatCalculation
             )
 
@@ -149,21 +153,25 @@ private struct PickerExample: View {
             }
 
             SendCurrencyPicker(
-                cryptoIconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
-                cryptoCurrencyCode: "USDT",
-                fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
-                fiatCurrencyCode: "USD",
-                disabled: false,
+                data: .init(
+                    cryptoIconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
+                    cryptoCurrencyCode: "USDT",
+                    fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
+                    fiatCurrencyCode: "USD",
+                    disabled: false
+                ),
                 useFiatCalculation: $useFiatCalculation
             )
             .frame(maxWidth: 227)
 
             SendCurrencyPicker(
-                cryptoIconURL: URL(string: "XXX://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
-                cryptoCurrencyCode: "USDT",
-                fiatIconURL: URL(string: "XXX://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
-                fiatCurrencyCode: "USD",
-                disabled: false,
+                data: .init(
+                    cryptoIconURL: URL(string: "XXX://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
+                    cryptoCurrencyCode: "USDT",
+                    fiatIconURL: URL(string: "XXX://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
+                    fiatCurrencyCode: "USD",
+                    disabled: false
+                ),
                 useFiatCalculation: $useFiatCalculation
             )
             .frame(maxWidth: 227)

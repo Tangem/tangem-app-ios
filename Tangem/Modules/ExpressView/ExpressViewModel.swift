@@ -623,8 +623,8 @@ extension ExpressViewModel: NotificationTapDelegate {
 
     func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
         guard
-            let notif = notificationInputs.first(where: { $0.id == id }),
-            notif.settings.event is ExpressNotificationEvent
+            let notification = notificationInputs.first(where: { $0.id == id }),
+            let event = notification.settings.event as? ExpressNotificationEvent
         else {
             return
         }
@@ -649,7 +649,12 @@ extension ExpressViewModel: NotificationTapDelegate {
                 return
             }
 
-            updateSendDecimalValue(to: balance - amount)
+            var targetValue = balance - amount
+            if let feeValue = feeValue(from: event) {
+                targetValue -= feeValue
+            }
+
+            updateSendDecimalValue(to: targetValue)
         case .generateAddresses,
              .backupCard,
              .buyCrypto,
@@ -663,7 +668,11 @@ extension ExpressViewModel: NotificationTapDelegate {
             return
         }
     }
+}
 
+// MARK: - NotificationTapDelegate helpers
+
+private extension ExpressViewModel {
     func openFeeCurrency() {
         let walletModels = userWalletModel.walletModelsManager.walletModels
         guard let feeCurrencyWalletModel = walletModels.first(where: {
@@ -674,6 +683,28 @@ extension ExpressViewModel: NotificationTapDelegate {
         }
 
         coordinator?.presentFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
+    }
+
+    func feeValue(from event: ExpressNotificationEvent) -> Decimal? {
+        switch event {
+        case .validationErrorEvent(_, let context) where context.isFeeCurrency:
+            return context.feeValue
+        case .permissionNeeded,
+             .refreshRequired,
+             .hasPendingTransaction,
+             .hasPendingApproveTransaction,
+             .notEnoughFeeForTokenTx,
+             .tooSmallAmountToSwap,
+             .tooBigAmountToSwap,
+             .noDestinationTokens,
+             .feeWillBeSubtractFromSendingAmount,
+             .notEnoughReceivedAmountForReserve,
+             .withdrawalNotificationEvent,
+             .validationErrorEvent,
+             .verificationRequired,
+             .cexOperationFailed:
+            return nil
+        }
     }
 }
 
