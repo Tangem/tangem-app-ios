@@ -1,3 +1,4 @@
+ "send_gas_price_footer" = "This is the cost you are willing to pay for each unit of gas. The higher the gas price, the faster your transaction will be processed.";
 "add_custom_token_choose_network" = "Choose network";
 "add_custom_token_title" = "Add custom token";
 "add_tokens_title" = "Manage tokens";
@@ -474,6 +475,7 @@
 "send_from_wallet" = "From **%@**";
 "send_gas_limit" = "Gas limit";
 "send_gas_limit_footer" = "This is the maximum amount of gas that will be spent to complete a transaction or contract. A gas limit prevents unexpected or unlimited charges when executing a transaction.";
+"send_gas_price" = "Gas price";
 "send_max_amount" = "Max";
 "send_max_amount_label" = "Importo totale";
 "send_max_fee" = "Fee up to";
