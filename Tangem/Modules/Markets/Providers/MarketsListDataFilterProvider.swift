@@ -15,8 +15,6 @@ class MarketsListDataFilterProvider {
     private var _intervalTypeValue: CurrentValueSubject<MarketsPriceIntervalType, Never> = .init(.day)
     private var _orderTypeValue: CurrentValueSubject<MarketsListOrderType, Never> = .init(.rating)
 
-//    private lazy var filter: MarketsListDataProvider.Filter = .init(interval: _intervalTypeValue.value, order: _orderTypeValue.value)
-
     // MARK: - Public Properties
 
     var filterPublisher: some Publisher<MarketsListDataProvider.Filter, Never> {

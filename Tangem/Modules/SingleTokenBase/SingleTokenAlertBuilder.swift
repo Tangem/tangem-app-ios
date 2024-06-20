@@ -119,4 +119,11 @@ struct SingleTokenAlertBuilder {
 
         return nil
     }
+
+    func fulfillmentAssetRequirementsFailedAlert(error: Error, networkName: String) -> AlertBinder {
+        return .init(
+            title: Localization.commonTransactionFailed,
+            message: networkName + " " + error.localizedDescription
+        )
+    }
 }

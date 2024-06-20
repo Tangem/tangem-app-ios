@@ -1,0 +1,268 @@
+{
+    "imageHost": "https://s3.eu-central-1.amazonaws.com/tangem.api.dev/coins/",
+    "tokens": [
+        {
+            "id": "bitcoin",
+            "symbol": "btc",
+            "name": "Bitcoin",
+            "current_price": 65773.64918725424,
+            "price_change_percentage": {
+                "24h": 0.8034600000000003,
+                "30d": -7.2433864605826015,
+                "1w": -2.8780171016055345
+            },
+            "market_cap": 1295190942692,
+            "market_rating": 1
+        },
+        {
+            "id": "ethereum",
+            "symbol": "eth",
+            "name": "Ethereum",
+            "current_price": 3601.0786910161914,
+            "price_change_percentage": {
+                "24h": 1.7527400000000082,
+                "30d": -1.7145141494894878,
+                "1w": 2.672685444700962
+            },
+            "market_cap": 440177934816,
+            "market_rating": 2
+        },
+        {
+            "id": "tether",
+            "symbol": "usdt",
+            "name": "Tether",
+            "current_price": 0.9999916354745684,
+            "price_change_percentage": {
+                "24h": -0.022820000000001173,
+                "30d": -0.018466375899883758,
+                "1w": -0.04524531005062338
+            },
+            "market_cap": 112515007611,
+            "market_rating": 3
+        },
+        {
+            "id": "binancecoin",
+            "symbol": "bnb",
+            "name": "BNB",
+            "current_price": 603.738696299165,
+            "price_change_percentage": {
+                "24h": 0.48131000000000146,
+                "30d": -3.906790140525529,
+                "1w": -0.6559267827164095
+            },
+            "market_cap": 92826469846,
+            "market_rating": 4
+        },
+        {
+            "id": "solana",
+            "symbol": "sol",
+            "name": "Solana",
+            "current_price": 136.8704979255152,
+            "price_change_percentage": {
+                "24h": -1.5520800000000001,
+                "30d": -24.446253930338337,
+                "1w": -10.01616231631619
+            },
+            "market_cap": 63237038693,
+            "market_rating": 5
+        },
+        {
+            "id": "staked-ether",
+            "symbol": "steth",
+            "name": "Lido Staked Ether",
+            "current_price": 3599.849313367183,
+            "price_change_percentage": {
+                "24h": 1.7371400000000037,
+                "30d": -1.7129993120555742,
+                "1w": 2.658154641986954
+            },
+            "market_cap": 34460846132,
+            "market_rating": 6
+        },
+        {
+            "id": "usd-coin",
+            "symbol": "usdc",
+            "name": "USDC",
+            "current_price": 0.99998970929693,
+            "price_change_percentage": {
+                "24h": -0.047680000000005496,
+                "30d": 0.042716046005675246,
+                "1w": -0.049412621218203334
+            },
+            "market_cap": 32817871788,
+            "market_rating": 7
+        },
+        {
+            "id": "ripple",
+            "symbol": "xrp",
+            "name": "XRP",
+            "current_price": 0.4984549183741821,
+            "price_change_percentage": {
+                "24h": 1.8650800000000078,
+                "30d": -7.581259836952303,
+                "1w": 2.104781012362178
+            },
+            "market_cap": 27708886914,
+            "market_rating": 8
+        },
+        {
+            "id": "dogecoin",
+            "symbol": "doge",
+            "name": "Dogecoin",
+            "current_price": 0.1257353580255726,
+            "price_change_percentage": {
+                "24h": 0.666140000000004,
+                "30d": -23.161988651183062,
+                "1w": -12.665496078582139
+            },
+            "market_cap": 18150177995,
+            "market_rating": 9
+        },
+        {
+            "id": "the-open-network",
+            "symbol": "ton",
+            "name": "Toncoin",
+            "current_price": 7.245412296718763,
+            "price_change_percentage": {
+                "24h": 4.611300000000007,
+                "30d": 8.474075888161803,
+                "1w": -5.011136544259676
+            },
+            "market_cap": 17649790298,
+            "market_rating": 10
+        },
+        {
+            "id": "cardano",
+            "symbol": "ada",
+            "name": "Cardano",
+            "current_price": 0.3920158023621446,
+            "price_change_percentage": {
+                "24h": 0.2562699999999918,
+                "30d": -21.753574808163478,
+                "1w": -9.112359922939273
+            },
+            "market_cap": 13867657078,
+            "market_rating": 11
+        },
+        {
+            "id": "avalanche-2",
+            "symbol": "avax",
+            "name": "Avalanche",
+            "current_price": 28.100477039120594,
+            "price_change_percentage": {
+                "24h": 3.3605000000000107,
+                "30d": -30.910308462607606,
+                "1w": -13.341815997917461
+            },
+            "market_cap": 11054249194,
+            "market_rating": 12
+        },
+        {
+            "id": "shiba-inu",
+            "symbol": "shib",
+            "name": "Shiba Inu",
+            "current_price": 0.0000187300033429,
+            "price_change_percentage": {
+                "24h": 0.6488300000000002,
+                "30d": -26.39238511305466,
+                "1w": -13.857857407706842
+            },
+            "market_cap": 11036429860,
+            "market_rating": 13
+        },
+        {
+            "id": "tron",
+            "symbol": "trx",
+            "name": "TRON",
+            "current_price": 0.116628261461545,
+            "price_change_percentage": {
+                "24h": -0.2919000000000005,
+                "30d": -5.533272730914174,
+                "1w": 0.24481801189093488
+            },
+            "market_cap": 10182581731,
+            "market_rating": 14
+        },
+        {
+            "id": "wrapped-bitcoin",
+            "symbol": "wbtc",
+            "name": "Wrapped Bitcoin",
+            "current_price": 65897.54470059893,
+            "price_change_percentage": {
+                "24h": 0.8300600000000102,
+                "30d": -7.185015775229275,
+                "1w": -2.7881536566924825
+            },
+            "market_cap": 10092311633,
+            "market_rating": 15
+        },
+        {
+            "id": "chainlink",
+            "symbol": "link",
+            "name": "Chainlink",
+            "current_price": 14.739608370614137,
+            "price_change_percentage": {
+                "24h": 2.7964700000000065,
+                "30d": -12.94769925627307,
+                "1w": -5.010220947605926
+            },
+            "market_cap": 8639495629,
+            "market_rating": 16
+        },
+        {
+            "id": "polkadot",
+            "symbol": "dot",
+            "name": "Polkadot",
+            "current_price": 5.9052040962415795,
+            "price_change_percentage": {
+                "24h": -0.6716599999999961,
+                "30d": -21.630245411063022,
+                "1w": -9.480418414711611
+            },
+            "market_cap": 8140594872,
+            "market_rating": 17
+        },
+        {
+            "id": "bitcoin-cash",
+            "symbol": "bch",
+            "name": "Bitcoin Cash",
+            "current_price": 396.9991497303101,
+            "price_change_percentage": {
+                "24h": 1.0850999999999944,
+                "30d": -23.54970989067636,
+                "1w": -11.238931513335636
+            },
+            "market_cap": 7823747492,
+            "market_rating": 18
+        },
+        {
+            "id": "uniswap",
+            "symbol": "uni",
+            "name": "Uniswap",
+            "current_price": 10.084556849971893,
+            "price_change_percentage": {
+                "24h": -2.1241999999999983,
+                "30d": 8.703567086676234,
+                "1w": 2.220068184540236
+            },
+            "market_cap": 7613303189,
+            "market_rating": 19
+        },
+        {
+            "id": "near",
+            "symbol": "near",
+            "name": "NEAR Protocol",
+            "current_price": 5.417454705745317,
+            "price_change_percentage": {
+                "24h": 9.64666999999999,
+                "30d": -33.06971713456483,
+                "1w": -11.947955172583303
+            },
+            "market_cap": 5889654251,
+            "market_rating": 20
+        }
+    ],
+    "total": 4020,
+    "limit": 20,
+    "offset": 0
+}

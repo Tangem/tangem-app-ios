@@ -36,6 +36,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private let priceChangeFormatter = PriceChangeFormatter()
     private let priceFormatter = CommonTokenPriceFormatter()
+    private let marketCapFormatter = CommonMarketCapFormatter()
 
     // MARK: - Init
 
@@ -45,14 +46,14 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
-        symbol = data.symbol
+        symbol = data.symbol.uppercased()
 
         if let marketRating = data.marketRating {
             self.marketRating = "\(marketRating)"
         }
 
         if let marketCap = data.marketCap {
-            self.marketCap = "\(marketCap)"
+            self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
         }
 
         priceValue = priceFormatter.formatFiatBalance(data.priceValue)
