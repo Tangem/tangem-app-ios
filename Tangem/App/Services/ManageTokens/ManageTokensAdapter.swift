@@ -159,42 +159,22 @@ private extension ManageTokensAdapter {
             return
         }
 
+        let alertBuilder = HideTokenAlertBuilder()
         if canRemove(tokenItem) {
-            let title = Localization.tokenDetailsHideAlertTitle(tokenItem.name)
-
-            let cancelAction = { [unowned self] in
-                updateSelection(tokenItem)
-            }
-
-            let hideAction = { [unowned self] in
-                onSelect(isSelected, tokenItem)
-            }
-
-            alertSubject.send(AlertBinder(
-                alert: Alert(
-                    title: Text(title),
-                    message: Text(Localization.tokenDetailsHideAlertMessage),
-                    primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide), action: hideAction),
-                    secondaryButton: .cancel(cancelAction)
-                )
+            alertSubject.send(alertBuilder.hideTokenAlert(
+                tokenItem: tokenItem,
+                hideAction: { [weak self] in
+                    self?.onSelect(isSelected, tokenItem)
+                },
+                cancelAction: { [weak self] in
+                    self?.updateSelection(tokenItem)
+                }
             ))
         } else {
-            let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.name)
-
-            let message = Localization.tokenDetailsUnableHideAlertMessage(
-                tokenItem.name,
-                tokenItem.currencySymbol,
-                tokenItem.blockchain.displayName
-            )
-
-            alertSubject.send(AlertBinder(
-                alert: Alert(
-                    title: Text(title),
-                    message: Text(message),
-                    dismissButton: .default(Text(Localization.commonOk), action: {
-                        self.updateSelection(tokenItem)
-                    })
-                )
+            alertSubject.send(alertBuilder.unableToHideTokenAlert(
+                tokenItem: tokenItem, cancelAction: { [weak self] in
+                    self?.updateSelection(tokenItem)
+                }
             ))
         }
     }

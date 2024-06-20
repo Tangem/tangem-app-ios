@@ -69,34 +69,14 @@ class ManageTokensViewModel: ObservableObject {
 
     func removeCustomToken(_ info: CustomTokenItemViewInfo) {
         let tokenItem = info.tokenItem
+        let alertBuilder = HideTokenAlertBuilder()
         if userTokensManager.canRemove(tokenItem) {
-            alert = AlertBinder(
-                alert: Alert(
-                    title: Text(Localization.tokenDetailsHideAlertTitle(tokenItem.name)),
-                    message: Text(Localization.tokenDetailsHideAlertMessage),
-                    primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide), action: { [weak self] in
-                        self?.userTokensManager.remove(tokenItem)
-                        self?.showPortfolioUpdatedToast()
-                    }),
-                    secondaryButton: .cancel()
-                )
-            )
+            alert = alertBuilder.hideTokenAlert(tokenItem: tokenItem, hideAction: { [weak self] in
+                self?.userTokensManager.remove(tokenItem)
+                self?.showPortfolioUpdatedToast()
+            })
         } else {
-            let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.name)
-
-            let message = Localization.tokenDetailsUnableHideAlertMessage(
-                tokenItem.name,
-                tokenItem.currencySymbol,
-                tokenItem.blockchain.displayName
-            )
-
-            alert = AlertBinder(
-                alert: Alert(
-                    title: Text(title),
-                    message: Text(message),
-                    dismissButton: .default(Text(Localization.commonOk), action: {})
-                )
-            )
+            alert = alertBuilder.unableToHideTokenAlert(tokenItem: tokenItem)
         }
     }
 
