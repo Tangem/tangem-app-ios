@@ -74,7 +74,7 @@
 		2DD754D72AE1660D0009CA64 /* GenerateAddressesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */; };
 		2DDF91942A14DA2700B31113 /* TokenItemMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDF91932A14DA2700B31113 /* TokenItemMenuActions.swift */; };
 		2DDFA7952C230E2F00E51F7F /* CommonMarketCapFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDFA7942C230E2F00E51F7F /* CommonMarketCapFormatter.swift */; };
-		2DDFA7B22C24205900E51F7F /* coinsListResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 2DDFA7B12C24205900E51F7F /* coinsListResponse.json */; };
+		2DDFA7B62C242E4900E51F7F /* coinsListResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 2DDFA7B52C242E4900E51F7F /* coinsListResponse.json */; };
 		2DF5A81D2B13C33800AA5E73 /* WalletSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF5A81C2B13C33700AA5E73 /* WalletSelectorDataSource.swift */; };
 		2DF5A81F2B13C33D00AA5E73 /* ManageTokensNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */; };
 		4A293696EACF80B666320C1E /* Pods_TangemFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */; };
@@ -1729,7 +1729,7 @@
 		2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesViewModel.swift; sourceTree = "<group>"; };
 		2DDF91932A14DA2700B31113 /* TokenItemMenuActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemMenuActions.swift; sourceTree = "<group>"; };
 		2DDFA7942C230E2F00E51F7F /* CommonMarketCapFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarketCapFormatter.swift; sourceTree = "<group>"; };
-		2DDFA7B12C24205900E51F7F /* coinsListResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = coinsListResponse.json; sourceTree = "<group>"; };
+		2DDFA7B52C242E4900E51F7F /* coinsListResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = coinsListResponse.json; sourceTree = "<group>"; };
 		2DF5A81C2B13C33700AA5E73 /* WalletSelectorDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorDataSource.swift; sourceTree = "<group>"; };
 		2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkDataSource.swift; sourceTree = "<group>"; };
 		34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(production).xcconfig"; sourceTree = "<group>"; };
@@ -4699,32 +4699,32 @@
 		B068A7E525678A6E00D28CD2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				2DDFA7932C230E2300E51F7F /* MarketCapFormatter */,
-				2D276FEB2BFCD3690099001A /* TokenPriceFormatter */,
-				B0B335E129FA9E9A00E2082E /* BalanceFormatter */,
-				EF031A322C09EBB9001535C9 /* PercentFormatter */,
-				B0AF2DF22B1DF282001A8696 /* Express */,
-				B036626A2B63D77D0064E073 /* ISO4217CodeConverter.swift */,
-				EFA580622893E6AA00110DB0 /* BiometricAuthorizationUtils.swift */,
-				B020FFBD25DE895E00EF422C /* FileLogger.swift */,
-				B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */,
-				B068A7E625678A8800D28CD2 /* TwinCardsUtils.swift */,
-				B0C87B422566461600F861DE /* TwinCardsFileCoder.swift */,
-				B00D714F258A1B6C00A9442C /* JsonUtils.swift */,
-				B0323F2B258C041D005C7CD5 /* SignerUtils.swift */,
-				B0F62C5425DE4F6B005C8BA0 /* DeviceInfoProvider.swift */,
-				B0CAFA8C26C6C0FE001238DA /* QRCodeGenerator.swift */,
-				B0C87B472566492000F861DE /* TwinData.swift */,
-				EF0F99E2289177C6008B01DF /* InfoDictionaryUtils.swift */,
-				DC5DBBC8289B951600C21E35 /* DemoUtil.swift */,
-				DC74BC2E28EF060600B49850 /* UserWalletId.swift */,
-				DA6C752329225F9B0070EEFD /* MinimizedAppTimer.swift */,
-				B0E0AF5C2996488100E52F7B /* TransactionHistoryMapper.swift */,
-				B003BDAB2A029C4300B282F7 /* BalanceConverter.swift */,
 				B091D7472AA0DBA000ACB6E2 /* AppUtils.swift */,
+				B003BDAB2A029C4300B282F7 /* BalanceConverter.swift */,
+				EFA580622893E6AA00110DB0 /* BiometricAuthorizationUtils.swift */,
+				DC5DBBC8289B951600C21E35 /* DemoUtil.swift */,
+				B0F62C5425DE4F6B005C8BA0 /* DeviceInfoProvider.swift */,
+				B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */,
+				B020FFBD25DE895E00EF422C /* FileLogger.swift */,
+				EF0F99E2289177C6008B01DF /* InfoDictionaryUtils.swift */,
+				B036626A2B63D77D0064E073 /* ISO4217CodeConverter.swift */,
+				B00D714F258A1B6C00A9442C /* JsonUtils.swift */,
+				DA6C752329225F9B0070EEFD /* MinimizedAppTimer.swift */,
 				EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */,
 				B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */,
 				DCDE747A2C1397DD00C19A23 /* PushNotificationsProvider.swift */,
+				B0CAFA8C26C6C0FE001238DA /* QRCodeGenerator.swift */,
+				B0323F2B258C041D005C7CD5 /* SignerUtils.swift */,
+				B0E0AF5C2996488100E52F7B /* TransactionHistoryMapper.swift */,
+				B0C87B422566461600F861DE /* TwinCardsFileCoder.swift */,
+				B068A7E625678A8800D28CD2 /* TwinCardsUtils.swift */,
+				B0C87B472566492000F861DE /* TwinData.swift */,
+				DC74BC2E28EF060600B49850 /* UserWalletId.swift */,
+				B0B335E129FA9E9A00E2082E /* BalanceFormatter */,
+				B0AF2DF22B1DF282001A8696 /* Express */,
+				2DDFA7932C230E2300E51F7F /* MarketCapFormatter */,
+				EF031A322C09EBB9001535C9 /* PercentFormatter */,
+				2D276FEB2BFCD3690099001A /* TokenPriceFormatter */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -5652,7 +5652,7 @@
 			children = (
 				B098F3A12C04B5D300F79989 /* coinsResponse.json */,
 				B0FB4EF92A8511DA0057F4C2 /* walletUserWalletList.json */,
-				2DDFA7B12C24205900E51F7F /* coinsListResponse.json */,
+				2DDFA7B52C242E4900E51F7F /* coinsListResponse.json */,
 			);
 			path = APIResponses;
 			sourceTree = "<group>";
@@ -9039,7 +9039,7 @@
 				B03662692B63D7660064E073 /* iso4217Codes.plist in Resources */,
 				DC4512782BD1641900DE6F94 /* ethNoteDemo.json in Resources */,
 				DA6915A62A9CE2BD00DB4339 /* Tokens.xcassets in Resources */,
-				2DDFA7B22C24205900E51F7F /* coinsListResponse.json in Resources */,
+				2DDFA7B62C242E4900E51F7F /* coinsListResponse.json in Resources */,
 				5D3F77D224BF56DC00E8695B /* LaunchScreen.storyboard in Resources */,
 				5D5CE1A92625FF00009023EC /* config_prod.json in Resources */,
 				5DBBAB0D24D8547F00E78F1C /* Colors.xcassets in Resources */,
