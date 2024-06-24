@@ -16,59 +16,11 @@ struct SendFinishView: View {
         GroupedScrollView(spacing: 14) {
             if viewModel.showHeader {
                 header
-                    .padding(.top, 24)
-                    .padding(.bottom, 12)
             }
 
-            GroupedSection(viewModel.destinationViewTypes) { type in
-                switch type {
-                case .address(let address, let corners):
-                    SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
-                        .setNamespace(namespace)
-                        .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                        .background(
-                            Colors.Background.action
-                                .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                                .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
-                        )
-                case .additionalField(let type, let value):
-                    DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                        .setNamespace(namespace)
-                        .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                        .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
-                        .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                        .background(
-                            Colors.Background.action
-                                .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                                .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
-                        )
-                }
-            }
-            .backgroundColor(.clear)
-            .geometryEffect(.init(id: SendViewNamespaceId.destinationContainer.rawValue, namespace: namespace))
-            .horizontalPadding(0)
-            .separatorStyle(.single)
+            destinationSection
 
-            GroupedSection(viewModel.amountSummaryViewData) {
-                SendAmountSummaryView(data: $0)
-                    .setNamespace(namespace)
-                    .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
-                    .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
-                    .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
-            }
-            .innerContentPadding(0)
-            .backgroundColor(Colors.Background.action)
-            .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
-
-            GroupedSection(viewModel.feeSummaryViewData) { data in
-                SendFeeSummaryView(data: data)
-                    .setNamespace(namespace)
-                    .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
-                    .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: .market).rawValue)
-                    .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: .market).rawValue)
-            }
-            .backgroundColor(Colors.Background.action)
-            .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
+            feeSection
         }
         .onAppear(perform: viewModel.onAppear)
     }
@@ -89,6 +41,64 @@ struct SendFinishView: View {
                 .padding(.top, 6)
         }
         .transition(.move(edge: .top).combined(with: .opacity))
+        .padding(.top, 24)
+        .padding(.bottom, 12)
+    }
+
+    private var destinationSection: some View {
+        GroupedSection(viewModel.destinationViewTypes) { type in
+            switch type {
+            case .address(let address, let corners):
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
+                    .setNamespace(namespace)
+                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                    .background(
+                        Colors.Background.action
+                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
+                            .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
+                    )
+            case .additionalField(let type, let value):
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
+                    .setNamespace(namespace)
+                    .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
+                    .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
+                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                    .background(
+                        Colors.Background.action
+                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
+                            .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
+                    )
+            }
+        }
+        .backgroundColor(.clear)
+        .geometryEffect(.init(id: SendViewNamespaceId.destinationContainer.rawValue, namespace: namespace))
+        .horizontalPadding(0)
+        .separatorStyle(.single)
+    }
+
+    private var amountSection: some View {
+        GroupedSection(viewModel.amountSummaryViewData) {
+            SendAmountSummaryView(data: $0)
+                .setNamespace(namespace)
+                .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
+                .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
+                .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
+        }
+        .innerContentPadding(0)
+        .backgroundColor(Colors.Background.action)
+        .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
+    }
+
+    private var feeSection: some View {
+        GroupedSection(viewModel.feeSummaryViewData) { data in
+            SendFeeSummaryView(data: data)
+                .setNamespace(namespace)
+                .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
+                .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: .market).rawValue)
+                .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: .market).rawValue)
+        }
+        .backgroundColor(Colors.Background.action)
+        .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
     }
 }
 

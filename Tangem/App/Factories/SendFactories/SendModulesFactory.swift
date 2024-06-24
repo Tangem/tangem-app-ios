@@ -128,22 +128,23 @@ struct SendModulesFactory {
     }
 
     func makeSendSummaryViewModel(
-        sendModel: SendModel,
+        interactor: SendSummaryInteractor,
         notificationManager: SendNotificationManager,
-        sendFeeInteractor: SendFeeInteractor,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        walletInfo: SendWalletInfo
+        sendType: SendType
     ) -> SendSummaryViewModel {
-        let initial = SendSummaryViewModel.Initial(tokenItem: walletModel.tokenItem)
+        let initial = SendSummaryViewModel.Initial(
+            tokenItem: walletModel.tokenItem,
+            canEditAmount: sendType.predefinedAmount == nil,
+            canEditDestination: sendType.predefinedDestination == nil
+        )
 
         return SendSummaryViewModel(
             initial: initial,
-            input: sendModel,
+            interactor: interactor,
             notificationManager: notificationManager,
-            sendFeeInteractor: sendFeeInteractor,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            walletInfo: walletInfo,
-            sectionViewModelFactory: makeSendSummarySectionViewModelFactory(walletInfo: walletInfo)
+            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
         )
     }
 
@@ -163,7 +164,7 @@ struct SendModulesFactory {
             addressTextViewHeightModel: addressTextViewHeightModel,
             feeTypeAnalyticsParameter: feeTypeAnalyticsParameter,
             walletInfo: walletInfo,
-            sectionViewModelFactory: makeSendSummarySectionViewModelFactory(walletInfo: walletInfo)
+            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
         )
     }
 }
@@ -204,13 +205,13 @@ private extension SendModulesFactory {
         )
     }
 
-    func makeSendSummarySectionViewModelFactory(walletInfo: SendWalletInfo) -> SendSummarySectionViewModelFactory {
-        SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
+    func makeSendSummarySectionViewModelFactory() -> SendSummarySectionViewModelFactory {
+        return SendSummarySectionViewModelFactory(
+            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
+            feeCurrencyId: walletModel.feeTokenItem.currencyId,
+            isFeeApproximate: builder.isFeeApproximate(),
+            currencyId: walletModel.tokenItem.currencyId,
+            tokenIconInfo: builder.makeTokenIconInfo()
         )
     }
 

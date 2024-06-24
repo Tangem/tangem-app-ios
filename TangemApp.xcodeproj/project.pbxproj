@@ -6471,15 +6471,12 @@
 			isa = PBXGroup;
 			children = (
 				DA559C292B0261F400F59584 /* SendSummaryView.swift */,
-				DA1DF04E2BA40D44008310E4 /* HintView.swift */,
-				DA1DF0482BA3E496008310E4 /* SendAmountSummaryView.swift */,
-				DA1DF04A2BA3E4A0008310E4 /* SendAmountSummaryViewData.swift */,
 				DA559C282B0261F400F59584 /* SendSummaryViewModel.swift */,
 				DA559C2A2B0261F400F59584 /* SendSummaryRoutable.swift */,
-				DA8C67242B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift */,
-				DA8C67252B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift */,
-				DA1DF0442BA3E3AC008310E4 /* SendFeeSummaryView.swift */,
-				DA1DF0462BA3E3B1008310E4 /* SendFeeSummaryViewModel.swift */,
+				EF1D1AE62C296E23000CB941 /* SendDestinationAddressSummaryView */,
+				EF1D1AE32C296D79000CB941 /* SendAmountSummaryView */,
+				EF1D1AE52C296DCA000CB941 /* SendFeeSummaryView */,
+				EF1D1AE42C296D82000CB941 /* HintView */,
 			);
 			path = Summary;
 			sourceTree = "<group>";
@@ -7538,6 +7535,41 @@
 				EF0DD7A22B02B5C00099527D /* ExpressFeeRowData.swift */,
 			);
 			path = ExpressFeeRow;
+			sourceTree = "<group>";
+		};
+		EF1D1AE32C296D79000CB941 /* SendAmountSummaryView */ = {
+			isa = PBXGroup;
+			children = (
+				DA1DF0482BA3E496008310E4 /* SendAmountSummaryView.swift */,
+				DA1DF04A2BA3E4A0008310E4 /* SendAmountSummaryViewData.swift */,
+			);
+			path = SendAmountSummaryView;
+			sourceTree = "<group>";
+		};
+		EF1D1AE42C296D82000CB941 /* HintView */ = {
+			isa = PBXGroup;
+			children = (
+				DA1DF04E2BA40D44008310E4 /* HintView.swift */,
+			);
+			path = HintView;
+			sourceTree = "<group>";
+		};
+		EF1D1AE52C296DCA000CB941 /* SendFeeSummaryView */ = {
+			isa = PBXGroup;
+			children = (
+				DA1DF0442BA3E3AC008310E4 /* SendFeeSummaryView.swift */,
+				DA1DF0462BA3E3B1008310E4 /* SendFeeSummaryViewModel.swift */,
+			);
+			path = SendFeeSummaryView;
+			sourceTree = "<group>";
+		};
+		EF1D1AE62C296E23000CB941 /* SendDestinationAddressSummaryView */ = {
+			isa = PBXGroup;
+			children = (
+				DA8C67242B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift */,
+				DA8C67252B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift */,
+			);
+			path = SendDestinationAddressSummaryView;
 			sourceTree = "<group>";
 		};
 		EF1E172C2BF50DDA000364AE /* SettingsUserWalletRow */ = {

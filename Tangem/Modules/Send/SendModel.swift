@@ -260,13 +260,17 @@ class SendModel {
     }
 }
 
-// MARK: - SendAmountInput, SendAmountOutput
+// MARK: - SendDestinationInput
 
-extension SendModel: SendAmountInput, SendAmountOutput {
-    var amount: SendAmount? { _amount.value }
+extension SendModel: SendDestinationInput {
+    func destinationTextPublisher() -> AnyPublisher<String, Never> {
+        _destination
+            .compactMap { $0?.value }
+            .eraseToAnyPublisher()
+    }
 
-    func amountDidChanged(amount: SendAmount?) {
-        _amount.send(amount)
+    func additionalFieldPublisher() -> AnyPublisher<DestinationAdditionalFieldType, Never> {
+        _destinationAdditionalField.eraseToAnyPublisher()
     }
 }
 
@@ -293,6 +297,24 @@ extension SendModel: SendDestinationOutput {
 
     func destinationAdditionalParametersDidChanged(_ type: DestinationAdditionalFieldType) {
         _destinationAdditionalField.send(type)
+    }
+}
+
+// MARK: - SendAmountInput
+
+extension SendModel: SendAmountInput {
+    var amount: SendAmount? { _amount.value }
+
+    func amountPublisher() -> AnyPublisher<SendAmount?, Never> {
+        _amount.dropFirst().eraseToAnyPublisher()
+    }
+}
+
+// MARK: - SendAmountOutput
+
+extension SendModel: SendAmountOutput {
+    func amountDidChanged(amount: SendAmount?) {
+        _amount.send(amount)
     }
 }
 
@@ -329,34 +351,9 @@ extension SendModel: SendFeeOutput {
     }
 }
 
-// MARK: - SendSummaryViewModelInput
+// MARK: - SendSummaryInteractor
 
-extension SendModel: SendSummaryViewModelInput {
-    var amountPublisher: AnyPublisher<SendAmount?, Never> {
-        _amount.eraseToAnyPublisher()
-    }
-
-    var destinationTextPublisher: AnyPublisher<String, Never> {
-        _destination
-            .receive(on: DispatchQueue.main) // Move this to UI layer
-            .compactMap { $0?.value }
-            .eraseToAnyPublisher()
-    }
-
-    var transactionAmountPublisher: AnyPublisher<Amount?, Never> {
-        transaction
-            .map(\.?.amount)
-            .eraseToAnyPublisher()
-    }
-
-    var canEditAmount: Bool {
-        sendType.predefinedAmount == nil
-    }
-
-    var canEditDestination: Bool {
-        sendType.predefinedDestination == nil
-    }
-
+extension SendModel: SendSummaryInteractor {
     var isSending: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
     }

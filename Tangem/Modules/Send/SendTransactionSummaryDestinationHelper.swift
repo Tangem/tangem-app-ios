@@ -9,27 +9,9 @@
 import Foundation
 
 struct SendTransactionSummaryDestinationHelper {
-    // TODO: Remove optional
-    func makeTransactionDescription(amount: Decimal?, fee: Decimal?, amountCurrencyId: String?, feeCurrencyId: String?) -> String? {
-        guard
-            let amount,
-            let fee,
-            let amountCurrencyId,
-            let feeCurrencyId
-        else {
-            return nil
-        }
-
-        let converter = BalanceConverter()
-        let amountInFiat = converter.convertToFiat(amount, currencyId: amountCurrencyId)
-        let feeInFiat = converter.convertToFiat(fee, currencyId: feeCurrencyId)
-
-        let totalInFiat: Decimal?
-        if let amountInFiat, let feeInFiat {
-            totalInFiat = amountInFiat + feeInFiat
-        } else {
-            totalInFiat = nil
-        }
+    func makeTransactionDescription(amount: SendAmount, fee: Decimal, feeCurrencyId: String?) -> String? {
+        let feeInFiat = feeCurrencyId.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
+        let totalInFiat = [amount.fiat, feeInFiat].compactMap { $0 }.reduce(0, +)
 
         let formattingOptions = BalanceFormattingOptions(
             minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
@@ -37,6 +19,7 @@ struct SendTransactionSummaryDestinationHelper {
             formatEpsilonAsLowestRepresentableValue: true,
             roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
         )
+
         let formatter = BalanceFormatter()
         let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
         let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
