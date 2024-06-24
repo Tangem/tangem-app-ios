@@ -36,7 +36,7 @@ class SendSummaryViewModel: ObservableObject {
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
 
     @Published var transactionDescription: String?
-    @Published var transactionDescriptionIsVisisble: Bool = false
+    @Published var transactionDescriptionIsVisible: Bool = false
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
     var didProperlyDisappear: Bool = true
@@ -87,7 +87,7 @@ class SendSummaryViewModel: ObservableObject {
         }
 
         showHint = false
-        transactionDescriptionIsVisisble = false
+        transactionDescriptionIsVisible = false
     }
 
     func onAppear() {
@@ -99,7 +99,7 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.transactionDescriptionIsVisisble = self.transactionDescription != nil
+            self.transactionDescriptionIsVisible = self.transactionDescription != nil
         }
 
         Analytics.log(.sendConfirmScreenOpened)

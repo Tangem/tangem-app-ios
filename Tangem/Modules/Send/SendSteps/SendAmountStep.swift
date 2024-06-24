@@ -11,7 +11,7 @@ import Combine
 import SwiftUI
 
 class SendAmountStep {
-    let viewModel: SendAmountViewModel
+    private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
     private let sendFeeInteractor: SendFeeInteractor
 

@@ -13,7 +13,6 @@ import SwiftUI
 class SendDestinationStep {
     private let viewModel: SendDestinationViewModel
     private let interactor: SendDestinationInteractor
-    private let sendAmountViewModel: SendAmountViewModel
     private let sendFeeInteractor: SendFeeInteractor
     private let tokenItem: TokenItem
 
@@ -24,13 +23,11 @@ class SendDestinationStep {
     init(
         viewModel: SendDestinationViewModel,
         interactor: any SendDestinationInteractor,
-        sendAmountViewModel: SendAmountViewModel,
         sendFeeInteractor: any SendFeeInteractor,
         tokenItem: TokenItem
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
-        self.sendAmountViewModel = sendAmountViewModel
         self.sendFeeInteractor = sendFeeInteractor
         self.tokenItem = tokenItem
     }

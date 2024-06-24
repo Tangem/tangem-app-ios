@@ -178,8 +178,8 @@ struct SendSummaryView: View {
                 .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
-                .visible(viewModel.transactionDescriptionIsVisisble)
-                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisisble)
+                .visible(viewModel.transactionDescriptionIsVisible)
+                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         }
     }
 }

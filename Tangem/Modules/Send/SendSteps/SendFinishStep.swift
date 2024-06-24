@@ -12,14 +12,9 @@ import SwiftUI
 
 class SendFinishStep {
     private let viewModel: SendFinishViewModel
-    private let sendFeeInteractor: SendFeeInteractor
 
-    init(
-        viewModel: SendFinishViewModel,
-        sendFeeInteractor: SendFeeInteractor
-    ) {
+    init(viewModel: SendFinishViewModel) {
         self.viewModel = viewModel
-        self.sendFeeInteractor = sendFeeInteractor
     }
 }
 

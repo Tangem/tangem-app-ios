@@ -12,6 +12,7 @@ import Combine
 import BlockchainSdk
 
 class SendModel {
+
     // MARK: - Data
 
     private let _destination: CurrentValueSubject<SendAddress?, Never>
@@ -43,6 +44,7 @@ class SendModel {
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
+    private let source: PredefinedValues.Source
     private var bag: Set<AnyCancellable> = []
 
     // MARK: - Public interface
@@ -67,6 +69,7 @@ class SendModel {
         self.feeIncludedCalculator = feeIncludedCalculator
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
 
+        source = predefinedValues.source
         _destination = .init(predefinedValues.destination)
         _destinationAdditionalField = .init(predefinedValues.tag)
         _amount = .init(predefinedValues.amount)
@@ -349,28 +352,24 @@ extension SendModel: SendNotificationManagerInput {
 
 private extension SendModel {
     func logTransactionAnalytics() {
-        let sourceValue: Analytics.ParameterValue
-//        switch sendType {
-//        case .send:
-        sourceValue = .transactionSourceSend
-//        case .sell:
-//            sourceValue = .transactionSourceSell
-//        }
-
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee?.option)
 
         Analytics.log(event: .transactionSent, params: [
-            .source: sourceValue.rawValue,
+            .source: source.analyticsValue.rawValue,
             .token: tokenItem.currencySymbol,
             .blockchain: tokenItem.blockchain.displayName,
             .feeType: feeType.rawValue,
             .memo: additionalFieldAnalyticsParameter().rawValue,
         ])
 
-        if let amount {
-            Analytics.log(.sendSelectedCurrency, params: [
-                .commonType: amount.type.analyticParameter,
-            ])
+        switch amount?.type {
+        case .none:
+            break
+        case .typical:
+            Analytics.log(.sendSelectedCurrency, params: [.commonType: .token])
+
+        case .alternative:
+            Analytics.log(.sendSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
         }
     }
 
@@ -385,21 +384,26 @@ private extension SendModel {
     }
 }
 
-extension SendAmount.SendAmountType {
-    var analyticParameter: Analytics.ParameterValue {
-        switch self {
-        case .typical: .token
-        case .alternative: .selectedCurrencyApp
-        }
-    }
-}
-
 // MARK: - Models
 
 extension SendModel {
     struct PredefinedValues {
+        let source: Source
+
         let destination: SendAddress?
         let tag: SendDestinationAdditionalField
         let amount: SendAmount?
+
+        enum Source {
+            case send
+            case sell
+            
+            var analyticsValue: Analytics.ParameterValue {
+                switch self {
+                case .send: .transactionSourceSend
+                case .sell: .transactionSourceSell
+                }
+            }
+        }
     }
 }

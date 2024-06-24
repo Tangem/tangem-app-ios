@@ -40,7 +40,6 @@ struct SendFlowBaseBuilder {
 
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
             io: (input: sendModel, output: sendModel),
-            sendAmountViewModel: amount.step.viewModel,
             sendFeeInteractor: fee.interactor,
             sendQRCodeService: sendQRCodeService,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -56,8 +55,6 @@ struct SendFlowBaseBuilder {
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            sendFeeInteractor: fee.interactor,
-            notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel
         )
 
