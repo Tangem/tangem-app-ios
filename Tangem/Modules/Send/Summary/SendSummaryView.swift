@@ -16,6 +16,10 @@ struct SendSummaryView: View {
 
     var body: some View {
         GroupedScrollView(spacing: 14) {
+            if let transactionTime = viewModel.transactionSentTime {
+                header(transactionTime: transactionTime)
+            }
+
             if !viewModel.animatingDestinationOnAppear {
                 destinationSection
             }
@@ -47,6 +51,28 @@ struct SendSummaryView: View {
         .alert(item: $viewModel.alert) { $0.alert }
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
+    }
+
+    // MARK: - Header
+
+    @ViewBuilder
+    private func header(transactionTime: String) -> some View {
+        VStack(spacing: 0) {
+            Assets.inProgress
+                .image
+
+            Text(Localization.sentTransactionSentTitle)
+                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+                .padding(.top, 18)
+
+            Text(transactionTime)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                .lineLimit(1)
+                .padding(.top, 6)
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .padding(.top, 24)
+        .padding(.bottom, 12)
     }
 
     // MARK: - Destination

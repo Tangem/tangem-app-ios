@@ -11,12 +11,15 @@ import SwiftUI
 import Combine
 
 protocol SendSummaryViewModelSetupable: AnyObject {
+    func setup(sendFinishInput: SendFinishInput)
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
 class SendSummaryViewModel: ObservableObject {
+    @Published var transactionSentTime: String?
+
     @Published var canEditAmount: Bool
     @Published var canEditDestination: Bool
     @Published var canEditFee: Bool = true
@@ -49,7 +52,7 @@ class SendSummaryViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
 
     init(
-        initial: Initial,
+        initial: Settings,
         interactor: SendSummaryInteractor,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
@@ -140,12 +143,12 @@ class SendSummaryViewModel: ObservableObject {
 
 extension SendSummaryViewModel: SendSummaryViewModelSetupable {
     func setup(sendDestinationInput input: SendDestinationInput) {
-        Publishers.CombineLatest(input.destinationTextPublisher(), input.additionalFieldPublisher())
+        Publishers.CombineLatest(input.destinationPublisher, input.additionalFieldPublisher)
             .withWeakCaptureOf(self)
             .map { viewModel, args in
                 let (destination, additionalField) = args
                 return viewModel.sectionViewModelFactory.makeDestinationViewTypes(
-                    address: destination,
+                    address: destination.value,
                     additionalField: additionalField
                 )
             }
@@ -205,10 +208,23 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             }
             .store(in: &bag)
     }
+
+    func setup(sendFinishInput input: any SendFinishInput) {
+        input.transactionSentDate
+            .map { date in
+                let formatter = DateFormatter()
+                formatter.dateStyle = .long
+                formatter.timeStyle = .short
+                return formatter.string(from: date)
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.transactionSentTime, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
 }
 
 extension SendSummaryViewModel {
-    struct Initial {
+    struct Settings {
         let tokenItem: TokenItem
         let canEditAmount: Bool
         let canEditDestination: Bool

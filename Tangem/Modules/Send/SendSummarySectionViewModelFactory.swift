@@ -46,7 +46,7 @@ struct SendSummarySectionViewModelFactory {
         return destinationViewTypes
     }
 
-    func makeAmountViewData(amount: String, amountAlternative: String) -> SendAmountSummaryViewData {
+    func makeAmountViewData(amount: String?, amountAlternative: String?) -> SendAmountSummaryViewData {
         SendAmountSummaryViewData(
             title: Localization.sendAmountLabel,
             amount: amount,

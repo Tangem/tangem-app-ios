@@ -7,9 +7,12 @@
 //
 
 import Foundation
+import Combine
 
 protocol SendAmountInput: AnyObject {
     var amount: SendAmount? { get }
+
+    func amountPublisher() -> AnyPublisher<SendAmount?, Never>
 }
 
 protocol SendAmountOutput: AnyObject {

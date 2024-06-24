@@ -131,12 +131,13 @@ struct SendModulesFactory {
         interactor: SendSummaryInteractor,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        sendType: SendType
+        canEditAmount: Bool,
+        canEditDestination: Bool
     ) -> SendSummaryViewModel {
         let initial = SendSummaryViewModel.Initial(
             tokenItem: walletModel.tokenItem,
-            canEditAmount: sendType.predefinedAmount == nil,
-            canEditDestination: sendType.predefinedDestination == nil
+            canEditAmount: canEditAmount,
+            canEditDestination: canEditDestination
         )
 
         return SendSummaryViewModel(
@@ -149,21 +150,36 @@ struct SendModulesFactory {
     }
 
     func makeSendFinishViewModel(
-        amount: SendAmount?,
         sendModel: SendModel,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        feeTypeAnalyticsParameter: Analytics.ParameterValue,
-        walletInfo: SendWalletInfo
+        feeTypeAnalyticsParameter: Analytics.ParameterValue
     ) -> SendFinishViewModel? {
-        let initial = SendFinishViewModel.Initial(tokenItem: walletModel.tokenItem, amount: amount)
+        guard let destinationText = sendModel.destination?.value,
+              let amount = sendModel.amount,
+              let feeValue = sendModel.selectedFee,
+              let transactionTime = sendModel.transactionTime else {
+            return nil
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .short
+        let transactionTimeFormatted = formatter.string(from: transactionTime)
+
+        let initial = SendFinishViewModel.Initial(
+            tokenItem: walletModel.tokenItem,
+            destination: destinationText,
+            additionalField: sendModel.destinationAdditionalField,
+            amount: amount,
+            feeValue: feeValue,
+            transactionTimeFormatted: transactionTimeFormatted
+        )
 
         return SendFinishViewModel(
             initial: initial,
-            input: sendModel,
             addressTextViewHeightModel: addressTextViewHeightModel,
             feeTypeAnalyticsParameter: feeTypeAnalyticsParameter,
-            walletInfo: walletInfo,
             sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
         )
     }

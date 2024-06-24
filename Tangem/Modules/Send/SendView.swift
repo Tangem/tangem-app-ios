@@ -144,8 +144,8 @@ struct SendView: View {
                 .onDisappear(perform: viewModel.onSummaryDisappear)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .finish(let sendFinishViewModel):
-            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
+        case .finish:
+            SendSummaryView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         }

@@ -33,6 +33,14 @@ class SendModel {
         _sendError.eraseToAnyPublisher()
     }
 
+    var destination: SendAddress? {
+        _destination.value
+    }
+
+    var destinationAdditionalField: DestinationAdditionalFieldType {
+        _destinationAdditionalField.value
+    }
+
     var isFeeIncluded: Bool {
         _isFeeIncluded.value
     }
@@ -42,6 +50,14 @@ class SendModel {
             .map { $0 != nil }
             .removeDuplicates()
             .eraseToAnyPublisher()
+    }
+
+    var transactionTime: Date? {
+        _transactionTime.value
+    }
+
+    var transactionURL: URL? {
+        _transactionURL.value
     }
 
     // MARK: - Delegate
@@ -237,10 +253,11 @@ class SendModel {
             .store(in: &bag)
 
         if let withdrawalValidator = walletModel.withdrawalNotificationProvider {
-            transaction
+            _transaction
                 .map { transaction in
-                    guard let transaction else { return nil }
-                    return withdrawalValidator.withdrawalNotification(amount: transaction.amount, fee: transaction.fee)
+                    transaction.flatMap {
+                        withdrawalValidator.withdrawalNotification(amount: $0.amount, fee: $0.fee.amount)
+                    }
                 }
                 .sink { [weak self] in
                     self?._withdrawalNotification.send($0)
@@ -257,20 +274,6 @@ class SendModel {
 
     private func makeAmount(decimal: Decimal) -> Amount? {
         Amount(with: walletModel.tokenItem.blockchain, type: walletModel.tokenItem.amountType, value: decimal)
-    }
-}
-
-// MARK: - SendDestinationInput
-
-extension SendModel: SendDestinationInput {
-    func destinationTextPublisher() -> AnyPublisher<String, Never> {
-        _destination
-            .compactMap { $0?.value }
-            .eraseToAnyPublisher()
-    }
-
-    func additionalFieldPublisher() -> AnyPublisher<DestinationAdditionalFieldType, Never> {
-        _destinationAdditionalField.eraseToAnyPublisher()
     }
 }
 
@@ -351,6 +354,14 @@ extension SendModel: SendFeeOutput {
     }
 }
 
+// MARK: - SendFinishInput
+
+extension SendModel: SendFinishInput {
+    var transactionSentDate: AnyPublisher<Date, Never> {
+        _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
+    }
+}
+
 // MARK: - SendSummaryInteractor
 
 extension SendModel: SendSummaryInteractor {
@@ -359,41 +370,14 @@ extension SendModel: SendSummaryInteractor {
     }
 }
 
-// MARK: - SendFinishViewModelInput
-
-extension SendModel: SendFinishViewModelInput {
-    var feeValue: SendFee? {
-        _selectedFee.value
-    }
-
-    var userInputAmountValue: Decimal? {
-        _amount.value?.crypto
-    }
-
-    var destinationText: String? {
-        _destination.value?.value
-    }
-
-    var additionalField: DestinationAdditionalFieldType {
-        _destinationAdditionalField.value
-    }
-
-    var feeText: String {
-        _selectedFee.value?.value.value?.amount.string() ?? ""
-    }
-
-    var transactionTime: Date? {
-        _transactionTime.value
-    }
-
-    var transactionURL: URL? {
-        _transactionURL.value
-    }
-}
-
 // MARK: - SendNotificationManagerInput
 
 extension SendModel: SendNotificationManagerInput {
+    // TODO: Refactoring in https://tangem.atlassian.net/browse/IOS-7196
+    var selectedSendFeePublisher: AnyPublisher<SendFee?, Never> {
+        selectedFeePublisher
+    }
+
     var feeValues: AnyPublisher<[SendFee], Never> {
         sendFeeInteractor.feesPublisher()
     }

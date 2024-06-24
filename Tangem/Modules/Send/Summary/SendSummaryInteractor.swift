@@ -9,9 +9,7 @@
 import Foundation
 import Combine
 
-protocol SendSummaryInput: AnyObject {
-    var isSending: Bool { get }
-}
+protocol SendSummaryInput: AnyObject {}
 
 protocol SendSummaryOutput: AnyObject {}
 
