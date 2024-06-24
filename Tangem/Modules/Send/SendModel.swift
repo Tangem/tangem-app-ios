@@ -340,12 +340,12 @@ class SendModel {
 
         do {
             try walletModel.transactionCreator.validate(amount: amount, fee: fee)
+        } catch ValidationError.totalExceedsBalance, ValidationError.minimumBalance {
+            return true
         } catch {
-            let validationError = error as? ValidationError
-            if case .totalExceedsBalance = validationError {
-                return true
-            }
+            // Fall through to the last return
         }
+
         return false
     }
 
