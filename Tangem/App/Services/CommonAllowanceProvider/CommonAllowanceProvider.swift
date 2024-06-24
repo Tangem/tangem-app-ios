@@ -84,6 +84,6 @@ extension CommonExpressAllowanceProvider: ExpressAllowanceProvider {
             throw AllowanceProviderError.ethereumTransactionProcessorNotFound
         }
 
-        return ethereumTransactionDataBuilder.buildForApprove(spender: spender, amount: amount)
+        return try ethereumTransactionDataBuilder.buildForApprove(spender: spender, amount: amount)
     }
 }

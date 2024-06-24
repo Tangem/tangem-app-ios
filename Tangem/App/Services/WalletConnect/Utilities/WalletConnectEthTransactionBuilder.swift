@@ -59,7 +59,7 @@ struct CommonWalletConnectEthTransactionBuilder {
         if blockchain.supportsEIP1559 {
             async let baseFee = ethereumNetworkProvider.getBaseFee().async()
             async let priorityFee = ethereumNetworkProvider.getPriorityFee().async()
-            feeParameters = try await EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
+            feeParameters = try await EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee.average, priorityFee: priorityFee)
         } else {
             async let gasPrice = getGasPrice(for: tx, using: ethereumNetworkProvider)
             feeParameters = try await EthereumLegacyFeeParameters(gasLimit: gasLimit, gasPrice: gasPrice)
