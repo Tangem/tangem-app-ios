@@ -9,17 +9,6 @@
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
-
-protocol SendSummaryInteractor: AnyObject {
-    var isSending: AnyPublisher<Bool, Never> { get }
-}
-
-protocol SendSummaryInput: AnyObject {
-    var isSending: Bool { get }
-}
-
-protocol SendSummaryOutput: AnyObject {}
 
 protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendDestinationInput: SendDestinationInput)
@@ -27,30 +16,10 @@ protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
-protocol SendSummaryViewModelInput: AnyObject {
-//    var canEditAmount: Bool { get }
-//    var canEditDestination: Bool { get }
-
-//    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
-//    var destinationTextPublisher: AnyPublisher<String, Never> { get }
-//    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> { get }
-//    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
-
-    var isSending: AnyPublisher<Bool, Never> { get }
-}
-
 class SendSummaryViewModel: ObservableObject {
     @Published var canEditAmount: Bool
     @Published var canEditDestination: Bool
     @Published var canEditFee: Bool = true
-
-//    var walletName: String {
-//        walletInfo.walletName
-//    }
-
-//    var balance: String {
-//        walletInfo.balance
-//    }
 
     @Published var isSending = false
     @Published var alert: AlertBinder?
