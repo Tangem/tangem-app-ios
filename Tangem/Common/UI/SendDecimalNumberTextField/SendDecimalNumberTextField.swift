@@ -77,7 +77,7 @@ struct SendDecimalNumberTextField: View {
                         prefixSuffixView(suffix, hasSpaceBeforeText: hasSpace)
                     }
                 }
-                .frame(width: ceil(maxWidth / textScale))
+                .frame(width: ceil(maxWidth / textScale), alignment: alignment)
                 .scaleEffect(.init(bothDimensions: textScale))
 
                 // Expand the tappable area
