@@ -84,7 +84,6 @@ struct SendDecimalNumberTextField: View {
                 Color.clear
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
-                    .frame(height: measuredTextSize.height)
                     .onTapGesture {
                         isInputActive = true
                     }
@@ -93,6 +92,7 @@ struct SendDecimalNumberTextField: View {
             .infinityFrame() // Provides centered alignment within `GeometryReader`
             .overlay(textSizeMeasurer)
         }
+        .frame(height: measuredTextSize.height)
     }
 
     /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
