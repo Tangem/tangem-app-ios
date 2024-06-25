@@ -16,7 +16,8 @@ final class MarketsViewModel: ObservableObject {
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var viewDidAppear: Bool = false
-    @Published var marketRatingHeaderViewModel: MarketRatingHeaderViewModel
+    @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
+    @Published var isLoading: Bool = false
 
     // MARK: - Properties
 
@@ -45,8 +46,8 @@ final class MarketsViewModel: ObservableObject {
         self.coordinator = coordinator
         dataSource = MarketsDataSource()
 
-        marketRatingHeaderViewModel = MarketRatingHeaderViewModel(provider: filterProvider)
-        marketRatingHeaderViewModel.delegate = self
+        marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
+        marketsRatingHeaderViewModel.delegate = self
 
         searchTextBind(searchTextPublisher: searchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
@@ -132,10 +133,8 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                if isLoading {
-                    // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
-                    viewModel.setNeedDisplayTokensListSkeletonView()
-                }
+                // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
+                viewModel.isLoading = isLoading
             })
             .store(in: &bag)
     }
@@ -156,37 +155,6 @@ private extension MarketsViewModel {
 
     // MARK: - Private Implementation
 
-    /// Need for display list skeleton view
-    private func setNeedDisplayTokensListSkeletonView() {
-        let dummyTokenItemModel = MarketsTokenModel(
-            id: "",
-            name: "",
-            symbol: "",
-            currentPrice: nil,
-            priceChangePercentage: [:],
-            marketRating: nil,
-            marketCap: nil
-        )
-
-        let skeletonTokenViewModels = [Int](0 ... 20).map {
-            let inputData = MarketsItemViewModel.InputData(
-                id: "\($0)",
-                name: dummyTokenItemModel.name,
-                symbol: dummyTokenItemModel.symbol,
-                marketCap: dummyTokenItemModel.marketCap,
-                marketRating: dummyTokenItemModel.marketRating,
-                priceValue: dummyTokenItemModel.currentPrice,
-                priceChangeStateValue: dummyTokenItemModel.priceChangePercentage.first?.value,
-                charts: nil,
-                isLoading: true
-            )
-
-            return MarketsItemViewModel(inputData)
-        }
-
-        tokenViewModels.append(contentsOf: skeletonTokenViewModels)
-    }
-
     private func mapToTokenViewModel(
         tokenItemModel: MarketsTokenModel,
         with chartPreviewItem: MarketsHistoryPreviewItemModel?
@@ -201,8 +169,7 @@ private extension MarketsViewModel {
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
             priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue],
-            charts: chartsDoubleConvertedValues,
-            isLoading: false
+            charts: chartsDoubleConvertedValues
         )
 
         return MarketsItemViewModel(inputData)
@@ -217,8 +184,8 @@ private extension MarketsViewModel {
     }
 }
 
-extension MarketsViewModel: MarketOrderHeaderViewModelOrderDelegate {
-    func marketOrderActionButtonDidTap() {
+extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
+    func orderActionButtonDidTap() {
         coordinator?.openFilterOrderBottonSheet(with: filterProvider)
     }
 }

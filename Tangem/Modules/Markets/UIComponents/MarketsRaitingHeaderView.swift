@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct MarketsRatingHeaderView: View {
-    @ObservedObject var viewModel: MarketRatingHeaderViewModel
+    @ObservedObject var viewModel: MarketsRatingHeaderViewModel
 
     private let insets: EdgeInsets = .init(top: 2, leading: 2, bottom: 2, trailing: 2)
     private let interSegmentSpacing: CGFloat = 2

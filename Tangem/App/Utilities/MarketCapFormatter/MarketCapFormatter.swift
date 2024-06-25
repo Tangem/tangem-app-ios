@@ -1,5 +1,5 @@
 //
-//  CommonMarketCapFormatter.swift
+//  MarketCapFormatter.swift
 //  Tangem
 //
 //  Created by skibinalexander on 19.06.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct CommonMarketCapFormatter {
+struct MarketCapFormatter {
     static var defaultEmptyBalanceString: String { "–" }
 
     /// Format any decimal number using `BalanceFormattingOptions`
@@ -55,14 +55,16 @@ struct CommonMarketCapFormatter {
     }
 
     private func formatPoints(_ value: Decimal) -> Points {
-        let thousandRate = value / pow(Decimal(10), 3)
-        let millionRate = value / pow(Decimal(10), 6)
-        let billionRate = value / pow(Decimal(10), 9)
-        let trillionRate = value / pow(Decimal(10), 12)
+        let thousandRate = value / Constants.thousandRate
+        let millionRate = value / Constants.millionRate
+        let billionRate = value / Constants.billionRate
+        let trillionRate = value / Constants.trillionRate
 
-        if value > 0, value <= Constants.million {
+        if value > 0, value <= Constants.thousand {
+            return .init(decimal: trillionRate, suffix: "")
+        } else if value > Constants.thousand, value <= Constants.million {
             return .init(decimal: thousandRate, suffix: "K")
-        } else if value > Constants.thousand, value <= Constants.billion {
+        } else if value > Constants.million, value <= Constants.billion {
             return .init(decimal: millionRate, suffix: "M")
         } else if value > Constants.billion, value <= Constants.trillion {
             return .init(decimal: billionRate, suffix: "B")
@@ -72,7 +74,7 @@ struct CommonMarketCapFormatter {
     }
 }
 
-extension CommonMarketCapFormatter {
+extension MarketCapFormatter {
     struct Points {
         let decimal: Decimal
         let suffix: String
@@ -97,5 +99,10 @@ extension CommonMarketCapFormatter {
         static let million: Decimal = 1_000_000
         static let billion: Decimal = 1_000_000_000
         static let trillion: Decimal = 1_000_000_000_000
+
+        static let thousandRate: Decimal = pow(Decimal(10), 3)
+        static let millionRate: Decimal = pow(Decimal(10), 6)
+        static let billionRate: Decimal = pow(Decimal(10), 9)
+        static let trillionRate: Decimal = pow(Decimal(10), 12)
     }
 }

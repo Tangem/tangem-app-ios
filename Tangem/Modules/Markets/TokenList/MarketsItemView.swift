@@ -40,35 +40,27 @@ struct MarketsItemView: View {
     private var tokenInfoView: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstBaselineCustom, spacing: 4) {
-                if viewModel.isLoading {
-                    makeSkeletonView(by: Constants.skeletonMediumWidthValue)
-                } else {
-                    Text(viewModel.name)
-                        .lineLimit(1)
-                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                Text(viewModel.name)
+                    .lineLimit(1)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-                    Text(viewModel.symbol)
-                        .lineLimit(1)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                }
+                Text(viewModel.symbol)
+                    .lineLimit(1)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
 
             HStack(spacing: 6) {
-                if viewModel.isLoading {
-                    makeSkeletonView(by: Constants.skeletonSmallWidthValue)
-                } else {
-                    if let marketRaiting = viewModel.marketRating {
-                        Text(marketRaiting)
-                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                            .padding(.horizontal, 5)
-                            .background(Colors.Field.primary)
-                            .cornerRadiusContinuous(4)
-                    }
+                if let marketRaiting = viewModel.marketRating {
+                    Text(marketRaiting)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .padding(.horizontal, 5)
+                        .background(Colors.Field.primary)
+                        .cornerRadiusContinuous(4)
+                }
 
-                    if let marketCap = viewModel.marketCap {
-                        Text(marketCap)
-                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                    }
+                if let marketCap = viewModel.marketCap {
+                    Text(marketCap)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
             }
         }
@@ -76,18 +68,12 @@ struct MarketsItemView: View {
 
     private var tokenPriceView: some View {
         VStack(alignment: .trailing, spacing: 3) {
-            if viewModel.isLoading {
-                makeSkeletonView(by: Constants.skeletonMediumWidthValue)
+            Text(viewModel.priceValue)
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                makeSkeletonView(by: Constants.skeletonSmallWidthValue)
-            } else {
-                Text(viewModel.priceValue)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-
-                TokenPriceChangeView(state: viewModel.priceChangeState)
-            }
+            TokenPriceChangeView(state: viewModel.priceChangeState)
         }
     }
 
@@ -132,8 +118,7 @@ extension MarketsItemView {
                 marketRating: token.marketRating,
                 priceValue: token.currentPrice,
                 priceChangeStateValue: nil,
-                charts: nil,
-                isLoading: false
+                charts: nil
             )
         }
     }

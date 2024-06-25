@@ -10,10 +10,12 @@ import Foundation
 import BlockchainSdk
 
 struct VisaTokenInfoLoader {
+    private let isTestnet: Bool
     private let evmSmartContractInteractor: EVMSmartContractInteractor
     private let logger: InternalLogger
 
-    init(evmSmartContractInteractor: EVMSmartContractInteractor, logger: InternalLogger) {
+    init(isTestnet: Bool, evmSmartContractInteractor: EVMSmartContractInteractor, logger: InternalLogger) {
+        self.isTestnet = isTestnet
         self.evmSmartContractInteractor = evmSmartContractInteractor
         self.logger = logger
     }
@@ -30,7 +32,7 @@ struct VisaTokenInfoLoader {
             symbol: symbol,
             contractAddress: contractAddress,
             decimalCount: decimalsCount,
-            id: VisaUtilities().tokenId
+            id: VisaUtilities(isTestnet: isTestnet).tokenId
         )
     }
 
@@ -39,7 +41,7 @@ struct VisaTokenInfoLoader {
 
         do {
             let contractAddressResponse = try await evmSmartContractInteractor.ethCall(request: contractAddressRequest).async()
-            let contractAddress = try AddressParser().parseAddressResponse(contractAddressResponse)
+            let contractAddress = try AddressParser(isTestnet: isTestnet).parseAddressResponse(contractAddressResponse)
             log("Token contract address loaded and parsed. \n\(contractAddress)")
             return contractAddress
         } catch {

@@ -33,28 +33,28 @@ final class MarketsListDataProvider {
 
     // Tells if all items have been loaded
     var canFetchMore: Bool {
-        guard !isLoading else {
+        if isLoading {
             return false
         }
 
-        guard let totalSupply else {
+        guard let totalTokensCount else {
             return true
         }
 
-        let countPages = totalSupply / limitPerPage
-        return currentPage < countPages
+        let countPages = totalTokensCount / limitPerPage
+        return currentOffset < countPages
     }
 
     // MARK: Private Properties
 
-    // Tracks last page loaded. Used to load next page (current + 1)
-    private var currentPage: Int = 0
+    // Tracks last page ofsset loaded. Used to load next page (current + 1)
+    private var currentOffset: Int = 0
 
     // Limit of records per page
     private let limitPerPage: Int = 20
 
     // Total tokens value by pages
-    private var totalSupply: Int?
+    private var totalTokensCount: Int?
 
     private var lastSearchText: String?
     private var lastFilter: Filter?
@@ -72,8 +72,8 @@ final class MarketsListDataProvider {
         lastFilter = filter
 
         items = []
-        currentPage = 0
-        totalSupply = nil
+        currentOffset = 0
+        totalTokensCount = nil
 
         isLoading = false
     }
@@ -99,8 +99,8 @@ final class MarketsListDataProvider {
             await runOnMain {
                 AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens with count = \(response.tokens.count)")
 
-                provider.currentPage = response.offset + response.limit
-                provider.totalSupply = response.total
+                provider.currentOffset = response.offset + response.limit
+                provider.totalTokensCount = response.total
 
                 provider.isLoading = false
 
@@ -126,7 +126,7 @@ private extension MarketsListDataProvider {
 
         let requestModel = MarketsDTO.General.Request(
             currency: selectedCurrencyCode,
-            offset: currentPage,
+            offset: currentOffset,
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
