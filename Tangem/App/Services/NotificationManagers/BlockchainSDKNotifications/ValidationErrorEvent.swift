@@ -108,10 +108,10 @@ extension ValidationErrorEvent: NotificationEvent {
              .amountExceedMaximumUTXO,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .invalidMaxAmount:
             return .init(iconType: .image(Assets.redCircleWarning.image))
-        case .notEnoughMana, .invalidMaxAmount:
-            return .init(iconType: .image(Assets.attention.image))
         }
     }
 

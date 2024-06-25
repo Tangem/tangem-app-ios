@@ -264,17 +264,15 @@ class CommonSendNotificationManager: SendNotificationManager {
              .existentialDeposit,
              .amountExceedMaximumUTXO,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .invalidMaxAmount:
             return .validationErrorEvent(validationErrorEvent)
         case .invalidNumber:
             return nil
         case .insufficientAmountToReserveAtDestination:
             // Use async validation and show the notification before. Instead of alert
             return nil
-        case .notEnoughMana(let current, let max):
-            return .notEnoughMana(current: current, max: max)
-        case .invalidMaxAmount(let validMax):
-            return .invalidMaxAmount(validMax: validMax)
         }
     }
 }
