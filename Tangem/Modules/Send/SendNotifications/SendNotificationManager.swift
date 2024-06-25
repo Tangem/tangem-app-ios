@@ -271,6 +271,10 @@ class CommonSendNotificationManager: SendNotificationManager {
         case .insufficientAmountToReserveAtDestination:
             // Use async validation and show the notification before. Instead of alert
             return nil
+        case .notEnoughMana(let current, let max):
+            return .notEnoughMana(current: current, max: max)
+        case .invalidMaxAmount(let validMax):
+            return .invalidMaxAmount(validMax: validMax)
         }
     }
 }

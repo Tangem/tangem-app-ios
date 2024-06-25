@@ -26,6 +26,8 @@ public extension Wallet {
             return .token(value: value)
         case .sameCurrency:
             return transactionAmountType
+        case .feeResource(let type):
+            return .feeResource(type)
         }
     }
 }

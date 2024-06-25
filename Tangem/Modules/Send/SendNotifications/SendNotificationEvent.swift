@@ -19,6 +19,9 @@ enum SendNotificationEvent {
     // Generic notifications is received from BSDK
     case withdrawalNotificationEvent(WithdrawalNotificationEvent)
     case validationErrorEvent(ValidationErrorEvent)
+
+    case notEnoughMana(current: Decimal, max: Decimal)
+    case invalidMaxAmount(validMax: Decimal)
 }
 
 extension SendNotificationEvent: NotificationEvent {
@@ -36,6 +39,10 @@ extension SendNotificationEvent: NotificationEvent {
             return event.title
         case .validationErrorEvent(let event):
             return event.title
+        case .notEnoughMana:
+            return .string(Localization.sendNotificationNotEnoughManaTitle)
+        case .invalidMaxAmount:
+            return .string(Localization.sendNotificationManaLimitTitle)
         }
     }
 
@@ -53,6 +60,10 @@ extension SendNotificationEvent: NotificationEvent {
             return event.description
         case .validationErrorEvent(let event):
             return event.description
+        case .notEnoughMana(let current, let max):
+            return Localization.sendNotificationNotEnoughManaDescription(current, max)
+        case .invalidMaxAmount(let validMax):
+            return Localization.sendNotificationManaLimitDescription(validMax)
         }
     }
 
@@ -64,7 +75,9 @@ extension SendNotificationEvent: NotificationEvent {
             return .action
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
-             .customFeeTooLow:
+             .customFeeTooLow,
+             .notEnoughMana,
+             .invalidMaxAmount:
             return .secondary
         case .withdrawalNotificationEvent(let event):
             return event.colorScheme
@@ -78,7 +91,9 @@ extension SendNotificationEvent: NotificationEvent {
         case .networkFeeUnreachable,
              .customFeeTooHigh,
              .customFeeTooLow,
-             .feeWillBeSubtractFromSendingAmount:
+             .feeWillBeSubtractFromSendingAmount,
+             .notEnoughMana,
+             .invalidMaxAmount:
             // ⚠️ sync with SendNotificationEvent.icon
             return .init(iconType: .image(Assets.attention.image))
         case .withdrawalNotificationEvent(let event):
@@ -93,7 +108,9 @@ extension SendNotificationEvent: NotificationEvent {
         case .networkFeeUnreachable,
              .customFeeTooHigh,
              .customFeeTooLow,
-             .feeWillBeSubtractFromSendingAmount:
+             .feeWillBeSubtractFromSendingAmount,
+             .notEnoughMana,
+             .invalidMaxAmount:
             // ⚠️ sync with SendNotificationEvent.icon
             return .warning
         case .withdrawalNotificationEvent(let event):
@@ -135,7 +152,7 @@ extension SendNotificationEvent {
 
     var locations: [Location] {
         switch self {
-        case .networkFeeUnreachable:
+        case .networkFeeUnreachable, .notEnoughMana, .invalidMaxAmount:
             return [.feeLevels, .summary]
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
@@ -155,7 +172,9 @@ extension SendNotificationEvent {
             return .refreshFee
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
-             .customFeeTooLow:
+             .customFeeTooLow,
+             .notEnoughMana,
+             .invalidMaxAmount:
             return nil
         case .withdrawalNotificationEvent(let event):
             return event.buttonActionType
@@ -176,6 +195,10 @@ extension SendNotificationEvent {
             "customFeeTooHigh"
         case .customFeeTooLow:
             "customFeeTooLow"
+        case .notEnoughMana:
+            "notEnoughMana"
+        case .invalidMaxAmount:
+            "invalidMaxAmount"
         case .withdrawalNotificationEvent(let event):
             event.id
         case .validationErrorEvent(let event):

@@ -35,7 +35,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.getBuyUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
         case .token(let token):
             return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
-        case .reserve:
+        case .reserve, .feeResource:
             return nil
         }
     }
@@ -50,7 +50,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.getSellUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
         case .token(let token):
             return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
-        case .reserve:
+        case .reserve, .feeResource:
             return nil
         }
     }

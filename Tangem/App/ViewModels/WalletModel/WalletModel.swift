@@ -67,7 +67,7 @@ class WalletModel {
 
     var tokenItem: TokenItem {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return .blockchain(blockchainNetwork)
         case .token(let token):
             return .token(token, blockchainNetwork)
@@ -82,6 +82,16 @@ class WalletModel {
             return .token(value, blockchainNetwork)
         case .sameCurrency:
             return tokenItem
+        case .feeResource(let type):
+            return .token(
+                Token(
+                    name: type.rawValue,
+                    symbol: type.rawValue.uppercased(),
+                    contractAddress: "",
+                    decimalCount: 0
+                ),
+                blockchainNetwork
+            )
         }
     }
 
@@ -91,6 +101,8 @@ class WalletModel {
             return wallet.blockchain.displayName
         case .token(let token):
             return token.name
+        case .feeResource(let type):
+            return type.rawValue
         }
     }
 
@@ -98,7 +110,7 @@ class WalletModel {
         switch amountType {
         case .coin, .reserve:
             return true
-        case .token:
+        case .token, .feeResource:
             return false
         }
     }
