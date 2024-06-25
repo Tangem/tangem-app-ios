@@ -33,8 +33,6 @@ final class MarketsViewModel: ObservableObject {
     private let dataProvider = MarketsListDataProvider()
     private let chartsPreviewProvider = MarketsListChartsPreviewProvider()
 
-//    private lazy var loader = setupListDataLoader()
-
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
