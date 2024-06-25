@@ -17,6 +17,7 @@ final class MarketsViewModel: ObservableObject {
     @Published var isShowAddCustomToken: Bool = false
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var viewDidAppear: Bool = false
+    @Published var marketRatingHeaderViewModel: MarketRatingHeaderViewModel
 
     // MARK: - Properties
 
@@ -27,9 +28,8 @@ final class MarketsViewModel: ObservableObject {
     private weak var coordinator: MarketsRoutable?
 
     private var dataSource: MarketsDataSource
+    private let filterProvider = MarketsListDataFilterProvider()
     private lazy var loader = setupListDataLoader()
-
-    private var filter: MarketsListDataProvider.Filter = .init()
 
     private var bag = Set<AnyCancellable>()
 
@@ -41,6 +41,9 @@ final class MarketsViewModel: ObservableObject {
     ) {
         self.coordinator = coordinator
         dataSource = MarketsDataSource()
+
+        marketRatingHeaderViewModel = MarketRatingHeaderViewModel(provider: filterProvider)
+        marketRatingHeaderViewModel.delegate = self
 
         searchBind(searchTextPublisher: searchTextPublisher)
 
@@ -57,7 +60,7 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomDisappear() {
-        loader.reset("")
+        loader.reset(nil)
         fetch(with: "")
         viewDidAppear = false
     }
@@ -153,5 +156,11 @@ private extension MarketsViewModel {
         )
 
         return MarketsItemViewModel(inputData)
+    }
+}
+
+extension MarketsViewModel: MarketOrderHeaderViewModelOrderDelegate {
+    func marketOrderActionButtonDidTap() {
+        coordinator?.openFilterOrderBottonSheet(with: filterProvider)
     }
 }

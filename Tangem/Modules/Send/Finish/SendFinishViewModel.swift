@@ -35,7 +35,7 @@ class SendFinishViewModel: ObservableObject {
     private let feeTypeAnalyticsParameter: Analytics.ParameterValue
     private let walletInfo: SendWalletInfo
 
-    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, feeTypeAnalyticsParameter: Analytics.ParameterValue, walletInfo: SendWalletInfo) {
+    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, feeTypeAnalyticsParameter: Analytics.ParameterValue, walletInfo: SendWalletInfo, sectionViewModelFactory: SendSummarySectionViewModelFactory) {
         guard
             let destinationText = input.destinationText,
             let transactionTime = input.transactionTime,
@@ -43,14 +43,6 @@ class SendFinishViewModel: ObservableObject {
         else {
             return nil
         }
-
-        let sectionViewModelFactory = SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
-        )
 
         destinationViewTypes = sectionViewModelFactory.makeDestinationViewTypes(
             address: destinationText,

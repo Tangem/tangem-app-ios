@@ -25,6 +25,12 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
+            .bottomSheet(
+                item: $coordinator.marketsListOrderBottonSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                MarketsListOrderBottonSheetView(viewModel: $0)
+            }
             .detentBottomSheet(
                 item: $coordinator.networkSelectorViewModel,
                 detents: [.medium, .large]

@@ -57,13 +57,13 @@ final class MarketsListDataProvider {
         currentPage = 0
     }
 
-    func fetch(_ searchText: String, with filter: Filter) {
+    func fetch(_ searchText: String, with filter: Filter, generalCoins: Bool = false) {
         if lastSearchText != searchText || filter != lastFilter {
             reset(searchText, with: filter)
         }
 
         runTask(in: self) { provider in
-            let tokens = try await provider.loadItems(searchText, with: filter)
+            let tokens = try await provider.loadItems(searchText, with: filter, generalCoins: generalCoins)
 
             await runOnMain {
                 AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens with count = \(tokens.count)")
@@ -90,7 +90,7 @@ final class MarketsListDataProvider {
 // MARK: Private
 
 private extension MarketsListDataProvider {
-    func loadItems(_ searchText: String, with filter: Filter) async throws -> [MarketsTokenModel] {
+    func loadItems(_ searchText: String, with filter: Filter, generalCoins: Bool) async throws -> [MarketsTokenModel] {
         let searchText = searchText.trimmed()
 
         let requestModel = MarketsDTO.General.Request(
@@ -99,7 +99,7 @@ private extension MarketsListDataProvider {
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
-            generalCoins: filter.generalCoins,
+            generalCoins: generalCoins,
             search: searchText
         )
 
@@ -114,14 +114,17 @@ extension MarketsListDataProvider {
     final class Filter: Hashable, Equatable {
         var interval: MarketsPriceIntervalType = .day
         var order: MarketsListOrderType = .rating
-        var generalCoins: Bool = false
+
+        init(interval: MarketsPriceIntervalType, order: MarketsListOrderType) {
+            self.interval = interval
+            self.order = order
+        }
 
         // MARK: - Hashable
 
         func hash(into hasher: inout Hasher) {
             hasher.combine(interval.rawValue)
             hasher.combine(order.rawValue)
-            hasher.combine(generalCoins)
         }
 
         // MARK: - Equatable

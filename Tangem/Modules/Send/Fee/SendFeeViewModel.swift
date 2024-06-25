@@ -24,7 +24,6 @@ protocol SendFeeViewModelInput {
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
 
     func didSelectFeeOption(_ feeOption: FeeOption)
-    func didChangeFeeInclusion(_ isFeeIncluded: Bool)
 }
 
 class SendFeeViewModel: ObservableObject {

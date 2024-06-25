@@ -227,6 +227,12 @@ extension Wallet2Config: UserWalletConfig {
         // Volt Inu
         case "AF35":
             return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
+        // Kaspa 2
+        case "AF25":
+            return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
+        // Kaspa reseller
+        case "AF31":
+            return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple

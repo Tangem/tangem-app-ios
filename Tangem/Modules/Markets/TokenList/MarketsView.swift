@@ -25,11 +25,13 @@ struct MarketsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(Localization.manageTokensListHeaderTitle)
+            Text(Localization.marketsCommonTitle)
                 .style(Fonts.Bold.title3, color: Colors.Text.primary1)
                 .lineLimit(1)
+
+            MarketsRatingHeaderView(viewModel: viewModel.marketRatingHeaderViewModel)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 16)
     }
 

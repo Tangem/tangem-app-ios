@@ -73,7 +73,7 @@ class VisaWalletModel {
         self.userWalletModel = userWalletModel
 
         let apiService = VisaAPIServiceBuilder().build(
-            isTestnet: true,
+            isTestnet: FeatureStorage().isVisaTestnet,
             urlSessionConfiguration: .defaultConfiguration,
             logger: AppLog.shared
         )
@@ -182,7 +182,7 @@ class VisaWalletModel {
             let address = try AddressServiceFactory(blockchain: blockchain)
                 .makeAddressService()
                 .makeAddress(for: walletPublicKey, with: .default)
-            let builder = VisaBridgeInteractorBuilder(evmSmartContractInteractor: smartContractInteractor, logger: AppLog.shared)
+            let builder = VisaBridgeInteractorBuilder(isTestnet: blockchain.isTestnet, evmSmartContractInteractor: smartContractInteractor, logger: AppLog.shared)
             let interactor = try await builder.build(for: address.value)
             visaBridgeInteractor = interactor
             tokenItem = .token(interactor.visaToken, .init(blockchain, derivationPath: nil))

@@ -306,6 +306,8 @@
 "manage_tokens_unavailable_vote" = "Upvote";
 "manage_tokens_wallet_selector_title" = "Choose wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
+"markets_common_title" = "Market";
+"markets_sort_by_title" = "Sort By";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";
