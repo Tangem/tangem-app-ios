@@ -179,16 +179,19 @@ struct SendDecimalNumberTextField: View {
     }
 
     private func makePrefixSuffixText(_ text: String, hasSpaceBeforeText: Bool, hasSpaceAfterText: Bool) -> String {
-        var text = text
+        var result = ""
 
         if hasSpaceBeforeText {
-            text = Constants.spaceCharacter + text
-        }
-        if hasSpaceAfterText {
-            text += Constants.spaceCharacter
+            result += Constants.spaceCharacter
         }
 
-        return text
+        result += text
+
+        if hasSpaceAfterText {
+            result += Constants.spaceCharacter
+        }
+
+        return result
     }
 }
 
