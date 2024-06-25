@@ -493,9 +493,9 @@
 "send_notification_invalid_reserve_amount_text" = "Target account is not created. Please change the amount to send.";
 "send_notification_invalid_reserve_amount_title" = "The amount to send must be at least %@";
 "send_notification_leave_button" = "Leave %@";
-"send_notification_mana_limit_description" = "You can transfer only %@ KOIN due to the MANA limit imposed by the Koinos network.";
+"send_notification_mana_limit_description" = "You can transfer only %@ KOIN due to the Mana limit imposed by the Koinos network";
 "send_notification_mana_limit_title" = "Mana limit";
-"send_notification_not_enough_mana_description" = "You don't have enough MANA for this transaction. Please adjust the transfer amount or wait until the MANA is refilled. Your MANA balance is %@/%@.";
+"send_notification_not_enough_mana_description" = "You don't have enough Mana for this transaction. Please wait until the Mana is refilled. Your Mana balance is %@/%@";
 "send_notification_not_enough_mana_title" = "Not enough Mana";
 "send_notification_reduce_by" = "Reduce by %@";
 "send_notification_reduce_to" = "Reduce to %@";
