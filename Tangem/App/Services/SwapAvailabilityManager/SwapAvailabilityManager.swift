@@ -15,7 +15,7 @@ protocol SwapAvailabilityController {
 }
 
 protocol SwapAvailabilityProvider {
-    var tokenItemsAvailableToSwapPublisher: AnyPublisher<[TokenItemId: TokenItemSwapState], Never> { get }
+    var tokenItemsAvailableToSwapPublisher: AnyPublisher<[TokenItem: TokenItemSwapState], Never> { get }
     func swapState(for tokenItem: TokenItem) -> TokenItemSwapState
     func canSwap(tokenItem: TokenItem) -> Bool
 }

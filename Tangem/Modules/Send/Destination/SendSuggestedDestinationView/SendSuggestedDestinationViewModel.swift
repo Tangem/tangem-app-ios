@@ -99,6 +99,7 @@ struct SendSuggestedDestinationTransactionRecord {
     let address: String
     let additionalField: String?
     let isOutgoing: Bool
+    let date: Date
     let amountFormatted: String
     let dateFormatted: String
 }

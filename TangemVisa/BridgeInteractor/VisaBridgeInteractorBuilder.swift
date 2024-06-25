@@ -10,10 +10,12 @@ import Foundation
 import BlockchainSdk
 
 public struct VisaBridgeInteractorBuilder {
+    private let isTestnet: Bool
     private let evmSmartContractInteractor: EVMSmartContractInteractor
     private let logger: InternalLogger
 
-    public init(evmSmartContractInteractor: EVMSmartContractInteractor, logger: VisaLogger) {
+    public init(isTestnet: Bool, evmSmartContractInteractor: EVMSmartContractInteractor, logger: VisaLogger) {
+        self.isTestnet = isTestnet
         self.evmSmartContractInteractor = evmSmartContractInteractor
         self.logger = .init(logger: logger)
     }
@@ -22,7 +24,7 @@ public struct VisaBridgeInteractorBuilder {
         var paymentAccount: String?
 
         log("Start searching PaymentAccount for card with address: \(cardAddress)")
-        let registryAddress = try VisaConfigProvider.shared().getRegistryAddress(isTestnet: VisaUtilities().visaBlockchain.isTestnet)
+        let registryAddress = try VisaConfigProvider.shared().getRegistryAddress(isTestnet: isTestnet)
         log("Requesting PaymentAccount from bridge with address \(registryAddress)")
 
         let request = VisaSmartContractRequest(
@@ -32,7 +34,7 @@ public struct VisaBridgeInteractorBuilder {
 
         do {
             let response = try await evmSmartContractInteractor.ethCall(request: request).async()
-            paymentAccount = try AddressParser().parseAddressResponse(response)
+            paymentAccount = try AddressParser(isTestnet: isTestnet).parseAddressResponse(response)
             log("PaymentAccount founded: \(paymentAccount ?? .unknown)")
         } catch {
             log("Failed to receive PaymentAccount. Reason: \(error)")
@@ -45,6 +47,7 @@ public struct VisaBridgeInteractorBuilder {
 
         log("Start loading token info")
         let tokenInfoLoader = VisaTokenInfoLoader(
+            isTestnet: isTestnet,
             evmSmartContractInteractor: evmSmartContractInteractor,
             logger: logger
         )

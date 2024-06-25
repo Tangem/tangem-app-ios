@@ -226,9 +226,19 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         }
 
         sendAnalytics(isSuccessful: true)
+
         walletModel
             .fulfillRequirements(signer: userWalletModel.signer)
-            .sink()
+            .materialize()
+            .failures()
+            .withWeakCaptureOf(self)
+            .map { viewModel, error in
+                let alertBuilder = SingleTokenAlertBuilder()
+                let networkName = viewModel.blockchain.displayName
+
+                return alertBuilder.fulfillmentAssetRequirementsFailedAlert(error: error, networkName: networkName)
+            }
+            .assign(to: \.alert, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

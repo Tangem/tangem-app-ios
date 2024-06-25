@@ -24,6 +24,10 @@ struct EnvironmentSetupView: View {
                     DefaultToggleRowView(viewModel: $0)
                 }
 
+                GroupedSection(viewModel.pickerViewModels) {
+                    DefaultPickerRowView(viewModel: $0)
+                }
+
                 GroupedSection(viewModel.additionalSettingsViewModels) { viewModel in
                     DefaultRowView(viewModel: viewModel)
                 }

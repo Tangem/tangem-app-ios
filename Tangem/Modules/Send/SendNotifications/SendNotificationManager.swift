@@ -269,7 +269,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         case .invalidNumber:
             return nil
         case .insufficientAmountToReserveAtDestination:
-            // Use async validation and show the notifcation before. Instead of alert
+            // Use async validation and show the notification before. Instead of alert
             return nil
         }
     }

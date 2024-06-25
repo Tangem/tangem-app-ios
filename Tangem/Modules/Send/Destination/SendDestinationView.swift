@@ -65,19 +65,22 @@ struct SendDestinationView: View {
         .onAppear(perform: viewModel.onAppear)
         .onAppear(perform: viewModel.onAuxiliaryViewAppear)
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
+        .animation(SendView.Constants.defaultAnimation, value: viewModel.showSuggestedDestinations)
     }
 }
 
-struct SendDestinationView_Previews: PreviewProvider {
-    @Namespace static var namespace
+/*
+ struct SendDestinationView_Previews: PreviewProvider {
+     @Namespace static var namespace
 
-    static var previews: some View {
-        SendDestinationView(
-            viewModel: SendDestinationViewModel(
-                input: SendDestinationViewModelInputMock(),
-                addressTextViewHeightModel: .init()
-            ),
-            namespace: namespace
-        )
-    }
-}
+     static var previews: some View {
+         SendDestinationView(
+             viewModel: SendDestinationViewModel(
+                 input: SendSendDestinationInputMock(),
+                 addressTextViewHeightModel: .init()
+             ),
+             namespace: namespace
+         )
+     }
+ }
+ */

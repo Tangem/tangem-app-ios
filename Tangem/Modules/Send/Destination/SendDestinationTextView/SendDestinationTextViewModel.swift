@@ -20,7 +20,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
     let didPasteDestination: (String) -> Void
 
     @Published var isValidating: Bool = false
-    @Published var input: String = ""
+    @Published var text: String = ""
     @Published var placeholder: String = ""
     @Published var isDisabled: Bool = true
     @Published var errorText: String?
@@ -28,7 +28,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
     var hasTextInClipboard = false
 
     var shouldShowPasteButton: Bool {
-        input.isEmpty && !isDisabled
+        text.isEmpty && !isDisabled
     }
 
     private var bag: Set<AnyCancellable> = []
@@ -58,12 +58,12 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
     private func bind(style: Style, input: AnyPublisher<String, Never>, isValidating: AnyPublisher<Bool, Never>, isDisabled: AnyPublisher<Bool, Never>, errorText: AnyPublisher<Error?, Never>) {
         input
             .sink { [weak self] text in
-                guard self?.input != text else { return }
-                self?.input = text
+                guard self?.text != text else { return }
+                self?.text = text
             }
             .store(in: &bag)
 
-        self.$input
+        $text
             .removeDuplicates()
             .sink { [weak self] in
                 self?.didEnterDestination($0)
@@ -132,7 +132,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
     }
 
     func clearInput() {
-        input = ""
+        text = ""
     }
 
     private func provideButtonHapticFeedback() {

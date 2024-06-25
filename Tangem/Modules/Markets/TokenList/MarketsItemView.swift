@@ -50,14 +50,18 @@ struct MarketsItemView: View {
             }
 
             HStack(spacing: 6) {
-                Text(viewModel.marketRating)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                    .padding(.horizontal, 5)
-                    .background(Colors.Field.primary)
-                    .cornerRadiusContinuous(4)
+                if let marketRaiting = viewModel.marketRating {
+                    Text(marketRaiting)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .padding(.horizontal, 5)
+                        .background(Colors.Field.primary)
+                        .cornerRadiusContinuous(4)
+                }
 
-                Text(viewModel.marketCap)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                if let marketCap = viewModel.marketCap {
+                    Text(marketCap)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                }
             }
         }
     }
@@ -81,10 +85,23 @@ struct MarketsItemView: View {
                     data: charts
                 )
             } else {
-                // TODO: - Need insert to skeleton
+                makeSkeletonView(by: Constants.skeletonMediumWidthValue)
             }
         }
         .frame(width: 56, height: 32, alignment: .center)
+    }
+
+    private func makeSkeletonView(by value: String) -> some View {
+        Text(value)
+            .style(Fonts.Bold.caption1, color: Colors.Text.primary1)
+            .skeletonable(isShown: true)
+    }
+}
+
+extension MarketsItemView {
+    enum Constants {
+        static let skeletonMediumWidthValue: String = "---------"
+        static let skeletonSmallWidthValue: String = "------"
     }
 }
 
@@ -93,19 +110,14 @@ struct MarketsItemView: View {
 
     return ScrollView(.vertical) {
         ForEach(tokens) { token in
-            MarketsItemView(
-                viewModel: MarketsItemViewModel(
-                    .init(
-                        id: token.id,
-                        imageURL: token.imageUrl,
-                        name: token.name,
-                        symbol: token.symbol,
-                        marketCap: token.marketCap,
-                        marketRating: token.marketRating,
-                        priceValue: token.currentPrice,
-                        priceChangeStateValue: token.priceChangePercentage[.day]
-                    )
-                )
+            let inputData = MarketsItemViewModel.InputData(
+                id: token.id,
+                name: token.name,
+                symbol: token.symbol,
+                marketCap: token.marketCap,
+                marketRating: token.marketRating,
+                priceValue: token.currentPrice,
+                priceChangeStateValue: nil
             )
         }
     }

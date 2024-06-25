@@ -76,20 +76,13 @@ class SendSummaryViewModel: ObservableObject {
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
 
-    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo) {
+    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo, sectionViewModelFactory: SendSummarySectionViewModelFactory) {
         self.input = input
         self.walletInfo = walletInfo
         self.notificationManager = notificationManager
         self.fiatCryptoValueProvider = fiatCryptoValueProvider
         self.addressTextViewHeightModel = addressTextViewHeightModel
-
-        sectionViewModelFactory = SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
-        )
+        self.sectionViewModelFactory = sectionViewModelFactory
 
         canEditAmount = input.canEditAmount
         canEditDestination = input.canEditDestination

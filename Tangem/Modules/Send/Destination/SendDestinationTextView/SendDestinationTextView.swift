@@ -98,7 +98,7 @@ struct SendDestinationTextView: View {
                         ActivityIndicatorView(style: .medium, color: .iconInformative)
                     )
             } else {
-                AddressIconView(viewModel: AddressIconViewModel(address: viewModel.input))
+                AddressIconView(viewModel: AddressIconViewModel(address: viewModel.text))
             }
         }
         .matchedGeometryEffectOptional(id: iconNamespaceId, in: namespace)
@@ -125,13 +125,13 @@ struct SendDestinationTextView: View {
                     if viewModel.allowMultilineText {
                         AddressTextView(
                             heightModel: viewModel.addressTextViewHeightModel,
-                            text: $viewModel.input,
+                            text: $viewModel.text,
                             placeholder: viewModel.placeholder,
                             font: inputFieldUIFont,
                             color: inputFieldUIColor
                         )
                     } else {
-                        TextField(viewModel.placeholder, text: $viewModel.input)
+                        TextField(viewModel.placeholder, text: $viewModel.text)
                             .style(inputFieldFont, color: inputFieldColor)
                     }
                 }
@@ -145,8 +145,8 @@ struct SendDestinationTextView: View {
                     clearIcon
                         .matchedGeometryEffectOptional(id: clearButtonNamespaceId, in: namespace)
                 }
-                .hidden(viewModel.input.isEmpty)
-                .disabled(viewModel.input.isEmpty)
+                .hidden(viewModel.text.isEmpty)
+                .disabled(viewModel.text.isEmpty)
             }
         }
     }
