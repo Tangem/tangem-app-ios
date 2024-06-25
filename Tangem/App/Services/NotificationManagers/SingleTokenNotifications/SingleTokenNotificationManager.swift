@@ -83,12 +83,14 @@ final class SingleTokenNotificationManager {
             events.append(.bnbBeaconChainRetirement)
         }
 
-        if case .koinos = walletModel.tokenItem.blockchain {
-            let amounts = walletModel.wallet.amounts
+        let amounts = walletModel.wallet.amounts
+        if case .koinos = walletModel.tokenItem.blockchain,
+           let currentMana = amounts[.feeResource(.mana)]?.value,
+           let maxMana = amounts[.coin]?.value {
             events.append(
                 .manaLevel(
-                    currentMana: "\(amounts[.feeResource(.mana)]?.value ?? .zero)",
-                    maxMana: "\(amounts[.coin]?.value ?? .zero)"
+                    currentMana: "\(currentMana)",
+                    maxMana: "\(maxMana)"
                 )
             )
         }

@@ -141,8 +141,8 @@ class ExpressNotificationManager {
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
              .cardanoInsufficientBalanceToSendToken,
-             .notEnoughMana, // TODO: [KOINOS] Maybe do something with it
-             .invalidMaxAmount: // TODO: [KOINOS] Maybe do something with it
+             .notEnoughMana,
+             .invalidMaxAmount:
             event = .validationErrorEvent(event: validationErrorEvent, context: context)
         }
 
