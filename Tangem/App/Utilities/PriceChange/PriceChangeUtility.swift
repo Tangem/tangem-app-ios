@@ -22,7 +22,7 @@ struct PriceChangeUtility {
     func convertToPriceChangeState(changePercent: Decimal?) -> TokenPriceChangeView.State {
         guard
             let changePercent,
-            let result = formatPriceChange(changePercent / Constants.percentDivider)
+            let result = formatPriceChange(changePercent * Constants.percentDivider)
         else {
             return .noData
         }

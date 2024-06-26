@@ -11,14 +11,40 @@ import Combine
 
 class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var price: String
-    @Published var priceChangeState: TokenPriceChangeView.State
+    @Published var shortDescription: String
+    @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
+
+    let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
+
+    var priceChangeState: TokenPriceChangeView.State {
+        guard let pickedDate else {
+            let changePercent = loadedPriceChangeInfo[selectedPriceChangeIntervalType.tokenMarketsDetailsId]
+            return priceChangeUtility.convertToPriceChangeState(changePercent: changePercent)
+        }
+
+        // TODO: calculate from interval between picked date and now
+        print("Price change state for picked date: \(pickedDate)")
+        return .noData
+    }
 
     var tokenName: String {
         tokenInfo.name
     }
 
     var priceDate: String {
-        return dateFormatter.string(from: displayingDate)
+        guard let pickedDate else {
+            return Localization.commonToday
+        }
+
+        return "\(dateFormatter.string(from: pickedDate)) – \(Localization.commonNow)"
+    }
+
+    var pickedDate: Date? {
+        guard let pickedTimeInterval else {
+            return nil
+        }
+
+        return Date(timeIntervalSince1970: pickedTimeInterval)
     }
 
     var iconURL: URL {
@@ -26,13 +52,15 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         return iconBuilder.tokenIconURL(id: tokenInfo.id, size: .large)
     }
 
-    @Published private var displayingDate: Date = .init()
+    @Published private var pickedTimeInterval: TimeInterval?
+    @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
+    @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
 
     private let balanceFormatter = BalanceFormatter()
     private let priceChangeUtility = PriceChangeUtility()
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.doesRelativeDateFormatting = true
+        dateFormatter.dateFormat = "dd MMMM, HH:MM"
         return dateFormatter
     }()
 
@@ -50,6 +78,17 @@ class TokenMarketsDetailsViewModel: ObservableObject {
                 roundingType: .defaultFiat(roundingMode: .bankers)
             )
         )
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: tokenInfo.priceChangePercentage[MarketsPriceIntervalType.day.rawValue])
+
+        loadedHistoryInfo = [Date().timeIntervalSince1970: tokenInfo.priceChangePercentage[MarketsPriceIntervalType.day.marketsListId] ?? 0]
+        loadedPriceChangeInfo = tokenInfo.priceChangePercentage
+
+        // TODO: Will be replaced in IOS-7083
+        shortDescription = "XRP (XRP) is a cryptocurrency launched in January 2009, where the first genesis block was mined on 9th January 2009."
+    }
+}
+
+extension TokenMarketsDetailsViewModel {
+    func openFullDescription() {
+        print("Open full description tapped")
     }
 }

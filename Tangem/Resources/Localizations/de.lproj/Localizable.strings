@@ -103,6 +103,7 @@
 "common_next" = "Next";
 "common_no" = "No";
 "common_no_address" = "No address";
+"common_now" = "Now";
 "common_ok" = "OK";
 "common_origin_card" = "Primary Card";
 "common_passphrase" = "Passphrase";
@@ -133,6 +134,7 @@
 "common_support" = "Support";
 "common_swap" = "Swap";
 "common_terms_and_conditions" = "terms and conditions";
+"common_today" = "Today";
 "common_transaction_failed" = "Transaction failed";
 "common_transactions" = "Transactions";
 "common_transfer" = "Transfer";

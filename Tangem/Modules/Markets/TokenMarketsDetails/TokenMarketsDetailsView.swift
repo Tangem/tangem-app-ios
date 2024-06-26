@@ -24,25 +24,30 @@ struct TokenMarketsDetailsView: View {
 
     var content: some View {
         ScrollView {
-            VStack {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(viewModel.price)
-                            .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+            VStack(alignment: .center, spacing: 24) {
+                header
 
-                        HStack {
-                            Text(viewModel.priceDate)
-                                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                MarketsPickerView(
+                    marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
+                    options: viewModel.priceChangeIntervalOptions,
+                    titleFactory: { $0.tokenMarketsDetailsId.capitalizingFirstLetter() }
+                )
+                .frame(maxWidth: .infinity)
 
-                            TokenPriceChangeView(state: viewModel.priceChangeState, showSkeletonWhenLoading: true)
-                        }
+                chart
+
+                Button(action: viewModel.openFullDescription) {
+                    Group {
+                        Text("\(viewModel.shortDescription) ")
+                            + Text(Localization.commonReadMore)
+                            .foregroundColor(Colors.Text.accent)
                     }
-
-                    Spacer(minLength: 8)
-
-                    IconView(url: viewModel.iconURL, size: .init(bothDimensions: 48), forceKingfisher: true)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                    .multilineTextAlignment(.leading)
                 }
-                Text("Hello, Token Markets Details!")
+                .padding(.horizontal, 16)
+
+                contentBlocks
             }
             .padding(.top, 14)
         }
@@ -51,6 +56,42 @@ struct TokenMarketsDetailsView: View {
         .navigationTitle(Text(viewModel.tokenName))
 
         .background(Colors.Background.tertiary)
+    }
+
+    private var header: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(viewModel.price)
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(viewModel.priceDate)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+                    TokenPriceChangeView(state: viewModel.priceChangeState, showSkeletonWhenLoading: true)
+                }
+            }
+
+            Spacer(minLength: 8)
+
+            IconView(url: viewModel.iconURL, size: .init(bothDimensions: 48), forceKingfisher: true)
+        }
+        .padding(.horizontal, 16)
+    }
+
+    private var chart: some View {
+        // TODO: Insert chart here
+        Image(systemName: "chart.xyaxis.line")
+            .style(Font.system(size: 80), color: Colors.Icon.accent)
+    }
+
+    private var contentBlocks: some View {
+        VStack(spacing: 14) {
+            VStack(alignment: .leading, spacing: 8) {
+                // TODO: My portfolio
+            }
+            .defaultRoundedBackground()
+        }
     }
 }
 

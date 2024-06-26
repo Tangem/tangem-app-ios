@@ -47,7 +47,7 @@ extension MarketsDTO.General {
                 "currency": currency,
                 "offset": offset,
                 "limit": limit,
-                "interval": interval.rawValue,
+                "interval": interval.marketsListId,
                 "order": order.rawValue,
             ]
 

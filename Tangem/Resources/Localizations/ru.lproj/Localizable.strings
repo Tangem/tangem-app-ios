@@ -109,6 +109,7 @@
 "common_next" = "Далее";
 "common_no" = "Нет";
 "common_no_address" = "Нет адреса";
+"common_now" = "Сейчас";
 "common_ok" = "OK";
 "common_origin_card" = "Основная карта";
 "common_passphrase" = "Парольная фраза";
@@ -139,6 +140,7 @@
 "common_support" = "Поддержка";
 "common_swap" = "Обмен";
 "common_terms_and_conditions" = "условия участия";
+"common_today" = "Сегодня";
 "common_transaction_failed" = "Ошибка транзакции";
 "common_transactions" = "Транзакции";
 "common_transfer" = "Перевод";

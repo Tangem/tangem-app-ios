@@ -303,6 +303,7 @@
 		B04BA23126F07ECE0036784C /* OnboardingTextButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04BA23026F07ECE0036784C /* OnboardingTextButtonView.swift */; };
 		B04BA23426F0837C0036784C /* OnboardingTopupLayoutCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04BA23326F0837C0036784C /* OnboardingTopupLayoutCalculator.swift */; };
 		B04BA23626F083C30036784C /* OnboardingTopupBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04BA23526F083C30036784C /* OnboardingTopupBalanceView.swift */; };
+		B04CC7062C2BE7E5008AD3F1 /* MarketsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04CC7052C2BE7E5008AD3F1 /* MarketsPickerView.swift */; };
 		B04CD33C29122C5C001EA84A /* ReferralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04CD33B29122C5C001EA84A /* ReferralView.swift */; };
 		B04CD33E29122C64001EA84A /* ReferralViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04CD33D29122C64001EA84A /* ReferralViewModel.swift */; };
 		B04CD34029122C6E001EA84A /* ReferralCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04CD33F29122C6E001EA84A /* ReferralCoordinator.swift */; };
@@ -2028,6 +2029,7 @@
 		B04BA23026F07ECE0036784C /* OnboardingTextButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTextButtonView.swift; sourceTree = "<group>"; };
 		B04BA23326F0837C0036784C /* OnboardingTopupLayoutCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTopupLayoutCalculator.swift; sourceTree = "<group>"; };
 		B04BA23526F083C30036784C /* OnboardingTopupBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTopupBalanceView.swift; sourceTree = "<group>"; };
+		B04CC7052C2BE7E5008AD3F1 /* MarketsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPickerView.swift; sourceTree = "<group>"; };
 		B04CD33B29122C5C001EA84A /* ReferralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralView.swift; sourceTree = "<group>"; };
 		B04CD33D29122C64001EA84A /* ReferralViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralViewModel.swift; sourceTree = "<group>"; };
 		B04CD33F29122C6E001EA84A /* ReferralCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralCoordinator.swift; sourceTree = "<group>"; };
@@ -3441,6 +3443,7 @@
 				2D2276562C0EF23B006BB6A1 /* MarketsRaitingHeaderView.swift */,
 				2D2276572C0EF23B006BB6A1 /* MarketsRaitingHeaderViewModel.swift */,
 				2D8737622C29E89600417762 /* MarketsSkeletonItemView.swift */,
+				B04CC7052C2BE7E5008AD3F1 /* MarketsPickerView.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -9875,6 +9878,7 @@
 				DCBC944D2993FE380050BC35 /* Analytics+ParameterKey.swift in Sources */,
 				EF9E2A4F2B56A59F00418559 /* ExpressPendingTransactionRepositoryMock.swift in Sources */,
 				DC0CC5B22B0D3B0900E32CAC /* UserWalletIdPreflightReadFilter.swift in Sources */,
+				B04CC7062C2BE7E5008AD3F1 /* MarketsPickerView.swift in Sources */,
 				DC7254922A050C200003FE1B /* NoteOnboardingStepsBuilder.swift in Sources */,
 				B65D3FCB2A67129D00FEEFE8 /* CardsInfoPagerContentAnimationModifier.swift in Sources */,
 				EF1E176D2BF69065000364AE /* WalletConnectRowViewModel.swift in Sources */,
