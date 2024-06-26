@@ -663,6 +663,7 @@
 "wallet_connect_sessions_title" = "WalletConnect 連接";
 "wallet_connect_subtitle" = "連結到Dapps";
 "wallet_connect_title" = "WalletConnect";
+"wallet_connect_toast_awaiting_session_proposal" = "Connecting may take a few seconds";
 "wallet_marketplace_block_title" = "%@市場價格";
 "wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";
