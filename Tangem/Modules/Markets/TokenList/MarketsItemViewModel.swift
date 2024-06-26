@@ -12,11 +12,11 @@ import Combine
 class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Published
 
-    @Published var marketRating: String = ""
-    @Published var marketCap: String = ""
+    var marketRating: String?
+    var marketCap: String?
 
-    @Published var priceValue: String = ""
-    @Published var priceChangeState: TokenPriceChangeView.State = .noData
+    var priceValue: String = ""
+    var priceChangeState: TokenPriceChangeView.State = .noData
 
     // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
     @Published var charts: [Double]? = nil
@@ -34,22 +34,28 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private let priceChangeFormatter = PriceChangeFormatter()
     private let priceFormatter = CommonTokenPriceFormatter()
+    private let marketCapFormatter = MarketCapFormatter()
 
     // MARK: - Init
 
     init(_ data: InputData) {
         id = data.id
-        imageURL = URL(string: data.imageURL)
+        imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
-        symbol = data.symbol
+        symbol = data.symbol.uppercased()
 
-        marketCap = data.marketCap
-        marketRating = data.marketRating
+        if let marketRating = data.marketRating {
+            self.marketRating = "\(marketRating)"
+        }
+
+        if let marketCap = data.marketCap {
+            self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
+        }
 
         priceValue = priceFormatter.formatFiatBalance(data.priceValue)
 
         if let priceChangeStateValue = data.priceChangeStateValue {
-            let priceChangeResult = priceChangeFormatter.format(priceChangeStateValue, option: .priceChange)
+            let priceChangeResult = priceChangeFormatter.format(priceChangeStateValue * Constants.priceChangeStateValueDevider, option: .priceChange)
             priceChangeState = .loaded(signType: priceChangeResult.signType, text: priceChangeResult.formattedText)
         } else {
             priceChangeState = .loading
@@ -68,12 +74,15 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 extension MarketsItemViewModel {
     struct InputData {
         let id: String
-        let imageURL: String
         let name: String
         let symbol: String
-        let marketCap: String
-        let marketRating: String
+        let marketCap: UInt64?
+        let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
+    }
+
+    enum Constants {
+        static let priceChangeStateValueDevider: Decimal = 0.01
     }
 }

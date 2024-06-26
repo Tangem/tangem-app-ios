@@ -55,14 +55,14 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
-        case .marketsGeneral:
-            return "/market_general"
+        case .coinsList:
+            return "/coins/list"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features, .marketsGeneral:
+        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features, .coinsList:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -137,7 +137,7 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
-        case .marketsGeneral(let requestData):
+        case .coinsList(let requestData):
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
         }
     }
@@ -181,7 +181,7 @@ extension TangemApiTarget {
         case awardNewUser(walletId: String, address: String, code: String)
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
-        case marketsGeneral(_ requestModel: MarketsDTO.General.Request)
+        case coinsList(_ requestModel: MarketsDTO.General.Request)
 
         // Configs
         case apiList
