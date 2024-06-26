@@ -44,20 +44,16 @@ class CommonSwapAvailabilityManager: SwapAvailabilityManager {
 
     private func loadExpressAssets(for items: [TokenItem], userWalletId: String) {
         runTask(in: self, code: { manager in
-            var requestedItems = [ExpressCurrency: TokenItem]()
-            let expressCurrencies = items.map {
-                let currency = $0.expressCurrency
-                requestedItems[currency] = $0
-                return currency
+            let requestedItems: [TokenItem: ExpressCurrency] = items.reduce(into: [:]) { partialResult, item in
+                partialResult[item] = item.expressCurrency
             }
+
+            let expressCurrencies = requestedItems.values.unique()
             let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
             let assets = try await provider.assets(with: expressCurrencies)
-            let preparedSwapStates: [TokenItem: Bool] = assets.reduce(into: [:]) { partialResult, asset in
-                guard let tokenItem = requestedItems[asset.currency] else {
-                    return
-                }
-
-                partialResult[tokenItem] = asset.isExchangeable
+            let preparedSwapStates: [TokenItem: Bool] = requestedItems.reduce(into: [:]) { partialResult, pair in
+                let isExchangeable = assets.first(where: { $0.currency == pair.value })?.isExchangeable ?? false
+                partialResult[pair.key] = isExchangeable
             }
 
             manager.saveTokenItemsAvailability(for: preparedSwapStates)
