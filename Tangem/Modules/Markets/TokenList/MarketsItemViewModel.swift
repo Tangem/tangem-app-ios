@@ -73,7 +73,7 @@ extension MarketsItemViewModel {
         let name: String
         let symbol: String
         let marketCap: UInt64?
-        let marketRating: UInt64?
+        let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
         let didTapAction: () -> Void
