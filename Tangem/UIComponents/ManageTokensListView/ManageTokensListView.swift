@@ -33,6 +33,17 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
 
     init(
         viewModel: ManageTokensListViewModel,
+        bottomPadding: CGFloat = Constants.bottomPadding,
+        @ViewBuilder header: HeaderFactory
+    ) where Footer == EmptyView {
+        self.viewModel = viewModel
+        self.bottomPadding = bottomPadding
+        self.header = header()
+        footer = nil
+    }
+
+    init(
+        viewModel: ManageTokensListViewModel,
         bottomPadding: CGFloat = Constants.bottomPadding
     ) where Header == EmptyView, Footer == EmptyView {
         self.viewModel = viewModel
@@ -45,7 +56,7 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
 
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 if let header {
                     header
                 }

@@ -160,7 +160,7 @@ private extension ManageTokensAdapter {
         }
 
         if canRemove(tokenItem) {
-            let title = Localization.tokenDetailsHideAlertTitle(tokenItem.currencySymbol)
+            let title = Localization.tokenDetailsHideAlertTitle(tokenItem.name)
 
             let cancelAction = { [unowned self] in
                 updateSelection(tokenItem)
@@ -179,11 +179,11 @@ private extension ManageTokensAdapter {
                 )
             ))
         } else {
-            let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.blockchain.currencySymbol)
+            let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.name)
 
             let message = Localization.tokenDetailsUnableHideAlertMessage(
                 tokenItem.name,
-                tokenItem.blockchain.currencySymbol,
+                tokenItem.currencySymbol,
                 tokenItem.blockchain.displayName
             )
 
