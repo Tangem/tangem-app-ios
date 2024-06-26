@@ -10,7 +10,7 @@ import Foundation
 
 enum MarketsDTO {
     enum General {}
-    enum HistoryPreview {}
+    enum ChartsHistory {}
 }
 
 // MARK: - General
@@ -76,7 +76,7 @@ extension MarketsDTO.General {
 
 // MARK: - HistoryPreview
 
-extension MarketsDTO.HistoryPreview {
+extension MarketsDTO.ChartsHistory {
     struct Request: Encodable {
         let currency: String
         let coinIds: [String]

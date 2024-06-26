@@ -31,7 +31,7 @@ final class MarketsViewModel: ObservableObject {
 
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
-    private let chartsPreviewProvider = MarketsListChartsPreviewProvider()
+    private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
 
     private var bag = Set<AnyCancellable>()
 
@@ -51,7 +51,6 @@ final class MarketsViewModel: ObservableObject {
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         dataProviderBind()
-        chartsPreviewProviderBind()
     }
 
     func onBottomAppear() {
@@ -116,13 +115,10 @@ private extension MarketsViewModel {
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
                 viewModel.tokenViewModels = items.compactMap { item in
-                    // If chartPreviewItem already exist cache value in chartsPreviewProvider
-                    let chartPreviewItem = viewModel.chartsPreviewProvider.items.first(where: { item.id == $0.key })?.value
-                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: chartPreviewItem)
+                    viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
                     return tokenViewModel
                 }
-
-                viewModel.chartsPreviewProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
             })
             .store(in: &bag)
 
@@ -131,34 +127,14 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
                 viewModel.isLoading = isLoading
-            })
-            .store(in: &bag)
-    }
-
-    func chartsPreviewProviderBind() {
-        chartsPreviewProvider.$items
-            .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, items in
-                for chartPreviewItem in items {
-                    let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chartPreviewItem.value)
-                    viewModel.tokenViewModels.first(where: { $0.id == chartPreviewItem.key })?.charts = chartsDoubleConvertedValues
-                }
             })
             .store(in: &bag)
     }
 
     // MARK: - Private Implementation
 
-    private func mapToTokenViewModel(
-        tokenItemModel: MarketsTokenModel,
-        with chartPreviewItem: MarketsHistoryPreviewItemModel?
-    ) -> MarketsItemViewModel {
-        let chartsDoubleConvertedValues = mapHistoryPreviewItemModelToChartsList(chartPreviewItem)
-
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
             id: tokenItemModel.id,
             name: tokenItemModel.name,
@@ -166,19 +142,10 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue],
-            charts: chartsDoubleConvertedValues
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
         )
 
-        return MarketsItemViewModel(inputData)
-    }
-
-    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsHistoryPreviewItemModel?) -> [Double]? {
-        guard let chartPreviewItem else { return nil }
-
-        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
-        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
-        return chartsDoubleConvertedValues
+        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider)
     }
 }
 

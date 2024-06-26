@@ -103,7 +103,7 @@ class FakeTangemApiService: TangemApiService {
         return try provider.parseCoinResponse()
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.HistoryPreview.Request) async throws -> [String: MarketsHistoryPreviewItemModel] {
+    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
         let provider = FakeMarketListProvider()
         return try provider.parseHistoryPreviewResponse()
     }
@@ -125,7 +125,7 @@ private struct FakeMarketListProvider {
         throw "Not implemented"
     }
 
-    func parseHistoryPreviewResponse() throws -> [String: MarketsHistoryPreviewItemModel] {
+    func parseHistoryPreviewResponse() throws -> [String: MarketsChartsHistoryItemModel] {
         throw "Not implemented"
     }
 }

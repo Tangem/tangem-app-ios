@@ -8,14 +8,14 @@
 
 import Foundation
 
-final class MarketsListChartsPreviewProvider {
+final class MarketsListChartsHistoryProvider {
     // MARK: Dependencies
 
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     // MARK: Published Properties
 
-    @Published var items: [String: MarketsHistoryPreviewItemModel] = [:]
+    @Published var items: [String: MarketsChartsHistoryItemModel] = [:]
 
     // MARK: - Private Properties
 
@@ -31,7 +31,7 @@ final class MarketsListChartsPreviewProvider {
         }
 
         runTask(in: self) { provider in
-            let response: [String: MarketsHistoryPreviewItemModel]
+            let response: [String: MarketsChartsHistoryItemModel]
 
             do {
                 // Need for filtered coins already received
@@ -42,12 +42,10 @@ final class MarketsListChartsPreviewProvider {
                 return
             }
 
-            await runOnMain {
-                AppLog.shared.debug("\(String(describing: provider)) loaded charts history preview tokens with count = \(response.count)")
+            AppLog.shared.debug("\(String(describing: provider)) loaded charts history preview tokens with count = \(response.count)")
 
-                for (key, value) in response {
-                    self.items[key] = value
-                }
+            for (key, value) in response {
+                self.items[key] = value
             }
         }
     }
@@ -55,9 +53,9 @@ final class MarketsListChartsPreviewProvider {
 
 // MARK: Private
 
-private extension MarketsListChartsPreviewProvider {
-    func loadItems(for coinIds: [String], with interval: MarketsPriceIntervalType) async throws -> [String: MarketsHistoryPreviewItemModel] {
-        let requestModel = MarketsDTO.HistoryPreview.Request(
+private extension MarketsListChartsHistoryProvider {
+    func loadItems(for coinIds: [String], with interval: MarketsPriceIntervalType) async throws -> [String: MarketsChartsHistoryItemModel] {
+        let requestModel = MarketsDTO.ChartsHistory.Request(
             currency: selectedCurrencyCode,
             coinIds: coinIds,
             interval: interval

@@ -1,5 +1,5 @@
 //
-//  MarketsHistoryPreviewModel.swift
+//  MarketsChartsHistoryItemModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 18.06.2024.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct MarketsHistoryPreviewItemModel: Decodable {
+struct MarketsChartsHistoryItemModel: Decodable {
     let prices: [String: Decimal]
 }

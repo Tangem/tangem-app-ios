@@ -38,7 +38,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Init
 
-    init(_ data: InputData) {
+    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider) {
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
@@ -61,15 +61,34 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             priceChangeState = .loading
         }
 
-        charts = data.charts
-
-        bind()
+        bind(with: chartsProvider)
     }
 
     // MARK: - Private Implementation
 
-    private func bind() {
-        // Need for user update charts
+    private func bind(with provider: MarketsListChartsHistoryProvider) {
+        provider
+            .$items
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, charts in
+                guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
+                    return
+                }
+
+                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value)
+                viewModel.charts = chartsDoubleConvertedValues
+            })
+            .store(in: &bag)
+    }
+
+    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let chartPreviewItem else { return nil }
+
+        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
+        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+        return chartsDoubleConvertedValues
     }
 }
 
@@ -82,7 +101,6 @@ extension MarketsItemViewModel {
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
-        let charts: [Double]?
     }
 
     enum Constants {

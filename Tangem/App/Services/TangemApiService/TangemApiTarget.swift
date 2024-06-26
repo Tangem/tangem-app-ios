@@ -197,7 +197,7 @@ extension TangemApiTarget {
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
         case coinsList(_ requestModel: MarketsDTO.General.Request)
-        case coinsHistoryPreview(_ requestModel: MarketsDTO.HistoryPreview.Request)
+        case coinsHistoryPreview(_ requestModel: MarketsDTO.ChartsHistory.Request)
 
         // Configs
         case apiList
