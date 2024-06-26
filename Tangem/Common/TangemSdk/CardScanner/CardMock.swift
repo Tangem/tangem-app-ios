@@ -15,6 +15,7 @@ enum CardMock: String, CaseIterable {
     case xrpNote
     case xlmBird
     case visa
+    case visaTestnet
     case wallet2Demo
     case walletDemo
     case ethNoteDemo
@@ -35,6 +36,8 @@ enum CardMock: String, CaseIterable {
                 TwinData(series: .cb61, pairPublicKey: Data(hexString: "0417553CDACA4928E934C4DCC519697634A283163C63BE5BA3EF6D1F8A7D987AE0E1DA3B8E04505C3356AA3669EB271FC344F93E1C541D5DD425726A06183C6DB4"))
             )
         case .visa:
+            return .none
+        case .visaTestnet:
             return .none
         case .wallet2:
             return .none
@@ -59,6 +62,8 @@ enum CardMock: String, CaseIterable {
             return url(fileName: "twinCard")
         case .visa:
             return url(fileName: "visa")
+        case .visaTestnet:
+            return url(fileName: "visaTestnet")
         case .wallet2:
             return url(fileName: "wallet2")
         case .wallet:

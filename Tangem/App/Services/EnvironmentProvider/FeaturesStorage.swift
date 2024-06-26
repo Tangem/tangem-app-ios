@@ -35,6 +35,9 @@ class FeatureStorage {
 
     @AppStorageCompat(FeatureStorageKeys.mockedCardScannerEnabled)
     var isMockedCardScannerEnabled = true
+
+    @AppStorageCompat(FeatureStorageKeys.useVisaTestnet)
+    var isVisaTestnet = false
 }
 
 // MARK: - Keys
@@ -48,4 +51,5 @@ private enum FeatureStorageKeys: String {
     case supportedBlockchainsIds
     case performanceMonitorEnabled = "performance_monitor_enabled"
     case mockedCardScannerEnabled = "mocked_card_scanner_enabled"
+    case useVisaTestnet = "use_visa_testnet"
 }

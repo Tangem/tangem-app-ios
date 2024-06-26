@@ -15,8 +15,8 @@ struct AddressParser {
 
     private var addressService: AddressService
 
-    init() {
-        let blockchain = VisaUtilities().visaBlockchain
+    init(isTestnet: Bool) {
+        let blockchain = VisaUtilities(isTestnet: isTestnet).visaBlockchain
         addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
     }
 

@@ -49,10 +49,13 @@ extension MarketsDTO.General {
                 "limit": limit,
                 "interval": interval.rawValue,
                 "order": order.rawValue,
-                "general_coins": generalCoins,
             ]
 
-            if let search {
+            if generalCoins {
+                params["general_coins"] = generalCoins
+            }
+
+            if let search, !search.isEmpty {
                 params["search"] = search
             }
 
@@ -62,5 +65,8 @@ extension MarketsDTO.General {
 
     struct Response: Decodable {
         let tokens: [MarketsTokenModel]
+        let total: Int
+        let limit: Int
+        let offset: Int
     }
 }
