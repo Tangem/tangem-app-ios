@@ -8,22 +8,34 @@
 
 import Combine
 import CombineExt
+import SwiftUI
 
 class ManageTokensViewModel: ObservableObject {
     var manageTokensListViewModel: ManageTokensListViewModel!
 
+    @Published var customTokensList: [CustomTokenItemViewInfo] = []
     @Published var searchText = ""
     @Published var isPendingListEmpty = true
     @Published var isSavingChanges = false
     @Published var alert: AlertBinder?
 
     private let adapter: ManageTokensAdapter
+    private let userTokensManager: UserTokensManager
+    private let walletModelsManager: WalletModelsManager
     private weak var coordinator: ManageTokensRoutable?
 
+    private let customTokensFullList = CurrentValueSubject<[CustomTokenItemViewInfo], Never>([])
     private var bag = Set<AnyCancellable>()
 
-    init(adapter: ManageTokensAdapter, coordinator: ManageTokensRoutable?) {
+    init(
+        adapter: ManageTokensAdapter,
+        userTokensManager: UserTokensManager,
+        walletModelsManager: WalletModelsManager,
+        coordinator: ManageTokensRoutable?
+    ) {
         self.adapter = adapter
+        self.userTokensManager = userTokensManager
+        self.walletModelsManager = walletModelsManager
         self.coordinator = coordinator
 
         manageTokensListViewModel = .init(
@@ -44,11 +56,7 @@ class ManageTokensViewModel: ObservableObject {
             switch result {
             case .success:
                 adapter.resetAdapter()
-                Toast(view: SuccessToast(text: Localization.manageTokensToastPortfolioUpdated))
-                    .present(
-                        layout: .top(padding: 20),
-                        type: .temporary()
-                    )
+                showPortfolioUpdatedToast()
             case .failure(let failure):
                 if failure.isUserCancelled {
                     return
@@ -56,6 +64,39 @@ class ManageTokensViewModel: ObservableObject {
 
                 alert = failure.alertBinder
             }
+        }
+    }
+
+    func removeCustomToken(_ info: CustomTokenItemViewInfo) {
+        let tokenItem = info.tokenItem
+        if userTokensManager.canRemove(tokenItem) {
+            alert = AlertBinder(
+                alert: Alert(
+                    title: Text(Localization.tokenDetailsHideAlertTitle(tokenItem.name)),
+                    message: Text(Localization.tokenDetailsHideAlertMessage),
+                    primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide), action: { [weak self] in
+                        self?.userTokensManager.remove(tokenItem)
+                        self?.showPortfolioUpdatedToast()
+                    }),
+                    secondaryButton: .cancel()
+                )
+            )
+        } else {
+            let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.name)
+
+            let message = Localization.tokenDetailsUnableHideAlertMessage(
+                tokenItem.name,
+                tokenItem.currencySymbol,
+                tokenItem.blockchain.displayName
+            )
+
+            alert = AlertBinder(
+                alert: Alert(
+                    title: Text(title),
+                    message: Text(message),
+                    dismissButton: .default(Text(Localization.commonOk), action: {})
+                )
+            )
         }
     }
 
@@ -81,6 +122,55 @@ class ManageTokensViewModel: ObservableObject {
                 viewModel.adapter.fetch(searchText)
             }
             .store(in: &bag)
+
+        $searchText
+            .debounce(for: 0.5, scheduler: DispatchQueue.main)
+            .combineLatest(customTokensFullList)
+            .map { searchText, tokensList in
+                if searchText.isEmpty {
+                    return tokensList
+                }
+
+                return tokensList.filter {
+                    $0.name.range(of: searchText, options: .caseInsensitive) != nil ||
+                        $0.symbol.range(of: searchText, options: .caseInsensitive) != nil
+                }
+            }
+            .assign(to: \.customTokensList, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        walletModelsManager.walletModelsPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .map { viewModel, walletModels in
+                viewModel.prepareCustomTokensList(from: walletModels)
+            }
+            .assign(to: \.value, on: customTokensFullList, ownership: .weak)
+            .store(in: &bag)
+    }
+
+    private func prepareCustomTokensList(from walletModels: [WalletModel]) -> [CustomTokenItemViewInfo] {
+        let iconInfoBuilder = TokenIconInfoBuilder()
+        return walletModels.compactMap {
+            guard $0.isCustom else {
+                return nil
+            }
+
+            return .init(
+                tokenItem: $0.tokenItem,
+                iconInfo: iconInfoBuilder.build(from: $0.tokenItem, isCustom: true),
+                name: $0.name,
+                symbol: $0.tokenItem.currencySymbol
+            )
+        }
+    }
+
+    private func showPortfolioUpdatedToast() {
+        Toast(view: SuccessToast(text: Localization.manageTokensToastPortfolioUpdated))
+            .present(
+                layout: .top(padding: 20),
+                type: .temporary()
+            )
     }
 }
 

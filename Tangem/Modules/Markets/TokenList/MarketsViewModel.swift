@@ -14,22 +14,25 @@ final class MarketsViewModel: ObservableObject {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
-    @Published var isShowAddCustomToken: Bool = false
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var viewDidAppear: Bool = false
-    @Published var marketRatingHeaderViewModel: MarketRatingHeaderViewModel
+    @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
+    @Published var isLoading: Bool = false
 
     // MARK: - Properties
 
     var hasNextPage: Bool {
-        loader.canFetchMore
+        dataProvider.canFetchMore
     }
 
     private weak var coordinator: MarketsRoutable?
 
     private var dataSource: MarketsDataSource
+
     private let filterProvider = MarketsListDataFilterProvider()
-    private lazy var loader = setupListDataLoader()
+    private let dataProvider = MarketsListDataProvider()
+
+//    private lazy var loader = setupListDataLoader()
 
     private var bag = Set<AnyCancellable>()
 
@@ -42,12 +45,13 @@ final class MarketsViewModel: ObservableObject {
         self.coordinator = coordinator
         dataSource = MarketsDataSource()
 
-        marketRatingHeaderViewModel = MarketRatingHeaderViewModel(provider: filterProvider)
-        marketRatingHeaderViewModel.delegate = self
+        marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
+        marketsRatingHeaderViewModel.delegate = self
 
-        searchBind(searchTextPublisher: searchTextPublisher)
+        searchTextBind(searchTextPublisher: searchTextPublisher)
+        searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
-        bind()
+        dataProviderBind()
     }
 
     func onBottomAppear() {
@@ -60,13 +64,13 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomDisappear() {
-        loader.reset(nil)
-        fetch(with: "")
+        dataProvider.reset(nil, with: nil)
+        fetch(with: "", by: filterProvider.currentFilterValue)
         viewDidAppear = false
     }
 
     func fetchMore() {
-        loader.fetchMore()
+        dataProvider.fetchMore()
     }
 
     func addCustomTokenDidTapAction() {
@@ -78,89 +82,73 @@ final class MarketsViewModel: ObservableObject {
 // MARK: - Private Implementation
 
 private extension MarketsViewModel {
-    func fetch(with searchText: String = "") {
-        loader.fetch(searchText)
+    func fetch(with searchText: String = "", by filter: MarketsListDataProvider.Filter) {
+        dataProvider.fetch(searchText, with: filter)
     }
 
-    func searchBind(searchTextPublisher: (some Publisher<String, Never>)?) {
+    func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
         searchTextPublisher?
             .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .sink { [weak self] value in
-                if !value.isEmpty {
-                    Analytics.log(.manageTokensSearched)
-
-                    // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
-                    self?.setNeedDisplayTokensListSkeletonView()
-                }
-
-                self?.fetch(with: value)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, value in
+                viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
     }
 
-    func bind() {
-        dataSource
-            .userWalletModelsPublisher
-            .sink { [weak self] models in
-                self?.fetch()
+    func searchFilterBind(filterPublisher: (some Publisher<MarketsListDataProvider.Filter, Never>)?) {
+        filterPublisher?
+            .dropFirst()
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, value in
+                viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
     }
 
-    func setupListDataLoader() -> ListDataLoader {
-        let supportedBlockchains = SupportedBlockchains.all
-        let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
-
-        loader.$items
+    func dataProviderBind() {
+        dataProvider.$items
             .receive(on: DispatchQueue.main)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] items in
-                guard let self = self else {
-                    return
-                }
-
-                tokenViewModels = items.compactMap { self.mapToTokenViewModel(coinModel: $0) }
-
-                isShowAddCustomToken = tokenViewModels.isEmpty && !dataSource.userWalletModels.contains(where: { $0.config.hasFeature(.multiCurrency) })
-
-                if let searchValue = loader.lastSearchTextValue, !searchValue.isEmpty, items.isEmpty {
-                    Analytics.log(event: .manageTokensTokenIsNotFound, params: [.input: searchValue])
-                }
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { provider, items in
+                provider.tokenViewModels = items.compactMap { provider.mapToTokenViewModel(tokenItemModel: $0) }
             })
             .store(in: &bag)
 
-        return loader
+        dataProvider.$isLoading
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, isLoading in
+                // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
+                viewModel.isLoading = isLoading
+            })
+            .store(in: &bag)
     }
 
     // MARK: - Private Implementation
 
-    /// Need for display list skeleton view
-    private func setNeedDisplayTokensListSkeletonView() {
-        // TODO: - The task is at the approval stage. There is no issue number yet
-//        tokenViewModels = [Int](0 ... 10).map { _ in }
-    }
-
-    private func mapToTokenViewModel(coinModel: CoinModel) -> MarketsItemViewModel {
-        // TODO: - Contains the poppy values that will be linked in the task https://tangem.atlassian.net/browse/IOS-6828
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
-            id: coinModel.id,
-            imageURL: IconURLBuilder().tokenIconURL(id: coinModel.id, size: .large).absoluteString,
-            name: coinModel.name,
-            symbol: coinModel.symbol,
-            marketCap: "",
-            marketRating: "",
-            priceValue: nil,
-            priceChangeStateValue: nil
+            id: tokenItemModel.id,
+            name: tokenItemModel.name,
+            symbol: tokenItemModel.symbol,
+            marketCap: tokenItemModel.marketCap,
+            marketRating: tokenItemModel.marketRating,
+            priceValue: tokenItemModel.currentPrice,
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
         )
 
         return MarketsItemViewModel(inputData)
     }
 }
 
-extension MarketsViewModel: MarketOrderHeaderViewModelOrderDelegate {
-    func marketOrderActionButtonDidTap() {
+extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
+    func orderActionButtonDidTap() {
         coordinator?.openFilterOrderBottonSheet(with: filterProvider)
     }
 }

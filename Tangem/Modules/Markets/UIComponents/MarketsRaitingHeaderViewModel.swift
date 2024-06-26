@@ -1,5 +1,5 @@
 //
-//  MarketRaitingHeaderViewModel.swift
+//  MarketsRaitingHeaderViewModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 03.06.2024.
@@ -9,11 +9,11 @@
 import Foundation
 import Combine
 
-protocol MarketOrderHeaderViewModelOrderDelegate: AnyObject {
-    func marketOrderActionButtonDidTap()
+protocol MarketsOrderHeaderViewModelOrderDelegate: AnyObject {
+    func orderActionButtonDidTap()
 }
 
-class MarketRatingHeaderViewModel: ObservableObject {
+class MarketsRatingHeaderViewModel: ObservableObject {
     // MARK: - Published Properties
 
     @Published var marketListOrderType: MarketsListOrderType
@@ -21,7 +21,7 @@ class MarketRatingHeaderViewModel: ObservableObject {
 
     var marketPriceIntervalTypeOptions: [MarketsPriceIntervalType] = []
 
-    weak var delegate: MarketOrderHeaderViewModelOrderDelegate?
+    weak var delegate: MarketsOrderHeaderViewModelOrderDelegate?
 
     // MARK: - Private Properties
 
@@ -62,6 +62,6 @@ class MarketRatingHeaderViewModel: ObservableObject {
     }
 
     func onOrderActionButtonDidTap() {
-        delegate?.marketOrderActionButtonDidTap()
+        delegate?.orderActionButtonDidTap()
     }
 }

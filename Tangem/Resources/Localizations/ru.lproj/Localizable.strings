@@ -81,6 +81,7 @@
 "common_copy" = "Копировать";
 "common_copy_address" = "Скопировать адрес";
 "common_create" = "Создать";
+"common_custom" = "Свое";
 "common_delete" = "Удалить";
 "common_disabled" = "Отключено";
 "common_disconnect" = "Отключить";
@@ -92,7 +93,6 @@
 "common_explorer" = "Обозреватель";
 "common_fee_label" = "Комиссия";
 "common_fee_selector_footer" = "Сетевые комиссии – это плата пользователя за обработку и подтверждение транзакций. Размер комиссии зависит от нагрузки на сеть, объема транзакции и приоритета исполнения. %@";
-"common_fee_selector_option_custom" = "Свое";
 "common_fee_selector_option_fast" = "Быстро";
 "common_fee_selector_option_market" = "По рынку";
 "common_fee_selector_option_slow" = "Медленно";
@@ -300,6 +300,7 @@
 "manage_tokens_network_selector_title" = "Выберите сети";
 "manage_tokens_network_selector_wallet" = "Кошелек";
 "manage_tokens_nothing_found" = "Не удалось найти этот токен, вы можете добавить его вручную.";
+"manage_tokens_remove" = "Удалить";
 "manage_tokens_search_placeholder" = "например Bitcoin";
 "manage_tokens_toast_portfolio_updated" = "Ваш портфель был обновлен";
 "manage_tokens_unavailable_description" = "Выбранный токен не доступен в кошельке на данный момент. Но не переживайте, вы можете выразить свой интерес проголосовав за его добавление.";
