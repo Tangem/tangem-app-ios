@@ -35,6 +35,7 @@ class SendModel {
         _sendError.eraseToAnyPublisher()
     }
 
+    /// - Warning: Buggy in some cases and needs to be fixed (IOS-7211)
     var isFeeIncluded: Bool {
         _isFeeIncluded.value
     }
@@ -340,12 +341,12 @@ class SendModel {
 
         do {
             try walletModel.transactionCreator.validate(amount: amount, fee: fee)
+        } catch ValidationError.totalExceedsBalance, ValidationError.minimumBalance {
+            return true
         } catch {
-            let validationError = error as? ValidationError
-            if case .totalExceedsBalance = validationError {
-                return true
-            }
+            // Fall through to the last return
         }
+
         return false
     }
 
@@ -512,6 +513,7 @@ extension SendModel: SendFeeViewModelInput {
         sendType.canIncludeFeeIntoAmount && walletModel.amountType == walletModel.feeTokenItem.amountType
     }
 
+    /// - Warning: Buggy in some cases and needs to be fixed (IOS-7211)
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
         _isFeeIncluded.eraseToAnyPublisher()
     }
