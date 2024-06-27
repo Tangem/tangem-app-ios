@@ -64,7 +64,6 @@
 "cardano_max_amount_has_token_title" = "Not enough ADA";
 "common_accept" = "接受";
 "common_access_denied" = "Access denied";
-"common_allow" = "Allow";
 "common_apply" = "Apply";
 "common_approval" = "Approval";
 "common_attention" = "注意";
@@ -116,7 +115,6 @@
 "common_passphrase" = "Passphrase";
 "common_paste" = "Paste";
 "common_push" = "推送";
-"common_range" = "%1$@-%2$@";
 "common_read_more" = "Read more";
 "common_receive" = "Receive";
 "common_reject" = "拒絕";
@@ -203,7 +201,6 @@
 "details_row_title_issuer" = "發行人";
 "details_row_title_signed_hashes" = "簽署";
 "details_security_management_warning" = "如果您忘記密碼，您將無法使用您的資金。無法恢復代碼";
-"details_send_feedback" = "Send feedback";
 "details_title" = "更多";
 "disclaimer_title" = "服務條款";
 "error_wrong_wallet_tapped" = "您使用了另一個錢包中的卡。點按與此錢包關聯的卡片";
@@ -538,13 +535,9 @@
 "settings_forget_wallet" = "Forget wallet";
 "settings_forget_wallet_footer" = "This will remove the wallet from the application. The wallet itself can be added again.";
 "settings_wallet_name_title" = "Name";
-"staking_details_apr" = "APR";
-"staking_details_apy" = "APY";
 "staking_details_available" = "Available";
 "staking_details_average_reward_rate" = "Average Reward Rate";
 "staking_details_estimated_profit" = "%@ est. profit";
-"staking_details_market_rating" = "Market rating";
-"staking_details_metrics_block_header" = "Metrics";
 "staking_details_minimum_requirement" = "Minimum Requirement";
 "staking_details_no_rewards_to_claim" = "No rewards to claim";
 "staking_details_on_stake" = "On stake";
@@ -601,7 +594,6 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Selling funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_pending_transaction_send" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_sell_unavailable" = "Selling %@ is not available at the moment. Please check our updates.";
-"token_button_unavailability_reason_staking_unavailable" = "Staking %s is not available at the moment. Please check our updates.";
 "token_details_choose_address" = "Choose address";
 "token_details_generate_xpub" = "Generate XPUB";
 "token_details_hide_alert_hide" = "隱藏";
@@ -634,9 +626,6 @@
 "twins_recreate_warning" = "這個動作是不可逆的。您將無法訪問舊錢包";
 "twins_scan_twin_with_number" = "將您的 iPhone 靠近編號為 %@ 的雙胞胎卡";
 "unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
-"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
-"user_push_notification_agreement_argument_two" = "Be able to get important market notifications";
-"user_push_notification_agreement_header" = "Would you like to usePush-notifications?";
 "user_wallet_list_add_button" = "添加新錢包";
 "user_wallet_list_delete_prompt" = "您確定要刪除此錢包?";
 "user_wallet_list_error_wallet_already_saved" = "此錢包已保存，您可以再添加一個";

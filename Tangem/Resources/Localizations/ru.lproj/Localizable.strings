@@ -64,7 +64,6 @@
 "cardano_max_amount_has_token_title" = "Недостаточно ADA";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
-"common_allow" = "Allow";
 "common_apply" = "Применить";
 "common_approval" = "Одобрение";
 "common_attention" = "Внимание";
@@ -116,7 +115,6 @@
 "common_passphrase" = "Парольная фраза";
 "common_paste" = "Вставить";
 "common_push" = "Ускорить";
-"common_range" = "%1$@-%2$@";
 "common_read_more" = "Подробнее";
 "common_receive" = "Получить";
 "common_reject" = "Отклонить";
@@ -203,7 +201,6 @@
 "details_row_title_issuer" = "Эмитент";
 "details_row_title_signed_hashes" = "Подписано";
 "details_security_management_warning" = "Если вы забудете код, то потеряете доступ к своим средствам. Восстановление кода невозможно.";
-"details_send_feedback" = "Отправить отзыв";
 "details_title" = "Подробности";
 "disclaimer_title" = "Условия использования";
 "error_wrong_wallet_tapped" = "Вы использовали карту от другого кошелька. Приложите карту, связанную с этим кошельком.";
@@ -538,13 +535,9 @@
 "settings_forget_wallet" = "Забыть кошелек";
 "settings_forget_wallet_footer" = "Это приведет к удалению кошелька из приложения. Сам кошелек можно добавить снова.";
 "settings_wallet_name_title" = "Имя";
-"staking_details_apr" = "APR";
-"staking_details_apy" = "APY";
 "staking_details_available" = "Доступно";
 "staking_details_average_reward_rate" = "Average Reward Rate";
 "staking_details_estimated_profit" = "%@ est. profit";
-"staking_details_market_rating" = "Market rating";
-"staking_details_metrics_block_header" = "Metrics";
 "staking_details_minimum_requirement" = "Minimum Requirement";
 "staking_details_no_rewards_to_claim" = "No rewards to claim";
 "staking_details_on_stake" = "On stake";
@@ -601,7 +594,6 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Продажа средств станет доступной после завершения транзакции(-ий) в сети %@";
 "token_button_unavailability_reason_pending_transaction_send" = "Отправка средств станет доступной после завершения транзакции(-ий) в сети %@";
 "token_button_unavailability_reason_sell_unavailable" = "В данный момент продажа %@ недоступна. Следите за нашими обновлениями.";
-"token_button_unavailability_reason_staking_unavailable" = "В данный момент стейкинг монеты %s недоступен. Следите за нашими обновлениями.";
 "token_details_choose_address" = "Выберите адрес";
 "token_details_generate_xpub" = "Сгенерировать XPUB";
 "token_details_hide_alert_hide" = "Скрыть";
@@ -634,9 +626,6 @@
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
 "unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту, чтобы получить доступ к своему кошельку";
-"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
-"user_push_notification_agreement_argument_two" = "Be able to get important market notifications";
-"user_push_notification_agreement_header" = "Would you like to usePush-notifications?";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
 "user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";
