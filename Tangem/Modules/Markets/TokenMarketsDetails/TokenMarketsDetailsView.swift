@@ -36,18 +36,21 @@ struct TokenMarketsDetailsView: View {
 
                 chart
 
-                Button(action: viewModel.openFullDescription) {
-                    Group {
-                        Text("\(viewModel.shortDescription) ")
-                            + Text(Localization.commonReadMore)
-                            .foregroundColor(Colors.Text.accent)
+                if let shortDescription = viewModel.shortDescription {
+                    Button(action: viewModel.openFullDescription) {
+                        Group {
+                            Text("\(shortDescription) ")
+                                + Text(Localization.commonReadMore)
+                                .foregroundColor(Colors.Text.accent)
+                        }
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
                     }
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
 
                 contentBlocks
+                    .padding(.bottom, 45)
             }
             .padding(.top, 14)
         }
@@ -91,7 +94,12 @@ struct TokenMarketsDetailsView: View {
                 // TODO: My portfolio
             }
             .defaultRoundedBackground()
+
+            if viewModel.isLoading {
+                ContentBlockSkeletons()
+            } else {}
         }
+        .animation(.default, value: viewModel.isLoading)
     }
 }
 
@@ -106,5 +114,5 @@ struct TokenMarketsDetailsView: View {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init()))
 }

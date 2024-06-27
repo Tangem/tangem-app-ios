@@ -11,8 +11,9 @@ import Combine
 
 class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var price: String
-    @Published var shortDescription: String
+    @Published var shortDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
+    @Published var isLoading = true
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -65,9 +66,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }()
 
     private let tokenInfo: MarketsTokenModel
+    private let dataProvider: TokenMarketsDetailsDataProvider
 
-    init(tokenInfo: MarketsTokenModel) {
+    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider) {
         self.tokenInfo = tokenInfo
+        self.dataProvider = dataProvider
 
         price = balanceFormatter.formatFiatBalance(
             tokenInfo.currentPrice,
@@ -81,9 +84,14 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         loadedHistoryInfo = [Date().timeIntervalSince1970: tokenInfo.priceChangePercentage[MarketsPriceIntervalType.day.marketsListId] ?? 0]
         loadedPriceChangeInfo = tokenInfo.priceChangePercentage
+    }
 
-        // TODO: Will be replaced in IOS-7083
-        shortDescription = "XRP (XRP) is a cryptocurrency launched in January 2009, where the first genesis block was mined on 9th January 2009."
+    private func loadDetailedInfo() {
+        runTask(in: self) { viewModel in
+            let result = try await viewModel.dataProvider.loadTokenMarketsData(for: viewModel.tokenInfo.id)
+
+            await runOnMain { viewModel.isLoading = false }
+        }
     }
 }
 

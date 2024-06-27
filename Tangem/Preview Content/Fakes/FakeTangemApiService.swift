@@ -102,6 +102,10 @@ class FakeTangemApiService: TangemApiService {
         let provider = FakeMarketListProvider()
         return try provider.parseCoinResponse()
     }
+
+    func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
+        throw "Not implemented"
+    }
 }
 
 private struct FakeCoinListProvider {
