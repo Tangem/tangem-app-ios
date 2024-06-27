@@ -355,7 +355,7 @@ final class SendViewModel: ObservableObject {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, destination in
-                switch destination?.source {
+                switch destination.source {
                 case .myWallet, .recentAddress:
                     viewModel.next()
                 default:
@@ -687,11 +687,11 @@ final class SendViewModel: ObservableObject {
     private func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
         // If the blockchain doesn't support additional field -- return null
         // Otherwise return full / empty
-        guard let additionalField = sendModel.additionalField else {
-            return .null
+        switch sendModel.additionalField {
+        case .notSupported: .null
+        case .empty: .empty
+        case .filled: .full
         }
-
-        return additionalField.1.isEmpty ? .empty : .full
     }
 
     // TODO: Andrey Fedorov - Re-use fee currency & redirect logic from Token Details & Send (IOS-5710)

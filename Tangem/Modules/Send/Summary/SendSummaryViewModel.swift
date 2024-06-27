@@ -19,7 +19,7 @@ protocol SendSummaryViewModelInput: AnyObject {
     var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
     var transactionAmountPublisher: AnyPublisher<Amount?, Never> { get }
     var destinationTextPublisher: AnyPublisher<String, Never> { get }
-    var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> { get }
+    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> { get }
     var feeValuePublisher: AnyPublisher<Fee?, Never> { get }
     var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
     var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }

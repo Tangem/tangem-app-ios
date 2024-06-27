@@ -7,8 +7,12 @@
 //
 
 import Foundation
+import Combine
 
-protocol SendDestinationInput: AnyObject {}
+protocol SendDestinationInput: AnyObject {
+    var destinationPublisher: AnyPublisher<SendAddress, Never> { get }
+    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> { get }
+}
 
 protocol SendDestinationOutput: AnyObject {
     func destinationDidChanged(_ address: SendAddress?)

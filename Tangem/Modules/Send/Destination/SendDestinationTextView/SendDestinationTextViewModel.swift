@@ -78,6 +78,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
 
         isDisabled
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] isDisabled in
                 self?.isDisabled = isDisabled
                 self?.placeholder = style.placeholder(isDisabled: isDisabled)
@@ -85,6 +86,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         errorText
+            .receive(on: DispatchQueue.main)
             .assign(to: \.errorText, on: self, ownership: .weak)
             .store(in: &bag)
 

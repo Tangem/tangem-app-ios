@@ -195,7 +195,7 @@ struct SendModulesFactory {
         input: SendDestinationInput,
         output: SendDestinationOutput
     ) -> SendDestinationInteractor {
-        let parametersBuilder = SendTransactionParametersBuilder(blockchain: tokenItem.blockchain)
+        let parametersBuilder = SendTransactionParametersBuilder(blockchain: walletModel.tokenItem.blockchain)
 
         return CommonSendDestinationInteractor(
             input: input,
@@ -204,7 +204,7 @@ struct SendModulesFactory {
             transactionHistoryProvider: makeSendDestinationTransactionHistoryProvider(),
             transactionHistoryMapper: makeTransactionHistoryMapper(),
             addressResolver: walletModel.addressResolver,
-            additionalFieldType: .fields(for: tokenItem.blockchain),
+            additionalFieldType: .fields(for: walletModel.tokenItem.blockchain),
             parametersBuilder: parametersBuilder
         )
     }
@@ -226,7 +226,7 @@ struct SendModulesFactory {
 
     private func makeTransactionHistoryMapper() -> TransactionHistoryMapper {
         TransactionHistoryMapper(
-            currencySymbol: tokenItem.currencySymbol,
+            currencySymbol: walletModel.tokenItem.currencySymbol,
             walletAddresses: walletModel.addresses,
             showSign: false
         )

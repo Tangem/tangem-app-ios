@@ -13,7 +13,7 @@ import BlockchainSdk
 
 class SendFinishViewModelInputMock: SendFinishViewModelInput {
     var destinationText: String? { "0x123123123" }
-    var additionalField: (SendAdditionalFields, String)? { (.memo, "123123") }
+    var additionalField: DestinationAdditionalFieldType { .filled(type: .memo, value: "123123", params: TONTransactionParams(memo: "123123")) }
     var userInputAmountValue: BlockchainSdk.Amount? { .init(with: .ethereum(testnet: false), type: .coin, value: 1) }
     var feeValue: BlockchainSdk.Fee? { .init(Amount(with: .ethereum(testnet: false), value: 0.003)) }
     var selectedFeeOption: FeeOption { .market }

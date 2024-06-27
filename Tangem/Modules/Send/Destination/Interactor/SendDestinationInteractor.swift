@@ -73,6 +73,30 @@ class CommonSendDestinationInteractor {
             output?.destinationDidChanged(.none)
         }
     }
+
+    private func resolve(destination: String, resolver: AddressResolver) async throws -> String {
+        _isValidatingDestination.send(true)
+        let resolved = try await resolver.resolve(destination)
+        _isValidatingDestination.send(false)
+
+        return resolved
+    }
+
+    private func proceed(additionalField: String) throws -> DestinationAdditionalFieldType {
+        guard let type = additionalFieldType else {
+            assertionFailure("Additional field for the blockchain whick doesn't support it")
+            return .notSupported
+        }
+
+        guard let parameters = try parametersBuilder.transactionParameters(from: additionalField) else {
+            // We don't have to call this code if transactionParameters doesn't exist fot this blockchain
+            // Check your input parameters
+            assertionFailure("Additional field for the blockchain whick doesn't support it")
+            return .notSupported
+        }
+
+        return .filled(type: type, value: additionalField, params: parameters)
+    }
 }
 
 // MARK: - SendDestinationInteractor
@@ -153,49 +177,6 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
             _destinationAdditionalFieldError.send(error)
             output?.destinationAdditionalParametersDidChanged(.empty(type: type))
         }
-    }
-
-    func proceed(destination: String) async throws -> String {
-        try validator.validate(destination: destination)
-
-        if let addressResolver = addressResolver {
-            try await Task.sleep(seconds: 1)
-
-            try Task.checkCancellation()
-
-            let resolvedAddress = try await addressResolver.resolve(destination)
-            return resolvedAddress
-        }
-
-        return destination
-    }
-
-    func resolve(destination: String, resolver: AddressResolver) async throws -> String {
-        try await Task.sleep(seconds: 1)
-
-        try Task.checkCancellation()
-
-        await runOnMain { _isValidatingDestination.send(true) }
-        let resolved = try await resolver.resolve(destination)
-        await runOnMain { _isValidatingDestination.send(false) }
-
-        return resolved
-    }
-
-    func proceed(additionalField: String) throws -> DestinationAdditionalFieldType {
-        guard let type = additionalFieldType else {
-            assertionFailure("Additional field for the blockchain whick doesn't support it")
-            return .notSupported
-        }
-
-        guard let parameters = try parametersBuilder.transactionParameters(from: additionalField) else {
-            // We don't have to call this code if transactionParameters doesn't exist fot this blockchain
-            // Check your input parameters
-            assertionFailure("Additional field for the blockchain whick doesn't support it")
-            return .notSupported
-        }
-
-        return .filled(type: type, value: additionalField, params: parameters)
     }
 }
 
