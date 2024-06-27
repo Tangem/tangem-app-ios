@@ -54,15 +54,9 @@ struct WalletSelectorItemView: View {
             if viewModel.isSelected {
                 Assets.Checked.on.image
                     .frame(size: Constants.checkedSelectedIconSize)
-                    .opacity(viewModel.isSelected ? 1.0 : 0.0)
-                    .frame(size: Constants.checkedSelectedIconSize)
-                    .animation(.easeInOut(duration: 1.0), value: viewModel.isSelected)
             } else {
                 Assets.Checked.off.image
                     .frame(size: Constants.checkedSelectedIconSize)
-                    .opacity(viewModel.isSelected ? 1.0 : 0.0)
-                    .frame(size: Constants.checkedSelectedIconSize)
-                    .animation(.easeInOut(duration: 1.0), value: viewModel.isSelected)
             }
         }
     }
