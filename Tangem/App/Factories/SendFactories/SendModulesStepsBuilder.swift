@@ -10,8 +10,15 @@ import Foundation
 import TangemStaking
 
 struct SendModulesStepsBuilder {
-    let userWalletName: String
-    let walletModel: WalletModel
+    private let userWalletName: String
+    private let walletModel: WalletModel
+
+    private var tokenItem: TokenItem { walletModel.tokenItem }
+
+    init(userWalletName: String, walletModel: WalletModel) {
+        self.userWalletName = userWalletName
+        self.walletModel = walletModel
+    }
 
     func makeTokenIconInfo() -> TokenIconInfo {
         TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
@@ -60,5 +67,15 @@ struct SendModulesStepsBuilder {
                     (name: userWalletModel.name, address: walletModel.defaultAddress)
                 }
         }
+    }
+
+    func makeCurrencyPickerData() -> SendCurrencyPickerData {
+        SendCurrencyPickerData(
+            cryptoIconURL: makeTokenIconInfo().imageURL,
+            cryptoCurrencyCode: tokenItem.currencySymbol,
+            fiatIconURL: makeFiatIconURL(),
+            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode,
+            disabled: walletModel.quote == nil
+        )
     }
 }

@@ -36,7 +36,7 @@ class MarketsListDataFilterProvider {
 
     // This is necessary to determine the supported values in case of expansion
     var supportedPriceIntervalTypes: [MarketsPriceIntervalType] {
-        MarketsPriceIntervalType.allCases
+        [.day, .week, .month]
     }
 
     func didSelectMarketPriceInterval(_ interval: MarketsPriceIntervalType) {

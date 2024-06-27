@@ -35,7 +35,15 @@ class SendFinishViewModel: ObservableObject {
     private let feeTypeAnalyticsParameter: Analytics.ParameterValue
     private let walletInfo: SendWalletInfo
 
-    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, feeTypeAnalyticsParameter: Analytics.ParameterValue, walletInfo: SendWalletInfo, sectionViewModelFactory: SendSummarySectionViewModelFactory) {
+    init?(
+        initial: Initial,
+        input: SendFinishViewModelInput,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        feeTypeAnalyticsParameter: Analytics.ParameterValue,
+        walletInfo: SendWalletInfo,
+        sectionViewModelFactory: SendSummarySectionViewModelFactory
+    ) {
+        // TODO: Move all logic into factory
         guard
             let destinationText = input.destinationText,
             let transactionTime = input.transactionTime,
@@ -48,10 +56,10 @@ class SendFinishViewModel: ObservableObject {
             address: destinationText,
             additionalField: input.additionalField
         )
-        amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(
-            from: fiatCryptoValueProvider.formattedAmount,
-            amountAlternative: fiatCryptoValueProvider.formattedAmountAlternative
-        )
+
+        let formattedAmount = initial.amount?.format(currencySymbol: initial.tokenItem.currencySymbol)
+        let formattedAmountAlternative = initial.amount?.formatAlternative(currencySymbol: initial.tokenItem.currencySymbol)
+        amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(from: formattedAmount, amountAlternative: formattedAmountAlternative)
         feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: .loaded(feeValue), feeOption: input.selectedFeeOption)
 
         let formatter = DateFormatter()
@@ -73,5 +81,12 @@ class SendFinishViewModel: ObservableObject {
         withAnimation(SendView.Constants.defaultAnimation) {
             showHeader = true
         }
+    }
+}
+
+extension SendFinishViewModel {
+    struct Initial {
+        let tokenItem: TokenItem
+        let amount: SendAmount?
     }
 }
