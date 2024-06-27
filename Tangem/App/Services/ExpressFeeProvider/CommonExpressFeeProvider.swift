@@ -81,8 +81,8 @@ private extension CommonExpressFeeProvider {
             return fee
         }
 
-        let increaseMultiplicator = BigUInt(112) / BigUInt(100)
-        let newParameters = parameters.multiplyingGasLimit(to: increaseMultiplicator)
+        let gasLimit = parameters.gasLimit * BigUInt(112) / BigUInt(100)
+        let newParameters = parameters.changingGasLimit(to: gasLimit)
         let feeValue = newParameters.calculateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
         let amount = Amount(with: wallet.tokenItem.blockchain, value: feeValue)
         return Fee(amount, parameters: newParameters)
