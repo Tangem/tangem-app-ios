@@ -2,8 +2,8 @@
 //  WalletSelectorItemViewModel.swift
 //  Tangem
 //
-//  Created by Andrey Chukavin on 18.09.2023.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by skibinalexander on 14.06.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
