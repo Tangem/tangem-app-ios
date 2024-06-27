@@ -44,7 +44,6 @@ struct WalletSelectorItemView: View {
 
             selectedCheckmark
         }
-        .padding(.horizontal, 12)
         .padding(.vertical, 14)
         .contentShape(Rectangle())
     }
