@@ -1,5 +1,5 @@
 //
-//  MarketsWalletSelectorItemView.swift
+//  WalletSelectorItemView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 14.06.2024.
@@ -8,12 +8,22 @@
 
 import SwiftUI
 
-struct MarketsWalletSelectorItemView: View {
-    @ObservedObject var viewModel: MarketsWalletSelectorItemViewModel
+struct WalletSelectorItemView: View {
+    @ObservedObject var viewModel: WalletSelectorItemViewModel
 
     private let maxImageWidth = 50.0
 
     var body: some View {
+        Button {
+            viewModel.didTapWallet(viewModel.userWalletId)
+        } label: {
+            contentButton
+        }
+    }
+
+    // MARK: - Private Implementation
+
+    private var contentButton: some View {
         HStack(spacing: 12) {
             if let image = viewModel.image {
                 Image(uiImage: image)
@@ -32,20 +42,35 @@ struct MarketsWalletSelectorItemView: View {
 
             Spacer(minLength: 0)
 
-            if viewModel.isSelected {
-                Assets.Checked.on.image
-                    .frame(width: 24, height: 24)
-            } else {
-                Assets.Checked.off.image
-                    .frame(width: 24, height: 24)
-            }
+            selectedCheckmark
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 14)
         .contentShape(Rectangle())
-        .onTapGesture {
-            viewModel.didTapWallet(viewModel.userWalletId)
+    }
+
+    private var selectedCheckmark: some View {
+        VStack {
+            if viewModel.isSelected {
+                Assets.Checked.on.image
+                    .frame(size: Constants.checkedSelectedIconSize)
+                    .opacity(viewModel.isSelected ? 1.0 : 0.0)
+                    .frame(size: Constants.checkedSelectedIconSize)
+                    .animation(.easeInOut(duration: 1.0), value: viewModel.isSelected)
+            } else {
+                Assets.Checked.off.image
+                    .frame(size: Constants.checkedSelectedIconSize)
+                    .opacity(viewModel.isSelected ? 1.0 : 0.0)
+                    .frame(size: Constants.checkedSelectedIconSize)
+                    .animation(.easeInOut(duration: 1.0), value: viewModel.isSelected)
+            }
         }
+    }
+}
+
+extension WalletSelectorItemView {
+    enum Constants {
+        static let checkedSelectedIconSize = CGSize(bothDimensions: 24)
     }
 }
 

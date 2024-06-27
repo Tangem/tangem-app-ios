@@ -21,7 +21,7 @@ struct MarketsWalletSelectorView: View {
                 .padding(.horizontal, 14)
 
             ForEach(viewModel.itemViewModels) { itemViewModel in
-                MarketsWalletSelectorItemView(viewModel: itemViewModel)
+                WalletSelectorItemView(viewModel: itemViewModel)
             }
         }
         .background(Colors.Background.action)

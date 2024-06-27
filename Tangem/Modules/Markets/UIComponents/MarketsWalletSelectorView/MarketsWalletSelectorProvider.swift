@@ -14,5 +14,5 @@ protocol MarketsWalletSelectorProvider: AnyObject {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> { get }
 
     /// ViewModels list for wallet selector screen
-    var itemViewModels: [MarketsWalletSelectorItemViewModel] { get }
+    var itemViewModels: [WalletSelectorItemViewModel] { get }
 }

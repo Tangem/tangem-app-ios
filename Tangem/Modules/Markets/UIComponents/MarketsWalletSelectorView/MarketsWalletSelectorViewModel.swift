@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class MarketsWalletSelectorViewModel: ObservableObject {
-    var itemViewModels: [MarketsWalletSelectorItemViewModel] = []
+    var itemViewModels: [WalletSelectorItemViewModel] = []
 
     private weak var provider: MarketsWalletSelectorProvider?
     private var bag = Set<AnyCancellable>()

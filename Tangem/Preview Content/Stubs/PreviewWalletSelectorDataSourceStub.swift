@@ -21,7 +21,7 @@ class PreviewWalletSelectorDataSourceStub: WalletSelectorDataSource {
 class PreviewMarketsWalletSelectorDataSourceStub: MarketsWalletSelectorProvider {
     private var _selectedUserWalletModel: CurrentValueSubject<UserWalletModel?, Never> = .init(nil)
 
-    var itemViewModels: [MarketsWalletSelectorItemViewModel] = []
+    var itemViewModels: [WalletSelectorItemViewModel] = []
 
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
