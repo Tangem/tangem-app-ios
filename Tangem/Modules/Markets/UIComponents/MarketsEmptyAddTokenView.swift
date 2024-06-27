@@ -16,7 +16,7 @@ struct MarketsEmptyAddTokenView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 12) {
             headerView
 
             buttonView
