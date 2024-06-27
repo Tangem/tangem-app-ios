@@ -13,6 +13,7 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
     typealias FooterFactory = () -> Footer?
 
     @ObservedObject var viewModel: ManageTokensListViewModel
+    let isReadOnly: Bool
     let header: Header?
     let footer: Footer?
 
@@ -22,21 +23,38 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
     init(
         viewModel: ManageTokensListViewModel,
         bottomPadding: CGFloat = Constants.bottomPadding,
+        isReadOnly: Bool = false,
         @ViewBuilder header: HeaderFactory,
         @ViewBuilder footer: FooterFactory
     ) {
         self.viewModel = viewModel
         self.bottomPadding = bottomPadding
+        self.isReadOnly = isReadOnly
         self.header = header()
         self.footer = footer()
     }
 
     init(
         viewModel: ManageTokensListViewModel,
-        bottomPadding: CGFloat = Constants.bottomPadding
+        bottomPadding: CGFloat = Constants.bottomPadding,
+        isReadOnly: Bool = false,
+        @ViewBuilder header: HeaderFactory
+    ) where Footer == EmptyView {
+        self.viewModel = viewModel
+        self.bottomPadding = bottomPadding
+        self.isReadOnly = isReadOnly
+        self.header = header()
+        footer = nil
+    }
+
+    init(
+        viewModel: ManageTokensListViewModel,
+        bottomPadding: CGFloat = Constants.bottomPadding,
+        isReadOnly: Bool = false
     ) where Header == EmptyView, Footer == EmptyView {
         self.viewModel = viewModel
         self.bottomPadding = bottomPadding
+        self.isReadOnly = isReadOnly
         header = nil
         footer = nil
     }
@@ -45,14 +63,13 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
 
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 if let header {
                     header
                 }
 
-                ForEach(viewModel.coinViewModels) {
-                    ManageTokensCoinView(model: $0)
-                        .padding(.horizontal)
+                ForEach(viewModel.tokenListItemModels) {
+                    ManageTokensListItemView(viewModel: $0, isReadOnly: isReadOnly)
                 }
 
                 if viewModel.hasNextPage {

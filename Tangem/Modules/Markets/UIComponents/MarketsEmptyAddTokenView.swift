@@ -21,24 +21,18 @@ struct MarketsEmptyAddTokenView: View {
 
             buttonView
         }
-        .padding(14)
-        .background(Colors.Background.primary)
-        .cornerRadiusContinuous(14)
+        .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
     }
 
     private var headerView: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(Localization.marketsCommonMyPortfolio)
-                    .lineLimit(1)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+        VStack(alignment: .leading, spacing: 10) {
+            Text(Localization.marketsCommonMyPortfolio)
+                .lineLimit(1)
+                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                Text(Localization.marketsAddToMyPortfolioDescription)
-                    .lineLimit(2)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-            }
-
-            Spacer()
+            Text(Localization.marketsAddToMyPortfolioDescription)
+                .lineLimit(2)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
         }
     }
 

@@ -182,7 +182,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         let visible: Bool
         if let feeCryptoValue, isFeeIncluded {
             let converter = BalanceConverter()
-            let feeFiatValue = converter.convertToFiat(value: feeCryptoValue, from: feeTokenItem.currencyId ?? "")
+            let feeFiatValue = converter.convertToFiat(feeCryptoValue, currencyId: feeTokenItem.currencyId ?? "")
 
             let formatter = BalanceFormatter()
             cryptoAmountFormatted = formatter.formatCryptoBalance(feeCryptoValue, currencyCode: feeTokenItem.currencySymbol)
@@ -269,7 +269,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         case .invalidNumber:
             return nil
         case .insufficientAmountToReserveAtDestination:
-            // Use async validation and show the notifcation before. Instead of alert
+            // Use async validation and show the notification before. Instead of alert
             return nil
         }
     }

@@ -32,18 +32,16 @@ struct SendFinishView: View {
                                 .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
                         )
                 case .additionalField(let type, let value):
-                    if let name = type.name {
-                        DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                            .setNamespace(namespace)
-                            .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                            .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
-                            .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                            .background(
-                                Colors.Background.action
-                                    .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                                    .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
-                            )
-                    }
+                    DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
+                        .setNamespace(namespace)
+                        .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
+                        .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
+                        .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                        .background(
+                            Colors.Background.action
+                                .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
+                                .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
+                        )
                 }
             }
             .backgroundColor(.clear)
@@ -94,46 +92,48 @@ struct SendFinishView: View {
     }
 }
 
-struct SendFinishView_Previews: PreviewProvider {
-    @Namespace static var namespace
+/*
+ struct SendFinishView_Previews: PreviewProvider {
+     @Namespace static var namespace
 
-    static let tokenIconInfo = TokenIconInfo(
-        name: "Tether",
-        blockchainIconName: "ethereum.fill",
-        imageURL: IconURLBuilder().tokenIconURL(id: "tether"),
-        isCustom: false,
-        customTokenColor: nil
-    )
+     static let tokenIconInfo = TokenIconInfo(
+         name: "Tether",
+         blockchainIconName: "ethereum.fill",
+         imageURL: IconURLBuilder().tokenIconURL(id: "tether"),
+         isCustom: false,
+         customTokenColor: nil
+     )
 
-    static let walletInfo = SendWalletInfo(
-        walletName: "Wallet",
-        balanceValue: 12013,
-        balance: "12013",
-        blockchain: .ethereum(testnet: false),
-        currencyId: "tether",
-        feeCurrencySymbol: "ETH",
-        feeCurrencyId: "ethereum",
-        isFeeApproximate: false,
-        tokenIconInfo: tokenIconInfo,
-        cryptoIconURL: nil,
-        cryptoCurrencyCode: "USDT",
-        fiatIconURL: nil,
-        fiatCurrencyCode: "USD",
-        amountFractionDigits: 6,
-        feeFractionDigits: 6,
-        feeAmountType: .coin,
-        canUseFiatCalculation: true
-    )
+     static let walletInfo = SendWalletInfo(
+         walletName: "Wallet",
+         balanceValue: 12013,
+         balance: "12013",
+         blockchain: .ethereum(testnet: false),
+         currencyId: "tether",
+         feeCurrencySymbol: "ETH",
+         feeCurrencyId: "ethereum",
+         isFeeApproximate: false,
+         tokenIconInfo: tokenIconInfo,
+         cryptoIconURL: nil,
+         cryptoCurrencyCode: "USDT",
+         fiatIconURL: nil,
+         fiatCurrencyCode: "USD",
+         amountFractionDigits: 6,
+         feeFractionDigits: 6,
+         feeAmountType: .coin,
+         canUseFiatCalculation: true
+     )
 
-    static var viewModel = SendFinishViewModel(
-        input: SendFinishViewModelInputMock(),
-        fiatCryptoValueProvider: SendFiatCryptoValueProviderMock(),
-        addressTextViewHeightModel: .init(),
-        feeTypeAnalyticsParameter: .transactionFeeFixed,
-        walletInfo: walletInfo
-    )!
+     static var viewModel = SendFinishViewModel(
+         input: SendFinishViewModelInputMock(),
+         fiatCryptoValueProvider: SendFiatCryptoValueProviderMock(),
+         addressTextViewHeightModel: .init(),
+         feeTypeAnalyticsParameter: .transactionFeeFixed,
+         walletInfo: walletInfo
+     )!
 
-    static var previews: some View {
-        SendFinishView(viewModel: viewModel, namespace: namespace)
-    }
-}
+     static var previews: some View {
+         SendFinishView(viewModel: viewModel, namespace: namespace)
+     }
+ }
+ */

@@ -1,5 +1,5 @@
 //
-//  SendDestinationViewModelInputMock.swift
+//  SendSendDestinationInputMock.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 01.11.2023.
@@ -10,63 +10,8 @@ import SwiftUI
 import Combine
 import BlockchainSdk
 
-class SendDestinationViewModelInputMock: SendDestinationViewModelInput {
-    var destinationValid: AnyPublisher<Bool, Never> {
-        .just(output: true)
-    }
+class SendDestinationInputOutputMock: SendDestinationInput, SendDestinationOutput {
+    func destinationDidChanged(_ address: SendAddress?) {}
 
-    var isValidatingDestination: AnyPublisher<Bool, Never> {
-        .just(output: false)
-    }
-
-    var destinationTextPublisher: AnyPublisher<String, Never> {
-        .just(output: "0x123123")
-    }
-
-    var destinationAdditionalFieldTextPublisher: AnyPublisher<String, Never> {
-        .just(output: "Memo")
-    }
-
-    var destinationError: AnyPublisher<Error?, Never> {
-        Just(nil).eraseToAnyPublisher()
-    }
-
-    var destinationAdditionalFieldError: AnyPublisher<Error?, Never> {
-        Just(nil).eraseToAnyPublisher()
-    }
-
-    var networkName: String {
-        "Ethereum"
-    }
-
-    var additionalFieldType: SendAdditionalFields? {
-        .memo
-    }
-
-    var canChangeAdditionalField: AnyPublisher<Bool, Never> {
-        .just(output: true)
-    }
-
-    var blockchainNetwork: BlockchainNetwork {
-        BlockchainNetwork(.ethereum(testnet: false), derivationPath: nil)
-    }
-
-    var currencySymbol: String {
-        "ETH"
-    }
-
-    var walletAddresses: [String] {
-        []
-    }
-
-    var transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never> {
-        .just(output: .loading)
-    }
-
-    var suggestedWallets: [SendSuggestedDestinationWallet] {
-        []
-    }
-
-    func setDestination(_ address: SendAddress) {}
-    func setDestinationAdditionalField(_ additionalField: String) {}
+    func destinationAdditionalParametersDidChanged(_ type: DestinationAdditionalFieldType) {}
 }

@@ -25,21 +25,20 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .detentBottomSheet(
-                item: $coordinator.networkSelectorViewModel,
-                detents: [.medium, .large]
-            ) { viewModel in
-                NavigationView {
-                    ManageTokensNetworkSelectorView(viewModel: viewModel)
-                        .navigationLinks(links)
-                }
-                .navigationViewStyle(.stack)
+            .bottomSheet(
+                item: $coordinator.marketsListOrderBottonSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                MarketsListOrderBottonSheetView(viewModel: $0)
             }
             .detentBottomSheet(
                 item: $coordinator.addCustomTokenCoordinator,
                 detents: [.large]
-            ) { coordinator in
-                AddCustomTokenCoordinatorView(coordinator: coordinator)
+            ) {
+                AddCustomTokenCoordinatorView(coordinator: $0)
+            }
+            .sheet(item: $coordinator.tokenMarketsDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
     }
 

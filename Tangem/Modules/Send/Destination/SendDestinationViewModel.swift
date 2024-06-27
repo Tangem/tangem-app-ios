@@ -7,108 +7,91 @@
 //
 
 import Foundation
-import SwiftUI
 import Combine
 import BlockchainSdk
 
-protocol SendDestinationViewModelInput {
-    var destinationValid: AnyPublisher<Bool, Never> { get }
+protocol SendDestinationInput: AnyObject {}
 
-    var isValidatingDestination: AnyPublisher<Bool, Never> { get }
-
-    var destinationTextPublisher: AnyPublisher<String, Never> { get }
-    var destinationAdditionalFieldTextPublisher: AnyPublisher<String, Never> { get }
-
-    var destinationError: AnyPublisher<Error?, Never> { get }
-    var destinationAdditionalFieldError: AnyPublisher<Error?, Never> { get }
-
-    var networkName: String { get }
-    var blockchainNetwork: BlockchainNetwork { get }
-
-    var additionalFieldType: SendAdditionalFields? { get }
-    var canChangeAdditionalField: AnyPublisher<Bool, Never> { get }
-
-    var currencySymbol: String { get }
-    var walletAddresses: [String] { get }
-
-    var transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never> { get }
-
-    func setDestination(_ address: SendAddress)
-    func setDestinationAdditionalField(_ additionalField: String)
+protocol SendDestinationOutput: AnyObject {
+    func destinationDidChanged(_ address: SendAddress?)
+    func destinationAdditionalParametersDidChanged(_ type: DestinationAdditionalFieldType)
 }
 
 class SendDestinationViewModel: ObservableObject {
-    var addressViewModel: SendDestinationTextViewModel?
-    var additionalFieldViewModel: SendDestinationTextViewModel?
+    @Published var addressViewModel: SendDestinationTextViewModel?
+    @Published var additionalFieldViewModel: SendDestinationTextViewModel?
 
-    @Published var destinationErrorText: String?
-    @Published var destinationAdditionalFieldErrorText: String?
     @Published var suggestedDestinationViewModel: SendSuggestedDestinationViewModel?
     @Published var animatingAuxiliaryViewsOnAppear: Bool = false
     @Published var showSuggestedDestinations = true
 
     var didProperlyDisappear: Bool = false
 
-    private let input: SendDestinationViewModelInput
+    // MARK: - Private
+
+    private let _destinationValid: CurrentValueSubject<Bool, Never> = .init(false)
+
+    private let _destinationText: CurrentValueSubject<String, Never> = .init("")
+    private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
+    private let _destinationError: CurrentValueSubject<Error?, Never> = .init(nil)
+
+    private let _destinationAdditionalFieldText: CurrentValueSubject<String, Never> = .init("")
+    private let _canChangeAdditionalField: CurrentValueSubject<Bool, Never> = .init(true)
+    private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
+
+    private let initial: InitialModel
+    private weak var input: SendDestinationInput?
+    private weak var output: SendDestinationOutput?
+    private let processor: SendDestinationProcessor
+
     private let addressTextViewHeightModel: AddressTextViewHeightModel
     private let transactionHistoryMapper: TransactionHistoryMapper
     private let suggestedWallets: [SendSuggestedDestinationWallet]
+    private let transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never>
 
     private var bag: Set<AnyCancellable> = []
 
-    // MARK: - Dependencies
-
-    @Injected(\.userWalletRepository) private static var userWalletRepository: UserWalletRepository
-
     // MARK: - Methods
 
-    init(input: SendDestinationViewModelInput, addressTextViewHeightModel: AddressTextViewHeightModel) {
+    init(
+        initial: InitialModel,
+        input: SendDestinationInput,
+        output: SendDestinationOutput,
+        processor: SendDestinationProcessor,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        transactionHistoryMapper: TransactionHistoryMapper
+    ) {
+        suggestedWallets = initial.suggestedWallets.map { wallet in
+            SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
+        }
+
+        transactionHistoryPublisher = initial.transactionHistoryPublisher
+
+        self.initial = initial
         self.input = input
+        self.output = output
+        self.processor = processor
+
         self.addressTextViewHeightModel = addressTextViewHeightModel
+        self.transactionHistoryMapper = transactionHistoryMapper
 
-        transactionHistoryMapper = TransactionHistoryMapper(
-            currencySymbol: input.currencySymbol,
-            walletAddresses: input.walletAddresses,
-            showSign: false
-        )
-
-        let addressesToIgnore = input.blockchainNetwork.blockchain.supportsCompound ? [] : input.walletAddresses
-
-        suggestedWallets = Self.suggestedWallets(
-            for: input.blockchainNetwork.blockchain,
-            ignoringAddesses: addressesToIgnore
-        )
-
-        addressViewModel = SendDestinationTextViewModel(
-            style: .address(networkName: input.networkName),
-            input: input.destinationTextPublisher,
-            isValidating: input.isValidatingDestination,
-            isDisabled: .just(output: false),
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            errorText: input.destinationError
-        ) { [weak self] in
-            self?.input.setDestination(SendAddress(value: $0, source: .textField))
-        } didPasteDestination: { [weak self] in
-            self?.input.setDestination(SendAddress(value: $0, source: .pasteButton))
-        }
-
-        if let additionalFieldType = input.additionalFieldType,
-           let name = additionalFieldType.name {
-            additionalFieldViewModel = SendDestinationTextViewModel(
-                style: .additionalField(name: name),
-                input: input.destinationAdditionalFieldTextPublisher,
-                isValidating: .just(output: false),
-                isDisabled: input.canChangeAdditionalField.map { !$0 }.eraseToAnyPublisher(),
-                addressTextViewHeightModel: .init(),
-                errorText: input.destinationAdditionalFieldError
-            ) { [weak self] in
-                self?.input.setDestinationAdditionalField($0)
-            } didPasteDestination: { [weak self] in
-                self?.input.setDestinationAdditionalField($0)
-            }
-        }
-
+        setupView()
         bind()
+
+        if let predefinedDestination = initial.predefinedDestination {
+            _destinationText.send(predefinedDestination)
+            destinationDidChange(address: predefinedDestination, source: .sellProvider)
+        }
+
+        if let type = initial.additionalFieldType, let predefinedTag = initial.predefinedTag {
+            _destinationAdditionalFieldText.send(predefinedTag)
+            destinationAdditionalDidChange(value: predefinedTag, type: type)
+        }
+    }
+
+    func update(address: SendAddress?, additionalField: String?) {
+        address.map { _destinationText.send($0.value) }
+        additionalField.map { _destinationAdditionalFieldText.send($0) }
     }
 
     func onAppear() {
@@ -119,106 +102,155 @@ class SendDestinationViewModel: ObservableObject {
         }
     }
 
+    private func setupView() {
+        addressViewModel = SendDestinationTextViewModel(
+            style: .address(networkName: initial.networkName),
+            input: _destinationText.eraseToAnyPublisher(),
+            isValidating: _isValidatingDestination.eraseToAnyPublisher(),
+            isDisabled: .just(output: false),
+            addressTextViewHeightModel: addressTextViewHeightModel,
+            errorText: _destinationError.eraseToAnyPublisher()
+        ) { [weak self] in
+            self?.destinationDidChange(address: $0, source: .textField)
+        } didPasteDestination: { [weak self] in
+            self?._destinationText.send($0)
+            self?.destinationDidChange(address: $0, source: .pasteButton)
+        }
+
+        additionalFieldViewModel = initial.additionalFieldType.map { additionalFieldType in
+            SendDestinationTextViewModel(
+                style: .additionalField(name: additionalFieldType.name),
+                input: _destinationAdditionalFieldText.eraseToAnyPublisher(),
+                isValidating: .just(output: false),
+                isDisabled: _canChangeAdditionalField.map { !$0 }.eraseToAnyPublisher(),
+                addressTextViewHeightModel: .init(),
+                errorText: _destinationAdditionalFieldError.eraseToAnyPublisher()
+            ) { [weak self] in
+                self?.destinationAdditionalDidChange(value: $0, type: additionalFieldType)
+            } didPasteDestination: { [weak self] in
+                self?._destinationAdditionalFieldText.send($0)
+            }
+        }
+    }
+
+    private func destinationDidChange(address: String, source: Analytics.DestinationAddressSource) {
+        guard !address.isEmpty else {
+            _destinationError.send(nil)
+            output?.destinationDidChanged(.none)
+            return
+        }
+
+        runTask(in: self) { viewModel in
+            await runOnMain { viewModel._isValidatingDestination.send(true) }
+
+            do {
+                let address = try await viewModel.processor.proceed(destination: address)
+                viewModel.output?.destinationDidChanged(.init(value: address, source: source))
+
+                await runOnMain {
+                    viewModel._destinationValid.send(true)
+                    viewModel._destinationError.send(.none)
+                }
+
+                Analytics.logDestinationAddress(isAddressValid: true, source: source)
+            } catch {
+                if error is CancellationError { return }
+
+                viewModel.output?.destinationDidChanged(.none)
+
+                await runOnMain {
+                    viewModel._destinationValid.send(false)
+                    viewModel._destinationError.send(error)
+                }
+
+                Analytics.logDestinationAddress(isAddressValid: false, source: source)
+            }
+
+            await runOnMain { viewModel._isValidatingDestination.send(false) }
+        }
+    }
+
+    private func destinationAdditionalDidChange(value: String, type: SendAdditionalFields) {
+        guard !value.isEmpty else {
+            output?.destinationAdditionalParametersDidChanged(.empty(type: type))
+            _destinationAdditionalFieldError.send(nil)
+            return
+        }
+
+        do {
+            let type = try processor.proceed(additionalField: value)
+            output?.destinationAdditionalParametersDidChanged(type)
+        } catch {
+            _destinationAdditionalFieldError.send(error)
+        }
+    }
+
     private func bind() {
-        input
-            .destinationError
-            .map {
-                $0?.localizedDescription
-            }
-            .assign(to: \.destinationErrorText, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        input
-            .destinationAdditionalFieldError
-            .map {
-                $0?.localizedDescription
-            }
-            .assign(to: \.destinationAdditionalFieldErrorText, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        input
-            .destinationValid
+        _destinationValid
             .removeDuplicates()
             .delay(for: 0.01, scheduler: DispatchQueue.main) // HACK: making sure it doesn't interfere with textview's updates
             .sink { [weak self] destinationValid in
-                withAnimation(SendView.Constants.defaultAnimation) {
-                    self?.showSuggestedDestinations = !destinationValid
-                }
+                self?.showSuggestedDestinations = !destinationValid
             }
             .store(in: &bag)
 
-        input
-            .transactionHistoryPublisher
-            .compactMap { [weak self] state -> [SendSuggestedDestinationTransactionRecord] in
-                guard
-                    let self,
-                    case .loaded(let records) = state
-                else {
+        transactionHistoryPublisher
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, state -> [SendSuggestedDestinationTransactionRecord] in
+                guard case .loaded(let records) = state else {
                     return []
                 }
 
-                #warning("TODO: compact map before sort (?)")
                 let transactions = records
-                    .sorted {
-                        ($0.date ?? Date()) > ($1.date ?? Date())
-                    }
-                    .compactMap { record in
-                        self.transactionHistoryMapper.mapSuggestedRecord(record)
-                    }
+                    .compactMap { viewModel.transactionHistoryMapper.mapSuggestedRecord($0) }
                     .prefix(Constants.numberOfRecentTransactions)
+                    .sorted { $0.date > $1.date }
 
                 return Array(transactions)
             }
             .sink { [weak self] recentTransactions in
-                guard let self else { return }
-
-                if suggestedWallets.isEmpty, recentTransactions.isEmpty {
-                    suggestedDestinationViewModel = nil
-                    return
-                }
-
-                suggestedDestinationViewModel = SendSuggestedDestinationViewModel(
-                    wallets: suggestedWallets,
-                    recentTransactions: recentTransactions
-                ) { [weak self] destination in
-                    let feedbackGenerator = UINotificationFeedbackGenerator()
-                    feedbackGenerator.notificationOccurred(.success)
-
-                    self?.input.setDestination(SendAddress(value: destination.address, source: destination.type.source))
-                    if let additionalField = destination.additionalField {
-                        self?.input.setDestinationAdditionalField(additionalField)
-                    }
-                }
+                self?.setup(recentTransactions: recentTransactions)
             }
             .store(in: &bag)
     }
 
-    private static func suggestedWallets(for blockchain: Blockchain, ignoringAddesses ignoredAddresses: [String]) -> [SendSuggestedDestinationWallet] {
-        var suggestedWallets: [SendSuggestedDestinationWallet] = []
-        for userWalletModel in Self.userWalletRepository.models {
-            let walletModels = userWalletModel.walletModelsManager.walletModels
-            let suggestedDestinationWallets = walletModels
-                .filter { walletModel in
-                    // Disregarding the difference between testnet and mainnet blockchains
-                    // See https://github.com/tangem/tangem-app-ios/pull/3079#discussion_r1553709671
-                    return walletModel.blockchainNetwork.blockchain.networkId == blockchain.networkId
-                        && walletModel.isMainToken
-                        && !ignoredAddresses.contains(walletModel.defaultAddress)
-                }
-                .map { walletModel in
-                    SendSuggestedDestinationWallet(
-                        name: userWalletModel.name,
-                        address: walletModel.defaultAddress
-                    )
-                }
-
-            suggestedWallets.append(contentsOf: suggestedDestinationWallets)
+    private func setup(recentTransactions: [SendSuggestedDestinationTransactionRecord]) {
+        if suggestedWallets.isEmpty, recentTransactions.isEmpty {
+            suggestedDestinationViewModel = nil
+            return
         }
-        return suggestedWallets
+
+        suggestedDestinationViewModel = SendSuggestedDestinationViewModel(
+            wallets: suggestedWallets,
+            recentTransactions: recentTransactions
+        ) { [weak self] destination in
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+            self?._destinationText.send(destination.address)
+            self?.destinationDidChange(address: destination.address, source: destination.type.source)
+
+            if let additionalField = destination.additionalField {
+                self?._destinationAdditionalFieldText.send(additionalField)
+            }
+        }
     }
 }
 
 extension SendDestinationViewModel: AuxiliaryViewAnimatable {}
+
+extension SendDestinationViewModel {
+    struct InitialModel {
+        typealias SuggestedWallet = (name: String, address: String)
+
+        let networkName: String
+        let additionalFieldType: SendAdditionalFields?
+        let suggestedWallets: [SuggestedWallet]
+        let transactionHistoryPublisher: AnyPublisher<WalletModel.TransactionHistoryState, Never>
+
+        let predefinedDestination: String?
+        let predefinedTag: String?
+    }
+}
 
 private extension SendSuggestedDestination.`Type` {
     var source: Analytics.DestinationAddressSource {

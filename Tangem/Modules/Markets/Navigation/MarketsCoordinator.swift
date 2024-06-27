@@ -22,11 +22,16 @@ class MarketsCoordinator: CoordinatorObject {
 
     @Published private(set) var manageTokensViewModel: MarketsViewModel? = nil
 
+    // MARK: - Coordinators
+
+    @Published var addCustomTokenCoordinator: AddCustomTokenCoordinator? = nil
+    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
+
     // MARK: - Child ViewModels
 
     @Published var networkSelectorViewModel: ManageTokensNetworkSelectorViewModel? = nil
     @Published var walletSelectorViewModel: WalletSelectorViewModel? = nil
-    @Published var addCustomTokenCoordinator: AddCustomTokenCoordinator?
+    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel? = nil
 
     // MARK: - Init
 
@@ -96,6 +101,17 @@ extension MarketsCoordinator: MarketsRoutable {
 
     func hideGenerateAddressesWarning() {
         delegate?.hideGenerateAddressesWarning()
+    }
+
+    func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider) {
+        marketsListOrderBottonSheetViewModel = .init(from: provider)
+    }
+
+    func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {
+        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator()
+        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
+
+        self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
     }
 }
 

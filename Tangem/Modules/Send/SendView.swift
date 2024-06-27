@@ -122,9 +122,12 @@ struct SendView: View {
     private var currentPage: some View {
         switch viewModel.step {
         case .amount:
-            SendAmountView(viewModel: viewModel.sendAmountViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
+            SendAmountView(
+                viewModel: viewModel.sendAmountViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
+            .onAppear(perform: viewModel.onCurrentPageAppear)
+            .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
             SendDestinationView(viewModel: viewModel.sendDestinationViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
@@ -285,28 +288,30 @@ extension SendView {
 
 // MARK: - Preview
 
-struct SendView_Preview: PreviewProvider {
-    static let card = FakeUserWalletModel.wallet3Cards
+/*
+ struct SendView_Preview: PreviewProvider {
+     static let card = FakeUserWalletModel.wallet3Cards
 
-    static let viewModel = SendViewModel(
-        walletName: card.userWalletName,
-        walletModel: card.walletModelsManager.walletModels.first!,
-        userWalletModel: card,
-        transactionSigner: TransactionSignerMock(),
-        sendType: .send,
-        emailDataProvider: EmailDataProviderMock(),
-        canUseFiatCalculation: true,
-        coordinator: SendRoutableMock()
-    )
+     static let viewModel = SendViewModel(
+         walletName: card.userWalletName,
+         walletModel: card.walletModelsManager.walletModels.first!,
+         userWalletModel: card,
+         transactionSigner: TransactionSignerMock(),
+         sendType: .send,
+         emailDataProvider: EmailDataProviderMock(),
+         canUseFiatCalculation: true,
+         coordinator: SendRoutableMock()
+     )
 
-    static var previews: some View {
-        SendView(viewModel: viewModel)
-            .previewDisplayName("Full screen")
+     static var previews: some View {
+         SendView(viewModel: viewModel)
+             .previewDisplayName("Full screen")
 
-        NavHolder()
-            .sheet(isPresented: .constant(true)) {
-                SendView(viewModel: viewModel)
-            }
-            .previewDisplayName("Sheet")
-    }
-}
+         NavHolder()
+             .sheet(isPresented: .constant(true)) {
+                 SendView(viewModel: viewModel)
+             }
+             .previewDisplayName("Sheet")
+     }
+ }
+ */

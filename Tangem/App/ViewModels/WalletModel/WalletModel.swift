@@ -134,7 +134,7 @@ class WalletModel {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 
     var rateFormatted: String {
@@ -157,6 +157,10 @@ class WalletModel {
     }
 
     var wallet: Wallet { walletManager.wallet }
+
+    var addresses: [String] {
+        wallet.addresses.map { $0.value }
+    }
 
     var addressNames: [String] {
         wallet.addresses.map { $0.localizedName }
