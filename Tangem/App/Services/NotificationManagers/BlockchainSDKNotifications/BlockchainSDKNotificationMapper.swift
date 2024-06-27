@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import enum BlockchainSdk.ValidationError
 import enum BlockchainSdk.WithdrawalNotification
+import enum BlockchainSdk.FeeResourceType
 
 struct BlockchainSDKNotificationMapper {
     private let tokenItem: TokenItem
@@ -52,10 +53,12 @@ struct BlockchainSDKNotificationMapper {
             return .cardanoCannotBeSentBecauseHasTokens
         case .cardanoInsufficientBalanceToSendToken:
             return .cardanoInsufficientBalanceToSendToken(tokenSymbol: tokenItemSymbol)
-        case .insufficientFeeResource(_, let current, let max):
+        case .insufficientFeeResource(.mana, let current, let max):
             return .notEnoughMana(current: current, max: max)
-        case .invalidMaxAmount(let validMax):
-            return .invalidMaxAmount(validMax: validMax)
+        case .amountExeedsFeeResourceCapacity(.mana, let availableAmount):
+            return .manaLimit(availableAmount: availableAmount)
+        case .feeExceedsMaxFeeResource:
+            return .notEnoughBalance
         }
     }
 

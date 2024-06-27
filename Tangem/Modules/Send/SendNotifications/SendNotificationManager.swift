@@ -266,7 +266,8 @@ class CommonSendNotificationManager: SendNotificationManager {
              .cardanoCannotBeSentBecauseHasTokens,
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
-             .invalidMaxAmount:
+             .manaLimit,
+             .notEnoughBalance:
             return .validationErrorEvent(validationErrorEvent)
         case .invalidNumber:
             return nil

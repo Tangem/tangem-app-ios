@@ -890,7 +890,8 @@ private extension ValidationError {
              .cardanoHasTokens,
              .cardanoInsufficientBalanceToSendToken,
              .insufficientFeeResource,
-             .invalidMaxAmount:
+             .amountExeedsFeeResourceCapacity,
+             .feeExceedsMaxFeeResource:
             return .summary
         }
     }
