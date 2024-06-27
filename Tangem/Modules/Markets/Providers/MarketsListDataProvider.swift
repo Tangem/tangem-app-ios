@@ -96,8 +96,6 @@ final class MarketsListDataProvider {
                 return
             }
 
-            AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens with count = \(response.tokens.count)")
-
             provider.currentOffset = response.offset + response.limit
             provider.totalTokensCount = response.total
 

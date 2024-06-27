@@ -15,7 +15,7 @@ final class MarketsListChartsHistoryProvider {
 
     // MARK: Published Properties
 
-    @Published var items: [String: MarketsChartsHistoryItemModel] = [:]
+    @Published var items: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]] = [:]
 
     // MARK: - Private Properties
 
@@ -35,18 +35,28 @@ final class MarketsListChartsHistoryProvider {
 
             do {
                 // Need for filtered coins already received
-                let filteredCoinIds = coinIds.filter { !provider.items.keys.contains($0) }
+                let filteredCoinIds = coinIds.filter {
+                    !(provider.items[$0]?.keys.contains(interval) ?? false)
+                }
+
+                guard !filteredCoinIds.isEmpty else {
+                    return
+                }
+
                 response = try await provider.loadItems(for: filteredCoinIds, with: interval)
             } catch {
                 AppLog.shared.debug("\(String(describing: provider)) loaded charts history preview list tokens did receive error \(error.localizedDescription)")
                 return
             }
 
-            AppLog.shared.debug("\(String(describing: provider)) loaded charts history preview tokens with count = \(response.count)")
+            // It is necessary in order to set the value once in the value of items
+            var copyItems: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]] = provider.items
 
             for (key, value) in response {
-                self.items[key] = value
+                copyItems[key] = [interval: value]
             }
+
+            provider.items = copyItems
         }
     }
 }

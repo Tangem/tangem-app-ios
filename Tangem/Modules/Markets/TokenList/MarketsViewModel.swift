@@ -145,7 +145,7 @@ private extension MarketsViewModel {
             priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
         )
 
-        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider)
+        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
     }
 }
 

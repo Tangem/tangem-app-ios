@@ -38,7 +38,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Init
 
-    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider) {
+    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider, filterProvider: MarketsListDataFilterProvider) {
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
@@ -61,23 +61,23 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             priceChangeState = .loading
         }
 
-        bind(with: chartsProvider)
+        bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     // MARK: - Private Implementation
 
-    private func bind(with provider: MarketsListChartsHistoryProvider) {
-        provider
+    private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
+        charts
             .$items
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, charts in
                 guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
                     return
                 }
 
-                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value)
+                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value[filter.currentFilterValue.interval])
                 viewModel.charts = chartsDoubleConvertedValues
             })
             .store(in: &bag)
