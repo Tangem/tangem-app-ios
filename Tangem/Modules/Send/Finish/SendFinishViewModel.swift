@@ -14,7 +14,7 @@ import BlockchainSdk
 protocol SendFinishViewModelInput: AnyObject {
     var userInputAmountValue: Amount? { get }
     var destinationText: String? { get }
-    var additionalField: (SendAdditionalFields, String)? { get }
+    var additionalField: DestinationAdditionalFieldType { get }
     var feeValue: Fee? { get }
     var selectedFeeOption: FeeOption { get }
 
