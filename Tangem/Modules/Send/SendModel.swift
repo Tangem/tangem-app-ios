@@ -47,10 +47,6 @@ class SendModel {
             .eraseToAnyPublisher()
     }
 
-    var destinationPublisher: AnyPublisher<SendAddress?, Never> {
-        _destination.eraseToAnyPublisher()
-    }
-
     // MARK: - Data
 
     private let _destination: CurrentValueSubject<SendAddress?, Never>
@@ -405,9 +401,23 @@ extension SendModel: SendAmountInput, SendAmountOutput {
     }
 }
 
-// MARK: - SendDestinationInput, SendDestinationOutput
+// MARK: - SendDestinationInput
 
-extension SendModel: SendDestinationInput, SendDestinationOutput {
+extension SendModel: SendDestinationInput {
+    var destinationPublisher: AnyPublisher<SendAddress, Never> {
+        _destination
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+
+    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> {
+        _destinationAdditionalField.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - SendDestinationOutput
+
+extension SendModel: SendDestinationOutput {
     func destinationDidChanged(_ address: SendAddress?) {
         _destination.send(address)
     }
@@ -473,20 +483,6 @@ extension SendModel: SendSummaryViewModelInput {
             .eraseToAnyPublisher()
     }
 
-    var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> {
-        _destinationAdditionalField
-            .withWeakCaptureOf(self)
-            .map { viewModel, field in
-                switch field {
-                case .filled(let type, let value, _):
-                    return (type, value)
-                default:
-                    return nil
-                }
-            }
-            .eraseToAnyPublisher()
-    }
-
     var transactionAmountPublisher: AnyPublisher<Amount?, Never> {
         transaction
             .map(\.?.amount)
@@ -525,13 +521,8 @@ extension SendModel: SendFinishViewModelInput {
         _destination.value?.value
     }
 
-    var additionalField: (SendAdditionalFields, String)? {
-        switch _destinationAdditionalField.value {
-        case .notSupported, .empty:
-            return nil
-        case .filled(let type, let value, _):
-            return (type, value)
-        }
+    var additionalField: DestinationAdditionalFieldType {
+        _destinationAdditionalField.value
     }
 
     var feeValue: Fee? {
@@ -570,6 +561,10 @@ extension SendModel: SendNotificationManagerInput {
 // MARK: - CustomFeeServiceInput, CustomFeeServiceOutput
 
 extension SendModel: CustomFeeServiceInput, CustomFeeServiceOutput {
+    var destinationAddressPublisher: AnyPublisher<String?, Never> {
+        _destination.map { $0?.value }.eraseToAnyPublisher()
+    }
+
     var cryptoAmountPublisher: AnyPublisher<BlockchainSdk.Amount?, Never> {
         _amount
             .withWeakCaptureOf(self)

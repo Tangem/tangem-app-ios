@@ -93,7 +93,6 @@ final class SendViewModel: ObservableObject {
     private let sendStepParameters: SendStep.Parameters
     private let keyboardVisibilityService: KeyboardVisibilityService
     private let factory: SendModulesFactory
-    private let processor: SendDestinationProcessor
 
     private weak var coordinator: SendRoutable?
 
@@ -153,7 +152,6 @@ final class SendViewModel: ObservableObject {
         keyboardVisibilityService: KeyboardVisibilityService,
         sendAmountValidator: SendAmountValidator,
         factory: SendModulesFactory,
-        processor: SendDestinationProcessor,
         coordinator: SendRoutable
     ) {
         self.walletInfo = walletInfo
@@ -166,7 +164,6 @@ final class SendViewModel: ObservableObject {
         self.notificationManager = notificationManager
         self.customFeeService = customFeeService
         self.keyboardVisibilityService = keyboardVisibilityService
-        self.processor = processor
         self.factory = factory
 
         steps = sendType.steps
@@ -358,7 +355,7 @@ final class SendViewModel: ObservableObject {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, destination in
-                switch destination?.source {
+                switch destination.source {
                 case .myWallet, .recentAddress:
                     viewModel.next()
                 default:
@@ -655,7 +652,7 @@ final class SendViewModel: ObservableObject {
             return
         }
 
-        sendDestinationViewModel.update(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
+        sendDestinationViewModel.setExternally(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
         if let amount = result.amount {
             sendAmountViewModel.setExternalAmount(amount.value)
         }
@@ -690,11 +687,11 @@ final class SendViewModel: ObservableObject {
     private func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
         // If the blockchain doesn't support additional field -- return null
         // Otherwise return full / empty
-        guard let additionalField = sendModel.additionalField else {
-            return .null
+        switch sendModel.additionalField {
+        case .notSupported: .null
+        case .empty: .empty
+        case .filled: .full
         }
-
-        return additionalField.1.isEmpty ? .empty : .full
     }
 
     // TODO: Andrey Fedorov - Re-use fee currency & redirect logic from Token Details & Send (IOS-5710)
