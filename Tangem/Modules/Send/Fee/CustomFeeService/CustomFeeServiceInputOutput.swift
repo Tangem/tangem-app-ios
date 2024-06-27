@@ -11,7 +11,7 @@ import Combine
 
 protocol CustomFeeServiceInput: AnyObject {
     var customFee: Fee? { get }
-    var amountPublisher: AnyPublisher<Amount?, Never> { get }
+    var cryptoAmountPublisher: AnyPublisher<Amount?, Never> { get }
     var destinationPublisher: AnyPublisher<SendAddress?, Never> { get }
     var feeValuePublisher: AnyPublisher<BlockchainSdk.Fee?, Never> { get }
 }

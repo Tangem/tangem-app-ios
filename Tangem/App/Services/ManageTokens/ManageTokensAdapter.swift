@@ -19,7 +19,7 @@ class ManageTokensAdapter {
     private let userTokensManager: UserTokensManager
     private let loader: ListDataLoader
 
-    private let coinViewModelsSubject = CurrentValueSubject<[ManageTokensCoinViewModel], Never>([])
+    private let listItemsViewModelsSubject = CurrentValueSubject<[ManageTokensListItemViewModel], Never>([])
     private let alertSubject = CurrentValueSubject<AlertBinder?, Never>(nil)
     private let isPendingListsEmptySubject = CurrentValueSubject<Bool, Never>(true)
 
@@ -32,8 +32,8 @@ class ManageTokensAdapter {
         loader.canFetchMore
     }
 
-    var coinViewModelsPublisher: some Publisher<[ManageTokensCoinViewModel], Never> {
-        coinViewModelsSubject
+    var listItemsViewModelsPublisher: some Publisher<[ManageTokensListItemViewModel], Never> {
+        listItemsViewModelsSubject
     }
 
     var alertPublisher: some Publisher<AlertBinder?, Never> {
@@ -72,11 +72,11 @@ private extension ManageTokensAdapter {
     func bind() {
         loader.$items
             .withWeakCaptureOf(self)
-            .map { adapter, items -> [ManageTokensCoinViewModel] in
-                items.compactMap(adapter.mapToCoinViewModel(coinModel:))
+            .map { adapter, items -> [ManageTokensListItemViewModel] in
+                items.compactMap(adapter.mapToListItemViewModel(coinModel:))
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.value, on: coinViewModelsSubject, ownership: .weak)
+            .assign(to: \.value, on: listItemsViewModelsSubject, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -144,7 +144,7 @@ private extension ManageTokensAdapter {
     }
 
     func updateSelection(_ tokenItem: TokenItem) {
-        for item in coinViewModelsSubject.value {
+        for item in listItemsViewModelsSubject.value {
             for itemItem in item.items {
                 if itemItem.tokenItem == tokenItem {
                     itemItem.updateSelection(with: bindSelection(tokenItem))
@@ -203,9 +203,9 @@ private extension ManageTokensAdapter {
         return binding
     }
 
-    func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensCoinViewModel {
-        let currencyItems = coinModel.items.enumerated().map { index, item in
-            ManageTokensCoinItemViewModel(
+    func mapToListItemViewModel(coinModel: CoinModel) -> ManageTokensListItemViewModel {
+        let networkItems = coinModel.items.enumerated().map { index, item in
+            ManageTokensItemNetworkSelectorViewModel(
                 tokenItem: item.tokenItem,
                 isReadonly: false,
                 isSelected: bindSelection(item.tokenItem),
@@ -214,7 +214,7 @@ private extension ManageTokensAdapter {
             )
         }
 
-        return ManageTokensCoinViewModel(with: coinModel, items: currencyItems)
+        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 
     func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {

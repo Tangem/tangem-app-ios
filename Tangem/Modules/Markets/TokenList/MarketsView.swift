@@ -55,13 +55,4 @@ struct MarketsView: View {
             }
         }
     }
-
-    private var addCustomTokenView: some View {
-        MarketsAddCustomItemView {
-            // Need force hide keyboard, because it will affect the state of the focus properties field in the shield under the hood
-            UIApplication.shared.endEditing()
-
-            viewModel.addCustomTokenDidTapAction()
-        }
-    }
 }

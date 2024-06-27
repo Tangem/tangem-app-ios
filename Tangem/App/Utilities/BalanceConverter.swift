@@ -17,13 +17,13 @@ struct BalanceConverter {
     ///   - value: Amout of crypto to convert to fiat
     ///   - currencyId: ID of the crypto currency
     /// - Returns: Converted decimal value in specified fiat currency
-    func convertToFiat(value: Decimal, from currencyId: String) async throws -> Decimal {
+    func convertToFiat(_ value: Decimal, currencyId: String) async throws -> Decimal {
         let rate = try await quotesRepository.quote(for: currencyId).price
         let fiatValue = value * rate
         return fiatValue
     }
 
-    func convertToFiat(value: Decimal, from currencyId: String) -> Decimal? {
+    func convertToFiat(_ value: Decimal, currencyId: String) -> Decimal? {
         guard let rate = quotesRepository.quotes[currencyId]?.price else {
             return nil
         }
@@ -32,7 +32,7 @@ struct BalanceConverter {
         return fiatValue
     }
 
-    func convertFromFiat(value: Decimal, to currencyId: String) -> Decimal? {
+    func convertFromFiat(_ value: Decimal, currencyId: String) -> Decimal? {
         guard let rate = quotesRepository.quotes[currencyId]?.price else {
             return nil
         }

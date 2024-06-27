@@ -16,6 +16,7 @@ protocol SendSummaryViewModelInput: AnyObject {
     var canEditDestination: Bool { get }
     var feeOptions: [FeeOption] { get }
 
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
     var transactionAmountPublisher: AnyPublisher<Amount?, Never> { get }
     var destinationTextPublisher: AnyPublisher<String, Never> { get }
     var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> { get }
@@ -69,18 +70,26 @@ class SendSummaryViewModel: ObservableObject {
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     private var bag: Set<AnyCancellable> = []
     private let input: SendSummaryViewModelInput
+    private let tokenItem: TokenItem
     private let walletInfo: SendWalletInfo
     private let notificationManager: SendNotificationManager
-    private let fiatCryptoValueProvider: SendFiatCryptoValueProvider
     private var isVisible = false
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
 
-    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo, sectionViewModelFactory: SendSummarySectionViewModelFactory) {
+    init(
+        initial: Initial,
+        input: SendSummaryViewModelInput,
+        notificationManager: SendNotificationManager,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        walletInfo: SendWalletInfo,
+        sectionViewModelFactory: SendSummarySectionViewModelFactory
+    ) {
+        tokenItem = initial.tokenItem
+
         self.input = input
         self.walletInfo = walletInfo
         self.notificationManager = notificationManager
-        self.fiatCryptoValueProvider = fiatCryptoValueProvider
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.sectionViewModelFactory = sectionViewModelFactory
 
@@ -157,18 +166,20 @@ class SendSummaryViewModel: ObservableObject {
             .assign(to: \.destinationViewTypes, on: self)
             .store(in: &bag)
 
-        Publishers.CombineLatest(
-            fiatCryptoValueProvider.formattedAmountPublisher,
-            fiatCryptoValueProvider.formattedAmountAlternativePublisher
-        )
-        .compactMap { [weak self] formattedAmount, formattedAmountAlternative in
-            self?.sectionViewModelFactory.makeAmountViewData(
-                from: formattedAmount,
-                amountAlternative: formattedAmountAlternative
-            )
-        }
-        .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
-        .store(in: &bag)
+        input.amountPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, amount in
+                let formattedAmount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol)
+                let formattedAlternativeAmount = amount?.formatAlternative(currencySymbol: viewModel.tokenItem.currencySymbol)
+
+                return viewModel.sectionViewModelFactory.makeAmountViewData(
+                    from: formattedAmount,
+                    amountAlternative: formattedAlternativeAmount
+                )
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
+            .store(in: &bag)
 
         Publishers.CombineLatest(input.feeValues, input.selectedFeeOptionPublisher)
             .sink { [weak self] feeValues, selectedFeeOption in
@@ -210,5 +221,11 @@ class SendSummaryViewModel: ObservableObject {
 
     private func sectionBackground(canEdit: Bool) -> Color {
         canEdit ? Colors.Background.action : Colors.Button.disabled
+    }
+}
+
+extension SendSummaryViewModel {
+    struct Initial {
+        let tokenItem: TokenItem
     }
 }

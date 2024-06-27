@@ -17,8 +17,8 @@ struct HighPriceImpactCalculator {
     private let highPriceImpactWarningLimit: Decimal = 0.1
 
     func isHighPriceImpact(converting sourceAmount: Decimal, to destinationAmount: Decimal) async throws -> Result {
-        let sourceFiatAmount = try await balanceConverter.convertToFiat(value: sourceAmount, from: sourceCurrencyId)
-        let destinationFiatAmount = try await balanceConverter.convertToFiat(value: destinationAmount, from: destinationCurrencyId)
+        let sourceFiatAmount = try await balanceConverter.convertToFiat(sourceAmount, currencyId: sourceCurrencyId)
+        let destinationFiatAmount = try await balanceConverter.convertToFiat(destinationAmount, currencyId: destinationCurrencyId)
 
         let lossesInPercents = (1 - destinationFiatAmount / sourceFiatAmount)
 
