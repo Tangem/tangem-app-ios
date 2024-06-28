@@ -98,7 +98,7 @@ extension MarketsDTO.ChartsHistory {
             [
                 "currency": currency,
                 "coin_ids": coinIds.joined(separator: ","),
-                "interval": interval.rawValue,
+                "interval": interval.marketsListId,
             ]
         }
     }
