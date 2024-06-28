@@ -47,6 +47,12 @@
 "card_settings_action_sheet_title" = "Are you sure you want to do this?";
 "card_settings_change_access_code" = "Change Access Code";
 "card_settings_change_access_code_footer" = "Access code will be changed on this card only";
+"card_settings_completed_reset_alert_message" = "All cards in the selected wallet have been reset to factory settings. You can now create a new wallet.";
+"card_settings_completed_reset_alert_title" = "Reset complete";
+"card_settings_continue_reset_alert_message" = "Do you want to reset the next card in this wallet?";
+"card_settings_continue_reset_alert_title" = "Card reset";
+"card_settings_interrupted_reset_alert_message" = "We recommend completing the reset process for all cards in this wallet";
+"card_settings_interrupted_reset_alert_title" = "You haven't reset all your cards";
 "card_settings_reset_card_to_factory" = "Reset to Factory Settings";
 "card_settings_security_mode" = "Security Mode";
 "card_settings_title" = "Card settings";
@@ -265,6 +271,7 @@
 "initial_message_change_passcode_body" = "Tippen Sie um den Passcode zu ändern";
 "initial_message_create_wallet_body" = "To create the wallet tap the card as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "To reset to factory settings tap the card as shown above and do not remove until the end of the operation";
+"initial_message_reset_backup_card_header" = "Tap the card #%@ of the wallet";
 "initial_message_sign_body" = "To sign tap the card as shown above and do not remove until the end of the operation";
 "key_invalidated_warning_description" = "You have updated biometrics, scan your card to enter";
 "koinos_insufficient_balance_to_send_koin_description" = "Your balance should be higher than the fee value to make a transfer";
