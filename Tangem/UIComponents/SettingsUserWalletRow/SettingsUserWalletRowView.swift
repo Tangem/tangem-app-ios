@@ -17,6 +17,7 @@ struct SettingsUserWalletRowView: View {
             content
         }
         .buttonStyle(.plain)
+        .allowsHitTesting(!viewModel.isUserWalletLocked)
     }
 
     @ViewBuilder
@@ -28,7 +29,9 @@ struct SettingsUserWalletRowView: View {
 
             Spacer()
 
-            Assets.chevron.image
+            if !viewModel.isUserWalletLocked {
+                Assets.chevron.image
+            }
         }
         .infinityFrame(axis: .horizontal, alignment: .leading)
         .padding(.vertical, 12)

@@ -16,7 +16,7 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
     @Published var balanceState: LoadableTextView.State = .initialized
     let tapAction: () -> Void
 
-    private let isUserWalletLocked: Bool
+    let isUserWalletLocked: Bool
     private let userWalletNamePublisher: AnyPublisher<String, Never>
     private let totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never>
     private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
