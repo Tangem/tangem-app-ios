@@ -11,8 +11,7 @@ import Combine
 
 protocol SendAmountInput: AnyObject {
     var amount: SendAmount? { get }
-
-    func amountPublisher() -> AnyPublisher<SendAmount?, Never>
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
 }
 
 protocol SendAmountOutput: AnyObject {

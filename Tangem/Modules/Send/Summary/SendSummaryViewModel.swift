@@ -102,7 +102,7 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.transactionDescriptionIsVisisble = self.transactionDescription != nil
+            self.transactionDescriptionIsVisisble = self.transactionDescription != nil && editableType != .notEditable
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -163,7 +163,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
     }
 
     func setup(sendAmountInput input: SendAmountInput) {
-        input.amountPublisher()
+        input.amountPublisher
             .withWeakCaptureOf(self)
             .compactMap { viewModel, amount in
                 guard let formattedAmount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol),

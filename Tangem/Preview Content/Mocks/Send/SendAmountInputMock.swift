@@ -11,7 +11,7 @@ import Combine
 
 class SendAmountInputOutputMock: SendAmountInput, SendAmountOutput {
     var amount: SendAmount? { .none }
-    func amountPublisher() -> AnyPublisher<SendAmount?, Never> { .just(output: amount) }
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { .just(output: amount) }
 
     func amountDidChanged(amount: SendAmount?) {}
 }

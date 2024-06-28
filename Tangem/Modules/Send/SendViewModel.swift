@@ -200,15 +200,15 @@ final class SendViewModel: ObservableObject {
             editableType: .notEditable
         )
 
-        sendFinishViewModel.setup(sendFinishInput: sendModel)
-        sendFinishViewModel.setup(sendDestinationInput: sendModel)
-        sendFinishViewModel.setup(sendAmountInput: sendModel)
-        sendFinishViewModel.setup(sendFeeInteractor: sendFeeInteractor)
-
         sendSummaryViewModel.router = self
         sendSummaryViewModel.setup(sendDestinationInput: sendModel)
         sendSummaryViewModel.setup(sendAmountInput: sendModel)
         sendSummaryViewModel.setup(sendFeeInteractor: sendFeeInteractor)
+
+        sendFinishViewModel.setup(sendDestinationInput: sendModel)
+        sendFinishViewModel.setup(sendAmountInput: sendModel)
+        sendFinishViewModel.setup(sendFeeInteractor: sendFeeInteractor)
+        sendFinishViewModel.setup(sendFinishInput: sendModel)
 
         sendModel.delegate = self
         notificationManager.setupManager(with: self)

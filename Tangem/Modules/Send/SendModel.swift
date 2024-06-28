@@ -56,10 +56,6 @@ class SendModel {
             .eraseToAnyPublisher()
     }
 
-    var transactionTime: Date? {
-        _transactionTime.value
-    }
-
     var transactionURL: URL? {
         _transactionURL.value
     }
@@ -298,8 +294,8 @@ extension SendModel: SendDestinationOutput {
 extension SendModel: SendAmountInput {
     var amount: SendAmount? { _amount.value }
 
-    func amountPublisher() -> AnyPublisher<SendAmount?, Never> {
-        _amount.dropFirst().eraseToAnyPublisher()
+    var amountPublisher: AnyPublisher<SendAmount?, Never> {
+        _amount.eraseToAnyPublisher()
     }
 }
 

@@ -162,41 +162,6 @@ struct SendModulesFactory {
             descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
-
-//    func makeSendFinishViewModel(
-//        sendModel: SendModel,
-//        notificationManager: SendNotificationManager,
-//        addressTextViewHeightModel: AddressTextViewHeightModel,
-//        feeTypeAnalyticsParameter: Analytics.ParameterValue
-//    ) -> SendFinishViewModel? {
-//        guard let destinationText = sendModel.destination?.value,
-//              let amount = sendModel.amount,
-//              let feeValue = sendModel.selectedFee,
-//              let transactionTime = sendModel.transactionTime else {
-//            return nil
-//        }
-//
-//        let formatter = DateFormatter()
-//        formatter.dateStyle = .long
-//        formatter.timeStyle = .short
-//        let transactionTimeFormatted = formatter.string(from: transactionTime)
-//
-//        let initial = SendFinishViewModel.Initial(
-//            tokenItem: walletModel.tokenItem,
-//            destination: destinationText,
-//            additionalField: sendModel.destinationAdditionalField,
-//            amount: amount,
-//            feeValue: feeValue,
-//            transactionTimeFormatted: transactionTimeFormatted
-//        )
-//
-//        return SendFinishViewModel(
-//            initial: initial,
-//            addressTextViewHeightModel: addressTextViewHeightModel,
-//            feeTypeAnalyticsParameter: feeTypeAnalyticsParameter,
-//            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
-//        )
-//    }
 }
 
 // MARK: - Dependencies
