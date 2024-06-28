@@ -83,6 +83,8 @@ class WalletModel {
         case .sameCurrency:
             return tokenItem
         case .feeResource(let type):
+            // We use this when displaying the fee currency on the 'Send' screen.
+            // This is because when sending KOIN, we use MANA as the fee.
             return .token(
                 Token(
                     name: type.rawValue,
