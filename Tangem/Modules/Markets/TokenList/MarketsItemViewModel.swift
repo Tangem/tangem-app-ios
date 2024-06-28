@@ -39,7 +39,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Init
 
-    init(_ data: InputData) {
+    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider, filterProvider: MarketsListDataFilterProvider) {
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
@@ -57,13 +57,34 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         priceValue = priceFormatter.formatFiatBalance(data.priceValue)
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
 
-        bind()
+        bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     // MARK: - Private Implementation
 
-    private func bind() {
-        // Need for user update charts
+    private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
+        charts
+            .$items
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.3, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, charts in
+                guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
+                    return
+                }
+
+                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value[filter.currentFilterValue.interval])
+                viewModel.charts = chartsDoubleConvertedValues
+            })
+            .store(in: &bag)
+    }
+
+    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let chartPreviewItem else { return nil }
+
+        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
+        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+        return chartsDoubleConvertedValues
     }
 }
 

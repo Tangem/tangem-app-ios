@@ -247,10 +247,16 @@ extension CommonTangemApiService: TangemApiService {
 
     // MARK: - Markets Implementation
 
-    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try await request(for: .coinsList(requestModel), decoder: decoder)
+    }
+
+    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try await request(for: .coinsHistoryPreview(requestModel), decoder: decoder)
     }
 
     // MARK: - Init

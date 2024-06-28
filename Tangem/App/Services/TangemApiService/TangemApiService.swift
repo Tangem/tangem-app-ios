@@ -19,7 +19,10 @@ protocol TangemApiService: AnyObject, Initializable {
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
     /// Get general market data for a list of tokens
-    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
+
+    /// Get history preview chart data for a list of tokens
+    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel]
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError>
     func saveTokens(list: UserTokenList, for key: String) -> AnyPublisher<Void, TangemAPIError>

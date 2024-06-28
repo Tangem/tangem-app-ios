@@ -96,16 +96,12 @@ final class MarketsListDataProvider {
                 return
             }
 
-            await runOnMain {
-                AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens with count = \(response.tokens.count)")
+            provider.currentOffset = response.offset + response.limit
+            provider.totalTokensCount = response.total
 
-                provider.currentOffset = response.offset + response.limit
-                provider.totalTokensCount = response.total
+            provider.isLoading = false
 
-                provider.isLoading = false
-
-                self.items.append(contentsOf: response.tokens)
-            }
+            self.items.append(contentsOf: response.tokens)
         }
     }
 
@@ -136,7 +132,7 @@ private extension MarketsListDataProvider {
 
         AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
-        return try await tangemApiService.loadMarkets(requestModel: requestModel)
+        return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }
 }
 
