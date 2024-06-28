@@ -66,4 +66,13 @@ extension SendType {
             return false
         }
     }
+
+    var isSend: Bool {
+        switch self {
+        case .send:
+            return true
+        case .sell:
+            return false
+        }
+    }
 }

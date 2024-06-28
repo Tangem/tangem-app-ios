@@ -23,8 +23,6 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonDisabled: Bool = false
     @Published var updatingFees = false
     @Published var alert: AlertBinder?
-    @Published var transactionDescription: String?
-    @Published var transactionDescriptionIsVisisble: Bool = false
 
     var title: String? {
         step.name(for: sendStepParameters)
@@ -141,6 +139,7 @@ final class SendViewModel: ObservableObject {
         sendModel: SendModel,
         notificationManager: SendNotificationManager,
         sendFeeInteractor: SendFeeInteractor,
+        sendSummaryInteractor: SendSummaryInteractor,
         keyboardVisibilityService: KeyboardVisibilityService,
         sendAmountValidator: SendAmountValidator,
         factory: SendModulesFactory,
@@ -161,7 +160,6 @@ final class SendViewModel: ObservableObject {
         steps = sendType.steps
         step = sendType.firstStep
         didReachSummaryScreen = sendType.firstStep == .summary
-        transactionDescriptionIsVisisble = sendType.firstStep == .summary
         mainButtonType = Self.mainButtonType(for: sendType.firstStep, didReachSummaryScreen: didReachSummaryScreen)
         stepAnimation = sendType.firstStep == .summary ? .moveAndFade : .slideForward
         sendStepParameters = SendStep.Parameters(currencyName: walletModel.tokenItem.name, walletName: walletInfo.walletName)
@@ -189,19 +187,17 @@ final class SendViewModel: ObservableObject {
         )
 
         sendSummaryViewModel = factory.makeSendSummaryViewModel(
-            interactor: sendModel,
+            interactor: sendSummaryInteractor,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            canEditAmount: sendType.predefinedAmount == nil,
-            canEditDestination: sendType.predefinedDestination == nil
+            editableType: sendType.isSend ? .editable : .disable
         )
 
         sendFinishViewModel = factory.makeSendSummaryViewModel(
-            interactor: sendModel,
+            interactor: sendSummaryInteractor,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            canEditAmount: true, // White background
-            canEditDestination: true
+            editableType: .notEditable
         )
 
         sendFinishViewModel.setup(sendFinishInput: sendModel)
@@ -432,25 +428,6 @@ final class SendViewModel: ObservableObject {
                 }
             }
             .store(in: &bag)
-
-        Publishers
-            .CombineLatest(
-                sendModel.amountPublisher().compactMap { $0 },
-                sendModel.selectedFeePublisher.compactMap { $0?.value.value?.amount.value }
-            )
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, args in
-                let (amount, fee) = args
-
-                let helper = SendTransactionSummaryDestinationHelper()
-                viewModel.transactionDescription = helper.makeTransactionDescription(
-                    amount: amount,
-                    fee: fee,
-                    feeCurrencyId: viewModel.walletInfo.feeCurrencyId
-                )
-            }
-            .store(in: &bag)
     }
 
     private func logTransactionAnalytics() {
@@ -628,7 +605,6 @@ final class SendViewModel: ObservableObject {
             self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
             self.showTransactionButtons = self.sendModel.transactionURL != nil
             self.step = step
-            self.transactionDescriptionIsVisisble = step == .summary
         }
     }
 

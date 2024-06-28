@@ -1,17 +1,26 @@
 //
-//  SendTransactionSummaryDestinationHelper.swift
+//  SendTransactionSummaryDescriptionBuilder.swift
 //  Tangem
 //
-//  Created by Sergey Balashov on 22.06.2024.
+//  Created by Sergey Balashov on 28.06.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-struct SendTransactionSummaryDestinationHelper {
-    func makeTransactionDescription(amount: SendAmount, fee: Decimal, feeCurrencyId: String?) -> String? {
-        let feeInFiat = feeCurrencyId.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
-        let totalInFiat = [amount.fiat, feeInFiat].compactMap { $0 }.reduce(0, +)
+struct SendTransactionSummaryDescriptionBuilder {
+    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
+
+    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
+        self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
+    }
+
+    func makeDescription(amount: Decimal, fee: Decimal) -> String? {
+        let amountInFiat = tokenItem.id.flatMap { BalanceConverter().convertToFiat(amount, currencyId: $0) }
+        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
+        let totalInFiat = [amountInFiat, feeInFiat].compactMap { $0 }.reduce(0, +)
 
         let formattingOptions = BalanceFormattingOptions(
             minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,

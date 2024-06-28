@@ -45,6 +45,10 @@ class SendModel {
         _isFeeIncluded.value
     }
 
+    var isSending: AnyPublisher<Bool, Never> {
+        sendTransactionSender.isSending
+    }
+
     var transactionFinished: AnyPublisher<Bool, Never> {
         _transactionTime
             .map { $0 != nil }
@@ -74,11 +78,10 @@ class SendModel {
 
     private let _transactionCreationError = CurrentValueSubject<Error?, Never>(nil)
     private let _withdrawalNotification = CurrentValueSubject<WithdrawalNotification?, Never>(nil)
-    private let transaction = CurrentValueSubject<BlockchainSdk.Transaction?, Never>(nil)
+    private let _transaction = CurrentValueSubject<BlockchainSdk.Transaction?, Never>(nil)
 
     // MARK: - Raw data
 
-    private let _isSending = CurrentValueSubject<Bool, Never>(false)
     private let _transactionTime = CurrentValueSubject<Date?, Never>(nil)
     private let _transactionURL = CurrentValueSubject<URL?, Never>(nil)
 
@@ -87,7 +90,7 @@ class SendModel {
     // MARK: - Private stuff
 
     private let walletModel: WalletModel
-    private let transactionSigner: TransactionSigner
+    private let sendTransactionSender: SendTransactionSender
     private let sendFeeInteractor: SendFeeInteractor
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let informationRelevanceService: InformationRelevanceService
@@ -103,14 +106,14 @@ class SendModel {
 
     init(
         walletModel: WalletModel,
-        transactionSigner: TransactionSigner,
+        sendTransactionSender: SendTransactionSender,
         sendFeeInteractor: SendFeeInteractor,
         feeIncludedCalculator: FeeIncludedCalculator,
         informationRelevanceService: InformationRelevanceService,
         sendType: SendType
     ) {
         self.walletModel = walletModel
-        self.transactionSigner = transactionSigner
+        self.sendTransactionSender = sendTransactionSender
         self.sendFeeInteractor = sendFeeInteractor
         self.feeIncludedCalculator = feeIncludedCalculator
         self.informationRelevanceService = informationRelevanceService
@@ -132,7 +135,7 @@ class SendModel {
     }
 
     func currentTransaction() -> BlockchainSdk.Transaction? {
-        transaction.value
+        _transaction.value
     }
 
     func updateFees() {
@@ -170,25 +173,20 @@ class SendModel {
     }
 
     func sendTransaction() {
-        guard var transaction = transaction.value else {
+        guard var transaction = _transaction.value else {
             AppLog.shared.debug("Transaction object hasn't been created")
             return
         }
-
-        #warning("TODO: loading view")
-        #warning("TODO: demo")
 
         if case .filled(_, _, let params) = _destinationAdditionalField.value {
             transaction.params = params
         }
 
-        _isSending.send(true)
-        walletModel.send(transaction, signer: transactionSigner)
+        sendTransactionSender
+            .send(transaction: transaction)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
-
-                _isSending.send(false)
 
                 if case .failure(let error) = completion,
                    !error.toTangemSdkError().isUserCancelled {
@@ -197,9 +195,7 @@ class SendModel {
             } receiveValue: { [weak self] result in
                 guard let self else { return }
 
-                if let transactionURL = explorerUrl(from: result.hash) {
-                    _transactionURL.send(transactionURL)
-                }
+                _transactionURL.send(result.url)
                 _transactionTime.send(Date())
             }
             .store(in: &bag)
@@ -243,10 +239,10 @@ class SendModel {
             .sink { [weak self] result in
                 switch result {
                 case .success(let transaction):
-                    self?.transaction.send(transaction)
+                    self?._transaction.send(transaction)
                     self?._transactionCreationError.send(nil)
                 case .failure(let error):
-                    self?.transaction.send(nil)
+                    self?._transaction.send(nil)
                     self?._transactionCreationError.send(error)
                 }
             }
@@ -264,12 +260,6 @@ class SendModel {
                 }
                 .store(in: &bag)
         }
-    }
-
-    private func explorerUrl(from hash: String) -> URL? {
-        let factory = ExternalLinkProviderFactory()
-        let provider = factory.makeProvider(for: walletModel.blockchainNetwork.blockchain)
-        return provider.url(transaction: hash)
     }
 
     private func makeAmount(decimal: Decimal) -> Amount? {
@@ -354,19 +344,19 @@ extension SendModel: SendFeeOutput {
     }
 }
 
+// MARK: - SendSummaryInput, SendSummaryOutput
+
+extension SendModel: SendSummaryInput, SendSummaryOutput {
+    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> {
+        _transaction.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - SendFinishInput
 
 extension SendModel: SendFinishInput {
     var transactionSentDate: AnyPublisher<Date, Never> {
         _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
-    }
-}
-
-// MARK: - SendSummaryInteractor
-
-extension SendModel: SendSummaryInteractor {
-    var isSending: AnyPublisher<Bool, Never> {
-        _isSending.eraseToAnyPublisher()
     }
 }
 

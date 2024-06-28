@@ -33,10 +33,12 @@ struct SendModulesFactory {
         )
 
         let informationRelevanceService = makeInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
+        let sendTransactionSender = makeSendTransactionSender()
 
         let sendModel = makeSendModel(
             sendFeeInteractor: sendFeeInteractor,
             informationRelevanceService: informationRelevanceService,
+            sendTransactionSender: sendTransactionSender,
             type: type
         )
         let canUseFiatCalculation = quotesRepository.quote(for: walletModel.tokenItem) != nil
@@ -55,6 +57,7 @@ struct SendModulesFactory {
             sendModel: sendModel,
             notificationManager: makeSendNotificationManager(sendModel: sendModel),
             sendFeeInteractor: sendFeeInteractor,
+            sendSummaryInteractor: makeSendSummaryInteractor(input: sendModel, output: sendModel, sendTransactionSender: sendTransactionSender),
             keyboardVisibilityService: KeyboardVisibilityService(),
             sendAmountValidator: makeSendAmountValidator(),
             factory: self,
@@ -131,17 +134,15 @@ struct SendModulesFactory {
         interactor: SendSummaryInteractor,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        canEditAmount: Bool,
-        canEditDestination: Bool
+        editableType: SendSummaryViewModel.EditableType
     ) -> SendSummaryViewModel {
-        let initial = SendSummaryViewModel.Initial(
+        let settings = SendSummaryViewModel.Settings(
             tokenItem: walletModel.tokenItem,
-            canEditAmount: canEditAmount,
-            canEditDestination: canEditDestination
+            editableType: editableType
         )
 
         return SendSummaryViewModel(
-            initial: initial,
+            settings: settings,
             interactor: interactor,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -149,40 +150,53 @@ struct SendModulesFactory {
         )
     }
 
-    func makeSendFinishViewModel(
-        sendModel: SendModel,
-        notificationManager: SendNotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
-        feeTypeAnalyticsParameter: Analytics.ParameterValue
-    ) -> SendFinishViewModel? {
-        guard let destinationText = sendModel.destination?.value,
-              let amount = sendModel.amount,
-              let feeValue = sendModel.selectedFee,
-              let transactionTime = sendModel.transactionTime else {
-            return nil
-        }
-
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .short
-        let transactionTimeFormatted = formatter.string(from: transactionTime)
-
-        let initial = SendFinishViewModel.Initial(
-            tokenItem: walletModel.tokenItem,
-            destination: destinationText,
-            additionalField: sendModel.destinationAdditionalField,
-            amount: amount,
-            feeValue: feeValue,
-            transactionTimeFormatted: transactionTimeFormatted
-        )
-
-        return SendFinishViewModel(
-            initial: initial,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            feeTypeAnalyticsParameter: feeTypeAnalyticsParameter,
-            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
+    func makeSendSummaryInteractor(
+        input: SendSummaryInput,
+        output: SendSummaryOutput,
+        sendTransactionSender: any SendTransactionSender
+    ) -> SendSummaryInteractor {
+        CommonSendSummaryInteractor(
+            input: input,
+            output: output,
+            sendTransactionSender: sendTransactionSender,
+            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
+
+//    func makeSendFinishViewModel(
+//        sendModel: SendModel,
+//        notificationManager: SendNotificationManager,
+//        addressTextViewHeightModel: AddressTextViewHeightModel,
+//        feeTypeAnalyticsParameter: Analytics.ParameterValue
+//    ) -> SendFinishViewModel? {
+//        guard let destinationText = sendModel.destination?.value,
+//              let amount = sendModel.amount,
+//              let feeValue = sendModel.selectedFee,
+//              let transactionTime = sendModel.transactionTime else {
+//            return nil
+//        }
+//
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .long
+//        formatter.timeStyle = .short
+//        let transactionTimeFormatted = formatter.string(from: transactionTime)
+//
+//        let initial = SendFinishViewModel.Initial(
+//            tokenItem: walletModel.tokenItem,
+//            destination: destinationText,
+//            additionalField: sendModel.destinationAdditionalField,
+//            amount: amount,
+//            feeValue: feeValue,
+//            transactionTimeFormatted: transactionTimeFormatted
+//        )
+//
+//        return SendFinishViewModel(
+//            initial: initial,
+//            addressTextViewHeightModel: addressTextViewHeightModel,
+//            feeTypeAnalyticsParameter: feeTypeAnalyticsParameter,
+//            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
+//        )
+//    }
 }
 
 // MARK: - Dependencies
@@ -199,13 +213,14 @@ private extension SendModulesFactory {
     func makeSendModel(
         sendFeeInteractor: SendFeeInteractor,
         informationRelevanceService: InformationRelevanceService,
+        sendTransactionSender: any SendTransactionSender,
         type: SendType
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
 
         return SendModel(
             walletModel: walletModel,
-            transactionSigner: transactionSigner,
+            sendTransactionSender: sendTransactionSender,
             sendFeeInteractor: sendFeeInteractor,
             feeIncludedCalculator: feeIncludedCalculator,
             informationRelevanceService: informationRelevanceService,
@@ -310,5 +325,16 @@ private extension SendModulesFactory {
 
     func makeInformationRelevanceService(sendFeeInteractor: SendFeeInteractor) -> InformationRelevanceService {
         CommonInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
+    }
+
+    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        SendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+    }
+
+    func makeSendTransactionSender() -> SendTransactionSender {
+        CommonSendTransactionSender(
+            walletModel: walletModel,
+            transactionSigner: transactionSigner
+        )
     }
 }

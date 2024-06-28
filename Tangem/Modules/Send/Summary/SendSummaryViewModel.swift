@@ -20,9 +20,8 @@ protocol SendSummaryViewModelSetupable: AnyObject {
 class SendSummaryViewModel: ObservableObject {
     @Published var transactionSentTime: String?
 
-    @Published var canEditAmount: Bool
-    @Published var canEditDestination: Bool
-    @Published var canEditFee: Bool = true
+    @Published var editableType: EditableType
+    @Published var canEditFee: Bool = false
 
     @Published var isSending = false
     @Published var alert: AlertBinder?
@@ -37,8 +36,14 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
+    @Published var transactionDescription: String?
+    @Published var transactionDescriptionIsVisisble: Bool = false
+
     let addressTextViewHeightModel: AddressTextViewHeightModel
     var didProperlyDisappear: Bool = true
+
+    var canEditAmount: Bool { editableType == .editable }
+    var canEditDestination: Bool { editableType == .editable }
 
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
 
@@ -52,15 +57,14 @@ class SendSummaryViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
 
     init(
-        initial: Settings,
+        settings: Settings,
         interactor: SendSummaryInteractor,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         sectionViewModelFactory: SendSummarySectionViewModelFactory
     ) {
-        canEditDestination = initial.canEditDestination
-        canEditAmount = initial.canEditAmount
-        tokenItem = initial.tokenItem
+        editableType = settings.editableType
+        tokenItem = settings.tokenItem
 
         self.interactor = interactor
         self.notificationManager = notificationManager
@@ -86,6 +90,7 @@ class SendSummaryViewModel: ObservableObject {
         }
 
         showHint = false
+        transactionDescriptionIsVisisble = false
     }
 
     func onAppear() {
@@ -97,6 +102,7 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
+            self.transactionDescriptionIsVisisble = self.transactionDescription != nil
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -126,8 +132,8 @@ class SendSummaryViewModel: ObservableObject {
 
     private func bind() {
         interactor
-            .isSending
-            .assign(to: \.isSending, on: self, ownership: .weak)
+            .transactionDescription
+            .assign(to: \.transactionDescription, on: self, ownership: .weak)
             .store(in: &bag)
 
         notificationManager
@@ -218,7 +224,11 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                 return formatter.string(from: date)
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.transactionSentTime, on: self, ownership: .weak)
+            .sink(receiveValue: { [weak self] time in
+                withAnimation(SendView.Constants.defaultAnimation) {
+                    self?.transactionSentTime = time
+                }
+            })
             .store(in: &bag)
     }
 }
@@ -226,7 +236,12 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
 extension SendSummaryViewModel {
     struct Settings {
         let tokenItem: TokenItem
-        let canEditAmount: Bool
-        let canEditDestination: Bool
+        let editableType: EditableType
+    }
+
+    enum EditableType: Hashable {
+        case disable
+        case notEditable
+        case editable
     }
 }

@@ -15,37 +15,41 @@ struct SendSummaryView: View {
     private var amountMinTextScale: CGFloat?
 
     var body: some View {
-        GroupedScrollView(spacing: 14) {
-            if let transactionTime = viewModel.transactionSentTime {
-                header(transactionTime: transactionTime)
+        VStack(alignment: .center, spacing: 14) {
+            GroupedScrollView(spacing: 14) {
+                if let transactionTime = viewModel.transactionSentTime {
+                    header(transactionTime: transactionTime)
+                }
+
+                if !viewModel.animatingDestinationOnAppear {
+                    destinationSection
+                }
+
+                if !viewModel.animatingAmountOnAppear {
+                    amountSection
+                }
+
+                if !viewModel.animatingFeeOnAppear {
+                    feeSection
+                }
+
+                if viewModel.showHint {
+                    HintView(
+                        text: Localization.sendSummaryTapHint,
+                        font: Fonts.Regular.footnote,
+                        textColor: Colors.Text.secondary,
+                        backgroundColor: Colors.Button.secondary
+                    )
+                    .padding(.top, 8)
+                    .transition(SendView.Constants.hintViewTransition)
+                }
+
+                ForEach(viewModel.notificationInputs) { input in
+                    NotificationView(input: input)
+                }
             }
 
-            if !viewModel.animatingDestinationOnAppear {
-                destinationSection
-            }
-
-            if !viewModel.animatingAmountOnAppear {
-                amountSection
-            }
-
-            if !viewModel.animatingFeeOnAppear {
-                feeSection
-            }
-
-            if viewModel.showHint {
-                HintView(
-                    text: Localization.sendSummaryTapHint,
-                    font: Fonts.Regular.footnote,
-                    textColor: Colors.Text.secondary,
-                    backgroundColor: Colors.Button.secondary
-                )
-                .padding(.top, 8)
-                .transition(SendView.Constants.hintViewTransition)
-            }
-
-            ForEach(viewModel.notificationInputs) { input in
-                NotificationView(input: input)
-            }
+            descriptionView
         }
         .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .alert(item: $viewModel.alert) { $0.alert }
@@ -85,7 +89,7 @@ struct SendSummaryView: View {
                     .setNamespace(namespace)
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
-                        sectionBackground(canEdit: viewModel.canEditDestination)
+                        sectionBackground(type: viewModel.editableType)
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
                             .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
                     )
@@ -96,7 +100,7 @@ struct SendSummaryView: View {
                     .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
-                        sectionBackground(canEdit: viewModel.canEditDestination)
+                        sectionBackground(type: viewModel.editableType)
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
                             .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
                     )
@@ -125,7 +129,7 @@ struct SendSummaryView: View {
                 .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
         }
         .innerContentPadding(0)
-        .backgroundColor(sectionBackground(canEdit: viewModel.canEditAmount))
+        .backgroundColor(sectionBackground(type: viewModel.editableType))
         .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditAmount)
@@ -177,8 +181,27 @@ struct SendSummaryView: View {
             .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: option).rawValue, in: namespace)
     }
 
-    private func sectionBackground(canEdit: Bool) -> Color {
-        canEdit ? Colors.Background.action : Colors.Button.disabled
+    private func sectionBackground(type: SendSummaryViewModel.EditableType) -> Color {
+        switch type {
+        case .notEditable, .editable:
+            Colors.Background.action
+        case .disable:
+            Colors.Button.disabled
+        }
+    }
+
+    // MARK: - Description
+
+    @ViewBuilder
+    private var descriptionView: some View {
+        if let transactionDescription = viewModel.transactionDescription {
+            Text(.init(transactionDescription))
+                .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
+                .visible(viewModel.transactionDescriptionIsVisisble)
+                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisisble)
+        }
     }
 }
 
