@@ -25,8 +25,8 @@ extension MarketsDTO.Coins {
         let symbol: String
         let active: Bool
         let currentPrice: Decimal
-        let priceChangePercentage: PriceChangePercentage
-        let networks: [Network]
+        let priceChangePercentage: [String: Decimal]
+        let networks: [Network]?
         let shortDescription: String?
         let fullDescription: String?
         let insights: [Insight]?
@@ -35,64 +35,42 @@ extension MarketsDTO.Coins {
         let pricePerformance: PricePerformance
     }
 
-    struct PriceChangePercentage: Codable {
-        let day: Decimal
-        let week: Decimal
-        let month: Decimal
-        let threeMonths: Decimal
-        let sixMonths: Decimal
-        let year: Decimal
-        let allTime: Decimal
-    }
-
     struct Network: Codable {
         let networkId: String
         let exchangeable: Bool
-        let contractAddress: String
-        let decimalCount: Decimal
+        let contractAddress: String?
+        let decimalCount: Decimal?
     }
 
     struct Insight: Codable {
-        let holdersChange: Change
-        let liquidityChange: Change
-        let buyPressureChange: Change
-        let experiencedBuyerChange: Change
-    }
-
-    struct Change: Codable {
-        let day: Decimal
-        let week: Decimal
-        let month: Decimal
+        let holdersChange: [String: Decimal]
+        let liquidityChange: [String: Decimal]
+        let buyPressureChange: [String: Decimal]
+        let experiencedBuyerChange: [String: Decimal]
     }
 
     struct Metrics: Codable {
         let marketRating: Decimal
         let circulatingSupply: Decimal
         let marketCap: Decimal
-        let volume24h: Decimal
+        let volume24H: Decimal
         let totalSupply: Decimal
-        let fullyDilutedValuation: Decimal
+        let fullyDilutedValuation: Decimal?
     }
 
     struct Links: Codable {
-        let homepage: [String?]
-        let blockchainSite: [String?]
+        let homepage: [String]?
+        let blockchainSite: [String]?
         let whitepaper: String?
         let reddit: String?
-        let officialForum: [String?]
-        let chat: [String?]
-        let community: [String?]
-        let repository: [String?]
+        let officialForum: [String]?
+        let chat: [String]?
+        let community: [String]?
+        let repository: [String]?
     }
 
     struct PricePerformance: Codable {
-        let highPrice: Price
-        let lowPrice: Price
-    }
-
-    struct Price: Codable {
-        let day: Decimal
-        let month: Decimal
-        let allTime: Decimal
+        let highPrice: [String: Decimal]
+        let lowPrice: [String: Decimal]
     }
 }

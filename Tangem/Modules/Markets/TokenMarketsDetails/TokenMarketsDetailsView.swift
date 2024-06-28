@@ -30,24 +30,13 @@ struct TokenMarketsDetailsView: View {
                 MarketsPickerView(
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
-                    titleFactory: { $0.tokenMarketsDetailsId.capitalizingFirstLetter() }
+                    titleFactory: { $0.rawValue.capitalizingFirstLetter() }
                 )
                 .frame(maxWidth: .infinity)
 
                 chart
 
-                if let shortDescription = viewModel.shortDescription {
-                    Button(action: viewModel.openFullDescription) {
-                        Group {
-                            Text("\(shortDescription) ")
-                                + Text(Localization.commonReadMore)
-                                .foregroundColor(Colors.Text.accent)
-                        }
-                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                        .multilineTextAlignment(.leading)
-                    }
-                    .padding(.horizontal, 16)
-                }
+                description
 
                 contentBlocks
                     .padding(.bottom, 45)
@@ -57,8 +46,8 @@ struct TokenMarketsDetailsView: View {
         .frame(maxWidth: .infinity)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Text(viewModel.tokenName))
-
         .background(Colors.Background.tertiary)
+        .bindAlert($viewModel.alert)
     }
 
     private var header: some View {
@@ -82,6 +71,30 @@ struct TokenMarketsDetailsView: View {
         .padding(.horizontal, 16)
     }
 
+    @ViewBuilder
+    private var description: some View {
+        if let shortDescription = viewModel.shortDescription {
+            Group {
+                if viewModel.fullDescription == nil {
+                    Text(shortDescription)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Button(action: viewModel.openFullDescription) {
+                        Group {
+                            Text("\(shortDescription) ")
+                                + Text(Localization.commonReadMore)
+                                .foregroundColor(Colors.Text.accent)
+                        }
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+
     private var chart: some View {
         // TODO: Insert chart here
         Image(systemName: "chart.xyaxis.line")
@@ -97,7 +110,9 @@ struct TokenMarketsDetailsView: View {
 
             if viewModel.isLoading {
                 ContentBlockSkeletons()
-            } else {}
+            } else {
+                // TODO: Will be added in further tasks
+            }
         }
         .animation(.default, value: viewModel.isLoading)
     }

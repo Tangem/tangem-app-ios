@@ -11,13 +11,13 @@ import Foundation
 final class TokenMarketsDetailsDataProvider {
     @Injected(\.tangemApiService) private var tangemAPIService: TangemApiService
 
-    func loadTokenMarketsData(for tokenId: TokenItemId) async throws -> MarketsDTO.Coins.Response {
+    func loadTokenMarketsDetails(for tokenId: TokenItemId) async throws -> TokenMarketsDetailsModel {
         let request = await MarketsDTO.Coins.Request(
             tokenId: tokenId,
             currency: AppSettings.shared.selectedCurrencyCode,
             language: Locale.current.identifier
         )
         let result = try await tangemAPIService.loadTokenMarketsDetails(requestModel: request)
-        return result
+        return .init(marketsDTO: result)
     }
 }

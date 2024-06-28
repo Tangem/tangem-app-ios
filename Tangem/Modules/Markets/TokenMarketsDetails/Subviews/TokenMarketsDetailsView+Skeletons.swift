@@ -19,7 +19,7 @@ extension TokenMarketsDetailsView {
 
                         Spacer()
 
-                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.tokenMarketsDetailsId })
+                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
                     }
 
                     ForEach(0 ... 1) { _ in
@@ -70,7 +70,7 @@ extension TokenMarketsDetailsView {
 
                         Spacer(minLength: 10)
 
-                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.tokenMarketsDetailsId })
+                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
                     }
 
                     HStack {
