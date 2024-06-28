@@ -85,6 +85,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         // TODO: Will be replaced in IOS-7083
         shortDescription = "XRP (XRP) is a cryptocurrency launched in January 2009, where the first genesis block was mined on 9th January 2009."
     }
+
+    // MARK: - Actions
+
+    func onAddToPortfolioTapAction() {
+        // TODO: - Need to implement bottom sheet token portfolio
+    }
 }
 
 extension TokenMarketsDetailsViewModel {
