@@ -87,10 +87,8 @@ struct TokenMarketsDetailsView: View {
 
     private var contentBlocks: some View {
         VStack(spacing: 14) {
-            VStack(alignment: .leading, spacing: 8) {
-                // TODO: My portfolio
-            }
-            .defaultRoundedBackground()
+            MarketsEmptyAddTokenView(didTapAction: viewModel.onAddToPortfolioTapAction)
+                .padding(.horizontal, 16)
         }
     }
 }

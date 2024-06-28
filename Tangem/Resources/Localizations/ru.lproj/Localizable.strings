@@ -310,6 +310,10 @@
 "manage_tokens_unavailable_vote" = "Голосовать";
 "manage_tokens_wallet_selector_title" = "Выберите кошелек";
 "manage_tokens_wallet_support_only_one_network_title" = "Кошелёк не поддерживает более одной сети";
+"markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
+"markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_sort_by_title" = "Sort By";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
