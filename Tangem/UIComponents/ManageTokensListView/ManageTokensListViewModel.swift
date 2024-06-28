@@ -9,22 +9,22 @@
 import Combine
 
 class ManageTokensListViewModel: ObservableObject {
-    @Published var coinViewModels: [ManageTokensCoinViewModel] = []
+    @Published var tokenListItemModels: [ManageTokensListItemViewModel] = []
 
     var hasNextPage: Bool {
         loader?.hasNextPage ?? false
     }
 
     private weak var loader: ManageTokensListLoader?
-    private let coinViewModelsPublisher: any Publisher<[ManageTokensCoinViewModel], Never>
+    private let listItemsViewModelsPublisher: any Publisher<[ManageTokensListItemViewModel], Never>
     private var bag = Set<AnyCancellable>()
 
     init(
         loader: ManageTokensListLoader,
-        coinViewModelsPublisher: some Publisher<[ManageTokensCoinViewModel], Never>
+        listItemsViewModelsPublisher: some Publisher<[ManageTokensListItemViewModel], Never>
     ) {
         self.loader = loader
-        self.coinViewModelsPublisher = coinViewModelsPublisher
+        self.listItemsViewModelsPublisher = listItemsViewModelsPublisher
 
         bind()
     }
@@ -34,8 +34,8 @@ class ManageTokensListViewModel: ObservableObject {
     }
 
     func bind() {
-        coinViewModelsPublisher
-            .assign(to: \.coinViewModels, on: self, ownership: .weak)
+        listItemsViewModelsPublisher
+            .assign(to: \.tokenListItemModels, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

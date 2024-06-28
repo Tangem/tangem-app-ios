@@ -134,6 +134,7 @@
 "common_sign" = "Подписать";
 "common_sign_and_send" = "Подписать и отправить";
 "common_stake" = "Stake";
+"common_staking" = "Стейкинг";
 "common_start" = "Начать";
 "common_submit" = "Отправить";
 "common_success" = "Успешно";
@@ -670,6 +671,7 @@
 "wallet_connect_sessions_title" = "Сессии WalletConnect";
 "wallet_connect_subtitle" = "Подключение к dApps";
 "wallet_connect_title" = "WalletConnect";
+"wallet_connect_toast_awaiting_session_proposal" = "Подключение может занять несколько секунд";
 "wallet_marketplace_block_title" = "Рыночная цена %@";
 "wallet_marketprice_block_update_time" = "за 24 часа";
 "wallet_network_group_title" = "Сеть %@";

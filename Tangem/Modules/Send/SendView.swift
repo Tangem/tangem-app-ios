@@ -122,9 +122,12 @@ struct SendView: View {
     private var currentPage: some View {
         switch viewModel.step {
         case .amount:
-            SendAmountView(viewModel: viewModel.sendAmountViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
+            SendAmountView(
+                viewModel: viewModel.sendAmountViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
+            .onAppear(perform: viewModel.onCurrentPageAppear)
+            .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
             SendDestinationView(viewModel: viewModel.sendDestinationViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)

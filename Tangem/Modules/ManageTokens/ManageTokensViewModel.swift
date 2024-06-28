@@ -40,7 +40,7 @@ class ManageTokensViewModel: ObservableObject {
 
         manageTokensListViewModel = .init(
             loader: self,
-            coinViewModelsPublisher: adapter.coinViewModelsPublisher
+            listItemsViewModelsPublisher: adapter.listItemsViewModelsPublisher
         )
 
         bind()

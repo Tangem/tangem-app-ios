@@ -57,7 +57,8 @@ struct SendDestinationView: View {
                 namespace: namespace
             ))
 
-            if let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
+            if viewModel.showSuggestedDestinations,
+               let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
                 SendSuggestedDestinationView(viewModel: suggestedDestinationViewModel)
                     .transition(.opacity)
             }
