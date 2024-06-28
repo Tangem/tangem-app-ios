@@ -97,20 +97,18 @@ class WalletModel {
 
     var name: String {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return wallet.blockchain.displayName
         case .token(let token):
             return token.name
-        case .feeResource(let type):
-            return type.rawValue
         }
     }
 
     var isMainToken: Bool {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return true
-        case .token, .feeResource:
+        case .token:
             return false
         }
     }
