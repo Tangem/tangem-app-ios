@@ -144,7 +144,7 @@ class WalletModel {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 
     var rateFormatted: String {

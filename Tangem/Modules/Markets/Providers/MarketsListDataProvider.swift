@@ -153,7 +153,7 @@ extension MarketsListDataProvider {
         // MARK: - Hashable
 
         func hash(into hasher: inout Hasher) {
-            hasher.combine(interval.rawValue)
+            hasher.combine(interval.id)
             hasher.combine(order.rawValue)
         }
 

@@ -15,8 +15,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     var marketRating: String?
     var marketCap: String?
 
-    var priceValue: String = ""
-    var priceChangeState: TokenPriceChangeView.State = .noData
+    var priceValue: String
+    var priceChangeState: TokenPriceChangeView.State
 
     // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
     @Published var charts: [Double]? = nil
@@ -27,12 +27,13 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     let imageURL: URL?
     let name: String
     let symbol: String
+    let didTapAction: () -> Void
 
     // MARK: - Private Properties
 
     private var bag = Set<AnyCancellable>()
 
-    private let priceChangeFormatter = PriceChangeFormatter()
+    private let priceChangeUtility = PriceChangeUtility()
     private let priceFormatter = CommonTokenPriceFormatter()
     private let marketCapFormatter = MarketCapFormatter()
 
@@ -43,6 +44,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
         symbol = data.symbol.uppercased()
+        didTapAction = data.didTapAction
 
         if let marketRating = data.marketRating {
             self.marketRating = "\(marketRating)"
@@ -53,13 +55,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         priceValue = priceFormatter.formatFiatBalance(data.priceValue)
-
-        if let priceChangeStateValue = data.priceChangeStateValue {
-            let priceChangeResult = priceChangeFormatter.format(priceChangeStateValue * Constants.priceChangeStateValueDevider, option: .priceChange)
-            priceChangeState = .loaded(signType: priceChangeResult.signType, text: priceChangeResult.formattedText)
-        } else {
-            priceChangeState = .loading
-        }
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
 
         bind()
     }
@@ -80,6 +76,7 @@ extension MarketsItemViewModel {
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
+        let didTapAction: () -> Void
     }
 
     enum Constants {

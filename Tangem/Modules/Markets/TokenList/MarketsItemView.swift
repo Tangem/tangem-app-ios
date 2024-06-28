@@ -15,26 +15,28 @@ struct MarketsItemView: View {
     private let iconSize = CGSize(bothDimensions: 36)
 
     var body: some View {
-        HStack(spacing: 12) {
-            IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+        Button(action: viewModel.didTapAction) {
+            HStack(spacing: 12) {
+                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
-            VStack {
-                tokenInfoView
-            }
+                VStack {
+                    tokenInfoView
+                }
 
-            Spacer()
+                Spacer()
 
-            VStack {
-                HStack(spacing: 10) {
-                    tokenPriceView
+                VStack {
+                    HStack(spacing: 10) {
+                        tokenPriceView
 
-                    priceHistoryView
+                        priceHistoryView
+                    }
                 }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 15)
+            .animation(nil) // Disable animations on scroll reuse
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 15)
-        .animation(nil) // Disable animations on scroll reuse
     }
 
     private var tokenInfoView: some View {
@@ -117,7 +119,8 @@ extension MarketsItemView {
                 marketCap: token.marketCap,
                 marketRating: token.marketRating,
                 priceValue: token.currentPrice,
-                priceChangeStateValue: nil
+                priceChangeStateValue: nil,
+                didTapAction: {}
             )
         }
     }
