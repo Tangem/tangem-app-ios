@@ -8,17 +8,17 @@
 
 import Foundation
 
-enum MarketsPriceIntervalType: CaseIterable, Codable, CustomStringConvertible, Identifiable, Equatable {
-    case day
-    case week
-    case month
-    case quarter
-    case halfYear
-    case year
+enum MarketsPriceIntervalType: String, CaseIterable, Codable, CustomStringConvertible, Identifiable, Equatable {
+    case day = "24h"
+    case week = "1w"
+    case month = "1m"
+    case quarter = "3m"
+    case halfYear = "6m"
+    case year = "1y"
     case all
 
     var id: String {
-        tokenMarketsDetailsId
+        rawValue
     }
 
     var marketsListId: String {
@@ -26,18 +26,6 @@ enum MarketsPriceIntervalType: CaseIterable, Codable, CustomStringConvertible, I
         case .day: return "24h"
         case .week: return "1w"
         default: return "30d"
-        }
-    }
-
-    var tokenMarketsDetailsId: String {
-        switch self {
-        case .day: return "24h"
-        case .week: return "1w"
-        case .month: return "1m"
-        case .quarter: return "3m"
-        case .halfYear: return "6m"
-        case .year: return "1y"
-        case .all: return "all"
         }
     }
 }

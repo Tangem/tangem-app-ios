@@ -24,7 +24,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        rootViewModel = .init(tokenInfo: options.info, coordinator: self)
+        rootViewModel = .init(tokenInfo: options.info, dataProvider: .init())
     }
 }
 
