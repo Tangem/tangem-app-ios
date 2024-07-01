@@ -744,7 +744,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                             if self.backupServiceState == .finished {
                                 self.pendingBackupManager.onBackupCompleted()
-                                self.userWalletModel?.onBackupUpdate(type: .completed)
+                                self.userWalletModel?.onBackupUpdate(type: .backupCompleted)
                                 Analytics.log(
                                     event: .backupFinished,
                                     params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]

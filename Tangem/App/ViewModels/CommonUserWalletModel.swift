@@ -355,7 +355,7 @@ extension CommonUserWalletModel: UserWalletModel {
             cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
             cardInfo.card.backupStatus = card.backupStatus
             onUpdate()
-        case .completed:
+        case .backupCompleted:
             // we have to read an actual status from backup validator
             _updatePublisher.send()
         }

@@ -36,5 +36,5 @@ protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProvidin
 
 enum BackupUpdateType {
     case primaryCardBackuped(card: Card)
-    case completed
+    case backupCompleted
 }
