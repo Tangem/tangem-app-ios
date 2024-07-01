@@ -12,117 +12,137 @@ extension TokenMarketsDetailsView {
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
-                VStack(spacing: 0) {
-                    HStack {
-                        Text(Localization.marketsTokenDetailsInsights)
-                            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                insights
 
-                        Spacer()
+                securityScore
 
-                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
-                    }
+                metrics
 
-                    ForEach(0 ... 1) { _ in
-                        fillableBlocks
-                    }
-                }
-                .defaultRoundedBackground(with: Colors.Background.action)
+                pricePerformance
 
-                HStack(spacing: 0) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(alignment: .center, spacing: 4) {
-                            Text(Localization.marketsTokenDetailsSecurityScore)
-                                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                links
+            }
+            .padding(.horizontal, 16)
+        }
 
-                            Assets.infoCircle16.image
-                                .foregroundStyle(Colors.Icon.informative)
-                        }
-
-                        skeletonView(width: 106, height: 16)
-                    }
+        private var insights: some View {
+            VStack(spacing: 0) {
+                HStack {
+                    Text(Localization.marketsTokenDetailsInsights)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                     Spacer()
 
-                    skeletonView(width: 134, height: 20)
+                    MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
                 }
-                .defaultRoundedBackground(with: Colors.Background.action)
 
-                VStack(spacing: 0) {
-                    HStack {
-                        Text(Localization.marketsTokenDetailsMetrics)
+                ForEach(0 ... 1) { _ in
+                    fillableBlocks
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
+
+        private var securityScore: some View {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(alignment: .center, spacing: 4) {
+                        Text(Localization.marketsTokenDetailsSecurityScore)
                             .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                        Spacer(minLength: 10)
-
-                        skeletonView(width: 70, height: 18)
+                        Assets.infoCircle16.image
+                            .foregroundStyle(Colors.Icon.informative)
                     }
 
-                    ForEach(0 ... 2) { _ in
-                        fillableBlocks
-                    }
+                    skeletonView(width: 106, height: 16)
                 }
-                .defaultRoundedBackground(with: Colors.Background.action)
 
-                VStack(spacing: 12) {
-                    HStack {
-                        Text(Localization.marketsTokenDetailsPricePerformance)
-                            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                Spacer()
 
-                        Spacer(minLength: 10)
+                skeletonView(width: 134, height: 20)
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
 
-                        MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
-                    }
-
-                    HStack {
-                        skeletonView(width: 28, height: 18)
-
-                        Spacer()
-
-                        skeletonView(width: 38, height: 18)
-                    }
-
-                    skeletonView(width: .infinity, height: 6)
-
-                    HStack {
-                        skeletonView(width: 60, height: 21)
-
-                        Spacer()
-
-                        skeletonView(width: 60, height: 21)
-                    }
-                }
-                .defaultRoundedBackground(with: Colors.Background.action)
-
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(Localization.marketsTokenDetailsLinks)
+        private var metrics: some View {
+            VStack(spacing: 0) {
+                HStack {
+                    Text(Localization.marketsTokenDetailsMetrics)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                        .padding(.bottom, 10)
-                        .padding(.horizontal, 16)
 
-                    ForEach(0 ... 2) { index in
-                        VStack(alignment: .leading, spacing: 12) {
-                            skeletonView(width: 74, height: 18)
-                                .padding(.horizontal, 16)
+                    Spacer(minLength: 10)
 
-                            HStack(spacing: 12) {
-                                ForEach(0 ... 2) { _ in
-                                    SkeletonView()
-                                        .frame(width: .infinity, height: 28)
-                                        .cornerRadiusContinuous(14)
-                                }
-                            }
+                    skeletonView(width: 70, height: 18)
+                }
+
+                ForEach(0 ... 2) { _ in
+                    fillableBlocks
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
+
+        private var pricePerformance: some View {
+            VStack(spacing: 12) {
+                HStack {
+                    Text(Localization.marketsTokenDetailsPricePerformance)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                    Spacer(minLength: 10)
+
+                    MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
+                }
+
+                HStack {
+                    skeletonView(width: 28, height: 18)
+
+                    Spacer()
+
+                    skeletonView(width: 38, height: 18)
+                }
+
+                skeletonView(width: .infinity, height: 6)
+
+                HStack {
+                    skeletonView(width: 60, height: 21)
+
+                    Spacer()
+
+                    skeletonView(width: 60, height: 21)
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
+
+        private var links: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(Localization.marketsTokenDetailsLinks)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    .padding(.bottom, 10)
+                    .padding(.horizontal, 16)
+
+                ForEach(0 ... 2) { index in
+                    VStack(alignment: .leading, spacing: 12) {
+                        skeletonView(width: 74, height: 18)
                             .padding(.horizontal, 16)
 
-                            if index != 2 {
-                                Separator(height: .exact(0.5), color: Colors.Stroke.primary, axis: .horizontal)
-                                    .padding(.leading, 16)
+                        HStack(spacing: 12) {
+                            ForEach(0 ... 2) { _ in
+                                SkeletonView()
+                                    .frame(width: .infinity, height: 28)
+                                    .cornerRadiusContinuous(14)
                             }
+                        }
+                        .padding(.horizontal, 16)
+
+                        if index != 2 {
+                            Separator(height: .exact(0.5), color: Colors.Stroke.primary, axis: .horizontal)
+                                .padding(.leading, 16)
                         }
                     }
                 }
-                .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: 0)
             }
-            .padding(.horizontal, 16)
+            .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: 0)
         }
 
         private var fillableBlocks: some View {
