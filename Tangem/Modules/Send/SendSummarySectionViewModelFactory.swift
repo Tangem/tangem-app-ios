@@ -31,14 +31,13 @@ struct SendSummarySectionViewModelFactory {
         self.tokenIconInfo = tokenIconInfo
     }
 
-    func makeDestinationViewTypes(address: String, additionalField: (SendAdditionalFields, String)?) -> [SendDestinationSummaryViewType] {
+    func makeDestinationViewTypes(address: String, additionalField: DestinationAdditionalFieldType) -> [SendDestinationSummaryViewType] {
         var destinationViewTypes: [SendDestinationSummaryViewType] = []
 
         let addressCorners: UIRectCorner
-        if let (additionalFieldType, additionalFieldValue) = additionalField,
-           !additionalFieldValue.isEmpty {
+        if case .filled(let type, let value, _) = additionalField {
             addressCorners = [.topLeft, .topRight]
-            destinationViewTypes.append(.additionalField(type: additionalFieldType, value: additionalFieldValue))
+            destinationViewTypes.append(.additionalField(type: type, value: value))
         } else {
             addressCorners = .allCorners
         }

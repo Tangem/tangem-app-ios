@@ -31,8 +31,7 @@ final class MarketsViewModel: ObservableObject {
 
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
-
-//    private lazy var loader = setupListDataLoader()
+    private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
 
     private var bag = Set<AnyCancellable>()
 
@@ -114,8 +113,12 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { provider, items in
-                provider.tokenViewModels = items.compactMap { provider.mapToTokenViewModel(tokenItemModel: $0) }
+            .sink(receiveValue: { viewModel, items in
+                viewModel.tokenViewModels = items.compactMap { item in
+                    viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
+                    return tokenViewModel
+                }
             })
             .store(in: &bag)
 
@@ -124,7 +127,6 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
                 viewModel.isLoading = isLoading
             })
             .store(in: &bag)
@@ -140,10 +142,13 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId],
+            didTapAction: { [weak self] in
+                self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
+            }
         )
 
-        return MarketsItemViewModel(inputData)
+        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
     }
 }
 

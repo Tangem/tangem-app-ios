@@ -14,7 +14,7 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     var enteredSearchText = CurrentValueSubject<String, Never>("")
     var manageTokensListViewModel: ManageTokensListViewModel!
 
-    @Published var coinViewModels: [ManageTokensCoinViewModel] = []
+    @Published var listItemsViewModels: [ManageTokensListItemViewModel] = []
     @Published var isLoading: Bool = true
 
     private lazy var loader = setupListDataLoader()
@@ -23,7 +23,7 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     init() {
         manageTokensListViewModel = .init(
             loader: self,
-            coinViewModelsPublisher: $coinViewModels
+            listItemsViewModelsPublisher: $listItemsViewModels
         )
 
         bind()
@@ -78,19 +78,19 @@ private extension WelcomeSearchTokensViewModel {
 
         loader.$items
             .withWeakCaptureOf(self)
-            .map { viewModel, items -> [ManageTokensCoinViewModel] in
+            .map { viewModel, items -> [ManageTokensListItemViewModel] in
                 items.compactMap(viewModel.mapToCoinViewModel(coinModel:))
             }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.coinViewModels, on: self, ownership: .weak)
+            .assign(to: \.listItemsViewModels, on: self, ownership: .weak)
             .store(in: &bag)
 
         return loader
     }
 
-    func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensCoinViewModel {
-        let currencyItems = coinModel.items.enumerated().map { index, item in
-            ManageTokensCoinItemViewModel(
+    func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensListItemViewModel {
+        let networkItems = coinModel.items.enumerated().map { index, item in
+            ManageTokensItemNetworkSelectorViewModel(
                 tokenItem: item.tokenItem,
                 isReadonly: true,
                 isSelected: .constant(false),
@@ -99,6 +99,6 @@ private extension WelcomeSearchTokensViewModel {
             )
         }
 
-        return ManageTokensCoinViewModel(with: coinModel, items: currencyItems)
+        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 }

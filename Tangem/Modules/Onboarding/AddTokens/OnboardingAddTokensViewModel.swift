@@ -49,7 +49,7 @@ class OnboardingAddTokensViewModel: ObservableObject {
     init(adapter: ManageTokensAdapter, delegate: OnboardingAddTokensDelegate?) {
         self.adapter = adapter
         self.delegate = delegate
-        manageTokensListViewModel = .init(loader: self, coinViewModelsPublisher: adapter.coinViewModelsPublisher)
+        manageTokensListViewModel = .init(loader: self, listItemsViewModelsPublisher: adapter.listItemsViewModelsPublisher)
 
         bind()
     }
