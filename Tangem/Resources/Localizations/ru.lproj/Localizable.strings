@@ -81,6 +81,7 @@
 "common_copy" = "Копировать";
 "common_copy_address" = "Скопировать адрес";
 "common_create" = "Создать";
+"common_custom" = "Свое";
 "common_delete" = "Удалить";
 "common_disabled" = "Отключено";
 "common_disconnect" = "Отключить";
@@ -92,7 +93,6 @@
 "common_explorer" = "Обозреватель";
 "common_fee_label" = "Комиссия";
 "common_fee_selector_footer" = "Сетевые комиссии – это плата пользователя за обработку и подтверждение транзакций. Размер комиссии зависит от нагрузки на сеть, объема транзакции и приоритета исполнения. %@";
-"common_fee_selector_option_custom" = "Свое";
 "common_fee_selector_option_fast" = "Быстро";
 "common_fee_selector_option_market" = "По рынку";
 "common_fee_selector_option_slow" = "Медленно";
@@ -109,6 +109,7 @@
 "common_next" = "Далее";
 "common_no" = "Нет";
 "common_no_address" = "Нет адреса";
+"common_now" = "Сейчас";
 "common_ok" = "OK";
 "common_origin_card" = "Основная карта";
 "common_passphrase" = "Парольная фраза";
@@ -133,12 +134,14 @@
 "common_sign" = "Подписать";
 "common_sign_and_send" = "Подписать и отправить";
 "common_stake" = "Stake";
+"common_staking" = "Стейкинг";
 "common_start" = "Начать";
 "common_submit" = "Отправить";
 "common_success" = "Успешно";
 "common_support" = "Поддержка";
 "common_swap" = "Обмен";
 "common_terms_and_conditions" = "условия участия";
+"common_today" = "Сегодня";
 "common_transaction_failed" = "Ошибка транзакции";
 "common_transactions" = "Транзакции";
 "common_transfer" = "Перевод";
@@ -300,12 +303,17 @@
 "manage_tokens_network_selector_title" = "Выберите сети";
 "manage_tokens_network_selector_wallet" = "Кошелек";
 "manage_tokens_nothing_found" = "Не удалось найти этот токен, вы можете добавить его вручную.";
+"manage_tokens_remove" = "Удалить";
 "manage_tokens_search_placeholder" = "например Bitcoin";
 "manage_tokens_toast_portfolio_updated" = "Ваш портфель был обновлен";
 "manage_tokens_unavailable_description" = "Выбранный токен не доступен в кошельке на данный момент. Но не переживайте, вы можете выразить свой интерес проголосовав за его добавление.";
 "manage_tokens_unavailable_vote" = "Голосовать";
 "manage_tokens_wallet_selector_title" = "Выберите кошелек";
 "manage_tokens_wallet_support_only_one_network_title" = "Кошелёк не поддерживает более одной сети";
+"markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
+"markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_sort_by_title" = "Sort By";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
@@ -664,6 +672,7 @@
 "wallet_connect_sessions_title" = "Сессии WalletConnect";
 "wallet_connect_subtitle" = "Подключение к dApps";
 "wallet_connect_title" = "WalletConnect";
+"wallet_connect_toast_awaiting_session_proposal" = "Подключение может занять несколько секунд";
 "wallet_marketplace_block_title" = "Рыночная цена %@";
 "wallet_marketprice_block_update_time" = "за 24 часа";
 "wallet_network_group_title" = "Сеть %@";

@@ -24,7 +24,7 @@ struct ManageTokensView: View {
                     Divider()
                 }
 
-                ManageTokensListView(viewModel: viewModel.manageTokensListViewModel)
+                ManageTokensListView(viewModel: viewModel.manageTokensListViewModel, header: customTokensList)
                     .addContentOffsetObserver($contentOffset)
             }
 
@@ -65,6 +65,19 @@ struct ManageTokensView: View {
             }
         })
     }
+
+    private func customTokensList() -> some View {
+        LazyVStack(spacing: 0) {
+            ForEach(viewModel.customTokensList) { item in
+                CustomTokenItemView(
+                    info: item,
+                    removeAction: { info in
+                        viewModel.removeCustomToken(info)
+                    }
+                )
+            }
+        }
+    }
 }
 
 #Preview {
@@ -79,6 +92,11 @@ struct ManageTokensView: View {
     ))
 
     return NavigationView {
-        ManageTokensView(viewModel: .init(adapter: adapter, coordinator: nil))
+        ManageTokensView(viewModel: .init(
+            adapter: adapter,
+            userTokensManager: fakeModel.userTokensManager,
+            walletModelsManager: fakeModel.walletModelsManager,
+            coordinator: nil
+        ))
     }
 }

@@ -80,11 +80,11 @@ extension SendSuggestedDestinationViewModel.CellModel {
 struct SendSuggestedDestination {
     let address: String
     let additionalField: String?
-    let type: Type
+    let type: DestinationType
 }
 
 extension SendSuggestedDestination {
-    enum `Type` {
+    enum DestinationType {
         case otherWallet
         case recentAddress
     }

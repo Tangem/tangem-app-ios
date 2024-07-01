@@ -282,36 +282,15 @@ private extension MultiWalletMainContentViewModel {
     func hideTokenAction(for tokenItemViewModel: TokenItemViewModel) {
         let tokenItem = tokenItemViewModel.tokenItem
 
+        let alertBuilder = HideTokenAlertBuilder()
         if userWalletModel.userTokensManager.canRemove(tokenItem) {
-            showHideWarningAlert(tokenItem: tokenItem)
-        } else {
-            showUnableToHideAlert(name: tokenItem.name, currencySymbol: tokenItem.currencySymbol, blockchainName: tokenItem.blockchain.displayName)
-        }
-    }
-
-    func showHideWarningAlert(tokenItem: TokenItem) {
-        error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsHideAlertTitle(tokenItem.name),
-            message: Localization.tokenDetailsHideAlertMessage,
-            primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide)) { [weak self] in
+            error = alertBuilder.hideTokenAlert(tokenItem: tokenItem, hideAction: {
+                [weak self] in
                 self?.hideToken(tokenItem: tokenItem)
-            },
-            secondaryButton: .cancel()
-        )
-    }
-
-    func showUnableToHideAlert(name: String, currencySymbol: String, blockchainName: String) {
-        let message = Localization.tokenDetailsUnableHideAlertMessage(
-            name,
-            currencySymbol,
-            blockchainName
-        )
-
-        error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsUnableHideAlertTitle(name),
-            message: message,
-            primaryButton: .default(Text(Localization.commonOk))
-        )
+            })
+        } else {
+            error = alertBuilder.unableToHideTokenAlert(tokenItem: tokenItem)
+        }
     }
 
     func hideToken(tokenItem: TokenItem) {

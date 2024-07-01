@@ -13,7 +13,6 @@ import BigInt
 import BlockchainSdk
 
 protocol SendFeeViewModelInput {
-    var amountPublisher: AnyPublisher<Amount?, Never> { get }
     var selectedFeeOption: FeeOption { get }
     var feeOptions: [FeeOption] { get }
     var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
@@ -154,7 +153,7 @@ class SendFeeViewModel: ObservableObject {
                 guard
                     let customFee,
                     let feeCurrencyId = self.walletInfo.feeCurrencyId,
-                    let fiatFee = self.balanceConverter.convertToFiat(value: customFee.amount.value, from: feeCurrencyId)
+                    let fiatFee = self.balanceConverter.convertToFiat(customFee.amount.value, currencyId: feeCurrencyId)
                 else {
                     return nil
                 }

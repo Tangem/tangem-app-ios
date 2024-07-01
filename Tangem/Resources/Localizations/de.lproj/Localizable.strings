@@ -47,6 +47,12 @@
 "card_settings_action_sheet_title" = "Are you sure you want to do this?";
 "card_settings_change_access_code" = "Change Access Code";
 "card_settings_change_access_code_footer" = "Access code will be changed on this card only";
+"card_settings_completed_reset_alert_message" = "All cards in the selected wallet have been reset to factory settings. You can now create a new wallet.";
+"card_settings_completed_reset_alert_title" = "Reset complete";
+"card_settings_continue_reset_alert_message" = "Do you want to reset the next card in this wallet?";
+"card_settings_continue_reset_alert_title" = "Card reset";
+"card_settings_interrupted_reset_alert_message" = "We recommend completing the reset process for all cards in this wallet";
+"card_settings_interrupted_reset_alert_title" = "You haven't reset all your cards";
 "card_settings_reset_card_to_factory" = "Reset to Factory Settings";
 "card_settings_security_mode" = "Security Mode";
 "card_settings_title" = "Card settings";
@@ -75,6 +81,7 @@
 "common_copy" = "Copy";
 "common_copy_address" = "Copy address";
 "common_create" = "Create";
+"common_custom" = "Custom";
 "common_delete" = "Entfernen";
 "common_disabled" = "Disabled";
 "common_disconnect" = "Disconnect";
@@ -86,7 +93,6 @@
 "common_explorer" = "Explorer";
 "common_fee_label" = "Gebühr";
 "common_fee_selector_footer" = "Network fees are charges users pay to process and confirm transactions. The fee amount can be affected by network congestion, transaction size, and execution priority. %@";
-"common_fee_selector_option_custom" = "Custom";
 "common_fee_selector_option_fast" = "Fast";
 "common_fee_selector_option_market" = "Market";
 "common_fee_selector_option_slow" = "Slow";
@@ -103,6 +109,7 @@
 "common_next" = "Next";
 "common_no" = "No";
 "common_no_address" = "No address";
+"common_now" = "Now";
 "common_ok" = "OK";
 "common_origin_card" = "Primary Card";
 "common_passphrase" = "Passphrase";
@@ -127,12 +134,14 @@
 "common_sign" = "Sign";
 "common_sign_and_send" = "Sign and send";
 "common_stake" = "Stake";
+"common_staking" = "Staking";
 "common_start" = "Start";
 "common_submit" = "Submit";
 "common_success" = "Erfolg";
 "common_support" = "Support";
 "common_swap" = "Swap";
 "common_terms_and_conditions" = "terms and conditions";
+"common_today" = "Today";
 "common_transaction_failed" = "Transaction failed";
 "common_transactions" = "Transactions";
 "common_transfer" = "Transfer";
@@ -262,6 +271,7 @@
 "initial_message_change_passcode_body" = "Tippen Sie um den Passcode zu ändern";
 "initial_message_create_wallet_body" = "To create the wallet tap the card as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "To reset to factory settings tap the card as shown above and do not remove until the end of the operation";
+"initial_message_reset_backup_card_header" = "Tap the card #%@ of the wallet";
 "initial_message_sign_body" = "To sign tap the card as shown above and do not remove until the end of the operation";
 "key_invalidated_warning_description" = "You have updated biometrics, scan your card to enter";
 "koinos_insufficient_balance_to_send_koin_description" = "Your balance should be higher than the fee value to make a transfer";
@@ -293,12 +303,17 @@
 "manage_tokens_network_selector_title" = "Choose networks";
 "manage_tokens_network_selector_wallet" = "Wallet";
 "manage_tokens_nothing_found" = "Couldn’t find this token, you can add it manually";
+"manage_tokens_remove" = "Remove";
 "manage_tokens_search_placeholder" = "e.g. BTC I trust, hodl I must";
 "manage_tokens_toast_portfolio_updated" = "Your portfolio has been updated";
 "manage_tokens_unavailable_description" = "The selected token is currently unavailable for actions within the crypto wallet. But worry not, you can express your interest by upvoting it.";
 "manage_tokens_unavailable_vote" = "Upvote";
 "manage_tokens_wallet_selector_title" = "Choose wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
+"markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
+"markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_sort_by_title" = "Sort By";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
@@ -657,6 +672,7 @@
 "wallet_connect_sessions_title" = "WalletConnect Sessions";
 "wallet_connect_subtitle" = "Connect to dApps";
 "wallet_connect_title" = "WalletConnect";
+"wallet_connect_toast_awaiting_session_proposal" = "Connecting may take a few seconds";
 "wallet_marketplace_block_title" = "%@ Market Price";
 "wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";

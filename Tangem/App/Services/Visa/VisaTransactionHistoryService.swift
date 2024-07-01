@@ -16,7 +16,7 @@ class VisaTransactionHistoryService {
     private let storage: ThreadSafeContainer<[VisaTransactionRecord]> = []
 
     private let cardPublicKey: String
-    private let numberOfItemsOnPage: Int = 10
+    private let numberOfItemsOnPage: Int = 20
     private var currentOffset = 0
     private var reachEndOfHistoryList = false
 
@@ -80,7 +80,7 @@ extension VisaTransactionHistoryService {
         log("Attempting to load next page. Current history offset: \(currentOffset)")
         do {
             let loadedRecords = try await loadRecordsPage(offset: currentOffset)
-            reachEndOfHistoryList = loadedRecords.count % numberOfItemsOnPage != 0
+            reachEndOfHistoryList = loadedRecords.count != numberOfItemsOnPage
             currentOffset += loadedRecords.count
             saveRecordsInStorage(records: loadedRecords)
             log("History loaded sucessfully. Number of new items: \(loadedRecords.count). New offset: \(currentOffset)")
