@@ -18,17 +18,13 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     @Published var walletSelectorViewModel: MarketsWalletSelectorViewModel
     @Published var notificationInput: NotificationViewInput?
 
-    @Published var nativeSelectorItems: [MarketsTokensNetworkSelectorItemViewModel] = []
-    @Published var nonNativeSelectorItems: [MarketsTokensNetworkSelectorItemViewModel] = []
+    @Published var tokenItemViewModels: [MarketsTokensNetworkSelectorItemViewModel] = []
 
     @Published var alert: AlertBinder?
     @Published var pendingAdd: [TokenItem] = []
-    @Published var pendingRemove: [TokenItem] = []
-
-    private var addressCopiedToast: Toast<SuccessToast>?
 
     var isSaveDisabled: Bool {
-        pendingAdd.isEmpty && pendingRemove.isEmpty
+        pendingAdd.isEmpty
     }
 
     // MARK: - Private Implementation
@@ -104,10 +100,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func reloadSelectorItemsFromTokenItems() {
-        nativeSelectorItems = tokenItems
-            .filter {
-                $0.isBlockchain
-            }
+        tokenItemViewModels = tokenItems
             .map {
                 .init(
                     id: $0.hashValue,
@@ -118,27 +111,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                     tokenTypeName: nil,
                     contractAddress: $0.contractAddress,
                     isSelected: bindSelection($0),
-                    isAvailable: canTokenItemBeToggled,
-                    isCopied: bindCopy($0)
-                )
-            }
-
-        nonNativeSelectorItems = tokenItems
-            .filter {
-                !$0.isBlockchain
-            }
-            .map {
-                .init(
-                    id: $0.hashValue,
-                    isMain: $0.isBlockchain,
-                    iconName: $0.blockchain.iconName,
-                    iconNameSelected: $0.blockchain.iconNameFilled,
-                    networkName: $0.networkName,
-                    tokenTypeName: $0.blockchain.tokenTypeName,
-                    contractAddress: $0.contractAddress,
-                    isSelected: bindSelection($0),
-                    isAvailable: canTokenItemBeToggled,
-                    isCopied: bindCopy($0)
+                    isAvailable: canTokenItemBeToggled
                 )
             }
     }
@@ -159,10 +132,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             return
         }
 
-        try userTokensManager.update(
-            itemsToRemove: pendingRemove,
-            itemsToAdd: pendingAdd
-        )
+        try userTokensManager.update(itemsToRemove: [], itemsToAdd: pendingAdd)
     }
 
     private func isAvailableTokenSelection() -> Bool {
@@ -182,18 +152,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
         let alreadyAdded = isAdded(tokenItem)
 
-        if alreadyAdded {
-            if selected {
-                pendingRemove.remove(tokenItem)
-            } else {
-                pendingRemove.append(tokenItem)
-            }
+        if selected {
+            pendingAdd.append(tokenItem)
         } else {
-            if selected {
-                pendingAdd.append(tokenItem)
-            } else {
-                pendingAdd.remove(tokenItem)
-            }
+            pendingAdd.remove(tokenItem)
         }
 
         try saveChanges()
@@ -203,40 +165,34 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         let binding = Binding<Bool> { [weak self] in
             self?.isSelected(tokenItem) ?? false
         } set: { [weak self] isSelected in
-            do {
-                try self?.displayAlertWarningDeleteIfNeeded(isSelected: isSelected, tokenItem: tokenItem)
-            } catch {
-                self?.displayAlertAndUpdateSelection(for: tokenItem, error: error)
+            if isSelected {
+                self?.pendingAdd.remove(tokenItem)
+            } else {
+                self?.pendingAdd.append(tokenItem)
             }
         }
 
         return binding
     }
 
-    private func bindCopy(_ tokenItem: TokenItem) -> Binding<Bool> {
-        let binding = Binding<Bool> { [weak self] in
-            self?.addressCopiedToast != nil
-        } set: { [weak self] isSelected in
-            if isSelected {
-                self?.presentCopyAddressToast()
-            } else {
-                self?.addressCopiedToast?.dismiss(animated: true)
-            }
+    private func bindCopy() -> Binding<Bool> {
+        let binding = Binding<Bool> {
+            false
+        } set: { _ in
+            Toast(view: SuccessToast(text: Localization.contractAddressCopiedMessage))
+                .present(
+                    layout: .bottom(padding: 80),
+                    type: .temporary()
+                )
         }
 
         return binding
     }
 
     private func updateSelection(_ tokenItem: TokenItem) {
-        if tokenItem.isBlockchain {
-            nativeSelectorItems
-                .first(where: { $0.id == tokenItem.hashValue })?
-                .updateSelection(with: bindSelection(tokenItem))
-        } else {
-            nonNativeSelectorItems
-                .first(where: { $0.id == tokenItem.hashValue })?
-                .updateSelection(with: bindSelection(tokenItem))
-        }
+        tokenItemViewModels
+            .first(where: { $0.id == tokenItem.hashValue })?
+            .updateSelection(with: bindSelection(tokenItem))
     }
 
     private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
@@ -255,15 +211,8 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         }
 
         pendingAdd = []
-        pendingRemove = []
 
         reloadSelectorItemsFromTokenItems()
-    }
-
-    func presentCopyAddressToast() {
-        let toastView = SuccessToast(text: Localization.contractAddressCopiedMessage)
-        addressCopiedToast = Toast(view: toastView)
-        addressCopiedToast?.present(layout: .top(padding: 14), type: .temporary())
     }
 }
 
@@ -291,22 +240,9 @@ private extension MarketsTokensNetworkSelectorViewModel {
         return parentEmbeddedCoinId == tokenItem.blockchain.coinId
     }
 
-    func canRemove(_ tokenItem: TokenItem) -> Bool {
-        guard let userTokensManager = dataSource.selectedUserWalletModel?.userTokensManager else {
-            return false
-        }
-
-        return userTokensManager.canRemove(tokenItem)
-    }
-
     func isSelected(_ tokenItem: TokenItem) -> Bool {
         let isWaitingToBeAdded = pendingAdd.contains(tokenItem)
-        let isWaitingToBeRemoved = pendingRemove.contains(tokenItem)
         let alreadyAdded = isAdded(tokenItem)
-
-        if isWaitingToBeRemoved {
-            return false
-        }
 
         return isWaitingToBeAdded || alreadyAdded
     }
@@ -337,40 +273,6 @@ private extension MarketsTokensNetworkSelectorViewModel {
             message: Text(message),
             dismissButton: okButton
         ))
-    }
-
-    func displayAlertWarningDeleteIfNeeded(isSelected: Bool, tokenItem: TokenItem) throws {
-        guard
-            !isSelected,
-            !pendingAdd.contains(tokenItem),
-            isTokenAvailable(tokenItem)
-        else {
-            try onSelect(isSelected, tokenItem)
-            return
-        }
-
-        if canRemove(tokenItem) {
-            alert = alertBuilder.successCanRemoveAlertDeleteTokenIfNeeded(
-                tokenItem: tokenItem,
-                cancelAction: { [weak self] in
-                    self?.updateSelection(tokenItem)
-                },
-                hideAction: { [weak self] in
-                    do {
-                        try self?.onSelect(isSelected, tokenItem)
-                    } catch {
-                        self?.displayAlertAndUpdateSelection(for: tokenItem, error: error as? LocalizedError)
-                    }
-                }
-            )
-        } else {
-            alert = alertBuilder.errorCanRemoveAlertDeleteTokenIfNeeded(
-                tokenItem: tokenItem,
-                dissmisAction: { [weak self] item in
-                    self?.updateSelection(item)
-                }
-            )
-        }
     }
 
     func displayWarningNotification(for event: WarningEvent) {
