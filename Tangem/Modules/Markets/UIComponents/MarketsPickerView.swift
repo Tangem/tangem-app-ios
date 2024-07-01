@@ -76,7 +76,7 @@ private extension MarketsPickerView {
             MarketsPickerView(
                 marketPriceIntervalType: intervalType,
                 options: MarketsPriceIntervalType.allCases,
-                titleFactory: { $0.tokenMarketsDetailsId }
+                titleFactory: { $0.rawValue }
             )
         }
     }

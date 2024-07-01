@@ -11,14 +11,17 @@ import Combine
 
 class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var price: String
-    @Published var shortDescription: String
+    @Published var shortDescription: String?
+    @Published var fullDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
+    @Published var isLoading = true
+    @Published var alert: AlertBinder?
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
     var priceChangeState: TokenPriceChangeView.State {
         guard let pickedDate else {
-            let changePercent = loadedPriceChangeInfo[selectedPriceChangeIntervalType.tokenMarketsDetailsId]
+            let changePercent = loadedPriceChangeInfo[selectedPriceChangeIntervalType.rawValue]
             return priceChangeUtility.convertToPriceChangeState(changePercent: changePercent)
         }
 
@@ -58,32 +61,64 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private let balanceFormatter = BalanceFormatter()
     private let priceChangeUtility = PriceChangeUtility()
-    private lazy var dateFormatter: DateFormatter = {
+    private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMMM, HH:MM"
         return dateFormatter
     }()
 
-    private let tokenInfo: MarketsTokenModel
+    private let fiatBalanceFormattingOptions: BalanceFormattingOptions = .init(
+        minFractionDigits: 2,
+        maxFractionDigits: 8,
+        formatEpsilonAsLowestRepresentableValue: false,
+        roundingType: .defaultFiat(roundingMode: .bankers)
+    )
 
-    init(tokenInfo: MarketsTokenModel) {
+    private let tokenInfo: MarketsTokenModel
+    private let dataProvider: TokenMarketsDetailsDataProvider
+    private var loadedInfo: TokenMarketsDetailsModel?
+
+    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider) {
         self.tokenInfo = tokenInfo
+        self.dataProvider = dataProvider
 
         price = balanceFormatter.formatFiatBalance(
             tokenInfo.currentPrice,
-            formattingOptions: .init(
-                minFractionDigits: 2,
-                maxFractionDigits: 8,
-                formatEpsilonAsLowestRepresentableValue: false,
-                roundingType: .defaultFiat(roundingMode: .bankers)
-            )
+            formattingOptions: fiatBalanceFormattingOptions
         )
 
         loadedHistoryInfo = [Date().timeIntervalSince1970: tokenInfo.priceChangePercentage[MarketsPriceIntervalType.day.marketsListId] ?? 0]
         loadedPriceChangeInfo = tokenInfo.priceChangePercentage
+        loadDetailedInfo()
+    }
 
-        // TODO: Will be replaced in IOS-7083
-        shortDescription = "XRP (XRP) is a cryptocurrency launched in January 2009, where the first genesis block was mined on 9th January 2009."
+    private func loadDetailedInfo() {
+        runTask(in: self) { viewModel in
+            do {
+                viewModel.log("Attempt to load token markets data for token with id: \(viewModel.tokenInfo.id)")
+                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: viewModel.tokenInfo.id)
+
+                await runOnMain {
+                    viewModel.setupUI(using: result)
+                    viewModel.isLoading = false
+                }
+            } catch {
+                await runOnMain { viewModel.alert = error.alertBinder }
+                viewModel.log("Failed to load detailed info. Reason: \(error)")
+            }
+        }
+    }
+
+    private func setupUI(using model: TokenMarketsDetailsModel) {
+        price = balanceFormatter.formatFiatBalance(model.currentPrice, formattingOptions: fiatBalanceFormattingOptions)
+        loadedPriceChangeInfo = model.priceChangePercentage
+        loadedInfo = model
+        shortDescription = model.shortDescription
+        fullDescription = model.fullDescription
+    }
+
+    private func log(_ message: @autoclosure () -> String) {
+        AppLog.shared.debug("[TokenMarketsDetailsViewModel] - \(message())")
     }
 
     // MARK: - Actions
