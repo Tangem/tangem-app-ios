@@ -17,6 +17,15 @@ protocol WalletConnectEthTransactionBuilder {
 struct CommonWalletConnectEthTransactionBuilder {
     private let zeroString = "0x0"
 
+    private func getGasPrice(for tx: WalletConnectEthTransaction, using ethereumNetworkProvider: EthereumNetworkProvider) async throws -> BigUInt {
+        if let gasPrice = tx.gasPrice?.hexToInteger {
+            return BigUInt(gasPrice)
+        }
+
+        let price = try await ethereumNetworkProvider.getGasPrice().async()
+        return price
+    }
+
     private func getGasLimit(for tx: WalletConnectEthTransaction, with amount: Amount, using ethereumNetworkProvider: EthereumNetworkProvider) async throws -> BigUInt {
         if let dappGasLimit = tx.gas?.hexToInteger ?? tx.gasLimit?.hexToInteger {
             return BigUInt(dappGasLimit)
@@ -35,6 +44,35 @@ struct CommonWalletConnectEthTransactionBuilder {
             data: tx.data
         ).async()
         return gasLimitBigInt
+    }
+
+    private func getFee(
+        for tx: WalletConnectEthTransaction,
+        with amount: Amount,
+        blockchain: Blockchain,
+        using ethereumNetworkProvider: EthereumNetworkProvider
+    ) async throws -> Fee {
+        async let gasLimit = getGasLimit(for: tx, with: amount, using: ethereumNetworkProvider)
+
+        let feeParameters: EthereumFeeParameters
+
+        if blockchain.supportsEIP1559 {
+            async let feeHistory = ethereumNetworkProvider.getFeeHistory().async()
+            feeParameters = try await EthereumEIP1559FeeParameters(
+                gasLimit: gasLimit,
+                baseFee: feeHistory.marketBaseFee,
+                priorityFee: feeHistory.marketPriorityFee
+            )
+        } else {
+            async let gasPrice = getGasPrice(for: tx, using: ethereumNetworkProvider)
+            feeParameters = try await EthereumLegacyFeeParameters(gasLimit: gasLimit, gasPrice: gasPrice)
+        }
+
+        let feeValue = feeParameters.calculateFee(decimalValue: blockchain.decimalValue)
+        let gasAmount = Amount(with: blockchain, value: feeValue)
+
+        let fee = Fee(gasAmount, parameters: feeParameters)
+        return fee
     }
 }
 
@@ -55,17 +93,8 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
         }
 
         let valueAmount = Amount(with: blockchain, type: .coin, value: value)
-
         async let walletUpdate = walletModel.update(silent: false).async()
-        async let baseFee = ethereumNetworkProvider.getBaseFee().async()
-        async let priorityFee = ethereumNetworkProvider.getPriorityFee().async()
-        async let gasLimit = getGasLimit(for: wcTransaction, with: valueAmount, using: ethereumNetworkProvider)
-
-        let feeParameters = try await EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
-        let feeValue = feeParameters.calculateFee(decimalValue: blockchain.decimalValue)
-        let gasAmount = Amount(with: blockchain, value: feeValue)
-
-        let fee = Fee(gasAmount, parameters: feeParameters)
+        let fee = try await getFee(for: wcTransaction, with: valueAmount, blockchain: blockchain, using: ethereumNetworkProvider)
         let _ = try await walletUpdate
 
         var transaction = try await walletModel.transactionCreator.createTransaction(

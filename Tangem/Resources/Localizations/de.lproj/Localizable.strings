@@ -482,6 +482,8 @@
 "send_from_wallet" = "From **%@**";
 "send_gas_limit" = "Gas limit";
 "send_gas_limit_footer" = "This is the maximum amount of gas that will be spent to complete a transaction or contract. A gas limit prevents unexpected or unlimited charges when executing a transaction.";
+"send_gas_price" = "Gas price";
+"send_gas_price_footer" = "This is the cost you are willing to pay for each unit of gas. The higher the gas price, the faster your transaction will be processed.";
 "send_max_amount" = "Max";
 "send_max_amount_label" = "Höchstbetrag";
 "send_max_fee" = "Fee up to";

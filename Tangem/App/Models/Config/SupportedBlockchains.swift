@@ -126,6 +126,7 @@ struct SupportedBlockchains {
             .joystream(curve: ed25519Curve(for: version)),
             .manta(testnet: false),
             .radiant(testnet: false),
+            .mantle(testnet: false),
         ]
     }
 
