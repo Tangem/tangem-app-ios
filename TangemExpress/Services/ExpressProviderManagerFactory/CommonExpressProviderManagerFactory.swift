@@ -40,7 +40,7 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
                 logger: logger,
                 mapper: mapper
             )
-        case .cex:
+        case .cex, .dexBridge:
             return CEXExpressProviderManager(
                 provider: provider,
                 expressAPIProvider: expressAPIProvider,

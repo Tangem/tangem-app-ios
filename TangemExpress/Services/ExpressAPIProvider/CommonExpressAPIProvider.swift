@@ -19,7 +19,7 @@ class CommonExpressAPIProvider {
 
     private func refundAddress(item: ExpressSwappableItem) -> String? {
         switch item.providerInfo.type {
-        case .dex:
+        case .dex, .dexBridge:
             return nil
         case .cex:
             return item.source.defaultAddress
