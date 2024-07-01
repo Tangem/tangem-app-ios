@@ -20,7 +20,8 @@ struct UserWalletIdPreflightReadFilter: PreflightReadFilter {
 
     func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws {
         guard let firstPublicKey = card.wallets.first?.publicKey else {
-            throw TangemSdkError.walletNotFound
+            // We can safely reset this card because there are no wallets in it. Case with cardLinked status without any wallets
+            return
         }
 
         let userWalletId = UserWalletId(with: firstPublicKey)
