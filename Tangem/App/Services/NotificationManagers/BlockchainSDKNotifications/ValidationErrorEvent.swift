@@ -25,7 +25,7 @@ enum ValidationErrorEvent {
 
     case notEnoughMana(current: Decimal, max: Decimal)
     case manaLimit(availableAmount: Decimal)
-    case notEnoughBalance
+    case koinosInsufficientBalanceToSendKoin
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -53,7 +53,7 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.sendNotificationNotEnoughManaTitle)
         case .manaLimit:
             return .string(Localization.sendNotificationManaLimitTitle)
-        case .notEnoughBalance:
+        case .koinosInsufficientBalanceToSendKoin:
             return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
         }
     }
@@ -88,7 +88,7 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.sendNotificationNotEnoughManaDescription(current, max)
         case .manaLimit(let validMax):
             return Localization.sendNotificationManaLimitDescription(validMax)
-        case .notEnoughBalance:
+        case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
         }
     }
@@ -116,7 +116,7 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .notEnoughBalance:
+             .koinosInsufficientBalanceToSendKoin:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
@@ -134,7 +134,7 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .notEnoughBalance:
+             .koinosInsufficientBalanceToSendKoin:
             return .critical
         }
     }
@@ -164,7 +164,7 @@ extension ValidationErrorEvent {
              .cardanoCannotBeSentBecauseHasTokens,
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
-             .notEnoughBalance:
+             .koinosInsufficientBalanceToSendKoin:
             return nil
         }
     }
