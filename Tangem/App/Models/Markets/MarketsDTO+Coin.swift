@@ -66,7 +66,7 @@ extension MarketsDTO.Coins {
         let officialForum: [String]?
         let chat: [String]?
         let community: [String]?
-        let reposUrl: [String]?
+        let reposUrl: [String: [String]]?
     }
 
     struct PricePerformance: Codable {
