@@ -236,7 +236,7 @@ extension Wallet2Config: UserWalletConfig {
         // Lemon, Aqua, Grapefruit
         case "AF40", "AF41", "AF42":
             return Assets.Cards.lemonAquaGrapefruit
-        // Lemon, Aqua, Grapefruit
+        // Peach, Air, Glass
         case "AF43", "AF44", "AF45":
             return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
