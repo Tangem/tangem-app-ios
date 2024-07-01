@@ -120,6 +120,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private func log(_ message: @autoclosure () -> String) {
         AppLog.shared.debug("[TokenMarketsDetailsViewModel] - \(message())")
     }
+
+    // MARK: - Actions
+
+    func onAddToPortfolioTapAction() {
+        // TODO: - Need to implement bottom sheet token portfolio
+    }
 }
 
 extension TokenMarketsDetailsViewModel {

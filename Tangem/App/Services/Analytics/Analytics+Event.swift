@@ -96,6 +96,7 @@ extension Analytics {
         case sendFeeScreenOpened = "[Token / Send] Fee Screen Opened"
         case sendFeeSelected = "[Token / Send] Fee Selected"
         case sendCustomFeeClicked = "[Token / Send] Custom Fee Clicked"
+        case sendGasPriceInserted = "[Token / Send] Gas Price Inserted"
         case sendCustomFeeInserted = "[Token / Send] Custom Fee Inserted"
         case sendGasLimitInserted = "[Token / Send] Gas Limit Inserted"
         case sendMaxFeeInserted = "[Token / Send] Max Fee Inserted"

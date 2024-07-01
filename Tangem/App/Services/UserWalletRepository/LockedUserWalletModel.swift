@@ -102,7 +102,7 @@ class LockedUserWalletModel: UserWalletModel {
         return true
     }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
 
     func addAssociatedCard(_ cardId: String) {}
 }

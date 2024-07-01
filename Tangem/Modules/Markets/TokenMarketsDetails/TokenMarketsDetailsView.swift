@@ -111,7 +111,8 @@ struct TokenMarketsDetailsView: View {
             if viewModel.isLoading {
                 ContentBlockSkeletons()
             } else {
-                // TODO: Will be added in further tasks
+                MarketsEmptyAddTokenView(didTapAction: viewModel.onAddToPortfolioTapAction)
+                    .padding(.horizontal, 16)
             }
         }
         .animation(.default, value: viewModel.isLoading)

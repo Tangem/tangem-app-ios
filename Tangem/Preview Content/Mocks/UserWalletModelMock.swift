@@ -73,7 +73,7 @@ class UserWalletModelMock: UserWalletModel {
 
     func validate() -> Bool { true }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
 
     func addAssociatedCard(_ cardId: String) {}
 }

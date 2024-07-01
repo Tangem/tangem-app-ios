@@ -21,7 +21,11 @@ protocol TangemApiService: AnyObject, Initializable {
     // MARK: - Markets
 
     /// Get general market data for a list of tokens
-    func loadMarkets(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
+
+    /// Get history preview chart data for a list of tokens
+    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel]
+
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError>
