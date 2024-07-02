@@ -30,7 +30,7 @@ struct PendingExpressTransactionFactory {
             currentStatus = .sendingToUser
         case .finished:
             currentStatus = .done
-        case .failed:
+        case .failed, .waitingTxHash, .unknown:
             currentStatus = .failed
             statusesList = failedStatusesList
         case .refunded:

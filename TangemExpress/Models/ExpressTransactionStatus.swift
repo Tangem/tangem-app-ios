@@ -10,6 +10,7 @@ import Foundation
 
 public enum ExpressTransactionStatus: String, Codable {
     case new
+    case waitingTxHash = "waiting-tx-hash"
     case waiting
     case confirming
     case exchanging
@@ -19,4 +20,5 @@ public enum ExpressTransactionStatus: String, Codable {
     case refunded
     case verifying
     case expired
+    case unknown
 }

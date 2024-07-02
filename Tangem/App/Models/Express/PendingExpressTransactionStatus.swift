@@ -70,6 +70,15 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         }
     }
 
+    var shouldHide: Bool {
+        switch self {
+        case .done, .refunded, .canceled:
+            return true
+        case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .failed, .verificationRequired:
+            return false
+        }
+    }
+
     var isDone: Bool {
         self == .done
     }
