@@ -15,7 +15,7 @@ struct WalletSelectorItemView: View {
 
     var body: some View {
         Button {
-            viewModel.didTapWallet(viewModel.userWalletId)
+            viewModel.onTapAction()
         } label: {
             contentButton
         }
