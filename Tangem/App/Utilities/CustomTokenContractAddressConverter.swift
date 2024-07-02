@@ -28,6 +28,13 @@ struct CustomTokenContractAddressConverter {
             } catch {
                 return originalAddress
             }
+        case .cardano:
+            do {
+                let converter = CardanoTokenContractAddressService()
+                return try converter.convertToFingerprint(address: originalAddress, symbol: nil)
+            } catch {
+                return originalAddress
+            }
         case .bitcoin,
              .litecoin,
              .stellar,
@@ -38,7 +45,6 @@ struct CustomTokenContractAddressConverter {
              .rsk,
              .bitcoinCash,
              .binance,
-             .cardano,
              .xrp,
              .ducatus,
              .tezos,

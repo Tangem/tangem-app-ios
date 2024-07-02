@@ -325,15 +325,9 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
 
     private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
         let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+        let validator = ContractAddressValidatorFactory(blockchain: blockchain).makeValidator()
 
-        if blockchain.skipValidation, // skip validation for binance and cardano
-           !contractAddress.trimmed().isEmpty {
-            return contractAddress
-        }
-
-        let addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
-
-        guard addressService.validate(contractAddress) else {
+        guard validator.validate(contractAddress) else {
             throw TokenCreationErrors.invalidContractAddress
         }
 
@@ -557,15 +551,6 @@ private extension Blockchain {
             return false
         default:
             return canHandleTokens
-        }
-    }
-
-    var skipValidation: Bool {
-        switch self {
-        case .binance, .cardano:
-            return true
-        default:
-            return false
         }
     }
 }
