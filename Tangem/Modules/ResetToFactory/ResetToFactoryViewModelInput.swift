@@ -11,7 +11,7 @@ import Foundation
 extension ResetToFactoryViewModel {
     struct Input {
         let cardInteractor: FactorySettingsResetting
-        let linkedCardsCount: Int
+        let backupCardsCount: Int
         let userWalletId: UserWalletId
     }
 }

@@ -344,15 +344,21 @@ extension CommonUserWalletModel: UserWalletModel {
         userWalletRepository.save()
     }
 
-    func onBackupCreated(_ card: Card) {
-        for updatedWallet in card.wallets {
-            cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
-        }
+    func onBackupUpdate(type: BackupUpdateType) {
+        switch type {
+        case .primaryCardBackuped(let card):
+            for updatedWallet in card.wallets {
+                cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
+            }
 
-        cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
-        cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
-        cardInfo.card.backupStatus = card.backupStatus
-        onUpdate()
+            cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
+            cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
+            cardInfo.card.backupStatus = card.backupStatus
+            onUpdate()
+        case .backupCompleted:
+            // we have to read an actual status from backup validator
+            _updatePublisher.send()
+        }
     }
 
     func addAssociatedCard(_ cardId: String) {

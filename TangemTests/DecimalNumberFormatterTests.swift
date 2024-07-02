@@ -136,10 +136,10 @@ class DecimalNumberFormatterTests: XCTestCase {
                 maximumFractionDigits: testCase.digits
             )
 
-            let decimalToString = formatter.format(value: testCase.decimal)
+            let decimalToString: String = formatter.format(value: testCase.decimal)
             XCTAssertEqual(decimalToString, testCase.string)
 
-            let stringToString = formatter.format(value: testCase.string)
+            let stringToString: String = formatter.format(value: testCase.string)
             XCTAssertEqual(stringToString, testCase.string)
         }
     }

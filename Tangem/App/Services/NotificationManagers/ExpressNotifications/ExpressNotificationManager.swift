@@ -170,7 +170,7 @@ class ExpressNotificationManager {
         }
 
         let feeTokenItem = interactor.getSender().feeTokenItem
-        let feeFiatValue = BalanceConverter().convertToFiat(value: subtractFee, from: feeTokenItem.currencyId ?? "")
+        let feeFiatValue = BalanceConverter().convertToFiat(subtractFee, currencyId: feeTokenItem.currencyId ?? "")
 
         let formatter = BalanceFormatter()
         let cryptoAmountFormatted = formatter.formatCryptoBalance(subtractFee, currencyCode: feeTokenItem.currencySymbol)
