@@ -316,6 +316,11 @@
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_sort_by_title" = "Sort By";
+"markets_token_details_insights" = "Insights";
+"markets_token_details_links" = "Links";
+"markets_token_details_metrics" = "Metrics";
+"markets_token_details_price_performance" = "Price performance";
+"markets_token_details_security_score" = "Security score";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
 "onboarding_access_code_feature_1_title" = "Protect";
 "onboarding_access_code_feature_2_description" = "You can set up an individual access code on each card later";

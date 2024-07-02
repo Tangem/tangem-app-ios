@@ -59,6 +59,8 @@ struct TangemApiTarget: TargetType {
             return "/coins/list"
         case .coinsHistoryPreview:
             return "/coins/history_preview"
+        case .tokenMarketsDetails(let request):
+            return "/coins/\(request.tokenId)"
         }
     }
 
@@ -75,7 +77,8 @@ struct TangemApiTarget: TargetType {
              .apiList,
              .features,
              .coinsList,
-             .coinsHistoryPreview:
+             .coinsHistoryPreview,
+             .tokenMarketsDetails:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -154,6 +157,11 @@ struct TangemApiTarget: TargetType {
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
         case .coinsHistoryPreview(let requestData):
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding(destination: .queryString, arrayEncoding: .noBrackets))
+        case .tokenMarketsDetails(let request):
+            return .requestParameters(parameters: [
+                "currency": request.currency,
+                "language": request.language,
+            ], encoding: URLEncoding.default)
         }
     }
 
@@ -198,6 +206,7 @@ extension TangemApiTarget {
         case resetAward(cardId: String)
         case coinsList(_ requestModel: MarketsDTO.General.Request)
         case coinsHistoryPreview(_ requestModel: MarketsDTO.ChartsHistory.Request)
+        case tokenMarketsDetails(request: MarketsDTO.Coins.Request)
 
         // Configs
         case apiList
