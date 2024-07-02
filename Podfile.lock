@@ -220,7 +220,7 @@ DEPENDENCIES:
   - AmplitudeSwift
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-619`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-620`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics
@@ -228,7 +228,7 @@ DEPENDENCIES:
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
   - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem7`)
+  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem9`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-298`)
   - TonSwift (from `https://github.com/tangem/ton-swift.git`, tag `1.0.10-tangem1`)
@@ -278,10 +278,10 @@ EXTERNAL SOURCES:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-619
+    :tag: develop-620
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem7
+    :tag: 1.2.0-tangem9
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
@@ -304,10 +304,10 @@ CHECKOUT OPTIONS:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-619
+    :tag: develop-620
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem7
+    :tag: 1.2.0-tangem9
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
@@ -363,6 +363,6 @@ SPEC CHECKSUMS:
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: f39118cf50008a2b50890dd649fda284793dc681
+PODFILE CHECKSUM: 13f3fa6b8523e37733c597c9e9d2559a80170755
 
 COCOAPODS: 1.15.2
