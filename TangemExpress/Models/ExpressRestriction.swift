@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import struct BlockchainSdk.Fee
 
 public enum ExpressRestriction {
     case tooSmallAmount(_ minAmount: Decimal)
@@ -14,5 +15,5 @@ public enum ExpressRestriction {
     case approveTransactionInProgress(spender: String)
     case insufficientBalance(_ requiredAmount: Decimal)
     case notEnoughBalanceForFee
-    case notEnoughBalanceForOtherNativeFee
+    case notEnoughBalanceForOtherNativeFee(_ estimatedFee: Fee)
 }

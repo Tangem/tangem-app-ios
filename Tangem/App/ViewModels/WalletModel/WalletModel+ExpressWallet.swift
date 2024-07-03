@@ -23,10 +23,6 @@ extension WalletModel: ExpressWallet {
         tokenItem == feeTokenItem
     }
 
-    var feeCurrencyHasPositiveBalance: Bool {
-        wallet.hasFeeCurrency(amountType: amountType)
-    }
-
     func getBalance() throws -> Decimal {
         guard let balanceValue else {
             throw ExpressManagerError.amountNotFound
@@ -35,7 +31,7 @@ extension WalletModel: ExpressWallet {
         return balanceValue
     }
 
-    func feeCurrencyEnoughBalanceToSend(value: Decimal) -> Bool {
-        wallet.feeCurrencyBalance(amountType: amountType) > value
+    func getFeeCurrencyBalance() -> Decimal {
+        wallet.feeCurrencyBalance(amountType: amountType)
     }
 }

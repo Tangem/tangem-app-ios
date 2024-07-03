@@ -76,7 +76,7 @@ private extension DEXExpressProviderManager {
             let data = try await expressAPIProvider.exchangeData(item: item)
             try Task.checkCancellation()
 
-            if let restriction = checkRestriction(request: request, quote: quote, data: data) {
+            if let restriction = try await checkRestriction(request: request, quote: quote, data: data) {
                 return restriction
             }
 
@@ -154,17 +154,24 @@ private extension DEXExpressProviderManager {
         return nil
     }
 
-    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) -> ExpressProviderManagerState? {
+    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState? {
         guard let otherNativeFee = data.otherNativeFee else {
             return nil
         }
 
-        guard request.pair.source.feeCurrencyEnoughBalanceToSend(value: otherNativeFee) else {
-            return .restriction(.notEnoughBalanceForOtherNativeFee, quote: quote)
+        guard otherNativeFee > request.pair.source.getFeeCurrencyBalance() else {
+            return nil
         }
 
-        // All good
-        return nil
+        // Try to estimate the fee as if we were sending the full balance
+        var fee = try await feeProvider.getFee(
+            amount: request.pair.source.getBalance(),
+            destination: data.destinationAddress,
+            hexData: data.txData.map { Data(hexString: $0) }
+        )
+
+        fee = include(otherNativeFee: otherNativeFee, in: fee)
+        return .restriction(.notEnoughBalanceForOtherNativeFee(fee.fastest), quote: quote)
     }
 
     func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {
