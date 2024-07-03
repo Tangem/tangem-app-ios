@@ -189,6 +189,10 @@ final class UserWalletNotificationManager {
     }
 
     private func showAppRateNotificationIfNeeded() {
+        guard showAppRateNotification else {
+            return
+        }
+        
         let factory = NotificationsFactory()
 
         let action: NotificationView.NotificationAction = { [weak self] id in
