@@ -81,10 +81,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: TokenMarketsDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
+    private var tokenItems: [TokenItem] = []
 
-    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider) {
+    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
+        self.coordinator = coordinator
 
         price = balanceFormatter.formatFiatBalance(
             tokenInfo.currentPrice,
@@ -101,6 +103,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             do {
                 viewModel.log("Attempt to load token markets data for token with id: \(viewModel.tokenInfo.id)")
                 let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: viewModel.tokenInfo.id)
+
+                // TODO: - Need implement correct SupportedBlockchains
+                viewModel.tokenItems = TokenMarketsDetailsMapper(
+                    supportedBlockchains: SupportedBlockchains.all
+                ).mapToTokenItems(tokenMarketsDetails: result)
 
                 await runOnMain {
                     viewModel.setupUI(using: result)
@@ -128,7 +135,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: - Actions
 
     func onAddToPortfolioTapAction() {
-        coordinator?.openTokenSelector(dataSource: dataSource, coinId: tokenInfo.id, tokenItems: [])
+        coordinator?.openTokenSelector(dataSource: dataSource, coinId: tokenInfo.id, tokenItems: tokenItems)
     }
 }
 
