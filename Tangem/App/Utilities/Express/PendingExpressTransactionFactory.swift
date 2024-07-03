@@ -15,6 +15,7 @@ struct PendingExpressTransactionFactory {
     private let verifyingStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .verificationRequired, .sendingToUser]
     private let canceledStatusesList: [PendingExpressTransactionStatus] = [.canceled]
     private let awaitingHashStatusesList: [PendingExpressTransactionStatus] = [.awaitingHash]
+    private let unknownHashStatusesList: [PendingExpressTransactionStatus] = [.unknown]
 
     func buildPendingExpressTransaction(currentExpressStatus: ExpressTransactionStatus, for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
         let currentStatus: PendingExpressTransactionStatus
@@ -36,8 +37,8 @@ struct PendingExpressTransactionFactory {
             currentStatus = .awaitingHash
             statusesList = awaitingHashStatusesList
         case .unknown:
-            currentStatus = .failed
-            statusesList = [.failed]
+            currentStatus = .unknown
+            statusesList = unknownHashStatusesList
         case .failed, .txFailed, .exchangeTxSent:
             currentStatus = .failed
             statusesList = failedStatusesList
@@ -70,6 +71,8 @@ struct PendingExpressTransactionFactory {
                 return failedStatusesList
             case .awaitingHash:
                 return awaitingHashStatusesList
+            case .unknown:
+                return unknownHashStatusesList
             case .verificationRequired:
                 return verifyingStatusesList
             }

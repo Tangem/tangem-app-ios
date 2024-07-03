@@ -239,6 +239,7 @@
 "express_exchange_status_subtitle" = "Provider-sourced data. Estimated amount subject to change due to market conditions.";
 "express_exchange_status_title" = "Exchange status";
 "express_exchange_status_verifying" = "Verification required";
+"express_exchange_status_waiting_tx_hash" = "Awaiting transaction hash";
 "express_fetch_best_rates" = "Fetching best rates...";
 "express_floating_rate" = "Floating rate";
 "express_legal_one_placeholder" = "By using swap functionality, you agree with provider’s %@";

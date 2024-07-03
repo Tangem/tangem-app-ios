@@ -239,6 +239,7 @@
 "express_exchange_status_subtitle" = "Данные провайдера. Сумма к получению может измениться в зависимости от рыночных условий.";
 "express_exchange_status_title" = "Статус обмена";
 "express_exchange_status_verifying" = "Требуется верификация";
+"express_exchange_status_waiting_tx_hash" = "Ожидание хеша транзакции";
 "express_fetch_best_rates" = "Получение наилучших курсов...";
 "express_floating_rate" = "Плавающая ставка";
 "express_legal_one_placeholder" = "Пользуясь сервисом, вы соглашаетесь с %@";
