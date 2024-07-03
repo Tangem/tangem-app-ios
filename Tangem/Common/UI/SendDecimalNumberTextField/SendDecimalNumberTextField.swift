@@ -63,9 +63,7 @@ struct SendDecimalNumberTextField: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: alignment) {
-                let maxWidth = proxy.size.width
-                let textScale = clamp(maxWidth / measuredTextSize.width, min: Constants.minTextScale, max: Constants.maxTextScale)
-
+                let (scale, width) = scaleAndWidth(using: proxy)
                 HStack(alignment: .center, spacing: 0) {
                     if case .prefix(.some(let prefix), let hasSpace) = prefixSuffixOptions {
                         prefixSuffixView(prefix, hasSpaceAfterText: hasSpace)
@@ -77,8 +75,8 @@ struct SendDecimalNumberTextField: View {
                         prefixSuffixView(suffix, hasSpaceBeforeText: hasSpace)
                     }
                 }
-                .frame(width: ceil(maxWidth / textScale), alignment: alignment)
-                .scaleEffect(.init(bothDimensions: textScale))
+                .frame(width: width, alignment: alignment)
+                .scaleEffect(.init(bothDimensions: scale))
 
                 // Expand the tappable area
                 Color.clear
@@ -192,6 +190,29 @@ struct SendDecimalNumberTextField: View {
         }
 
         return result
+    }
+
+    private func scaleAndWidth(using proxy: GeometryProxy) -> (scale: CGFloat, width: CGFloat) {
+        let maxWidth = proxy.size.width
+        let measuredWidth = measuredTextSize.width
+
+        guard measuredWidth > maxWidth else {
+            return (1.0, maxWidth)
+        }
+
+        // It turns out that in some cases, HStack inserts some space (1pt) between neighboring child views,
+        // despite its spacing being set to zero. This value is used to mitigate this behavior when we have two views
+        // in the HStack (i.e., when we have either prefix or a suffix).
+        let additionalWidth = prefixSuffixOptions != nil ? 1.0 : 0.0
+
+        let scale = clamp(
+            maxWidth / (measuredWidth + additionalWidth),
+            min: Constants.minTextScale,
+            max: Constants.maxTextScale
+        )
+        let width = ceil(maxWidth / scale)
+
+        return (scale, width)
     }
 }
 
