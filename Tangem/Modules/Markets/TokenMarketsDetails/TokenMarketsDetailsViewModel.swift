@@ -81,7 +81,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: TokenMarketsDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
-    private var tokenItems: [TokenItem] = []
 
     init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         self.tokenInfo = tokenInfo
@@ -103,11 +102,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             do {
                 viewModel.log("Attempt to load token markets data for token with id: \(viewModel.tokenInfo.id)")
                 let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: viewModel.tokenInfo.id)
-
-                // TODO: - Need implement correct SupportedBlockchains
-                viewModel.tokenItems = TokenMarketsDetailsMapper(
-                    supportedBlockchains: SupportedBlockchains.all
-                ).mapToTokenItems(tokenMarketsDetails: result)
 
                 await runOnMain {
                     viewModel.setupUI(using: result)
@@ -135,6 +129,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: - Actions
 
     func onAddToPortfolioTapAction() {
+        guard let tokenItems = loadedInfo?.tokenItems, !tokenItems.isEmpty else {
+            assertionFailure("TokenItem list is empty")
+            return
+        }
+
         coordinator?.openTokenSelector(dataSource: dataSource, coinId: tokenInfo.id, tokenItems: tokenItems)
     }
 }

@@ -64,7 +64,7 @@
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
 		2DB43917296EBC6000CBBB1E /* AppsFlyerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */; };
-		2DB648622C353BC000DA100D /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB648612C353BC000DA100D /* Network.swift */; };
+		2DB648622C353BC000DA100D /* NetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB648612C353BC000DA100D /* NetworkModel.swift */; };
 		2DB648642C3542E700DA100D /* TokenItemMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB648632C3542E700DA100D /* TokenItemMapper.swift */; };
 		2DB648672C35439D00DA100D /* TokenMarketsDetailsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB648662C35439D00DA100D /* TokenMarketsDetailsMapper.swift */; };
 		2DB8E1162B29068C0044BF7D /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8E1152B29068C0044BF7D /* CustomSearchBar.swift */; };
@@ -1756,7 +1756,7 @@
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
 		2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerConfig.swift; sourceTree = "<group>"; };
-		2DB648612C353BC000DA100D /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		2DB648612C353BC000DA100D /* NetworkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkModel.swift; sourceTree = "<group>"; };
 		2DB648632C3542E700DA100D /* TokenItemMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenItemMapper.swift; sourceTree = "<group>"; };
 		2DB648662C35439D00DA100D /* TokenMarketsDetailsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMarketsDetailsMapper.swift; sourceTree = "<group>"; };
 		2DB8E1152B29068C0044BF7D /* CustomSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
@@ -4061,7 +4061,7 @@
 				EF08A0F0283D2382008BD923 /* CoinsList.swift */,
 				5DBAFD1D27E2471D0008B882 /* CoinModel.swift */,
 				EFAD02482A8274D500E9B959 /* CoinsResponseMapper.swift */,
-				2DB648612C353BC000DA100D /* Network.swift */,
+				2DB648612C353BC000DA100D /* NetworkModel.swift */,
 			);
 			path = Coins;
 			sourceTree = "<group>";
@@ -10218,7 +10218,7 @@
 				EF0F99AA289028F8008B01DF /* AppSettingsCoordinator.swift in Sources */,
 				5D5332B125F9091900D32CA5 /* TokenItem.swift in Sources */,
 				B085154F26D77C2400E1A836 /* TwinsOnboardingViewModel.swift in Sources */,
-				2DB648622C353BC000DA100D /* Network.swift in Sources */,
+				2DB648622C353BC000DA100D /* NetworkModel.swift in Sources */,
 				B618370A2A8398BE00F07C17 /* Transaction+.swift in Sources */,
 				DCD9CBA329F7F4D800440C93 /* LogsComposer.swift in Sources */,
 				DA5EE9FE2AF3F3E8004B455C /* AddressIconView.swift in Sources */,

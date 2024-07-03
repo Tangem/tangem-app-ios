@@ -19,12 +19,28 @@ struct TokenMarketsDetailsMapper {
         tokenItemMapper = TokenItemMapper(supportedBlockchains: supportedBlockchains)
     }
 
-    func mapToTokenItems(tokenMarketsDetails model: TokenMarketsDetailsModel) -> [TokenItem] {
-        let id = model.id.trimmed()
-        let name = model.name.trimmed()
-        let symbol = model.symbol.uppercased().trimmed()
+    func map(response: MarketsDTO.Coins.Response) -> TokenMarketsDetailsModel {
+        TokenMarketsDetailsModel(
+            id: response.id,
+            name: response.name,
+            symbol: response.symbol,
+            isActive: response.active,
+            currentPrice: response.currentPrice,
+            shortDescription: response.shortDescription,
+            fullDescription: response.fullDescription,
+            priceChangePercentage: response.priceChangePercentage,
+            tokenItems: mapToTokenItems(response: response)
+        )
+    }
 
-        let items: [TokenItem] = model.networks.compactMap { network in
+    // MARK: - Private Implementation
+
+    private func mapToTokenItems(response: MarketsDTO.Coins.Response) -> [TokenItem] {
+        let id = response.id.trimmed()
+        let name = response.name.trimmed()
+        let symbol = response.symbol.uppercased().trimmed()
+
+        let items: [TokenItem] = response.networks?.compactMap { network in
             guard let item = tokenItemMapper.mapToTokenItem(
                 id: id,
                 name: name,
@@ -40,7 +56,7 @@ struct TokenMarketsDetailsMapper {
             }
 
             return item
-        }
+        } ?? []
 
         return items
     }
