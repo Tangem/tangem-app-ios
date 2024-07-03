@@ -88,6 +88,15 @@ extension ExpressPendingTransactionRecord {
             case .dexBridge: return .dexBridge
             }
         }
+
+        var supportStatusTracking: Bool {
+            switch self {
+            case .cex, .dexBridge:
+                return true
+            case .dex:
+                return false
+            }
+        }
     }
 }
 

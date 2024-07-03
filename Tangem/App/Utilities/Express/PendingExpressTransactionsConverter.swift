@@ -23,7 +23,7 @@ struct PendingExpressTransactionsConverter {
                 state = .inProgress
             case .failed, .canceled:
                 state = .error
-            case .verificationRequired:
+            case .verificationRequired, .awaitingHash:
                 state = .warning
             }
 
@@ -70,6 +70,8 @@ struct PendingExpressTransactionsConverter {
                 return .init(title: status.passedStatusTitle, state: .cross(passed: true))
             case .canceled:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: false))
+            case .awaitingHash:
+                return .init(title: status.passedStatusTitle, state: .exclamationMark)
             default:
                 return .init(title: status.passedStatusTitle, state: .checkmark)
             }
@@ -87,7 +89,7 @@ struct PendingExpressTransactionsConverter {
         case .refunded:
             // Refunded state is the final state and it can't be pending (with loader)
             state = isFinished ? .checkmark : .empty
-        case .verificationRequired:
+        case .verificationRequired, .awaitingHash:
             state = .exclamationMark
         case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .canceled:
             break

@@ -76,12 +76,21 @@ private extension DEXExpressProviderManager {
             let data = try await expressAPIProvider.exchangeData(item: item)
             try Task.checkCancellation()
 
-            let fee = try await feeProvider.getFee(
+            if let restriction = checkRestriction(request: request, quote: quote, data: data) {
+                return restriction
+            }
+
+            var fee = try await feeProvider.getFee(
                 amount: data.value,
                 destination: data.destinationAddress,
                 hexData: data.txData.map { Data(hexString: $0) }
             )
             try Task.checkCancellation()
+
+            if let otherNativeFee = data.otherNativeFee {
+                fee = include(otherNativeFee: otherNativeFee, in: fee)
+                log("The fee was increased by otherNativeFee \(otherNativeFee)")
+            }
 
             // better to make the quote from the data
             let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
@@ -145,6 +154,19 @@ private extension DEXExpressProviderManager {
         return nil
     }
 
+    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) -> ExpressProviderManagerState? {
+        guard let otherNativeFee = data.otherNativeFee else {
+            return nil
+        }
+
+        guard request.pair.source.feeCurrencyEnoughBalanceToSend(value: otherNativeFee) else {
+            return .restriction(.notEnoughBalanceForFee, quote: quote)
+        }
+
+        // All good
+        return nil
+    }
+
     func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {
         let amount: Decimal = {
             switch approvePolicy {
@@ -168,6 +190,22 @@ private extension DEXExpressProviderManager {
             fee: .single(fastest),
             quote: quote
         )
+    }
+
+    func include(otherNativeFee: Decimal, in fee: ExpressFee) -> ExpressFee {
+        switch fee {
+        case .single(let fee):
+            return .single(add(value: otherNativeFee, to: fee))
+        case .double(let market, let fast):
+            return .double(
+                market: add(value: otherNativeFee, to: market),
+                fast: add(value: otherNativeFee, to: fast)
+            )
+        }
+    }
+
+    func add(value: Decimal, to fee: Fee) -> Fee {
+        Fee(.init(with: fee.amount, value: fee.amount.value + value), parameters: fee.parameters)
     }
 
     func log(_ args: Any) {

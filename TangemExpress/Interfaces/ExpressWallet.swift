@@ -16,6 +16,7 @@ public protocol ExpressWallet {
     var feeCurrencyHasPositiveBalance: Bool { get }
 
     func getBalance() throws -> Decimal
+    func feeCurrencyEnoughBalanceToSend(value: Decimal) -> Bool
 }
 
 public extension ExpressWallet {

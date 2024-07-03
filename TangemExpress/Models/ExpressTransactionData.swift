@@ -34,6 +34,9 @@ public struct ExpressTransactionData {
     /// The value which should be in tx data. EVM-like blockchains
     public let txData: String?
 
+    /// The value which will be included in value. Used in dex/bridge
+    public let otherNativeFee: Decimal?
+
     /// CEX provider transaction id
     public let externalTxId: String?
     /// The URL of CEX provider exchange status page
@@ -50,6 +53,7 @@ public struct ExpressTransactionData {
         extraDestinationId: String?,
         value: Decimal,
         txData: String?,
+        otherNativeFee: Decimal?,
         externalTxId: String?,
         externalTxUrl: String?
     ) {
@@ -63,6 +67,7 @@ public struct ExpressTransactionData {
         self.extraDestinationId = extraDestinationId
         self.value = value
         self.txData = txData
+        self.otherNativeFee = otherNativeFee
         self.externalTxId = externalTxId
         self.externalTxUrl = externalTxUrl
     }

@@ -34,4 +34,8 @@ extension WalletModel: ExpressWallet {
 
         return balanceValue
     }
+
+    func feeCurrencyEnoughBalanceToSend(value: Decimal) -> Bool {
+        wallet.feeCurrencyBalance(amountType: amountType) > value
+    }
 }
