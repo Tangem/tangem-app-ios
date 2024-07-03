@@ -116,7 +116,7 @@ final class SingleTokenNotificationManager {
 
         setupRentFeeNotification()
 
-        if isMulticurrency, swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) {
+        if isMulticurrency {
             setupPromotionNotification()
         }
     }
@@ -253,7 +253,8 @@ final class SingleTokenNotificationManager {
         promotionUpdateTask?.cancel()
         promotionUpdateTask = Task { [weak self] in
             guard let self, !Task.isCancelled,
-                  let programName = PromotionProgramName.allCases.first else {
+                  let programName = PromotionProgramName.allCases.first,
+            swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) else {
                 return
             }
 
