@@ -126,6 +126,7 @@ struct SendView: View {
                 viewModel: viewModel.sendAmountViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .amountMinTextScale(Constants.amountMinTextScale)
             .onAppear(perform: viewModel.onCurrentPageAppear)
             .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
@@ -138,6 +139,7 @@ struct SendView: View {
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .summary:
             SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
+                .amountMinTextScale(Constants.amountMinTextScale)
                 .onAppear(perform: viewModel.onSummaryAppear)
                 .onDisappear(perform: viewModel.onSummaryDisappear)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
@@ -253,6 +255,7 @@ private struct SendViewBackButton: View {
 
 extension SendView {
     enum Constants {
+        static let amountMinTextScale = 0.5
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .spring(duration: animationDuration)
         static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
