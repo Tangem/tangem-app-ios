@@ -315,6 +315,7 @@
 "markets_add_to_portfolio_button" = "Add to portfolio";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
+"markets_select_wallet" = "Select wallet";
 "markets_sort_by_title" = "Sort By";
 "markets_token_details_insights" = "Insights";
 "markets_token_details_links" = "Links";
