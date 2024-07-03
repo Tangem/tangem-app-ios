@@ -21,6 +21,7 @@ struct MarketsWalletSelectorView: View {
                 WalletSelectorItemView(viewModel: itemViewModel)
             }
         }
+        .background(Colors.Background.action)
         .frame(maxWidth: .infinity)
         .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
     }
