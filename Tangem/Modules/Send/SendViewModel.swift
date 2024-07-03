@@ -25,7 +25,7 @@ final class SendViewModel: ObservableObject {
     @Published var updatingFees = false
     @Published var alert: AlertBinder?
     @Published var transactionDescription: String?
-    @Published var transactionDescriptionIsVisisble: Bool = false
+    @Published var transactionDescriptionIsVisible: Bool = false
 
     var title: String? {
         step.name(for: sendStepParameters)
@@ -169,12 +169,12 @@ final class SendViewModel: ObservableObject {
         steps = sendType.steps
         step = sendType.firstStep
         didReachSummaryScreen = sendType.firstStep == .summary
-        transactionDescriptionIsVisisble = sendType.firstStep == .summary
+        transactionDescriptionIsVisible = sendType.firstStep == .summary
         mainButtonType = Self.mainButtonType(for: sendType.firstStep, didReachSummaryScreen: didReachSummaryScreen)
         stepAnimation = sendType.firstStep == .summary ? .moveAndFade : .slideForward
         sendStepParameters = SendStep.Parameters(currencyName: walletModel.tokenItem.name, walletName: walletInfo.walletName)
 
-        // TODO: Sepate by steps and inject it
+        // TODO: Separate by steps and inject it
         addressTextViewHeightModel = .init()
         sendAmountViewModel = factory.makeSendAmountViewModel(
             input: sendModel,
@@ -628,7 +628,7 @@ final class SendViewModel: ObservableObject {
             self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
             self.showTransactionButtons = self.sendModel.transactionURL != nil
             self.step = step
-            self.transactionDescriptionIsVisisble = step == .summary
+            self.transactionDescriptionIsVisible = step == .summary
         }
     }
 
