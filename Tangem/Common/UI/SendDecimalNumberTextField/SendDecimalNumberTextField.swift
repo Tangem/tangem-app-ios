@@ -30,6 +30,7 @@ struct SendDecimalNumberTextField: View {
     private var alignment: Alignment = .leading
     private var onFocusChanged: ((Bool) -> Void)?
     private var prefixSuffixOptions: PrefixSuffixOptions?
+    private var minTextScale: CGFloat?
 
     private var textToMeasure: String {
         var text = ""
@@ -197,7 +198,10 @@ struct SendDecimalNumberTextField: View {
         let maxWidth = proxy.size.width
         let measuredWidth = measuredTextSize.width
 
-        guard measuredWidth > maxWidth else {
+        guard
+            let minTextScale,
+            measuredWidth > maxWidth
+        else {
             return (1.0, maxWidth)
         }
 
@@ -205,12 +209,8 @@ struct SendDecimalNumberTextField: View {
         // despite its spacing being set to zero. This value is used to mitigate this behavior when we have two views
         // in the HStack (i.e., when we have either prefix or a suffix).
         let additionalWidth = prefixSuffixOptions != nil ? 1.0 : 0.0
-
-        let scale = clamp(
-            maxWidth / (measuredWidth + additionalWidth),
-            min: Constants.minTextScale,
-            max: Constants.maxTextScale
-        )
+        let totalWidth = measuredWidth + additionalWidth
+        let scale = clamp(maxWidth / totalWidth, min: minTextScale, max: Constants.maxTextScale)
         let width = ceil(maxWidth / scale)
 
         return (scale, width)
@@ -243,6 +243,12 @@ extension SendDecimalNumberTextField: Setupable {
     func onFocusChanged(_ action: ((Bool) -> Void)?) -> Self {
         map { $0.onFocusChanged = action }
     }
+
+    /// The scale factor that determines the smallest font size to use during drawing (custom implementation).
+    /// - minTextScale: The desired `minimumScaleFactor` for custom font scaling. If nil, no font scaling applies.
+    func minTextScale(_ minTextScale: CGFloat?) -> Self {
+        map { $0.minTextScale = minTextScale }
+    }
 }
 
 extension SendDecimalNumberTextField {
@@ -274,7 +280,6 @@ private extension SendDecimalNumberTextField {
     enum Constants {
         static let spaceCharacter = " "
         static let placeholder = "0"
-        static let minTextScale = 0.5
         static let maxTextScale = 1.0
     }
 }
