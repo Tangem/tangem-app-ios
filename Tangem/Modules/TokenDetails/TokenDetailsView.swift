@@ -126,6 +126,7 @@ private extension TokenDetailsView {
         amountType: walletModel.tokenItem.amountType
     )
     let notifManager = SingleTokenNotificationManager(
+        isMulticurrency: true,
         walletModel: walletModel,
         walletModelsManager: userWalletModel.walletModelsManager,
         contextDataProvider: nil

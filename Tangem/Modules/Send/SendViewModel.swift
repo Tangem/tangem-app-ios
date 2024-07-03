@@ -792,10 +792,11 @@ extension SendViewModel: NotificationTapDelegate {
              .refresh,
              .goToProvider,
              .addHederaTokenAssociation,
-             .bookNow,
+             .openLink,
              .stake,
              .openFeedbackMail,
-             .openAppStoreReview:
+             .openAppStoreReview,
+             .swap:
             assertionFailure("Notification tap not handled")
         }
     }

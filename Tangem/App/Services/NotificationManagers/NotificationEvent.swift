@@ -9,7 +9,7 @@
 import Foundation
 
 protocol NotificationEvent: Hashable, Identifiable {
-    var id: String { get }
+    var id: NotificationViewId { get }
     var title: NotificationView.Title { get }
     var description: String? { get }
     var colorScheme: NotificationView.ColorScheme { get }
@@ -25,7 +25,7 @@ protocol NotificationEvent: Hashable, Identifiable {
 
 extension NotificationEvent {
     // Unique ID. Overwrite if hash value is not enough (may be influenced by associated values)
-    var id: String {
-        "\(hashValue)"
+    var id: NotificationViewId {
+        hashValue
     }
 }

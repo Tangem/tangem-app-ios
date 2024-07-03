@@ -79,6 +79,8 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
             break
         case .openFeeCurrency:
             openFeeCurrency()
+        case .swap:
+            openExchange()
         case .generateAddresses,
              .backupCard,
              .buyCrypto,
@@ -89,7 +91,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .reduceAmountTo,
              .addHederaTokenAssociation,
              .leaveAmount,
-             .bookNow,
+             .openLink,
              .stake,
              .openFeedbackMail,
              .openAppStoreReview:

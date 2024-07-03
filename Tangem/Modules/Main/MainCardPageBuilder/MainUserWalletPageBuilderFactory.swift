@@ -120,6 +120,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         }
 
         let singleWalletNotificationManager = SingleTokenNotificationManager(
+            isMulticurrency: false,
             walletModel: walletModel,
             walletModelsManager: model.walletModelsManager,
             contextDataProvider: model

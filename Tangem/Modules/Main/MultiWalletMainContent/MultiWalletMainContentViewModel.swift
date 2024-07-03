@@ -374,7 +374,7 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             deriveEntriesWithoutDerivation()
         case .backupCard:
             startBackupProcess()
-        case .bookNow(let url):
+        case .openLink(let url, _):
             openURL(url)
         case .openFeedbackMail:
             rateAppController.openFeedbackMail()

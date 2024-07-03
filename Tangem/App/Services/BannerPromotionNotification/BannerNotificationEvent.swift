@@ -8,68 +8,47 @@
 
 import Foundation
 
-enum BannerNotificationEvent: Hashable, NotificationEvent {
-    case travala(description: String, programName: PromotionProgramName)
-
-    var programName: PromotionProgramName {
-        switch self {
-        case .travala(_, let programName):
-            return programName
-        }
-    }
-
-    var title: NotificationView.Title {
-        switch self {
-        case .travala:
-            return .string(Localization.mainTravalaPromotionTitle)
-        }
-    }
-
-    var description: String? {
-        switch self {
-        case .travala(let description, _):
-            return description
-        }
-    }
+struct BannerNotificationEvent: Hashable, NotificationEvent {
+    let title: NotificationView.Title
+    let description: String?
+    let programName: PromotionProgramName
 
     var colorScheme: NotificationView.ColorScheme {
-        switch self {
-        case .travala:
-            return .travalaPromotion
-        }
+        .okx
     }
 
     var icon: NotificationView.MessageIcon {
-        switch self {
-        case .travala:
-            // Just for hold the place. The icon will be on the background
-            return .init(
-                iconType: .image(Assets.travalaBannerIcon.image.renderingMode(.template)),
-                color: .clear,
-                size: CGSize(bothDimensions: 60)
-            )
-        }
+        .init(
+            iconType: .image(Assets.okxDexLogoWhite.image.renderingMode(.template)),
+            color: .white,
+            size: .init(width: 49, height: 24)
+        )
     }
 
-    var severity: NotificationView.Severity { .info }
-    var isDismissable: Bool { true }
+    var severity: NotificationView.Severity {
+        .info
+    }
+
+    var isDismissable: Bool {
+        true
+    }
 
     var analyticsEvent: Analytics.Event? {
-        switch self {
-        case .travala:
-            return .promotionBannerAppeared
-        }
+        .promotionBannerAppeared
     }
 
     var analyticsParams: [Analytics.ParameterKey: String] {
-        switch self {
-        case .travala:
-            return [
-                .programName: Analytics.ParameterValue.travala.rawValue,
-                .source: Analytics.ParameterValue.main.rawValue,
-            ]
-        }
+        [
+            .programName: Analytics.ParameterValue.okx.rawValue,
+            .source: Analytics.ParameterValue.main.rawValue,
+        ]
     }
 
-    var isOneShotAnalyticsEvent: Bool { true }
+    var isOneShotAnalyticsEvent: Bool {
+        true
+    }
+
+    var id: NotificationViewId {
+        programName.hashValue
+    }
 }

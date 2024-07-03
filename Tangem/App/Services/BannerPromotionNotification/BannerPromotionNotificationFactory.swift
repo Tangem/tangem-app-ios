@@ -10,14 +10,9 @@ import Foundation
 import UIKit
 
 struct BannerPromotionNotificationFactory {
-    private static let travalaDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM"
-        return formatter
-    }()
-
     func buildBannerNotificationInput(
         promotion: ActivePromotionInfo,
+        placement: BannerPromotionPlacement,
         buttonAction: @escaping NotificationView.NotificationButtonTapAction,
         dismissAction: @escaping NotificationView.NotificationAction
     ) -> NotificationViewInput {
@@ -26,25 +21,39 @@ struct BannerPromotionNotificationFactory {
         let settings: NotificationView.Settings
 
         switch promotion.bannerPromotion {
-        case .travala:
+        case .okx:
             severity = .info
 
-            let event = BannerNotificationEvent.travala(
-                description: travalaDescription(promotion: promotion),
+            let event = BannerNotificationEvent(
+                title: .string(Localization.swapPromoTitle),
+                description: Localization.swapPromoText,
                 programName: promotion.bannerPromotion
             )
 
             settings = .init(event: event, dismissAction: dismissAction)
 
+            // For future banners
             if let link = promotion.link {
                 let button = NotificationView.NotificationButton(
                     action: buttonAction,
-                    actionType: .bookNow(promotionLink: link),
+                    actionType: .openLink(promotionLink: link, buttonTitle: ""),
                     isWithLoader: false
                 )
+
                 style = .withButtons([button])
             } else {
-                style = .plain
+                switch placement {
+                case .main:
+                    style = .plain
+                case .tokenDetails:
+                    let button = NotificationView.NotificationButton(
+                        action: buttonAction,
+                        actionType: .swap,
+                        isWithLoader: false
+                    )
+
+                    style = .withButtons([button])
+                }
             }
         }
 
@@ -52,17 +61,6 @@ struct BannerPromotionNotificationFactory {
             style: style,
             severity: severity,
             settings: settings
-        )
-    }
-}
-
-// MARK: - Private
-
-private extension BannerPromotionNotificationFactory {
-    func travalaDescription(promotion: ActivePromotionInfo) -> String {
-        Localization.mainTravalaPromotionDescription(
-            Self.travalaDateFormatter.string(from: promotion.timeline.start),
-            Self.travalaDateFormatter.string(from: promotion.timeline.end)
         )
     }
 }

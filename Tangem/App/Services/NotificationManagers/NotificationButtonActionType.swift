@@ -19,7 +19,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case leaveAmount(amount: Decimal, amountFormatted: String)
     case reduceAmountBy(amount: Decimal, amountFormatted: String)
     case reduceAmountTo(amount: Decimal, amountFormatted: String)
-    case bookNow(promotionLink: URL)
+    case openLink(promotionLink: URL, buttonTitle: String)
+    case swap
     case addHederaTokenAssociation
     @available(*, unavailable, message: "Token trust lines support not implemented yet")
     case addTokenTrustline
@@ -55,8 +56,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.sendNotificationReduceBy(amountFormatted)
         case .reduceAmountTo(_, let amountFormatted), .leaveAmount(_, let amountFormatted):
             return Localization.sendNotificationLeaveButton(amountFormatted)
-        case .bookNow:
-            return Localization.mainTravalaPromotionButton
+        case .openLink(_, let buttonTitle):
+            return buttonTitle
         case .addHederaTokenAssociation:
             return Localization.warningHederaMissingTokenAssociationButtonTitle
         case .stake:
@@ -65,6 +66,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.warningButtonCouldBeBetter
         case .openAppStoreReview:
             return Localization.warningButtonReallyCool
+        case .swap:
+            return Localization.tokenSwapPromotionButton
         case .empty:
             return ""
         }
@@ -74,6 +77,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         switch self {
         case .generateAddresses:
             return .trailing(Assets.tangemIcon)
+        case .swap:
+            return .leading(Assets.exchangeMini)
         case .backupCard,
              .buyCrypto,
              .openFeeCurrency,
@@ -84,7 +89,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .reduceAmountTo,
              .leaveAmount,
              .addHederaTokenAssociation,
-             .bookNow,
+             .openLink,
              .stake,
              .openFeedbackMail,
              .openAppStoreReview,
@@ -96,8 +101,9 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     var style: MainButton.Style {
         switch self {
         case .generateAddresses,
-             .bookNow,
+             .openLink,
              .openAppStoreReview,
+             .swap,
              .empty:
             return .primary
         case .backupCard,

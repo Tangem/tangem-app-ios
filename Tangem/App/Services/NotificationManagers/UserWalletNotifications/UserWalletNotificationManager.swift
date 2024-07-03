@@ -112,18 +112,9 @@ final class UserWalletNotificationManager {
             )
         }
 
-        if showAppRateNotification {
-            inputs.append(
-                factory.buildNotificationInput(
-                    for: .rateApp,
-                    action: action,
-                    buttonAction: buttonAction,
-                    dismissAction: dismissAction
-                )
-            )
-        }
-
         notificationInputsSubject.send(inputs)
+
+        showAppRateNotificationIfNeeded()
 
         validateHashesCount()
     }
@@ -136,9 +127,8 @@ final class UserWalletNotificationManager {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: programName, on: .main),
-                  let promotionLink = promotion.link else {
-                notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: programName, on: .main) else {
+                notificationInputsSubject.value.removeAll { $0.id == programName.hashValue }
                 return
             }
 
@@ -179,6 +169,7 @@ final class UserWalletNotificationManager {
 
             let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
+                placement: .main,
                 buttonAction: buttonAction,
                 dismissAction: dismissAction
             )
@@ -197,9 +188,35 @@ final class UserWalletNotificationManager {
         }
     }
 
-    private func showAppRateNotificationIfNeeded(_ shouldShow: Bool) {
-        showAppRateNotification = shouldShow
-        createNotifications()
+    private func showAppRateNotificationIfNeeded() {
+        let factory = NotificationsFactory()
+
+        let action: NotificationView.NotificationAction = { [weak self] id in
+            self?.delegate?.didTapNotification(with: id, action: .empty)
+        }
+
+        let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            self?.delegate?.didTapNotification(with: id, action: action)
+        }
+
+        let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
+
+        let input = factory.buildNotificationInput(
+            for: .rateApp,
+            action: action,
+            buttonAction: buttonAction,
+            dismissAction: dismissAction
+        )
+
+        addInputIfNeeded(input)
+    }
+
+    private func addInputIfNeeded(_ input: NotificationViewInput) {
+        guard !notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
+            return
+        }
+
+        notificationInputsSubject.value.insert(input, at: 0)
     }
 
     private func bind() {
@@ -218,7 +235,11 @@ final class UserWalletNotificationManager {
 
         rateAppController
             .showAppRateNotificationPublisher
-            .sink(receiveValue: weakify(self, forFunction: UserWalletNotificationManager.showAppRateNotificationIfNeeded(_:)))
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { manager, shouldShow in
+                manager.showAppRateNotification = shouldShow
+                manager.showAppRateNotificationIfNeeded()
+            })
             .store(in: &bag)
     }
 
