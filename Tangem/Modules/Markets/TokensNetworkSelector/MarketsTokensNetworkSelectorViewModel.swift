@@ -32,8 +32,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     private var bag = Set<AnyCancellable>()
     private let alertBuilder = MarketsTokensNetworkSelectorAlertBuilder()
 
-    /// CoinId from parent data source embedded on selected UserWalletModel
-    private let parentEmbeddedCoinId: String?
     private let dataSource: MarketsTokensNetworkDataSource
 
     private let coinId: String
@@ -56,7 +54,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     ) {
         self.coinId = coinId
         self.tokenItems = tokenItems
-        parentEmbeddedCoinId = parentDataSource.defaultUserWalletModel?.embeddedCoinId
 
         dataSource = MarketsTokensNetworkDataSource(parentDataSource)
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: dataSource)
@@ -121,10 +118,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         guard dataSource.userWalletModels.isEmpty else {
             return
         }
-
-        if parentEmbeddedCoinId != coinId {
-            displayWarningNotification(for: .supportedOnlySingleCurrencyWallet)
-        }
     }
 
     private func saveChanges() throws {
@@ -149,8 +142,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         }
 
         sendAnalyticsOnChangeTokenState(tokenIsSelected: selected, tokenItem: tokenItem)
-
-        let alreadyAdded = isAdded(tokenItem)
 
         if selected {
             pendingAdd.append(tokenItem)
@@ -236,8 +227,8 @@ private extension MarketsTokensNetworkSelectorViewModel {
         if let userTokensManager = dataSource.selectedUserWalletModel?.userTokensManager {
             return userTokensManager.contains(tokenItem)
         }
-
-        return parentEmbeddedCoinId == tokenItem.blockchain.coinId
+        
+        return false
     }
 
     func isSelected(_ tokenItem: TokenItem) -> Bool {

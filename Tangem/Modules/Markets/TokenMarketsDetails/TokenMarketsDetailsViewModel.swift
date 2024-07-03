@@ -82,9 +82,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let dataProvider: TokenMarketsDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
 
-    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider) {
+    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable? = nil) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
+        self.coordinator = coordinator
 
         price = balanceFormatter.formatFiatBalance(
             tokenInfo.currentPrice,

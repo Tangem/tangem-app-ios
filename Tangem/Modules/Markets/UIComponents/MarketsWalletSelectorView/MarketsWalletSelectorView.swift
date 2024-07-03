@@ -13,11 +13,9 @@ struct MarketsWalletSelectorView: View {
     @ObservedObject var viewModel: MarketsWalletSelectorViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .leading, spacing: 10) {
             Text(Localization.marketsSelectWallet)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                .padding(.top, 14)
-                .padding(.bottom, 10)
 
             ForEach(viewModel.itemViewModels) { itemViewModel in
                 WalletSelectorItemView(viewModel: itemViewModel)
