@@ -104,11 +104,12 @@ struct SendDecimalNumberTextField: View {
     /// and https://github.com/LeoNatan/LNSwiftUIUtils for example.
     @ViewBuilder
     private var textSizeMeasurer: some View {
-        Text(textToMeasure)
+        TextField(text: .constant(textToMeasure), label: EmptyView.init)
             .font(appearance.font)
             .lineLimit(1)
             .fixedSize()
             .hidden(true) // Native `.hidden()` may affect layout
+            .allowsHitTesting(false)
             .readGeometry(\.size, bindTo: $measuredTextSize)
     }
 
