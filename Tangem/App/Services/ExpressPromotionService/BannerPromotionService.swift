@@ -36,8 +36,19 @@ enum BannerPromotionPlacement: String, Hashable {
     case tokenDetails
 }
 
-enum PromotionProgramName: String, Hashable {
+enum PromotionProgramName: String, Hashable, CaseIterable {
     // Estimated dates 13/05 - 13/06
     // Will be deleted: https://tangem.atlassian.net/browse/IOS-6842
     case travala
+}
+
+// MARK: - Analytics
+
+extension PromotionProgramName {
+    var analyticsProgramName: Analytics.ParameterValue {
+        switch self {
+        case .travala:
+            return Analytics.ParameterValue.travala
+        }
+    }
 }

@@ -619,9 +619,7 @@ private extension ExpressViewModel {
 // MARK: - NotificationTapDelegate
 
 extension ExpressViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId) {}
-
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         guard
             let notification = notificationInputs.first(where: { $0.id == id }),
             let event = notification.settings.event as? ExpressNotificationEvent
@@ -630,6 +628,8 @@ extension ExpressViewModel: NotificationTapDelegate {
         }
 
         switch action {
+        case .empty:
+            break
         case .refresh:
             interactor.refresh(type: .full)
         case .openFeeCurrency:

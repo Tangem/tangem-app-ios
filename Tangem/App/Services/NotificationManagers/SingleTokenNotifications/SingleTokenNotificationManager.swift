@@ -99,7 +99,7 @@ final class SingleTokenNotificationManager {
             factory.buildNotificationInput(
                 for: $0,
                 buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                    self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
                 dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
@@ -165,7 +165,7 @@ final class SingleTokenNotificationManager {
                 factory.buildNotificationInput(
                     for: event,
                     buttonAction: { [weak self] id, actionType in
-                        self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                        self?.delegate?.didTapNotification(with: id, action: actionType)
                     },
                     dismissAction: { [weak self] id in
                         self?.dismissNotification(with: id)
@@ -266,11 +266,7 @@ extension SingleTokenNotificationManager: NotificationManager {
             return
         }
 
-        switch event {
-        case .travala:
-            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
-        }
-
+        bannerPromotionService.hide(promotion: event.programName, on: .tokenDetails)
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
     }
 }

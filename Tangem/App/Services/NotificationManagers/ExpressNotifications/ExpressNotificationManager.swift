@@ -106,7 +106,7 @@ class ExpressNotificationManager {
         }
 
         let notification = notificationsFactory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         notificationInputsSubject.value = [notification]
     }
@@ -145,7 +145,7 @@ class ExpressNotificationManager {
         }
 
         let notification = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
 
         notificationInputsSubject.value = [notification]
@@ -159,7 +159,7 @@ class ExpressNotificationManager {
         let notificationsFactory = NotificationsFactory()
 
         let notification = notificationsFactory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         notificationInputsSubject.value = [notification]
     }
@@ -208,7 +208,7 @@ class ExpressNotificationManager {
 
         let event = ExpressNotificationEvent.withdrawalNotificationEvent(withdrawalNotification)
         let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         return input
     }

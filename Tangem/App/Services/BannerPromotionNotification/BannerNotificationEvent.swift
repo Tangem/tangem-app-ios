@@ -9,7 +9,14 @@
 import Foundation
 
 enum BannerNotificationEvent: Hashable, NotificationEvent {
-    case travala(description: String)
+    case travala(description: String, programName: PromotionProgramName)
+
+    var programName: PromotionProgramName {
+        switch self {
+        case .travala(_, let programName):
+            return programName
+        }
+    }
 
     var title: NotificationView.Title {
         switch self {
@@ -20,7 +27,7 @@ enum BannerNotificationEvent: Hashable, NotificationEvent {
 
     var description: String? {
         switch self {
-        case .travala(let description):
+        case .travala(let description, _):
             return description
         }
     }

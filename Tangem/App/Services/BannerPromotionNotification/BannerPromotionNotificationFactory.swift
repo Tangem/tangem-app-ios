@@ -16,23 +16,42 @@ struct BannerPromotionNotificationFactory {
         return formatter
     }()
 
-    func buildNotificationButton(
-        actionType: NotificationButtonActionType,
-        action: @escaping NotificationView.NotificationButtonTapAction
-    ) -> NotificationView.NotificationButton {
-        NotificationView.NotificationButton(action: action, actionType: actionType, isWithLoader: false)
-    }
-
     func buildBannerNotificationInput(
         promotion: ActivePromotionInfo,
-        button: NotificationView.NotificationButton?,
+        buttonAction: @escaping NotificationView.NotificationButtonTapAction,
         dismissAction: @escaping NotificationView.NotificationAction
     ) -> NotificationViewInput {
-        let event = event(for: promotion, place: .tokenDetails)
+        let style: NotificationView.Style
+        let severity: NotificationView.Severity
+        let settings: NotificationView.Settings
+
+        switch promotion.bannerPromotion {
+        case .travala:
+            severity = .info
+
+            let event = BannerNotificationEvent.travala(
+                description: travalaDescription(promotion: promotion),
+                programName: promotion.bannerPromotion
+            )
+
+            settings = .init(event: event, dismissAction: dismissAction)
+
+            if let link = promotion.link {
+                let button = NotificationView.NotificationButton(
+                    action: buttonAction,
+                    actionType: .bookNow(promotionLink: link),
+                    isWithLoader: false
+                )
+                style = .withButtons([button])
+            } else {
+                style = .plain
+            }
+        }
+
         return NotificationViewInput(
-            style: button.map { .withButtons([$0]) } ?? .plain,
-            severity: .info,
-            settings: .init(event: event, dismissAction: dismissAction)
+            style: style,
+            severity: severity,
+            settings: settings
         )
     }
 }
@@ -40,13 +59,6 @@ struct BannerPromotionNotificationFactory {
 // MARK: - Private
 
 private extension BannerPromotionNotificationFactory {
-    func event(for promotion: ActivePromotionInfo, place: BannerPromotionPlacement) -> BannerNotificationEvent {
-        switch promotion.bannerPromotion {
-        case .travala:
-            return .travala(description: travalaDescription(promotion: promotion))
-        }
-    }
-
     func travalaDescription(promotion: ActivePromotionInfo) -> String {
         Localization.mainTravalaPromotionDescription(
             Self.travalaDateFormatter.string(from: promotion.timeline.start),

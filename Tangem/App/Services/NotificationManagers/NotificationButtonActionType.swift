@@ -28,6 +28,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case openFeedbackMail
     /// Rate the app.
     case openAppStoreReview
+    /// No action
+    case empty
 
     var id: Int { hashValue }
 
@@ -63,6 +65,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.warningButtonCouldBeBetter
         case .openAppStoreReview:
             return Localization.warningButtonReallyCool
+        case .empty:
+            return ""
         }
     }
 
@@ -83,7 +87,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .bookNow,
              .stake,
              .openFeedbackMail,
-             .openAppStoreReview:
+             .openAppStoreReview,
+             .empty:
             return nil
         }
     }
@@ -92,7 +97,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         switch self {
         case .generateAddresses,
              .bookNow,
-             .openAppStoreReview:
+             .openAppStoreReview,
+             .empty:
             return .primary
         case .backupCard,
              .buyCrypto,

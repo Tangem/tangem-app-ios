@@ -211,7 +211,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         guard let event = notificationEvent(from: validationError) else { return [] }
 
         let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         } dismissAction: { [weak self] id in
             self?.dismissAction(with: id)
         }
@@ -238,7 +238,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         if visible {
             let factory = NotificationsFactory()
             let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                self?.delegate?.didTapNotification(with: id, action: actionType)
             } dismissAction: { [weak self] id in
                 self?.dismissAction(with: id)
             }

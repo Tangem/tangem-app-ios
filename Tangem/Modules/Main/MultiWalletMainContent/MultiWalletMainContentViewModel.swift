@@ -325,7 +325,7 @@ extension MultiWalletMainContentViewModel {
         coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
     }
 
-    private func openTravalaPromotion(url: URL) {
+    private func openURL(_ url: URL) {
         coordinator?.openInSafari(url: url)
     }
 
@@ -355,28 +355,27 @@ extension MultiWalletMainContentViewModel {
 // MARK: - Notification tap delegate
 
 extension MultiWalletMainContentViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputs.first(where: { $0.id == id }) else {
-            userWalletNotificationManager.dismissNotification(with: id)
-            return
-        }
-
-        switch notification.settings.event {
-        case let userWalletEvent as WarningEvent:
-            handleUserWalletNotificationTap(event: userWalletEvent, id: id)
-        default:
-            break
-        }
-    }
-
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            guard let notification = notificationInputs.first(where: { $0.id == id }) else {
+                userWalletNotificationManager.dismissNotification(with: id)
+                return
+            }
+
+            switch notification.settings.event {
+            case let userWalletEvent as WarningEvent:
+                handleUserWalletNotificationTap(event: userWalletEvent, id: id)
+            default:
+                break
+            }
+
         case .generateAddresses:
             deriveEntriesWithoutDerivation()
         case .backupCard:
             startBackupProcess()
         case .bookNow(let url):
-            openTravalaPromotion(url: url)
+            openURL(url)
         case .openFeedbackMail:
             rateAppController.openFeedbackMail()
         case .openAppStoreReview:

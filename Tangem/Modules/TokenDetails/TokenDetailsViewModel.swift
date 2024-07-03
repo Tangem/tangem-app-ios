@@ -73,8 +73,10 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         Analytics.log(event: .detailsScreenOpened, params: [Analytics.ParameterKey.token: walletModel.tokenItem.currencySymbol])
     }
 
-    override func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            break
         case .openFeeCurrency:
             openFeeCurrency()
         case .generateAddresses,
@@ -91,7 +93,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .stake,
              .openFeedbackMail,
              .openAppStoreReview:
-            super.didTapNotificationButton(with: id, action: action)
+            super.didTapNotification(with: id, action: action)
         }
     }
 

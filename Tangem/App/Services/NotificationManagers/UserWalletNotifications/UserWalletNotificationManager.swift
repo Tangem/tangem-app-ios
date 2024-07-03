@@ -11,8 +11,7 @@ import Combine
 import BlockchainSdk
 
 protocol NotificationTapDelegate: AnyObject {
-    func didTapNotification(with id: NotificationViewId)
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType)
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType)
 }
 
 /// Manager for handling Notifications related to UserWalletModel.
@@ -49,11 +48,11 @@ final class UserWalletNotificationManager {
     private func createNotifications() {
         let factory = NotificationsFactory()
         let action: NotificationView.NotificationAction = { [weak self] id in
-            self?.delegate?.didTapNotification(with: id)
+            self?.delegate?.didTapNotification(with: id, action: .empty)
         }
 
         let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
-            self?.delegate?.didTapNotificationButton(with: id, action: action)
+            self?.delegate?.didTapNotification(with: id, action: action)
         }
 
         let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
@@ -72,7 +71,7 @@ final class UserWalletNotificationManager {
         }
 
         if userWalletModel.config.hasFeature(.multiCurrency) {
-            setupPromotionNotification(dismissAction: dismissAction)
+            setupPromotionNotification()
         }
 
         inputs.append(contentsOf: factory.buildNotificationInputs(
@@ -129,15 +128,15 @@ final class UserWalletNotificationManager {
         validateHashesCount()
     }
 
-    private func setupPromotionNotification(dismissAction: @escaping NotificationView.NotificationAction) {
+    private func setupPromotionNotification() {
         promotionUpdateTask?.cancel()
         promotionUpdateTask = Task { [weak self] in
-            guard let self, !Task.isCancelled else {
+            guard let self, !Task.isCancelled,
+                  let programName = PromotionProgramName.allCases.first else {
                 return
             }
 
-            let name: PromotionProgramName = .travala
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main),
+            guard let promotion = await bannerPromotionService.activePromotion(promotion: programName, on: .main),
                   let promotionLink = promotion.link else {
                 notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
                 return
@@ -148,17 +147,39 @@ final class UserWalletNotificationManager {
             }
 
             let factory = BannerPromotionNotificationFactory()
-            let button = factory.buildNotificationButton(actionType: .bookNow(promotionLink: promotionLink)) { [weak self] id, action in
-                var parameters = BannerNotificationEvent.travala(description: "").analyticsParams
-                parameters[.action] = Analytics.ParameterValue.clicked.rawValue
-                Analytics.log(event: .promotionBannerClicked, params: parameters)
 
-                self?.delegate?.didTapNotificationButton(with: id, action: action)
+            let dismissAction: NotificationView.NotificationAction = { [weak self] id in
+                self?.bannerPromotionService.hide(promotion: programName, on: .main)
+                self?.dismissNotification(with: id)
+
+                Analytics.log(
+                    .promotionBannerClicked,
+                    params:
+                    [
+                        .programName: programName.analyticsProgramName,
+                        .source: .main,
+                        .action: .closed,
+                    ]
+                )
+            }
+
+            let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+                self?.delegate?.didTapNotification(with: id, action: action)
+
+                Analytics.log(
+                    .promotionBannerClicked,
+                    params:
+                    [
+                        .programName: programName.analyticsProgramName,
+                        .source: .main,
+                        .action: .clicked,
+                    ]
+                )
             }
 
             let input = factory.buildBannerNotificationInput(
                 promotion: promotion,
-                button: button,
+                buttonAction: buttonAction,
                 dismissAction: dismissAction
             )
 
@@ -240,7 +261,7 @@ final class UserWalletNotificationManager {
             let notification = factory.buildNotificationInput(
                 for: .numberOfSignedHashesIncorrect,
                 action: { [weak self] id in
-                    self?.delegate?.didTapNotification(with: id)
+                    self?.delegate?.didTapNotification(with: id, action: .empty)
                 },
                 buttonAction: { _, _ in },
                 dismissAction: weakify(self, forFunction: UserWalletNotificationManager.dismissNotification(with:))
@@ -263,7 +284,7 @@ final class UserWalletNotificationManager {
                 case .failure:
                     let notification = factory.buildNotificationInput(
                         for: .numberOfSignedHashesIncorrect,
-                        action: { id in self?.delegate?.didTapNotification(with: id) },
+                        action: { id in self?.delegate?.didTapNotification(with: id, action: .empty) },
                         buttonAction: { _, _ in },
                         dismissAction: { id in self?.dismissNotification(with: id) }
                     )
@@ -324,17 +345,6 @@ extension UserWalletNotificationManager: NotificationManager {
                 rateAppController.dismissAppRate()
             default:
                 break
-            }
-        }
-
-        if let event = notification.settings.event as? BannerNotificationEvent {
-            switch event {
-            case .travala:
-                var parameters = event.analyticsParams
-                parameters[.action] = Analytics.ParameterValue.closed.rawValue
-                Analytics.log(event: .promotionBannerClicked, params: parameters)
-
-                bannerPromotionService.hide(promotion: .travala, on: .main)
             }
         }
 
