@@ -21,7 +21,7 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
     private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
 
     private var bag: Set<AnyCancellable> = []
-    private let didTapWallet: (UserWalletId) -> Void
+    private var didTapWallet: ((UserWalletId) -> Void)?
 
     // MARK: - Init
 
@@ -30,7 +30,7 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
         name: String,
         cardImagePublisher: AnyPublisher<CardImageResult, Never>,
         isSelected: Bool,
-        didTapWallet: @escaping (UserWalletId) -> Void
+        didTapWallet: ((UserWalletId) -> Void)?
     ) {
         self.userWalletId = userWalletId
         self.name = name
@@ -41,7 +41,9 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
         loadImage()
     }
 
-    func onTapAction() {}
+    func onTapAction() {
+        didTapWallet?(userWalletId)
+    }
 
     // MARK: - Private Implementation
 
