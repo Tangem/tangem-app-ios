@@ -8,26 +8,14 @@
 
 import Foundation
 
-struct BannerNotificationEvent: Hashable, NotificationEvent {
+struct BannerNotificationEvent: NotificationEvent {
     let title: NotificationView.Title
     let description: String?
     let programName: PromotionProgramName
-
-    var colorScheme: NotificationView.ColorScheme {
-        .okx
-    }
-
-    var icon: NotificationView.MessageIcon {
-        .init(
-            iconType: .image(Assets.okxDexLogoWhite.image.renderingMode(.template)),
-            color: .white,
-            size: .init(width: 49, height: 24)
-        )
-    }
-
-    var severity: NotificationView.Severity {
-        .info
-    }
+    let placement: BannerPromotionPlacement
+    let icon: NotificationView.MessageIcon
+    let colorScheme: NotificationView.ColorScheme
+    let severity: NotificationView.Severity
 
     var isDismissable: Bool {
         true
@@ -40,7 +28,7 @@ struct BannerNotificationEvent: Hashable, NotificationEvent {
     var analyticsParams: [Analytics.ParameterKey: String] {
         [
             .programName: Analytics.ParameterValue.okx.rawValue,
-            .source: Analytics.ParameterValue.main.rawValue,
+            .source: analyticsSource,
         ]
     }
 
@@ -50,5 +38,14 @@ struct BannerNotificationEvent: Hashable, NotificationEvent {
 
     var id: NotificationViewId {
         programName.hashValue
+    }
+
+    private var analyticsSource: String {
+        switch placement {
+        case .main:
+            Analytics.ParameterValue.main.rawValue
+        case .tokenDetails:
+            Analytics.ParameterValue.token.rawValue
+        }
     }
 }

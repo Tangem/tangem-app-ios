@@ -27,7 +27,15 @@ struct BannerPromotionNotificationFactory {
             let event = BannerNotificationEvent(
                 title: .string(Localization.swapPromoTitle),
                 description: Localization.swapPromoText,
-                programName: promotion.bannerPromotion
+                programName: promotion.bannerPromotion,
+                placement: placement,
+                icon: .init(
+                    iconType: .image(Assets.okxDexLogoWhite.image.renderingMode(.template)),
+                    color: .white,
+                    size: .init(width: 49, height: 24)
+                ),
+                colorScheme: .okx,
+                severity: .info
             )
 
             settings = .init(event: event, dismissAction: dismissAction)
