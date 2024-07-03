@@ -162,6 +162,19 @@ struct SendModulesFactory {
             descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
+
+    func makeSendFinishViewModel(addressTextViewHeightModel: AddressTextViewHeightModel) -> SendFinishViewModel {
+        let settings = SendFinishViewModel.Settings(
+            tokenItem: walletModel.tokenItem,
+            isFixedFee: builder.makeFeeOptions().count == 1
+        )
+
+        return SendFinishViewModel(
+            settings: settings,
+            addressTextViewHeightModel: addressTextViewHeightModel,
+            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
+        )
+    }
 }
 
 // MARK: - Dependencies

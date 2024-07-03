@@ -140,12 +140,10 @@ struct SendView: View {
         case .summary:
             SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
                 .amountMinTextScale(Constants.amountMinTextScale)
-                .onAppear(perform: viewModel.onSummaryAppear)
-                .onDisappear(perform: viewModel.onSummaryDisappear)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .finish:
-            SendSummaryView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
+            SendFinishView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         }

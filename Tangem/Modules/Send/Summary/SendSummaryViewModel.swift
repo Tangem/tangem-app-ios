@@ -11,15 +11,12 @@ import SwiftUI
 import Combine
 
 protocol SendSummaryViewModelSetupable: AnyObject {
-    func setup(sendFinishInput: SendFinishInput)
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
 class SendSummaryViewModel: ObservableObject {
-    @Published var transactionSentTime: String?
-
     @Published var editableType: EditableType
     @Published var canEditFee: Bool = false
 
@@ -36,6 +33,8 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
+    @Published private(set) var notificationInputs: [NotificationViewInput] = []
+
     @Published var transactionDescription: String?
     @Published var transactionDescriptionIsVisisble: Bool = false
 
@@ -44,8 +43,6 @@ class SendSummaryViewModel: ObservableObject {
 
     var canEditAmount: Bool { editableType == .editable }
     var canEditDestination: Bool { editableType == .editable }
-
-    @Published private(set) var notificationInputs: [NotificationViewInput] = []
 
     private let tokenItem: TokenItem
     private let interactor: SendSummaryInteractor
@@ -102,7 +99,7 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.transactionDescriptionIsVisisble = self.transactionDescription != nil && editableType != .notEditable
+            self.transactionDescriptionIsVisisble = self.transactionDescription != nil
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -158,6 +155,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                     additionalField: additionalField
                 )
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.destinationViewTypes, on: self)
             .store(in: &bag)
     }
@@ -190,11 +188,13 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
 
                 return multipleFeeOptions && !hasError
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.canEditFee, on: self, ownership: .weak)
             .store(in: &bag)
 
         Publishers.CombineLatest(interactor.feesPublisher(), interactor.selectedFeePublisher())
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
                 let (feeValues, selectedFee) = args
                 var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
@@ -214,23 +214,6 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             }
             .store(in: &bag)
     }
-
-    func setup(sendFinishInput input: any SendFinishInput) {
-        input.transactionSentDate
-            .map { date in
-                let formatter = DateFormatter()
-                formatter.dateStyle = .long
-                formatter.timeStyle = .short
-                return formatter.string(from: date)
-            }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] time in
-                withAnimation(SendView.Constants.defaultAnimation) {
-                    self?.transactionSentTime = time
-                }
-            })
-            .store(in: &bag)
-    }
 }
 
 extension SendSummaryViewModel {
@@ -241,7 +224,6 @@ extension SendSummaryViewModel {
 
     enum EditableType: Hashable {
         case disable
-        case notEditable
         case editable
     }
 }

@@ -65,8 +65,7 @@ final class SendViewModel: ObservableObject {
     let sendDestinationViewModel: SendDestinationViewModel
     let sendFeeViewModel: SendFeeViewModel
     let sendSummaryViewModel: SendSummaryViewModel
-    // TODO: Will be separated on steps with equal viewModels
-    let sendFinishViewModel: SendSummaryViewModel
+    let sendFinishViewModel: SendFinishViewModel
 
     // MARK: - Dependencies
 
@@ -193,11 +192,8 @@ final class SendViewModel: ObservableObject {
             editableType: sendType.isSend ? .editable : .disable
         )
 
-        sendFinishViewModel = factory.makeSendSummaryViewModel(
-            interactor: sendSummaryInteractor,
-            notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: .notEditable
+        sendFinishViewModel = factory.makeSendFinishViewModel(
+            addressTextViewHeightModel: addressTextViewHeightModel
         )
 
         sendSummaryViewModel.router = self
@@ -319,10 +315,6 @@ final class SendViewModel: ObservableObject {
         let networkName = walletModel.blockchainNetwork.blockchain.displayName
         coordinator?.openQRScanner(with: binding, networkName: networkName)
     }
-
-    func onSummaryAppear() {}
-
-    func onSummaryDisappear() {}
 
     private func bind() {
         sendModel.isSending

@@ -1,0 +1,151 @@
+//
+//  SendFinishViewModel.swift
+//  Tangem
+//
+//  Created by Sergey Balashov on 03.07.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
+//
+
+import Foundation
+import SwiftUI
+import Combine
+
+protocol SendFinishViewModelSetupable: AnyObject {
+    func setup(sendFinishInput: SendFinishInput)
+    func setup(sendDestinationInput: SendDestinationInput)
+    func setup(sendAmountInput: SendAmountInput)
+    func setup(sendFeeInteractor: SendFeeInteractor)
+}
+
+class SendFinishViewModel: ObservableObject {
+    @Published var showHeader = false
+    @Published var transactionSentTime: String?
+    @Published var alert: AlertBinder?
+
+    @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
+    @Published var amountSummaryViewData: SendAmountSummaryViewData?
+    @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
+
+    @ObservedObject var addressTextViewHeightModel: AddressTextViewHeightModel
+
+    private let tokenItem: TokenItem
+    private let isFixedFee: Bool
+    private let sectionViewModelFactory: SendSummarySectionViewModelFactory
+
+    private var feeTypeAnalyticsParameter: Analytics.ParameterValue = .null
+    private var bag: Set<AnyCancellable> = []
+
+    init(
+        settings: Settings,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        sectionViewModelFactory: SendSummarySectionViewModelFactory
+    ) {
+        tokenItem = settings.tokenItem
+        isFixedFee = settings.isFixedFee
+
+        self.addressTextViewHeightModel = addressTextViewHeightModel
+        self.sectionViewModelFactory = sectionViewModelFactory
+    }
+
+    func onAppear() {
+        Analytics.log(event: .sendTransactionSentScreenOpened, params: [
+            .token: tokenItem.currencySymbol,
+            .feeType: feeTypeAnalyticsParameter.rawValue,
+        ])
+
+        withAnimation(SendView.Constants.defaultAnimation) {
+            showHeader = true
+        }
+    }
+
+    // TODO: Will be moved to separated builder
+    private func selectedFeeTypeAnalyticsParameter(selectedFee: FeeOption) -> Analytics.ParameterValue {
+        if isFixedFee {
+            return .transactionFeeFixed
+        }
+
+        switch selectedFee {
+        case .slow:
+            return .transactionFeeMin
+        case .market:
+            return .transactionFeeNormal
+        case .fast:
+            return .transactionFeeMax
+        case .custom:
+            return .transactionFeeCustom
+        }
+    }
+}
+
+// MARK: - SendFinishViewModelSetupable
+
+extension SendFinishViewModel: SendFinishViewModelSetupable {
+    func setup(sendDestinationInput input: SendDestinationInput) {
+        Publishers.CombineLatest(input.destinationPublisher, input.additionalFieldPublisher)
+            .withWeakCaptureOf(self)
+            .map { viewModel, args in
+                let (destination, additionalField) = args
+                return viewModel.sectionViewModelFactory.makeDestinationViewTypes(
+                    address: destination.value,
+                    additionalField: additionalField
+                )
+            }
+            .assign(to: \.destinationViewTypes, on: self)
+            .store(in: &bag)
+    }
+
+    func setup(sendAmountInput input: SendAmountInput) {
+        input.amountPublisher
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, amount in
+                guard let formattedAmount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol),
+                      let formattedAlternativeAmount = amount?.formatAlternative(currencySymbol: viewModel.tokenItem.currencySymbol) else {
+                    return nil
+                }
+
+                return viewModel.sectionViewModelFactory.makeAmountViewData(
+                    amount: formattedAmount,
+                    amountAlternative: formattedAlternativeAmount
+                )
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
+
+    func setup(sendFeeInteractor interactor: SendFeeInteractor) {
+        interactor.selectedFeePublisher()
+            .compactMap { $0 }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, selectedFee in
+                viewModel.feeTypeAnalyticsParameter = viewModel.selectedFeeTypeAnalyticsParameter(selectedFee: selectedFee.option)
+                viewModel.selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
+            }
+            .store(in: &bag)
+    }
+
+    func setup(sendFinishInput input: any SendFinishInput) {
+        input.transactionSentDate
+            .map { date in
+                let formatter = DateFormatter()
+                formatter.dateStyle = .long
+                formatter.timeStyle = .short
+                return formatter.string(from: date)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] time in
+                withAnimation(SendView.Constants.defaultAnimation) {
+                    self?.transactionSentTime = time
+                }
+            })
+            .store(in: &bag)
+    }
+}
+
+extension SendFinishViewModel {
+    struct Settings {
+        let tokenItem: TokenItem
+        let isFixedFee: Bool
+    }
+}
