@@ -160,7 +160,7 @@ private extension DEXExpressProviderManager {
         }
 
         guard request.pair.source.feeCurrencyEnoughBalanceToSend(value: otherNativeFee) else {
-            return .restriction(.notEnoughBalanceForFee, quote: quote)
+            return .restriction(.notEnoughBalanceForOtherNativeFee, quote: quote)
         }
 
         // All good
