@@ -26,10 +26,8 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     private let shouldStretchToFill: Bool
 
     @State private var optionIsPressed: [Option.ID: Bool] = [:]
-
-    private var segmentAccessibilityValueCompletion: (Int, Int) -> String = { index, count in
-        "\(index) of \(count)"
-    }
+    @State private var selectedIndex: Int
+    @State private var targetWidth: CGFloat?
 
     @Namespace private var namespaceID
     private let buttonBackgroundID: String = "buttonOverlayID"
@@ -59,6 +57,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         self.segmentContent = segmentContent
         self.shouldStretchToFill = shouldStretchToFill
         optionIsPressed = Dictionary(uniqueKeysWithValues: options.lazy.map { ($0.id, false) })
+        selectedIndex = options.firstIndex(of: selection.wrappedValue) ?? 0
     }
 
     // MARK: - UI
@@ -78,20 +77,42 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     shouldStretchToFill: shouldStretchToFill,
                     backgroundID: buttonBackgroundID,
                     namespaceID: namespaceID,
-                    action: { selection = option }
+                    targetWidth: targetWidth,
+                    action: {
+                        selection = option
+                        selectedIndex = index
+                    }
                 )
                 .zIndex(selection == option ? 0 : 1)
                 .background {
-                    HStack {
-                        Spacer()
-                        Divider()
+                    if index < options.count - 1 {
+                        HStack {
+                            Spacer()
+                            Divider()
+                        }
+                        .padding(.vertical, 4)
+                        .opacity((selectedIndex == index || selectedIndex - 1 == index) ? 0.0 : 1.0)
+                        .animation(.easeInOut, value: selectedIndex)
                     }
-                    .padding(.vertical, 4)
                 }
+                .overlay(content: {
+                    // We need this part to properly calculate segment size
+                    segmentContent(option, true)
+                        .fixedSize(horizontal: true, vertical: true)
+                        .opacity(0)
+                        .readGeometry(\.size.width) { value in
+                            if shouldStretchToFill {
+                                return
+                            }
+
+                            if value > (targetWidth ?? 0) {
+                                targetWidth = value
+                            }
+                        }
+                })
             }
         }
         .padding(segmentedControlInsets)
-        .frame(width: .infinity)
     }
 }
 
@@ -110,6 +131,7 @@ private extension SegmentedPickerView {
         let shouldStretchToFill: Bool
         let backgroundID: String
         let namespaceID: Namespace.ID
+        let targetWidth: CGFloat?
         let action: () -> Void
 
         // MARK: - UI
@@ -117,7 +139,7 @@ private extension SegmentedPickerView {
         var body: some View {
             Button(action: action) {
                 content
-                    .frame(maxWidth: shouldStretchToFill ? .infinity : nil)
+                    .frame(maxWidth: shouldStretchToFill ? .infinity : targetWidth)
                     .background {
                         if isSelected {
                             selectionView
