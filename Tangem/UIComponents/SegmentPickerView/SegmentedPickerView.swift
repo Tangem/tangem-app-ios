@@ -23,12 +23,11 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     private let options: [Option]
     private let selectionView: () -> SelectionView
     private let segmentContent: (Option, Bool) -> SegmentContent
+    private let shouldStretchToFill: Bool
 
     @State private var optionIsPressed: [Option.ID: Bool] = [:]
-
-    private var segmentAccessibilityValueCompletion: (Int, Int) -> String = { index, count in
-        "\(index) of \(count)"
-    }
+    @State private var selectedIndex: Int
+    @State private var targetWidth: CGFloat?
 
     @Namespace private var namespaceID
     private let buttonBackgroundID: String = "buttonOverlayID"
@@ -48,6 +47,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     public init(
         selection: Binding<Option>,
         options: [Option],
+        shouldStretchToFill: Bool,
         selectionView: @escaping () -> SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
@@ -55,7 +55,9 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         self.options = options
         self.selectionView = selectionView
         self.segmentContent = segmentContent
+        self.shouldStretchToFill = shouldStretchToFill
         optionIsPressed = Dictionary(uniqueKeysWithValues: options.lazy.map { ($0.id, false) })
+        selectedIndex = options.firstIndex(of: selection.wrappedValue) ?? 0
     }
 
     // MARK: - UI
@@ -64,23 +66,50 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         HStack(spacing: interSegmentSpacing) {
             ForEach(Array(zip(options.indices, options)), id: \.1.id) { index, option in
                 Segment(
-                    content: segmentContent(option, optionIsPressed[option.id, default: false]),
-                    selectionView: selectionView(),
-                    isSelected: selection == option,
-                    animation: slidingAnimation,
-                    contentBlendMode: contentStyle.contentBlendMode,
-                    firstLevelOverlayBlendMode: contentStyle.firstLevelOverlayBlendMode,
-                    highestLevelOverlayBlendMode: contentStyle.highestLevelOverlayBlendMode,
                     isPressed: .init(
                         get: { optionIsPressed[option.id, default: false] },
                         set: { optionIsPressed[option.id] = $0 }
                     ),
+                    content: segmentContent(option, optionIsPressed[option.id, default: false]),
+                    selectionView: selectionView(),
+                    isSelected: selection == option,
+                    animation: slidingAnimation,
+                    shouldStretchToFill: shouldStretchToFill,
                     backgroundID: buttonBackgroundID,
                     namespaceID: namespaceID,
-                    accessibiltyValue: segmentAccessibilityValueCompletion(index + 1, options.count),
-                    action: { selection = option }
+                    targetWidth: targetWidth,
+                    action: {
+                        selection = option
+                        selectedIndex = index
+                    }
                 )
                 .zIndex(selection == option ? 0 : 1)
+                .background {
+                    if index < options.count - 1 {
+                        HStack {
+                            Spacer()
+                            Divider()
+                        }
+                        .padding(.vertical, 4)
+                        .opacity((selectedIndex == index || selectedIndex - 1 == index) ? 0.0 : 1.0)
+                        .animation(.easeInOut, value: selectedIndex)
+                    }
+                }
+                .overlay(content: {
+                    // We need this part to properly calculate segment size
+                    segmentContent(option, true)
+                        .fixedSize(horizontal: true, vertical: true)
+                        .opacity(0)
+                        .readGeometry(\.size.width) { value in
+                            if shouldStretchToFill {
+                                return
+                            }
+
+                            if value > (targetWidth ?? 0) {
+                                targetWidth = value
+                            }
+                        }
+                })
             }
         }
         .padding(segmentedControlInsets)
@@ -93,17 +122,16 @@ private extension SegmentedPickerView {
     struct Segment<SegmentSelectionView: View, Content: View>: View {
         // MARK: - Properties
 
+        @Binding var isPressed: Bool
+
         let content: Content
         let selectionView: SegmentSelectionView
         let isSelected: Bool
         let animation: Animation
-        let contentBlendMode: BlendMode?
-        let firstLevelOverlayBlendMode: BlendMode?
-        let highestLevelOverlayBlendMode: BlendMode?
-        @Binding var isPressed: Bool
+        let shouldStretchToFill: Bool
         let backgroundID: String
         let namespaceID: Namespace.ID
-        let accessibiltyValue: String
+        let targetWidth: CGFloat?
         let action: () -> Void
 
         // MARK: - UI
@@ -111,24 +139,11 @@ private extension SegmentedPickerView {
         var body: some View {
             Button(action: action) {
                 content
-                    .blendModeIfNotNil(contentBlendMode)
-                    .overlay {
-                        if let firstLevelOverlayBlendMode {
-                            content
-                                .blendMode(firstLevelOverlayBlendMode)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                    .overlay {
-                        if let highestLevelOverlayBlendMode {
-                            content
-                                .blendMode(highestLevelOverlayBlendMode)
-                                .accessibilityHidden(true)
-                        }
-                    }
+                    .frame(maxWidth: shouldStretchToFill ? .infinity : targetWidth)
                     .background {
                         if isSelected {
                             selectionView
+                                .zIndex(10)
                                 .transition(.offset())
                                 .matchedGeometryEffect(id: backgroundID, in: namespaceID)
                         }
@@ -136,10 +151,6 @@ private extension SegmentedPickerView {
                     .animation(animation, value: isSelected)
             }
             .buttonStyle(SegmentButtonStyle(isPressed: $isPressed))
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
-            .accessibilityRemoveTraits(isSelected ? [] : .isSelected)
-            .accessibilityValue(accessibiltyValue)
         }
     }
 }
@@ -160,19 +171,21 @@ public extension SegmentedPickerView {
     init(
         selection: Binding<Option>,
         options: [Option],
+        shouldStretchToFill: Bool,
         selectionView: SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
         self.init(
             selection: selection,
             options: options,
+            shouldStretchToFill: shouldStretchToFill,
             selectionView: { selectionView },
             segmentContent: segmentContent
         )
     }
 }
 
-// MARK: - SegmentButtonStyle
+//// MARK: - SegmentButtonStyle
 
 extension SegmentedPickerView.Segment {
     private struct SegmentButtonStyle: ButtonStyle {
@@ -184,64 +197,6 @@ extension SegmentedPickerView.Segment {
                 .onChange(of: configuration.isPressed) { newValue in
                     isPressed = newValue
                 }
-        }
-    }
-}
-
-// MARK: - CustomizableSegmentedControlContentStyle + Properties
-
-private extension SegmentedPickerViewContentStyle {
-    var contentBlendMode: BlendMode? {
-        switch self {
-        case .default:
-            return nil
-        case .blendMode(let mode, _, _):
-            return mode
-        }
-    }
-
-    var firstLevelOverlayBlendMode: BlendMode? {
-        switch self {
-        case .default:
-            return nil
-        case .blendMode(_, let mode, _):
-            return mode
-        }
-    }
-
-    var highestLevelOverlayBlendMode: BlendMode? {
-        switch self {
-        case .default:
-            return nil
-        case .blendMode(_, _, let mode):
-            return mode
-        }
-    }
-}
-
-// MARK: - CustomizableSegmentedControl + Accessibility Extensions
-
-public extension SegmentedPickerView {
-    /// Add accessibility value to every segment
-    ///
-    /// - Parameters:
-    ///     - completion: Takes index and total count. Returns neccessary string
-    func segmentAccessibilityValue(_ completion: @escaping (Int, Int) -> String) -> Self {
-        var copy = self
-        copy.segmentAccessibilityValueCompletion = completion
-        return copy
-    }
-}
-
-// MARK: - View + Extensions
-
-private extension View {
-    @ViewBuilder
-    func blendModeIfNotNil(_ mode: BlendMode?) -> some View {
-        if let mode {
-            blendMode(mode)
-        } else {
-            self
         }
     }
 }

@@ -33,7 +33,12 @@ extension TokenMarketsDetailsView {
 
                     Spacer()
 
-                    MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
+                    MarketsPickerView(
+                        marketPriceIntervalType: .constant(.day),
+                        options: [.day, .month, .year],
+                        shouldStretchToFill: false,
+                        titleFactory: { $0.rawValue }
+                    )
                 }
 
                 ForEach(0 ... 1) { _ in
@@ -88,9 +93,14 @@ extension TokenMarketsDetailsView {
                     Text(Localization.marketsTokenDetailsPricePerformance)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                    Spacer(minLength: 10)
+                    Spacer()
 
-                    MarketsPickerView(marketPriceIntervalType: .constant(.day), options: [.day, .month, .year], titleFactory: { $0.rawValue })
+                    MarketsPickerView(
+                        marketPriceIntervalType: .constant(.day),
+                        options: [.day, .month, .year],
+                        shouldStretchToFill: false,
+                        titleFactory: { $0.rawValue }
+                    )
                 }
 
                 HStack {
@@ -129,7 +139,7 @@ extension TokenMarketsDetailsView {
                         HStack(spacing: 12) {
                             ForEach(0 ... 2) { _ in
                                 SkeletonView()
-                                    .frame(width: .infinity, height: 28)
+                                    .frame(maxWidth: .infinity, minHeight: 28, maxHeight: 28)
                                     .cornerRadiusContinuous(14)
                             }
                         }
@@ -161,7 +171,7 @@ extension TokenMarketsDetailsView {
         private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
             SkeletonView()
                 .cornerRadiusContinuous(3)
-                .frame(width: width, height: height)
+                .frame(maxWidth: width, minHeight: height, maxHeight: height)
         }
     }
 }
