@@ -448,7 +448,7 @@ private extension ExpressViewModel {
 
     func updateFeeValue(state: ExpressInteractor.State) {
         switch state {
-        case .restriction(.notEnoughAmountForOtherNativeFee(let fee), _):
+        case .restriction(.notEnoughAmountForOtherNativeFee, _):
             updateExpressFeeRowViewModel(fees: state.fees)
         case .restriction(.notEnoughAmountForFee(let state), _):
             updateExpressFeeRowViewModel(fees: state.fees)
@@ -499,11 +499,11 @@ private extension ExpressViewModel {
                  .tooBigAmountForSwapping,
                  .noDestinationTokens,
                  .validationError,
-                 .notEnoughReceivedAmount,
-                 .notEnoughAmountForOtherNativeFee:
+                 .notEnoughReceivedAmount:
                 mainButtonState = .swap
             case .notEnoughBalanceForSwapping,
-                 .notEnoughAmountForFee:
+                 .notEnoughAmountForFee,
+                 .notEnoughAmountForOtherNativeFee:
                 mainButtonState = .insufficientFunds
             }
 
