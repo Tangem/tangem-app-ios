@@ -25,6 +25,8 @@ public struct DecodedTransactionDetails: Decodable {
     let txValue: String
     // Additional fee for dex/bridge
     let otherNativeFee: String?
+    // Estimated gas for txData
+    let gas: String?
     // CEX provider transaction id
     let externalTxId: String?
     // url of CEX provider exchange status page

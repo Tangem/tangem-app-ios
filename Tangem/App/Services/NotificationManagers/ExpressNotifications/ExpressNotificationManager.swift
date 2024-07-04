@@ -87,19 +87,13 @@ class ExpressNotificationManager {
         case .validationError(let error, let context):
             setupNotification(for: error, context: context)
             return
-        case .notEnoughAmountForFee:
+        case .notEnoughAmountForFee, .notEnoughAmountForOtherNativeFee:
             guard let notEnoughFeeForTokenTxEvent = makeNotEnoughFeeForTokenTx(sender: interactor.getSender()) else {
                 notificationInputsSubject.value = []
                 return
             }
 
             event = notEnoughFeeForTokenTxEvent
-        case .notEnoughAmountForOtherNativeFee:
-            event = .notEnoughFeeForTokenTx(
-                mainTokenName: feeTokenItem.blockchain.displayName,
-                mainTokenSymbol: feeTokenItem.currencySymbol,
-                blockchainIconName: feeTokenItem.blockchain.iconNameFilled
-            )
         case .notEnoughReceivedAmount(let minAmount, let tokenSymbol):
             event = .notEnoughReceivedAmountForReserve(amountFormatted: "\(minAmount.formatted()) \(tokenSymbol)")
         case .requiredRefresh(let occurredError as ExpressAPIError):

@@ -10,6 +10,7 @@ import Foundation
 
 public protocol FeeProvider {
     func estimatedFee(amount: Decimal) async throws -> ExpressFee
+    func estimatedFee(estimatedGasLimit: Int) async throws -> ExpressFee
     func getFee(amount: Decimal, destination: String, hexData: Data?) async throws -> ExpressFee
 }
 

@@ -159,17 +159,15 @@ private extension DEXExpressProviderManager {
             return nil
         }
 
-        guard otherNativeFee > request.pair.source.getFeeCurrencyBalance() else {
+        guard data.value > request.pair.source.getFeeCurrencyBalance() else {
             return nil
         }
 
-        // Try to estimate the fee as if we were sending the full balance
-        var fee = try await feeProvider.getFee(
-            amount: request.pair.source.getBalance(),
-            destination: data.destinationAddress,
-            hexData: data.txData.map { Data(hexString: $0) }
-        )
+        guard let estimatedGasLimit = data.estimatedGasLimit else {
+            return .restriction(.insufficientBalance(data.value), quote: quote)
+        }
 
+        var fee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
         fee = include(otherNativeFee: otherNativeFee, in: fee)
         return .restriction(.notEnoughBalanceForOtherNativeFee(fee.fastest), quote: quote)
     }
