@@ -136,9 +136,6 @@ extension Analytics {
 
         // MARK: - Promotion banners
 
-        case oneInch = "1inch"
-        case changelly = "Changelly"
-        case changeNow = "ChangeNow"
         case okx = "OKX"
 
         case clicked = "Clicked"

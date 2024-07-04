@@ -254,7 +254,7 @@ final class SingleTokenNotificationManager {
         promotionUpdateTask = Task { [weak self] in
             guard let self, !Task.isCancelled,
                   let programName = PromotionProgramName.allCases.first,
-            swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) else {
+                  swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) else {
                 return
             }
 
