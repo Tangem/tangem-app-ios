@@ -62,11 +62,13 @@ extension MarketsDTO.Coins {
         let homepage: [String]?
         let blockchainSite: [String]?
         let whitepaper: String?
-        let reddit: String?
-        let officialForum: [String]?
+        let subredditUrl: String?
+        let officialForumUrl: [String]?
         let chat: [String]?
         let community: [String]?
         let reposUrl: [String: [String]]?
+        let twitterScreenName: String?
+        let facebookUsername: String?
     }
 
     struct PricePerformance: Codable {
@@ -74,3 +76,22 @@ extension MarketsDTO.Coins {
         let lowPrice: [String: Decimal]
     }
 }
+
+// "links": { // каждый параметр объекта может содерджать пустое значение
+//    "homepage": [ //массив значений
+//        "http://www.bitcoin.org"
+//    ],
+//    "blockchain_site": [ //массив значений
+//        "https://mempool.space/",
+//        "https://blockchair.com/bitcoin/"
+//    ],
+//    "whitepaper": "https://bitcoin.org/bitcoin.pdf",
+//    "reddit": "https://www.reddit.com/r/Bitcoin/",
+//    "official_forum": [], //массив значений
+//    "chat": [], //массив значений
+//    "community": [ //массив значений
+//        "https://twitter.com/Bitcoin",
+//        "https://www.facebook.com/buy.bitcoin.news/"
+//    ],
+//    "repository": [] //массив значений
+//    }
