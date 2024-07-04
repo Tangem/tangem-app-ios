@@ -30,9 +30,10 @@ struct TokenMarketsDetailsView: View {
                 MarketsPickerView(
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
+                    shouldStretchToFill: true,
                     titleFactory: { $0.rawValue.capitalizingFirstLetter() }
                 )
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
 
                 chart
 
