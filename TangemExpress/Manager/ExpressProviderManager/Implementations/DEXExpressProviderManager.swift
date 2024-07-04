@@ -76,25 +76,7 @@ private extension DEXExpressProviderManager {
             let data = try await expressAPIProvider.exchangeData(item: item)
             try Task.checkCancellation()
 
-            if let restriction = try await checkRestriction(request: request, quote: quote, data: data) {
-                return restriction
-            }
-
-            var fee = try await feeProvider.getFee(
-                amount: data.value,
-                destination: data.destinationAddress,
-                hexData: data.txData.map { Data(hexString: $0) }
-            )
-            try Task.checkCancellation()
-
-            if let otherNativeFee = data.otherNativeFee {
-                fee = include(otherNativeFee: otherNativeFee, in: fee)
-                log("The fee was increased by otherNativeFee \(otherNativeFee)")
-            }
-
-            // better to make the quote from the data
-            let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
-            return .ready(.init(fee: fee, data: data, quote: quoteData))
+            return try await proceed(request: request, quote: quote, data: data)
 
         } catch let error as ExpressAPIError {
             guard let amount = error.value?.amount else {
@@ -154,22 +136,52 @@ private extension DEXExpressProviderManager {
         return nil
     }
 
-    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState? {
-        guard let otherNativeFee = data.otherNativeFee else {
-            return nil
+    func proceed(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState {
+        if data.value > request.pair.source.getFeeCurrencyBalance() {
+            let estimateFee = try await estimateFee(request: request, data: data)
+            return .restriction(estimateFee, quote: quote)
         }
 
-        guard data.value > request.pair.source.getFeeCurrencyBalance() else {
-            return nil
+        do {
+            let ready = try await ready(request: request, quote: quote, data: data)
+            return .ready(ready)
+        } catch {
+            let estimateFee = try await estimateFee(request: request, data: data)
+            return .restriction(estimateFee, quote: quote)
         }
+    }
 
+    func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
         guard let estimatedGasLimit = data.estimatedGasLimit else {
-            return .restriction(.insufficientBalance(data.value), quote: quote)
+            let estimatedAmount = request.amount + (data.otherNativeFee ?? 0)
+            return .insufficientBalance(estimatedAmount)
         }
 
-        var fee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
-        fee = include(otherNativeFee: otherNativeFee, in: fee)
-        return .restriction(.notEnoughBalanceForOtherNativeFee(fee.fastest), quote: quote)
+        var estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
+        if let otherNativeFee = data.otherNativeFee {
+            estimateFee = add(value: otherNativeFee, to: estimateFee)
+        }
+
+        return .notEnoughBalanceForOtherNativeFee(estimateFee)
+    }
+
+    func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {
+        var fee = try await feeProvider.getFee(
+            amount: data.value,
+            destination: data.destinationAddress,
+            hexData: data.txData.map { Data(hexString: $0) }
+        )
+
+        try Task.checkCancellation()
+
+        if let otherNativeFee = data.otherNativeFee {
+            fee = include(otherNativeFee: otherNativeFee, in: fee)
+            log("The fee was increased by otherNativeFee \(otherNativeFee)")
+        }
+
+        // better to make the quote from the data
+        let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
+        return .init(fee: fee, data: data, quote: quoteData)
     }
 
     func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {

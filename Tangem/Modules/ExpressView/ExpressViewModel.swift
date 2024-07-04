@@ -457,8 +457,9 @@ private extension ExpressViewModel {
 
     func updateFeeValue(state: ExpressInteractor.State) {
         switch state {
-        case .restriction(.notEnoughAmountForOtherNativeFee, _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+        case .restriction(.notEnoughAmountForOtherNativeFee(let estimatedFee), _):
+            // Signle estimated fee just for UI
+            updateExpressFeeRowViewModel(fees: [.market: estimatedFee])
         case .restriction(.notEnoughAmountForFee(let state), _):
             updateExpressFeeRowViewModel(fees: state.fees)
         case .previewCEX(let state, _):

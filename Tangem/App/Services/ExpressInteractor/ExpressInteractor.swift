@@ -766,8 +766,6 @@ extension ExpressInteractor {
 
         var fees: [FeeOption: Fee] {
             switch self {
-            case .restriction(.notEnoughAmountForOtherNativeFee(let fee), _):
-                return [.market: fee]
             case .restriction(.notEnoughAmountForFee(.previewCEX(let state, _)), _):
                 return state.fees
             case .restriction(.notEnoughAmountForFee(.readyToSwap(let state, _)), _):

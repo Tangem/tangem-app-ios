@@ -66,7 +66,6 @@ class ExpressNotificationManager {
     private func setupNotification(for restrictions: ExpressInteractor.RestrictionType) {
         guard let interactor = expressInteractor else { return }
 
-        let feeTokenItem = interactor.getSender().feeTokenItem
         let sourceTokenItem = interactor.getSender().tokenItem
         let sourceTokenItemSymbol = sourceTokenItem.currencySymbol
         let event: ExpressNotificationEvent
