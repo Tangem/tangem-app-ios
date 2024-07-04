@@ -47,6 +47,7 @@ struct MarketsRatingHeaderView: View {
             MarketsPickerView(
                 marketPriceIntervalType: $viewModel.marketPriceIntervalType,
                 options: viewModel.marketPriceIntervalTypeOptions,
+                shouldStretchToFill: false,
                 titleFactory: { $0.marketsListId }
             )
         }

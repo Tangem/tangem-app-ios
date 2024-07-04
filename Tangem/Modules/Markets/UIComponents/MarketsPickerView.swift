@@ -12,34 +12,43 @@ struct MarketsPickerView: View {
     @Binding var marketPriceIntervalType: MarketsPriceIntervalType
 
     let options: [MarketsPriceIntervalType]
+    let shouldStretchToFill: Bool
     let titleFactory: (MarketsPriceIntervalType) -> String
 
     var body: some View {
         SegmentedPickerView(
             selection: $marketPriceIntervalType,
             options: options,
+            shouldStretchToFill: shouldStretchToFill,
             selectionView: selectionView,
             segmentContent: { option, _ in
                 segmentView(title: titleFactory(option), isSelected: marketPriceIntervalType == option)
-                    .colorMultiply(Colors.Text.primary1)
                     .animation(.none, value: marketPriceIntervalType)
             }
         )
         .insets(Constants.insets)
-        .segmentedControlSlidingAnimation(.default)
+        .segmentedControlSlidingAnimation(.easeInOut)
         .segmentedControl(interSegmentSpacing: Constants.interSegmentSpacing)
-        .background(Colors.Background.secondary)
+        .background(Colors.Button.secondary)
         .clipShape(RoundedRectangle(cornerRadius: Constants.containerCornerRadius))
     }
 
     private func segmentView(title: String, isSelected: Bool) -> some View {
-        HStack(spacing: .zero) {
+        ZStack(alignment: .center) {
             Text(title)
-                .font(isSelected ? Fonts.Bold.footnote : Fonts.Regular.footnote)
+                .font(Fonts.Bold.footnote)
+                .foregroundStyle(Colors.Text.primary1)
+                .opacity(isSelected ? 1.0 : 0.0)
+
+            Text(title)
+                .font(Fonts.Regular.footnote)
+                .foregroundStyle(Colors.Text.primary1)
+                .opacity(isSelected ? 0.0 : 1.0)
         }
+        .animation(.default, value: isSelected)
         .lineLimit(1)
-        .padding(.vertical, 4)
-        .padding(.horizontal, 8)
+        .padding(.vertical, 2)
+        .padding(.horizontal, 12)
     }
 
     private var selectionView: some View {
@@ -51,7 +60,7 @@ struct MarketsPickerView: View {
 private extension MarketsPickerView {
     enum Constants {
         static let insets: EdgeInsets = .init(top: 2, leading: 2, bottom: 2, trailing: 2)
-        static let interSegmentSpacing: CGFloat = 2
+        static let interSegmentSpacing: CGFloat = 0
         static let containerCornerRadius: CGFloat = 8
         // We need to use an odd value, otherwise the rounding curvature of the selection
         // will be noticeably different from the background rounding curvature
@@ -60,24 +69,38 @@ private extension MarketsPickerView {
 }
 
 #Preview {
-    @State var priceIntervalType: MarketsPriceIntervalType = .day
-    @State var tokenPriceInterval: MarketsPriceIntervalType = .day
+    struct MarketsPickerPreviewView: View {
+        @State private var firstInterval = MarketsPriceIntervalType.day
+        @State private var secondInterval = MarketsPriceIntervalType.day
+        @State private var thirdInterval = MarketsPriceIntervalType.day
 
-    return VStack(spacing: 30) {
-        StatefulPreviewWrapper(priceIntervalType) { intervalType in
-            MarketsPickerView(
-                marketPriceIntervalType: intervalType,
-                options: [.day, .week, .month],
-                titleFactory: { $0.marketsListId }
-            )
-        }
+        var body: some View {
+            VStack(spacing: 30) {
+                MarketsPickerView(
+                    marketPriceIntervalType: $firstInterval,
+                    options: [.day, .week, .month],
+                    shouldStretchToFill: false,
+                    titleFactory: { $0.marketsListId }
+                )
 
-        StatefulPreviewWrapper(tokenPriceInterval) { intervalType in
-            MarketsPickerView(
-                marketPriceIntervalType: intervalType,
-                options: MarketsPriceIntervalType.allCases,
-                titleFactory: { $0.rawValue }
-            )
+                MarketsPickerView(
+                    marketPriceIntervalType: $secondInterval,
+                    options: MarketsPriceIntervalType.allCases,
+                    shouldStretchToFill: false,
+                    titleFactory: { $0.rawValue }
+                )
+
+                MarketsPickerView(
+                    marketPriceIntervalType: $secondInterval,
+                    options: MarketsPriceIntervalType.allCases,
+                    shouldStretchToFill: true,
+                    titleFactory: { $0.rawValue }
+                )
+                .padding(.horizontal, 16)
+            }
         }
     }
+
+    return MarketsPickerPreviewView()
+        .background(Colors.Background.primary)
 }
