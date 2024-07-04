@@ -349,6 +349,9 @@ private extension ExpressViewModel {
         switch state {
         case .restriction(.notEnoughBalanceForSwapping, _):
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
+        case .restriction(.notEnoughAmountForTxValue, _),
+             .restriction(.notEnoughAmountForFee, _) where interactor.getSender().isFeeCurrency:
+            sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
         default:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .text(Localization.swappingFromTitle))
         }
