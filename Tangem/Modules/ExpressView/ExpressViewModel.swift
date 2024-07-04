@@ -179,7 +179,16 @@ private extension ExpressViewModel {
             return
         }
 
-        coordinator?.presentApproveView()
+        runTask(in: self) { viewModel in
+            guard let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider else {
+                return
+            }
+
+            let selectedPolicy = await viewModel.interactor.getApprovePolicy()
+            await runOnMain {
+                viewModel.coordinator?.presentApproveView(provider: selectedProvider, selectedPolicy: selectedPolicy)
+            }
+        }
     }
 
     func openFeeSelectorView() {
