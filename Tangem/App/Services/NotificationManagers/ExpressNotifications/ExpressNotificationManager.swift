@@ -86,7 +86,7 @@ class ExpressNotificationManager {
         case .validationError(let error, let context):
             setupNotification(for: error, context: context)
             return
-        case .notEnoughAmountForFee, .notEnoughAmountForOtherNativeFee:
+        case .notEnoughAmountForFee, .notEnoughAmountForTxValue:
             guard let notEnoughFeeForTokenTxEvent = makeNotEnoughFeeForTokenTx(sender: interactor.getSender()) else {
                 notificationInputsSubject.value = []
                 return

@@ -108,7 +108,7 @@ private extension DEXExpressProviderManager {
 
             // Check fee currency balance at least more then zero
             guard request.pair.source.feeCurrencyHasPositiveBalance else {
-                return .restriction(.notEnoughBalanceForFee, quote: quote)
+                return .restriction(.feeCurrencyHasZeroBalance, quote: quote)
             }
 
         } catch {
@@ -152,17 +152,17 @@ private extension DEXExpressProviderManager {
     }
 
     func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
-        guard let estimatedGasLimit = data.estimatedGasLimit else {
-            let estimatedAmount = request.amount + (data.otherNativeFee ?? 0)
-            return .insufficientBalance(estimatedAmount)
+        let otherNativeFee = data.otherNativeFee ?? 0
+
+        if let estimatedGasLimit = data.estimatedGasLimit {
+            let estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
+            let estimateTxValue = otherNativeFee + estimateFee.amount.value
+
+            return .feeCurrencyInsufficientBalanceForTxValue(estimateTxValue)
         }
 
-        var estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
-        if let otherNativeFee = data.otherNativeFee {
-            estimateFee = add(value: otherNativeFee, to: estimateFee)
-        }
-
-        return .notEnoughBalanceForOtherNativeFee(estimateFee)
+        let estimatedAmount = request.amount + otherNativeFee
+        return .insufficientBalance(estimatedAmount)
     }
 
     func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {

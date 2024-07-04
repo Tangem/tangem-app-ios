@@ -314,11 +314,11 @@ private extension ExpressInteractor {
         case .restriction(.insufficientBalance(let requiredAmount), let quote):
             return .restriction(.notEnoughBalanceForSwapping(requiredAmount: requiredAmount), quote: quote)
 
-        case .restriction(.notEnoughBalanceForFee, let quote):
+        case .restriction(.feeCurrencyHasZeroBalance, let quote):
             return .restriction(.notEnoughAmountForFee(.idle), quote: quote)
 
-        case .restriction(.notEnoughBalanceForOtherNativeFee(let fee), let quote):
-            return .restriction(.notEnoughAmountForOtherNativeFee(fee), quote: quote)
+        case .restriction(.feeCurrencyInsufficientBalanceForTxValue(let fee), let quote):
+            return .restriction(.notEnoughAmountForTxValue(fee), quote: quote)
 
         case .permissionRequired(let permissionRequired):
             if hasPendingTransaction() {
@@ -818,7 +818,7 @@ extension ExpressInteractor {
         case hasPendingApproveTransaction
         case notEnoughBalanceForSwapping(requiredAmount: Decimal)
         case notEnoughAmountForFee(_ returnState: State)
-        case notEnoughAmountForOtherNativeFee(_ estimatedFee: Fee)
+        case notEnoughAmountForTxValue(_ estimatedTxValue: Decimal)
         case requiredRefresh(occurredError: Error)
         case noDestinationTokens
         case validationError(error: ValidationError, context: ValidationErrorContext)

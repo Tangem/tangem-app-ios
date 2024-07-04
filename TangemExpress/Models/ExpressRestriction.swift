@@ -14,6 +14,6 @@ public enum ExpressRestriction {
     case tooBigAmount(_ maxAmount: Decimal)
     case approveTransactionInProgress(spender: String)
     case insufficientBalance(_ requiredAmount: Decimal)
-    case notEnoughBalanceForFee
-    case notEnoughBalanceForOtherNativeFee(_ estimatedFee: Fee)
+    case feeCurrencyHasZeroBalance
+    case feeCurrencyInsufficientBalanceForTxValue(_ estimatedTxValue: Decimal)
 }

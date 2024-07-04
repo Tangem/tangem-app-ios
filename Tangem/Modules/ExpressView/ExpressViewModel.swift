@@ -457,9 +457,9 @@ private extension ExpressViewModel {
 
     func updateFeeValue(state: ExpressInteractor.State) {
         switch state {
-        case .restriction(.notEnoughAmountForOtherNativeFee(let estimatedFee), _):
+        case .restriction(.notEnoughAmountForTxValue(let estimatedFee), _):
             // Signle estimated fee just for UI
-            updateExpressFeeRowViewModel(fees: [.market: estimatedFee])
+            updateExpressFeeRowViewModel(fee: estimatedFee, action: nil)
         case .restriction(.notEnoughAmountForFee(let state), _):
             updateExpressFeeRowViewModel(fees: state.fees)
         case .previewCEX(let state, _):
@@ -480,15 +480,18 @@ private extension ExpressViewModel {
             return
         }
 
-        let tokenItem = interactor.getSender().feeTokenItem
-        let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
-
         var action: (() -> Void)?
         // If fee is one option then don't open selector
         if fees.count > 1 {
             action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
         }
 
+        updateExpressFeeRowViewModel(fee: fee, action: action)
+    }
+
+    func updateExpressFeeRowViewModel(fee: Decimal, action: (() -> Void)?) {
+        let tokenItem = interactor.getSender().feeTokenItem
+        let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
         expressFeeRowViewModel = ExpressFeeRowData(title: Localization.commonNetworkFeeTitle, subtitle: formattedFee, action: action)
     }
 
@@ -513,7 +516,7 @@ private extension ExpressViewModel {
                 mainButtonState = .swap
             case .notEnoughBalanceForSwapping,
                  .notEnoughAmountForFee,
-                 .notEnoughAmountForOtherNativeFee:
+                 .notEnoughAmountForTxValue:
                 mainButtonState = .insufficientFunds
             }
 
