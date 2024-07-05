@@ -26,7 +26,6 @@ final class SingleTokenNotificationManager {
     private var rentFeeNotification: NotificationViewInput?
     private var bag: Set<AnyCancellable> = []
     private var notificationsUpdateTask: Task<Void, Never>?
-    private var promotionUpdateTask: Task<Void, Never>?
 
     init(
         walletModel: WalletModel,
