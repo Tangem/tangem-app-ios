@@ -123,7 +123,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
                 return .recommended
             }
 
-            return provider.isBest ? .bestRate : .none
+            return .none
         }()
 
         if let percentSubtitle = await makePercentSubtitle(provider: provider) {
