@@ -13,7 +13,7 @@ struct SendSummaryStepBuilder {
 
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
-    let builder: SendModulesStepsBuilder
+    let builder: SendDependenciesBuilder
 
     func makeSendSummaryStep(
         sendTransactionSender: any SendTransactionSender,

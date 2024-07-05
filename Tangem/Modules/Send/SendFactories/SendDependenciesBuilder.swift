@@ -1,5 +1,5 @@
 //
-//  SendModulesStepsBuilder.swift
+//  SendDependenciesBuilder.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 31.05.2024.
@@ -10,7 +10,7 @@ import Foundation
 import TangemStaking
 import BlockchainSdk
 
-struct SendModulesStepsBuilder {
+struct SendDependenciesBuilder {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     private let userWalletName: String

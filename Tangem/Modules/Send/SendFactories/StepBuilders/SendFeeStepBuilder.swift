@@ -13,7 +13,7 @@ struct SendFeeStepBuilder {
 
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
-    let builder: SendModulesStepsBuilder
+    let builder: SendDependenciesBuilder
 
     func makeFeeSendStep(notificationManager: SendNotificationManager, router: SendFeeRoutable) -> ReturnValue {
         let interactor = makeSendFeeInteractor()

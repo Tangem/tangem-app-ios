@@ -1530,8 +1530,8 @@
 		EFC84B0C2C37FAB500546882 /* SendFeeStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B022C37FAB500546882 /* SendFeeStepBuilder.swift */; };
 		EFC84B0D2C37FAB500546882 /* SendFinishStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B032C37FAB500546882 /* SendFinishStepBuilder.swift */; };
 		EFC84B0E2C37FAB500546882 /* SendSummaryStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B042C37FAB500546882 /* SendSummaryStepBuilder.swift */; };
-		EFC84B0F2C37FAB500546882 /* SendModulesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B062C37FAB500546882 /* SendModulesFactory.swift */; };
-		EFC84B102C37FAB500546882 /* SendModulesStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B072C37FAB500546882 /* SendModulesStepsBuilder.swift */; };
+		EFC84B0F2C37FAB500546882 /* SendFlowFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B062C37FAB500546882 /* SendFlowFactory.swift */; };
+		EFC84B102C37FAB500546882 /* SendDependenciesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B072C37FAB500546882 /* SendDependenciesBuilder.swift */; };
 		EFC84B262C37FBB300546882 /* SendStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1C2C37FBB200546882 /* SendStep.swift */; };
 		EFC84B272C37FBB300546882 /* SendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1D2C37FBB200546882 /* SendStepsManager.swift */; };
 		EFC84B282C37FBB300546882 /* SendStepsManagerInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1E2C37FBB200546882 /* SendStepsManagerInputOutput.swift */; };
@@ -3364,8 +3364,8 @@
 		EFC84B022C37FAB500546882 /* SendFeeStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeeStepBuilder.swift; sourceTree = "<group>"; };
 		EFC84B032C37FAB500546882 /* SendFinishStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFinishStepBuilder.swift; sourceTree = "<group>"; };
 		EFC84B042C37FAB500546882 /* SendSummaryStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSummaryStepBuilder.swift; sourceTree = "<group>"; };
-		EFC84B062C37FAB500546882 /* SendModulesFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendModulesFactory.swift; sourceTree = "<group>"; };
-		EFC84B072C37FAB500546882 /* SendModulesStepsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendModulesStepsBuilder.swift; sourceTree = "<group>"; };
+		EFC84B062C37FAB500546882 /* SendFlowFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFlowFactory.swift; sourceTree = "<group>"; };
+		EFC84B072C37FAB500546882 /* SendDependenciesBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDependenciesBuilder.swift; sourceTree = "<group>"; };
 		EFC84B1C2C37FBB200546882 /* SendStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStep.swift; sourceTree = "<group>"; };
 		EFC84B1D2C37FBB200546882 /* SendStepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManager.swift; sourceTree = "<group>"; };
 		EFC84B1E2C37FBB200546882 /* SendStepsManagerInputOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManagerInputOutput.swift; sourceTree = "<group>"; };
@@ -8900,9 +8900,9 @@
 		EFC84B082C37FAB500546882 /* SendFactories */ = {
 			isa = PBXGroup;
 			children = (
+				EFC84B062C37FAB500546882 /* SendFlowFactory.swift */,
+				EFC84B072C37FAB500546882 /* SendDependenciesBuilder.swift */,
 				EFC84B052C37FAB500546882 /* StepBuilders */,
-				EFC84B062C37FAB500546882 /* SendModulesFactory.swift */,
-				EFC84B072C37FAB500546882 /* SendModulesStepsBuilder.swift */,
 			);
 			path = SendFactories;
 			sourceTree = "<group>";
@@ -9970,7 +9970,7 @@
 				B0C4F77B26F0A05C0086D815 /* BlankCard.swift in Sources */,
 				DA19D8C62B39AE3C001C91C4 /* QRCodeParser.swift in Sources */,
 				B06ADFD829B9CEEC00E92E5E /* OnboardingSeedPhraseGenerateView.swift in Sources */,
-				EFC84B102C37FAB500546882 /* SendModulesStepsBuilder.swift in Sources */,
+				EFC84B102C37FAB500546882 /* SendDependenciesBuilder.swift in Sources */,
 				B6C4D7342B1A74DB0084AF1E /* BottomScrollableSheetState.swift in Sources */,
 				B06ADFDB29BAFA4600E92E5E /* SeedPhraseManager.swift in Sources */,
 				EF1E17302BF64224000364AE /* SettingsUserWalletRowViewModel.swift in Sources */,
@@ -10614,7 +10614,7 @@
 				B01B2D752BD2924F00D8A6A1 /* CommonAPIListProvider.swift in Sources */,
 				B0AF2DF12B1DAACD001A8696 /* PendingExpressTransactionStatus.swift in Sources */,
 				EF032C512955C59E006C1FF3 /* DefaultSelectableRowView.swift in Sources */,
-				EFC84B0F2C37FAB500546882 /* SendModulesFactory.swift in Sources */,
+				EFC84B0F2C37FAB500546882 /* SendFlowFactory.swift in Sources */,
 				EF4662222924DEEE00346B6C /* DefaultToggleRowView.swift in Sources */,
 				EF46621B2924DEEE00346B6C /* DefaultHeaderView.swift in Sources */,
 				DC66BBEB2859AB8600CDF765 /* TOSViewModel.swift in Sources */,

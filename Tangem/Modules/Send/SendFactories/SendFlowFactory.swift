@@ -1,5 +1,5 @@
 //
-//  SendFlowFactory.swift
+//  SendModulesFactory.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 08.06.2024.
@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 
-struct SendFlowFactory {
+struct SendModulesFactory {
     private let userWalletModel: UserWalletModel
     private let walletModel: WalletModel
 

@@ -14,7 +14,7 @@ struct SendDestinationStepBuilder {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     let walletModel: WalletModel
-    let builder: SendModulesStepsBuilder
+    let builder: SendDependenciesBuilder
 
     func makeSendDestinationStep(
         sendAmountInteractor: any SendAmountInteractor,

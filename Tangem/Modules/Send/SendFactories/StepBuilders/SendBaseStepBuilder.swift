@@ -16,7 +16,7 @@ struct SendBaseStepBuilder {
     let sendFeeStepBuilder: SendFeeStepBuilder
     let sendSummaryStepBuilder: SendSummaryStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
-    let builder: SendModulesStepsBuilder
+    let builder: SendDependenciesBuilder
 
     func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
