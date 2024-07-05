@@ -73,12 +73,18 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
             feeFormatter: feeFormatter,
             pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
             expressInteractor: expressInteractor,
+            providerName: providerName,
+            selectedPolicy: selectedPolicy,
             coordinator: coordinator
         )
     }

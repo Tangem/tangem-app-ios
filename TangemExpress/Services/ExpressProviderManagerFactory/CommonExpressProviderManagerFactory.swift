@@ -31,7 +31,7 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
 
     func makeExpressProviderManager(provider: ExpressProvider) -> ExpressProviderManager {
         switch provider.type {
-        case .dex:
+        case .dex, .dexBridge:
             return DEXExpressProviderManager(
                 provider: provider,
                 expressAPIProvider: expressAPIProvider,
