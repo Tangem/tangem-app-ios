@@ -63,7 +63,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
             tokenRouter: tokenRouter
         )
         notificationManager.setupManager(with: self)
-        bannerNotificationManager.setupManager(with: self)
+        bannerNotificationManager?.setupManager(with: self)
         balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
 
         prepareSelf()
