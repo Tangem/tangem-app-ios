@@ -239,6 +239,7 @@
 "express_exchange_status_subtitle" = "Provider-sourced data. Estimated amount subject to change due to market conditions.";
 "express_exchange_status_title" = "Exchange status";
 "express_exchange_status_verifying" = "Verification required";
+"express_exchange_status_waiting_tx_hash" = "Awaiting transaction hash";
 "express_fetch_best_rates" = "Fetching best rates...";
 "express_floating_rate" = "Floating rate";
 "express_legal_one_placeholder" = "By using swap functionality, you agree with provider’s %@";
@@ -265,6 +266,7 @@
 "feedback_subject_support_tangem" = "Tangem反饋";
 "feedback_subject_tx_failed" = "無法發送交易";
 "feedback_subject_tx_push_failed" = "無法推送交易";
+"give_permission_swap_subtitle" = "要繼續，您需要允許 %@ 智能合約使用您的 %@";
 "home_button_order" = "Order card";
 "home_button_scan" = "掃描卡片";
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
@@ -583,7 +585,6 @@
 "swapping_permission_header" = "賦予權限";
 "swapping_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "swapping_permission_rows_amount" = "數量 %@";
-"swapping_permission_subheader" = "要繼續，您需要允許 1inch 智能合約使用您的 %@";
 "swapping_permission_unlimited" = "Unlimited";
 "swapping_permit_and_swap" = "許可和交換";
 "swapping_success_view_title" = "進行中";

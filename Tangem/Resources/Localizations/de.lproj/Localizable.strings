@@ -239,6 +239,7 @@
 "express_exchange_status_subtitle" = "Provider-sourced data. Estimated amount subject to change due to market conditions.";
 "express_exchange_status_title" = "Exchange status";
 "express_exchange_status_verifying" = "Verification required";
+"express_exchange_status_waiting_tx_hash" = "Awaiting transaction hash";
 "express_fetch_best_rates" = "Fetching best rates...";
 "express_floating_rate" = "Floating rate";
 "express_legal_one_placeholder" = "By using swap functionality, you agree with provider’s %@";
@@ -265,6 +266,7 @@
 "feedback_subject_support_tangem" = "Tangem feedback";
 "feedback_subject_tx_failed" = "Can't send a transaction";
 "feedback_subject_tx_push_failed" = "Can't push a transaction";
+"give_permission_swap_subtitle" = "To continue, grant %@ smart contracts permission to use your %@";
 "home_button_order" = "Order card";
 "home_button_scan" = "Karte scannen";
 "initial_message_change_access_code_body" = "Tippen Sie um den Zugangscode zu ändern";
@@ -583,7 +585,6 @@
 "swapping_permission_header" = "Give Permission";
 "swapping_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "swapping_permission_rows_amount" = "Amount %@";
-"swapping_permission_subheader" = "To continue, grant 1inch smart contracts permission to use your %@";
 "swapping_permission_unlimited" = "Unlimited";
 "swapping_permit_and_swap" = "Permit and Swap";
 "swapping_success_view_title" = "In progress";

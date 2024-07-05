@@ -29,6 +29,8 @@ extension SentExpressTransactionData {
             extraDestinationId: nil,
             value: 123,
             txData: nil,
+            otherNativeFee: nil,
+            estimatedGasLimit: nil,
             externalTxId: nil,
             externalTxUrl: nil
         )

@@ -14,14 +14,17 @@ struct PendingExpressTransactionFactory {
     private let failedStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .failed, .refunded]
     private let verifyingStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .verificationRequired, .sendingToUser]
     private let canceledStatusesList: [PendingExpressTransactionStatus] = [.canceled]
+    private let awaitingHashStatusesList: [PendingExpressTransactionStatus] = [.awaitingHash]
+    private let unknownHashStatusesList: [PendingExpressTransactionStatus] = [.unknown]
 
     func buildPendingExpressTransaction(currentExpressStatus: ExpressTransactionStatus, for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
         let currentStatus: PendingExpressTransactionStatus
         var statusesList: [PendingExpressTransactionStatus] = defaultStatusesList
         var transactionRecord = transactionRecord
         switch currentExpressStatus {
-        case .new, .waiting:
+        case .created, .waiting:
             currentStatus = .awaitingDeposit
+
         case .confirming:
             currentStatus = .confirming
         case .exchanging:
@@ -30,7 +33,13 @@ struct PendingExpressTransactionFactory {
             currentStatus = .sendingToUser
         case .finished:
             currentStatus = .done
-        case .failed:
+        case .waitingTxHash:
+            currentStatus = .awaitingHash
+            statusesList = awaitingHashStatusesList
+        case .unknown:
+            currentStatus = .unknown
+            statusesList = unknownHashStatusesList
+        case .failed, .txFailed, .exchangeTxSent:
             currentStatus = .failed
             statusesList = failedStatusesList
         case .refunded:
@@ -60,6 +69,10 @@ struct PendingExpressTransactionFactory {
                 return canceledStatusesList
             case .failed, .refunded:
                 return failedStatusesList
+            case .awaitingHash:
+                return awaitingHashStatusesList
+            case .unknown:
+                return unknownHashStatusesList
             case .verificationRequired:
                 return verifyingStatusesList
             }
