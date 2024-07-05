@@ -116,7 +116,7 @@ private extension SendAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher()
+            .errorPublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, error in

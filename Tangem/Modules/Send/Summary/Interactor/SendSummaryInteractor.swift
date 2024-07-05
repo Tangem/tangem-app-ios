@@ -18,6 +18,8 @@ protocol SendSummaryOutput: AnyObject {}
 
 protocol SendSummaryInteractor: AnyObject {
     var transactionDescription: AnyPublisher<String?, Never> { get }
+
+    func setup(input: SendSummaryInput, output: SendSummaryOutput)
 }
 
 class CommonSendSummaryInteractor {
@@ -26,6 +28,9 @@ class CommonSendSummaryInteractor {
 
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
+
+    private let _transactionDescription: CurrentValueSubject<String?, Never> = .init(.none)
+    private var transactionDescriptionSubscribtion: AnyCancellable?
 
     init(
         input: SendSummaryInput,
@@ -38,7 +43,6 @@ class CommonSendSummaryInteractor {
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
     }
-}
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
     var isSending: AnyPublisher<Bool, Never> {
@@ -51,14 +55,29 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
         return input
             .transactionPublisher
             .withWeakCaptureOf(self)
-            .map { interactor, transaction in
-                transaction.flatMap { transaction in
+            .sink { interactor, transaction in
+                let description = transaction.flatMap { transaction in
                     interactor.descriptionBuilder.makeDescription(
                         amount: transaction.amount.value,
                         fee: transaction.fee.amount.value
                     )
                 }
+
+                interactor._transactionDescription.send(description)
             }
-            .eraseToAnyPublisher()
+    }
+}
+
+extension CommonSendSummaryInteractor: SendSummaryInteractor {
+    func setup(input: any SendSummaryInput, output _: any SendSummaryOutput) {
+        bind(input: input)
+    }
+
+    var isSending: AnyPublisher<Bool, Never> {
+        sendTransactionSender.isSending
+    }
+
+    var transactionDescription: AnyPublisher<String?, Never> {
+        return _transactionDescription.eraseToAnyPublisher()
     }
 }

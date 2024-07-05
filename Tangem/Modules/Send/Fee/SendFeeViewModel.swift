@@ -18,6 +18,7 @@ class SendFeeViewModel: ObservableObject {
 
     @Published private(set) var deselectedFeeViewsVisible: Bool = false
     @Published var animatingAuxiliaryViewsOnAppear: Bool = false
+    @Published var alert: AlertBinder?
 
     @Published private(set) var feeLevelsNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var customFeeNotificationInputs: [NotificationViewInput] = []

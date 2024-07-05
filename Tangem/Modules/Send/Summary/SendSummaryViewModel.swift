@@ -71,7 +71,7 @@ class SendSummaryViewModel: ObservableObject {
         bind()
     }
 
-    func setupAnimations(previousStep: SendStep) {
+    func setupAnimations(previousStep: SendStepType) {
         switch previousStep {
         case .destination:
             animatingAmountOnAppear = true
@@ -116,7 +116,7 @@ class SendSummaryViewModel: ObservableObject {
         isVisible = false
     }
 
-    func didTapSummary(for step: SendStep) {
+    func didTapSummary(for step: SendStepType) {
         if isSending {
             return
         }

@@ -15,14 +15,14 @@ enum SendType {
 }
 
 extension SendType {
-    var firstStep: SendStep {
+    var firstStep: SendStepType {
         switch self {
         case .send: .destination
         case .sell: .summary
         }
     }
 
-    var steps: [SendStep] {
+    var steps: [SendStepType] {
         switch self {
         case .send:
             return [.destination, .amount, .summary, .fee]

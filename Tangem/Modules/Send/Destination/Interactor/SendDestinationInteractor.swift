@@ -18,6 +18,7 @@ protocol SendDestinationInteractor {
     var destinationError: AnyPublisher<String?, Never> { get }
     var destinationAdditionalFieldError: AnyPublisher<String?, Never> { get }
 
+    func setup(input: SendDestinationInput, output: SendDestinationOutput)
     func update(destination: String, source: Analytics.DestinationAddressSource)
     func update(additionalField: String)
 }
@@ -39,8 +40,6 @@ class CommonSendDestinationInteractor {
     private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
 
     init(
-        input: SendDestinationInput?,
-        output: SendDestinationOutput?,
         validator: SendDestinationValidator,
         transactionHistoryProvider: SendDestinationTransactionHistoryProvider,
         transactionHistoryMapper: TransactionHistoryMapper,
@@ -48,8 +47,6 @@ class CommonSendDestinationInteractor {
         additionalFieldType: SendAdditionalFields?,
         parametersBuilder: SendTransactionParametersBuilder
     ) {
-        self.input = input
-        self.output = output
         self.validator = validator
         self.transactionHistoryProvider = transactionHistoryProvider
         self.transactionHistoryMapper = transactionHistoryMapper
@@ -129,6 +126,11 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
 
     var destinationAdditionalFieldError: AnyPublisher<String?, Never> {
         _destinationAdditionalFieldError.map { $0?.localizedDescription }.eraseToAnyPublisher()
+    }
+
+    func setup(input: any SendDestinationInput, output: any SendDestinationOutput) {
+        self.input = input
+        self.output = output
     }
 
     func update(destination address: String, source: Analytics.DestinationAddressSource) {

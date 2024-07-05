@@ -10,11 +10,13 @@ import Foundation
 import Combine
 
 protocol SendAmountInteractor {
+    var errorPublisher: AnyPublisher<String?, Never> { get }
+
     func update(amount: Decimal?) -> SendAmount?
     func update(type: SendAmountCalculationType) -> SendAmount?
     func updateToMaxAmount() -> SendAmount?
 
-    func errorPublisher() -> AnyPublisher<String?, Never>
+    func setup(input: SendAmountInput, output: SendAmountOutput)
 }
 
 class CommonSendAmountInteractor {
@@ -31,15 +33,11 @@ class CommonSendAmountInteractor {
     init(
         tokenItem: TokenItem,
         balanceValue: Decimal,
-        input: SendAmountInput,
-        output: SendAmountOutput,
         validator: SendAmountValidator,
         type: SendAmountCalculationType
     ) {
         self.tokenItem = tokenItem
         self.balanceValue = balanceValue
-        self.input = input
-        self.output = output
         self.validator = validator
         self.type = type
     }
@@ -86,6 +84,15 @@ class CommonSendAmountInteractor {
 }
 
 extension CommonSendAmountInteractor: SendAmountInteractor {
+    var errorPublisher: AnyPublisher<String?, Never> {
+        _error.map { $0?.localizedDescription }.eraseToAnyPublisher()
+    }
+
+    func setup(input: any SendAmountInput, output: any SendAmountOutput) {
+        self.input = input
+        self.output = output
+    }
+
     func update(amount: Decimal?) -> SendAmount? {
         guard let amount else {
             validateAndUpdate(amount: nil)
@@ -121,10 +128,6 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
             validateAndUpdate(amount: amount)
             return amount
         }
-    }
-
-    func errorPublisher() -> AnyPublisher<String?, Never> {
-        _error.map { $0?.localizedDescription }.eraseToAnyPublisher()
     }
 }
 

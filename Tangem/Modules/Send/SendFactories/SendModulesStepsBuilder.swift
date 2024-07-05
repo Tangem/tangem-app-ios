@@ -8,16 +8,21 @@
 
 import Foundation
 import TangemStaking
+import BlockchainSdk
 
 struct SendModulesStepsBuilder {
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+
     private let userWalletName: String
     private let walletModel: WalletModel
+    private let userWalletModel: UserWalletModel
 
     private var tokenItem: TokenItem { walletModel.tokenItem }
 
-    init(userWalletName: String, walletModel: WalletModel) {
+    init(userWalletName: String, walletModel: WalletModel, userWalletModel: UserWalletModel) {
         self.userWalletName = userWalletName
         self.walletModel = walletModel
+        self.userWalletModel = userWalletModel
     }
 
     func isFeeApproximate() -> Bool {
@@ -32,7 +37,7 @@ struct SendModulesStepsBuilder {
         IconURLBuilder().fiatIconURL(currencyCode: AppSettings.shared.selectedCurrencyCode)
     }
 
-    func makeSendWalletInfo(canUseFiatCalculation: Bool) -> SendWalletInfo {
+    func makeSendWalletInfo() -> SendWalletInfo {
         let tokenIconInfo = makeTokenIconInfo()
 
         return SendWalletInfo(
@@ -52,7 +57,7 @@ struct SendModulesStepsBuilder {
             amountFractionDigits: walletModel.tokenItem.decimalCount,
             feeFractionDigits: walletModel.feeTokenItem.decimalCount,
             feeAmountType: walletModel.feeTokenItem.amountType,
-            canUseFiatCalculation: canUseFiatCalculation
+            canUseFiatCalculation: quotesRepository.quote(for: walletModel.tokenItem) != nil
         )
     }
 
@@ -89,5 +94,58 @@ struct SendModulesStepsBuilder {
         }
 
         return [.market]
+    }
+
+    func makeFeeAnalyticsParameterBuilder() -> FeeAnalyticsParameterBuilder {
+        FeeAnalyticsParameterBuilder(isFixedFee: makeFeeOptions().count == 1)
+    }
+
+    func makeSendNotificationManager() -> SendNotificationManager {
+        CommonSendNotificationManager(
+            tokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
+    }
+
+    func makeInformationRelevanceService(sendFeeInteractor: SendFeeInteractor) -> InformationRelevanceService {
+        CommonInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
+    }
+
+    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        SendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+    }
+
+    func makeSendTransactionSender() -> SendTransactionSender {
+        CommonSendTransactionSender(
+            walletModel: walletModel,
+            transactionSigner: userWalletModel.signer
+        )
+    }
+
+    func makeSendModel(
+        sendAmountInteractor: SendAmountInteractor,
+        sendFeeInteractor: SendFeeInteractor,
+        informationRelevanceService: InformationRelevanceService,
+        sendTransactionSender: any SendTransactionSender,
+        type: SendType,
+        router: SendRoutable
+    ) -> SendModel {
+        let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
+
+        return SendModel(
+            //            userWalletModel: userWalletModel,
+            walletModel: walletModel,
+            sendTransactionSender: sendTransactionSender,
+//            transactionCreator: walletModel.transactionCreator,
+//            transactionSigner: userWalletModel.signer,
+//            sendAmountInteractor: sendAmountInteractor,
+            sendFeeInteractor: sendFeeInteractor,
+            feeIncludedCalculator: feeIncludedCalculator,
+            informationRelevanceService: informationRelevanceService,
+//            emailDataProvider: userWalletModel,
+//            feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
+            sendType: type
+//            coordinator: router
+        )
     }
 }
