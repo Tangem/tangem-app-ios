@@ -1,5 +1,5 @@
 //
-//  WelcomeOnboardingStepsBuilder.swift
+//  WelcomeOnboaringStepsBuilder.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 30.05.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct WelcomeOnboardingStepsBuilder {
+struct WelcomeOnboaringStepsBuilder {
     private let isPushNotificationsAvailable: Bool
 
     init(
@@ -17,8 +17,8 @@ struct WelcomeOnboardingStepsBuilder {
         self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 
-    func buildSteps() -> [WelcomeOnboardingStep] {
-        var steps = [WelcomeOnboardingStep]()
+    func buildSteps() -> [WelcomeOnbordingStep] {
+        var steps = [WelcomeOnbordingStep]()
 
         if !AppSettings.shared.termsOfServicesAccepted.contains(AppConstants.tosURL.absoluteString) {
             steps.append(.tos)

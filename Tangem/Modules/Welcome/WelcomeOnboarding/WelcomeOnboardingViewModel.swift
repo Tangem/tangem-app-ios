@@ -14,7 +14,7 @@ final class WelcomeOnboardingViewModel: ObservableObject {
 
     @Published var viewState: ViewState? = nil
 
-    var currentStep: WelcomeOnboardingStep {
+    var currentStep: WelcomeOnbordingStep {
         steps[currentStepIndex]
     }
 
@@ -24,11 +24,11 @@ final class WelcomeOnboardingViewModel: ObservableObject {
 
     private let pushNotificationsPermissionManager: PushNotificationsPermissionManager
 
-    private let steps: [WelcomeOnboardingStep]
+    private let steps: [WelcomeOnbordingStep]
     private var currentStepIndex = 0
 
     init(
-        steps: [WelcomeOnboardingStep],
+        steps: [WelcomeOnbordingStep],
         pushNotificationsPermissionManager: PushNotificationsPermissionManager,
         coordinator: WelcomeOnboardingRoutable
     ) {

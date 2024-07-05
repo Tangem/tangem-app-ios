@@ -12,6 +12,8 @@ struct TwinsOnboardingView: View {
     @ObservedObject var viewModel: TwinsOnboardingViewModel
 
     private let screenSize: CGSize = UIScreen.main.bounds.size
+    private let progressBarHeight: CGFloat = 4
+    private let progressBarPadding: CGFloat = 10
 
     var isNavbarVisible: Bool {
         viewModel.isNavBarVisible
@@ -35,18 +37,9 @@ struct TwinsOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(
-                viewModel: viewModel.userWalletStorageAgreementViewModel,
-                topInset: -viewModel.progressBarPadding
-            )
+            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
         case .pushNotifications:
-            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
-                PushNotificationsPermissionRequestView(
-                    viewModel: pushNotificationsViewModel,
-                    topInset: -viewModel.progressBarPadding,
-                    buttonsAxis: .vertical
-                )
-            }
+            OnboardingPushNotificationsView(viewModel: viewModel.pushNotificationsViewModel)
         default:
             EmptyView()
         }
@@ -91,8 +84,8 @@ struct TwinsOnboardingView: View {
                         .offset(x: 0, y: -geom.size.height / 2 + (isNavbarVisible ? viewModel.navbarSize.height / 2 : 0))
                         .opacity(isNavbarVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
-                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + viewModel.progressBarPadding)
+                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
+                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + progressBarPadding)
                             .opacity(isProgressBarVisible ? 1.0 : 0.0)
                             .padding(.horizontal, 16)
 

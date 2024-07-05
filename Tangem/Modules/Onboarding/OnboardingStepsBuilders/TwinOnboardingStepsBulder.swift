@@ -1,5 +1,5 @@
 //
-//  TwinOnboardingStepsBuilder.swift
+//  TwinOnboardingStepsBulder.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 07.04.2023.
@@ -9,7 +9,7 @@
 import Foundation
 import TangemSdk
 
-struct TwinOnboardingStepsBuilder {
+struct TwinOnboardingStepsBulder {
     private let cardId: String
     private let hasWallets: Bool
     private let twinData: TwinData
@@ -44,7 +44,7 @@ struct TwinOnboardingStepsBuilder {
     }
 }
 
-extension TwinOnboardingStepsBuilder: OnboardingStepsBuilder {
+extension TwinOnboardingStepsBulder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [TwinsOnboardingStep]()
 

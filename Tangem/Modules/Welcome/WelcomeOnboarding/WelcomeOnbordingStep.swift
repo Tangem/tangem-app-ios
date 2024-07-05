@@ -1,5 +1,5 @@
 //
-//  WelcomeOnboardingStep.swift
+//  WelcomeOnbordingStep.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 30.05.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum WelcomeOnboardingStep {
+enum WelcomeOnbordingStep {
     case tos
     case pushNotifications
 }

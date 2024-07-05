@@ -42,7 +42,7 @@ class WelcomeOnboardingCoordinator: CoordinatorObject {
 
 extension WelcomeOnboardingCoordinator {
     struct Options {
-        let steps: [WelcomeOnboardingStep]
+        let steps: [WelcomeOnbordingStep]
         let pushNotificationsPermissionManager: PushNotificationsPermissionManager
     }
 }

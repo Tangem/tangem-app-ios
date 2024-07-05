@@ -18,7 +18,6 @@ class MainCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
-    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     // MARK: - Root view model
 
@@ -42,8 +41,8 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalWebViewModel: WebViewContainerViewModel?
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel?
     @Published var organizeTokensViewModel: OrganizeTokensViewModel?
-    @Published var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel?
-    @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel?
+
+    @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel? = nil
 
     // MARK: - Helpers
 
@@ -61,14 +60,11 @@ class MainCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         let swipeDiscoveryHelper = WalletSwipeDiscoveryHelper()
-        let factory = PushNotificationsHelpersFactory()
-        let pushNotificationsAvailabilityProvider = factory.makeAvailabilityProviderForAfterLogin(using: pushNotificationsInteractor)
         let viewModel = MainViewModel(
             selectedUserWalletId: options.userWalletModel.userWalletId,
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
+            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self)
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -119,12 +115,6 @@ extension MainCoordinator: MainRoutable {
 
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
-    }
-
-    func openPushNotificationsAuthorization() {
-        let factory = PushNotificationsHelpersFactory()
-        let permissionManager = factory.makePermissionManagerForAfterLogin(using: pushNotificationsInteractor)
-        pushNotificationsViewModel = PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }
 }
 
@@ -389,13 +379,5 @@ extension MainCoordinator: RateAppRoutable {
 
     func openAppStoreReview() {
         isAppStoreReviewRequested = true
-    }
-}
-
-// MARK: - PushNotificationsPermissionRequestDelegate protocol conformance
-
-extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
-    func didFinishPushNotificationOnboarding() {
-        pushNotificationsViewModel = nil
     }
 }

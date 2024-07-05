@@ -153,8 +153,8 @@ extension WelcomeViewModel {
 // MARK: - WelcomeViewLifecycleListener
 
 extension WelcomeViewModel: WelcomeViewLifecycleListener {
-    func resignActive() {
-        storiesModel.resignActive()
+    func resignActve() {
+        storiesModel.resignActve()
     }
 
     func becomeActive() {

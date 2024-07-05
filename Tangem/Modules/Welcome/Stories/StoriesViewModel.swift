@@ -229,7 +229,7 @@ class StoriesViewModel: ObservableObject {
 }
 
 extension StoriesViewModel: WelcomeViewLifecycleListener {
-    func resignActive() {
+    func resignActve() {
         if timerIsRunning() {
             pauseTimer()
         } else {
