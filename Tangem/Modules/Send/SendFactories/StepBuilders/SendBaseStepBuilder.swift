@@ -60,6 +60,13 @@ struct SendBaseStepBuilder {
             sendFeeInteractor: fee.interactor
         )
 
+        // Update the fees in case we in the sell flow
+        // TODO: Will be updated
+        // https://tangem.atlassian.net/browse/IOS-7195
+        if !sendType.isSend {
+            sendModel.updateFees()
+        }
+
         notificationManager.setup(input: sendModel)
 
         summary.step.setup(sendDestinationInput: sendModel)

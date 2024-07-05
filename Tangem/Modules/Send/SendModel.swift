@@ -68,7 +68,7 @@ class SendModel {
 
     private let _destination: CurrentValueSubject<SendAddress?, Never>
     private let _destinationAdditionalField: CurrentValueSubject<DestinationAdditionalFieldType, Never>
-    private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
+    private let _amount: CurrentValueSubject<SendAmount?, Never>
     private let _selectedFee = CurrentValueSubject<SendFee?, Never>(nil)
     private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
@@ -94,7 +94,6 @@ class SendModel {
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let feeIncludedCalculator: FeeIncludedCalculator
 
-    private let sendType: SendType
     private var bag: Set<AnyCancellable> = []
 
     var currencySymbol: String {
@@ -107,26 +106,32 @@ class SendModel {
         walletModel: WalletModel,
         sendTransactionDispatcher: SendTransactionDispatcher,
         feeIncludedCalculator: FeeIncludedCalculator,
-        sendType: SendType
+        predefinedAmount: Amount?,
+        predefinedDestination: String?,
+        predefinedTag: String?
     ) {
         self.walletModel = walletModel
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.feeIncludedCalculator = feeIncludedCalculator
-        self.sendType = sendType
 
-        let destination = sendType.predefinedDestination.map { SendAddress(value: $0, source: .sellProvider) }
+        let destination = predefinedDestination.map { SendAddress(value: $0, source: .sellProvider) }
         _destination = .init(destination)
+
+        let amount = predefinedAmount.map { amount in
+            let fiatValue = walletModel.tokenItem.currencyId.flatMap { currencyId in
+                BalanceConverter().convertToFiat(amount.value, currencyId: currencyId)
+            }
+
+            return SendAmount(type: .typical(crypto: amount.value, fiat: fiatValue))
+        }
+
+        _amount = .init(amount)
 
         let fields = SendAdditionalFields.fields(for: walletModel.blockchainNetwork.blockchain)
         let type = fields.map { DestinationAdditionalFieldType.empty(type: $0) } ?? .notSupported
         _destinationAdditionalField = .init(type)
 
         bind()
-
-        // Update the fees in case we have all prerequisites specified
-        if sendType.predefinedAmount != nil, sendType.predefinedDestination != nil {
-            updateFees()
-        }
     }
 
     func currentTransaction() -> BlockchainSdk.Transaction? {

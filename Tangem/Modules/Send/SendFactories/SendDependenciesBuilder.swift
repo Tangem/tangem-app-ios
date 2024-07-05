@@ -133,7 +133,9 @@ struct SendDependenciesBuilder {
             walletModel: walletModel,
             sendTransactionSender: sendTransactionSender,
             feeIncludedCalculator: feeIncludedCalculator,
-            sendType: type
+            predefinedAmount: type.predefinedAmount,
+            predefinedDestination: type.predefinedDestination,
+            predefinedTag: type.predefinedTag
         )
     }
 }

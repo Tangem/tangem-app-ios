@@ -754,6 +754,21 @@ private extension SendStepType {
         }
     }
 
+    var analyticsSourceParameterValue: Analytics.ParameterValue {
+        switch self {
+        case .amount:
+            return .amount
+        case .destination:
+            return .address
+        case .fee:
+            return .fee
+        case .summary:
+            return .summary
+        case .finish:
+            return .finish
+        }
+    }
+
     var opensKeyboardByDefault: Bool {
         switch self {
         case .amount:
