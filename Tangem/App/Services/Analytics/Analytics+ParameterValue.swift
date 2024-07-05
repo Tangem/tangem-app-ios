@@ -144,6 +144,11 @@ extension Analytics {
         case clicked = "Clicked"
         case closed = "Closed"
 
+        // MARK: - Promo
+
+        case recommended = "Recommended"
+        case native = "Native"
+
         // MARK: - Rate the app response
 
         /// App store review (`RateAppResponse.positive`).
