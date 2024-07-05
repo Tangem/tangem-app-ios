@@ -121,14 +121,15 @@ final class UserWalletNotificationManager {
 
     private func setupPromotionNotification() {
         promotionUpdateTask?.cancel()
-        promotionUpdateTask = Task { [weak self] in
-            guard let self, !Task.isCancelled,
+
+        promotionUpdateTask = runTask(in: self) { manager in
+            guard !Task.isCancelled,
                   let programName = PromotionProgramName.allCases.first else {
                 return
             }
 
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: programName, on: .main) else {
-                notificationInputsSubject.value.removeAll { $0.id == programName.hashValue }
+            guard let promotion = await manager.bannerPromotionService.activePromotion(promotion: programName, on: .main) else {
+                manager.notificationInputsSubject.value.removeAll { $0.id == programName.hashValue }
                 return
             }
 
@@ -179,11 +180,11 @@ final class UserWalletNotificationManager {
                     return
                 }
 
-                guard !self.notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
+                guard !manager.notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
                     return
                 }
 
-                self.notificationInputsSubject.value.insert(input, at: 0)
+                manager.notificationInputsSubject.value.insert(input, at: 0)
             }
         }
     }
