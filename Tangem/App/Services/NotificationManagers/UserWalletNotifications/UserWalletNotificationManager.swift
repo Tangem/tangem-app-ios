@@ -18,7 +18,6 @@ protocol NotificationTapDelegate: AnyObject {
 /// Don't forget to setup manager with delegate for proper notification handling
 final class UserWalletNotificationManager {
     @Injected(\.deprecationService) private var deprecationService: DeprecationServicing
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
 
     private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
@@ -29,7 +28,6 @@ final class UserWalletNotificationManager {
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
-    private var promotionUpdateTask: Task<Void, Never>?
     private var showAppRateNotification = false
 
     init(
@@ -68,10 +66,6 @@ final class UserWalletNotificationManager {
                     dismissAction: dismissAction
                 )
             )
-        }
-
-        if userWalletModel.config.hasFeature(.multiCurrency) {
-            setupPromotionNotification()
         }
 
         inputs.append(contentsOf: factory.buildNotificationInputs(
@@ -117,76 +111,6 @@ final class UserWalletNotificationManager {
         showAppRateNotificationIfNeeded()
 
         validateHashesCount()
-    }
-
-    private func setupPromotionNotification() {
-        promotionUpdateTask?.cancel()
-
-        promotionUpdateTask = runTask(in: self) { manager in
-            guard !Task.isCancelled,
-                  let programName = PromotionProgramName.allCases.first else {
-                return
-            }
-
-            guard let promotion = await manager.bannerPromotionService.activePromotion(promotion: programName, on: .main) else {
-                manager.notificationInputsSubject.value.removeAll { $0.id == programName.hashValue }
-                return
-            }
-
-            if Task.isCancelled {
-                return
-            }
-
-            let factory = BannerPromotionNotificationFactory()
-
-            let dismissAction: NotificationView.NotificationAction = { [weak self] id in
-                self?.bannerPromotionService.hide(promotion: programName, on: .main)
-                self?.dismissNotification(with: id)
-
-                Analytics.log(
-                    .promotionBannerClicked,
-                    params:
-                    [
-                        .programName: programName.analyticsProgramName,
-                        .source: .main,
-                        .action: .closed,
-                    ]
-                )
-            }
-
-            let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
-                self?.delegate?.didTapNotification(with: id, action: action)
-
-                Analytics.log(
-                    .promotionBannerClicked,
-                    params:
-                    [
-                        .programName: programName.analyticsProgramName,
-                        .source: .main,
-                        .action: .clicked,
-                    ]
-                )
-            }
-
-            let input = factory.buildBannerNotificationInput(
-                promotion: promotion,
-                placement: .main,
-                buttonAction: buttonAction,
-                dismissAction: dismissAction
-            )
-
-            await runOnMain {
-                if Task.isCancelled {
-                    return
-                }
-
-                guard !manager.notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
-                    return
-                }
-
-                manager.notificationInputsSubject.value.insert(input, at: 0)
-            }
-        }
     }
 
     private func showAppRateNotificationIfNeeded() {

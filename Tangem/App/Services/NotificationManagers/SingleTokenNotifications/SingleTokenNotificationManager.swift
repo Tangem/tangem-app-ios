@@ -13,13 +13,10 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
 
     private let analyticsService: NotificationsAnalyticsService = .init()
 
-    private let isMulticurrency: Bool
     private let walletModel: WalletModel
     private let walletModelsManager: WalletModelsManager
     private weak var delegate: NotificationTapDelegate?
@@ -32,12 +29,10 @@ final class SingleTokenNotificationManager {
     private var promotionUpdateTask: Task<Void, Never>?
 
     init(
-        isMulticurrency: Bool,
         walletModel: WalletModel,
         walletModelsManager: WalletModelsManager,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
-        self.isMulticurrency = isMulticurrency
         self.walletModel = walletModel
         self.walletModelsManager = walletModelsManager
 
@@ -115,10 +110,6 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject.send(inputs)
 
         setupRentFeeNotification()
-
-        if isMulticurrency {
-            setupPromotionNotification()
-        }
     }
 
     private func setupRentFeeNotification() {
@@ -248,76 +239,6 @@ final class SingleTokenNotificationManager {
             rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
         )
     }
-
-    private func setupPromotionNotification() {
-        promotionUpdateTask?.cancel()
-        promotionUpdateTask = runTask(in: self) { manager in
-            guard !Task.isCancelled,
-                  let programName = PromotionProgramName.allCases.first,
-                  manager.swapAvailabilityProvider.canSwap(tokenItem: manager.walletModel.tokenItem) else {
-                return
-            }
-
-            guard let promotion = await manager.bannerPromotionService.activePromotion(promotion: programName, on: .tokenDetails) else {
-                manager.notificationInputsSubject.value.removeAll { $0.id == programName.hashValue }
-                return
-            }
-
-            if Task.isCancelled {
-                return
-            }
-
-            let factory = BannerPromotionNotificationFactory()
-
-            let dismissAction: NotificationView.NotificationAction = { [weak self] id in
-                self?.bannerPromotionService.hide(promotion: programName, on: .tokenDetails)
-                self?.dismissNotification(with: id)
-
-                Analytics.log(
-                    .promotionBannerClicked,
-                    params:
-                    [
-                        .programName: programName.analyticsProgramName,
-                        .source: .token,
-                        .action: .closed,
-                    ]
-                )
-            }
-
-            let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
-                self?.delegate?.didTapNotification(with: id, action: action)
-
-                Analytics.log(
-                    .promotionBannerClicked,
-                    params:
-                    [
-                        .programName: programName.analyticsProgramName,
-                        .source: .token,
-                        .action: .clicked,
-                    ]
-                )
-            }
-
-            let input = factory.buildBannerNotificationInput(
-                promotion: promotion,
-                placement: .tokenDetails,
-                buttonAction: buttonAction,
-                dismissAction: dismissAction
-            )
-
-            await runOnMain {
-                if Task.isCancelled {
-                    return
-                }
-
-                guard !manager.notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
-                    return
-                }
-
-                manager.notificationInputsSubject.value.insert(input, at: 0)
-            }
-        }
-    }
 }
 
 extension SingleTokenNotificationManager: NotificationManager {
@@ -337,10 +258,6 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
-            return
-        }
-
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
     }
 }

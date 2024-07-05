@@ -68,6 +68,8 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             contextDataProvider: model
         )
 
+        let bannerNotificationManager = model.config.hasFeature(.multiCurrency) ? BannerNotificationManager(placement: .main) : nil
+
         if model.isUserWalletLocked {
             return .lockedWallet(
                 id: id,
@@ -95,10 +97,12 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 walletModelsManager: model.walletModelsManager,
                 contextDataProvider: model
             )
+
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,
                 userWalletNotificationManager: userWalletNotificationManager,
                 tokensNotificationManager: multiWalletNotificationManager,
+                bannerNotificationManager: bannerNotificationManager,
                 rateAppController: rateAppController,
                 tokenSectionsAdapter: sectionsAdapter,
                 tokenRouter: tokenRouter,
@@ -107,7 +111,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             )
             viewModel.delegate = multiWalletContentDelegate
             userWalletNotificationManager.setupManager(with: viewModel)
-
+            bannerNotificationManager?.setupManager(with: viewModel)
             return .multiWallet(
                 id: id,
                 headerModel: headerModel,
@@ -120,7 +124,6 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         }
 
         let singleWalletNotificationManager = SingleTokenNotificationManager(
-            isMulticurrency: false,
             walletModel: walletModel,
             walletModelsManager: model.walletModelsManager,
             contextDataProvider: model

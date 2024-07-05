@@ -1,5 +1,5 @@
 //
-//  BannerPromotionNotificationFactory.swift
+//  BannerNotificationFactory.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 07.02.2024.
@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import UIKit
 
-struct BannerPromotionNotificationFactory {
+struct BannerNotificationFactory {
     func buildBannerNotificationInput(
         promotion: ActivePromotionInfo,
         placement: BannerPromotionPlacement,

@@ -60,7 +60,6 @@ class TokenDetailsCoordinator: CoordinatorObject {
         )
 
         let notificationManager = SingleTokenNotificationManager(
-            isMulticurrency: true,
             walletModel: options.walletModel,
             walletModelsManager: options.userWalletModel.walletModelsManager,
             contextDataProvider: options.userWalletModel
@@ -76,11 +75,14 @@ class TokenDetailsCoordinator: CoordinatorObject {
             walletModel: options.walletModel
         )
 
+        let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem))
+
         tokenDetailsViewModel = .init(
             userWalletModel: options.userWalletModel,
             walletModel: options.walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
+            bannerNotificationManager: bannerNotificationManager,
             pendingExpressTransactionsManager: pendingExpressTransactionsManager,
             coordinator: self,
             tokenRouter: tokenRouter

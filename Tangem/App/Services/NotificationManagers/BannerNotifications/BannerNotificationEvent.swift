@@ -27,7 +27,7 @@ struct BannerNotificationEvent: NotificationEvent {
 
     var analyticsParams: [Analytics.ParameterKey: String] {
         [
-            .programName: programName.analyticsProgramName.rawValue,
+            .programName: programName.analyticsValue.rawValue,
             .source: analyticsSource,
         ]
     }
