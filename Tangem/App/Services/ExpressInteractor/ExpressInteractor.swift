@@ -415,7 +415,7 @@ private extension ExpressInteractor {
         let amount = makeAmount(value: previewCEX.quote.fromAmount)
 
         let withdrawalNotificationProvider = getSender().withdrawalNotificationProvider
-        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee.amount)
+        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee)
 
         // Check on the minimum received amount
         // Almost impossible case because the providers check it on their side
