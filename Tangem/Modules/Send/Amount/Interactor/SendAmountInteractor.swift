@@ -83,6 +83,8 @@ class CommonSendAmountInteractor {
     }
 }
 
+// MARK: - SendAmountInteractor
+
 extension CommonSendAmountInteractor: SendAmountInteractor {
     var errorPublisher: AnyPublisher<String?, Never> {
         _error.map { $0?.localizedDescription }.eraseToAnyPublisher()

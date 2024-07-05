@@ -20,7 +20,7 @@ struct SendBaseStepBuilder {
 
     func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel: AddressTextViewHeightModel = .init()
+        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionSender = builder.makeSendTransactionSender()
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(notificationManager: notificationManager, router: router)
@@ -57,17 +57,13 @@ struct SendBaseStepBuilder {
             router: router
         )
 
-        let walletInfo = builder.makeSendWalletInfo()
-        let initial = SendViewModel.Initial(feeOptions: builder.makeFeeOptions())
-        fee.interactor.setup(input: sendModel, output: sendModel)
-
         notificationManager.setup(input: sendModel)
 
         destination.interactor.setup(input: sendModel, output: sendModel)
         amount.interactor.setup(input: sendModel, output: sendModel)
         fee.interactor.setup(input: sendModel, output: sendModel)
-
         summary.interactor.setup(input: sendModel, output: sendModel)
+
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)
         summary.step.setup(sendFeeInteractor: fee.interactor)
@@ -78,8 +74,8 @@ struct SendBaseStepBuilder {
         finish.setup(sendFinishInput: sendModel)
 
         return SendViewModel(
-            initial: initial,
-            walletInfo: walletInfo,
+            initial: .init(feeOptions: builder.makeFeeOptions()),
+            walletInfo: builder.makeSendWalletInfo(),
             walletModel: walletModel,
             userWalletModel: userWalletModel,
             sendType: sendType,

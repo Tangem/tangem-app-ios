@@ -30,8 +30,6 @@ protocol SendStep {
 }
 
 extension SendStep {
-    typealias NavigationTrailingView = EmptyView
-
     var subtitle: String? { nil }
 
     func makeCompactView(namespace: Namespace.ID) -> AnyView {

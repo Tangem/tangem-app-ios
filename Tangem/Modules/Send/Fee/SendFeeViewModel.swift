@@ -59,8 +59,6 @@ class SendFeeViewModel: ObservableObject {
         self.interactor = interactor
         self.notificationManager = notificationManager
         self.router = router
-
-        bind()
     }
 
     func onAppear() {
@@ -76,6 +74,8 @@ class SendFeeViewModel: ObservableObject {
         } else {
             Analytics.log(.sendFeeScreenOpened)
         }
+
+        bind()
     }
 
     func onDisappear() {
@@ -86,7 +86,7 @@ class SendFeeViewModel: ObservableObject {
         router?.openFeeExplanation(url: feeExplanationUrl)
     }
 
-    private func bind() {
+    func bind() {
         interactor.feesPublisher()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)

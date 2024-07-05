@@ -143,7 +143,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
     }
 
     func selectedFeePublisher() -> AnyPublisher<SendFee?, Never> {
-        input?.selectedFeePublisher ?? .just(output: nil)
+        input!.selectedFeePublisher // ?? .just(output: nil)
     }
 
     func feesPublisher() -> AnyPublisher<[SendFee], Never> {
