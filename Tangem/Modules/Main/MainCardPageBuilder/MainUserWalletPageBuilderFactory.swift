@@ -68,8 +68,6 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             contextDataProvider: model
         )
 
-        let bannerNotificationManager = model.config.hasFeature(.multiCurrency) ? BannerNotificationManager(placement: .main) : nil
-
         if model.isUserWalletLocked {
             return .lockedWallet(
                 id: id,
@@ -97,6 +95,8 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 walletModelsManager: model.walletModelsManager,
                 contextDataProvider: model
             )
+
+            let bannerNotificationManager = model.config.hasFeature(.multiCurrency) ? BannerNotificationManager(placement: .main) : nil
 
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,

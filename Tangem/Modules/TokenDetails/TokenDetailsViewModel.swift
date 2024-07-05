@@ -25,7 +25,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
-    private let bannerNotificationManager: NotificationManager
+    private let bannerNotificationManager: NotificationManager?
     private var bag = Set<AnyCancellable>()
 
     var iconUrl: URL? {
@@ -47,7 +47,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
-        bannerNotificationManager: NotificationManager,
+        bannerNotificationManager: NotificationManager?,
         pendingExpressTransactionsManager: PendingExpressTransactionsManager,
         coordinator: TokenDetailsRoutable,
         tokenRouter: SingleTokenRoutable
@@ -204,7 +204,7 @@ private extension TokenDetailsViewModel {
             .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
             .store(in: &bag)
 
-        bannerNotificationManager.notificationPublisher
+        bannerNotificationManager?.notificationPublisher
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)

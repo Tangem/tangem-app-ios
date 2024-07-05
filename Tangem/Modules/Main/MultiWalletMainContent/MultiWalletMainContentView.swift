@@ -15,7 +15,6 @@ struct MultiWalletMainContentView: View {
         VStack(spacing: 14) {
             ForEach(viewModel.bannerNotificationInputs) { input in
                 NotificationView(input: input)
-                    .setButtonsLoadingState(to: viewModel.isScannerBusy)
                     .transition(.notificationTransition)
             }
 
