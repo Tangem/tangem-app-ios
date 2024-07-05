@@ -314,8 +314,11 @@ private extension ExpressInteractor {
         case .restriction(.insufficientBalance(let requiredAmount), let quote):
             return .restriction(.notEnoughBalanceForSwapping(requiredAmount: requiredAmount), quote: quote)
 
-        case .restriction(.notEnoughBalanceForFee, let quote):
+        case .restriction(.feeCurrencyHasZeroBalance, let quote):
             return .restriction(.notEnoughAmountForFee(.idle), quote: quote)
+
+        case .restriction(.feeCurrencyInsufficientBalanceForTxValue(let fee), let quote):
+            return .restriction(.notEnoughAmountForTxValue(fee), quote: quote)
 
         case .permissionRequired(let permissionRequired):
             if hasPendingTransaction() {
@@ -415,7 +418,7 @@ private extension ExpressInteractor {
         let amount = makeAmount(value: previewCEX.quote.fromAmount)
 
         let withdrawalNotificationProvider = getSender().withdrawalNotificationProvider
-        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee.amount)
+        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee)
 
         // Check on the minimum received amount
         // Almost impossible case because the providers check it on their side
@@ -815,6 +818,7 @@ extension ExpressInteractor {
         case hasPendingApproveTransaction
         case notEnoughBalanceForSwapping(requiredAmount: Decimal)
         case notEnoughAmountForFee(_ returnState: State)
+        case notEnoughAmountForTxValue(_ estimatedTxValue: Decimal)
         case requiredRefresh(occurredError: Error)
         case noDestinationTokens
         case validationError(error: ValidationError, context: ValidationErrorContext)

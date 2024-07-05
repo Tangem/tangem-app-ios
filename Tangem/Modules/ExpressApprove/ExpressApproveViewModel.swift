@@ -15,18 +15,15 @@ import struct BlockchainSdk.Fee
 final class ExpressApproveViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
+    @Published var subheader: String
+
     @Published var menuRowViewModel: DefaultMenuRowViewModel<ExpressApprovePolicy>?
-    @Published var selectedAction: ExpressApprovePolicy = .unlimited
+    @Published var selectedAction: ExpressApprovePolicy
     @Published var feeRowViewModel: DefaultRowViewModel?
 
     @Published var isLoading = false
     @Published var mainButtonIsDisabled = false
     @Published var errorAlert: AlertBinder?
-
-    var subheader: String {
-        let currencySymbol = expressInteractor.getSender().tokenItem.currencySymbol
-        return Localization.swappingPermissionSubheader(currencySymbol)
-    }
 
     // MARK: - Dependencies
 
@@ -44,6 +41,8 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
         pendingTransactionRepository: ExpressPendingTransactionRepository,
         logger: Logger,
         expressInteractor: ExpressInteractor,
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
         coordinator: ExpressApproveRoutable
     ) {
         self.feeFormatter = feeFormatter
@@ -52,7 +51,17 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
         self.expressInteractor = expressInteractor
         self.coordinator = coordinator
 
-        setupExpressView()
+        let currencySymbol = expressInteractor.getSender().tokenItem.currencySymbol
+
+        selectedAction = selectedPolicy
+        subheader = Localization.givePermissionSwapSubtitle(providerName, currencySymbol)
+        menuRowViewModel = .init(
+            title: Localization.swappingPermissionRowsAmount(currencySymbol),
+            actions: [.unlimited, .specified]
+        )
+
+        feeRowViewModel = DefaultRowViewModel(title: Localization.commonNetworkFeeTitle, detailsType: .none)
+        updateView(for: expressInteractor.getState())
         bind()
     }
 
@@ -157,19 +166,18 @@ private extension ExpressApproveViewModel {
             await runOnMain {
                 viewModel.selectedAction = approvePolicy
             }
+
+            guard let provider = await viewModel.expressInteractor.getSelectedProvider()?.provider else {
+                return
+            }
+
+            let currencySymbol = viewModel.expressInteractor.getSender().tokenItem.currencySymbol
+            await runOnMain {
+                viewModel.subheader = Localization.givePermissionSwapSubtitle(provider.name, currencySymbol)
+            }
         }
 
         let currencySymbol = expressInteractor.getSender().tokenItem.currencySymbol
-        menuRowViewModel = .init(
-            title: Localization.swappingPermissionRowsAmount(currencySymbol),
-            actions: [
-                ExpressApprovePolicy.unlimited,
-                ExpressApprovePolicy.specified,
-            ]
-        )
-
-        feeRowViewModel = DefaultRowViewModel(title: Localization.commonNetworkFeeTitle, detailsType: .none)
-        updateView(for: expressInteractor.getState())
     }
 
     func sendApproveTransaction() {
