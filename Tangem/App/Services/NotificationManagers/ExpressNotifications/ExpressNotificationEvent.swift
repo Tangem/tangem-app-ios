@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum ExpressNotificationEvent {
+enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
     case permissionNeeded(providerName: String, currencyCode: String)
     case refreshRequired(title: String, message: String)

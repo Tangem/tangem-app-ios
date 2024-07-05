@@ -291,9 +291,6 @@
 "main_scan_card_warning_view_subtitle" = "To access all the networks you need to scan the card";
 "main_scan_card_warning_view_title" = "Scan your card";
 "main_tokens" = "Tokens";
-"main_travala_promotion_button" = "Book now";
-"main_travala_promotion_description" = "Save **$50** while booking via our partner Travala: **%1@ - %2@**";
-"main_travala_promotion_title" = "Book your holidays with Tangem and pay in crypto";
 "manage_tokens_add" = "Add";
 "manage_tokens_edit" = "Edit";
 "manage_tokens_list_header_title" = "Coin market cap";
@@ -570,6 +567,8 @@
 "story_meet_title" = "Meet Tangem";
 "story_web3_description" = "Exchange, buy NFT's, make loans and deposits in more than 100 different decentralized services";
 "story_web3_title" = "Web 3.0 Compatible";
+"swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
+"swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
 "swapping_alert_title" = "Fees";
@@ -615,6 +614,7 @@
 "token_details_token_type_subtitle_no_standard" = "Token in %%image%% %1$@ network";
 "token_details_unable_hide_alert_message" = "The %1$@ (%2$@) token is the main currency on the %3$@ network and cannot be hidden as long as you have other tokens on this network in the list";
 "token_details_unable_hide_alert_title" = "Unable to hide %@";
+"token_swap_promotion_button" = "Swap now";
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "You don't have any transactions yet";
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
