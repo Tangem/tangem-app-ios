@@ -31,7 +31,7 @@ class CommonInformationRelevanceService {
 
     private func bind() {
         sendFeeInteractor
-            .selectedFeePublisher()
+            .selectedFeePublisher
             .withWeakCaptureOf(self)
             .sink { service, _ in
                 service.informationDidUpdated()
@@ -75,8 +75,8 @@ extension CommonInformationRelevanceService: InformationRelevanceService {
 
         // Catch the subscribtions
         return sendFeeInteractor
-            .feesPublisher()
-            // Drop old value
+            .feesPublisher
+            // Skip the old values
             .dropFirst()
             .withWeakCaptureOf(self)
             .tryMap { service, fees in

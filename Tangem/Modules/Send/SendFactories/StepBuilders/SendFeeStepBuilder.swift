@@ -9,14 +9,15 @@
 import Foundation
 
 struct SendFeeStepBuilder {
+    typealias IO = SendFeeInput & SendFeeOutput
     typealias ReturnValue = (step: SendFeeStep, interactor: SendFeeInteractor)
 
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
-    func makeFeeSendStep(notificationManager: SendNotificationManager, router: SendFeeRoutable) -> ReturnValue {
-        let interactor = makeSendFeeInteractor()
+    func makeFeeSendStep(io: IO, notificationManager: SendNotificationManager, router: SendFeeRoutable) -> ReturnValue {
+        let interactor = makeSendFeeInteractor(io: io)
 
         let viewModel = makeSendFeeViewModel(
             sendFeeInteractor: interactor,
@@ -54,14 +55,14 @@ private extension SendFeeStepBuilder {
         )
     }
 
-    private func makeSendFeeInteractor() -> SendFeeInteractor { // predefinedAmount: Amount?, predefinedDestination: String?
+    private func makeSendFeeInteractor(io: IO) -> SendFeeInteractor {
         let customFeeService = CustomFeeServiceFactory(walletModel: walletModel).makeService()
         let interactor = CommonSendFeeInteractor(
+            input: io,
+            output: io,
             provider: makeSendFeeProvider(),
             defaultFeeOptions: builder.makeFeeOptions(),
             customFeeService: customFeeService
-            //            predefinedAmount: predefinedAmount,
-            //            predefinedDestination: predefinedDestination
         )
 
         customFeeService?.setup(input: interactor, output: interactor)

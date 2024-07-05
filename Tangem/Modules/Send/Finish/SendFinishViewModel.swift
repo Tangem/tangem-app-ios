@@ -114,7 +114,7 @@ extension SendFinishViewModel: SendFinishViewModelSetupable {
     }
 
     func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor.selectedFeePublisher()
+        interactor.selectedFeePublisher
             .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)

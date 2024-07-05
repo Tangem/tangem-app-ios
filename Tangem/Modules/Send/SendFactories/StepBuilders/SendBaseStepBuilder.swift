@@ -23,9 +23,16 @@ struct SendBaseStepBuilder {
         let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionSender = builder.makeSendTransactionSender()
 
-        let fee = sendFeeStepBuilder.makeFeeSendStep(notificationManager: notificationManager, router: router)
-        let amount = sendAmountStepBuilder.makeSendAmountStep(sendFeeInteractor: fee.interactor)
+        let sendModel = builder.makeSendModel(
+            sendTransactionSender: sendTransactionSender,
+            type: sendType,
+            router: router
+        )
+
+        let fee = sendFeeStepBuilder.makeFeeSendStep(io: sendModel, notificationManager: notificationManager, router: router)
+        let amount = sendAmountStepBuilder.makeSendAmountStep(io: sendModel, sendFeeInteractor: fee.interactor)
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
+            io: sendModel,
             sendAmountInteractor: amount.interactor,
             sendFeeInteractor: fee.interactor,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -33,6 +40,7 @@ struct SendBaseStepBuilder {
         )
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
+            io: sendModel,
             sendTransactionSender: sendTransactionSender,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -46,23 +54,13 @@ struct SendBaseStepBuilder {
             sendType: sendType
         )
 
-        let informationRelevanceService = builder.makeInformationRelevanceService(sendFeeInteractor: fee.interactor)
-
-        let sendModel = builder.makeSendModel(
-            sendAmountInteractor: amount.interactor,
-            sendFeeInteractor: fee.interactor,
-            informationRelevanceService: informationRelevanceService,
-            sendTransactionSender: sendTransactionSender,
-            type: sendType,
-            router: router
+        // We have to set and fee.interactor here after all setups is complited
+        sendModel.sendFeeInteractor = fee.interactor
+        sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
+            sendFeeInteractor: fee.interactor
         )
 
         notificationManager.setup(input: sendModel)
-
-        destination.interactor.setup(input: sendModel, output: sendModel)
-        amount.interactor.setup(input: sendModel, output: sendModel)
-        fee.interactor.setup(input: sendModel, output: sendModel)
-        summary.interactor.setup(input: sendModel, output: sendModel)
 
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)

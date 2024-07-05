@@ -9,14 +9,15 @@
 import Foundation
 
 struct SendAmountStepBuilder {
+    typealias IO = SendAmountInput & SendAmountOutput
     typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
 
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
-    func makeSendAmountStep(sendFeeInteractor: any SendFeeInteractor) -> ReturnValue {
-        let interactor = makeSendAmountInteractor()
+    func makeSendAmountStep(io: IO, sendFeeInteractor: any SendFeeInteractor) -> ReturnValue {
+        let interactor = makeSendAmountInteractor(io: io)
 
         let viewModel = makeSendAmountViewModel(
             interactor: interactor,
@@ -53,8 +54,10 @@ private extension SendAmountStepBuilder {
         return SendAmountViewModel(initial: initital, interactor: interactor)
     }
 
-    private func makeSendAmountInteractor() -> SendAmountInteractor {
+    private func makeSendAmountInteractor(io: IO) -> SendAmountInteractor {
         CommonSendAmountInteractor(
+            input: io,
+            output: io,
             tokenItem: walletModel.tokenItem,
             balanceValue: walletModel.balanceValue ?? 0,
             validator: makeSendAmountValidator(),

@@ -9,6 +9,7 @@
 import Foundation
 
 struct SendSummaryStepBuilder {
+    typealias IO = SendSummaryInput & SendSummaryOutput
     typealias ReturnValue = (step: SendSummaryStep, interactor: SendSummaryInteractor)
 
     let userWalletModel: UserWalletModel
@@ -16,12 +17,16 @@ struct SendSummaryStepBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendSummaryStep(
+        io: IO,
         sendTransactionSender: any SendTransactionSender,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         sendType: SendType
     ) -> ReturnValue {
-        let interactor = makeSendSummaryInteractor(sendTransactionSender: sendTransactionSender)
+        let interactor = makeSendSummaryInteractor(
+            io: io,
+            sendTransactionSender: sendTransactionSender
+        )
 
         let viewModel = makeSendSummaryViewModel(
             interactor: interactor,
@@ -64,8 +69,13 @@ private extension SendSummaryStepBuilder {
         )
     }
 
-    func makeSendSummaryInteractor(sendTransactionSender: any SendTransactionSender) -> SendSummaryInteractor {
+    func makeSendSummaryInteractor(
+        io: IO,
+        sendTransactionSender: any SendTransactionSender
+    ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
+            input: io,
+            output: io,
             sendTransactionSender: sendTransactionSender,
             descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder()
         )

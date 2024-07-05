@@ -10,16 +10,8 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-protocol SendSummaryInput: AnyObject {
-    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> { get }
-}
-
-protocol SendSummaryOutput: AnyObject {}
-
 protocol SendSummaryInteractor: AnyObject {
     var transactionDescription: AnyPublisher<String?, Never> { get }
-
-    func setup(input: SendSummaryInput, output: SendSummaryOutput)
 }
 
 class CommonSendSummaryInteractor {
@@ -28,9 +20,6 @@ class CommonSendSummaryInteractor {
 
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
-
-    private let _transactionDescription: CurrentValueSubject<String?, Never> = .init(.none)
-    private var transactionDescriptionSubscribtion: AnyCancellable?
 
     init(
         input: SendSummaryInput,
@@ -42,6 +31,8 @@ class CommonSendSummaryInteractor {
         self.output = output
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
+
+        bind(input: input)
     }
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
@@ -65,19 +56,5 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
 
                 interactor._transactionDescription.send(description)
             }
-    }
-}
-
-extension CommonSendSummaryInteractor: SendSummaryInteractor {
-    func setup(input: any SendSummaryInput, output _: any SendSummaryOutput) {
-        bind(input: input)
-    }
-
-    var isSending: AnyPublisher<Bool, Never> {
-        sendTransactionSender.isSending
-    }
-
-    var transactionDescription: AnyPublisher<String?, Never> {
-        return _transactionDescription.eraseToAnyPublisher()
     }
 }

@@ -181,7 +181,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
 
     func setup(sendFeeInteractor interactor: SendFeeInteractor) {
         interactor
-            .feesPublisher()
+            .feesPublisher
             .map { feeValues in
                 let multipleFeeOptions = feeValues.count > 1
                 let hasError = feeValues.contains { $0.value.error != nil }
@@ -192,7 +192,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .assign(to: \.canEditFee, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.CombineLatest(interactor.feesPublisher(), interactor.selectedFeePublisher())
+        Publishers.CombineLatest(interactor.feesPublisher, interactor.selectedFeePublisher)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in

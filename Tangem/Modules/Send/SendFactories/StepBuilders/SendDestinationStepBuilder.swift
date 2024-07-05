@@ -10,6 +10,7 @@ import Foundation
 import BlockchainSdk
 
 struct SendDestinationStepBuilder {
+    typealias IO = SendDestinationInput & SendDestinationOutput
     typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor)
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -17,12 +18,13 @@ struct SendDestinationStepBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendDestinationStep(
+        io: IO,
         sendAmountInteractor: any SendAmountInteractor,
         sendFeeInteractor: any SendFeeInteractor,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
     ) -> ReturnValue {
-        let interactor = makeSendDestinationInteractor()
+        let interactor = makeSendDestinationInteractor(io: io)
 
         let viewModel = makeSendDestinationViewModel(
             interactor: interactor,
@@ -70,8 +72,10 @@ private extension SendDestinationStepBuilder {
         return viewModel
     }
 
-    func makeSendDestinationInteractor() -> SendDestinationInteractor {
+    func makeSendDestinationInteractor(io: IO) -> SendDestinationInteractor {
         CommonSendDestinationInteractor(
+            input: io,
+            output: io,
             validator: makeSendDestinationValidator(),
             transactionHistoryProvider: makeSendDestinationTransactionHistoryProvider(),
             transactionHistoryMapper: makeTransactionHistoryMapper(),

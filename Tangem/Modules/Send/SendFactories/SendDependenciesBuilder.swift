@@ -123,9 +123,6 @@ struct SendDependenciesBuilder {
     }
 
     func makeSendModel(
-        sendAmountInteractor: SendAmountInteractor,
-        sendFeeInteractor: SendFeeInteractor,
-        informationRelevanceService: InformationRelevanceService,
         sendTransactionSender: any SendTransactionSender,
         type: SendType,
         router: SendRoutable
@@ -133,19 +130,10 @@ struct SendDependenciesBuilder {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
 
         return SendModel(
-            //            userWalletModel: userWalletModel,
             walletModel: walletModel,
             sendTransactionSender: sendTransactionSender,
-//            transactionCreator: walletModel.transactionCreator,
-//            transactionSigner: userWalletModel.signer,
-//            sendAmountInteractor: sendAmountInteractor,
-            sendFeeInteractor: sendFeeInteractor,
             feeIncludedCalculator: feeIncludedCalculator,
-            informationRelevanceService: informationRelevanceService,
-//            emailDataProvider: userWalletModel,
-//            feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
             sendType: type
-//            coordinator: router
         )
     }
 }

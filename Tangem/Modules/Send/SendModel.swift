@@ -83,15 +83,18 @@ class SendModel {
 
     private let _sendError = PassthroughSubject<Error?, Never>()
 
+    // MARK: - Dependensies
+
+    var sendFeeInteractor: SendFeeInteractor!
+    var informationRelevanceService: InformationRelevanceService!
+
     // MARK: - Private stuff
 
     private let walletModel: WalletModel
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let sendFeeInteractor: SendFeeInteractor
     private let feeIncludedCalculator: FeeIncludedCalculator
-    private let informationRelevanceService: InformationRelevanceService
-    private let sendType: SendType
 
+    private let sendType: SendType
     private var bag: Set<AnyCancellable> = []
 
     var currencySymbol: String {
@@ -103,16 +106,12 @@ class SendModel {
     init(
         walletModel: WalletModel,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        sendFeeInteractor: SendFeeInteractor,
         feeIncludedCalculator: FeeIncludedCalculator,
-        informationRelevanceService: InformationRelevanceService,
         sendType: SendType
     ) {
         self.walletModel = walletModel
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.sendFeeInteractor = sendFeeInteractor
         self.feeIncludedCalculator = feeIncludedCalculator
-        self.informationRelevanceService = informationRelevanceService
         self.sendType = sendType
 
         let destination = sendType.predefinedDestination.map { SendAddress(value: $0, source: .sellProvider) }
@@ -365,7 +364,7 @@ extension SendModel: SendNotificationManagerInput {
     }
 
     var feeValues: AnyPublisher<[SendFee], Never> {
-        sendFeeInteractor.feesPublisher()
+        sendFeeInteractor.feesPublisher
     }
 
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {

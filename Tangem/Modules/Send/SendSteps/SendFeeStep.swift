@@ -42,7 +42,7 @@ extension SendFeeStep: SendStep {
     var viewModel: SendFeeViewModel { _viewModel }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.selectedFeePublisher().map { $0 != nil }.eraseToAnyPublisher()
+        interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
     }
 
     func makeView(namespace: Namespace.ID) -> AnyView {
