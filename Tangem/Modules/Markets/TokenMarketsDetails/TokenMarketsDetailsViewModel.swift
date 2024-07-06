@@ -61,8 +61,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private weak var coordinator: TokenMarketsDetailsRoutable?
 
-    private var dataSource = MarketsDataSource()
-
     private let balanceFormatter = BalanceFormatter()
     private let priceChangeUtility = PriceChangeUtility()
     private let dateFormatter: DateFormatter = {
@@ -129,12 +127,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: - Actions
 
     func onAddToPortfolioTapAction() {
-        guard let tokenItems = loadedInfo?.tokenItems, !tokenItems.isEmpty else {
+        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
             assertionFailure("TokenItem list is empty")
             return
         }
 
-        coordinator?.openTokenSelector(dataSource: dataSource, coinId: tokenInfo.id, tokenItems: tokenItems)
+        coordinator?.openTokenSelector(with: coinModel)
     }
 }
 
