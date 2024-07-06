@@ -179,8 +179,8 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
-            // We should show only CEX transaction on UI
-            guard record.provider.type == .cex else {
+            // We should show only `supportStatusTracking` transaction on UI
+            guard record.provider.type.supportStatusTracking else {
                 return false
             }
 

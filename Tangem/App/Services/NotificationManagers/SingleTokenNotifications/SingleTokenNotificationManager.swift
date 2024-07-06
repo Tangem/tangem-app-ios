@@ -13,7 +13,6 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     private let analyticsService: NotificationsAnalyticsService = .init()
@@ -99,7 +98,7 @@ final class SingleTokenNotificationManager {
             factory.buildNotificationInput(
                 for: $0,
                 buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                    self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
                 dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
@@ -165,7 +164,7 @@ final class SingleTokenNotificationManager {
                 factory.buildNotificationInput(
                     for: event,
                     buttonAction: { [weak self] id, actionType in
-                        self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                        self?.delegate?.didTapNotification(with: id, action: actionType)
                     },
                     dismissAction: { [weak self] id in
                         self?.dismissNotification(with: id)
@@ -258,19 +257,6 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
-            return
-        }
-
-        guard let event = notification.settings.event as? BannerNotificationEvent else {
-            return
-        }
-
-        switch event {
-        case .travala:
-            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
-        }
-
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
     }
 }

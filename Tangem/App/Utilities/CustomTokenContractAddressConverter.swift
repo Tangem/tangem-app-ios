@@ -16,7 +16,7 @@ struct CustomTokenContractAddressConverter {
         self.blockchain = blockchain
     }
 
-    func convert(_ originalAddress: String) -> String {
+    func convert(_ originalAddress: String, symbol: String?) -> String {
         switch blockchain {
         case .hedera:
             do {
@@ -31,7 +31,7 @@ struct CustomTokenContractAddressConverter {
         case .cardano:
             do {
                 let converter = CardanoTokenContractAddressService()
-                return try converter.convertToFingerprint(address: originalAddress, symbol: nil)
+                return try converter.convertToFingerprint(address: originalAddress, symbol: symbol)
             } catch {
                 return originalAddress
             }

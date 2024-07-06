@@ -86,7 +86,7 @@ class ExpressNotificationManager {
         case .validationError(let error, let context):
             setupNotification(for: error, context: context)
             return
-        case .notEnoughAmountForFee:
+        case .notEnoughAmountForFee, .notEnoughAmountForTxValue:
             guard let notEnoughFeeForTokenTxEvent = makeNotEnoughFeeForTokenTx(sender: interactor.getSender()) else {
                 notificationInputsSubject.value = []
                 return
@@ -106,7 +106,7 @@ class ExpressNotificationManager {
         }
 
         let notification = notificationsFactory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         notificationInputsSubject.value = [notification]
     }
@@ -145,23 +145,29 @@ class ExpressNotificationManager {
         }
 
         let notification = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
 
         notificationInputsSubject.value = [notification]
     }
 
     private func setupPermissionRequiredNotification() {
-        guard let interactor = expressInteractor else { return }
+        runTask(in: self) { manager in
+            guard let interactor = manager.expressInteractor else { return }
 
-        let sourceTokenItem = interactor.getSender().tokenItem
-        let event: ExpressNotificationEvent = .permissionNeeded(currencyCode: sourceTokenItem.currencySymbol)
-        let notificationsFactory = NotificationsFactory()
+            let sourceTokenItem = interactor.getSender().tokenItem
+            let selectedProvider = await interactor.getSelectedProvider()?.provider
+            let event: ExpressNotificationEvent = .permissionNeeded(
+                providerName: selectedProvider?.name ?? "",
+                currencyCode: sourceTokenItem.currencySymbol
+            )
+            let notificationsFactory = NotificationsFactory()
 
-        let notification = notificationsFactory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            let notification = notificationsFactory.buildNotificationInput(for: event) { [weak manager] id, actionType in
+                manager?.delegate?.didTapNotification(with: id, action: actionType)
+            }
+            manager.notificationInputsSubject.value = [notification]
         }
-        notificationInputsSubject.value = [notification]
     }
 
     private func setupFeeWillBeSubtractFromSendingAmountNotification(subtractFee: Decimal) -> NotificationViewInput? {
@@ -208,7 +214,7 @@ class ExpressNotificationManager {
 
         let event = ExpressNotificationEvent.withdrawalNotificationEvent(withdrawalNotification)
         let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         return input
     }

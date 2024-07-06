@@ -79,11 +79,22 @@ extension ExpressPendingTransactionRecord {
     enum ProviderType: String, Codable, Equatable {
         case cex
         case dex
+        case dexBridge
 
         static func type(from type: ExpressProviderType) -> ProviderType {
             switch type {
             case .dex: return .dex
             case .cex: return .cex
+            case .dexBridge: return .dexBridge
+            }
+        }
+
+        var supportStatusTracking: Bool {
+            switch self {
+            case .cex, .dexBridge:
+                return true
+            case .dex:
+                return false
             }
         }
     }
