@@ -11,15 +11,9 @@ import SwiftUI
 struct UserWalletStorageAgreementView: View {
     @ObservedObject private var viewModel: UserWalletStorageAgreementViewModel
 
-    private let topInset: CGFloat
+    @Environment(\.colorScheme) private var colorScheme
 
-    init(
-        viewModel: UserWalletStorageAgreementViewModel,
-        topInset: CGFloat
-    ) {
-        self.viewModel = viewModel
-        self.topInset = topInset
-    }
+    private let topInset: CGFloat
 
     var body: some View {
         VStack(spacing: 0) {
@@ -29,7 +23,7 @@ struct UserWalletStorageAgreementView: View {
                 VStack(spacing: 0.0) {
                     BiometryLogoImage.image.image
                         .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.onboarding)
+                        .foregroundColor(iconColor)
 
                     FixedSpacer(height: 28.0)
 
@@ -80,5 +74,25 @@ struct UserWalletStorageAgreementView: View {
             .layoutPriority(101) // Higher layout priority causes spacers to collapse if there is not enough vertical space
         }
         .padding(.bottom)
+    }
+
+    private var iconColor: Color {
+        switch colorScheme {
+        case .light:
+            return Colors.Icon.inactive
+        case .dark:
+            return Colors.Icon.primary1
+        @unknown default:
+            assertionFailure("Unknown color scheme '\(String(describing: colorScheme))' received")
+            return Colors.Icon.inactive
+        }
+    }
+
+    init(
+        viewModel: UserWalletStorageAgreementViewModel,
+        topInset: CGFloat
+    ) {
+        self.viewModel = viewModel
+        self.topInset = topInset
     }
 }

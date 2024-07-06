@@ -11,6 +11,8 @@ import SwiftUI
 struct PushNotificationsPermissionRequestView: View {
     @ObservedObject private var viewModel: PushNotificationsPermissionRequestViewModel
 
+    @Environment(\.colorScheme) private var colorScheme
+
     private let topInset: CGFloat
     private let buttonsAxis: Axis
 
@@ -22,7 +24,7 @@ struct PushNotificationsPermissionRequestView: View {
                 VStack(spacing: 0.0) {
                     Assets.notificationBell.image
                         .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.onboarding)
+                        .foregroundColor(iconColor)
 
                     FixedSpacer(height: 28.0)
 
@@ -86,6 +88,18 @@ struct PushNotificationsPermissionRequestView: View {
             style: .secondary,
             action: viewModel.didTapLater
         )
+    }
+
+    private var iconColor: Color {
+        switch colorScheme {
+        case .light:
+            return Colors.Icon.inactive
+        case .dark:
+            return Colors.Icon.primary1
+        @unknown default:
+            assertionFailure("Unknown color scheme '\(String(describing: colorScheme))' received")
+            return Colors.Icon.inactive
+        }
     }
 
     init(
