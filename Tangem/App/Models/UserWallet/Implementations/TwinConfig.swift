@@ -187,7 +187,7 @@ extension TwinConfig: UserWalletConfig {
         backupService: BackupService,
         isPushNotificationsAvailable: Bool
     ) -> OnboardingStepsBuilder {
-        return TwinOnboardingStepsBulder(
+        return TwinOnboardingStepsBuilder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
             twinData: twinData,
