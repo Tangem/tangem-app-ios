@@ -63,12 +63,13 @@ final class WelcomeOnboardingViewModel: ObservableObject {
         case .tos:
             return .tos(WelcomeOnboardingTOSViewModel(delegate: self))
         case .pushNotifications:
-            let viewModel = PushNotificationsPermissionRequestViewModel(
-                permissionManager: pushNotificationsPermissionManager,
-                delegate: self
-            )
+            // TODO: Andrey Fedorov - Add actual implementation (IOS-7302)
+//            let viewModel = PushNotificationsPermissionRequestViewModel(
+//                permissionManager: pushNotificationsPermissionManager,
+//                delegate: self
+//            )
 
-            return .pushNotifications(viewModel)
+            return .pushNotifications(()/*viewModel*/)
         }
     }
 }
@@ -78,7 +79,7 @@ final class WelcomeOnboardingViewModel: ObservableObject {
 extension WelcomeOnboardingViewModel {
     enum ViewState: Equatable {
         case tos(WelcomeOnboardingTOSViewModel)
-        case pushNotifications(PushNotificationsPermissionRequestViewModel)
+        case pushNotifications(Void /* PushNotificationsPermissionRequestViewModel */ ) // TODO: Andrey Fedorov - Add actual implementation (IOS-7302)
 
         static func == (lhs: WelcomeOnboardingViewModel.ViewState, rhs: WelcomeOnboardingViewModel.ViewState) -> Bool {
             switch (lhs, rhs) {
@@ -88,14 +89,6 @@ extension WelcomeOnboardingViewModel {
                 return false
             }
         }
-    }
-}
-
-// MARK: - PushNotificationsPermissionRequestDelegate
-
-extension WelcomeOnboardingViewModel: PushNotificationsPermissionRequestDelegate {
-    func didFinishPushNotificationOnboarding() {
-        openNextStep()
     }
 }
 

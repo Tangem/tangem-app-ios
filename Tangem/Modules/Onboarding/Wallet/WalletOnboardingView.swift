@@ -64,7 +64,7 @@ struct WalletOnboardingView: View {
                 OnboardingAddTokensView(viewModel: model)
             }
         case .pushNotifications:
-            OnboardingPushNotificationsView(viewModel: viewModel.pushNotificationsViewModel)
+            EmptyView() // TODO: Andrey Fedorov - Add actual implementation (IOS-7302)
         default:
             EmptyView()
         }

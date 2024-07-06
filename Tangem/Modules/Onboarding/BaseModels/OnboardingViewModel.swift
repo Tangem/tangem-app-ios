@@ -156,8 +156,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         )
     }()
 
-    lazy var pushNotificationsViewModel: OnboardingPushNotificationsViewModel = .init(delegate: self)
-
     let input: OnboardingInput
 
     var isFromMain: Bool = false
@@ -444,11 +442,5 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 extension OnboardingViewModel: OnboardingAddTokensDelegate {
     func showAlert(_ alert: AlertBinder) {
         self.alert = alert
-    }
-}
-
-extension OnboardingViewModel: OnboardingPushNotificationsDelegate {
-    func didFinishPushNotificationOnboarding() {
-        goToNextStep()
     }
 }
