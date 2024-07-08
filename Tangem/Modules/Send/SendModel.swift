@@ -248,7 +248,7 @@ class SendModel {
             _transaction
                 .map { transaction in
                     transaction.flatMap {
-                        withdrawalValidator.withdrawalNotification(amount: $0.amount, fee: $0.fee.amount)
+                        withdrawalValidator.withdrawalNotification(amount: $0.amount, fee: $0.fee)
                     }
                 }
                 .sink { [weak self] in
