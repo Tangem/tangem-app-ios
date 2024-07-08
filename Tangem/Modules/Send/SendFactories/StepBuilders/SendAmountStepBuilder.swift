@@ -12,7 +12,6 @@ struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
     typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
 
-    let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
@@ -35,7 +34,7 @@ struct SendAmountStepBuilder {
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(interactor: SendAmountInteractor) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
-            userWalletName: userWalletModel.name,
+            userWalletName: builder.walletName(),
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
             balanceValue: walletModel.balanceValue ?? 0,

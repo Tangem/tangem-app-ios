@@ -67,10 +67,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         self.interactor = interactor
 
         bind()
-
-//        if let predefinedAmount = initial.predefinedAmount {
-//            setExternalAmount(predefinedAmount)
-//        }
     }
 
     func onAppear() {

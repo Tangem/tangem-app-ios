@@ -13,16 +13,16 @@ import BlockchainSdk
 struct SendDependenciesBuilder {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
-    private let userWalletName: String
     private let walletModel: WalletModel
     private let userWalletModel: UserWalletModel
 
-    private var tokenItem: TokenItem { walletModel.tokenItem }
-
-    init(userWalletName: String, walletModel: WalletModel, userWalletModel: UserWalletModel) {
-        self.userWalletName = userWalletName
-        self.walletModel = walletModel
+    init(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         self.userWalletModel = userWalletModel
+        self.walletModel = walletModel
+    }
+
+    func walletName() -> String {
+        userWalletModel.name
     }
 
     func isFeeApproximate() -> Bool {
@@ -41,7 +41,7 @@ struct SendDependenciesBuilder {
         let tokenIconInfo = makeTokenIconInfo()
 
         return SendWalletInfo(
-            walletName: userWalletName,
+            walletName: walletName(),
             balanceValue: walletModel.balanceValue,
             balance: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
             blockchain: walletModel.blockchainNetwork.blockchain,
@@ -64,7 +64,7 @@ struct SendDependenciesBuilder {
     func makeCurrencyPickerData() -> SendCurrencyPickerData {
         SendCurrencyPickerData(
             cryptoIconURL: makeTokenIconInfo().imageURL,
-            cryptoCurrencyCode: tokenItem.currencySymbol,
+            cryptoCurrencyCode: walletModel.tokenItem.currencySymbol,
             fiatIconURL: makeFiatIconURL(),
             fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode,
             disabled: walletModel.quote == nil

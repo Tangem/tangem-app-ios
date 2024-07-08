@@ -12,7 +12,6 @@ struct SendSummaryStepBuilder {
     typealias IO = (input: SendSummaryInput, output: SendSummaryOutput)
     typealias ReturnValue = (step: SendSummaryStep, interactor: SendSummaryInteractor)
 
-    let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
@@ -39,7 +38,7 @@ struct SendSummaryStepBuilder {
             viewModel: viewModel,
             interactor: interactor,
             tokenItem: walletModel.tokenItem,
-            walletName: userWalletModel.name
+            walletName: builder.walletName()
         )
 
         return (step: step, interactor: interactor)
