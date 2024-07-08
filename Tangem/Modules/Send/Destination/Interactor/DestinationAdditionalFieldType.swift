@@ -1,5 +1,5 @@
 //
-//  DestinationAdditionalFieldType.swift
+//  SendDestinationAdditionalField.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 19.06.2024.
@@ -9,13 +9,13 @@
 import Foundation
 import BlockchainSdk
 
-enum DestinationAdditionalFieldType {
+enum SendDestinationAdditionalField {
     case notSupported
-    case empty(type: SendAdditionalFields)
-    case filled(type: SendAdditionalFields, value: String, params: TransactionParams)
+    case empty(type: SendDestinationAdditionalFieldType)
+    case filled(type: SendDestinationAdditionalFieldType, value: String, params: TransactionParams)
 }
 
-enum SendAdditionalFields {
+enum SendDestinationAdditionalFieldType {
     case memo
     case destinationTag
 
@@ -28,7 +28,7 @@ enum SendAdditionalFields {
         }
     }
 
-    static func fields(for blockchain: Blockchain) -> SendAdditionalFields? {
+    static func type(for blockchain: Blockchain) -> SendDestinationAdditionalFieldType? {
         switch blockchain {
         case .stellar,
              .binance,

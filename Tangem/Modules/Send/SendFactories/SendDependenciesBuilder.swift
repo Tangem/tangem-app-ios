@@ -79,6 +79,10 @@ struct SendDependenciesBuilder {
         return [.market]
     }
 
+    func makeSendTransactionParametersBuilder() -> SendTransactionParametersBuilder {
+        SendTransactionParametersBuilder(blockchain: walletModel.tokenItem.blockchain)
+    }
+
     func makeFeeAnalyticsParameterBuilder() -> FeeAnalyticsParameterBuilder {
         FeeAnalyticsParameterBuilder(isFixedFee: makeFeeOptions().count == 1)
     }
@@ -103,18 +107,44 @@ struct SendDependenciesBuilder {
 
     func makeSendModel(
         sendTransactionSender: any SendTransactionSender,
-        type: SendType,
+        predefinedSellParameters: PredefinedSellParameters?,
         router: SendRoutable
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
+        let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
             walletModel: walletModel,
             sendTransactionSender: sendTransactionSender,
             feeIncludedCalculator: feeIncludedCalculator,
-            predefinedAmount: type.predefinedAmount,
-            predefinedDestination: type.predefinedDestination,
-            predefinedTag: type.predefinedTag
+            predefinedValues: predefinedValues
         )
+    }
+
+    func mapToPredefinedValues(sellParameters: PredefinedSellParameters?) -> SendModel.PredefinedValues {
+        let destination = sellParameters.map { SendAddress(value: $0.destination, source: .sellProvider) }
+        let amount = sellParameters.map { sellParameters in
+            let fiatValue = walletModel.tokenItem.currencyId.flatMap { currencyId in
+                BalanceConverter().convertToFiat(sellParameters.amount, currencyId: currencyId)
+            }
+
+            return SendAmount(type: .typical(crypto: sellParameters.amount, fiat: fiatValue))
+        }
+
+        // the additionalField is requried. Other can be optional
+        let additionalField: SendDestinationAdditionalField = {
+            guard let type = SendDestinationAdditionalFieldType.type(for: walletModel.blockchainNetwork.blockchain) else {
+                return .notSupported
+            }
+
+            guard let tag = sellParameters?.tag?.nilIfEmpty,
+                  let params = try? makeSendTransactionParametersBuilder().transactionParameters(from: tag) else {
+                return .empty(type: type)
+            }
+
+            return .filled(type: type, value: tag, params: params)
+        }()
+
+        return SendModel.PredefinedValues(destination: destination, tag: additionalField, amount: amount)
     }
 }

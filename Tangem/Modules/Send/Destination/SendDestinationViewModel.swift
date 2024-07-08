@@ -147,7 +147,7 @@ extension SendDestinationViewModel {
         typealias SuggestedWallet = (name: String, address: String)
 
         let networkName: String
-        let additionalFieldType: SendAdditionalFields?
+        let additionalFieldType: SendDestinationAdditionalFieldType?
         let suggestedWallets: [SuggestedWallet]
     }
 }

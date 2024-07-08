@@ -25,7 +25,7 @@ struct SendBaseStepBuilder {
 
         let sendModel = builder.makeSendModel(
             sendTransactionSender: sendTransactionSender,
-            type: sendType,
+            predefinedSellParameters: sendType.predefinedSellParameters,
             router: router
         )
 

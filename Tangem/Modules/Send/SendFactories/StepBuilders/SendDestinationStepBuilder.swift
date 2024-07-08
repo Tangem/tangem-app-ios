@@ -16,6 +16,7 @@ struct SendDestinationStepBuilder {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     let walletModel: WalletModel
+    let builder: SendDependenciesBuilder
 
     func makeSendDestinationStep(
         io: IO,
@@ -53,7 +54,7 @@ private extension SendDestinationStepBuilder {
     ) -> SendDestinationViewModel {
         let tokenItem = walletModel.tokenItem
         let suggestedWallets = makeSuggestedWallets()
-        let additionalFieldType = SendAdditionalFields.fields(for: tokenItem.blockchain)
+        let additionalFieldType = SendDestinationAdditionalFieldType.type(for: tokenItem.blockchain)
 
         let settings = SendDestinationViewModel.Settings(
             networkName: tokenItem.networkName,
@@ -78,13 +79,9 @@ private extension SendDestinationStepBuilder {
             transactionHistoryProvider: makeSendDestinationTransactionHistoryProvider(),
             transactionHistoryMapper: makeTransactionHistoryMapper(),
             addressResolver: walletModel.addressResolver,
-            additionalFieldType: .fields(for: walletModel.tokenItem.blockchain),
-            parametersBuilder: makeSendTransactionParametersBuilder()
+            additionalFieldType: .type(for: walletModel.tokenItem.blockchain),
+            parametersBuilder: builder.makeSendTransactionParametersBuilder()
         )
-    }
-
-    func makeSendTransactionParametersBuilder() -> SendTransactionParametersBuilder {
-        SendTransactionParametersBuilder(blockchain: walletModel.tokenItem.blockchain)
     }
 
     func makeSendDestinationValidator() -> SendDestinationValidator {

@@ -11,7 +11,7 @@ import UIKit
 
 enum SendDestinationSummaryViewType {
     case address(address: String, corners: UIRectCorner)
-    case additionalField(type: SendAdditionalFields, value: String)
+    case additionalField(type: SendDestinationAdditionalFieldType, value: String)
 }
 
 extension SendDestinationSummaryViewType: Identifiable {

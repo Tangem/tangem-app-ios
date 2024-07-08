@@ -206,11 +206,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .sell(
-                amount: .init(with: .polygon(testnet: false), type: .coin, value: 0.5),
-                destination: "0x90E4D59c8583E37426b37d1D7394B6008A987c67",
-                tag: "Tag"
-            )
+            type: .send
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -247,7 +243,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .sell(amount: amountToSend, destination: destination, tag: tag)
+            type: .sell(parameters: .init(amount: amountToSend.value, destination: destination, tag: tag))
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
