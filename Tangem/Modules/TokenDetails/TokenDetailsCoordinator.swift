@@ -54,11 +54,6 @@ class TokenDetailsCoordinator: CoordinatorObject {
             amountType: options.walletModel.amountType
         )
 
-        let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(
-            userId: options.userWalletModel.userWalletId.stringValue,
-            logger: AppLog.shared
-        )
-
         let notificationManager = SingleTokenNotificationManager(
             walletModel: options.walletModel,
             walletModelsManager: options.userWalletModel.walletModelsManager,
