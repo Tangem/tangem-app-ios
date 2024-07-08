@@ -74,32 +74,12 @@ extension SendFeeStep: SendStep {
     }
 
     func willClose(next step: any SendStep) {
+        // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
     }
 
     func willAppear(previous step: any SendStep) {
         interactor.updateFees()
-    }
-}
-
-struct FeeAnalyticsParameterBuilder {
-    private let isFixedFee: Bool
-
-    init(isFixedFee: Bool) {
-        self.isFixedFee = isFixedFee
-    }
-
-    func analyticsParameter(selectedFee: FeeOption?) -> Analytics.ParameterValue {
-        if isFixedFee {
-            return .transactionFeeFixed
-        }
-
-        guard let selectedFee else {
-            assertionFailure("selectedFeeTypeAnalyticsParameter not found")
-            return .null
-        }
-
-        return selectedFee.analyticsValue
     }
 }

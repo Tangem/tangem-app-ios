@@ -127,7 +127,7 @@ class SendSummaryViewModel: ObservableObject {
         router?.openStep(step)
     }
 
-    func bind() {
+    private func bind() {
         interactor
             .transactionDescription
             .assign(to: \.transactionDescription, on: self, ownership: .weak)

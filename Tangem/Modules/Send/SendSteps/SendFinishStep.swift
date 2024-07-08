@@ -12,28 +12,14 @@ import SwiftUI
 
 class SendFinishStep {
     private let _viewModel: SendFinishViewModel
-    private let tokenItem: TokenItem
     private let sendFeeInteractor: SendFeeInteractor
-    private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     init(
         viewModel: SendFinishViewModel,
-        tokenItem: TokenItem,
-        sendFeeInteractor: SendFeeInteractor,
-        feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
+        sendFeeInteractor: SendFeeInteractor
     ) {
         _viewModel = viewModel
-        self.tokenItem = tokenItem
         self.sendFeeInteractor = sendFeeInteractor
-        self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
-    }
-
-    private func onAppear() {
-        let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: sendFeeInteractor.selectedFee?.option)
-        Analytics.log(event: .sendTransactionSentScreenOpened, params: [
-            .token: tokenItem.currencySymbol,
-            .feeType: feeType.rawValue,
-        ])
     }
 }
 

@@ -34,19 +34,6 @@ class SendDestinationStep {
         self.router = router
     }
 
-    /*
-     func fullfilled() -> AnyPublisher<Void, Never> {
-             .destinationPublisher()
-             .filter { viewModel, destination in
-                 switch destination.source {
-                 case .myWallet, .recentAddress:
-                     viewModel.stepsManager.performNext()
-                 default:
-                     break
-                 }
-             }
-     }
-     */
     private func scanQRCode() {
         let binding = Binding<String>(get: { "" }, set: parseQRCode)
 
