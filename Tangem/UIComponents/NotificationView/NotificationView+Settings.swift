@@ -82,7 +82,7 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .okx: Colors.Background.primary.preferredColorScheme(.dark)
+            case .okx: Color(hex: "#1E1E1E")!
             }
         }
 
