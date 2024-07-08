@@ -252,6 +252,7 @@
 "express_provider_min_amount" = "Available from %@";
 "express_provider_not_available" = "Unavailable for this pair";
 "express_provider_permission_needed" = "Permission Required";
+"express_provider_recommended" = "Recommended";
 "express_terms_of_use" = "Terms of Use";
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";

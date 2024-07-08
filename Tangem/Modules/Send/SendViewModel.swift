@@ -9,7 +9,6 @@
 import Combine
 import SwiftUI
 import BlockchainSdk
-import AVFoundation
 
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
@@ -80,6 +79,7 @@ final class SendViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
+    private let initial: Initial
     private let sendModel: SendModel
     private let sendType: SendType
     private let steps: [SendStep]
@@ -89,7 +89,6 @@ final class SendViewModel: ObservableObject {
     private let walletInfo: SendWalletInfo
     private let notificationManager: SendNotificationManager
     private let addressTextViewHeightModel: AddressTextViewHeightModel
-    private let customFeeService: CustomFeeService?
     private let sendStepParameters: SendStep.Parameters
     private let keyboardVisibilityService: KeyboardVisibilityService
     private let factory: SendModulesFactory
@@ -99,7 +98,6 @@ final class SendViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
     private var feeUpdateSubscription: AnyCancellable? = nil
 
-    private var screenIdleStartTime: Date?
     private var currentPageAnimating: Bool? = nil
     private var didReachSummaryScreen: Bool
 
@@ -140,6 +138,7 @@ final class SendViewModel: ObservableObject {
     }
 
     init(
+        initial: Initial,
         walletInfo: SendWalletInfo,
         walletModel: WalletModel,
         userWalletModel: UserWalletModel,
@@ -148,12 +147,13 @@ final class SendViewModel: ObservableObject {
         emailDataProvider: EmailDataProvider,
         sendModel: SendModel,
         notificationManager: SendNotificationManager,
-        customFeeService: CustomFeeService?,
+        sendFeeInteractor: SendFeeInteractor,
         keyboardVisibilityService: KeyboardVisibilityService,
         sendAmountValidator: SendAmountValidator,
         factory: SendModulesFactory,
         coordinator: SendRoutable
     ) {
+        self.initial = initial
         self.walletInfo = walletInfo
         self.coordinator = coordinator
         self.sendType = sendType
@@ -162,7 +162,6 @@ final class SendViewModel: ObservableObject {
         self.emailDataProvider = emailDataProvider
         self.sendModel = sendModel
         self.notificationManager = notificationManager
-        self.customFeeService = customFeeService
         self.keyboardVisibilityService = keyboardVisibilityService
         self.factory = factory
 
@@ -191,22 +190,21 @@ final class SendViewModel: ObservableObject {
         )
 
         sendFeeViewModel = factory.makeSendFeeViewModel(
-            sendModel: sendModel,
+            sendFeeInteractor: sendFeeInteractor,
             notificationManager: notificationManager,
-            customFeeService: customFeeService,
-            walletInfo: walletInfo
+            router: coordinator
         )
 
         sendSummaryViewModel = factory.makeSendSummaryViewModel(
             sendModel: sendModel,
             notificationManager: notificationManager,
+            sendFeeInteractor: sendFeeInteractor,
             addressTextViewHeightModel: addressTextViewHeightModel,
             walletInfo: walletInfo
         )
 
-        sendFeeViewModel.router = coordinator
         sendSummaryViewModel.router = self
-
+        sendModel.delegate = self
         notificationManager.setupManager(with: self)
 
         updateTransactionHistoryIfNeeded()
@@ -267,7 +265,7 @@ final class SendViewModel: ObservableObject {
             let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
             openStep(nextStep, stepAnimation: .moveAndFade, checkCustomFee: checkCustomFee, updateFee: updateFee)
         case .send:
-            send()
+            sendModel.send()
         case .close:
             coordinator?.dismiss()
         }
@@ -316,13 +314,9 @@ final class SendViewModel: ObservableObject {
         coordinator?.openQRScanner(with: binding, networkName: networkName)
     }
 
-    func onSummaryAppear() {
-        screenIdleStartTime = Date()
-    }
+    func onSummaryAppear() {}
 
-    func onSummaryDisappear() {
-        screenIdleStartTime = nil
-    }
+    func onSummaryDisappear() {}
 
     private func bind() {
         sendModel.isSending
@@ -430,7 +424,7 @@ final class SendViewModel: ObservableObject {
             .store(in: &bag)
 
         Publishers
-            .CombineLatest(sendModel.transactionAmountPublisher, sendModel.feeValuePublisher)
+            .CombineLatest(sendModel.transactionAmountPublisher, sendModel.selectedFeePublisher)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
@@ -439,7 +433,7 @@ final class SendViewModel: ObservableObject {
                 let helper = SendTransactionSummaryDestinationHelper()
                 viewModel.transactionDescription = helper.makeTransactionDescription(
                     amount: amount?.value,
-                    fee: fee?.amount.value,
+                    fee: fee?.value.value?.amount.value,
                     amountCurrencyId: viewModel.walletInfo.currencyId,
                     feeCurrencyId: viewModel.walletInfo.feeCurrencyId
                 )
@@ -562,13 +556,7 @@ final class SendViewModel: ObservableObject {
     }
 
     private func updateFee() {
-        feeUpdateSubscription = sendModel.updateFees()
-            .receive(on: DispatchQueue.main)
-            .sink()
-    }
-
-    private func cancelUpdatingFee() {
-        feeUpdateSubscription = nil
+        sendModel.updateFees()
     }
 
     private func shouldCheckCustomFee(currentStep: SendStep) -> Bool {
@@ -668,11 +656,14 @@ final class SendViewModel: ObservableObject {
     }
 
     private func selectedFeeTypeAnalyticsParameter() -> Analytics.ParameterValue {
-        if sendModel.feeOptions.count == 1 {
+        if initial.feeOptions.count == 1 {
             return .transactionFeeFixed
         }
 
-        switch sendModel.selectedFeeOption {
+        switch sendModel.feeValue?.option {
+        case .none:
+            assertionFailure("selectedFeeTypeAnalyticsParameter not found")
+            return .null
         case .slow:
             return .transactionFeeMin
         case .market:
@@ -724,35 +715,6 @@ extension SendViewModel: SendSummaryRoutable {
         openStep(step, stepAnimation: .moveAndFade, updateFee: updateFee)
     }
 
-    func send() {
-        guard let screenIdleStartTime else { return }
-
-        let feeValidityInterval: TimeInterval = 60
-        let now = Date()
-        if now.timeIntervalSince(screenIdleStartTime) <= feeValidityInterval {
-            sendModel.send()
-            return
-        }
-
-        sendModel.updateFees()
-            .sink { [weak self] completion in
-                if case .failure = completion {
-                    self?.alert = SendAlertBuilder.makeFeeRetryAlert {
-                        self?.send()
-                    }
-                }
-            } receiveValue: { [weak self] result in
-                self?.screenIdleStartTime = Date()
-
-                if let oldFee = result.oldFee, result.newFee > oldFee {
-                    self?.alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
-                } else {
-                    self?.sendModel.send()
-                }
-            }
-            .store(in: &bag)
-    }
-
     private func auxiliaryViewAnimatable(_ step: SendStep) -> AuxiliaryViewAnimatable? {
         switch step {
         case .amount:
@@ -769,15 +731,23 @@ extension SendViewModel: SendSummaryRoutable {
     }
 }
 
+// MARK: - SendModelUIDelegate
+
+extension SendViewModel: SendModelUIDelegate {
+    func showAlert(_ alert: AlertBinder) {
+        self.alert = alert
+    }
+}
+
+// MARK: - NotificationTapDelegate
+
 extension SendViewModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .empty:
             break
         case .refreshFee:
-            feeUpdateSubscription = sendModel.updateFees()
-                .mapToVoid()
-                .sink()
+            sendModel.updateFees()
         case .openFeeCurrency:
             openNetworkCurrency()
         case .leaveAmount(let amount, _):
@@ -808,7 +778,7 @@ extension SendViewModel: NotificationTapDelegate {
         }
 
         var newAmount = source - amount
-        if sendModel.isFeeIncluded, let feeValue = sendModel.feeValue?.amount.value {
+        if sendModel.isFeeIncluded, let feeValue = sendModel.feeValue?.value.value?.amount.value {
             newAmount = newAmount - feeValue
         }
 
@@ -898,39 +868,8 @@ private extension SendAmountCalculationType {
     }
 }
 
-struct SendTransactionSummaryDestinationHelper {
-    // TODO: Remove optional
-    func makeTransactionDescription(amount: Decimal?, fee: Decimal?, amountCurrencyId: String?, feeCurrencyId: String?) -> String? {
-        guard
-            let amount,
-            let fee,
-            let amountCurrencyId,
-            let feeCurrencyId
-        else {
-            return nil
-        }
-
-        let converter = BalanceConverter()
-        let amountInFiat = converter.convertToFiat(amount, currencyId: amountCurrencyId)
-        let feeInFiat = converter.convertToFiat(fee, currencyId: feeCurrencyId)
-
-        let totalInFiat: Decimal?
-        if let amountInFiat, let feeInFiat {
-            totalInFiat = amountInFiat + feeInFiat
-        } else {
-            totalInFiat = nil
-        }
-
-        let formattingOptions = BalanceFormattingOptions(
-            minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
-            maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
-            formatEpsilonAsLowestRepresentableValue: true,
-            roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
-        )
-        let formatter = BalanceFormatter()
-        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
-
-        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
+extension SendViewModel {
+    struct Initial {
+        let feeOptions: [FeeOption]
     }
 }

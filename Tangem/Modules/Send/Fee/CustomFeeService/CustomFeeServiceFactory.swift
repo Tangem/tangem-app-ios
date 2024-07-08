@@ -9,42 +9,27 @@
 import Foundation
 
 struct CustomFeeServiceFactory {
-    let input: CustomFeeServiceInput
-    let output: CustomFeeServiceOutput
-    let walletModel: WalletModel
+    private let walletModel: WalletModel
 
-    init(
-        input: CustomFeeServiceInput,
-        output: CustomFeeServiceOutput,
-        walletModel: WalletModel
-    ) {
-        self.input = input
-        self.output = output
+    init(walletModel: WalletModel) {
         self.walletModel = walletModel
     }
 
     func makeService() -> CustomFeeService? {
-        guard walletModel.supportsCustomFees else {
-            return nil
-        }
-
         let blockchain = walletModel.blockchainNetwork.blockchain
-        if case .bitcoin = blockchain, let bitcoinTransactionFeeCalculator = walletModel.bitcoinTransactionFeeCalculator {
+
+        if case .bitcoin = blockchain,
+           let bitcoinTransactionFeeCalculator = walletModel.bitcoinTransactionFeeCalculator {
             return CustomBitcoinFeeService(
-                input: input,
-                output: output,
+                feeTokenItem: walletModel.feeTokenItem,
                 bitcoinTransactionFeeCalculator: bitcoinTransactionFeeCalculator
             )
-        } else if blockchain.isEvm {
-            return CustomEvmFeeService(
-                input: input,
-                output: output,
-                blockchain: blockchain,
-                feeTokenItem: walletModel.feeTokenItem
-            )
-        } else {
-            assertionFailure("WHY")
-            return nil
         }
+
+        if blockchain.isEvm {
+            return CustomEvmFeeService(feeTokenItem: walletModel.feeTokenItem)
+        }
+
+        return nil
     }
 }

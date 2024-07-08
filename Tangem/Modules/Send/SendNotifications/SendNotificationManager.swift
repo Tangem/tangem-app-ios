@@ -10,11 +10,10 @@ import Combine
 import BlockchainSdk
 
 protocol SendNotificationManagerInput {
-    var feeValuePublisher: AnyPublisher<BlockchainSdk.Fee?, Never> { get }
-    var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
-    var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }
-    var customFeePublisher: AnyPublisher<Fee?, Never> { get }
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
+    var feeValues: AnyPublisher<[SendFee], Never> { get }
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
+
     var withdrawalNotification: AnyPublisher<WithdrawalNotification?, Never> { get }
     var amountError: AnyPublisher<Error?, Never> { get }
     var transactionCreationError: AnyPublisher<Error?, Never> { get }
@@ -111,50 +110,40 @@ class CommonSendNotificationManager: SendNotificationManager {
 
         let loadedFeeValues = input
             .feeValues
-            .compactMap { loadingFeeValues -> [FeeOption: Decimal]? in
-                if loadingFeeValues.values.contains(where: { $0.isLoading }) {
-                    return nil
-                }
+            .filter { !$0.allConforms { $0.value.isLoading } }
 
-                return loadingFeeValues.compactMapValues { $0.value?.amount.value }
-            }
-        let customFeeValue = input
-            .customFeePublisher
-            .compactMap {
-                $0?.amount.value
-            }
-        Publishers.CombineLatest3(input.selectedFeeOptionPublisher, loadedFeeValues, customFeeValue)
-            .sink { [weak self] selectedFeeOption, loadedFeeValues, customFee in
-                let customFeeTooLow: Bool
-                let customFeeTooHigh: Bool
+        Publishers.CombineLatest(input.selectedFeePublisher, loadedFeeValues)
+            .sink { [weak self] selectedFee, loadedFeeValues in
 
-                let highFeeOrderOfMagnitudeTrigger = 5
-                let highFeeOrderOfMagnitude: Int?
-                if selectedFeeOption == .custom,
-                   let lowestFee = loadedFeeValues[.slow],
-                   let highestFee = loadedFeeValues[.fast] {
-                    customFeeTooLow = customFee < lowestFee
-                    customFeeTooHigh = customFee > (highestFee * Decimal(highFeeOrderOfMagnitudeTrigger))
+                switch (selectedFee?.option, selectedFee?.value) {
+                case (.custom, .loaded(let customFee)):
+                    let highFeeOrderOfMagnitudeTrigger: Decimal = 5
+                    var customFeeTooLow: Bool = false
+                    var customFeeTooHigh: Bool = false
+                    var highFeeOrderOfMagnitude: Int = 0
 
-                    if customFeeTooHigh {
-                        highFeeOrderOfMagnitude = ((customFee / highestFee).rounded(roundingMode: .plain) as NSDecimalNumber).intValue
-                    } else {
-                        highFeeOrderOfMagnitude = nil
+                    if let lowestFee = loadedFeeValues.first(where: { $0.option == .slow })?.value.value,
+                       let highestFee = loadedFeeValues.first(where: { $0.option == .fast })?.value.value {
+                        customFeeTooLow = customFee.amount.value < lowestFee.amount.value
+                        customFeeTooHigh = customFee.amount.value > highestFee.amount.value * highFeeOrderOfMagnitudeTrigger
+
+                        let highFeeOrder = customFee.amount.value / highestFee.amount.value
+                        highFeeOrderOfMagnitude = highFeeOrder.intValue(roundingMode: .plain)
                     }
-                } else {
-                    customFeeTooLow = false
-                    customFeeTooHigh = false
-                    highFeeOrderOfMagnitude = nil
-                }
 
-                self?.updateEventVisibility(customFeeTooLow, event: .customFeeTooLow)
-                self?.updateEventVisibility(customFeeTooHigh, event: .customFeeTooHigh(orderOfMagnitude: highFeeOrderOfMagnitude ?? 0))
+                    self?.updateEventVisibility(customFeeTooLow, event: .customFeeTooLow)
+                    self?.updateEventVisibility(customFeeTooHigh, event: .customFeeTooHigh(orderOfMagnitude: highFeeOrderOfMagnitude))
+
+                default:
+                    self?.updateEventVisibility(false, event: .customFeeTooLow)
+                    self?.updateEventVisibility(false, event: .customFeeTooHigh(orderOfMagnitude: 0))
+                }
             }
             .store(in: &bag)
 
         Publishers.CombineLatest(
             input.isFeeIncludedPublisher,
-            input.feeValuePublisher.map(\.?.amount.value)
+            input.selectedFeePublisher.map { $0?.value.value?.amount.value }
         )
         .sink { [weak self] isFeeIncluded, feeValue in
             self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)

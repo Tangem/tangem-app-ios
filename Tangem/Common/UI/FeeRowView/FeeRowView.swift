@@ -59,7 +59,7 @@ struct FeeRowView: View {
                 .layoutPriority(1)
 
             if let fiatAmount {
-                Text("•")
+                Text(AppConstants.dotSign)
                     .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
                     .layoutPriority(3)
 

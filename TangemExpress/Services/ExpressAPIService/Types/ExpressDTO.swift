@@ -68,6 +68,7 @@ enum ExpressDTO {
             let imageSmall: String?
             let termsOfUse: String?
             let privacyPolicy: String?
+            let recommended: Bool?
         }
     }
 

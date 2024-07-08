@@ -26,7 +26,7 @@ class SendFeeSummaryViewModel: ObservableObject, Identifiable {
         case .loading:
             return ""
         case .loaded(let value):
-            return value?.cryptoFee
+            return value.cryptoFee
         case .failedToLoad:
             return AppConstants.dashSign
         }
@@ -38,7 +38,7 @@ class SendFeeSummaryViewModel: ObservableObject, Identifiable {
             // Corresponding UI will be displayed by the cryptoAmount field
             return nil
         case .loaded(let value):
-            return value?.fiatFee
+            return value.fiatFee
         }
     }
 
@@ -49,9 +49,9 @@ class SendFeeSummaryViewModel: ObservableObject, Identifiable {
     let feeOption: FeeOption
     private var animateTitleOnAppear: Bool = false
 
-    private let formattedFeeComponents: LoadingValue<FormattedFeeComponents?>
+    private let formattedFeeComponents: LoadingValue<FormattedFeeComponents>
 
-    init(title: String, feeOption: FeeOption, formattedFeeComponents: LoadingValue<FormattedFeeComponents?>) {
+    init(title: String, feeOption: FeeOption, formattedFeeComponents: LoadingValue<FormattedFeeComponents>) {
         self.title = title
         self.feeOption = feeOption
         self.formattedFeeComponents = formattedFeeComponents
