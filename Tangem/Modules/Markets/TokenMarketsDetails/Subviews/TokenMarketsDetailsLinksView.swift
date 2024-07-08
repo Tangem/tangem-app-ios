@@ -8,9 +8,11 @@
 
 import SwiftUI
 
-struct TokenMarketsDetailsLinkSection {
+struct TokenMarketsDetailsLinkSection: Identifiable {
     let title: String
     let chips: [ChipsData]
+
+    var id: String { title }
 }
 
 struct TokenMarketsDetailsLinksView: View {
@@ -24,50 +26,76 @@ struct TokenMarketsDetailsLinksView: View {
     )
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
             Text(Localization.marketsTokenDetailsLinks)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                .padding(.top, 2)
+
+            ForEach(sections.indexed(), id: \.1.id) { index, section in
+                VStack(alignment: .leading, spacing: 12) {
+                    Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 12) {
+                        ForEach(section.chips) { chipsData in
+                            ChipsView(
+                                text: chipsData.text,
+                                icon: chipsData.icon,
+                                style: chipsSettings,
+                                action: chipsData.action
+                            )
+                        }
+                    }
+                }
+            }
         }
         .defaultRoundedBackground()
     }
 }
 
-struct ChipsData {
+struct ChipsData: Identifiable {
     let text: String
     let icon: ChipsView.Icon
     let style: ChipsView.StyleSettings
+    let link: String
+    let action: () -> Void
+
+    var id: String {
+        link
+    }
 }
 
 struct ChipsView: View {
     let text: String
     let icon: Icon
     let style: StyleSettings
+    let action: () -> Void
 
     var body: some View {
-        HStack(spacing: 4) {
-            switch icon {
-            case .leading(let image):
-                image
-                    .renderingMode(.template)
-                    .foregroundStyle(style.iconColor)
+        Button(action: action) {
+            HStack(spacing: 4) {
+                switch icon {
+                case .leading(let image):
+                    stylizedIcon(icon: image)
 
-                textView
-            case .trailing(let image):
-                textView
+                    textView
+                case .trailing(let image):
+                    textView
 
-                image
-                    .renderingMode(.template)
-                    .foregroundStyle(style.iconColor)
+                    stylizedIcon(icon: image)
+                }
             }
+            .padding(.vertical, 6)
+            .padding(.horizontal, 12)
         }
-        .padding(.vertical, 6)
-        .padding(.horizontal, 12)
-
     }
 
     private var textView: some View {
         Text(text)
             .style(style.font, color: style.textColor)
+    }
+
+    private func stylizedIcon(icon: Image) -> some View {
+        icon
+            .renderingMode(.template)
+            .foregroundStyle(style.iconColor)
     }
 }
 
@@ -86,8 +114,36 @@ extension ChipsView {
 }
 
 #Preview {
-    TokenMarketsDetailsLinksView(sections: [
-        .init(title: "Official links",
-              chips: <#T##[ChipsData]#>)
+    let chipsSettings = ChipsView.StyleSettings(
+        iconColor: Colors.Icon.secondary,
+        textColor: Colors.Text.secondary,
+        backgroundColor: Colors.Field.focused,
+        font: Fonts.Bold.caption1
+    )
+
+    return TokenMarketsDetailsLinksView(sections: [
+        .init(
+            title: "Official Links",
+            chips: [
+                .init(
+                    text: "Website",
+                    icon: .leading(Assets.arrowRightUp16.image),
+                    style: chipsSettings,
+                    action: {}
+                ),
+                .init(
+                    text: "Whitepaper",
+                    icon: .leading(Assets.whitepaper16.image),
+                    style: chipsSettings,
+                    action: {}
+                ),
+                .init(
+                    text: "Forum",
+                    icon: .leading(Assets.arrowRightUp16.image),
+                    style: chipsSettings,
+                    action: {}
+                ),
+            ]
+        ),
     ])
 }
