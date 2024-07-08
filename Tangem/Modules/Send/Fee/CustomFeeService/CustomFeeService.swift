@@ -7,13 +7,22 @@
 //
 
 import Foundation
+import Combine
+import BlockchainSdk
 
 protocol CustomFeeService: AnyObject {
-    var customFeeDescription: String? { get }
-
+    func initialSetupCustomFee(_ fee: Fee)
     func inputFieldModels() -> [SendCustomFeeInputFieldModel]
+
+    func setup(input: CustomFeeServiceInput, output: CustomFeeServiceOutput)
 }
 
-protocol EditableCustomFeeService: CustomFeeService {
-    func setCustomFee(value: Decimal?)
+protocol CustomFeeServiceInput: AnyObject {
+    var cryptoAmountPublisher: AnyPublisher<Amount, Never> { get }
+    var destinationAddressPublisher: AnyPublisher<String, Never> { get }
+}
+
+protocol CustomFeeServiceOutput: AnyObject {
+    // There is no way to push the nil fee. It causes to deselect the `selected fee`
+    func customFeeDidChanged(_ customFee: Fee)
 }

@@ -78,4 +78,12 @@ struct SendModulesStepsBuilder {
             disabled: walletModel.quote == nil
         )
     }
+
+    func makeFeeOptions() -> [FeeOption] {
+        if walletModel.shouldShowFeeSelector {
+            return [.slow, .market, .fast]
+        }
+
+        return [.market]
+    }
 }

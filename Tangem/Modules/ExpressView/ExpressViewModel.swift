@@ -582,12 +582,16 @@ private extension ExpressViewModel {
                 return .none
             }
 
+            if selectedProvider.provider.recommended == true {
+                return .recommended
+            }
+
             return selectedProvider.isBest ? .bestRate : .none
         }()
 
         return ProviderRowViewModel(
             provider: expressProviderFormatter.mapToProvider(provider: selectedProvider.provider),
-            titleFormat: .prefixAndName,
+            titleFormat: .name,
             isDisabled: false,
             badge: badge,
             subtitles: [subtitle],
