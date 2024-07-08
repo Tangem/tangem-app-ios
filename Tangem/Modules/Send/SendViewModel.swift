@@ -770,10 +770,10 @@ extension SendViewModel: SendSummaryRoutable {
 }
 
 extension SendViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId) {}
-
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            break
         case .refreshFee:
             feeUpdateSubscription = sendModel.updateFees()
                 .mapToVoid()
@@ -792,10 +792,11 @@ extension SendViewModel: NotificationTapDelegate {
              .refresh,
              .goToProvider,
              .addHederaTokenAssociation,
-             .bookNow,
+             .openLink,
              .stake,
              .openFeedbackMail,
-             .openAppStoreReview:
+             .openAppStoreReview,
+             .swap:
             assertionFailure("Notification tap not handled")
         }
     }

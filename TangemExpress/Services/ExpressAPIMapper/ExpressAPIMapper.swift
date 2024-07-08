@@ -45,7 +45,8 @@ struct ExpressAPIMapper {
             type: provider.type,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
-            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:))
+            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
+            recommended: provider.recommended
         )
     }
 
