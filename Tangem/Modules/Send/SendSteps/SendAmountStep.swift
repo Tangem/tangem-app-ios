@@ -36,10 +36,11 @@ extension SendAmountStep: SendStep {
     var viewModel: SendAmountViewModel { _viewModel }
 
     func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(SendAmountView(
-            viewModel: viewModel,
-            namespace: .init(id: namespace, names: SendGeometryEffectNames())
-        )
+        AnyView(
+            SendAmountView(
+                viewModel: viewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         )
     }
 

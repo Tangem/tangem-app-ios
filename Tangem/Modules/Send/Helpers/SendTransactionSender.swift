@@ -51,6 +51,9 @@ extension CommonSendTransactionSender: SendTransactionSender {
 
         return walletModel
             .send(transaction, signer: transactionSigner)
+            .handleEvents(receiveCompletion: { [weak self] _ in
+                self?._isSending.send(false)
+            })
             .withWeakCaptureOf(self)
             .map { sender, result in
                 sender._isSending.send(false)

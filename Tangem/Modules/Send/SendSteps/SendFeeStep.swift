@@ -95,18 +95,11 @@ struct FeeAnalyticsParameterBuilder {
             return .transactionFeeFixed
         }
 
-        switch selectedFee {
-        case .none:
+        guard let selectedFee else {
             assertionFailure("selectedFeeTypeAnalyticsParameter not found")
             return .null
-        case .slow:
-            return .transactionFeeMin
-        case .market:
-            return .transactionFeeNormal
-        case .fast:
-            return .transactionFeeMax
-        case .custom:
-            return .transactionFeeCustom
         }
+
+        return selectedFee.analyticsValue
     }
 }

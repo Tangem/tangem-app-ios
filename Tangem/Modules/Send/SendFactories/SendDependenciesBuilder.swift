@@ -61,23 +61,6 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeSuggestedWallets(userWalletModels: [UserWalletModel]) -> [SendDestinationViewModel.Settings.SuggestedWallet] {
-        userWalletModels.reduce([]) { result, userWalletModel in
-            let walletModels = userWalletModel.walletModelsManager.walletModels
-            return result + walletModels
-                .filter { walletModel in
-                    let ignoredAddresses = self.walletModel.wallet.addresses.map { $0.value }
-
-                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId &&
-                        walletModel.isMainToken &&
-                        !ignoredAddresses.contains(walletModel.defaultAddress)
-                }
-                .map { walletModel in
-                    (name: userWalletModel.name, address: walletModel.defaultAddress)
-                }
-        }
-    }
-
     func makeCurrencyPickerData() -> SendCurrencyPickerData {
         SendCurrencyPickerData(
             cryptoIconURL: makeTokenIconInfo().imageURL,
@@ -109,10 +92,6 @@ struct SendDependenciesBuilder {
 
     func makeInformationRelevanceService(sendFeeInteractor: SendFeeInteractor) -> InformationRelevanceService {
         CommonInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
-    }
-
-    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
-        SendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 
     func makeSendTransactionSender() -> SendTransactionSender {

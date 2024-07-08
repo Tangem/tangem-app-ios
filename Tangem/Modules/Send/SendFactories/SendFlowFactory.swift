@@ -20,9 +20,9 @@ struct SendFlowFactory {
 
     func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
         let builder = SendDependenciesBuilder(userWalletName: userWalletModel.name, walletModel: walletModel, userWalletModel: userWalletModel)
+        let sendDestinationStepBuilder = SendDestinationStepBuilder(walletModel: walletModel)
         let sendAmountStepBuilder = SendAmountStepBuilder(userWalletModel: userWalletModel, walletModel: walletModel, builder: builder)
-        let sendDestinationStepBuilder = SendDestinationStepBuilder(walletModel: walletModel, builder: builder)
-        let sendFeeStepBuilder = SendFeeStepBuilder(userWalletModel: userWalletModel, walletModel: walletModel, builder: builder)
+        let sendFeeStepBuilder = SendFeeStepBuilder(walletModel: walletModel, builder: builder)
         let sendSummaryStepBuilder = SendSummaryStepBuilder(userWalletModel: userWalletModel, walletModel: walletModel, builder: builder)
         let sendFinishStepBuilder = SendFinishStepBuilder(userWalletModel: userWalletModel, walletModel: walletModel, builder: builder)
 

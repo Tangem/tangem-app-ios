@@ -9,7 +9,7 @@
 import Foundation
 
 struct SendAmountStepBuilder {
-    typealias IO = SendAmountInput & SendAmountOutput
+    typealias IO = (input: SendAmountInput, output: SendAmountOutput)
     typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
 
     let userWalletModel: UserWalletModel
@@ -18,11 +18,7 @@ struct SendAmountStepBuilder {
 
     func makeSendAmountStep(io: IO, sendFeeInteractor: any SendFeeInteractor) -> ReturnValue {
         let interactor = makeSendAmountInteractor(io: io)
-
-        let viewModel = makeSendAmountViewModel(
-            interactor: interactor,
-            predefinedAmount: nil
-        )
+        let viewModel = makeSendAmountViewModel(interactor: interactor)
 
         let step = SendAmountStep(
             viewModel: viewModel,
@@ -37,18 +33,14 @@ struct SendAmountStepBuilder {
 // MARK: - Private
 
 private extension SendAmountStepBuilder {
-    func makeSendAmountViewModel(
-        interactor: SendAmountInteractor,
-        predefinedAmount: Decimal?
-    ) -> SendAmountViewModel {
+    func makeSendAmountViewModel(interactor: SendAmountInteractor) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
             userWalletName: userWalletModel.name,
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
             balanceValue: walletModel.balanceValue ?? 0,
             balanceFormatted: walletModel.balance,
-            currencyPickerData: builder.makeCurrencyPickerData(),
-            predefinedAmount: predefinedAmount
+            currencyPickerData: builder.makeCurrencyPickerData()
         )
 
         return SendAmountViewModel(initial: initital, interactor: interactor)
@@ -56,8 +48,8 @@ private extension SendAmountStepBuilder {
 
     private func makeSendAmountInteractor(io: IO) -> SendAmountInteractor {
         CommonSendAmountInteractor(
-            input: io,
-            output: io,
+            input: io.input,
+            output: io.output,
             tokenItem: walletModel.tokenItem,
             balanceValue: walletModel.balanceValue ?? 0,
             validator: makeSendAmountValidator(),

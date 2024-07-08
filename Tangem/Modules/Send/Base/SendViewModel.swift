@@ -69,7 +69,6 @@ final class SendViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private let initial: Initial
     private let sendModel: SendModel
     private let sendType: SendType
     private let steps: [SendStepType]
@@ -80,6 +79,7 @@ final class SendViewModel: ObservableObject {
     private let notificationManager: SendNotificationManager
     private let sendStepParameters: SendStepType.Parameters
     private let keyboardVisibilityService: KeyboardVisibilityService
+    private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     private weak var coordinator: SendRoutable?
 
@@ -126,7 +126,6 @@ final class SendViewModel: ObservableObject {
     }
 
     init(
-        initial: Initial,
         walletInfo: SendWalletInfo,
         walletModel: WalletModel,
         userWalletModel: UserWalletModel,
@@ -135,6 +134,7 @@ final class SendViewModel: ObservableObject {
         notificationManager: SendNotificationManager,
         sendFeeInteractor: SendFeeInteractor,
         keyboardVisibilityService: KeyboardVisibilityService,
+        feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder,
         sendAmountViewModel: SendAmountViewModel,
         sendDestinationViewModel: SendDestinationViewModel,
         sendFeeViewModel: SendFeeViewModel,
@@ -142,7 +142,6 @@ final class SendViewModel: ObservableObject {
         sendFinishViewModel: SendFinishViewModel,
         coordinator: SendRoutable
     ) {
-        self.initial = initial
         self.walletInfo = walletInfo
         self.coordinator = coordinator
         self.sendType = sendType
@@ -151,6 +150,7 @@ final class SendViewModel: ObservableObject {
         self.sendModel = sendModel
         self.notificationManager = notificationManager
         self.keyboardVisibilityService = keyboardVisibilityService
+        self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
         self.sendAmountViewModel = sendAmountViewModel
         self.sendDestinationViewModel = sendDestinationViewModel
         self.sendFeeViewModel = sendFeeViewModel
@@ -591,23 +591,7 @@ final class SendViewModel: ObservableObject {
     }
 
     private func selectedFeeTypeAnalyticsParameter() -> Analytics.ParameterValue {
-        if initial.feeOptions.count == 1 {
-            return .transactionFeeFixed
-        }
-
-        switch sendModel.selectedFee?.option {
-        case .none:
-            assertionFailure("selectedFeeTypeAnalyticsParameter not found")
-            return .null
-        case .slow:
-            return .transactionFeeMin
-        case .market:
-            return .transactionFeeNormal
-        case .fast:
-            return .transactionFeeMax
-        case .custom:
-            return .transactionFeeCustom
-        }
+        feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: sendModel.selectedFee?.option)
     }
 
     private func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
@@ -812,11 +796,5 @@ private extension SendAmountCalculationType {
         case .crypto: .token
         case .fiat: .selectedCurrencyApp
         }
-    }
-}
-
-extension SendViewModel {
-    struct Initial {
-        let feeOptions: [FeeOption]
     }
 }

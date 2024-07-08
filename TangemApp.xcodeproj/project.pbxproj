@@ -1525,6 +1525,7 @@
 		EFC84ADC2C37081C00546882 /* EthereumNetworkProvider+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84ADB2C37081B00546882 /* EthereumNetworkProvider+.swift */; };
 		EFC84AC02C35CB2000546882 /* SendFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84ABF2C35CB2000546882 /* SendFinishView.swift */; };
 		EFC84AC22C35CB2900546882 /* SendFinishViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84AC12C35CB2900546882 /* SendFinishViewModel.swift */; };
+		EFC84ADC2C37081C00546882 /* EthereumNetworkProvider+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84ADB2C37081B00546882 /* EthereumNetworkProvider+.swift */; };
 		EFC84B092C37FAB500546882 /* SendAmountStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84AFF2C37FAB500546882 /* SendAmountStepBuilder.swift */; };
 		EFC84B0A2C37FAB500546882 /* SendBaseStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B002C37FAB500546882 /* SendBaseStepBuilder.swift */; };
 		EFC84B0B2C37FAB500546882 /* SendDestinationStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B012C37FAB500546882 /* SendDestinationStepBuilder.swift */; };
@@ -1534,8 +1535,6 @@
 		EFC84B0F2C37FAB500546882 /* SendFlowFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B062C37FAB500546882 /* SendFlowFactory.swift */; };
 		EFC84B102C37FAB500546882 /* SendDependenciesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B072C37FAB500546882 /* SendDependenciesBuilder.swift */; };
 		EFC84B262C37FBB300546882 /* SendStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1C2C37FBB200546882 /* SendStep.swift */; };
-		EFC84B272C37FBB300546882 /* SendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1D2C37FBB200546882 /* SendStepsManager.swift */; };
-		EFC84B282C37FBB300546882 /* SendStepsManagerInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B1E2C37FBB200546882 /* SendStepsManagerInputOutput.swift */; };
 		EFC84B292C37FBB300546882 /* SendAmountStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B202C37FBB200546882 /* SendAmountStep.swift */; };
 		EFC84B2A2C37FBB300546882 /* SendDestinationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B212C37FBB200546882 /* SendDestinationStep.swift */; };
 		EFC84B2B2C37FBB300546882 /* SendFeeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B222C37FBB200546882 /* SendFeeStep.swift */; };
@@ -3360,6 +3359,7 @@
 		EFC84ADB2C37081B00546882 /* EthereumNetworkProvider+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EthereumNetworkProvider+.swift"; sourceTree = "<group>"; };
 		EFC84ABF2C35CB2000546882 /* SendFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFinishView.swift; sourceTree = "<group>"; };
 		EFC84AC12C35CB2900546882 /* SendFinishViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFinishViewModel.swift; sourceTree = "<group>"; };
+		EFC84ADB2C37081B00546882 /* EthereumNetworkProvider+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EthereumNetworkProvider+.swift"; sourceTree = "<group>"; };
 		EFC84AFF2C37FAB500546882 /* SendAmountStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmountStepBuilder.swift; sourceTree = "<group>"; };
 		EFC84B002C37FAB500546882 /* SendBaseStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendBaseStepBuilder.swift; sourceTree = "<group>"; };
 		EFC84B012C37FAB500546882 /* SendDestinationStepBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDestinationStepBuilder.swift; sourceTree = "<group>"; };
@@ -3369,8 +3369,6 @@
 		EFC84B062C37FAB500546882 /* SendFlowFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFlowFactory.swift; sourceTree = "<group>"; };
 		EFC84B072C37FAB500546882 /* SendDependenciesBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDependenciesBuilder.swift; sourceTree = "<group>"; };
 		EFC84B1C2C37FBB200546882 /* SendStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStep.swift; sourceTree = "<group>"; };
-		EFC84B1D2C37FBB200546882 /* SendStepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManager.swift; sourceTree = "<group>"; };
-		EFC84B1E2C37FBB200546882 /* SendStepsManagerInputOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManagerInputOutput.swift; sourceTree = "<group>"; };
 		EFC84B202C37FBB200546882 /* SendAmountStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmountStep.swift; sourceTree = "<group>"; };
 		EFC84B212C37FBB200546882 /* SendDestinationStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDestinationStep.swift; sourceTree = "<group>"; };
 		EFC84B222C37FBB200546882 /* SendFeeStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeeStep.swift; sourceTree = "<group>"; };
@@ -8891,11 +8889,11 @@
 			isa = PBXGroup;
 			children = (
 				EFC84B002C37FAB500546882 /* SendBaseStepBuilder.swift */,
-				EFC84AFF2C37FAB500546882 /* SendAmountStepBuilder.swift */,
 				EFC84B012C37FAB500546882 /* SendDestinationStepBuilder.swift */,
+				EFC84AFF2C37FAB500546882 /* SendAmountStepBuilder.swift */,
 				EFC84B022C37FAB500546882 /* SendFeeStepBuilder.swift */,
-				EFC84B032C37FAB500546882 /* SendFinishStepBuilder.swift */,
 				EFC84B042C37FAB500546882 /* SendSummaryStepBuilder.swift */,
+				EFC84B032C37FAB500546882 /* SendFinishStepBuilder.swift */,
 			);
 			path = StepBuilders;
 			sourceTree = "<group>";
@@ -8914,8 +8912,6 @@
 			isa = PBXGroup;
 			children = (
 				EFC84B1C2C37FBB200546882 /* SendStep.swift */,
-				EFC84B1D2C37FBB200546882 /* SendStepsManager.swift */,
-				EFC84B1E2C37FBB200546882 /* SendStepsManagerInputOutput.swift */,
 			);
 			path = SendStepsManager;
 			sourceTree = "<group>";
@@ -10956,7 +10952,6 @@
 				DCF2369129924C0900FE1855 /* AnalyticsContext.swift in Sources */,
 				DAC53CFF27BE63830027147D /* FinishStoryPage.swift in Sources */,
 				DC295B482861C4BE006CB7B6 /* DetailsCoordinator.swift in Sources */,
-				EFC84B272C37FBB300546882 /* SendStepsManager.swift in Sources */,
 				DC7D3A0B29E07829007BCD23 /* TwinTangemSdkFactory.swift in Sources */,
 				EF8DBCEC2C061B93009072CF /* StakingRepositoryProxy.swift in Sources */,
 				B02275D72701D9FB004C752B /* PreparePrimaryCardTask.swift in Sources */,
@@ -11176,7 +11171,6 @@
 				DC5022AC2B98FEB10085A19F /* UserWalletSerializable.swift in Sources */,
 				B04570942B2B071700B0794F /* TotalBalance.swift in Sources */,
 				B0E1564B26B941A4005B33E4 /* SingleCardOnboardingView.swift in Sources */,
-				EFC84B282C37FBB300546882 /* SendStepsManagerInputOutput.swift in Sources */,
 				DC37A0772A584BD000C2A3F2 /* WalletModelsManagerMock.swift in Sources */,
 				EFAD02492A8274D500E9B959 /* CoinsResponseMapper.swift in Sources */,
 				DA81CF302B060A5D008877F1 /* SendSuggestedDestinationViewModel.swift in Sources */,

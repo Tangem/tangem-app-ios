@@ -68,9 +68,9 @@ class SendAmountViewModel: ObservableObject, Identifiable {
 
         bind()
 
-        if let predefinedAmount = initial.predefinedAmount {
-            setExternalAmount(predefinedAmount)
-        }
+//        if let predefinedAmount = initial.predefinedAmount {
+//            setExternalAmount(predefinedAmount)
+//        }
     }
 
     func onAppear() {
@@ -159,7 +159,5 @@ extension SendAmountViewModel {
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
-
-        let predefinedAmount: Decimal?
     }
 }

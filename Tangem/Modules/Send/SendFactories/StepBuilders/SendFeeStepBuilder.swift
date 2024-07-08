@@ -9,10 +9,9 @@
 import Foundation
 
 struct SendFeeStepBuilder {
-    typealias IO = SendFeeInput & SendFeeOutput
+    typealias IO = (input: SendFeeInput, output: SendFeeOutput)
     typealias ReturnValue = (step: SendFeeStep, interactor: SendFeeInteractor)
 
-    let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
@@ -58,8 +57,8 @@ private extension SendFeeStepBuilder {
     private func makeSendFeeInteractor(io: IO) -> SendFeeInteractor {
         let customFeeService = CustomFeeServiceFactory(walletModel: walletModel).makeService()
         let interactor = CommonSendFeeInteractor(
-            input: io,
-            output: io,
+            input: io.input,
+            output: io.output,
             provider: makeSendFeeProvider(),
             defaultFeeOptions: builder.makeFeeOptions(),
             customFeeService: customFeeService

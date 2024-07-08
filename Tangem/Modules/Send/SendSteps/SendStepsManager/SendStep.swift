@@ -20,21 +20,20 @@ protocol SendStep {
 
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
 
+    // We're forced to use `AnyView` here because
+    // `associatedtype View` will return the `any View` which
+    // will not possible to use as the SwiftUI View
     func makeView(namespace: Namespace.ID) -> AnyView
     func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView
-    func makeCompactView(namespace: Namespace.ID) -> AnyView
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool
+
     func willAppear(previous step: any SendStep)
     func willClose(next step: any SendStep)
 }
 
 extension SendStep {
     var subtitle: String? { nil }
-
-    func makeCompactView(namespace: Namespace.ID) -> AnyView {
-        AnyView(EmptyView())
-    }
 
     func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView {
         AnyView(EmptyView())
@@ -56,8 +55,8 @@ enum SendStepType: String, Hashable {
     case finish
 }
 
+// TODO: The extension will be removed https://tangem.atlassian.net/browse/IOS-7195
 extension SendStepType {
-    // TODO: Will be removed https://tangem.atlassian.net/browse/IOS-7195
     struct Parameters {
         let currencyName: String
         let walletName: String

@@ -26,7 +26,7 @@ class CommonSendFeeInteractor {
     private weak var output: SendFeeOutput?
 
     private let provider: SendFeeProvider
-    private var customFeeService: CustomFeeService?
+    private let customFeeService: CustomFeeService?
 
     private let _cryptoAmount: CurrentValueSubject<Amount?, Never> = .init(nil)
     private let _destination: CurrentValueSubject<String?, Never> = .init(nil)
@@ -110,7 +110,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 
     var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
         guard let input else {
-            assertionFailure("SendFeeInput not found")
+            assertionFailure("SendFeeInput is not found")
             return Empty().eraseToAnyPublisher()
         }
 

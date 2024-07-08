@@ -10,12 +10,12 @@ import Foundation
 import BlockchainSdk
 
 struct SendDestinationStepBuilder {
-    typealias IO = SendDestinationInput & SendDestinationOutput
+    typealias IO = (input: SendDestinationInput, output: SendDestinationOutput)
     typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor)
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+
     let walletModel: WalletModel
-    let builder: SendDependenciesBuilder
 
     func makeSendDestinationStep(
         io: IO,
@@ -52,8 +52,9 @@ private extension SendDestinationStepBuilder {
         addressTextViewHeightModel: AddressTextViewHeightModel
     ) -> SendDestinationViewModel {
         let tokenItem = walletModel.tokenItem
-        let suggestedWallets = builder.makeSuggestedWallets(userWalletModels: userWalletRepository.models)
+        let suggestedWallets = makeSuggestedWallets()
         let additionalFieldType = SendAdditionalFields.fields(for: tokenItem.blockchain)
+
         let settings = SendDestinationViewModel.Settings(
             networkName: tokenItem.networkName,
             additionalFieldType: additionalFieldType,
@@ -66,16 +67,13 @@ private extension SendDestinationStepBuilder {
             addressTextViewHeightModel: addressTextViewHeightModel
         )
 
-        //        let address = sendType.predefinedDestination.map { SendAddress(value: $0, source: .sellProvider) }
-        //        viewModel.setExternally(address: address, additionalField: sendType.predefinedTag)
-
         return viewModel
     }
 
     func makeSendDestinationInteractor(io: IO) -> SendDestinationInteractor {
         CommonSendDestinationInteractor(
-            input: io,
-            output: io,
+            input: io.input,
+            output: io.output,
             validator: makeSendDestinationValidator(),
             transactionHistoryProvider: makeSendDestinationTransactionHistoryProvider(),
             transactionHistoryMapper: makeTransactionHistoryMapper(),
@@ -111,22 +109,21 @@ private extension SendDestinationStepBuilder {
             showSign: false
         )
     }
-}
 
-private extension Blockchain {
-    var supportsCompound: Bool {
-        switch self {
-        case .bitcoin,
-             .bitcoinCash,
-             .litecoin,
-             .dogecoin,
-             .dash,
-             .kaspa,
-             .ravencoin,
-             .ducatus:
-            return true
-        default:
-            return false
+    func makeSuggestedWallets() -> [SendDestinationViewModel.Settings.SuggestedWallet] {
+        userWalletRepository.models.reduce([]) { result, userWalletModel in
+            let walletModels = userWalletModel.walletModelsManager.walletModels
+            return result + walletModels
+                .filter { walletModel in
+                    let ignoredAddresses = self.walletModel.wallet.addresses.map { $0.value }
+
+                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId &&
+                        walletModel.isMainToken &&
+                        !ignoredAddresses.contains(walletModel.defaultAddress)
+                }
+                .map { walletModel in
+                    (name: userWalletModel.name, address: walletModel.defaultAddress)
+                }
         }
     }
 }

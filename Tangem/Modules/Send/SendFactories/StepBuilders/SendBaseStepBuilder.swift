@@ -29,10 +29,10 @@ struct SendBaseStepBuilder {
             router: router
         )
 
-        let fee = sendFeeStepBuilder.makeFeeSendStep(io: sendModel, notificationManager: notificationManager, router: router)
-        let amount = sendAmountStepBuilder.makeSendAmountStep(io: sendModel, sendFeeInteractor: fee.interactor)
+        let fee = sendFeeStepBuilder.makeFeeSendStep(io: (input: sendModel, output: sendModel), notificationManager: notificationManager, router: router)
+        let amount = sendAmountStepBuilder.makeSendAmountStep(io: (input: sendModel, output: sendModel), sendFeeInteractor: fee.interactor)
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
-            io: sendModel,
+            io: (input: sendModel, output: sendModel),
             sendAmountInteractor: amount.interactor,
             sendFeeInteractor: fee.interactor,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -40,7 +40,7 @@ struct SendBaseStepBuilder {
         )
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-            io: sendModel,
+            io: (input: sendModel, output: sendModel),
             sendTransactionSender: sendTransactionSender,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
@@ -79,7 +79,6 @@ struct SendBaseStepBuilder {
         finish.setup(sendFinishInput: sendModel)
 
         return SendViewModel(
-            initial: .init(feeOptions: builder.makeFeeOptions()),
             walletInfo: builder.makeSendWalletInfo(),
             walletModel: walletModel,
             userWalletModel: userWalletModel,
@@ -88,6 +87,7 @@ struct SendBaseStepBuilder {
             notificationManager: notificationManager,
             sendFeeInteractor: fee.interactor,
             keyboardVisibilityService: KeyboardVisibilityService(),
+            feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder(),
             sendAmountViewModel: amount.step.viewModel,
             sendDestinationViewModel: destination.step.viewModel,
             sendFeeViewModel: fee.step.viewModel,

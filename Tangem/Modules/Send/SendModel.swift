@@ -189,7 +189,7 @@ class SendModel {
                 guard let self else { return }
 
                 if case .failure(let error) = completion,
-                   !error.toTangemSdkError().isUserCancelled {
+                   !error.error.toTangemSdkError().isUserCancelled {
                     _sendError.send(error)
                 }
             } receiveValue: { [weak self] result in
