@@ -35,7 +35,6 @@ extension SendFinishStep: SendStep {
     func makeView(namespace: Namespace.ID) -> AnyView {
         AnyView(
             SendFinishView(viewModel: viewModel, namespace: namespace)
-                .onAppear(perform: onAppear)
         )
     }
 

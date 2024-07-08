@@ -26,9 +26,7 @@ struct SendFinishStepBuilder {
 
         let step = SendFinishStep(
             viewModel: viewModel,
-            tokenItem: walletModel.tokenItem,
-            sendFeeInteractor: sendFeeInteractor,
-            feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder()
+            sendFeeInteractor: sendFeeInteractor
         )
 
         return step

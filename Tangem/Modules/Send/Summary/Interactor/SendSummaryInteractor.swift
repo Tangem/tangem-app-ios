@@ -31,9 +31,8 @@ class CommonSendSummaryInteractor {
         self.output = output
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
-
-        bind(input: input)
     }
+}
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
     var isSending: AnyPublisher<Bool, Never> {
@@ -41,20 +40,22 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
     }
 
     var transactionDescription: AnyPublisher<String?, Never> {
-        guard let input else { return Empty().eraseToAnyPublisher() }
+        guard let input else {
+            assertionFailure("SendFeeInput is not found")
+            return Empty().eraseToAnyPublisher()
+        }
 
         return input
             .transactionPublisher
             .withWeakCaptureOf(self)
-            .sink { interactor, transaction in
-                let description = transaction.flatMap { transaction in
+            .map { interactor, transaction in
+                transaction.flatMap { transaction in
                     interactor.descriptionBuilder.makeDescription(
                         amount: transaction.amount.value,
                         fee: transaction.fee.amount.value
                     )
                 }
-
-                interactor._transactionDescription.send(description)
             }
+            .eraseToAnyPublisher()
     }
 }
