@@ -2,7 +2,7 @@
 //  MarketsTokensNetworkSelectorItemViewModel.swift
 //  Tangem
 //
-//  Created by Andrey Chukavin on 13.09.2023.
+//  Created by Skibin Alexander on 13.09.2023.
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
@@ -10,58 +10,91 @@ import Foundation
 import SwiftUI
 import Combine
 
-final class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject {
-    let id: Int
-    var iconName: String { selectedPublisher ? _iconNameSelected : _iconName }
-    var isSelected: Binding<Bool>
-    let isAvailable: Bool
+class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject {
+    @Published var isSelected: Bool
 
-    let networkName: String
+    let id: UUID = .init()
+    let tokenItem: TokenItem
+    let isReadonly: Bool
+    let position: ItemPosition
     let isMain: Bool
-    let tokenTypeName: String?
-    let contractAddress: String?
+    let networkName: String
+    let contractName: String?
+    let hasContextMenu: Bool
+    let contractNameForegroundColor: Color
 
-    @Published var selectedPublisher: Bool
+    var networkNameForegroundColor: Color {
+        guard !isReadonly else {
+            return Colors.Text.disabled
+        }
 
-    private let _iconName: String
-    private let _iconNameSelected: String
+        return isSelected ? Colors.Text.primary1 : Colors.Text.secondary
+    }
+
+    var checkedImage: Image {
+        guard !isReadonly else {
+            return Assets.Checked.disabled.image
+        }
+
+        return isSelected ? Assets.Checked.on.image : Assets.Checked.off.image
+    }
+
+    var iconImageName: String {
+        guard !isReadonly else {
+            return imageName
+        }
+
+        return isSelected ? imageNameSelected : imageName
+    }
+
+    private var isSelectedBinding: Binding<Bool>
     private var bag = Set<AnyCancellable>()
 
-    init(
-        id: Int,
-        isMain: Bool,
-        iconName: String,
-        iconNameSelected: String,
-        networkName: String,
-        tokenTypeName: String?,
-        contractAddress: String?,
-        isSelected: Binding<Bool>,
-        isAvailable: Bool = true
-    ) {
-        self.id = id
-        self.isMain = isMain
-        _iconName = iconName
-        _iconNameSelected = iconNameSelected
-        self.networkName = networkName
-        self.tokenTypeName = tokenTypeName
-        self.contractAddress = contractAddress
-        self.isSelected = isSelected
-        self.isAvailable = isAvailable
+    private let imageName: String
+    private let imageNameSelected: String
 
-        selectedPublisher = isSelected.wrappedValue
+    // MARK: - Init
 
-        $selectedPublisher
+    init(tokenItem: TokenItem, isReadonly: Bool, isSelected: Binding<Bool>, position: ItemPosition = .middle) {
+        self.tokenItem = tokenItem
+        self.isReadonly = isReadonly
+        isSelectedBinding = isSelected
+        self.position = position
+        isMain = tokenItem.isBlockchain
+        imageName = tokenItem.blockchain.iconName
+        imageNameSelected = tokenItem.blockchain.iconNameFilled
+        networkName = tokenItem.blockchain.displayName
+        contractName = tokenItem.contractName
+        hasContextMenu = tokenItem.isToken
+        contractNameForegroundColor = tokenItem.isBlockchain ? Colors.Text.accent : Colors.Text.tertiary
+
+        self.isSelected = isSelected.wrappedValue
+
+        $isSelected
             .dropFirst()
-            .sink { [weak self] value in
-                self?.isSelected.wrappedValue = value
-            }
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, value in
+                viewModel.isSelectedBinding.wrappedValue = value
+            })
             .store(in: &bag)
     }
 
-    // MARK: - Implementation
-
     func updateSelection(with isSelected: Binding<Bool>) {
-        self.isSelected = isSelected
-        selectedPublisher = isSelected.wrappedValue
+        isSelectedBinding = isSelected
+        self.isSelected = isSelected.wrappedValue
+    }
+
+    func onSelectedTapAction() {
+        isSelected.toggle()
+    }
+}
+
+extension MarketsTokensNetworkSelectorItemViewModel: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    static func == (lhs: MarketsTokensNetworkSelectorItemViewModel, rhs: MarketsTokensNetworkSelectorItemViewModel) -> Bool {
+        lhs.id == rhs.id
     }
 }

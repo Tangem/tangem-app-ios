@@ -18,7 +18,9 @@ struct MarketsTokensNetworkSelectorView: View {
                     VStack(spacing: 14) {
                         MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
 
-                        networksContent
+                        contentView
+
+                        bottomView
                     }
                     .padding(.horizontal, 16)
                 }
@@ -29,7 +31,7 @@ struct MarketsTokensNetworkSelectorView: View {
         }
     }
 
-    private var networksContent: some View {
+    private var contentView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             VStack(alignment: .leading, spacing: .zero) {
                 Text(Localization.marketsSelectWallet)
@@ -50,16 +52,11 @@ struct MarketsTokensNetworkSelectorView: View {
     private var tokenInfoView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(spacing: 12) {
-                NetworkIcon(
-                    imageName: viewModel.coinIconName,
-                    isActive: false,
-                    isMainIndicatorVisible: false,
-                    size: CGSize(bothDimensions: 36)
-                )
+                IconView(url: viewModel.coinIconURL, size: .init(bothDimensions: 36), forceKingfisher: true)
 
-                VStack {
+                VStack(alignment: .leading) {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text(viewModel.coinIconName)
+                        Text(viewModel.coinName)
                             .lineLimit(1)
                             .layoutPriority(-1)
                             .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
@@ -71,12 +68,25 @@ struct MarketsTokensNetworkSelectorView: View {
                         Spacer()
                     }
 
-                    Text("Available networks")
+                    Text(Localization.marketsAvailableNetworks)
                         .style(.footnote, color: Colors.Text.secondary)
                 }
             }
         }
         .padding(.vertical, 12)
+    }
+
+    private var bottomView: some View {
+        VStack(spacing: 14) {
+            MarketsGeneratedAddressView()
+
+            MainButton(
+                title: Localization.commonContinue,
+                icon: .leading(Assets.tangemIcon)
+            ) {
+                viewModel.generatedAddressOnTapAction()
+            }
+        }
     }
 }
 

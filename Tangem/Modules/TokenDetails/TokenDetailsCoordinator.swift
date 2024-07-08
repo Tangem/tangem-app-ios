@@ -76,8 +76,8 @@ class TokenDetailsCoordinator: CoordinatorObject {
         )
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
-        ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem))
-        : nil
+            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem))
+            : nil
 
         tokenDetailsViewModel = .init(
             userWalletModel: options.userWalletModel,

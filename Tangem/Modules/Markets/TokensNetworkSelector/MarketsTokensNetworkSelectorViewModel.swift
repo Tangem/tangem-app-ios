@@ -38,11 +38,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     // MARK: - Computed Properties
 
-    var coinIconName: String {
-        coinModel.name.lowercased()
+    var coinIconURL: URL {
+        IconURLBuilder().tokenIconURL(id: coinModel.id)
     }
 
-    var coinNetworkName: String {
+    var coinName: String {
         coinModel.name
     }
 
@@ -82,17 +82,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
     }
 
-    func displayNonNativeNetworkAlert() {
-        Analytics.log(.manageTokensNoticeNonNativeNetworkClicked)
-
-        let okButton = Alert.Button.default(Text(Localization.commonOk)) {}
-
-        alert = AlertBinder(alert: Alert(
-            title: Text(""),
-            message: Text(Localization.manageTokensNetworkSelectorNonNativeInfo),
-            dismissButton: okButton
-        ))
-    }
+    func generatedAddressOnTapAction() {}
 
     // MARK: - Private Implementation
 
@@ -111,17 +101,13 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     private func reloadSelectorItemsFromTokenItems() {
         tokenItemViewModels = tokenItems
-            .map {
-                .init(
-                    id: $0.hashValue,
-                    isMain: $0.isBlockchain,
-                    iconName: $0.blockchain.iconName,
-                    iconNameSelected: $0.blockchain.iconNameFilled,
-                    networkName: $0.networkName,
-                    tokenTypeName: nil,
-                    contractAddress: $0.contractAddress,
-                    isSelected: bindSelection($0),
-                    isAvailable: canTokenItemBeToggled
+            .enumerated()
+            .map { index, element in
+                MarketsTokensNetworkSelectorItemViewModel(
+                    tokenItem: element,
+                    isReadonly: isAdded(element),
+                    isSelected: bindSelection(element),
+                    position: .init(with: index, total: tokenItems.count)
                 )
             }
     }
