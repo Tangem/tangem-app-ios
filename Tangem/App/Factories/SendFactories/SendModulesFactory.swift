@@ -251,21 +251,3 @@ struct SendModulesFactory {
         )
     }
 }
-
-private extension Blockchain {
-    var supportsCompound: Bool {
-        switch self {
-        case .bitcoin,
-             .bitcoinCash,
-             .litecoin,
-             .dogecoin,
-             .dash,
-             .kaspa,
-             .ravencoin,
-             .ducatus:
-            return true
-        default:
-            return false
-        }
-    }
-}
