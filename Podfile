@@ -70,7 +70,7 @@ target 'Tangem' do
   ]
 
   # Analytics
-  pod 'AmplitudeSwift'
+  pod 'AmplitudeSwift', '1.6.2'
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
 

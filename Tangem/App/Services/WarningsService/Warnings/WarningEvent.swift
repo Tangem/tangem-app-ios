@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum WarningEvent: Equatable {
+enum WarningEvent: Equatable, Hashable {
     case numberOfSignedHashesIncorrect
     case rateApp
     case failedToVerifyCard

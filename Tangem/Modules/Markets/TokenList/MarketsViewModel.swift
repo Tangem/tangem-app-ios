@@ -51,6 +51,9 @@ final class MarketsViewModel: ObservableObject {
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         dataProviderBind()
+
+        // Need for preload markets list, when bottom sheet it has not been opened yet
+        fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
     func onBottomAppear() {
@@ -64,6 +67,7 @@ final class MarketsViewModel: ObservableObject {
 
     func onBottomDisappear() {
         dataProvider.reset(nil, with: nil)
+        // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
         viewDidAppear = false
     }
@@ -92,6 +96,10 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
+                guard viewModel.viewDidAppear else {
+                    return
+                }
+
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -114,8 +122,9 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
+                viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
+
                 viewModel.tokenViewModels = items.compactMap { item in
-                    viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
                     let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
                     return tokenViewModel
                 }
