@@ -176,6 +176,13 @@ final class WalletConnectV2Service {
             try await pairApi.pair(uri: url)
             try Task.checkCancellation()
             log("Established pair for \(url)")
+            DispatchQueue.main.async {
+                Toast(view: SuccessToast(text: Localization.walletConnectToastAwaitingSessionProposal))
+                    .present(
+                        layout: .top(padding: 20),
+                        type: .temporary()
+                    )
+            }
         } catch {
             displayErrorUI(WalletConnectV2Error.pairClientError(error.localizedDescription))
             AppLog.shared.error("[WC 2.0] Failed to connect to \(url) with error: \(error)")
@@ -183,6 +190,7 @@ final class WalletConnectV2Service {
             // Hack to delete the topic from the user default storage inside the WC 2.0 SDK
             await disconnect(topic: url.topic)
         }
+        canEstablishNewSessionSubject.send(true)
     }
 
     private func disconnect(topic: String) async {

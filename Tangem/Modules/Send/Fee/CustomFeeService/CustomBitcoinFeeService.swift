@@ -55,8 +55,8 @@ class CustomBitcoinFeeService {
 
         Publishers.CombineLatest3(
             satoshiPerByte,
-            input.amountPublisher,
-            input.destinationPublisher.map(\.?.value)
+            input.cryptoAmountPublisher,
+            input.destinationAddressPublisher
         )
         .sink { [weak self] satoshiPerByte, amount, destination in
             self?.recalculateCustomFee(

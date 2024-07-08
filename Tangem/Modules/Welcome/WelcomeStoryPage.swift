@@ -18,10 +18,6 @@ enum WelcomeStoryPage: CaseIterable {
     // case web3
     case finish
 
-    var colorScheme: ColorScheme {
-        .dark
-    }
-
     var duration: Double {
         switch self {
         case .learn, .meetTangem:

@@ -182,7 +182,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         let visible: Bool
         if let feeCryptoValue, isFeeIncluded {
             let converter = BalanceConverter()
-            let feeFiatValue = converter.convertToFiat(value: feeCryptoValue, from: feeTokenItem.currencyId ?? "")
+            let feeFiatValue = converter.convertToFiat(feeCryptoValue, currencyId: feeTokenItem.currencyId ?? "")
 
             let formatter = BalanceFormatter()
             cryptoAmountFormatted = formatter.formatCryptoBalance(feeCryptoValue, currencyCode: feeTokenItem.currencySymbol)
@@ -211,7 +211,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         guard let event = notificationEvent(from: validationError) else { return [] }
 
         let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+            self?.delegate?.didTapNotification(with: id, action: actionType)
         } dismissAction: { [weak self] id in
             self?.dismissAction(with: id)
         }
@@ -238,7 +238,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         if visible {
             let factory = NotificationsFactory()
             let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                self?.delegate?.didTapNotification(with: id, action: actionType)
             } dismissAction: { [weak self] id in
                 self?.dismissAction(with: id)
             }
@@ -269,7 +269,7 @@ class CommonSendNotificationManager: SendNotificationManager {
         case .invalidNumber:
             return nil
         case .insufficientAmountToReserveAtDestination:
-            // Use async validation and show the notifcation before. Instead of alert
+            // Use async validation and show the notification before. Instead of alert
             return nil
         }
     }

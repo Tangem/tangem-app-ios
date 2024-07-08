@@ -16,9 +16,10 @@ protocol SendSummaryViewModelInput: AnyObject {
     var canEditDestination: Bool { get }
     var feeOptions: [FeeOption] { get }
 
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
     var transactionAmountPublisher: AnyPublisher<Amount?, Never> { get }
     var destinationTextPublisher: AnyPublisher<String, Never> { get }
-    var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> { get }
+    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> { get }
     var feeValuePublisher: AnyPublisher<Fee?, Never> { get }
     var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
     var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }
@@ -59,8 +60,6 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingAmountOnAppear = false
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
-    @Published var transactionDescription: String?
-    @Published var showTransactionDescription = true
 
     var didProperlyDisappear: Bool = true
 
@@ -71,27 +70,28 @@ class SendSummaryViewModel: ObservableObject {
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     private var bag: Set<AnyCancellable> = []
     private let input: SendSummaryViewModelInput
+    private let tokenItem: TokenItem
     private let walletInfo: SendWalletInfo
     private let notificationManager: SendNotificationManager
-    private let fiatCryptoValueProvider: SendFiatCryptoValueProvider
     private var isVisible = false
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
 
-    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo) {
+    init(
+        initial: Initial,
+        input: SendSummaryViewModelInput,
+        notificationManager: SendNotificationManager,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        walletInfo: SendWalletInfo,
+        sectionViewModelFactory: SendSummarySectionViewModelFactory
+    ) {
+        tokenItem = initial.tokenItem
+
         self.input = input
         self.walletInfo = walletInfo
         self.notificationManager = notificationManager
-        self.fiatCryptoValueProvider = fiatCryptoValueProvider
         self.addressTextViewHeightModel = addressTextViewHeightModel
-
-        sectionViewModelFactory = SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
-        )
+        self.sectionViewModelFactory = sectionViewModelFactory
 
         canEditAmount = input.canEditAmount
         canEditDestination = input.canEditDestination
@@ -115,7 +115,6 @@ class SendSummaryViewModel: ObservableObject {
         }
 
         showHint = false
-        showTransactionDescription = false
     }
 
     func onAppear() {
@@ -127,7 +126,6 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.showTransactionDescription = self.transactionDescription != nil
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -168,18 +166,20 @@ class SendSummaryViewModel: ObservableObject {
             .assign(to: \.destinationViewTypes, on: self)
             .store(in: &bag)
 
-        Publishers.CombineLatest(
-            fiatCryptoValueProvider.formattedAmountPublisher,
-            fiatCryptoValueProvider.formattedAmountAlternativePublisher
-        )
-        .compactMap { [weak self] formattedAmount, formattedAmountAlternative in
-            self?.sectionViewModelFactory.makeAmountViewData(
-                from: formattedAmount,
-                amountAlternative: formattedAmountAlternative
-            )
-        }
-        .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
-        .store(in: &bag)
+        input.amountPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, amount in
+                let formattedAmount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol)
+                let formattedAlternativeAmount = amount?.formatAlternative(currencySymbol: viewModel.tokenItem.currencySymbol)
+
+                return viewModel.sectionViewModelFactory.makeAmountViewData(
+                    from: formattedAmount,
+                    amountAlternative: formattedAlternativeAmount
+                )
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
+            .store(in: &bag)
 
         Publishers.CombineLatest(input.feeValues, input.selectedFeeOptionPublisher)
             .sink { [weak self] feeValues, selectedFeeOption in
@@ -211,26 +211,6 @@ class SendSummaryViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        Publishers.CombineLatest(input.transactionAmountPublisher, input.feeValuePublisher)
-            .withWeakCaptureOf(self)
-            .map { parameters -> String? in
-                let (thisSendSummaryViewModel, (amount, fee)) = parameters
-
-                return thisSendSummaryViewModel.makeTransactionDescription(amount: amount, fee: fee)
-            }
-            .sink { [weak self] transactionDescription in
-                guard let self else { return }
-
-                self.transactionDescription = transactionDescription
-
-                if isVisible, !showTransactionDescription, transactionDescription != nil {
-                    withAnimation(SendView.Constants.defaultAnimation) {
-                        self.showTransactionDescription = true
-                    }
-                }
-            }
-            .store(in: &bag)
-
         notificationManager
             .notificationPublisher(for: .summary)
             .sink { [weak self] notificationInputs in
@@ -242,38 +222,10 @@ class SendSummaryViewModel: ObservableObject {
     private func sectionBackground(canEdit: Bool) -> Color {
         canEdit ? Colors.Background.action : Colors.Button.disabled
     }
+}
 
-    private func makeTransactionDescription(amount: Amount?, fee: Fee?) -> String? {
-        guard
-            let amount,
-            let fee,
-            let amountCurrencyId = walletInfo.currencyId,
-            let feeCurrencyId = walletInfo.feeCurrencyId
-        else {
-            return nil
-        }
-
-        let converter = BalanceConverter()
-        let amountInFiat = converter.convertToFiat(value: amount.value, from: amountCurrencyId)
-        let feeInFiat = converter.convertToFiat(value: fee.amount.value, from: feeCurrencyId)
-
-        let totalInFiat: Decimal?
-        if let amountInFiat, let feeInFiat {
-            totalInFiat = amountInFiat + feeInFiat
-        } else {
-            totalInFiat = nil
-        }
-
-        let formattingOptions = BalanceFormattingOptions(
-            minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
-            maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
-            formatEpsilonAsLowestRepresentableValue: true,
-            roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
-        )
-        let formatter = BalanceFormatter()
-        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
-
-        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
+extension SendSummaryViewModel {
+    struct Initial {
+        let tokenItem: TokenItem
     }
 }

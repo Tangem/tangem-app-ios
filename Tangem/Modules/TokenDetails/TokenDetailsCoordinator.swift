@@ -75,6 +75,10 @@ class TokenDetailsCoordinator: CoordinatorObject {
             walletModel: options.walletModel
         )
 
+        let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
+            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem))
+            : nil
+
         let factory = XPUBGeneratorFactory(cardInteractor: options.userWalletModel.keysDerivingInteractor)
         let xpubGenerator = factory.makeXPUBGenerator(
             for: options.walletModel.blockchainNetwork.blockchain,
@@ -86,6 +90,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             walletModel: options.walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
+            bannerNotificationManager: bannerNotificationManager,
             pendingExpressTransactionsManager: pendingExpressTransactionsManager,
             xpubGenerator: xpubGenerator,
             coordinator: self,
@@ -204,11 +209,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
-            walletName: userWalletModel.name,
-            emailDataProvider: userWalletModel,
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            transactionSigner: userWalletModel.signer,
             type: .send
         )
         coordinator.start(with: options)
@@ -244,11 +246,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
-            walletName: userWalletModel.name,
-            emailDataProvider: userWalletModel,
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            transactionSigner: userWalletModel.signer,
             type: .sell(amount: amountToSend, destination: destination, tag: tag)
         )
         coordinator.start(with: options)

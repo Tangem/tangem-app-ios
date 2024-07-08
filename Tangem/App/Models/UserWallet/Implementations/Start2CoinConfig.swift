@@ -32,10 +32,6 @@ extension Start2CoinConfig: UserWalletConfig {
         )
     }
 
-    var tou: TOU {
-        TOUBuilder().makeTOU(for: card.cardId)
-    }
-
     var cardsCount: Int {
         1
     }
@@ -150,7 +146,7 @@ extension Start2CoinConfig: UserWalletConfig {
     }
 
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return Start2CoinOnboardingStepsBuilder(hasWallets: !card.wallets.isEmpty, touId: tou.id)
+        return Start2CoinOnboardingStepsBuilder(hasWallets: !card.wallets.isEmpty)
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
@@ -159,104 +155,5 @@ extension Start2CoinConfig: UserWalletConfig {
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
         return SimpleWalletManagerFactory()
-    }
-}
-
-// MARK: - TOU
-
-private struct TOUBuilder {
-    func makeTOU(for cardId: String) -> TOU {
-        let regionCode = regionCode(for: cardId)
-        let url = TOUItem.makeFrom(languageCode: Locale.current.languageCode, regionCode: regionCode).url
-        let id = TOUItem.makeFrom(languageCode: nil, regionCode: regionCode).urlString
-
-        return TOU(id: id, url: url)
-    }
-
-    private func regionCode(for cardId: String) -> String {
-        let cardIdPrefix = cardId[cardId.index(cardId.startIndex, offsetBy: 1)]
-        switch cardIdPrefix {
-        case "0":
-            return "fr"
-        case "1":
-            return "ch"
-        case "2":
-            return "at"
-        default:
-            return "fr"
-        }
-    }
-}
-
-private enum TOUItem: CaseIterable {
-    case deAt
-    case deCh
-    case enCh
-    case frCh
-    case frFr
-    case itCh
-
-    var url: URL { .init(string: urlString)! }
-
-    var urlString: String {
-        switch self {
-        case .deAt: return "https://tangem.com/start2coin-de-at-tangem.html"
-        case .deCh: return "https://tangem.com/start2coin-de-ch-tangem.html"
-        case .enCh: return "https://tangem.com/start2coin-en-ch-tangem.html"
-        case .frCh: return "https://tangem.com/start2coin-fr-ch-tangem.html"
-        case .frFr: return "https://tangem.com/start2coin-fr-fr-tangem.html"
-        case .itCh: return "https://tangem.com/start2coin-it-ch-tangem.html"
-        }
-    }
-
-    var urlStringLegacy: String {
-        switch self {
-        case .deAt: return "https://app.tangem.com/tou/Start2Coin-de-at-tangem.pdf"
-        case .deCh: return "https://app.tangem.com/tou/Start2Coin-de-ch-tangem.pdf"
-        case .enCh: return "https://app.tangem.com/tou/Start2Coin-en-ch-tangem.pdf"
-        case .frCh: return "https://app.tangem.com/tou/Start2Coin-fr-ch-tangem.pdf"
-        case .frFr: return "https://app.tangem.com/tou/Start2Coin-fr-fr-atangem.pdf"
-        case .itCh: return "https://app.tangem.com/tou/Start2Coin-it-ch-tangem.pdf"
-        }
-    }
-
-    static func makeFrom(languageCode: String?, regionCode: String) -> Self {
-        switch (languageCode, regionCode) {
-        case ("fr", "ch"):
-            return .frCh
-        case ("de", "ch"):
-            return .deCh
-        case ("en", "ch"):
-            return .enCh
-        case ("it", "ch"):
-            return .itCh
-        case ("fr", "fr"):
-            return .frFr
-        case ("de", "at"):
-            return .deAt
-        case (_, "fr"):
-            return .frFr
-        case (_, "ch"):
-            return .enCh
-        case (_, "at"):
-            return .deAt
-        default:
-            return .frFr
-        }
-    }
-}
-
-struct S2CTOUMigrator {
-    func migrate() {
-        var termsOfServicesAccepted = AppSettings.shared.termsOfServicesAccepted
-
-        for tou in TOUItem.allCases {
-            if termsOfServicesAccepted.contains(tou.urlStringLegacy) {
-                termsOfServicesAccepted.remove(tou.urlStringLegacy)
-                termsOfServicesAccepted.append(tou.urlString)
-            }
-        }
-
-        AppSettings.shared.termsOfServicesAccepted = termsOfServicesAccepted
     }
 }

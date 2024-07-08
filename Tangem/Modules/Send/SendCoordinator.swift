@@ -18,7 +18,6 @@ class SendCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     // MARK: - Root view model
 
@@ -40,18 +39,8 @@ class SendCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let canUseFiatCalculation = quotesRepository.quote(for: options.walletModel.tokenItem) != nil
-
-        rootViewModel = SendViewModel(
-            walletName: options.walletName,
-            walletModel: options.walletModel,
-            userWalletModel: options.userWalletModel,
-            transactionSigner: options.transactionSigner,
-            sendType: options.type,
-            emailDataProvider: options.emailDataProvider,
-            canUseFiatCalculation: canUseFiatCalculation,
-            coordinator: self
-        )
+        let factory = SendModulesFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
+        rootViewModel = factory.makeSendViewModel(type: options.type, coordinator: self)
     }
 }
 
@@ -59,11 +48,8 @@ class SendCoordinator: CoordinatorObject {
 
 extension SendCoordinator {
     struct Options {
-        let walletName: String
-        let emailDataProvider: EmailDataProvider
         let walletModel: WalletModel
         let userWalletModel: UserWalletModel
-        let transactionSigner: TransactionSigner
         let type: SendType
     }
 }

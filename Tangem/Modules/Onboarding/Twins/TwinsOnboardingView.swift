@@ -14,7 +14,6 @@ struct TwinsOnboardingView: View {
     private let screenSize: CGSize = UIScreen.main.bounds.size
     private let progressBarHeight: CGFloat = 4
     private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
 
     var isNavbarVisible: Bool {
         viewModel.isNavBarVisible
@@ -39,17 +38,10 @@ struct TwinsOnboardingView: View {
         switch viewModel.currentStep {
         case .saveUserWallet:
             UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+        case .pushNotifications:
+            OnboardingPushNotificationsView(viewModel: viewModel.pushNotificationsViewModel)
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -59,12 +51,6 @@ struct TwinsOnboardingView: View {
                 .allowsHitTesting(false)
                 .frame(maxWidth: screenSize.width)
                 .zIndex(110)
-
-            disclaimerContent
-                .layoutPriority(1)
-                .readGeometry(\.size) { size in
-                    viewModel.setupContainer(with: size)
-                }
 
             VStack(spacing: 0) {
                 GeometryReader { geom in
@@ -164,7 +150,7 @@ struct TwinsOnboardingView: View {
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,

@@ -81,6 +81,7 @@
 "common_copy" = "複製";
 "common_copy_address" = "複製地址";
 "common_create" = "創造";
+"common_custom" = "Custom";
 "common_delete" = "刪除";
 "common_disabled" = "禁用";
 "common_disconnect" = "斷開連接";
@@ -92,7 +93,6 @@
 "common_explorer" = "Explorer";
 "common_fee_label" = "費用";
 "common_fee_selector_footer" = "Network fees are charges users pay to process and confirm transactions. The fee amount can be affected by network congestion, transaction size, and execution priority. %@";
-"common_fee_selector_option_custom" = "Custom";
 "common_fee_selector_option_fast" = "Fast";
 "common_fee_selector_option_market" = "Market";
 "common_fee_selector_option_slow" = "Slow";
@@ -109,6 +109,7 @@
 "common_next" = "Next";
 "common_no" = "否";
 "common_no_address" = "No address";
+"common_now" = "Now";
 "common_ok" = "OK";
 "common_origin_card" = "主卡片";
 "common_passphrase" = "Passphrase";
@@ -133,12 +134,14 @@
 "common_sign" = "簽署";
 "common_sign_and_send" = "簽署和發送";
 "common_stake" = "Stake";
+"common_staking" = "Staking";
 "common_start" = "開始";
 "common_submit" = "提交";
 "common_success" = "成功";
 "common_support" = "Support";
 "common_swap" = "交換";
 "common_terms_and_conditions" = "條款和條件";
+"common_today" = "Today";
 "common_transaction_failed" = "Transaction failed";
 "common_transactions" = "交易";
 "common_transfer" = "Transfer";
@@ -236,6 +239,7 @@
 "express_exchange_status_subtitle" = "Provider-sourced data. Estimated amount subject to change due to market conditions.";
 "express_exchange_status_title" = "Exchange status";
 "express_exchange_status_verifying" = "Verification required";
+"express_exchange_status_waiting_tx_hash" = "Awaiting transaction hash";
 "express_fetch_best_rates" = "Fetching best rates...";
 "express_floating_rate" = "Floating rate";
 "express_legal_one_placeholder" = "By using swap functionality, you agree with provider’s %@";
@@ -248,6 +252,7 @@
 "express_provider_min_amount" = "Available from %@";
 "express_provider_not_available" = "Unavailable for this pair";
 "express_provider_permission_needed" = "Permission Required";
+"express_provider_recommended" = "Recommended";
 "express_terms_of_use" = "Terms of Use";
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
@@ -262,6 +267,7 @@
 "feedback_subject_support_tangem" = "Tangem反饋";
 "feedback_subject_tx_failed" = "無法發送交易";
 "feedback_subject_tx_push_failed" = "無法推送交易";
+"give_permission_swap_subtitle" = "要繼續，您需要允許 %@ 智能合約使用您的 %@";
 "home_button_order" = "Order card";
 "home_button_scan" = "掃描卡片";
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
@@ -286,9 +292,6 @@
 "main_scan_card_warning_view_subtitle" = "要訪問所有的網路您需要掃描卡片";
 "main_scan_card_warning_view_title" = "掃描卡片";
 "main_tokens" = "代幣";
-"main_travala_promotion_button" = "Book now";
-"main_travala_promotion_description" = "Save **$50** while booking via our partner Travala: **%1@ - %2@**";
-"main_travala_promotion_title" = "Book your holidays with Tangem and pay in crypto";
 "manage_tokens_add" = "Add";
 "manage_tokens_edit" = "Edit";
 "manage_tokens_list_header_title" = "Coin market cap";
@@ -300,12 +303,25 @@
 "manage_tokens_network_selector_title" = "Choose networks";
 "manage_tokens_network_selector_wallet" = "Wallet";
 "manage_tokens_nothing_found" = "Couldn’t find this token, you can add it manually";
+"manage_tokens_remove" = "Remove";
 "manage_tokens_search_placeholder" = "e.g. BTC I trust, hodl I must";
 "manage_tokens_toast_portfolio_updated" = "Your portfolio has been updated";
 "manage_tokens_unavailable_description" = "The selected token is currently unavailable for actions within the crypto wallet. But worry not, you can express your interest by upvoting it.";
 "manage_tokens_unavailable_vote" = "Upvote";
 "manage_tokens_wallet_selector_title" = "Choose wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
+"markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
+"markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_common_my_portfolio" = "My portfolio";
+"markets_common_title" = "Market";
+"markets_select_wallet" = "Select wallet";
+"markets_sort_by_title" = "Sort By";
+"markets_token_details_insights" = "Insights";
+"markets_token_details_links" = "Links";
+"markets_token_details_metrics" = "Metrics";
+"markets_token_details_price_performance" = "Price performance";
+"markets_token_details_security_score" = "Security score";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";
@@ -472,6 +488,8 @@
 "send_from_wallet" = "From **%@**";
 "send_gas_limit" = "Gas limit";
 "send_gas_limit_footer" = "This is the maximum amount of gas that will be spent to complete a transaction or contract. A gas limit prevents unexpected or unlimited charges when executing a transaction.";
+"send_gas_price" = "Gas price";
+"send_gas_price_footer" = "This is the cost you are willing to pay for each unit of gas. The higher the gas price, the faster your transaction will be processed.";
 "send_max_amount" = "Max";
 "send_max_amount_label" = "最大值";
 "send_max_fee" = "Fee up to";
@@ -550,6 +568,8 @@
 "story_meet_title" = "認識Tangem";
 "story_web3_description" = "交易、購買NFT、自由穿梭於100+去中心化服務";
 "story_web3_title" = "兼容Web3.0";
+"swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
+"swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
 "swapping_alert_title" = "Fees";
@@ -565,7 +585,6 @@
 "swapping_permission_header" = "賦予權限";
 "swapping_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "swapping_permission_rows_amount" = "數量 %@";
-"swapping_permission_subheader" = "要繼續，您需要允許 1inch 智能合約使用您的 %@";
 "swapping_permission_unlimited" = "Unlimited";
 "swapping_permit_and_swap" = "許可和交換";
 "swapping_success_view_title" = "進行中";
@@ -596,6 +615,7 @@
 "token_details_token_type_subtitle_no_standard" = "Token in %%image%% %1$@ network";
 "token_details_unable_hide_alert_message" = "%1$@ (%2$@) 代幣是 %3$@ 網絡上的主要貨幣，只要列表中還有該網絡上的其他代幣，它就無法被隱藏。";
 "token_details_unable_hide_alert_title" = "無法隱藏 %@";
+"token_swap_promotion_button" = "Swap now";
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "您還沒有任何交易";
 "transaction_history_error_failed_to_load" = "無法加載交易";
@@ -660,6 +680,7 @@
 "wallet_connect_sessions_title" = "WalletConnect 連接";
 "wallet_connect_subtitle" = "連結到Dapps";
 "wallet_connect_title" = "WalletConnect";
+"wallet_connect_toast_awaiting_session_proposal" = "Connecting may take a few seconds";
 "wallet_marketplace_block_title" = "%@市場價格";
 "wallet_marketprice_block_update_time" = "last 24h";
 "wallet_network_group_title" = "%@ network";

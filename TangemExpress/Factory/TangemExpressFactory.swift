@@ -19,9 +19,12 @@ public struct TangemExpressFactory {
         allowanceProvider: AllowanceProvider,
         feeProvider: FeeProvider,
         expressRepository: ExpressRepository,
-        logger: Logger? = nil
+        logger: Logger? = nil,
+        analyticsLogger: ExpressAnalyticsLogger? = nil
     ) -> ExpressManager {
         let logger: Logger = logger ?? CommonLogger()
+        let analyticsLogger: ExpressAnalyticsLogger = analyticsLogger ?? CommonExpressAnalyticsLogger()
+
         let factory = CommonExpressProviderManagerFactory(
             expressAPIProvider: expressAPIProvider,
             allowanceProvider: allowanceProvider,
@@ -34,7 +37,8 @@ public struct TangemExpressFactory {
             expressAPIProvider: expressAPIProvider,
             expressProviderManagerFactory: factory,
             expressRepository: expressRepository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: analyticsLogger
         )
     }
 
@@ -89,7 +93,8 @@ public struct ExpressDeviceInfo {
     }
 }
 
-public enum ExpressAPIType: String, Hashable {
+public enum ExpressAPIType: String, Hashable, CaseIterable {
     case develop
     case production
+    case stage
 }

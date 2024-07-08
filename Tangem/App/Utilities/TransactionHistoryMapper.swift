@@ -85,12 +85,14 @@ struct TransactionHistoryMapper {
         }
 
         let amountFormatted = transferAmount(from: record)
-        let dateFormatted = dateTimeFormatter.string(from: record.date ?? Date())
+        let date = record.date ?? Date()
+        let dateFormatted = dateTimeFormatter.string(from: date)
 
         return SendSuggestedDestinationTransactionRecord(
             address: address,
-            additionalField: nil,
+            additionalField: nil, // TODO: Add memo/tag to the record
             isOutgoing: record.isOutgoing,
+            date: date,
             amountFormatted: amountFormatted,
             dateFormatted: dateFormatted
         )

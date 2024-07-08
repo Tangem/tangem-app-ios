@@ -25,4 +25,8 @@ protocol MarketsRoutable: AnyObject {
     )
 
     func hideGenerateAddressesWarning()
+
+    func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider)
+
+    func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel)
 }

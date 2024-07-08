@@ -39,7 +39,7 @@ extension CommonPendingExpressTransactionAnalyticsTracker {
                 return .inProgress
             case .done:
                 return .done
-            case .failed:
+            case .failed, .awaitingHash, .unknown:
                 return .fail
             case .refunded:
                 return .refunded

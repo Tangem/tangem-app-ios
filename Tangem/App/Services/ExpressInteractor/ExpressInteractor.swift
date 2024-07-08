@@ -314,8 +314,11 @@ private extension ExpressInteractor {
         case .restriction(.insufficientBalance(let requiredAmount), let quote):
             return .restriction(.notEnoughBalanceForSwapping(requiredAmount: requiredAmount), quote: quote)
 
-        case .restriction(.notEnoughBalanceForFee, let quote):
+        case .restriction(.feeCurrencyHasZeroBalance, let quote):
             return .restriction(.notEnoughAmountForFee(.idle), quote: quote)
+
+        case .restriction(.feeCurrencyInsufficientBalanceForTxValue(let fee), let quote):
+            return .restriction(.notEnoughAmountForTxValue(fee), quote: quote)
 
         case .permissionRequired(let permissionRequired):
             if hasPendingTransaction() {
@@ -415,7 +418,7 @@ private extension ExpressInteractor {
         let amount = makeAmount(value: previewCEX.quote.fromAmount)
 
         let withdrawalNotificationProvider = getSender().withdrawalNotificationProvider
-        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee.amount)
+        let notification = withdrawalNotificationProvider?.withdrawalNotification(amount: amount, fee: fee)
 
         // Check on the minimum received amount
         // Almost impossible case because the providers check it on their side
@@ -438,16 +441,13 @@ private extension ExpressInteractor {
         do {
             let transactionValidator = getSender().transactionValidator
             try await transactionValidator.validate(amount: amount, fee: fee, destination: .generate)
-
         } catch ValidationError.totalExceedsBalance, ValidationError.amountExceedsBalance {
             return .restriction(.notEnoughBalanceForSwapping(requiredAmount: amount.value), quote: correctState.quote)
-
         } catch ValidationError.feeExceedsBalance {
             return .restriction(.notEnoughAmountForFee(correctState), quote: correctState.quote)
-
         } catch let error as ValidationError {
-            return .restriction(.validationError(error), quote: correctState.quote)
-
+            let context = ValidationErrorContext(isFeeCurrency: fee.amount.type == amount.type, feeValue: fee.amount.value)
+            return .restriction(.validationError(error: error, context: context), quote: correctState.quote)
         } catch {
             return .restriction(.requiredRefresh(occurredError: error), quote: correctState.quote)
         }
@@ -493,7 +493,7 @@ private extension ExpressInteractor {
                 return .restriction(.noDestinationTokens, quote: .none)
             }
 
-            // If we have a amount to we will start the full update
+            // If we have an amount to we will start the full update
             if let amount = await interactor.expressManager.getAmount(), amount > 0 {
                 interactor.updateState(.loading(type: .full))
             }
@@ -818,9 +818,10 @@ extension ExpressInteractor {
         case hasPendingApproveTransaction
         case notEnoughBalanceForSwapping(requiredAmount: Decimal)
         case notEnoughAmountForFee(_ returnState: State)
+        case notEnoughAmountForTxValue(_ estimatedTxValue: Decimal)
         case requiredRefresh(occurredError: Error)
         case noDestinationTokens
-        case validationError(ValidationError)
+        case validationError(error: ValidationError, context: ValidationErrorContext)
         case notEnoughReceivedAmount(minAmount: Decimal, tokenSymbol: String)
     }
 

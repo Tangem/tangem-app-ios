@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 enum AppConstants {
-    static let webShopUrl = URL(string: "https://buy.tangem.com")!
+    static let webShopUrl = URL(string: "https://buy.tangem.com?utm_source=tangem&utm_medium=app")!
 
     static var isSmallScreen: Bool {
         UIScreen.main.bounds.width < 375 || UIScreen.main.bounds.height < 650
@@ -32,4 +32,6 @@ enum AppConstants {
 
     #warning("TODO: use TangemBlogUrlBuilder")
     static let feeExplanationTangemBlogURL = URL(string: "https://tangem.com/en/blog/post/what-is-a-transaction-fee-and-why-do-we-need-it/")!
+
+    static let tosURL = URL(string: "https://tangem.com/tangem_tos.html")!
 }

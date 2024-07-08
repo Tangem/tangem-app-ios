@@ -140,7 +140,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             return
         }
 
-        if let fiat = balanceConverter.convertToFiat(value: tokenTxInfo.amount, from: currencyId) {
+        if let fiat = balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId) {
             root[keyPath: stateKeyPath] = .loaded(text: balanceFormatter.formatFiatBalance(fiat))
             return
         }
@@ -148,7 +148,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Task { [weak root] in
             guard let root = root else { return }
 
-            let fiatAmount = try await root.balanceConverter.convertToFiat(value: tokenTxInfo.amount, from: currencyId)
+            let fiatAmount = try await root.balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId)
             let formattedFiat = root.balanceFormatter.formatFiatBalance(fiatAmount)
             await runOnMain {
                 root[keyPath: stateKeyPath] = .loaded(text: formattedFiat)
@@ -177,7 +177,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                     return
                 }
 
-                if !pendingTx.transactionRecord.transactionStatus.isTransactionInProgress {
+                if pendingTx.transactionRecord.transactionStatus.shouldHide {
                     viewModel.pendingTransactionsManager?.hideTransaction(with: pendingTx.transactionRecord.expressTransactionId)
                 }
 

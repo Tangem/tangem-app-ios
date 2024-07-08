@@ -18,12 +18,14 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Published private var balance: LoadingValue<BalanceInfo> = .loading
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
+    @Published var bannerNotificationInputs: [NotificationViewInput] = []
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: walletModel.tokenItem)
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
+    private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
     private var bag = Set<AnyCancellable>()
 
@@ -50,6 +52,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
+        bannerNotificationManager: NotificationManager?,
         pendingExpressTransactionsManager: PendingExpressTransactionsManager,
         xpubGenerator: XPUBGenerator?,
         coordinator: TokenDetailsRoutable,
@@ -57,6 +60,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     ) {
         self.coordinator = coordinator
         self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
+        self.bannerNotificationManager = bannerNotificationManager
         self.xpubGenerator = xpubGenerator
         super.init(
             userWalletModel: userWalletModel,
@@ -66,6 +70,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
             tokenRouter: tokenRouter
         )
         notificationManager.setupManager(with: self)
+        bannerNotificationManager?.setupManager(with: self)
         balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
 
         prepareSelf()
@@ -79,10 +84,14 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         Analytics.log(event: .detailsScreenOpened, params: [Analytics.ParameterKey.token: walletModel.tokenItem.currencySymbol])
     }
 
-    override func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            break
         case .openFeeCurrency:
             openFeeCurrency()
+        case .swap:
+            openExchange()
         case .generateAddresses,
              .backupCard,
              .buyCrypto,
@@ -93,11 +102,11 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .reduceAmountTo,
              .addHederaTokenAssociation,
              .leaveAmount,
-             .bookNow,
+             .openLink,
              .stake,
              .openFeedbackMail,
              .openAppStoreReview:
-            super.didTapNotificationButton(with: id, action: action)
+            super.didTapNotification(with: id, action: action)
         }
     }
 
@@ -217,6 +226,12 @@ private extension TokenDetailsViewModel {
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        bannerNotificationManager?.notificationPublisher
+            .receive(on: DispatchQueue.main)
+            .removeDuplicates()
+            .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

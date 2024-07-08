@@ -32,6 +32,7 @@ class StoriesViewModel: ObservableObject {
     private let longTapDuration = 0.25
     private let minimumSwipeDistance = 100.0
     private let promotionCheckTimeout: TimeInterval = 5
+    private var shouldStartTimer: Bool = true
 
     func checkPromotion() async {
         let isNewCard = true
@@ -48,13 +49,18 @@ class StoriesViewModel: ObservableObject {
             .store(in: &bag)
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.resumeTimer()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                if viewModel.shouldStartTimer {
+                    viewModel.resumeTimer()
+                }
             }
             .store(in: &bag)
 
-        DispatchQueue.main.async {
-            self.restartTimer()
+        if shouldStartTimer {
+            DispatchQueue.main.async {
+                self.restartTimer()
+            }
         }
     }
 
@@ -226,10 +232,15 @@ extension StoriesViewModel: WelcomeViewLifecycleListener {
     func resignActve() {
         if timerIsRunning() {
             pauseTimer()
+        } else {
+            // First start of the app with welcome onboarding
+            shouldStartTimer = false
         }
     }
 
     func becomeActive() {
+        shouldStartTimer = true
+
         if !timerIsRunning() {
             resumeTimer()
         }

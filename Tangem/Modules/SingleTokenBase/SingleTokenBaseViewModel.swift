@@ -171,11 +171,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     // We need to keep this not in extension because we may want to override this logic and
     // implementation from extensions can't be overridden
-    func didTapNotification(with id: NotificationViewId) {}
-
-    // We need to keep this not in extension because we may want to override this logic and
-    // implementation from extensions can't be overridden
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .buyCrypto:
             openBuyCryptoIfPossible()
@@ -183,6 +179,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             fulfillAssetRequirements()
         case .stake:
             openStaking()
+        case .empty:
+            break
         default:
             break
         }
@@ -226,9 +224,19 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         }
 
         sendAnalytics(isSuccessful: true)
+
         walletModel
             .fulfillRequirements(signer: userWalletModel.signer)
-            .sink()
+            .materialize()
+            .failures()
+            .withWeakCaptureOf(self)
+            .map { viewModel, error in
+                let alertBuilder = SingleTokenAlertBuilder()
+                let networkName = viewModel.blockchain.displayName
+
+                return alertBuilder.fulfillmentAssetRequirementsFailedAlert(error: error, networkName: networkName)
+            }
+            .assign(to: \.alert, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

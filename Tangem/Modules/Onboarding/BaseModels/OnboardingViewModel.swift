@@ -156,13 +156,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         )
     }()
 
-    var disclaimerModel: DisclaimerViewModel? {
-        guard let url = input.cardInput.disclaimer?.url else {
-            return nil
-        }
-
-        return .init(url: url, style: .onboarding)
-    }
+    lazy var pushNotificationsViewModel: OnboardingPushNotificationsViewModel = .init(delegate: self)
 
     let input: OnboardingInput
 
@@ -326,14 +320,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
     }
 
-    func disclaimerAccepted() {
-        guard let id = input.cardInput.disclaimer?.id else {
-            return
-        }
-
-        AppSettings.shared.termsOfServicesAccepted.append(id)
-    }
-
     private func bindAnalytics() {
         $currentStepIndex
             .removeDuplicates()
@@ -458,5 +444,11 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 extension OnboardingViewModel: OnboardingAddTokensDelegate {
     func showAlert(_ alert: AlertBinder) {
         self.alert = alert
+    }
+}
+
+extension OnboardingViewModel: OnboardingPushNotificationsDelegate {
+    func didFinishPushNotificationOnboarding() {
+        goToNextStep()
     }
 }

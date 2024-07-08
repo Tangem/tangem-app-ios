@@ -9,15 +9,8 @@
 import SwiftUI
 
 struct SendFeeView: View {
-    let namespace: Namespace.ID
-
     @ObservedObject var viewModel: SendFeeViewModel
-
-    let bottomButtonsHeight: CGFloat
-
-    private var safeAreaBottomSpacing: CGFloat {
-        bottomButtonsHeight + SendCustomFeeInputField.Constants.fieldPadding + GroupedSectionConstants.footerSpacing
-    }
+    let namespace: Namespace.ID
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
@@ -47,7 +40,8 @@ struct SendFeeView: View {
                         .transition(SendView.Constants.auxiliaryViewTransition(for: .fee))
                 }
             }
-            .backgroundColor(Colors.Background.action, id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace)
+            .backgroundColor(Colors.Background.action)
+            .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
             .separatorStyle(.none)
 
             if !viewModel.animatingAuxiliaryViewsOnAppear {
@@ -76,9 +70,6 @@ struct SendFeeView: View {
         .onDisappear(perform: viewModel.onDisappear)
         .onAppear(perform: viewModel.onAuxiliaryViewAppear)
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
-        .safeAreaInset(edge: .bottom, spacing: safeAreaBottomSpacing) {
-            EmptyView().frame(height: 0)
-        }
     }
 
     private func feeRowView(_ feeRowViewModel: FeeRowViewModel) -> some View {
@@ -132,6 +123,14 @@ struct SendFeeView_Previews: PreviewProvider {
     )
 
     static var previews: some View {
-        SendFeeView(namespace: namespace, viewModel: SendFeeViewModel(input: SendFeeViewModelInputMock(), notificationManager: FakeSendNotificationManager(), customFeeService: nil, walletInfo: walletInfo), bottomButtonsHeight: 0)
+        SendFeeView(
+            viewModel: SendFeeViewModel(
+                input: SendFeeViewModelInputMock(),
+                notificationManager: FakeSendNotificationManager(),
+                customFeeService: nil,
+                walletInfo: walletInfo
+            ),
+            namespace: namespace
+        )
     }
 }

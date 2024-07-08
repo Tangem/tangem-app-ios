@@ -27,7 +27,6 @@ extension UserWalletConfig where Self: WalletOnboardingStepsBuilderFactory {
             canBackup: card.backupStatus?.canBackup ?? false,
             hasBackup: card.backupStatus?.isActive ?? false,
             canSkipBackup: canSkipBackup,
-            touId: tou.id,
             backupService: backupService
         )
     }
@@ -42,7 +41,6 @@ extension UserWalletConfig where Self: SingleCardOnboardingStepsBuilderFactory {
         return SingleCardOnboardingStepsBuilder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
-            touId: tou.id,
             isMultiCurrency: hasFeature(.multiCurrency)
         )
     }
@@ -56,8 +54,7 @@ extension UserWalletConfig where Self: NoteCardOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
         return NoteOnboardingStepsBuilder(
             cardId: card.cardId,
-            hasWallets: !card.wallets.isEmpty,
-            touId: tou.id
+            hasWallets: !card.wallets.isEmpty
         )
     }
 }
@@ -68,8 +65,6 @@ protocol VisaCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, C
 
 extension UserWalletConfig where Self: VisaCardOnboardingStepsBuilderFactory {
     func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return VisaOnboardingStepsBuilder(
-            touId: tou.id
-        )
+        return VisaOnboardingStepsBuilder()
     }
 }

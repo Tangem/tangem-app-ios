@@ -37,7 +37,12 @@ class ManageTokensCoordinator: CoordinatorObject {
             userTokensManager: userWalletModel.userTokensManager
         ))
 
-        rootViewModel = .init(adapter: adapter, coordinator: self)
+        rootViewModel = .init(
+            adapter: adapter,
+            userTokensManager: userWalletModel.userTokensManager,
+            walletModelsManager: userWalletModel.walletModelsManager,
+            coordinator: self
+        )
     }
 }
 

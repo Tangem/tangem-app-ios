@@ -32,7 +32,7 @@ class DetailsCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel?
     @Published var supportChatViewModel: SupportChatViewModel?
-    @Published var disclaimerViewModel: DisclaimerViewModel?
+    @Published var tosViewModel: TOSViewModel?
     @Published var environmentSetupCoordinator: EnvironmentSetupCoordinator?
 
     // MARK: - Helpers
@@ -107,8 +107,8 @@ extension DetailsCoordinator: DetailsRoutable {
         supportChatViewModel = SupportChatViewModel(input: input)
     }
 
-    func openDisclaimer(url: URL) {
-        disclaimerViewModel = .init(url: url, style: .details)
+    func openTOS() {
+        tosViewModel = .init()
     }
 
     func openScanCardManual() {

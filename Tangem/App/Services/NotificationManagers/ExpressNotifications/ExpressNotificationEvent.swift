@@ -9,9 +9,9 @@
 import Foundation
 import SwiftUI
 
-enum ExpressNotificationEvent {
+enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
-    case permissionNeeded(currencyCode: String)
+    case permissionNeeded(providerName: String, currencyCode: String)
     case refreshRequired(title: String, message: String)
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
@@ -24,7 +24,7 @@ enum ExpressNotificationEvent {
 
     // Generic notifications is received from BSDK
     case withdrawalNotificationEvent(WithdrawalNotificationEvent)
-    case validationErrorEvent(ValidationErrorEvent)
+    case validationErrorEvent(event: ValidationErrorEvent, context: ValidationErrorContext)
 
     // The notifications which is used only on the PendingExpressTxStatusBottomSheetView
     case verificationRequired
@@ -60,15 +60,15 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .string(Localization.warningExpressNotificationInvalidReserveAmountTitle(amountFormatted))
         case .withdrawalNotificationEvent(let event):
             return event.title
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.title
         }
     }
 
     var description: String? {
         switch self {
-        case .permissionNeeded(let currencyCode):
-            return Localization.swappingPermissionSubheader(currencyCode)
+        case .permissionNeeded(let providerName, let currencyCode):
+            return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
         case .refreshRequired(_, let message):
             return message
         case .hasPendingTransaction(let symbol):
@@ -89,12 +89,12 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationFailedText
         case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
             return Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
-        // Only for dustRestriction we have to use different desription
-        case .validationErrorEvent(.dustRestriction(let minimumAmountFormatted, let minimumChangeFormatted)):
+        // Only for dustRestriction we have to use different description
+        case .validationErrorEvent(.dustRestriction(let minimumAmountFormatted, let minimumChangeFormatted), _):
             return Localization.warningExpressDustMessage(minimumAmountFormatted, minimumChangeFormatted)
         case .withdrawalNotificationEvent(let event):
             return event.description
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.description
         }
     }
@@ -117,7 +117,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .action
         case .withdrawalNotificationEvent(let event):
             return event.colorScheme
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.colorScheme
         }
     }
@@ -143,7 +143,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.redCircleWarning.image))
         case .withdrawalNotificationEvent(let event):
             return event.icon
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.icon
         }
     }
@@ -167,7 +167,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .critical
         case .withdrawalNotificationEvent(let event):
             return event.severity
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.severity
         }
     }
@@ -180,7 +180,7 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .refresh
         case .verificationRequired, .cexOperationFailed:
             return .goToProvider
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.buttonActionType
         case .withdrawalNotificationEvent(let event):
             return event.buttonActionType

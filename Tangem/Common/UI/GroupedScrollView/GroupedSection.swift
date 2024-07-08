@@ -38,9 +38,7 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
     private var backgroundColor: Color = Colors.Background.primary
     private var contentAlignment: HorizontalAlignment = .leading
     private var innerHeaderPadding: CGFloat = GroupedSectionConstants.headerSpacing
-
-    private var namespace: Namespace.ID?
-    private var backgroundNamespaceId: String?
+    private var geometryEffect: GeometryEffect?
 
     init(
         _ models: [Model],
@@ -60,12 +58,10 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
         @ViewBuilder header: @escaping () -> Header = { EmptyView() },
         @ViewBuilder footer: @escaping () -> Footer = { EmptyView() }
     ) {
-        self.init(
-            model == nil ? [] : [model!],
-            content: content,
-            header: header,
-            footer: footer
-        )
+        models = model.map { [$0] } ?? []
+        self.content = content
+        self.header = header
+        self.footer = footer
     }
 
     var body: some View {
@@ -87,9 +83,11 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
                 .padding(.vertical, innerContentPadding)
                 .background(
                     backgroundColor
-                        .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
-                        .matchedGeometryEffectOptional(id: backgroundNamespaceId, in: namespace)
+                        .modifier(ifLet: geometryEffect) {
+                            $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
+                        }
                 )
+                .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
 
                 footer()
                     .padding(.horizontal, horizontalPadding)
@@ -150,15 +148,11 @@ extension GroupedSection: Setupable {
     }
 
     func backgroundColor(_ color: Color) -> Self {
-        backgroundColor(color, id: nil, namespace: nil)
+        map { $0.backgroundColor = color }
     }
 
-    func backgroundColor(_ color: Color, id backgroundNamespaceId: String?, namespace: Namespace.ID?) -> Self {
-        map {
-            $0.backgroundColor = color
-            $0.namespace = namespace
-            $0.backgroundNamespaceId = backgroundNamespaceId
-        }
+    func geometryEffect(_ geometryEffect: GeometryEffect?) -> Self {
+        map { $0.geometryEffect = geometryEffect }
     }
 
     func contentAlignment(_ alignment: HorizontalAlignment) -> Self {
