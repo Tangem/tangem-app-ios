@@ -59,6 +59,7 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .mantle(testnet: false),
+            .bittensor(curve: ed25519Curve(for: version)),
         ]
     }
 
@@ -173,7 +174,6 @@ struct SupportedBlockchains {
             .flare(testnet: true),
             .taraxa(testnet: true),
             .base(testnet: true),
-            .bittensor(curve: ed25519Curve(for: version)),
         ]
     }
 
