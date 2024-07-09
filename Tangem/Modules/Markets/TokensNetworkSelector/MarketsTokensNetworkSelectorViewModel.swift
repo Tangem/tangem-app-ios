@@ -32,7 +32,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     private var bag = Set<AnyCancellable>()
     private let alertBuilder = MarketsTokensNetworkSelectorAlertBuilder()
 
-    private let walletDataSource: MarketsWalletDataSource
+    private let walletDataSource: MarketsTokensNetworkDataSource
 
     private let coinModel: CoinModel
 
@@ -67,7 +67,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     init(coinModel: CoinModel) {
         self.coinModel = coinModel
 
-        walletDataSource = MarketsWalletDataSource()
+        walletDataSource = MarketsTokensNetworkDataSource()
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataSource)
 
         bind()

@@ -543,14 +543,3 @@ struct LegacyPickerModel: Identifiable {
         .init(items: [], selection: "")
     }
 }
-
-private extension Blockchain {
-    var canHandleCustomTokens: Bool {
-        switch self {
-        case .terraV1:
-            return false
-        default:
-            return canHandleTokens
-        }
-    }
-}
