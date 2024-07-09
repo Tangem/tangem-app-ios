@@ -20,6 +20,10 @@ struct SendModulesStepsBuilder {
         self.walletModel = walletModel
     }
 
+    func isFeeApproximate() -> Bool {
+        walletModel.tokenItem.blockchain.isFeeApproximate(for: walletModel.amountType)
+    }
+
     func makeTokenIconInfo() -> TokenIconInfo {
         TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
     }
@@ -39,7 +43,7 @@ struct SendModulesStepsBuilder {
             currencyId: walletModel.tokenItem.currencyId,
             feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
             feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: walletModel.tokenItem.blockchain.isFeeApproximate(for: walletModel.amountType),
+            isFeeApproximate: isFeeApproximate(),
             tokenIconInfo: tokenIconInfo,
             cryptoIconURL: tokenIconInfo.imageURL,
             cryptoCurrencyCode: walletModel.tokenItem.currencySymbol,

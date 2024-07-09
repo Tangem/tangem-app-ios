@@ -10,7 +10,7 @@ import Combine
 import BlockchainSdk
 
 protocol SendNotificationManagerInput {
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
+    var selectedSendFeePublisher: AnyPublisher<SendFee?, Never> { get }
     var feeValues: AnyPublisher<[SendFee], Never> { get }
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
 
@@ -112,7 +112,7 @@ class CommonSendNotificationManager: SendNotificationManager {
             .feeValues
             .filter { !$0.allConforms { $0.value.isLoading } }
 
-        Publishers.CombineLatest(input.selectedFeePublisher, loadedFeeValues)
+        Publishers.CombineLatest(input.selectedSendFeePublisher, loadedFeeValues)
             .sink { [weak self] selectedFee, loadedFeeValues in
 
                 switch (selectedFee?.option, selectedFee?.value) {
@@ -143,7 +143,7 @@ class CommonSendNotificationManager: SendNotificationManager {
 
         Publishers.CombineLatest(
             input.isFeeIncludedPublisher,
-            input.selectedFeePublisher.map { $0?.value.value?.amount.value }
+            input.selectedSendFeePublisher.map { $0?.value.value?.amount.value }
         )
         .sink { [weak self] isFeeIncluded, feeValue in
             self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)

@@ -140,12 +140,10 @@ struct SendView: View {
         case .summary:
             SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
                 .amountMinTextScale(Constants.amountMinTextScale)
-                .onAppear(perform: viewModel.onSummaryAppear)
-                .onDisappear(perform: viewModel.onSummaryDisappear)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .finish(let sendFinishViewModel):
-            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
+        case .finish:
+            SendFinishView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         }
@@ -153,27 +151,6 @@ struct SendView: View {
 
     @ViewBuilder
     private var bottomContainer: some View {
-        VStack(alignment: .center, spacing: 14) {
-            description
-
-            bottomButtons
-        }
-    }
-
-    @ViewBuilder
-    private var description: some View {
-        if let transactionDescription = viewModel.transactionDescription {
-            Text(.init(transactionDescription))
-                .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 16)
-                .visible(viewModel.transactionDescriptionIsVisisble)
-                .animation(Constants.defaultAnimation, value: viewModel.step)
-        }
-    }
-
-    @ViewBuilder
-    private var bottomButtons: some View {
         VStack(spacing: 10) {
             if viewModel.showTransactionButtons {
                 HStack(spacing: 8) {
