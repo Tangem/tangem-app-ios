@@ -296,7 +296,8 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
         let converter = CustomTokenContractAddressConverter(blockchain: blockchain)
 
-        return converter.convert(contractAddress)
+        let enteredSymbol = symbol.isEmpty ? nil : symbol
+        return converter.convert(contractAddress, symbol: enteredSymbol)
     }
 
     private func checkLocalStorage() throws {
@@ -569,17 +570,5 @@ extension AddCustomTokenViewModel {
         case name
         case symbol
         case decimals
-    }
-}
-
-private extension Blockchain {
-    var canHandleCustomTokens: Bool {
-        switch self {
-        // Only one token supported currently
-        case .terraV1:
-            return false
-        default:
-            return canHandleTokens
-        }
     }
 }

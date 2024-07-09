@@ -28,6 +28,10 @@ struct BindingValue<Value> {
         nonmutating set { set(newValue) }
     }
 
+    static func constant(_ value: Value) -> BindingValue<Value> {
+        .init(get: { value }, set: { _ in })
+    }
+
     init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
         self.get = get
         self.set = set

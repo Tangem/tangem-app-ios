@@ -73,7 +73,7 @@ private extension CEXExpressProviderManager {
 
             guard request.pair.source.feeCurrencyHasPositiveBalance else {
                 let quote = try await loadQuote(request: request)
-                return .restriction(.notEnoughBalanceForFee, quote: quote)
+                return .restriction(.feeCurrencyHasZeroBalance, quote: quote)
             }
 
             let (estimatedFee, subtractFee, request) = try await subtractedFeeRequestIfNeeded(request: request)

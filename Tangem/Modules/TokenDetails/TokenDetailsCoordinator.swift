@@ -54,11 +54,6 @@ class TokenDetailsCoordinator: CoordinatorObject {
             amountType: options.walletModel.amountType
         )
 
-        let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(
-            userId: options.userWalletModel.userWalletId.stringValue,
-            logger: AppLog.shared
-        )
-
         let notificationManager = SingleTokenNotificationManager(
             walletModel: options.walletModel,
             walletModelsManager: options.userWalletModel.walletModelsManager,
@@ -75,12 +70,24 @@ class TokenDetailsCoordinator: CoordinatorObject {
             walletModel: options.walletModel
         )
 
+        let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
+            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem))
+            : nil
+
+        let factory = XPUBGeneratorFactory(cardInteractor: options.userWalletModel.keysDerivingInteractor)
+        let xpubGenerator = factory.makeXPUBGenerator(
+            for: options.walletModel.blockchainNetwork.blockchain,
+            publicKey: options.walletModel.wallet.publicKey
+        )
+
         tokenDetailsViewModel = .init(
             userWalletModel: options.userWalletModel,
             walletModel: options.walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
+            bannerNotificationManager: bannerNotificationManager,
             pendingExpressTransactionsManager: pendingExpressTransactionsManager,
+            xpubGenerator: xpubGenerator,
             coordinator: self,
             tokenRouter: tokenRouter
         )

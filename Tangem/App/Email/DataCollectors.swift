@@ -178,10 +178,6 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
             let derivationPath = walletModel.wallet.publicKey.derivationPath
             dataToFormat.append(EmailCollectedData(type: .wallet(.derivationPath), data: derivationPath?.rawPath ?? "[default]"))
 
-            if let xpubKey = walletModel.wallet.xpubKey {
-                dataToFormat.append(EmailCollectedData(type: .wallet(.xpub), data: xpubKey))
-            }
-
             if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
                 dataToFormat.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
             }

@@ -131,7 +131,7 @@ private extension ExpressSuccessSentViewModel {
 
         provider = ProviderRowViewModel(
             provider: providerFormatter.mapToProvider(provider: data.provider),
-            titleFormat: .prefixAndName,
+            titleFormat: .name,
             isDisabled: false,
             badge: .none,
             subtitles: [subtitle],

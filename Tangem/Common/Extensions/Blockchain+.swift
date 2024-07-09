@@ -10,22 +10,6 @@ import Foundation
 import BlockchainSdk
 
 extension Blockchain {
-    /// Should be used to get the actual currency rate
-    var currencyId: String {
-        switch self {
-        case .arbitrum(let testnet),
-             .optimism(let testnet),
-             .aurora(let testnet),
-             .manta(let testnet),
-             .zkSync(let testnet),
-             .polygonZkEVM(let testnet),
-             .base(let testnet):
-            return Blockchain.ethereum(testnet: testnet).coinId
-        default:
-            return coinId
-        }
-    }
-
     /// Should be used to get a icon from the`Tokens.xcassets` file
     var iconName: String {
         var name = "\(self)".lowercased()
@@ -61,24 +45,5 @@ extension Set<Blockchain> {
 
         AppLog.shared.debug("⚠️⚠️⚠️ Blockchain with id: \(networkId) isn't contained in supported blockchains")
         return nil
-    }
-}
-
-extension Blockchain {
-    /// Provides a more descriptive display name for the fee currency (ETH) for some Ethereum L2s,
-    /// for example: `'Optimistic Ethereum (ETH)'` instead of just `'ETH'`
-    var feeDisplayName: String {
-        switch self {
-        case .arbitrum,
-             .optimism,
-             .aurora,
-             .manta,
-             .zkSync,
-             .polygonZkEVM,
-             .base:
-            return displayName + " (\(currencySymbol))"
-        default:
-            return currencySymbol
-        }
     }
 }

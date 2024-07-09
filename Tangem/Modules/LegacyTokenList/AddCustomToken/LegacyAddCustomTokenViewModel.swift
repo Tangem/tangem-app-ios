@@ -340,8 +340,8 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         }
 
         let converter = CustomTokenContractAddressConverter(blockchain: blockchain)
-
-        return converter.convert(contractAddress)
+        let enteredSymbol = symbol.isEmpty ? nil : symbol
+        return converter.convert(contractAddress, symbol: enteredSymbol)
     }
 
     private func checkLocalStorage() throws {
@@ -541,16 +541,5 @@ struct LegacyPickerModel: Identifiable {
 
     static var empty: LegacyPickerModel {
         .init(items: [], selection: "")
-    }
-}
-
-private extension Blockchain {
-    var canHandleCustomTokens: Bool {
-        switch self {
-        case .terraV1:
-            return false
-        default:
-            return canHandleTokens
-        }
     }
 }

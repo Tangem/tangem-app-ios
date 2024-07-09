@@ -51,20 +51,6 @@ class WalletModel {
         walletManager.allowsFeeSelection
     }
 
-    var supportsCustomFees: Bool {
-        let blockchain = blockchainNetwork.blockchain
-
-        if case .bitcoin = blockchain, bitcoinTransactionFeeCalculator != nil {
-            return true
-        }
-
-        if blockchain.isEvm {
-            return true
-        }
-
-        return false
-    }
-
     var tokenItem: TokenItem {
         switch amountType {
         case .coin, .reserve:

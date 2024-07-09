@@ -31,13 +31,27 @@ struct ActivePromotionInfo: Hashable {
     let link: URL?
 }
 
-enum BannerPromotionPlacement: String, Hashable {
+enum BannerPromotionPlacement {
     case main
-    case tokenDetails
+    case tokenDetails(TokenItem)
+
+    var analyticsValue: Analytics.ParameterValue {
+        switch self {
+        case .main:
+            return .main
+        case .tokenDetails:
+            return .token
+        }
+    }
 }
 
-enum PromotionProgramName: String, Hashable {
-    // Estimated dates 13/05 - 13/06
-    // Will be deleted: https://tangem.atlassian.net/browse/IOS-6842
-    case travala
+enum PromotionProgramName: String, Hashable, CaseIterable {
+    case okx
+
+    var analyticsValue: Analytics.ParameterValue {
+        switch self {
+        case .okx:
+            return Analytics.ParameterValue.okx
+        }
+    }
 }
