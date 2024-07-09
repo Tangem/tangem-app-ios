@@ -38,3 +38,35 @@ enum LoadingValue<Value> {
         return nil
     }
 }
+
+// MARK: - Equatable
+
+extension LoadingValue: Equatable where Value: Equatable {
+    static func == (lhs: LoadingValue<Value>, rhs: LoadingValue<Value>) -> Bool {
+        switch (lhs, rhs) {
+        case (.loading, .loading):
+            return true
+        case (.loaded(let lhs), .loaded(let rhs)):
+            return lhs == rhs
+        case (.failedToLoad(let lhs), .failedToLoad(let rhs)):
+            return lhs.localizedDescription == rhs.localizedDescription
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: - Hashable
+
+extension LoadingValue: Hashable where Value: Hashable {
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .loading:
+            hasher.combine("loading")
+        case .loaded(let value):
+            hasher.combine(value)
+        case .failedToLoad(let error):
+            hasher.combine(error.localizedDescription)
+        }
+    }
+}

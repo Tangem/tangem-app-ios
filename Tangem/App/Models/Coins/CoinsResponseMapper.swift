@@ -12,8 +12,11 @@ import BlockchainSdk
 struct CoinsResponseMapper {
     let supportedBlockchains: Set<Blockchain>
 
+    private let tokenItemMapper: TokenItemMapper
+
     init(supportedBlockchains: Set<Blockchain>) {
         self.supportedBlockchains = supportedBlockchains
+        tokenItemMapper = TokenItemMapper(supportedBlockchains: supportedBlockchains)
     }
 
     func mapToCoinModels(_ response: CoinsList.Response) -> [CoinModel] {
@@ -23,7 +26,7 @@ struct CoinsResponseMapper {
             let symbol = coin.symbol.uppercased().trimmed()
 
             let items: [CoinModel.Item] = coin.networks.compactMap { network in
-                guard let item = mapToTokenItem(id: id, name: name, symbol: symbol, network: network) else {
+                guard let item = tokenItemMapper.mapToTokenItem(id: id, name: name, symbol: symbol, network: network) else {
                     return nil
                 }
 
@@ -36,31 +39,5 @@ struct CoinsResponseMapper {
 
             return CoinModel(id: id, name: name, symbol: symbol, items: items)
         }
-    }
-
-    private func mapToTokenItem(id: String, name: String, symbol: String, network: CoinsList.Network) -> TokenItem? {
-        // We should find and use a exactly same blockchain that in the supportedBlockchains set
-        guard let blockchain = supportedBlockchains[network.networkId] else {
-            return nil
-        }
-
-        guard let contractAddress = network.contractAddress,
-              let decimalCount = network.decimalCount else {
-            return .blockchain(.init(blockchain, derivationPath: nil))
-        }
-
-        guard blockchain.canHandleTokens else {
-            return nil
-        }
-
-        let token = Token(
-            name: name,
-            symbol: symbol,
-            contractAddress: contractAddress.trimmed(),
-            decimalCount: decimalCount,
-            id: id
-        )
-
-        return .token(token, .init(blockchain, derivationPath: nil))
     }
 }

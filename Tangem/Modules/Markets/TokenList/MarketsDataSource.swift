@@ -28,22 +28,7 @@ class MarketsDataSource {
     // MARK: - Init
 
     init() {
-        userWalletRepository
-            .eventProvider
-            .filter { event in
-                switch event {
-                case .locked, .inserted, .deleted, .biometryUnlocked:
-                    return true
-                default:
-                    return false
-                }
-            }
-            .sink { [weak self] event in
-                guard let self = self else { return }
-
-                let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
-                _userWalletModels.send(userWalletModels)
-            }
-            .store(in: &bag)
+        let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
+        _userWalletModels.send(userWalletModels)
     }
 }

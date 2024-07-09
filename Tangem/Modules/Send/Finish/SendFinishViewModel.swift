@@ -12,11 +12,9 @@ import Combine
 import BlockchainSdk
 
 protocol SendFinishViewModelInput: AnyObject {
-    var userInputAmountValue: Amount? { get }
     var destinationText: String? { get }
     var additionalField: DestinationAdditionalFieldType { get }
-    var feeValue: Fee? { get }
-    var selectedFeeOption: FeeOption { get }
+    var feeValue: SendFee? { get }
 
     var transactionTime: Date? { get }
     var transactionURL: URL? { get }
@@ -60,7 +58,7 @@ class SendFinishViewModel: ObservableObject {
         let formattedAmount = initial.amount?.format(currencySymbol: initial.tokenItem.currencySymbol)
         let formattedAmountAlternative = initial.amount?.formatAlternative(currencySymbol: initial.tokenItem.currencySymbol)
         amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(from: formattedAmount, amountAlternative: formattedAmountAlternative)
-        feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: .loaded(feeValue), feeOption: input.selectedFeeOption)
+        feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: feeValue)
 
         let formatter = DateFormatter()
         formatter.dateStyle = .long

@@ -252,6 +252,7 @@
 "express_provider_min_amount" = "Доступно с %@";
 "express_provider_not_available" = "Недоступно для этой пары";
 "express_provider_permission_needed" = "Требуется разрешение";
+"express_provider_recommended" = "Рекомендовано";
 "express_terms_of_use" = "Условиями использования";
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
