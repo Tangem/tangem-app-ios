@@ -17,7 +17,7 @@ struct SendTransactionParametersBuilder {
     }
 
     func transactionParameters(from value: String) throws -> TransactionParams? {
-        assert(!value.isEmpty, "Have to be checked berofe validation")
+        assert(!value.isEmpty, "Have to be checked before validation")
 
         switch blockchain {
         case .binance:

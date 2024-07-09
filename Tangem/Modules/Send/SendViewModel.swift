@@ -173,7 +173,7 @@ final class SendViewModel: ObservableObject {
         stepAnimation = sendType.firstStep == .summary ? .moveAndFade : .slideForward
         sendStepParameters = SendStep.Parameters(currencyName: walletModel.tokenItem.name, walletName: walletInfo.walletName)
 
-        // TODO: Sepate by steps and inject it
+        // TODO: Separate by steps and inject it
         addressTextViewHeightModel = .init()
         sendAmountViewModel = factory.makeSendAmountViewModel(
             input: sendModel,
