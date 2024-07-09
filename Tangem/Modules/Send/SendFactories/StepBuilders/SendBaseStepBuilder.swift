@@ -21,10 +21,10 @@ struct SendBaseStepBuilder {
     func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
         let addressTextViewHeightModel = AddressTextViewHeightModel()
-        let sendTransactionSender = builder.makeSendTransactionSender()
+        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
 
         let sendModel = builder.makeSendModel(
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             predefinedSellParameters: sendType.predefinedSellParameters,
             router: router
         )
@@ -41,7 +41,7 @@ struct SendBaseStepBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: sendModel, output: sendModel),
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
             sendType: sendType

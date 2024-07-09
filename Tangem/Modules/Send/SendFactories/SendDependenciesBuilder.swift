@@ -98,15 +98,15 @@ struct SendDependenciesBuilder {
         CommonInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
     }
 
-    func makeSendTransactionSender() -> SendTransactionSender {
-        CommonSendTransactionSender(
+    func makeSendTransactionDispatcher() -> SendTransactionDispatcher {
+        CommonSendTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: userWalletModel.signer
         )
     }
 
     func makeSendModel(
-        sendTransactionSender: any SendTransactionSender,
+        sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters?,
         router: SendRoutable
     ) -> SendModel {
@@ -115,7 +115,7 @@ struct SendDependenciesBuilder {
 
         return SendModel(
             walletModel: walletModel,
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             feeIncludedCalculator: feeIncludedCalculator,
             predefinedValues: predefinedValues
         )

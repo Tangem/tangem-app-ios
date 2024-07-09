@@ -17,14 +17,14 @@ struct SendSummaryStepBuilder {
 
     func makeSendSummaryStep(
         io: IO,
-        sendTransactionSender: any SendTransactionSender,
+        sendTransactionDispatcher: any SendTransactionDispatcher,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         sendType: SendType
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
             io: io,
-            sendTransactionSender: sendTransactionSender
+            sendTransactionDispatcher: sendTransactionDispatcher
         )
 
         let viewModel = makeSendSummaryViewModel(
@@ -70,12 +70,12 @@ private extension SendSummaryStepBuilder {
 
     func makeSendSummaryInteractor(
         io: IO,
-        sendTransactionSender: any SendTransactionSender
+        sendTransactionDispatcher: any SendTransactionDispatcher
     ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
             input: io.input,
             output: io.output,
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
