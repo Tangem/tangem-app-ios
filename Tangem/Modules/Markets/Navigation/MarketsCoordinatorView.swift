@@ -14,7 +14,7 @@ struct MarketsCoordinatorView: CoordinatorView {
 
     var body: some View {
         ZStack {
-            if let model = coordinator.manageTokensViewModel {
+            if let model = coordinator.rootViewModel {
                 MarketsView(viewModel: model)
 
                 sheets
@@ -25,29 +25,20 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .detentBottomSheet(
-                item: $coordinator.networkSelectorViewModel,
-                detents: [.medium, .large]
-            ) { viewModel in
-                NavigationView {
-                    ManageTokensNetworkSelectorView(viewModel: viewModel)
-                        .navigationLinks(links)
-                }
-                .navigationViewStyle(.stack)
+            .bottomSheet(
+                item: $coordinator.marketsListOrderBottonSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                MarketsListOrderBottonSheetView(viewModel: $0)
             }
-            .detentBottomSheet(
-                item: $coordinator.addCustomTokenCoordinator,
-                detents: [.large]
-            ) { coordinator in
-                AddCustomTokenCoordinatorView(coordinator: coordinator)
+            .sheet(item: $coordinator.tokenMarketsDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.walletSelectorViewModel) {
-                WalletSelectorView(viewModel: $0)
-            }
+            .emptyNavigationLink()
     }
 }

@@ -14,14 +14,12 @@ import BlockchainSdk
 protocol SendSummaryViewModelInput: AnyObject {
     var canEditAmount: Bool { get }
     var canEditDestination: Bool { get }
-    var feeOptions: [FeeOption] { get }
 
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
     var transactionAmountPublisher: AnyPublisher<Amount?, Never> { get }
     var destinationTextPublisher: AnyPublisher<String, Never> { get }
-    var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> { get }
-    var feeValuePublisher: AnyPublisher<Fee?, Never> { get }
-    var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
-    var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }
+    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> { get }
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
 
     var isSending: AnyPublisher<Bool, Never> { get }
 }
@@ -69,18 +67,29 @@ class SendSummaryViewModel: ObservableObject {
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     private var bag: Set<AnyCancellable> = []
     private let input: SendSummaryViewModelInput
+    private let tokenItem: TokenItem
     private let walletInfo: SendWalletInfo
     private let notificationManager: SendNotificationManager
-    private let fiatCryptoValueProvider: SendFiatCryptoValueProvider
+    private let sendFeeInteractor: SendFeeInteractor
     private var isVisible = false
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
 
-    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo, sectionViewModelFactory: SendSummarySectionViewModelFactory) {
+    init(
+        initial: Initial,
+        input: SendSummaryViewModelInput,
+        notificationManager: SendNotificationManager,
+        sendFeeInteractor: SendFeeInteractor,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        walletInfo: SendWalletInfo,
+        sectionViewModelFactory: SendSummarySectionViewModelFactory
+    ) {
+        tokenItem = initial.tokenItem
+
         self.input = input
         self.walletInfo = walletInfo
         self.notificationManager = notificationManager
-        self.fiatCryptoValueProvider = fiatCryptoValueProvider
+        self.sendFeeInteractor = sendFeeInteractor
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.sectionViewModelFactory = sectionViewModelFactory
 
@@ -157,36 +166,33 @@ class SendSummaryViewModel: ObservableObject {
             .assign(to: \.destinationViewTypes, on: self)
             .store(in: &bag)
 
-        Publishers.CombineLatest(
-            fiatCryptoValueProvider.formattedAmountPublisher,
-            fiatCryptoValueProvider.formattedAmountAlternativePublisher
-        )
-        .compactMap { [weak self] formattedAmount, formattedAmountAlternative in
-            self?.sectionViewModelFactory.makeAmountViewData(
-                from: formattedAmount,
-                amountAlternative: formattedAmountAlternative
-            )
-        }
-        .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
-        .store(in: &bag)
+        input.amountPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, amount in
+                let formattedAmount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol)
+                let formattedAlternativeAmount = amount?.formatAlternative(currencySymbol: viewModel.tokenItem.currencySymbol)
 
-        Publishers.CombineLatest(input.feeValues, input.selectedFeeOptionPublisher)
-            .sink { [weak self] feeValues, selectedFeeOption in
+                return viewModel.sectionViewModelFactory.makeAmountViewData(
+                    from: formattedAmount,
+                    amountAlternative: formattedAlternativeAmount
+                )
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        Publishers.CombineLatest(sendFeeInteractor.feesPublisher(), input.selectedFeePublisher)
+            .sink { [weak self] feeValues, selectedFee in
                 guard let self else { return }
 
                 var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
                 var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
-                for feeOption in input.feeOptions {
-                    let feeValue = feeValues[feeOption] ?? .failedToLoad(error: WalletError.failedToGetFee)
-
-                    if feeOption == selectedFeeOption {
-                        selectedFeeSummaryViewModel = sectionViewModelFactory.makeFeeViewData(
-                            from: feeValue,
-                            feeOption: feeOption
-                        )
+                for feeValue in feeValues {
+                    if feeValue.option == selectedFee?.option {
+                        selectedFeeSummaryViewModel = sectionViewModelFactory.makeFeeViewData(from: feeValue)
                     } else {
-                        let model = sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue, feeOption: feeOption)
+                        let model = sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
                         deselectedFeeRowViewModels.append(model)
                     }
                 }
@@ -194,7 +200,7 @@ class SendSummaryViewModel: ObservableObject {
                 self.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
                 self.deselectedFeeRowViewModels = deselectedFeeRowViewModels
 
-                let multipleFeeOptions = input.feeOptions.count > 1
+                let multipleFeeOptions = feeValues.count > 1
                 let noFeeErrors = feeValues.allSatisfy { $0.value.error == nil }
                 canEditFee = multipleFeeOptions && noFeeErrors
             }
@@ -210,5 +216,11 @@ class SendSummaryViewModel: ObservableObject {
 
     private func sectionBackground(canEdit: Bool) -> Color {
         canEdit ? Colors.Background.action : Colors.Button.disabled
+    }
+}
+
+extension SendSummaryViewModel {
+    struct Initial {
+        let tokenItem: TokenItem
     }
 }

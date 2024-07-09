@@ -57,7 +57,8 @@ struct SendDestinationView: View {
                 namespace: namespace
             ))
 
-            if let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
+            if viewModel.showSuggestedDestinations,
+               let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
                 SendSuggestedDestinationView(viewModel: suggestedDestinationViewModel)
                     .transition(.opacity)
             }
@@ -65,6 +66,7 @@ struct SendDestinationView: View {
         .onAppear(perform: viewModel.onAppear)
         .onAppear(perform: viewModel.onAuxiliaryViewAppear)
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
+        .animation(SendView.Constants.defaultAnimation, value: viewModel.showSuggestedDestinations)
     }
 }
 
@@ -75,7 +77,7 @@ struct SendDestinationView: View {
      static var previews: some View {
          SendDestinationView(
              viewModel: SendDestinationViewModel(
-                 input: SendDestinationViewModelInputMock(),
+                 input: SendSendDestinationInputMock(),
                  addressTextViewHeightModel: .init()
              ),
              namespace: namespace

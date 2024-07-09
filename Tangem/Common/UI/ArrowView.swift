@@ -13,9 +13,16 @@ struct ArrowView: View {
     let position: ItemPosition
     let width: CGFloat
     let height: CGFloat
-    let color = Color(name: "manage_tokens_arrow")
+    let color = Colors.Stroke.secondary
+    /// Use this offset when arrow origin should be shifted from the center of the view
+    var arrowCenterXOffset: CGFloat?
+
+    private var arrowXOffset: CGFloat {
+        width / 2 + (arrowCenterXOffset ?? 0)
+    }
+
     var body: some View {
-        LineShape(position: position)
+        LineShape(position: position, centerXPos: arrowXOffset)
             .foregroundColor(color)
             .overlay(TriangleShape().fill(color))
             .frame(width: width, height: height)
@@ -30,7 +37,7 @@ enum ItemPosition: Equatable {
 
     fileprivate var startOffset: CGFloat {
         switch self {
-        case .single, .first:
+        case .single:
             return 6
         default:
             return 0
@@ -61,6 +68,7 @@ enum ItemPosition: Equatable {
 
 private struct LineShape: Shape {
     let position: ItemPosition
+    let centerXPos: CGFloat
 
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -74,15 +82,15 @@ private struct LineShape: Shape {
             dashPhase: 0.0
         )
 
-        let startPoint = CGPoint(x: rect.midX, y: rect.minY - position.startOffset)
-        let startCurvePoint = CGPoint(x: rect.midX, y: rect.minY)
+        let startPoint = CGPoint(x: centerXPos, y: rect.minY)
+        let startCurvePoint = CGPoint(x: centerXPos, y: rect.minY)
         let endCurvePoint = CGPoint(x: rect.maxX, y: rect.midY)
-        let bottomPoint = position.isLast ? startCurvePoint : CGPoint(x: rect.midX, y: rect.maxY)
+        let bottomPoint = position.isLast ? startCurvePoint : CGPoint(x: centerXPos, y: rect.maxY)
 
         path.move(to: startPoint)
         path.addLine(to: bottomPoint)
         path.move(to: startCurvePoint)
-        path.addQuadCurve(to: endCurvePoint, control: CGPoint(x: rect.midX, y: rect.midY))
+        path.addQuadCurve(to: endCurvePoint, control: CGPoint(x: centerXPos, y: rect.midY))
 
         return path.strokedPath(style)
     }
@@ -107,10 +115,14 @@ private struct TriangleShape: Shape {
 
 struct ArrowView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            ArrowView(position: .first, width: 50, height: 50)
-            ArrowView(position: .middle, width: 50, height: 50)
-            ArrowView(position: .last, width: 50, height: 50)
+        HStack {
+            VStack(alignment: .leading) {
+                ArrowView(position: .first, width: 40, height: 40)
+                ArrowView(position: .middle, width: 44, height: 40, arrowCenterXOffset: -2)
+                ArrowView(position: .last, width: 40, height: 40)
+            }
+
+            Spacer()
         }
     }
 }

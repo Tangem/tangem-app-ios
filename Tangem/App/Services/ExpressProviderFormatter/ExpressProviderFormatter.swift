@@ -84,7 +84,7 @@ struct ExpressProviderFormatter {
             id: provider.id,
             iconURL: provider.imageURL,
             name: provider.name,
-            type: provider.type.rawValue.uppercased()
+            type: provider.type.title
         )
     }
 
@@ -128,6 +128,17 @@ struct ExpressProviderFormatter {
         }
 
         return nil
+    }
+}
+
+private extension ExpressProviderType {
+    var title: String {
+        switch self {
+        case .dex, .cex:
+            return rawValue.uppercased()
+        case .dexBridge:
+            return "DEX/Bridge"
+        }
     }
 }
 

@@ -19,6 +19,7 @@ final class MarketsListDataProvider {
     // MARK: Published Properties
 
     @Published var items: [MarketsTokenModel] = []
+    @Published var isLoading: Bool = false
 
     // MARK: - Public Properties
 
@@ -26,16 +27,34 @@ final class MarketsListDataProvider {
         return lastSearchText
     }
 
-    // Tells if all items have been loaded. (Used to hide/show activity spinner)
-    private(set) var canFetchMore = true
+    var lastFilterValue: Filter? {
+        return lastFilter
+    }
+
+    // Tells if all items have been loaded
+    var canFetchMore: Bool {
+        if isLoading {
+            return false
+        }
+
+        guard let totalTokensCount else {
+            return true
+        }
+
+        let countPages = totalTokensCount / limitPerPage
+        return currentOffset < countPages
+    }
 
     // MARK: Private Properties
 
-    // Tracks last page loaded. Used to load next page (current + 1)
-    private var currentPage = 0
+    // Tracks last page ofsset loaded. Used to load next page (current + 1)
+    private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage = 20
+    private let limitPerPage: Int = 20
+
+    // Total tokens value by pages
+    private var totalTokensCount: Int?
 
     private var lastSearchText: String?
     private var lastFilter: Filter?
@@ -46,35 +65,43 @@ final class MarketsListDataProvider {
 
     // MARK: - Implementation
 
-    func reset(_ searchText: String?, with filter: Filter) {
+    func reset(_ searchText: String?, with filter: Filter?) {
         AppLog.shared.debug("\(String(describing: self)) reset market list tokens")
 
         lastSearchText = searchText
         lastFilter = filter
 
-        canFetchMore = true
         items = []
-        currentPage = 0
+        currentOffset = 0
+        totalTokensCount = nil
+
+        isLoading = false
     }
 
-    func fetch(_ searchText: String, with filter: Filter) {
+    func fetch(_ searchText: String, with filter: Filter, generalCoins: Bool = false) {
         if lastSearchText != searchText || filter != lastFilter {
             reset(searchText, with: filter)
         }
 
+        isLoading = true
+
         runTask(in: self) { provider in
-            let tokens = try await provider.loadItems(searchText, with: filter)
+            let response: MarketsDTO.General.Response
 
-            await runOnMain {
-                AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens with count = \(tokens.count)")
-
-                provider.currentPage += 1
-                self.items.append(contentsOf: tokens)
-                // If count of data received is less than perPage value then it is last page.
-                if tokens.count < provider.limitPerPage {
-                    provider.canFetchMore = false
-                }
+            do {
+                response = try await provider.loadItems(searchText, with: filter, generalCoins: generalCoins)
+            } catch {
+                AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens did receive error \(error.localizedDescription)")
+                provider.isLoading = false
+                return
             }
+
+            provider.currentOffset = response.offset + response.limit
+            provider.totalTokensCount = response.total
+
+            provider.isLoading = false
+
+            self.items.append(contentsOf: response.tokens)
         }
     }
 
@@ -90,23 +117,22 @@ final class MarketsListDataProvider {
 // MARK: Private
 
 private extension MarketsListDataProvider {
-    func loadItems(_ searchText: String, with filter: Filter) async throws -> [MarketsTokenModel] {
+    func loadItems(_ searchText: String, with filter: Filter, generalCoins: Bool) async throws -> MarketsDTO.General.Response {
         let searchText = searchText.trimmed()
 
         let requestModel = MarketsDTO.General.Request(
             currency: selectedCurrencyCode,
-            offset: currentPage,
+            offset: currentOffset,
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
-            generalCoins: filter.generalCoins,
+            generalCoins: generalCoins,
             search: searchText
         )
 
         AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
-        let response = try await tangemApiService.loadMarkets(requestModel: requestModel)
-        return response.tokens
+        return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }
 }
 
@@ -114,14 +140,17 @@ extension MarketsListDataProvider {
     final class Filter: Hashable, Equatable {
         var interval: MarketsPriceIntervalType = .day
         var order: MarketsListOrderType = .rating
-        var generalCoins: Bool = false
+
+        init(interval: MarketsPriceIntervalType, order: MarketsListOrderType) {
+            self.interval = interval
+            self.order = order
+        }
 
         // MARK: - Hashable
 
         func hash(into hasher: inout Hasher) {
-            hasher.combine(interval.rawValue)
+            hasher.combine(interval.id)
             hasher.combine(order.rawValue)
-            hasher.combine(generalCoins)
         }
 
         // MARK: - Equatable

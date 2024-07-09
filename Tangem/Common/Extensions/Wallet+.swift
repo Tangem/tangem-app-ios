@@ -11,11 +11,15 @@ import BlockchainSdk
 import SwiftUI
 
 public extension Wallet {
-    func hasFeeCurrency(amountType: Amount.AmountType) -> Bool {
+    func feeCurrencyBalance(amountType: Amount.AmountType) -> Decimal {
         let feeAmountType = feeAmountType(transactionAmountType: amountType)
         let feeAmount = amounts[feeAmountType]?.value ?? 0
 
-        return feeAmount > 0
+        return feeAmount
+    }
+
+    func hasFeeCurrency(amountType: Amount.AmountType) -> Bool {
+        feeCurrencyBalance(amountType: amountType) > 0
     }
 
     private func feeAmountType(transactionAmountType: Amount.AmountType) -> Amount.AmountType {

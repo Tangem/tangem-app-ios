@@ -86,11 +86,8 @@ extension ScanCardSettingsViewModel {
     func processSuccessScan(for cardInfo: CardInfo) {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
 
-        guard let userWalletIdSeed = config.userWalletIdSeed else {
-            return
-        }
-
-        let userWalletId = UserWalletId(with: userWalletIdSeed)
+        // We just allow to reset cards wthout keys via any wallet
+        let userWalletId = config.userWalletIdSeed.map { UserWalletId(with: $0) } ?? UserWalletId(value: Data())
 
         let input = CardSettingsViewModel.Input(
             userWalletId: userWalletId,
@@ -98,7 +95,7 @@ extension ScanCardSettingsViewModel {
             securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
             factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
             isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
-            linkedCardsCount: cardInfo.card.backupStatus?.linkedCardsCount ?? 0,
+            backupCardsCount: cardInfo.card.backupStatus?.backupCardsCount ?? 0,
             canTwin: config.hasFeature(.twinning),
             twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
             cardIdFormatted: cardInfo.cardIdFormatted,

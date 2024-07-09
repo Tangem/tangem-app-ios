@@ -108,7 +108,6 @@ enum EmailCollectedDataType {
         case exceptionWalletManagerHost = "Exception Host"
         case outputsCount = "Outputs count"
         case derivationPath = "Derivation path"
-        case xpub = "XPUB"
         case hasSeedPhrase = "Has seed phrase"
     }
 

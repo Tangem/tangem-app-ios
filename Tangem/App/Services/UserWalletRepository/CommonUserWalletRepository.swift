@@ -93,14 +93,12 @@ class CommonUserWalletRepository: UserWalletRepository {
                 failedCardScanTracker.resetCounter()
                 sendEvent(.scan(isScanning: false))
 
-                var cardInfo = response.getCardInfo()
+                let cardInfo = response.getCardInfo()
                 updateAssociatedCard(for: cardInfo)
                 resetServices()
                 initializeAnalyticsContext(with: cardInfo)
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
-
-                cardInfo.name = config.cardName
 
                 let userWalletModel = CommonUserWalletModel(cardInfo: cardInfo)
                 if let userWalletModel {

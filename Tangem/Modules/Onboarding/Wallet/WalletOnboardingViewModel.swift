@@ -739,11 +739,12 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                             self.userWalletModel?.addAssociatedCard(updatedCard.cardId)
                             self.pendingBackupManager.onProceedBackup(updatedCard)
                             if updatedCard.cardId == self.backupService.primaryCard?.cardId {
-                                self.userWalletModel?.onBackupCreated(updatedCard)
+                                self.userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
                             }
 
                             if self.backupServiceState == .finished {
                                 self.pendingBackupManager.onBackupCompleted()
+                                self.userWalletModel?.onBackupUpdate(type: .backupCompleted)
                                 Analytics.log(
                                     event: .backupFinished,
                                     params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]

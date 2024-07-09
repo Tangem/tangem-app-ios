@@ -32,6 +32,20 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
         return try mapToExpressFee(fees: fees)
     }
 
+    func estimatedFee(estimatedGasLimit: Int) async throws -> Fee {
+        guard let ethereumNetworkProvider = wallet.ethereumNetworkProvider else {
+            throw ExpressFeeProviderError.ethereumNetworkProviderNotFound
+        }
+
+        let parameters = try await ethereumNetworkProvider.getFee(
+            gasLimit: BigUInt(estimatedGasLimit),
+            supportsEIP1559: wallet.tokenItem.blockchain.supportsEIP1559
+        )
+
+        let amount = parameters.calculateFee(decimalValue: wallet.tokenItem.decimalValue)
+        return Fee(makeAmount(amount: amount))
+    }
+
     func getFee(amount: Decimal, destination: String, hexData: Data?) async throws -> ExpressFee {
         let amount = makeAmount(amount: amount)
 
@@ -77,22 +91,19 @@ private extension CommonExpressFeeProvider {
     }
 
     func increaseGasLimit(fee: Fee) -> Fee {
-        guard let parameters = fee.parameters as? EthereumEIP1559FeeParameters else {
+        guard let parameters = fee.parameters as? EthereumFeeParameters else {
             return fee
         }
 
         let gasLimit = parameters.gasLimit * BigUInt(112) / BigUInt(100)
-        let feeParameters = EthereumEIP1559FeeParameters(
-            gasLimit: gasLimit,
-            maxFeePerGas: parameters.maxFeePerGas,
-            priorityFee: parameters.priorityFee
-        )
-        let feeValue = feeParameters.calculateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
+        let newParameters = parameters.changingGasLimit(to: gasLimit)
+        let feeValue = newParameters.calculateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
         let amount = Amount(with: wallet.tokenItem.blockchain, value: feeValue)
-        return Fee(amount, parameters: feeParameters)
+        return Fee(amount, parameters: newParameters)
     }
 }
 
 enum ExpressFeeProviderError: Error {
     case feeNotFound
+    case ethereumNetworkProviderNotFound
 }

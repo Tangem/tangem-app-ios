@@ -66,9 +66,7 @@ extension SendDestinationAddressSummaryView: Setupable {
             case .address(let address, _):
                 SendDestinationAddressSummaryView(addressTextViewHeightModel: .init(), address: address)
             case .additionalField(let type, let value):
-                if let name = type.name {
-                    DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                }
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
             }
         }
 
@@ -77,9 +75,7 @@ extension SendDestinationAddressSummaryView: Setupable {
             case .address(let address, _):
                 SendDestinationAddressSummaryView(addressTextViewHeightModel: .init(), address: address)
             case .additionalField(let type, let value):
-                if let name = type.name {
-                    DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                }
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
             }
         }
 
@@ -93,9 +89,7 @@ extension SendDestinationAddressSummaryView: Setupable {
             case .address(let address, _):
                 SendDestinationAddressSummaryView(addressTextViewHeightModel: .init(), address: address)
             case .additionalField(let type, let value):
-                if let name = type.name {
-                    DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                }
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
             }
         }
         .backgroundColor(Colors.Button.disabled)
@@ -110,9 +104,7 @@ extension SendDestinationAddressSummaryView: Setupable {
             case .address(let address, _):
                 SendDestinationAddressSummaryView(addressTextViewHeightModel: .init(), address: address)
             case .additionalField(let type, let value):
-                if let name = type.name {
-                    DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                }
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
             }
         }
     }

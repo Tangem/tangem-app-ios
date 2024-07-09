@@ -51,20 +51,6 @@ class WalletModel {
         walletManager.allowsFeeSelection
     }
 
-    var supportsCustomFees: Bool {
-        let blockchain = blockchainNetwork.blockchain
-
-        if case .bitcoin = blockchain, bitcoinTransactionFeeCalculator != nil {
-            return true
-        }
-
-        if blockchain.isEvm {
-            return true
-        }
-
-        return false
-    }
-
     var tokenItem: TokenItem {
         switch amountType {
         case .coin, .reserve:
@@ -134,7 +120,7 @@ class WalletModel {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 
     var rateFormatted: String {
@@ -157,6 +143,10 @@ class WalletModel {
     }
 
     var wallet: Wallet { walletManager.wallet }
+
+    var addresses: [String] {
+        wallet.addresses.map { $0.value }
+    }
 
     var addressNames: [String] {
         wallet.addresses.map { $0.localizedName }

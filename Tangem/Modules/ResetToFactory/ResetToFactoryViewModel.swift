@@ -18,24 +18,24 @@ class ResetToFactoryViewModel: ObservableObject {
     }
 
     var message: String {
-        if hasLinkedCards {
+        if hasBackupCards {
             return Localization.resetCardWithBackupToFactoryMessage
         } else {
             return Localization.resetCardWithoutBackupToFactoryMessage
         }
     }
 
-    private let hasLinkedCards: Bool
+    private let hasBackupCards: Bool
     private let resetHelper: ResetToFactoryService
     private let cardInteractor: FactorySettingsResetting
     private weak var coordinator: ResetToFactoryViewRoutable?
 
     init(input: ResetToFactoryViewModel.Input, coordinator: ResetToFactoryViewRoutable) {
         cardInteractor = input.cardInteractor
-        hasLinkedCards = input.linkedCardsCount > 0
+        hasBackupCards = input.backupCardsCount > 0
         resetHelper = ResetToFactoryService(
             userWalletId: input.userWalletId,
-            totalCardsCount: input.linkedCardsCount + 1
+            totalCardsCount: input.backupCardsCount + 1
         )
         self.coordinator = coordinator
 
@@ -63,7 +63,7 @@ private extension ResetToFactoryViewModel {
     func setupView() {
         warnings.append(Warning(isAccepted: false, type: .accessToCard))
 
-        if hasLinkedCards {
+        if hasBackupCards {
             warnings.append(Warning(isAccepted: false, type: .accessCodeRecovery))
         }
     }
@@ -162,7 +162,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsContinueResetAlertTitle,
             message: Localization.cardSettingsContinueResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }
@@ -179,7 +179,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsInterruptedResetAlertTitle,
             message: Localization.cardSettingsInterruptedResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }

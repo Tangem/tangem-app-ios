@@ -27,18 +27,16 @@ struct SendSummaryView: View {
                                     .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
                             )
                     case .additionalField(let type, let value):
-                        if let name = type.name {
-                            DefaultTextWithTitleRowView(data: .init(title: name, text: value))
-                                .setNamespace(namespace)
-                                .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                                .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
-                                .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                                .background(
-                                    viewModel.destinationBackground
-                                        .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                                        .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
-                                )
-                        }
+                        DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
+                            .setNamespace(namespace)
+                            .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
+                            .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
+                            .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                            .background(
+                                viewModel.destinationBackground
+                                    .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
+                                    .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
+                            )
                     }
                 }
                 .backgroundColor(.clear)

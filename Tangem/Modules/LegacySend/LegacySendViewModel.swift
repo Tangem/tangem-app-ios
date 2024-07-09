@@ -80,7 +80,7 @@ class LegacySendViewModel: ObservableObject {
         additionalInputFields != .none
     }
 
-    var additionalInputFields: SendAdditionalFields {
+    var additionalInputFields: SendAdditionalFields? {
         .fields(for: blockchainNetwork.blockchain)
     }
 
@@ -914,7 +914,7 @@ private extension LegacySendViewModel {
 
             guard
                 let currencyId,
-                let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId)
+                let fiatValue = BalanceConverter().convertToFiat(amount.value, currencyId: currencyId)
             else {
                 return nil
             }
@@ -942,7 +942,7 @@ private extension LegacySendViewModel {
         }
 
         return BalanceConverter()
-            .convertFromFiat(value: amount.value, to: currencyId)?
+            .convertFromFiat(amount.value, currencyId: currencyId)?
             .rounded(scale: amount.decimals)
     }
 
@@ -964,7 +964,7 @@ private extension LegacySendViewModel {
     }
 
     func retrieveAnalyticsMemoValue() -> Analytics.ParameterValue {
-        guard !additionalInputFields.isEmpty else {
+        guard additionalInputFields != nil else {
             return .null
         }
 

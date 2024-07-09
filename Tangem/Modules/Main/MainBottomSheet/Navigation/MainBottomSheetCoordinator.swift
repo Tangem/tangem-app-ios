@@ -76,32 +76,7 @@ class MainBottomSheetCoordinator: CoordinatorObject {
             dismissAction: dismissAction,
             popToRootAction: popToRootAction
         )
-        coordinator.delegate = self
         coordinator.start(with: .init(searchTextPublisher: __headerViewModel.enteredSearchTextPublisher))
         marketsCoordinator = coordinator
-    }
-}
-
-// MARK: - ManageTokensCoordinatorDelegate protocol conformance
-
-extension MainBottomSheetCoordinator: MarketsCoordinatorDelegate {
-    func showGenerateAddressesWarning(
-        numberOfNetworks: Int,
-        currentWalletNumber: Int,
-        totalWalletNumber: Int,
-        action: @escaping () -> Void
-    ) {
-        overlayViewModel = .generateAddresses(
-            viewModel: GenerateAddressesViewModel(
-                numberOfNetworks: numberOfNetworks,
-                currentWalletNumber: currentWalletNumber,
-                totalWalletNumber: totalWalletNumber,
-                didTapGenerate: action
-            )
-        )
-    }
-
-    func hideGenerateAddressesWarning() {
-        overlayViewModel = nil
     }
 }

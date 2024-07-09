@@ -14,22 +14,22 @@ final class MarketsViewModel: ObservableObject {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
-    @Published var isShowAddCustomToken: Bool = false
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var viewDidAppear: Bool = false
+    @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
+    @Published var isLoading: Bool = false
 
     // MARK: - Properties
 
     var hasNextPage: Bool {
-        loader.canFetchMore
+        dataProvider.canFetchMore
     }
 
     private weak var coordinator: MarketsRoutable?
 
-    private var dataSource: MarketsDataSource
-    private lazy var loader = setupListDataLoader()
-
-    private var filter: MarketsListDataProvider.Filter = .init()
+    private let filterProvider = MarketsListDataFilterProvider()
+    private let dataProvider = MarketsListDataProvider()
+    private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
 
     private var bag = Set<AnyCancellable>()
 
@@ -40,11 +40,17 @@ final class MarketsViewModel: ObservableObject {
         coordinator: MarketsRoutable
     ) {
         self.coordinator = coordinator
-        dataSource = MarketsDataSource()
 
-        searchBind(searchTextPublisher: searchTextPublisher)
+        marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
+        marketsRatingHeaderViewModel.delegate = self
 
-        bind()
+        searchTextBind(searchTextPublisher: searchTextPublisher)
+        searchFilterBind(filterPublisher: filterProvider.filterPublisher)
+
+        dataProviderBind()
+
+        // Need for preload markets list, when bottom sheet it has not been opened yet
+        fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
     func onBottomAppear() {
@@ -57,101 +63,98 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomDisappear() {
-        loader.reset("")
-        fetch(with: "")
+        dataProvider.reset(nil, with: nil)
+        // Need reset state bottom sheet for next open bottom sheet
+        fetch(with: "", by: filterProvider.currentFilterValue)
         viewDidAppear = false
     }
 
     func fetchMore() {
-        loader.fetchMore()
-    }
-
-    func addCustomTokenDidTapAction() {
-        Analytics.log(.manageTokensButtonCustomToken)
-        coordinator?.openAddCustomToken(dataSource: dataSource)
+        dataProvider.fetchMore()
     }
 }
 
 // MARK: - Private Implementation
 
 private extension MarketsViewModel {
-    func fetch(with searchText: String = "") {
-        loader.fetch(searchText)
+    func fetch(with searchText: String = "", by filter: MarketsListDataProvider.Filter) {
+        dataProvider.fetch(searchText, with: filter)
     }
 
-    func searchBind(searchTextPublisher: (some Publisher<String, Never>)?) {
+    func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
         searchTextPublisher?
             .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .sink { [weak self] value in
-                if !value.isEmpty {
-                    Analytics.log(.manageTokensSearched)
-
-                    // It is necessary to hide it under this condition for disable to eliminate the flickering of the animation
-                    self?.setNeedDisplayTokensListSkeletonView()
-                }
-
-                self?.fetch(with: value)
-            }
-            .store(in: &bag)
-    }
-
-    func bind() {
-        dataSource
-            .userWalletModelsPublisher
-            .sink { [weak self] models in
-                self?.fetch()
-            }
-            .store(in: &bag)
-    }
-
-    func setupListDataLoader() -> ListDataLoader {
-        let supportedBlockchains = SupportedBlockchains.all
-        let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
-
-        loader.$items
-            .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] items in
-                guard let self = self else {
+            .withWeakCaptureOf(self)
+            .sink { viewModel, value in
+                guard viewModel.viewDidAppear else {
                     return
                 }
 
-                tokenViewModels = items.compactMap { self.mapToTokenViewModel(coinModel: $0) }
+                viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
+            }
+            .store(in: &bag)
+    }
 
-                isShowAddCustomToken = tokenViewModels.isEmpty && !dataSource.userWalletModels.contains(where: { $0.config.hasFeature(.multiCurrency) })
+    func searchFilterBind(filterPublisher: (some Publisher<MarketsListDataProvider.Filter, Never>)?) {
+        filterPublisher?
+            .dropFirst()
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, value in
+                viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+            }
+            .store(in: &bag)
+    }
 
-                if let searchValue = loader.lastSearchTextValue, !searchValue.isEmpty, items.isEmpty {
-                    Analytics.log(event: .manageTokensTokenIsNotFound, params: [.input: searchValue])
+    func dataProviderBind() {
+        dataProvider.$items
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, items in
+                viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
+
+                viewModel.tokenViewModels = items.compactMap { item in
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
+                    return tokenViewModel
                 }
             })
             .store(in: &bag)
 
-        return loader
+        dataProvider.$isLoading
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, isLoading in
+                viewModel.isLoading = isLoading
+            })
+            .store(in: &bag)
     }
 
     // MARK: - Private Implementation
 
-    /// Need for display list skeleton view
-    private func setNeedDisplayTokensListSkeletonView() {
-        // TODO: - The task is at the approval stage. There is no issue number yet
-//        tokenViewModels = [Int](0 ... 10).map { _ in }
-    }
-
-    private func mapToTokenViewModel(coinModel: CoinModel) -> MarketsItemViewModel {
-        // TODO: - Contains the poppy values that will be linked in the task https://tangem.atlassian.net/browse/IOS-6828
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
-            id: coinModel.id,
-            imageURL: IconURLBuilder().tokenIconURL(id: coinModel.id, size: .large).absoluteString,
-            name: coinModel.name,
-            symbol: coinModel.symbol,
-            marketCap: "",
-            marketRating: "",
-            priceValue: nil,
-            priceChangeStateValue: nil
+            id: tokenItemModel.id,
+            name: tokenItemModel.name,
+            symbol: tokenItemModel.symbol,
+            marketCap: tokenItemModel.marketCap,
+            marketRating: tokenItemModel.marketRating,
+            priceValue: tokenItemModel.currentPrice,
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId],
+            didTapAction: { [weak self] in
+                self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
+            }
         )
 
-        return MarketsItemViewModel(inputData)
+        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
+    }
+}
+
+extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
+    func orderActionButtonDidTap() {
+        coordinator?.openFilterOrderBottonSheet(with: filterProvider)
     }
 }
