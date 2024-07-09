@@ -11,17 +11,19 @@ import SwiftUI
 import Combine
 
 class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject {
-    @Published var isSelected: Bool
+    @Published var isSelected: Bool = false
 
     let id: UUID = .init()
+
     let tokenItem: TokenItem
-    let isReadonly: Bool
     let position: ItemPosition
     let isMain: Bool
     let networkName: String
     let contractName: String?
     let hasContextMenu: Bool
     let contractNameForegroundColor: Color
+
+    var isReadonly: Bool
 
     var networkNameForegroundColor: Color {
         guard !isReadonly else {
@@ -79,8 +81,9 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
             .store(in: &bag)
     }
 
-    func updateSelection(with isSelected: Binding<Bool>) {
+    func updateSelection(with isSelected: Binding<Bool>, isReadonly: Bool) {
         isSelectedBinding = isSelected
+        self.isReadonly = isReadonly
         self.isSelected = isSelected.wrappedValue
     }
 

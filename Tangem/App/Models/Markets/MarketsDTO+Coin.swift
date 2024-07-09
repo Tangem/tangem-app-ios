@@ -31,7 +31,7 @@ extension MarketsDTO.Coins {
         let fullDescription: String?
         let insights: [Insight]?
         let metrics: Metrics
-        let links: Links
+        let links: Links?
         let pricePerformance: PricePerformance
     }
 
@@ -60,7 +60,6 @@ extension MarketsDTO.Coins {
 
     struct Links: Codable {
         let homepage: [String]?
-        let blockchainSite: [String]?
         let whitepaper: String?
         let reddit: String?
         let officialForum: [String]?

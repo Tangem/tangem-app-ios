@@ -20,10 +20,12 @@ struct MarketsTokensNetworkSelectorView: View {
 
                         contentView
 
-                        bottomView
+                        Color.clear.frame(width: 10, height: 58, alignment: .center)
                     }
                     .padding(.horizontal, 16)
                 }
+
+                overlayButtonView
             }
             .alert(item: $viewModel.alert, content: { $0.alert })
             .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
@@ -76,16 +78,24 @@ struct MarketsTokensNetworkSelectorView: View {
         .padding(.vertical, 12)
     }
 
-    private var bottomView: some View {
-        VStack(spacing: 14) {
-            MarketsGeneratedAddressView()
+    private var overlayButtonView: some View {
+        VStack {
+            Spacer()
 
             MainButton(
                 title: Localization.commonContinue,
-                icon: .leading(Assets.tangemIcon)
-            ) {
-                viewModel.generatedAddressOnTapAction()
-            }
+                isLoading: viewModel.isSaving,
+                isDisabled: viewModel.isSaveDisabled,
+                action: viewModel.saveChangesOnTapAction
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .background(LinearGradient(
+                colors: [Colors.Background.primary, Colors.Background.primary, Colors.Background.primary.opacity(0)],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .edgesIgnoringSafeArea(.bottom))
         }
     }
 }
