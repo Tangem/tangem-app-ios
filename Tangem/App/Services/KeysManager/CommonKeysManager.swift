@@ -53,7 +53,9 @@ extension CommonKeysManager: KeysManager {
             quickNodeSolanaCredentials: .init(apiKey: keys.quiknodeApiKey, subdomain: keys.quiknodeSubdomain),
             quickNodeBscCredentials: .init(apiKey: keys.bscQuiknodeApiKey, subdomain: keys.bscQuiknodeSubdomain),
             defaultNetworkProviderConfiguration: .init(logger: .verbose, urlSessionConfiguration: .standard),
-            networkProviderConfigurations: [:]
+            networkProviderConfigurations: [:],
+            bittensorDwellirKey: keys.bittensorDwellirKey,
+            bittensorOnfinalityKey: keys.bittensorOnfinalityKey
         )
     }
 
@@ -126,5 +128,7 @@ extension CommonKeysManager {
         let express: ExpressKeys
         let devExpress: ExpressKeys?
         let stakeKitApiKey: String
+        let bittensorDwellirKey: String
+        let bittensorOnfinalityKey: String
     }
 }

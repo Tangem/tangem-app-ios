@@ -44,7 +44,9 @@ enum PreviewCard {
                     fireAcademyApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     chiaTangemApiKeys: .init(mainnetApiKey: ""),
                     quickNodeSolanaCredentials: .init(apiKey: "", subdomain: ""),
-                    quickNodeBscCredentials: .init(apiKey: "", subdomain: "")
+                    quickNodeBscCredentials: .init(apiKey: "", subdomain: ""),
+                    bittensorDwellirKey: "",
+                    bittensorOnfinalityKey: ""
                 ),
                 dependencies: .init(
                     accountCreator: BlockchainAccountCreatorStub(),

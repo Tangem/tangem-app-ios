@@ -93,6 +93,7 @@ struct TokenInteractionAvailabilityProvider {
              .taraxa,
              .radiant,
              .base,
+             .bittensor,
              .joystream,
              .koinos:
 
