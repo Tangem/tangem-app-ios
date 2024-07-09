@@ -8,15 +8,9 @@
 
 import Foundation
 
-protocol SendStepsManagerInput: AnyObject {
-//    var currentStep: SendStep { get }
-}
+protocol SendStepsManagerInput: AnyObject {}
 
 protocol SendStepsManagerOutput: AnyObject {
-//    func update(step: SendStep, animation: SendView.StepAnimation)
-
-//    func update(mainButtonType: SendMainButtonType)
-//    func update(backButtonVisible: Bool)
     func update(state: SendStepsManagerViewState)
 }
 
@@ -52,13 +46,4 @@ struct SendStepsManagerViewState {
             backButtonVisible: false
         )
     }
-
-//    static func close(step: SendStep) -> SendStepsManagerViewState {
-//        SendStepsManagerViewState(
-//            step: step,
-//            animation: .moveAndFade,
-//            mainButtonType: .close,
-//            backButtonVisible: false
-//        )
-//    }
 }

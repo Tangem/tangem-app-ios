@@ -47,6 +47,10 @@ extension SendSummaryStep: SendStep {
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
     }
+
+    func willAppear(previous step: any SendStep) {
+        viewModel.setupAnimations(previousStep: step.type)
+    }
 }
 
 // MARK: - SendSummaryViewModelSetupable
