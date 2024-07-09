@@ -10,9 +10,11 @@ import Foundation
 import Combine
 
 protocol SendBaseInput: AnyObject {
+    var isFeeIncluded: Bool { get }
+
     var isLoading: AnyPublisher<Bool, Never> { get }
 }
 
 protocol SendBaseOutput: AnyObject {
-    func sendTransaction() -> AnyPublisher<SendTransactionSentResult, Never>
+    func sendTransaction() -> AnyPublisher<SendTransactionDispatcherResult, Never>
 }

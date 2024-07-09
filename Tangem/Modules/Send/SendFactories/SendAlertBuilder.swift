@@ -8,8 +8,21 @@
 
 import Foundation
 import SwiftUI
+import BlockchainSdk
 
 enum SendAlertBuilder {
+    static func makeTransactionFailedAlert(sendTxError: SendTxError, openMailAction: @escaping () -> Void) -> AlertBinder {
+        let reason = String(sendTxError.localizedDescription.dropTrailingPeriod)
+        let errorCode = (sendTxError.error as? ErrorCodeProviding).map { "\($0.errorCode)" } ?? "-"
+
+        return AlertBuilder.makeAlert(
+            title: Localization.sendAlertTransactionFailedTitle,
+            message: Localization.sendAlertTransactionFailedText(reason, errorCode),
+            primaryButton: .default(Text(Localization.alertButtonRequestSupport), action: openMailAction),
+            secondaryButton: .default(Text(Localization.commonCancel))
+        )
+    }
+
     static func makeDismissAlert(dismissAction: @escaping () -> Void) -> AlertBinder {
         let dismissButton = Alert.Button.default(Text(Localization.commonYes), action: dismissAction)
         let cancelButton = Alert.Button.cancel(Text(Localization.commonNo))

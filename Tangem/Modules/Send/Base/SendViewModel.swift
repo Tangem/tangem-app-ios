@@ -8,6 +8,7 @@
 
 import Combine
 import SwiftUI
+import BlockchainSdk
 
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
@@ -51,7 +52,7 @@ final class SendViewModel: ObservableObject {
 
     private let interactor: SendBaseInteractor
     private let stepsManager: SendStepsManager
-    private weak var router: SendRoutable?
+    private weak var coordinator: SendRoutable?
 
     private var bag: Set<AnyCancellable> = []
     private var isValidSubscription: AnyCancellable?
@@ -62,14 +63,13 @@ final class SendViewModel: ObservableObject {
     init(
         interactor: SendBaseInteractor,
         stepsManager: SendStepsManager,
-        router: SendRoutable
+        coordinator: SendRoutable
     ) {
         self.interactor = interactor
         self.stepsManager = stepsManager
-        self.router = router
+        self.coordinator = coordinator
 
         step = stepsManager.firstStep
-//        didReachSummaryScreen = stepsManager.firstStep.type == .summary
         stepAnimation = .slideForward
         mainButtonType = .next
 
@@ -79,12 +79,10 @@ final class SendViewModel: ObservableObject {
 
     func onCurrentPageAppear() {
         step.didAppear()
-//        currentPageAnimating = true
     }
 
     func onCurrentPageDisappear() {
         step.didDisappear()
-//        currentPageAnimating = false
     }
 
     func userDidTapActionButton() {
@@ -96,7 +94,7 @@ final class SendViewModel: ObservableObject {
         case .send:
             performSend()
         case .close:
-            router?.dismiss()
+            coordinator?.dismiss()
         }
     }
 
@@ -113,21 +111,21 @@ final class SendViewModel: ObservableObject {
 
         if shouldShowDismissAlert {
             alert = SendAlertBuilder.makeDismissAlert { [weak self] in
-                self?.router?.dismiss()
+                self?.coordinator?.dismiss()
             }
         } else {
-            router?.dismiss()
+            coordinator?.dismiss()
         }
     }
 
     func share(url: URL) {
         Analytics.log(.sendButtonShare)
-        router?.openShareSheet(url: url)
+        coordinator?.openShareSheet(url: url)
     }
 
     func explore(url: URL) {
         Analytics.log(.sendButtonExplore)
-        router?.openExplorer(url: url)
+        coordinator?.openExplorer(url: url)
     }
 }
 
@@ -139,9 +137,44 @@ private extension SendViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, result in
-                viewModel.transactionURL = result.url
+                viewModel.proceed(result: result)
             }
             .store(in: &bag)
+    }
+
+    private func proceed(result: SendTransactionDispatcherResult) {
+        switch result {
+        case .success(let url):
+            transactionURL = url
+            stepsManager.performFinish()
+        case .userCancelled, .transactionNotFound:
+            break
+        case .informationRelevanceServiceError:
+            alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
+                self?.performSend()
+            }
+        case .informationRelevanceServiceFeeWasIncreased:
+            alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
+        case .sendTxError(let transaction, let sendTxError):
+            alert = SendAlertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError, openMailAction: { [weak self] in
+                self?.openMail(transaction: transaction, error: sendTxError)
+            })
+        case .demoAlert:
+            alert = AlertBuilder.makeAlert(
+                title: "",
+                message: Localization.alertDemoFeatureDisabled,
+                primaryButton: .default(.init(Localization.commonOk)) { [weak self] in
+                    self?.coordinator?.dismiss()
+                }
+            )
+        }
+    }
+
+    private func openMail(transaction: BSDKTransaction, error: SendTxError) {
+        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+
+        let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
+        coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
     private func bind(step: SendStep) {
@@ -180,21 +213,9 @@ private extension SendViewModel {
     }
 }
 
-// MARK: - SendModelUIDelegate
-
-extension SendViewModel: SendModelUIDelegate {
-    func showAlert(_ alert: AlertBinder) {
-        self.alert = alert
-    }
-}
-
 // MARK: - SendStepsManagerInput
 
-extension SendViewModel: SendStepsManagerInput {
-//    var currentStep: SendStep {
-//        return step
-//    }
-}
+extension SendViewModel: SendStepsManagerInput {}
 
 // MARK: - SendStepsManagerOutput
 

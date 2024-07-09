@@ -83,23 +83,21 @@ struct SendDependenciesBuilder {
 
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
-        predefinedSellParameters: PredefinedSellParameters?,
-        router: SendRoutable
+        predefinedSellParameters: PredefinedSellParameters?
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
             userWalletModel: userWalletModel,
-            walletModel: walletModel,
+            tokenItem: walletModel.tokenItem,
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
+            withdrawalNotificationProvider: walletModel.withdrawalNotificationProvider,
             transactionSigner: userWalletModel.signer,
             feeIncludedCalculator: feeIncludedCalculator,
-            emailDataProvider: userWalletModel,
             feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
-            predefinedValues: predefinedValues,
-            coordinator: router
+            predefinedValues: predefinedValues
         )
     }
 

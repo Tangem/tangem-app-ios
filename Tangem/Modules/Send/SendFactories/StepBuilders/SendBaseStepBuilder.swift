@@ -25,8 +25,7 @@ struct SendBaseStepBuilder {
 
         let sendModel = builder.makeSendModel(
             sendTransactionDispatcher: sendTransactionDispatcher,
-            predefinedSellParameters: sendType.predefinedSellParameters,
-            router: router
+            predefinedSellParameters: sendType.predefinedSellParameters
         )
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(io: (input: sendModel, output: sendModel), notificationManager: notificationManager, router: router)
@@ -90,10 +89,9 @@ struct SendBaseStepBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
-        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, router: router)
+        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
         stepsManager.setup(input: viewModel, output: viewModel)
-        sendModel.delegate = viewModel
 
         return viewModel
     }
