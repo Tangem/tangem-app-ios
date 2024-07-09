@@ -13,21 +13,17 @@ struct MarketsWalletSelectorView: View {
     @ObservedObject var viewModel: MarketsWalletSelectorViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .leading, spacing: 10) {
             Text(Localization.marketsSelectWallet)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                .padding(.top, 14)
-                .padding(.bottom, 10)
-                .padding(.horizontal, 14)
 
             ForEach(viewModel.itemViewModels) { itemViewModel in
                 WalletSelectorItemView(viewModel: itemViewModel)
             }
         }
         .background(Colors.Background.action)
-        .cornerRadiusContinuous(14)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity)
+        .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
     }
 }
 

@@ -58,28 +58,24 @@ struct SendSummarySectionViewModelFactory {
         )
     }
 
-    func makeFeeViewData(from value: LoadingValue<Fee>, feeOption: FeeOption) -> SendFeeSummaryViewModel? {
-        let formattedFeeComponents = formattedFeeComponents(from: value)
+    func makeFeeViewData(from value: SendFee) -> SendFeeSummaryViewModel? {
+        let formattedFeeComponents = formattedFeeComponents(from: value.value)
         return SendFeeSummaryViewModel(
             title: Localization.commonNetworkFeeTitle,
-            feeOption: feeOption,
+            feeOption: value.option,
             formattedFeeComponents: formattedFeeComponents
         )
     }
 
-    func makeDeselectedFeeRowViewModel(from value: LoadingValue<Fee>, feeOption: FeeOption) -> FeeRowViewModel {
+    func makeDeselectedFeeRowViewModel(from value: SendFee) -> FeeRowViewModel {
         return FeeRowViewModel(
-            option: feeOption,
-            formattedFeeComponents: formattedFeeComponents(from: value),
-            isSelected: .init(get: {
-                false
-            }, set: { _ in
-
-            })
+            option: value.option,
+            formattedFeeComponents: formattedFeeComponents(from: value.value),
+            isSelected: .constant(false)
         )
     }
 
-    private func formattedFeeComponents(from feeValue: LoadingValue<Fee>) -> LoadingValue<FormattedFeeComponents?> {
+    private func formattedFeeComponents(from feeValue: LoadingValue<Fee>) -> LoadingValue<FormattedFeeComponents> {
         switch feeValue {
         case .loading:
             return .loading

@@ -1,5 +1,5 @@
 //
-//  SendFeeViewModelInputMock.swift
+//  SendFeeInputOutputMock.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 01.11.2023.
@@ -8,41 +8,18 @@
 
 import SwiftUI
 import Combine
-import BigInt
 import BlockchainSdk
 
-class SendFeeViewModelInputMock: SendFeeViewModelInput {
-    var customFeePublisher: AnyPublisher<Fee?, Never> {
-        .just(output: nil)
-    }
+class SendFeeInputMock: SendFeeInput {
+    var selectedFee: SendFee? { SendFee(option: .market, value: .loaded(.init(.init(with: .polygon(testnet: false), value: 0.1)))) }
 
-    var amountPublisher: AnyPublisher<Amount?, Never> {
-        .just(output: nil)
-    }
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { .just(output: selectedFee) }
 
-    var selectedFeeOption: FeeOption {
-        .market
-    }
+    var cryptoAmountPublisher: AnyPublisher<BlockchainSdk.Amount, Never> { .just(output: .init(with: .polygon(testnet: false), value: 1)) }
 
-    var feeOptions: [FeeOption] {
-        [.slow, .market, .fast, .custom]
-    }
+    var destinationAddressPublisher: AnyPublisher<String?, Never> { .just(output: "0x") }
+}
 
-    var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> {
-        .just(output: [
-            .slow: .loaded(.init(.init(with: .ethereum(testnet: false), type: .coin, value: 1))),
-            .market: .loaded(.init(.init(with: .ethereum(testnet: false), type: .coin, value: 2))),
-            .fast: .loaded(.init(.init(with: .ethereum(testnet: false), type: .coin, value: 3))),
-        ])
-    }
-
-    var canIncludeFeeIntoAmount: Bool {
-        true
-    }
-
-    var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
-        .just(output: false)
-    }
-
-    func didSelectFeeOption(_ feeOption: FeeOption) {}
+class SendFeeOutputMock: SendFeeOutput {
+    func feeDidChanged(fee: SendFee) {}
 }

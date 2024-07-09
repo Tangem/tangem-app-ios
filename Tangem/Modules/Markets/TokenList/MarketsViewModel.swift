@@ -27,8 +27,6 @@ final class MarketsViewModel: ObservableObject {
 
     private weak var coordinator: MarketsRoutable?
 
-    private var dataSource: MarketsDataSource
-
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
@@ -42,7 +40,6 @@ final class MarketsViewModel: ObservableObject {
         coordinator: MarketsRoutable
     ) {
         self.coordinator = coordinator
-        dataSource = MarketsDataSource()
 
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
         marketsRatingHeaderViewModel.delegate = self
@@ -74,11 +71,6 @@ final class MarketsViewModel: ObservableObject {
 
     func fetchMore() {
         dataProvider.fetchMore()
-    }
-
-    func addCustomTokenDidTapAction() {
-        Analytics.log(.manageTokensButtonCustomToken)
-        coordinator?.openAddCustomToken(dataSource: dataSource)
     }
 }
 
