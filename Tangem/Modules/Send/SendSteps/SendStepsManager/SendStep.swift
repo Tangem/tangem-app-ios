@@ -11,40 +11,37 @@ import Combine
 import SwiftUI
 
 protocol SendStep {
-    associatedtype ViewModel: ObservableObject
-    var viewModel: ViewModel { get }
-
-    var type: SendStepType { get }
     var title: String? { get }
     var subtitle: String? { get }
 
-    var isValidPublisher: AnyPublisher<Bool, Never> { get }
+    var type: SendStepType { get }
+    var viewType: SendStepViewType { get }
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? { get }
 
-    // We're forced to use `AnyView` here because
-    // `associatedtype View` will return the `any View` which
-    // will not possible to use as the SwiftUI View
-    func makeView(namespace: Namespace.ID) -> AnyView
-    func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView
+    var isValidPublisher: AnyPublisher<Bool, Never> { get }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool
 
     func willAppear(previous step: any SendStep)
-    func willClose(next step: any SendStep)
+    func didAppear()
+
+    func willDisappear(next step: any SendStep)
+    func didDisappear()
 }
 
 extension SendStep {
-    var subtitle: String? { nil }
-
-    func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView {
-        AnyView(EmptyView())
-    }
+    var subtitle: String? { .none }
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? { .none }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
         return true
     }
 
     func willAppear(previous step: any SendStep) {}
-    func willClose(next step: any SendStep) {}
+    func didAppear() {}
+
+    func willDisappear(next step: any SendStep) {}
+    func didDisappear() {}
 }
 
 enum SendStepType: String, Hashable {
@@ -55,33 +52,31 @@ enum SendStepType: String, Hashable {
     case finish
 }
 
-// TODO: The extension will be removed https://tangem.atlassian.net/browse/IOS-7195
-extension SendStepType {
-    struct Parameters {
-        let currencyName: String
-        let walletName: String
-    }
+enum SendStepViewType {
+    case destination(SendDestinationViewModel)
+    case amount(SendAmountViewModel)
+    case fee(SendFeeViewModel)
+    case summary(SendSummaryViewModel)
+    case finish(SendFinishViewModel)
+}
 
-    func name(for parameters: Parameters) -> String? {
+enum SendStepNavigationTrailingViewType {
+    case qrCodeButton(action: () -> Void)
+}
+
+extension SendStepType {
+    var analyticsSourceParameterValue: Analytics.ParameterValue {
         switch self {
         case .amount:
-            return Localization.sendAmountLabel
+            return .amount
         case .destination:
-            return Localization.sendRecipientLabel
+            return .address
         case .fee:
-            return Localization.commonFeeSelectorTitle
+            return .fee
         case .summary:
-            return Localization.sendSummaryTitle(parameters.currencyName)
+            return .summary
         case .finish:
-            return nil
-        }
-    }
-
-    func description(for parameters: Parameters) -> String? {
-        if case .summary = self {
-            return parameters.walletName
-        } else {
-            return nil
+            return .finish
         }
     }
 }

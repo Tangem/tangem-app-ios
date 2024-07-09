@@ -38,16 +38,20 @@ extension SendFeeStep: SendStep {
     var title: String? { Localization.commonFeeSelectorTitle }
 
     var type: SendStepType { .fee }
-
+    var viewType: SendStepViewType { .fee(viewModel) }
     var viewModel: SendFeeViewModel { _viewModel }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
     }
 
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(SendFeeView(viewModel: viewModel, namespace: namespace))
-    }
+//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
+//        .fee(viewModel)
+//    }
+//
+//    func makeView(namespace: Namespace.ID) -> AnyView {
+//        AnyView(SendFeeView(viewModel: viewModel, namespace: namespace))
+//    }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
         let events = notificationManager.notificationInputs.compactMap { $0.settings.event as? SendNotificationEvent }
@@ -73,13 +77,13 @@ extension SendFeeStep: SendStep {
         return true
     }
 
-    func willClose(next step: any SendStep) {
+    func willDisappear(next step: SendStep) {
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
     }
 
-    func willAppear(previous step: any SendStep) {
-        interactor.updateFees()
+    func willAppear(previous step: SendStep) {
+//        interactor.updateFees()
     }
 }

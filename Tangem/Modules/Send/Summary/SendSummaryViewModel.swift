@@ -130,6 +130,7 @@ class SendSummaryViewModel: ObservableObject {
     private func bind() {
         interactor
             .transactionDescription
+            .receive(on: DispatchQueue.main)
             .assign(to: \.transactionDescription, on: self, ownership: .weak)
             .store(in: &bag)
 

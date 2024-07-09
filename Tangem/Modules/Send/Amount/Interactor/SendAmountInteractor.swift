@@ -11,6 +11,7 @@ import Combine
 
 protocol SendAmountInteractor {
     var errorPublisher: AnyPublisher<String?, Never> { get }
+    var isValidPublisher: AnyPublisher<Bool, Never> { get }
 
     func update(amount: Decimal?) -> SendAmount?
     func update(type: SendAmountCalculationType) -> SendAmount?
@@ -27,6 +28,7 @@ class CommonSendAmountInteractor {
 
     private var type: SendAmountCalculationType
     private var _error: CurrentValueSubject<Error?, Never> = .init(nil)
+    private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
 
     init(
         input: SendAmountInput,
@@ -48,9 +50,11 @@ class CommonSendAmountInteractor {
         do {
             try amount?.crypto.map { try validator.validate(amount: $0) }
             _error.send(.none)
+            _isValid.send(amount != nil)
             output?.amountDidChanged(amount: amount)
         } catch {
             _error.send(error)
+            _isValid.send(false)
             output?.amountDidChanged(amount: .none)
         }
     }
@@ -90,6 +94,10 @@ class CommonSendAmountInteractor {
 extension CommonSendAmountInteractor: SendAmountInteractor {
     var errorPublisher: AnyPublisher<String?, Never> {
         _error.map { $0?.localizedDescription }.eraseToAnyPublisher()
+    }
+
+    var isValidPublisher: AnyPublisher<Bool, Never> {
+        _isValid.eraseToAnyPublisher()
     }
 
     func update(amount: Decimal?) -> SendAmount? {

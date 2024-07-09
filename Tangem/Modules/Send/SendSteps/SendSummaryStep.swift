@@ -36,14 +36,19 @@ extension SendSummaryStep: SendStep {
     var subtitle: String? { walletName }
 
     var type: SendStepType { .summary }
+    var viewType: SendStepViewType { .summary(viewModel) }
 
     var viewModel: SendSummaryViewModel { _viewModel }
 
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            SendSummaryView(viewModel: _viewModel, namespace: namespace)
-        )
-    }
+//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
+//        .summary(viewModel)
+//    }
+//
+//    func makeView(namespace: Namespace.ID) -> AnyView {
+//        AnyView(
+//            SendSummaryView(viewModel: viewModel, namespace: namespace)
+//        )
+//    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

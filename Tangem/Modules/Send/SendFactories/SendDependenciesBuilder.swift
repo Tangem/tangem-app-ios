@@ -37,30 +37,6 @@ struct SendDependenciesBuilder {
         IconURLBuilder().fiatIconURL(currencyCode: AppSettings.shared.selectedCurrencyCode)
     }
 
-    func makeSendWalletInfo() -> SendWalletInfo {
-        let tokenIconInfo = makeTokenIconInfo()
-
-        return SendWalletInfo(
-            walletName: walletName(),
-            balanceValue: walletModel.balanceValue,
-            balance: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            currencyId: walletModel.tokenItem.currencyId,
-            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
-            feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: isFeeApproximate(),
-            tokenIconInfo: tokenIconInfo,
-            cryptoIconURL: tokenIconInfo.imageURL,
-            cryptoCurrencyCode: walletModel.tokenItem.currencySymbol,
-            fiatIconURL: makeFiatIconURL(),
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode,
-            amountFractionDigits: walletModel.tokenItem.decimalCount,
-            feeFractionDigits: walletModel.feeTokenItem.decimalCount,
-            feeAmountType: walletModel.feeTokenItem.amountType,
-            canUseFiatCalculation: quotesRepository.quote(for: walletModel.tokenItem) != nil
-        )
-    }
-
     func makeCurrencyPickerData() -> SendCurrencyPickerData {
         SendCurrencyPickerData(
             cryptoIconURL: makeTokenIconInfo().imageURL,
@@ -114,10 +90,16 @@ struct SendDependenciesBuilder {
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
+            userWalletModel: userWalletModel,
             walletModel: walletModel,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            transactionCreator: walletModel.transactionCreator,
+            transactionSigner: userWalletModel.signer,
             feeIncludedCalculator: feeIncludedCalculator,
-            predefinedValues: predefinedValues
+            emailDataProvider: userWalletModel,
+            feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
+            predefinedValues: predefinedValues,
+            coordinator: router
         )
     }
 

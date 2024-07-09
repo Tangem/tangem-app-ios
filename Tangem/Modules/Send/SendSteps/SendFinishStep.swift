@@ -29,14 +29,19 @@ extension SendFinishStep: SendStep {
     var title: String? { nil }
 
     var type: SendStepType { .finish }
+    var viewType: SendStepViewType { .finish(viewModel) }
 
     var viewModel: SendFinishViewModel { _viewModel }
 
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            SendFinishView(viewModel: viewModel, namespace: namespace)
-        )
-    }
+//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
+//        .finish(viewModel)
+//    }
+
+//    func makeView(namespace: Namespace.ID) -> AnyView {
+//        AnyView(
+//            SendFinishView(viewModel: viewModel, namespace: namespace)
+//        )
+//    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

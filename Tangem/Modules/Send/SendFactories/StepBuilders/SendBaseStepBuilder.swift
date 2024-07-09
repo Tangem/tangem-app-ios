@@ -33,7 +33,7 @@ struct SendBaseStepBuilder {
         let amount = sendAmountStepBuilder.makeSendAmountStep(io: (input: sendModel, output: sendModel), sendFeeInteractor: fee.interactor)
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
             io: (input: sendModel, output: sendModel),
-            sendAmountInteractor: amount.interactor,
+            sendAmountViewModel: amount.step.viewModel,
             sendFeeInteractor: fee.interactor,
             addressTextViewHeightModel: addressTextViewHeightModel,
             router: router
@@ -54,7 +54,8 @@ struct SendBaseStepBuilder {
             sendType: sendType
         )
 
-        // We have to set and fee.interactor here after all setups is complited
+        // We have to set dependicies here after all setups is completed
+//        sendModel.sendAmountInteractor = amount.interactor
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
@@ -64,7 +65,7 @@ struct SendBaseStepBuilder {
         // TODO: Will be updated
         // https://tangem.atlassian.net/browse/IOS-7195
         if !sendType.isSend {
-            sendModel.updateFees()
+            fee.interactor.updateFees()
         }
 
         notificationManager.setup(input: sendModel)
@@ -78,22 +79,22 @@ struct SendBaseStepBuilder {
         finish.setup(sendFeeInteractor: fee.interactor)
         finish.setup(sendFinishInput: sendModel)
 
-        return SendViewModel(
-            walletInfo: builder.makeSendWalletInfo(),
-            walletModel: walletModel,
-            userWalletModel: userWalletModel,
-            sendType: sendType,
-            sendModel: sendModel,
-            notificationManager: notificationManager,
-            sendFeeInteractor: fee.interactor,
-            keyboardVisibilityService: KeyboardVisibilityService(),
-            feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder(),
-            sendAmountViewModel: amount.step.viewModel,
-            sendDestinationViewModel: destination.step.viewModel,
-            sendFeeViewModel: fee.step.viewModel,
-            sendSummaryViewModel: summary.step.viewModel,
-            sendFinishViewModel: finish.viewModel,
-            coordinator: router
+        let stepsManager = CommonSendStepsManager(
+            keyboardVisibilityService: .init(),
+            destinationStep: destination.step,
+            amountStep: amount.step,
+            feeStep: fee.step,
+            summaryStep: summary.step,
+            finishStep: finish
         )
+
+        summary.step.viewModel.router = stepsManager
+
+        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
+        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, router: router)
+        stepsManager.setup(input: viewModel, output: viewModel)
+        sendModel.delegate = viewModel
+
+        return viewModel
     }
 }

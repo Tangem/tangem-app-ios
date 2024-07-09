@@ -20,7 +20,7 @@ struct SendDestinationStepBuilder {
 
     func makeSendDestinationStep(
         io: IO,
-        sendAmountInteractor: any SendAmountInteractor,
+        sendAmountViewModel: SendAmountViewModel,
         sendFeeInteractor: any SendFeeInteractor,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
@@ -35,7 +35,7 @@ struct SendDestinationStepBuilder {
         let step = SendDestinationStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendAmountInteractor: sendAmountInteractor,
+            sendAmountViewModel: sendAmountViewModel,
             sendFeeInteractor: sendFeeInteractor,
             tokenItem: walletModel.tokenItem,
             router: router

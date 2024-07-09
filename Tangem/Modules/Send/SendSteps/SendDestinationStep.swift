@@ -13,7 +13,7 @@ import SwiftUI
 class SendDestinationStep {
     private let _viewModel: SendDestinationViewModel
     private let interactor: SendDestinationInteractor
-    private let sendAmountInteractor: any SendAmountInteractor
+    private let sendAmountViewModel: SendAmountViewModel
     private let sendFeeInteractor: SendFeeInteractor
     private let tokenItem: TokenItem
     private weak var router: SendDestinationRoutable?
@@ -21,14 +21,14 @@ class SendDestinationStep {
     init(
         viewModel: SendDestinationViewModel,
         interactor: any SendDestinationInteractor,
-        sendAmountInteractor: any SendAmountInteractor,
+        sendAmountViewModel: SendAmountViewModel,
         sendFeeInteractor: any SendFeeInteractor,
         tokenItem: TokenItem,
         router: any SendDestinationRoutable
     ) {
         _viewModel = viewModel
         self.interactor = interactor
-        self.sendAmountInteractor = sendAmountInteractor
+        self.sendAmountViewModel = sendAmountViewModel
         self.sendFeeInteractor = sendFeeInteractor
         self.tokenItem = tokenItem
         self.router = router
@@ -54,7 +54,10 @@ class SendDestinationStep {
         }
 
         viewModel.setExternally(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
-        _ = result.amount.map { sendAmountInteractor.update(amount: $0.value) }
+
+        if let amount = result.amount?.value {
+            sendAmountViewModel.setExternalAmount(amount)
+        }
     }
 }
 
@@ -65,11 +68,23 @@ extension SendDestinationStep: SendStep {
 
     var type: SendStepType { .destination }
 
-    var viewModel: SendDestinationViewModel { _viewModel }
+    var viewType: SendStepViewType { .destination(viewModel) }
 
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(SendDestinationView(viewModel: viewModel, namespace: namespace))
-    }
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? { .qrCodeButton(action: scanQRCode) }
+
+    var viewModel: SendDestinationViewModel { _viewModel }
+//
+//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
+//        .destination(viewModel)
+//    }
+//
+//    func makeNavigationTrailingView(namespace: Namespace.ID) -> SendStepNavigationTrailingViewType? {
+//        .qrCodeButton(action: scanQRCode)
+//    }
+
+//    func makeView(namespace: Namespace.ID) -> AnyView {
+//        AnyView(SendDestinationView(viewModel: viewModel, namespace: namespace))
+//    }
 
     func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView {
         AnyView(
@@ -85,7 +100,7 @@ extension SendDestinationStep: SendStep {
         interactor.destinationValid.eraseToAnyPublisher()
     }
 
-    func willClose(next step: any SendStep) {
+    func willDisappear(next step: SendStep) {
         guard step.type == .summary else {
             return
         }

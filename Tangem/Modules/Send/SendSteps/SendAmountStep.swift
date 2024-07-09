@@ -33,22 +33,31 @@ extension SendAmountStep: SendStep {
 
     var type: SendStepType { .amount }
 
+    var viewType: SendStepViewType { .amount(viewModel) }
     var viewModel: SendAmountViewModel { _viewModel }
 
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            SendAmountView(
-                viewModel: viewModel,
-                namespace: .init(id: namespace, names: SendGeometryEffectNames())
-            )
-        )
-    }
+//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
+//        .amount(viewModel)
+//    }
+//
+//    func makeView(namespace: Namespace.ID) -> AnyView {
+//        AnyView(
+//            SendAmountView(
+//                viewModel: viewModel,
+//                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+//            )
+//        )
+//    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.errorPublisher.map { $0 == nil }.eraseToAnyPublisher()
+        interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
-    func willClose(next step: any SendStep) {
+    func willDisappear(next step: SendStep) {
+        guard step.type == .summary else {
+            return
+        }
+
         sendFeeInteractor.updateFees()
     }
 }
