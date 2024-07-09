@@ -11,11 +11,15 @@ import Combine
 import SwiftUI
 
 class SendFeeStep {
-    private let _viewModel: SendFeeViewModel
+    private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
     private let notificationManager: SendNotificationManager
     private let tokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
+
+    var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
+        viewModel
+    }
 
     init(
         viewModel: SendFeeViewModel,
@@ -24,7 +28,7 @@ class SendFeeStep {
         tokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
-        _viewModel = viewModel
+        self.viewModel = viewModel
         self.interactor = interactor
         self.notificationManager = notificationManager
         self.tokenItem = tokenItem
@@ -38,20 +42,12 @@ extension SendFeeStep: SendStep {
     var title: String? { Localization.commonFeeSelectorTitle }
 
     var type: SendStepType { .fee }
+
     var viewType: SendStepViewType { .fee(viewModel) }
-    var viewModel: SendFeeViewModel { _viewModel }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
     }
-
-//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
-//        .fee(viewModel)
-//    }
-//
-//    func makeView(namespace: Namespace.ID) -> AnyView {
-//        AnyView(SendFeeView(viewModel: viewModel, namespace: namespace))
-//    }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
         let events = notificationManager.notificationInputs.compactMap { $0.settings.event as? SendNotificationEvent }

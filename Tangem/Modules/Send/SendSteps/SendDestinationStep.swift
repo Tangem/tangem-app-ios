@@ -10,13 +10,21 @@ import Foundation
 import Combine
 import SwiftUI
 
+protocol SendQRCodeService {
+    func qrCodeDidScanned(result: QRCodeParser.Result)
+}
+
 class SendDestinationStep {
-    private let _viewModel: SendDestinationViewModel
+    private let viewModel: SendDestinationViewModel
     private let interactor: SendDestinationInteractor
     private let sendAmountViewModel: SendAmountViewModel
     private let sendFeeInteractor: SendFeeInteractor
     private let tokenItem: TokenItem
     private weak var router: SendDestinationRoutable?
+
+    var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
+        viewModel
+    }
 
     init(
         viewModel: SendDestinationViewModel,
@@ -26,7 +34,7 @@ class SendDestinationStep {
         tokenItem: TokenItem,
         router: any SendDestinationRoutable
     ) {
-        _viewModel = viewModel
+        self.viewModel = viewModel
         self.interactor = interactor
         self.sendAmountViewModel = sendAmountViewModel
         self.sendFeeInteractor = sendFeeInteractor
@@ -71,30 +79,6 @@ extension SendDestinationStep: SendStep {
     var viewType: SendStepViewType { .destination(viewModel) }
 
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? { .qrCodeButton(action: scanQRCode) }
-
-    var viewModel: SendDestinationViewModel { _viewModel }
-//
-//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
-//        .destination(viewModel)
-//    }
-//
-//    func makeNavigationTrailingView(namespace: Namespace.ID) -> SendStepNavigationTrailingViewType? {
-//        .qrCodeButton(action: scanQRCode)
-//    }
-
-//    func makeView(namespace: Namespace.ID) -> AnyView {
-//        AnyView(SendDestinationView(viewModel: viewModel, namespace: namespace))
-//    }
-
-    func makeNavigationTrailingView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            Button(action: scanQRCode) {
-                Assets.qrCode.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.primary1)
-            }
-        )
-    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.destinationValid.eraseToAnyPublisher()

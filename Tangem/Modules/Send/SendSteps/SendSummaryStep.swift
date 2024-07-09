@@ -11,7 +11,7 @@ import Combine
 import SwiftUI
 
 class SendSummaryStep {
-    private let _viewModel: SendSummaryViewModel
+    private let viewModel: SendSummaryViewModel
     private let interactor: SendSummaryInteractor
     private let tokenItem: TokenItem
     private let walletName: String
@@ -22,10 +22,14 @@ class SendSummaryStep {
         tokenItem: TokenItem,
         walletName: String
     ) {
-        _viewModel = viewModel
+        self.viewModel = viewModel
         self.interactor = interactor
         self.tokenItem = tokenItem
         self.walletName = walletName
+    }
+
+    func set(router: SendSummaryRoutable) {
+        viewModel.router = router
     }
 }
 
@@ -33,22 +37,12 @@ class SendSummaryStep {
 
 extension SendSummaryStep: SendStep {
     var title: String? { Localization.sendSummaryTitle(tokenItem.currencySymbol) }
+
     var subtitle: String? { walletName }
 
     var type: SendStepType { .summary }
+
     var viewType: SendStepViewType { .summary(viewModel) }
-
-    var viewModel: SendSummaryViewModel { _viewModel }
-
-//    func makeView(namespace: Namespace.ID) -> SendStepViewType {
-//        .summary(viewModel)
-//    }
-//
-//    func makeView(namespace: Namespace.ID) -> AnyView {
-//        AnyView(
-//            SendSummaryView(viewModel: viewModel, namespace: namespace)
-//        )
-//    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

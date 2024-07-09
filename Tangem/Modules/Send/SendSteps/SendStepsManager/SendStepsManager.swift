@@ -242,11 +242,11 @@ extension CommonSendStepsManager: SendSummaryRoutable {
     private func auxiliaryViewAnimatable(_ step: SendStepType) -> AuxiliaryViewAnimatable? {
         switch step {
         case .destination:
-            return destinationStep.viewModel
+            return destinationStep.auxiliaryViewAnimatable
         case .amount:
-            return amountStep.viewModel
+            return amountStep.auxiliaryViewAnimatable
         case .fee:
-            return feeStep.viewModel
+            return feeStep.auxiliaryViewAnimatable
         case .summary, .finish:
             return nil
         }

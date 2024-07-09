@@ -88,7 +88,7 @@ struct SendBaseStepBuilder {
             finishStep: finish
         )
 
-        summary.step.viewModel.router = stepsManager
+        summary.step.set(router: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
         let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, router: router)
