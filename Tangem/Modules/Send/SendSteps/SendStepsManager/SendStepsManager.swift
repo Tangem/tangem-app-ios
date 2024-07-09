@@ -186,3 +186,11 @@ extension CommonSendStepsManager: SendSummaryRoutable {
         }
     }
 }
+
+// MARK: - SendDestinationStepRoutable
+
+extension CommonSendStepsManager: SendDestinationStepRoutable {
+    func destinationStepFulfilled() {
+        performNext()
+    }
+}

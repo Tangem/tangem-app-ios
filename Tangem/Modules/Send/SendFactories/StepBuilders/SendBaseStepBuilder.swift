@@ -99,6 +99,7 @@ struct SendBaseStepBuilder {
         )
 
         summary.step.set(router: stepsManager)
+        destination.step.set(stepRouter: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
         let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)

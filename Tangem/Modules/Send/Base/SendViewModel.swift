@@ -55,10 +55,9 @@ final class SendViewModel: ObservableObject {
     private weak var coordinator: SendRoutable?
 
     private var bag: Set<AnyCancellable> = []
-    private var isValidSubscription: AnyCancellable?
 
-//    private var currentPageAnimating: Bool = false
-//    private var didReachSummaryScreen: Bool = false
+    private var sendSubscription: AnyCancellable?
+    private var isValidSubscription: AnyCancellable?
 
     init(
         interactor: SendBaseInteractor,
@@ -133,13 +132,12 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     private func performSend() {
-        interactor.send()
+        sendSubscription = interactor.send()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, result in
                 viewModel.proceed(result: result)
             }
-            .store(in: &bag)
     }
 
     private func proceed(result: SendTransactionDispatcherResult) {
@@ -178,10 +176,7 @@ private extension SendViewModel {
     }
 
     private func bind(step: SendStep) {
-//        didReachSummaryScreen = step.type == .summary
-
         isValidSubscription = step.isValidPublisher
-            .print("isValidPublisher ->> step \(step.type)")
             .map { !$0 }
             .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
@@ -199,17 +194,6 @@ private extension SendViewModel {
         interactor.isLoading
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
-
-        /*
-         interactor
-         .performNext
-         .withWeakCaptureOf(self)
-         .receive(on: DispatchQueue.main)
-         .sink { viewModel, _ in
-         viewModel.stepsManager.performNext()
-         }
-         .store(in: &bag)
-         */
     }
 }
 

@@ -78,8 +78,4 @@ extension SendFeeStep: SendStep {
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
     }
-
-    func willAppear(previous step: SendStep) {
-//        interactor.updateFees()
-    }
 }

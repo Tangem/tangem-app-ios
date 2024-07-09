@@ -26,7 +26,7 @@ class SendModel {
 
     private let _withdrawalNotification = CurrentValueSubject<WithdrawalNotification?, Never>(nil)
 
-    // MARK: - Dependensies
+    // MARK: - Dependencies
 
     var sendAmountInteractor: SendAmountInteractor!
     var sendFeeInteractor: SendFeeInteractor!
@@ -188,11 +188,12 @@ private extension SendModel {
              .demoAlert,
              .userCancelled:
             break
-        case .sendTxError(let transaction, let error):
+        case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
                 .token: tokenItem.currencySymbol,
             ])
-        case .success(let url):
+        case .success:
+            _transactionTime.send(Date())
             logTransactionAnalytics()
 
             transaction.amount.type.token.map { token in

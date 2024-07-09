@@ -35,9 +35,9 @@ class SendDestinationStep {
         self.tokenItem = tokenItem
     }
 
-//    func set(router: SendDestinationRoutable) {
-//        viewModel.router = router
-//    }
+    func set(stepRouter: SendDestinationStepRoutable) {
+        viewModel.stepRouter = stepRouter
+    }
 }
 
 // MARK: - SendStep

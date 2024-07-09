@@ -27,13 +27,14 @@ class SendDestinationViewModel: ObservableObject {
     private let interactor: SendDestinationInteractor
     private let sendQRCodeService: SendQRCodeService
     private let addressTextViewHeightModel: AddressTextViewHeightModel
-    private let suggestedWallets: [SendSuggestedDestinationWallet]
+    private weak var router: SendDestinationRoutable?
 
+    private let suggestedWallets: [SendSuggestedDestinationWallet]
     private let _destinationText: CurrentValueSubject<String, Never> = .init("")
     private let _destinationAdditionalFieldText: CurrentValueSubject<String, Never> = .init("")
     private var bag: Set<AnyCancellable> = []
 
-    private weak var router: SendDestinationRoutable?
+    weak var stepRouter: SendDestinationStepRoutable?
 
     // MARK: - Methods
 
@@ -44,15 +45,15 @@ class SendDestinationViewModel: ObservableObject {
         addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
     ) {
-        suggestedWallets = settings.suggestedWallets.map { wallet in
-            SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
-        }
-
         self.settings = settings
         self.interactor = interactor
         self.sendQRCodeService = sendQRCodeService
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.router = router
+
+        suggestedWallets = settings.suggestedWallets.map { wallet in
+            SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
+        }
 
         setupView()
         bind()
@@ -164,6 +165,11 @@ class SendDestinationViewModel: ObservableObject {
 
             if let additionalField = destination.additionalField {
                 self?._destinationAdditionalFieldText.send(additionalField)
+            }
+
+            // Give some time to update UI fields
+            DispatchQueue.main.async {
+                self?.stepRouter?.destinationStepFulfilled()
             }
         }
     }
