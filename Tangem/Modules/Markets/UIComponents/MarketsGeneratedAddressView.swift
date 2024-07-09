@@ -14,7 +14,10 @@ struct MarketsGeneratedAddressView: View {
             Assets
                 .tangemIcon
                 .image
-                .frame(size: .init(bothDimensions: 20))
+                .resizable()
+                .renderingMode(.template)
+                .frame(width: 20, height: 20)
+                .foregroundColor(Colors.Icon.primary1)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey("To generate addresses for selected networks, you need to attach a Tangem card"))

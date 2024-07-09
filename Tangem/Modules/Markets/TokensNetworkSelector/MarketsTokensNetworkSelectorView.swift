@@ -20,6 +20,8 @@ struct MarketsTokensNetworkSelectorView: View {
 
                         contentView
 
+                        MarketsGeneratedAddressView()
+
                         Color.clear.frame(width: 10, height: 58, alignment: .center)
                     }
                     .padding(.horizontal, 16)
@@ -36,7 +38,7 @@ struct MarketsTokensNetworkSelectorView: View {
     private var contentView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             VStack(alignment: .leading, spacing: .zero) {
-                Text(Localization.marketsSelectWallet)
+                Text(Localization.marketsSelectNetwork)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 tokenInfoView
