@@ -530,6 +530,10 @@
 "send_notification_invalid_reserve_amount_text" = "Адрес получателя не активирован. \nПожалуйста, измените сумму отправки, чтобы продолжить.";
 "send_notification_invalid_reserve_amount_title" = "Сумма отправки не может быть менее %@";
 "send_notification_leave_button" = "Оставить %@";
+"send_notification_mana_limit_description" = "Вы можете перевести только %@ KOIN из-за ограничения Mana, установленного сетью Koinos";
+"send_notification_mana_limit_title" = "Лимит маны";
+"send_notification_not_enough_mana_description" = "У вас недостаточно Маны для этой транзакции. Пожалуйста, подождите, пока Мана восполнится. Ваш баланс маны равен %@/%@";
+"send_notification_not_enough_mana_title" = "Недостаточно маны";
 "send_notification_reduce_by" = "Уменьшить на %@";
 "send_notification_reduce_to" = "Уменьшить до %@";
 "send_notification_transaction_delay_text" = "Обратите внимание, что при определенных параметрах комиссии возможны задержки по вашей транзакции";
@@ -630,6 +634,8 @@
 "token_details_hide_alert_message" = "Вы скрываете токен с главного экрана, но в любой момент сможете добавить его обратно через страницу управления токенами.";
 "token_details_hide_alert_title" = "Скрыть %@";
 "token_details_hide_token" = "Скрыть токен";
+"token_details_mana_level_description" = "Сеть Koinos использует Ману для оплаты комиссии сети. У вас есть %@/%@ Mana";
+"token_details_mana_level_title" = "Уровень маны";
 "token_details_staking_block_subtitle" = "Стейкинг позволяет вам зарабатывать %1$@ и получать вознаграждения каждые %2$@ дней";
 "token_details_staking_block_title" = "Зарабатывайте до %@ вознаграждений за стейкинг ежегодно";
 "token_details_token_type_subtitle" = "%1$@ токен в сети %%image%% %2$@";

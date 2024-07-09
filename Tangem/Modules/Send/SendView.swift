@@ -126,6 +126,7 @@ struct SendView: View {
                 viewModel: viewModel.sendAmountViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .amountMinTextScale(Constants.amountMinTextScale)
             .onAppear(perform: viewModel.onCurrentPageAppear)
             .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .destination:
@@ -138,12 +139,11 @@ struct SendView: View {
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         case .summary:
             SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onSummaryAppear)
-                .onDisappear(perform: viewModel.onSummaryDisappear)
+                .amountMinTextScale(Constants.amountMinTextScale)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .finish(let sendFinishViewModel):
-            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
+        case .finish:
+            SendFinishView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
                 .onAppear(perform: viewModel.onCurrentPageAppear)
                 .onDisappear(perform: viewModel.onCurrentPageDisappear)
         }
@@ -151,27 +151,6 @@ struct SendView: View {
 
     @ViewBuilder
     private var bottomContainer: some View {
-        VStack(alignment: .center, spacing: 14) {
-            description
-
-            bottomButtons
-        }
-    }
-
-    @ViewBuilder
-    private var description: some View {
-        if let transactionDescription = viewModel.transactionDescription {
-            Text(.init(transactionDescription))
-                .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 16)
-                .visible(viewModel.transactionDescriptionIsVisisble)
-                .animation(Constants.defaultAnimation, value: viewModel.step)
-        }
-    }
-
-    @ViewBuilder
-    private var bottomButtons: some View {
         VStack(spacing: 10) {
             if viewModel.showTransactionButtons {
                 HStack(spacing: 8) {
@@ -253,6 +232,7 @@ private struct SendViewBackButton: View {
 
 extension SendView {
     enum Constants {
+        static let amountMinTextScale = 0.5
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .spring(duration: animationDuration)
         static let backButtonAnimation: Animation = .easeOut(duration: 0.1)

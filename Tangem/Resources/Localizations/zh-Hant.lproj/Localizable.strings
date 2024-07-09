@@ -530,6 +530,10 @@
 "send_notification_invalid_reserve_amount_text" = "Target account is not created. Please change the amount to send.";
 "send_notification_invalid_reserve_amount_title" = "The amount to send must be at least %@";
 "send_notification_leave_button" = "Leave %@";
+"send_notification_mana_limit_description" = "You can transfer only %@ KOIN due to the Mana limit imposed by the Koinos network";
+"send_notification_mana_limit_title" = "Mana limit";
+"send_notification_not_enough_mana_description" = "You don't have enough Mana for this transaction. Please wait until the Mana is refilled. Your Mana balance is %@/%@";
+"send_notification_not_enough_mana_title" = "Not enough Mana";
 "send_notification_reduce_by" = "Reduce by %@";
 "send_notification_reduce_to" = "Reduce to %@";
 "send_notification_transaction_delay_text" = "Kindly be aware that your transaction may experience delays under specific fee settings";
@@ -630,6 +634,8 @@
 "token_details_hide_alert_message" = "您即將在主屏幕上隱藏此代幣。您可以隨時通過管理代幣頁面將其添加回來。";
 "token_details_hide_alert_title" = "隱藏 %@";
 "token_details_hide_token" = "隱藏代幣";
+"token_details_mana_level_description" = "The Koinos network requires Mana for network fees. Your have %@/%@ Mana";
+"token_details_mana_level_title" = "Mana level";
 "token_details_staking_block_subtitle" = "Staking allows you to earn %1$@ and get rewards every %2$@ days";
 "token_details_staking_block_title" = "Earn up to %@ staking rewards yearly";
 "token_details_token_type_subtitle" = "%1$@ token in %%image%% %2$@ network";

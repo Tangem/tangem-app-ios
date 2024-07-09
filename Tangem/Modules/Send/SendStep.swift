@@ -13,7 +13,7 @@ enum SendStep {
     case destination
     case fee
     case summary
-    case finish(model: SendFinishViewModel)
+    case finish
 }
 
 extension SendStep {

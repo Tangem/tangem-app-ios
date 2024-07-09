@@ -214,7 +214,7 @@ private extension CommonSendFeeInteractor {
     func mapToDefaultFees(fees: [Fee]) -> [SendFee] {
         switch fees.count {
         case 1:
-            return [SendFee(option: .market, value: .loaded(fees[1]))]
+            return [SendFee(option: .market, value: .loaded(fees[0]))]
         case 3:
             return [
                 SendFee(option: .slow, value: .loaded(fees[0])),

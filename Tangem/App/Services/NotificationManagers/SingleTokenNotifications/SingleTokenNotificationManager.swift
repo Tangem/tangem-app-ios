@@ -82,6 +82,18 @@ final class SingleTokenNotificationManager {
             events.append(.bnbBeaconChainRetirement)
         }
 
+        let amounts = walletModel.wallet.amounts
+        if case .koinos = walletModel.tokenItem.blockchain,
+           let currentMana = amounts[.feeResource(.mana)]?.value,
+           let maxMana = amounts[.coin]?.value {
+            events.append(
+                .manaLevel(
+                    currentMana: "\(currentMana)",
+                    maxMana: "\(maxMana)"
+                )
+            )
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
