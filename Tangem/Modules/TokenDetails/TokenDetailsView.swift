@@ -103,9 +103,15 @@ struct TokenDetailsView: View {
 
     @ViewBuilder
     private var navbarTrailingButton: some View {
-        if viewModel.canHideToken {
+        if viewModel.hasDotsMenu {
             Menu {
-                Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
+                    Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                }
             } label: {
                 NavbarDotsImage()
             }
@@ -150,6 +156,7 @@ private extension TokenDetailsView {
         notificationManager: notifManager,
         bannerNotificationManager: bannerNotificationManager,
         pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
     ))

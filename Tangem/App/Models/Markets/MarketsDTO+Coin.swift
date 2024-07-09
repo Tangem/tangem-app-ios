@@ -39,7 +39,7 @@ extension MarketsDTO.Coins {
         let networkId: String
         let exchangeable: Bool
         let contractAddress: String?
-        let decimalCount: Decimal?
+        let decimalCount: Int?
     }
 
     struct Insight: Codable {

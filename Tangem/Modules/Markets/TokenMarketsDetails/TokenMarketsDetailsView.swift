@@ -126,5 +126,5 @@ struct TokenMarketsDetailsView: View {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init()))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), coordinator: nil))
 }

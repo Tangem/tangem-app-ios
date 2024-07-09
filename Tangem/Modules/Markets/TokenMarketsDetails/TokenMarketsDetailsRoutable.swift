@@ -8,4 +8,6 @@
 
 import Foundation
 
-protocol TokenMarketsDetailsRoutable: AnyObject {}
+protocol TokenMarketsDetailsRoutable: AnyObject {
+    func openTokenSelector(dataSource: MarketsDataSource, coinId: String, tokenItems: [TokenItem])
+}

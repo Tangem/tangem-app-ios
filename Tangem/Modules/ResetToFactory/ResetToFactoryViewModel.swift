@@ -162,7 +162,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsContinueResetAlertTitle,
             message: Localization.cardSettingsContinueResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }
@@ -179,7 +179,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsInterruptedResetAlertTitle,
             message: Localization.cardSettingsInterruptedResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }
