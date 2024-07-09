@@ -27,7 +27,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.canBuy(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
         case .token(let token):
             return exchangeService.canBuy(token.symbol, amountType: amountType, blockchain: blockchain)
-        case .reserve:
+        case .reserve, .feeResource:
             return false
         }
     }
@@ -38,7 +38,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.canSell(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
         case .token(let token):
             return exchangeService.canSell(token.symbol, amountType: amountType, blockchain: blockchain)
-        case .reserve:
+        case .reserve, .feeResource:
             return false
         }
     }
