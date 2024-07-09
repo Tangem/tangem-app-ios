@@ -16,6 +16,7 @@ struct MarketsCoordinatorView: CoordinatorView {
         ZStack {
             if let model = coordinator.rootViewModel {
                 MarketsView(viewModel: model)
+                    .navigationLinks(links)
 
                 sheets
             }
@@ -31,14 +32,13 @@ struct MarketsCoordinatorView: CoordinatorView {
             ) {
                 MarketsListOrderBottonSheetView(viewModel: $0)
             }
-            .sheet(item: $coordinator.tokenMarketsDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
-            }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .emptyNavigationLink()
+            .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            }
     }
 }
