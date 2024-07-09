@@ -29,7 +29,7 @@ class CommonSendStepsManager {
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
-    private var stack: [SendStep] = [] {
+    private var stack: [SendStep] {
         didSet {
             print("stack ->>", stack.map { $0.type })
         }
@@ -37,8 +37,6 @@ class CommonSendStepsManager {
 
 //    private weak var input: SendStepsManagerInput?
     private weak var output: SendStepsManagerOutput?
-
-    private var bag: Set<AnyCancellable> = []
 
     init(
         keyboardVisibilityService: KeyboardVisibilityService,
@@ -58,30 +56,6 @@ class CommonSendStepsManager {
         stack = [destinationStep]
     }
 
-    private func open(step: SendStep) {
-        let isEditAction = stack.contains(where: { $0.type == .summary })
-        stack.append(step)
-
-        switch step.type {
-        case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
-        case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
-        default:
-            if isEditAction {
-                output?.update(state: .moveAndFade(step: step, action: .continue))
-            } else {
-                output?.update(state: .next(step: step))
-            }
-        }
-    }
-
-    private func remove() -> SendStep {
-        stack.removeLast()
-
-        return currentStep()
-    }
-
     private func currentStep() -> SendStep {
         let last = stack.last
 
@@ -89,20 +63,6 @@ class CommonSendStepsManager {
 
         return last ?? firstStep
     }
-
-//    private func getPreviousStep() -> (SendStep)? {
-//        switch input?.currentStep.type {
-//        case .none:
-//            return destinationStep
-//        case .destination:
-//            return amountStep
-//        case .amount:
-//            return destinationStep
-//        case .fee, .summary, .finish:
-//            assertionFailure("There is no previous step")
-//            return nil
-//        }
-//    }
 
     private func getNextStep() -> (SendStep)? {
         switch currentStep().type {
@@ -116,57 +76,36 @@ class CommonSendStepsManager {
         }
     }
 
-    //    private func openStep(_ step: SendStep, animation: SendView.StepAnimation) {
-    //        output?.update(animation: animation)
-    //        output?.update(step: step, animation: animation)
-    //    }
+    private func next(step: SendStep) {
+        let isEditAction = stack.contains(where: { $0.type == .summary })
+        stack.append(step)
 
-    //    private func openStep(_ step: SendStep, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
-    //        let openStepAfterDelay = { [weak self] in
-    //            // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
-    //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-    //                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
-    //            }
-    //        }
+        switch step.type {
+        case .summary:
+            output?.update(state: .moveAndFade(step: step, action: .send))
+        case .finish:
+            output?.update(state: .moveAndFade(step: step, action: .close))
+        case .amount where isEditAction,
+             .destination where isEditAction,
+             .fee where isEditAction:
+            output?.update(state: .moveAndFade(step: step, action: .continue))
+        case .amount, .destination, .fee:
+            output?.update(state: .next(step: step))
+        }
+    }
 
-    //        if updateFee {
-    //            self.updateFee()
-    //            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
-    //            return
-    //        }
-    //
-    //        if keyboardVisibilityService.keyboardVisible, !step.opensKeyboardByDefault {
-    //            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
-    //            return
-    //        }
+    private func back() {
+        stack.removeLast()
+        let step = currentStep()
 
-    //        if case .summary = step {
-    //            if showSummaryStepAlertIfNeeded(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee) {
-    //                return
-    //            }
-
-    //            didReachSummaryScreen = true
-
-    //            sendSummaryViewModel.setupAnimations(previousStep: self.step)
-    //        }
-
-    // Gotta give some time to update animation variable
-    //        self.stepAnimation = stepAnimation
-
-    //        mainButtonType = self.mainButtonType(for: step)
-    //
-    //        DispatchQueue.main.async {
-    //            self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
-    //            self.showTransactionButtons = self.sendModel.transactionURL != nil
-    //            self.step = step
-    //            self.transactionDescriptionIsVisisble = step == .summary
-    //        }
-    //    }
+        switch step.type {
+        case .summary:
+            output?.update(state: .moveAndFade(step: step, action: .send))
+        default:
+            output?.update(state: .back(step: step))
+        }
+    }
 }
-
-// TODO: Update fee
-// TODO: Update main button
-// TODO: Show alert fee
 
 // MARK: - SendStepsManager
 
@@ -179,17 +118,16 @@ extension CommonSendStepsManager: SendStepsManager {
     }
 
     func performBack() {
-        output?.update(state: .back(step: remove()))
+        back()
     }
 
     func performNext() {
-        guard let next = getNextStep() else {
+        guard let step = getNextStep() else {
             return
         }
 
         func openNext() {
-            keyboardVisibilityService.hideKeyboard(completion: {})
-            open(step: next)
+            next(step: step)
         }
 
         guard currentStep().canBeClosed(continueAction: openNext) else {
@@ -200,17 +138,13 @@ extension CommonSendStepsManager: SendStepsManager {
     }
 
     func performFinish() {
-        open(step: finishStep)
+        next(step: finishStep)
     }
 
     func performContinue() {
         assert(stack.contains(where: { $0.type == .summary }), "Continue is possible only after summary")
 
-        let summary = remove()
-        assert(summary.type == .summary, "Continue is possible only after summary")
-
-        keyboardVisibilityService.hideKeyboard {}
-        output?.update(state: .moveAndFade(step: summary, action: .send))
+        back()
     }
 }
 
@@ -229,11 +163,11 @@ extension CommonSendStepsManager: SendSummaryRoutable {
 
         switch step {
         case .destination:
-            open(step: destinationStep)
+            next(step: destinationStep)
         case .amount:
-            open(step: amountStep)
+            next(step: amountStep)
         case .fee:
-            open(step: feeStep)
+            next(step: feeStep)
         case .summary, .finish:
             assertionFailure("Not implemented")
         }

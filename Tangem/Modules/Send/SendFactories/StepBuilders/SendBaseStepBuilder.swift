@@ -22,18 +22,30 @@ struct SendBaseStepBuilder {
         let notificationManager = builder.makeSendNotificationManager()
         let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendQRCodeService = builder.makeSendQRCodeService()
 
         let sendModel = builder.makeSendModel(
             sendTransactionDispatcher: sendTransactionDispatcher,
             predefinedSellParameters: sendType.predefinedSellParameters
         )
 
-        let fee = sendFeeStepBuilder.makeFeeSendStep(io: (input: sendModel, output: sendModel), notificationManager: notificationManager, router: router)
-        let amount = sendAmountStepBuilder.makeSendAmountStep(io: (input: sendModel, output: sendModel), sendFeeInteractor: fee.interactor)
+        let fee = sendFeeStepBuilder.makeFeeSendStep(
+            io: (input: sendModel, output: sendModel),
+            notificationManager: notificationManager,
+            router: router
+        )
+
+        let amount = sendAmountStepBuilder.makeSendAmountStep(
+            io: (input: sendModel, output: sendModel),
+            sendFeeInteractor: fee.interactor,
+            sendQRCodeService: sendQRCodeService
+        )
+
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
             io: (input: sendModel, output: sendModel),
             sendAmountViewModel: amount.step.viewModel,
             sendFeeInteractor: fee.interactor,
+            sendQRCodeService: sendQRCodeService,
             addressTextViewHeightModel: addressTextViewHeightModel,
             router: router
         )
@@ -54,7 +66,6 @@ struct SendBaseStepBuilder {
         )
 
         // We have to set dependicies here after all setups is completed
-//        sendModel.sendAmountInteractor = amount.interactor
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor

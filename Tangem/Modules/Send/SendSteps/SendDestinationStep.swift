@@ -10,17 +10,12 @@ import Foundation
 import Combine
 import SwiftUI
 
-protocol SendQRCodeService {
-    func qrCodeDidScanned(result: QRCodeParser.Result)
-}
-
 class SendDestinationStep {
     private let viewModel: SendDestinationViewModel
     private let interactor: SendDestinationInteractor
     private let sendAmountViewModel: SendAmountViewModel
     private let sendFeeInteractor: SendFeeInteractor
     private let tokenItem: TokenItem
-    private weak var router: SendDestinationRoutable?
 
     var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
         viewModel
@@ -31,42 +26,18 @@ class SendDestinationStep {
         interactor: any SendDestinationInteractor,
         sendAmountViewModel: SendAmountViewModel,
         sendFeeInteractor: any SendFeeInteractor,
-        tokenItem: TokenItem,
-        router: any SendDestinationRoutable
+        tokenItem: TokenItem
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.sendAmountViewModel = sendAmountViewModel
         self.sendFeeInteractor = sendFeeInteractor
         self.tokenItem = tokenItem
-        self.router = router
     }
 
-    private func scanQRCode() {
-        let binding = Binding<String>(get: { "" }, set: parseQRCode)
-
-        let networkName = tokenItem.blockchain.displayName
-        router?.openQRScanner(with: binding, networkName: networkName)
-    }
-
-    private func parseQRCode(_ code: String) {
-        // TODO: Add the necessary UI warnings
-        let parser = QRCodeParser(
-            amountType: tokenItem.amountType,
-            blockchain: tokenItem.blockchain,
-            decimalCount: tokenItem.decimalCount
-        )
-
-        guard let result = parser.parse(code) else {
-            return
-        }
-
-        viewModel.setExternally(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
-
-        if let amount = result.amount?.value {
-            sendAmountViewModel.setExternalAmount(amount)
-        }
-    }
+//    func set(router: SendDestinationRoutable) {
+//        viewModel.router = router
+//    }
 }
 
 // MARK: - SendStep
@@ -78,7 +49,11 @@ extension SendDestinationStep: SendStep {
 
     var viewType: SendStepViewType { .destination(viewModel) }
 
-    var navigationTrailingViewType: SendStepNavigationTrailingViewType? { .qrCodeButton(action: scanQRCode) }
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
+        .qrCodeButton { [weak self] in
+            self?.viewModel.scanQRCode()
+        }
+    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.destinationValid.eraseToAnyPublisher()

@@ -81,6 +81,16 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeSendQRCodeService() -> SendQRCodeService {
+        CommonSendQRCodeService(
+            parser: QRCodeParser(
+                amountType: walletModel.tokenItem.amountType,
+                blockchain: walletModel.tokenItem.blockchain,
+                decimalCount: walletModel.tokenItem.decimalCount
+            )
+        )
+    }
+
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters?

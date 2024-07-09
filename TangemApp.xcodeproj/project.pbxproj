@@ -1562,6 +1562,7 @@
 		EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1565126B97F8C005B33E4 /* OnboardingCardView.swift */; };
 		EFE255F62C3D79BB00B17DAC /* BSDKTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */; };
 		EFE255F82C3D835000B17DAC /* SendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE255F72C3D834F00B17DAC /* SendError.swift */; };
+		EFE255FA2C3D8C7C00B17DAC /* SendQRCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */; };
 		EFE503592A727A100086A1B1 /* BottomScrollableSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE503582A727A100086A1B1 /* BottomScrollableSheet.swift */; };
 		EFE5EC532AEC1BB100C5ADC3 /* UndoToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE5EC522AEC1BB100C5ADC3 /* UndoToastView.swift */; };
 		EFE5EC552AEC2AF400C5ADC3 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE5EC542AEC2AF400C5ADC3 /* Toast.swift */; };
@@ -3399,6 +3400,7 @@
 		EFD5FE422C1369AE0047242E /* GeometryEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryEffect.swift; sourceTree = "<group>"; };
 		EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BSDKTransaction.swift; path = Tangem/Common/BlockchainSDK/BSDKTransaction.swift; sourceTree = SOURCE_ROOT; };
 		EFE255F72C3D834F00B17DAC /* SendError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendError.swift; sourceTree = "<group>"; };
+		EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQRCodeService.swift; sourceTree = "<group>"; };
 		EFE503582A727A100086A1B1 /* BottomScrollableSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomScrollableSheet.swift; sourceTree = "<group>"; };
 		EFE5EC522AEC1BB100C5ADC3 /* UndoToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoToastView.swift; sourceTree = "<group>"; };
 		EFE5EC542AEC2AF400C5ADC3 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -7740,6 +7742,7 @@
 				EF1D1ADF2C272055000CB941 /* InformationRelevanceService.swift */,
 				DAAA3C6E2B3D79FA0002DBB0 /* SendTransactionParametersBuilder.swift */,
 				EF95441E2C3C43B600041FCD /* FeeAnalyticsParameterBuilder.swift */,
+				EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -11265,6 +11268,7 @@
 				B0BDFD1D2A8B68B600479F53 /* NotificationViewInput.swift in Sources */,
 				EFAECCF12C1B702D0051710F /* SendAmountValidator.swift in Sources */,
 				5D51036D27C535AB0025EA55 /* ABIEncoder.swift in Sources */,
+				EFE255FA2C3D8C7C00B17DAC /* SendQRCodeService.swift in Sources */,
 				2D5DCC2D2C3309F1000EE379 /* MarketsTokensNetworkSelectorAlertBuilder.swift in Sources */,
 				B6E932C32A2F2D860068D466 /* OrganizeTokensViewModel.swift in Sources */,
 				EF0DD7A12B02B3230099527D /* ExpressFeeRow.swift in Sources */,

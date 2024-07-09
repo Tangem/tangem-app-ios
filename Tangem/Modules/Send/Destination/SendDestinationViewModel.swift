@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import SwiftUI
 
 class SendDestinationViewModel: ObservableObject {
     @Published var addressViewModel: SendDestinationTextViewModel?
@@ -24,6 +25,7 @@ class SendDestinationViewModel: ObservableObject {
 
     private let settings: Settings
     private let interactor: SendDestinationInteractor
+    private let sendQRCodeService: SendQRCodeService
     private let addressTextViewHeightModel: AddressTextViewHeightModel
     private let suggestedWallets: [SendSuggestedDestinationWallet]
 
@@ -31,12 +33,16 @@ class SendDestinationViewModel: ObservableObject {
     private let _destinationAdditionalFieldText: CurrentValueSubject<String, Never> = .init("")
     private var bag: Set<AnyCancellable> = []
 
+    private weak var router: SendDestinationRoutable?
+
     // MARK: - Methods
 
     init(
         settings: Settings,
         interactor: SendDestinationInteractor,
-        addressTextViewHeightModel: AddressTextViewHeightModel
+        sendQRCodeService: SendQRCodeService,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        router: SendDestinationRoutable
     ) {
         suggestedWallets = settings.suggestedWallets.map { wallet in
             SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
@@ -44,15 +50,19 @@ class SendDestinationViewModel: ObservableObject {
 
         self.settings = settings
         self.interactor = interactor
+        self.sendQRCodeService = sendQRCodeService
         self.addressTextViewHeightModel = addressTextViewHeightModel
+        self.router = router
 
         setupView()
         bind()
     }
 
-    func setExternally(address: SendAddress?, additionalField: String?) {
-        address.map { _destinationText.send($0.value) }
-        additionalField.map { _destinationAdditionalFieldText.send($0) }
+    func scanQRCode() {
+        let binding = Binding<String>(get: { "" }, set: { [weak self] value in
+            self?.sendQRCodeService.qrCodeDidScanned(value: value)
+        })
+        router?.openQRScanner(with: binding, networkName: settings.networkName)
     }
 
     func onAppear() {
@@ -110,8 +120,29 @@ class SendDestinationViewModel: ObservableObject {
         interactor
             .transactionHistoryPublisher
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, recentTransactions in
                 viewModel.setup(recentTransactions: recentTransactions)
+            }
+            .store(in: &bag)
+
+        sendQRCodeService
+            .qrCodeDestination
+            .compactMap { $0 }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, address in
+                viewModel._destinationText.send(address)
+            }
+            .store(in: &bag)
+
+        sendQRCodeService
+            .qrCodeAdditionalField
+            .compactMap { $0 }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, field in
+                viewModel._destinationAdditionalFieldText.send(field)
             }
             .store(in: &bag)
     }
