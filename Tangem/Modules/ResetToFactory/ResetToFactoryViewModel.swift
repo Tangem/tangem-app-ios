@@ -88,8 +88,10 @@ private extension ResetToFactoryViewModel {
             guard let self else { return }
 
             switch result {
-            case .success:
-                resetHelper.cardDidReset()
+            case .success(let didReset):
+                if didReset {
+                    resetHelper.cardDidReset()
+                }
 
                 if resetHelper.hasCardsToReset {
                     alert = ResetToFactoryAlertBuilder.makeContinueResetAlert(continueAction: resetCardToFactory, cancelAction: resetDidCancel)
@@ -162,7 +164,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsContinueResetAlertTitle,
             message: Localization.cardSettingsContinueResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }
@@ -179,7 +181,7 @@ private enum ResetToFactoryAlertBuilder {
         AlertBuilder.makeAlert(
             title: Localization.cardSettingsInterruptedResetAlertTitle,
             message: Localization.cardSettingsInterruptedResetAlertMessage,
-            primaryButton: .default(Text(Localization.commonContinue), action: continueAction),
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
             secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
         )
     }

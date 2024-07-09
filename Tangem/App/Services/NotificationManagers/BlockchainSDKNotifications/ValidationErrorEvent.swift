@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum ValidationErrorEvent {
+enum ValidationErrorEvent: Hashable {
     // Amount/Fee notifications
     case invalidNumber
     case insufficientBalance

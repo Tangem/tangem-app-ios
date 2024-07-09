@@ -280,15 +280,9 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
     private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
         let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+        let validator = ContractAddressValidatorFactory(blockchain: blockchain).makeValidator()
 
-        if blockchain.skipValidation, // skip validation for binance and cardano
-           !contractAddress.trimmed().isEmpty {
-            return contractAddress
-        }
-
-        let addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
-
-        guard addressService.validate(contractAddress) else {
+        guard validator.validate(contractAddress) else {
             throw TokenCreationErrors.invalidContractAddress
         }
 
@@ -302,7 +296,8 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
         let converter = CustomTokenContractAddressConverter(blockchain: blockchain)
 
-        return converter.convert(contractAddress)
+        let enteredSymbol = symbol.isEmpty ? nil : symbol
+        return converter.convert(contractAddress, symbol: enteredSymbol)
     }
 
     private func checkLocalStorage() throws {
@@ -575,26 +570,5 @@ extension AddCustomTokenViewModel {
         case name
         case symbol
         case decimals
-    }
-}
-
-private extension Blockchain {
-    var canHandleCustomTokens: Bool {
-        switch self {
-        // Only one token supported currently
-        case .terraV1:
-            return false
-        default:
-            return canHandleTokens
-        }
-    }
-
-    var skipValidation: Bool {
-        switch self {
-        case .binance, .cardano:
-            return true
-        default:
-            return false
-        }
     }
 }

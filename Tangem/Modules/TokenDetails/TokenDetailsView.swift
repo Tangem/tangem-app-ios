@@ -25,6 +25,11 @@ struct TokenDetailsView: View {
 
                 BalanceWithButtonsView(viewModel: viewModel.balanceWithButtonsModel)
 
+                ForEach(viewModel.bannerNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
+                }
+
                 ForEach(viewModel.tokenNotificationInputs) { input in
                     NotificationView(input: input)
                         .transition(.notificationTransition)
@@ -98,9 +103,15 @@ struct TokenDetailsView: View {
 
     @ViewBuilder
     private var navbarTrailingButton: some View {
-        if viewModel.canHideToken {
+        if viewModel.hasDotsMenu {
             Menu {
-                Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
+                    Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                }
             } label: {
                 NavbarDotsImage()
             }
@@ -136,12 +147,16 @@ private extension TokenDetailsView {
     )
     let coordinator = TokenDetailsCoordinator()
 
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem))
+
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,
         walletModel: walletModel,
         exchangeUtility: exchangeUtility,
         notificationManager: notifManager,
+        bannerNotificationManager: bannerNotificationManager,
         pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
     ))

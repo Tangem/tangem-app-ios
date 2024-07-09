@@ -11,13 +11,25 @@ import Foundation
 final class TokenMarketsDetailsDataProvider {
     @Injected(\.tangemApiService) private var tangemAPIService: TangemApiService
 
+    private let mapper = TokenMarketsDetailsMapper(supportedBlockchains: SupportedBlockchains.all)
+    private let defaultLanguageCode = "en"
+
     func loadTokenMarketsDetails(for tokenId: TokenItemId) async throws -> TokenMarketsDetailsModel {
+        let languageCode: String?
+
+        if #available(iOS 16, *) {
+            languageCode = Locale.current.language.languageCode?.identifier
+        } else {
+            languageCode = Locale.current.languageCode
+        }
+
         let request = await MarketsDTO.Coins.Request(
             tokenId: tokenId,
             currency: AppSettings.shared.selectedCurrencyCode,
-            language: Locale.current.identifier
+            language: languageCode ?? defaultLanguageCode
         )
         let result = try await tangemAPIService.loadTokenMarketsDetails(requestModel: request)
-        return .init(marketsDTO: result)
+        let model = mapper.map(response: result)
+        return model
     }
 }

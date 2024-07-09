@@ -32,6 +32,20 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
         return try mapToExpressFee(fees: fees)
     }
 
+    func estimatedFee(estimatedGasLimit: Int) async throws -> Fee {
+        guard let ethereumNetworkProvider = wallet.ethereumNetworkProvider else {
+            throw ExpressFeeProviderError.ethereumNetworkProviderNotFound
+        }
+
+        let parameters = try await ethereumNetworkProvider.getFee(
+            gasLimit: BigUInt(estimatedGasLimit),
+            supportsEIP1559: wallet.tokenItem.blockchain.supportsEIP1559
+        )
+
+        let amount = parameters.calculateFee(decimalValue: wallet.tokenItem.decimalValue)
+        return Fee(makeAmount(amount: amount))
+    }
+
     func getFee(amount: Decimal, destination: String, hexData: Data?) async throws -> ExpressFee {
         let amount = makeAmount(amount: amount)
 
@@ -91,4 +105,5 @@ private extension CommonExpressFeeProvider {
 
 enum ExpressFeeProviderError: Error {
     case feeNotFound
+    case ethereumNetworkProviderNotFound
 }

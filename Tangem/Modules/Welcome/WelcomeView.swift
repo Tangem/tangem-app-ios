@@ -14,6 +14,7 @@ struct WelcomeView: View {
     var body: some View {
         storiesView
             .alert(item: $viewModel.error, content: { $0.alert })
+            .environment(\.colorScheme, .dark)
             .onAppear(perform: viewModel.onAppear)
             .onDidAppear(viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
@@ -39,7 +40,6 @@ struct WelcomeView: View {
                 )
             }
         }
-        .preferredColorScheme(.dark)
     }
 }
 

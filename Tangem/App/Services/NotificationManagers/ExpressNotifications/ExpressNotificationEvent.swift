@@ -9,9 +9,9 @@
 import Foundation
 import SwiftUI
 
-enum ExpressNotificationEvent {
+enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
-    case permissionNeeded(currencyCode: String)
+    case permissionNeeded(providerName: String, currencyCode: String)
     case refreshRequired(title: String, message: String)
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
@@ -67,8 +67,8 @@ extension ExpressNotificationEvent: NotificationEvent {
 
     var description: String? {
         switch self {
-        case .permissionNeeded(let currencyCode):
-            return Localization.swappingPermissionSubheader(currencyCode)
+        case .permissionNeeded(let providerName, let currencyCode):
+            return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
         case .refreshRequired(_, let message):
             return message
         case .hasPendingTransaction(let symbol):

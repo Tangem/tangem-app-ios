@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol NotificationEvent: Hashable, Identifiable {
-    var id: String { get }
+protocol NotificationEvent: Identifiable {
+    var id: NotificationViewId { get }
     var title: NotificationView.Title { get }
     var description: String? { get }
     var colorScheme: NotificationView.ColorScheme { get }
@@ -23,9 +23,9 @@ protocol NotificationEvent: Hashable, Identifiable {
     var isOneShotAnalyticsEvent: Bool { get }
 }
 
-extension NotificationEvent {
+extension NotificationEvent where Self: Hashable {
     // Unique ID. Overwrite if hash value is not enough (may be influenced by associated values)
-    var id: String {
-        "\(hashValue)"
+    var id: NotificationViewId {
+        hashValue
     }
 }

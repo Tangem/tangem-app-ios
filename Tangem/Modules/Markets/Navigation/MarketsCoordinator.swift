@@ -16,21 +16,16 @@ class MarketsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
-    weak var delegate: MarketsCoordinatorDelegate?
-
     // MARK: - Root Published
 
-    @Published private(set) var manageTokensViewModel: MarketsViewModel? = nil
+    @Published private(set) var rootViewModel: MarketsViewModel? = nil
 
     // MARK: - Coordinators
 
-    @Published var addCustomTokenCoordinator: AddCustomTokenCoordinator? = nil
     @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child ViewModels
 
-    @Published var networkSelectorViewModel: ManageTokensNetworkSelectorViewModel? = nil
-    @Published var walletSelectorViewModel: WalletSelectorViewModel? = nil
     @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel? = nil
 
     // MARK: - Init
@@ -43,15 +38,14 @@ class MarketsCoordinator: CoordinatorObject {
     // MARK: - Implmentation
 
     func start(with options: MarketsCoordinator.Options) {
-        assert(delegate != nil)
-        manageTokensViewModel = .init(searchTextPublisher: options.searchTextPublisher, coordinator: self)
+        rootViewModel = .init(searchTextPublisher: options.searchTextPublisher, coordinator: self)
     }
 
     func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
         if state.isBottom {
-            manageTokensViewModel?.onBottomDisappear()
+            rootViewModel?.onBottomDisappear()
         } else {
-            manageTokensViewModel?.onBottomAppear()
+            rootViewModel?.onBottomAppear()
         }
     }
 }
@@ -63,46 +57,6 @@ extension MarketsCoordinator {
 }
 
 extension MarketsCoordinator: MarketsRoutable {
-    func openAddCustomToken(dataSource: MarketsDataSource) {
-        guard let userWalletModel = dataSource.defaultUserWalletModel else { return }
-
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.addCustomTokenCoordinator = nil
-            self?.dismiss()
-        }
-
-        let addCustomTokenCoordinator = AddCustomTokenCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        addCustomTokenCoordinator.start(with: .init(userWalletModel: userWalletModel))
-        self.addCustomTokenCoordinator = addCustomTokenCoordinator
-    }
-
-    func openTokenSelector(dataSource: MarketsDataSource, coinId: String, tokenItems: [TokenItem]) {
-        networkSelectorViewModel = ManageTokensNetworkSelectorViewModel(
-            parentDataSource: dataSource,
-            coinId: coinId,
-            tokenItems: tokenItems,
-            coordinator: self
-        )
-    }
-
-    func showGenerateAddressesWarning(
-        numberOfNetworks: Int,
-        currentWalletNumber: Int,
-        totalWalletNumber: Int,
-        action: @escaping () -> Void
-    ) {
-        delegate?.showGenerateAddressesWarning(
-            numberOfNetworks: numberOfNetworks,
-            currentWalletNumber: currentWalletNumber,
-            totalWalletNumber: totalWalletNumber,
-            action: action
-        )
-    }
-
-    func hideGenerateAddressesWarning() {
-        delegate?.hideGenerateAddressesWarning()
-    }
-
     func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider) {
         marketsListOrderBottonSheetViewModel = .init(from: provider)
     }
@@ -112,11 +66,5 @@ extension MarketsCoordinator: MarketsRoutable {
         tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
 
         self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
-    }
-}
-
-extension MarketsCoordinator: ManageTokensNetworkSelectorRoutable {
-    func openWalletSelector(with dataSource: WalletSelectorDataSource) {
-        walletSelectorViewModel = WalletSelectorViewModel(dataSource: dataSource)
     }
 }

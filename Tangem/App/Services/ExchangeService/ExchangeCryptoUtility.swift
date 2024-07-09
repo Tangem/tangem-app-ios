@@ -21,8 +21,27 @@ struct ExchangeCryptoUtility {
         self.amountType = amountType
     }
 
-    var buyAvailable: Bool { buyURL != nil }
-    var sellAvailable: Bool { sellURL != nil }
+    var buyAvailable: Bool {
+        switch amountType {
+        case .coin:
+            return exchangeService.canBuy(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
+        case .token(let token):
+            return exchangeService.canBuy(token.symbol, amountType: amountType, blockchain: blockchain)
+        case .reserve:
+            return false
+        }
+    }
+
+    var sellAvailable: Bool {
+        switch amountType {
+        case .coin:
+            return exchangeService.canSell(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
+        case .token(let token):
+            return exchangeService.canSell(token.symbol, amountType: amountType, blockchain: blockchain)
+        case .reserve:
+            return false
+        }
+    }
 
     var buyURL: URL? {
         if blockchain.isTestnet {

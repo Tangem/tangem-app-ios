@@ -23,5 +23,11 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
 
     var sheets: some View {
         NavHolder()
+            .detentBottomSheet(
+                item: $coordinator.networkSelectorViewModel,
+                detents: [.large, .medium]
+            ) { viewModel in
+                MarketsTokensNetworkSelectorView(viewModel: viewModel)
+            }
     }
 }

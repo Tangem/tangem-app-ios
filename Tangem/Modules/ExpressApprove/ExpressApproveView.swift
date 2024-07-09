@@ -107,7 +107,7 @@ struct ExpressApproveView_Preview: PreviewProvider {
 
         func toggleItem() {
             if item == nil {
-                item = ExpressModulesFactoryMock().makeExpressApproveViewModel(coordinator: self)
+                item = ExpressModulesFactoryMock().makeExpressApproveViewModel(providerName: "1inch", selectedPolicy: .unlimited, coordinator: self)
             } else {
                 item = nil
             }

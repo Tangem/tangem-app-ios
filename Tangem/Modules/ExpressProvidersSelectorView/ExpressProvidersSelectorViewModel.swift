@@ -113,7 +113,18 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         )
 
         let isSelected = selectedProvider?.provider.id == provider.provider.id
-        let badge: ProviderRowViewModel.Badge? = state.isPermissionRequired ? .permissionNeeded : .none
+
+        let badge: ProviderRowViewModel.Badge? = {
+            if state.isPermissionRequired {
+                return .permissionNeeded
+            }
+
+            if provider.provider.recommended == true {
+                return .recommended
+            }
+
+            return .none
+        }()
 
         if let percentSubtitle = await makePercentSubtitle(provider: provider) {
             subtitles.append(percentSubtitle)

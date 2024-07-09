@@ -12,6 +12,8 @@ struct SendSummaryView: View {
     @ObservedObject var viewModel: SendSummaryViewModel
     let namespace: Namespace.ID
 
+    private var amountMinTextScale: CGFloat?
+
     var body: some View {
         GroupedScrollView(spacing: 14) {
             if !viewModel.animatingDestinationOnAppear {
@@ -115,6 +117,14 @@ struct SendSummaryView: View {
         .onDisappear(perform: viewModel.onDisappear)
     }
 
+    init(
+        viewModel: SendSummaryViewModel,
+        namespace: Namespace.ID
+    ) {
+        self.viewModel = viewModel
+        self.namespace = namespace
+    }
+
     private func feeRowViewSeparator(for option: FeeOption) -> some View {
         Separator(height: .minimal, color: Colors.Stroke.primary)
             .padding(.leading, GroupedSectionConstants.defaultHorizontalPadding)
@@ -124,6 +134,7 @@ struct SendSummaryView: View {
 
     private func amountSectionContent(data: SendAmountSummaryViewData) -> some View {
         SendAmountSummaryView(data: data)
+            .amountMinTextScale(amountMinTextScale)
             .setNamespace(namespace)
             .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
             .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
@@ -136,6 +147,14 @@ struct SendSummaryView: View {
             .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
             .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: data.feeOption).rawValue)
             .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: data.feeOption).rawValue)
+    }
+}
+
+// MARK: - Setupable protocol conformance
+
+extension SendSummaryView: Setupable {
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
     }
 }
 

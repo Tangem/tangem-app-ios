@@ -15,6 +15,7 @@ struct SendAmountSummaryView: View {
     private var iconNamespaceId: String?
     private var amountCryptoNamespaceId: String?
     private var amountFiatNamespaceId: String?
+    private var amountMinTextScale: CGFloat?
 
     private let iconSize = CGSize(bothDimensions: 36)
 
@@ -31,6 +32,7 @@ struct SendAmountSummaryView: View {
                 Text(data.amount)
                     .style(Fonts.Regular.title1, color: Colors.Text.primary1)
                     .truncationMode(.tail)
+                    .minimumScaleFactor(amountMinTextScale ?? 1.0)
                     .frame(maxWidth: .infinity)
                     .matchedGeometryEffectOptional(id: amountCryptoNamespaceId, in: namespace)
 
@@ -45,6 +47,8 @@ struct SendAmountSummaryView: View {
         .padding(.bottom, 16)
     }
 }
+
+// MARK: - Setupable protocol conformance
 
 extension SendAmountSummaryView: Setupable {
     func setNamespace(_ namespace: Namespace.ID) -> Self {
@@ -61,6 +65,10 @@ extension SendAmountSummaryView: Setupable {
 
     func setAmountFiatNamespaceId(_ amountFiatNamespaceId: String?) -> Self {
         map { $0.amountFiatNamespaceId = amountFiatNamespaceId }
+    }
+
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
     }
 }
 

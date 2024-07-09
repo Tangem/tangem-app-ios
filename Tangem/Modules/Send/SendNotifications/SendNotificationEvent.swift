@@ -166,16 +166,16 @@ extension SendNotificationEvent {
 }
 
 extension SendNotificationEvent {
-    var id: String {
+    var id: NotificationViewId {
         switch self {
         case .networkFeeUnreachable:
-            "networkFeeUnreachable"
+            "networkFeeUnreachable".hashValue
         case .feeWillBeSubtractFromSendingAmount:
-            "feeWillBeSubtractFromSendingAmount"
+            "feeWillBeSubtractFromSendingAmount".hashValue
         case .customFeeTooHigh:
-            "customFeeTooHigh"
+            "customFeeTooHigh".hashValue
         case .customFeeTooLow:
-            "customFeeTooLow"
+            "customFeeTooLow".hashValue
         case .withdrawalNotificationEvent(let event):
             event.id
         case .validationErrorEvent(let event):
