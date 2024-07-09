@@ -69,7 +69,7 @@ final class WelcomeOnboardingViewModel: ObservableObject {
 //                delegate: self
 //            )
 
-            return .pushNotifications(()/*viewModel*/)
+            return .pushNotifications(() /* viewModel */ )
         }
     }
 }
