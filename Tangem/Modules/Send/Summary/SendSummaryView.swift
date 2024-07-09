@@ -14,6 +14,11 @@ struct SendSummaryView: View {
 
     private var amountMinTextScale: CGFloat?
 
+    init(viewModel: SendSummaryViewModel, namespace: Namespace.ID) {
+        self.viewModel = viewModel
+        self.namespace = namespace
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             GroupedScrollView(spacing: 14) {

@@ -24,25 +24,25 @@ class CommonSendSummaryInteractor {
     private weak var input: SendSummaryInput?
     private weak var output: SendSummaryOutput?
 
-    private let sendTransactionSender: SendTransactionSender
+    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
 
     init(
         input: SendSummaryInput,
         output: SendSummaryOutput,
-        sendTransactionSender: SendTransactionSender,
+        sendTransactionDispatcher: SendTransactionDispatcher,
         descriptionBuilder: SendTransactionSummaryDescriptionBuilder
     ) {
         self.input = input
         self.output = output
-        self.sendTransactionSender = sendTransactionSender
+        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
     }
 }
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
     var isSending: AnyPublisher<Bool, Never> {
-        sendTransactionSender.isSending
+        sendTransactionDispatcher.isSending
     }
 
     var transactionDescription: AnyPublisher<String?, Never> {

@@ -46,7 +46,7 @@ class SendModel {
     }
 
     var isSending: AnyPublisher<Bool, Never> {
-        sendTransactionSender.isSending
+        sendTransactionDispatcher.isSending
     }
 
     var transactionFinished: AnyPublisher<Bool, Never> {
@@ -86,7 +86,7 @@ class SendModel {
     // MARK: - Private stuff
 
     private let walletModel: WalletModel
-    private let sendTransactionSender: SendTransactionSender
+    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let sendFeeInteractor: SendFeeInteractor
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let informationRelevanceService: InformationRelevanceService
@@ -102,14 +102,14 @@ class SendModel {
 
     init(
         walletModel: WalletModel,
-        sendTransactionSender: SendTransactionSender,
+        sendTransactionDispatcher: SendTransactionDispatcher,
         sendFeeInteractor: SendFeeInteractor,
         feeIncludedCalculator: FeeIncludedCalculator,
         informationRelevanceService: InformationRelevanceService,
         sendType: SendType
     ) {
         self.walletModel = walletModel
-        self.sendTransactionSender = sendTransactionSender
+        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.sendFeeInteractor = sendFeeInteractor
         self.feeIncludedCalculator = feeIncludedCalculator
         self.informationRelevanceService = informationRelevanceService
@@ -178,7 +178,7 @@ class SendModel {
             transaction.params = params
         }
 
-        sendTransactionSender
+        sendTransactionDispatcher
             .send(transaction: transaction)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in

@@ -33,12 +33,12 @@ struct SendModulesFactory {
         )
 
         let informationRelevanceService = makeInformationRelevanceService(sendFeeInteractor: sendFeeInteractor)
-        let sendTransactionSender = makeSendTransactionSender()
+        let sendTransactionDispatcher = makeSendTransactionDispatcher()
 
         let sendModel = makeSendModel(
             sendFeeInteractor: sendFeeInteractor,
             informationRelevanceService: informationRelevanceService,
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             type: type
         )
         let canUseFiatCalculation = quotesRepository.quote(for: walletModel.tokenItem) != nil
@@ -57,7 +57,7 @@ struct SendModulesFactory {
             sendModel: sendModel,
             notificationManager: makeSendNotificationManager(sendModel: sendModel),
             sendFeeInteractor: sendFeeInteractor,
-            sendSummaryInteractor: makeSendSummaryInteractor(input: sendModel, output: sendModel, sendTransactionSender: sendTransactionSender),
+            sendSummaryInteractor: makeSendSummaryInteractor(input: sendModel, output: sendModel, sendTransactionDispatcher: sendTransactionDispatcher),
             keyboardVisibilityService: KeyboardVisibilityService(),
             sendAmountValidator: makeSendAmountValidator(),
             factory: self,
@@ -153,12 +153,12 @@ struct SendModulesFactory {
     func makeSendSummaryInteractor(
         input: SendSummaryInput,
         output: SendSummaryOutput,
-        sendTransactionSender: any SendTransactionSender
+        sendTransactionDispatcher: any SendTransactionDispatcher
     ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
             input: input,
             output: output,
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
@@ -191,14 +191,14 @@ private extension SendModulesFactory {
     func makeSendModel(
         sendFeeInteractor: SendFeeInteractor,
         informationRelevanceService: InformationRelevanceService,
-        sendTransactionSender: any SendTransactionSender,
+        sendTransactionDispatcher: any SendTransactionDispatcher,
         type: SendType
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
 
         return SendModel(
             walletModel: walletModel,
-            sendTransactionSender: sendTransactionSender,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             sendFeeInteractor: sendFeeInteractor,
             feeIncludedCalculator: feeIncludedCalculator,
             informationRelevanceService: informationRelevanceService,
@@ -309,8 +309,8 @@ private extension SendModulesFactory {
         SendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 
-    func makeSendTransactionSender() -> SendTransactionSender {
-        CommonSendTransactionSender(
+    func makeSendTransactionDispatcher() -> SendTransactionDispatcher {
+        CommonSendTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: transactionSigner
         )

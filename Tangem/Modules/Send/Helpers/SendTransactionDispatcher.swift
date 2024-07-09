@@ -1,5 +1,5 @@
 //
-//  SendTransactionSender.swift
+//  SendTransactionDispatcher.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 28.06.2024.
@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 import Combine
 
-protocol SendTransactionSender {
+protocol SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { get }
 
     func send(transaction: BlockchainSdk.Transaction) -> AnyPublisher<SendTransactionSentResult, SendTxError>
@@ -20,7 +20,7 @@ struct SendTransactionSentResult {
     let url: URL?
 }
 
-class CommonSendTransactionSender {
+class CommonSendTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
 
@@ -41,9 +41,9 @@ class CommonSendTransactionSender {
     }
 }
 
-// MARK: - SendTransactionSender
+// MARK: - SendTransactionDispatcher
 
-extension CommonSendTransactionSender: SendTransactionSender {
+extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
 
     func send(transaction: BlockchainSdk.Transaction) -> AnyPublisher<SendTransactionSentResult, SendTxError> {
