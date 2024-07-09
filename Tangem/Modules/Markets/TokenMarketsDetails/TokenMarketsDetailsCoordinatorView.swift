@@ -25,7 +25,7 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
         NavHolder()
             .detentBottomSheet(
                 item: $coordinator.networkSelectorViewModel,
-                detents: [.large, .medium]
+                detents: [.large]
             ) { viewModel in
                 MarketsTokensNetworkSelectorView(viewModel: viewModel)
             }
