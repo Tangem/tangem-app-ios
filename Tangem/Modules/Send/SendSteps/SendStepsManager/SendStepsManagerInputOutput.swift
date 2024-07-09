@@ -8,8 +8,6 @@
 
 import Foundation
 
-protocol SendStepsManagerInput: AnyObject {}
-
 protocol SendStepsManagerOutput: AnyObject {
     func update(state: SendStepsManagerViewState)
 }

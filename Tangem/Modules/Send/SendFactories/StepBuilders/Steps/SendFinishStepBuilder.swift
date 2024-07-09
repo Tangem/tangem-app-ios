@@ -17,8 +17,7 @@ struct SendFinishStepBuilder {
     func makeSendFinishStep(
         sendFeeInteractor: SendFeeInteractor,
         notificationManager: SendNotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
-        sendType: SendType
+        addressTextViewHeightModel: AddressTextViewHeightModel
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             addressTextViewHeightModel: addressTextViewHeightModel

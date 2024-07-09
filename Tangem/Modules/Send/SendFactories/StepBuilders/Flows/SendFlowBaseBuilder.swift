@@ -1,5 +1,5 @@
 //
-//  SendBaseStepBuilder.swift
+//  SendFlowBaseBuilder.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 28.06.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SendBaseStepBuilder {
+struct SendFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let sendAmountStepBuilder: SendAmountStepBuilder
@@ -18,16 +18,13 @@ struct SendBaseStepBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
         let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let sendQRCodeService = builder.makeSendQRCodeService()
 
-        let sendModel = builder.makeSendModel(
-            sendTransactionDispatcher: sendTransactionDispatcher,
-            predefinedSellParameters: sendType.predefinedSellParameters
-        )
+        let sendModel = builder.makeSendModel(sendTransactionDispatcher: sendTransactionDispatcher)
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
             io: (input: sendModel, output: sendModel),
@@ -55,14 +52,13 @@ struct SendBaseStepBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            sendType: sendType
+            editableType: .editable
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             sendFeeInteractor: fee.interactor,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            sendType: sendType
+            addressTextViewHeightModel: addressTextViewHeightModel
         )
 
         // We have to set dependicies here after all setups is completed
@@ -70,13 +66,6 @@ struct SendBaseStepBuilder {
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
         )
-
-        // Update the fees in case we in the sell flow
-        // TODO: Will be updated
-        // https://tangem.atlassian.net/browse/IOS-7195
-        if !sendType.isSend {
-            fee.interactor.updateFees()
-        }
 
         notificationManager.setup(input: sendModel)
 
@@ -90,7 +79,6 @@ struct SendBaseStepBuilder {
         finish.setup(sendFinishInput: sendModel)
 
         let stepsManager = CommonSendStepsManager(
-            keyboardVisibilityService: .init(),
             destinationStep: destination.step,
             amountStep: amount.step,
             feeStep: fee.step,
@@ -103,7 +91,7 @@ struct SendBaseStepBuilder {
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
         let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
-        stepsManager.setup(input: viewModel, output: viewModel)
+        stepsManager.set(output: viewModel)
 
         return viewModel
     }

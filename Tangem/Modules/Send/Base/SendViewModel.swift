@@ -68,12 +68,12 @@ final class SendViewModel: ObservableObject {
         self.stepsManager = stepsManager
         self.coordinator = coordinator
 
-        step = stepsManager.firstStep
-        stepAnimation = .slideForward
-        mainButtonType = .next
+        step = stepsManager.initialState.step
+        stepAnimation = stepsManager.initialState.animation
+        mainButtonType = stepsManager.initialState.mainButtonType
 
         bind()
-        bind(step: stepsManager.firstStep)
+        bind(step: stepsManager.initialState.step)
     }
 
     func onCurrentPageAppear() {
@@ -196,10 +196,6 @@ private extension SendViewModel {
             .store(in: &bag)
     }
 }
-
-// MARK: - SendStepsManagerInput
-
-extension SendViewModel: SendStepsManagerInput {}
 
 // MARK: - SendStepsManagerOutput
 

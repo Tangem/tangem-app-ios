@@ -93,7 +93,7 @@ struct SendDependenciesBuilder {
 
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
-        predefinedSellParameters: PredefinedSellParameters?
+        predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
