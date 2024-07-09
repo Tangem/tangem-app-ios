@@ -27,9 +27,13 @@ struct TokenMarketsDetailsInsights {
     let buyPressure: [MarketsPriceIntervalType: Decimal]
     let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
 
-    init?(dto: MarketsDTO.Coins.Insight?) {
+    init(dto: MarketsDTO.Coins.Insight?) {
         guard let dto else {
-            return nil
+            holders = [:]
+            liquidity = [:]
+            buyPressure = [:]
+            experiencedBuyers = [:]
+            return
         }
 
         func mapToInterval(_ dict: [String: Decimal]) -> [MarketsPriceIntervalType: Decimal] {

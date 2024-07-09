@@ -110,7 +110,13 @@ struct TokenMarketsDetailsView: View {
             if viewModel.isLoading {
                 ContentBlockSkeletons()
             } else {
-                MarketsTokenDetailsInsightsView(recordsInfo: <#T##[TokenMarketsDetailsInsightsView.RecordInfo]#>)
+                Group {
+                    if let insightsViewModel = viewModel.insightsViewModel {
+                        MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                            .animation(nil, value: viewModel.isLoading)
+                    }
+                }
+                .padding(.horizontal, 16)
             }
         }
         .animation(.default, value: viewModel.isLoading)
