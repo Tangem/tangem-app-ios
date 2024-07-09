@@ -28,7 +28,7 @@ class FactorySettingsResettingCardInteractor {
 // MARK: - FactorySettingsResetting
 
 extension FactorySettingsResettingCardInteractor: FactorySettingsResetting {
-    func resetCard(headerMessage: String? = nil, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func resetCard(headerMessage: String? = nil, completion: @escaping (Result<Bool, TangemSdkError>) -> Void) {
         let initialMessage = Message(
             header: headerMessage,
             body: Localization.initialMessagePurgeWalletBody
@@ -44,12 +44,7 @@ extension FactorySettingsResettingCardInteractor: FactorySettingsResetting {
 
             // Fix alerts no-show
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                switch result {
-                case .success:
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+                completion(result)
             }
 
             withExtendedLifetime(task) {}
