@@ -38,10 +38,8 @@ struct SendView: View {
         .alert(item: $viewModel.alert) { $0.alert }
         .safeAreaInset(edge: .bottom) {
             bottomContainer
-                .animation(Constants.defaultAnimation, value: viewModel.step.type)
                 .animation(Constants.defaultAnimation, value: viewModel.showBackButton)
         }
-//        .animation(Constants.defaultAnimation, value: viewModel.step.type)
     }
 
     @ViewBuilder

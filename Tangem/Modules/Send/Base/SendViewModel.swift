@@ -202,11 +202,12 @@ private extension SendViewModel {
 extension SendViewModel: SendStepsManagerOutput {
     func update(state: SendStepsManagerViewState) {
         stepAnimation = state.animation
+        mainButtonType = state.mainButtonType
+        showBackButton = state.backButtonVisible
 
+        // Give some time to update `stepAnimation`
         DispatchQueue.main.async {
             self.step = state.step
-            self.mainButtonType = state.mainButtonType
-            self.showBackButton = state.backButtonVisible
         }
     }
 }
