@@ -11,28 +11,46 @@ import Combine
 
 class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Published Properties
-    
-    @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel]
-    
+
+    @Published var isShowAddButton: Bool = false
+    @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
+
     // MARK: - Private Properties
-    
-    private var dataSource: MarketsDataSource
-    private var emptyTapAction: (() -> Void)?
+
+    private let coinId: String
+    private let walletDataSource: MarketsWalletDataSource
+    private var addTapAction: (() -> Void)?
 
     // MARK: - Init
 
-    init(tokenItems: [TokenItem], with dataSource: MarketsDataSource, emptyTapAction: (() -> Void)?) {
-        self.dataSource = dataSource
-        self.emptyTapAction = emptyTapAction
-        
-        tokenItemViewModels = tokenItems.map {
-            MarketsPortfolioTokenItemViewModel(tokenItem: $0)
+    init(walletDataSource: MarketsWalletDataSource, coinId: String, tokenItems: [TokenItem], addTapAction: (() -> Void)?) {
+        self.coinId = coinId
+        self.walletDataSource = walletDataSource
+        self.addTapAction = addTapAction
+
+        tokenItemViewModels = tokenItems.reduce(into: []) { partialResult, tokenItem in
+            let tokenItemViewModelByUserWalletModels = walletDataSource.userWalletModels.map {
+                MarketsPortfolioTokenItemViewModel(
+                    userWalletModel: $0,
+                    coinId: coinId,
+                    tokenItem: tokenItem,
+                    longPressTapAction: nil
+                )
+            }
+
+            partialResult.append(contentsOf: tokenItemViewModelByUserWalletModels)
         }
     }
 
-    // MARK: - Implementation
+    // MARK: - Public Implementation
 
-    func onEmptyTapAction() {
-        emptyTapAction?()
+    func onAddTapAction() {
+        addTapAction?()
+    }
+
+    // MARK: - Private Implementation
+
+    private func initialSetup() {
+        if walletDataSource.userWalletModels.isEmpty {}
     }
 }

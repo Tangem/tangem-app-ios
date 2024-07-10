@@ -24,9 +24,20 @@ struct MarketsPortfolioContainerView: View {
 
     private var headerView: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.marketsCommonMyPortfolio)
-                .lineLimit(1)
-                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+            HStack(alignment: .center) {
+                Text(Localization.marketsCommonMyPortfolio)
+                    .lineLimit(1)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                Spacer()
+
+                MainButton(
+                    title: "Add to portfolio",
+                    style: .secondary
+                ) {
+                    viewModel.onAddTapAction()
+                }
+            }
         }
     }
 
@@ -43,7 +54,7 @@ struct MarketsPortfolioContainerView: View {
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
             MainButton(title: Localization.marketsAddToPortfolioButton) {
-                viewModel.onEmptyTapAction()
+                viewModel.onAddTapAction()
             }
         }
     }
@@ -61,5 +72,6 @@ struct MarketsPortfolioContainerView: View {
 }
 
 #Preview {
-    MarketsPortfolioContainerView(viewModel: .init())
+    EmptyView()
+//    MarketsPortfolioContainerView(viewModel: .init(tokenItems: [], addTapAction: nil))
 }

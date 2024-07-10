@@ -1,146 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>card_label_card_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li карта</string>
-        <key>few</key>
-        <string>%li карты</string>
-        <key>many</key>
-        <string>%li карт</string>
-        <key>other</key>
-        <string>%li карт</string>
-      </dict>
-    </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%li из %#@total_wallets@</string>
-      <key>total_wallets</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li кошелька</string>
-        <key>few</key>
-        <string>%li кошельков</string>
-        <key>many</key>
-        <string>%li кошельков</string>
-        <key>other</key>
-        <string>%li кошельков</string>
-      </dict>
-    </dict>
-    <key>onboarding_seed_generate_message_words_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string></string>
-        <key>few</key>
-        <string>Запишите эти %li слова в порядке, указанном ниже, и сохраните их в надежном месте.</string>
-        <key>many</key>
-        <string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
-        <key>other</key>
-        <string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
-      </dict>
-    </dict>
-    <key>onboarding_seed_generate_words_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string></string>
-        <key>few</key>
-        <string>%li слова</string>
-        <key>many</key>
-        <string>%li слов</string>
-        <key>other</key>
-        <string>%li слов</string>
-      </dict>
-    </dict>
-    <key>referral_number_of_wallets</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>за %li кошелек</string>
-        <key>few</key>
-        <string>за %li кошелька</string>
-        <key>many</key>
-        <string>за %li кошельков</string>
-        <key>other</key>
-        <string>за %li кошельков</string>
-      </dict>
-    </dict>
-    <key>referral_wallets_purchased_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li кошелек</string>
-        <key>few</key>
-        <string>%li кошелька</string>
-        <key>many</key>
-        <string>%li кошельков</string>
-        <key>other</key>
-        <string>%li кошельков</string>
-      </dict>
-    </dict>
-    <key>warning_missing_derivation_message</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
-        <key>few</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
-        <key>many</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
-        <key>other</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
-      </dict>
-    </dict>
-  </dict>
+<dict>
+	<key>card_label_card_count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>%li карта</string>
+			<key>few</key>
+			<string>%li карты</string>
+			<key>many</key>
+			<string>%li карт</string>
+			<key>other</key>
+			<string>%li карт</string>
+		</dict>
+	</dict>
+	<key>manage_tokens_number_of_wallets_ios</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%li из %#@total_wallets@</string>
+		<key>total_wallets</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>%li кошелька</string>
+			<key>few</key>
+			<string>%li кошельков</string>
+			<key>many</key>
+			<string>%li кошельков</string>
+			<key>other</key>
+			<string>%li кошельков</string>
+		</dict>
+	</dict>
+	<key>onboarding_seed_generate_message_words_count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string></string>
+			<key>few</key>
+			<string>Запишите эти %li слова в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+			<key>many</key>
+			<string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+			<key>other</key>
+			<string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
+		</dict>
+	</dict>
+	<key>markets_token_details_based_on_ratings</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>Based on %li rating</string>
+			<key>other</key>
+			<string>Based on %li ratings</string>
+		</dict>
+	</dict>
+	<key>onboarding_seed_generate_words_count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string></string>
+			<key>few</key>
+			<string>%li слова</string>
+			<key>many</key>
+			<string>%li слов</string>
+			<key>other</key>
+			<string>%li слов</string>
+		</dict>
+	</dict>
+	<key>referral_number_of_wallets</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>за %li кошелек</string>
+			<key>few</key>
+			<string>за %li кошелька</string>
+			<key>many</key>
+			<string>за %li кошельков</string>
+			<key>other</key>
+			<string>за %li кошельков</string>
+		</dict>
+	</dict>
+	<key>referral_wallets_purchased_count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>%li кошелек</string>
+			<key>few</key>
+			<string>%li кошелька</string>
+			<key>many</key>
+			<string>%li кошельков</string>
+			<key>other</key>
+			<string>%li кошельков</string>
+		</dict>
+	</dict>
+	<key>warning_missing_derivation_message</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@format@</string>
+		<key>format</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>li</string>
+			<key>one</key>
+			<string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
+			<key>few</key>
+			<string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+			<key>many</key>
+			<string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+			<key>other</key>
+			<string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+		</dict>
+	</dict>
+</dict>
 </plist>
