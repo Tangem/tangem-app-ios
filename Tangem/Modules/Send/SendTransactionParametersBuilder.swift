@@ -96,7 +96,8 @@ struct SendTransactionParametersBuilder {
              .base,
              .bittensor,
              .joystream,
-             .koinos:
+             .koinos,
+             .internetComputer:
             return nil
         }
     }

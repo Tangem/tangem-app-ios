@@ -176,7 +176,8 @@ private extension CommonExpressTransactionBuilder {
              .base,
              .bittensor,
              .joystream,
-             .koinos:
+             .koinos,
+             .internetComputer:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }
