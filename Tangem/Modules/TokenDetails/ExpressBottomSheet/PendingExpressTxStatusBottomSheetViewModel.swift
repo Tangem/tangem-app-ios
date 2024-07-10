@@ -33,6 +33,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var showGoToProviderHeaderButton = true
     @Published var notificationViewInput: NotificationViewInput? = nil
 
+    private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
     private weak var pendingTransactionsManager: (any PendingExpressTransactionsManager)?
 
     private let pendingTransaction: PendingExpressTransaction
@@ -59,7 +60,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
         let provider = pendingTransaction.transactionRecord.provider
         providerRowViewModel = .init(
-            provider: .init(id: provider.id, iconURL: provider.iconURL, name: provider.name, type: provider.type.rawValue),
+            provider: expressProviderFormatter.mapToProvider(provider: provider),
             titleFormat: .name,
             isDisabled: false,
             badge: .none,
