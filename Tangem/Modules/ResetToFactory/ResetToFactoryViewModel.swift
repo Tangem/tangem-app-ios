@@ -88,8 +88,10 @@ private extension ResetToFactoryViewModel {
             guard let self else { return }
 
             switch result {
-            case .success:
-                resetHelper.cardDidReset()
+            case .success(let didReset):
+                if didReset {
+                    resetHelper.cardDidReset()
+                }
 
                 if resetHelper.hasCardsToReset {
                     alert = ResetToFactoryAlertBuilder.makeContinueResetAlert(continueAction: resetCardToFactory, cancelAction: resetDidCancel)

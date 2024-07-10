@@ -17,6 +17,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var alert: AlertBinder?
 
+    // MARK: Blocks
+
+    @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
+
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
     var priceChangeState: TokenPriceChangeView.State {
@@ -79,10 +83,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     )
 
     private let tokenInfo: MarketsTokenModel
-    private let dataProvider: TokenMarketsDetailsDataProvider
+    private let dataProvider: MarketsTokenDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
 
-    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
+    init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
         self.coordinator = coordinator
@@ -120,6 +124,14 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadedInfo = model
         shortDescription = model.shortDescription
         fullDescription = model.fullDescription
+
+        makeBlocksViewModels(using: model)
+    }
+
+    private func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
+        if let insights = model.insights {
+            insightsViewModel = .init(insights: insights, infoRouter: self)
+        }
     }
 
     private func log(_ message: @autoclosure () -> String) {
@@ -140,6 +152,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
 extension TokenMarketsDetailsViewModel {
     func openFullDescription() {
+        // TODO: Will be added in IOS-7291
         print("Open full description tapped")
+    }
+}
+
+extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
+    func openInfoBottomSheet(title: String, message: String) {
+        // TODO: Will be added in IOS-7291
     }
 }

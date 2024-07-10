@@ -11,6 +11,7 @@ import SwiftUI
 
 struct BalanceFormatter {
     static var defaultEmptyBalanceString: String { "–" }
+    private let decimalRoundingUtility = DecimalRoundingUtility()
 
     /// Format any decimal number using `BalanceFormattingOptions`
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
@@ -29,7 +30,7 @@ struct BalanceFormatter {
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
-        let valueToFormat = roundDecimal(value, with: formattingOptions.roundingType)
+        let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat)"
     }
 
@@ -53,7 +54,7 @@ struct BalanceFormatter {
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
-        let valueToFormat = roundDecimal(value, with: formattingOptions.roundingType)
+        let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
     }
 
@@ -100,8 +101,8 @@ struct BalanceFormatter {
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
-        if currencyCode == "RUB" {
-            formatter.currencySymbol = "₽"
+        if currencyCode == AppConstants.rubCurrencyCode {
+            formatter.currencySymbol = AppConstants.rubSign
         }
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
@@ -112,7 +113,7 @@ struct BalanceFormatter {
             let nbsp = " "
             return "<\(nbsp)\(minimumFormatted)"
         } else {
-            let valueToFormat = roundDecimal(balance, with: formattingOptions.roundingType)
+            let valueToFormat = decimalRoundingUtility.roundDecimal(balance, with: formattingOptions.roundingType)
             let formattedValue = formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
             return formattedValue
         }
@@ -139,22 +140,5 @@ struct BalanceFormatter {
         }
 
         return attributedString
-    }
-
-    private func roundDecimal(_ value: Decimal, with roundingType: AmountRoundingType?) -> Decimal {
-        if value == 0 {
-            return 0
-        }
-
-        guard let roundingType = roundingType else {
-            return value
-        }
-
-        switch roundingType {
-        case .shortestFraction(let roundingMode):
-            return SignificantFractionDigitRounder(roundingMode: roundingMode).round(value: value)
-        case .default(let roundingMode, let scale):
-            return max(value, Decimal(1) / pow(10, scale)).rounded(scale: scale, roundingMode: roundingMode)
-        }
     }
 }

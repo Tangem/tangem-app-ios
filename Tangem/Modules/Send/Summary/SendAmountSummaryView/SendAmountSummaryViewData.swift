@@ -12,7 +12,7 @@ struct SendAmountSummaryViewData: Identifiable {
     let id = UUID()
 
     let title: String
-    let amount: String
-    let amountAlternative: String
+    let amount: String?
+    let amountAlternative: String?
     let tokenIconInfo: TokenIconInfo
 }

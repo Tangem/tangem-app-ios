@@ -22,6 +22,10 @@ enum ValidationErrorEvent: Hashable {
     case insufficientAmountToReserveAtDestination(minimumAmountFormatted: String)
     case cardanoCannotBeSentBecauseHasTokens
     case cardanoInsufficientBalanceToSendToken(tokenSymbol: String)
+
+    case notEnoughMana(current: Decimal, max: Decimal)
+    case manaLimit(availableAmount: Decimal)
+    case koinosInsufficientBalanceToSendKoin
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -45,6 +49,12 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.sendNotificationInvalidAmountTitle)
         case .cardanoInsufficientBalanceToSendToken:
             return .string(Localization.cardanoInsufficientBalanceToSendTokenTitle)
+        case .notEnoughMana:
+            return .string(Localization.sendNotificationNotEnoughManaTitle)
+        case .manaLimit:
+            return .string(Localization.sendNotificationManaLimitTitle)
+        case .koinosInsufficientBalanceToSendKoin:
+            return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
         }
     }
 
@@ -74,6 +84,12 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.cardanoMaxAmountHasTokenDescription
         case .cardanoInsufficientBalanceToSendToken(let tokenSymbol):
             return Localization.cardanoInsufficientBalanceToSendTokenDescription(tokenSymbol)
+        case .notEnoughMana(let current, let max):
+            return Localization.sendNotificationNotEnoughManaDescription(current, max)
+        case .manaLimit(let validMax):
+            return Localization.sendNotificationManaLimitDescription(validMax)
+        case .koinosInsufficientBalanceToSendKoin:
+            return Localization.koinosInsufficientBalanceToSendKoinDescription
         }
     }
 
@@ -97,7 +113,10 @@ extension ValidationErrorEvent: NotificationEvent {
              .amountExceedMaximumUTXO,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .manaLimit,
+             .koinosInsufficientBalanceToSendKoin:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
@@ -112,7 +131,10 @@ extension ValidationErrorEvent: NotificationEvent {
              .amountExceedMaximumUTXO,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .manaLimit,
+             .koinosInsufficientBalanceToSendKoin:
             return .critical
         }
     }
@@ -133,12 +155,16 @@ extension ValidationErrorEvent {
             return .reduceAmountTo(amount: amount, amountFormatted: amountFormatted)
         case .existentialDeposit(let amount, let amountFormatted):
             return .leaveAmount(amount: amount, amountFormatted: amountFormatted)
+        case .manaLimit(let available):
+            return .reduceAmountTo(amount: available, amountFormatted: "\(available)")
         case .invalidNumber,
              .insufficientBalance,
              .dustRestriction,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .koinosInsufficientBalanceToSendKoin:
             return nil
         }
     }
