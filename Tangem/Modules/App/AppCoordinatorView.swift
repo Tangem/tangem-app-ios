@@ -15,18 +15,6 @@ struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     var body: some View {
-        StakingValidatorsView(
-            viewModel: StakingValidatorsViewModel(
-                interactor: FakeStakingValidatorsInteractor()
-            ),
-            namespace: .init(
-                id: namespace,
-                names: SendGeometryEffectNames()
-            )
-        )
-    }
-    /*
-     var body: some View {
          NavigationView {
              switch coordinator.viewState {
              case .welcome(let welcomeCoordinator):
@@ -74,5 +62,4 @@ struct AppCoordinatorView: CoordinatorView {
              InformationHiddenBalancesView(viewModel: $0)
          }
      }
-      */
 }

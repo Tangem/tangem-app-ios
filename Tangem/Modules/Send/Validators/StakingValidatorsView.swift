@@ -14,14 +14,11 @@ struct StakingValidatorsView: View {
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
-            SelectableGropedSection(
-                viewModel.validators,
-                selection: $viewModel.selectedValidator
-            ) {
+            SelectableGropedSection(viewModel.validators, selection: $viewModel.selectedValidator) {
                 ValidatorView(data: $0)
             }
-            .backgroundColor(Colors.Background.action)
-//            .geometryEffect(.init(id: namespace.names.validatorContainer, namespace: namespace.id))
+            .settings(\.backgroundColor, Colors.Background.action)
+            .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
         }
         .onAppear(perform: viewModel.onAppear)
     }
@@ -49,5 +46,6 @@ struct StakingValidatorsView_Preview: PreviewProvider {
                 names: SendGeometryEffectNames()
             )
         )
+        .background(Colors.Background.secondary)
     }
 }

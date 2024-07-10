@@ -8,7 +8,10 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 protocol StakingValidatorsInput: AnyObject {}
 
-class StakingValidatorsInputMock: StakingValidatorsInput {}
+protocol StakingValidatorsOutput: AnyObject {
+    func userDidSelected(validator: ValidatorInfo)
+}

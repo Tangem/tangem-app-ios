@@ -38,9 +38,7 @@ struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Foo
     private let header: () -> Header
     private let footer: () -> Footer
 
-    // Use "Colors.Background.primary" as default with "Colors.Background.secondary" background
-    // Use "Colors.Background.action" on sheets with "Colors.Background.teritary" background
-    private var backgroundColor: Color = Colors.Background.primary
+    private var settings: Settings = .init()
 
     init(
         _ models: [Model],
@@ -66,11 +64,18 @@ struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Foo
             header: header,
             footer: footer
         )
+        .settings(settings)
     }
 }
 
+extension SelectableGropedSection {
+    typealias Settings = GroupedSection<Model, Content, Footer, Header>.Settings
+}
+
+// MARK: - Setupable
+
 extension SelectableGropedSection: Setupable {
-    func backgroundColor(_ color: Color) -> Self {
-        map { $0.backgroundColor = color }
+    func settings<V>(_ keyPath: WritableKeyPath<Settings, V>, _ value: V) -> Self {
+        map { $0.settings[keyPath: keyPath] = value }
     }
 }
