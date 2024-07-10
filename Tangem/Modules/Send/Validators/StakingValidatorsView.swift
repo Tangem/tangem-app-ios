@@ -9,23 +9,20 @@
 import SwiftUI
 
 struct StakingValidatorsView: View {
-    @ObservedObject private var viewModel: StakingValidatorsViewModel
-    private let namespace: Namespace
-
-    init(viewModel: StakingValidatorsViewModel, namespace: Namespace) {
-        self.viewModel = viewModel
-        self.namespace = namespace
-    }
+    @ObservedObject var viewModel: StakingValidatorsViewModel
+    let namespace: Namespace
 
     var body: some View {
-        MiltiSelectableGropedSection(
-            viewModel.validators,
-            selection: $viewModel.selectedValidators
-        ) {
-            ValidatorView(data: $0)
+        GroupedScrollView(spacing: 20) {
+            SelectableGropedSection(
+                viewModel.validators,
+                selection: $viewModel.selectedValidator
+            ) {
+                ValidatorView(data: $0)
+            }
+            .backgroundColor(Colors.Background.action)
+//            .geometryEffect(.init(id: namespace.names.validatorContainer, namespace: namespace.id))
         }
-        .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: namespace.names.validatorContainer, namespace: namespace.id))
         .onAppear(perform: viewModel.onAppear)
     }
 }

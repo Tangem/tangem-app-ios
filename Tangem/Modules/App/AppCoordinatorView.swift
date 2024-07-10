@@ -11,54 +11,68 @@ import SwiftUI
 
 struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AppCoordinator
+    @Namespace var namespace
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     var body: some View {
-        NavigationView {
-            switch coordinator.viewState {
-            case .welcome(let welcomeCoordinator):
-                WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-            case .uncompleteBackup(let uncompletedBackupCoordinator):
-                UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-            case .auth(let authCoordinator):
-                AuthCoordinatorView(coordinator: authCoordinator)
-            case .main(let mainCoordinator):
-                MainCoordinatorView(coordinator: mainCoordinator)
-            case .none:
-                EmptyView()
-            }
-        }
-        .animation(.default, value: coordinator.viewState)
-        .navigationViewStyle(.stack)
-        .accentColor(Colors.Text.primary1)
-        .modifier(ifLet: coordinator.mainBottomSheetCoordinator) { view, mainBottomSheetCoordinator in
-            // Unfortunately, we can't just apply the `bottomScrollableSheet` modifier here conditionally when
-            // `mainBottomSheetCoordinator.headerViewModel != nil` or `mainBottomSheetCoordinator.contentViewModel != nil`
-            // because this will change the structural identity of `AppCoordinatorView` and therefore all its state.
-            //
-            // Therefore, the `bottomScrollableSheet` view modifier is always applied when the main bottom sheet
-            // coordinator exists, but `header`/`content` views are created only when there is a non-nil
-            // `mainBottomSheetCoordinator.headerViewModel` or `mainBottomSheetCoordinator.contentViewModel`
-            view
-                .bottomScrollableSheet(
-                    item: mainBottomSheetCoordinator,
-                    header: MainBottomSheetHeaderCoordinatorView.init,
-                    content: MainBottomSheetContentCoordinatorView.init,
-                    overlay: MainBottomSheetOverlayCoordinatorView.init
-                )
-                .bottomScrollableSheetConfiguration(
-                    isHiddenWhenCollapsed: true,
-                    allowsHitTesting: coordinator.isMainBottomSheetShown
-                )
-                .onBottomScrollableSheetStateChange(
-                    weakify(mainBottomSheetCoordinator, forFunction: MainBottomSheetCoordinator.onBottomScrollableSheetStateChange)
-                )
-        }
-        .bottomSheet(
-            item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
-            backgroundColor: Colors.Background.primary
-        ) {
-            InformationHiddenBalancesView(viewModel: $0)
-        }
+        StakingValidatorsView(
+            viewModel: StakingValidatorsViewModel(
+                interactor: FakeStakingValidatorsInteractor()
+            ),
+            namespace: .init(
+                id: namespace,
+                names: SendGeometryEffectNames()
+            )
+        )
     }
+    /*
+     var body: some View {
+         NavigationView {
+             switch coordinator.viewState {
+             case .welcome(let welcomeCoordinator):
+                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+             case .uncompleteBackup(let uncompletedBackupCoordinator):
+                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+             case .auth(let authCoordinator):
+                 AuthCoordinatorView(coordinator: authCoordinator)
+             case .main(let mainCoordinator):
+                 MainCoordinatorView(coordinator: mainCoordinator)
+             case .none:
+                 EmptyView()
+             }
+         }
+         .animation(.default, value: coordinator.viewState)
+         .navigationViewStyle(.stack)
+         .accentColor(Colors.Text.primary1)
+         .modifier(ifLet: coordinator.mainBottomSheetCoordinator) { view, mainBottomSheetCoordinator in
+             // Unfortunately, we can't just apply the `bottomScrollableSheet` modifier here conditionally when
+             // `mainBottomSheetCoordinator.headerViewModel != nil` or `mainBottomSheetCoordinator.contentViewModel != nil`
+             // because this will change the structural identity of `AppCoordinatorView` and therefore all its state.
+             //
+             // Therefore, the `bottomScrollableSheet` view modifier is always applied when the main bottom sheet
+             // coordinator exists, but `header`/`content` views are created only when there is a non-nil
+             // `mainBottomSheetCoordinator.headerViewModel` or `mainBottomSheetCoordinator.contentViewModel`
+             view
+                 .bottomScrollableSheet(
+                     item: mainBottomSheetCoordinator,
+                     header: MainBottomSheetHeaderCoordinatorView.init,
+                     content: MainBottomSheetContentCoordinatorView.init,
+                     overlay: MainBottomSheetOverlayCoordinatorView.init
+                 )
+                 .bottomScrollableSheetConfiguration(
+                     isHiddenWhenCollapsed: true,
+                     allowsHitTesting: coordinator.isMainBottomSheetShown
+                 )
+                 .onBottomScrollableSheetStateChange(
+                     weakify(mainBottomSheetCoordinator, forFunction: MainBottomSheetCoordinator.onBottomScrollableSheetStateChange)
+                 )
+         }
+         .bottomSheet(
+             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
+             backgroundColor: Colors.Background.primary
+         ) {
+             InformationHiddenBalancesView(viewModel: $0)
+         }
+     }
+      */
 }

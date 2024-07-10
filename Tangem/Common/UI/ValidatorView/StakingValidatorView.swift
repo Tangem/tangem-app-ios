@@ -16,10 +16,10 @@ struct ValidatorViewData: Hashable, Identifiable {
     let aprFormatted: String?
 }
 
-struct ValidatorView: MultiSelectableView {
+struct ValidatorView: SelectableView {
     private let data: ValidatorViewData
 
-    var isSelected: Binding<[String]>?
+    var isSelected: Binding<String>?
     var selectionId: String { data.id }
 
     init(data: ValidatorViewData) {
@@ -72,13 +72,13 @@ struct ValidatorView: MultiSelectableView {
 
 #Preview("ValidatorView") {
     struct StakingValidatorPreview: View {
-        @State private var selected: [String] = []
+        @State private var selected: String = ""
 
         var body: some View {
             ZStack {
                 Colors.Background.tertiary.ignoresSafeArea()
 
-                MiltiSelectableGropedSection([
+                SelectableGropedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,

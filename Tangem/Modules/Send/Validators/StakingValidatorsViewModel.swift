@@ -10,21 +10,23 @@ import Combine
 import TangemStaking
 
 struct FakeStakingValidatorsInteractor: StakingValidatorsInteractor {
+    let _validators = CurrentValueSubject<[ValidatorInfo], Never>([
+        .init(
+            address: UUID().uuidString,
+            name: "InfStones",
+            iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,
+            apr: 0.008
+        ),
+        .init(
+            address: UUID().uuidString,
+            name: "Aconcagua",
+            iconURL: URL(string: "ttps://assets.stakek.it/validators/aconcagua.png")!,
+            apr: 0.023
+        ),
+    ])
+
     var validatorsPublisher: AnyPublisher<[ValidatorInfo], Never> {
-        .just(output: [
-            .init(
-                address: UUID().uuidString,
-                name: "InfStones",
-                iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,
-                apr: 0.008
-            ),
-            .init(
-                address: UUID().uuidString,
-                name: "Aconcagua",
-                iconURL: URL(string: "ttps://assets.stakek.it/validators/aconcagua.png")!,
-                apr: 0.023
-            ),
-        ])
+        _validators.eraseToAnyPublisher()
     }
 }
 
@@ -36,7 +38,7 @@ final class StakingValidatorsViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var validators: [ValidatorViewData] = []
-    @Published var selectedValidators: [String] = []
+    @Published var selectedValidator: String = ""
 
     // MARK: - Dependencies
 
