@@ -51,7 +51,8 @@ private extension StakingValidatorsViewModel {
             id: info.address,
             imageURL: info.iconURL,
             name: info.name,
-            aprFormatted: info.apr.map { percentFormatter.format($0, option: .staking) }
+            aprFormatted: info.apr.map { percentFormatter.format($0, option: .staking) },
+            detailsType: .checked
         )
     }
 }

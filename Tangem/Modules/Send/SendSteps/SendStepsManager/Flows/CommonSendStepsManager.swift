@@ -48,7 +48,7 @@ class CommonSendStepsManager {
             return amountStep
         case .amount:
             return summaryStep
-        case .fee, .summary, .finish:
+        case .fee, .validators, .summary, .finish:
             assertionFailure("There is no next step")
             return nil
         }
@@ -67,8 +67,10 @@ class CommonSendStepsManager {
              .destination where isEditAction,
              .fee where isEditAction:
             output?.update(state: .moveAndFade(step: step, action: .continue))
-        case .amount, .destination, .fee:
+        case .amount, .destination:
             output?.update(state: .next(step: step))
+        case .fee, .validators:
+            assertionFailure("There is no next step")
         }
     }
 
@@ -134,6 +136,10 @@ extension CommonSendStepsManager: SendStepsManager {
 // MARK: - SendSummaryStepsRoutable
 
 extension CommonSendStepsManager: SendSummaryStepsRoutable {
+    func summaryStepRequestEditValidators() {
+        assertionFailure("This steps is not tappable in this flow")
+    }
+
     func summaryStepRequestEditDestination() {
         guard case .summary = currentStep().type else {
             assertionFailure("This code should only be called from summary")
