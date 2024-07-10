@@ -9,10 +9,26 @@
 import Foundation
 import SwiftUI
 
-protocol SelectableView: View {
-    associatedtype SelectionValue
+protocol SelectableView: View, Setupable {
+    associatedtype SelectionValue: Equatable
+
+    var selectionId: SelectionValue { get }
+    var isSelected: Binding<SelectionValue>? { get set }
 
     func isSelected(_ isSelected: Binding<SelectionValue>) -> Self
+}
+
+extension SelectableView {
+    func isSelected(_ isSelected: Binding<SelectionValue>) -> Self {
+        map { $0.isSelected = isSelected }
+    }
+
+    var isSelectedProxy: Binding<Bool> {
+        .init(
+            get: { isSelected?.wrappedValue == selectionId },
+            set: { _ in isSelected?.wrappedValue = selectionId }
+        )
+    }
 }
 
 struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Footer: View, Header: View>: View {

@@ -1,5 +1,5 @@
 //
-//  StakingSummaryViewGeometryEffectNames.swift
+//  SendGeometryEffectNames.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 31.05.2024.
@@ -10,7 +10,13 @@ import Foundation
 
 // MARK: - All names
 
-struct SendGeometryEffectNames: SendAmountViewGeometryEffectNames {
+struct SendGeometryEffectNames: SendAmountViewGeometryEffectNames, StakingValidatorsViewGeometryEffectNames {
+    // MARK: - StakingValidatorsViewGeometryEffectNames
+
+    var validatorContainer: String { "ValidatorContainer" }
+
+    // MARK: - SendAmountViewGeometryEffectNames
+
     var walletName: String { SendViewNamespaceId.walletName.rawValue }
     var walletBalance: String { SendViewNamespaceId.walletBalance.rawValue }
     var amountContainer: String { SendViewNamespaceId.amountContainer.rawValue }
@@ -28,6 +34,12 @@ protocol SendAmountViewGeometryEffectNames {
     var tokenIcon: String { get }
     var amountCryptoText: String { get }
     var amountFiatText: String { get }
+}
+
+// MARK: - Validators section
+
+protocol StakingValidatorsViewGeometryEffectNames {
+    var validatorContainer: String { get }
 }
 
 // MARK: - Summary section
