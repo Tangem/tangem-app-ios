@@ -253,7 +253,10 @@ class CommonSendNotificationManager: SendNotificationManager {
              .existentialDeposit,
              .amountExceedMaximumUTXO,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .manaLimit,
+             .koinosInsufficientBalanceToSendKoin:
             return .validationErrorEvent(validationErrorEvent)
         case .invalidNumber:
             return nil

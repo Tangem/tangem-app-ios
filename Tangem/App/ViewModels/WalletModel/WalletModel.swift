@@ -53,7 +53,7 @@ class WalletModel {
 
     var tokenItem: TokenItem {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return .blockchain(blockchainNetwork)
         case .token(let token):
             return .token(token, blockchainNetwork)
@@ -68,12 +68,24 @@ class WalletModel {
             return .token(value, blockchainNetwork)
         case .sameCurrency:
             return tokenItem
+        case .feeResource(let type):
+            // We use this when displaying the fee currency on the 'Send' screen.
+            // This is because when sending KOIN, we use MANA as the fee.
+            return .token(
+                Token(
+                    name: type.rawValue,
+                    symbol: type.rawValue.uppercased(),
+                    contractAddress: "",
+                    decimalCount: 0
+                ),
+                blockchainNetwork
+            )
         }
     }
 
     var name: String {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return wallet.blockchain.displayName
         case .token(let token):
             return token.name
@@ -82,7 +94,7 @@ class WalletModel {
 
     var isMainToken: Bool {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return true
         case .token:
             return false

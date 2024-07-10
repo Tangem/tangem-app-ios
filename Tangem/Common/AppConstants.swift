@@ -27,6 +27,8 @@ enum AppConstants {
     static let dashSign = "—" // longer stick (em-dash)
     static let unbreakableSpace = "\u{00a0}"
     static let dotSign = "•"
+    static let rubCurrencyCode = "RUB"
+    static let rubSign = "₽"
 
     static let sessionId = UUID().uuidString
 

@@ -906,7 +906,7 @@ private extension LegacySendViewModel {
         if let amount = amount {
             let currencyId: String?
             switch amount.type {
-            case .coin, .reserve:
+            case .coin, .reserve, .feeResource:
                 currencyId = walletModel.blockchainNetwork.blockchain.currencyId
             case .token:
                 currencyId = walletModel.tokenItem.currencyId

@@ -146,7 +146,7 @@ extension MoonPayService: ExchangeService {
             case .token(let value):
                 return $0.networkCode == moonpayNetwork &&
                     $0.contractAddress?.caseInsensitiveCompare(value.contractAddress) == .orderedSame
-            case .reserve:
+            case .reserve, .feeResource:
                 return false
             }
         })
@@ -380,6 +380,7 @@ private extension Blockchain {
         case .base: return "base"
         case .joystream: return nil
         case .bittensor: return nil
+        case .koinos: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -450,6 +451,7 @@ private extension Blockchain {
         case .base: return "eth_base"
         case .joystream: return nil
         case .bittensor: return nil
+        case .koinos: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }

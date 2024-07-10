@@ -39,6 +39,7 @@ enum PreviewCard {
                     tronGridApiKey: "",
                     hederaArkhiaApiKey: "",
                     polygonScanApiKey: "",
+                    koinosProApiKey: "",
                     tonCenterApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     fireAcademyApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     chiaTangemApiKeys: .init(mainnetApiKey: ""),

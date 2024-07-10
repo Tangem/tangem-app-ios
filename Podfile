@@ -180,7 +180,7 @@ post_install do |installer|
     "BlockchainSdk",
     "https://github.com/tangem/wallet-core-binaries-ios.git",
     "TangemWalletCoreBinariesWrapper",
-    { :kind => "exactVersion", :version => "4.0.46-tangem1" }
+    { :kind => "exactVersion", :version => "4.0.21-tangem6" }
   )
 
   # `SwiftProtobuf` SPM package for `BlockchainSdk` pod

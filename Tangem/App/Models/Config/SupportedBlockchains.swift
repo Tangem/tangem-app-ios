@@ -60,6 +60,7 @@ struct SupportedBlockchains {
         [
             .mantle(testnet: false),
             .bittensor(curve: ed25519Curve(for: version)),
+            .koinos(testnet: false),
         ]
     }
 
@@ -174,6 +175,7 @@ struct SupportedBlockchains {
             .flare(testnet: true),
             .taraxa(testnet: true),
             .base(testnet: true),
+            .koinos(testnet: true),
         ]
     }
 
