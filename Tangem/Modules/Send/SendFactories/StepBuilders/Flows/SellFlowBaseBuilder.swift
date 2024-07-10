@@ -43,8 +43,6 @@ struct SellFlowBaseBuilder {
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            sendFeeInteractor: fee.interactor,
-            notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel
         )
 

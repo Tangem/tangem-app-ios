@@ -20,7 +20,7 @@ struct SendAmountView: View {
 
             if !viewModel.animatingAuxiliaryViewsOnAppear {
                 segmentControl
-                    .transition(SendView.Constants.auxiliaryViewTransition(for: .amount))
+                    .transition(.offset(y: 100).combined(with: .opacity))
             }
         }
         .onAppear(perform: viewModel.onAppear)

@@ -16,12 +16,9 @@ protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
-class SendSummaryViewModel: ObservableObject {
+class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var editableType: EditableType
     @Published var canEditFee: Bool = false
-
-    @Published var isSending = false
-    @Published var alert: AlertBinder?
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
@@ -33,6 +30,7 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
+    @Published var alert: AlertBinder?
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
 
     @Published var transactionDescription: String?
@@ -48,7 +46,7 @@ class SendSummaryViewModel: ObservableObject {
     private let interactor: SendSummaryInteractor
     private let notificationManager: SendNotificationManager
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
-    weak var router: SendSummaryRoutable?
+    weak var router: SendSummaryStepsRoutable?
 
     private var isVisible = false
     private var bag: Set<AnyCancellable> = []
@@ -116,15 +114,24 @@ class SendSummaryViewModel: ObservableObject {
         isVisible = false
     }
 
-    func didTapSummary(for step: SendStepType) {
-        if isSending {
-            return
-        }
+    func userDidTapDestination() {
+        didTapSummary()
+        router?.summaryStepRequestEditDestination()
+    }
 
+    func userDidTapAmount() {
+        didTapSummary()
+        router?.summaryStepRequestEditAmount()
+    }
+
+    func userDidTapFee() {
+        didTapSummary()
+        router?.summaryStepRequestEditFee()
+    }
+
+    private func didTapSummary() {
         AppSettings.shared.userDidTapSendScreenSummary = true
         showHint = false
-
-        router?.openStep(step)
     }
 
     private func bind() {

@@ -23,9 +23,7 @@ class SendFinishStep {
 extension SendFinishStep: SendStep {
     var title: String? { nil }
 
-    var type: SendStepType { .finish }
-
-    var viewType: SendStepViewType { .finish(viewModel) }
+    var type: SendStepType { .finish(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

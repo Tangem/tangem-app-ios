@@ -1517,6 +1517,7 @@
 		EFAF63E92927CA63004B3227 /* Setupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAF63E82927CA63004B3227 /* Setupable.swift */; };
 		EFB4C1322837C51700E991C1 /* TextHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB4C1312837C51700E991C1 /* TextHint.swift */; };
 		EFB6800E2B29BD4B00842BE3 /* SheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB6800D2B29BD4B00842BE3 /* SheetModifier.swift */; };
+		EFB932032C3EAF7900C999E9 /* SendStepType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB932022C3EAF7900C999E9 /* SendStepType.swift */; };
 		EFB999AF2C3D9A7F00F6A987 /* CommonSendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */; };
 		EFB999B12C3D9AA100F6A987 /* CommonSellStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */; };
 		EFB999B42C3D9EC000F6A987 /* SellFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */; };
@@ -3358,6 +3359,7 @@
 		EFAF63E82927CA63004B3227 /* Setupable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setupable.swift; sourceTree = "<group>"; };
 		EFB4C1312837C51700E991C1 /* TextHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHint.swift; sourceTree = "<group>"; };
 		EFB6800D2B29BD4B00842BE3 /* SheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetModifier.swift; sourceTree = "<group>"; };
+		EFB932022C3EAF7900C999E9 /* SendStepType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendStepType.swift; sourceTree = "<group>"; };
 		EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendStepsManager.swift; sourceTree = "<group>"; };
 		EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSellStepsManager.swift; sourceTree = "<group>"; };
 		EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellFlowBaseBuilder.swift; sourceTree = "<group>"; };
@@ -8991,6 +8993,7 @@
 			children = (
 				EFB999AD2C3D9A7200F6A987 /* Flows */,
 				EFC84B1C2C37FBB200546882 /* SendStep.swift */,
+				EFB932022C3EAF7900C999E9 /* SendStepType.swift */,
 				EF95442C2C3C52A300041FCD /* SendStepsManager.swift */,
 				EF95442B2C3C52A300041FCD /* SendStepsManagerInputOutput.swift */,
 			);
@@ -10059,6 +10062,7 @@
 				B012A11C2AA617000079BAB4 /* NotificationManager.swift in Sources */,
 				5DDE22F52609022D008657C6 /* WalletConnectView.swift in Sources */,
 				2DB8E1162B29068C0044BF7D /* CustomSearchBar.swift in Sources */,
+				EFB932032C3EAF7900C999E9 /* SendStepType.swift in Sources */,
 				EF4BEFDF28AD3EE500C5D1BE /* ContentState.swift in Sources */,
 				B0BE30652A7BA74000B3AD13 /* MultiWalletTokenItemsSectionFactory.swift in Sources */,
 				2D5DCC362C330A33000EE379 /* WalletSelectorItemViewModel.swift in Sources */,

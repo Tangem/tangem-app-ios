@@ -28,7 +28,7 @@ class SendSummaryStep {
         self.walletName = walletName
     }
 
-    func set(router: SendSummaryRoutable) {
+    func set(router: SendSummaryStepsRoutable) {
         viewModel.router = router
     }
 }
@@ -40,9 +40,7 @@ extension SendSummaryStep: SendStep {
 
     var subtitle: String? { walletName }
 
-    var type: SendStepType { .summary }
-
-    var viewType: SendStepViewType { .summary(viewModel) }
+    var type: SendStepType { .summary(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

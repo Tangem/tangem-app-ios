@@ -17,10 +17,6 @@ class SendFeeStep {
     private let tokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
-    var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
-        viewModel
-    }
-
     init(
         viewModel: SendFeeViewModel,
         interactor: SendFeeInteractor,
@@ -41,9 +37,7 @@ class SendFeeStep {
 extension SendFeeStep: SendStep {
     var title: String? { Localization.commonFeeSelectorTitle }
 
-    var type: SendStepType { .fee }
-
-    var viewType: SendStepViewType { .fee(viewModel) }
+    var type: SendStepType { .fee(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
@@ -71,6 +65,14 @@ extension SendFeeStep: SendStep {
         }
 
         return true
+    }
+
+    func willAppear(previous step: any SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {

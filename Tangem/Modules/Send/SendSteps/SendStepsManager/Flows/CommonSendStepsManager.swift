@@ -55,7 +55,7 @@ class CommonSendStepsManager {
     }
 
     private func next(step: SendStep) {
-        let isEditAction = stack.contains(where: { $0.type == .summary })
+        let isEditAction = stack.contains(where: { $0.type.isSummary })
         stack.append(step)
 
         switch step.type {
@@ -121,48 +121,40 @@ extension CommonSendStepsManager: SendStepsManager {
     }
 
     func performContinue() {
-        assert(stack.contains(where: { $0.type == .summary }), "Continue is possible only after summary")
+        assert(stack.contains(where: { $0.type.isSummary }), "Continue is possible only after summary")
 
         back()
     }
 }
 
-// MARK: - SendSummaryRoutable
+// MARK: - SendSummaryStepsRoutable
 
-extension CommonSendStepsManager: SendSummaryRoutable {
-    func openStep(_ step: SendStepType) {
+extension CommonSendStepsManager: SendSummaryStepsRoutable {
+    func summaryStepRequestEditDestination() {
         guard case .summary = currentStep().type else {
             assertionFailure("This code should only be called from summary")
             return
         }
 
-        if let auxiliaryViewAnimatable = auxiliaryViewAnimatable(step) {
-            auxiliaryViewAnimatable.setAnimatingAuxiliaryViewsOnAppear()
-        }
-
-        switch step {
-        case .destination:
-            next(step: destinationStep)
-        case .amount:
-            next(step: amountStep)
-        case .fee:
-            next(step: feeStep)
-        case .summary, .finish:
-            assertionFailure("Not implemented")
-        }
+        next(step: destinationStep)
     }
 
-    private func auxiliaryViewAnimatable(_ step: SendStepType) -> AuxiliaryViewAnimatable? {
-        switch step {
-        case .destination:
-            return destinationStep.auxiliaryViewAnimatable
-        case .amount:
-            return amountStep.auxiliaryViewAnimatable
-        case .fee:
-            return feeStep.auxiliaryViewAnimatable
-        case .summary, .finish:
-            return nil
+    func summaryStepRequestEditAmount() {
+        guard case .summary = currentStep().type else {
+            assertionFailure("This code should only be called from summary")
+            return
         }
+
+        next(step: amountStep)
+    }
+
+    func summaryStepRequestEditFee() {
+        guard case .summary = currentStep().type else {
+            assertionFailure("This code should only be called from summary")
+            return
+        }
+
+        next(step: feeStep)
     }
 }
 

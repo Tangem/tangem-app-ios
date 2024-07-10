@@ -89,7 +89,7 @@ struct SendView: View {
 
     @ViewBuilder
     private var currentPage: some View {
-        switch viewModel.step.viewType {
+        switch viewModel.step.type {
         case .destination(let sendDestinationViewModel):
             SendDestinationView(viewModel: sendDestinationViewModel, namespace: namespace)
         case .amount(let sendAmountViewModel):
@@ -195,25 +195,6 @@ extension SendView {
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .spring(duration: animationDuration)
         static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
-        static let sectionContentAnimation: Animation = .easeOut(duration: animationDuration)
-        static let hintViewTransition: AnyTransition = .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
-
-        static func auxiliaryViewTransition(for step: SendStepType) -> AnyTransition {
-            let offset: CGFloat
-            switch step {
-            case .destination, .amount:
-                offset = 100
-            case .fee:
-                offset = 250
-            case .summary:
-                offset = 100
-            case .finish:
-                assertionFailure("WHY")
-                return .identity
-            }
-
-            return .offset(y: offset).combined(with: .opacity)
-        }
     }
 }
 

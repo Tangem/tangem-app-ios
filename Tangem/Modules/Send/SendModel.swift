@@ -12,7 +12,6 @@ import Combine
 import BlockchainSdk
 
 class SendModel {
-
     // MARK: - Data
 
     private let _destination: CurrentValueSubject<SendAddress?, Never>
@@ -397,7 +396,7 @@ extension SendModel {
         enum Source {
             case send
             case sell
-            
+
             var analyticsValue: Analytics.ParameterValue {
                 switch self {
                 case .send: .transactionSourceSend

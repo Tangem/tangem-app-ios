@@ -15,7 +15,6 @@ protocol SendStep {
     var subtitle: String? { get }
 
     var type: SendStepType { get }
-    var viewType: SendStepViewType { get }
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? { get }
 
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
@@ -44,39 +43,6 @@ extension SendStep {
     func didDisappear() {}
 }
 
-enum SendStepType: String, Hashable {
-    case destination
-    case amount
-    case fee
-    case summary
-    case finish
-}
-
-enum SendStepViewType {
-    case destination(SendDestinationViewModel)
-    case amount(SendAmountViewModel)
-    case fee(SendFeeViewModel)
-    case summary(SendSummaryViewModel)
-    case finish(SendFinishViewModel)
-}
-
 enum SendStepNavigationTrailingViewType {
     case qrCodeButton(action: () -> Void)
-}
-
-extension SendStepType {
-    var analyticsSourceParameterValue: Analytics.ParameterValue {
-        switch self {
-        case .amount:
-            return .amount
-        case .destination:
-            return .address
-        case .fee:
-            return .fee
-        case .summary:
-            return .summary
-        case .finish:
-            return .finish
-        }
-    }
 }

@@ -37,7 +37,7 @@ class CommonSellStepsManager {
     }
 
     private func next(step: SendStep) {
-        let isEditAction = stack.contains(where: { $0.type == .summary })
+        let isEditAction = stack.contains(where: { $0.type.isSummary })
         stack.append(step)
 
         switch step.type {
@@ -91,49 +91,29 @@ extension CommonSellStepsManager: SendStepsManager {
     }
 
     func performContinue() {
-        assert(stack.contains(where: { $0.type == .summary }), "Continue is possible only after summary")
+        assert(stack.contains(where: { $0.type.isSummary }), "Continue is possible only after summary")
 
         back()
     }
 }
 
-// MARK: - SendSummaryRoutable
+// MARK: - SendSummaryStepsRoutable
 
-extension CommonSellStepsManager: SendSummaryRoutable {
-    func openStep(_ step: SendStepType) {
+extension CommonSellStepsManager: SendSummaryStepsRoutable {
+    func summaryStepRequestEditDestination() {
+        assertionFailure("This steps is not tappable in this flow")
+    }
+
+    func summaryStepRequestEditAmount() {
+        assertionFailure("This steps is not tappable in this flow")
+    }
+
+    func summaryStepRequestEditFee() {
         guard case .summary = currentStep().type else {
             assertionFailure("This code should only be called from summary")
             return
         }
 
-        if let auxiliaryViewAnimatable = auxiliaryViewAnimatable(step) {
-            auxiliaryViewAnimatable.setAnimatingAuxiliaryViewsOnAppear()
-        }
-
-        switch step {
-        case .destination, .amount:
-            assertionFailure("This steps is not tappable in this flow")
-        case .fee:
-            next(step: feeStep)
-        case .summary, .finish:
-            assertionFailure("Not implemented")
-        }
-    }
-
-    private func auxiliaryViewAnimatable(_ step: SendStepType) -> AuxiliaryViewAnimatable? {
-        switch step {
-        case .fee:
-            return feeStep.auxiliaryViewAnimatable
-        case .destination, .amount, .summary, .finish:
-            return nil
-        }
-    }
-}
-
-// MARK: - SendDestinationStepRoutable
-
-extension CommonSellStepsManager: SendDestinationStepRoutable {
-    func destinationStepFulfilled() {
-        performNext()
+        next(step: feeStep)
     }
 }

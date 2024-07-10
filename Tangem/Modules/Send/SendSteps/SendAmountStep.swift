@@ -15,10 +15,6 @@ class SendAmountStep {
     private let interactor: SendAmountInteractor
     private let sendFeeInteractor: SendFeeInteractor
 
-    var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
-        viewModel
-    }
-
     init(
         viewModel: SendAmountViewModel,
         interactor: SendAmountInteractor,
@@ -35,18 +31,24 @@ class SendAmountStep {
 extension SendAmountStep: SendStep {
     var title: String? { Localization.sendAmountLabel }
 
-    var type: SendStepType { .amount }
-
-    var viewType: SendStepViewType { .amount(viewModel) }
+    var type: SendStepType { .amount(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
+    func willAppear(previous step: any SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        viewModel.setAnimatingAuxiliaryViewsOnAppear()
+    }
+
     func willDisappear(next step: SendStep) {
         UIApplication.shared.endEditing()
 
-        guard step.type == .summary else {
+        guard step.type.isSummary else {
             return
         }
 

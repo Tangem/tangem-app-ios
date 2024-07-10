@@ -16,10 +16,6 @@ class SendDestinationStep {
     private let sendFeeInteractor: SendFeeInteractor
     private let tokenItem: TokenItem
 
-    var auxiliaryViewAnimatable: AuxiliaryViewAnimatable {
-        viewModel
-    }
-
     init(
         viewModel: SendDestinationViewModel,
         interactor: any SendDestinationInteractor,
@@ -42,9 +38,7 @@ class SendDestinationStep {
 extension SendDestinationStep: SendStep {
     var title: String? { Localization.sendRecipientLabel }
 
-    var type: SendStepType { .destination }
-
-    var viewType: SendStepViewType { .destination(viewModel) }
+    var type: SendStepType { .destination(viewModel) }
 
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
         .qrCodeButton { [weak self] in
@@ -56,8 +50,16 @@ extension SendDestinationStep: SendStep {
         interactor.destinationValid.eraseToAnyPublisher()
     }
 
+    func willAppear(previous step: any SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        viewModel.setAnimatingAuxiliaryViewsOnAppear()
+    }
+
     func willDisappear(next step: SendStep) {
-        guard step.type == .summary else {
+        guard step.type.isSummary else {
             return
         }
 

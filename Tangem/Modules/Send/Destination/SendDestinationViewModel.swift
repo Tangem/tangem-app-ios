@@ -11,7 +11,7 @@ import Combine
 import BlockchainSdk
 import SwiftUI
 
-class SendDestinationViewModel: ObservableObject {
+class SendDestinationViewModel: ObservableObject, Identifiable {
     @Published var addressViewModel: SendDestinationTextViewModel?
     @Published var additionalFieldViewModel: SendDestinationTextViewModel?
 
