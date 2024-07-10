@@ -20,6 +20,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: Blocks
 
     @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
+    @Published var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -131,6 +132,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
             insightsViewModel = .init(insights: insights, infoRouter: self)
+        }
+
+        if let metrics = model.metrics {
+            metricsViewModel = .init(metrics: metrics, infoRouter: self)
         }
     }
 
