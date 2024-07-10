@@ -104,12 +104,12 @@ struct TokenMarketsDetailsView: View {
 
     private var contentBlocks: some View {
         VStack(spacing: 14) {
-            MarketsEmptyAddTokenView(didTapAction: viewModel.onAddToPortfolioTapAction)
-                .padding(.horizontal, 16)
-
             if viewModel.isLoading {
                 ContentBlockSkeletons()
-            } else {}
+            } else {
+                MarketsPortfolioContainerView(viewModel: .init())
+                    .padding(.horizontal, 16)
+            }
         }
         .animation(.default, value: viewModel.isLoading)
     }
