@@ -15,13 +15,9 @@ struct StakingValidatorsStepBuilder {
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
-    func makeSendFinishStep(
-        io: IO,
-        addressTextViewHeightModel: AddressTextViewHeightModel
-    ) -> ReturnValue {
-
+    func makeStakingValidatorsStep(io: IO) -> ReturnValue {
         let interactor = makeStakingValidatorsInteractor(io: io)
-        let viewModel = makeSendFinishViewModel(interactor: interactor)
+        let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
 
         let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor)
 
@@ -32,7 +28,7 @@ struct StakingValidatorsStepBuilder {
 // MARK: - Private
 
 private extension StakingValidatorsStepBuilder {
-    func makeSendFinishViewModel(interactor: StakingValidatorsInteractor) -> StakingValidatorsViewModel {
+    func makeStakingValidatorsViewModel(interactor: StakingValidatorsInteractor) -> StakingValidatorsViewModel {
         StakingValidatorsViewModel(interactor: interactor)
     }
 
