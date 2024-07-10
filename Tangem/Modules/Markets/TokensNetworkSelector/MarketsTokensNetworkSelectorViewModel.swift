@@ -97,11 +97,14 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
         userWalletModel.userTokensManager.deriveIfNeeded { [weak self] result in
             self?.isSaving = false
-            self?.pendingAdd = []
 
             if case .failure(let error) = result, !error.isUserCancelled {
                 self?.alert = error.alertBinder
+                return
             }
+
+            self?.pendingAdd = []
+            self?.updateSelectionByTokenItems()
         }
     }
 
@@ -215,15 +218,21 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {
-        if selectedUserWalletModel?.userWalletId != userWalletModel?.userWalletId {
-            Analytics.log(
-                event: .manageTokensWalletSelected,
-                params: [.source: Analytics.ParameterValue.mainToken.rawValue]
-            )
+        guard selectedUserWalletModel?.userWalletId != userWalletModel?.userWalletId else {
+            return
         }
+
+        Analytics.log(
+            event: .manageTokensWalletSelected,
+            params: [.source: Analytics.ParameterValue.mainToken.rawValue]
+        )
 
         pendingAdd = []
 
+        updateSelectionByTokenItems()
+    }
+
+    private func updateSelectionByTokenItems() {
         coinModel.items
             .map { $0.tokenItem }
             .forEach { tokenItem in

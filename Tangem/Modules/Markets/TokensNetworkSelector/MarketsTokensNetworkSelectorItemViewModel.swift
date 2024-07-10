@@ -20,7 +20,6 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
     let isMain: Bool
     let networkName: String
     let contractName: String?
-    let hasContextMenu: Bool
     let contractNameForegroundColor: Color
 
     var isReadonly: Bool
@@ -67,7 +66,6 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
         imageNameSelected = tokenItem.blockchain.iconNameFilled
         networkName = tokenItem.blockchain.displayName
         contractName = tokenItem.contractName
-        hasContextMenu = tokenItem.isToken
         contractNameForegroundColor = tokenItem.isBlockchain ? Colors.Text.accent : Colors.Text.tertiary
 
         self.isSelected = isSelected.wrappedValue

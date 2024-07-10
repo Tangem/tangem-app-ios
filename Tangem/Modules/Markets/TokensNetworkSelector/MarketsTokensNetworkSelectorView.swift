@@ -44,13 +44,14 @@ struct MarketsTokensNetworkSelectorView: View {
                 tokenInfoView
             }
 
-            LazyVStack(spacing: 0) {
+            VStack(spacing: .zero) {
                 ForEach(viewModel.tokenItemViewModels) {
                     MarketsTokensNetworkSelectorItemView(viewModel: $0)
                 }
             }
+            .padding(.leading, 7)
         }
-        .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
+        .roundedBackground(with: Colors.Background.action, padding: 14, radius: Constants.cornerRadius)
     }
 
     private var tokenInfoView: some View {
@@ -86,6 +87,7 @@ struct MarketsTokensNetworkSelectorView: View {
 
             MainButton(
                 title: Localization.commonContinue,
+                icon: .trailing(Assets.tangemIcon),
                 isLoading: viewModel.isSaving,
                 isDisabled: viewModel.isSaveDisabled,
                 action: viewModel.saveChangesOnTapAction
