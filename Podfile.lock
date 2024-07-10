@@ -238,7 +238,7 @@ DEPENDENCIES:
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.28.1)
   - Firebase/Crashlytics (= 10.28.1)
-  - Firebase/Messaging
+  - Firebase/Messaging (= 10.28.1)
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
   - Moya
@@ -379,6 +379,6 @@ SPEC CHECKSUMS:
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 3c416e69f6c3e32e4231335d1f0eaed7cf6bbbd4
+PODFILE CHECKSUM: 385f96e322262bc3a2c5d8e1ad7a520f80e36b6e
 
 COCOAPODS: 1.15.2

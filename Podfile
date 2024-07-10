@@ -78,7 +78,7 @@ target 'Tangem' do
   pod 'Firebase/Analytics', '10.28.1'
 
   # Push notifications
-  pod 'Firebase/Messaging'
+  pod 'Firebase/Messaging', '10.28.1'
 
   target 'TangemTests' do
     inherit! :search_paths
