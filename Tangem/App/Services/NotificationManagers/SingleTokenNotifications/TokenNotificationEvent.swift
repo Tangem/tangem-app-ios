@@ -20,6 +20,7 @@ enum TokenNotificationEvent: Hashable {
     case bnbBeaconChainRetirement
     case hasUnfulfilledRequirements(configuration: UnfulfilledRequirementsConfiguration)
     case staking(tokenSymbol: String, tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, rewardPeriodDaysFormatted: String)
+    case manaLevel(currentMana: String, maxMana: String)
 
     static func event(
         for reason: TransactionSendAvailabilityProvider.SendingRestrictions,
@@ -46,7 +47,8 @@ enum TokenNotificationEvent: Hashable {
              .existentialDepositWarning,
              .noAccount,
              .solanaHighImpact,
-             .bnbBeaconChainRetirement:
+             .bnbBeaconChainRetirement,
+             .manaLevel:
             return nil
         case .notEnoughFeeForTransaction(let configuration):
             let eventConfig = configuration.eventConfiguration
@@ -84,6 +86,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.warningHederaMissingTokenAssociationTitle)
         case .staking(_, _, let earnUpToFormatted, _):
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
+        case .manaLevel:
+            return .string(Localization.tokenDetailsManaLevelTitle)
         }
     }
 
@@ -122,6 +126,8 @@ extension TokenNotificationEvent: NotificationEvent {
             )
         case .staking(let tokenSymbol, _, _, let rewardPeriodFormatted):
             return Localization.tokenDetailsStakingBlockSubtitle(tokenSymbol, rewardPeriodFormatted)
+        case .manaLevel(let currentMana, let maxMana):
+            return Localization.tokenDetailsManaLevelDescription(currentMana, maxMana)
         }
     }
 
@@ -133,7 +139,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .existentialDepositWarning,
              .noAccount,
              .solanaHighImpact,
-             .bnbBeaconChainRetirement:
+             .bnbBeaconChainRetirement,
+             .manaLevel:
             return .secondary
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
@@ -147,7 +154,7 @@ extension TokenNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable, .someNetworksUnreachable, .solanaHighImpact, .bnbBeaconChainRetirement:
             return .init(iconType: .image(Assets.attention.image))
-        case .rentFee, .noAccount, .existentialDepositWarning:
+        case .rentFee, .noAccount, .existentialDepositWarning, .manaLevel:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .notEnoughFeeForTransaction(let configuration):
             return .init(iconType: .image(Image(configuration.eventConfiguration.feeAmountTypeIconName)))
@@ -163,7 +170,8 @@ extension TokenNotificationEvent: NotificationEvent {
         case .noAccount,
              .rentFee,
              .existentialDepositWarning,
-             .staking:
+             .staking,
+             .manaLevel:
             return .info
         case .networkUnreachable,
              .someNetworksUnreachable,
@@ -187,7 +195,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
-             .staking:
+             .staking,
+             .manaLevel:
             return false
         }
     }
@@ -230,6 +239,7 @@ extension TokenNotificationEvent {
         case .bnbBeaconChainRetirement: return nil
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
         case .staking: return nil
+        case .manaLevel: return nil
         }
     }
 
@@ -246,7 +256,8 @@ extension TokenNotificationEvent {
              .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
-             .staking:
+             .staking,
+             .manaLevel:
             return [:]
         }
     }

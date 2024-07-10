@@ -12,6 +12,8 @@ struct SendAmountView: View {
     @ObservedObject var viewModel: SendAmountViewModel
     let namespace: Namespace
 
+    private var amountMinTextScale: CGFloat?
+
     var body: some View {
         GroupedScrollView(spacing: 14) {
             amountContainer
@@ -72,6 +74,7 @@ struct SendAmountView: View {
                     .initialFocusBehavior(.delayedFocus(duration: 2 * SendView.Constants.animationDuration))
                     .alignment(.center)
                     .prefixSuffixOptions(viewModel.currentFieldOptions)
+                    .minTextScale(amountMinTextScale)
                     .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout
@@ -102,12 +105,28 @@ struct SendAmountView: View {
             }
         }
     }
+
+    init(
+        viewModel: SendAmountViewModel,
+        namespace: Namespace
+    ) {
+        self.viewModel = viewModel
+        self.namespace = namespace
+    }
 }
 
 extension SendAmountView {
     struct Namespace {
         let id: SwiftUI.Namespace.ID
         let names: any SendAmountViewGeometryEffectNames
+    }
+}
+
+// MARK: - Setupable protocol conformance
+
+extension SendAmountView: Setupable {
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
     }
 }
 

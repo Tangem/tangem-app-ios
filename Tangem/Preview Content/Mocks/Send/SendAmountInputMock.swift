@@ -8,12 +8,10 @@
 
 import SwiftUI
 import Combine
-import BlockchainSdk
 
-class SendAmountInputMock: SendAmountInput {
+class SendAmountInputOutputMock: SendAmountInput, SendAmountOutput {
     var amount: SendAmount? { .none }
-}
+    var amountPublisher: AnyPublisher<SendAmount?, Never> { .just(output: amount) }
 
-class SendAmountOutputMock: SendAmountOutput {
     func amountDidChanged(amount: SendAmount?) {}
 }
