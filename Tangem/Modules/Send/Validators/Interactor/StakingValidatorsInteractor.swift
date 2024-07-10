@@ -34,6 +34,33 @@ class CommonStakingValidatorsInteractor {
         self.input = input
         self.output = output
         self.manager = manager
+
+        bind()
+    }
+}
+
+// MARK: - Private
+
+private extension CommonStakingValidatorsInteractor {
+    func bind() {
+        do {
+            let yield = try manager.getYield()
+
+            guard !yield.validators.isEmpty else {
+                AppLog.shared.debug("Yield.Validators is empty")
+                return
+            }
+
+            if let defaultValidator = yield.validators.first(where: { $0.address == yield.defaultValidator }) {
+                output?.userDidSelected(validator: defaultValidator)
+            } else if let first = yield.validators.first {
+                output?.userDidSelected(validator: first)
+            }
+
+            _validators.send(yield.validators)
+        } catch {
+            AppLog.shared.debug("Yield not found")
+        }
     }
 }
 

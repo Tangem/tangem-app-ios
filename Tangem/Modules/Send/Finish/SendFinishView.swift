@@ -18,7 +18,9 @@ struct SendFinishView: View {
                 header(transactionTime: transactionTime)
             }
 
-            destinationSection
+            if let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
+                destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
+            }
 
             amountSection
 
@@ -51,7 +53,7 @@ struct SendFinishView: View {
 
     // MARK: - Destination
 
-    private var destinationSection: some View {
+    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):

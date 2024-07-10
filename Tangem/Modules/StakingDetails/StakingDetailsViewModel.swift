@@ -21,6 +21,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
+    private let userWalletModel: UserWalletModel
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
     private weak var coordinator: StakingDetailsRoutable?
@@ -40,10 +41,12 @@ final class StakingDetailsViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        userWalletModel: UserWalletModel,
         walletModel: WalletModel,
         stakingManager: StakingManager,
         coordinator: StakingDetailsRoutable
     ) {
+        self.userWalletModel = userWalletModel
         self.walletModel = walletModel
         self.stakingManager = stakingManager
         self.coordinator = coordinator

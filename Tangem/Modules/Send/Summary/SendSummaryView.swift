@@ -22,12 +22,17 @@ struct SendSummaryView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             GroupedScrollView(spacing: 14) {
-                if !viewModel.animatingDestinationOnAppear {
-                    destinationSection
+                if !viewModel.animatingDestinationOnAppear,
+                   let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
+                    destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
                 }
 
                 if !viewModel.animatingAmountOnAppear {
                     amountSection
+                }
+
+                if !viewModel.animatingValidatorOnAppear {
+                    validatorSection
                 }
 
                 if !viewModel.animatingFeeOnAppear {
@@ -62,7 +67,7 @@ struct SendSummaryView: View {
 
     // MARK: - Destination
 
-    private var destinationSection: some View {
+    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):
@@ -116,6 +121,20 @@ struct SendSummaryView: View {
         .allowsHitTesting(viewModel.canEditAmount)
         .onTapGesture {
             viewModel.userDidTapAmount()
+        }
+    }
+
+    // MARK: - Validator
+
+    private var validatorSection: some View {
+        GroupedSection(viewModel.selectedValidatorData) { data in
+            ValidatorView(data: data)
+        }
+        .settings(\.backgroundColor, sectionBackground(type: viewModel.editableType))
+        .settings(\.backgroundGeometryEffect, .init(id: "ValidatorContainer", namespace: namespace))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.userDidTapValidator()
         }
     }
 

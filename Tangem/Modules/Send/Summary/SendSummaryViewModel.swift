@@ -22,11 +22,13 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
+    @Published var selectedValidatorData: ValidatorViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
     @Published var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
     @Published var animatingDestinationOnAppear = false
     @Published var animatingAmountOnAppear = false
+    @Published var animatingValidatorOnAppear = false
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
@@ -36,7 +38,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var transactionDescription: String?
     @Published var transactionDescriptionIsVisible: Bool = false
 
-    let addressTextViewHeightModel: AddressTextViewHeightModel
+    let addressTextViewHeightModel: AddressTextViewHeightModel?
     var didProperlyDisappear: Bool = true
 
     var canEditAmount: Bool { editableType == .editable }
@@ -77,9 +79,13 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         case .amount:
             animatingDestinationOnAppear = true
             animatingFeeOnAppear = true
+            animatingValidatorOnAppear = true
         case .fee:
             animatingDestinationOnAppear = true
             animatingAmountOnAppear = true
+        case .validators:
+            animatingAmountOnAppear = true
+            animatingFeeOnAppear = true
         default:
             break
         }
@@ -97,6 +103,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
+            self.animatingValidatorOnAppear = false
             self.transactionDescriptionIsVisible = self.transactionDescription != nil
         }
 
@@ -122,6 +129,11 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     func userDidTapAmount() {
         didTapSummary()
         router?.summaryStepRequestEditAmount()
+    }
+
+    func userDidTapValidator() {
+        didTapSummary()
+        router?.summaryStepRequestEditValidators()
     }
 
     func userDidTapFee() {
@@ -220,6 +232,17 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                 viewModel.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
                 viewModel.deselectedFeeRowViewModels = deselectedFeeRowViewModels
             }
+            .store(in: &bag)
+    }
+
+    func setup(stakingValidatorsInput input: any StakingValidatorsInput) {
+        input.selectedValidatorPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, validator in
+                viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: validator, detailsType: .chevron)
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.selectedValidatorData, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

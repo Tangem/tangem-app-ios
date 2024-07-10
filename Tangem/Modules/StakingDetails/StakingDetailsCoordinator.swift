@@ -29,10 +29,12 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     required init(
         dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions>
+        popToRootAction: @escaping Action<PopToRootOptions>,
+        factory: StakingModulesFactory
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
+        self.factory = factory
     }
 
     func start(with options: Options) {

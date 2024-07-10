@@ -1541,6 +1541,11 @@
 		EFA4E37B2C3EEC6D008815AD /* StakingValidatorsStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E37A2C3EEC6D008815AD /* StakingValidatorsStepBuilder.swift */; };
 		EFA4E3872C3F046C008815AD /* ValidatorViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3862C3F046C008815AD /* ValidatorViewData.swift */; };
 		EFA568092C471C1E0064EBA1 /* Future+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA568082C471C1E0064EBA1 /* Future+.swift */; };
+		EFA4E37D2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E37C2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift */; };
+		EFA4E37F2C3EEE9E008815AD /* StakingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */; };
+		EFA4E3812C3EF4BF008815AD /* CommonSendFeeInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3802C3EF4BF008815AD /* CommonSendFeeInteractor.swift */; };
+		EFA4E3832C3EF506008815AD /* StakingFeeInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3822C3EF506008815AD /* StakingFeeInteractor.swift */; };
+		EFA4E3852C3EF914008815AD /* CommonStakingStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */; };
 		EFA580612893E4E200110DB0 /* LanguageCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA580602893E4E200110DB0 /* LanguageCode.swift */; };
 		EFA580632893E6AA00110DB0 /* BiometricAuthorizationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA580622893E6AA00110DB0 /* BiometricAuthorizationUtils.swift */; };
 		EFA6164E2B62A96B0013A129 /* TransactionSendAvailabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA6164D2B62A96A0013A129 /* TransactionSendAvailabilityProvider.swift */; };
@@ -1637,11 +1642,6 @@
 		EFEE22BA2BFCE3D10099917E /* WithdrawalNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE22B92BFCE3D10099917E /* WithdrawalNotificationEvent.swift */; };
 		EFEE22BC2BFCE44B0099917E /* ValidationErrorEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE22BB2BFCE44B0099917E /* ValidationErrorEvent.swift */; };
 		EFEE22BF2BFCF3450099917E /* BlockchainSDKNotificationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE22BE2BFCF3450099917E /* BlockchainSDKNotificationMapper.swift */; };
-		EFEE23482BFE01CC0099917E /* StakingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23432BFE01CC0099917E /* StakingCoordinator.swift */; };
-		EFEE23492BFE01CC0099917E /* StakingCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23442BFE01CC0099917E /* StakingCoordinatorView.swift */; };
-		EFEE234A2BFE01CC0099917E /* StakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23452BFE01CC0099917E /* StakingView.swift */; };
-		EFEE234B2BFE01CC0099917E /* StakingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23462BFE01CC0099917E /* StakingViewModel.swift */; };
-		EFEE234C2BFE01CC0099917E /* StakingRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23472BFE01CC0099917E /* StakingRoutable.swift */; };
 		EFEE236A2BFE20860099917E /* StakingDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23652BFE20860099917E /* StakingDetailsCoordinator.swift */; };
 		EFEE236B2BFE20860099917E /* StakingDetailsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23662BFE20860099917E /* StakingDetailsCoordinatorView.swift */; };
 		EFEE236C2BFE20860099917E /* StakingDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23672BFE20860099917E /* StakingDetailsView.swift */; };
@@ -3436,6 +3436,11 @@
 		EFA4E37A2C3EEC6D008815AD /* StakingValidatorsStepBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingValidatorsStepBuilder.swift; sourceTree = "<group>"; };
 		EFA4E3862C3F046C008815AD /* ValidatorViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorViewData.swift; sourceTree = "<group>"; };
 		EFA568082C471C1E0064EBA1 /* Future+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Future+.swift"; sourceTree = "<group>"; };
+		EFA4E37C2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingFlowBaseBuilder.swift; sourceTree = "<group>"; };
+		EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingModel.swift; sourceTree = "<group>"; };
+		EFA4E3802C3EF4BF008815AD /* CommonSendFeeInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendFeeInteractor.swift; sourceTree = "<group>"; };
+		EFA4E3822C3EF506008815AD /* StakingFeeInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingFeeInteractor.swift; sourceTree = "<group>"; };
+		EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingStepsManager.swift; sourceTree = "<group>"; };
 		EFA580602893E4E200110DB0 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
 		EFA580622893E6AA00110DB0 /* BiometricAuthorizationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiometricAuthorizationUtils.swift; sourceTree = "<group>"; };
 		EFA6164D2B62A96A0013A129 /* TransactionSendAvailabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionSendAvailabilityProvider.swift; sourceTree = "<group>"; };
@@ -3530,11 +3535,6 @@
 		EFEE22B92BFCE3D10099917E /* WithdrawalNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawalNotificationEvent.swift; sourceTree = "<group>"; };
 		EFEE22BB2BFCE44B0099917E /* ValidationErrorEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationErrorEvent.swift; sourceTree = "<group>"; };
 		EFEE22BE2BFCF3450099917E /* BlockchainSDKNotificationMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockchainSDKNotificationMapper.swift; sourceTree = "<group>"; };
-		EFEE23432BFE01CC0099917E /* StakingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingCoordinator.swift; sourceTree = "<group>"; };
-		EFEE23442BFE01CC0099917E /* StakingCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingCoordinatorView.swift; sourceTree = "<group>"; };
-		EFEE23452BFE01CC0099917E /* StakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingView.swift; sourceTree = "<group>"; };
-		EFEE23462BFE01CC0099917E /* StakingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingViewModel.swift; sourceTree = "<group>"; };
-		EFEE23472BFE01CC0099917E /* StakingRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingRoutable.swift; sourceTree = "<group>"; };
 		EFEE23652BFE20860099917E /* StakingDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsCoordinator.swift; sourceTree = "<group>"; };
 		EFEE23662BFE20860099917E /* StakingDetailsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsCoordinatorView.swift; sourceTree = "<group>"; };
 		EFEE23672BFE20860099917E /* StakingDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsView.swift; sourceTree = "<group>"; };
@@ -7048,6 +7048,7 @@
 				DAD2D8512B4D2144002EA7F1 /* SendSummarySectionViewModelFactory.swift */,
 				DA559C242B0261F400F59584 /* SendType.swift */,
 				DA559C1D2B0261F300F59584 /* SendModel.swift */,
+				EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */,
 			);
 			path = Send;
 			sourceTree = "<group>";
@@ -7597,7 +7598,6 @@
 		DC7DA81A2844EED800AD6DBD /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				EFEE232E2BFE00EA0099917E /* Staking */,
 				EFEE23632BFE204A0099917E /* StakingDetails */,
 				EF5D83D12B0B79F900516B5F /* ExpressSuccessSent */,
 				EF842DE22AFA58A5006E472E /* ExpressTokensList */,
@@ -7950,6 +7950,8 @@
 			isa = PBXGroup;
 			children = (
 				EF339E482C21FBEC00B5CDC9 /* SendFeeInteractor.swift */,
+				EFA4E3802C3EF4BF008815AD /* CommonSendFeeInteractor.swift */,
+				EFA4E3822C3EF506008815AD /* StakingFeeInteractor.swift */,
 				EF339E502C21FCCC00B5CDC9 /* SendFeeProvider.swift */,
 				EF339E4E2C21FC9500B5CDC9 /* SendFee.swift */,
 			);
@@ -9064,6 +9066,7 @@
 			children = (
 				EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */,
 				EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */,
+				EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -9073,6 +9076,7 @@
 			children = (
 				EFC84B002C37FAB500546882 /* SendFlowBaseBuilder.swift */,
 				EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */,
+				EFA4E37C2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -9346,18 +9350,6 @@
 				EFEE22B92BFCE3D10099917E /* WithdrawalNotificationEvent.swift */,
 			);
 			path = BlockchainSDKNotifications;
-			sourceTree = "<group>";
-		};
-		EFEE232E2BFE00EA0099917E /* Staking */ = {
-			isa = PBXGroup;
-			children = (
-				EFEE23432BFE01CC0099917E /* StakingCoordinator.swift */,
-				EFEE23442BFE01CC0099917E /* StakingCoordinatorView.swift */,
-				EFEE23452BFE01CC0099917E /* StakingView.swift */,
-				EFEE23462BFE01CC0099917E /* StakingViewModel.swift */,
-				EFEE23472BFE01CC0099917E /* StakingRoutable.swift */,
-			);
-			path = Staking;
 			sourceTree = "<group>";
 		};
 		EFEE23632BFE204A0099917E /* StakingDetails */ = {
@@ -10411,6 +10403,7 @@
 				B041C9672C3FF5BB00CE027A /* Math.swift in Sources */,
 				EF0DD7982B026B690099527D /* CommonAllowanceProvider.swift in Sources */,
 				EF46621D2924DEEE00346B6C /* DefaultRowView.swift in Sources */,
+				EFA4E37F2C3EEE9E008815AD /* StakingModel.swift in Sources */,
 				EF5A16722937972A00BEC2F4 /* IconView.swift in Sources */,
 				5D84DBED270E26B90013A813 /* WelcomeBackgroundView.swift in Sources */,
 				EFA4E3792C3EEB33008815AD /* StakingValidatorsStep.swift in Sources */,
@@ -10481,6 +10474,7 @@
 				B0A0910C26D3628200F46DF5 /* AnimatableGradient.swift in Sources */,
 				DAF3D58D2B3AD9050047D65F /* SendCurrencyPicker.swift in Sources */,
 				B6961B202BB2FD2900FE266D /* PolkadotAccountHealthNetworkService.swift in Sources */,
+				EFA4E37D2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift in Sources */,
 				B0ADFD3E298A70CD00EF2869 /* WalletConnectEthTransactionBuilder.swift in Sources */,
 				B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */,
 				EFA9854F2947787F00D1FCB3 /* FeeFormatterMock.swift in Sources */,
@@ -11016,6 +11010,7 @@
 				5D4B8BC327EDD601002CE87C /* CardInfo.swift in Sources */,
 				B63127D42A2F52E2007C124C /* OrganizeTokensListSection.swift in Sources */,
 				DC261CB7292CF6B700875E64 /* UncompletedBackupRoutable.swift in Sources */,
+				EFA4E3812C3EF4BF008815AD /* CommonSendFeeInteractor.swift in Sources */,
 				DA559C3A2B0261F400F59584 /* SendView.swift in Sources */,
 				DAB19D4E2B2C72C400DD08C4 /* AddCustomTokenNotificationEvent.swift in Sources */,
 				EF1E172E2BF50E07000364AE /* SettingsUserWalletRowView.swift in Sources */,
@@ -11308,6 +11303,7 @@
 				EF0F99E3289177C6008B01DF /* InfoDictionaryUtils.swift in Sources */,
 				DC66BC0C285B75BF00CDF765 /* PushTxCoordinator.swift in Sources */,
 				EF842DEC2AFA58C5006E472E /* ExpressTokensListRoutable.swift in Sources */,
+				EFA4E3852C3EF914008815AD /* CommonStakingStepsManager.swift in Sources */,
 				B03F19032C3D291100C93CFD /* AmountNotationSuffixFormatter.swift in Sources */,
 				B0FE0B3A297140D10046EE2C /* WalletConnectV2Error.swift in Sources */,
 				B6C957A32ACBDDBE00671B37 /* IOS15AndBelowScrollDisabledModifier.swift in Sources */,
@@ -11446,6 +11442,7 @@
 				DC66BC08285B6E6400CDF765 /* DetailsRoutable.swift in Sources */,
 				2D535E702A0CB4D20081EB76 /* NotificationView.swift in Sources */,
 				B031AAB126C1443E00015003 /* Confetti.swift in Sources */,
+				EFA4E3832C3EF506008815AD /* StakingFeeInteractor.swift in Sources */,
 				EF729B542AF12B1500D80205 /* BottomSheetHeaderView.swift in Sources */,
 				2DC567682B0DFFAF00B0244F /* MarketsCoordinatorView.swift in Sources */,
 				B0A2B3E925D6B5BD0001EEB4 /* TokenBalanceViewModel.swift in Sources */,
@@ -11532,13 +11529,8 @@
 				EFEBCE2B29265CF300B0C886 /* TokenIconInfo.swift in Sources */,
 				DC66BBF5285A14CB00CDF765 /* WelcomeViewLifecycleListener.swift in Sources */,
 				EFA6B04729533C860090A92F /* ResetToFactoryViewRoutable.swift in Sources */,
-				EFEE23482BFE01CC0099917E /* StakingCoordinator.swift in Sources */,
 				EF339E512C21FCCC00B5CDC9 /* SendFeeProvider.swift in Sources */,
-				EFEE23492BFE01CC0099917E /* StakingCoordinatorView.swift in Sources */,
-				EFEE234A2BFE01CC0099917E /* StakingView.swift in Sources */,
 				2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */,
-				EFEE234B2BFE01CC0099917E /* StakingViewModel.swift in Sources */,
-				EFEE234C2BFE01CC0099917E /* StakingRoutable.swift in Sources */,
 				B0F319002A739477009F131E /* FakeWalletManager.swift in Sources */,
 				B004A3E82B17672000C66CA9 /* PendingExpressTransactionView.swift in Sources */,
 				B62C65D42C38D06B00189AD4 /* CommonPushNotificationsInteractor.swift in Sources */,

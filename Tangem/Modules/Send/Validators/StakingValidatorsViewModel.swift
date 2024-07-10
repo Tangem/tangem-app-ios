@@ -49,6 +49,24 @@ private extension StakingValidatorsViewModel {
             }
             .assign(to: \.validators, on: self, ownership: .weak)
             .store(in: &bag)
+
+        interactor
+            .selectedValidatorPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, selectedValidator in
+                viewModel.selectedValidator = selectedValidator.address
+            }
+            .store(in: &bag)
+
+        $selectedValidator
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, validatorAddress in
+                viewModel.interactor.userDidSelect(validatorAddress: validatorAddress)
+            }
+            .store(in: &bag)
     }
 }
 

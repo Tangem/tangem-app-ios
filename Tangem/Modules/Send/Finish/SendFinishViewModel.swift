@@ -26,7 +26,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
 
-    @ObservedObject var addressTextViewHeightModel: AddressTextViewHeightModel
+    let addressTextViewHeightModel: AddressTextViewHeightModel?
 
     private let tokenItem: TokenItem
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
@@ -37,7 +37,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
     init(
         settings: Settings,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         sectionViewModelFactory: SendSummarySectionViewModelFactory,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {

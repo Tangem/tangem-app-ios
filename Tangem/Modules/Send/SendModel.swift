@@ -28,11 +28,10 @@ class SendModel {
 
     // MARK: - Dependencies
 
-    var sendAmountInteractor: SendAmountInteractor!
     var sendFeeInteractor: SendFeeInteractor!
     var informationRelevanceService: InformationRelevanceService!
 
-    // MARK: - Private stuff
+    // MARK: - Private injections
 
     private let userWalletModel: UserWalletModel
     private let tokenItem: TokenItem

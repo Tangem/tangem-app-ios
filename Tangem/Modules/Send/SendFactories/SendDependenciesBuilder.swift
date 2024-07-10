@@ -92,6 +92,8 @@ struct SendDependenciesBuilder {
         )
     }
 
+    // MARK: - Send, Sell
+
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters? = .none
@@ -137,5 +139,17 @@ struct SendDependenciesBuilder {
         }()
 
         return SendModel.PredefinedValues(source: source, destination: destination, tag: additionalField, amount: amount)
+    }
+
+    // MARK: - Staking
+
+    func makeStakingModel(
+        sendTransactionDispatcher: any SendTransactionDispatcher
+    ) -> StakingModel {
+        StakingModel(sendTransactionDispatcher: sendTransactionDispatcher)
+    }
+
+    func makeStakingFeeInteractor(input: SendFeeInput, output: SendFeeOutput) -> SendFeeInteractor {
+        StakingFeeInteractor(input: input, output: output)
     }
 }
