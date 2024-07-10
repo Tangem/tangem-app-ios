@@ -74,11 +74,11 @@ target 'Tangem' do
   
   # Analytics
   pod 'AmplitudeSwift', '1.6.2'
-  pod 'Firebase/Crashlytics', '10.28.1'
-  pod 'Firebase/Analytics', '10.28.1'
+  pod 'Firebase/Crashlytics', '10.29.0'
+  pod 'Firebase/Analytics', '10.29.0'
 
   # Push notifications
-  pod 'Firebase/Messaging', '10.28.1'
+  pod 'Firebase/Messaging', '10.29.0'
 
   target 'TangemTests' do
     inherit! :search_paths
