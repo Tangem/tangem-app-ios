@@ -30,6 +30,9 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
     var supportedBlockchainsIds: [String] = []
 
+    @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
+    var stakingBlockchainsIds: [String] = []
+
     @AppStorageCompat(FeatureStorageKeys.performanceMonitorEnabled)
     var isPerformanceMonitorEnabled = false
 
@@ -49,6 +52,7 @@ private enum FeatureStorageKeys: String {
     case apiExpress = "api_express"
     case fakeTxHistory = "fake_transaction_history"
     case supportedBlockchainsIds
+    case stakingBlockchainsIds
     case performanceMonitorEnabled = "performance_monitor_enabled"
     case mockedCardScannerEnabled = "mocked_card_scanner_enabled"
     case useVisaTestnet = "use_visa_testnet"
