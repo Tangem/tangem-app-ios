@@ -12,7 +12,7 @@ import BlockchainSdk
 
 protocol SendFeeInteractor {
     var selectedFee: SendFee? { get }
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> { get }
 
     var feesPublisher: AnyPublisher<[SendFee], Never> { get }
     var customFeeInputFieldModels: [SendCustomFeeInputFieldModel] { get }
@@ -108,7 +108,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
         input?.selectedFee
     }
 
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> {
         guard let input else {
             assertionFailure("SendFeeInput is not found")
             return Empty().eraseToAnyPublisher()
@@ -140,6 +140,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 
         provider
             .getFee(amount: amount, destination: destination)
+            .delay(for: 1, scheduler: DispatchQueue.global())
             .sink(receiveCompletion: { [weak self] completion in
                 guard case .failure(let error) = completion else {
                     return
@@ -225,15 +226,12 @@ private extension CommonSendFeeInteractor {
 
     private func initialFeeForUpdate(fees: [Fee]) -> SendFee? {
         let values = mapToDefaultFees(fees: fees)
-        let market = values.first(where: { $0.option == .market })
-        return market
+        let option = input?.selectedFee.option ?? .market
+        let initialFee = values.first(where: { $0.option == option })
+        return initialFee
     }
 
     private func initialSelectedFeeUpdateIfNeeded(fee: SendFee) {
-        guard input?.selectedFee == nil else {
-            return
-        }
-
         output?.feeDidChanged(fee: fee)
     }
 }
