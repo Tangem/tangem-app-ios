@@ -10,13 +10,13 @@ import Foundation
 
 struct ValidatorViewData: Hashable, Identifiable {
     let id: String
-    let imageURL: URL
     let name: String
+    let imageURL: URL?
     let aprFormatted: String?
     let detailsType: DetailsType?
 
     enum DetailsType: Hashable {
-        case checked
+        case checkmark
         case chevron
         case balance(crypto: String, fiat: String)
     }

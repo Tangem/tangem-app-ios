@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemStaking
 
 struct StakingValidatorsStepBuilder {
     typealias IO = (input: StakingValidatorsInput, output: StakingValidatorsOutput)
@@ -15,8 +16,8 @@ struct StakingValidatorsStepBuilder {
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
-    func makeStakingValidatorsStep(io: IO) -> ReturnValue {
-        let interactor = makeStakingValidatorsInteractor(io: io)
+    func makeStakingValidatorsStep(io: IO, manager: any StakingManager) -> ReturnValue {
+        let interactor = makeStakingValidatorsInteractor(io: io, manager: manager)
         let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
 
         let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor)
@@ -32,7 +33,7 @@ private extension StakingValidatorsStepBuilder {
         StakingValidatorsViewModel(interactor: interactor)
     }
 
-    func makeStakingValidatorsInteractor(io: IO) -> StakingValidatorsInteractor {
-        CommonStakingValidatorsInteractor(input: io.input, output: io.output)
+    func makeStakingValidatorsInteractor(io: IO, manager: any StakingManager) -> StakingValidatorsInteractor {
+        CommonStakingValidatorsInteractor(input: io.input, output: io.output, manager: manager)
     }
 }

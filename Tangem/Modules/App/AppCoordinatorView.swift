@@ -11,7 +11,6 @@ import SwiftUI
 
 struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AppCoordinator
-    @Namespace var namespace
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     var body: some View {

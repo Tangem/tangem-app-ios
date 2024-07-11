@@ -19,7 +19,7 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     private let interactor: StakingValidatorsInteractor
 
-    private let percentFormatter = PercentFormatter()
+    private let stakingValidatorViewMapper = StakingValidatorViewMapper()
     private var bag: Set<AnyCancellable> = []
 
     init(interactor: StakingValidatorsInteractor) {
@@ -40,20 +40,15 @@ private extension StakingValidatorsViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .map { viewModel, validators in
-                validators.map { viewModel.mapToValidatorViewData(info: $0) }
+                // TODO: https://tangem.atlassian.net/browse/IOS-7105
+                viewModel.selectedValidator = validators.first?.address ?? ""
+
+                return validators.map {
+                    viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: $0, detailsType: .checkmark)
+                }
             }
             .assign(to: \.validators, on: self, ownership: .weak)
             .store(in: &bag)
-    }
-
-    func mapToValidatorViewData(info: ValidatorInfo) -> ValidatorViewData {
-        ValidatorViewData(
-            id: info.address,
-            imageURL: info.iconURL,
-            name: info.name,
-            aprFormatted: info.apr.map { percentFormatter.format($0, option: .staking) },
-            detailsType: .checked
-        )
     }
 }
 

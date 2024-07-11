@@ -20,7 +20,12 @@ struct ValidatorView: SelectableView {
     }
 
     var body: some View {
-        Button(action: { isSelectedProxy.wrappedValue.toggle() }) {
+        switch data.detailsType {
+        case .checkmark:
+            Button(action: { isSelectedProxy.wrappedValue.toggle() }) {
+                content
+            }
+        case .none, .chevron, .balance:
             content
         }
     }
@@ -47,7 +52,7 @@ struct ValidatorView: SelectableView {
     }
 
     private var info: some View {
-        VStack(spacing: 2) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
@@ -67,8 +72,8 @@ struct ValidatorView: SelectableView {
     @ViewBuilder
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
-        case .checked:
-            CheckIconView(isSelected: isSelectedProxy.wrappedValue)
+        case .checkmark:
+            CircleCheckmarkIcon(isSelected: isSelectedProxy.wrappedValue)
         case .chevron:
             Assets.chevron.image
         case .balance(let crypto, let fiat):
@@ -89,22 +94,22 @@ struct ValidatorView: SelectableView {
 
         var body: some View {
             ZStack {
-                Colors.Background.tertiary.ignoresSafeArea()
+                Colors.Background.secondary.ignoresSafeArea()
 
                 SelectableGropedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
-                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,
                         name: "InfStones",
+                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         aprFormatted: "0.08%",
-                        detailsType: .checked
+                        detailsType: .checkmark
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
-                        imageURL: URL(string: "ttps://assets.stakek.it/validators/aconcagua.png")!,
-                        name: "Aconcagua",
+                        name: "Coinbase",
+                        imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
                         aprFormatted: nil,
-                        detailsType: .checked
+                        detailsType: .checkmark
                     ),
 
                 ], selection: $selected) {
@@ -124,20 +129,20 @@ struct ValidatorView: SelectableView {
 
         var body: some View {
             ZStack {
-                Colors.Background.tertiary.ignoresSafeArea()
+                Colors.Background.secondary.ignoresSafeArea()
 
                 GroupedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
-                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,
                         name: "InfStones",
+                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         aprFormatted: "0.08%",
                         detailsType: .chevron
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
-                        imageURL: URL(string: "ttps://assets.stakek.it/validators/aconcagua.png")!,
                         name: "Aconcagua",
+                        imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
                         aprFormatted: nil,
                         detailsType: .chevron
                     ),
@@ -159,13 +164,13 @@ struct ValidatorView: SelectableView {
 
         var body: some View {
             ZStack {
-                Colors.Background.tertiary.ignoresSafeArea()
+                Colors.Background.secondary.ignoresSafeArea()
 
                 GroupedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
-                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png")!,
                         name: "InfStones",
+                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         aprFormatted: "0.08%",
                         detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
                     ),
