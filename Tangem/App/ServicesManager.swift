@@ -48,7 +48,7 @@ class ServicesManager {
         accountHealthChecker.initialize()
         apiListProvider.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
-        if FeatureProvider.isAvailable(.staking) {
+        if StakingFeatureProvider().isStakingAvailable {
             stakingRepositoryProxy.initialize()
         }
     }
