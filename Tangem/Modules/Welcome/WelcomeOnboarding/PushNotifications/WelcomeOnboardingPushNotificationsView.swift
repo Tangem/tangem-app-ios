@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct WelcomeOnboardingPushNotificationsView: View {
-    private let viewModel: PushNotificationsPermissionRequestViewModel
+    let viewModel: PushNotificationsPermissionRequestViewModel
 
     var body: some View {
         VStack(spacing: 0.0) {
@@ -21,10 +21,6 @@ struct WelcomeOnboardingPushNotificationsView: View {
                 buttonsAxis: .vertical
             )
         }
-    }
-
-    init(viewModel: PushNotificationsPermissionRequestViewModel) {
-        self.viewModel = viewModel
     }
 }
 
