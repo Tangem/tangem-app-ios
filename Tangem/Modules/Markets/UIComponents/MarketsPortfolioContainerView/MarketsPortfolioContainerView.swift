@@ -35,7 +35,7 @@ struct MarketsPortfolioContainerView: View {
                     Button(action: {
                         viewModel.onAddTapAction()
                     }, label: {
-                        HStack {
+                        HStack(spacing: 2) {
                             Assets
                                 .plus24
                                 .image
@@ -44,13 +44,13 @@ struct MarketsPortfolioContainerView: View {
                                 .foregroundColor(Colors.Icon.primary1)
                                 .frame(size: .init(bothDimensions: 14))
 
-                            Text("Add token")
+                            Text(Localization.marketsAddToken)
                                 .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
                         }
-                        .padding(.leading, 8)
-                        .padding(.trailing, 10)
-                        .padding(.vertical, 2)
                     })
+                    .padding(.leading, 8)
+                    .padding(.trailing, 10)
+                    .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
                 }
             }

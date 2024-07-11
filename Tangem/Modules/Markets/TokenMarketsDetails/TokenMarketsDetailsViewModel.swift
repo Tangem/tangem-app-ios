@@ -140,7 +140,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
-            tokenItems: model.coinModel.items.map { $0.tokenItem },
+            coinId: model.coinModel.id,
             addTapAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.onAddToPortfolioTapAction)
         )
     }

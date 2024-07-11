@@ -19,19 +19,19 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Private Properties
 
     private let userWalletModels: [UserWalletModel]
-    private let tokenItems: [TokenItem]
+    private let coinId: String
     private var addTapAction: (() -> Void)?
 
     // MARK: - Init
 
     init(
         userWalletModels: [UserWalletModel],
-        tokenItems: [TokenItem],
+        coinId: String,
         addTapAction: (() -> Void)?
     ) {
         self.userWalletModels = userWalletModels
         self.addTapAction = addTapAction
-        self.tokenItems = tokenItems
+        self.coinId = coinId
 
         initialSetup()
     }
@@ -45,15 +45,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Private Implementation
 
     private func initialSetup() {
-        tokenItemViewModels = tokenItems.reduce(into: []) { partialResult, tokenItem in
-            let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
-                .compactMap { userWalletModel in
-                    guard
-                        userWalletModel.userTokensManager.contains(tokenItem),
-                        let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.tokenItem == tokenItem })
-                    else {
-                        return nil
-                    }
+        let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
+            .reduce(into: []) { partialResult, userWalletModel in
+                let filteredWalletModels = userWalletModel.walletModelsManager.walletModels.filter {
+                    $0.tokenItem.id?.caseInsensitiveCompare(coinId) == .orderedSame
+                }
+
+                let viewModels = filteredWalletModels.map { walletModel in
+                    let tokenItem = walletModel.tokenItem
 
                     let inputData = MarketsPortfolioTokenItemViewModel.InputData(
                         coinImageURL: IconURLBuilder().tokenIconURL(optionalId: tokenItem.id),
@@ -68,8 +67,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                     return MarketsPortfolioTokenItemViewModel(data: inputData)
                 }
 
-            partialResult.append(contentsOf: tokenItemViewModelByUserWalletModels)
-        }
+                partialResult.append(contentsOf: viewModels)
+            }
+
+        tokenItemViewModels = tokenItemViewModelByUserWalletModels
 
         let hasMultiCurrency = !userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }.isEmpty
 
