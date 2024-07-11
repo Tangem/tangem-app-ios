@@ -30,8 +30,8 @@ extension MarketsDTO.Coins {
         let shortDescription: String?
         let fullDescription: String?
         let insights: [Insight]?
-        let metrics: Metrics
         let links: Links
+        let metrics: MarketsTokenDetailsMetrics?
         let pricePerformance: PricePerformance
     }
 
@@ -47,15 +47,6 @@ extension MarketsDTO.Coins {
         let liquidityChange: [String: Decimal]
         let buyPressureChange: [String: Decimal]
         let experiencedBuyerChange: [String: Decimal]
-    }
-
-    struct Metrics: Codable {
-        let marketRating: Decimal
-        let circulatingSupply: Decimal
-        let marketCap: Decimal
-        let volume24H: Decimal
-        let totalSupply: Decimal
-        let fullyDilutedValuation: Decimal?
     }
 
     struct Links: Codable {

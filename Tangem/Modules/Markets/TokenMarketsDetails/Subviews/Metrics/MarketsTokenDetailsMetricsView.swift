@@ -1,15 +1,15 @@
 //
-//  MarketsTokenDetailsInsightsView.swift
+//  MarketsTokenDetailsMetricsView.swift
 //  Tangem
 //
-//  Created by Andrew Son on 08/07/24.
+//  Created by Andrew Son on 10/07/24.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import SwiftUI
 
-struct MarketsTokenDetailsInsightsView: View {
-    @ObservedObject var viewModel: MarketsTokenDetailsInsightsViewModel
+struct MarketsTokenDetailsMetricsView: View {
+    let viewModel: MarketsTokenDetailsMetricsViewModel
 
     @State private var gridWidth: CGFloat = .zero
     @State private var firstItemWidth: CGFloat = .zero
@@ -20,23 +20,16 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 
     private var gridItems: [GridItem] {
-        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .leading)]
+        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(Localization.marketsTokenDetailsInsights)
+                Text(Localization.marketsTokenDetailsMetrics)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 Spacer()
-
-                MarketsPickerView(
-                    marketPriceIntervalType: $viewModel.selectedInterval,
-                    options: viewModel.availableIntervals,
-                    shouldStretchToFill: false,
-                    titleFactory: { $0.rawValue }
-                )
             }
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 10, content: {
@@ -47,7 +40,8 @@ struct MarketsTokenDetailsInsightsView: View {
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
                         },
-                        containerWidth: gridWidth
+                        containerWidth: gridWidth,
+                        estimateTitleAndMessageSizes: false
                     )
                     .readGeometry(\.size.width, onChange: { value in
                         if value > firstItemWidth {
@@ -64,36 +58,42 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 }
 
-extension MarketsTokenDetailsInsightsView {
+extension MarketsTokenDetailsMetricsView {
     enum Constants {
         static let itemsSpacing: CGFloat = 12
     }
 }
 
-extension MarketsTokenDetailsInsightsView {
+extension MarketsTokenDetailsMetricsView {
     enum RecordType: String, Identifiable, MarketsTokenDetailsInfoDescriptionProvider {
-        case buyers
-        case buyPressure
-        case holdersChange
-        case liquidity
+        case marketCapitalization
+        case marketRating
+        case tradingVolume
+        case fullyDilutedValuation
+        case circulatingSupply
+        case totalSupply
 
         var id: String { rawValue }
 
         var title: String {
             switch self {
-            case .buyers: return Localization.marketsTokenDetailsExperiencedBuyers
-            case .buyPressure: return Localization.marketsTokenDetailsBuyPressure
-            case .holdersChange: return Localization.marketsTokenDetailsHolders
-            case .liquidity: return Localization.marketsTokenDetailsLiquidity
+            case .marketCapitalization: return Localization.marketsTokenDetailsMarketCapitalization
+            case .marketRating: return Localization.marketsTokenDetailsMarketRating
+            case .tradingVolume: return Localization.marketsTokenDetailsTradingVolume
+            case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuation
+            case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupply
+            case .totalSupply: return Localization.marketsTokenDetailsTotalSupply
             }
         }
 
         var infoDescription: String {
             switch self {
-            case .buyers: return Localization.marketsTokenDetailsExperiencedBuyersDescription
-            case .buyPressure: return Localization.marketsTokenDetailsBuyPressureDescription
-            case .holdersChange: return Localization.marketsTokenDetailsHoldersDescription
-            case .liquidity: return Localization.marketsTokenDetailsLiquidityDescription
+            case .marketCapitalization: return Localization.marketsTokenDetailsMarketCapitalizationDescription
+            case .marketRating: return Localization.marketsTokenDetailsMarketRatingDescription
+            case .tradingVolume: return Localization.marketsTokenDetailsTradingVolume24hDescription
+            case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuationDescription
+            case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupplyDescription
+            case .totalSupply: return Localization.marketsTokenDetailsTotalSupplyDescription
             }
         }
     }
@@ -113,21 +113,16 @@ extension MarketsTokenDetailsInsightsView {
 }
 
 #Preview {
-    let records: [MarketsTokenDetailsInsightsView.RecordInfo] = [
-        .init(type: .buyers, recordData: "+44"),
-        .init(type: .buyPressure, recordData: "-$400"),
-        .init(type: .holdersChange, recordData: "+100"),
-        .init(type: .liquidity, recordData: "+445,9K"),
-    ]
-
-    return MarketsTokenDetailsInsightsView(
+    MarketsTokenDetailsMetricsView(
         viewModel: .init(
-            insights: .init(dto: .init(
-                holdersChange: [:],
-                liquidityChange: [:],
-                buyPressureChange: [:],
-                experiencedBuyerChange: [:]
-            )),
+            metrics: .init(
+                marketRating: 3,
+                circulatingSupply: 112259808785.143,
+                marketCap: 112234033891,
+                volume24H: 42854017104,
+                totalSupply: 112286364258.112,
+                fullyDilutedValuation: 112234033891
+            ),
             infoRouter: nil
         )
     )

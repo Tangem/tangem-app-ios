@@ -30,7 +30,8 @@ struct TokenMarketsDetailsMapper {
             fullDescription: response.fullDescription,
             priceChangePercentage: response.priceChangePercentage,
             tokenItems: mapToTokenItems(response: response),
-            insights: .init(dto: response.insights?.first)
+            insights: .init(dto: response.insights?.first),
+            metrics: response.metrics
         )
     }
 

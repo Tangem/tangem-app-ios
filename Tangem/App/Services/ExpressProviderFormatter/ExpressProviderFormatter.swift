@@ -88,6 +88,15 @@ struct ExpressProviderFormatter {
         )
     }
 
+    func mapToProvider(provider: ExpressPendingTransactionRecord.Provider) -> ProviderRowViewModel.Provider {
+        ProviderRowViewModel.Provider(
+            id: provider.id,
+            iconURL: provider.iconURL,
+            name: provider.name,
+            type: provider.type.title
+        )
+    }
+
     func mapToLegalText(provider: ExpressProvider) -> AttributedString? {
         let tos = Localization.expressTermsOfUse
         let policy = Localization.expressPrivacyPolicy
@@ -132,6 +141,17 @@ struct ExpressProviderFormatter {
 }
 
 private extension ExpressProviderType {
+    var title: String {
+        switch self {
+        case .dex, .cex:
+            return rawValue.uppercased()
+        case .dexBridge:
+            return "DEX/Bridge"
+        }
+    }
+}
+
+private extension ExpressPendingTransactionRecord.ProviderType {
     var title: String {
         switch self {
         case .dex, .cex:

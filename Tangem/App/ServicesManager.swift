@@ -50,7 +50,7 @@ class ServicesManager {
         apiListProvider.initialize()
         pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
-        if FeatureProvider.isAvailable(.staking) {
+        if StakingFeatureProvider().isStakingAvailable {
             stakingRepositoryProxy.initialize()
         }
     }
