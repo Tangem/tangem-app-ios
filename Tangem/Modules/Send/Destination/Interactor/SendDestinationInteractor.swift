@@ -60,11 +60,18 @@ class CommonSendDestinationInteractor {
 
     private func update(destination result: Result<String?, Error>, source: Analytics.DestinationAddressSource) {
         switch result {
-        case .success(let address):
-            _destinationValid.send(address?.nilIfEmpty != nil)
+        case .success(.none), .success(Constants.emptyString):
+            _destinationValid.send(false)
+            _destinationError.send(.none)
+            output?.destinationDidChanged(.none)
+
+        case .success(.some(let address)):
+            assert(!address.isEmpty, "Had to fall in case above")
+
+            _destinationValid.send(true)
             _destinationError.send(.none)
             Analytics.logDestinationAddress(isAddressValid: true, source: source)
-            output?.destinationDidChanged(address.map { .init(value: $0, source: source) })
+            output?.destinationDidChanged(.init(value: address, source: source))
 
         case .failure(let error):
             _destinationValid.send(false)
@@ -183,5 +190,6 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
 private extension CommonSendDestinationInteractor {
     enum Constants {
         static let numberOfRecentTransactions = 10
+        static let emptyString = ""
     }
 }

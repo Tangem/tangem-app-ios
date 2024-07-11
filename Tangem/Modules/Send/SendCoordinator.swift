@@ -40,7 +40,13 @@ class SendCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         let factory = SendFlowFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
-        rootViewModel = factory.makeSendViewModel(sendType: options.type, router: self)
+
+        switch options.type {
+        case .send:
+            rootViewModel = factory.makeSendViewModel(router: self)
+        case .sell(let parameters):
+            rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
+        }
     }
 }
 

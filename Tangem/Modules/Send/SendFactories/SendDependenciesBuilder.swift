@@ -37,30 +37,6 @@ struct SendDependenciesBuilder {
         IconURLBuilder().fiatIconURL(currencyCode: AppSettings.shared.selectedCurrencyCode)
     }
 
-    func makeSendWalletInfo() -> SendWalletInfo {
-        let tokenIconInfo = makeTokenIconInfo()
-
-        return SendWalletInfo(
-            walletName: walletName(),
-            balanceValue: walletModel.balanceValue,
-            balance: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            currencyId: walletModel.tokenItem.currencyId,
-            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
-            feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: isFeeApproximate(),
-            tokenIconInfo: tokenIconInfo,
-            cryptoIconURL: tokenIconInfo.imageURL,
-            cryptoCurrencyCode: walletModel.tokenItem.currencySymbol,
-            fiatIconURL: makeFiatIconURL(),
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode,
-            amountFractionDigits: walletModel.tokenItem.decimalCount,
-            feeFractionDigits: walletModel.feeTokenItem.decimalCount,
-            feeAmountType: walletModel.feeTokenItem.amountType,
-            canUseFiatCalculation: quotesRepository.quote(for: walletModel.tokenItem) != nil
-        )
-    }
-
     func makeCurrencyPickerData() -> SendCurrencyPickerData {
         SendCurrencyPickerData(
             cryptoIconURL: makeTokenIconInfo().imageURL,
@@ -105,23 +81,38 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeSendQRCodeService() -> SendQRCodeService {
+        CommonSendQRCodeService(
+            parser: QRCodeParser(
+                amountType: walletModel.tokenItem.amountType,
+                blockchain: walletModel.tokenItem.blockchain,
+                decimalCount: walletModel.tokenItem.decimalCount
+            )
+        )
+    }
+
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
-        predefinedSellParameters: PredefinedSellParameters?,
-        router: SendRoutable
+        predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
-            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            tokenItem: walletModel.tokenItem,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            transactionCreator: walletModel.transactionCreator,
+            withdrawalNotificationProvider: walletModel.withdrawalNotificationProvider,
+            transactionSigner: userWalletModel.signer,
             feeIncludedCalculator: feeIncludedCalculator,
+            feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
             predefinedValues: predefinedValues
         )
     }
 
     func mapToPredefinedValues(sellParameters: PredefinedSellParameters?) -> SendModel.PredefinedValues {
+        let source: SendModel.PredefinedValues.Source = sellParameters == nil ? .send : .sell
         let destination = sellParameters.map { SendAddress(value: $0.destination, source: .sellProvider) }
         let amount = sellParameters.map { sellParameters in
             let fiatValue = walletModel.tokenItem.currencyId.flatMap { currencyId in
@@ -145,6 +136,6 @@ struct SendDependenciesBuilder {
             return .filled(type: type, value: tag, params: params)
         }()
 
-        return SendModel.PredefinedValues(destination: destination, tag: additionalField, amount: amount)
+        return SendModel.PredefinedValues(source: source, destination: destination, tag: additionalField, amount: amount)
     }
 }
