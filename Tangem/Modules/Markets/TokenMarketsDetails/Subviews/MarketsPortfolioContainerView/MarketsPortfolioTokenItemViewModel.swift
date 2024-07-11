@@ -17,6 +17,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     let coinImageURL: URL?
     let walletName: String
     let tokenName: String
+    let tokenImageName: String?
 
     let fiatBalanceValue: String
     let balanceValue: String
@@ -34,6 +35,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         coinImageURL = data.coinImageURL
         walletName = data.walletName
         tokenName = data.tokenName
+        tokenImageName = data.tokenImageName
         fiatBalanceValue = data.fiatBalanceValue
         balanceValue = data.balanceValue
         userWalletId = data.userWalletId
@@ -46,6 +48,7 @@ extension MarketsPortfolioTokenItemViewModel {
         let coinImageURL: URL?
         let walletName: String
         let tokenName: String
+        let tokenImageName: String?
         let fiatBalanceValue: String
         let balanceValue: String
         let userWalletId: UserWalletId

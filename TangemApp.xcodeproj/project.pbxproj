@@ -3734,7 +3734,6 @@
 				2DB6487E2C35877000DA100D /* MarketsRaitingHeaderView.swift */,
 				2DB6487F2C35877000DA100D /* MarketsRaitingHeaderViewModel.swift */,
 				2DB648802C35877000DA100D /* MarketsSkeletonItemView.swift */,
-				2DD1425D2C3E97AF00B0DA0D /* MarketsPortfolioContainerView */,
 				2DB6487B2C35877000DA100D /* MarketsWalletSelectorView */,
 			);
 			path = UIComponents;
@@ -5511,10 +5510,11 @@
 		B0AF9BFA2C32D01200EC5830 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				B0E479B82C3E7B380043B239 /* Metrics */,
-				B0ED3F062C3D76AC00311DE2 /* Insights */,
-				B0AF9BF92C32D01200EC5830 /* TokenMarketsDetailsView+Skeletons.swift */,
 				B0FF51C72C3C0FA800746705 /* TokenMarketsDetailsStatisticsRecordView.swift */,
+				B0AF9BF92C32D01200EC5830 /* TokenMarketsDetailsView+Skeletons.swift */,
+				B0ED3F062C3D76AC00311DE2 /* Insights */,
+				2DD1425D2C3E97AF00B0DA0D /* MarketsPortfolioContainerView */,
+				B0E479B82C3E7B380043B239 /* Metrics */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";

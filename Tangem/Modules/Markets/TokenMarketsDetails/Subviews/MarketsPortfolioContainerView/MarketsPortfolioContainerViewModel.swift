@@ -58,6 +58,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                         coinImageURL: IconURLBuilder().tokenIconURL(optionalId: tokenItem.id),
                         walletName: userWalletModel.config.cardName,
                         tokenName: "\(tokenItem.currencySymbol) \(tokenItem.networkName)",
+                        tokenImageName: tokenItem.isToken ? tokenItem.blockchain.iconNameFilled : nil,
                         fiatBalanceValue: walletModel.fiatBalance,
                         balanceValue: walletModel.balance,
                         userWalletId: userWalletModel.userWalletId,

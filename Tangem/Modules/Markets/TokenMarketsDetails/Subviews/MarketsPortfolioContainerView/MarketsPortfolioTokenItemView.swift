@@ -11,11 +11,12 @@ import SwiftUI
 struct MarketsPortfolioTokenItemView: View {
     @ObservedObject var viewModel: MarketsPortfolioTokenItemViewModel
 
-    private let iconSize = CGSize(bothDimensions: 36)
+    private let coinIconSize = CGSize(bothDimensions: 36)
+    private let networkIconSize = CGSize(bothDimensions: 14)
 
     var body: some View {
         HStack(spacing: 12) {
-            IconView(url: viewModel.coinImageURL, size: iconSize, forceKingfisher: true)
+            iconView
 
             tokenInfoView
 
@@ -24,6 +25,21 @@ struct MarketsPortfolioTokenItemView: View {
             tokenPriceBalanceView
         }
         .padding(.vertical, 10)
+    }
+
+    private var iconView: some View {
+        IconView(url: viewModel.coinImageURL, size: coinIconSize, forceKingfisher: true)
+            .overlay {
+                if let tokenImageName = viewModel.tokenImageName {
+                    NetworkIcon(
+                        imageName: tokenImageName,
+                        isActive: true,
+                        isMainIndicatorVisible: false
+                    )
+                    .frame(size: networkIconSize)
+                    .offset(x: 18, y: -18)
+                }
+            }
     }
 
     private var tokenInfoView: some View {
@@ -59,5 +75,20 @@ struct MarketsPortfolioTokenItemView: View {
 }
 
 #Preview {
-    EmptyView()
+    Group {
+        MarketsPortfolioTokenItemView(
+            viewModel: MarketsPortfolioTokenItemViewModel(
+                data: .init(
+                    coinImageURL: IconURLBuilder().tokenIconURL(id: "tether"),
+                    walletName: "My Wallet * Salary",
+                    tokenName: "USDT Tether",
+                    tokenImageName: "ethereum",
+                    fiatBalanceValue: "0.1 $",
+                    balanceValue: "0.01111",
+                    userWalletId: .init(with: Data()),
+                    tokenItemId: "tether"
+                )
+            )
+        )
+    }
 }

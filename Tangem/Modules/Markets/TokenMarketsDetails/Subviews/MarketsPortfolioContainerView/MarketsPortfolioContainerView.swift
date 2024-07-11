@@ -113,7 +113,3 @@ extension MarketsPortfolioContainerView {
         }
     }
 }
-
-#Preview {
-    EmptyView()
-}
