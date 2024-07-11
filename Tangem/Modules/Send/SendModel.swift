@@ -37,7 +37,7 @@ class SendModel {
         _destination.value
     }
 
-    var destinationAdditionalField: DestinationAdditionalFieldType {
+    var destinationAdditionalField: SendDestinationAdditionalField {
         _destinationAdditionalField.value
     }
 
@@ -67,8 +67,8 @@ class SendModel {
     // MARK: - Data
 
     private let _destination: CurrentValueSubject<SendAddress?, Never>
-    private let _destinationAdditionalField: CurrentValueSubject<DestinationAdditionalFieldType, Never>
-    private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
+    private let _destinationAdditionalField: CurrentValueSubject<SendDestinationAdditionalField, Never>
+    private let _amount: CurrentValueSubject<SendAmount?, Never>
     private let _selectedFee = CurrentValueSubject<SendFee?, Never>(nil)
     private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
@@ -83,14 +83,16 @@ class SendModel {
 
     private let _sendError = PassthroughSubject<Error?, Never>()
 
+    // MARK: - Dependensies
+
+    var sendFeeInteractor: SendFeeInteractor!
+    var informationRelevanceService: InformationRelevanceService!
+
     // MARK: - Private stuff
 
     private let walletModel: WalletModel
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let sendFeeInteractor: SendFeeInteractor
     private let feeIncludedCalculator: FeeIncludedCalculator
-    private let informationRelevanceService: InformationRelevanceService
-    private let sendType: SendType
 
     private var bag: Set<AnyCancellable> = []
 
@@ -103,31 +105,18 @@ class SendModel {
     init(
         walletModel: WalletModel,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        sendFeeInteractor: SendFeeInteractor,
         feeIncludedCalculator: FeeIncludedCalculator,
-        informationRelevanceService: InformationRelevanceService,
-        sendType: SendType
+        predefinedValues: PredefinedValues
     ) {
         self.walletModel = walletModel
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.sendFeeInteractor = sendFeeInteractor
         self.feeIncludedCalculator = feeIncludedCalculator
-        self.informationRelevanceService = informationRelevanceService
-        self.sendType = sendType
 
-        let destination = sendType.predefinedDestination.map { SendAddress(value: $0, source: .sellProvider) }
-        _destination = .init(destination)
-
-        let fields = SendAdditionalFields.fields(for: walletModel.blockchainNetwork.blockchain)
-        let type = fields.map { DestinationAdditionalFieldType.empty(type: $0) } ?? .notSupported
-        _destinationAdditionalField = .init(type)
+        _destination = .init(predefinedValues.destination)
+        _destinationAdditionalField = .init(predefinedValues.tag)
+        _amount = .init(predefinedValues.amount)
 
         bind()
-
-        // Update the fees in case we have all prerequisites specified
-        if sendType.predefinedAmount != nil, sendType.predefinedDestination != nil {
-            updateFees()
-        }
     }
 
     func currentTransaction() -> BlockchainSdk.Transaction? {
@@ -185,7 +174,7 @@ class SendModel {
                 guard let self else { return }
 
                 if case .failure(let error) = completion,
-                   !error.toTangemSdkError().isUserCancelled {
+                   !error.error.toTangemSdkError().isUserCancelled {
                     _sendError.send(error)
                 }
             } receiveValue: { [weak self] result in
@@ -272,7 +261,7 @@ extension SendModel: SendDestinationInput {
             .eraseToAnyPublisher()
     }
 
-    var additionalFieldPublisher: AnyPublisher<DestinationAdditionalFieldType, Never> {
+    var additionalFieldPublisher: AnyPublisher<SendDestinationAdditionalField, Never> {
         _destinationAdditionalField.eraseToAnyPublisher()
     }
 }
@@ -284,7 +273,7 @@ extension SendModel: SendDestinationOutput {
         _destination.send(address)
     }
 
-    func destinationAdditionalParametersDidChanged(_ type: DestinationAdditionalFieldType) {
+    func destinationAdditionalParametersDidChanged(_ type: SendDestinationAdditionalField) {
         _destinationAdditionalField.send(type)
     }
 }
@@ -365,7 +354,7 @@ extension SendModel: SendNotificationManagerInput {
     }
 
     var feeValues: AnyPublisher<[SendFee], Never> {
-        sendFeeInteractor.feesPublisher()
+        sendFeeInteractor.feesPublisher
     }
 
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
@@ -382,5 +371,13 @@ extension SendModel: SendNotificationManagerInput {
 
     var withdrawalNotification: AnyPublisher<WithdrawalNotification?, Never> {
         _withdrawalNotification.eraseToAnyPublisher()
+    }
+}
+
+extension SendModel {
+    struct PredefinedValues {
+        let destination: SendAddress?
+        let tag: SendDestinationAdditionalField
+        let amount: SendAmount?
     }
 }

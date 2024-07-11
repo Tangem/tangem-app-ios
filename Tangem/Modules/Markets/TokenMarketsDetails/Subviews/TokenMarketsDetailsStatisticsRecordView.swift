@@ -13,6 +13,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     let message: String
     let infoButtonAction: () -> Void
     let containerWidth: CGFloat
+    var estimateTitleAndMessageSizes: Bool = true
 
     @State private var titleTargetWidth: CGFloat = .zero
     @State private var messageTargetWidth: CGFloat = .zero
@@ -35,11 +36,14 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
                 .fixedSize()
                 .readGeometry(\.size.width, bindTo: $titleTargetWidth)
         }
-        .overlay {
-            messageView
-                .opacity(0.0)
-                .fixedSize()
-                .readGeometry(\.size.width, bindTo: $messageTargetWidth)
+        .if(estimateTitleAndMessageSizes) {
+            $0
+                .overlay {
+                    messageView
+                        .opacity(0.0)
+                        .fixedSize()
+                        .readGeometry(\.size.width, bindTo: $messageTargetWidth)
+                }
         }
     }
 
@@ -60,7 +64,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     private var messageView: some View {
         Text(message)
             .lineLimit(1)
-            .fixedSize()
+            .minimumScaleFactor(0.6)
             .style(Fonts.Regular.callout, color: Colors.Text.primary1)
     }
 }

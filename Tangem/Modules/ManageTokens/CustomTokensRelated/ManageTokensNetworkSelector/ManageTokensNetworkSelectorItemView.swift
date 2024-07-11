@@ -16,6 +16,7 @@ struct ManageTokensNetworkSelectorItemView: View {
             NetworkIcon(
                 imageName: viewModel.iconName,
                 isActive: false,
+                isDisabled: false,
                 isMainIndicatorVisible: viewModel.isMain,
                 size: CGSize(bothDimensions: 36)
             )

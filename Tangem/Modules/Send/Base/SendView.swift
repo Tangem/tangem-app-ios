@@ -239,7 +239,7 @@ extension SendView {
         static let sectionContentAnimation: Animation = .easeOut(duration: animationDuration)
         static let hintViewTransition: AnyTransition = .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
 
-        static func auxiliaryViewTransition(for step: SendStep) -> AnyTransition {
+        static func auxiliaryViewTransition(for step: SendStepType) -> AnyTransition {
             let offset: CGFloat
             switch step {
             case .destination, .amount:

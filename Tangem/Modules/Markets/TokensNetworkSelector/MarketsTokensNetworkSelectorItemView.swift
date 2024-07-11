@@ -64,6 +64,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
         NetworkIcon(
             imageName: viewModel.iconImageName,
             isActive: viewModel.isSelected && !viewModel.isReadonly,
+            isDisabled: viewModel.isReadonly,
             isMainIndicatorVisible: viewModel.isMain,
             size: .init(bothDimensions: Constants.iconWidth)
         )

@@ -30,7 +30,7 @@ class CommonSendDestinationInteractor {
     private let transactionHistoryProvider: SendDestinationTransactionHistoryProvider
     private let transactionHistoryMapper: TransactionHistoryMapper
     private let addressResolver: AddressResolver?
-    private let additionalFieldType: SendAdditionalFields?
+    private let additionalFieldType: SendDestinationAdditionalFieldType?
     private let parametersBuilder: SendTransactionParametersBuilder
 
     private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
@@ -39,13 +39,13 @@ class CommonSendDestinationInteractor {
     private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
 
     init(
-        input: SendDestinationInput?,
-        output: SendDestinationOutput?,
+        input: SendDestinationInput,
+        output: SendDestinationOutput,
         validator: SendDestinationValidator,
         transactionHistoryProvider: SendDestinationTransactionHistoryProvider,
         transactionHistoryMapper: TransactionHistoryMapper,
         addressResolver: AddressResolver?,
-        additionalFieldType: SendAdditionalFields?,
+        additionalFieldType: SendDestinationAdditionalFieldType?,
         parametersBuilder: SendTransactionParametersBuilder
     ) {
         self.input = input
@@ -82,7 +82,7 @@ class CommonSendDestinationInteractor {
         return resolved
     }
 
-    private func proceed(additionalField: String) throws -> DestinationAdditionalFieldType {
+    private func proceed(additionalField: String) throws -> SendDestinationAdditionalField {
         guard let type = additionalFieldType else {
             assertionFailure("Additional field for the blockchain whick doesn't support it")
             return .notSupported

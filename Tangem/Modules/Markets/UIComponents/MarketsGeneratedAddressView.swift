@@ -20,19 +20,14 @@ struct MarketsGeneratedAddressView: View {
                 .foregroundColor(Colors.Icon.primary1)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(LocalizedStringKey("To generate addresses for selected networks, you need to attach a Tangem card"))
+                Text(LocalizedStringKey(Localization.marketsGenerateAddressesNotification))
                     .multilineTextAlignment(.leading)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                     .infinityFrame(axis: .horizontal, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 14)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(Colors.Button.disabled)
-        )
+        .defaultRoundedBackground(with: Colors.Button.disabled)
         .infinityFrame(axis: .horizontal, alignment: .leading)
     }
 }

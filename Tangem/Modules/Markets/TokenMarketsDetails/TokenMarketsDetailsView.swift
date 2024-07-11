@@ -122,9 +122,13 @@ struct TokenMarketsDetailsView: View {
                 Group {
                     if let insightsViewModel = viewModel.insightsViewModel {
                         MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
-                            .animation(nil, value: viewModel.isLoading)
+                    }
+
+                    if let metricsViewModel = viewModel.metricsViewModel {
+                        MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
                     }
                 }
+                .animation(nil, value: viewModel.isLoading)
                 .padding(.horizontal, 16)
             }
         }
