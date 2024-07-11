@@ -21,7 +21,6 @@ struct SellFlowBaseBuilder {
         let notificationManager = builder.makeSendNotificationManager()
         let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
-        let sendQRCodeService = builder.makeSendQRCodeService()
 
         let sendModel = builder.makeSendModel(
             sendTransactionDispatcher: sendTransactionDispatcher,
@@ -77,6 +76,8 @@ struct SellFlowBaseBuilder {
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
         let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
         stepsManager.set(output: viewModel)
+
+        fee.step.set(alertPresenter: viewModel)
 
         return viewModel
     }
