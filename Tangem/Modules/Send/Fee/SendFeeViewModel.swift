@@ -18,6 +18,7 @@ class SendFeeViewModel: ObservableObject {
 
     @Published private(set) var deselectedFeeViewsVisible: Bool = false
     @Published var animatingAuxiliaryViewsOnAppear: Bool = false
+    @Published var alert: AlertBinder?
 
     @Published private(set) var feeLevelsNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var customFeeNotificationInputs: [NotificationViewInput] = []
@@ -86,7 +87,7 @@ class SendFeeViewModel: ObservableObject {
     }
 
     private func bind() {
-        interactor.feesPublisher()
+        interactor.feesPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, values in
@@ -94,7 +95,7 @@ class SendFeeViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        interactor.selectedFeePublisher()
+        interactor.selectedFeePublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedFee in
@@ -122,7 +123,7 @@ class SendFeeViewModel: ObservableObject {
         selectedFeeOption = selectedFee?.option
 
         let showCustomFeeFields = selectedFee?.option == .custom
-        let models = showCustomFeeFields ? interactor.customFeeInputFieldModels() : []
+        let models = showCustomFeeFields ? interactor.customFeeInputFieldModels : []
         if customFeeModels.count != models.count {
             customFeeModels = models
         }

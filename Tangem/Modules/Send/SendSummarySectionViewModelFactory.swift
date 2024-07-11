@@ -31,7 +31,7 @@ struct SendSummarySectionViewModelFactory {
         self.tokenIconInfo = tokenIconInfo
     }
 
-    func makeDestinationViewTypes(address: String, additionalField: DestinationAdditionalFieldType) -> [SendDestinationSummaryViewType] {
+    func makeDestinationViewTypes(address: String, additionalField: SendDestinationAdditionalField) -> [SendDestinationSummaryViewType] {
         var destinationViewTypes: [SendDestinationSummaryViewType] = []
 
         var addressCorners: UIRectCorner = .allCorners

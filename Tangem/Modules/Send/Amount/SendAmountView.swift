@@ -133,7 +133,7 @@ extension SendAmountView: Setupable {
 /*
  struct SendAmountView_Previews: PreviewProvider {
      static let viewModel = SendAmountViewModel(
-         inputModel: SendModulesStepsBuilder (userWalletName: "Wallet", wallet: .mockETH).makeStakingAmountInput(),
+         inputModel: SendDependenciesBuilder (userWalletName: "Wallet", wallet: .mockETH).makeStakingAmountInput(),
          cryptoFiatAmountConverter: .init(),
          input: StakingAmountInputMock(),
          output: StakingAmountOutputMock()

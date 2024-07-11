@@ -27,9 +27,12 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         intervalInsights[selectedInterval] ?? []
     }
 
-    private let currencySymbolProvider: NumberFormatter = {
+    private let fiatAmountFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = .current
+        numberFormatter.numberStyle = .currency
+        numberFormatter.maximumFractionDigits = 1
+        numberFormatter.usesGroupingSeparator = true
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
         numberFormatter.currencyCode = currencyCode
@@ -38,6 +41,15 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
             numberFormatter.currencySymbol = AppConstants.rubSign
         }
 
+        return numberFormatter
+    }()
+
+    private let nonCurrencyFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = .current
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.maximumFractionDigits = 1
+        numberFormatter.usesGroupingSeparator = true
         return numberFormatter
     }()
 
@@ -59,24 +71,22 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         let roundingType = AmountRoundingType.default(roundingMode: .plain, scale: 1)
         let missingValue = AppConstants.dashSign
 
-        func useDefaultFormat(for value: Decimal?) -> String {
+        func formatAmount(_ value: Decimal?, using formatter: NumberFormatter) -> String {
             guard let value else {
                 return missingValue
             }
 
-            return amountNotationFormatter.formatWithNotation(value, roundingType: roundingType).fullDescription
+            let amountWithNotation = amountNotationFormatter.formatWithNotation(value, roundingType: roundingType)
+            let formattedAmount = formatter.string(from: abs(amountWithNotation.decimal) as NSDecimalNumber) ?? "0"
+            return "\(amountWithNotation.signPrefix)\(formattedAmount)\(amountWithNotation.suffix)"
         }
 
         intervalInsights = availableIntervals.reduce(into: [:]) { partialResult, interval in
-            let buyers = useDefaultFormat(for: insights.experiencedBuyers[interval])
-            let holders = useDefaultFormat(for: insights.holders[interval])
-            let liquidity = useDefaultFormat(for: insights.liquidity[interval])
+            let buyers = formatAmount(insights.experiencedBuyers[interval], using: nonCurrencyFormatter)
+            let holders = formatAmount(insights.holders[interval], using: nonCurrencyFormatter)
+            let liquidity = formatAmount(insights.liquidity[interval], using: nonCurrencyFormatter)
 
-            var buyPressure = missingValue
-            if let buyPressureValue = insights.buyPressure[interval] {
-                let result = amountNotationFormatter.formatWithNotation(buyPressureValue, roundingType: roundingType)
-                buyPressure = "\(result.signPrefix) \(currencySymbolProvider.currencySymbol ?? "") \(abs(result.decimal)) \(result.suffix)"
-            }
+            let buyPressure = formatAmount(insights.buyPressure[interval], using: fiatAmountFormatter)
 
             partialResult[interval] = [
                 .init(type: .buyers, recordData: buyers),

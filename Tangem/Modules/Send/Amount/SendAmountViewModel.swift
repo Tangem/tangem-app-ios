@@ -67,10 +67,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         self.interactor = interactor
 
         bind()
-
-        if let predefinedAmount = initial.predefinedAmount {
-            setExternalAmount(predefinedAmount)
-        }
     }
 
     func onAppear() {
@@ -116,7 +112,7 @@ private extension SendAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher()
+            .errorPublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, error in
@@ -159,7 +155,5 @@ extension SendAmountViewModel {
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
-
-        let predefinedAmount: Decimal?
     }
 }

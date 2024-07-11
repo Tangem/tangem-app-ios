@@ -9,5 +9,5 @@
 import Foundation
 
 protocol SendSummaryRoutable: AnyObject {
-    func openStep(_ step: SendStep)
+    func openStep(_ step: SendStepType)
 }

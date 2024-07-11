@@ -12,16 +12,13 @@ import BlockchainSdk
 
 protocol SendFeeInteractor {
     var selectedFee: SendFee? { get }
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
+
+    var feesPublisher: AnyPublisher<[SendFee], Never> { get }
+    var customFeeInputFieldModels: [SendCustomFeeInputFieldModel] { get }
 
     func update(selectedFee: SendFee)
     func updateFees()
-
-    func feesPublisher() -> AnyPublisher<[SendFee], Never>
-    func selectedFeePublisher() -> AnyPublisher<SendFee?, Never>
-
-    func customFeeInputFieldModels() -> [SendCustomFeeInputFieldModel]
-
-    func setup(input: SendFeeInput, output: SendFeeOutput)
 }
 
 class CommonSendFeeInteractor {
@@ -29,10 +26,10 @@ class CommonSendFeeInteractor {
     private weak var output: SendFeeOutput?
 
     private let provider: SendFeeProvider
-    private var customFeeService: CustomFeeService?
-    private let _cryptoAmount: CurrentValueSubject<Amount?, Never>
-    private let _destination: CurrentValueSubject<String?, Never>
+    private let customFeeService: CustomFeeService?
 
+    private let _cryptoAmount: CurrentValueSubject<Amount?, Never> = .init(nil)
+    private let _destination: CurrentValueSubject<String?, Never> = .init(nil)
     private let _fees: CurrentValueSubject<LoadingValue<[Fee]>, Never> = .init(.loading)
     private let _customFee: CurrentValueSubject<Fee?, Never> = .init(.none)
 
@@ -55,19 +52,20 @@ class CommonSendFeeInteractor {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        input: SendFeeInput,
+        output: SendFeeOutput,
         provider: SendFeeProvider,
         defaultFeeOptions: [FeeOption],
-        customFeeService: CustomFeeService?,
-        predefinedAmount: Amount? = nil,
-        predefinedDestination: String? = nil
+        customFeeService: CustomFeeService?
     ) {
+        self.input = input
+        self.output = output
         self.provider = provider
         self.defaultFeeOptions = defaultFeeOptions
         self.customFeeService = customFeeService
-        _cryptoAmount = .init(predefinedAmount)
-        _destination = .init(predefinedDestination)
 
         bind()
+        bind(input: input)
     }
 
     func bind() {
@@ -110,11 +108,27 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
         input?.selectedFee
     }
 
-    func setup(input: any SendFeeInput, output: any SendFeeOutput) {
-        self.input = input
-        self.output = output
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
+        guard let input else {
+            assertionFailure("SendFeeInput is not found")
+            return Empty().eraseToAnyPublisher()
+        }
 
-        bind(input: input)
+        return input.selectedFeePublisher
+    }
+
+    var feesPublisher: AnyPublisher<[SendFee], Never> {
+        Publishers.CombineLatest(_fees, _customFee)
+            .withWeakCaptureOf(self)
+            .map { interactor, args in
+                let (feesValue, customFee) = args
+                return interactor.mapToSendFees(feesValue: feesValue, customFee: customFee)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    var customFeeInputFieldModels: [SendCustomFeeInputFieldModel] {
+        customFeeService?.inputFieldModels() ?? []
     }
 
     func updateFees() {
@@ -140,24 +154,6 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 
     func update(selectedFee: SendFee) {
         output?.feeDidChanged(fee: selectedFee)
-    }
-
-    func selectedFeePublisher() -> AnyPublisher<SendFee?, Never> {
-        input?.selectedFeePublisher ?? .just(output: nil)
-    }
-
-    func feesPublisher() -> AnyPublisher<[SendFee], Never> {
-        Publishers.CombineLatest(_fees, _customFee)
-            .withWeakCaptureOf(self)
-            .map { interactor, args in
-                let (feesValue, customFee) = args
-                return interactor.mapToSendFees(feesValue: feesValue, customFee: customFee)
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func customFeeInputFieldModels() -> [SendCustomFeeInputFieldModel] {
-        customFeeService?.inputFieldModels() ?? []
     }
 }
 
