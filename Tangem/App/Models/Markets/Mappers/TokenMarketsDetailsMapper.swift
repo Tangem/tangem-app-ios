@@ -31,7 +31,8 @@ struct TokenMarketsDetailsMapper {
             priceChangePercentage: response.priceChangePercentage,
             tokenItems: mapToTokenItems(response: response),
             insights: .init(dto: response.insights?.first),
-            metrics: response.metrics
+            metrics: response.metrics,
+            pricePerformance: mapPricePerformance(response: response)
         )
     }
 
@@ -61,5 +62,15 @@ struct TokenMarketsDetailsMapper {
         } ?? []
 
         return items
+    }
+
+    private func mapPricePerformance(response: MarketsDTO.Coins.Response) -> [MarketsPriceIntervalType: MarketsPricePerformanceData] {
+        return response.pricePerformance.reduce(into: [:]) { partialResult, pair in
+            guard let intervalType = MarketsPriceIntervalType(rawValue: pair.key) else {
+                return
+            }
+
+            partialResult[intervalType] = pair.value
+        }
     }
 }

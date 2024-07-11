@@ -20,6 +20,7 @@ struct TokenMarketsDetailsModel: Identifiable {
     let tokenItems: [TokenItem]
     let insights: TokenMarketsDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
+    let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]
 }
 
 struct TokenMarketsDetailsInsights {
