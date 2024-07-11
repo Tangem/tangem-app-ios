@@ -42,13 +42,15 @@ class SendAmountViewModel: ObservableObject, Identifiable {
 
     private let tokenItem: TokenItem
     private let interactor: SendAmountInteractor
+    private let sendQRCodeService: SendQRCodeService
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory
 
     private var bag: Set<AnyCancellable> = []
 
     init(
         initial: SendAmountViewModel.Settings,
-        interactor: SendAmountInteractor
+        interactor: SendAmountInteractor,
+        sendQRCodeService: SendQRCodeService
     ) {
         userWalletName = initial.userWalletName
         balance = initial.balanceFormatted
@@ -65,6 +67,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         tokenItem = initial.tokenItem
 
         self.interactor = interactor
+        self.sendQRCodeService = sendQRCodeService
 
         bind()
     }
@@ -81,11 +84,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         let amount = interactor.updateToMaxAmount()
         decimalNumberTextFieldViewModel.update(value: amount?.main)
         alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol)
-    }
-
-    func setExternalAmount(_ amount: Decimal?) {
-        decimalNumberTextFieldViewModel.update(value: amount)
-        textFieldValueDidChanged(amount: amount)
     }
 }
 
@@ -104,8 +102,8 @@ private extension SendAmountViewModel {
 
         decimalNumberTextFieldViewModel
             .valuePublisher
-            .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, value in
                 viewModel.textFieldValueDidChanged(amount: value)
             }
@@ -113,12 +111,27 @@ private extension SendAmountViewModel {
 
         interactor
             .errorPublisher
-            .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, error in
                 viewModel.error = error?.localizedDescription
             }
             .store(in: &bag)
+
+        sendQRCodeService
+            .qrCodeAmount
+            .compactMap { $0 }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, amount in
+                viewModel.setExternalAmount(amount)
+            }
+            .store(in: &bag)
+    }
+
+    func setExternalAmount(_ amount: Decimal?) {
+        decimalNumberTextFieldViewModel.update(value: amount)
+        textFieldValueDidChanged(amount: amount)
     }
 
     func textFieldValueDidChanged(amount: Decimal?) {

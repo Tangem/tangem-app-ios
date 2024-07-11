@@ -12,7 +12,7 @@ import SwiftUI
 struct NetworkIcon: View {
     let imageName: String
     let isActive: Bool
-    let isDisabled: Bool
+    var isDisabled: Bool = false
     let isMainIndicatorVisible: Bool
     var size: CGSize = .init(width: 20, height: 20)
 
@@ -69,7 +69,7 @@ struct NetworkIcon_Previews: PreviewProvider {
     static let blockchainIconNames = "solana.fill"
     static var previews: some View {
         VStack {
-            NetworkIcon(imageName: blockchainIconNames, isActive: true, isDisabled: false, isMainIndicatorVisible: true)
+            NetworkIcon(imageName: blockchainIconNames, isActive: true, isMainIndicatorVisible: true)
 
             NetworkIcon(imageName: blockchainIconNames, isActive: true, isDisabled: false, isMainIndicatorVisible: true, size: CGSize(bothDimensions: 36))
         }

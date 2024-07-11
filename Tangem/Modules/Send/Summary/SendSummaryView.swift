@@ -42,7 +42,9 @@ struct SendSummaryView: View {
                         backgroundColor: Colors.Button.secondary
                     )
                     .padding(.top, 8)
-                    .transition(SendView.Constants.hintViewTransition)
+                    .transition(
+                        .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
+                    )
                 }
 
                 ForEach(viewModel.notificationInputs) { input in
@@ -92,7 +94,7 @@ struct SendSummaryView: View {
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditDestination)
         .onTapGesture {
-            viewModel.didTapSummary(for: .destination)
+            viewModel.userDidTapDestination()
         }
     }
 
@@ -113,7 +115,7 @@ struct SendSummaryView: View {
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditAmount)
         .onTapGesture {
-            viewModel.didTapSummary(for: .amount)
+            viewModel.userDidTapAmount()
         }
     }
 
@@ -149,7 +151,7 @@ struct SendSummaryView: View {
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditFee)
         .onTapGesture {
-            viewModel.didTapSummary(for: .fee)
+            viewModel.userDidTapFee()
         }
     }
 
@@ -178,8 +180,8 @@ struct SendSummaryView: View {
                 .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
-                .visible(viewModel.transactionDescriptionIsVisisble)
-                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisisble)
+                .visible(viewModel.transactionDescriptionIsVisible)
+                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         }
     }
 }

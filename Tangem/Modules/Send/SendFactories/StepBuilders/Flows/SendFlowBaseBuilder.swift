@@ -1,5 +1,5 @@
 //
-//  SendBaseStepBuilder.swift
+//  SendFlowBaseBuilder.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 28.06.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SendBaseStepBuilder {
+struct SendFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let sendAmountStepBuilder: SendAmountStepBuilder
@@ -18,23 +18,30 @@ struct SendBaseStepBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
         let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendQRCodeService = builder.makeSendQRCodeService()
 
-        let sendModel = builder.makeSendModel(
-            sendTransactionDispatcher: sendTransactionDispatcher,
-            predefinedSellParameters: sendType.predefinedSellParameters,
+        let sendModel = builder.makeSendModel(sendTransactionDispatcher: sendTransactionDispatcher)
+
+        let fee = sendFeeStepBuilder.makeFeeSendStep(
+            io: (input: sendModel, output: sendModel),
+            notificationManager: notificationManager,
             router: router
         )
 
-        let fee = sendFeeStepBuilder.makeFeeSendStep(io: (input: sendModel, output: sendModel), notificationManager: notificationManager, router: router)
-        let amount = sendAmountStepBuilder.makeSendAmountStep(io: (input: sendModel, output: sendModel), sendFeeInteractor: fee.interactor)
+        let amount = sendAmountStepBuilder.makeSendAmountStep(
+            io: (input: sendModel, output: sendModel),
+            sendFeeInteractor: fee.interactor,
+            sendQRCodeService: sendQRCodeService
+        )
+
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
             io: (input: sendModel, output: sendModel),
-            sendAmountInteractor: amount.interactor,
             sendFeeInteractor: fee.interactor,
+            sendQRCodeService: sendQRCodeService,
             addressTextViewHeightModel: addressTextViewHeightModel,
             router: router
         )
@@ -44,28 +51,18 @@ struct SendBaseStepBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            sendType: sendType
+            editableType: .editable
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            sendFeeInteractor: fee.interactor,
-            notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            sendType: sendType
+            addressTextViewHeightModel: addressTextViewHeightModel
         )
 
-        // We have to set and fee.interactor here after all setups is complited
+        // We have to set dependicies here after all setups is completed
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
         )
-
-        // Update the fees in case we in the sell flow
-        // TODO: Will be updated
-        // https://tangem.atlassian.net/browse/IOS-7195
-        if !sendType.isSend {
-            sendModel.updateFees()
-        }
 
         notificationManager.setup(input: sendModel)
 
@@ -78,22 +75,21 @@ struct SendBaseStepBuilder {
         finish.setup(sendFeeInteractor: fee.interactor)
         finish.setup(sendFinishInput: sendModel)
 
-        return SendViewModel(
-            walletInfo: builder.makeSendWalletInfo(),
-            walletModel: walletModel,
-            userWalletModel: userWalletModel,
-            sendType: sendType,
-            sendModel: sendModel,
-            notificationManager: notificationManager,
-            sendFeeInteractor: fee.interactor,
-            keyboardVisibilityService: KeyboardVisibilityService(),
-            feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder(),
-            sendAmountViewModel: amount.step.viewModel,
-            sendDestinationViewModel: destination.step.viewModel,
-            sendFeeViewModel: fee.step.viewModel,
-            sendSummaryViewModel: summary.step.viewModel,
-            sendFinishViewModel: finish.viewModel,
-            coordinator: router
+        let stepsManager = CommonSendStepsManager(
+            destinationStep: destination.step,
+            amountStep: amount.step,
+            feeStep: fee.step,
+            summaryStep: summary.step,
+            finishStep: finish
         )
+
+        summary.step.set(router: stepsManager)
+        destination.step.set(stepRouter: stepsManager)
+
+        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
+        stepsManager.set(output: viewModel)
+
+        return viewModel
     }
 }

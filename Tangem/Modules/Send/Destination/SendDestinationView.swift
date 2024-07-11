@@ -12,6 +12,10 @@ struct SendDestinationView: View {
     @ObservedObject var viewModel: SendDestinationViewModel
     let namespace: Namespace.ID
 
+    private var auxiliaryViewTransition: AnyTransition {
+        .offset(y: 100).combined(with: .opacity)
+    }
+
     var body: some View {
         GroupedScrollView(spacing: 20) {
             GroupedSection(viewModel.addressViewModel) {
@@ -26,7 +30,7 @@ struct SendDestinationView: View {
                 if !viewModel.animatingAuxiliaryViewsOnAppear, let viewModel = viewModel.addressViewModel {
                     Text(viewModel.description)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .destination))
+                        .transition(auxiliaryViewTransition)
                 }
             }
             .backgroundColor(Colors.Background.action)
@@ -48,7 +52,7 @@ struct SendDestinationView: View {
                 if let additionalFieldViewModel = viewModel.additionalFieldViewModel, !viewModel.animatingAuxiliaryViewsOnAppear {
                     Text(additionalFieldViewModel.description)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .destination))
+                        .transition(auxiliaryViewTransition)
                 }
             }
             .backgroundColor(Colors.Background.action)
