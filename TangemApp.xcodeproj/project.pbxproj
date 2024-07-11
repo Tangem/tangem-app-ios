@@ -1546,7 +1546,6 @@
 		EFB932152C3EC18300C999E9 /* StakingValidatorsInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB9320F2C3EC18300C999E9 /* StakingValidatorsInputOutput.swift */; };
 		EFB932182C3EC18300C999E9 /* StakingValidatorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB932122C3EC18300C999E9 /* StakingValidatorsView.swift */; };
 		EFB932192C3EC18300C999E9 /* StakingValidatorsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB932132C3EC18300C999E9 /* StakingValidatorsViewModel.swift */; };
-		EFB9321B2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB9321A2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift */; };
 		EFB9321D2C3EC44D00C999E9 /* ValidatorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB9321C2C3EC44D00C999E9 /* ValidatorInfo.swift */; };
 		EFB999AF2C3D9A7F00F6A987 /* CommonSendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */; };
 		EFB999B12C3D9AA100F6A987 /* CommonSellStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */; };
@@ -3412,7 +3411,6 @@
 		EFB9320F2C3EC18300C999E9 /* StakingValidatorsInputOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsInputOutput.swift; sourceTree = "<group>"; };
 		EFB932122C3EC18300C999E9 /* StakingValidatorsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsView.swift; sourceTree = "<group>"; };
 		EFB932132C3EC18300C999E9 /* StakingValidatorsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsViewModel.swift; sourceTree = "<group>"; };
-		EFB9321A2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiltiSelectableGropedSection.swift; sourceTree = "<group>"; };
 		EFB9321C2C3EC44D00C999E9 /* ValidatorInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorInfo.swift; sourceTree = "<group>"; };
 		EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendStepsManager.swift; sourceTree = "<group>"; };
 		EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSellStepsManager.swift; sourceTree = "<group>"; };
@@ -7984,7 +7982,6 @@
 				EF4662332924DFAF00346B6C /* GroupedScrollView.swift */,
 				EF4662342924DFAF00346B6C /* GroupedSection.swift */,
 				EF5F1BB329D5A19E0093307B /* SelectableGropedSection.swift */,
-				EFB9321A2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift */,
 			);
 			path = GroupedScrollView;
 			sourceTree = "<group>";
@@ -11005,7 +11002,6 @@
 				5DF2522D24F95E390015B429 /* UIScreen+.swift in Sources */,
 				B60B203C2AC5BDFA0098C09D /* BottomScrollableSheetShadowView.swift in Sources */,
 				B0A596562992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift in Sources */,
-				EFB9321B2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift in Sources */,
 				B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */,
 				DC3ED8A72C1B49F900C89C62 /* DefaultPickerRowView.swift in Sources */,
 				DA4055252ABDD3A300353F8A /* AddCustomTokenNetworksListItemViewModel.swift in Sources */,
