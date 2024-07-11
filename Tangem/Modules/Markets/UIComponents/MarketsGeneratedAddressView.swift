@@ -27,8 +27,6 @@ struct MarketsGeneratedAddressView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 14)
         .defaultRoundedBackground(with: Colors.Button.disabled)
         .infinityFrame(axis: .horizontal, alignment: .leading)
     }

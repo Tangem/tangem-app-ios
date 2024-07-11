@@ -19,6 +19,7 @@ struct ManageTokensCoinItemView: View {
         NetworkIcon(
             imageName: model.selectedPublisher ? model.imageNameSelected : model.imageName,
             isActive: model.selectedPublisher,
+            isDisabled: false,
             isMainIndicatorVisible: model.isMain
         )
     }
