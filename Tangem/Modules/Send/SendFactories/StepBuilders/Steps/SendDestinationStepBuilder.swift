@@ -20,8 +20,8 @@ struct SendDestinationStepBuilder {
 
     func makeSendDestinationStep(
         io: IO,
-        sendAmountInteractor: any SendAmountInteractor,
         sendFeeInteractor: any SendFeeInteractor,
+        sendQRCodeService: SendQRCodeService,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
     ) -> ReturnValue {
@@ -29,28 +29,28 @@ struct SendDestinationStepBuilder {
 
         let viewModel = makeSendDestinationViewModel(
             interactor: interactor,
-            addressTextViewHeightModel: addressTextViewHeightModel
+            sendQRCodeService: sendQRCodeService,
+            addressTextViewHeightModel: addressTextViewHeightModel,
+            router: router
         )
 
         let step = SendDestinationStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendAmountInteractor: sendAmountInteractor,
             sendFeeInteractor: sendFeeInteractor,
-            tokenItem: walletModel.tokenItem,
-            router: router
+            tokenItem: walletModel.tokenItem
         )
 
         return (step: step, interactor: interactor)
     }
 }
 
-// MARK: - SendAmountStepBuilder
-
 private extension SendDestinationStepBuilder {
     func makeSendDestinationViewModel(
         interactor: SendDestinationInteractor,
-        addressTextViewHeightModel: AddressTextViewHeightModel
+        sendQRCodeService: SendQRCodeService,
+        addressTextViewHeightModel: AddressTextViewHeightModel,
+        router: SendDestinationRoutable
     ) -> SendDestinationViewModel {
         let tokenItem = walletModel.tokenItem
         let suggestedWallets = makeSuggestedWallets()
@@ -65,7 +65,9 @@ private extension SendDestinationStepBuilder {
         let viewModel = SendDestinationViewModel(
             settings: settings,
             interactor: interactor,
-            addressTextViewHeightModel: addressTextViewHeightModel
+            sendQRCodeService: sendQRCodeService,
+            addressTextViewHeightModel: addressTextViewHeightModel,
+            router: router
         )
 
         return viewModel

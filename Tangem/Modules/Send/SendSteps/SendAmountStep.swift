@@ -11,7 +11,7 @@ import Combine
 import SwiftUI
 
 class SendAmountStep {
-    private let _viewModel: SendAmountViewModel
+    private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
     private let sendFeeInteractor: SendFeeInteractor
 
@@ -20,7 +20,7 @@ class SendAmountStep {
         interactor: SendAmountInteractor,
         sendFeeInteractor: SendFeeInteractor
     ) {
-        _viewModel = viewModel
+        self.viewModel = viewModel
         self.interactor = interactor
         self.sendFeeInteractor = sendFeeInteractor
     }
@@ -31,24 +31,27 @@ class SendAmountStep {
 extension SendAmountStep: SendStep {
     var title: String? { Localization.sendAmountLabel }
 
-    var type: SendStepType { .amount }
-
-    var viewModel: SendAmountViewModel { _viewModel }
-
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            SendAmountView(
-                viewModel: viewModel,
-                namespace: .init(id: namespace, names: SendGeometryEffectNames())
-            )
-        )
-    }
+    var type: SendStepType { .amount(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.errorPublisher.map { $0 == nil }.eraseToAnyPublisher()
+        interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
-    func willClose(next step: any SendStep) {
+    func willAppear(previous step: any SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        viewModel.setAnimatingAuxiliaryViewsOnAppear()
+    }
+
+    func willDisappear(next step: SendStep) {
+        UIApplication.shared.endEditing()
+
+        guard step.type.isSummary else {
+            return
+        }
+
         sendFeeInteractor.updateFees()
     }
 }

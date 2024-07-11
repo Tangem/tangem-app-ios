@@ -2,7 +2,7 @@
 //  SendViewModel.swift
 //  Tangem
 //
-//  Created by Andrey Chukavin on 30.10.2023.
+//  Created by Sergey Balashov on 06.06.2024.
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
@@ -14,787 +14,200 @@ final class SendViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var stepAnimation: SendView.StepAnimation
-    @Published var step: SendStepType
-    @Published var closeButtonDisabled = false
-    @Published var showBackButton = false
-    @Published var showTransactionButtons = false
+    @Published var step: SendStep {
+        willSet {
+            step.willDisappear(next: newValue)
+            newValue.willAppear(previous: step)
+        } didSet {
+            bind(step: step)
+        }
+    }
+
     @Published var mainButtonType: SendMainButtonType
+    @Published var showBackButton = false
+
+    @Published var transactionURL: URL?
+
+    @Published var closeButtonDisabled = false
+    @Published var isUserInteractionDisabled = false
     @Published var mainButtonLoading: Bool = false
     @Published var mainButtonDisabled: Bool = false
-    @Published var updatingFees = false
+
     @Published var alert: AlertBinder?
 
-    var title: String? {
-        step.name(for: sendStepParameters)
-    }
-
-    var subtitle: String? {
-        step.description(for: sendStepParameters)
-    }
+    var title: String? { step.title }
+    var subtitle: String? { step.subtitle }
 
     var closeButtonColor: Color {
         closeButtonDisabled ? Colors.Text.disabled : Colors.Text.primary1
     }
 
-    var mainButtonTitle: String {
-        mainButtonType.title
-    }
-
-    var mainButtonIcon: MainButton.Icon? {
-        mainButtonType.icon
-    }
-
-    var showQRCodeButton: Bool {
-        switch step {
-        case .destination:
-            return true
-        case .amount, .fee, .summary, .finish:
-            return false
-        }
-    }
-
     var shouldShowDismissAlert: Bool {
-        if case .finish = step {
+        if case .finish = step.type {
             return false
         }
 
-        return didReachSummaryScreen
+        return mainButtonType == .send || mainButtonType == .continue
     }
 
-    let sendAmountViewModel: SendAmountViewModel
-    let sendDestinationViewModel: SendDestinationViewModel
-    let sendFeeViewModel: SendFeeViewModel
-    let sendSummaryViewModel: SendSummaryViewModel
-    let sendFinishViewModel: SendFinishViewModel
-
-    // MARK: - Dependencies
-
-    private let sendModel: SendModel
-    private let sendType: SendType
-    private let steps: [SendStepType]
-    private let walletModel: WalletModel
-    private let userWalletModel: UserWalletModel
-    private var emailDataProvider: EmailDataProvider { userWalletModel }
-    private let walletInfo: SendWalletInfo
-    private let notificationManager: SendNotificationManager
-    private let sendStepParameters: SendStepType.Parameters
-    private let keyboardVisibilityService: KeyboardVisibilityService
-    private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
-
+    private let interactor: SendBaseInteractor
+    private let stepsManager: SendStepsManager
     private weak var coordinator: SendRoutable?
 
     private var bag: Set<AnyCancellable> = []
-    private var feeUpdateSubscription: AnyCancellable? = nil
 
-    private var currentPageAnimating: Bool? = nil
-    private var didReachSummaryScreen: Bool
-
-    private var validSteps: AnyPublisher<[SendStepType], Never> {
-        let summaryValid = Publishers.CombineLatest(
-            sendModel.transactionCreationError.map { $0 != nil }.eraseToAnyPublisher(),
-            notificationManager.hasNotifications(with: .critical)
-        )
-        .map { hasTransactionErrors, hasCriticalNotifications in
-            !hasTransactionErrors && !hasCriticalNotifications
-        }
-        .eraseToAnyPublisher()
-
-        return Publishers.CombineLatest4(
-            sendModel.destinationValid,
-            sendModel.amountValid,
-            sendModel.feeValid,
-            summaryValid
-        )
-        .receive(on: DispatchQueue.main)
-        .map { destinationValid, amountValid, feeValid, summaryValid in
-            var validSteps: [SendStepType] = []
-            if destinationValid {
-                validSteps.append(.destination)
-            }
-            if amountValid {
-                validSteps.append(.amount)
-            }
-            if feeValid {
-                validSteps.append(.fee)
-            }
-            if summaryValid {
-                validSteps.append(.summary)
-            }
-            return validSteps
-        }
-        .eraseToAnyPublisher()
-    }
+    private var sendSubscription: AnyCancellable?
+    private var isValidSubscription: AnyCancellable?
 
     init(
-        walletInfo: SendWalletInfo,
-        walletModel: WalletModel,
-        userWalletModel: UserWalletModel,
-        sendType: SendType,
-        sendModel: SendModel,
-        notificationManager: SendNotificationManager,
-        sendFeeInteractor: SendFeeInteractor,
-        keyboardVisibilityService: KeyboardVisibilityService,
-        feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder,
-        sendAmountViewModel: SendAmountViewModel,
-        sendDestinationViewModel: SendDestinationViewModel,
-        sendFeeViewModel: SendFeeViewModel,
-        sendSummaryViewModel: SendSummaryViewModel,
-        sendFinishViewModel: SendFinishViewModel,
+        interactor: SendBaseInteractor,
+        stepsManager: SendStepsManager,
         coordinator: SendRoutable
     ) {
-        self.walletInfo = walletInfo
+        self.interactor = interactor
+        self.stepsManager = stepsManager
         self.coordinator = coordinator
-        self.sendType = sendType
-        self.walletModel = walletModel
-        self.userWalletModel = userWalletModel
-        self.sendModel = sendModel
-        self.notificationManager = notificationManager
-        self.keyboardVisibilityService = keyboardVisibilityService
-        self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
-        self.sendAmountViewModel = sendAmountViewModel
-        self.sendDestinationViewModel = sendDestinationViewModel
-        self.sendFeeViewModel = sendFeeViewModel
-        self.sendSummaryViewModel = sendSummaryViewModel
-        self.sendFinishViewModel = sendFinishViewModel
 
-        steps = sendType.steps
-        step = sendType.firstStep
-        didReachSummaryScreen = sendType.firstStep == .summary
-        mainButtonType = Self.mainButtonType(for: sendType.firstStep, didReachSummaryScreen: didReachSummaryScreen)
-        stepAnimation = sendType.firstStep == .summary ? .moveAndFade : .slideForward
-        sendStepParameters = SendStepType.Parameters(currencyName: walletModel.tokenItem.name, walletName: walletInfo.walletName)
-
-        sendSummaryViewModel.router = self
-        sendModel.delegate = self
-        notificationManager.setupManager(with: self)
-
-        updateTransactionHistoryIfNeeded()
+        step = stepsManager.initialState.step
+        stepAnimation = stepsManager.initialState.animation
+        mainButtonType = stepsManager.initialState.mainButtonType
 
         bind()
+        bind(step: stepsManager.initialState.step)
     }
 
     func onCurrentPageAppear() {
-        if currentPageAnimating != nil {
-            currentPageAnimating = true
-        }
+        step.didAppear()
     }
 
     func onCurrentPageDisappear() {
-        currentPageAnimating = false
+        step.didDisappear()
     }
 
-    func dismiss() {
-        Analytics.log(.sendButtonClose, params: [
-            .source: step.analyticsSourceParameterValue,
-            .fromSummary: .affirmativeOrNegative(for: didReachSummaryScreen),
-            .valid: .affirmativeOrNegative(for: !mainButtonDisabled),
-        ])
-
-        if shouldShowDismissAlert {
-            alert = SendAlertBuilder.makeDismissAlert { [coordinator] in
-                coordinator?.dismiss()
-            }
-        } else {
-            coordinator?.dismiss()
-        }
-    }
-
-    func next() {
-        // If we try to open another page mid-animation then the appropriate onAppear of the new page will not get called
-        if currentPageAnimating ?? false {
-            return
-        }
-
+    func userDidTapActionButton() {
         switch mainButtonType {
         case .next:
-            guard let nextStep = nextStep(after: step) else {
-                assertionFailure("Invalid step logic -- next")
-                return
-            }
-
-            logNextStepAnalytics()
-
-            let openingSummary = (nextStep == .summary)
-            let stepAnimation: SendView.StepAnimation = openingSummary ? .moveAndFade : .slideForward
-
-            let checkCustomFee = shouldCheckCustomFee(currentStep: step)
-            let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: updateFee)
+            stepsManager.performNext()
         case .continue:
-            let nextStep = SendStepType.summary
-            let checkCustomFee = shouldCheckCustomFee(currentStep: step)
-            let updateFee = shouldUpdateFee(currentStep: step, nextStep: nextStep)
-            openStep(nextStep, stepAnimation: .moveAndFade, checkCustomFee: checkCustomFee, updateFee: updateFee)
+            stepsManager.performContinue()
         case .send:
-            sendModel.send()
+            performSend()
         case .close:
             coordinator?.dismiss()
         }
     }
 
-    func back() {
-        guard let previousStep = previousStep(before: step) else {
-            assertionFailure("Invalid step logic -- back")
-            return
-        }
-
-        openStep(previousStep, stepAnimation: .slideBackward, updateFee: false)
+    func userDidTapBackButton() {
+        stepsManager.performBack()
     }
 
-    func share() {
-        guard let transactionURL = sendModel.transactionURL else {
-            assertionFailure("WHY")
-            return
-        }
+    func dismiss() {
+        Analytics.log(.sendButtonClose, params: [
+            .source: step.type.analyticsSourceParameterValue,
+            .fromSummary: .affirmativeOrNegative(for: step.type.isSummary),
+            .valid: .affirmativeOrNegative(for: !mainButtonDisabled),
+        ])
 
+        if shouldShowDismissAlert {
+            alert = SendAlertBuilder.makeDismissAlert { [weak self] in
+                self?.coordinator?.dismiss()
+            }
+        } else {
+            coordinator?.dismiss()
+        }
+    }
+
+    func share(url: URL) {
         Analytics.log(.sendButtonShare)
-        coordinator?.openShareSheet(url: transactionURL)
+        coordinator?.openShareSheet(url: url)
     }
 
-    func explore() {
-        guard let transactionURL = sendModel.transactionURL else {
-            assertionFailure("WHY")
-            return
-        }
-
+    func explore(url: URL) {
         Analytics.log(.sendButtonExplore)
-        coordinator?.openExplorer(url: transactionURL)
+        coordinator?.openExplorer(url: url)
     }
+}
 
-    func scanQRCode() {
-        let binding = Binding<String>(
-            get: {
-                ""
-            },
-            set: { [weak self] in
-                self?.parseQRCode($0)
-            }
-        )
+// MARK: - Private
 
-        let networkName = walletModel.blockchainNetwork.blockchain.displayName
-        coordinator?.openQRScanner(with: binding, networkName: networkName)
-    }
-
-    private func bind() {
-        sendModel.isSending
-            .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        Publishers.CombineLatest($updatingFees, sendModel.isSending)
-            .map { updatingFees, isSending in
-                updatingFees || isSending
-            }
-            .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        Publishers.CombineLatest(validSteps, $step)
-            .receive(on: DispatchQueue.main)
-            .map { validSteps, step in
-                #warning("TODO: invert the logic and publish INVALID steps instead (?)")
-                switch step {
-                case .finish:
-                    return false
-                default:
-                    return !validSteps.contains(step)
-                }
-            }
-            .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        sendModel
-            .destinationPublisher
+private extension SendViewModel {
+    private func performSend() {
+        sendSubscription = interactor.send()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, destination in
-                switch destination.source {
-                case .myWallet, .recentAddress:
-                    viewModel.next()
-                default:
-                    break
-                }
+            .sink { viewModel, result in
+                viewModel.proceed(result: result)
             }
-            .store(in: &bag)
+    }
 
-        sendModel
-            .sendError
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] error in
-                guard let self, let error else { return }
-
-                Analytics.log(event: .sendErrorTransactionRejected, params: [
-                    .token: walletModel.tokenItem.currencySymbol,
-                ])
-
-                if case .noAccount(_, let amount) = (error as? WalletError) {
-                    let amountFormatted = Amount(
-                        with: walletModel.blockchainNetwork.blockchain,
-                        type: walletModel.amountType,
-                        value: amount
-                    ).string()
-
-                    #warning("Use TransactionValidator async validate to get this warning before send tx")
-                    let title = Localization.sendNotificationInvalidReserveAmountTitle(amountFormatted)
-                    let message = Localization.sendNotificationInvalidReserveAmountText
-
-                    alert = AlertBinder(title: title, message: message)
-                } else {
-                    let errorCode: String
-                    let reason = String(error.localizedDescription.dropTrailingPeriod)
-                    if let errorCodeProviding = error as? ErrorCodeProviding {
-                        errorCode = "\(errorCodeProviding.errorCode)"
-                    } else {
-                        errorCode = "-"
-                    }
-
-                    alert = SendError(
-                        title: Localization.sendAlertTransactionFailedTitle,
-                        message: Localization.sendAlertTransactionFailedText(reason, errorCode),
-                        error: (error as? SendTxError) ?? SendTxError(error: error),
-                        openMailAction: openMail
-                    )
-                    .alertBinder
-                }
+    private func proceed(result: SendTransactionDispatcherResult) {
+        switch result {
+        case .success(let url):
+            transactionURL = url
+            stepsManager.performFinish()
+        case .userCancelled, .transactionNotFound:
+            break
+        case .informationRelevanceServiceError:
+            alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
+                self?.performSend()
             }
-            .store(in: &bag)
-
-        sendModel
-            .transactionFinished
-            .removeDuplicates()
-            .sink { [weak self] transactionFinished in
-                guard let self, transactionFinished else { return }
-
-                openFinishPage()
-
-                if walletModel.isDemo {
-                    let button = Alert.Button.default(Text(Localization.commonOk)) {
-                        self.coordinator?.dismiss()
-                    }
-                    alert = AlertBuilder.makeAlert(title: "", message: Localization.alertDemoFeatureDisabled, primaryButton: button)
-                } else {
-                    logTransactionAnalytics()
+        case .informationRelevanceServiceFeeWasIncreased:
+            alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
+        case .sendTxError(let transaction, let sendTxError):
+            alert = SendAlertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError, openMailAction: { [weak self] in
+                self?.openMail(transaction: transaction, error: sendTxError)
+            })
+        case .demoAlert:
+            alert = AlertBuilder.makeAlert(
+                title: "",
+                message: Localization.alertDemoFeatureDisabled,
+                primaryButton: .default(.init(Localization.commonOk)) { [weak self] in
+                    self?.coordinator?.dismiss()
                 }
-
-                if let address = sendModel.destination?.value, let token = walletModel.tokenItem.token {
-                    UserWalletFinder().addToken(token, in: walletModel.blockchainNetwork.blockchain, for: address)
-                }
-            }
-            .store(in: &bag)
-    }
-
-    private func logTransactionAnalytics() {
-        let sourceValue: Analytics.ParameterValue
-        switch sendType {
-        case .send:
-            sourceValue = .transactionSourceSend
-        case .sell:
-            sourceValue = .transactionSourceSell
+            )
         }
-        Analytics.log(event: .transactionSent, params: [
-            .source: sourceValue.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
-            .blockchain: walletModel.blockchainNetwork.blockchain.displayName,
-            .feeType: selectedFeeTypeAnalyticsParameter().rawValue,
-            .memo: additionalFieldAnalyticsParameter().rawValue,
-        ])
-
-        Analytics.log(.sendSelectedCurrency, params: [
-            .commonType: sendAmountViewModel.amountType.analyticParameter,
-        ])
     }
 
-    private func nextStep(after step: SendStepType) -> SendStepType? {
-        guard
-            let currentStepIndex = steps.firstIndex(of: step),
-            (currentStepIndex + 1) < steps.count
-        else {
-            return nil
-        }
-
-        return steps[currentStepIndex + 1]
-    }
-
-    private func previousStep(before step: SendStepType) -> SendStepType? {
-        guard
-            let currentStepIndex = steps.firstIndex(of: step),
-            (currentStepIndex - 1) >= 0
-        else {
-            return nil
-        }
-
-        return steps[currentStepIndex - 1]
-    }
-
-    private func openMail(with error: SendTxError) {
-        guard let transaction = sendModel.currentTransaction() else { return }
-
+    private func openMail(transaction: BSDKTransaction, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
-        let emailDataCollector = SendScreenDataCollector(
-            userWalletEmailData: emailDataProvider.emailData,
-            walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
-            isFeeIncluded: sendModel.isFeeIncluded,
-            lastError: error
-        )
-        let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
+        let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
         coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
-    private func showSummaryStepAlertIfNeeded(_ step: SendStepType, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool) -> Bool {
-        if checkCustomFee {
-            let events = notificationManager.notificationInputs.compactMap { $0.settings.event as? SendNotificationEvent }
-            for event in events {
-                switch event {
-                case .customFeeTooLow:
-                    Analytics.log(event: .sendNoticeTransactionDelaysArePossible, params: [
-                        .token: walletModel.tokenItem.currencySymbol,
-                    ])
-
-                    alert = SendAlertBuilder.makeCustomFeeTooLowAlert { [weak self] in
-                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, updateFee: false)
-                    }
-
-                    return true
-                case .customFeeTooHigh(let orderOfMagnitude):
-                    alert = SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude) { [weak self] in
-                        self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: false, updateFee: false)
-                    }
-
-                    return true
-                default:
-                    break
-                }
-            }
-        }
-
-        return false
+    private func bind(step: SendStep) {
+        isValidSubscription = step.isValidPublisher
+            .map { !$0 }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
     }
 
-    private static func mainButtonType(for step: SendStepType, didReachSummaryScreen: Bool) -> SendMainButtonType {
-        switch step {
-        case .amount, .destination, .fee:
-            if didReachSummaryScreen {
-                return .continue
-            } else {
-                return .next
-            }
-        case .summary:
-            return .send
-        case .finish:
-            return .close
-        }
+    private func bind() {
+        interactor.isLoading
+            .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor.isLoading
+            .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor.isLoading
+            .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
     }
+}
 
-    private func updateTransactionHistoryIfNeeded() {
-        if walletModel.transactionHistoryNotLoaded {
-            walletModel.updateTransactionsHistory()
-                .sink()
-                .store(in: &bag)
-        }
-    }
+// MARK: - SendStepsManagerOutput
 
-    private func updateFee() {
-        sendModel.updateFees()
-    }
+extension SendViewModel: SendStepsManagerOutput {
+    func update(state: SendStepsManagerViewState) {
+        stepAnimation = state.animation
+        mainButtonType = state.mainButtonType
+        showBackButton = state.backButtonVisible
 
-    private func shouldCheckCustomFee(currentStep: SendStepType) -> Bool {
-        switch currentStep {
-        case .fee:
-            return true
-        default:
-            return false
-        }
-    }
-
-    private func shouldUpdateFee(currentStep: SendStepType, nextStep: SendStepType) -> Bool {
-        if nextStep == .summary, currentStep.updateFeeOnLeave {
-            return true
-        } else if nextStep.updateFeeOnOpen {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    private func openStep(_ step: SendStepType, stepAnimation: SendView.StepAnimation, checkCustomFee: Bool = true, updateFee: Bool) {
-        let openStepAfterDelay = { [weak self] in
-            // Slight delay is needed, otherwise the animation of the keyboard will interfere with the page change
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.openStep(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee, updateFee: false)
-            }
-        }
-
-        if updateFee {
-            self.updateFee()
-            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
-            return
-        }
-
-        if keyboardVisibilityService.keyboardVisible, !step.opensKeyboardByDefault {
-            keyboardVisibilityService.hideKeyboard(completion: openStepAfterDelay)
-            return
-        }
-
-        if case .summary = step {
-            if showSummaryStepAlertIfNeeded(step, stepAnimation: stepAnimation, checkCustomFee: checkCustomFee) {
-                return
-            }
-
-            didReachSummaryScreen = true
-
-            sendSummaryViewModel.setupAnimations(previousStep: self.step)
-        }
-
-        // Gotta give some time to update animation variable
-        self.stepAnimation = stepAnimation
-
-        mainButtonType = Self.mainButtonType(for: step, didReachSummaryScreen: didReachSummaryScreen)
-
+        // Give some time to update `stepAnimation`
         DispatchQueue.main.async {
-            self.showBackButton = self.previousStep(before: step) != nil && !self.didReachSummaryScreen
-            self.showTransactionButtons = self.sendModel.transactionURL != nil
-            self.step = step
-        }
-    }
-
-    private func openFinishPage() {
-        openStep(.finish, stepAnimation: .moveAndFade, updateFee: false)
-    }
-
-    private func parseQRCode(_ code: String) {
-        #warning("TODO: Add the necessary UI warnings")
-        let parser = QRCodeParser(
-            amountType: walletModel.amountType,
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            decimalCount: walletModel.decimalCount
-        )
-
-        guard let result = parser.parse(code) else {
-            return
-        }
-
-        sendDestinationViewModel.setExternally(address: SendAddress(value: result.destination, source: .qrCode), additionalField: result.memo)
-        if let amount = result.amount {
-            sendAmountViewModel.setExternalAmount(amount.value)
-        }
-    }
-
-    private func logNextStepAnalytics() {
-        switch step {
-        case .fee:
-            Analytics.log(event: .sendFeeSelected, params: [.feeType: selectedFeeTypeAnalyticsParameter().rawValue])
-        default:
-            break
-        }
-    }
-
-    private func selectedFeeTypeAnalyticsParameter() -> Analytics.ParameterValue {
-        feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: sendModel.selectedFee?.option)
-    }
-
-    private func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
-        // If the blockchain doesn't support additional field -- return null
-        // Otherwise return full / empty
-        switch sendModel.destinationAdditionalField {
-        case .notSupported: .null
-        case .empty: .empty
-        case .filled: .full
-        }
-    }
-
-    // TODO: Andrey Fedorov - Re-use fee currency & redirect logic from Token Details & Send (IOS-5710)
-    private func openNetworkCurrency() {
-        guard
-            let networkCurrencyWalletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
-                $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
-            })
-        else {
-            assertionFailure("Network currency WalletModel not found")
-            return
-        }
-
-        coordinator?.openFeeCurrency(for: networkCurrencyWalletModel, userWalletModel: userWalletModel)
-    }
-}
-
-extension SendViewModel: SendSummaryRoutable {
-    func openStep(_ step: SendStepType) {
-        guard self.step == .summary else {
-            assertionFailure("This code should only be called from summary")
-            return
-        }
-
-        if let auxiliaryViewAnimatable = auxiliaryViewAnimatable(step) {
-            auxiliaryViewAnimatable.setAnimatingAuxiliaryViewsOnAppear()
-        }
-
-        let updateFee = shouldUpdateFee(currentStep: self.step, nextStep: step)
-        openStep(step, stepAnimation: .moveAndFade, updateFee: updateFee)
-    }
-
-    private func auxiliaryViewAnimatable(_ step: SendStepType) -> AuxiliaryViewAnimatable? {
-        switch step {
-        case .amount:
-            return sendAmountViewModel
-        case .destination:
-            return sendDestinationViewModel
-        case .fee:
-            return sendFeeViewModel
-        case .summary:
-            return nil
-        case .finish:
-            return nil
-        }
-    }
-}
-
-// MARK: - SendModelUIDelegate
-
-extension SendViewModel: SendModelUIDelegate {
-    func showAlert(_ alert: AlertBinder) {
-        self.alert = alert
-    }
-}
-
-// MARK: - NotificationTapDelegate
-
-extension SendViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
-        switch action {
-        case .empty:
-            break
-        case .refreshFee:
-            sendModel.updateFees()
-        case .openFeeCurrency:
-            openNetworkCurrency()
-        case .leaveAmount(let amount, _):
-            reduceAmountBy(amount, from: walletInfo.balanceValue)
-        case .reduceAmountBy(let amount, _):
-            reduceAmountBy(amount, from: sendModel.amount?.crypto)
-        case .reduceAmountTo(let amount, _):
-            reduceAmountTo(amount)
-        case .generateAddresses,
-             .backupCard,
-             .buyCrypto,
-             .refresh,
-             .goToProvider,
-             .addHederaTokenAssociation,
-             .openLink,
-             .stake,
-             .openFeedbackMail,
-             .openAppStoreReview,
-             .swap:
-            assertionFailure("Notification tap not handled")
-        }
-    }
-
-    private func reduceAmountBy(_ amount: Decimal, from source: Decimal?) {
-        guard let source else {
-            assertionFailure("WHY")
-            return
-        }
-
-        var newAmount = source - amount
-        if sendModel.isFeeIncluded, let feeValue = sendModel.selectedFee?.value.value?.amount.value {
-            newAmount = newAmount - feeValue
-        }
-
-        sendAmountViewModel.setExternalAmount(newAmount)
-    }
-
-    private func reduceAmountTo(_ amount: Decimal) {
-        sendAmountViewModel.setExternalAmount(amount)
-    }
-}
-
-// MARK: - SendStepType
-
-private extension SendStepType {
-    var updateFeeOnLeave: Bool {
-        switch self {
-        case .destination, .amount:
-            return true
-        case .fee, .summary, .finish:
-            return false
-        }
-    }
-
-    var isFinish: Bool {
-        if case .finish = self {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    var updateFeeOnOpen: Bool {
-        switch self {
-        case .fee:
-            return true
-        case .destination, .amount, .summary, .finish:
-            return false
-        }
-    }
-
-    var analyticsSourceParameterValue: Analytics.ParameterValue {
-        switch self {
-        case .amount:
-            return .amount
-        case .destination:
-            return .address
-        case .fee:
-            return .fee
-        case .summary:
-            return .summary
-        case .finish:
-            return .finish
-        }
-    }
-
-    var opensKeyboardByDefault: Bool {
-        switch self {
-        case .amount:
-            return true
-        case .destination, .fee, .summary, .finish:
-            return false
-        }
-    }
-}
-
-// MARK: - ValidationError
-
-private extension ValidationError {
-    var step: SendStepType? {
-        switch self {
-        case .invalidAmount, .balanceNotFound:
-            // Shouldn't happen as we validate and cover amount errors separately, synchronously
-            return nil
-        case .amountExceedsBalance,
-             .invalidFee,
-             .feeExceedsBalance,
-             .maximumUTXO,
-             .reserve,
-             .dustAmount,
-             .dustChange,
-             .minimumBalance,
-             .totalExceedsBalance,
-             .cardanoHasTokens,
-             .cardanoInsufficientBalanceToSendToken,
-             .insufficientFeeResource,
-             .amountExeedsFeeResourceCapacity,
-             .feeExceedsMaxFeeResource:
-            return .summary
-        }
-    }
-}
-
-private extension SendAmountCalculationType {
-    var analyticParameter: Analytics.ParameterValue {
-        switch self {
-        case .crypto: .token
-        case .fiat: .selectedCurrencyApp
+            self.step = state.step
         }
     }
 }
