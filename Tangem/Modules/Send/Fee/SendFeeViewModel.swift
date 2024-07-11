@@ -20,10 +20,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     @Published var animatingAuxiliaryViewsOnAppear: Bool = false
     @Published var alert: AlertBinder?
 
-    @Published private(set) var feeLevelsNotificationInputs: [NotificationViewInput] = []
-    @Published private(set) var customFeeNotificationInputs: [NotificationViewInput] = []
-    @Published private(set) var feeCoverageNotificationInputs: [NotificationViewInput] = []
-    @Published private(set) var notificationInputs: [NotificationViewInput] = []
+    @Published private(set) var networkFeeUnreachableNotificationViewInput: NotificationViewInput?
 
     var feeSelectorFooterText: String {
         Localization.commonFeeSelectorFooter("[\(Localization.commonReadMore)](\(feeExplanationUrl.absoluteString))")
@@ -104,18 +101,18 @@ class SendFeeViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         notificationManager
-            .notificationPublisher(for: .feeLevels)
-            .assign(to: \.feeLevelsNotificationInputs, on: self, ownership: .weak)
-            .store(in: &bag)
+            .notificationPublisher
+            .map { notifications in
+                notifications.first { input in
+                    guard case .networkFeeUnreachable = input.settings.event as? SendNotificationEvent else {
+                        return false
+                    }
 
-        notificationManager
-            .notificationPublisher(for: .customFee)
-            .assign(to: \.customFeeNotificationInputs, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        notificationManager
-            .notificationPublisher(for: .feeIncluded)
-            .assign(to: \.feeCoverageNotificationInputs, on: self, ownership: .weak)
+                    return true
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.networkFeeUnreachableNotificationViewInput, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

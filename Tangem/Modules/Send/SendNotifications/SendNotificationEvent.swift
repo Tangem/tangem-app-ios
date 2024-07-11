@@ -125,6 +125,20 @@ extension SendNotificationEvent: NotificationEvent {
     }
 }
 
+extension SendNotificationEvent: Equatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.networkFeeUnreachable, .networkFeeUnreachable): true
+        case (.feeWillBeSubtractFromSendingAmount, .feeWillBeSubtractFromSendingAmount): true
+        case (.customFeeTooHigh, .customFeeTooHigh): true
+        case (.customFeeTooLow, .customFeeTooLow): true
+        case (.withdrawalNotificationEvent, .withdrawalNotificationEvent): true
+        case (.validationErrorEvent, .validationErrorEvent): true
+        default: false
+        }
+    }
+}
+
 extension SendNotificationEvent {
     enum Location {
         case feeLevels

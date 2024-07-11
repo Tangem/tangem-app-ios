@@ -39,7 +39,6 @@ class SendModel {
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let transactionSigner: TransactionSigner
     private let transactionCreator: TransactionCreator
-    private let withdrawalNotificationProvider: WithdrawalNotificationProvider?
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
@@ -53,7 +52,6 @@ class SendModel {
         tokenItem: TokenItem,
         sendTransactionDispatcher: SendTransactionDispatcher,
         transactionCreator: TransactionCreator,
-        withdrawalNotificationProvider: WithdrawalNotificationProvider?,
         transactionSigner: TransactionSigner,
         feeIncludedCalculator: FeeIncludedCalculator,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder,
@@ -64,7 +62,6 @@ class SendModel {
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.transactionSigner = transactionSigner
         self.transactionCreator = transactionCreator
-        self.withdrawalNotificationProvider = withdrawalNotificationProvider
         self.feeIncludedCalculator = feeIncludedCalculator
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
 
@@ -100,21 +97,6 @@ private extension SendModel {
                 case .success(let transaction):
                     self?._transaction.send(transaction)
                 }
-            }
-            .store(in: &bag)
-
-        guard let withdrawalNotificationProvider else {
-            return
-        }
-
-        _transaction
-            .map { transaction in
-                transaction.flatMap {
-                    withdrawalNotificationProvider.withdrawalNotification(amount: $0.amount, fee: $0.fee)
-                }
-            }
-            .sink { [weak self] in
-                self?._withdrawalNotification.send($0)
             }
             .store(in: &bag)
     }
@@ -321,11 +303,6 @@ extension SendModel: SendBaseInput, SendBaseOutput {
 // MARK: - SendNotificationManagerInput
 
 extension SendModel: SendNotificationManagerInput {
-    // TODO: Refactoring in https://tangem.atlassian.net/browse/IOS-7196
-    var selectedSendFeePublisher: AnyPublisher<SendFee?, Never> {
-        selectedFeePublisher
-    }
-
     var feeValues: AnyPublisher<[SendFee], Never> {
         sendFeeInteractor.feesPublisher
     }
@@ -334,16 +311,8 @@ extension SendModel: SendNotificationManagerInput {
         _isFeeIncluded.eraseToAnyPublisher()
     }
 
-    var amountError: AnyPublisher<(any Error)?, Never> {
-        .just(output: nil) // TODO: Check it
-    }
-
     var transactionCreationError: AnyPublisher<Error?, Never> {
         _transactionError.eraseToAnyPublisher()
-    }
-
-    var withdrawalNotification: AnyPublisher<WithdrawalNotification?, Never> {
-        _withdrawalNotification.eraseToAnyPublisher()
     }
 }
 
