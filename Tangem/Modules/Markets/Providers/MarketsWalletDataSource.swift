@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class MarketsWalletDataSource {
+class MarketsWalletDataProvider {
     // MARK: - Injected
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -37,7 +37,7 @@ class MarketsWalletDataSource {
     }
 }
 
-extension MarketsWalletDataSource: MarketsWalletSelectorProvider {
+extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }

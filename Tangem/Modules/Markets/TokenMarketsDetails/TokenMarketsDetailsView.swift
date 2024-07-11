@@ -108,6 +108,18 @@ struct TokenMarketsDetailsView: View {
                 ContentBlockSkeletons()
             } else {
                 Group {
+                    if let portfolioViewModel = viewModel.portfolioViewModel {
+                        MarketsPortfolioContainerView(viewModel: portfolioViewModel)
+                            .animation(nil, value: viewModel.isLoading)
+                    }
+                }
+                .padding(16)
+            }
+
+            if viewModel.isLoading {
+                ContentBlockSkeletons()
+            } else {
+                Group {
                     if let insightsViewModel = viewModel.insightsViewModel {
                         MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
                             .animation(nil, value: viewModel.isLoading)

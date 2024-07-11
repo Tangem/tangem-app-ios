@@ -31,20 +31,51 @@ struct MarketsPortfolioContainerView: View {
 
                 Spacer()
 
-                MainButton(
-                    title: "Add to portfolio",
-                    style: .secondary
-                ) {
-                    viewModel.onAddTapAction()
+                if viewModel.isShowTopAddButton {
+                    Button(action: {
+                        viewModel.onAddTapAction()
+                    }, label: {
+                        HStack {
+                            Assets
+                                .plus24
+                                .image
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Colors.Icon.primary1)
+                                .frame(size: .init(bothDimensions: 14))
+
+                            Text("Add token")
+                                .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                        }
+                        .padding(.leading, 8)
+                        .padding(.trailing, 10)
+                        .padding(.vertical, 2)
+                    })
+                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
                 }
             }
         }
     }
 
     private var contentView: some View {
-//        emptyView
+        VStack(spacing: .zero) {
+            switch viewModel.typeView {
+            case .empty:
+                emptyView
+            case .list:
+                listView
+            case .unavailable:
+                unavailableView
+            }
+        }
+    }
 
-        unavailableView
+    private var listView: some View {
+        VStack {
+            ForEach(viewModel.tokenItemViewModels) {
+                MarketsPortfolioTokenItemView(viewModel: $0)
+            }
+        }
     }
 
     private var emptyView: some View {
@@ -71,7 +102,18 @@ struct MarketsPortfolioContainerView: View {
     }
 }
 
+extension MarketsPortfolioContainerView {
+    enum TypeView: Int, Identifiable, Hashable {
+        case empty
+        case list
+        case unavailable
+
+        var id: Int {
+            rawValue
+        }
+    }
+}
+
 #Preview {
     EmptyView()
-//    MarketsPortfolioContainerView(viewModel: .init(tokenItems: [], addTapAction: nil))
 }

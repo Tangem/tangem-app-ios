@@ -20,6 +20,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: Blocks
 
     @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
+    @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -82,6 +83,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
+    private let walletDataProvider = MarketsWalletDataProvider()
     private var loadedInfo: TokenMarketsDetailsModel?
 
     init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
@@ -130,6 +132,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         if let insights = model.insights {
             insightsViewModel = .init(insights: insights, infoRouter: self)
         }
+
+        portfolioViewModel = .init(
+            userWalletModels: walletDataProvider.userWalletModels,
+            tokenItems: model.coinModel.items.map { $0.tokenItem },
+            addTapAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.onAddToPortfolioTapAction)
+        )
     }
 
     private func log(_ message: @autoclosure () -> String) {
@@ -144,7 +152,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             return
         }
 
-        coordinator?.openTokenSelector(with: coinModel)
+        coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
     }
 }
 
