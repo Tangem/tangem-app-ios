@@ -121,9 +121,7 @@ struct ExpressAPIMapper {
     func mapToExpressTransaction(response: ExpressDTO.ExchangeStatus.Response) -> ExpressTransaction {
         ExpressTransaction(
             providerId: .init(response.providerId),
-            externalStatus: response.status,
-            externalTxId: response.externalTxId,
-            externalTxUrl: response.externalTxUrl
+            externalStatus: response.status
         )
     }
 }

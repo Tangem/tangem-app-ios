@@ -29,8 +29,8 @@ class SendFinishViewModel: ObservableObject {
     @ObservedObject var addressTextViewHeightModel: AddressTextViewHeightModel
 
     private let tokenItem: TokenItem
-    private let isFixedFee: Bool
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
+    private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     private var feeTypeAnalyticsParameter: Analytics.ParameterValue = .null
     private var bag: Set<AnyCancellable> = []
@@ -38,13 +38,14 @@ class SendFinishViewModel: ObservableObject {
     init(
         settings: Settings,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        sectionViewModelFactory: SendSummarySectionViewModelFactory
+        sectionViewModelFactory: SendSummarySectionViewModelFactory,
+        feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
         tokenItem = settings.tokenItem
-        isFixedFee = settings.isFixedFee
 
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.sectionViewModelFactory = sectionViewModelFactory
+        self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
     }
 
     func onAppear() {
@@ -55,24 +56,6 @@ class SendFinishViewModel: ObservableObject {
 
         withAnimation(SendView.Constants.defaultAnimation) {
             showHeader = true
-        }
-    }
-
-    // TODO: Will be moved to separated builder
-    private func selectedFeeTypeAnalyticsParameter(selectedFee: FeeOption) -> Analytics.ParameterValue {
-        if isFixedFee {
-            return .transactionFeeFixed
-        }
-
-        switch selectedFee {
-        case .slow:
-            return .transactionFeeMin
-        case .market:
-            return .transactionFeeNormal
-        case .fast:
-            return .transactionFeeMax
-        case .custom:
-            return .transactionFeeCustom
         }
     }
 }
@@ -114,12 +97,12 @@ extension SendFinishViewModel: SendFinishViewModelSetupable {
     }
 
     func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor.selectedFeePublisher()
+        interactor.selectedFeePublisher
             .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedFee in
-                viewModel.feeTypeAnalyticsParameter = viewModel.selectedFeeTypeAnalyticsParameter(selectedFee: selectedFee.option)
+                viewModel.feeTypeAnalyticsParameter = viewModel.feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee.option)
                 viewModel.selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
             }
             .store(in: &bag)
@@ -146,6 +129,5 @@ extension SendFinishViewModel: SendFinishViewModelSetupable {
 extension SendFinishViewModel {
     struct Settings {
         let tokenItem: TokenItem
-        let isFixedFee: Bool
     }
 }

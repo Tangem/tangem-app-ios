@@ -18,6 +18,7 @@ struct TokenMarketsDetailsModel: Identifiable {
     let fullDescription: String?
     let priceChangePercentage: [String: Decimal]
     let insights: TokenMarketsDetailsInsights?
+    let metrics: MarketsTokenDetailsMetrics?
     let coinModel: CoinModel
 }
 
@@ -27,13 +28,9 @@ struct TokenMarketsDetailsInsights {
     let buyPressure: [MarketsPriceIntervalType: Decimal]
     let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
 
-    init(dto: MarketsDTO.Coins.Insight?) {
+    init?(dto: MarketsDTO.Coins.Insight?) {
         guard let dto else {
-            holders = [:]
-            liquidity = [:]
-            buyPressure = [:]
-            experiencedBuyers = [:]
-            return
+            return nil
         }
 
         func mapToInterval(_ dict: [String: Decimal]) -> [MarketsPriceIntervalType: Decimal] {

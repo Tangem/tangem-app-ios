@@ -22,7 +22,8 @@ struct MarketsTokensNetworkSelectorView: View {
 
                         MarketsGeneratedAddressView()
 
-                        Color.clear.frame(width: 10, height: 58, alignment: .center)
+                        VStack {}
+                            .padding(58)
                     }
                     .padding(.horizontal, 16)
                 }
@@ -49,7 +50,7 @@ struct MarketsTokensNetworkSelectorView: View {
                     MarketsTokensNetworkSelectorItemView(viewModel: $0)
                 }
             }
-            .padding(.leading, 7)
+            .padding(.leading, 8)
         }
         .roundedBackground(with: Colors.Background.action, padding: 14, radius: Constants.cornerRadius)
     }

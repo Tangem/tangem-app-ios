@@ -64,6 +64,8 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         $text
+            // Skip the initial value
+            .dropFirst()
             .removeDuplicates()
             .sink { [weak self] in
                 self?.didEnterDestination($0)
