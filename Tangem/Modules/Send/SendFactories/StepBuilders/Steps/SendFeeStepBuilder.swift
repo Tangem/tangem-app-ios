@@ -15,7 +15,7 @@ struct SendFeeStepBuilder {
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
-    func makeFeeSendStep(io: IO, notificationManager: SendNotificationManager, router: SendFeeRoutable) -> ReturnValue {
+    func makeFeeSendStep(io: IO, notificationManager: NotificationManager, router: SendFeeRoutable) -> ReturnValue {
         let interactor = makeSendFeeInteractor(io: io)
 
         let viewModel = makeSendFeeViewModel(
@@ -41,7 +41,7 @@ struct SendFeeStepBuilder {
 private extension SendFeeStepBuilder {
     func makeSendFeeViewModel(
         sendFeeInteractor: SendFeeInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         router: SendFeeRoutable
     ) -> SendFeeViewModel {
         let settings = SendFeeViewModel.Settings(tokenItem: walletModel.tokenItem)

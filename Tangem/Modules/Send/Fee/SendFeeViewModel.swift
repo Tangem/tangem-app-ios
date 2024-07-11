@@ -30,7 +30,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
 
     private let tokenItem: TokenItem
     private let interactor: SendFeeInteractor
-    private let notificationManager: SendNotificationManager
+    private let notificationManager: NotificationManager
 
     private weak var router: SendFeeRoutable?
 
@@ -48,7 +48,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     init(
         settings: Settings,
         interactor: SendFeeInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         router: SendFeeRoutable
     ) {
         tokenItem = settings.tokenItem
