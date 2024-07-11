@@ -17,6 +17,8 @@ class SendFeeStep {
     private let tokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
+    // We have to use this `SendViewAlertPresenter`
+    // Because .alert(item:) doesn't work in the nested views
     private weak var alertPresenter: SendViewAlertPresenter?
 
     init(
@@ -46,7 +48,7 @@ extension SendFeeStep: SendStep {
     var type: SendStepType { .fee(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.selectedFeePublisher.map { $0.value.value != nil }.eraseToAnyPublisher()
+        .just(output: true)
     }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {

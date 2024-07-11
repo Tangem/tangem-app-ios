@@ -140,16 +140,16 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 
         provider
             .getFee(amount: amount, destination: destination)
-            .delay(for: 1, scheduler: DispatchQueue.global())
-            .sink(receiveCompletion: { [weak self] completion in
-                guard case .failure(let error) = completion else {
-                    return
+            .mapToResult()
+            .withWeakCaptureOf(self)
+            .sink { interactor, result in
+                switch result {
+                case .success(let fees):
+                    interactor._fees.send(.loaded(fees))
+                case .failure(let error):
+                    interactor._fees.send(.failedToLoad(error: error))
                 }
-
-                self?._fees.send(.failedToLoad(error: error))
-            }, receiveValue: { [weak self] fees in
-                self?._fees.send(.loaded(fees))
-            })
+            }
             .store(in: &bag)
     }
 
