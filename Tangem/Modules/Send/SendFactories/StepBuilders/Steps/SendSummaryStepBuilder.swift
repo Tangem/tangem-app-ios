@@ -20,7 +20,7 @@ struct SendSummaryStepBuilder {
         sendTransactionDispatcher: any SendTransactionDispatcher,
         notificationManager: SendNotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
-        sendType: SendType
+        editableType: SendSummaryViewModel.EditableType
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
             io: io,
@@ -31,7 +31,7 @@ struct SendSummaryStepBuilder {
             interactor: interactor,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: sendType.isSend ? .editable : .disable
+            editableType: editableType
         )
 
         let step = SendSummaryStep(

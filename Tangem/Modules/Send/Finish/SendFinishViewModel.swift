@@ -17,7 +17,7 @@ protocol SendFinishViewModelSetupable: AnyObject {
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
-class SendFinishViewModel: ObservableObject {
+class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var showHeader = false
     @Published var transactionSentTime: String?
     @Published var alert: AlertBinder?

@@ -11,7 +11,7 @@ import Combine
 import SwiftUI
 
 class SendFeeStep {
-    private let _viewModel: SendFeeViewModel
+    private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
     private let notificationManager: SendNotificationManager
     private let tokenItem: TokenItem
@@ -24,7 +24,7 @@ class SendFeeStep {
         tokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
-        _viewModel = viewModel
+        self.viewModel = viewModel
         self.interactor = interactor
         self.notificationManager = notificationManager
         self.tokenItem = tokenItem
@@ -37,16 +37,10 @@ class SendFeeStep {
 extension SendFeeStep: SendStep {
     var title: String? { Localization.commonFeeSelectorTitle }
 
-    var type: SendStepType { .fee }
-
-    var viewModel: SendFeeViewModel { _viewModel }
+    var type: SendStepType { .fee(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
-    }
-
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(SendFeeView(viewModel: viewModel, namespace: namespace))
     }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
@@ -73,13 +67,17 @@ extension SendFeeStep: SendStep {
         return true
     }
 
-    func willClose(next step: any SendStep) {
+    func willAppear(previous step: any SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        viewModel.setAnimatingAuxiliaryViewsOnAppear()
+    }
+
+    func willDisappear(next step: SendStep) {
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
-    }
-
-    func willAppear(previous step: any SendStep) {
-        interactor.updateFees()
     }
 }

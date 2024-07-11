@@ -49,7 +49,6 @@ struct TokenIcon: View {
             NetworkIcon(
                 imageName: iconName,
                 isActive: true,
-                isDisabled: false,
                 isMainIndicatorVisible: false,
                 size: networkIconSize
             )

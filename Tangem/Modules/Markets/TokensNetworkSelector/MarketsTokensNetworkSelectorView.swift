@@ -21,11 +21,9 @@ struct MarketsTokensNetworkSelectorView: View {
                         contentView
 
                         MarketsGeneratedAddressView()
-
-                        VStack {}
-                            .padding(58)
                     }
                     .padding(.horizontal, 16)
+                    .padding(.bottom, 72)
                 }
 
                 overlayButtonView

@@ -18,7 +18,7 @@ struct SendFlowFactory {
         self.walletModel = walletModel
     }
 
-    func makeSendViewModel(sendType: SendType, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendDestinationStepBuilder = SendDestinationStepBuilder(walletModel: walletModel, builder: builder)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
@@ -26,7 +26,7 @@ struct SendFlowFactory {
         let sendSummaryStepBuilder = SendSummaryStepBuilder(walletModel: walletModel, builder: builder)
         let sendFinishStepBuilder = SendFinishStepBuilder(walletModel: walletModel, builder: builder)
 
-        let baseBuilder = SendBaseStepBuilder(
+        let baseBuilder = SendFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
             sendAmountStepBuilder: sendAmountStepBuilder,
@@ -37,6 +37,24 @@ struct SendFlowFactory {
             builder: builder
         )
 
-        return baseBuilder.makeSendViewModel(sendType: sendType, router: router)
+        return baseBuilder.makeSendViewModel(router: router)
+    }
+
+    func makeSellViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendViewModel {
+        let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
+        let sendFeeStepBuilder = SendFeeStepBuilder(walletModel: walletModel, builder: builder)
+        let sendSummaryStepBuilder = SendSummaryStepBuilder(walletModel: walletModel, builder: builder)
+        let sendFinishStepBuilder = SendFinishStepBuilder(walletModel: walletModel, builder: builder)
+
+        let baseBuilder = SellFlowBaseBuilder(
+            userWalletModel: userWalletModel,
+            walletModel: walletModel,
+            sendFeeStepBuilder: sendFeeStepBuilder,
+            sendSummaryStepBuilder: sendSummaryStepBuilder,
+            sendFinishStepBuilder: sendFinishStepBuilder,
+            builder: builder
+        )
+
+        return baseBuilder.makeSendViewModel(sellParameters: sellParameters, router: router)
     }
 }

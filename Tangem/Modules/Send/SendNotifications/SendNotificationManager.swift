@@ -257,12 +257,10 @@ class CommonSendNotificationManager: SendNotificationManager {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .insufficientAmountToReserveAtDestination:
             return .validationErrorEvent(validationErrorEvent)
         case .invalidNumber:
-            return nil
-        case .insufficientAmountToReserveAtDestination:
-            // Use async validation and show the notification before. Instead of alert
             return nil
         }
     }

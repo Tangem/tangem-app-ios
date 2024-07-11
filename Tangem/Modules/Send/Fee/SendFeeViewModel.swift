@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 import struct BlockchainSdk.Fee
 
-class SendFeeViewModel: ObservableObject {
+class SendFeeViewModel: ObservableObject, Identifiable {
     @Published private(set) var selectedFeeOption: FeeOption?
     @Published private(set) var feeRowViewModels: [FeeRowViewModel] = []
     @Published private(set) var customFeeModels: [SendCustomFeeInputFieldModel] = []

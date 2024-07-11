@@ -19,152 +19,110 @@ struct SendView: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            header
+            headerView
 
             ZStack(alignment: .bottom) {
                 currentPage
-                    .transition(pageContentTransition)
+                    .transition(viewModel.stepAnimation.transition)
+                    .allowsHitTesting(!viewModel.isUserInteractionDisabled)
+                    .onAppear(perform: viewModel.onCurrentPageAppear)
+                    .onDisappear(perform: viewModel.onCurrentPageDisappear)
 
                 bottomOverlay
             }
+            .animation(Constants.defaultAnimation, value: viewModel.step.type)
         }
         .background(backgroundColor.ignoresSafeArea())
-        .animation(Constants.defaultAnimation, value: viewModel.step)
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert) { $0.alert }
         .safeAreaInset(edge: .bottom) {
             bottomContainer
-                .animation(Constants.defaultAnimation, value: viewModel.showTransactionButtons)
-        }
-    }
-
-    private var pageContentTransition: AnyTransition {
-        switch viewModel.stepAnimation {
-        case .slideForward:
-            return .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
-        case .slideBackward:
-            return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
-        case .moveAndFade:
-            return .asymmetric(
-                insertion: .offset(),
-                removal: .opacity.animation(.spring(duration: SendView.Constants.animationDuration / 2))
-            )
+                .animation(Constants.defaultAnimation, value: viewModel.showBackButton)
         }
     }
 
     @ViewBuilder
-    private var header: some View {
+    private var headerView: some View {
         if let title = viewModel.title {
-            HStack {
-                closeButton
-
-                // Making sure the header doesn't jump when changing the visibility of the fields
-                ZStack {
-                    headerText(title: title, subtitle: viewModel.subtitle, titleNamespaceId: SendViewNamespaceId.containerTitle.rawValue)
-
-                    headerText(title: "Title", subtitle: "Subtitle", titleNamespaceId: nil)
-                        .hidden()
+            headerText(title: title)
+                .overlay(alignment: .leading) {
+                    Button(Localization.commonClose, action: viewModel.dismiss)
+                        .foregroundColor(viewModel.closeButtonColor)
+                        .disabled(viewModel.closeButtonDisabled)
                 }
-                .padding(.vertical, 0)
-                .lineLimit(1)
-
-                ZStack(alignment: .trailing) {
-                    closeButton
-                        .hidden()
-
-                    if viewModel.showQRCodeButton {
-                        Button(action: viewModel.scanQRCode) {
-                            Assets.qrCode.image
-                                .renderingMode(.template)
-                                .foregroundColor(Colors.Icon.primary1)
+                .modifier(ifLet: viewModel.step.navigationTrailingViewType) { view, type in
+                    view.overlay(alignment: .trailing) {
+                        switch type {
+                        case .qrCodeButton(let action):
+                            Button(action: action) {
+                                Assets.qrCode.image
+                                    .renderingMode(.template)
+                                    .foregroundColor(Colors.Icon.primary1)
+                            }
                         }
                     }
                 }
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
+                .frame(height: 44)
+                .padding(.top, 8)
+                .padding(.horizontal, 16)
         }
-    }
-
-    private var closeButton: some View {
-        Button(Localization.commonClose, action: viewModel.dismiss)
-            .foregroundColor(viewModel.closeButtonColor)
-            .disabled(viewModel.closeButtonDisabled)
-            .fixedSize(horizontal: true, vertical: false)
     }
 
     @ViewBuilder
-    private func headerText(title: String, subtitle: String?, titleNamespaceId: String?) -> some View {
+    private func headerText(title: String) -> some View {
         VStack(spacing: 2) {
-            // SwiftUI cannot animate the position and the contents of the same text view at the same time
-            // Hence the duplicate title views
-            if let subtitle = subtitle {
-                headerTitleText(title: title, titleNamespaceId: titleNamespaceId)
+            Text(title)
+                .multilineTextAlignment(.center)
+                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .animation(.default, value: title)
 
+            if let subtitle = viewModel.subtitle {
                 Text(subtitle)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                    .transition(.opacity)
-            } else {
-                headerTitleText(title: title, titleNamespaceId: titleNamespaceId)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-    }
-
-    private func headerTitleText(title: String, titleNamespaceId: String?) -> some View {
-        Text(title)
-            .style(Fonts.Bold.body, color: Colors.Text.primary1)
-            .frame(maxWidth: .infinity)
-            .matchedGeometryEffectOptional(id: titleNamespaceId, in: titleNamespaceId != nil ? namespace : nil)
+        .lineLimit(1)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
     private var currentPage: some View {
-        switch viewModel.step {
-        case .amount:
+        switch viewModel.step.type {
+        case .destination(let sendDestinationViewModel):
+            SendDestinationView(viewModel: sendDestinationViewModel, namespace: namespace)
+        case .amount(let sendAmountViewModel):
             SendAmountView(
-                viewModel: viewModel.sendAmountViewModel,
+                viewModel: sendAmountViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
             .amountMinTextScale(Constants.amountMinTextScale)
-            .onAppear(perform: viewModel.onCurrentPageAppear)
-            .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .destination:
-            SendDestinationView(viewModel: viewModel.sendDestinationViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .fee:
-            SendFeeView(viewModel: viewModel.sendFeeViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .summary:
-            SendSummaryView(viewModel: viewModel.sendSummaryViewModel, namespace: namespace)
-                .amountMinTextScale(Constants.amountMinTextScale)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
-        case .finish:
-            SendFinishView(viewModel: viewModel.sendFinishViewModel, namespace: namespace)
-                .onAppear(perform: viewModel.onCurrentPageAppear)
-                .onDisappear(perform: viewModel.onCurrentPageDisappear)
+        case .fee(let sendFeeViewModel):
+            SendFeeView(viewModel: sendFeeViewModel, namespace: namespace)
+        case .summary(let sendSummaryViewModel):
+            SendSummaryView(viewModel: sendSummaryViewModel, namespace: namespace)
+        case .finish(let sendFinishViewModel):
+            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
         }
     }
 
     @ViewBuilder
     private var bottomContainer: some View {
         VStack(spacing: 10) {
-            if viewModel.showTransactionButtons {
+            if let url = viewModel.transactionURL {
                 HStack(spacing: 8) {
                     MainButton(
                         title: Localization.commonExplore,
                         icon: .leading(Assets.globe),
                         style: .secondary,
-                        action: viewModel.explore
+                        action: { viewModel.explore(url: url) }
                     )
                     MainButton(
                         title: Localization.commonShare,
                         icon: .leading(Assets.share),
                         style: .secondary,
-                        action: viewModel.share
+                        action: { viewModel.share(url: url) }
                     )
                 }
                 .transition(.opacity)
@@ -176,22 +134,23 @@ struct SendView: View {
                         backgroundColor: backButtonStyle.background(isDisabled: false),
                         cornerRadius: backButtonStyle.cornerRadius(for: backButtonSize),
                         height: backButtonSize.height,
-                        action: viewModel.back
+                        action: viewModel.userDidTapBackButton
                     )
                     .transition(.move(edge: .leading).combined(with: .opacity))
                     .animation(SendView.Constants.backButtonAnimation, value: viewModel.showBackButton)
                 }
 
                 MainButton(
-                    title: viewModel.mainButtonTitle,
-                    icon: viewModel.mainButtonIcon,
+                    title: viewModel.mainButtonType.title,
+                    icon: viewModel.mainButtonType.icon,
                     style: .primary,
                     size: .default,
                     isLoading: viewModel.mainButtonLoading,
                     isDisabled: viewModel.mainButtonDisabled,
-                    action: viewModel.next
+                    action: viewModel.userDidTapActionButton
                 )
             }
+            .padding(.top, 8)
             .padding(.bottom, 14)
         }
         .padding(.horizontal, 16)
@@ -236,25 +195,6 @@ extension SendView {
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .spring(duration: animationDuration)
         static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
-        static let sectionContentAnimation: Animation = .easeOut(duration: animationDuration)
-        static let hintViewTransition: AnyTransition = .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
-
-        static func auxiliaryViewTransition(for step: SendStepType) -> AnyTransition {
-            let offset: CGFloat
-            switch step {
-            case .destination, .amount:
-                offset = 100
-            case .fee:
-                offset = 250
-            case .summary:
-                offset = 100
-            case .finish:
-                assertionFailure("WHY")
-                return .identity
-            }
-
-            return .offset(y: offset).combined(with: .opacity)
-        }
     }
 }
 
@@ -263,6 +203,20 @@ extension SendView {
         case slideForward
         case slideBackward
         case moveAndFade
+
+        var transition: AnyTransition {
+            switch self {
+            case .slideForward:
+                return .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
+            case .slideBackward:
+                return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
+            case .moveAndFade:
+                return .asymmetric(
+                    insertion: .offset(),
+                    removal: .opacity.animation(.spring(duration: SendView.Constants.animationDuration / 2))
+                )
+            }
+        }
     }
 }
 

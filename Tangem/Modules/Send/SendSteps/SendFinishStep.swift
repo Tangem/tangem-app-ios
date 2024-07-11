@@ -11,15 +11,10 @@ import Combine
 import SwiftUI
 
 class SendFinishStep {
-    private let _viewModel: SendFinishViewModel
-    private let sendFeeInteractor: SendFeeInteractor
+    private let viewModel: SendFinishViewModel
 
-    init(
-        viewModel: SendFinishViewModel,
-        sendFeeInteractor: SendFeeInteractor
-    ) {
-        _viewModel = viewModel
-        self.sendFeeInteractor = sendFeeInteractor
+    init(viewModel: SendFinishViewModel) {
+        self.viewModel = viewModel
     }
 }
 
@@ -28,15 +23,7 @@ class SendFinishStep {
 extension SendFinishStep: SendStep {
     var title: String? { nil }
 
-    var type: SendStepType { .finish }
-
-    var viewModel: SendFinishViewModel { _viewModel }
-
-    func makeView(namespace: Namespace.ID) -> AnyView {
-        AnyView(
-            SendFinishView(viewModel: viewModel, namespace: namespace)
-        )
-    }
+    var type: SendStepType { .finish(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)

@@ -1,5 +1,5 @@
 //
-//  SendSummaryRoutableMock.swift
+//  SendSummaryStepsRoutableMock.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 01.11.2023.
@@ -8,7 +8,8 @@
 
 import Foundation
 
-class SendSummaryRoutableMock: SendSummaryRoutable {
-    func openStep(_ step: SendStepType) {}
-    func send() {}
+class SendSummaryStepsRoutableMock: SendSummaryStepsRoutable {
+    func summaryStepRequestEditDestination() {}
+    func summaryStepRequestEditAmount() {}
+    func summaryStepRequestEditFee() {}
 }
