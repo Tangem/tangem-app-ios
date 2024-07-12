@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class StakingDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
@@ -30,7 +31,7 @@ class StakingDetailsCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let factory = StakingModulesFactory(wallet: options.wallet)
+        let factory = StakingModulesFactory(walletModel: options.wallet)
         rootViewModel = factory.makeStakingDetailsViewModel(coordinator: self)
     }
 }

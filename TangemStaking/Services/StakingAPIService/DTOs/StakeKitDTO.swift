@@ -32,10 +32,10 @@ enum StakeKitDTO {
         let name: String?
         let image: String?
         let website: String?
-        let apr: Double?
-        let commission: Double?
+        let apr: Decimal?
+        let commission: Decimal?
         let stakedBalance: String?
-        let votingPower: Double?
+        let votingPower: Decimal?
         let preferred: Bool?
 
         enum Status: String, Decodable {
