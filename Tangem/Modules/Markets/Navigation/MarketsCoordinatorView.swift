@@ -15,10 +15,14 @@ struct MarketsCoordinatorView: CoordinatorView {
     var body: some View {
         ZStack {
             if let model = coordinator.rootViewModel {
-                MarketsView(viewModel: model)
-                    .navigationLinks(links)
+                NavigationView {
+                    ZStack {
+                        MarketsView(viewModel: model)
+                            .navigationLinks(links)
 
-                sheets
+                        sheets
+                    }
+                }
             }
         }
     }
