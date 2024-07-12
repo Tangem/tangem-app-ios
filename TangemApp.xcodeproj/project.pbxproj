@@ -6192,6 +6192,15 @@
 			path = Polkadot;
 			sourceTree = "<group>";
 		};
+		B669136D2C4194C90016B0EE /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				B6FCEE6E2C40E11400CA9252 /* ScrollViewContentOffsetLocker.swift */,
+				B6FCEE6C2C40E0BD00CA9252 /* OverlayContentContainerViewController.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
 		B673FC3F2B1BF73A0089944C /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
@@ -6446,8 +6455,7 @@
 		B6FCEE6B2C40E09F00CA9252 /* OverlayContentContainer */ = {
 			isa = PBXGroup;
 			children = (
-				B6FCEE6C2C40E0BD00CA9252 /* OverlayContentContainerViewController.swift */,
-				B6FCEE6E2C40E11400CA9252 /* ScrollViewContentOffsetLocker.swift */,
+				B669136D2C4194C90016B0EE /* UIKit */,
 			);
 			path = OverlayContentContainer;
 			sourceTree = "<group>";
