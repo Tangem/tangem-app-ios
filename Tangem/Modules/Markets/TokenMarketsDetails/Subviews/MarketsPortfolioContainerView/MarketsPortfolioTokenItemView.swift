@@ -19,10 +19,6 @@ struct MarketsPortfolioTokenItemView: View {
             iconView
 
             tokenInfoView
-
-            Spacer()
-
-            tokenPriceBalanceView
         }
         .padding(.vertical, 10)
     }
@@ -41,26 +37,26 @@ struct MarketsPortfolioTokenItemView: View {
                 Text(viewModel.walletName)
                     .lineLimit(1)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                Spacer(minLength: 8)
+
+                Text(viewModel.fiatBalanceValue)
+                    .lineLimit(1)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             }
 
             HStack {
                 Text(viewModel.tokenName)
                     .lineLimit(1)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+
+                Spacer(minLength: 8)
+
+                Text(viewModel.balanceValue)
+                    .truncationMode(.middle)
+                    .lineLimit(1)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
-        }
-    }
-
-    private var tokenPriceBalanceView: some View {
-        VStack(alignment: .trailing, spacing: 2) {
-            Text(viewModel.fiatBalanceValue)
-                .lineLimit(1)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-
-            Text(viewModel.balanceValue)
-                .truncationMode(.middle)
-                .lineLimit(1)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
     }
 }
