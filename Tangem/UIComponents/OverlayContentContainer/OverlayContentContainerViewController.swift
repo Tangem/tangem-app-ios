@@ -97,7 +97,7 @@ final class OverlayContentContainerViewController: UIViewController {
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
         // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow)
-        let backgroundShadowView = UIView()
+        let backgroundShadowView = UIView(frame: screenBounds)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -365,7 +365,7 @@ private extension OverlayContentContainerViewController {
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.5
-        static let cornerRadius = 14.0
+        static let cornerRadius = 24.0
         static let animationDuration = 0.3
         static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
