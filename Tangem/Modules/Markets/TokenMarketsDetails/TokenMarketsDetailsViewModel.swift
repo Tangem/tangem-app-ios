@@ -22,7 +22,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
     @Published var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
     @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
+    @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+
+    @Injected(\.safariManager) var safariManager: SafariManager
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -167,6 +170,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }
 
         pricePerformanceViewModel = .init(pricePerformanceData: model.pricePerformance, currentPricePublisher: currentPriceSubject.eraseToAnyPublisher())
+
+        linksSections = MarketsTokenDetailsLinksMapper(
+            openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
+        ).mapToSections(model.links)
     }
 
     private func log(_ message: @autoclosure () -> String) {
@@ -182,6 +189,15 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }
 
         coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
+    }
+
+    func openLinkAction(_ link: String) {
+        guard let url = URL(string: link) else {
+            log("Failed to create link from: \(link)")
+            return
+        }
+
+        coordinator?.openURL(url)
     }
 }
 

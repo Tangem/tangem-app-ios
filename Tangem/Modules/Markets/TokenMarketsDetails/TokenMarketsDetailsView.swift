@@ -124,6 +124,8 @@ struct TokenMarketsDetailsView: View {
                     if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
                         MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
                     }
+
+                    TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
                 }
                 .animation(nil, value: viewModel.isLoading)
                 .padding(.horizontal, 16)

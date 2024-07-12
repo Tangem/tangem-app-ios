@@ -32,7 +32,8 @@ struct TokenMarketsDetailsMapper {
             insights: .init(dto: response.insights?.first),
             metrics: response.metrics,
             coinModel: mapToCoinModel(response: response),
-            pricePerformance: mapPricePerformance(response: response)
+            pricePerformance: mapPricePerformance(response: response),
+            links: response.links
         )
     }
 
