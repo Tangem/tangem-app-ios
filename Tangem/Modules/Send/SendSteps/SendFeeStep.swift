@@ -13,14 +13,14 @@ import SwiftUI
 class SendFeeStep {
     private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
-    private let notificationManager: SendNotificationManager
+    private let notificationManager: NotificationManager
     private let tokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     init(
         viewModel: SendFeeViewModel,
         interactor: SendFeeInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         tokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {

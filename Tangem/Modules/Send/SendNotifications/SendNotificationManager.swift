@@ -10,273 +10,295 @@ import Combine
 import BlockchainSdk
 
 protocol SendNotificationManagerInput {
-    var selectedSendFeePublisher: AnyPublisher<SendFee?, Never> { get }
     var feeValues: AnyPublisher<[SendFee], Never> { get }
+    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
 
-    var withdrawalNotification: AnyPublisher<WithdrawalNotification?, Never> { get }
-    var amountError: AnyPublisher<Error?, Never> { get }
+    var transactionPublisher: AnyPublisher<BSDKTransaction?, Never> { get }
     var transactionCreationError: AnyPublisher<Error?, Never> { get }
 }
 
 protocol SendNotificationManager: NotificationManager {
-    func notificationPublisher(for location: SendNotificationEvent.Location) -> AnyPublisher<[NotificationViewInput], Never>
-    func hasNotifications(with severity: NotificationView.Severity) -> AnyPublisher<Bool, Never>
-
     func setup(input: SendNotificationManagerInput)
 }
 
-class CommonSendNotificationManager: SendNotificationManager {
+class CommonSendNotificationManager {
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
+    private let withdrawalNotificationProvider: WithdrawalNotificationProvider?
 
-    private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
-    private let validationErrorInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
+    private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
     private var bag: Set<AnyCancellable> = []
-
-    private var notEnoughFeeConfiguration: TransactionSendAvailabilityProvider.SendingRestrictions.NotEnoughFeeConfiguration {
-        TransactionSendAvailabilityProvider.SendingRestrictions.NotEnoughFeeConfiguration(
-            transactionAmountTypeName: tokenItem.name,
-            feeAmountTypeName: feeTokenItem.name,
-            feeAmountTypeCurrencySymbol: feeTokenItem.currencySymbol,
-            feeAmountTypeIconName: feeTokenItem.blockchain.iconNameFilled,
-            networkName: tokenItem.networkName,
-            currencyButtonTitle: nil
-        )
-    }
 
     private weak var delegate: NotificationTapDelegate?
 
-    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
+    init(
+        tokenItem: TokenItem,
+        feeTokenItem: TokenItem,
+        withdrawalNotificationProvider: WithdrawalNotificationProvider?
+    ) {
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
+        self.withdrawalNotificationProvider = withdrawalNotificationProvider
     }
+}
 
-    func notificationPublisher(for location: SendNotificationEvent.Location) -> AnyPublisher<[NotificationViewInput], Never> {
-        notificationPublisher
-            .map {
-                $0.filter { input in
-                    guard let sendNotificationEvent = input.settings.event as? SendNotificationEvent else {
-                        return false
-                    }
+// MARK: - Bind
 
-                    return sendNotificationEvent.locations.contains(location)
-                }
-            }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
-    func hasNotifications(with severity: NotificationView.Severity) -> AnyPublisher<Bool, Never> {
-        notificationPublisher
-            .map { notificationInputs in
-                notificationInputs.contains { $0.settings.event.severity == severity }
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func hasNotificationEvent(_ event: SendNotificationEvent) -> Bool {
-        return notificationInputs.contains { notificationInput in
-            notificationInput.settings.event.id == event.id
-        }
-    }
-
-    func setup(input: SendNotificationManagerInput) {
-        input
-            .feeValues
-            .map {
-                $0.contains { $0.value.error != nil }
-            }
-            .sink { [weak self] hasError in
-                self?.updateEventVisibility(hasError, event: .networkFeeUnreachable)
-            }
-            .store(in: &bag)
-
-        input
-            .withdrawalNotification
-            .sink { [weak self] withdrawalNotification in
-                guard let self else { return }
-
-                switch withdrawalNotification {
-                case .some(let suggestion):
-                    let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
-                    let withdrawalNotification = factory.mapToWithdrawalNotificationEvent(suggestion)
-                    updateEventVisibility(true, event: .withdrawalNotificationEvent(withdrawalNotification))
-                case .none:
-                    hideAllWithdrawalNotificationEvent()
-                }
-            }
-            .store(in: &bag)
-
-        let loadedFeeValues = input
-            .feeValues
-            .filter { !$0.allConforms { $0.value.isLoading } }
-
-        Publishers.CombineLatest(input.selectedSendFeePublisher, loadedFeeValues)
-            .sink { [weak self] selectedFee, loadedFeeValues in
-
-                switch (selectedFee?.option, selectedFee?.value) {
-                case (.custom, .loaded(let customFee)):
-                    let highFeeOrderOfMagnitudeTrigger: Decimal = 5
-                    var customFeeTooLow: Bool = false
-                    var customFeeTooHigh: Bool = false
-                    var highFeeOrderOfMagnitude: Int = 0
-
-                    if let lowestFee = loadedFeeValues.first(where: { $0.option == .slow })?.value.value,
-                       let highestFee = loadedFeeValues.first(where: { $0.option == .fast })?.value.value {
-                        customFeeTooLow = customFee.amount.value < lowestFee.amount.value
-                        customFeeTooHigh = customFee.amount.value > highestFee.amount.value * highFeeOrderOfMagnitudeTrigger
-
-                        let highFeeOrder = customFee.amount.value / highestFee.amount.value
-                        highFeeOrderOfMagnitude = highFeeOrder.intValue(roundingMode: .plain)
-                    }
-
-                    self?.updateEventVisibility(customFeeTooLow, event: .customFeeTooLow)
-                    self?.updateEventVisibility(customFeeTooHigh, event: .customFeeTooHigh(orderOfMagnitude: highFeeOrderOfMagnitude))
-
-                default:
-                    self?.updateEventVisibility(false, event: .customFeeTooLow)
-                    self?.updateEventVisibility(false, event: .customFeeTooHigh(orderOfMagnitude: 0))
-                }
+private extension CommonSendNotificationManager {
+    func bind(input: SendNotificationManagerInput) {
+        input.feeValues
+            .withWeakCaptureOf(self)
+            .sink { manager, feeValues in
+                let hasError = feeValues.contains { $0.value.error != nil }
+                manager.updateNetworkFeeUnreachable(isVisible: hasError)
             }
             .store(in: &bag)
 
         Publishers.CombineLatest(
+            input.selectedFeePublisher.compactMap { $0 },
+            input.feeValues.filter { !$0.allConforms { $0.value.isLoading } }
+        )
+        .sink { [weak self] selectedFee, loadedFeeValues in
+            self?.updateCustomFee(selectedFee: selectedFee, feeValues: loadedFeeValues)
+        }
+        .store(in: &bag)
+
+        Publishers.CombineLatest(
             input.isFeeIncludedPublisher,
-            input.selectedSendFeePublisher.map { $0?.value.value?.amount.value }
+            input.selectedFeePublisher.compactMap { $0?.value.value?.amount.value }
         )
         .sink { [weak self] isFeeIncluded, feeValue in
             self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)
         }
         .store(in: &bag)
 
-        Publishers.CombineLatest(
-            input.amountError.compactMap { [$0].compactMap { $0 } },
-            input.transactionCreationError.compactMap { [$0].compactMap { $0 } }
-        )
-        .map {
-            $0.0 + $0.1
-        }
-        .withWeakCaptureOf(self)
-        .map { (self, errors) -> [NotificationViewInput] in
-            self.notificationInputs(from: errors.first)
-        }
-        .assign(to: \.value, on: validationErrorInputsSubject, ownership: .weak)
-        .store(in: &bag)
-    }
-
-    private func updateFeeInclusionEvent(isFeeIncluded: Bool, feeCryptoValue: Decimal?) {
-        let cryptoAmountFormatted: String
-        let fiatAmountFormatted: String
-        let visible: Bool
-        if let feeCryptoValue, isFeeIncluded {
-            let converter = BalanceConverter()
-            let feeFiatValue = converter.convertToFiat(feeCryptoValue, currencyId: feeTokenItem.currencyId ?? "")
-
-            let formatter = BalanceFormatter()
-            cryptoAmountFormatted = formatter.formatCryptoBalance(feeCryptoValue, currencyCode: feeTokenItem.currencySymbol)
-            fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
-
-            visible = true
-        } else {
-            cryptoAmountFormatted = ""
-            fiatAmountFormatted = ""
-            visible = false
-        }
-
-        let event = SendNotificationEvent.feeWillBeSubtractFromSendingAmount(
-            cryptoAmountFormatted: cryptoAmountFormatted,
-            fiatAmountFormatted: fiatAmountFormatted
-        )
-
-        updateEventVisibility(visible, event: event)
-    }
-
-    private func notificationInputs(from error: Error?) -> [NotificationViewInput] {
-        guard let validationError = error as? ValidationError else { return [] }
-
-        let factory = NotificationsFactory()
-
-        guard let event = notificationEvent(from: validationError) else { return [] }
-
-        let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotification(with: id, action: actionType)
-        } dismissAction: { [weak self] id in
-            self?.dismissAction(with: id)
-        }
-        return [input]
-    }
-
-    private func dismissAction(with settingsId: NotificationViewId) {
-        notificationInputsSubject.value.removeAll {
-            $0.settings.id == settingsId
-        }
-    }
-
-    private func hideAllWithdrawalNotificationEvent() {
-        notificationInputsSubject.value.removeAll(where: { input in
-            guard case .withdrawalNotificationEvent = input.settings.event as? SendNotificationEvent else {
-                return false
+        input.transactionCreationError
+            .withWeakCaptureOf(self)
+            .sink { manager, error in
+                manager.updateNotification(error: error)
             }
+            .store(in: &bag)
 
-            return true
-        })
-    }
-
-    private func updateEventVisibility(_ visible: Bool, event: SendNotificationEvent) {
-        if visible {
-            let factory = NotificationsFactory()
-            let input = factory.buildNotificationInput(for: event) { [weak self] id, actionType in
-                self?.delegate?.didTapNotification(with: id, action: actionType)
-            } dismissAction: { [weak self] id in
-                self?.dismissAction(with: id)
-            }
-
-            if let index = notificationInputsSubject.value.firstIndex(where: { $0.settings.event.id == event.id }) {
-                notificationInputsSubject.value[index] = input
-            } else {
-                notificationInputsSubject.value.append(input)
-            }
-        } else {
-            notificationInputsSubject.value.removeAll { $0.settings.event.id == event.id }
-        }
-    }
-
-    private func notificationEvent(from validationError: ValidationError) -> SendNotificationEvent? {
-        let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
-        let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
-
-        switch validationErrorEvent {
-        case .dustRestriction,
-             .insufficientBalance,
-             .insufficientBalanceForFee,
-             .existentialDeposit,
-             .amountExceedMaximumUTXO,
-             .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken,
-             .notEnoughMana,
-             .manaLimit,
-             .koinosInsufficientBalanceToSendKoin,
-             .insufficientAmountToReserveAtDestination:
-            return .validationErrorEvent(validationErrorEvent)
-        case .invalidNumber:
-            return nil
+        if let withdrawalNotificationProvider {
+            input
+                .transactionPublisher
+                .withWeakCaptureOf(self)
+                .map { manager, transaction in
+                    transaction.flatMap {
+                        withdrawalNotificationProvider.withdrawalNotification(amount: $0.amount, fee: $0.fee)
+                    }
+                }
+                .withWeakCaptureOf(self)
+                .sink { manager, notification in
+                    manager.updateWithdrawalNotification(notification: notification)
+                }
+                .store(in: &bag)
         }
     }
 }
 
-extension CommonSendNotificationManager: NotificationManager {
+// MARK: - Fee
+
+private extension CommonSendNotificationManager {
+    func updateNetworkFeeUnreachable(isVisible: Bool) {
+        if isVisible {
+            show(notification: .networkFeeUnreachable)
+        } else {
+            hideAllNotification { event in
+                if case .networkFeeUnreachable = event {
+                    return true
+                }
+
+                return false
+            }
+        }
+    }
+
+    func updateCustomFee(selectedFee: SendFee, feeValues: [SendFee]) {
+        switch (selectedFee.option, selectedFee.value) {
+        case (.custom, .loaded(let customFee)):
+            updateCustomFeeTooLow(
+                customFee: customFee,
+                lowestFee: feeValues.first(where: { $0.option == .slow })?.value.value
+            )
+
+            updateCustomFeeTooHigh(
+                customFee: customFee,
+                highestFee: feeValues.first(where: { $0.option == .fast })?.value.value
+            )
+
+        default:
+            hideAllNotification { event in
+                switch event {
+                case .customFeeTooLow, .customFeeTooHigh:
+                    return true
+                default:
+                    return false
+                }
+            }
+        }
+    }
+
+    func updateCustomFeeTooLow(customFee: Fee, lowestFee: Fee?) {
+        if let lowestFee, customFee.amount.value < lowestFee.amount.value {
+            show(notification: .customFeeTooLow)
+        } else {
+            hideAllNotification { event in
+                if case .customFeeTooLow = event {
+                    return true
+                }
+
+                return false
+            }
+        }
+    }
+
+    func updateCustomFeeTooHigh(customFee: Fee, highestFee: Fee?) {
+        let magnitudeTrigger: Decimal = 5
+
+        if let highestFee, customFee.amount.value > highestFee.amount.value * magnitudeTrigger {
+            let highFeeOrder = customFee.amount.value / highestFee.amount.value
+            let highFeeOrderOfMagnitude = highFeeOrder.intValue(roundingMode: .plain)
+
+            show(notification: .customFeeTooHigh(orderOfMagnitude: highFeeOrderOfMagnitude))
+        } else {
+            hideAllNotification { event in
+                if case .customFeeTooHigh = event {
+                    return true
+                }
+
+                return false
+            }
+        }
+    }
+
+    func updateFeeInclusionEvent(isFeeIncluded: Bool, feeCryptoValue: Decimal) {
+        if isFeeIncluded {
+            let feeFiatValue = feeTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(feeCryptoValue, currencyId: $0) }
+
+            let formatter = BalanceFormatter()
+            let cryptoAmountFormatted = formatter.formatCryptoBalance(feeCryptoValue, currencyCode: feeTokenItem.currencySymbol)
+            let fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+            show(notification: .feeWillBeSubtractFromSendingAmount(
+                cryptoAmountFormatted: cryptoAmountFormatted,
+                fiatAmountFormatted: fiatAmountFormatted
+            ))
+        } else {
+            hideAllNotification { event in
+                if case .feeWillBeSubtractFromSendingAmount = event {
+                    return true
+                }
+
+                return false
+            }
+        }
+    }
+}
+
+// MARK: - ValidationError
+
+private extension CommonSendNotificationManager {
+    func updateWithdrawalNotification(notification: WithdrawalNotification?) {
+        switch notification {
+        case .none:
+            hideAllNotification { event in
+                if case .withdrawalNotificationEvent = event {
+                    return true
+                }
+
+                return false
+            }
+        case .some(let suggestion):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let withdrawalNotification = factory.mapToWithdrawalNotificationEvent(suggestion)
+            show(notification: .withdrawalNotificationEvent(withdrawalNotification))
+        }
+    }
+
+    func updateNotification(error: Error?) {
+        switch error {
+        case .none:
+            hideAllValidationErrorEvent()
+        case let validationError as ValidationError:
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            switch validationErrorEvent {
+            case .dustRestriction,
+                 .insufficientBalance,
+                 .insufficientBalanceForFee,
+                 .existentialDeposit,
+                 .amountExceedMaximumUTXO,
+                 .cardanoCannotBeSentBecauseHasTokens,
+                 .cardanoInsufficientBalanceToSendToken,
+                 .notEnoughMana,
+                 .manaLimit,
+                 .koinosInsufficientBalanceToSendKoin,
+                 .insufficientAmountToReserveAtDestination:
+                show(notification: .validationErrorEvent(validationErrorEvent))
+            case .invalidNumber:
+                hideAllValidationErrorEvent()
+            }
+        default:
+            AppLog.shared.debug("Transaction error will not show to user")
+            hideAllValidationErrorEvent()
+        }
+    }
+}
+
+// MARK: - Show/Hide
+
+private extension CommonSendNotificationManager {
+    func show(notification event: SendNotificationEvent) {
+        let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
+            self?.delegate?.didTapNotification(with: id, action: actionType)
+        } dismissAction: { [weak self] id in
+            self?.notificationInputsSubject.value.removeAll {
+                $0.settings.id == id
+            }
+        }
+
+        notificationInputsSubject.value.appendIfNotContains(input)
+    }
+
+    func hideAllValidationErrorEvent() {
+        hideAllNotification { event in
+            if case .validationErrorEvent = event {
+                return true
+            }
+
+            return false
+        }
+    }
+
+    func hideAllNotification(where shouldBeRemoved: (SendNotificationEvent) -> Bool) {
+        notificationInputsSubject.value.removeAll(where: { input in
+            guard let event = input.settings.event as? SendNotificationEvent else {
+                return false
+            }
+
+            return shouldBeRemoved(event)
+        })
+    }
+}
+
+// MARK: - SendNotificationManager
+
+extension CommonSendNotificationManager: SendNotificationManager {
+    func setup(input: SendNotificationManagerInput) {
+        bag.removeAll()
+
+        bind(input: input)
+    }
+
     var notificationInputs: [NotificationViewInput] {
-        notificationInputsSubject.value + validationErrorInputsSubject.value
+        notificationInputsSubject.value
     }
 
     var notificationPublisher: AnyPublisher<[NotificationViewInput], Never> {
-        Publishers.CombineLatest(notificationInputsSubject, validationErrorInputsSubject)
-            .map {
-                $0 + $1
-            }
-            .eraseToAnyPublisher()
+        notificationInputsSubject.eraseToAnyPublisher()
     }
 
     func setupManager(with delegate: NotificationTapDelegate?) {
