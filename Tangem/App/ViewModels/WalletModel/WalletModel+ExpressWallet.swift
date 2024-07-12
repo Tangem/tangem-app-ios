@@ -19,6 +19,10 @@ extension WalletModel: ExpressWallet {
         tokenItem.decimalCount
     }
 
+    var feeCurrencyDecimalCount: Int {
+        feeTokenItem.decimalCount
+    }
+
     var isFeeCurrency: Bool {
         tokenItem == feeTokenItem
     }

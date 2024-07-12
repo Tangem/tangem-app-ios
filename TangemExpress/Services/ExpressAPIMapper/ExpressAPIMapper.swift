@@ -96,10 +96,6 @@ struct ExpressAPIMapper {
         toAmount /= pow(10, response.toDecimals)
         txValue /= pow(10, response.fromDecimals)
 
-        let otherNativeFee = txDetails.otherNativeFee
-            .map { Decimal(string: $0) }?
-            .map { $0 / pow(10, response.fromDecimals) }
-
         return ExpressTransactionData(
             requestId: txDetails.requestId,
             fromAmount: fromAmount,
@@ -111,7 +107,7 @@ struct ExpressAPIMapper {
             extraDestinationId: txDetails.txExtraId,
             value: txValue,
             txData: txDetails.txData,
-            otherNativeFee: otherNativeFee,
+            otherNativeFee: txDetails.otherNativeFee.flatMap(Decimal.init),
             estimatedGasLimit: txDetails.gas.flatMap(Int.init),
             externalTxId: txDetails.externalTxId,
             externalTxUrl: txDetails.externalTxUrl
