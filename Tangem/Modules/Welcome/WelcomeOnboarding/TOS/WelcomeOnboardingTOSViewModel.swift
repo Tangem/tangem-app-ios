@@ -13,7 +13,7 @@ class WelcomeOnboardingTOSViewModel: ObservableObject {
 
     private weak var delegate: WelcomeOnboardingTOSDelegate?
 
-    init(delegate: any WelcomeOnboardingTOSDelegate) {
+    init(delegate: WelcomeOnboardingTOSDelegate) {
         self.delegate = delegate
     }
 

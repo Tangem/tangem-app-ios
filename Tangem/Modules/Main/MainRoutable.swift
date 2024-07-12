@@ -13,4 +13,5 @@ protocol MainRoutable: AnyObject {
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
     func openOnboardingModal(with input: OnboardingInput)
     func openScanCardManual()
+    func openPushNotificationsAuthorization()
 }

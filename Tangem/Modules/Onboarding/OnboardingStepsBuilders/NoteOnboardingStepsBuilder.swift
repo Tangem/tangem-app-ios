@@ -12,6 +12,7 @@ import TangemSdk
 struct NoteOnboardingStepsBuilder {
     private let cardId: String
     private let hasWallets: Bool
+    private let isPushNotificationsAvailable: Bool
 
     private var otherSteps: [SingleCardOnboardingStep] {
         var steps: [SingleCardOnboardingStep] = []
@@ -22,16 +23,21 @@ struct NoteOnboardingStepsBuilder {
             steps.append(.saveUserWallet)
         }
 
-        if PushNotificationsProvider.isAvailable {
+        if isPushNotificationsAvailable {
             steps.append(.pushNotifications)
         }
 
         return steps
     }
 
-    init(cardId: String, hasWallets: Bool) {
+    init(
+        cardId: String,
+        hasWallets: Bool,
+        isPushNotificationsAvailable: Bool
+    ) {
         self.cardId = cardId
         self.hasWallets = hasWallets
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 }
 
