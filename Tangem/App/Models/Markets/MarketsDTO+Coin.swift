@@ -48,9 +48,4 @@ extension MarketsDTO.Coins {
         let buyPressureChange: [String: Decimal]
         let experiencedBuyerChange: [String: Decimal]
     }
-
-    struct PricePerformance: Codable {
-        let highPrice: [String: Decimal]
-        let lowPrice: [String: Decimal]
-    }
 }
