@@ -34,8 +34,8 @@ def blockchain_sdk_pods
 #  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-629'
   pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
-  #pod 'Solana.Swift', :path => '../Solana.Swift'
+#  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
+  pod 'Solana.Swift', :path => '../Tangem/Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
   #pod 'BinanceChain', :path => '../SwiftBinanceChain'
@@ -54,7 +54,6 @@ target 'Tangem' do
   pod 'Moya'
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
-  pod 'TonSwift', :git => 'https://github.com/tangem/ton-swift.git', :tag => '1.0.10-tangem1'
 
   # Helpers
   pod 'BlockiesSwift', '~> 0.1.2'
@@ -210,13 +209,56 @@ post_install do |installer|
    { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
   )
   
+  add_spm_package_to_target(
+   installer.pods_project,
+   "Solana.Swift",
+   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
+   "TweetNacl",
+   { :kind => "upToNextMajorVersion", :minimumVersion => "1.1.0" }
+  )
+  
+  # `BigInt` SPM package for `BlockchainSdk` pod
+#  add_spm_package_to_target(
+#    installer.pods_project,
+#    "BlockchainSdk",
+#    "https://github.com/attaswift/BigInt",
+#    "BigInt",
+#    { :kind => "exactVersion", :version => "5.3.0" }
+#  )
+  
+  add_spm_package_to_target(
+   installer.pods_project,
+   "BlockchainSdk",
+   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
+   "TweetNacl",
+   { :kind => "upToNextMajorVersion", :minimumVersion => "1.1.0" }
+  )
+  
   # `IcpKit` SPM package for `BlockchainSdk` pod
   add_spm_package_to_target(
     installer.pods_project,
     "BlockchainSdk",
     "https://github.com/tangem/IcpKit.git",
     "IcpKit",
-    { :kind => "revision", :revision => "9313935307e4a4e5e70ee4caf3614bcd4d3a139c" }
+    { :kind => "exactVersion", :version => "0.1.2-tangem1" }
+  )
+  
+  # `TonSwift` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+    installer.pods_project,
+    "BlockchainSdk",
+    "https://github.com/tangem/ton-swift.git",
+    "TonSwift",
+    { :kind => "exactVersion", :version => "1.0.10-tangem1" }
+  )
+  
+  # `ScaleCodec` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+    installer.pods_project,
+    "BlockchainSdk",
+    "https://github.com/tesseract-one/ScaleCodec.swift",
+    "ScaleCodec",
+    { :kind => "exactVersion", :version => "0.2.1" }
   )
 
 end
