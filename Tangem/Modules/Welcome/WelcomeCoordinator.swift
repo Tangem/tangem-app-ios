@@ -21,6 +21,7 @@ class WelcomeCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     // MARK: - Main view model
 
@@ -72,13 +73,16 @@ class WelcomeCoordinator: CoordinatorObject {
                 if viewDismissed {
                     viewState?.welcomeViewModel?.becomeActive()
                 } else {
-                    viewState?.welcomeViewModel?.resignActve()
+                    viewState?.welcomeViewModel?.resignActive()
                 }
             }
     }
 
     private func showWelcomeOnboardingIfNeeded() {
-        let builder = WelcomeOnboaringStepsBuilder()
+        let factory = PushNotificationsHelpersFactory()
+        let availabilityProvider = factory.makeAvailabilityProviderForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let permissionManager = factory.makePermissionManagerForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let builder = WelcomeOnboardingStepsBuilder(isPushNotificationsAvailable: availabilityProvider.isAvailable)
         let steps = builder.buildSteps()
 
         let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
@@ -86,7 +90,7 @@ class WelcomeCoordinator: CoordinatorObject {
         }
 
         let coordinator = WelcomeOnboardingCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .init(steps: steps))
+        coordinator.start(with: .init(steps: steps, pushNotificationsPermissionManager: permissionManager))
         welcomeOnboardingCoordinator = coordinator
     }
 }

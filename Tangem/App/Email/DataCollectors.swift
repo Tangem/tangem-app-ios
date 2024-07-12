@@ -60,7 +60,7 @@ struct SendScreenDataCollector: EmailDataCollector {
             data.append(EmailCollectedData(type: .card(.token), data: token.symbol))
             data.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
             data.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             break
         }
 
@@ -177,10 +177,6 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
 
             let derivationPath = walletModel.wallet.publicKey.derivationPath
             dataToFormat.append(EmailCollectedData(type: .wallet(.derivationPath), data: derivationPath?.rawPath ?? "[default]"))
-
-            if let xpubKey = walletModel.wallet.xpubKey {
-                dataToFormat.append(EmailCollectedData(type: .wallet(.xpub), data: xpubKey))
-            }
 
             if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
                 dataToFormat.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))

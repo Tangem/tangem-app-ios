@@ -174,7 +174,9 @@ private extension CommonExpressTransactionBuilder {
              .taraxa,
              .radiant,
              .base,
-             .joystream:
+             .bittensor,
+             .joystream,
+             .koinos:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }

@@ -21,9 +21,9 @@ struct PendingExpressTransactionsConverter {
             switch $0.transactionRecord.transactionStatus {
             case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
-            case .failed, .canceled:
+            case .failed, .canceled, .unknown:
                 state = .error
-            case .verificationRequired:
+            case .verificationRequired, .awaitingHash:
                 state = .warning
             }
 
@@ -68,8 +68,10 @@ struct PendingExpressTransactionsConverter {
             switch status {
             case .failed:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: true))
-            case .canceled:
+            case .canceled, .unknown:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: false))
+            case .awaitingHash:
+                return .init(title: status.passedStatusTitle, state: .exclamationMark)
             default:
                 return .init(title: status.passedStatusTitle, state: .checkmark)
             }
@@ -82,12 +84,12 @@ struct PendingExpressTransactionsConverter {
         var state: PendingExpressTransactionStatusRow.State = isCurrentStatus ? .loader : isPendingStatus ? .empty : .checkmark
 
         switch status {
-        case .failed:
+        case .failed, .unknown:
             state = .cross(passed: false)
         case .refunded:
             // Refunded state is the final state and it can't be pending (with loader)
             state = isFinished ? .checkmark : .empty
-        case .verificationRequired:
+        case .verificationRequired, .awaitingHash:
             state = .exclamationMark
         case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .canceled:
             break

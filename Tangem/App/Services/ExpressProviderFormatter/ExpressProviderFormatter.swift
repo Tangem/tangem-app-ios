@@ -84,7 +84,16 @@ struct ExpressProviderFormatter {
             id: provider.id,
             iconURL: provider.imageURL,
             name: provider.name,
-            type: provider.type.rawValue.uppercased()
+            type: provider.type.title
+        )
+    }
+
+    func mapToProvider(provider: ExpressPendingTransactionRecord.Provider) -> ProviderRowViewModel.Provider {
+        ProviderRowViewModel.Provider(
+            id: provider.id,
+            iconURL: provider.iconURL,
+            name: provider.name,
+            type: provider.type.title
         )
     }
 
@@ -128,6 +137,28 @@ struct ExpressProviderFormatter {
         }
 
         return nil
+    }
+}
+
+private extension ExpressProviderType {
+    var title: String {
+        switch self {
+        case .dex, .cex:
+            return rawValue.uppercased()
+        case .dexBridge:
+            return "DEX/Bridge"
+        }
+    }
+}
+
+private extension ExpressPendingTransactionRecord.ProviderType {
+    var title: String {
+        switch self {
+        case .dex, .cex:
+            return rawValue.uppercased()
+        case .dexBridge:
+            return "DEX/Bridge"
+        }
     }
 }
 

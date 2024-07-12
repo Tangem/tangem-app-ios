@@ -17,6 +17,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var alert: AlertBinder?
 
+    // MARK: Blocks
+
+    @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
+    @Published var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
+
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
     var priceChangeState: TokenPriceChangeView.State {
@@ -61,8 +66,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private weak var coordinator: TokenMarketsDetailsRoutable?
 
-    private var dataSource = MarketsDataSource()
-
     private let balanceFormatter = BalanceFormatter()
     private let priceChangeUtility = PriceChangeUtility()
     private let dateFormatter: DateFormatter = {
@@ -79,10 +82,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     )
 
     private let tokenInfo: MarketsTokenModel
-    private let dataProvider: TokenMarketsDetailsDataProvider
+    private let dataProvider: MarketsTokenDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
 
-    init(tokenInfo: MarketsTokenModel, dataProvider: TokenMarketsDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
+    init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
         self.coordinator = coordinator
@@ -120,6 +123,18 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadedInfo = model
         shortDescription = model.shortDescription
         fullDescription = model.fullDescription
+
+        makeBlocksViewModels(using: model)
+    }
+
+    private func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
+        if let insights = model.insights {
+            insightsViewModel = .init(insights: insights, infoRouter: self)
+        }
+
+        if let metrics = model.metrics {
+            metricsViewModel = .init(metrics: metrics, infoRouter: self)
+        }
     }
 
     private func log(_ message: @autoclosure () -> String) {
@@ -129,17 +144,24 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: - Actions
 
     func onAddToPortfolioTapAction() {
-        guard let tokenItems = loadedInfo?.tokenItems, !tokenItems.isEmpty else {
+        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
             assertionFailure("TokenItem list is empty")
             return
         }
 
-        coordinator?.openTokenSelector(dataSource: dataSource, coinId: tokenInfo.id, tokenItems: tokenItems)
+        coordinator?.openTokenSelector(with: coinModel)
     }
 }
 
 extension TokenMarketsDetailsViewModel {
     func openFullDescription() {
+        // TODO: Will be added in IOS-7291
         print("Open full description tapped")
+    }
+}
+
+extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
+    func openInfoBottomSheet(title: String, message: String) {
+        // TODO: Will be added in IOS-7291
     }
 }

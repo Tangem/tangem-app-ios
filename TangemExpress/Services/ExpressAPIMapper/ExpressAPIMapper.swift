@@ -45,7 +45,8 @@ struct ExpressAPIMapper {
             type: provider.type,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
-            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:))
+            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
+            recommended: provider.recommended
         )
     }
 
@@ -95,6 +96,10 @@ struct ExpressAPIMapper {
         toAmount /= pow(10, response.toDecimals)
         txValue /= pow(10, response.fromDecimals)
 
+        let otherNativeFee = txDetails.otherNativeFee
+            .map { Decimal(string: $0) }?
+            .map { $0 / pow(10, response.fromDecimals) }
+
         return ExpressTransactionData(
             requestId: txDetails.requestId,
             fromAmount: fromAmount,
@@ -106,6 +111,8 @@ struct ExpressAPIMapper {
             extraDestinationId: txDetails.txExtraId,
             value: txValue,
             txData: txDetails.txData,
+            otherNativeFee: otherNativeFee,
+            estimatedGasLimit: txDetails.gas.flatMap(Int.init),
             externalTxId: txDetails.externalTxId,
             externalTxUrl: txDetails.externalTxUrl
         )
@@ -114,9 +121,7 @@ struct ExpressAPIMapper {
     func mapToExpressTransaction(response: ExpressDTO.ExchangeStatus.Response) -> ExpressTransaction {
         ExpressTransaction(
             providerId: .init(response.providerId),
-            externalStatus: response.status,
-            externalTxId: response.externalTxId,
-            externalTxUrl: response.externalTxUrl
+            externalStatus: response.status
         )
     }
 }

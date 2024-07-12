@@ -12,13 +12,15 @@ struct SendAmountView: View {
     @ObservedObject var viewModel: SendAmountViewModel
     let namespace: Namespace
 
+    private var amountMinTextScale: CGFloat?
+
     var body: some View {
         GroupedScrollView(spacing: 14) {
             amountContainer
 
             if !viewModel.animatingAuxiliaryViewsOnAppear {
                 segmentControl
-                    .transition(SendView.Constants.auxiliaryViewTransition(for: .amount))
+                    .transition(.offset(y: 100).combined(with: .opacity))
             }
         }
         .onAppear(perform: viewModel.onAppear)
@@ -68,10 +70,10 @@ struct SendAmountView: View {
 
             VStack(spacing: 6) {
                 SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                    // A small delay must be introduced to fix a glitch in a transition animation when changing screens
-                    .initialFocusBehavior(.delayedFocus(duration: 2 * SendView.Constants.animationDuration))
+                    .initialFocusBehavior(.immediateFocus)
                     .alignment(.center)
                     .prefixSuffixOptions(viewModel.currentFieldOptions)
+                    .minTextScale(amountMinTextScale)
                     .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout
@@ -102,6 +104,14 @@ struct SendAmountView: View {
             }
         }
     }
+
+    init(
+        viewModel: SendAmountViewModel,
+        namespace: Namespace
+    ) {
+        self.viewModel = viewModel
+        self.namespace = namespace
+    }
 }
 
 extension SendAmountView {
@@ -111,10 +121,18 @@ extension SendAmountView {
     }
 }
 
+// MARK: - Setupable protocol conformance
+
+extension SendAmountView: Setupable {
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
+    }
+}
+
 /*
  struct SendAmountView_Previews: PreviewProvider {
      static let viewModel = SendAmountViewModel(
-         inputModel: SendModulesStepsBuilder (userWalletName: "Wallet", wallet: .mockETH).makeStakingAmountInput(),
+         inputModel: SendDependenciesBuilder (userWalletName: "Wallet", wallet: .mockETH).makeStakingAmountInput(),
          cryptoFiatAmountConverter: .init(),
          input: StakingAmountInputMock(),
          output: StakingAmountOutputMock()

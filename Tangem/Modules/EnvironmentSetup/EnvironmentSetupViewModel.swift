@@ -136,6 +136,9 @@ final class EnvironmentSetupViewModel: ObservableObject {
             DefaultRowViewModel(title: "Supported Blockchains") { [weak self] in
                 self?.coordinator?.openSupportedBlockchainsPreferences()
             },
+            DefaultRowViewModel(title: "Staking Blockchains") { [weak self] in
+                self?.coordinator?.openStakingBlockchainsPreferences()
+            },
         ]
 
         updateCurrentPromoCode()

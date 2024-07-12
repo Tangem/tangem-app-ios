@@ -35,11 +35,7 @@ extension TokenMarketsDetailsCoordinator {
 }
 
 extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
-    func openTokenSelector(dataSource: MarketsDataSource, coinId: String, tokenItems: [TokenItem]) {
-        networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(
-            parentDataSource: dataSource,
-            coinId: coinId,
-            tokenItems: tokenItems
-        )
+    func openTokenSelector(with coinModel: CoinModel) {
+        networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(coinModel: coinModel)
     }
 }

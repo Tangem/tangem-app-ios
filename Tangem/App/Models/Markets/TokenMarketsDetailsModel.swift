@@ -17,16 +17,36 @@ struct TokenMarketsDetailsModel: Identifiable {
     let shortDescription: String?
     let fullDescription: String?
     let priceChangePercentage: [String: Decimal]
-    let tokenItems: [TokenItem]
-    let links: [Link]
+    let insights: TokenMarketsDetailsInsights?
+    let metrics: MarketsTokenDetailsMetrics?
+    let coinModel: CoinModel
 }
 
-extension TokenMarketsDetailsModel {
-    enum Link {
-        case homepage(String)
-        case whitePaper(String)
-        case officialForum(String)
-        case socialNetwork
+struct TokenMarketsDetailsInsights {
+    let holders: [MarketsPriceIntervalType: Decimal]
+    let liquidity: [MarketsPriceIntervalType: Decimal]
+    let buyPressure: [MarketsPriceIntervalType: Decimal]
+    let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
+
+    init?(dto: MarketsDTO.Coins.Insight?) {
+        guard let dto else {
+            return nil
+        }
+
+        func mapToInterval(_ dict: [String: Decimal]) -> [MarketsPriceIntervalType: Decimal] {
+            return dict.reduce(into: [:]) { partialResult, pair in
+                guard let interval = MarketsPriceIntervalType(rawValue: pair.key) else {
+                    return
+                }
+
+                partialResult[interval] = pair.value
+            }
+        }
+
+        holders = mapToInterval(dto.holdersChange)
+        liquidity = mapToInterval(dto.liquidityChange)
+        buyPressure = mapToInterval(dto.buyPressureChange)
+        experiencedBuyers = mapToInterval(dto.experiencedBuyerChange)
     }
 }
 

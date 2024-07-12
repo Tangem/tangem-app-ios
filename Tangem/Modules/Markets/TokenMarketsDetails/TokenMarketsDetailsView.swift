@@ -30,9 +30,10 @@ struct TokenMarketsDetailsView: View {
                 MarketsPickerView(
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
+                    shouldStretchToFill: true,
                     titleFactory: { $0.rawValue.capitalizingFirstLetter() }
                 )
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
 
                 chart
 
@@ -108,7 +109,19 @@ struct TokenMarketsDetailsView: View {
 
             if viewModel.isLoading {
                 ContentBlockSkeletons()
-            } else {}
+            } else {
+                Group {
+                    if let insightsViewModel = viewModel.insightsViewModel {
+                        MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                    }
+
+                    if let metricsViewModel = viewModel.metricsViewModel {
+                        MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                    }
+                }
+                .animation(nil, value: viewModel.isLoading)
+                .padding(.horizontal, 16)
+            }
         }
         .animation(.default, value: viewModel.isLoading)
     }

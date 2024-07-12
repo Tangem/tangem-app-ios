@@ -10,6 +10,8 @@ import Foundation
 import Combine
 
 class FakeSendNotificationManager: FakeUserWalletNotificationManager, SendNotificationManager {
+    func setup(input: any SendNotificationManagerInput) {}
+
     func notificationPublisher(for location: SendNotificationEvent.Location) -> AnyPublisher<[NotificationViewInput], Never> {
         .just(output: [])
     }
