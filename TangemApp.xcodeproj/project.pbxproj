@@ -814,6 +814,9 @@
 		B6FB04E72B1FEF13000BB59E /* StatusBarStyleConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */; };
 		B6FB04E92B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */; };
 		B6FB04EB2B1FF022000BB59E /* StatusBarStyleConfigurator+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04EA2B1FF022000BB59E /* StatusBarStyleConfigurator+Environment.swift */; };
+		B6FCEE712C40E14300CA9252 /* UIScrollView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FCEE702C40E14300CA9252 /* UIScrollView+.swift */; };
+		B6FCEE732C40E16100CA9252 /* CGAffineTransform+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FCEE722C40E16100CA9252 /* CGAffineTransform+.swift */; };
+		B6FCEE752C40E28700CA9252 /* CGPoint+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FCEE742C40E28700CA9252 /* CGPoint+.swift */; };
 		B6FE5B282B93C0FF00B7A76B /* UserCodeRecoveringMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DCD02829DFF04B00C36C84 /* UserCodeRecoveringMock.swift */; };
 		B6FECF4F2C4032930030A8A9 /* PushNotificationsPermissionManagerStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FECF4C2C4032930030A8A9 /* PushNotificationsPermissionManagerStub.swift */; };
 		B6FECF502C4032930030A8A9 /* PushNotificationsPermissionRequestDelegateStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FECF4D2C4032930030A8A9 /* PushNotificationsPermissionRequestDelegateStub.swift */; };
@@ -2638,6 +2641,9 @@
 		B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfigurator.swift; sourceTree = "<group>"; };
 		B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfiguratorWeakifyAdapter.swift; sourceTree = "<group>"; };
 		B6FB04EA2B1FF022000BB59E /* StatusBarStyleConfigurator+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatusBarStyleConfigurator+Environment.swift"; sourceTree = "<group>"; };
+		B6FCEE702C40E14300CA9252 /* UIScrollView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+.swift"; sourceTree = "<group>"; };
+		B6FCEE722C40E16100CA9252 /* CGAffineTransform+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGAffineTransform+.swift"; sourceTree = "<group>"; };
+		B6FCEE742C40E28700CA9252 /* CGPoint+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+.swift"; sourceTree = "<group>"; };
 		B6FECF4C2C4032930030A8A9 /* PushNotificationsPermissionManagerStub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionManagerStub.swift; sourceTree = "<group>"; };
 		B6FECF4D2C4032930030A8A9 /* PushNotificationsPermissionRequestDelegateStub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestDelegateStub.swift; sourceTree = "<group>"; };
 		B6FECF4E2C4032930030A8A9 /* PushNotificationsAvailabilityProviderStub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsAvailabilityProviderStub.swift; sourceTree = "<group>"; };
@@ -5127,10 +5133,13 @@
 				5D80ED412550172A0008DEF0 /* UIApplication+.swift */,
 				5DDE22EE2608EFDB008657C6 /* UIViewController+.swift */,
 				B0C6B4C226CE678900FA990B /* CGSize+.swift */,
+				B6FCEE742C40E28700CA9252 /* CGPoint+.swift */,
 				B6176A792A5B743A0062C399 /* CGRect+.swift */,
+				B6FCEE722C40E16100CA9252 /* CGAffineTransform+.swift */,
 				B644EC262ACBF217007D9F4B /* UIPanGestureRecognizer+Value.swift */,
 				2D2ACE192B30FAA90004CBB6 /* PresentationConfigurationViewModifier.swift */,
 				EF033B172B8631C700A71600 /* UIResponder+.swift */,
+				B6FCEE702C40E14300CA9252 /* UIScrollView+.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -10284,6 +10293,7 @@
 				B01B2D7C2BD2936A00D8A6A1 /* APIProviderType.swift in Sources */,
 				EF5E5AAD2B73E9AD00D19BBB /* Timeline.swift in Sources */,
 				EF032C532955C725006C1FF3 /* CheckIconView.swift in Sources */,
+				B6FCEE712C40E14300CA9252 /* UIScrollView+.swift in Sources */,
 				DC0A57D82822A3C80031BECC /* InjectedValues.swift in Sources */,
 				EF842DEA2AFA58C5006E472E /* ExpressTokensListView.swift in Sources */,
 				B09BB87E259A095B00B92000 /* WarningsPriority+Colors.swift in Sources */,
@@ -10320,6 +10330,7 @@
 				2D5DCC412C330B43000EE379 /* MarketsWalletSelectorProvider.swift in Sources */,
 				DA1DF0452BA3E3AC008310E4 /* SendFeeSummaryView.swift in Sources */,
 				2D1BB3932C089816008392F7 /* MarketsItemViewModel.swift in Sources */,
+				B6FCEE752C40E28700CA9252 /* CGPoint+.swift in Sources */,
 				B06C083D2A73E0E900D982BC /* MainHeaderSubtitleInfo.swift in Sources */,
 				5D6784D925EBA1D800149995 /* TokenItems+Array.swift in Sources */,
 				EFA6B04129532D990090A92F /* NavigationBusyButton.swift in Sources */,
@@ -11004,6 +11015,7 @@
 				B62EE31E2B28A0FE006BA412 /* AppStoreReviewModifier.swift in Sources */,
 				DC7DA81E2844F27800AD6DBD /* WelcomeCoordinatorView.swift in Sources */,
 				EFC84AC02C35CB2000546882 /* SendFinishView.swift in Sources */,
+				B6FCEE732C40E16100CA9252 /* CGAffineTransform+.swift in Sources */,
 				DA559C342B0261F400F59584 /* SendCoordinator.swift in Sources */,
 				2D5DCC312C3309F1000EE379 /* MarketsTokensNetworkSelectorViewModel.swift in Sources */,
 				DA4371A52A7D1937006215CA /* LegacyAddCustomTokenRoutable.swift in Sources */,
