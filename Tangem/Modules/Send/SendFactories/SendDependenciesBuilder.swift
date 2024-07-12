@@ -66,7 +66,8 @@ struct SendDependenciesBuilder {
     func makeSendNotificationManager() -> SendNotificationManager {
         CommonSendNotificationManager(
             tokenItem: walletModel.tokenItem,
-            feeTokenItem: walletModel.feeTokenItem
+            feeTokenItem: walletModel.feeTokenItem,
+            withdrawalNotificationProvider: walletModel.withdrawalNotificationProvider
         )
     }
 
@@ -103,7 +104,6 @@ struct SendDependenciesBuilder {
             tokenItem: walletModel.tokenItem,
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
-            withdrawalNotificationProvider: walletModel.withdrawalNotificationProvider,
             transactionSigner: userWalletModel.signer,
             feeIncludedCalculator: feeIncludedCalculator,
             feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),

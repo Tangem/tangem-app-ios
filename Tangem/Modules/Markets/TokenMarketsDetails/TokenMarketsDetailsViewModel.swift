@@ -21,6 +21,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
     @Published var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
+    @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
     @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
 
     @Injected(\.safariManager) var safariManager: SafariManager
@@ -66,6 +67,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private var pickedTimeInterval: TimeInterval?
     @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
     @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
+    @Published private var currentPriceSubject: CurrentValueSubject<Decimal, Never>
 
     private weak var coordinator: TokenMarketsDetailsRoutable?
 
@@ -87,8 +89,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
     private var loadedInfo: TokenMarketsDetailsModel?
+    private var bag = Set<AnyCancellable>()
 
     init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
+        currentPriceSubject = .init(tokenInfo.currentPrice ?? 0.0)
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
         self.coordinator = coordinator
@@ -98,9 +102,23 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             formattingOptions: fiatBalanceFormattingOptions
         )
 
+        bind()
         loadedHistoryInfo = [Date().timeIntervalSince1970: tokenInfo.priceChangePercentage[MarketsPriceIntervalType.day.marketsListId] ?? 0]
         loadedPriceChangeInfo = tokenInfo.priceChangePercentage
         loadDetailedInfo()
+    }
+
+    private func bind() {
+        currentPriceSubject
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newPrice in
+                viewModel.price = viewModel.balanceFormatter.formatFiatBalance(
+                    newPrice,
+                    formattingOptions: viewModel.fiatBalanceFormattingOptions
+                )
+            }
+            .store(in: &bag)
     }
 
     private func loadDetailedInfo() {
@@ -138,6 +156,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         if let metrics = model.metrics {
             metricsViewModel = .init(metrics: metrics, infoRouter: self)
         }
+
+        pricePerformanceViewModel = .init(pricePerformanceData: model.pricePerformance, currentPricePublisher: currentPriceSubject.eraseToAnyPublisher())
 
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))

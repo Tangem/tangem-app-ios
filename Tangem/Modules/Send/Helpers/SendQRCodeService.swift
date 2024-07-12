@@ -10,11 +10,11 @@ import Foundation
 import Combine
 
 protocol SendQRCodeService {
-    func qrCodeDidScanned(value: String)
-
     var qrCodeDestination: AnyPublisher<String?, Never> { get }
     var qrCodeAdditionalField: AnyPublisher<String?, Never> { get }
     var qrCodeAmount: AnyPublisher<Decimal?, Never> { get }
+
+    func qrCodeDidScanned(value: String)
 }
 
 struct CommonSendQRCodeService {

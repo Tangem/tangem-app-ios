@@ -35,7 +35,7 @@ struct MarketsTokenDetailsInsightsView: View {
                     marketPriceIntervalType: $viewModel.selectedInterval,
                     options: viewModel.availableIntervals,
                     shouldStretchToFill: false,
-                    titleFactory: { $0.rawValue }
+                    titleFactory: { $0.tokenDetailsNameLocalized }
                 )
             }
 

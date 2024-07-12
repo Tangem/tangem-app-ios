@@ -48,7 +48,7 @@ struct MarketsRatingHeaderView: View {
                 marketPriceIntervalType: $viewModel.marketPriceIntervalType,
                 options: viewModel.marketPriceIntervalTypeOptions,
                 shouldStretchToFill: false,
-                titleFactory: { $0.marketsListId }
+                titleFactory: { $0.tokenDetailsNameLocalized }
             )
         }
     }
