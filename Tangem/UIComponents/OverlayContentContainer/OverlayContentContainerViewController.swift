@@ -13,13 +13,13 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Dependencies
 
     private let contentViewController: UIViewController
-    private let overlayViewController: UIViewController
     private let overlayCollapsedHeight: CGFloat
     private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
 
     // MARK: - Mutable state
 
+    private var overlayViewController: UIViewController?
     private var panGestureStartLocation: CGPoint?
     private var shouldIgnorePanGestureRecognizer = false
     private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
@@ -62,12 +62,10 @@ final class OverlayContentContainerViewController: UIViewController {
     /// are relative to the main screen bounds (w/o safe area).
     init(
         contentViewController: UIViewController,
-        overlayViewController: UIViewController,
         overlayCollapsedHeight: CGFloat,
         overlayExpandedVerticalOffset: CGFloat
     ) {
         self.contentViewController = contentViewController
-        self.overlayViewController = overlayViewController
         self.overlayCollapsedHeight = overlayCollapsedHeight
         self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
         super.init(nibName: nil, bundle: nil)
@@ -86,7 +84,43 @@ final class OverlayContentContainerViewController: UIViewController {
         setupPanGestureRecognizer()
         setupContent()
         setupBackgroundShadowView()
-        setupOverlay()
+        setupOverlayIfAvailable()
+    }
+
+    // MARK: - Public API
+
+    func installOverlay(_ newOverlayViewController: UIViewController) {
+        guard overlayViewController == nil else {
+            assertionFailure("Remove previous overlay view controller using `removeOverlay` before installing a new one")
+            return
+        }
+
+        guard isViewLoaded else {
+            // Overlay (if any) will be installed in `viewDidLoad` later on
+            return
+        }
+
+        overlayViewController = newOverlayViewController
+        setupOverlay(newOverlayViewController)
+    }
+
+    func removeOverlay() {
+        guard let overlayViewController else {
+            return
+        }
+
+        reset() // Crucial for tearing down the KVO observation (if any)
+
+        overlayViewController.willMove(toParent: nil)
+
+        overlayViewTopAnchorConstraint?.isActive = false
+        overlayViewTopAnchorConstraint = nil
+
+        let overlayView = overlayViewController.view!
+        overlayView.removeFromSuperview()
+
+        overlayViewController.removeFromParent()
+        self.overlayViewController = nil
     }
 
     // MARK: - Setup
@@ -127,7 +161,13 @@ final class OverlayContentContainerViewController: UIViewController {
         contentViewController.didMove(toParent: self)
     }
 
-    private func setupOverlay() {
+    private func setupOverlayIfAvailable() {
+        if let overlayViewController {
+            setupOverlay(overlayViewController)
+        }
+    }
+
+    private func setupOverlay(_ overlayViewController: UIViewController) {
         addChild(overlayViewController)
 
         let containerView = view!
@@ -330,7 +370,8 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         let location = touch.location(in: nil)
         panGestureStartLocation = location
 
-        return overlayViewController.view.frame.contains(location)
+        // The gesture is completely disabled if no overlay view controller is set
+        return overlayViewController?.view.frame.contains(location) ?? false
     }
 
     func gestureRecognizer(
