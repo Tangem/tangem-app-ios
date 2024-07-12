@@ -12,8 +12,8 @@ import UIKit
 final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Dependencies
 
-    private let contentVC: UIViewController
-    private let overlayVC: UIViewController
+    private let contentViewController: UIViewController
+    private let overlayViewController: UIViewController
     private let overlayCollapsedHeight: CGFloat
     private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
@@ -58,14 +58,16 @@ final class OverlayContentContainerViewController: UIViewController {
 
     // MARK: - Initialization/Deinitialization
 
+    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `overlayExpandedVerticalOffset`, etc)
+    /// are relative to the main screen bounds (w/o safe area).
     init(
-        contentVC: UIViewController,
-        overlayVC: UIViewController,
+        contentViewController: UIViewController,
+        overlayViewController: UIViewController,
         overlayCollapsedHeight: CGFloat,
         overlayExpandedVerticalOffset: CGFloat
     ) {
-        self.contentVC = contentVC
-        self.overlayVC = overlayVC
+        self.contentViewController = contentViewController
+        self.overlayViewController = overlayViewController
         self.overlayCollapsedHeight = overlayCollapsedHeight
         self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
         super.init(nibName: nil, bundle: nil)
@@ -85,7 +87,6 @@ final class OverlayContentContainerViewController: UIViewController {
         setupContent()
         setupBackgroundShadowView()
         setupOverlay()
-        let _ = print("\(#function) called at \(CACurrentMediaTime())") // FIXME: Andrey Fedorov - Test only, remove when not needed
     }
 
     // MARK: - Setup
@@ -97,7 +98,7 @@ final class OverlayContentContainerViewController: UIViewController {
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
         // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow)
-        let backgroundShadowView = UIView()
+        let backgroundShadowView = UIView(frame: screenBounds)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -107,10 +108,10 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private func setupContent() {
-        addChild(contentVC)
+        addChild(contentViewController)
 
         let containerView = view!
-        let contentView = contentVC.view!
+        let contentView = contentViewController.view!
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(contentView)
@@ -123,14 +124,14 @@ final class OverlayContentContainerViewController: UIViewController {
         contentView.layer.cornerRadius = Constants.cornerRadius // TODO: Andrey Fedorov - Add animation for content view's corners
         contentView.layer.masksToBounds = true
 
-        contentVC.didMove(toParent: self)
+        contentViewController.didMove(toParent: self)
     }
 
     private func setupOverlay() {
-        addChild(overlayVC)
+        addChild(overlayViewController)
 
         let containerView = view!
-        let overlayView = overlayVC.view!
+        let overlayView = overlayViewController.view!
         containerView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(overlayView)
@@ -149,7 +150,7 @@ final class OverlayContentContainerViewController: UIViewController {
         overlayView.layer.cornerRadius = Constants.cornerRadius
         overlayView.layer.masksToBounds = true
 
-        overlayVC.didMove(toParent: self)
+        overlayViewController.didMove(toParent: self)
     }
 
     private func setupPanGestureRecognizer() {
@@ -168,11 +169,10 @@ final class OverlayContentContainerViewController: UIViewController {
             min: 0.0,
             max: 1.0
         )
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(progress)") // FIXME: Andrey Fedorov - Test only, remove when not needed
     }
 
     private func updateContentScale() {
-        let contentLayer = contentVC.view.layer
+        let contentLayer = contentViewController.view.layer
         let invertedProgress = 1.0 - progress
         let scale = Constants.minContentViewScale
             + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
@@ -226,7 +226,6 @@ final class OverlayContentContainerViewController: UIViewController {
 
     @objc
     private func onPanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(gestureRecognizer.state)") // FIXME: Andrey Fedorov - Test only, remove when not needed
         switch gestureRecognizer.state {
         case .changed:
             onPanGestureChanged(gestureRecognizer)
@@ -331,15 +330,13 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         let location = touch.location(in: nil)
         panGestureStartLocation = location
 
-        return overlayVC.view.frame.contains(location)
+        return overlayViewController.view.frame.contains(location)
     }
 
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(gestureRecognizer) and \(otherGestureRecognizer)") // FIXME: Andrey Fedorov - Test only, remove when not needed
-
         if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
             scrollViewContentOffsetLocker = .make(for: scrollView)
         }
@@ -365,7 +362,7 @@ private extension OverlayContentContainerViewController {
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.5
-        static let cornerRadius = 14.0
+        static let cornerRadius = 24.0
         static let animationDuration = 0.3
         static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
