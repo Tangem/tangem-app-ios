@@ -87,7 +87,6 @@ final class OverlayContentContainerViewController: UIViewController {
         setupContent()
         setupBackgroundShadowView()
         setupOverlay()
-        let _ = print("\(#function) called at \(CACurrentMediaTime())") // FIXME: Andrey Fedorov - Test only, remove when not needed
     }
 
     // MARK: - Setup
@@ -170,7 +169,6 @@ final class OverlayContentContainerViewController: UIViewController {
             min: 0.0,
             max: 1.0
         )
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(progress)") // FIXME: Andrey Fedorov - Test only, remove when not needed
     }
 
     private func updateContentScale() {
@@ -228,7 +226,6 @@ final class OverlayContentContainerViewController: UIViewController {
 
     @objc
     private func onPanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(gestureRecognizer.state)") // FIXME: Andrey Fedorov - Test only, remove when not needed
         switch gestureRecognizer.state {
         case .changed:
             onPanGestureChanged(gestureRecognizer)
@@ -340,8 +337,6 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(gestureRecognizer) and \(otherGestureRecognizer)") // FIXME: Andrey Fedorov - Test only, remove when not needed
-
         if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
             scrollViewContentOffsetLocker = .make(for: scrollView)
         }
