@@ -31,7 +31,7 @@ struct TokenMarketsDetailsView: View {
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
                     shouldStretchToFill: true,
-                    titleFactory: { $0.rawValue.capitalizingFirstLetter() }
+                    titleFactory: { $0.tokenDetailsNameLocalized }
                 )
                 .padding(.horizontal, 16)
 
@@ -117,6 +117,10 @@ struct TokenMarketsDetailsView: View {
 
                     if let metricsViewModel = viewModel.metricsViewModel {
                         MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                    }
+
+                    if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
+                        MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
                     }
                 }
                 .animation(nil, value: viewModel.isLoading)

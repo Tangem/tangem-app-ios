@@ -44,22 +44,16 @@ struct SendFeeView: View {
             .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
             .separatorStyle(.none)
 
-            if !viewModel.animatingAuxiliaryViewsOnAppear {
-                ForEach(viewModel.feeLevelsNotificationInputs) { input in
-                    NotificationView(input: input)
-                        .transition(auxiliaryViewTransition)
-                }
+            if !viewModel.animatingAuxiliaryViewsOnAppear,
+               let input = viewModel.networkFeeUnreachableNotificationViewInput {
+                NotificationView(input: input)
+                    .transition(auxiliaryViewTransition)
             }
 
             if !viewModel.animatingAuxiliaryViewsOnAppear, !viewModel.customFeeModels.isEmpty {
                 ForEach(viewModel.customFeeModels) { customFeeModel in
                     SendCustomFeeInputField(viewModel: customFeeModel)
                         .onFocusChanged(customFeeModel.onFocusChanged)
-                        .transition(auxiliaryViewTransition)
-                }
-
-                ForEach(viewModel.customFeeNotificationInputs) { input in
-                    NotificationView(input: input)
                         .transition(auxiliaryViewTransition)
                 }
             }

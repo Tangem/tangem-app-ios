@@ -15,7 +15,7 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, CustomStringConver
     case quarter = "3m"
     case halfYear = "6m"
     case year = "1y"
-    case all
+    case all = "all_time"
 
     var id: String {
         rawValue
@@ -26,6 +26,18 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, CustomStringConver
         case .day: return "24h"
         case .week: return "1w"
         default: return "30d"
+        }
+    }
+
+    var tokenDetailsNameLocalized: String {
+        switch self {
+        case .day: return Localization.marketsSelectorInterval24hTitle
+        case .week: return Localization.marketsSelectorInterval7dTitle
+        case .month: return Localization.marketsSelectorInterval1mTitle
+        case .quarter: return Localization.marketsSelectorInterval3mTitle
+        case .halfYear: return Localization.marketsSelectorInterval6mTitle
+        case .year: return Localization.marketsSelectorInterval1yTitle
+        case .all: return Localization.marketsSelectorIntervalAllTitle
         }
     }
 }

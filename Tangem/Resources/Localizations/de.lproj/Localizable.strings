@@ -320,6 +320,13 @@
 "markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
+"markets_selector_interval_1m_title" = "1m";
+"markets_selector_interval_1y_title" = "1y";
+"markets_selector_interval_24h_title" = "24h";
+"markets_selector_interval_3m_title" = "3m";
+"markets_selector_interval_6m_title" = "6m";
+"markets_selector_interval_7d_title" = "7d";
+"markets_selector_interval_all_title" = "All";
 "markets_sort_by_title" = "Sort By";
 "markets_token_details_blockchain_site" = "Blockchain site";
 "markets_token_details_buy_pressure" = "Buy pressure";
