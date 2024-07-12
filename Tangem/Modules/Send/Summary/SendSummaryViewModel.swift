@@ -14,6 +14,7 @@ protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
     func setup(sendFeeInteractor: SendFeeInteractor)
+    func setup(stakingValidatorsInput: StakingValidatorsInput)
 }
 
 class SendSummaryViewModel: ObservableObject, Identifiable {
@@ -24,6 +25,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
     @Published var selectedValidatorData: ValidatorViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
+    @Published var selectedValidatorViewModel: ValidatorViewData?
     @Published var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
     @Published var animatingDestinationOnAppear = false
@@ -50,14 +52,14 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     weak var router: SendSummaryStepsRoutable?
 
-    private var isVisible = false
+    private lazy var stakingValidatorViewMapper = StakingValidatorViewMapper()
     private var bag: Set<AnyCancellable> = []
 
     init(
         settings: Settings,
         interactor: SendSummaryInteractor,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         sectionViewModelFactory: SendSummarySectionViewModelFactory
     ) {
         editableType = settings.editableType
@@ -95,8 +97,6 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        isVisible = true
-
         selectedFeeSummaryViewModel?.setAnimateTitleOnAppear(true)
 
         withAnimation(SendView.Constants.defaultAnimation) {
@@ -117,9 +117,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         }
     }
 
-    func onDisappear() {
-        isVisible = false
-    }
+    func onDisappear() {}
 
     func userDidTapDestination() {
         didTapSummary()

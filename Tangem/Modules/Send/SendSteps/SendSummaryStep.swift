@@ -65,4 +65,8 @@ extension SendSummaryStep: SendSummaryViewModelSetupable {
     func setup(sendFeeInteractor: any SendFeeInteractor) {
         viewModel.setup(sendFeeInteractor: sendFeeInteractor)
     }
+
+    func setup(stakingValidatorsInput: any StakingValidatorsInput) {
+        viewModel.setup(stakingValidatorsInput: stakingValidatorsInput)
+    }
 }

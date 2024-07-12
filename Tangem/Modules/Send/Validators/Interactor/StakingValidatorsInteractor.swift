@@ -17,7 +17,6 @@ protocol StakingValidatorsInteractor {
     func userDidSelect(validatorAddress: String)
 }
 
-// TODO: https://tangem.atlassian.net/browse/IOS-7105
 class CommonStakingValidatorsInteractor {
     private weak var input: StakingValidatorsInput?
     private weak var output: StakingValidatorsOutput?
