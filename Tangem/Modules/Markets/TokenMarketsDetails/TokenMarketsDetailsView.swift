@@ -31,7 +31,7 @@ struct TokenMarketsDetailsView: View {
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
                     shouldStretchToFill: true,
-                    titleFactory: { $0.rawValue.capitalizingFirstLetter() }
+                    titleFactory: { $0.tokenDetailsNameLocalized }
                 )
                 .padding(.horizontal, 16)
 

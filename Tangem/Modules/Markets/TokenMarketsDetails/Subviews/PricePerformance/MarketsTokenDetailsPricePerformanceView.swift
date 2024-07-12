@@ -67,9 +67,9 @@ struct MarketsTokenDetailsPricePerformanceView: View {
 #Preview {
     MarketsTokenDetailsPricePerformanceView(viewModel: .init(
         pricePerformanceData: [
-            .day: .init(low: 0.98, high: 0.989),
-            .month: .init(low: 0.97, high: 1.01),
-            .all: .init(low: 0.969, high: 1.1),
+            .day: .init(lowPrice: 0.98, highPrice: 0.989),
+            .month: .init(lowPrice: 0.97, highPrice: 1.01),
+            .all: .init(lowPrice: 0.969, highPrice: 1.1),
         ],
         currentPricePublisher: Just(1.0).eraseToAnyPublisher()
     ))

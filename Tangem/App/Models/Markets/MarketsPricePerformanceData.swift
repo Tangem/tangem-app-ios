@@ -9,6 +9,6 @@
 import Foundation
 
 struct MarketsPricePerformanceData: Codable {
-    let low: Decimal
-    let high: Decimal
+    let lowPrice: Decimal
+    let highPrice: Decimal
 }

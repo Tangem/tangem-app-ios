@@ -30,10 +30,14 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, CustomStringConver
     }
 
     var tokenDetailsNameLocalized: String {
-        if case .all = self {
-            return "All"
+        switch self {
+        case .day: return Localization.marketsSelectorInterval24hTitle
+        case .week: return Localization.marketsSelectorInterval7dTitle
+        case .month: return Localization.marketsSelectorInterval1mTitle
+        case .quarter: return Localization.marketsSelectorInterval3mTitle
+        case .halfYear: return Localization.marketsSelectorInterval6mTitle
+        case .year: return Localization.marketsSelectorInterval1yTitle
+        case .all: return Localization.marketsSelectorIntervalAllTitle
         }
-
-        return rawValue
     }
 }
