@@ -12,6 +12,8 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     @Published var rootViewModel: TokenMarketsDetailsViewModel? = nil
     @Published var networkSelectorViewModel: MarketsTokensNetworkSelectorViewModel? = nil
 
@@ -37,5 +39,9 @@ extension TokenMarketsDetailsCoordinator {
 extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
     func openTokenSelector(with coinModel: CoinModel) {
         networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(coinModel: coinModel)
+    }
+
+    func openURL(_ url: URL) {
+        safariManager.openURL(url)
     }
 }
