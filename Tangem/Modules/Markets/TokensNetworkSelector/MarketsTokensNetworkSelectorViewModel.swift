@@ -34,8 +34,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     private var bag = Set<AnyCancellable>()
     private let alertBuilder = MarketsTokensNetworkSelectorAlertBuilder()
 
-    private let walletDataSource: MarketsWalletDataSource
-
+    private let walletDataProvider: MarketsWalletDataProvider
     private let coinModel: CoinModel
 
     // MARK: - Computed Properties
@@ -57,7 +56,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private var selectedUserWalletModel: UserWalletModel? {
-        walletDataSource.selectedUserWalletModel
+        walletDataProvider.selectedUserWalletModel
     }
 
     private var canTokenItemBeToggled: Bool {
@@ -66,11 +65,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     // MARK: - Init
 
-    init(coinModel: CoinModel) {
+    init(coinModel: CoinModel, walletDataProvider: MarketsWalletDataProvider) {
         self.coinModel = coinModel
+        self.walletDataProvider = walletDataProvider
 
-        walletDataSource = MarketsWalletDataSource()
-        walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataSource)
+        walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
         bind()
         setup()
@@ -86,7 +85,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     func saveChangesOnTapAction() {
         guard
-            let userWalletModel = walletDataSource.selectedUserWalletModel,
+            let userWalletModel = walletDataProvider.selectedUserWalletModel,
             !isSaving
         else {
             return
@@ -111,10 +110,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     // MARK: - Private Implementation
 
     private func bind() {
-        walletDataSource.selectedUserWalletModelPublisher
+        walletDataProvider.selectedUserWalletModelPublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, userWalletId in
-                guard let userWalletModel = viewModel.walletDataSource.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
+                guard let userWalletModel = viewModel.walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return
                 }
 
@@ -138,7 +137,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     /// This method that shows a configure notification input result if the condition is single currency by coinId
     private func setup() {
-        guard walletDataSource.userWalletModels.isEmpty else {
+        guard walletDataProvider.userWalletModels.isEmpty else {
             return
         }
     }
@@ -159,7 +158,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func onSelect(_ selected: Bool, _ tokenItem: TokenItem) throws {
-        guard let userTokensManager = walletDataSource.selectedUserWalletModel?.userTokensManager else {
+        guard let userTokensManager = walletDataProvider.selectedUserWalletModel?.userTokensManager else {
             return
         }
 
@@ -245,7 +244,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
 private extension MarketsTokensNetworkSelectorViewModel {
     func isAdded(_ tokenItem: TokenItem) -> Bool {
-        if let userTokensManager = walletDataSource.selectedUserWalletModel?.userTokensManager {
+        if let userTokensManager = walletDataProvider.selectedUserWalletModel?.userTokensManager {
             return userTokensManager.contains(tokenItem)
         }
 

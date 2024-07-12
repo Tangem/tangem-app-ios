@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class MarketsWalletDataSource {
+class MarketsWalletDataProvider {
     // MARK: - Injected
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -25,7 +25,7 @@ class MarketsWalletDataSource {
     // MARK: - Init
 
     init() {
-        let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked && $0.config.hasFeature(.multiCurrency) }
+        let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
 
         _userWalletModels.send(userWalletModels)
 
@@ -37,7 +37,7 @@ class MarketsWalletDataSource {
     }
 }
 
-extension MarketsWalletDataSource: MarketsWalletSelectorProvider {
+extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }
@@ -47,18 +47,20 @@ extension MarketsWalletDataSource: MarketsWalletSelectorProvider {
     }
 
     var itemViewModels: [WalletSelectorItemViewModel] {
-        userWalletModels.map { userWalletModel in
-            WalletSelectorItemViewModel(
-                userWalletId: userWalletModel.userWalletId,
-                name: userWalletModel.config.cardName,
-                cardImagePublisher: userWalletModel.cardImagePublisher,
-                isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
-            ) { [weak self] userWalletId in
-                guard let self = self else { return }
+        userWalletModels
+            .filter { $0.config.hasFeature(.multiCurrency) }
+            .map { userWalletModel in
+                WalletSelectorItemViewModel(
+                    userWalletId: userWalletModel.userWalletId,
+                    name: userWalletModel.config.cardName,
+                    cardImagePublisher: userWalletModel.cardImagePublisher,
+                    isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
+                ) { [weak self] userWalletId in
+                    guard let self = self else { return }
 
-                let selectedUserWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
-                _selectedUserWalletModel.send(selectedUserWalletModel)
+                    let selectedUserWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
+                    _selectedUserWalletModel.send(selectedUserWalletModel)
+                }
             }
-        }
     }
 }

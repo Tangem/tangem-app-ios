@@ -28,7 +28,7 @@ extension WithdrawalNotificationEvent: NotificationEvent {
     var description: String? {
         switch self {
         case .reduceAmountBecauseFeeIsTooHigh(_, let amount, let blockchainName):
-            return Localization.sendNotificationHighFeeText(amount, blockchainName)
+            return Localization.sendNotificationHighFeeText(blockchainName, amount)
         case .cardanoWillBeSendAlongToken(let cardanoAmountFormatted, let tokenSymbol):
             return Localization.cardanoCoinWillBeSendWithTokenDescription(cardanoAmountFormatted, tokenSymbol)
         }

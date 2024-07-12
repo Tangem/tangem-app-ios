@@ -36,14 +36,13 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
                 .fixedSize()
                 .readGeometry(\.size.width, bindTo: $titleTargetWidth)
         }
-        .if(estimateTitleAndMessageSizes) {
-            $0
-                .overlay {
-                    messageView
-                        .opacity(0.0)
-                        .fixedSize()
-                        .readGeometry(\.size.width, bindTo: $messageTargetWidth)
-                }
+        .if(estimateTitleAndMessageSizes) { view in
+            view.overlay {
+                messageView
+                    .opacity(0.0)
+                    .fixedSize()
+                    .readGeometry(\.size.width, bindTo: $messageTargetWidth)
+            }
         }
     }
 
