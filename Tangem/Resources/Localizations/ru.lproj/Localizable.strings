@@ -726,7 +726,7 @@
 "wallet_connect_pairing_error" = "Не удалось создать пару WalletConnect: %1$@";
 "wallet_connect_paste_from_clipboard" = "Вставить из буфера обмена";
 "wallet_connect_personal_sign_message" = "Сообщение для %1$@:\n%2$@";
-"wallet_connect_request_session_start" = "Запрос на открытие сессии для\n1$@\n\nСЕТЬ: %2$@\n\nURL: %3$@";
+"wallet_connect_request_session_start" = "Запрос на открытие сессии для\n%1$@\n\nСЕТЬ: %2$@\n\nURL: %3$@";
 "wallet_connect_scan_new_code" = "Сканировать новый код";
 "wallet_connect_scanner_error_not_valid_card" = "Эту карту нельзя использовать с WalletConnect.";
 "wallet_connect_scanner_error_unsupported_network" = "Сеть не поддерживается. Пожалуйста, выберите другую сеть.";
