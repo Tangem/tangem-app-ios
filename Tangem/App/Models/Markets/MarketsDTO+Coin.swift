@@ -51,7 +51,6 @@ extension MarketsDTO.Coins {
 
     struct Links: Codable {
         let homepage: [String]?
-        let blockchainSite: [String]?
         let whitepaper: String?
         let reddit: String?
         let officialForum: [String]?

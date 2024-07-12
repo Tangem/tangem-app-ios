@@ -100,7 +100,8 @@ struct MainView_Preview: PreviewProvider {
         let viewModel = MainViewModel(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator)
+            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator),
+            pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub()
         )
         swipeDiscoveryHelper.delegate = viewModel
 

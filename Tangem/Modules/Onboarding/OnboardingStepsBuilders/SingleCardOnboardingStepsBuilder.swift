@@ -13,6 +13,7 @@ struct SingleCardOnboardingStepsBuilder {
     private let cardId: String
     private let hasWallets: Bool
     private let isMultiCurrency: Bool
+    private let isPushNotificationsAvailable: Bool
 
     private var otherSteps: [SingleCardOnboardingStep] {
         var steps: [SingleCardOnboardingStep] = []
@@ -23,7 +24,7 @@ struct SingleCardOnboardingStepsBuilder {
             steps.append(.saveUserWallet)
         }
 
-        if PushNotificationsProvider.isAvailable {
+        if isPushNotificationsAvailable {
             steps.append(.pushNotifications)
         }
 
@@ -34,10 +35,16 @@ struct SingleCardOnboardingStepsBuilder {
         isMultiCurrency && FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
     }
 
-    init(cardId: String, hasWallets: Bool, isMultiCurrency: Bool) {
+    init(
+        cardId: String,
+        hasWallets: Bool,
+        isMultiCurrency: Bool,
+        isPushNotificationsAvailable: Bool
+    ) {
         self.cardId = cardId
         self.hasWallets = hasWallets
         self.isMultiCurrency = isMultiCurrency
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 }
 

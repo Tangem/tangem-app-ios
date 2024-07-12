@@ -18,6 +18,7 @@ class CommonUserWalletModel {
 
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     let walletModelsManager: WalletModelsManager
 
@@ -308,7 +309,8 @@ extension CommonUserWalletModel: UserWalletModel {
             cardInfo: cardInfo,
             userWalletModel: self,
             sdkFactory: config,
-            onboardingStepsBuilderFactory: config
+            onboardingStepsBuilderFactory: config,
+            pushNotificationsInteractor: pushNotificationsInteractor
         )
 
         return factory.makeBackupInput()

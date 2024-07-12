@@ -64,6 +64,7 @@
 "cardano_max_amount_has_token_title" = "Недостаточно ADA";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
+"common_allow" = "Allow";
 "common_apply" = "Применить";
 "common_approval" = "Одобрение";
 "common_attention" = "Внимание";
@@ -316,6 +317,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
+"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
 "markets_selector_interval_1m_title" = "1m";
@@ -429,6 +431,7 @@
 "onboarding_title" = "Активация карты";
 "onboarding_title_backup_card_format" = "Резервная карта #%li";
 "onboarding_title_no_backup_cards" = "Нет резервных карт";
+"onboarding_title_notifications" = "Уведомления";
 "onboarding_title_one_backup_card" = "Добавлена ​​одна резервная карта";
 "onboarding_title_scan_origin_card" = "Подготовьте свою карту";
 "onboarding_title_two_backup_cards" = "Добавлены две резервные карты";
@@ -684,6 +687,9 @@
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
 "unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту, чтобы получить доступ к своему кошельку";
+"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
+"user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
+"user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
 "user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";
