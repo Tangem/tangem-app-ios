@@ -11,51 +11,104 @@ import SwiftUI
 struct MarketsTokensNetworkSelectorItemView: View {
     @ObservedObject var viewModel: MarketsTokensNetworkSelectorItemViewModel
 
+    @State private var size: CGSize = .zero
+
+    /// How much arrow should extrude from the edge of the icon
+    private let arrowExtrudeLength: CGFloat = 4
+    private let arrowWidth: Double = Constants.iconWidth
+
     var body: some View {
-        HStack(spacing: 12) {
-            NetworkIcon(
-                imageName: viewModel.iconName,
-                isActive: false,
-                isMainIndicatorVisible: viewModel.isMain,
-                size: CGSize(bothDimensions: 36)
+        HStack(spacing: 8) {
+            ArrowView(
+                position: viewModel.position,
+                width: arrowWidth + arrowExtrudeLength,
+                height: size.height,
+                arrowCenterXOffset: -(arrowExtrudeLength / 2)
             )
 
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(viewModel.networkName)
-                    .lineLimit(1)
-                    .layoutPriority(-1)
-                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+            HStack(spacing: 8) {
+                icon
 
-                if let tokenTypeName = viewModel.tokenTypeName {
-                    Text(tokenTypeName)
-                        .lineLimit(1)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text(viewModel.networkName.uppercased())
+                        .style(Fonts.Bold.footnote, color: viewModel.networkNameForegroundColor)
+                        .lineLimit(2)
+
+                    if let contractName = viewModel.contractName {
+                        Text(contractName)
+                            .style(Fonts.Regular.caption1, color: viewModel.contractNameForegroundColor)
+                            .padding(.leading, 2)
+                            .lineLimit(1)
+                            .fixedSize()
+                    }
                 }
+
+                Spacer(minLength: 0)
+
+                Button {
+                    viewModel.onSelectedTapAction()
+                } label: {
+                    selectedCheckmark
+                }
+                .disabled(viewModel.isReadonly)
             }
-
-            Spacer(minLength: 0)
-
-            Toggle("", isOn: $viewModel.selectedPublisher)
-                .labelsHidden()
-                .tint(Colors.Control.checked)
-                .disabled(!viewModel.isAvailable)
+            .padding(.vertical, 16)
         }
         .contentShape(Rectangle())
-        .onTapGesture {} // fix scroll/longpress conflict
-        .onLongPressGesture(perform: viewModel.onCopy)
-        .padding(16)
+        .readGeometry(\.size, bindTo: $size)
+    }
+
+    // MARK: - Private UI
+
+    private var icon: some View {
+        NetworkIcon(
+            imageName: viewModel.iconImageName,
+            isActive: viewModel.isSelected && !viewModel.isReadonly,
+            isDisabled: viewModel.isReadonly,
+            isMainIndicatorVisible: viewModel.isMain,
+            size: .init(bothDimensions: Constants.iconWidth)
+        )
+    }
+
+    private var selectedCheckmark: some View {
+        viewModel
+            .checkedImage
+            .frame(size: Constants.checkedSelectedIconSize)
+    }
+}
+
+extension MarketsTokensNetworkSelectorItemView {
+    enum Constants {
+        static let iconWidth: Double = 22
+        static let checkedSelectedIconSize = CGSize(bothDimensions: 24)
     }
 }
 
 struct MarketsTokensNetworkSelectorItemView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            MarketsTokensNetworkSelectorItemView(viewModel: .init(id: 0, isMain: true, iconName: "ethereum", iconNameSelected: "ethereum.fill", networkName: "Ethereum", tokenTypeName: "ERC20", contractAddress: nil, isSelected: .constant(true), isCopied: .constant(false)))
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(itemsList(count: 1, isSelected: .constant(Bool.random())), id: \.id) { viewModel in
+                    StatefulPreviewWrapper(false) { _ in
+                        MarketsTokensNetworkSelectorItemView(viewModel: viewModel)
+                    }
+                }
 
-            MarketsTokensNetworkSelectorItemView(viewModel: .init(id: 1, isMain: false, iconName: "solana", iconNameSelected: "solana.fill", networkName: "Solana", tokenTypeName: nil, contractAddress: nil, isSelected: .constant(false), isCopied: .constant(false)))
-
-            MarketsTokensNetworkSelectorItemView(viewModel: .init(id: 2, isMain: false, iconName: "bsc", iconNameSelected: "bsc.fill", networkName: "Binance smartest chain on the planet", tokenTypeName: "BEEP-BEEP 20", contractAddress: nil, isSelected: .constant(false), isCopied: .constant(false)))
+                Spacer()
+            }
         }
-        .previewLayout(.fixed(width: 400, height: 300))
+    }
+
+    private static func itemsList(count: Int, isSelected: Binding<Bool>) -> [MarketsTokensNetworkSelectorItemViewModel] {
+        var viewModels = [MarketsTokensNetworkSelectorItemViewModel]()
+        for i in 0 ..< count {
+            viewModels.append(MarketsTokensNetworkSelectorItemViewModel(
+                tokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)),
+                isReadonly: false,
+                isSelected: isSelected,
+                position: i == (count - 1) ? .last : i == 0 ? .first : .middle
+            ))
+        }
+        return viewModels
     }
 }

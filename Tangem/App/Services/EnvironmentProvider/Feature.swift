@@ -37,14 +37,14 @@ enum Feature: String, Hashable, CaseIterable {
         case .markets: return .unspecified
         case .dynamicFonts: return .unspecified
         case .staking: return .unspecified
-        case .pushNotifications: return .unspecified
+        case .pushNotifications: return .version("5.13")
         }
     }
 }
 
 extension Feature {
     enum ReleaseVersion: Hashable {
-        /// This case is for an unterminated release date
+        /// This case is for an undetermined release date
         case unspecified
 
         /// Version in the format "1.1.0" or "1.2"

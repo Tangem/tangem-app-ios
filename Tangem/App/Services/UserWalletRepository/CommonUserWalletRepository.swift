@@ -16,6 +16,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     var selectedModel: UserWalletModel? {
         return models.first {
@@ -109,7 +110,8 @@ class CommonUserWalletRepository: UserWalletRepository {
                     cardInfo: cardInfo,
                     userWalletModel: userWalletModel,
                     sdkFactory: config,
-                    onboardingStepsBuilderFactory: config
+                    onboardingStepsBuilderFactory: config,
+                    pushNotificationsInteractor: pushNotificationsInteractor
                 )
 
                 if let onboardingInput = factory.makeOnboardingInput() {

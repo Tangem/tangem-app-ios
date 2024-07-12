@@ -1,5 +1,5 @@
 //
-//  TwinOnboardingStepsBulder.swift
+//  TwinOnboardingStepsBuilder.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 07.04.2023.
@@ -9,10 +9,11 @@
 import Foundation
 import TangemSdk
 
-struct TwinOnboardingStepsBulder {
+struct TwinOnboardingStepsBuilder {
     private let cardId: String
     private let hasWallets: Bool
     private let twinData: TwinData
+    private let isPushNotificationsAvailable: Bool
 
     private var otherSteps: [TwinsOnboardingStep] {
         var steps: [TwinsOnboardingStep] = []
@@ -23,21 +24,27 @@ struct TwinOnboardingStepsBulder {
             steps.append(.saveUserWallet)
         }
 
-        if PushNotificationsProvider.isAvailable {
+        if isPushNotificationsAvailable {
             steps.append(.pushNotifications)
         }
 
         return steps
     }
 
-    init(cardId: String, hasWallets: Bool, twinData: TwinData) {
+    init(
+        cardId: String,
+        hasWallets: Bool,
+        twinData: TwinData,
+        isPushNotificationsAvailable: Bool
+    ) {
         self.cardId = cardId
         self.hasWallets = hasWallets
         self.twinData = twinData
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 }
 
-extension TwinOnboardingStepsBulder: OnboardingStepsBuilder {
+extension TwinOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [TwinsOnboardingStep]()
 

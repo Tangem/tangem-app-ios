@@ -9,7 +9,11 @@
 import Foundation
 import Combine
 
-class MarketsTokensNetworkDataSource {
+class MarketsWalletDataSource {
+    // MARK: - Injected
+
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+
     // MARK: - Properties
 
     private let _userWalletModels: CurrentValueSubject<[UserWalletModel], Never> = .init([])
@@ -20,20 +24,20 @@ class MarketsTokensNetworkDataSource {
 
     // MARK: - Init
 
-    init(_ dataSource: MarketsDataSource) {
-        let userWalletModels = dataSource.userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
+    init() {
+        let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked && $0.config.hasFeature(.multiCurrency) }
 
         _userWalletModels.send(userWalletModels)
 
         let selectedUserWalletModel = userWalletModels.first { userWalletModel in
-            userWalletModel.userWalletId == dataSource.defaultUserWalletModel?.userWalletId
+            userWalletModel.userWalletId == userWalletRepository.selectedUserWalletId
         } ?? userWalletModels.first
 
         _selectedUserWalletModel.send(selectedUserWalletModel)
     }
 }
 
-extension MarketsTokensNetworkDataSource: MarketsWalletSelectorProvider {
+extension MarketsWalletDataSource: MarketsWalletSelectorProvider {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }

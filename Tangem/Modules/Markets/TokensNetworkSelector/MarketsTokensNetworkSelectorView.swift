@@ -14,7 +14,19 @@ struct MarketsTokensNetworkSelectorView: View {
     var body: some View {
         NavigationView {
             ZStack(alignment: .bottom) {
-                groupedContent
+                ScrollView {
+                    VStack(spacing: 14) {
+                        MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+
+                        contentView
+
+                        MarketsGeneratedAddressView()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 72)
+                }
+
+                overlayButtonView
             }
             .alert(item: $viewModel.alert, content: { $0.alert })
             .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
@@ -22,75 +34,71 @@ struct MarketsTokensNetworkSelectorView: View {
         }
     }
 
-    private var groupedContent: some View {
-        GroupedScrollView {
-            MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+    private var contentView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            VStack(alignment: .leading, spacing: .zero) {
+                Text(Localization.marketsSelectNetwork)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-            if !viewModel.nativeSelectorItems.isEmpty {
-                Spacer(minLength: 14)
-
-                nativeNetworksContent
-
-                Spacer(minLength: 10)
+                tokenInfoView
             }
 
-            if !viewModel.nonNativeSelectorItems.isEmpty {
-                Spacer(minLength: 14)
-
-                noneNativeNetworksContent
-            }
-        }
-    }
-
-    private var nativeNetworksContent: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(Localization.manageTokensNetworkSelectorNativeTitle)
-                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-            Text(Localization.manageTokensNetworkSelectorNativeSubtitle)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-
-            Spacer(minLength: 10)
-
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.nativeSelectorItems) {
+            VStack(spacing: .zero) {
+                ForEach(viewModel.tokenItemViewModels) {
                     MarketsTokensNetworkSelectorItemView(viewModel: $0)
                 }
             }
-            .background(Colors.Background.action)
-            .cornerRadiusContinuous(Constants.cornerRadius)
+            .padding(.leading, 8)
         }
+        .roundedBackground(with: Colors.Background.action, padding: 14, radius: Constants.cornerRadius)
     }
 
-    private var noneNativeNetworksContent: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Button(action: viewModel.displayNonNativeNetworkAlert) {
-                HStack(spacing: 4) {
-                    Text(Localization.manageTokensNetworkSelectorNonNativeTitle)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+    private var tokenInfoView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            HStack(spacing: 12) {
+                IconView(url: viewModel.coinIconURL, size: .init(bothDimensions: 36), forceKingfisher: true)
 
-                    Assets.infoIconMini.image
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(size: .init(bothDimensions: 20))
-                        .foregroundColor(Colors.Icon.inactive)
+                VStack(alignment: .leading) {
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text(viewModel.coinName)
+                            .lineLimit(1)
+                            .layoutPriority(-1)
+                            .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-                    Spacer()
+                        Text(viewModel.coinSymbol)
+                            .lineLimit(1)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+
+                        Spacer()
+                    }
+
+                    Text(Localization.marketsAvailableNetworks)
+                        .style(.footnote, color: Colors.Text.secondary)
                 }
             }
+        }
+        .padding(.vertical, 12)
+    }
 
-            Text(Localization.manageTokensNetworkSelectorNonNativeSubtitle)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+    private var overlayButtonView: some View {
+        VStack {
+            Spacer()
 
-            Spacer(minLength: 10)
-
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.nonNativeSelectorItems) {
-                    MarketsTokensNetworkSelectorItemView(viewModel: $0)
-                }
-            }
-            .background(Colors.Background.action)
-            .cornerRadiusContinuous(Constants.cornerRadius)
+            MainButton(
+                title: Localization.commonContinue,
+                icon: .trailing(Assets.tangemIcon),
+                isLoading: viewModel.isSaving,
+                isDisabled: viewModel.isSaveDisabled,
+                action: viewModel.saveChangesOnTapAction
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .background(LinearGradient(
+                colors: [Colors.Background.primary, Colors.Background.primary, Colors.Background.primary.opacity(0)],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .edgesIgnoringSafeArea(.bottom))
         }
     }
 }

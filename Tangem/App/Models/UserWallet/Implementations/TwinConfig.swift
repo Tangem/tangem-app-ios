@@ -183,11 +183,15 @@ extension TwinConfig: UserWalletConfig {
         return TwinWalletManagerFactory(pairPublicKey: savedPairKey)
     }
 
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return TwinOnboardingStepsBulder(
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return TwinOnboardingStepsBuilder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
-            twinData: twinData
+            twinData: twinData,
+            isPushNotificationsAvailable: isPushNotificationsAvailable
         )
     }
 
