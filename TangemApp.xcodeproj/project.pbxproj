@@ -11,7 +11,6 @@
 		0A77AD272C40303300BA89F7 /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0A77AD262C40303300BA89F7 /* TweetNacl */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
-		0ABC60E92C41006900065EBA /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC60E82C41006900065EBA /* BigInt */; };
 		290167CAE4AB04EF14809C71 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1A9153420AB02B11100282 /* Pods_Tangem_TangemUITests.framework */; };
 		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
@@ -3422,7 +3421,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
-				0ABC60E92C41006900065EBA /* BigInt in Frameworks */,
 				EF2D9C9B2BBDA87D0055C485 /* TangemFoundation.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
@@ -9138,7 +9136,6 @@
 				B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */,
 				0A81B38D2BB3018E0008F21C /* ZIPFoundation */,
 				0A77AD262C40303300BA89F7 /* TweetNacl */,
-				0ABC60E82C41006900065EBA /* BigInt */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -9411,7 +9408,6 @@
 				B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */,
 				0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				0A77AD252C40303300BA89F7 /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
-				0ABC60E72C41006900065EBA /* XCRemoteSwiftPackageReference "BigInt" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -11800,8 +11796,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -11846,8 +11840,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -11867,8 +11859,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -11944,8 +11934,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -11990,8 +11978,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -12011,8 +11997,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -14189,8 +14173,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -14235,8 +14217,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -14256,8 +14236,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -14439,8 +14417,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -14485,8 +14461,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -14506,8 +14480,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -16628,8 +16600,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -16674,8 +16644,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -16695,8 +16663,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -16878,8 +16844,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -16924,8 +16888,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -16945,8 +16907,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -17207,14 +17167,6 @@
 				minimumVersion = 0.9.18;
 			};
 		};
-		0ABC60E72C41006900065EBA /* XCRemoteSwiftPackageReference "BigInt" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/attaswift/BigInt";
-			requirement = {
-				kind = exactVersion;
-				version = 5.3.0;
-			};
-		};
 		B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
@@ -17243,11 +17195,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
-		};
-		0ABC60E82C41006900065EBA /* BigInt */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0ABC60E72C41006900065EBA /* XCRemoteSwiftPackageReference "BigInt" */;
-			productName = BigInt;
 		};
 		B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
