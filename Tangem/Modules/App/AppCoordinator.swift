@@ -118,7 +118,6 @@ class AppCoordinator: CoordinatorObject {
 
     /// - Note: The coordinator is set up only once and only when the feature toggle is enabled.
     private func setupMainBottomSheetCoordinatorIfNeeded() {
-        return // FIXME: Andrey Fedorov - Test only, remove when not needed
         guard
             FeatureProvider.isAvailable(.markets),
             mainBottomSheetCoordinator == nil

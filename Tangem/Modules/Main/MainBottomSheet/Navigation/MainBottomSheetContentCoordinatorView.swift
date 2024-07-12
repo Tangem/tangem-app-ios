@@ -10,6 +10,7 @@ import SwiftUI
 
 /// - Note: Multiple separate root coordinator views are used in this module due to the architecture of the
 /// scrollable bottom sheet UI component, which consists of three parts (views) - `header`, `content` and `overlay`.
+@available(*, deprecated, message: "Use single root view for the entire flow")
 struct MainBottomSheetContentCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainBottomSheetCoordinator
 
