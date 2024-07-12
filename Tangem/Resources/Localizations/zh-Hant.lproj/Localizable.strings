@@ -64,6 +64,7 @@
 "cardano_max_amount_has_token_title" = "Not enough ADA";
 "common_accept" = "接受";
 "common_access_denied" = "Access denied";
+"common_allow" = "Allow";
 "common_apply" = "Apply";
 "common_approval" = "Approval";
 "common_attention" = "注意";
@@ -316,6 +317,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
+"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
 "markets_sort_by_title" = "Sort By";
@@ -422,6 +424,7 @@
 "onboarding_title" = "啟用卡片";
 "onboarding_title_backup_card_format" = "備份卡 #%li";
 "onboarding_title_no_backup_cards" = "沒有備用卡";
+"onboarding_title_notifications" = "Notifications";
 "onboarding_title_one_backup_card" = "添加了一張備用卡";
 "onboarding_title_scan_origin_card" = "準備好你的卡片";
 "onboarding_title_two_backup_cards" = "添加了兩張備用卡";
@@ -677,6 +680,9 @@
 "twins_recreate_warning" = "這個動作是不可逆的。您將無法訪問舊錢包";
 "twins_scan_twin_with_number" = "將您的 iPhone 靠近編號為 %@ 的雙胞胎卡";
 "unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
+"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
+"user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
+"user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";
 "user_wallet_list_add_button" = "添加新錢包";
 "user_wallet_list_delete_prompt" = "您確定要刪除此錢包?";
 "user_wallet_list_error_wallet_already_saved" = "此錢包已保存，您可以再添加一個";

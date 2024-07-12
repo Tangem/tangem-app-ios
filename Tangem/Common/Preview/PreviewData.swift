@@ -16,6 +16,7 @@ struct PreviewData {
             backupService: .init(sdk: .init()),
             primaryCardId: "",
             cardInitializer: nil,
+            pushNotificationsPermissionManager: PushNotificationsPermissionManagerStub(),
             steps: .singleWallet([.createWallet, .success]),
             cardInput: .userWalletModel(PreviewCard.ethEmptyNote.userWalletModel),
             twinData: nil
@@ -27,6 +28,7 @@ struct PreviewData {
             backupService: .init(sdk: .init()),
             primaryCardId: "",
             cardInitializer: nil,
+            pushNotificationsPermissionManager: PushNotificationsPermissionManagerStub(),
             steps: .twins([
                 .intro(pairNumber: "0128"),
                 .first,
@@ -45,6 +47,7 @@ struct PreviewData {
             backupService: .init(sdk: .init()),
             primaryCardId: "",
             cardInitializer: nil,
+            pushNotificationsPermissionManager: PushNotificationsPermissionManagerStub(),
             steps: .wallet([.createWallet, .backupIntro, .selectBackupCards, .backupCards, .success]),
             cardInput: .userWalletModel(PreviewCard.tangemWalletEmpty.userWalletModel),
             twinData: nil

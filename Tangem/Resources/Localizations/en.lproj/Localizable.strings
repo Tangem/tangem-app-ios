@@ -64,6 +64,7 @@
 "cardano_max_amount_has_token_title" = "Not enough ADA";
 "common_accept" = "Accept";
 "common_access_denied" = "Access denied";
+"common_allow" = "Allow";
 "common_apply" = "Apply";
 "common_approval" = "Approval";
 "common_attention" = "Attention";
@@ -316,6 +317,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
+"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
 "markets_sort_by_title" = "Sort By";
@@ -422,6 +424,7 @@
 "onboarding_title" = "Activating card";
 "onboarding_title_backup_card_format" = "Backup card #%li";
 "onboarding_title_no_backup_cards" = "No backup cards";
+"onboarding_title_notifications" = "Notifications";
 "onboarding_title_one_backup_card" = "One backup card added";
 "onboarding_title_scan_origin_card" = "Prepare your card";
 "onboarding_title_two_backup_cards" = "Two backup cards added";
@@ -677,6 +680,9 @@
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
 "unlock_wallet_description_full" = "Use %@ or scan a card to have an access to your wallet";
+"user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
+"user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
+"user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";
 "user_wallet_list_add_button" = "Add new wallet";
 "user_wallet_list_delete_prompt" = "Are you sure you want to delete this wallet?";
 "user_wallet_list_error_wallet_already_saved" = "This wallet has already been saved, you can add another one";
