@@ -44,7 +44,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     private let tokenItem: TokenItem
     private let interactor: SendSummaryInteractor
-    private let notificationManager: SendNotificationManager
+    private let notificationManager: NotificationManager
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     weak var router: SendSummaryStepsRoutable?
 
@@ -54,7 +54,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     init(
         settings: Settings,
         interactor: SendSummaryInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         sectionViewModelFactory: SendSummarySectionViewModelFactory
     ) {
@@ -142,7 +142,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         notificationManager
-            .notificationPublisher(for: .summary)
+            .notificationPublisher
             .sink { [weak self] notificationInputs in
                 self?.notificationInputs = notificationInputs
             }
@@ -209,7 +209,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                 var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
                 for feeValue in feeValues {
-                    if feeValue.option == selectedFee?.option {
+                    if feeValue.option == selectedFee.option {
                         selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: feeValue)
                     } else {
                         let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)

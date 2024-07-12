@@ -32,7 +32,7 @@ extension MarketsDTO.Coins {
         let insights: [Insight]?
         let links: Links
         let metrics: MarketsTokenDetailsMetrics?
-        let pricePerformance: PricePerformance
+        let pricePerformance: [String: MarketsPricePerformanceData]
     }
 
     struct Network: Codable {
@@ -57,10 +57,5 @@ extension MarketsDTO.Coins {
         let chat: [String]?
         let community: [String]?
         let reposUrl: [String: [String]]?
-    }
-
-    struct PricePerformance: Codable {
-        let highPrice: [String: Decimal]
-        let lowPrice: [String: Decimal]
     }
 }

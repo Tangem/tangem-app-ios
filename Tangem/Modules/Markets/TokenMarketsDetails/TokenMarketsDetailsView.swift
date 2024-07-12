@@ -31,7 +31,7 @@ struct TokenMarketsDetailsView: View {
                     marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
                     options: viewModel.priceChangeIntervalOptions,
                     shouldStretchToFill: true,
-                    titleFactory: { $0.rawValue.capitalizingFirstLetter() }
+                    titleFactory: { $0.tokenDetailsNameLocalized }
                 )
                 .padding(.horizontal, 16)
 
@@ -104,17 +104,12 @@ struct TokenMarketsDetailsView: View {
 
     private var contentBlocks: some View {
         VStack(spacing: 14) {
-            if viewModel.isLoading {
-                ContentBlockSkeletons()
-            } else {
-                Group {
-                    if let portfolioViewModel = viewModel.portfolioViewModel {
-                        MarketsPortfolioContainerView(viewModel: portfolioViewModel)
-                            .animation(nil, value: viewModel.isLoading)
-                    }
+            Group {
+                if let portfolioViewModel = viewModel.portfolioViewModel {
+                    MarketsPortfolioContainerView(viewModel: portfolioViewModel)
                 }
-                .padding(16)
             }
+            .padding(.horizontal, 16)
 
             if viewModel.isLoading {
                 ContentBlockSkeletons()
@@ -126,6 +121,10 @@ struct TokenMarketsDetailsView: View {
 
                     if let metricsViewModel = viewModel.metricsViewModel {
                         MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                    }
+
+                    if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
+                        MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
                     }
                 }
                 .animation(nil, value: viewModel.isLoading)

@@ -13,14 +13,18 @@ import SwiftUI
 class SendFeeStep {
     private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
-    private let notificationManager: SendNotificationManager
+    private let notificationManager: NotificationManager
     private let tokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
+
+    // We have to use this `SendViewAlertPresenter`
+    // Because .alert(item:) doesn't work in the nested views
+    private weak var alertPresenter: SendViewAlertPresenter?
 
     init(
         viewModel: SendFeeViewModel,
         interactor: SendFeeInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         tokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
@@ -29,6 +33,10 @@ class SendFeeStep {
         self.notificationManager = notificationManager
         self.tokenItem = tokenItem
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
+    }
+
+    func set(alertPresenter: SendViewAlertPresenter) {
+        self.alertPresenter = alertPresenter
     }
 }
 
@@ -40,7 +48,7 @@ extension SendFeeStep: SendStep {
     var type: SendStepType { .fee(viewModel) }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.selectedFeePublisher.map { $0 != nil }.eraseToAnyPublisher()
+        .just(output: true)
     }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
@@ -52,11 +60,15 @@ extension SendFeeStep: SendStep {
                     .token: tokenItem.currencySymbol,
                 ])
 
-                viewModel.alert = SendAlertBuilder.makeCustomFeeTooLowAlert(continueAction: continueAction)
+                alertPresenter?.showAlert(
+                    SendAlertBuilder.makeCustomFeeTooLowAlert(continueAction: continueAction)
+                )
 
                 return false
             case .customFeeTooHigh(let orderOfMagnitude):
-                viewModel.alert = SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
+                alertPresenter?.showAlert(
+                    SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
+                )
 
                 return false
             default:
@@ -76,6 +88,8 @@ extension SendFeeStep: SendStep {
     }
 
     func willDisappear(next step: SendStep) {
+        UIApplication.shared.endEditing()
+
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
