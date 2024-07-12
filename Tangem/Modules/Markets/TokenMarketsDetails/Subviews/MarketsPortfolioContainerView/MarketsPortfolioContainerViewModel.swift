@@ -52,20 +52,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 }
 
                 let viewModels = filteredWalletModels.map { walletModel in
-                    let tokenItem = walletModel.tokenItem
-
-                    let inputData = MarketsPortfolioTokenItemViewModel.InputData(
-                        coinImageURL: IconURLBuilder().tokenIconURL(optionalId: tokenItem.id),
-                        walletName: userWalletModel.config.cardName,
-                        tokenName: "\(tokenItem.currencySymbol) \(tokenItem.networkName)",
-                        tokenImageName: tokenItem.isToken ? tokenItem.blockchain.iconNameFilled : nil,
-                        fiatBalanceValue: walletModel.fiatBalance,
-                        balanceValue: walletModel.balance,
-                        userWalletId: userWalletModel.userWalletId,
-                        tokenItemId: tokenItem.id
-                    )
-
-                    return MarketsPortfolioTokenItemViewModel(data: inputData)
+                    return MarketsPortfolioTokenItemViewModel(walletName: userWalletModel.name, walletModel: walletModel)
                 }
 
                 partialResult.append(contentsOf: viewModels)

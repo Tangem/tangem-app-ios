@@ -19,7 +19,7 @@ struct MarketsPortfolioContainerView: View {
 
             contentView
         }
-        .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
+        .defaultRoundedBackground(with: Colors.Background.action)
     }
 
     private var headerView: some View {
@@ -36,9 +36,7 @@ struct MarketsPortfolioContainerView: View {
                         viewModel.onAddTapAction()
                     }, label: {
                         HStack(spacing: 2) {
-                            Assets
-                                .plus24
-                                .image
+                            Assets.plus24.image
                                 .resizable()
                                 .renderingMode(.template)
                                 .foregroundColor(Colors.Icon.primary1)
@@ -71,7 +69,7 @@ struct MarketsPortfolioContainerView: View {
     }
 
     private var listView: some View {
-        VStack {
+        VStack(spacing: .zero) {
             ForEach(viewModel.tokenItemViewModels) {
                 MarketsPortfolioTokenItemView(viewModel: $0)
             }
@@ -93,7 +91,7 @@ struct MarketsPortfolioContainerView: View {
     private var unavailableView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack {
-                Text("This asset is not available")
+                Text(Localization.marketsAddToMyPortfolioUnavailableDescription)
                     .style(.footnote, color: Colors.Text.tertiary)
 
                 Spacer()

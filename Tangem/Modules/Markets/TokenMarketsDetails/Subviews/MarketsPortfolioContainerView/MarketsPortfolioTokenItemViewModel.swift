@@ -10,48 +10,45 @@ import Foundation
 import Combine
 
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
-    // MARK: - Published Properties
+    // MARK: - Public Properties
+
+    @Published var fiatBalanceValue: String = ""
+    @Published var balanceValue: String = ""
 
     let id: UUID = .init()
 
-    let coinImageURL: URL?
+    let tokenIconInfo: TokenIconInfo
     let walletName: String
     let tokenName: String
-    let tokenImageName: String?
-
-    let fiatBalanceValue: String
-    let balanceValue: String
 
     // MARK: - Private Properties
 
-    private let userWalletId: UserWalletId
-    private let tokenItemId: TokenItemId?
+    private weak var walletModel: WalletModel?
 
-    private var bag = Set<AnyCancellable>()
+    private var updateSubscription: AnyCancellable?
 
     // MARK: - Init
 
-    init(data: InputData) {
-        coinImageURL = data.coinImageURL
-        walletName = data.walletName
-        tokenName = data.tokenName
-        tokenImageName = data.tokenImageName
-        fiatBalanceValue = data.fiatBalanceValue
-        balanceValue = data.balanceValue
-        userWalletId = data.userWalletId
-        tokenItemId = data.tokenItemId
-    }
-}
+    init(walletName: String, walletModel: WalletModel) {
+        self.walletName = walletName
+        self.walletModel = walletModel
 
-extension MarketsPortfolioTokenItemViewModel {
-    struct InputData {
-        let coinImageURL: URL?
-        let walletName: String
-        let tokenName: String
-        let tokenImageName: String?
-        let fiatBalanceValue: String
-        let balanceValue: String
-        let userWalletId: UserWalletId
-        let tokenItemId: TokenItemId?
+        tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        tokenName = "\(walletModel.tokenItem.currencySymbol) \(walletModel.tokenItem.networkName)"
+
+        bind()
+    }
+
+    func bind() {
+        updateSubscription = walletModel?
+            .walletDidChangePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, walletModelState in
+                if walletModelState.isSuccessfullyLoaded {
+                    viewModel.fiatBalanceValue = viewModel.walletModel?.fiatBalance ?? ""
+                    viewModel.balanceValue = viewModel.walletModel?.balance ?? ""
+                }
+            }
     }
 }

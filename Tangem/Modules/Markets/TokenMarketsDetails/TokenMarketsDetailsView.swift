@@ -104,12 +104,10 @@ struct TokenMarketsDetailsView: View {
 
     private var contentBlocks: some View {
         VStack(spacing: 14) {
-            Group {
-                if let portfolioViewModel = viewModel.portfolioViewModel {
-                    MarketsPortfolioContainerView(viewModel: portfolioViewModel)
-                }
+            if let portfolioViewModel = viewModel.portfolioViewModel {
+                MarketsPortfolioContainerView(viewModel: portfolioViewModel)
+                    .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
 
             if viewModel.isLoading {
                 ContentBlockSkeletons()
