@@ -18,4 +18,14 @@ class StakingDependenciesFactory {
             configuration: .defaultConfiguration
         )
     }
+
+    public func makePendingHashesSender() -> StakingPendingHashesSender {
+        let repository = CommonStakingPendingHashesRepository()
+        let provider = makeStakingAPIProvider()
+
+        return TangemStakingFactory().makePendingHashesSender(
+            repository: repository,
+            provider: provider
+        )
+    }
 }

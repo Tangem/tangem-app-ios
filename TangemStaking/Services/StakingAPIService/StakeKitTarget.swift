@@ -16,8 +16,8 @@ struct StakeKitTarget: Moya.TargetType {
     enum Target {
         case enabledYields
         case getYield(StakeKitDTO.Yield.Info.Request)
-
         case enterAction(StakeKitDTO.Actions.Enter.Request)
+        case submitHash(StakeKitDTO.SubmitHash.Request, transactionId: String)
     }
 
     var baseURL: URL {
@@ -32,6 +32,8 @@ struct StakeKitTarget: Moya.TargetType {
             return "yields/\(stakekitDTO.integrationId)"
         case .enterAction:
             return "actions/enter"
+        case .submitHash(_, let transactionId):
+            return "transactions/\(transactionId)/submit_hash"
         }
     }
 
@@ -39,7 +41,7 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .getYield, .enabledYields:
             return .get
-        case .enterAction:
+        case .enterAction, .submitHash:
             return .post
         }
     }
@@ -49,6 +51,8 @@ struct StakeKitTarget: Moya.TargetType {
         case .getYield, .enabledYields:
             return .requestPlain
         case .enterAction(let request):
+            return .requestJSONEncodable(request)
+        case .submitHash(let request, _):
             return .requestJSONEncodable(request)
         }
     }

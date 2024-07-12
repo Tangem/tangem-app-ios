@@ -42,4 +42,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             )
         )
     }
+
+    func submitHash(_ hash: String, for transactionId: String) async throws {
+        let _ = try await service.submitHash(request: .init(hash: hash), for: transactionId)
+    }
 }

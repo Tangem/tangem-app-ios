@@ -11,6 +11,6 @@ import Foundation
 public protocol StakingAPIProvider {
     func enabledYields() async throws -> [YieldInfo]
     func yieldInfo(integrationId: String) async throws -> YieldInfo
-
     func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws
+    func submitHash(_ hash: String, for transactionId: String) async throws
 }
