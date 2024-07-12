@@ -49,7 +49,7 @@ extension StakingFeeInteractor: SendFeeInteractor {
         input?.selectedFee
     }
 
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> {
         guard let input else {
             assertionFailure("SendFeeInput is not found")
             return Empty().eraseToAnyPublisher()

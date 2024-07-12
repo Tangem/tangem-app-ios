@@ -43,7 +43,7 @@ class CommonStakingValidatorsInteractor {
 private extension CommonStakingValidatorsInteractor {
     func bind() {
         do {
-            let yield = try manager.getYield()
+            let yield = manager.yield
 
             guard !yield.validators.isEmpty else {
                 AppLog.shared.debug("Yield.Validators is empty")

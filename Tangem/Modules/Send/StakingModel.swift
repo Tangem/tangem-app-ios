@@ -15,8 +15,8 @@ class StakingModel {
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
-    private let _selectedFee = CurrentValueSubject<SendFee?, Never>(nil)
-    private let _selectedValidator = CurrentValueSubject<ValidatorInfo?, Never>(nil)
+    private let _selectedFee = CurrentValueSubject<SendFee, Never>(.init(option: .market, value: .loading))
+    private let _selectedValidator = CurrentValueSubject<LoadingValue<ValidatorInfo>, Never>(.loading)
 
     private let _transaction = CurrentValueSubject<BSDKTransaction?, Never>(nil)
     private let _transactionError = CurrentValueSubject<Error?, Never>(nil)
@@ -103,7 +103,7 @@ extension StakingModel: SendAmountOutput {
 
 extension StakingModel: StakingValidatorsInput {
     var selectedValidatorPublisher: AnyPublisher<TangemStaking.ValidatorInfo, Never> {
-        _selectedValidator.compactMap { $0 }.eraseToAnyPublisher()
+        _selectedValidator.compactMap { $0.value }.eraseToAnyPublisher()
     }
 }
 
@@ -111,18 +111,18 @@ extension StakingModel: StakingValidatorsInput {
 
 extension StakingModel: StakingValidatorsOutput {
     func userDidSelected(validator: TangemStaking.ValidatorInfo) {
-        _selectedValidator.send(validator)
+        _selectedValidator.send(.loaded(validator))
     }
 }
 
 // MARK: - SendFeeInput
 
 extension StakingModel: SendFeeInput {
-    var selectedFee: SendFee? {
+    var selectedFee: SendFee {
         _selectedFee.value
     }
 
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> {
         _selectedFee.eraseToAnyPublisher()
     }
 

@@ -1366,6 +1366,7 @@
 		EF5A5AD528D86094002544AC /* CardImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A5AD228D86094002544AC /* CardImageProvider.swift */; };
 		EF5A5AD628D86094002544AC /* CardImageProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A5AD328D86094002544AC /* CardImageProviding.swift */; };
 		EF5A5AD728D86094002544AC /* CardArtwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A5AD428D86094002544AC /* CardArtwork.swift */; };
+		EF5BB4F82C4584FC0071C400 /* StakingTokenItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5BB4F72C4584FC0071C400 /* StakingTokenItem.swift */; };
 		EF5D83D92B0B7A2B00516B5F /* ExpressSuccessSentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D42B0B7A2B00516B5F /* ExpressSuccessSentView.swift */; };
 		EF5D83DA2B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D52B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift */; };
 		EF5D83DB2B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D62B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift */; };
@@ -1427,6 +1428,7 @@
 		EF7B9CF1286C6BE2004C33A9 /* CardSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF0286C6BE2004C33A9 /* CardSettingsViewModel.swift */; };
 		EF7B9CF5286C7023004C33A9 /* CardSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF4286C7023004C33A9 /* CardSettingsCoordinator.swift */; };
 		EF7B9CF7286C702E004C33A9 /* CardSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF6286C702E004C33A9 /* CardSettingsCoordinatorView.swift */; };
+		EF7E5F972C45706400FA1F78 /* StakingBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF598B42C454A9400481DD8 /* StakingBalanceProvider.swift */; };
 		EF808445293F6B76000D91EA /* TokenURLIconSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF808444293F6B76000D91EA /* TokenURLIconSize.swift */; };
 		EF842DEA2AFA58C5006E472E /* ExpressTokensListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE52AFA58C5006E472E /* ExpressTokensListView.swift */; };
 		EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */; };
@@ -1583,7 +1585,6 @@
 		EFB932152C3EC18300C999E9 /* StakingValidatorsInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB9320F2C3EC18300C999E9 /* StakingValidatorsInputOutput.swift */; };
 		EFB932182C3EC18300C999E9 /* StakingValidatorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB932122C3EC18300C999E9 /* StakingValidatorsView.swift */; };
 		EFB932192C3EC18300C999E9 /* StakingValidatorsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB932132C3EC18300C999E9 /* StakingValidatorsViewModel.swift */; };
-		EFB9321D2C3EC44D00C999E9 /* ValidatorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB9321C2C3EC44D00C999E9 /* ValidatorInfo.swift */; };
 		EFB999AF2C3D9A7F00F6A987 /* CommonSendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */; };
 		EFB999B12C3D9AA100F6A987 /* CommonSellStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */; };
 		EFB999B42C3D9EC000F6A987 /* SellFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */; };
@@ -3251,6 +3252,7 @@
 		EF5A5AD228D86094002544AC /* CardImageProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardImageProvider.swift; sourceTree = "<group>"; };
 		EF5A5AD328D86094002544AC /* CardImageProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardImageProviding.swift; sourceTree = "<group>"; };
 		EF5A5AD428D86094002544AC /* CardArtwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardArtwork.swift; sourceTree = "<group>"; };
+		EF5BB4F72C4584FC0071C400 /* StakingTokenItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTokenItem.swift; sourceTree = "<group>"; };
 		EF5D83D42B0B7A2B00516B5F /* ExpressSuccessSentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentView.swift; sourceTree = "<group>"; };
 		EF5D83D52B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentViewModel.swift; sourceTree = "<group>"; };
 		EF5D83D62B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentRoutable.swift; sourceTree = "<group>"; };
@@ -9132,6 +9134,7 @@
 		EFBC5C722C00A74100B662E0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EFF598B32C454A8800481DD8 /* StakingBalanceProvider */,
 				EF8DBCDB2C0609F5009072CF /* StakingManager */,
 				DC592B882C419EA9005AB9A7 /* StakingPendingHashes */,
 				EF031A262C08E64F001535C9 /* StakingCalculator */,
@@ -11135,7 +11138,6 @@
 				5DF2522D24F95E390015B429 /* UIScreen+.swift in Sources */,
 				B60B203C2AC5BDFA0098C09D /* BottomScrollableSheetShadowView.swift in Sources */,
 				B0A596562992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift in Sources */,
-				EFB9321B2C3EC3F900C999E9 /* MiltiSelectableGropedSection.swift in Sources */,
 				B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */,
 				DC3ED8A72C1B49F900C89C62 /* DefaultPickerRowView.swift in Sources */,
 				DA4055252ABDD3A300353F8A /* AddCustomTokenNetworksListItemViewModel.swift in Sources */,
@@ -11393,7 +11395,6 @@
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
 				B02B74B229879E3C006473F2 /* WalletConnectSigner.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
-				EFA8F15E2C3F063200D0A90D /* StakingValidatorViewMapper.swift in Sources */,
 				DC0A57EA2822AD6D0031BECC /* PersistentStorageKey.swift in Sources */,
 				B04CD34429122C8D001EA84A /* ReferralCoordinatorView.swift in Sources */,
 				B6AA136A2A2A373600B53937 /* CardInfoPagePreviewSection.swift in Sources */,
@@ -11902,7 +11903,6 @@
 				EFBC5C752C00A74100B662E0 /* StakingAPIService.swift in Sources */,
 				EFBC5C902C00B8B800B662E0 /* StakeKitDTO+Yield.swift in Sources */,
 				EF407E382C04B09A00366733 /* Logger.swift in Sources */,
-				EFB9321D2C3EC44D00C999E9 /* ValidatorInfo.swift in Sources */,
 				EF8DBCEA2C061B0E009072CF /* CommonStakingManager.swift in Sources */,
 				EF407E682C04D7E700366733 /* RewardClaimingType.swift in Sources */,
 				DC592B8C2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift in Sources */,
