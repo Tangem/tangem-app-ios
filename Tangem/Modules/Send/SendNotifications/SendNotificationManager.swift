@@ -66,7 +66,7 @@ private extension CommonSendNotificationManager {
 
         Publishers.CombineLatest(
             input.isFeeIncludedPublisher,
-            input.selectedFeePublisher.compactMap { $0?.value.value?.amount.value }
+            input.selectedFeePublisher.compactMap { $0.value.value?.amount.value }
         )
         .sink { [weak self] isFeeIncluded, feeValue in
             self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)
