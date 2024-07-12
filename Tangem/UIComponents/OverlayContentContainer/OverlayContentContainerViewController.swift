@@ -12,8 +12,8 @@ import UIKit
 final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Dependencies
 
-    private let contentVC: UIViewController
-    private let overlayVC: UIViewController
+    private let contentViewController: UIViewController
+    private let overlayViewController: UIViewController
     private let overlayCollapsedHeight: CGFloat
     private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
@@ -58,14 +58,16 @@ final class OverlayContentContainerViewController: UIViewController {
 
     // MARK: - Initialization/Deinitialization
 
+    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `overlayExpandedVerticalOffset`, etc)
+    /// are relative to the main screen bounds (w/o safe area).
     init(
-        contentVC: UIViewController,
-        overlayVC: UIViewController,
+        contentViewController: UIViewController,
+        overlayViewController: UIViewController,
         overlayCollapsedHeight: CGFloat,
         overlayExpandedVerticalOffset: CGFloat
     ) {
-        self.contentVC = contentVC
-        self.overlayVC = overlayVC
+        self.contentViewController = contentViewController
+        self.overlayViewController = overlayViewController
         self.overlayCollapsedHeight = overlayCollapsedHeight
         self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
         super.init(nibName: nil, bundle: nil)
@@ -107,10 +109,10 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private func setupContent() {
-        addChild(contentVC)
+        addChild(contentViewController)
 
         let containerView = view!
-        let contentView = contentVC.view!
+        let contentView = contentViewController.view!
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(contentView)
@@ -123,14 +125,14 @@ final class OverlayContentContainerViewController: UIViewController {
         contentView.layer.cornerRadius = Constants.cornerRadius // TODO: Andrey Fedorov - Add animation for content view's corners
         contentView.layer.masksToBounds = true
 
-        contentVC.didMove(toParent: self)
+        contentViewController.didMove(toParent: self)
     }
 
     private func setupOverlay() {
-        addChild(overlayVC)
+        addChild(overlayViewController)
 
         let containerView = view!
-        let overlayView = overlayVC.view!
+        let overlayView = overlayViewController.view!
         containerView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(overlayView)
@@ -149,7 +151,7 @@ final class OverlayContentContainerViewController: UIViewController {
         overlayView.layer.cornerRadius = Constants.cornerRadius
         overlayView.layer.masksToBounds = true
 
-        overlayVC.didMove(toParent: self)
+        overlayViewController.didMove(toParent: self)
     }
 
     private func setupPanGestureRecognizer() {
@@ -172,7 +174,7 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private func updateContentScale() {
-        let contentLayer = contentVC.view.layer
+        let contentLayer = contentViewController.view.layer
         let invertedProgress = 1.0 - progress
         let scale = Constants.minContentViewScale
             + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
@@ -331,7 +333,7 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         let location = touch.location(in: nil)
         panGestureStartLocation = location
 
-        return overlayVC.view.frame.contains(location)
+        return overlayViewController.view.frame.contains(location)
     }
 
     func gestureRecognizer(
