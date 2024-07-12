@@ -7334,7 +7334,6 @@
 			isa = PBXGroup;
 			children = (
 				DC592B892C419F50005AB9A7 /* StakingPendingHashesRepository.swift */,
-				DC592B8F2C41A4BA005AB9A7 /* StakingPendingHash.swift */,
 				DC592B8B2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift */,
 				DC592B8D2C41A100005AB9A7 /* CommonStakingPendingHashesSender.swift */,
 			);
@@ -8937,6 +8936,7 @@
 				EF407E692C04D7F400366733 /* RewardScheduleType.swift */,
 				EF407E6B2C04D80100366733 /* RewardType.swift */,
 				EF407E6D2C04D81100366733 /* Period.swift */,
+				DC592B8F2C41A4BA005AB9A7 /* StakingPendingHash.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

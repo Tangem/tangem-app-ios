@@ -21,6 +21,12 @@ class CommonStakingPendingHashesSender: StakingPendingHashesSender {
         self.provider = provider
     }
 
+    func sendHash(_ pendingHash: StakingPendingHash) async throws {
+        repository.storeHash(pendingHash)
+        try await provider.submitHash(pendingHash.hash, for: pendingHash.transactionId)
+        repository.removeHash(pendingHash)
+    }
+
     func sendHashesIfNeeded() {
         Task { [weak self] in
             guard let self else {
