@@ -11,12 +11,4 @@ import Combine
 
 class FakeSendNotificationManager: FakeUserWalletNotificationManager, SendNotificationManager {
     func setup(input: any SendNotificationManagerInput) {}
-
-    func notificationPublisher(for location: SendNotificationEvent.Location) -> AnyPublisher<[NotificationViewInput], Never> {
-        .just(output: [])
-    }
-
-    func hasNotifications(with severity: NotificationView.Severity) -> AnyPublisher<Bool, Never> {
-        .just(output: false)
-    }
 }

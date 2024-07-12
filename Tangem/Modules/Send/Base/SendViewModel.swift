@@ -10,6 +10,10 @@ import Combine
 import SwiftUI
 import BlockchainSdk
 
+protocol SendViewAlertPresenter: AnyObject {
+    func showAlert(_ alert: AlertBinder)
+}
+
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
 
@@ -194,6 +198,14 @@ private extension SendViewModel {
         interactor.isLoading
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
+    }
+}
+
+// MARK: - SendViewAlertPresenter
+
+extension SendViewModel: SendViewAlertPresenter {
+    func showAlert(_ alert: AlertBinder) {
+        self.alert = alert
     }
 }
 
