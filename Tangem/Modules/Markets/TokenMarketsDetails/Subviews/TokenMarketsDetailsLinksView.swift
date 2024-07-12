@@ -31,20 +31,7 @@ struct TokenMarketsDetailsLinksView: View {
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
                 .padding(.top, 2)
 
-            ForEach(sections.indexed(), id: \.1.id) { index, section in
-                VStack(alignment: .leading, spacing: 12) {
-                    Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 12) {
-                        ForEach(section.chips) { chipsData in
-                            ChipsView(
-                                text: chipsData.text,
-                                icon: chipsData.icon,
-                                style: chipsSettings,
-                                action: chipsData.action
-                            )
-                        }
-                    }
-                }
-            }
+            
         }
         .defaultRoundedBackground()
     }
@@ -129,18 +116,21 @@ extension ChipsView {
                     text: "Website",
                     icon: .leading(Assets.arrowRightUp16.image),
                     style: chipsSettings,
+                    link: "3243109",
                     action: {}
                 ),
                 .init(
                     text: "Whitepaper",
                     icon: .leading(Assets.whitepaper16.image),
                     style: chipsSettings,
+                    link: "s2dfopefew",
                     action: {}
                 ),
                 .init(
                     text: "Forum",
                     icon: .leading(Assets.arrowRightUp16.image),
                     style: chipsSettings,
+                    link: "jfdksofnv,cnxbkr   ",
                     action: {}
                 ),
             ]
