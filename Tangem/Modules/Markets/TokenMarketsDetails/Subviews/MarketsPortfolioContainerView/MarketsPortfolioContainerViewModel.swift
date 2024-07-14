@@ -48,6 +48,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         coordinator?.openAddToken()
     }
 
+    func onExternalTapAction(type actionType: TokenActionType) {
+        guard let tokenItemViewModel = tokenItemViewModels.first else {
+            return
+        }
+
+        didTapContextAction(actionType, for: tokenItemViewModel)
+    }
+
     // MARK: - Private Implementation
 
     private func initialSetup() {

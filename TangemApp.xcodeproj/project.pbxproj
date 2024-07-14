@@ -20,6 +20,7 @@
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
 		2D1400D02C441D3500B75A42 /* TokenMarketsDetails+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CF2C441D3500B75A42 /* TokenMarketsDetails+Error.swift */; };
 		2D1400D22C4425B300B75A42 /* TokenMarketsDetailsPortfolioCoodinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400D12C4425B300B75A42 /* TokenMarketsDetailsPortfolioCoodinatorFactory.swift */; };
+		2D1400D62C4434E800B75A42 /* MarketsPortfolioFastActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400D52C4434E800B75A42 /* MarketsPortfolioFastActionsView.swift */; };
 		2D1BB3682C07421C008392F7 /* MarketsTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */; };
 		2D1BB36A2C074534008392F7 /* MarketsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3692C074534008392F7 /* MarketsDTO.swift */; };
 		2D1BB36C2C0745ED008392F7 /* MarketsListOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */; };
@@ -1794,6 +1795,7 @@
 		2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerRoutable.swift; sourceTree = "<group>"; };
 		2D1400CF2C441D3500B75A42 /* TokenMarketsDetails+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenMarketsDetails+Error.swift"; sourceTree = "<group>"; };
 		2D1400D12C4425B300B75A42 /* TokenMarketsDetailsPortfolioCoodinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMarketsDetailsPortfolioCoodinatorFactory.swift; sourceTree = "<group>"; };
+		2D1400D52C4434E800B75A42 /* MarketsPortfolioFastActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioFastActionsView.swift; sourceTree = "<group>"; };
 		2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenModel.swift; sourceTree = "<group>"; };
 		2D1BB3692C074534008392F7 /* MarketsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsDTO.swift; sourceTree = "<group>"; };
 		2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListOrderType.swift; sourceTree = "<group>"; };
@@ -3632,6 +3634,14 @@
 				2D1400D12C4425B300B75A42 /* TokenMarketsDetailsPortfolioCoodinatorFactory.swift */,
 			);
 			path = Factories;
+			sourceTree = "<group>";
+		};
+		2D1400D42C4434C500B75A42 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				2D1400D52C4434E800B75A42 /* MarketsPortfolioFastActionsView.swift */,
+			);
+			path = Actions;
 			sourceTree = "<group>";
 		};
 		2D1BB3662C074207008392F7 /* Markets */ = {
@@ -5596,6 +5606,7 @@
 			children = (
 				B0FF51C72C3C0FA800746705 /* TokenMarketsDetailsStatisticsRecordView.swift */,
 				B0AF9BF92C32D01200EC5830 /* TokenMarketsDetailsView+Skeletons.swift */,
+				2D1400D42C4434C500B75A42 /* Actions */,
 				B0ED3F062C3D76AC00311DE2 /* Insights */,
 				B07A13802C416AEE00A429C3 /* Links */,
 				2DB4EAD82C41938E00F9E860 /* MarketsPortfolioContainerView */,
@@ -10885,6 +10896,7 @@
 				EFC597BD2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift in Sources */,
 				DAF59CC62ACC4D8C004FCA86 /* AddCustomTokenDerivationPathSelectorItemView.swift in Sources */,
 				DA8C33952BF38CB2002AE4F9 /* UserWalletFinder.swift in Sources */,
+				2D1400D62C4434E800B75A42 /* MarketsPortfolioFastActionsView.swift in Sources */,
 				B02B74AA29879CC5006473F2 /* WalletConnectV2Factory.swift in Sources */,
 				DA4371A32A7D1937006215CA /* LegacyTokenListCoordinatorView.swift in Sources */,
 				B6AA136E2A2A376900B53937 /* CardInfoPageTransactionDefaultCellPreviewViewModel.swift in Sources */,

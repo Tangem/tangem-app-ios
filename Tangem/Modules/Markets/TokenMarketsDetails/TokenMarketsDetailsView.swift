@@ -109,6 +109,14 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16)
             }
 
+            if viewModel.showQuickActions {
+                MarketsPortfolioFastActionsView(
+                    actions: [.buy, .exchange, .receive],
+                    onTapAction: viewModel.onTapTokenAction(type:)
+                )
+                .padding(.horizontal, 16)
+            }
+
             if viewModel.isLoading {
                 ContentBlockSkeletons()
             } else {
