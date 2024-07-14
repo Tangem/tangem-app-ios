@@ -93,6 +93,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
 
+    // MARK: - Init
+
     init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         currentPriceSubject = .init(tokenInfo.currentPrice ?? 0.0)
         self.tokenInfo = tokenInfo
@@ -111,6 +113,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         makePreloadBlocksViewModels()
     }
+
+    // MARK: - Private Implementation
 
     private func bind() {
         currentPriceSubject
@@ -156,7 +160,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
-            addTapAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.onAddToPortfolioTapAction)
+            coordinator: coordinator
         )
     }
 
@@ -182,15 +186,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // MARK: - Actions
 
-    func onAddToPortfolioTapAction() {
-        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
-            assertionFailure("TokenItem list is empty")
-            return
-        }
-
-        coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
-    }
-
     func openLinkAction(_ link: String) {
         guard let url = URL(string: link) else {
             log("Failed to create link from: \(link)")
@@ -211,5 +206,21 @@ extension TokenMarketsDetailsViewModel {
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
         // TODO: Will be added in IOS-7291
+    }
+}
+
+// MARK: - Resolving
+
+extension TokenMarketsDetailsViewModel {
+    func resolveCoinModel() throws -> CoinModel {
+        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
+            throw Error.undefinedCoinModelData
+        }
+
+        return coinModel
+    }
+
+    func resolveWalletDataProvider() -> MarketsWalletDataProvider {
+        walletDataProvider
     }
 }
