@@ -1,5 +1,5 @@
 //
-//  MarketsPortfolioFastActionsView.swift
+//  MarketsPortfolioQuickActionsView.swift.swift
 //  Tangem
 //
 //  Created by skibinalexander on 14.07.2024.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct MarketsPortfolioFastActionsView: View {
+struct MarketsPortfolioQuickActionsView: View {
     let actions: [TokenActionType]
     private(set) var onTapAction: ((TokenActionType) -> Void)?
 

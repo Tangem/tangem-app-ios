@@ -110,7 +110,7 @@ struct TokenMarketsDetailsView: View {
             }
 
             if viewModel.showQuickActions {
-                MarketsPortfolioFastActionsView(
+                MarketsPortfolioQuickActionsView(
                     actions: [.buy, .exchange, .receive],
                     onTapAction: viewModel.onTapTokenAction(type:)
                 )
