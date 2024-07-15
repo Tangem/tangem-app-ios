@@ -24,6 +24,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
+    @Published var selectedValidatorData: ValidatorViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
 
     let addressTextViewHeightModel: AddressTextViewHeightModel?

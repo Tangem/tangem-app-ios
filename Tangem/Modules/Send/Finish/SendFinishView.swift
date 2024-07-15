@@ -24,6 +24,8 @@ struct SendFinishView: View {
 
             amountSection
 
+            validatorSection
+
             feeSection
         }
         .onAppear(perform: viewModel.onAppear)
@@ -57,7 +59,7 @@ struct SendFinishView: View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
                     .namespace(.init(id: namespace.id, names: namespace.names))
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
@@ -97,6 +99,20 @@ struct SendFinishView: View {
         .innerContentPadding(0)
         .backgroundColor(Colors.Background.action)
         .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
+    }
+
+    // MARK: - Validator
+
+    private var validatorSection: some View {
+        GroupedSection(viewModel.selectedValidatorData) { data in
+            ValidatorView(data: data, selection: .constant(""))
+                .geometryEffect(.init(id: namespace.id, names: namespace.names))
+        } header: {
+            DefaultHeaderView("Validator")
+                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+        }
+        .settings(\.backgroundColor, Colors.Background.action)
+        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
     }
 
     // MARK: - Fee

@@ -21,6 +21,7 @@ struct StakingValidatorsView: View {
                         $0.overlay(alignment: .topLeading) {
                             DefaultHeaderView("Validator")
                                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+                                .hidden()
                         }
                     }
             }
