@@ -14,6 +14,7 @@ enum SendStepType {
     case fee(SendFeeViewModel)
     case summary(SendSummaryViewModel)
     case finish(SendFinishViewModel)
+    case validators(StakingValidatorsViewModel)
 
     var isSummary: Bool {
         if case .summary = self {
@@ -38,6 +39,7 @@ extension SendStepType: Hashable {
         case .amount(let viewModel): hasher.combine(viewModel.id)
         case .destination(let viewModel): hasher.combine(viewModel.id)
         case .fee(let viewModel): hasher.combine(viewModel.id)
+        case .validators(let viewModel): hasher.combine(viewModel.id)
         case .summary(let viewModel): hasher.combine(viewModel.id)
         case .finish(let viewModel): hasher.combine(viewModel.id)
         }
@@ -54,6 +56,7 @@ extension SendStepType {
         case .amount: .amount
         case .destination: .address
         case .fee: .fee
+        case .validators: .null // TODO:
         case .summary: .summary
         case .finish: .finish
         }

@@ -22,7 +22,7 @@ struct MarketsListOrderBottonSheetView: View {
                     DefaultSelectableRowView(viewModel: $0)
                 }
             )
-            .backgroundColor(Colors.Background.action)
+            .settings(\.backgroundColor, Colors.Background.action)
         }
         .padding(.horizontal, 16)
     }

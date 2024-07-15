@@ -45,12 +45,10 @@ class CommonSellStepsManager {
             output?.update(state: .moveAndFade(step: step, action: .send))
         case .finish:
             output?.update(state: .moveAndFade(step: step, action: .close))
-        case .amount where isEditAction,
-             .destination where isEditAction,
-             .fee where isEditAction:
+        case .fee where isEditAction:
             output?.update(state: .moveAndFade(step: step, action: .continue))
-        case .amount, .destination, .fee:
-            output?.update(state: .next(step: step))
+        case .amount, .destination, .fee, .validators:
+            assertionFailure("There is no next step")
         }
     }
 
@@ -105,6 +103,10 @@ extension CommonSellStepsManager: SendSummaryStepsRoutable {
     }
 
     func summaryStepRequestEditAmount() {
+        assertionFailure("This steps is not tappable in this flow")
+    }
+
+    func summaryStepRequestEditValidators() {
         assertionFailure("This steps is not tappable in this flow")
     }
 
