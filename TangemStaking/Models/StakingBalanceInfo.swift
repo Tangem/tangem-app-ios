@@ -1,5 +1,5 @@
 //
-//  BalanceInfo.swift
+//  StakingBalanceInfo.swift
 //  TangemStaking
 //
 //  Created by Sergey Balashov on 12.07.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct BalanceInfo {
+public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
     public let blocked: Decimal
 

@@ -15,7 +15,7 @@ struct StakingRepositoryMock: StakingRepository {
         .just(output: [.mock])
     }
 
-    var balancesPublisher: AnyPublisher<[TangemStaking.BalanceInfo], Never> { .just(output: []) }
+    var balancesPublisher: AnyPublisher<[StakingBalanceInfo], Never> { .just(output: []) }
 
     func updateEnabledYields(withReload: Bool) {}
 
@@ -25,7 +25,7 @@ struct StakingRepositoryMock: StakingRepository {
         .mock
     }
 
-    func getBalance(item: TangemStaking.StakingTokenItem) -> TangemStaking.BalanceInfo? {
+    func getBalance(item: TangemStaking.StakingTokenItem) -> StakingBalanceInfo? {
         .none
     }
 }

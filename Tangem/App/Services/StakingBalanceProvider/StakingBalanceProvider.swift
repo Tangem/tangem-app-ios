@@ -18,14 +18,16 @@ protocol StakingBalanceProvider {
 }
 
 class CommonStakingBalanceProvider {
-    private let wallet: StakingWallet
+    private let item: StakingTokenItem
+    private let address: String
     private let provider: StakingAPIProvider
 
     private var updatingBalancesTask: Task<Void, Never>?
     private let _balance: CurrentValueSubject<StakingBalanceInfo?, Never> = .init(nil)
 
-    init(wallet: StakingWallet, provider: StakingAPIProvider) {
-        self.wallet = wallet
+    init(item: StakingTokenItem, address: String, provider: StakingAPIProvider) {
+        self.item = item
+        self.address = address
         self.provider = provider
     }
 }
@@ -47,7 +49,7 @@ extension CommonStakingBalanceProvider: StakingBalanceProvider {
             guard let self else { return }
 
             do {
-                let balance = try await provider.balance(address: wallet.defaultAddress, network: wallet.stakingTokenItem.coinId)
+                let balance = try await provider.balance(address: address, network: item.coinId)
                 _balance.send(balance)
             } catch {
                 AppLog.shared.error(error)

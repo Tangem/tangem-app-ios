@@ -14,10 +14,7 @@ class CommonStakingRepository {
     private let logger: Logger
 
     private var updatingYieldsTask: Task<Void, Never>?
-    private var updatingBalancesTask: Task<Void, Never>?
-
     private var availableYields: CurrentValueSubject<[YieldInfo]?, Never> = .init(nil)
-    private var balances: CurrentValueSubject<[BalanceInfo]?, Never> = .init(nil)
 
     init(provider: StakingAPIProvider, logger: Logger) {
         self.provider = provider
@@ -28,10 +25,6 @@ class CommonStakingRepository {
 extension CommonStakingRepository: StakingRepository {
     var enabledYieldsPublisher: AnyPublisher<[YieldInfo], Never> {
         availableYields.compactMap { $0 }.eraseToAnyPublisher()
-    }
-
-    var balancesPublisher: AnyPublisher<[BalanceInfo], Never> {
-        balances.compactMap { $0 }.eraseToAnyPublisher()
     }
 
     func updateEnabledYields(withReload: Bool) {
@@ -53,25 +46,7 @@ extension CommonStakingRepository: StakingRepository {
         }
     }
 
-    func updateBalances(item: StakingTokenItem, address: String) {
-        updatingBalancesTask?.cancel()
-        updatingBalancesTask = Task { [weak self] in
-            guard let self else { return }
-
-            do {
-                let balance = try await provider.balance(address: address, network: item.coinId)
-                balances.value?.append(balance)
-            } catch {
-                logger.error(error)
-            }
-        }
-    }
-
     func getYield(item: StakingTokenItem) -> YieldInfo? {
         availableYields.value?.first(where: { $0.item == item })
-    }
-
-    func getBalance(item: StakingTokenItem) -> BalanceInfo? {
-        balances.value?.first(where: { $0.item == item })
     }
 }

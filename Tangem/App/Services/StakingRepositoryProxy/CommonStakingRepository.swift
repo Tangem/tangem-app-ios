@@ -24,24 +24,12 @@ extension CommonStakingRepositoryProxy: StakingRepository {
         repository.enabledYieldsPublisher
     }
 
-    var balancesPublisher: AnyPublisher<[TangemStaking.BalanceInfo], Never> {
-        repository.balancesPublisher
-    }
-
     func updateEnabledYields(withReload: Bool) {
         repository.updateEnabledYields(withReload: withReload)
     }
 
-    func updateBalances(item: TangemStaking.StakingTokenItem, address: String) {
-        repository.updateBalances(item: item, address: address)
-    }
-
     func getYield(item: TangemStaking.StakingTokenItem) -> TangemStaking.YieldInfo? {
         repository.getYield(item: item)
-    }
-
-    func getBalance(item: TangemStaking.StakingTokenItem) -> TangemStaking.BalanceInfo? {
-        repository.getBalance(item: item)
     }
 }
 
