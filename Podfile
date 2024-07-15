@@ -194,24 +194,7 @@ post_install do |installer|
    { :kind => "exactVersion", :version => "1.25.2-tangem1" }
   )
   
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
-   "TweetNacl",
-   { :kind => "exactVersion", :minimumVersion => "1.1.0" }
-  )
-  
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/GigaBitcoin/secp256k1.swift.git",
-   "secp256k1",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
-  )
-  
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
+  # `TonSwift` SPM package for `BlockchainSdk` pod
   add_spm_package_to_target(
    installer.pods_project,
    "BlockchainSdk",
@@ -220,6 +203,7 @@ post_install do |installer|
    { :kind => "exactVersion", :version => "1.0.10-tangem1" }
   )
   
+  # `ScaleCodec` SPM package for `BlockchainSdk` pod
   add_spm_package_to_target(
    installer.pods_project,
    "BlockchainSdk",
@@ -246,6 +230,7 @@ post_install do |installer|
    { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
   )
   
+  # `TweetNacl` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
    "Solana.Swift",
