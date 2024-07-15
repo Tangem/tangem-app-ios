@@ -17,5 +17,5 @@ protocol StakingAPIService {
 
     func constructTransaction(id: String, request: StakeKitDTO.ConstructTransaction.Request) async throws -> StakeKitDTO.Transaction.Response
     func submitTransaction(id: String, request: StakeKitDTO.SubmitTransaction.Request) async throws -> StakeKitDTO.SubmitTransaction.Response
-    func submitHash(request: StakeKitDTO.SubmitHash.Request, for transactionId: String) async throws -> StakeKitDTO.SubmitHash.Response
+    func submitHash(id: String, request: StakeKitDTO.SubmitHash.Request) async throws -> StakeKitDTO.SubmitHash.Response
 }

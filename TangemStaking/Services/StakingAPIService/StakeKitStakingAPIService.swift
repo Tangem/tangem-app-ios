@@ -45,8 +45,8 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .submitTransaction(id: id, body: request))
     }
 
-    func submitHash(request: StakeKitDTO.SubmitHash.Request, for transactionId: String) async throws -> StakeKitDTO.SubmitHash.Response {
-        try await _request(target: .submitHash(request, transactionId: transactionId))
+    func submitHash(id: String, request: StakeKitDTO.SubmitHash.Request) async throws -> StakeKitDTO.SubmitHash.Response {
+        try await _request(target: .submitHash(id: id, body: request))
     }
 }
 
