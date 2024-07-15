@@ -15,12 +15,15 @@ struct MarketsPortfolioTokenItemView: View {
     private let networkIconSize = CGSize(bothDimensions: 14)
     private let previewContentShapeCornerRadius: CGFloat = 14
 
+    @State private var textBlockSize: CGSize = .zero
+
     var body: some View {
         HStack(spacing: 12) {
             iconView
 
             tokenInfoView
         }
+        .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
@@ -41,13 +44,16 @@ struct MarketsPortfolioTokenItemView: View {
     }
 
     private var tokenInfoView: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(viewModel.walletName)
-                    .lineLimit(1)
-                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+        VStack(spacing: 4) {
+            HStack(spacing: .zero) {
+                HStack(spacing: .zero) {
+                    Text(viewModel.walletName)
+                        .lineLimit(1)
+                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                }
+                .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
 
-                Spacer(minLength: 8)
+                Spacer(minLength: Constants.spacerLength)
 
                 Text(viewModel.fiatBalanceValue)
                     .lineLimit(1)
@@ -55,11 +61,14 @@ struct MarketsPortfolioTokenItemView: View {
             }
 
             HStack {
-                Text(viewModel.tokenName)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                HStack(spacing: .zero) {
+                    Text(viewModel.tokenName)
+                        .lineLimit(1)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                }
+                .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
 
-                Spacer(minLength: 8)
+                Spacer(minLength: Constants.spacerLength)
 
                 Text(viewModel.balanceValue)
                     .truncationMode(.middle)
@@ -67,6 +76,7 @@ struct MarketsPortfolioTokenItemView: View {
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
         }
+        .readGeometry(\.size, bindTo: $textBlockSize)
     }
 
     @ViewBuilder
@@ -93,5 +103,11 @@ struct MarketsPortfolioTokenItemView: View {
             action.icon.image
                 .renderingMode(.template)
         }
+    }
+}
+
+private extension MarketsPortfolioTokenItemView {
+    enum Constants {
+        static let spacerLength = 8.0
     }
 }

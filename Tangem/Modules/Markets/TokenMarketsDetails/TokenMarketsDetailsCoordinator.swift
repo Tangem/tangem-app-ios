@@ -204,6 +204,12 @@ extension TokenMarketsDetailsCoordinator {
                 }
             }
         }
+
+        sendCoordinator = portfolioCoordinatorFactory.makeSendCoordinator(
+            for: walletModel,
+            with: userWalletModel,
+            dismissAction: dismissAction
+        )
     }
 
     func showCopyAddressAlert() {

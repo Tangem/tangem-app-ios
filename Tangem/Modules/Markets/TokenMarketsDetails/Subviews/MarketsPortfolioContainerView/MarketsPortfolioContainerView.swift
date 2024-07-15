@@ -19,7 +19,7 @@ struct MarketsPortfolioContainerView: View {
 
             contentView
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: .zero)
     }
 
     private var headerView: some View {
@@ -53,6 +53,8 @@ struct MarketsPortfolioContainerView: View {
                 }
             }
         }
+        .background(Colors.Background.action)
+        .padding(.horizontal, 14)
     }
 
     private var contentView: some View {
