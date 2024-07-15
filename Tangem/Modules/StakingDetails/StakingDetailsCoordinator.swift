@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemStaking
 
 class StakingDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>

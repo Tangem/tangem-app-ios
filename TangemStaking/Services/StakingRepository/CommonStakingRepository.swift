@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemFoundation
 
 class CommonStakingRepository {
     private let provider: StakingAPIProvider

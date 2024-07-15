@@ -7,6 +7,5 @@
 //
 
 import Foundation
-import TangemStaking
 
 protocol StakingDetailsRoutable: AnyObject {}
