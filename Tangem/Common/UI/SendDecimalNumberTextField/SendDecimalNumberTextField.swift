@@ -136,11 +136,12 @@ struct SendDecimalNumberTextField: View {
                 }
             }
             .onAppear {
-                guard !isInputActive else {
-                    return
+                switch initialFocusBehavior {
+                case .noFocus:
+                    break
+                case .immediateFocus:
+                    isInputActive = true
                 }
-
-                isInputActive = true
             }
             .onChange(of: isInputActive) { isInputActive in
                 onFocusChanged?(isInputActive)

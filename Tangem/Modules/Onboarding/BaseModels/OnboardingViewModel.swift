@@ -13,7 +13,9 @@ import TangemSdk
 class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable> {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    let navbarSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 44)
+    var navbarSize: CGSize { OnboardingLayoutConstants.navbarSize }
+    var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
+    var progressBarPadding: CGFloat { OnboardingLayoutConstants.progressBarPadding }
     let resetAnimDuration: Double = 0.3
 
     @Published var steps: [Step] = []
@@ -154,6 +156,13 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
             adapter: manageTokensAdapter,
             delegate: self
         )
+    }()
+
+    lazy var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel? = {
+        guard let permissionManager = input.pushNotificationsPermissionManager else {
+            return nil
+        }
+        return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }()
 
     let input: OnboardingInput
@@ -442,5 +451,11 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 extension OnboardingViewModel: OnboardingAddTokensDelegate {
     func showAlert(_ alert: AlertBinder) {
         self.alert = alert
+    }
+}
+
+extension OnboardingViewModel: PushNotificationsPermissionRequestDelegate {
+    func didFinishPushNotificationOnboarding() {
+        goToNextStep()
     }
 }

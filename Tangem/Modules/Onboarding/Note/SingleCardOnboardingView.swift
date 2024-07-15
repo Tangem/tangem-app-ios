@@ -13,8 +13,6 @@ struct SingleCardOnboardingView: View {
 
     private let horizontalPadding: CGFloat = 16
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let progressBarHeight: CGFloat = 4
-    private let progressBarPadding: CGFloat = 10
 
     var currentStep: SingleCardOnboardingStep { viewModel.currentStep }
 
@@ -30,13 +28,22 @@ struct SingleCardOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+            UserWalletStorageAgreementView(
+                viewModel: viewModel.userWalletStorageAgreementViewModel,
+                topInset: -viewModel.progressBarPadding
+            )
         case .addTokens:
             if let addTokensViewModel = viewModel.addTokensViewModel {
                 OnboardingAddTokensView(viewModel: addTokensViewModel)
             }
         case .pushNotifications:
-            EmptyView() // TODO: Andrey Fedorov - Add actual implementation (IOS-7302)
+            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
+                PushNotificationsPermissionRequestView(
+                    viewModel: pushNotificationsViewModel,
+                    topInset: -viewModel.progressBarPadding,
+                    buttonsAxis: .vertical
+                )
+            }
         default:
             EmptyView()
         }
@@ -80,8 +87,8 @@ struct SingleCardOnboardingView: View {
                         .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height / 2 : 0))
                         .opacity(isTopItemsVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
-                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + progressBarPadding : 0))
+                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
+                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + viewModel.progressBarPadding : 0))
                             .opacity(isTopItemsVisible && isProgressBarVisible ? 1.0 : 0.0)
                             .padding(.horizontal, horizontalPadding)
 

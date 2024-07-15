@@ -13,8 +13,6 @@ struct WalletOnboardingView: View {
 
     private let screenSize: CGSize = UIScreen.main.bounds.size
     private let infoPagerHeight: CGFloat = 146
-    private let progressBarHeight: CGFloat = 4
-    private let progressBarPadding: CGFloat = 10
 
     var currentStep: WalletOnboardingStep {
         viewModel.currentStep
@@ -40,7 +38,10 @@ struct WalletOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+            UserWalletStorageAgreementView(
+                viewModel: viewModel.userWalletStorageAgreementViewModel,
+                topInset: -viewModel.progressBarPadding
+            )
         case .seedPhraseIntro:
             OnboardingSeedPhraseIntroView(
                 readMoreAction: viewModel.openReadMoreAboutSeedPhraseScreen,
@@ -64,7 +65,13 @@ struct WalletOnboardingView: View {
                 OnboardingAddTokensView(viewModel: model)
             }
         case .pushNotifications:
-            EmptyView() // TODO: Andrey Fedorov - Add actual implementation (IOS-7302)
+            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
+                PushNotificationsPermissionRequestView(
+                    viewModel: pushNotificationsViewModel,
+                    topInset: -viewModel.progressBarPadding,
+                    buttonsAxis: .vertical
+                )
+            }
         default:
             EmptyView()
         }
@@ -114,10 +121,10 @@ struct WalletOnboardingView: View {
                         .offset(x: 0, y: -geom.size.height / 2 + (isNavbarVisible ? viewModel.navbarSize.height / 2 + 4 : 0))
                         .opacity(isNavbarVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
+                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
                             .opacity(isProgressBarVisible ? 1.0 : 0.0)
                             .frame(width: screenSize.width - 32)
-                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + progressBarPadding)
+                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + viewModel.progressBarPadding)
 
                         if !viewModel.isCustomContentVisible {
                             AnimatedView(settings: viewModel.$thirdCardSettings) {

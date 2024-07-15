@@ -37,10 +37,12 @@ class CustomBitcoinFeeService {
 
     private func bind(input: CustomFeeServiceInput) {
         Publishers.CombineLatest3(
-            satoshiPerByte,
+            satoshiPerByte.dropFirst(),
             input.cryptoAmountPublisher,
             input.destinationAddressPublisher
         )
+        // Skip the initial values
+        .dropFirst()
         .withWeakCaptureOf(self)
         .compactMap { service, args in
             let (satoshiPerByte, amount, destination) = args
@@ -52,12 +54,14 @@ class CustomBitcoinFeeService {
         }
         .withWeakCaptureOf(self)
         .sink { service, fee in
-            service.output?.customFeeDidChanged(fee)
+            service.customFee.send(fee)
         }
         .store(in: &bag)
 
         customFee
             .compactMap { $0 }
+            // Skip the initial value
+            .dropFirst()
             .withWeakCaptureOf(self)
             .sink { service, customFee in
                 service.customFeeDidChanged(fee: customFee)

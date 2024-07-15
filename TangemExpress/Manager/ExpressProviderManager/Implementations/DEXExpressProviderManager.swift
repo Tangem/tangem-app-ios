@@ -152,7 +152,7 @@ private extension DEXExpressProviderManager {
     }
 
     func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
-        let otherNativeFee = data.otherNativeFee ?? 0
+        let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) ?? 0
 
         if let estimatedGasLimit = data.estimatedGasLimit {
             let estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
@@ -174,7 +174,7 @@ private extension DEXExpressProviderManager {
 
         try Task.checkCancellation()
 
-        if let otherNativeFee = data.otherNativeFee {
+        if let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) {
             fee = include(otherNativeFee: otherNativeFee, in: fee)
             log("The fee was increased by otherNativeFee \(otherNativeFee)")
         }

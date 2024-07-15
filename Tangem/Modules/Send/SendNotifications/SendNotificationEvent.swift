@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum SendNotificationEvent {
+enum SendNotificationEvent: Hashable {
     // The send flow specific notifications
     case networkFeeUnreachable
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
@@ -59,8 +59,7 @@ extension SendNotificationEvent: NotificationEvent {
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .networkFeeUnreachable,
-             .validationErrorEvent(.insufficientBalance): // Check it. It hasn't button:
-            // ♿️ Does it have a button? Use `action`
+             .validationErrorEvent(.insufficientBalance):
             return .action
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
@@ -79,7 +78,6 @@ extension SendNotificationEvent: NotificationEvent {
              .customFeeTooHigh,
              .customFeeTooLow,
              .feeWillBeSubtractFromSendingAmount:
-            // ⚠️ sync with SendNotificationEvent.icon
             return .init(iconType: .image(Assets.attention.image))
         case .withdrawalNotificationEvent(let event):
             return event.icon
@@ -94,7 +92,6 @@ extension SendNotificationEvent: NotificationEvent {
              .customFeeTooHigh,
              .customFeeTooLow,
              .feeWillBeSubtractFromSendingAmount:
-            // ⚠️ sync with SendNotificationEvent.icon
             return .warning
         case .withdrawalNotificationEvent(let event):
             return event.severity
@@ -126,29 +123,6 @@ extension SendNotificationEvent: NotificationEvent {
 }
 
 extension SendNotificationEvent {
-    enum Location {
-        case feeLevels
-        case customFee
-        case feeIncluded
-        case summary
-    }
-
-    var locations: [Location] {
-        switch self {
-        case .networkFeeUnreachable:
-            return [.feeLevels, .summary]
-        case .feeWillBeSubtractFromSendingAmount,
-             .customFeeTooHigh,
-             .customFeeTooLow,
-             .withdrawalNotificationEvent,
-             .validationErrorEvent:
-            return [.summary]
-        }
-    }
-}
-
-extension SendNotificationEvent {
-    // ♿️ Does it have a button? Use `action` color scheme then ☝️
     var buttonActionType: NotificationButtonActionType? {
         switch self {
         case .networkFeeUnreachable:
@@ -161,25 +135,6 @@ extension SendNotificationEvent {
             return event.buttonActionType
         case .validationErrorEvent(let event):
             return event.buttonActionType
-        }
-    }
-}
-
-extension SendNotificationEvent {
-    var id: NotificationViewId {
-        switch self {
-        case .networkFeeUnreachable:
-            "networkFeeUnreachable".hashValue
-        case .feeWillBeSubtractFromSendingAmount:
-            "feeWillBeSubtractFromSendingAmount".hashValue
-        case .customFeeTooHigh:
-            "customFeeTooHigh".hashValue
-        case .customFeeTooLow:
-            "customFeeTooLow".hashValue
-        case .withdrawalNotificationEvent(let event):
-            event.id
-        case .validationErrorEvent(let event):
-            event.id
         }
     }
 }

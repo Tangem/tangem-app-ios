@@ -12,6 +12,7 @@ import SwiftUI
 struct NetworkIcon: View {
     let imageName: String
     let isActive: Bool
+    var isDisabled: Bool = false
     let isMainIndicatorVisible: Bool
     var size: CGSize = .init(width: 20, height: 20)
 
@@ -25,7 +26,10 @@ struct NetworkIcon: View {
 
     @ViewBuilder
     private var background: some View {
-        if !isActive {
+        if isDisabled {
+            Circle()
+                .foregroundColor(Colors.Button.disabled)
+        } else if !isActive {
             Circle()
                 .foregroundColor(Colors.Button.secondary)
         }
@@ -67,7 +71,7 @@ struct NetworkIcon_Previews: PreviewProvider {
         VStack {
             NetworkIcon(imageName: blockchainIconNames, isActive: true, isMainIndicatorVisible: true)
 
-            NetworkIcon(imageName: blockchainIconNames, isActive: true, isMainIndicatorVisible: true, size: CGSize(bothDimensions: 36))
+            NetworkIcon(imageName: blockchainIconNames, isActive: true, isDisabled: false, isMainIndicatorVisible: true, size: CGSize(bothDimensions: 36))
         }
         .padding()
         .previewLayout(.sizeThatFits)
