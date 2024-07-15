@@ -23,7 +23,7 @@ class CommonStakingPendingHashesSender: StakingPendingHashesSender {
 
     func sendHash(_ pendingHash: StakingPendingHash) async throws {
         repository.storeHash(pendingHash)
-        try await provider.submitHash(pendingHash.hash, for: pendingHash.transactionId)
+        try await provider.submitHash(hash: pendingHash.hash, transactionId: pendingHash.transactionId)
         repository.removeHash(pendingHash)
     }
 
@@ -39,7 +39,7 @@ class CommonStakingPendingHashesSender: StakingPendingHashesSender {
             }
 
             for pendingHash in pendingHashes {
-                try await provider.submitHash(pendingHash.hash, for: pendingHash.transactionId)
+                try await provider.submitHash(hash: pendingHash.hash, transactionId: pendingHash.transactionId)
                 repository.removeHash(pendingHash)
             }
         }
