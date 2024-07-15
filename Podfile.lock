@@ -222,7 +222,7 @@ DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, commit `90cd192c725841ec162c298ad7a700c0aac05695`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, commit `b23a2dad23ec143c9ee92c1768c493bdfc573006`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -231,7 +231,7 @@ DEPENDENCIES:
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
   - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, commit `b6122fe83fabc86b5a87ee8c10ff430ce774b7c1`)
+  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem10`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-298`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
@@ -277,11 +277,11 @@ EXTERNAL SOURCES:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
   BlockchainSdk:
-    :commit: 90cd192c725841ec162c298ad7a700c0aac05695
+    :commit: b23a2dad23ec143c9ee92c1768c493bdfc573006
     :git: https://github.com/tangem/blockchain-sdk-swift.git
   Solana.Swift:
-    :commit: b6122fe83fabc86b5a87ee8c10ff430ce774b7c1
     :git: https://github.com/tangem/Solana.Swift
+    :tag: 1.2.0-tangem10
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
@@ -300,11 +300,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
   BlockchainSdk:
-    :commit: 90cd192c725841ec162c298ad7a700c0aac05695
+    :commit: b23a2dad23ec143c9ee92c1768c493bdfc573006
     :git: https://github.com/tangem/blockchain-sdk-swift.git
   Solana.Swift:
-    :commit: b6122fe83fabc86b5a87ee8c10ff430ce774b7c1
     :git: https://github.com/tangem/Solana.Swift
+    :tag: 1.2.0-tangem10
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
@@ -354,6 +354,6 @@ SPEC CHECKSUMS:
   TangemSdk: 4a188873f9dbed6340cca9ad6a010240af6df432
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 1a06d1eb264cca4ab57ec3314d7c1b42e99475c8
+PODFILE CHECKSUM: 490c71b514ab1f4c3818dc1ab068c9a2198fb5b5
 
 COCOAPODS: 1.15.2

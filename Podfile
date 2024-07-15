@@ -31,10 +31,10 @@ end
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :commit => '90cd192c725841ec162c298ad7a700c0aac05695'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :commit => 'b23a2dad23ec143c9ee92c1768c493bdfc573006'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :commit => 'b6122fe83fabc86b5a87ee8c10ff430ce774b7c1'
+  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem10'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
@@ -199,7 +199,7 @@ post_install do |installer|
    "BlockchainSdk",
    "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
    "TweetNacl",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "1.1.0" }
+   { :kind => "exactVersion", :minimumVersion => "1.1.0" }
   )
   
   # `secp256k1.swift` SPM package for `Solana.Swift` pod
@@ -251,7 +251,7 @@ post_install do |installer|
    "Solana.Swift",
    "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
    "TweetNacl",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "1.1.0" }
+   { :kind => "exactVersion", :version => "1.1.0" }
   )
 
 end
