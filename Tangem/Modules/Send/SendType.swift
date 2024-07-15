@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import BlockchainSdk
 
 enum SendType {
     case send

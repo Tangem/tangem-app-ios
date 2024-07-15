@@ -19,6 +19,10 @@ public struct YieldInfo {
     // Actions
     public let minimumRequirement: Decimal
 
+    // Validators
+    public let validators: [ValidatorInfo]
+    public let defaultValidator: String?
+
     // Metadata
     public let item: StakingTokenItem
     public let unbondingPeriod: Period
@@ -33,6 +37,8 @@ public struct YieldInfo {
         rewardType: RewardType,
         rewardRate: Decimal,
         minimumRequirement: Decimal,
+        validators: [ValidatorInfo],
+        defaultValidator: String?,
         item: StakingTokenItem,
         unbondingPeriod: Period,
         warmupPeriod: Period,
@@ -44,6 +50,8 @@ public struct YieldInfo {
         self.rewardType = rewardType
         self.rewardRate = rewardRate
         self.minimumRequirement = minimumRequirement
+        self.validators = validators
+        self.defaultValidator = defaultValidator
         self.item = item
         self.unbondingPeriod = unbondingPeriod
         self.warmupPeriod = warmupPeriod
