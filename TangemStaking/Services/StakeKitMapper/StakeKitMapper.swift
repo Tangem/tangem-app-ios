@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum StakeKitMapper {
+struct StakeKitMapper {
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
