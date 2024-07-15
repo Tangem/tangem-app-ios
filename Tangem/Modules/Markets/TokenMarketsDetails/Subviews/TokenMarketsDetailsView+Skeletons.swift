@@ -37,7 +37,7 @@ extension TokenMarketsDetailsView {
                         marketPriceIntervalType: .constant(.day),
                         options: [.day, .month, .year],
                         shouldStretchToFill: false,
-                        titleFactory: { $0.rawValue }
+                        titleFactory: { $0.tokenDetailsNameLocalized }
                     )
                 }
 
@@ -99,7 +99,7 @@ extension TokenMarketsDetailsView {
                         marketPriceIntervalType: .constant(.day),
                         options: [.day, .month, .year],
                         shouldStretchToFill: false,
-                        titleFactory: { $0.rawValue }
+                        titleFactory: { $0.tokenDetailsNameLocalized }
                     )
                 }
 
