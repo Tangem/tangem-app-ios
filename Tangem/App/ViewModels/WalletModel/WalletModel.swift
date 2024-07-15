@@ -318,7 +318,6 @@ class WalletModel {
 
     func generalUpdate(silent: Bool) -> AnyPublisher<Void, Never> {
         _transactionHistoryService?.clearHistory()
-        updateStakingState()
 
         return Publishers
             .CombineLatest(update(silent: silent), updateTransactionsHistory())

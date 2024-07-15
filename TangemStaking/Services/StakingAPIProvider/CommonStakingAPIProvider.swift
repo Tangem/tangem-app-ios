@@ -30,7 +30,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func balance(address: String, network: String) async throws -> StakingBalanceInfo {
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: address), network: .init(rawValue: network.uppercased())!)
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: address), network: network)
         let response = try await service.getBalances(request: request)
         let balanceInfo = try mapper.mapToBalanceInfo(from: response)
         return balanceInfo
