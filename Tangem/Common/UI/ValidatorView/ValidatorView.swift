@@ -15,6 +15,8 @@ struct ValidatorView: SelectableView {
     var isSelected: Binding<String>?
     var selectionId: String { data.id }
 
+    private var namespace: Namespace?
+
     init(data: ValidatorViewData) {
         self.data = data
     }
@@ -49,12 +51,18 @@ struct ValidatorView: SelectableView {
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
+            .modifier(ifLet: namespace) {
+                $0.matchedGeometryEffect(id: $1.names.validatorIcon(id: data.id), in: $1.id)
+            }
     }
 
     private var info: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                .modifier(ifLet: namespace) {
+                    $0.matchedGeometryEffect(id: $1.names.validatorTitle(id: data.id), in: $1.id)
+                }
 
             if let aprFormatted = data.aprFormatted {
                 HStack(spacing: 4) {
@@ -63,6 +71,9 @@ struct ValidatorView: SelectableView {
 
                     Text(aprFormatted)
                         .style(Fonts.Regular.footnote, color: Colors.Text.accent)
+                }
+                .modifier(ifLet: namespace) {
+                    $0.matchedGeometryEffect(id: $1.names.validatorSubtitle(id: data.id), in: $1.id)
                 }
             }
         }
@@ -85,6 +96,21 @@ struct ValidatorView: SelectableView {
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             })
         }
+    }
+}
+
+// MARK: - Setupable
+
+extension ValidatorView: Setupable {
+    func geometryEffect(_ namespace: Namespace) -> Self {
+        map { $0.namespace = namespace }
+    }
+}
+
+extension ValidatorView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any StakingValidatorsViewGeometryEffectNames
     }
 }
 

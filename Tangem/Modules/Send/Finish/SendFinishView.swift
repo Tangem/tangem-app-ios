@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SendFinishView: View {
     @ObservedObject var viewModel: SendFinishViewModel
-    let namespace: Namespace.ID
+    let namespace: SendSummaryView.Namespace
 
     var body: some View {
         GroupedScrollView(spacing: 14) {
@@ -21,6 +21,8 @@ struct SendFinishView: View {
             destinationSection
 
             amountSection
+
+            validatorSection
 
             feeSection
         }
@@ -55,29 +57,29 @@ struct SendFinishView: View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
-                    .setNamespace(namespace)
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
+                    .namespace(.init(id: namespace.id, names: namespace.names))
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
                         Colors.Background.action
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                            .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
+                            .matchedGeometryEffect(id: namespace.names.addressBackground, in: namespace.id)
                     )
             case .additionalField(let type, let value):
                 DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                    .setNamespace(namespace)
-                    .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                    .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
+                    .setNamespace(namespace.id)
+                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
                         Colors.Background.action
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                            .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
+                            .matchedGeometryEffect(id: namespace.names.addressAdditionalFieldBackground, in: namespace.id)
                     )
             }
         }
         .backgroundColor(.clear)
-        .geometryEffect(.init(id: SendViewNamespaceId.destinationContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.destinationContainer, namespace: namespace.id))
         .horizontalPadding(0)
         .separatorStyle(.single)
     }
@@ -87,14 +89,28 @@ struct SendFinishView: View {
     private var amountSection: some View {
         GroupedSection(viewModel.amountSummaryViewData) {
             SendAmountSummaryView(data: $0)
-                .setNamespace(namespace)
-                .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
-                .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
-                .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
+                .setNamespace(namespace.id)
+                .setIconNamespaceId(namespace.names.tokenIcon)
+                .setAmountCryptoNamespaceId(namespace.names.amountCryptoText)
+                .setAmountFiatNamespaceId(namespace.names.amountFiatText)
         }
         .innerContentPadding(0)
         .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
+    }
+
+    // MARK: - Validator
+
+    private var validatorSection: some View {
+        GroupedSection(viewModel.selectedValidatorData) { data in
+            ValidatorView(data: data)
+                .geometryEffect(.init(id: namespace.id, names: namespace.names))
+        } header: {
+            DefaultHeaderView("Validator")
+                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+        }
+        .settings(\.backgroundColor, Colors.Background.action)
+        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
     }
 
     // MARK: - Fee
@@ -102,13 +118,13 @@ struct SendFinishView: View {
     private var feeSection: some View {
         GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
             SendFeeSummaryView(data: data)
-                .setNamespace(namespace)
-                .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
-                .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: .market).rawValue)
-                .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: .market).rawValue)
+                .setNamespace(namespace.id)
+                .setTitleNamespaceId(namespace.names.feeTitle)
+                .setOptionNamespaceId(namespace.names.feeOption(feeOption: .market))
+                .setAmountNamespaceId(namespace.names.feeAmount(feeOption: .market))
         }
         .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
     }
 }
 

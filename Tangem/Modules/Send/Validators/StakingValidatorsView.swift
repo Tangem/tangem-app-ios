@@ -16,6 +16,7 @@ struct StakingValidatorsView: View {
         GroupedScrollView(spacing: 20) {
             SelectableGropedSection(viewModel.validators, selection: $viewModel.selectedValidator) {
                 ValidatorView(data: $0)
+                    .geometryEffect(.init(id: namespace.id, names: namespace.names))
             }
             .settings(\.backgroundColor, Colors.Background.action)
             .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))

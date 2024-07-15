@@ -983,7 +983,6 @@
 		DAC53D0027BE63830027147D /* Web3StoryPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC53CF527BE63830027147D /* Web3StoryPage.swift */; };
 		DAC5A5292BBEB5B5003CFC1D /* KeyboardVisibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC5A5282BBEB5B5003CFC1D /* KeyboardVisibilityService.swift */; };
 		DAD2D8522B4D2144002EA7F1 /* SendSummarySectionViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD2D8512B4D2144002EA7F1 /* SendSummarySectionViewModelFactory.swift */; };
-		DAD2D8542B4D578C002EA7F1 /* SendViewNamespaceId.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD2D8532B4D578C002EA7F1 /* SendViewNamespaceId.swift */; };
 		DAD60F292BB6E80B00F9E4D9 /* SendMainButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD60F282BB6E80B00F9E4D9 /* SendMainButtonType.swift */; };
 		DADBECDF2BBE910C007E7885 /* CustomFeeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADBECDA2BBE910C007E7885 /* CustomFeeService.swift */; };
 		DADBECE02BBE910C007E7885 /* CustomBitcoinFeeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADBECDB2BBE910C007E7885 /* CustomBitcoinFeeService.swift */; };
@@ -2861,7 +2860,6 @@
 		DAC53CF527BE63830027147D /* Web3StoryPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Web3StoryPage.swift; sourceTree = "<group>"; };
 		DAC5A5282BBEB5B5003CFC1D /* KeyboardVisibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardVisibilityService.swift; sourceTree = "<group>"; };
 		DAD2D8512B4D2144002EA7F1 /* SendSummarySectionViewModelFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSummarySectionViewModelFactory.swift; sourceTree = "<group>"; };
-		DAD2D8532B4D578C002EA7F1 /* SendViewNamespaceId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewNamespaceId.swift; sourceTree = "<group>"; };
 		DAD60F282BB6E80B00F9E4D9 /* SendMainButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMainButtonType.swift; sourceTree = "<group>"; };
 		DADBECDA2BBE910C007E7885 /* CustomFeeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomFeeService.swift; sourceTree = "<group>"; };
 		DADBECDB2BBE910C007E7885 /* CustomBitcoinFeeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomBitcoinFeeService.swift; sourceTree = "<group>"; };
@@ -7685,7 +7683,6 @@
 			isa = PBXGroup;
 			children = (
 				EF031A642C0A32C3001535C9 /* SendGeometryEffectNames.swift */,
-				DAD2D8532B4D578C002EA7F1 /* SendViewNamespaceId.swift */,
 			);
 			path = Namespace;
 			sourceTree = "<group>";
@@ -11112,7 +11109,6 @@
 				DC3ED8A72C1B49F900C89C62 /* DefaultPickerRowView.swift in Sources */,
 				DA4055252ABDD3A300353F8A /* AddCustomTokenNetworksListItemViewModel.swift in Sources */,
 				B0BA7BCB26C5684E00D7066F /* AddressQrBottomSheetView.swift in Sources */,
-				DAD2D8542B4D578C002EA7F1 /* SendViewNamespaceId.swift in Sources */,
 				B62C65CE2C38D06B00189AD4 /* PushNotificationsService.swift in Sources */,
 				B05919042A0BCD1100EB8005 /* MainHeaderViewModel.swift in Sources */,
 				B0406BB62A402462006452C2 /* PagerWithDots.swift in Sources */,
