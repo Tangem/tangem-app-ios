@@ -100,6 +100,11 @@ struct SendView: View {
             .amountMinTextScale(Constants.amountMinTextScale)
         case .fee(let sendFeeViewModel):
             SendFeeView(viewModel: sendFeeViewModel, namespace: namespace)
+        case .validators(let stakingValidatorsViewModel):
+            StakingValidatorsView(
+                viewModel: stakingValidatorsViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         case .summary(let sendSummaryViewModel):
             SendSummaryView(viewModel: sendSummaryViewModel, namespace: namespace)
         case .finish(let sendFinishViewModel):

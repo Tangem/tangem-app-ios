@@ -14,15 +14,15 @@ import TangemStaking
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
-    var title: String { Localization.stakingDetailsTitle(wallet.name) }
+    var title: String { Localization.stakingDetailsTitle(walletModel.name) }
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
 
     // MARK: - Dependencies
 
-    private let wallet: WalletModel
-    private let manager: StakingManager
+    private let walletModel: WalletModel
+    private let stakingRepository: StakingRepository
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
@@ -34,33 +34,60 @@ final class StakingDetailsViewModel: ObservableObject {
         return formatter
     }()
 
+    private let _yieldInfo = CurrentValueSubject<LoadingValue<YieldInfo>, Never>(.loading)
+    private let _balanceInfo = CurrentValueSubject<LoadingValue<TangemStaking.BalanceInfo>, Never>(.loading)
+
+    private var bag: Set<AnyCancellable> = []
+
     init(
-        wallet: WalletModel,
-        manager: StakingManager,
+        walletModel: WalletModel,
+        stakingRepository: StakingRepository,
         coordinator: StakingDetailsRoutable
     ) {
-        self.wallet = wallet
-        self.manager = manager
+        self.walletModel = walletModel
+        self.stakingRepository = stakingRepository
         self.coordinator = coordinator
+
+        bind()
     }
 
     func userDidTapBanner() {}
     func userDidTapActionButton() {}
 
     func onAppear() {
-        runTask(in: self) { viewModel in
-            let yield = try await viewModel.manager.getYield()
-            await viewModel.setupView(yield: yield)
-        }
+        loadValues()
     }
 }
 
 private extension StakingDetailsViewModel {
-    @MainActor
-    func setupView(yield: YieldInfo) {
+    func loadValues() {
+        guard let yield = stakingRepository.getYield(item: walletModel.stakingTokenItem) else {
+            assertionFailure("StakingRepository doesn't contains yield")
+            return
+        }
+
+        _yieldInfo.send(.loaded(yield))
+        _balanceInfo.send(.loaded(.init(item: walletModel.stakingTokenItem, blocked: 1.23)))
+    }
+
+    func bind() {
+        Publishers.CombineLatest(
+            _yieldInfo.compactMap { $0.value },
+            _balanceInfo.compactMap { $0.value }
+        )
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, args in
+            viewModel.setupView(yield: args.0, balanceInfo: args.1)
+        }
+        .store(in: &bag)
+    }
+
+    func setupView(yield: YieldInfo, balanceInfo: TangemStaking.BalanceInfo) {
+        let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
         setupView(
             inputData: StakingDetailsData(
-                available: wallet.balanceValue ?? 0, // Maybe add skeleton?
+                available: walletModel.balanceValue ?? 0, // Maybe add skeleton?
                 staked: 0, // TBD
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
@@ -82,7 +109,7 @@ private extension StakingDetailsViewModel {
         let days = 30
         let periodProfitFormatted = daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
 
-        let profitFormatted = wallet.balanceValue.map { balanceValue in
+        let profitFormatted = walletModel.balanceValue.map { balanceValue in
             let profit = StakingCalculator().earnValue(
                 invest: balanceValue,
                 apr: inputData.rewardRate,
@@ -102,12 +129,12 @@ private extension StakingDetailsViewModel {
     func setupDetailsSection(inputData: StakingDetailsData) {
         let availableFormatted = balanceFormatter.formatCryptoBalance(
             inputData.available,
-            currencyCode: wallet.tokenItem.currencySymbol
+            currencyCode: walletModel.tokenItem.currencySymbol
         )
 
         let stakedFormatted = balanceFormatter.formatCryptoBalance(
             inputData.staked,
-            currencyCode: wallet.tokenItem.currencySymbol
+            currencyCode: walletModel.tokenItem.currencySymbol
         )
 
         let rewardRateFormatted = percentFormatter.format(inputData.rewardRate, option: .staking)
@@ -115,7 +142,7 @@ private extension StakingDetailsViewModel {
         let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
         let minimumFormatted = balanceFormatter.formatCryptoBalance(
             inputData.minimumRequirement,
-            currencyCode: wallet.tokenItem.currencySymbol
+            currencyCode: walletModel.tokenItem.currencySymbol
         )
 
         let warmupFormatted = inputData.warmupPeriod.formatted(formatter: daysFormatter)

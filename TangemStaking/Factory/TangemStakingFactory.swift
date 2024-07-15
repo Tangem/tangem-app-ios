@@ -21,8 +21,8 @@ public struct TangemStakingFactory {
     ) -> StakingManager {
         CommonStakingManager(
             wallet: wallet,
-            provider: provider,
             repository: repository,
+            provider: provider,
             logger: logger
         )
     }
