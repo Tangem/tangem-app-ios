@@ -70,7 +70,7 @@ struct CommonWalletModelsFactory {
         }
 
         let provider = StakingDependenciesFactory().makeStakingAPIProvider()
-        return CommonStakingBalanceProvider(item: tokenItem, address: address, provider: provider)
+        return CommonStakingBalanceProvider(item: tokenItem.stakingTokenItem, address: address, provider: provider)
     }
 }
 
