@@ -44,7 +44,7 @@ extension StakeKitDTO {
             let duration: Duration?
             let validatorAddress: Required?
             let validatorAddresses: Required?
-            let nfts: [Nft]?
+            let nfts: [NFT]?
             let tronResource: TronResource?
             let signatureVerification: Required?
 
@@ -60,7 +60,7 @@ extension StakeKitDTO {
                 let maximum: Int?
             }
 
-            struct Nft: Decodable {
+            struct NFT: Decodable {
                 let baycId: Required?
                 let maycId: Required?
                 let bakcId: Required?

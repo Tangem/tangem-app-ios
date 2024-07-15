@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct StakeKitMapper {
+enum StakeKitMapper {
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
@@ -57,7 +57,7 @@ struct StakeKitMapper {
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRate: response.rewardRate,
             minimumRequirement: enterAction.args.amount.minimum,
-            validators: response.validators.compactMap { mapToValidatorInfo(from: $0) },
+            validators: response.validators.compactMap(mapToValidatorInfo),
             defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
