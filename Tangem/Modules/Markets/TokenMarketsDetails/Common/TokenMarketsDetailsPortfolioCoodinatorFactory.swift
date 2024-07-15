@@ -11,7 +11,6 @@ import Foundation
 struct TokenMarketsDetailsPortfolioCoodinatorFactory {
     // MARK: - Services
 
-    @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     var canBuy: Bool {

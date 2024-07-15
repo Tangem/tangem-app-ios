@@ -14,12 +14,18 @@ struct MarketsPortfolioContainerView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            headerView
+        VStack(spacing: 14) {
+            // Token list block
+            VStack(alignment: .leading, spacing: 12) {
+                headerView
 
-            contentView
+                contentView
+            }
+            .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: .zero)
+
+            // Quick action block
+            quickActionsView
         }
-        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: .zero)
     }
 
     private var headerView: some View {
@@ -98,6 +104,18 @@ struct MarketsPortfolioContainerView: View {
 
                 Spacer()
             }
+        }
+    }
+
+    @ViewBuilder
+    private var quickActionsView: some View {
+        if viewModel.showQuickActions, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+            MarketsPortfolioQuickActionsView(
+                actions: viewModel.buildContextActions(for: tokenItemViewModel),
+                onTapAction: { actionType in
+                    viewModel.didTapContextAction(actionType, for: tokenItemViewModel)
+                }
+            )
         }
     }
 }

@@ -15,7 +15,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var fullDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
     @Published var isLoading = true
-    @Published var showQuickActions: Bool = false
     @Published var alert: AlertBinder?
 
     // MARK: Blocks
@@ -163,9 +162,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             coinId: tokenInfo.id,
             coordinator: coordinator
         )
-
-        // This strict condition is conditioned by the requirements
-        showQuickActions = (portfolioViewModel?.tokenItemViewModels.count ?? 0) == 1
     }
 
     private func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
@@ -197,10 +193,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }
 
         coordinator?.openURL(url)
-    }
-
-    func onTapTokenAction(type actionType: TokenActionType) {
-        portfolioViewModel?.onExternalTapAction(type: actionType)
     }
 }
 

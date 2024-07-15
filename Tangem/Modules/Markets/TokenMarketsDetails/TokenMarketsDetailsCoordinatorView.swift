@@ -14,12 +14,23 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
     var body: some View {
         ZStack {
             if let viewModel = coordinator.rootViewModel {
-                TokenMarketsDetailsView(viewModel: viewModel)
+                NavigationView {
+                    TokenMarketsDetailsView(viewModel: viewModel)
+                        .navigationLinks(links)
+                }
             }
 
             sheets
         }
         .bindAlert($coordinator.error)
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.tokenDetailsCoordinator) {
+                TokenDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder

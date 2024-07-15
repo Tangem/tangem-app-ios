@@ -29,6 +29,8 @@ struct MarketsPortfolioQuickActionsView: View {
                 Text(Localization.marketsQuickActions)
                     .lineLimit(1)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                Spacer()
             }
         }
     }

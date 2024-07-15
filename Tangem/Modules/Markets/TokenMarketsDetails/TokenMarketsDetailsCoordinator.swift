@@ -26,14 +26,12 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
 
-    @Published private(set) var tokenDetailsViewModel: TokenDetailsViewModel? = nil
-
     // MARK: - Child Coordiantors
 
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
-    @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
 
     private var safariHandle: SafariHandle?
 
@@ -221,12 +219,6 @@ extension TokenMarketsDetailsCoordinator {
     }
 
     func openFeeCurrency(for model: WalletModel, with userWalletModel: UserWalletModel) {
-        // TODO: Remove this stuff after Send screen refactoring
-        guard model.tokenItem != tokenDetailsViewModel?.walletModel.tokenItem else {
-            return
-        }
-
-        #warning("TODO: Add analytics")
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
         }
