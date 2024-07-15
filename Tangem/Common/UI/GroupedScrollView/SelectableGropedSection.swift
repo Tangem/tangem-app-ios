@@ -9,10 +9,26 @@
 import Foundation
 import SwiftUI
 
-protocol SelectableView: View {
-    associatedtype SelectionValue
+protocol SelectableView: View, Setupable {
+    associatedtype SelectionValue: Equatable
+
+    var selectionId: SelectionValue { get }
+    var isSelected: Binding<SelectionValue>? { get set }
 
     func isSelected(_ isSelected: Binding<SelectionValue>) -> Self
+}
+
+extension SelectableView {
+    func isSelected(_ isSelected: Binding<SelectionValue>) -> Self {
+        map { $0.isSelected = isSelected }
+    }
+
+    var isSelectedProxy: Binding<Bool> {
+        .init(
+            get: { isSelected?.wrappedValue == selectionId },
+            set: { _ in isSelected?.wrappedValue = selectionId }
+        )
+    }
 }
 
 struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Footer: View, Header: View>: View {
@@ -22,9 +38,7 @@ struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Foo
     private let header: () -> Header
     private let footer: () -> Footer
 
-    // Use "Colors.Background.primary" as default with "Colors.Background.secondary" background
-    // Use "Colors.Background.action" on sheets with "Colors.Background.teritary" background
-    private var backgroundColor: Color = Colors.Background.primary
+    private var settings: Settings = .init()
 
     init(
         _ models: [Model],
@@ -50,11 +64,18 @@ struct SelectableGropedSection<Model: Identifiable, Content: SelectableView, Foo
             header: header,
             footer: footer
         )
+        .settings(settings)
     }
 }
 
+extension SelectableGropedSection {
+    typealias Settings = GroupedSection<Model, Content, Footer, Header>.Settings
+}
+
+// MARK: - Setupable
+
 extension SelectableGropedSection: Setupable {
-    func backgroundColor(_ color: Color) -> Self {
-        map { $0.backgroundColor = color }
+    func settings<V>(_ keyPath: WritableKeyPath<Settings, V>, _ value: V) -> Self {
+        map { $0.settings[keyPath: keyPath] = value }
     }
 }
