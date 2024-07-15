@@ -103,7 +103,7 @@ struct SendFinishView: View {
 
     private var validatorSection: some View {
         GroupedSection(viewModel.selectedValidatorData) { data in
-            ValidatorView(data: data)
+            ValidatorView(data: data, selection: .constant(""))
                 .geometryEffect(.init(id: namespace.id, names: namespace.names))
         } header: {
             DefaultHeaderView("Validator")

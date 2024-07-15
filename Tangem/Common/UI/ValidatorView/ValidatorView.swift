@@ -9,22 +9,21 @@
 import Foundation
 import SwiftUI
 
-struct ValidatorView: SelectableView {
+struct ValidatorView: View {
     private let data: ValidatorViewData
-
-    var isSelected: Binding<String>?
-    var selectionId: String { data.id }
+    private let selection: Binding<String>
 
     private var namespace: Namespace?
 
-    init(data: ValidatorViewData) {
+    init(data: ValidatorViewData, selection: Binding<String>) {
         self.data = data
+        self.selection = selection
     }
 
     var body: some View {
         switch data.detailsType {
         case .checkmark:
-            Button(action: { isSelectedProxy.wrappedValue.toggle() }) {
+            Button(action: { selection.isActive(compare: data.id).toggle() }) {
                 content
             }
         case .none, .chevron, .balance:
@@ -84,7 +83,7 @@ struct ValidatorView: SelectableView {
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: isSelectedProxy.wrappedValue)
+            CircleCheckmarkIcon(isSelected: selection.isActive(compare: data.id).wrappedValue)
         case .chevron:
             Assets.chevron.image
         case .balance(let crypto, let fiat):
@@ -122,7 +121,7 @@ extension ValidatorView {
             ZStack {
                 Colors.Background.secondary.ignoresSafeArea()
 
-                SelectableGropedSection([
+                GroupedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "InfStones",
@@ -137,9 +136,8 @@ extension ValidatorView {
                         aprFormatted: nil,
                         detailsType: .checkmark
                     ),
-
-                ], selection: $selected) {
-                    ValidatorView(data: $0)
+                ]) {
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }
@@ -174,7 +172,7 @@ extension ValidatorView {
                     ),
 
                 ]) {
-                    ValidatorView(data: $0)
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }
@@ -201,7 +199,7 @@ extension ValidatorView {
                         detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
                     ),
                 ]) {
-                    ValidatorView(data: $0)
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }

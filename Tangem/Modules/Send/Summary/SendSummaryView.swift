@@ -123,11 +123,12 @@ struct SendSummaryView: View {
 
     private var validatorSection: some View {
         GroupedSection(viewModel.selectedValidatorData) { data in
-            ValidatorView(data: data)
+            ValidatorView(data: data, selection: .constant(""))
                 .geometryEffect(.init(id: namespace.id, names: namespace.names))
         } header: {
             DefaultHeaderView("Validator")
                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+                .padding(.top, 12)
         }
         .settings(\.backgroundColor, sectionBackground(type: viewModel.editableType))
         .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
