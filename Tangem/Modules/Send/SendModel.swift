@@ -17,7 +17,7 @@ class SendModel {
     private let _destination: CurrentValueSubject<SendAddress?, Never>
     private let _destinationAdditionalField: CurrentValueSubject<SendDestinationAdditionalField, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never>
-    private let _selectedFee = CurrentValueSubject<SendFee?, Never>(nil)
+    private let _selectedFee = CurrentValueSubject<SendFee, Never>(.init(option: .market, value: .loading))
     private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
     private let _transaction = CurrentValueSubject<BSDKTransaction?, Never>(nil)
@@ -82,7 +82,7 @@ private extension SendModel {
             .CombineLatest3(
                 _amount.compactMap { $0?.crypto },
                 _destination.compactMap { $0?.value },
-                _selectedFee.compactMap { $0?.value.value }
+                _selectedFee.compactMap { $0.value.value }
             )
             .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
@@ -238,11 +238,11 @@ extension SendModel: SendAmountOutput {
 // MARK: - SendFeeInput
 
 extension SendModel: SendFeeInput {
-    var selectedFee: SendFee? {
+    var selectedFee: SendFee {
         _selectedFee.value
     }
 
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> {
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> {
         _selectedFee.eraseToAnyPublisher()
     }
 
@@ -320,7 +320,7 @@ extension SendModel: SendNotificationManagerInput {
 
 private extension SendModel {
     func logTransactionAnalytics() {
-        let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee?.option)
+        let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee.option)
 
         Analytics.log(event: .transactionSent, params: [
             .source: source.analyticsValue.rawValue,

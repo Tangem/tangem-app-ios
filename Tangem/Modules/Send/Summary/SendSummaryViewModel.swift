@@ -209,7 +209,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                 var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
                 for feeValue in feeValues {
-                    if feeValue.option == selectedFee?.option {
+                    if feeValue.option == selectedFee.option {
                         selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: feeValue)
                     } else {
                         let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)

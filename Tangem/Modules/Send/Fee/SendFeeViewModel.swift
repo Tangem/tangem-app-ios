@@ -18,7 +18,6 @@ class SendFeeViewModel: ObservableObject, Identifiable {
 
     @Published private(set) var deselectedFeeViewsVisible: Bool = false
     @Published var animatingAuxiliaryViewsOnAppear: Bool = false
-    @Published var alert: AlertBinder?
 
     @Published private(set) var networkFeeUnreachableNotificationViewInput: NotificationViewInput?
 

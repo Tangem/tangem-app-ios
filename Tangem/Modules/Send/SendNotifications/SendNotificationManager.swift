@@ -11,7 +11,7 @@ import BlockchainSdk
 
 protocol SendNotificationManagerInput {
     var feeValues: AnyPublisher<[SendFee], Never> { get }
-    var selectedFeePublisher: AnyPublisher<SendFee?, Never> { get }
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> { get }
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
 
     var transactionPublisher: AnyPublisher<BSDKTransaction?, Never> { get }
@@ -56,7 +56,7 @@ private extension CommonSendNotificationManager {
             .store(in: &bag)
 
         Publishers.CombineLatest(
-            input.selectedFeePublisher.compactMap { $0 },
+            input.selectedFeePublisher,
             input.feeValues.filter { !$0.allConforms { $0.value.isLoading } }
         )
         .sink { [weak self] selectedFee, loadedFeeValues in
@@ -66,7 +66,7 @@ private extension CommonSendNotificationManager {
 
         Publishers.CombineLatest(
             input.isFeeIncludedPublisher,
-            input.selectedFeePublisher.compactMap { $0?.value.value?.amount.value }
+            input.selectedFeePublisher.compactMap { $0.value.value?.amount.value }
         )
         .sink { [weak self] isFeeIncluded, feeValue in
             self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)

@@ -9,11 +9,7 @@
 import Foundation
 import Combine
 
-class MarketsWalletDataProvider {
-    // MARK: - Injected
-
-    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-
+class MarketsTokensNetworkDataSource {
     // MARK: - Properties
 
     private let _userWalletModels: CurrentValueSubject<[UserWalletModel], Never> = .init([])
@@ -24,20 +20,20 @@ class MarketsWalletDataProvider {
 
     // MARK: - Init
 
-    init() {
-        let userWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
+    init(_ dataSource: ManageTokensDataSource) {
+        let userWalletModels = dataSource.userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
         _userWalletModels.send(userWalletModels)
 
         let selectedUserWalletModel = userWalletModels.first { userWalletModel in
-            userWalletModel.userWalletId == userWalletRepository.selectedUserWalletId
+            userWalletModel.userWalletId == dataSource.defaultUserWalletModel?.userWalletId
         } ?? userWalletModels.first
 
         _selectedUserWalletModel.send(selectedUserWalletModel)
     }
 }
 
-extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
+extension MarketsTokensNetworkDataSource: MarketsWalletSelectorProvider {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }
@@ -47,20 +43,18 @@ extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
     }
 
     var itemViewModels: [WalletSelectorItemViewModel] {
-        userWalletModels
-            .filter { $0.config.hasFeature(.multiCurrency) }
-            .map { userWalletModel in
-                WalletSelectorItemViewModel(
-                    userWalletId: userWalletModel.userWalletId,
-                    name: userWalletModel.config.cardName,
-                    cardImagePublisher: userWalletModel.cardImagePublisher,
-                    isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
-                ) { [weak self] userWalletId in
-                    guard let self = self else { return }
+        userWalletModels.map { userWalletModel in
+            WalletSelectorItemViewModel(
+                userWalletId: userWalletModel.userWalletId,
+                name: userWalletModel.config.cardName,
+                cardImagePublisher: userWalletModel.cardImagePublisher,
+                isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
+            ) { [weak self] userWalletId in
+                guard let self = self else { return }
 
-                    let selectedUserWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
-                    _selectedUserWalletModel.send(selectedUserWalletModel)
-                }
+                let selectedUserWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
+                _selectedUserWalletModel.send(selectedUserWalletModel)
             }
+        }
     }
 }

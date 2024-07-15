@@ -314,6 +314,7 @@
 "markets_add_to_my_portfolio_description" = "To start buying, exchanging or receiving this asset, add this token to at least 1 network";
 "markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
 "markets_add_to_portfolio_button" = "Add to portfolio";
+"markets_add_token" = "Add token";
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";

@@ -123,6 +123,10 @@ extension CommonSendStepsManager: SendStepsManager {
     func performContinue() {
         assert(stack.contains(where: { $0.type.isSummary }), "Continue is possible only after summary")
 
+        guard currentStep().canBeClosed(continueAction: back) else {
+            return
+        }
+
         back()
     }
 }
