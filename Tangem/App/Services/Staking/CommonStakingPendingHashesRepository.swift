@@ -20,12 +20,7 @@ class CommonStakingPendingHashesRepository: StakingPendingHashesRepository {
     }
 
     func fetchHashes() -> [StakingPendingHash] {
-        let hashes = pendingHashes
-        guard !hashes.isEmpty else {
-            return []
-        }
-
-        return hashes.map { StakingPendingHash(transactionId: $0.key, hash: $0.value) }
+        return pendingHashes.map { StakingPendingHash(transactionId: $0.key, hash: $0.value) }
     }
 
     func removeHash(_ hash: StakingPendingHash) {
