@@ -63,15 +63,6 @@ struct CommonWalletModelsFactory {
             transactionHistoryProviders: multiAddressProviders.compactMapValues { $0 }
         )
     }
-
-    private func makeStakingBalanceProvider(tokenItem: TokenItem, address: String) -> StakingBalanceProvider? {
-        guard StakingFeatureProvider().isAvailable(for: tokenItem) else {
-            return nil
-        }
-
-        let provider = StakingDependenciesFactory().makeStakingAPIProvider()
-        return CommonStakingBalanceProvider(item: tokenItem.stakingTokenItem, address: address, provider: provider)
-    }
 }
 
 extension CommonWalletModelsFactory: WalletModelsFactory {
@@ -98,7 +89,7 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
                 transactionHistoryService: transactionHistoryService,
-                stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
+                stakingManagerProvider: .init(tokenItem: tokenItem, address: walletManager.wallet.address),
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom
@@ -119,7 +110,7 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
                     transactionHistoryService: transactionHistoryService,
-                    stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
+                    stakingManagerProvider: .init(tokenItem: tokenItem, address: walletManager.wallet.address),
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom

@@ -10,12 +10,12 @@ import Foundation
 import Combine
 import CombineExt
 import BlockchainSdk
+import TangemStaking
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     var walletModelId: WalletModel.Id {
         .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
@@ -221,7 +221,7 @@ class WalletModel {
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
             swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
-            stakingRepositoryProxy.enabledYieldsPublisher.mapToVoid()
+            stakingManagerProvider.stateDidUpdatePublisher
         )
         .eraseToAnyPublisher()
     }
@@ -234,7 +234,7 @@ class WalletModel {
 
     private let walletManager: WalletManager
     private let _transactionHistoryService: TransactionHistoryService?
-    private let _stakingBalanceProvider: StakingBalanceProvider?
+    private let stakingManagerProvider: StakingManagerProvider
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -255,14 +255,14 @@ class WalletModel {
     init(
         walletManager: WalletManager,
         transactionHistoryService: TransactionHistoryService?,
-        stakingBalanceProvider: StakingBalanceProvider?,
+        stakingManagerProvider: StakingManagerProvider,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
         _transactionHistoryService = transactionHistoryService
-        _stakingBalanceProvider = stakingBalanceProvider
+        self.stakingManagerProvider = stakingManagerProvider
         self.amountType = amountType
         self.isCustom = isCustom
 
@@ -644,15 +644,15 @@ extension WalletModel {
 
 extension WalletModel {
     private func updateStakingState() {
-        _stakingBalanceProvider?.updateBalance()
+        stakingManager?.updateBalance()
     }
 
     private func stakingState() -> AnyPublisher<WalletModel.StakingState, Never> {
-        guard let _stakingBalanceProvider else {
+        guard let stakingManager else {
             return .just(output: .notSupported)
         }
 
-        return _stakingBalanceProvider.balancePublisher
+        return stakingManager.balancePublisher
             .map { balance in
                 switch balance {
                 case .none:
@@ -728,8 +728,8 @@ extension WalletModel {
         walletManager as? AssetRequirementsManager
     }
 
-    var stakingBalanceProvider: StakingBalanceProvider? {
-        _stakingBalanceProvider
+    var stakingManager: StakingManager? {
+        stakingManagerProvider.stakingManager
     }
 }
 

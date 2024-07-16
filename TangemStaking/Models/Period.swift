@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Period {
+public enum Period: Hashable {
     case days(_ days: Int)
 
     // TODO: To UI layer

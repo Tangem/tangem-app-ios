@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import TangemStaking
 
 enum SendType {
     case send
     case sell(parameters: PredefinedSellParameters)
+    case staking(manager: StakingManager)
 }
 
 struct PredefinedSellParameters {

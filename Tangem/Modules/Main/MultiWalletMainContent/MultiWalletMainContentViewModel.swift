@@ -456,9 +456,8 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
 
     private func canStake(walletModel: WalletModel) -> Bool {
         [
-            StakingFeatureProvider().isAvailable(for: walletModel.tokenItem),
             userWalletModel.config.isFeatureVisible(.staking),
-            stakingRepository.getYield(item: walletModel.stakingTokenItem) != nil,
+            walletModel.stakingManager != nil,
             !walletModel.isCustom,
         ].allConforms { $0 }
     }

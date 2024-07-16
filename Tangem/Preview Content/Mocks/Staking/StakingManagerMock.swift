@@ -7,12 +7,17 @@
 //
 
 import Foundation
+import Combine
 import TangemStaking
 
 class StakingManagerMock: StakingManager {
-    func getYield() throws -> YieldInfo { .mock }
+    var yield: TangemStaking.YieldInfo { .mock }
+    var balance: TangemStaking.StakingBalanceInfo? { .none }
+    var balancePublisher: AnyPublisher<TangemStaking.StakingBalanceInfo?, Never> { .just(output: balance) }
 
-    func getFee(amount: Decimal, validator: String) async throws {}
+    func updateBalance() {}
+
+    func getFee(amount: Decimal, validator: String) async throws -> Decimal { 0.12345 }
 
     func getTransaction() async throws {}
 }

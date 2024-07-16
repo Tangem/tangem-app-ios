@@ -7,11 +7,16 @@
 //
 
 import Foundation
+import Combine
 
 public protocol StakingManager {
-    func getYield() throws -> YieldInfo
+    var yield: YieldInfo { get }
 
-    // Actual info from Stakek.it
-    func getFee(amount: Decimal, validator: String) async throws
+    var balance: StakingBalanceInfo? { get }
+    var balancePublisher: AnyPublisher<StakingBalanceInfo?, Never> { get }
+
+    func updateBalance()
+
+    func getFee(amount: Decimal, validator: String) async throws -> Decimal
     func getTransaction() async throws
 }

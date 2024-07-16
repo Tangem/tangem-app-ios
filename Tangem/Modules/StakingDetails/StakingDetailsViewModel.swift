@@ -21,8 +21,9 @@ final class StakingDetailsViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
+    private let userWalletModel: UserWalletModel
     private let walletModel: WalletModel
-    private let stakingRepository: StakingRepository
+    private let stakingManager: StakingManager
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
@@ -40,19 +41,23 @@ final class StakingDetailsViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        userWalletModel: UserWalletModel,
         walletModel: WalletModel,
-        stakingRepository: StakingRepository,
+        stakingManager: StakingManager,
         coordinator: StakingDetailsRoutable
     ) {
+        self.userWalletModel = userWalletModel
         self.walletModel = walletModel
-        self.stakingRepository = stakingRepository
+        self.stakingManager = stakingManager
         self.coordinator = coordinator
 
         bind()
     }
 
     func userDidTapBanner() {}
-    func userDidTapActionButton() {}
+    func userDidTapActionButton() {
+        coordinator?.openStakingFlow(manager: stakingManager)
+    }
 
     func onAppear() {
         loadValues()
@@ -61,13 +66,14 @@ final class StakingDetailsViewModel: ObservableObject {
 
 private extension StakingDetailsViewModel {
     func loadValues() {
-        guard let yield = stakingRepository.getYield(item: walletModel.stakingTokenItem) else {
-            assertionFailure("StakingRepository doesn't contains yield")
-            return
-        }
+        _yieldInfo.send(.loaded(stakingManager.yield))
 
-        _yieldInfo.send(.loaded(yield))
-        _balanceInfo.send(.loaded(.init(item: walletModel.stakingTokenItem, blocked: 1.23)))
+        if let balance = stakingManager.balance {
+            _balanceInfo.send(.loaded(balance))
+        } else {
+            // TODO: Dmitry Fedorov
+            _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23)))
+        }
     }
 
     func bind() {
@@ -84,10 +90,10 @@ private extension StakingDetailsViewModel {
     }
 
     func setupView(yield: YieldInfo, balanceInfo: StakingBalanceInfo) {
-        let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
+        let available = (walletModel.balanceValue ?? 0) - balanceInfo.blocked
         setupView(
             inputData: StakingDetailsData(
-                available: walletModel.balanceValue ?? 0, // Maybe add skeleton?
+                available: available, // Maybe add skeleton?
                 staked: 0, // TBD
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,

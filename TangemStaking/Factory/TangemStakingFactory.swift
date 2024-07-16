@@ -15,14 +15,16 @@ public struct TangemStakingFactory {
 
     public func makeStakingManager(
         wallet: StakingWallet,
-        provider: StakingAPIProvider,
-        repository: StakingRepository,
+        yieldInfo: YieldInfo,
+        balanceProvider: StakingBalanceProvider,
+        apiProvider: StakingAPIProvider,
         logger: Logger
     ) -> StakingManager {
         CommonStakingManager(
             wallet: wallet,
-            repository: repository,
-            provider: provider,
+            yieldInfo: yieldInfo,
+            balanceProvider: balanceProvider,
+            apiProvider: apiProvider,
             logger: logger
         )
     }
@@ -32,6 +34,14 @@ public struct TangemStakingFactory {
         logger: Logger
     ) -> StakingRepository {
         CommonStakingRepository(provider: provider, logger: logger)
+    }
+
+    public func makeStakingBalanceProvider(
+        wallet: StakingWallet,
+        provider: StakingAPIProvider,
+        logger: Logger
+    ) -> StakingBalanceProvider {
+        CommonStakingBalanceProvider(wallet: wallet, provider: provider, logger: logger)
     }
 
     public func makeStakingAPIProvider(

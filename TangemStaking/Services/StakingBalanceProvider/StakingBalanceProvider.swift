@@ -8,9 +8,8 @@
 
 import Foundation
 import Combine
-import TangemStaking
 
-protocol StakingBalanceProvider {
+public protocol StakingBalanceProvider {
     var balance: StakingBalanceInfo? { get }
     var balancePublisher: AnyPublisher<StakingBalanceInfo?, Never> { get }
 
@@ -18,17 +17,17 @@ protocol StakingBalanceProvider {
 }
 
 class CommonStakingBalanceProvider {
-    private let item: StakingTokenItem
-    private let address: String
+    private let wallet: StakingWallet
     private let provider: StakingAPIProvider
+    private let logger: Logger
 
     private var updatingBalancesTask: Task<Void, Never>?
     private let _balance: CurrentValueSubject<StakingBalanceInfo?, Never> = .init(nil)
 
-    init(item: StakingTokenItem, address: String, provider: StakingAPIProvider) {
-        self.item = item
-        self.address = address
+    public init(wallet: StakingWallet, provider: StakingAPIProvider, logger: Logger) {
+        self.wallet = wallet
         self.provider = provider
+        self.logger = logger
     }
 }
 
@@ -49,10 +48,10 @@ extension CommonStakingBalanceProvider: StakingBalanceProvider {
             guard let self else { return }
 
             do {
-                let balance = try await provider.balance(address: address, network: item.coinId)
+                let balance = try await provider.balance(wallet: wallet)
                 _balance.send(balance)
             } catch {
-                AppLog.shared.error(error)
+                logger.error(error)
             }
         }
     }

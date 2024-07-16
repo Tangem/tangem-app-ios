@@ -10,33 +10,37 @@ import Foundation
 import TangemStaking
 
 class StakingModulesFactory {
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
-
+    private let userWalletModel: UserWalletModel
     private let walletModel: WalletModel
 
-    private lazy var manager: StakingManager = makeStakingManager()
-
-    init(walletModel: WalletModel) {
+    init(userWalletModel: UserWalletModel, walletModel: WalletModel) {
+        self.userWalletModel = userWalletModel
         self.walletModel = walletModel
     }
 
-    func makeStakingDetailsViewModel(coordinator: StakingDetailsRoutable) -> StakingDetailsViewModel {
+    func makeStakingDetailsViewModel(
+        manager: StakingManager,
+        coordinator: StakingDetailsRoutable
+    ) -> StakingDetailsViewModel {
         StakingDetailsViewModel(
+            userWalletModel: userWalletModel,
             walletModel: walletModel,
-            stakingRepository: stakingRepositoryProxy,
+            stakingManager: manager,
             coordinator: coordinator
         )
     }
 
-    // MARK: - Dependencies
-
-    func makeStakingManager() -> StakingManager {
-        let provider = StakingDependenciesFactory().makeStakingAPIProvider()
-        return TangemStakingFactory().makeStakingManager(
-            wallet: walletModel,
-            provider: provider,
-            repository: stakingRepositoryProxy,
-            logger: AppLog.shared
+    func makeStakingFlow(
+        manager: StakingManager,
+        dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
+    ) -> SendCoordinator {
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .staking(manager: manager)
         )
+        coordinator.start(with: options)
+        return coordinator
     }
 }

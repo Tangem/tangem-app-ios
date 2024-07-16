@@ -7,42 +7,56 @@
 //
 
 import Foundation
+import Combine
 
 class CommonStakingManager {
     private let wallet: StakingWallet
-    private let repository: StakingRepository
-    private let provider: StakingAPIProvider
+    private let yieldInfo: YieldInfo
+    private let balanceProvider: StakingBalanceProvider
+    private let apiProvider: StakingAPIProvider
     private let logger: Logger
 
     init(
         wallet: StakingWallet,
-        repository: StakingRepository,
-        provider: StakingAPIProvider,
+        yieldInfo: YieldInfo,
+        balanceProvider: StakingBalanceProvider,
+        apiProvider: StakingAPIProvider,
         logger: Logger
     ) {
         self.wallet = wallet
-        self.repository = repository
-        self.provider = provider
+        self.yieldInfo = yieldInfo
+        self.balanceProvider = balanceProvider
+        self.apiProvider = apiProvider
         self.logger = logger
     }
 }
 
-extension CommonStakingManager: StakingManager {
-    func getYield() throws -> YieldInfo {
-        guard let yield = repository.getYield(item: wallet.stakingTokenItem) else {
-            throw StakingManagerError.notFound
-        }
+// MARK: - StakingManager
 
-        return yield
+extension CommonStakingManager: StakingManager {
+    var yield: YieldInfo { yieldInfo }
+    var balance: StakingBalanceInfo? { balanceProvider.balance }
+
+    var balancePublisher: AnyPublisher<StakingBalanceInfo?, Never> {
+        balanceProvider.balancePublisher
     }
 
-    func getFee(amount: Decimal, validator: String) async throws {
-        let action = try await provider.enterAction(
+    func updateBalance() {
+        balanceProvider.updateBalance()
+    }
+
+    func getFee(amount: Decimal, validator: String) async throws -> Decimal {
+        let action = try await apiProvider.enterAction(
             amount: amount,
-            address: wallet.defaultAddress,
+            address: wallet.address,
             validator: validator,
-            integrationId: getYield().id
+            integrationId: yieldInfo.id
         )
+
+        let transactionId = action.transactions[action.currentStepIndex].id
+        let transaction = try await apiProvider.patchTransaction(id: transactionId)
+
+        return transaction.fee
     }
 
     func getTransaction() async throws {
