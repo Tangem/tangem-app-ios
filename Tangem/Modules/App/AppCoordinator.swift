@@ -30,7 +30,7 @@ class AppCoordinator: CoordinatorObject {
     // but in fact this is a read-only binding since the UI never mutates it.
     @Published var mainBottomSheetCoordinator: MainBottomSheetCoordinator?
 
-    // Non-published property, used to preserve the state of the `MainBottomSheetCoordinator` 
+    // Non-published property, used to preserve the state of the `MainBottomSheetCoordinator`
     // instance between show-hide cycles
     private var __mainBottomSheetCoordinator: MainBottomSheetCoordinator?
 

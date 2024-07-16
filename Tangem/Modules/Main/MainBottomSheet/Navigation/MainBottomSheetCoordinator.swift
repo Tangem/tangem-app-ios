@@ -23,11 +23,15 @@ class MainBottomSheetCoordinator: CoordinatorObject {
     // MARK: - Child coordinators
 
     @Published var marketsCoordinator: MarketsCoordinator?
-    @Published var shouldDissmis: Bool = false
+    @Published var shouldDismiss: Bool = false
 
     // MARK: - Child view models
 
+    // Published property, used by UI
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
+
+    // Non-published property, used to preserve the state of the `MainBottomSheetHeaderViewModel`
+    // instance between show-hide cycles
     private lazy var __headerViewModel = MainBottomSheetHeaderViewModel()
 
     @Published private(set) var overlayViewModel: MainBottomSheetOverlayViewModel?
@@ -60,8 +64,9 @@ class MainBottomSheetCoordinator: CoordinatorObject {
     private func bind() {
         bottomSheetVisibility
             .isShownPublisher
-            .map { [weak self] isShown in
-                return isShown ? self?.__headerViewModel : nil
+            .withWeakCaptureOf(self)
+            .map { coordinator, isShown in
+                return isShown ? coordinator.__headerViewModel : nil
             }
             .assign(to: \.headerViewModel, on: self, ownership: .weak)
             .store(in: &bag)
@@ -69,7 +74,7 @@ class MainBottomSheetCoordinator: CoordinatorObject {
 
     private func setupManageTokens() {
         let dismissAction: Action<Void> = { [weak self] _ in
-            self?.shouldDissmis = true
+            self?.shouldDismiss = true
         }
 
         let coordinator = MarketsCoordinator(

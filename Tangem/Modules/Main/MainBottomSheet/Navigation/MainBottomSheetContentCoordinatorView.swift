@@ -19,10 +19,10 @@ struct MainBottomSheetContentCoordinatorView: CoordinatorView {
     var body: some View {
         if let marketsCoordinator = coordinator.marketsCoordinator {
             MarketsCoordinatorView(coordinator: marketsCoordinator)
-                .onChange(of: coordinator.shouldDissmis, perform: { newValue in
+                .onChange(of: coordinator.shouldDismiss, perform: { newValue in
                     if newValue {
                         bottomScrollableSheetStateController?.collapse()
-                        coordinator.shouldDissmis.toggle()
+                        coordinator.shouldDismiss.toggle()
                     }
                 })
         }
