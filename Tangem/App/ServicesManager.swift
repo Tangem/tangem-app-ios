@@ -18,7 +18,7 @@ class ServicesManager {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
+    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     private var bag = Set<AnyCancellable>()
@@ -51,7 +51,7 @@ class ServicesManager {
         pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
         if StakingFeatureProvider().isStakingAvailable {
-            stakingRepositoryProxy.initialize()
+            stakingAvailabilityProvider.initialize()
         }
     }
 

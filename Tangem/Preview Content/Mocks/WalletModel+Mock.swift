@@ -14,7 +14,6 @@ extension WalletModel {
     static let mockETH = WalletModel(
         walletManager: EthereumWalletManagerMock(),
         transactionHistoryService: nil,
-        stakingManagerProvider: .init(tokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)), address: ""),
         amountType: .coin,
         shouldPerformHealthCheck: false,
         isCustom: false

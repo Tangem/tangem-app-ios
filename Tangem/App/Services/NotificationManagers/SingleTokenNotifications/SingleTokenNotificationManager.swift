@@ -13,6 +13,8 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
+    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
+
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
@@ -229,7 +231,7 @@ final class SingleTokenNotificationManager {
     }
 
     func makeStakingNotificationEvent() -> TokenNotificationEvent? {
-        guard let yield = walletModel.stakingManager?.yield else {
+        guard let yield = stakingAvailabilityProvider.manager(walletModel: walletModel)?.yield else {
             return nil
         }
 

@@ -14,6 +14,7 @@ import TangemExpress
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
+    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
 
     @Published private var balance: LoadingValue<BalanceInfo> = .loading
     @Published var actionSheet: ActionSheetBinder?

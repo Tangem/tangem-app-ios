@@ -35,10 +35,6 @@ class WalletModel {
         transactionHistoryState()
     }
 
-    var stakingStatePublisher: AnyPublisher<StakingState, Never> {
-        stakingState()
-    }
-
     var transactionHistoryNotLoaded: Bool {
         if case .initial = _transactionHistoryService?.state {
             return true
@@ -219,11 +215,8 @@ class WalletModel {
     }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
-        Publishers.Merge(
-            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
-            stakingManagerProvider.stateDidUpdatePublisher
-        )
-        .eraseToAnyPublisher()
+        swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid()
+            .eraseToAnyPublisher()
     }
 
     var isDemo: Bool { demoBalance != nil }
@@ -234,7 +227,6 @@ class WalletModel {
 
     private let walletManager: WalletManager
     private let _transactionHistoryService: TransactionHistoryService?
-    private let stakingManagerProvider: StakingManagerProvider
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -255,14 +247,12 @@ class WalletModel {
     init(
         walletManager: WalletManager,
         transactionHistoryService: TransactionHistoryService?,
-        stakingManagerProvider: StakingManagerProvider,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
         _transactionHistoryService = transactionHistoryService
-        self.stakingManagerProvider = stakingManagerProvider
         self.amountType = amountType
         self.isCustom = isCustom
 
@@ -640,31 +630,6 @@ extension WalletModel {
     }
 }
 
-// MARK: - Staking
-
-extension WalletModel {
-    private func updateStakingState() {
-        stakingManager?.updateBalance()
-    }
-
-    private func stakingState() -> AnyPublisher<WalletModel.StakingState, Never> {
-        guard let stakingManager else {
-            return .just(output: .notSupported)
-        }
-
-        return stakingManager.balancePublisher
-            .map { balance in
-                switch balance {
-                case .none:
-                    return .availableToStake
-                case .some(let balance):
-                    return .staked(balance: balance)
-                }
-            }
-            .eraseToAnyPublisher()
-    }
-}
-
 // MARK: - Interfaces
 
 extension WalletModel {
@@ -726,10 +691,6 @@ extension WalletModel {
 
     var assetRequirementsManager: AssetRequirementsManager? {
         walletManager as? AssetRequirementsManager
-    }
-
-    var stakingManager: StakingManager? {
-        stakingManagerProvider.stakingManager
     }
 }
 

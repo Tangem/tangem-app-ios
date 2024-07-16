@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct StakingWallet {
+public struct StakingWallet: Hashable {
     public let item: StakingTokenItem
     public let address: String
 

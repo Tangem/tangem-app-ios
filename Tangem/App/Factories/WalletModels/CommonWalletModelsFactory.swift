@@ -89,7 +89,6 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
                 transactionHistoryService: transactionHistoryService,
-                stakingManagerProvider: .init(tokenItem: tokenItem, address: walletManager.wallet.address),
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom
@@ -110,7 +109,6 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
                     transactionHistoryService: transactionHistoryService,
-                    stakingManagerProvider: .init(tokenItem: tokenItem, address: walletManager.wallet.address),
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom

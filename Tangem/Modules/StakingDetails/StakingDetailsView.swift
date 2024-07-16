@@ -81,7 +81,6 @@ struct StakingDetailsView: View {
 
 struct StakingDetailsView_Preview: PreviewProvider {
     static let viewModel = StakingDetailsViewModel(
-        userWalletModel: FakeUserWalletModel.twins,
         walletModel: .mockETH,
         stakingManager: StakingManagerMock(),
         coordinator: StakingDetailsCoordinator()

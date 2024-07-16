@@ -23,7 +23,6 @@ class StakingModulesFactory {
         coordinator: StakingDetailsRoutable
     ) -> StakingDetailsViewModel {
         StakingDetailsViewModel(
-            userWalletModel: userWalletModel,
             walletModel: walletModel,
             stakingManager: manager,
             coordinator: coordinator
