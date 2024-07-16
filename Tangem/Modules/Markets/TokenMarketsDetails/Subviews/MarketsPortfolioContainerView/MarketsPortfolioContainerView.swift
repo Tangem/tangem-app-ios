@@ -16,15 +16,17 @@ struct MarketsPortfolioContainerView: View {
     var body: some View {
         VStack(spacing: 14) {
             // Token list block
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: .zero) {
                 headerView
 
                 contentView
             }
-            .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: .zero)
 
             // Quick action block
             quickActionsView
+        }
+        .if(viewModel.tokenItemViewModels.isEmpty) { view in
+            view.defaultRoundedBackground(with: Colors.Background.action)
         }
     }
 
@@ -59,8 +61,17 @@ struct MarketsPortfolioContainerView: View {
                 }
             }
         }
-        .background(Colors.Background.action)
-        .padding(.horizontal, 14)
+        .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { headerView in
+            headerView
+                .padding(.bottom, 10)
+        }, else: { headerView in
+            headerView
+                .padding(.top, 14)
+                .padding(.horizontal, 14)
+                .padding(.bottom, Constants.defaultVerticalOffsetSpacingBetweenContent + 10)
+                .background(Colors.Background.action)
+                .modifier(HeaderCornerRadiusModify())
+        })
     }
 
     private var contentView: some View {
@@ -77,15 +88,49 @@ struct MarketsPortfolioContainerView: View {
     }
 
     private var listView: some View {
-        VStack(spacing: .zero) {
-            ForEach(viewModel.tokenItemViewModels) {
-                MarketsPortfolioTokenItemView(viewModel: $0)
+        LazyVStack(spacing: .zero) {
+            let elementItems = viewModel.tokenItemViewModels
+
+            ForEach(indexed: elementItems.indexed()) { itemIndex, itemViewModel in
+                if #available(iOS 16.0, *) {
+                    let isFirstItem = itemIndex == 0
+                    let isLastItem = itemIndex == elementItems.count - 1
+
+                    if isFirstItem {
+                        let isSingleItem = elementItems.count == 1
+
+                        MarketsPortfolioTokenItemView(
+                            viewModel: itemViewModel,
+                            cornerRadius: Constants.cornerRadius,
+                            roundedCornersVerticalEdge: isSingleItem ? .all : .topEdge
+                        )
+                    } else if isLastItem {
+                        MarketsPortfolioTokenItemView(
+                            viewModel: itemViewModel,
+                            cornerRadius: Constants.cornerRadius,
+                            roundedCornersVerticalEdge: .bottomEdge
+                        )
+                    } else {
+                        MarketsPortfolioTokenItemView(
+                            viewModel: itemViewModel,
+                            cornerRadius: Constants.cornerRadius,
+                            roundedCornersVerticalEdge: nil
+                        )
+                    }
+                } else {
+                    MarketsPortfolioTokenItemView(
+                        viewModel: itemViewModel,
+                        cornerRadius: Constants.cornerRadius
+                    )
+                }
             }
         }
+        .background(Colors.Background.action.cornerRadiusContinuous(Constants.cornerRadius))
+        .offset(y: -Constants.defaultVerticalOffsetSpacingBetweenContent)
     }
 
     private var emptyView: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text(Localization.marketsAddToMyPortfolioDescription)
                 .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
@@ -128,6 +173,27 @@ extension MarketsPortfolioContainerView {
 
         var id: Int {
             rawValue
+        }
+    }
+}
+
+private extension MarketsPortfolioContainerView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 14.0
+        static let defaultVerticalOffsetSpacingBetweenContent: CGFloat = 14
+    }
+}
+
+private extension MarketsPortfolioContainerView {
+    struct HeaderCornerRadiusModify: ViewModifier {
+        func body(content: Content) -> some View {
+            if #available(iOS 16.0, *) {
+                content
+                    .cornerRadiusContinuous(topLeadingRadius: Constants.cornerRadius, topTrailingRadius: Constants.cornerRadius)
+            } else {
+                content
+                    .cornerRadius(20, corners: [.topLeft, .topRight])
+            }
         }
     }
 }

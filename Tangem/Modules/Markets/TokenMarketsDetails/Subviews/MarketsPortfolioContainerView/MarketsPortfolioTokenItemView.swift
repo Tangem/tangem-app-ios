@@ -13,7 +13,13 @@ struct MarketsPortfolioTokenItemView: View {
 
     private let coinIconSize = CGSize(bothDimensions: 36)
     private let networkIconSize = CGSize(bothDimensions: 14)
-    private let previewContentShapeCornerRadius: CGFloat = 14
+
+    /// Not used on iOS versions below iOS 16.0.
+    /// - Note: Although this property has no effect on iOS versions below iOS 16.0,
+    /// it can't be marked using `@available` declaration in Swift 5.7 and above.
+    private let roundedCornersConfiguration: RoundedCornersConfiguration?
+
+    private let previewContentShapeCornerRadius: CGFloat
 
     @State private var textBlockSize: CGSize = .zero
 
@@ -25,6 +31,7 @@ struct MarketsPortfolioTokenItemView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
+        .background(background)
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
@@ -80,6 +87,21 @@ struct MarketsPortfolioTokenItemView: View {
     }
 
     @ViewBuilder
+    private var background: some View {
+        if #available(iOS 16.0, *), let roundedCornersConfiguration = roundedCornersConfiguration {
+            Colors.Background.action
+                .cornerRadiusContinuous(
+                    topLeadingRadius: roundedCornersConfiguration.topLeadingRadius,
+                    bottomLeadingRadius: roundedCornersConfiguration.bottomLeadingRadius,
+                    bottomTrailingRadius: roundedCornersConfiguration.bottomTrailingRadius,
+                    topTrailingRadius: roundedCornersConfiguration.topTrailingRadius
+                )
+        } else {
+            Colors.Background.action
+        }
+    }
+
+    @ViewBuilder
     private func contextMenuButton(for actionType: TokenActionType) -> some View {
         let action = { viewModel.didTapContextAction(actionType) }
         if actionType.isDestructive {
@@ -103,6 +125,52 @@ struct MarketsPortfolioTokenItemView: View {
             action.icon.image
                 .renderingMode(.template)
         }
+    }
+}
+
+// MARK: - Initialization
+
+extension MarketsPortfolioTokenItemView {
+    @available(iOS 16.0, *)
+    init(
+        viewModel: MarketsPortfolioTokenItemViewModel,
+        cornerRadius: CGFloat,
+        roundedCornersVerticalEdge: RoundedCornersVerticalEdge?
+    ) {
+        self.viewModel = viewModel
+        previewContentShapeCornerRadius = cornerRadius
+
+        switch roundedCornersVerticalEdge {
+        case .topEdge:
+            roundedCornersConfiguration = RoundedCornersConfiguration(
+                topLeadingRadius: cornerRadius,
+                topTrailingRadius: cornerRadius
+            )
+        case .bottomEdge:
+            roundedCornersConfiguration = RoundedCornersConfiguration(
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: cornerRadius
+            )
+        case .all:
+            roundedCornersConfiguration = RoundedCornersConfiguration(
+                topLeadingRadius: cornerRadius,
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: cornerRadius,
+                topTrailingRadius: cornerRadius
+            )
+        case .none:
+            roundedCornersConfiguration = nil
+        }
+    }
+
+    @available(iOS, obsoleted: 16.0, message: "Use 'init(viewModel:cornerRadius:roundedCornersConfiguration:)' instead")
+    init(
+        viewModel: MarketsPortfolioTokenItemViewModel,
+        cornerRadius: CGFloat
+    ) {
+        self.viewModel = viewModel
+        previewContentShapeCornerRadius = cornerRadius
+        roundedCornersConfiguration = RoundedCornersConfiguration()
     }
 }
 

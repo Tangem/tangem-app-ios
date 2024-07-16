@@ -31,7 +31,6 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
-    @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
 
     private var safariHandle: SafariHandle?
 
@@ -125,12 +124,6 @@ extension TokenMarketsDetailsCoordinator {
     func openSend(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
-
-            if let navigationInfo {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    self?.openFeeCurrency(for: navigationInfo.walletModel, with: navigationInfo.userWalletModel)
-                }
-            }
         }
 
         sendCoordinator = portfolioCoordinatorFactory.makeSendCoordinator(
@@ -143,12 +136,6 @@ extension TokenMarketsDetailsCoordinator {
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.expressCoordinator = nil
-
-            guard let navigationInfo else {
-                return
-            }
-
-            self?.openFeeCurrency(for: navigationInfo.walletModel, with: navigationInfo.userWalletModel)
         }
 
         expressCoordinator = portfolioCoordinatorFactory.makeExchangeCoordinator(
@@ -195,12 +182,6 @@ extension TokenMarketsDetailsCoordinator {
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
-
-            if let navigationInfo {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    self?.openFeeCurrency(for: navigationInfo.walletModel, with: navigationInfo.userWalletModel)
-                }
-            }
         }
 
         sendCoordinator = portfolioCoordinatorFactory.makeSendCoordinator(
@@ -216,23 +197,6 @@ extension TokenMarketsDetailsCoordinator {
                 layout: .bottom(padding: 80),
                 type: .temporary()
             )
-    }
-
-    func openFeeCurrency(for model: WalletModel, with userWalletModel: UserWalletModel) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.tokenDetailsCoordinator = nil
-        }
-
-        let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
-        coordinator.start(
-            with: .init(
-                userWalletModel: userWalletModel,
-                walletModel: model,
-                userTokensManager: userWalletModel.userTokensManager
-            )
-        )
-
-        tokenDetailsCoordinator = coordinator
     }
 }
 
