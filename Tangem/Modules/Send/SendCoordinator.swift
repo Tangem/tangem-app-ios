@@ -47,7 +47,8 @@ class SendCoordinator: CoordinatorObject {
         case .sell(let parameters):
             rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
         case .staking(let manager):
-            assertionFailure("IOS-7105")
+            // TODO: IOS-7105
+            break
         }
     }
 }

@@ -31,7 +31,7 @@ class StakingManagerProvider {
         self.tokenItem = tokenItem
         self.address = address
 
-        setupManager()
+        _stakingManager = makeStakingManager()
         bind()
     }
 
@@ -41,12 +41,11 @@ class StakingManagerProvider {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { provider, _ in
-                provider.setupManager()
+                if provider._stakingManager == nil {
+                    provider._stakingManager = provider.makeStakingManager()
+                    provider.stateDidUpdate.send(())
+                }
             }
-    }
-
-    func setupManager() {
-        _stakingManager = makeStakingManager()
     }
 
     private func makeStakingManager() -> StakingManager? {

@@ -94,7 +94,7 @@ private extension StakingDetailsViewModel {
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
-                staked: 0, // TBD
+                staked: balanceInfo.blocked,
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
                 minimumRequirement: yield.minimumRequirement,
