@@ -85,6 +85,12 @@ struct MainCoordinatorView: CoordinatorView {
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }
+            .bottomSheet(
+                item: $coordinator.pushNotificationsViewModel,
+                backgroundColor: Colors.Background.primary
+            ) {
+                PushNotificationsBottomSheetView(viewModel: $0)
+            }
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)

@@ -11,48 +11,51 @@ import SwiftUI
 struct UserWalletStorageAgreementView: View {
     @ObservedObject private var viewModel: UserWalletStorageAgreementViewModel
 
-    init(viewModel: UserWalletStorageAgreementViewModel) {
-        self.viewModel = viewModel
-    }
+    @Environment(\.colorScheme) private var colorScheme
+
+    private let topInset: CGFloat
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
+            FixedSpacer(height: 62.0 + topInset)
 
-            VStack(spacing: 0) {
-                BiometryLogoImage.image.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.inactive)
+            Group {
+                VStack(spacing: 0.0) {
+                    BiometryLogoImage.image.image
+                        .renderingMode(.template)
+                        .foregroundColor(iconColor)
 
-                FlexibleSpacer(maxHeight: 28)
+                    FixedSpacer(height: 28.0)
 
-                Text(Localization.saveUserWalletAgreementHeader(BiometricAuthorizationUtils.biometryType.name))
-                    .style(Fonts.Bold.title1, color: Colors.Text.primary1)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(Localization.saveUserWalletAgreementHeader(BiometricAuthorizationUtils.biometryType.name))
+                        .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
-                FlexibleSpacer(maxHeight: 28)
+                Spacer(minLength: 8.0)
+                    .frame(maxHeight: 44.0)
+
+                VStack(spacing: 0.0) {
+                    OnboardingFeatureDescriptionView(
+                        icon: BiometryLogoImage.image,
+                        title: Localization.saveUserWalletAgreementAccessTitle,
+                        description: Localization.saveUserWalletAgreementAccessDescription
+                    )
+
+                    FixedSpacer(height: 28.0)
+
+                    OnboardingFeatureDescriptionView(
+                        icon: Assets.lock,
+                        title: Localization.saveUserWalletAgreementCodeTitle,
+                        description: Localization.saveUserWalletAgreementCodeDescription(BiometricAuthorizationUtils.biometryType.name)
+                    )
+                }
+                .layoutPriority(100) // Higher layout priority causes spacers to collapse if there is not enough vertical space
             }
+            .padding(.horizontal, 22.0)
 
-            Spacer()
-
-            VStack(spacing: 0) {
-                FeatureDescriptionView(
-                    icon: BiometryLogoImage.image,
-                    title: Localization.saveUserWalletAgreementAccessTitle,
-                    description: Localization.saveUserWalletAgreementAccessDescription
-                )
-
-                FlexibleSpacer(maxHeight: 28)
-
-                FeatureDescriptionView(
-                    icon: Assets.lock,
-                    title: Localization.saveUserWalletAgreementCodeTitle,
-                    description: Localization.saveUserWalletAgreementCodeDescription(BiometricAuthorizationUtils.biometryType.name)
-                )
-            }
-
-            Spacer()
+            Spacer(minLength: 8.0)
 
             VStack(spacing: 10) {
                 MainButton(title: BiometricAuthorizationUtils.allowButtonTitle, action: viewModel.accept)
@@ -67,51 +70,29 @@ struct UserWalletStorageAgreementView: View {
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, 16.0)
+            .layoutPriority(101) // Higher layout priority causes spacers to collapse if there is not enough vertical space
         }
-        .padding()
-    }
-}
-
-private extension UserWalletStorageAgreementView {
-    struct FlexibleSpacer: View {
-        let maxHeight: CGFloat
-
-        var body: some View {
-            Spacer()
-                .frame(maxHeight: maxHeight)
-        }
+        .padding(.bottom)
     }
 
-    struct FeatureDescriptionView: View {
-        let icon: ImageType
-        let title: String
-        let description: String
-
-        private let iconSize: Double = 42
-
-        var body: some View {
-            HStack(spacing: 16) {
-                Colors.Background.secondary
-                    .frame(width: iconSize, height: iconSize)
-                    .cornerRadius(iconSize / 2)
-                    .overlay(
-                        icon.image
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundColor(Colors.Text.primary1)
-                            .padding(.all, 11)
-                    )
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(title)
-                        .style(Fonts.Bold.callout, color: Colors.Text.primary1)
-
-                    Text(description)
-                        .style(Fonts.Regular.subheadline, color: Colors.Text.secondary)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
+    private var iconColor: Color {
+        switch colorScheme {
+        case .light:
+            return Colors.Icon.inactive
+        case .dark:
+            return Colors.Icon.primary1
+        @unknown default:
+            assertionFailure("Unknown color scheme '\(String(describing: colorScheme))' received")
+            return Colors.Icon.inactive
         }
+    }
+
+    init(
+        viewModel: UserWalletStorageAgreementViewModel,
+        topInset: CGFloat
+    ) {
+        self.viewModel = viewModel
+        self.topInset = topInset
     }
 }

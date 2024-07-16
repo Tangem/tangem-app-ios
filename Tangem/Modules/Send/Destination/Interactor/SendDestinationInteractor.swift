@@ -30,7 +30,7 @@ class CommonSendDestinationInteractor {
     private let transactionHistoryProvider: SendDestinationTransactionHistoryProvider
     private let transactionHistoryMapper: TransactionHistoryMapper
     private let addressResolver: AddressResolver?
-    private let additionalFieldType: SendAdditionalFields?
+    private let additionalFieldType: SendDestinationAdditionalFieldType?
     private let parametersBuilder: SendTransactionParametersBuilder
 
     private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
@@ -39,13 +39,13 @@ class CommonSendDestinationInteractor {
     private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
 
     init(
-        input: SendDestinationInput?,
-        output: SendDestinationOutput?,
+        input: SendDestinationInput,
+        output: SendDestinationOutput,
         validator: SendDestinationValidator,
         transactionHistoryProvider: SendDestinationTransactionHistoryProvider,
         transactionHistoryMapper: TransactionHistoryMapper,
         addressResolver: AddressResolver?,
-        additionalFieldType: SendAdditionalFields?,
+        additionalFieldType: SendDestinationAdditionalFieldType?,
         parametersBuilder: SendTransactionParametersBuilder
     ) {
         self.input = input
@@ -60,11 +60,18 @@ class CommonSendDestinationInteractor {
 
     private func update(destination result: Result<String?, Error>, source: Analytics.DestinationAddressSource) {
         switch result {
-        case .success(let address):
-            _destinationValid.send(address?.nilIfEmpty != nil)
+        case .success(.none), .success(Constants.emptyString):
+            _destinationValid.send(false)
+            _destinationError.send(.none)
+            output?.destinationDidChanged(.none)
+
+        case .success(.some(let address)):
+            assert(!address.isEmpty, "Had to fall in case above")
+
+            _destinationValid.send(true)
             _destinationError.send(.none)
             Analytics.logDestinationAddress(isAddressValid: true, source: source)
-            output?.destinationDidChanged(address.map { .init(value: $0, source: source) })
+            output?.destinationDidChanged(.init(value: address, source: source))
 
         case .failure(let error):
             _destinationValid.send(false)
@@ -82,7 +89,7 @@ class CommonSendDestinationInteractor {
         return resolved
     }
 
-    private func proceed(additionalField: String) throws -> DestinationAdditionalFieldType {
+    private func proceed(additionalField: String) throws -> SendDestinationAdditionalField {
         guard let type = additionalFieldType else {
             assertionFailure("Additional field for the blockchain whick doesn't support it")
             return .notSupported
@@ -183,5 +190,6 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
 private extension CommonSendDestinationInteractor {
     enum Constants {
         static let numberOfRecentTransactions = 10
+        static let emptyString = ""
     }
 }

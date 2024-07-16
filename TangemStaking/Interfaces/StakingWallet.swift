@@ -14,8 +14,8 @@ public protocol StakingWallet {
 }
 
 public struct StakingTokenItem: Hashable {
-    let coinId: String
-    let contractAdress: String?
+    public let coinId: String
+    public let contractAdress: String?
 
     public init(coinId: String, contractAdress: String?) {
         self.coinId = coinId

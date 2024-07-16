@@ -213,7 +213,11 @@ extension GenericConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            if card.firmwareVersion.doubleValue >= 4.52 {
+                return .available
+            }
+
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

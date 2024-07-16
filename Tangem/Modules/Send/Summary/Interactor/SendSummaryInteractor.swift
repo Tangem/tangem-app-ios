@@ -10,12 +10,6 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-protocol SendSummaryInput: AnyObject {
-    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> { get }
-}
-
-protocol SendSummaryOutput: AnyObject {}
-
 protocol SendSummaryInteractor: AnyObject {
     var transactionDescription: AnyPublisher<String?, Never> { get }
 }
@@ -46,7 +40,10 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
     }
 
     var transactionDescription: AnyPublisher<String?, Never> {
-        guard let input else { return Empty().eraseToAnyPublisher() }
+        guard let input else {
+            assertionFailure("SendFeeInput is not found")
+            return Empty().eraseToAnyPublisher()
+        }
 
         return input
             .transactionPublisher

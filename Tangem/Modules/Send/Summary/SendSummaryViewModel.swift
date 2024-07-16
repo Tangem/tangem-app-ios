@@ -16,12 +16,9 @@ protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendFeeInteractor: SendFeeInteractor)
 }
 
-class SendSummaryViewModel: ObservableObject {
+class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var editableType: EditableType
     @Published var canEditFee: Bool = false
-
-    @Published var isSending = false
-    @Published var alert: AlertBinder?
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
@@ -33,10 +30,11 @@ class SendSummaryViewModel: ObservableObject {
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
+    @Published var alert: AlertBinder?
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
 
     @Published var transactionDescription: String?
-    @Published var transactionDescriptionIsVisisble: Bool = false
+    @Published var transactionDescriptionIsVisible: Bool = false
 
     let addressTextViewHeightModel: AddressTextViewHeightModel
     var didProperlyDisappear: Bool = true
@@ -46,9 +44,9 @@ class SendSummaryViewModel: ObservableObject {
 
     private let tokenItem: TokenItem
     private let interactor: SendSummaryInteractor
-    private let notificationManager: SendNotificationManager
+    private let notificationManager: NotificationManager
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
-    weak var router: SendSummaryRoutable?
+    weak var router: SendSummaryStepsRoutable?
 
     private var isVisible = false
     private var bag: Set<AnyCancellable> = []
@@ -56,7 +54,7 @@ class SendSummaryViewModel: ObservableObject {
     init(
         settings: Settings,
         interactor: SendSummaryInteractor,
-        notificationManager: SendNotificationManager,
+        notificationManager: NotificationManager,
         addressTextViewHeightModel: AddressTextViewHeightModel,
         sectionViewModelFactory: SendSummarySectionViewModelFactory
     ) {
@@ -71,7 +69,7 @@ class SendSummaryViewModel: ObservableObject {
         bind()
     }
 
-    func setupAnimations(previousStep: SendStep) {
+    func setupAnimations(previousStep: SendStepType) {
         switch previousStep {
         case .destination:
             animatingAmountOnAppear = true
@@ -87,7 +85,7 @@ class SendSummaryViewModel: ObservableObject {
         }
 
         showHint = false
-        transactionDescriptionIsVisisble = false
+        transactionDescriptionIsVisible = false
     }
 
     func onAppear() {
@@ -99,7 +97,7 @@ class SendSummaryViewModel: ObservableObject {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.transactionDescriptionIsVisisble = self.transactionDescription != nil
+            self.transactionDescriptionIsVisible = self.transactionDescription != nil
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -116,25 +114,35 @@ class SendSummaryViewModel: ObservableObject {
         isVisible = false
     }
 
-    func didTapSummary(for step: SendStep) {
-        if isSending {
-            return
-        }
+    func userDidTapDestination() {
+        didTapSummary()
+        router?.summaryStepRequestEditDestination()
+    }
 
+    func userDidTapAmount() {
+        didTapSummary()
+        router?.summaryStepRequestEditAmount()
+    }
+
+    func userDidTapFee() {
+        didTapSummary()
+        router?.summaryStepRequestEditFee()
+    }
+
+    private func didTapSummary() {
         AppSettings.shared.userDidTapSendScreenSummary = true
         showHint = false
-
-        router?.openStep(step)
     }
 
     private func bind() {
         interactor
             .transactionDescription
+            .receive(on: DispatchQueue.main)
             .assign(to: \.transactionDescription, on: self, ownership: .weak)
             .store(in: &bag)
 
         notificationManager
-            .notificationPublisher(for: .summary)
+            .notificationPublisher
             .sink { [weak self] notificationInputs in
                 self?.notificationInputs = notificationInputs
             }
@@ -181,7 +189,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
 
     func setup(sendFeeInteractor interactor: SendFeeInteractor) {
         interactor
-            .feesPublisher()
+            .feesPublisher
             .map { feeValues in
                 let multipleFeeOptions = feeValues.count > 1
                 let hasError = feeValues.contains { $0.value.error != nil }
@@ -192,7 +200,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .assign(to: \.canEditFee, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.CombineLatest(interactor.feesPublisher(), interactor.selectedFeePublisher())
+        Publishers.CombineLatest(interactor.feesPublisher, interactor.selectedFeePublisher)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
@@ -201,7 +209,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
                 var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
                 for feeValue in feeValues {
-                    if feeValue.option == selectedFee?.option {
+                    if feeValue.option == selectedFee.option {
                         selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: feeValue)
                     } else {
                         let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)

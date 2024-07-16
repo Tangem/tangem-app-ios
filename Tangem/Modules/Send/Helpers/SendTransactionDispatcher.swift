@@ -9,15 +9,24 @@
 import Foundation
 import BlockchainSdk
 import Combine
+import enum TangemSdk.TangemSdkError
 
 protocol SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { get }
 
-    func send(transaction: BlockchainSdk.Transaction) -> AnyPublisher<SendTransactionSentResult, SendTxError>
+    func send(transaction: BSDKTransaction) -> AnyPublisher<SendTransactionDispatcherResult, Never>
 }
 
-struct SendTransactionSentResult {
-    let url: URL?
+enum SendTransactionDispatcherResult {
+    case informationRelevanceServiceError
+    case informationRelevanceServiceFeeWasIncreased
+
+    case transactionNotFound
+    case userCancelled
+    case sendTxError(transaction: BSDKTransaction, error: SendTxError)
+    case success(url: URL?)
+
+    case demoAlert
 }
 
 class CommonSendTransactionDispatcher {
@@ -33,12 +42,6 @@ class CommonSendTransactionDispatcher {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
     }
-
-    private func explorerUrl(from hash: String) -> URL? {
-        let factory = ExternalLinkProviderFactory()
-        let provider = factory.makeProvider(for: walletModel.blockchainNetwork.blockchain)
-        return provider.url(transaction: hash)
-    }
 }
 
 // MARK: - SendTransactionDispatcher
@@ -46,17 +49,52 @@ class CommonSendTransactionDispatcher {
 extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
 
-    func send(transaction: BlockchainSdk.Transaction) -> AnyPublisher<SendTransactionSentResult, SendTxError> {
+    func send(transaction: BSDKTransaction) -> AnyPublisher<SendTransactionDispatcherResult, Never> {
         _isSending.send(true)
 
         return walletModel
             .send(transaction, signer: transactionSigner)
+            .mapToResult()
             .withWeakCaptureOf(self)
             .map { sender, result in
                 sender._isSending.send(false)
 
-                return .init(url: sender.explorerUrl(from: result.hash))
+                return sender.proceed(transaction: transaction, result: result)
             }
             .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Private
+
+private extension CommonSendTransactionDispatcher {
+    private func proceed(transaction: BSDKTransaction, result: Result<TransactionSendResult, SendTxError>) -> SendTransactionDispatcherResult {
+        switch result {
+        case .success(let result):
+            return proceed(transaction: transaction, result: result)
+        case .failure(let error):
+            return proceed(transaction: transaction, error: error)
+        }
+    }
+
+    private func proceed(transaction: BSDKTransaction, result: TransactionSendResult) -> SendTransactionDispatcherResult {
+        if walletModel.isDemo {
+            return .demoAlert
+        }
+
+        let factory = ExternalLinkProviderFactory()
+        let provider = factory.makeProvider(for: walletModel.blockchainNetwork.blockchain)
+        let explorerUrl = provider.url(transaction: result.hash)
+
+        return .success(url: explorerUrl)
+    }
+
+    private func proceed(transaction: BSDKTransaction, error: SendTxError) -> SendTransactionDispatcherResult {
+        switch error.error {
+        case TangemSdkError.userCancelled:
+            return .userCancelled
+        default:
+            return .sendTxError(transaction: transaction, error: error)
+        }
     }
 }

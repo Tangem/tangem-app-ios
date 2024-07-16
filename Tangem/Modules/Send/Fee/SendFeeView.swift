@@ -12,6 +12,10 @@ struct SendFeeView: View {
     @ObservedObject var viewModel: SendFeeViewModel
     let namespace: Namespace.ID
 
+    private var auxiliaryViewTransition: AnyTransition {
+        .offset(y: 250).combined(with: .opacity)
+    }
+
     var body: some View {
         GroupedScrollView(spacing: 20) {
             GroupedSection(viewModel.feeRowViewModels) { feeRowViewModel in
@@ -33,30 +37,24 @@ struct SendFeeView: View {
             } footer: {
                 if !viewModel.animatingAuxiliaryViewsOnAppear {
                     feeSelectorFooter
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .fee))
+                        .transition(auxiliaryViewTransition)
                 }
             }
             .backgroundColor(Colors.Background.action)
             .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
             .separatorStyle(.none)
 
-            if !viewModel.animatingAuxiliaryViewsOnAppear {
-                ForEach(viewModel.feeLevelsNotificationInputs) { input in
-                    NotificationView(input: input)
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .fee))
-                }
+            if !viewModel.animatingAuxiliaryViewsOnAppear,
+               let input = viewModel.networkFeeUnreachableNotificationViewInput {
+                NotificationView(input: input)
+                    .transition(auxiliaryViewTransition)
             }
 
             if !viewModel.animatingAuxiliaryViewsOnAppear, !viewModel.customFeeModels.isEmpty {
                 ForEach(viewModel.customFeeModels) { customFeeModel in
                     SendCustomFeeInputField(viewModel: customFeeModel)
                         .onFocusChanged(customFeeModel.onFocusChanged)
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .fee))
-                }
-
-                ForEach(viewModel.customFeeNotificationInputs) { input in
-                    NotificationView(input: input)
-                        .transition(SendView.Constants.auxiliaryViewTransition(for: .fee))
+                        .transition(auxiliaryViewTransition)
                 }
             }
         }

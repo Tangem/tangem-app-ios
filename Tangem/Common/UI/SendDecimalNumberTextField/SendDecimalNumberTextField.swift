@@ -136,14 +136,10 @@ struct SendDecimalNumberTextField: View {
                 }
             }
             .onAppear {
-                guard
-                    !isInputActive,
-                    let focusDelayDuration = initialFocusBehavior.delayDuration
-                else {
-                    return
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelayDuration) {
+                switch initialFocusBehavior {
+                case .noFocus:
+                    break
+                case .immediateFocus:
                     isInputActive = true
                 }
             }
@@ -259,18 +255,6 @@ extension SendDecimalNumberTextField {
     enum InitialFocusBehavior {
         case noFocus
         case immediateFocus
-        case delayedFocus(duration: TimeInterval)
-
-        var delayDuration: TimeInterval? {
-            switch self {
-            case .noFocus:
-                nil
-            case .immediateFocus:
-                0
-            case .delayedFocus(let duration):
-                duration
-            }
-        }
     }
 }
 

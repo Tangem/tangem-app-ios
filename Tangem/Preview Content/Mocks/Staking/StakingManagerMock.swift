@@ -9,19 +9,10 @@
 import Foundation
 import TangemStaking
 
-actor StakingManagerMock: StakingManager {
-    func getYield() throws -> YieldInfo {
-        YieldInfo(
-            id: "tron-trx-native-staking",
-            apy: 0.03712381,
-            rewardType: .apr,
-            rewardRate: 0.03712381,
-            minimumRequirement: 1,
-            item: .init(coinId: "tron", contractAdress: nil),
-            unbondingPeriod: .days(14),
-            warmupPeriod: .days(0),
-            rewardClaimingType: .manual,
-            rewardScheduleType: .block
-        )
-    }
+class StakingManagerMock: StakingManager {
+    func getYield() throws -> YieldInfo { .mock }
+
+    func getFee(amount: Decimal, validator: String) async throws {}
+
+    func getTransaction() async throws {}
 }

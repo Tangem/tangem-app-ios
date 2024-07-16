@@ -9,6 +9,6 @@
 import Foundation
 
 protocol WelcomeViewLifecycleListener: AnyObject {
-    func resignActve()
+    func resignActive()
     func becomeActive()
 }

@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemStaking
 
 struct CommonWalletModelsFactory {
     private let derivationStyle: DerivationStyle?
@@ -62,6 +63,15 @@ struct CommonWalletModelsFactory {
             transactionHistoryProviders: multiAddressProviders.compactMapValues { $0 }
         )
     }
+
+    private func makeStakingBalanceProvider(tokenItem: TokenItem, address: String) -> StakingBalanceProvider? {
+        guard StakingFeatureProvider().isAvailable(for: tokenItem) else {
+            return nil
+        }
+
+        let provider = StakingDependenciesFactory().makeStakingAPIProvider()
+        return CommonStakingBalanceProvider(item: tokenItem.stakingTokenItem, address: address, provider: provider)
+    }
 }
 
 extension CommonWalletModelsFactory: WalletModelsFactory {
@@ -79,14 +89,16 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
         let blockchainNetwork = BlockchainNetwork(currentBlockchain, derivationPath: currentDerivation)
         if types.contains(.coin) {
+            let tokenItem: TokenItem = .blockchain(blockchainNetwork)
             let transactionHistoryService = makeTransactionHistoryService(
-                tokenItem: .blockchain(blockchainNetwork),
+                tokenItem: tokenItem,
                 addresses: walletManager.wallet.addresses.map { $0.value }
             )
             let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: .coin)
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
                 transactionHistoryService: transactionHistoryService,
+                stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom
@@ -98,14 +110,16 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let amountType: Amount.AmountType = .token(value: token)
             if types.contains(amountType) {
                 let isTokenCustom = isMainCoinCustom || token.id == nil
+                let tokenItem: TokenItem = .token(token, blockchainNetwork)
                 let transactionHistoryService = makeTransactionHistoryService(
-                    tokenItem: .token(token, blockchainNetwork),
+                    tokenItem: tokenItem,
                     addresses: walletManager.wallet.addresses.map { $0.value }
                 )
                 let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: amountType)
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
                     transactionHistoryService: transactionHistoryService,
+                    stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom

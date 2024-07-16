@@ -29,13 +29,13 @@ def tangem_sdk_pod
 end
 
 def blockchain_sdk_pods
-  #'TangemWalletCore' dependency must be added via SPM
+  # 'TangemWalletCore' dependency must be added via SPM
 
-#  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-629'
-  pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-633'
+  #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
-#  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
-  pod 'Solana.Swift', :path => '../Tangem/Solana.Swift'
+  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem10'
+  #pod 'Solana.Swift', :path => '../Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
   #pod 'BinanceChain', :path => '../SwiftBinanceChain'
@@ -68,13 +68,16 @@ target 'Tangem' do
     release_beta_configuration,
   ]
 
-  # support chat
-#  pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
+  # Support chat
+  #pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
   
   # Analytics
   pod 'AmplitudeSwift', '1.6.2'
-  pod 'Firebase/Crashlytics', '10.28.1'
-  pod 'Firebase/Analytics', '10.28.1'
+  pod 'Firebase/Crashlytics', '10.29.0'
+  pod 'Firebase/Analytics', '10.29.0'
+
+  # Push notifications
+  pod 'Firebase/Messaging', '10.29.0'
 
   target 'TangemTests' do
     inherit! :search_paths
@@ -190,25 +193,8 @@ post_install do |installer|
    "SwiftProtobuf",
    { :kind => "exactVersion", :version => "1.25.2-tangem1" }
   )
-    
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
-   "TweetNacl",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "1.1.0" }
-  )
-    
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/GigaBitcoin/secp256k1.swift.git",
-   "secp256k1",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
-  )
-    
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
+  
+  # `TonSwift` SPM package for `BlockchainSdk` pod
   add_spm_package_to_target(
    installer.pods_project,
    "BlockchainSdk",
@@ -217,20 +203,22 @@ post_install do |installer|
    { :kind => "exactVersion", :version => "1.0.10-tangem1" }
   )
   
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/tangem/IcpKit.git",
-   "IcpKit",
-   { :kind => "exactVersion", :version => "0.1.2-tangem1" }
-  )
-    
+  # `ScaleCodec` SPM package for `BlockchainSdk` pod
   add_spm_package_to_target(
    installer.pods_project,
    "BlockchainSdk",
    "https://github.com/tesseract-one/ScaleCodec.swift",
    "ScaleCodec",
    { :kind => "exactVersion", :version => "0.2.1" }
+  )
+
+  # `IcpKit` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+   installer.pods_project,
+   "BlockchainSdk",
+   "https://github.com/tangem/IcpKit.git",
+   "IcpKit",
+   { :kind => "exactVersion", :version => "0.1.2-tangem1" }
   )
 
   # `SwiftProtobuf` SPM package for `BinanceChain` pod
@@ -250,14 +238,16 @@ post_install do |installer|
    "secp256k1",
    { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
   )
-    
+  
+  # `TweetNacl` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
    "Solana.Swift",
    "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
    "TweetNacl",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "1.1.0" }
+   { :kind => "exactVersion", :version => "1.1.0" }
   )
+
 end
 
 # Adds given SPM package as a dependency to a specific target in the `Pods` project.

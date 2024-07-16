@@ -29,19 +29,22 @@ struct TokenMarketsDetailsMapper {
             shortDescription: response.shortDescription,
             fullDescription: response.fullDescription,
             priceChangePercentage: response.priceChangePercentage,
-            tokenItems: mapToTokenItems(response: response),
-            insights: .init(dto: response.insights?.first)
+            insights: .init(dto: response.insights?.first),
+            metrics: response.metrics,
+            coinModel: mapToCoinModel(response: response),
+            pricePerformance: mapPricePerformance(response: response),
+            links: response.links
         )
     }
 
     // MARK: - Private Implementation
 
-    private func mapToTokenItems(response: MarketsDTO.Coins.Response) -> [TokenItem] {
+    private func mapToCoinModel(response: MarketsDTO.Coins.Response) -> CoinModel {
         let id = response.id.trimmed()
         let name = response.name.trimmed()
         let symbol = response.symbol.uppercased().trimmed()
 
-        let items: [TokenItem] = response.networks?.compactMap { network in
+        let items: [CoinModel.Item] = response.networks?.compactMap { network in
             guard let item = tokenItemMapper.mapToTokenItem(
                 id: id,
                 name: name,
@@ -56,9 +59,19 @@ struct TokenMarketsDetailsMapper {
                 return nil
             }
 
-            return item
+            return CoinModel.Item(id: id, tokenItem: item, exchangeable: network.exchangeable)
         } ?? []
 
-        return items
+        return CoinModel(id: id, name: name, symbol: symbol, items: items)
+    }
+
+    private func mapPricePerformance(response: MarketsDTO.Coins.Response) -> [MarketsPriceIntervalType: MarketsPricePerformanceData] {
+        return response.pricePerformance.reduce(into: [:]) { partialResult, pair in
+            guard let intervalType = MarketsPriceIntervalType(rawValue: pair.key) else {
+                return
+            }
+
+            partialResult[intervalType] = pair.value
+        }
     }
 }
