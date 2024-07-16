@@ -20,19 +20,15 @@ struct CommonStakingRepositoryProxy {
 }
 
 extension CommonStakingRepositoryProxy: StakingRepository {
-    var enabledYieldsPuiblisher: AnyPublisher<[YieldInfo], Never> {
-        repository.enabledYieldsPuiblisher
+    var enabledYieldsPublisher: AnyPublisher<[TangemStaking.YieldInfo], Never> {
+        repository.enabledYieldsPublisher
     }
 
     func updateEnabledYields(withReload: Bool) {
         repository.updateEnabledYields(withReload: withReload)
     }
 
-    func getYield(id: String) -> YieldInfo? {
-        repository.getYield(id: id)
-    }
-
-    func getYield(item: StakingTokenItem) -> YieldInfo? {
+    func getYield(item: TangemStaking.StakingTokenItem) -> TangemStaking.YieldInfo? {
         repository.getYield(item: item)
     }
 }
