@@ -48,11 +48,23 @@ class CommonSendAmountInteractor {
 
     private func validateAndUpdate(amount: SendAmount?) {
         do {
-            try amount?.crypto.map { try validator.validate(amount: $0) }
-            _error.send(.none)
-            _isValid.send(amount != nil)
-            output?.amountDidChanged(amount: amount)
+            switch amount?.type {
+            case .typical(.some(let crypto), _) where crypto > 0,
+                 .alternative(_, .some(let crypto)) where crypto > 0:
+
+                try validator.validate(amount: crypto)
+                _error.send(.none)
+                _isValid.send(true)
+                output?.amountDidChanged(amount: amount)
+            default:
+                // Field is empty or zero
+                notValid(error: .none)
+            }
         } catch {
+            notValid(error: error)
+        }
+
+        func notValid(error: Error?) {
             _error.send(error)
             _isValid.send(false)
             output?.amountDidChanged(amount: .none)
