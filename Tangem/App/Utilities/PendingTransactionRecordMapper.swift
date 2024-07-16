@@ -74,6 +74,8 @@ struct PendingTransactionRecordMapper {
         switch transaction.transactionType {
         case .transfer:
             return .transfer
+        case .stake:
+            return .stake
         case .operation:
             return .operation(name: Localization.transactionHistoryOperation)
         }

@@ -29,8 +29,20 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .getYield(request))
     }
 
+    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> StakeKitDTO.Balances.Response {
+        try await _request(target: .getBalances(request))
+    }
+
     func enterAction(request: StakeKitDTO.Actions.Enter.Request) async throws -> StakeKitDTO.Actions.Enter.Response {
         try await _request(target: .enterAction(request))
+    }
+
+    func constructTransaction(id: String, request: StakeKitDTO.ConstructTransaction.Request) async throws -> StakeKitDTO.Transaction.Response {
+        try await _request(target: .constructTransaction(id: id, body: request))
+    }
+
+    func submitTransaction(id: String, request: StakeKitDTO.SubmitTransaction.Request) async throws -> StakeKitDTO.SubmitTransaction.Response {
+        try await _request(target: .submitTransaction(id: id, body: request))
     }
 }
 

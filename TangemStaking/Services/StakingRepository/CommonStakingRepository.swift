@@ -13,7 +13,7 @@ class CommonStakingRepository {
     private let provider: StakingAPIProvider
     private let logger: Logger
 
-    private var updatingTask: Task<Void, Never>?
+    private var updatingYieldsTask: Task<Void, Never>?
     private var availableYields: CurrentValueSubject<[YieldInfo]?, Never> = .init(nil)
 
     init(provider: StakingAPIProvider, logger: Logger) {
@@ -23,7 +23,7 @@ class CommonStakingRepository {
 }
 
 extension CommonStakingRepository: StakingRepository {
-    var enabledYieldsPuiblisher: AnyPublisher<[YieldInfo], Never> {
+    var enabledYieldsPublisher: AnyPublisher<[YieldInfo], Never> {
         availableYields.compactMap { $0 }.eraseToAnyPublisher()
     }
 
@@ -36,8 +36,8 @@ extension CommonStakingRepository: StakingRepository {
             return
         }
 
-        updatingTask?.cancel()
-        updatingTask = Task { [weak self] in
+        updatingYieldsTask?.cancel()
+        updatingYieldsTask = Task { [weak self] in
             do {
                 self?.availableYields.value = try await self?.provider.enabledYields()
             } catch {
@@ -46,11 +46,7 @@ extension CommonStakingRepository: StakingRepository {
         }
     }
 
-    func getYield(id: String) -> YieldInfo? {
-        return availableYields.value?.first(where: { $0.id == id })
-    }
-
     func getYield(item: StakingTokenItem) -> YieldInfo? {
-        return availableYields.value?.first(where: { $0.item == item })
+        availableYields.value?.first(where: { $0.item == item })
     }
 }

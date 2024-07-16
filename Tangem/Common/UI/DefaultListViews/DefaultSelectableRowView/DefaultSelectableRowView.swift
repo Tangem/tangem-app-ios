@@ -8,16 +8,11 @@
 
 import SwiftUI
 
-struct DefaultSelectableRowView<ID: Hashable>: View {
-    private var viewModel: DefaultSelectableRowViewModel<ID>
-    private var isSelected: Binding<ID>?
+struct DefaultSelectableRowView<ID: Hashable>: SelectableView {
+    private let viewModel: DefaultSelectableRowViewModel<ID>
 
-    private var isSelectedProxy: Binding<Bool> {
-        .init(
-            get: { isSelected?.wrappedValue == viewModel.id },
-            set: { _ in isSelected?.wrappedValue = viewModel.id }
-        )
-    }
+    var isSelected: Binding<ID>?
+    var selectionId: ID { viewModel.id }
 
     init(viewModel: DefaultSelectableRowViewModel<ID>) {
         self.viewModel = viewModel
@@ -46,16 +41,6 @@ struct DefaultSelectableRowView<ID: Hashable>: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-    }
-}
-
-// MARK: - SelectableView
-
-extension DefaultSelectableRowView: SelectableView, Setupable {
-    typealias SelectionValue = ID
-
-    func isSelected(_ isSelected: Binding<ID>) -> Self {
-        map { $0.isSelected = isSelected }
     }
 }
 
