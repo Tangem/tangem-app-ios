@@ -126,9 +126,8 @@ extension StakingModel: SendFeeInput {
         _selectedFee.eraseToAnyPublisher()
     }
 
-    var cryptoAmountPublisher: AnyPublisher<BlockchainSdk.Amount, Never> {
-        assertionFailure("We can not calculate fee in staking")
-        return Empty().eraseToAnyPublisher()
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
+        _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
     }
 
     var destinationAddressPublisher: AnyPublisher<String?, Never> {

@@ -8440,6 +8440,22 @@
 			path = ProviderRowView;
 			sourceTree = "<group>";
 		};
+		EF72DC022C466FED003DD97F /* StakingBalanceProvider */ = {
+			isa = PBXGroup;
+			children = (
+				EF72DC012C466FED003DD97F /* StakingBalanceProvider.swift */,
+			);
+			path = StakingBalanceProvider;
+			sourceTree = "<group>";
+		};
+		EF72DC222C467280003DD97F /* StakingManagerProvider */ = {
+			isa = PBXGroup;
+			children = (
+				EF72DC202C46727A003DD97F /* StakingManagerProvider.swift */,
+			);
+			path = StakingManagerProvider;
+			sourceTree = "<group>";
+		};
 		EF75A3D02B06418D0023A60A /* TokenItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -9134,7 +9150,7 @@
 		EFBC5C722C00A74100B662E0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				EFF598B32C454A8800481DD8 /* StakingBalanceProvider */,
+				EF72DC022C466FED003DD97F /* StakingBalanceProvider */,
 				EF8DBCDB2C0609F5009072CF /* StakingManager */,
 				DC592B882C419EA9005AB9A7 /* StakingPendingHashes */,
 				EF031A262C08E64F001535C9 /* StakingCalculator */,
@@ -10912,6 +10928,7 @@
 				DC3DCAE52A41FA6A00F72554 /* KeysRepository.swift in Sources */,
 				DAB19D4A2B2C72A100DD08C4 /* AddCustomTokenView.swift in Sources */,
 				B0DCC81B2A8A1B4900D85E53 /* NotificationsFactory.swift in Sources */,
+				EF72DC212C46727A003DD97F /* StakingManagerProvider.swift in Sources */,
 				B0625A2529CB3D2700EDD245 /* OnboardingSeedPhraseImportViewModel.swift in Sources */,
 				2DC5677D2B0E047700B0244F /* MainBottomSheetHeaderView.swift in Sources */,
 				DC66BC10285C405C00CDF765 /* CoordinatorObject.swift in Sources */,

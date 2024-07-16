@@ -14,19 +14,32 @@ import TangemStaking
 class StakingFeeInteractor {
     private weak var input: SendFeeInput?
     private weak var output: SendFeeOutput?
+    private weak var validatorsInput: StakingValidatorsInput?
+
+    private let manager: StakingManager
+    private let feeTokenItem: TokenItem
 
     private let _fee: CurrentValueSubject<LoadingValue<Fee>, Never> = .init(.loading)
-
     private var bag: Set<AnyCancellable> = []
 
-    init(input: SendFeeInput, output: SendFeeOutput) {
+    init(
+        input: SendFeeInput,
+        output: SendFeeOutput,
+        validatorsInput: StakingValidatorsInput,
+        manager: StakingManager,
+        feeTokenItem: TokenItem
+    ) {
         self.input = input
         self.output = output
+        self.validatorsInput = validatorsInput
+        self.manager = manager
+        self.feeTokenItem = feeTokenItem
 
         bind()
+        bind(input: input, validatorsInput: validatorsInput)
     }
 
-    func bind() {
+    private func bind() {
         _fee
             .withWeakCaptureOf(self)
             .compactMap { interactor, fee in
@@ -39,6 +52,41 @@ class StakingFeeInteractor {
                 interactor.initialSelectedFeeUpdateIfNeeded(fee: fee)
             }
             .store(in: &bag)
+    }
+
+    private func bind(input: SendFeeInput, validatorsInput: StakingValidatorsInput) {
+        Publishers.CombineLatest(
+            input.cryptoAmountPublisher,
+            validatorsInput.selectedValidatorPublisher
+        )
+//        .setFailureType(to: Error.self)
+        .print("getFee 1 ->>")
+        .withWeakCaptureOf(self)
+        .asyncMap { interactor, args -> Result<Decimal, Error> in
+            do {
+                let fee = try await interactor.manager.getFee(amount: args.0, validator: args.1.address)
+                return .success(fee)
+            } catch {
+                return .failure(error)
+            }
+        }
+        .print("getFee 2 ->>")
+//        .mapToResult()
+        .sink(receiveValue: { [weak self] result in
+            self?.feeDidLoad(result: result)
+        })
+        .store(in: &bag)
+    }
+
+    private func feeDidLoad(result: Result<Decimal, Error>) {
+        switch result {
+        case .success(let fee):
+            let fee = Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
+            _fee.send(.loaded(fee))
+        case .failure(let error):
+            AppLog.shared.error(error)
+            _fee.send(.failedToLoad(error: error))
+        }
     }
 }
 

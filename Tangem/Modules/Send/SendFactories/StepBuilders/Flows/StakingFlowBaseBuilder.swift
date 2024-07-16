@@ -23,8 +23,12 @@ struct StakingFlowBaseBuilder {
         let notificationManager = builder.makeSendNotificationManager()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let stakingModel = builder.makeStakingModel(sendTransactionDispatcher: sendTransactionDispatcher)
-
-        let feeInteractor = builder.makeStakingFeeInteractor(input: stakingModel, output: stakingModel)
+        let feeInteractor = builder.makeStakingFeeInteractor(
+            input: stakingModel,
+            output: stakingModel,
+            validatorsInput: stakingModel,
+            manager: manager
+        )
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: stakingModel, output: stakingModel),
@@ -51,8 +55,6 @@ struct StakingFlowBaseBuilder {
         stakingModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: feeInteractor
         )
-
-//        notificationManager.setup(input: stakingModel)
 
         summary.step.setup(sendAmountInput: stakingModel)
         summary.step.setup(sendFeeInteractor: feeInteractor)

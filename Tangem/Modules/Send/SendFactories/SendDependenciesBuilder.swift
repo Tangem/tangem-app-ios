@@ -149,7 +149,18 @@ struct SendDependenciesBuilder {
         StakingModel(sendTransactionDispatcher: sendTransactionDispatcher)
     }
 
-    func makeStakingFeeInteractor(input: SendFeeInput, output: SendFeeOutput) -> SendFeeInteractor {
-        StakingFeeInteractor(input: input, output: output)
+    func makeStakingFeeInteractor(
+        input: SendFeeInput,
+        output: SendFeeOutput,
+        validatorsInput: any StakingValidatorsInput,
+        manager: StakingManager
+    ) -> SendFeeInteractor {
+        StakingFeeInteractor(
+            input: input,
+            output: output,
+            validatorsInput: validatorsInput,
+            manager: manager,
+            feeTokenItem: walletModel.feeTokenItem
+        )
     }
 }

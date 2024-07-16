@@ -78,6 +78,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         case .destination:
             animatingAmountOnAppear = true
             animatingFeeOnAppear = true
+            animatingValidatorOnAppear = true
         case .amount:
             animatingDestinationOnAppear = true
             animatingFeeOnAppear = true
@@ -85,10 +86,12 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         case .fee:
             animatingDestinationOnAppear = true
             animatingAmountOnAppear = true
+            animatingValidatorOnAppear = true
         case .validators:
+            animatingDestinationOnAppear = true
             animatingAmountOnAppear = true
             animatingFeeOnAppear = true
-        default:
+        case .summary, .finish:
             break
         }
 

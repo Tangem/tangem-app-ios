@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemStaking
 
 struct ValidatorViewData: Hashable, Identifiable {
     let id: String

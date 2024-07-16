@@ -245,13 +245,8 @@ extension SendModel: SendFeeInput {
         _selectedFee.eraseToAnyPublisher()
     }
 
-    var cryptoAmountPublisher: AnyPublisher<BlockchainSdk.Amount, Never> {
-        _amount
-            .withWeakCaptureOf(self)
-            .compactMap { model, amount in
-                amount?.crypto.flatMap { model.makeAmount(decimal: $0) }
-            }
-            .eraseToAnyPublisher()
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
+        _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
     }
 
     var destinationAddressPublisher: AnyPublisher<String?, Never> {

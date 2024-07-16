@@ -17,7 +17,7 @@ class CommonSendFeeInteractor {
     private let provider: SendFeeProvider
     private let customFeeService: CustomFeeService?
 
-    private let _cryptoAmount: CurrentValueSubject<Amount?, Never> = .init(nil)
+    private let _cryptoAmount: CurrentValueSubject<Decimal?, Never> = .init(nil)
     private let _destination: CurrentValueSubject<String?, Never> = .init(nil)
     private let _fees: CurrentValueSubject<LoadingValue<[Fee]>, Never> = .init(.loading)
     private let _customFee: CurrentValueSubject<Fee?, Never> = .init(.none)
@@ -149,7 +149,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 // MARK: - CustomFeeServiceInput
 
 extension CommonSendFeeInteractor: CustomFeeServiceInput {
-    var cryptoAmountPublisher: AnyPublisher<Amount, Never> {
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
         _cryptoAmount.compactMap { $0 }.eraseToAnyPublisher()
     }
 

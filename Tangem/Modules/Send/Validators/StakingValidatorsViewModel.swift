@@ -8,12 +8,14 @@
 
 import Combine
 import TangemStaking
+import SwiftUI
 
 final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
     @Published var validators: [ValidatorViewData] = []
     @Published var selectedValidator: String = ""
+    @Published var deselectedValidatorsIsVisible: Bool = false
 
     // MARK: - Dependencies
 
@@ -28,7 +30,18 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
         bind()
     }
 
-    func onAppear() {}
+    func onAppear() {
+        let deselectedFeeViewAppearanceDelay = SendView.Constants.animationDuration / 3
+        DispatchQueue.main.asyncAfter(deadline: .now() + deselectedFeeViewAppearanceDelay) {
+            withAnimation(SendView.Constants.defaultAnimation) {
+                self.deselectedValidatorsIsVisible = true
+            }
+        }
+    }
+
+    func onDisappear() {
+        deselectedValidatorsIsVisible = false
+    }
 }
 
 // MARK: - Private
