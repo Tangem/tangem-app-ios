@@ -131,7 +131,7 @@ struct SendSummaryView: View {
             ValidatorView(data: data, selection: .constant(""))
                 .geometryEffect(.init(id: namespace.id, names: namespace.names))
         } header: {
-            DefaultHeaderView("Validator")
+            DefaultHeaderView(Localization.stakingValidator)
                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
                 .padding(.top, 12)
         }

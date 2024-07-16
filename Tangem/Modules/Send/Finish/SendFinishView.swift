@@ -108,7 +108,7 @@ struct SendFinishView: View {
             ValidatorView(data: data, selection: .constant(""))
                 .geometryEffect(.init(id: namespace.id, names: namespace.names))
         } header: {
-            DefaultHeaderView("Validator")
+            DefaultHeaderView(Localization.stakingValidator)
                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
         }
         .settings(\.backgroundColor, Colors.Background.action)
