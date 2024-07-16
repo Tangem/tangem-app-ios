@@ -31,9 +31,8 @@ struct AppCoordinatorView: CoordinatorView {
         .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
-        .overlayContentContainer(item: $coordinator.mainBottomSheetCoordinator) { coordinator in
-            // TODO: Andrey Fedorov - Use single root view for the entire flow
-            MainBottomSheetContentCoordinatorView(coordinator: coordinator)
+        .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
+            MarketsCoordinatorView(coordinator: coordinator)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,

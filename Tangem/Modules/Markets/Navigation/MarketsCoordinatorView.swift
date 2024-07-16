@@ -17,13 +17,26 @@ struct MarketsCoordinatorView: CoordinatorView {
             if let model = coordinator.rootViewModel {
                 NavigationView {
                     ZStack {
-                        MarketsView(viewModel: model)
-                            .navigationLinks(links)
+                        VStack(spacing: 0.0) {
+                            header
+
+                            MarketsView(viewModel: model)
+                                .navigationLinks(links)
+                        }
 
                         sheets
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var header: some View {
+        if let headerViewModel = coordinator.headerViewModel {
+            MainBottomSheetHeaderView(viewModel: headerViewModel)
+        } else {
+            EmptyView()
         }
     }
 
