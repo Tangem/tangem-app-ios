@@ -20,7 +20,7 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Mutable state
 
     private var overlayViewController: UIViewController?
-    private var panGestureStartLocation: CGPoint?
+    private var panGestureStartLocation: CGPoint = .zero
     private var shouldIgnorePanGestureRecognizer = false
     private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
 
@@ -248,9 +248,9 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private func reset() {
-        scrollViewContentOffsetLocker = nil
-        panGestureStartLocation = nil
+        panGestureStartLocation = .zero
         shouldIgnorePanGestureRecognizer = false
+        scrollViewContentOffsetLocker = nil
     }
 
     // MARK: - Handlers
@@ -329,8 +329,12 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
-        let location = gestureRecognizer.location(in: nil)
-        let finalOffset = location.y > screenBounds.height / 2.0 ? overlayCollapsedVerticalOffset : overlayExpandedVerticalOffset
+        let translation = gestureRecognizer.predictedTranslation(in: nil, atDecelerationRate: .fast)
+        let overlayOrigin = overlayViewController?.view.frame.origin ?? .zero
+        let predictedOverlayOriginY = abs(overlayOrigin.y + translation.y)
+        let finalOffset = predictedOverlayOriginY > screenBounds.height / 2.0
+            ? overlayCollapsedVerticalOffset
+            : overlayExpandedVerticalOffset
 
         overlayViewTopAnchorConstraint?.constant = finalOffset
         UIView.animate(withDuration: Constants.animationDuration) {
@@ -343,11 +347,6 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Helpers
 
     private func verticalDirection(for gestureRecognizer: UIPanGestureRecognizer) -> VerticalDirection? {
-        guard let panGestureStartLocation else {
-            assertionFailure("`\(#function)` is called but no `panGestureStartLocation` is saved")
-            return nil
-        }
-
         let location = gestureRecognizer.location(in: nil)
 
         if panGestureStartLocation.y > location.y {
