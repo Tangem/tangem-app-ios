@@ -31,14 +31,14 @@ struct StakeKitMapper {
 
     // MARK: - Balance
 
-    func mapToBalanceInfo(from response: StakeKitDTO.Balances.Response) throws -> BalanceInfo {
+    func mapToBalanceInfo(from response: StakeKitDTO.Balances.Response) throws -> StakingBalanceInfo {
         guard let token = response.balances.first?.token else {
             throw StakeKitMapperError.noData("Balances.Response.first.token not found")
         }
 
         let blocked = response.balances.reduce(0) { $0 + $1.amount }
 
-        return BalanceInfo(
+        return StakingBalanceInfo(
             item: mapToStakingTokenItem(from: token),
             blocked: blocked
         )

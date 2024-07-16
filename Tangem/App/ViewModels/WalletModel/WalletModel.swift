@@ -35,6 +35,10 @@ class WalletModel {
         transactionHistoryState()
     }
 
+    var stakingStatePublisher: AnyPublisher<StakingState, Never> {
+        stakingState()
+    }
+
     var transactionHistoryNotLoaded: Bool {
         if case .initial = _transactionHistoryService?.state {
             return true
@@ -230,6 +234,7 @@ class WalletModel {
 
     private let walletManager: WalletManager
     private let _transactionHistoryService: TransactionHistoryService?
+    private let _stakingBalanceProvider: StakingBalanceProvider?
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -250,12 +255,14 @@ class WalletModel {
     init(
         walletManager: WalletManager,
         transactionHistoryService: TransactionHistoryService?,
+        stakingBalanceProvider: StakingBalanceProvider?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
         _transactionHistoryService = transactionHistoryService
+        _stakingBalanceProvider = stakingBalanceProvider
         self.amountType = amountType
         self.isCustom = isCustom
 
@@ -633,6 +640,31 @@ extension WalletModel {
     }
 }
 
+// MARK: - Staking
+
+extension WalletModel {
+    private func updateStakingState() {
+        _stakingBalanceProvider?.updateBalance()
+    }
+
+    private func stakingState() -> AnyPublisher<WalletModel.StakingState, Never> {
+        guard let _stakingBalanceProvider else {
+            return .just(output: .notSupported)
+        }
+
+        return _stakingBalanceProvider.balancePublisher
+            .map { balance in
+                switch balance {
+                case .none:
+                    return .availableToStake
+                case .some(let balance):
+                    return .staked(balance: balance)
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Interfaces
 
 extension WalletModel {
@@ -694,6 +726,10 @@ extension WalletModel {
 
     var assetRequirementsManager: AssetRequirementsManager? {
         walletManager as? AssetRequirementsManager
+    }
+
+    var stakingBalanceProvider: StakingBalanceProvider? {
+        _stakingBalanceProvider
     }
 }
 

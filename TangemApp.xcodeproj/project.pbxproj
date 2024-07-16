@@ -10,6 +10,7 @@
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
+		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
 		290167CAE4AB04EF14809C71 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1A9153420AB02B11100282 /* Pods_Tangem_TangemUITests.framework */; };
 		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
@@ -1561,7 +1562,7 @@
 		EFAF63E92927CA63004B3227 /* Setupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAF63E82927CA63004B3227 /* Setupable.swift */; };
 		EFB0193F2C4160D7009EE857 /* StakeKitDTO+Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB0193E2C4160D7009EE857 /* StakeKitDTO+Transaction.swift */; };
 		EFB019412C4160EF009EE857 /* StakeKitDTO+Balances.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019402C4160EF009EE857 /* StakeKitDTO+Balances.swift */; };
-		EFB019432C41710F009EE857 /* BalanceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019422C41710F009EE857 /* BalanceInfo.swift */; };
+		EFB019432C41710F009EE857 /* StakingBalanceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019422C41710F009EE857 /* StakingBalanceInfo.swift */; };
 		EFB019452C417143009EE857 /* TransactionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019442C417143009EE857 /* TransactionInfo.swift */; };
 		EFB019472C4172D6009EE857 /* StakeKitDTO+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019462C4172D6009EE857 /* StakeKitDTO+NetworkType.swift */; };
 		EFB019492C4174D1009EE857 /* EnterAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019482C4174D1009EE857 /* EnterAction.swift */; };
@@ -1661,6 +1662,7 @@
 		EFF466E22AC709BE00ACC3EA /* BalanceTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF466E12AC709BE00ACC3EA /* BalanceTitleView.swift */; };
 		EFF466E32ACC337500ACC3EA /* FakeTokenQuotesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01178482AC1B86200C5AD07 /* FakeTokenQuotesRepository.swift */; };
 		EFF466EA2ACD928800ACC3EA /* PendingTransactionRecordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */; };
+		EFF598B52C454A9400481DD8 /* StakingBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF598B42C454A9400481DD8 /* StakingBalanceProvider.swift */; };
 		EFF9A2FA2BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */; };
 		EFF9A2FB2BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F62BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift */; };
 		EFF9A2FC2BD6B45E007C63D2 /* UserWalletSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F72BD6B45E007C63D2 /* UserWalletSettingsView.swift */; };
@@ -3453,7 +3455,7 @@
 		EFAF63E82927CA63004B3227 /* Setupable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setupable.swift; sourceTree = "<group>"; };
 		EFB0193E2C4160D7009EE857 /* StakeKitDTO+Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+Transaction.swift"; sourceTree = "<group>"; };
 		EFB019402C4160EF009EE857 /* StakeKitDTO+Balances.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+Balances.swift"; sourceTree = "<group>"; };
-		EFB019422C41710F009EE857 /* BalanceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceInfo.swift; sourceTree = "<group>"; };
+		EFB019422C41710F009EE857 /* StakingBalanceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingBalanceInfo.swift; sourceTree = "<group>"; };
 		EFB019442C417143009EE857 /* TransactionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionInfo.swift; sourceTree = "<group>"; };
 		EFB019462C4172D6009EE857 /* StakeKitDTO+NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+NetworkType.swift"; sourceTree = "<group>"; };
 		EFB019482C4174D1009EE857 /* EnterAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterAction.swift; sourceTree = "<group>"; };
@@ -3467,7 +3469,6 @@
 		EFB9320F2C3EC18300C999E9 /* StakingValidatorsInputOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsInputOutput.swift; sourceTree = "<group>"; };
 		EFB932122C3EC18300C999E9 /* StakingValidatorsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsView.swift; sourceTree = "<group>"; };
 		EFB932132C3EC18300C999E9 /* StakingValidatorsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingValidatorsViewModel.swift; sourceTree = "<group>"; };
-		EFB9321C2C3EC44D00C999E9 /* ValidatorInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorInfo.swift; sourceTree = "<group>"; };
 		EFB999AE2C3D9A7F00F6A987 /* CommonSendStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendStepsManager.swift; sourceTree = "<group>"; };
 		EFB999B02C3D9AA100F6A987 /* CommonSellStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSellStepsManager.swift; sourceTree = "<group>"; };
 		EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellFlowBaseBuilder.swift; sourceTree = "<group>"; };
@@ -3552,6 +3553,7 @@
 		EFF034B028B6523F00F70FF7 /* CommonWalletModelsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWalletModelsManager.swift; sourceTree = "<group>"; };
 		EFF466E12AC709BE00ACC3EA /* BalanceTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTitleView.swift; sourceTree = "<group>"; };
 		EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingTransactionRecordMapper.swift; sourceTree = "<group>"; };
+		EFF598B42C454A9400481DD8 /* StakingBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingBalanceProvider.swift; sourceTree = "<group>"; };
 		EFF5CF1928C796B1000EE8DB /* Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Alpha.xcconfig; sourceTree = "<group>"; };
 		EFF82D232B9A0905004DF1A0 /* Publisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+Async.swift"; sourceTree = "<group>"; };
 		EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsCoordinator.swift; sourceTree = "<group>"; };
@@ -3580,6 +3582,7 @@
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
 				B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
+				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
 				4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5610,6 +5613,14 @@
 		B0AF2DED2B1D8FD2001A8696 /* Express */ = {
 			isa = PBXGroup;
 			children = (
+				EF5820462B33348B00940387 /* ExpressExchangeDataDecoder */,
+				EF6A8B012B278A5700CA3535 /* ExpressRepository */,
+				EF6A8AFC2B2786D400CA3535 /* ExpressFeeProvider */,
+				EF9EA9612B10D39600AC1DA1 /* ExpressTokensListAdapter */,
+				EF5D83E02B0BC4DB00516B5F /* ExpressProviderFormatter */,
+				EF5D83E22B0CADE600516B5F /* ExpressTransactionBuilder */,
+				B0BB97282B18653B00053954 /* ExpressInteractor */,
+				B0BB972B2B18654300053954 /* ExpressPendingTransactionRepository */,
 				B00EBF842B20EE0C00071EB0 /* AnalyticsTracker */,
 				B0AF2DEE2B1D8FF9001A8696 /* PendingExpressTransactionsManager.swift */,
 			);
@@ -7075,15 +7086,7 @@
 				EFA6164F2B62CC510013A129 /* TransactionSendAvailabilityProvider */,
 				DCE61E3F2B5EDDEC005A8D2E /* Safari */,
 				DA19D8C42B39AE3C001C91C4 /* QRCodeParser */,
-				EF5820462B33348B00940387 /* ExpressExchangeDataDecoder */,
-				EF6A8B012B278A5700CA3535 /* ExpressRepository */,
-				EF6A8AFC2B2786D400CA3535 /* ExpressFeeProvider */,
 				B0AF2DED2B1D8FD2001A8696 /* Express */,
-				EF9EA9612B10D39600AC1DA1 /* ExpressTokensListAdapter */,
-				EF5D83E02B0BC4DB00516B5F /* ExpressProviderFormatter */,
-				EF5D83E22B0CADE600516B5F /* ExpressTransactionBuilder */,
-				B0BB97282B18653B00053954 /* ExpressInteractor */,
-				B0BB972B2B18654300053954 /* ExpressPendingTransactionRepository */,
 				EF0DD7962B026B500099527D /* CommonAllowanceProvider */,
 				EF0DD7932B026B200099527D /* ExpressDestinationService */,
 				EF39A6542AD5A8A600AAB518 /* SmartContractMethodMapper */,
@@ -7470,6 +7473,7 @@
 		DC592B912C41A7EA005AB9A7 /* Staking */ = {
 			isa = PBXGroup;
 			children = (
+				EFF598B32C454A8800481DD8 /* StakingBalanceProvider */,
 				EF8DBCE32C0618A3009072CF /* StakingRepositoryProxy */,
 				DC592B922C41A800005AB9A7 /* CommonStakingPendingHashesRepository.swift */,
 			);
@@ -9098,7 +9102,7 @@
 				EF407E6B2C04D80100366733 /* RewardType.swift */,
 				EF407E6D2C04D81100366733 /* Period.swift */,
 				EF2A54182C452B8500341060 /* ValidatorInfo.swift */,
-				EFB019422C41710F009EE857 /* BalanceInfo.swift */,
+				EFB019422C41710F009EE857 /* StakingBalanceInfo.swift */,
 				EFB019442C417143009EE857 /* TransactionInfo.swift */,
 				EFB019482C4174D1009EE857 /* EnterAction.swift */,
 				DC592B8F2C41A4BA005AB9A7 /* StakingPendingHash.swift */,
@@ -9418,6 +9422,14 @@
 			path = BalanceTitleView;
 			sourceTree = "<group>";
 		};
+		EFF598B32C454A8800481DD8 /* StakingBalanceProvider */ = {
+			isa = PBXGroup;
+			children = (
+				EFF598B42C454A9400481DD8 /* StakingBalanceProvider.swift */,
+			);
+			path = StakingBalanceProvider;
+			sourceTree = "<group>";
+		};
 		EFFE2CEA28B8E1A700B9F279 /* DerivationManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -9501,6 +9513,7 @@
 				B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */,
 				B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */,
 				0A81B38D2BB3018E0008F21C /* ZIPFoundation */,
+				0ABC61142C410AFD00065EBA /* TweetNacl */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -9772,6 +9785,7 @@
 				B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */,
 				B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */,
 				0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -10850,6 +10864,7 @@
 				EFB932152C3EC18300C999E9 /* StakingValidatorsInputOutput.swift in Sources */,
 				B0FB98A52598D24300B769A3 /* Card+.swift in Sources */,
 				EF46624029250F6000346B6C /* ReceiveCurrencyView.swift in Sources */,
+				EFF598B52C454A9400481DD8 /* StakingBalanceProvider.swift in Sources */,
 				DAA153BC2876CBFC002254D1 /* GeoResponse.swift in Sources */,
 				B012A1112AA5A75A0079BAB4 /* WalletModel+State.swift in Sources */,
 				2D57CA842C3D07D50070D477 /* ManageTokensDataSource.swift in Sources */,
@@ -11916,7 +11931,7 @@
 				EFBC5C792C00A79E00B662E0 /* StakeKitStakingAPIService.swift in Sources */,
 				EFB019492C4174D1009EE857 /* EnterAction.swift in Sources */,
 				EF407E5F2C04D65B00366733 /* CommonStakingAPIProvider.swift in Sources */,
-				EFB019432C41710F009EE857 /* BalanceInfo.swift in Sources */,
+				EFB019432C41710F009EE857 /* StakingBalanceInfo.swift in Sources */,
 				EF407E352C04AF6F00366733 /* TangemStakingFactory.swift in Sources */,
 				EF8DBCD82C0607CC009072CF /* StakingRepository.swift in Sources */,
 				EFB0193F2C4160D7009EE857 /* StakeKitDTO+Transaction.swift in Sources */,
@@ -12242,8 +12257,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -12288,8 +12301,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -12309,8 +12320,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -12386,8 +12395,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -12432,8 +12439,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -12453,8 +12458,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -14631,8 +14634,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -14677,8 +14678,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -14698,8 +14697,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -14881,8 +14878,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -14927,8 +14922,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -14948,8 +14941,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -17070,8 +17061,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -17116,8 +17105,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -17137,8 +17124,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -17320,8 +17305,6 @@
 					"-framework",
 					"\"AnyCodable\"",
 					"-framework",
-					"\"BigInt\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -17366,8 +17349,6 @@
 					"-framework",
 					"\"Promises\"",
 					"-framework",
-					"\"ScaleCodec\"",
-					"-framework",
 					"\"Security\"",
 					"-framework",
 					"\"Sodium\"",
@@ -17387,8 +17368,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
-					"-framework",
-					"\"TweetNacl\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -17641,6 +17620,14 @@
 				minimumVersion = 0.9.18;
 			};
 		};
+		0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 		B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
@@ -17664,6 +17651,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		0ABC61142C410AFD00065EBA /* TweetNacl */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
+			productName = TweetNacl;
 		};
 		B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;

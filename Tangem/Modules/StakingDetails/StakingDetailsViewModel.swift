@@ -35,7 +35,7 @@ final class StakingDetailsViewModel: ObservableObject {
     }()
 
     private let _yieldInfo = CurrentValueSubject<LoadingValue<YieldInfo>, Never>(.loading)
-    private let _balanceInfo = CurrentValueSubject<LoadingValue<TangemStaking.BalanceInfo>, Never>(.loading)
+    private let _balanceInfo = CurrentValueSubject<LoadingValue<StakingBalanceInfo>, Never>(.loading)
 
     private var bag: Set<AnyCancellable> = []
 
@@ -83,7 +83,7 @@ private extension StakingDetailsViewModel {
         .store(in: &bag)
     }
 
-    func setupView(yield: YieldInfo, balanceInfo: TangemStaking.BalanceInfo) {
+    func setupView(yield: YieldInfo, balanceInfo: StakingBalanceInfo) {
         let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
         setupView(
             inputData: StakingDetailsData(
