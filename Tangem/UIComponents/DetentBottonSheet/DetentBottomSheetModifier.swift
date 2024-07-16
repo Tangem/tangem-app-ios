@@ -13,13 +13,13 @@ struct DetentBottomSheetModifier<Item: Identifiable, ContentView: View>: ViewMod
 
     @Binding private var item: Item?
 
-    private let detents: Set<Sheet.Detent>
+    private let detents: Set<BottomSheetDetent>
     private let settings: Sheet.Settings
     private var sheetContent: (Item) -> ContentView
 
     init(
         item: Binding<Item?>,
-        detents: Set<Sheet.Detent>,
+        detents: Set<BottomSheetDetent>,
         settings: Sheet.Settings,
         sheetContent: @escaping (Item) -> ContentView
     ) {
@@ -65,7 +65,7 @@ private extension DetentBottomSheetModifier {
                     sheetContent(item)
                 }
                 .presentationConfiguration { controller in
-                    controller.detents = detents.map { $0.detentsAboveIOS15 }
+                    controller.detents = detents.map { $0.detentsBelowIOS16 }
                     controller.preferredCornerRadius = settings.cornerRadius
                 }
             }

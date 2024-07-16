@@ -28,17 +28,7 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
     private let header: () -> Header
     private let footer: () -> Footer
 
-    private var horizontalPadding: CGFloat = GroupedSectionConstants.defaultHorizontalPadding
-    private var separatorStyle: SeparatorStyle = .minimum
-    private var interItemSpacing: CGFloat = 0
-    private var innerContentPadding: CGFloat = 0
-
-    // Use "Colors.Background.primary" as default with "Colors.Background.secondary" background
-    // Use "Colors.Background.action" on sheets with "Colors.Background.teritary" background
-    private var backgroundColor: Color = Colors.Background.primary
-    private var contentAlignment: HorizontalAlignment = .leading
-    private var innerHeaderPadding: CGFloat = GroupedSectionConstants.headerSpacing
-    private var geometryEffect: GeometryEffect?
+    private var settings: Settings = .init()
 
     init(
         _ models: [Model],
@@ -67,46 +57,49 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
     var body: some View {
         if !models.isEmpty {
             VStack(alignment: .leading, spacing: GroupedSectionConstants.footerSpacing) {
-                VStack(alignment: contentAlignment, spacing: interItemSpacing) {
+                VStack(alignment: settings.contentAlignment, spacing: settings.interItemSpacing) {
                     header()
-                        .padding(.horizontal, horizontalPadding)
+                        .padding(.horizontal, settings.horizontalPadding)
 
                     ForEach(models) { model in
                         content(model)
-                            .padding(.horizontal, horizontalPadding)
+                            .padding(.horizontal, settings.horizontalPadding)
 
                         if models.last?.id != model.id {
                             separator
+                                .modifier(ifLet: settings.separatorGeometryEffect(model)) {
+                                    $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
+                                }
                         }
                     }
                 }
-                .padding(.vertical, innerContentPadding)
+                .padding(.vertical, settings.innerContentPadding)
                 .background(
-                    backgroundColor
-                        .modifier(ifLet: geometryEffect) {
+                    settings.backgroundColor
+                        .modifier(ifLet: settings.backgroundGeometryEffect) {
                             $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
                         }
                 )
                 .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
 
                 footer()
-                    .padding(.horizontal, horizontalPadding)
+                    .padding(.horizontal, settings.horizontalPadding)
             }
         }
     }
 
     @ViewBuilder private var separator: some View {
-        switch separatorStyle {
+        switch settings.separatorStyle {
         case .none:
             EmptyView()
         case .single:
             Colors.Stroke.primary
                 .frame(maxWidth: .infinity)
                 .frame(height: 1)
-                .padding(.leading, horizontalPadding)
+                .padding(.leading, settings.horizontalPadding)
         case .minimum:
             Separator(height: .minimal, color: Colors.Stroke.primary)
-                .padding(.leading, horizontalPadding)
+                .padding(.leading, settings.horizontalPadding)
         }
     }
 }
@@ -117,6 +110,22 @@ extension GroupedSection {
         case single
         case minimum
     }
+
+    struct Settings {
+        var horizontalPadding: CGFloat = GroupedSectionConstants.defaultHorizontalPadding
+        var separatorStyle: SeparatorStyle = .minimum
+        var interItemSpacing: CGFloat = 0
+        var innerContentPadding: CGFloat = 0
+
+        // Use "Colors.Background.primary" as default with "Colors.Background.secondary" background
+        // Use "Colors.Background.action" on sheets with "Colors.Background.teritary" background
+        var backgroundColor: Color = Colors.Background.primary
+        var contentAlignment: HorizontalAlignment = .leading
+        var innerHeaderPadding: CGFloat = GroupedSectionConstants.headerSpacing
+
+        var backgroundGeometryEffect: GeometryEffect?
+        var separatorGeometryEffect: (Model) -> GeometryEffect? = { _ in nil }
+    }
 }
 
 enum GroupedSectionConstants {
@@ -126,36 +135,46 @@ enum GroupedSectionConstants {
     static let footerSpacing: CGFloat = 8
 }
 
+// MARK: - Setupable
+
 extension GroupedSection: Setupable {
+    func settings(_ settings: Settings) -> Self {
+        map { $0.settings = settings }
+    }
+
+    func settings<V>(_ keyPath: WritableKeyPath<Settings, V>, _ value: V) -> Self {
+        map { $0.settings[keyPath: keyPath] = value }
+    }
+
     func horizontalPadding(_ padding: CGFloat) -> Self {
-        map { $0.horizontalPadding = padding }
+        settings(\.horizontalPadding, padding)
     }
 
     func separatorStyle(_ style: SeparatorStyle) -> Self {
-        map { $0.separatorStyle = style }
+        settings(\.separatorStyle, style)
     }
 
     func interItemSpacing(_ spacing: CGFloat) -> Self {
-        map { $0.interItemSpacing = spacing }
+        settings(\.interItemSpacing, spacing)
     }
 
     func innerContentPadding(_ padding: CGFloat) -> Self {
-        map { $0.innerContentPadding = padding }
+        settings(\.innerContentPadding, padding)
     }
 
     func innerHeaderPadding(_ padding: CGFloat) -> Self {
-        map { $0.innerHeaderPadding = padding }
+        settings(\.innerHeaderPadding, padding)
     }
 
     func backgroundColor(_ color: Color) -> Self {
-        map { $0.backgroundColor = color }
-    }
-
-    func geometryEffect(_ geometryEffect: GeometryEffect?) -> Self {
-        map { $0.geometryEffect = geometryEffect }
+        settings(\.backgroundColor, color)
     }
 
     func contentAlignment(_ alignment: HorizontalAlignment) -> Self {
-        map { $0.contentAlignment = alignment }
+        settings(\.contentAlignment, alignment)
+    }
+
+    func geometryEffect(_ geometryEffect: GeometryEffect?) -> Self {
+        settings(\.backgroundGeometryEffect, geometryEffect)
     }
 }

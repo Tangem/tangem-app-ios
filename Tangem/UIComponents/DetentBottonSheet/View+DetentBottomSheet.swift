@@ -17,7 +17,7 @@ extension View {
     @ViewBuilder
     func detentBottomSheet<Item: Identifiable, ContentView: View>(
         item: Binding<Item?>,
-        detents: Set<DetentBottomSheetContainer<ContentView>.Detent> = [.large],
+        detents: Set<BottomSheetDetent> = [.large],
         settings: DetentBottomSheetContainer<ContentView>.Settings = .init(),
         @ViewBuilder sheetContent: @escaping (Item) -> ContentView
     ) -> some View {

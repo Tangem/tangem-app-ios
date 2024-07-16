@@ -16,8 +16,13 @@ struct StakeKitTarget: Moya.TargetType {
     enum Target {
         case enabledYields
         case getYield(StakeKitDTO.Yield.Info.Request)
+        case getBalances(StakeKitDTO.Balances.Request)
 
         case enterAction(StakeKitDTO.Actions.Enter.Request)
+
+        case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)
+        case submitTransaction(id: String, body: StakeKitDTO.SubmitTransaction.Request)
+        case submitHash(id: String, body: StakeKitDTO.SubmitHash.Request)
     }
 
     var baseURL: URL {
@@ -30,8 +35,16 @@ struct StakeKitTarget: Moya.TargetType {
             return "yields/enabled"
         case .getYield(let stakekitDTO):
             return "yields/\(stakekitDTO.integrationId)"
+        case .getBalances:
+            return "yields/balances/scan"
         case .enterAction:
             return "actions/enter"
+        case .constructTransaction(let id, _):
+            return "/transactions/\(id)"
+        case .submitTransaction(let id, _):
+            return "/transactions/\(id)/submit"
+        case .submitHash(let id, _):
+            return "transactions/\(id)/submit_hash"
         }
     }
 
@@ -39,8 +52,10 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .getYield, .enabledYields:
             return .get
-        case .enterAction:
+        case .enterAction, .getBalances, .submitTransaction, .submitHash:
             return .post
+        case .constructTransaction:
+            return .patch
         }
     }
 
@@ -50,6 +65,14 @@ struct StakeKitTarget: Moya.TargetType {
             return .requestPlain
         case .enterAction(let request):
             return .requestJSONEncodable(request)
+        case .getBalances(let request):
+            return .requestJSONEncodable(request)
+        case .constructTransaction(_, let body):
+            return .requestJSONEncodable(body)
+        case .submitTransaction(_, let body):
+            return .requestJSONEncodable(body)
+        case .submitHash(_, let body):
+            return .requestJSONEncodable(body)
         }
     }
 

@@ -21,8 +21,8 @@ public struct TangemStakingFactory {
     ) -> StakingManager {
         CommonStakingManager(
             wallet: wallet,
-            provider: provider,
             repository: repository,
+            provider: provider,
             logger: logger
         )
     }
@@ -48,6 +48,13 @@ public struct TangemStakingFactory {
         let service = StakeKitStakingAPIService(provider: provider, credential: credential)
         let mapper = StakeKitMapper()
         return CommonStakingAPIProvider(service: service, mapper: mapper)
+    }
+
+    public func makePendingHashesSender(
+        repository: StakingPendingHashesRepository,
+        provider: StakingAPIProvider
+    ) -> StakingPendingHashesSender {
+        CommonStakingPendingHashesSender(repository: repository, provider: provider)
     }
 }
 
