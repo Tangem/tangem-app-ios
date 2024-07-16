@@ -31,9 +31,7 @@ struct DescriptionBottomSheetView: View {
             .overlay {
                 textContent
                     .opacity(0)
-                    .fixedSize(horizontal: false, vertical: true)
                     .readGeometry(\.size.height, onChange: { value in
-                        print("Bottom sheet content updated size: \(value)")
                         sheetHeight.wrappedValue = value
                     })
             }
@@ -50,25 +48,12 @@ struct DescriptionBottomSheetView: View {
             }
 
             Text(info.description)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
                 .style(Fonts.Regular.callout, color: Colors.Text.primary1)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
         }
         .padding(.bottom, 16)
-    }
-
-    private var content: some View {
-        Group {
-            if containerHeight < sheetHeight.wrappedValue {
-                ScrollView(showsIndicators: false) {
-                    textContent
-                        .padding(.bottom, 40)
-                }
-            } else {
-                textContent
-            }
-        }
-        .padding(.horizontal, 16)
     }
 }
 
