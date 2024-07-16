@@ -7112,7 +7112,6 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				EF72DC772C469FC2003DD97F /* StakingAvailabilityProvider */,
 				DC592B912C41A7EA005AB9A7 /* Staking */,
 				B62C65C62C38D04F00189AD4 /* PushNotifications */,
 				B098F3972C0474AD00F79989 /* ManageTokens */,
@@ -7511,9 +7510,8 @@
 		DC592B912C41A7EA005AB9A7 /* Staking */ = {
 			isa = PBXGroup;
 			children = (
-				EFF598B32C454A8800481DD8 /* StakingBalanceProvider */,
-				EF8DBCE32C0618A3009072CF /* StakingRepositoryProxy */,
 				DC592B922C41A800005AB9A7 /* CommonStakingPendingHashesRepository.swift */,
+				EF72DC772C469FC2003DD97F /* StakingAvailabilityProvider */,
 			);
 			path = Staking;
 			sourceTree = "<group>";
