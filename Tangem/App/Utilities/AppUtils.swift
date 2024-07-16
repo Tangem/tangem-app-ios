@@ -17,6 +17,14 @@ struct AppUtils {
 
         return tokenItem.canBeSignedOnPoorNfcQualityDevice
     }
+
+    func canStake(for tokenItem: TokenItem) -> Bool {
+        guard NFCUtils.isPoorNfcQualityDevice else {
+            return true
+        }
+
+        return tokenItem.canStakeOnPoorNfcQualityDevice
+    }
 }
 
 private extension TokenItem {
@@ -26,6 +34,15 @@ private extension TokenItem {
         case .solana:
             return isToken ? false : true
         case .chia:
+            return false
+        default:
+            return true
+        }
+    }
+
+    var canStakeOnPoorNfcQualityDevice: Bool {
+        switch blockchain {
+        case .solana:
             return false
         default:
             return true

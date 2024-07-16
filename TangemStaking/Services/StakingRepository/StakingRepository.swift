@@ -10,9 +10,9 @@ import Foundation
 import Combine
 
 public protocol StakingRepository {
-    var enabledYieldsPuiblisher: AnyPublisher<[YieldInfo], Never> { get }
+    var enabledYieldsPublisher: AnyPublisher<[YieldInfo], Never> { get }
 
     func updateEnabledYields(withReload: Bool)
-    func getYield(id: String) -> YieldInfo?
+
     func getYield(item: StakingTokenItem) -> YieldInfo?
 }

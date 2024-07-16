@@ -8,6 +8,10 @@
 
 import Foundation
 
-public protocol StakingManager: Actor {
+public protocol StakingManager {
     func getYield() throws -> YieldInfo
+
+    // Actual info from Stakek.it
+    func getFee(amount: Decimal, validator: String) async throws
+    func getTransaction() async throws
 }

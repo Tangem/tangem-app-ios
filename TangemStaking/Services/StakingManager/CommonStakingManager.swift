@@ -8,21 +8,21 @@
 
 import Foundation
 
-actor CommonStakingManager {
+class CommonStakingManager {
     private let wallet: StakingWallet
-    private let provider: StakingAPIProvider
     private let repository: StakingRepository
+    private let provider: StakingAPIProvider
     private let logger: Logger
 
     init(
         wallet: StakingWallet,
-        provider: StakingAPIProvider,
         repository: StakingRepository,
+        provider: StakingAPIProvider,
         logger: Logger
     ) {
         self.wallet = wallet
-        self.provider = provider
         self.repository = repository
+        self.provider = provider
         self.logger = logger
     }
 }
@@ -34,6 +34,19 @@ extension CommonStakingManager: StakingManager {
         }
 
         return yield
+    }
+
+    func getFee(amount: Decimal, validator: String) async throws {
+        let action = try await provider.enterAction(
+            amount: amount,
+            address: wallet.defaultAddress,
+            validator: validator,
+            integrationId: getYield().id
+        )
+    }
+
+    func getTransaction() async throws {
+        // TBD: https://tangem.atlassian.net/browse/IOS-6897
     }
 }
 

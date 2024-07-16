@@ -19,6 +19,10 @@ class StakingFeatureProvider {
             return false
         }
 
+        guard AppUtils().canStake(for: tokenItem) else {
+            return false
+        }
+
         if supportedBlockchainIds.contains(tokenItem.blockchain.networkId) {
             return true
         }

@@ -8,6 +8,7 @@
 
 import Foundation
 import BlockchainSdk
+import TangemStaking
 
 extension WalletModel: Equatable {
     static func == (lhs: WalletModel, rhs: WalletModel) -> Bool {
@@ -59,6 +60,14 @@ extension WalletModel {
                 return "TransactionHistoryState.error with \(error.localizedDescription)"
             }
         }
+    }
+
+    enum StakingState: Hashable {
+        case notSupported
+        case loading
+        case error
+        case availableToStake
+        case staked(balance: StakingBalanceInfo)
     }
 }
 
