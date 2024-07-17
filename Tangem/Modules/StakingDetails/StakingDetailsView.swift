@@ -12,8 +12,6 @@ struct StakingDetailsView: View {
     @ObservedObject private var viewModel: StakingDetailsViewModel
     @State private var bottomViewHeight: CGFloat = .zero
 
-    @State private var descriptionBottomSheetHeight: CGFloat = 0
-
     init(viewModel: StakingDetailsViewModel) {
         self.viewModel = viewModel
     }
@@ -42,16 +40,14 @@ struct StakingDetailsView: View {
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.inline)
             .onAppear(perform: viewModel.onAppear)
-            .descriptionBottomSheet(
-                info: $viewModel.descriptionBottomSheetInfo,
-                sheetHeight: $descriptionBottomSheetHeight,
-                backgroundColor: Colors.Background.action
-            )
-            .onChange(of: viewModel.descriptionBottomSheetInfo, perform: { value in
-                if value == nil {
-                    descriptionBottomSheetHeight = 0
-                }
-            })
+            .bottomSheet(
+                item: $viewModel.descriptionBottomSheetInfo,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                DescriptionBottomSheetView(
+                    info: DescriptionBottomSheetInfo(title: $0.title, description: $0.description)
+                )
+            }
         }
     }
 

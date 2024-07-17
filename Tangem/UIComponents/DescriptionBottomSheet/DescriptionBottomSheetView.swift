@@ -20,6 +20,16 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 }
 
 struct DescriptionBottomSheetView: View {
+    internal init(
+        info: DescriptionBottomSheetInfo,
+        availableHeight: CGFloat = 0,
+        sheetHeight: Binding<CGFloat> = .constant(0)
+    ) {
+        self.info = info
+        self.availableHeight = availableHeight
+        self.sheetHeight = sheetHeight
+    }
+
     let info: DescriptionBottomSheetInfo
     var availableHeight: CGFloat
 
