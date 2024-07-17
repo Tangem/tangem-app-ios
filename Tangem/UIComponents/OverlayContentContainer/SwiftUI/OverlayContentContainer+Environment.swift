@@ -15,6 +15,11 @@ extension EnvironmentValues {
         get { self[OverlayContentContainerEnvironmentKey.self] }
         set { self[OverlayContentContainerEnvironmentKey.self] = newValue }
     }
+
+    var overlayContentStateObserver: OverlayContentStateObserver {
+        get { self[OverlayContentStateObserverEnvironmentKey.self] }
+        set { self[OverlayContentStateObserverEnvironmentKey.self] = newValue }
+    }
 }
 
 // MARK: - Private implementation
@@ -25,12 +30,26 @@ private enum OverlayContentContainerEnvironmentKey: EnvironmentKey {
     }
 }
 
-private struct DummyOverlayContentContainer: OverlayContentContainer {
+private enum OverlayContentStateObserverEnvironmentKey: EnvironmentKey {
+    static var defaultValue: OverlayContentStateObserver {
+        return DummyOverlayContentContainer()
+    }
+}
+
+private struct DummyOverlayContentContainer: OverlayContentContainer, OverlayContentStateObserver {
     func installOverlay(_ overlayView: some View) {
         assertionFailure("Inject proper `OverlayContentContainer` implementation into the view hierarchy")
     }
 
     func removeOverlay() {
         assertionFailure("Inject proper `OverlayContentContainer` implementation into the view hierarchy")
+    }
+
+    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+        assertionFailure("Inject proper `OverlayContentStateObserver` implementation into the view hierarchy")
+    }
+
+    func removeObserver(forToken token: any Hashable) {
+        assertionFailure("Inject proper `OverlayContentStateObserver` implementation into the view hierarchy")
     }
 }
