@@ -33,8 +33,7 @@ struct DefaultRowView: View {
 
     private var content: some View {
         HStack {
-            Text(viewModel.title)
-                .style(appearance.font, color: appearance.textColor)
+            titleView
 
             Spacer()
 
@@ -47,6 +46,21 @@ struct DefaultRowView: View {
         .lineLimit(1)
         .padding(.vertical, 14)
         .contentShape(Rectangle())
+    }
+
+    private var titleView: some View {
+        HStack(spacing: 1) {
+            Text(viewModel.title)
+                .style(appearance.font, color: appearance.textColor)
+            if let secondaryAction = viewModel.secondaryAction {
+                Button(action: secondaryAction) {
+                    Image(systemName: "info.circle")
+                        .frame(width: 13)
+                        .padding(5)
+                        .foregroundStyle(Colors.Icon.informative)
+                }
+            }
+        }
     }
 
     @ViewBuilder
