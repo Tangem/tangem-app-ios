@@ -10,13 +10,28 @@ import Foundation
 import Combine
 
 public protocol StakingManager {
-    var yield: YieldInfo { get }
+    var state: StakingManagerState { get }
+    var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 
-    var balance: StakingBalanceInfo? { get }
-    var balancePublisher: AnyPublisher<StakingBalanceInfo?, Never> { get }
-
-    func updateBalance()
+    func updateState() async throws
 
     func getFee(amount: Decimal, validator: String) async throws -> Decimal
     func getTransaction() async throws
+}
+
+public enum StakingManagerState: Hashable {
+    case loading
+    case notEnabled
+    case availableToStake(YieldInfo)
+    case availableToUnstake(StakingBalanceInfo, YieldInfo)
+    case availableToClaimRewards(StakingBalanceInfo, YieldInfo)
+
+    public var isAvailable: Bool {
+        switch self {
+        case .loading, .notEnabled:
+            return false
+        case .availableToStake, .availableToUnstake, .availableToClaimRewards:
+            return true
+        }
+    }
 }

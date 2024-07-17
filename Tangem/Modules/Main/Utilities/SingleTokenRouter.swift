@@ -25,7 +25,6 @@ protocol SingleTokenRoutable {
 final class SingleTokenRouter: SingleTokenRoutable {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.keysManager) private var keysManager: KeysManager
-    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
 
     private let userWalletModel: UserWalletModel
     private weak var coordinator: SingleTokenBaseRoutable?
@@ -83,12 +82,17 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openStaking(walletModel: WalletModel) {
-        guard let stakingManager = stakingAvailabilityProvider.manager(walletModel: walletModel) else {
+        guard let stakingManager = walletModel.stakingManager else {
             return
         }
 
-        let options = StakingDetailsCoordinator.Options(manager: stakingManager)
-        coordinator?.openStaking(userWalletModel: userWalletModel, wallet: walletModel, options: options)
+        coordinator?.openStaking(
+            options: .init(
+                userWalletModel: userWalletModel,
+                walletModel: walletModel,
+                manager: stakingManager
+            )
+        )
     }
 
     func openSell(for walletModel: WalletModel) {

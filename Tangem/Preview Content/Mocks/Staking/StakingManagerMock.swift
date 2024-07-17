@@ -11,11 +11,10 @@ import Combine
 import TangemStaking
 
 class StakingManagerMock: StakingManager {
-    var yield: TangemStaking.YieldInfo { .mock }
-    var balance: TangemStaking.StakingBalanceInfo? { .none }
-    var balancePublisher: AnyPublisher<TangemStaking.StakingBalanceInfo?, Never> { .just(output: balance) }
+    var state: StakingManagerState { .notEnabled }
+    var statePublisher: AnyPublisher<StakingManagerState, Never> { .just(output: state) }
 
-    func updateBalance() {}
+    func updateState() {}
 
     func getFee(amount: Decimal, validator: String) async throws -> Decimal { 0.12345 }
 

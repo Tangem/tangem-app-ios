@@ -53,7 +53,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func userDidTapBanner() {}
     func userDidTapActionButton() {
-        coordinator?.openStakingFlow(manager: stakingManager)
+        coordinator?.openStakingFlow()
     }
 
     func onAppear() {
@@ -63,14 +63,13 @@ final class StakingDetailsViewModel: ObservableObject {
 
 private extension StakingDetailsViewModel {
     func loadValues() {
-        _yieldInfo.send(.loaded(stakingManager.yield))
-
-        if let balance = stakingManager.balance {
-            _balanceInfo.send(.loaded(balance))
-        } else {
-            // TODO: Dmitry Fedorov
-            _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23)))
+        guard case .availableToStake(let yield) = stakingManager.state else {
+            return
         }
+
+        _yieldInfo.send(.loaded(yield))
+        // TODO: Dmitry Fedorov
+        _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23)))
     }
 
     func bind() {

@@ -10,12 +10,13 @@ import Foundation
 import Combine
 import CombineExt
 import BlockchainSdk
+import TangemStaking
+import TangemFoundation
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
-    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
 
     var walletModelId: WalletModel.Id {
         .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
@@ -35,16 +36,16 @@ class WalletModel {
         transactionHistoryState()
     }
 
-    var transactionHistoryNotLoaded: Bool {
-        if case .initial = _transactionHistoryService?.state {
-            return true
-        } else {
-            return false
-        }
-    }
-
     var isSupportedTransactionHistory: Bool {
         _transactionHistoryService != nil
+    }
+
+    var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
+        _stakingManager.map { $0.statePublisher } ?? .just(output: .notEnabled)
+    }
+
+    var stakingManagerState: StakingManagerState {
+        _stakingManager?.state ?? .notEnabled
     }
 
     var shouldShowFeeSelector: Bool {
@@ -217,7 +218,7 @@ class WalletModel {
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
             swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
-            stakingAvailabilityProvider.availabilityDidUpdatedPublisher
+            stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()
     }
@@ -229,6 +230,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let walletManager: WalletManager
+    private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
@@ -249,12 +251,14 @@ class WalletModel {
 
     init(
         walletManager: WalletManager,
+        stakingManager: StakingManager?,
         transactionHistoryService: TransactionHistoryService?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
+        _stakingManager = stakingManager
         _transactionHistoryService = transactionHistoryService
         self.amountType = amountType
         self.isCustom = isCustom
@@ -313,7 +317,11 @@ class WalletModel {
         _transactionHistoryService?.clearHistory()
 
         return Publishers
-            .CombineLatest(update(silent: silent), updateTransactionsHistory())
+            .CombineLatest3(
+                update(silent: silent),
+                updateTransactionsHistory(),
+                updateStakingManagerState()
+            )
             .mapToVoid()
             .eraseToAnyPublisher()
     }
@@ -633,6 +641,19 @@ extension WalletModel {
     }
 }
 
+// MARK: - Staking
+
+extension WalletModel {
+    func updateStakingManagerState() -> AnyPublisher<Void, Never> {
+        Future.async { [weak self] in
+            try await self?._stakingManager?.updateState()
+        }
+        // Here we have to skip the error to let the PTR to complete
+        .replaceError(with: ())
+        .eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Interfaces
 
 extension WalletModel {
@@ -694,6 +715,10 @@ extension WalletModel {
 
     var assetRequirementsManager: AssetRequirementsManager? {
         walletManager as? AssetRequirementsManager
+    }
+
+    var stakingManager: StakingManager? {
+        _stakingManager
     }
 }
 

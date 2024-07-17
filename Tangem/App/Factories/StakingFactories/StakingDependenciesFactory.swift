@@ -19,16 +19,13 @@ class StakingDependenciesFactory {
         )
     }
 
-    func makeStakingManager(wallet: StakingWallet, yieldInfo: YieldInfo) -> StakingManager? {
-        let factory = TangemStakingFactory()
+    func makeStakingManager(integrationId: String, wallet: StakingWallet) -> StakingManager {
         let provider = makeStakingAPIProvider()
-        let balanceProvider = factory.makeStakingBalanceProvider(wallet: wallet, provider: provider, logger: AppLog.shared)
 
-        return factory.makeStakingManager(
+        return TangemStakingFactory().makeStakingManager(
+            integrationId: integrationId,
             wallet: wallet,
-            yieldInfo: yieldInfo,
-            balanceProvider: balanceProvider,
-            apiProvider: provider,
+            provider: provider,
             logger: AppLog.shared
         )
     }

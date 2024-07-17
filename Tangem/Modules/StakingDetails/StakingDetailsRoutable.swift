@@ -10,7 +10,7 @@ import Foundation
 import TangemStaking
 
 protocol StakingDetailsRoutable: AnyObject {
-    func openStakingFlow(manager: StakingManager)
+    func openStakingFlow()
     func openClaimRewardsFlow()
     func openUnstakingFlow()
 }

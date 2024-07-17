@@ -25,20 +25,24 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child view models
 
-    private let factory: StakingModulesFactory
+    private var options: Options?
 
-    init(
+    required init(
         dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions>,
-        factory: StakingModulesFactory
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
-        self.factory = factory
     }
 
     func start(with options: Options) {
-        rootViewModel = factory.makeStakingDetailsViewModel(manager: options.manager, coordinator: self)
+        self.options = options
+
+        rootViewModel = StakingDetailsViewModel(
+            walletModel: options.walletModel,
+            stakingManager: options.manager,
+            coordinator: self
+        )
     }
 }
 
@@ -46,6 +50,8 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
 extension StakingDetailsCoordinator {
     struct Options {
+        let userWalletModel: UserWalletModel
+        let walletModel: WalletModel
         let manager: StakingManager
     }
 }
@@ -74,7 +80,9 @@ private extension StakingDetailsCoordinator {
 // MARK: - StakingDetailsRoutable
 
 extension StakingDetailsCoordinator: StakingDetailsRoutable {
-    func openStakingFlow(manager: StakingManager) {
+    func openStakingFlow() {
+        guard let options else { return }
+
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
 
@@ -85,7 +93,13 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             }
         }
 
-        sendCoordinator = factory.makeStakingFlow(manager: manager, dismissAction: dismissAction)
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: .staking(manager: options.manager)
+        ))
+        sendCoordinator = coordinator
     }
 
     func openUnstakingFlow() {

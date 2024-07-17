@@ -14,34 +14,17 @@ public struct TangemStakingFactory {
     public init() {}
 
     public func makeStakingManager(
+        integrationId: String,
         wallet: StakingWallet,
-        yieldInfo: YieldInfo,
-        balanceProvider: StakingBalanceProvider,
-        apiProvider: StakingAPIProvider,
+        provider: StakingAPIProvider,
         logger: Logger
     ) -> StakingManager {
         CommonStakingManager(
+            integrationId: integrationId,
             wallet: wallet,
-            yieldInfo: yieldInfo,
-            balanceProvider: balanceProvider,
-            apiProvider: apiProvider,
+            provider: provider,
             logger: logger
         )
-    }
-
-    public func makeStakingRepository(
-        provider: StakingAPIProvider,
-        logger: Logger
-    ) -> StakingRepository {
-        CommonStakingRepository(provider: provider, logger: logger)
-    }
-
-    public func makeStakingBalanceProvider(
-        wallet: StakingWallet,
-        provider: StakingAPIProvider,
-        logger: Logger
-    ) -> StakingBalanceProvider {
-        CommonStakingBalanceProvider(wallet: wallet, provider: provider, logger: logger)
     }
 
     public func makeStakingAPIProvider(

@@ -13,6 +13,7 @@ import Combine
 extension WalletModel {
     static let mockETH = WalletModel(
         walletManager: EthereumWalletManagerMock(),
+        stakingManager: StakingManagerMock(),
         transactionHistoryService: nil,
         amountType: .coin,
         shouldPerformHealthCheck: false,
