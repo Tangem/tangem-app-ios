@@ -156,6 +156,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
         notificationManager
             .notificationPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notificationInputs in
                 self?.notificationInputs = notificationInputs
             }
@@ -223,7 +224,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
 
                 for feeValue in feeValues {
                     if feeValue.option == selectedFee.option {
-                        selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: feeValue)
+                        selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
                     } else {
                         let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
                         deselectedFeeRowViewModels.append(model)

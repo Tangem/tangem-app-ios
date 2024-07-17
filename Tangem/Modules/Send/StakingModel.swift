@@ -22,8 +22,6 @@ class StakingModel {
 
     // MARK: - Dependencies
 
-//    var informationRelevanceService: InformationRelevanceService!
-
     // MARK: - Private injections
 
     private let stakingManager: StakingManager

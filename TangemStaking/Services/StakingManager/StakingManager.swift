@@ -39,6 +39,17 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var yieldInfo: YieldInfo? {
+        switch self {
+        case .loading, .notEnabled:
+            return nil
+        case .availableToStake(let yieldInfo),
+             .availableToUnstake(_, let yieldInfo),
+             .availableToClaimRewards(_, let yieldInfo):
+            return yieldInfo
+        }
+    }
+
     public var description: String {
         switch self {
         case .loading: "loading"

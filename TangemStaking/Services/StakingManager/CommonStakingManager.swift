@@ -61,9 +61,9 @@ extension CommonStakingManager: StakingManager {
         case (.availableToStake(let yieldInfo), .stake(let amount, let validator)):
             try await getTransactionToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
         case (.availableToUnstake(_, _), .unstake):
-            throw StakingManagerError.notImplemented
+            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6898
         case (.availableToClaimRewards(_, _), .claimRewards):
-            throw StakingManagerError.notImplemented
+            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6899
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
         }
@@ -92,6 +92,9 @@ private extension CommonStakingManager {
         )
 
         let transactionId = action.transactions[action.currentStepIndex].id
+        // We have to wait that stakek.it prepared the transaction
+        // Otherwise we may get the 404 error
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
         let transaction = try await provider.patchTransaction(id: transactionId)
 
         return transaction
