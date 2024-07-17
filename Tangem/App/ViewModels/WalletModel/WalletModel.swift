@@ -714,7 +714,7 @@ extension WalletModel {
     }
 
     var stakingManager: StakingManager? {
-        stakingManagerProvider.stakingManager
+        _stakingManager
     }
 }
 

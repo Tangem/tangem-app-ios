@@ -56,7 +56,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func userDidTapBanner() {}
     func userDidTapActionButton() {
-        coordinator?.openStakingFlow(manager: stakingManager)
+        coordinator?.openStakingFlow()
     }
 
     func onAppear() {
