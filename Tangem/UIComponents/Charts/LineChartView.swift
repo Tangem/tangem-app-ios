@@ -1,15 +1,37 @@
 //
-//  LineChartView.swift
-//  Timezones
+//  ChartsView.swift
+//  ContextMenu
 //
-//  Created by Andrey Chukavin on 31.07.2023.
+//  Created by skibinalexander on 16.07.2024.
 //
 
 import SwiftUI
+import Charts
 
 struct LineChartView: View {
     let color: Color
     let data: [Double]
+
+    private var linearGradient: LinearGradient {
+        LinearGradient(
+            colors: [color.opacity(0.25), Color.clear],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    private var chartItems: [Item] {
+        data.indexed().map { index, element in
+            Item(id: index, value: element)
+        }
+    }
+
+    private var scaleY: (min: Double, max: Double) {
+        let values = chartItems.map { $0.value }
+        return (values.min() ?? .zero, values.max() ?? .zero)
+    }
+
+    // MARK: - UI
 
     var body: some View {
         GeometryReader { geometry in
@@ -25,6 +47,8 @@ struct LineChartView: View {
                 )
         }
     }
+
+    // MARK: - Private Implementation
 
     private func linePath(for size: CGSize) -> Path {
         guard
@@ -62,20 +86,25 @@ struct LineChartView: View {
     }
 }
 
-struct LineChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        HStack(spacing: 30) {
-            LineChartView(
-                color: Color(hex: "#FF3333")!,
-                data: [1, 7, 3, 5, 13].reversed()
-            )
-            .frame(width: 100, height: 50, alignment: .center)
+extension LineChartView {
+    struct Item: Identifiable, Equatable {
+        let id: Int
+        let value: Double
+    }
+}
 
-            LineChartView(
-                color: Color(hex: "#0099FF")!,
-                data: [2, 4, 3, 5, 6]
-            )
-            .frame(width: 100, height: 50, alignment: .center)
-        }
+#Preview {
+    HStack(spacing: 30) {
+        LineChartView(
+            color: Color.red,
+            data: [1, 7, 3, 5, 13].reversed()
+        )
+        .frame(width: 100, height: 50, alignment: .center)
+
+        LineChartView(
+            color: Color.blue,
+            data: [2, 4, 3, 5, 6]
+        )
+        .frame(width: 120, height: 50, alignment: .center)
     }
 }
