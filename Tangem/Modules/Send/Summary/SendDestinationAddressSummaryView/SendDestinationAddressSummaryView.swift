@@ -23,11 +23,11 @@ struct SendDestinationAddressSummaryView: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(Localization.sendRecipient)
                 .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                .modifier(ifLet: namespace) { $0.matchedGeometryEffect(id: $1.names.addressTitle, in: $1.id) }
+                .matchedGeometryEffect(namespace.map { .init(id: $0.names.addressTitle, namespace: $0.id) })
 
             HStack(spacing: 12) {
                 AddressIconView(viewModel: AddressIconViewModel(address: address))
-                    .modifier(ifLet: namespace) { $0.matchedGeometryEffect(id: $1.names.addressIcon, in: $1.id) }
+                    .matchedGeometryEffect(namespace.map { .init(id: $0.names.addressIcon, namespace: $0.id) })
                     .frame(size: CGSize(bothDimensions: 36))
                     .padding(.vertical, 10)
 
@@ -39,13 +39,13 @@ struct SendDestinationAddressSummaryView: View {
                     color: .textPrimary1
                 )
                 .disabled(true)
-                .modifier(ifLet: namespace) { $0.matchedGeometryEffect(id: $1.names.addressText, in: $1.id) }
+                .matchedGeometryEffect(namespace.map { .init(id: $0.names.addressText, namespace: $0.id) })
 
                 Assets.clear.image
                     .renderingMode(.template)
                     .foregroundColor(Colors.Icon.informative)
                     .opacity(0)
-                    .modifier(ifLet: namespace) { $0.matchedGeometryEffect(id: $1.names.addressClearButton, in: $1.id) }
+                    .matchedGeometryEffect(namespace.map { .init(id: $0.names.addressClearButton, namespace: $0.id) })
             }
         }
         .padding(.top, 12)

@@ -50,18 +50,18 @@ struct ValidatorView: View {
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
-            .modifier(ifLet: namespace) {
-                $0.matchedGeometryEffect(id: $1.names.validatorIcon(id: data.id), in: $1.id)
-            }
+            .matchedGeometryEffect(
+                namespace.map { .init(id: $0.names.validatorIcon(id: data.id), namespace: $0.id) }
+            )
     }
 
     private var info: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-                .modifier(ifLet: namespace) {
-                    $0.matchedGeometryEffect(id: $1.names.validatorTitle(id: data.id), in: $1.id)
-                }
+                .matchedGeometryEffect(
+                    namespace.map { .init(id: $0.names.validatorTitle(id: data.id), namespace: $0.id) }
+                )
 
             if let aprFormatted = data.aprFormatted {
                 HStack(spacing: 4) {
@@ -71,9 +71,9 @@ struct ValidatorView: View {
                     Text(aprFormatted)
                         .style(Fonts.Regular.footnote, color: Colors.Text.accent)
                 }
-                .modifier(ifLet: namespace) {
-                    $0.matchedGeometryEffect(id: $1.names.validatorSubtitle(id: data.id), in: $1.id)
-                }
+                .matchedGeometryEffect(
+                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.id), namespace: $0.id) }
+                )
             }
         }
         .lineLimit(1)
