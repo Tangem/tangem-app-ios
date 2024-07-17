@@ -162,7 +162,14 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
-            coordinator: coordinator
+            coordinator: coordinator,
+            addTokenTapAction: { [weak self] in
+                guard let self, let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
+                    return
+                }
+
+                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
+            }
         )
     }
 
@@ -211,21 +218,5 @@ extension TokenMarketsDetailsViewModel {
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
         descriptionBottomSheetInfo = .init(title: title, description: message)
-    }
-}
-
-// MARK: - Resolving
-
-extension TokenMarketsDetailsViewModel {
-    func resolveCoinModel() throws -> CoinModel {
-        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
-            throw Error.undefinedCoinModelData
-        }
-
-        return coinModel
-    }
-
-    func resolveWalletDataProvider() -> MarketsWalletDataProvider {
-        walletDataProvider
     }
 }

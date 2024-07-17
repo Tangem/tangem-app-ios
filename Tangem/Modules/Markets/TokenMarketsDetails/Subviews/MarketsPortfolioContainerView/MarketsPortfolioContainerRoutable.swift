@@ -9,12 +9,10 @@
 import Foundation
 
 protocol MarketsPortfolioContainerRoutable: AnyObject {
-    func openAddToken()
     func openReceive(walletModel: WalletModel)
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openSend(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openStaking(walletModel: WalletModel)
     func openSell(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
-    func showCopyAddressAlert()
 }

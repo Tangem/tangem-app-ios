@@ -28,16 +28,12 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         "\(walletModel.tokenItem.currencySymbol) \(walletModel.tokenItem.networkName)"
     }
 
-    var walletModelId: WalletModel.ID {
-        walletModel.id
-    }
-
     let userWalletId: UserWalletId
     let walletName: String
 
     // MARK: - Private Properties
 
-    private weak var walletModel: WalletModel!
+    let walletModel: WalletModel
     private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
     private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
 
@@ -63,14 +59,14 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     func bind() {
-        updateSubscription = walletModel?
+        updateSubscription = walletModel
             .walletDidChangePublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModelState in
                 if walletModelState.isSuccessfullyLoaded {
-                    viewModel.fiatBalanceValue = viewModel.walletModel?.fiatBalance ?? ""
-                    viewModel.balanceValue = viewModel.walletModel?.balance ?? ""
+                    viewModel.fiatBalanceValue = viewModel.walletModel.fiatBalance
+                    viewModel.balanceValue = viewModel.walletModel.balance
                 }
             }
     }

@@ -20,7 +20,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView = .empty
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
-    @Published var showQuickActions: Bool = false
+
+    // This strict condition is conditioned by the requirements
+    var isOneTokenInPortfolio: Bool {
+        tokenItemViewModels.count == 1
+    }
 
     // MARK: - Private Properties
 
@@ -28,17 +32,20 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private let coinId: String
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
+    private var addTokenTapAction: (() -> Void)?
 
     // MARK: - Init
 
     init(
         userWalletModels: [UserWalletModel],
         coinId: String,
-        coordinator: MarketsPortfolioContainerRoutable?
+        coordinator: MarketsPortfolioContainerRoutable?,
+        addTokenTapAction: (() -> Void)?
     ) {
         self.userWalletModels = userWalletModels
         self.coinId = coinId
         self.coordinator = coordinator
+        self.addTokenTapAction = addTokenTapAction
 
         initialSetup()
     }
@@ -46,7 +53,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Public Implementation
 
     func onAddTapAction() {
-        coordinator?.openAddToken()
+        addTokenTapAction?()
     }
 
     // MARK: - Private Implementation
@@ -82,12 +89,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             isShowTopAddButton = false
             typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
         }
-
-        // This strict condition is conditioned by the requirements
-        showQuickActions = tokenItemViewModels.count == 1
     }
 
-    private func maskFilterSingleTokenAvailableToken(actions: [TokenActionType]) -> [TokenActionType] {
+    private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
         if tokenItemViewModels.count == 1 {
             let filteredActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
 
@@ -104,15 +108,17 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
     func buildContextActions(for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
+        let walletModel = tokenItemViewModel.walletModel
+
         guard
             let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId }),
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.walletModelId }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
         else {
             return []
         }
 
         let actionsBuilder = TokenActionListBuilder()
+
         let utility = ExchangeCryptoUtility(
             blockchain: walletModel.blockchainNetwork.blockchain,
             address: walletModel.defaultAddress,
@@ -126,7 +132,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
             !walletModel.isCustom
 
-        let canStake = canStake(userWalletModel: userWalletModel, walletModel: walletModel)
+        let canStake = CanStakeActionUtility().canStake(with: userWalletModel, by: walletModel)
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
 
@@ -141,25 +147,16 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             exchangeUtility: utility
         )
 
-        return maskFilterSingleTokenAvailableToken(actions: contextActions)
-    }
-
-    private func canStake(userWalletModel: UserWalletModel, walletModel: WalletModel) -> Bool {
-        CanStakeActionUtility().canStake(with: userWalletModel, by: walletModel)
+        return filterAvailableTokenActions(contextActions)
     }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
     func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) {
-        guard
-            let userWalletModel = userWalletModels
-            .first(where: { $0.userWalletId == tokenItemViewModel.userWalletId }),
-            let walletModel = userWalletModel
-            .walletModelsManager
-            .walletModels
-            .first(where: { $0.id == tokenItemViewModel.walletModelId }),
-            let coordinator = coordinator
-        else {
+        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId })
+        let walletModel = tokenItemViewModel.walletModel
+
+        guard let userWalletModel, let coordinator else {
             return
         }
 
@@ -174,7 +171,9 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             coordinator.openSell(for: walletModel, with: userWalletModel)
         case .copyAddress:
             UIPasteboard.general.string = walletModel.defaultAddress
-            coordinator.showCopyAddressAlert()
+
+            Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
+                .present(layout: .bottom(padding: 80), type: .temporary())
         case .exchange:
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:

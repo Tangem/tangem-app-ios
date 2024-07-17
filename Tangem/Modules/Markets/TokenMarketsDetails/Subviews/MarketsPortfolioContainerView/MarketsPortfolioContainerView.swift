@@ -70,7 +70,7 @@ struct MarketsPortfolioContainerView: View {
                 .padding(.horizontal, 14)
                 .padding(.bottom, Constants.defaultVerticalOffsetSpacingBetweenContent + 10)
                 .background(Colors.Background.action)
-                .modifier(HeaderCornerRadiusModify())
+                .modifier(HeaderCornerRadiusModifier())
         })
     }
 
@@ -93,32 +93,27 @@ struct MarketsPortfolioContainerView: View {
 
             ForEach(indexed: elementItems.indexed()) { itemIndex, itemViewModel in
                 if #available(iOS 16.0, *) {
+                    let roundedCornersVerticalEdge: RoundedCornersVerticalEdge?
+
                     let isFirstItem = itemIndex == 0
                     let isLastItem = itemIndex == elementItems.count - 1
 
                     if isFirstItem {
                         let isSingleItem = elementItems.count == 1
-
-                        MarketsPortfolioTokenItemView(
-                            viewModel: itemViewModel,
-                            cornerRadius: Constants.cornerRadius,
-                            roundedCornersVerticalEdge: isSingleItem ? .all : .topEdge
-                        )
+                        roundedCornersVerticalEdge = isSingleItem ? .all : .topEdge
                     } else if isLastItem {
-                        MarketsPortfolioTokenItemView(
-                            viewModel: itemViewModel,
-                            cornerRadius: Constants.cornerRadius,
-                            roundedCornersVerticalEdge: .bottomEdge
-                        )
+                        roundedCornersVerticalEdge = .bottomEdge
                     } else {
-                        MarketsPortfolioTokenItemView(
-                            viewModel: itemViewModel,
-                            cornerRadius: Constants.cornerRadius,
-                            roundedCornersVerticalEdge: nil
-                        )
+                        roundedCornersVerticalEdge = nil
                     }
+
+                    return MarketsPortfolioTokenItemView(
+                        viewModel: itemViewModel,
+                        cornerRadius: Constants.cornerRadius,
+                        roundedCornersVerticalEdge: roundedCornersVerticalEdge
+                    )
                 } else {
-                    MarketsPortfolioTokenItemView(
+                    return MarketsPortfolioTokenItemView(
                         viewModel: itemViewModel,
                         cornerRadius: Constants.cornerRadius
                     )
@@ -154,7 +149,7 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private var quickActionsView: some View {
-        if viewModel.showQuickActions, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+        if viewModel.isOneTokenInPortfolio, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
             MarketsPortfolioQuickActionsView(
                 actions: viewModel.buildContextActions(for: tokenItemViewModel),
                 onTapAction: { actionType in
@@ -185,7 +180,7 @@ private extension MarketsPortfolioContainerView {
 }
 
 private extension MarketsPortfolioContainerView {
-    struct HeaderCornerRadiusModify: ViewModifier {
+    struct HeaderCornerRadiusModifier: ViewModifier {
         func body(content: Content) -> some View {
             if #available(iOS 16.0, *) {
                 content

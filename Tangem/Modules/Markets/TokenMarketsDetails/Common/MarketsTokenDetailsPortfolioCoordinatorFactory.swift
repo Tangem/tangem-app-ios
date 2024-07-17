@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsPortfolioCoodinator.swift
+//  MarketsTokenDetailsPortfolioCoordinatorFactory.swift
 //  Tangem
 //
 //  Created by skibinalexander on 14.07.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TokenMarketsDetailsPortfolioCoodinatorFactory {
+struct MarketsTokenDetailsPortfolioCoordinatorFactory {
     // MARK: - Services
 
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -20,7 +20,7 @@ struct TokenMarketsDetailsPortfolioCoodinatorFactory {
     // MARK: - Utils
 
     func buildExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {
-        ExchangeCryptoUtility(
+        return ExchangeCryptoUtility(
             blockchain: walletModel.blockchainNetwork.blockchain,
             address: walletModel.defaultAddress,
             amountType: walletModel.amountType
@@ -44,7 +44,7 @@ struct TokenMarketsDetailsPortfolioCoodinatorFactory {
         return coordinator
     }
 
-    func makeExchangeCoordinator(
+    func makeExpressCoordinator(
         for walletModel: WalletModel,
         with userWalletModel: UserWalletModel,
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -79,6 +79,7 @@ struct TokenMarketsDetailsPortfolioCoodinatorFactory {
     ) -> URL? {
         let blockchain = walletModel.blockchainNetwork.blockchain
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
+
         if let token = walletModel.amountType.token, blockchain == .ethereum(testnet: true) {
             TestnetBuyCryptoService().buyCrypto(
                 .erc20Token(token, walletModel: walletModel, signer: userWalletModel.signer)
@@ -100,17 +101,12 @@ struct TokenMarketsDetailsPortfolioCoodinatorFactory {
         with userWalletModel: UserWalletModel,
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
     ) -> SendCoordinator? {
-        // TODO: Refactor with Send screen navigation
-        guard var amountToSend = walletModel.wallet.amounts[walletModel.amountType] else {
-            return nil
-        }
-
         let coordinator = SendCoordinator(dismissAction: dismissAction)
 
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .sell(parameters: .init(amount: amountToSend.value, destination: request.targetAddress, tag: request.tag))
+            type: .sell(parameters: .init(amount: request.amount, destination: request.targetAddress, tag: request.tag))
         )
         coordinator.start(with: options)
         return coordinator

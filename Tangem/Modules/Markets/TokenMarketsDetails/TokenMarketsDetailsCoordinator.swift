@@ -34,7 +34,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 
     private var safariHandle: SafariHandle?
 
-    private let portfolioCoordinatorFactory = TokenMarketsDetailsPortfolioCoodinatorFactory()
+    private let portfolioCoordinatorFactory = MarketsTokenDetailsPortfolioCoordinatorFactory()
 
     // MARK: - Init
 
@@ -70,23 +70,6 @@ extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
 // MARK: - MarketsPortfolioContainerRoutable
 
 extension TokenMarketsDetailsCoordinator {
-    func openAddToken() {
-        do {
-            guard let rootViewModel else {
-                assertionFailure("Root viewmodel must not be nil")
-                return
-            }
-
-            let coinModel = try rootViewModel.resolveCoinModel()
-            let walletDataProvider = rootViewModel.resolveWalletDataProvider()
-
-            networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(coinModel: coinModel, walletDataProvider: walletDataProvider)
-        } catch {
-            assertionFailure(error.localizedDescription)
-            return
-        }
-    }
-
     func openReceive(walletModel: WalletModel) {
         let infos = walletModel.wallet.addresses.map { address in
             ReceiveAddressInfo(
@@ -138,7 +121,7 @@ extension TokenMarketsDetailsCoordinator {
             self?.expressCoordinator = nil
         }
 
-        expressCoordinator = portfolioCoordinatorFactory.makeExchangeCoordinator(
+        expressCoordinator = portfolioCoordinatorFactory.makeExpressCoordinator(
             for: walletModel,
             with: userWalletModel,
             dismissAction: dismissAction,
@@ -190,14 +173,6 @@ extension TokenMarketsDetailsCoordinator {
             dismissAction: dismissAction
         )
     }
-
-    func showCopyAddressAlert() {
-        Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
-            .present(
-                layout: .bottom(padding: 80),
-                type: .temporary()
-            )
-    }
 }
 
 // MARK: - Utilities functions
@@ -230,7 +205,7 @@ extension TokenMarketsDetailsCoordinator {
 
     func openP2PTutorial() {
         modalWebViewModel = WebViewContainerViewModel(
-            url: URL(string: "https://tangem.com/howtobuy.html")!,
+            url: AppConstants.howToBuyURL,
             title: "",
             addLoadingIndicator: true,
             withCloseButton: false,

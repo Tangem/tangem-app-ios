@@ -104,6 +104,7 @@ struct MarketsPortfolioTokenItemView: View {
     @ViewBuilder
     private func contextMenuButton(for actionType: TokenActionType) -> some View {
         let action = { viewModel.didTapContextAction(actionType) }
+
         if actionType.isDestructive {
             Button(
                 role: .destructive,
@@ -122,6 +123,7 @@ struct MarketsPortfolioTokenItemView: View {
     private func labelForContextButton(with action: TokenActionType) -> some View {
         HStack {
             Text(action.title)
+
             action.icon.image
                 .renderingMode(.template)
         }
