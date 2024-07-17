@@ -62,7 +62,7 @@ struct PendingExpressTransactionsConverter {
         currentStatus: PendingExpressTransactionStatus,
         lastStatusIndex: Int
     ) -> PendingExpressTransactionStatusRow.StatusRowData {
-        let isFinished = !currentStatus.isTransactionInProgress
+        let isFinished = currentStatus.isTerminated
         if isFinished {
             // Always display cross for failed state
             switch status {

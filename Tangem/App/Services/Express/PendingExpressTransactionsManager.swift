@@ -109,7 +109,8 @@ class CommonPendingExpressTransactionsManager {
                 for pendingTransaction in pendingTransactionsToRequest {
                     let record = pendingTransaction.transactionRecord
 
-                    guard record.transactionStatus.isTransactionInProgress else {
+                    // We have not any sense to update the terminated status
+                    guard !record.transactionStatus.isTerminated else {
                         transactionsInProgress.append(pendingTransaction)
                         transactionsToSchedule.append(pendingTransaction)
                         continue
