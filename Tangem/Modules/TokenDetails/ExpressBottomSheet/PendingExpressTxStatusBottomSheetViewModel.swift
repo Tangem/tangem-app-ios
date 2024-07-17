@@ -178,7 +178,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                     return
                 }
 
-                if pendingTx.transactionRecord.transactionStatus.shouldHide {
+                if pendingTx.transactionRecord.transactionStatus.isTerminated {
                     viewModel.pendingTransactionsManager?.hideTransaction(with: pendingTx.transactionRecord.expressTransactionId)
                 }
 

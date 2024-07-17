@@ -66,16 +66,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         }
     }
 
-    var isTransactionInProgress: Bool {
-        switch self {
-        case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .failed, .verificationRequired:
-            return true
-        case .done, .refunded, .canceled, .awaitingHash, .unknown:
-            return false
-        }
-    }
-
-    var shouldHide: Bool {
+    var isTerminated: Bool {
         switch self {
         case .done, .refunded, .canceled:
             return true
