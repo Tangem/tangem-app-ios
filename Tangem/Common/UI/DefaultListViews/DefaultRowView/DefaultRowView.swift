@@ -54,10 +54,9 @@ struct DefaultRowView: View {
                 .style(appearance.font, color: appearance.textColor)
             if let secondaryAction = viewModel.secondaryAction {
                 Button(action: secondaryAction) {
-                    Image(systemName: "info.circle")
-                        .frame(width: 13)
-                        .padding(5)
-                        .foregroundStyle(Colors.Icon.informative)
+                    Assets.infoCircle16.image
+                        .padding(4)
+                        .foregroundColor(Colors.Icon.informative)
                 }
             }
         }

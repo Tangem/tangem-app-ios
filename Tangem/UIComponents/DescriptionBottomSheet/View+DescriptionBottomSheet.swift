@@ -15,7 +15,7 @@ extension View {
             detents: [.custom(sheetHeight.wrappedValue)],
             settings: .init(backgroundColor: backgroundColor, contentHeightBinding: sheetHeight)
         ) { info in
-            DescriptionBottomSheetView(info: info, availableHeight: sheetHeight.wrappedValue, sheetHeight: sheetHeight)
+            DescriptionBottomSheetView(info: info, sheetHeight: sheetHeight)
         }
     }
 }
