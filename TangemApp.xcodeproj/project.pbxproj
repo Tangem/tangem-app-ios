@@ -765,6 +765,7 @@
 		B696109A2A428CA300CF88B7 /* OrganizeTokensListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */; };
 		B6961B202BB2FD2900FE266D /* PolkadotAccountHealthNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6961B1F2BB2FD2900FE266D /* PolkadotAccountHealthNetworkService.swift */; };
 		B69A140B2B7EC3FB00EF0825 /* TokenInteractionAvailabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69A140A2B7EC3FB00EF0825 /* TokenInteractionAvailabilityProvider.swift */; };
+		B69A48672C47BA2A003497E1 /* OverlayContentStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69A48662C47BA2A003497E1 /* OverlayContentStateController.swift */; };
 		B69C9D3A2A7027F100ECD35F /* DragGesture.Value+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */; };
 		B69D0E802A3AEE8000A8B44D /* TokenListLoadingPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69D0E7F2A3AEE7F00A8B44D /* TokenListLoadingPlaceholderView.swift */; };
 		B69D5EEB2A3252A800B494A9 /* OrganizeTokensListCornerRadiusParametersProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69D5EEA2A3252A800B494A9 /* OrganizeTokensListCornerRadiusParametersProvider.swift */; };
@@ -2639,6 +2640,7 @@
 		B69610992A428CA300CF88B7 /* OrganizeTokensListItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListItemView.swift; sourceTree = "<group>"; };
 		B6961B1F2BB2FD2900FE266D /* PolkadotAccountHealthNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolkadotAccountHealthNetworkService.swift; sourceTree = "<group>"; };
 		B69A140A2B7EC3FB00EF0825 /* TokenInteractionAvailabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInteractionAvailabilityProvider.swift; sourceTree = "<group>"; };
+		B69A48662C47BA2A003497E1 /* OverlayContentStateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayContentStateController.swift; sourceTree = "<group>"; };
 		B69C9D392A7027F100ECD35F /* DragGesture.Value+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DragGesture.Value+.swift"; sourceTree = "<group>"; };
 		B69D0E7F2A3AEE7F00A8B44D /* TokenListLoadingPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenListLoadingPlaceholderView.swift; sourceTree = "<group>"; };
 		B69D5EEA2A3252A800B494A9 /* OrganizeTokensListCornerRadiusParametersProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListCornerRadiusParametersProvider.swift; sourceTree = "<group>"; };
@@ -6345,6 +6347,7 @@
 			children = (
 				B66913632C4179400016B0EE /* OverlayContentContainer.swift */,
 				B656FCED2C47546C002B5BF2 /* OverlayContentStateObserver.swift */,
+				B69A48662C47BA2A003497E1 /* OverlayContentStateController.swift */,
 				B66913612C41790E0016B0EE /* OverlayContentContainer+Environment.swift */,
 				B669136F2C41958D0016B0EE /* OverlayContentContainerViewControllerAdapter.swift */,
 				B669136B2C417C9A0016B0EE /* OverlayContentContainerViewModifier.swift */,
@@ -11202,6 +11205,7 @@
 				DC74BC2F28EF060600B49850 /* UserWalletId.swift in Sources */,
 				EF4BEF8128AB953E00C5D1BE /* CommonUserTokenListManager.swift in Sources */,
 				2DC5DAAD29B782420039154A /* TonCenterApiKeys.swift in Sources */,
+				B69A48672C47BA2A003497E1 /* OverlayContentStateController.swift in Sources */,
 				DA1DF04B2BA3E4A0008310E4 /* SendAmountSummaryViewData.swift in Sources */,
 				DC70C0152B95EE20002205BA /* KeysDeriving.swift in Sources */,
 				B0C8A0D42562C86A00DEEAC7 /* View+PreviewDevice.swift in Sources */,

@@ -42,3 +42,15 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentStateObser
         containerViewController?.removeObserver(forToken: token)
     }
 }
+
+// MARK: - OverlayContentStateController protocol conformance
+
+extension OverlayContentContainerViewControllerAdapter: OverlayContentStateController {
+    func collapse() {
+        // TODO: Andrey Fedorov - Add actual implementation (IOS-7364)
+    }
+
+    func expand() {
+        // TODO: Andrey Fedorov - Add actual implementation (IOS-7364)
+    }
+}
