@@ -13,8 +13,6 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
-//    @Injected(\.stakingAvailabilityProvider) private var stakingAvailabilityProvider: StakingAvailabilityProvider
-
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel

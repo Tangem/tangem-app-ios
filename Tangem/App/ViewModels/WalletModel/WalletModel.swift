@@ -317,11 +317,7 @@ class WalletModel {
         _transactionHistoryService?.clearHistory()
 
         return Publishers
-            .CombineLatest3(
-                update(silent: silent),
-                updateTransactionsHistory(),
-                updateStakingManagerState()
-            )
+            .CombineLatest(update(silent: silent), updateTransactionsHistory())
             .mapToVoid()
             .eraseToAnyPublisher()
     }
