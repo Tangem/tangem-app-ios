@@ -354,6 +354,7 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
+        // TODO: Andrey Fedorov - Tweak predicted location calculation if needed (IOS-7364))
         let translation = gestureRecognizer.predictedTranslation(in: nil, atDecelerationRate: .fast)
         let overlayOrigin = overlayViewController?.view.frame.origin ?? .zero
         let predictedOverlayOriginY = abs(overlayOrigin.y + translation.y)
