@@ -44,7 +44,7 @@ class MarketsCoordinator: CoordinatorObject {
         rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
     }
 
-    func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
+    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
         if state.isBottom {
             rootViewModel?.onBottomSheetDisappear()
             headerViewModel?.onBottomSheetDisappear()

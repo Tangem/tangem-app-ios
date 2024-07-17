@@ -17,7 +17,11 @@ struct RootViewControllerFactory {
         }
 
         let adapter = OverlayContentContainerViewControllerAdapter()
-        let rootView = rootView.environment(\.overlayContentContainer, adapter)
+
+        let rootView = rootView
+            .environment(\.overlayContentContainer, adapter)
+            .environment(\.overlayContentStateObserver, adapter)
+
         let contentViewController = UIHostingController(rootView: rootView)
 
         // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area

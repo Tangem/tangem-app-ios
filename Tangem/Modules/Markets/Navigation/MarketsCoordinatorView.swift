@@ -26,6 +26,9 @@ struct MarketsCoordinatorView: CoordinatorView {
 
                         sheets
                     }
+                    .onOverlayContentStateChange { state in
+                        coordinator.onOverlayContentStateChange(state)
+                    }
                 }
             }
         }
