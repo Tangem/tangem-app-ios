@@ -34,6 +34,7 @@ private struct OverlayContentContainerViewModifier<
     @State private var isAppeared = false
 
     @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Environment(\.overlayContentStateObserver) private var overlayContentStateObserver
 
     init(
         item: Binding<Item?>,
@@ -46,7 +47,7 @@ private struct OverlayContentContainerViewModifier<
     func body(content: Content) -> some View {
         if #available(iOS 17.0, *) {
             content
-                .onChange(of: item?.id, initial: true) { _, _ in
+                .onChange(of: item?.id, initial: true) {
                     updateOverlay()
                 }
         } else {
@@ -74,7 +75,11 @@ private struct OverlayContentContainerViewModifier<
         overlayContentContainer.removeOverlay()
 
         if let item {
+            // `overlay` is a completely different branch of the SwiftUI view hierarchy,
+            // so we must explicitly re-inject `overlayContentStateObserver` into this branch
             let overlay = overlayFactory(item)
+                .environment(\.overlayContentStateObserver, overlayContentStateObserver)
+
             overlayContentContainer.installOverlay(overlay)
         }
     }

@@ -28,6 +28,9 @@ final class OverlayContentContainerViewController: UIViewController {
         didSet { onProgressChange(oldValue: oldValue, newValue: progress) }
     }
 
+    // TODO: Andrey Fedorov - Check for leaks (IOS-7364)
+    private var stateObservers: [AnyHashable: OverlayContentStateObserver.Observer] = [:]
+
     // MARK: - Read-only state
 
     private var screenBounds: CGRect {
@@ -121,6 +124,14 @@ final class OverlayContentContainerViewController: UIViewController {
 
         overlayViewController.removeFromParent()
         self.overlayViewController = nil
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.Observer, forToken token: any Hashable) {
+        stateObservers[AnyHashable(token)] = observer
+    }
+
+    func removeObserver(forToken token: any Hashable) {
+        stateObservers.removeValue(forKey: AnyHashable(token))
     }
 
     // MARK: - Setup
@@ -247,6 +258,19 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
+    private func notifyStateObserversIfNeeded() {
+        for stateObserver in stateObservers.values {
+            if isCollapsedState {
+                stateObserver(.bottom)
+            } else if isExpandedState {
+                // TODO: Andrey Fedorov - Add support for `Trigger.tapGesture` (IOS-7364)
+                stateObserver(.top(trigger: .dragGesture))
+            } else {
+                // No-op
+            }
+        }
+    }
+
     private func reset() {
         panGestureStartLocation = .zero
         shouldIgnorePanGestureRecognizer = false
@@ -262,6 +286,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
         updateContentScale()
         updateBackgroundShadowViewAlpha()
+        notifyStateObserversIfNeeded()
     }
 
     @objc

@@ -30,3 +30,15 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer 
         containerViewController?.removeOverlay()
     }
 }
+
+// MARK: - OverlayContentStateObserver protocol conformance
+
+extension OverlayContentContainerViewControllerAdapter: OverlayContentStateObserver {
+    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+        containerViewController?.addObserver(observer, forToken: token)
+    }
+
+    func removeObserver(forToken token: any Hashable) {
+        containerViewController?.removeObserver(forToken: token)
+    }
+}
