@@ -27,7 +27,7 @@ struct RootViewControllerFactory {
         // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
-            overlayCollapsedHeight: 92.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
+            overlayCollapsedHeight: 102.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
             overlayExpandedVerticalOffset: 54.0 // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=22985-125042&t=Z1kPdSQJ0JLoYgW0-4
         )
 

@@ -13,22 +13,20 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MarketsCoordinator
 
     var body: some View {
-        ZStack {
-            if let model = coordinator.rootViewModel {
-                NavigationView {
-                    ZStack {
-                        VStack(spacing: 0.0) {
-                            header
+        if let model = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
+                    VStack(spacing: 0.0) {
+                        header
 
-                            MarketsView(viewModel: model)
-                                .navigationLinks(links)
-                        }
+                        MarketsView(viewModel: model)
+                            .navigationLinks(links)
+                    }
 
-                        sheets
-                    }
-                    .onOverlayContentStateChange { state in
-                        coordinator.onOverlayContentStateChange(state)
-                    }
+                    sheets
+                }
+                .onOverlayContentStateChange { state in
+                    coordinator.onOverlayContentStateChange(state)
                 }
             }
         }
