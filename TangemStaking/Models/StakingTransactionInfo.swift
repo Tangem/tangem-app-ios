@@ -9,11 +9,32 @@
 import Foundation
 
 public struct StakingTransactionInfo: Hashable {
-    let id: String
-    let actionId: String
-    let network: String
-    let type: TransactionType
-    let status: TransactionStatus
-    let unsignedTransactionData: Data
-    let fee: Decimal
+    public let id: String
+    public let actionId: String
+    public let network: String
+    public let type: TransactionType
+    public let status: TransactionStatus
+    public let unsignedTransactionData: Data
+    public let amount: Decimal
+    public let fee: Decimal
+
+    public init(
+        id: String,
+        actionId: String,
+        network: String,
+        type: TransactionType,
+        status: TransactionStatus,
+        unsignedTransactionData: Data,
+        amount: Decimal,
+        fee: Decimal
+    ) {
+        self.id = id
+        self.actionId = actionId
+        self.network = network
+        self.type = type
+        self.status = status
+        self.unsignedTransactionData = unsignedTransactionData
+        self.amount = amount
+        self.fee = fee
+    }
 }

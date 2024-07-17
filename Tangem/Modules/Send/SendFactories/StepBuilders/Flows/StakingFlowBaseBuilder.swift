@@ -22,17 +22,14 @@ struct StakingFlowBaseBuilder {
     func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
-        let stakingModel = builder.makeStakingModel(sendTransactionDispatcher: sendTransactionDispatcher)
-        let feeInteractor = builder.makeStakingFeeInteractor(
-            input: stakingModel,
-            output: stakingModel,
-            validatorsInput: stakingModel,
-            manager: manager
+        let stakingModel = builder.makeStakingModel(
+            stakingManager: manager,
+            sendTransactionDispatcher: sendTransactionDispatcher
         )
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: stakingModel, output: stakingModel),
-            sendFeeInteractor: feeInteractor,
+            sendFeeLoader: stakingModel,
             sendQRCodeService: .none
         )
 
@@ -51,17 +48,12 @@ struct StakingFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(addressTextViewHeightModel: .none)
 
-        // We have to set dependicies here after all setups is completed
-        stakingModel.informationRelevanceService = builder.makeInformationRelevanceService(
-            sendFeeInteractor: feeInteractor
-        )
-
         summary.step.setup(sendAmountInput: stakingModel)
-        summary.step.setup(sendFeeInteractor: feeInteractor)
+        summary.step.setup(sendFeeInput: stakingModel)
         summary.step.setup(stakingValidatorsInput: stakingModel)
 
         finish.setup(sendAmountInput: stakingModel)
-        finish.setup(sendFeeInteractor: feeInteractor)
+        finish.setup(sendFeeInput: stakingModel)
         finish.setup(sendFinishInput: stakingModel)
 
         let stepsManager = CommonStakingStepsManager(

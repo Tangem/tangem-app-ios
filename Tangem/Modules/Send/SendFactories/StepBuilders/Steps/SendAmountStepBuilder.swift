@@ -17,7 +17,7 @@ struct SendAmountStepBuilder {
 
     func makeSendAmountStep(
         io: IO,
-        sendFeeInteractor: any SendFeeInteractor,
+        sendFeeLoader: any SendFeeLoader,
         sendQRCodeService: SendQRCodeService?
     ) -> ReturnValue {
         let interactor = makeSendAmountInteractor(io: io)
@@ -26,7 +26,7 @@ struct SendAmountStepBuilder {
         let step = SendAmountStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendFeeInteractor: sendFeeInteractor
+            sendFeeLoader: sendFeeLoader
         )
 
         return (step: step, interactor: interactor)

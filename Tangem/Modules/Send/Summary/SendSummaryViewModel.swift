@@ -13,7 +13,7 @@ import Combine
 protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
-    func setup(sendFeeInteractor: SendFeeInteractor)
+    func setup(sendFeeInput: SendFeeInput)
     func setup(stakingValidatorsInput: StakingValidatorsInput)
 }
 
@@ -200,8 +200,8 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .store(in: &bag)
     }
 
-    func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor
+    func setup(sendFeeInput input: SendFeeInput) {
+        input
             .feesPublisher
             .map { feeValues in
                 let multipleFeeOptions = feeValues.count > 1
@@ -213,7 +213,7 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .assign(to: \.canEditFee, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.CombineLatest(interactor.feesPublisher, interactor.selectedFeePublisher)
+        Publishers.CombineLatest(input.feesPublisher, input.selectedFeePublisher)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in

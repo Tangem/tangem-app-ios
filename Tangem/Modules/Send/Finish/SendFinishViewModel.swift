@@ -14,7 +14,7 @@ protocol SendFinishViewModelSetupable: AnyObject {
     func setup(sendFinishInput: SendFinishInput)
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
-    func setup(sendFeeInteractor: SendFeeInteractor)
+    func setup(sendFeeInput: SendFeeInput)
 }
 
 class SendFinishViewModel: ObservableObject, Identifiable {
@@ -97,8 +97,8 @@ extension SendFinishViewModel: SendFinishViewModelSetupable {
             .store(in: &bag)
     }
 
-    func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor.selectedFeePublisher
+    func setup(sendFeeInput input: SendFeeInput) {
+        input.selectedFeePublisher
             .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)

@@ -154,7 +154,7 @@ private extension SendModel {
         }
 
         return sendTransactionDispatcher
-            .send(transaction: transaction)
+            .send(transaction: .transfer(transaction))
             .withWeakCaptureOf(self)
             .compactMap { sender, result in
                 sender.proceed(transaction: transaction, result: result)
@@ -245,6 +245,10 @@ extension SendModel: SendFeeInput {
         _selectedFee.eraseToAnyPublisher()
     }
 
+    var feesPublisher: AnyPublisher<[SendFee], Never> {
+        sendFeeInteractor.feesPublisher
+    }
+
     var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
         _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
     }
@@ -265,8 +269,8 @@ extension SendModel: SendFeeOutput {
 // MARK: - SendSummaryInput, SendSummaryOutput
 
 extension SendModel: SendSummaryInput, SendSummaryOutput {
-    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> {
-        _transaction.eraseToAnyPublisher()
+    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
+        _transaction.map { $0.map { .transfer($0) } }.eraseToAnyPublisher()
     }
 }
 
@@ -303,6 +307,10 @@ extension SendModel: SendNotificationManagerInput {
 
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
         _isFeeIncluded.eraseToAnyPublisher()
+    }
+
+    var bsdkTransactionPublisher: AnyPublisher<BSDKTransaction?, Never> {
+        _transaction.eraseToAnyPublisher()
     }
 
     var transactionCreationError: AnyPublisher<Error?, Never> {

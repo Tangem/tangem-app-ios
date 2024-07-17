@@ -58,11 +58,11 @@ struct SellFlowBaseBuilder {
 
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInteractor: fee.interactor)
+        summary.step.setup(sendFeeInput: sendModel)
 
         finish.setup(sendDestinationInput: sendModel)
         finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInteractor: fee.interactor)
+        finish.setup(sendFeeInput: sendModel)
         finish.setup(sendFinishInput: sendModel)
 
         let stepsManager = CommonSellStepsManager(

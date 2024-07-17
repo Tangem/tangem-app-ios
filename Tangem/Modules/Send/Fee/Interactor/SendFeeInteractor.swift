@@ -10,7 +10,11 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-protocol SendFeeInteractor {
+protocol SendFeeLoader {
+    func updateFees()
+}
+
+protocol SendFeeInteractor: SendFeeLoader {
     var selectedFee: SendFee? { get }
     var selectedFeePublisher: AnyPublisher<SendFee, Never> { get }
 
@@ -18,5 +22,4 @@ protocol SendFeeInteractor {
     var customFeeInputFieldModels: [SendCustomFeeInputFieldModel] { get }
 
     func update(selectedFee: SendFee)
-    func updateFees()
 }

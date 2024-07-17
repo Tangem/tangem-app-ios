@@ -8,10 +8,9 @@
 
 import Foundation
 import Combine
-import struct BlockchainSdk.Transaction
 
 protocol SendSummaryInput: AnyObject {
-    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> { get }
+    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> { get }
 }
 
 protocol SendSummaryOutput: AnyObject {}
