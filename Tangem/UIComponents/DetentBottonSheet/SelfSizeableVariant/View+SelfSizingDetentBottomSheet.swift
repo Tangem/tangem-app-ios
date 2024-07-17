@@ -1,9 +1,9 @@
 //
-//  View+DetentBottomSheet.swift
+//  View+SelfSizingDetentBottomSheet.swift
 //  Tangem
 //
-//  Created by skibinalexander on 06.12.2023.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by Andrew Son on 16/07/24.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import SwiftUI
@@ -15,14 +15,14 @@ extension View {
     ///   - settings: You can setup the sheet's appearance
     ///   - sheetContent: View for `sheetContent`
     @ViewBuilder
-    func detentBottomSheet<Item: Identifiable, ContentView: View>(
+    func SelfSizingDetentBottomSheet<Item: Identifiable, ContentView: SelfSizingBottomSheetContent>(
         item: Binding<Item?>,
         detents: Set<BottomSheetDetent> = [.large],
-        settings: DetentBottomSheetContainer<ContentView>.Settings = .init(),
+        settings: SelfSizingDetentBottomSheetModifier<Item, ContentView>.Settings = .init(),
         @ViewBuilder sheetContent: @escaping (Item) -> ContentView
     ) -> some View {
         modifier(
-            DetentBottomSheetModifier(
+            SelfSizingDetentBottomSheetModifier(
                 item: item,
                 detents: detents,
                 settings: settings,
