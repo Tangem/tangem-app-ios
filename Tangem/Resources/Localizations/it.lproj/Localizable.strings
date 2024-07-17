@@ -329,6 +329,7 @@
 "markets_selector_interval_7d_title" = "7d";
 "markets_selector_interval_all_title" = "All";
 "markets_sort_by_title" = "Sort By";
+"markets_token_details_about_token_title" = "About %@";
 "markets_token_details_blockchain_site" = "Blockchain site";
 "markets_token_details_buy_pressure" = "Buy pressure";
 "markets_token_details_buy_pressure_description" = "The difference between buyers volume and sellers volume";

@@ -17,4 +17,5 @@ public protocol StakingAPIProvider {
 
     func patchTransaction(id: String) async throws -> TransactionInfo
     func submitTransaction(hash: String, signedTransaction: String) async throws
+    func submitHash(hash: String, transactionId: String) async throws
 }

@@ -84,6 +84,9 @@ class WelcomeCoordinator: CoordinatorObject {
         let permissionManager = factory.makePermissionManagerForWelcomeOnboarding(using: pushNotificationsInteractor)
         let builder = WelcomeOnboardingStepsBuilder(isPushNotificationsAvailable: availabilityProvider.isAvailable)
         let steps = builder.buildSteps()
+        guard !steps.isEmpty else {
+            return
+        }
 
         let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.welcomeOnboardingCoordinator = nil
