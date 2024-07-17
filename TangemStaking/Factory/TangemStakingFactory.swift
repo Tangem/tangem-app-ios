@@ -49,6 +49,13 @@ public struct TangemStakingFactory {
         let mapper = StakeKitMapper()
         return CommonStakingAPIProvider(service: service, mapper: mapper)
     }
+
+    public func makePendingHashesSender(
+        repository: StakingPendingHashesRepository,
+        provider: StakingAPIProvider
+    ) -> StakingPendingHashesSender {
+        CommonStakingPendingHashesSender(repository: repository, provider: provider)
+    }
 }
 
 // MARK: - Injected configurations and dependencies

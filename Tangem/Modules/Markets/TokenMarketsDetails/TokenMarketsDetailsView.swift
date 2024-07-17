@@ -11,6 +11,8 @@ import SwiftUI
 struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
 
+    @State private var descriptionBottomSheetHeight: CGFloat = 0
+
     var body: some View {
         VStack(spacing: 0) {
             SheetHandleView(backgroundColor: Colors.Background.tertiary)
@@ -44,11 +46,20 @@ struct TokenMarketsDetailsView: View {
             }
             .padding(.top, 14)
         }
-        .frame(maxWidth: .infinity)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Text(viewModel.tokenName))
         .background(Colors.Background.tertiary)
         .bindAlert($viewModel.alert)
+        .descriptionBottomSheet(
+            info: $viewModel.descriptionBottomSheetInfo,
+            sheetHeight: $descriptionBottomSheetHeight,
+            backgroundColor: Colors.Background.action
+        )
+        .onChange(of: viewModel.descriptionBottomSheetInfo, perform: { value in
+            if value == nil {
+                descriptionBottomSheetHeight = 0
+            }
+        })
     }
 
     private var header: some View {

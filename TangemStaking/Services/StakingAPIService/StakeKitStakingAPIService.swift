@@ -44,6 +44,10 @@ class StakeKitStakingAPIService: StakingAPIService {
     func submitTransaction(id: String, request: StakeKitDTO.SubmitTransaction.Request) async throws -> StakeKitDTO.SubmitTransaction.Response {
         try await _request(target: .submitTransaction(id: id, body: request))
     }
+
+    func submitHash(id: String, request: StakeKitDTO.SubmitHash.Request) async throws -> StakeKitDTO.SubmitHash.Response {
+        try await _request(target: .submitHash(id: id, body: request))
+    }
 }
 
 private extension StakeKitStakingAPIService {

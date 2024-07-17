@@ -22,6 +22,7 @@ struct StakeKitTarget: Moya.TargetType {
 
         case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)
         case submitTransaction(id: String, body: StakeKitDTO.SubmitTransaction.Request)
+        case submitHash(id: String, body: StakeKitDTO.SubmitHash.Request)
     }
 
     var baseURL: URL {
@@ -42,6 +43,8 @@ struct StakeKitTarget: Moya.TargetType {
             return "/transactions/\(id)"
         case .submitTransaction(let id, _):
             return "/transactions/\(id)/submit"
+        case .submitHash(let id, _):
+            return "transactions/\(id)/submit_hash"
         }
     }
 
@@ -49,7 +52,7 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .getYield, .enabledYields:
             return .get
-        case .enterAction, .getBalances, .submitTransaction:
+        case .enterAction, .getBalances, .submitTransaction, .submitHash:
             return .post
         case .constructTransaction:
             return .patch
@@ -67,6 +70,8 @@ struct StakeKitTarget: Moya.TargetType {
         case .constructTransaction(_, let body):
             return .requestJSONEncodable(body)
         case .submitTransaction(_, let body):
+            return .requestJSONEncodable(body)
+        case .submitHash(_, let body):
             return .requestJSONEncodable(body)
         }
     }
