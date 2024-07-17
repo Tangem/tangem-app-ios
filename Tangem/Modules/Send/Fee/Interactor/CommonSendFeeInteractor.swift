@@ -219,7 +219,7 @@ private extension CommonSendFeeInteractor {
     }
 
     private func initialSelectedFeeUpdateIfNeeded(fee: SendFee) {
-        guard input?.selectedFee == nil else {
+        guard input?.selectedFee.value.value == nil else {
             return
         }
 

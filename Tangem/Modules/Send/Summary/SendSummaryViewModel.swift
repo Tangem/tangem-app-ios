@@ -219,20 +219,10 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
                 let (feeValues, selectedFee) = args
-                var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
-                var deselectedFeeRowViewModels: [FeeRowViewModel] = []
-
-                for feeValue in feeValues {
-                    if feeValue.option == selectedFee.option {
-                        selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
-                    } else {
-                        let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
-                        deselectedFeeRowViewModels.append(model)
-                    }
+                viewModel.selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
+                viewModel.deselectedFeeRowViewModels = feeValues.filter { $0.option != selectedFee.option }.map { feeValue in
+                    viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
                 }
-
-                viewModel.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
-                viewModel.deselectedFeeRowViewModels = deselectedFeeRowViewModels
             }
             .store(in: &bag)
     }

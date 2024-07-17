@@ -37,6 +37,7 @@ struct SendSummaryStepBuilder {
         let step = SendSummaryStep(
             viewModel: viewModel,
             interactor: interactor,
+            input: io.input,
             tokenItem: walletModel.tokenItem,
             walletName: builder.walletName()
         )
