@@ -46,6 +46,9 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private var notificationUpdateWorkItem: DispatchWorkItem?
     private weak var router: PendingExpressTxStatusRoutable?
     private var successToast: Toast<SuccessToast>?
+    private var externalProviderTxURL: URL? {
+        pendingTransaction.transactionRecord.externalTxURL.flatMap { URL(string: $0) }
+    }
 
     init(
         pendingTransaction: PendingExpressTransaction,
@@ -116,10 +119,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func openProvider() {
-        guard
-            let urlString = pendingTransaction.transactionRecord.externalTxURL,
-            let url = URL(string: urlString)
-        else {
+        guard let url = externalProviderTxURL else {
             return
         }
 
@@ -229,7 +229,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             showGoToProviderHeaderButton = false
             scheduleNotificationUpdate(nil, delay: delay)
         default:
-            showGoToProviderHeaderButton = true
+            showGoToProviderHeaderButton = externalProviderTxURL != nil
             scheduleNotificationUpdate(nil, delay: delay)
         }
     }
