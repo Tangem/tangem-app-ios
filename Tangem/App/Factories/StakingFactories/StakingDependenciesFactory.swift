@@ -11,7 +11,6 @@ import TangemStaking
 
 class StakingDependenciesFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     func makeStakingAPIProvider() -> StakingAPIProvider {
         TangemStakingFactory().makeStakingAPIProvider(

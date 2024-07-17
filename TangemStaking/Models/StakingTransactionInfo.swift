@@ -1,5 +1,5 @@
 //
-//  TransactionInfo.swift
+//  StakingTransactionInfo.swift
 //  TangemStaking
 //
 //  Created by Sergey Balashov on 12.07.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct TransactionInfo: Hashable {
+public struct StakingTransactionInfo: Hashable {
     let id: String
     let actionId: String
     let network: String
