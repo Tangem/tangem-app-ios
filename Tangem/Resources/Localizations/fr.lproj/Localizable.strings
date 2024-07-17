@@ -602,9 +602,11 @@
 "staking_details_on_stake" = "On stake";
 "staking_details_reward_claiming" = "Reward claiming";
 "staking_details_reward_schedule" = "Reward schedule";
+"staking_details_rewards_to_claim" = "Rewards to claim: %s";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
 "staking_details_warmup_period" = "Warmup period";
+"staking_native" = "Native staking";
 "staking_rewards" = "Rewards";
 "story_awe_description" = "Store your crypto assets secure while keeping private keys contained in your card";
 "story_awe_title" = "Revolutionary Hardware Wallet";

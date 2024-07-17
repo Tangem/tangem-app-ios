@@ -44,6 +44,15 @@ struct TokenDetailsView: View {
                     )
                 }
 
+                if viewModel.isNativeStakingAvailable {
+                    NativeStakingView(
+                        usdAmount: "456.34$",
+                        coinAmount: "5 SOL",
+                        rewardsToClaim: "0,43$",
+                        tapAction: {}
+                    )
+                }
+
                 ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
                     PendingExpressTransactionView(info: transactionInfo)
                         .transition(.notificationTransition)

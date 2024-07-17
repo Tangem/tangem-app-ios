@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A0DB6E82C479A6900003450 /* NativeStakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DB6E72C479A6900003450 /* NativeStakingView.swift */; };
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
@@ -1804,6 +1805,7 @@
 		044BB04C4683A6282DB6C5BC /* Pods-TangemExpressTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		04AA141D96DF6EEC6163D9B4 /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
 		071053424D6ADD2932A4E994 /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
+		0A0DB6E72C479A6900003450 /* NativeStakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeStakingView.swift; sourceTree = "<group>"; };
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
@@ -3686,6 +3688,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A0DB6E62C479A5C00003450 /* NativeStakingView */ = {
+			isa = PBXGroup;
+			children = (
+				0A0DB6E72C479A6900003450 /* NativeStakingView.swift */,
+			);
+			path = NativeStakingView;
+			sourceTree = "<group>";
+		};
 		2D1BB3662C074207008392F7 /* Markets */ = {
 			isa = PBXGroup;
 			children = (
@@ -5389,42 +5399,43 @@
 		B0958BA529F6B698007CD76D /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
-				B0EA18AB2C465D5D0023B72A /* DescriptionBottomSheet */,
-				B041C96C2C3FF72F00CE027A /* ProgressViewStyle */,
-				2D5DCC342C330A33000EE379 /* WalletSelectorItemView */,
-				B6157AAB2C3226FD000640B4 /* Onboarding */,
-				EF1E17662BF67292000364AE /* DefaultTextFieldRowView */,
-				EF1E172C2BF50DDA000364AE /* SettingsUserWalletRow */,
-				EF6600512B6D187600B65449 /* PendingTransactionsListView */,
-				EFE5EC512AEC1B8800C5ADC3 /* UndoToastView */,
 				EFF466E02AC709B600ACC3EA /* BalanceTitleView */,
-				EFE7D57C2AA20D480047D93A /* TokenPriceChange */,
-				EFE7D5822AA224C50047D93A /* Types */,
-				EF81B2A82A6686D2006CD57B /* BottomScrollableSheet */,
 				B0A4C49E2A270F490060E039 /* BalanceWithButtonsView */,
+				EF81B2A82A6686D2006CD57B /* BottomScrollableSheet */,
 				EF666C242A2DF9D60044986F /* BottomSheet */,
 				2D535E6D2A0CB4D20081EB76 /* BottonSheetInfoView */,
-				2DBE29BE2B3C4A8100109D5E /* DetentBottonSheet */,
 				B05A13AF29FBF16300FB511A /* ButtonWithIcon */,
 				B675A1E42A1E050C00F624B6 /* CardsInfoPagerView */,
+				DA7046152AAA180900808FA8 /* Charts */,
 				B0B335CE29FA7FC100E2082E /* Common */,
+				EF1E17662BF67292000364AE /* DefaultTextFieldRowView */,
+				B0EA18AB2C465D5D0023B72A /* DescriptionBottomSheet */,
+				2DBE29BE2B3C4A8100109D5E /* DetentBottonSheet */,
 				B0120A942A0E0FAB00F485F1 /* Extensions */,
-				2D535E6A2A0CB4D20081EB76 /* NotificationView */,
-				DA5044E12ABACA4700D1E5CF /* MarketPriceView */,
 				B0692BB12C00CFA300FD8E1C /* ManageTokensListView */,
-				B0E7489A2A3C12920015E3FC /* ReceiveBottomSheetView */,
+				DA5044E12ABACA4700D1E5CF /* MarketPriceView */,
+				0A0DB6E62C479A5C00003450 /* NativeStakingView */,
+				2D535E6A2A0CB4D20081EB76 /* NotificationView */,
+				B6157AAB2C3226FD000640B4 /* Onboarding */,
 				B0406BB42A402445006452C2 /* PagerWithDots */,
+				EF6600512B6D187600B65449 /* PendingTransactionsListView */,
+				B041C96C2C3FF72F00CE027A /* ProgressViewStyle */,
+				B0E7489A2A3C12920015E3FC /* ReceiveBottomSheetView */,
+				2DB361492C14FB9200BB1D38 /* SegmentPickerView */,
 				DA8BBF952A0248E300B085DC /* SensitiveText */,
+				EF1E172C2BF50DDA000364AE /* SettingsUserWalletRow */,
 				B003BDA82A0291A200B282F7 /* TokenIcon */,
 				2DDF91922A14DA2700B31113 /* TokenItemMenuActions */,
 				B0958BA229F6A789007CD76D /* TokenItemView */,
-				B6E9721C2AA0262D00D2B1D1 /* TokenSectionView */,
 				B6C3B3052A3AD14B0007525E /* TokenListLoadingPlaceholders */,
-				EFBE76922A7C3FCC00CD918B /* TransactionView */,
-				B05A859329937D2400E87C6E /* TransactionHistory */,
-				DA7046152AAA180900808FA8 /* Charts */,
+				EFE7D57C2AA20D480047D93A /* TokenPriceChange */,
+				B6E9721C2AA0262D00D2B1D1 /* TokenSectionView */,
 				2DBE29BA2B3AE07200109D5E /* Tosts */,
-				2DB361492C14FB9200BB1D38 /* SegmentPickerView */,
+				B05A859329937D2400E87C6E /* TransactionHistory */,
+				EFBE76922A7C3FCC00CD918B /* TransactionView */,
+				EFE7D5822AA224C50047D93A /* Types */,
+				EFE5EC512AEC1B8800C5ADC3 /* UndoToastView */,
+				2D5DCC342C330A33000EE379 /* WalletSelectorItemView */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -11070,6 +11081,7 @@
 				DA406C1C2BD0D84200D1FC5E /* AddressTextView.swift in Sources */,
 				5D9DCB06255193C30059799C /* AppSettings.swift in Sources */,
 				DA559C4D2B02622600F59584 /* SendDestinationInputOutputMock.swift in Sources */,
+				0A0DB6E82C479A6900003450 /* NativeStakingView.swift in Sources */,
 				DC7D39F729E00635007BCD23 /* TwinOnboardingStepsBuilder.swift in Sources */,
 				B0541DC026FB300F0043893E /* WalletOnboardingStep.swift in Sources */,
 				2DB648832C35877000DA100D /* MarketsWalletSelectorView.swift in Sources */,
