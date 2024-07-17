@@ -49,7 +49,7 @@ struct DefaultRowView: View {
     }
 
     private var titleView: some View {
-        HStack(spacing: 1) {
+        HStack(spacing: 0) {
             Text(viewModel.title)
                 .style(appearance.font, color: appearance.textColor)
             if let secondaryAction = viewModel.secondaryAction {
