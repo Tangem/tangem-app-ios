@@ -22,7 +22,7 @@ extension StakeKitDTO {
             struct Balance: Decodable {
                 let groupId: String
                 let type: BalanceType
-                let amount: Decimal
+                let amount: String
                 let date: Date?
                 let pricePerShare: Decimal
                 let pendingActions: [PendingAction]

@@ -33,7 +33,7 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .getYield(request))
     }
 
-    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> StakeKitDTO.Balances.Response {
+    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> [StakeKitDTO.Balances.Response] {
         try await _request(target: .getBalances(request))
     }
 

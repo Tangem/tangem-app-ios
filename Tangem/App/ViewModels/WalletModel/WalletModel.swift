@@ -350,9 +350,9 @@ class WalletModel {
 
         updateWalletModelSubscription = walletManager
             .updatePublisher()
-            .combineLatest(loadQuotes())
+            .combineLatest(loadQuotes(), updateStakingManagerState()) { state, _, _ in state }
             .receive(on: updateQueue)
-            .sink { [weak self] newState, _ in
+            .sink { [weak self] newState in
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Finished common update for \(self)")

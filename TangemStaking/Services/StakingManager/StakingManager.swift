@@ -19,7 +19,7 @@ public protocol StakingManager {
     func getTransaction() async throws
 }
 
-public enum StakingManagerState: Hashable {
+public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
     case availableToStake(YieldInfo)
@@ -32,6 +32,16 @@ public enum StakingManagerState: Hashable {
             return false
         case .availableToStake, .availableToUnstake, .availableToClaimRewards:
             return true
+        }
+    }
+
+    public var description: String {
+        switch self {
+        case .loading: "loading"
+        case .notEnabled: "notEnabled"
+        case .availableToStake: "availableToStake"
+        case .availableToUnstake: "availableToUnstake"
+        case .availableToClaimRewards: "availableToClaimRewards"
         }
     }
 }

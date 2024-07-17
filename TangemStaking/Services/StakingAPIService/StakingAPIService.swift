@@ -11,7 +11,7 @@ import Foundation
 protocol StakingAPIService {
     func enabledYields() async throws -> StakeKitDTO.Yield.Enabled.Response
     func getYield(request: StakeKitDTO.Yield.Info.Request) async throws -> StakeKitDTO.Yield.Info.Response
-    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> StakeKitDTO.Balances.Response
+    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> [StakeKitDTO.Balances.Response]
 
     func enterAction(request: StakeKitDTO.Actions.Enter.Request) async throws -> StakeKitDTO.Actions.Enter.Response
 

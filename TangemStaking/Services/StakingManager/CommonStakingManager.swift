@@ -78,7 +78,7 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balance: StakingBalanceInfo, yield: YieldInfo) -> StakingManagerState {
+    func state(balance: StakingBalanceInfo?, yield: YieldInfo) -> StakingManagerState {
         // TODO: Add different states
         return .availableToStake(yield)
     }
