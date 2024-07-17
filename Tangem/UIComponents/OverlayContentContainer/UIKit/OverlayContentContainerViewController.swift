@@ -142,7 +142,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow)
+        // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow) (IOS-7364)
         let backgroundShadowView = UIView(frame: screenBounds)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
@@ -166,7 +166,7 @@ final class OverlayContentContainerViewController: UIViewController {
             contentView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        contentView.layer.cornerRadius = Constants.cornerRadius // TODO: Andrey Fedorov - Add animation for content view's corners
+        contentView.layer.cornerRadius = Constants.cornerRadius // TODO: Andrey Fedorov - Add animation for content view's corners (IOS-7364)
         contentView.layer.masksToBounds = true
 
         contentViewController.didMove(toParent: self)
@@ -229,7 +229,7 @@ final class OverlayContentContainerViewController: UIViewController {
             + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
 
         if isFinalState {
-            let keyPath = String(_sel: #selector(getter: CALayer.transform))
+            let keyPath = String(_sel: #selector(getter: CALayer.transform)) // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
             let animation = CABasicAnimation(keyPath: keyPath)
             animation.duration = Constants.animationDuration
             contentLayer.add(animation, forKey: #function)
@@ -250,7 +250,7 @@ final class OverlayContentContainerViewController: UIViewController {
             + (Constants.maxBackgroundShadowViewAlpha - Constants.minBackgroundShadowViewAlpha) * progress
 
         if isFinalState {
-            UIView.animate(withDuration: Constants.animationDuration) {
+            UIView.animate(withDuration: Constants.animationDuration) { // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
                 self.backgroundShadowView?.alpha = alpha
             }
         } else {
@@ -362,7 +362,7 @@ final class OverlayContentContainerViewController: UIViewController {
             : overlayExpandedVerticalOffset
 
         overlayViewTopAnchorConstraint?.constant = finalOffset
-        UIView.animate(withDuration: Constants.animationDuration) {
+        UIView.animate(withDuration: Constants.animationDuration) { // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
             self.view.layoutIfNeeded()
         }
 
