@@ -24,7 +24,7 @@ struct RootViewControllerFactory {
 
         let contentViewController = UIHostingController(rootView: rootView)
 
-        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area
+        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7364)
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
             overlayCollapsedHeight: 102.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
