@@ -23,6 +23,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Properties
 
+    let index: Int
     let id: String
     let imageURL: URL?
     let name: String
@@ -37,9 +38,17 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     private let priceFormatter = CommonTokenPriceFormatter()
     private let marketCapFormatter = MarketCapFormatter()
 
+    private weak var prefetchDataSource: MarketsListPrefetchDataSource?
+
     // MARK: - Init
 
-    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider, filterProvider: MarketsListDataFilterProvider) {
+    init(
+        _ data: InputData,
+        prefetchDataSource: MarketsListPrefetchDataSource?,
+        chartsProvider: MarketsListChartsHistoryProvider,
+        filterProvider: MarketsListDataFilterProvider
+    ) {
+        index = data.index
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
@@ -57,39 +66,60 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         priceValue = priceFormatter.formatFiatBalance(data.priceValue)
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
 
-        bindWithProviders(charts: chartsProvider, filter: filterProvider)
+        self.prefetchDataSource = prefetchDataSource
+
+        bindWithProviders(chartsProvider: chartsProvider, filter: filterProvider)
+    }
+
+    func onAppear() {
+        prefetchDataSource?.tokekItemViewModel(prefetchRowsAt: index)
+    }
+
+    func onDisappear() {
+        prefetchDataSource?.tokekItemViewModel(cancelPrefetchingForRowsAt: index)
     }
 
     // MARK: - Private Implementation
 
-    private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
-        charts
+    private func bindWithProviders(chartsProvider: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
+        chartsProvider
             .$items
             .receive(on: DispatchQueue.main)
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, charts in
-                guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
-                    return
-                }
-
-                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value[filter.currentFilterValue.interval])
-                viewModel.charts = chartsDoubleConvertedValues
+                viewModel.findAndAssignChartsValue(from: charts, with: filter.currentFilterValue.interval)
             })
             .store(in: &bag)
+
+        // You need to immediately find the value of the graph if it is already present
+        findAndAssignChartsValue(from: chartsProvider.items, with: filter.currentFilterValue.interval)
     }
 
-    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsChartsHistoryItemModel?) -> [Double]? {
-        guard let chartPreviewItem else { return nil }
+    private func findAndAssignChartsValue(
+        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
+        with interval: MarketsPriceIntervalType
+    ) {
+        guard let chart = chartsDictionary.first(where: { $0.key == id }) else {
+            return
+        }
 
-        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
+        let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
+        charts = chartsDoubleConvertedValues
+    }
+
+    private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let model else { return nil }
+
+        let chartsDecimalValues: [Decimal] = model.prices.values.map { $0 }
         let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
         return chartsDoubleConvertedValues
     }
 }
 
 extension MarketsItemViewModel {
-    struct InputData {
+    struct InputData: Identifiable {
+        let index: Int
         let id: String
         let name: String
         let symbol: String

@@ -41,8 +41,7 @@ final class MarketsListDataProvider {
             return true
         }
 
-        let countPages = totalTokensCount / limitPerPage
-        return currentOffset < countPages
+        return currentOffset <= totalTokensCount
     }
 
     // MARK: Private Properties
@@ -51,7 +50,7 @@ final class MarketsListDataProvider {
     private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage: Int = 20
+    private let limitPerPage: Int = 50
 
     // Total tokens value by pages
     private var totalTokensCount: Int?

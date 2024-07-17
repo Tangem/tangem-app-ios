@@ -36,6 +36,12 @@ struct MarketsItemView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 15)
             .animation(nil) // Disable animations on scroll reuse
+            .onAppear {
+                viewModel.onAppear()
+            }
+            .onDisappear {
+                viewModel.onDisappear()
+            }
         }
     }
 
@@ -111,8 +117,9 @@ extension MarketsItemView {
     let tokens = DummyMarketTokenModelFactory().list()
 
     return ScrollView(.vertical) {
-        ForEach(tokens) { token in
+        ForEach(tokens.indexed(), id: \.1.id) { index, token in
             let inputData = MarketsItemViewModel.InputData(
+                index: index,
                 id: token.id,
                 name: token.name,
                 symbol: token.symbol,

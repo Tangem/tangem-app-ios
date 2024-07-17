@@ -48,11 +48,11 @@ struct MarketsView: View {
                 }
             }
 
-            if viewModel.hasNextPage, viewModel.viewDidAppear {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
-                    .onAppear(perform: viewModel.fetchMore)
-            }
+//            if viewModel.hasNextPage, viewModel.viewDidAppear {
+//                ProgressView()
+//                    .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
+//                    .onAppear(perform: viewModel.fetchMore)
+//            }
         }
     }
 }

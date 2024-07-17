@@ -33,6 +33,8 @@ final class MarketsViewModel: ObservableObject {
 
     private var bag = Set<AnyCancellable>()
 
+    private var currentSearchValue: String = ""
+
     // MARK: - Init
 
     init(
@@ -92,6 +94,7 @@ private extension MarketsViewModel {
                     return
                 }
 
+                viewModel.currentSearchValue = value
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -116,8 +119,8 @@ private extension MarketsViewModel {
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
-                viewModel.tokenViewModels = items.compactMap { item in
-                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
+                viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, by: index)
                     return tokenViewModel
                 }
             })
@@ -135,8 +138,9 @@ private extension MarketsViewModel {
 
     // MARK: - Private Implementation
 
-    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel, by index: Int) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
+            index: index,
             id: tokenItemModel.id,
             name: tokenItemModel.name,
             symbol: tokenItemModel.symbol,
@@ -149,12 +153,41 @@ private extension MarketsViewModel {
             }
         )
 
-        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
+        return MarketsItemViewModel(
+            inputData,
+            prefetchDataSource: self,
+            chartsProvider: chartsHistoryProvider,
+            filterProvider: filterProvider
+        )
     }
 }
 
 extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
     func orderActionButtonDidTap() {
         coordinator?.openFilterOrderBottonSheet(with: filterProvider)
+    }
+}
+
+// MARK: - PrefetchDataSource
+
+extension MarketsViewModel: MarketsListPrefetchDataSource {
+    func tokekItemViewModel(prefetchRowsAt index: Int) {
+        guard viewDidAppear, dataProvider.canFetchMore else {
+            return
+        }
+
+        if (dataProvider.items.count - index) < Constants.prefetchMoreCountRows {
+            dataProvider.fetchMore()
+        }
+    }
+
+    func tokekItemViewModel(cancelPrefetchingForRowsAt index: Int) {}
+}
+
+// MARK: - Constants
+
+extension MarketsViewModel {
+    enum Constants {
+        static let prefetchMoreCountRows = 25
     }
 }
