@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 class TokenMarketsDetailsViewModel: ObservableObject {
-    @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published var price: String
