@@ -17,7 +17,6 @@ extension StakingTransactionInfo {
         type: .enter,
         status: .created,
         unsignedTransactionData: Data(),
-        amount: 100.123,
         fee: 1.23
     )
 }

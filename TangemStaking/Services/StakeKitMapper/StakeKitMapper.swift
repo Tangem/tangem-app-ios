@@ -40,10 +40,6 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Transaction.unsignedTransaction not found")
         }
 
-//        guard let amount = Decimal(stringValue: response.amount) else {
-//            throw StakeKitMapperError.noData("Transaction.amount not found")
-//        }
-
         guard let fee = response.gasEstimate.flatMap({ Decimal(stringValue: $0.amount) }) else {
             throw StakeKitMapperError.noData("Transaction.gasEstimate not found")
         }
@@ -59,7 +55,6 @@ struct StakeKitMapper {
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
             unsignedTransactionData: Data(hexString: unsignedTransaction),
-            amount: 12.34, // amount
             fee: fee
         )
     }

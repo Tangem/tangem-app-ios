@@ -76,8 +76,12 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    func makeFee(value: Decimal) -> Fee {
-        Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: value))
+    func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
+        var value = transaction?.mapValue { tx in
+            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: tx.fee))
+        }
+
+        return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
 
@@ -159,23 +163,14 @@ extension StakingModel: StakingValidatorsOutput {
 
 extension StakingModel: SendFeeInput {
     var selectedFee: SendFee {
-        let value = _transaction.value?.mapValue { makeFee(value: $0.fee) }
-
-        return SendFee(
-            option: .market,
-            value: value ?? .failedToLoad(error: CommonError.noData)
-        )
+        return mapToSendFee(transaction: _transaction.value)
     }
 
     var selectedFeePublisher: AnyPublisher<SendFee, Never> {
         _transaction
             .withWeakCaptureOf(self)
             .map { model, transaction in
-                let value = transaction?.mapValue { model.makeFee(value: $0.fee) }
-                return SendFee(
-                    option: .market,
-                    value: value ?? .failedToLoad(error: CommonError.noData)
-                )
+                model.mapToSendFee(transaction: transaction)
             }
             .eraseToAnyPublisher()
     }
@@ -210,15 +205,6 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
             .map { $0?.value.flatMap { .staking($0) } }
             .eraseToAnyPublisher()
     }
-    /*
-     .map { transaction in
-     guard let transaction = transaction?.value else {
-     return nil
-     }
-
-     return .staking(transaction)
-     }
-     */
 }
 
 // MARK: - SendFinishInput

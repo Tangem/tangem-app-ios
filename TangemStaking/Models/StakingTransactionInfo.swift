@@ -15,7 +15,6 @@ public struct StakingTransactionInfo: Hashable {
     public let type: TransactionType
     public let status: TransactionStatus
     public let unsignedTransactionData: Data
-    public let amount: Decimal
     public let fee: Decimal
 
     public init(
@@ -25,7 +24,6 @@ public struct StakingTransactionInfo: Hashable {
         type: TransactionType,
         status: TransactionStatus,
         unsignedTransactionData: Data,
-        amount: Decimal,
         fee: Decimal
     ) {
         self.id = id
@@ -34,7 +32,6 @@ public struct StakingTransactionInfo: Hashable {
         self.type = type
         self.status = status
         self.unsignedTransactionData = unsignedTransactionData
-        self.amount = amount
         self.fee = fee
     }
 }

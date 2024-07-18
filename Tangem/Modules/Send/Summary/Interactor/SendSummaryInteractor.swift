@@ -36,15 +36,12 @@ class CommonSendSummaryInteractor {
     private func mapToDescription(transaction: SendTransactionType) -> String? {
         switch transaction {
         case .transfer(let bsdkTransaction):
-            descriptionBuilder.makeDescription(
+            return descriptionBuilder.makeDescription(
                 amount: bsdkTransaction.amount.value,
                 fee: bsdkTransaction.fee.amount.value
             )
         case .staking(let stakingTransaction):
-            descriptionBuilder.makeDescription(
-                amount: stakingTransaction.amount,
-                fee: stakingTransaction.fee
-            )
+            return nil // Waiting texts
         }
     }
 }
