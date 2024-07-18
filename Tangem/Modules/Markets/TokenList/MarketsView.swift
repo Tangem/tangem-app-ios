@@ -47,12 +47,6 @@ struct MarketsView: View {
                     MarketsSkeletonItemView()
                 }
             }
-
-//            if viewModel.hasNextPage, viewModel.viewDidAppear {
-//                ProgressView()
-//                    .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
-//                    .onAppear(perform: viewModel.fetchMore)
-//            }
         }
     }
 }

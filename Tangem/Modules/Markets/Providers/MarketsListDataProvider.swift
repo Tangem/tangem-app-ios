@@ -50,7 +50,7 @@ final class MarketsListDataProvider {
     private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage: Int = 50
+    private let limitPerPage: Int = 100
 
     // Total tokens value by pages
     private var totalTokensCount: Int?
@@ -103,6 +103,8 @@ final class MarketsListDataProvider {
             self.items.append(contentsOf: response.tokens)
         }
     }
+
+    func fetchPrev(index: Int) {}
 
     func fetchMore() {
         if let lastSearchText, let lastFilter {

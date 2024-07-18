@@ -15,14 +15,15 @@ final class MarketsViewModel: ObservableObject {
 
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
-    @Published var viewDidAppear: Bool = false
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isLoading: Bool = false
 
     // MARK: - Properties
 
-    var hasNextPage: Bool {
-        dataProvider.canFetchMore
+    private var viewDidAppear: Bool = false {
+        didSet {
+            listDataController.viewDidAppear = viewDidAppear
+        }
     }
 
     private weak var coordinator: MarketsRoutable?
@@ -30,10 +31,9 @@ final class MarketsViewModel: ObservableObject {
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
+    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewDidAppear: viewDidAppear)
 
     private var bag = Set<AnyCancellable>()
-
-    private var currentSearchValue: String = ""
 
     // MARK: - Init
 
@@ -65,10 +65,12 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomDisappear() {
+        tokenViewModels = []
+        viewDidAppear = false
+
         dataProvider.reset(nil, with: nil)
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
-        viewDidAppear = false
     }
 
     func fetchMore() {
@@ -94,7 +96,6 @@ private extension MarketsViewModel {
                     return
                 }
 
-                viewModel.currentSearchValue = value
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -106,6 +107,10 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
+                guard value.order != .rating else {
+                    return
+                }
+
                 viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -155,7 +160,7 @@ private extension MarketsViewModel {
 
         return MarketsItemViewModel(
             inputData,
-            prefetchDataSource: self,
+            prefetchDataSource: listDataController,
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider
         )
@@ -165,29 +170,5 @@ private extension MarketsViewModel {
 extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
     func orderActionButtonDidTap() {
         coordinator?.openFilterOrderBottonSheet(with: filterProvider)
-    }
-}
-
-// MARK: - PrefetchDataSource
-
-extension MarketsViewModel: MarketsListPrefetchDataSource {
-    func tokekItemViewModel(prefetchRowsAt index: Int) {
-        guard viewDidAppear, dataProvider.canFetchMore else {
-            return
-        }
-
-        if (dataProvider.items.count - index) < Constants.prefetchMoreCountRows {
-            dataProvider.fetchMore()
-        }
-    }
-
-    func tokekItemViewModel(cancelPrefetchingForRowsAt index: Int) {}
-}
-
-// MARK: - Constants
-
-extension MarketsViewModel {
-    enum Constants {
-        static let prefetchMoreCountRows = 25
     }
 }
