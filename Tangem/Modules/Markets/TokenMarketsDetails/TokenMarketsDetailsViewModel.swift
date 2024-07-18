@@ -95,7 +95,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let walletDataProvider = MarketsWalletDataProvider()
 
-    private var quotesUpdateTimer: AsyncTimer?
+    private var quotesUpdateTimer: AsyncTaskScheduler?
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
 

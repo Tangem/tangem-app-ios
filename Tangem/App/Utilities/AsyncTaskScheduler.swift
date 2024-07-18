@@ -1,5 +1,5 @@
 //
-//  AsyncTimer.swift
+//  AsyncTaskScheduler.swift
 //  Tangem
 //
 //  Created by Andrew Son on 17/07/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class AsyncTimer {
+class AsyncTaskScheduler {
     private var task: Task<Void, Error>?
 
     func scheduleJob(interval: TimeInterval, repeats: Bool, action: @escaping () async throws -> Void) {
