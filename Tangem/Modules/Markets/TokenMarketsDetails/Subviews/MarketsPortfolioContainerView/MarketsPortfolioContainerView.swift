@@ -14,19 +14,23 @@ struct MarketsPortfolioContainerView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: .zero) {
             // Token list block
             VStack(alignment: .leading, spacing: .zero) {
                 headerView
 
                 contentView
             }
-            .if(viewModel.tokenItemViewModels.isEmpty) { view in
+            .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { view in
                 view.defaultRoundedBackground(with: Colors.Background.action)
-            }
+            }, else: { view in
+                // Need because token list offset by -Y value, it is required to compress the container
+                view.padding(.bottom, -Constants.defaultVerticalOffsetSpacingBetweenContent)
+            })
 
             // Quick action block
             quickActionsView
+                .padding(.top, Constants.defaultVerticalOffsetSpacingBetweenContent) // Need because token list offset by -Y value
         }
     }
 
