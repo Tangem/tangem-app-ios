@@ -82,7 +82,17 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openStaking(walletModel: WalletModel) {
-        coordinator?.openStaking(wallet: walletModel)
+        guard let stakingManager = walletModel.stakingManager else {
+            return
+        }
+
+        coordinator?.openStaking(
+            options: .init(
+                userWalletModel: userWalletModel,
+                walletModel: walletModel,
+                manager: stakingManager
+            )
+        )
     }
 
     func openSell(for walletModel: WalletModel) {

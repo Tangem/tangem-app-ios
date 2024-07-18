@@ -21,12 +21,12 @@ struct MarketsPortfolioContainerView: View {
 
                 contentView
             }
+            .if(viewModel.tokenItemViewModels.isEmpty) { view in
+                view.defaultRoundedBackground(with: Colors.Background.action)
+            }
 
             // Quick action block
             quickActionsView
-        }
-        .if(viewModel.tokenItemViewModels.isEmpty) { view in
-            view.defaultRoundedBackground(with: Colors.Background.action)
         }
     }
 

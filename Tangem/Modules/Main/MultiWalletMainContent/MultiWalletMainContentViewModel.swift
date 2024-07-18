@@ -14,7 +14,6 @@ import TangemStaking
 
 final class MultiWalletMainContentViewModel: ObservableObject {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-    @Injected(\.stakingRepositoryProxy) private var stakingRepository: StakingRepositoryProxy
 
     // MARK: - ViewState
 
@@ -455,7 +454,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
     }
 
     private func canStake(walletModel: WalletModel) -> Bool {
-        CanStakeActionUtility().canStake(with: userWalletModel, by: walletModel)
+        StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
     }
 }
 

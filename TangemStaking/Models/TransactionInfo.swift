@@ -8,7 +8,12 @@
 
 import Foundation
 
-public struct TransactionInfo {
+public struct TransactionInfo: Hashable {
     let id: String
-    let hexData: Data
+    let actionId: String
+    let network: String
+    let type: TransactionType
+    let status: TransactionStatus
+    let unsignedTransactionData: Data
+    let fee: Decimal
 }

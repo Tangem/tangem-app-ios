@@ -64,12 +64,28 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
     }
 
     func makeStakingDetailsCoordinator(
-        walletModel: WalletModel,
+        for walletModel: WalletModel,
+        with userWalletModel: UserWalletModel,
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions>
-    ) -> StakingDetailsCoordinator {
-        let coordinator = StakingDetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        coordinator.start(with: .init(wallet: walletModel))
+    ) -> StakingDetailsCoordinator? {
+        guard let stakingManager = walletModel.stakingManager else {
+            return nil
+        }
+
+        let coordinator = StakingDetailsCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
+        )
+
+        let options = StakingDetailsCoordinator.InputOptions(
+            userWalletModel: userWalletModel,
+            walletModel: walletModel,
+            manager: stakingManager
+        )
+
+        coordinator.start(with: options)
+
         return coordinator
     }
 

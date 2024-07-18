@@ -130,15 +130,15 @@ extension TokenMarketsDetailsCoordinator {
     }
 
     func openStaking(walletModel: WalletModel) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.stakingDetailsCoordinator = nil
-        }
-
-        stakingDetailsCoordinator = portfolioCoordinatorFactory.makeStakingDetailsCoordinator(
-            walletModel: walletModel,
-            dismissAction: dismissAction,
-            popToRootAction: popToRootAction
-        )
+//        let dismissAction: Action<Void> = { [weak self] _ in
+//            self?.stakingDetailsCoordinator = nil
+//        }
+//
+//        stakingDetailsCoordinator = portfolioCoordinatorFactory.makeStakingDetailsCoordinator(
+//            walletModel: walletModel,
+//            dismissAction: dismissAction,
+//            popToRootAction: popToRootAction
+//        )
     }
 
     func openSell(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {

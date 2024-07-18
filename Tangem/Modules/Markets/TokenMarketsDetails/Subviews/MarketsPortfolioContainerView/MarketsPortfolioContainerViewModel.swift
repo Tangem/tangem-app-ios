@@ -132,7 +132,8 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
             !walletModel.isCustom
 
-        let canStake = CanStakeActionUtility().canStake(with: userWalletModel, by: walletModel)
+        let canStake = StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
+
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
 
