@@ -13,6 +13,6 @@ protocol MarketsPortfolioContainerRoutable: AnyObject {
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openSend(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
-    func openStaking(walletModel: WalletModel)
+    func openStaking(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openSell(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
 }

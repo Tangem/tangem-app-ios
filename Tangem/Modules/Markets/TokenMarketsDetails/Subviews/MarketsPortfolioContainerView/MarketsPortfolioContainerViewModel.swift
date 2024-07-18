@@ -178,7 +178,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         case .exchange:
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
-            coordinator.openStaking(walletModel: walletModel)
+            coordinator.openStaking(for: walletModel, with: userWalletModel)
         case .hide:
             return
         }
