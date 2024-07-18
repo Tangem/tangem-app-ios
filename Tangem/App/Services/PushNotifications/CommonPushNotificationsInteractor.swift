@@ -86,9 +86,9 @@ final class CommonPushNotificationsInteractor {
     private func analyticsSourceValue(for flow: PushNotificationsPermissionRequestFlow) -> Analytics.ParameterValue {
         switch flow {
         case .welcomeOnboarding:
-            return .onboarding
-        case .walletOnboarding:
             return .stories
+        case .walletOnboarding:
+            return .onboarding
         case .afterLogin:
             return .main
         }
