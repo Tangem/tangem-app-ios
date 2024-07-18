@@ -95,7 +95,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let walletDataProvider = MarketsWalletDataProvider()
 
-    private var quotesUpdateTimer: AsyncTaskScheduler?
+    private var quotesUpdateScheduler: AsyncTaskScheduler?
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
 
@@ -120,8 +120,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     deinit {
         print("TokenMarketsDetailsViewModel deinit")
-        quotesUpdateTimer?.cancel()
-        quotesUpdateTimer = nil
+        quotesUpdateScheduler?.cancel()
+        quotesUpdateScheduler = nil
     }
 
     // MARK: - Actions
@@ -143,13 +143,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         coordinator?.openURL(url)
     }
-
-    lazy var logsDateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .full
-        return dateFormatter
-    }()
 }
 
 // MARK: - Private functions
@@ -199,15 +192,14 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func scheduleQuotesUpdate() {
-        print("\n\nInitialize timer time: \(logsDateFormatter.string(from: Date()))\n\n")
-        quotesUpdateTimer = .init()
-        quotesUpdateTimer?.scheduleJob(interval: quotesUpdateTimeInterval, repeats: true, action: weakify(self, forFunction: TokenMarketsDetailsViewModel.updateQuotes))
+        log("Scheduling quote update for \(tokenInfo.id)")
+        quotesUpdateScheduler = .init()
+        quotesUpdateScheduler?.scheduleJob(interval: quotesUpdateTimeInterval, repeats: true, action: weakify(self, forFunction: TokenMarketsDetailsViewModel.updateQuotes))
     }
 
     func updateQuotes() async {
-        print("\n\nStart loading quotes for \(tokenInfo.id) at time: \(logsDateFormatter.string(from: Date()))\n\n")
+        log("Updating quotes for \(tokenInfo.id)")
         await quotesRepository.loadQuotes(currencyIds: [tokenInfo.id])
-        print("\n\nQuotes should be loaded for \(tokenInfo.id) at time: \(logsDateFormatter.string(from: Date()))\n\n")
     }
 
     func updatePrice(_ newPrice: Decimal) {
