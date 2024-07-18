@@ -61,14 +61,6 @@ extension WalletModel {
             }
         }
     }
-
-    enum StakingState: Hashable {
-        case notSupported
-        case loading
-        case error
-        case availableToStake
-        case staked(balance: StakingBalanceInfo)
-    }
 }
 
 // MARK: - CustomStringConvertible protocol conformance

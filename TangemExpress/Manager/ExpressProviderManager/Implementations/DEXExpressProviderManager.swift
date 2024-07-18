@@ -137,7 +137,8 @@ private extension DEXExpressProviderManager {
     }
 
     func proceed(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState {
-        if data.value > request.pair.source.getFeeCurrencyBalance() {
+        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+        if txValue > request.pair.source.getFeeCurrencyBalance() {
             let estimateFee = try await estimateFee(request: request, data: data)
             return .restriction(estimateFee, quote: quote)
         }
@@ -166,8 +167,10 @@ private extension DEXExpressProviderManager {
     }
 
     func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {
+        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+
         var fee = try await feeProvider.getFee(
-            amount: data.value,
+            amount: txValue,
             destination: data.destinationAddress,
             hexData: data.txData.map { Data(hexString: $0) }
         )

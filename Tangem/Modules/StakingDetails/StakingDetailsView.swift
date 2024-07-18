@@ -17,30 +17,28 @@ struct StakingDetailsView: View {
     }
 
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .bottom) {
-                GroupedScrollView(alignment: .leading, spacing: 14) {
-                    banner
+        ZStack(alignment: .bottom) {
+            GroupedScrollView(alignment: .leading, spacing: 14) {
+                banner
 
-                    averageRewardingView
+                averageRewardingView
 
-                    GroupedSection(viewModel.detailsViewModels) {
-                        DefaultRowView(viewModel: $0)
-                    }
-
-                    rewardView
-
-                    FixedSpacer(height: bottomViewHeight)
+                GroupedSection(viewModel.detailsViewModels) {
+                    DefaultRowView(viewModel: $0)
                 }
-                .interContentPadding(14)
 
-                actionButton
+                rewardView
+
+                FixedSpacer(height: bottomViewHeight)
             }
-            .background(Colors.Background.secondary)
-            .navigationTitle(viewModel.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear(perform: viewModel.onAppear)
+            .interContentPadding(14)
+
+            actionButton
         }
+        .background(Colors.Background.secondary)
+        .navigationTitle(viewModel.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: viewModel.onAppear)
     }
 
     private var banner: some View {
@@ -84,7 +82,7 @@ struct StakingDetailsView: View {
 struct StakingDetailsView_Preview: PreviewProvider {
     static let viewModel = StakingDetailsViewModel(
         walletModel: .mockETH,
-        stakingRepository: StakingRepositoryMock(),
+        stakingManager: StakingManagerMock(),
         coordinator: StakingDetailsCoordinator()
     )
 

@@ -32,3 +32,20 @@ extension Binding {
         }
     }
 }
+
+// MARK: - Selectable View helpers
+
+extension Binding where Value: Equatable {
+    func isActive(compare value: Value) -> Binding<Bool> {
+        .init(
+            get: { wrappedValue == value },
+            set: { _ in wrappedValue = value }
+        )
+    }
+}
+
+extension Binding where Value == Bool {
+    func toggle() {
+        wrappedValue.toggle()
+    }
+}

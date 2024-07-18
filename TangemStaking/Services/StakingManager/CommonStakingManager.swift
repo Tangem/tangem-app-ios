@@ -7,42 +7,62 @@
 //
 
 import Foundation
+import Combine
 
 class CommonStakingManager {
+    private let integrationId: String
     private let wallet: StakingWallet
-    private let repository: StakingRepository
     private let provider: StakingAPIProvider
     private let logger: Logger
 
+    // MARK: Private
+
+    private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
+
     init(
+        integrationId: String,
         wallet: StakingWallet,
-        repository: StakingRepository,
         provider: StakingAPIProvider,
         logger: Logger
     ) {
+        self.integrationId = integrationId
         self.wallet = wallet
-        self.repository = repository
         self.provider = provider
         self.logger = logger
     }
 }
 
-extension CommonStakingManager: StakingManager {
-    func getYield() throws -> YieldInfo {
-        guard let yield = repository.getYield(item: wallet.stakingTokenItem) else {
-            throw StakingManagerError.notFound
-        }
+// MARK: - StakingManager
 
-        return yield
+extension CommonStakingManager: StakingManager {
+    var state: StakingManagerState {
+        _state.value
     }
 
-    func getFee(amount: Decimal, validator: String) async throws {
-        let action = try await provider.enterAction(
-            amount: amount,
-            address: wallet.defaultAddress,
-            validator: validator,
-            integrationId: getYield().id
-        )
+    var statePublisher: AnyPublisher<StakingManagerState, Never> {
+        _state.eraseToAnyPublisher()
+    }
+
+    func updateState() async throws {
+        updateState(.loading)
+        do {
+            async let balance = provider.balance(wallet: wallet)
+            async let yield = provider.yield(integrationId: integrationId)
+
+            try await updateState(state(balance: balance, yield: yield))
+        } catch {
+            logger.error(error)
+            throw error
+        }
+    }
+
+    func getFee(amount: Decimal, validator: String) async throws -> Decimal {
+        switch state {
+        case .availableToStake(let yieldInfo):
+            return try await getFeeToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
+        default:
+            throw StakingManagerError.notImplemented
+        }
     }
 
     func getTransaction() async throws {
@@ -50,6 +70,43 @@ extension CommonStakingManager: StakingManager {
     }
 }
 
+// MARK: - Private
+
+private extension CommonStakingManager {
+    func updateState(_ state: StakingManagerState) {
+        log("Update state to \(state)")
+        _state.send(state)
+    }
+
+    func state(balance: StakingBalanceInfo?, yield: YieldInfo) -> StakingManagerState {
+        // TODO: Add different states
+        return .availableToStake(yield)
+    }
+
+    func getFeeToStake(amount: Decimal, validator: String, integrationId: String) async throws -> Decimal {
+        let action = try await provider.enterAction(
+            amount: amount,
+            address: wallet.address,
+            validator: validator,
+            integrationId: integrationId
+        )
+
+        let transactionId = action.transactions[action.currentStepIndex].id
+        let transaction = try await provider.patchTransaction(id: transactionId)
+
+        return transaction.fee
+    }
+}
+
+// MARK: - Log
+
+private extension CommonStakingManager {
+    func log(_ args: Any) {
+        logger.debug("[Staking] \(self) \(args)")
+    }
+}
+
 public enum StakingManagerError: Error {
+    case notImplemented
     case notFound
 }

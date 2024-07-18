@@ -106,4 +106,13 @@ extension View {
             #endif
         }
     }
+
+    @ViewBuilder
+    func matchedGeometryEffect(_ effect: GeometryEffect?) -> some View {
+        if let effect {
+            matchedGeometryEffect(id: effect.id, in: effect.namespace, isSource: effect.isSource)
+        } else {
+            self
+        }
+    }
 }

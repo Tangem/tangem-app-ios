@@ -10,72 +10,73 @@ import Foundation
 
 extension StakeKitDTO {
     enum NetworkType: String, Hashable, Codable {
-        case avalancheC = "AVALANCHE_C"
-        case avalancheAtomic = "AVALANCHE_ATOMIC"
-        case avalancheP = "AVALANCHE_P"
-        case arbitrum = "ARBITRUM"
-        case binance = "BINANCE"
-        case celo = "CELO"
-        case ethereum = "ETHEREUM"
-        case ethereumGoerli = "ETHEREUM_GOERLI"
-        case ethereumHolesky = "ETHEREUM_HOLESKY"
-        case fantom = "FANTOM"
-        case harmony = "HARMONY"
-        case optimism = "OPTIMISM"
-        case polygon = "POLYGON"
-        case gnosis = "GNOSIS"
-        case moonriver = "MOONRIVER"
-        case okc = "OKC"
-        case zksync = "ZKSYNC"
-        case viction = "VICTION"
-        case agoric = "AGORIC"
-        case akash = "AKASH"
-        case axelar = "AXELAR"
-        case bandProtocol = "BAND_PROTOCOL"
-        case bitsong = "BITSONG"
-        case canto = "CANTO"
-        case chihuahua = "CHIHUAHUA"
-        case comdex = "COMDEX"
-        case coreum = "COREUM"
-        case cosmos = "COSMOS"
-        case crescent = "CRESCENT"
-        case cronos = "CRONOS"
-        case cudos = "CUDOS"
-        case desmos = "DESMOS"
-        case dydx = "DYDX"
-        case evmos = "EVMOS"
-        case fetchAi = "FETCH_AI"
-        case gravityBridge = "GRAVITY_BRIDGE"
-        case injective = "INJECTIVE"
-        case irisnet = "IRISNET"
-        case juno = "JUNO"
-        case kava = "KAVA"
-        case kiNetwork = "KI_NETWORK"
-        case mars_protocol = "MARS_PROTOCOL"
-        case nym = "NYM"
-        case okexChain = "OKEX_CHAIN"
-        case onomy = "ONOMY"
-        case osmosis = "OSMOSIS"
-        case persistence = "PERSISTENCE"
-        case quicksilver = "QUICKSILVER"
-        case regen = "REGEN"
-        case secret = "SECRET"
-        case sentinel = "SENTINEL"
-        case sommelier = "SOMMELIER"
-        case stafi = "STAFI"
-        case stargaze = "STARGAZE"
-        case stride = "STRIDE"
-        case teritori = "TERITORI"
-        case tgrade = "TGRADE"
-        case umee = "UMEE"
-        case polkadot = "POLKADOT"
-        case kusama = "KUSAMA"
-        case westend = "WESTEND"
-        case binancebeacon = "BINANCEBEACON"
-        case near = "NEAR"
-        case solana = "SOLANA"
-        case tezos = "TEZOS"
-        case tron = "TRON"
-        case unknown = "UNKNOWN"
+        case ethereum
+        case ethereumGoerli = "ethereum-goerli"
+        case ethereumHolesky = "ethereum-holesky"
+        case arbitrum
+        case base
+        case gnosis
+        case optimism
+        case polygon
+        case starknet
+        case zksync
+        case avalancheC = "avalanche-c"
+        case avalancheCAtomic = "avalanche-c-atomic"
+        case avalancheP = "avalanche-p"
+        case binance
+        case celo
+        case fantom
+        case harmony
+        case moonriver
+        case okc
+        case viction
+        case agoric
+        case akash
+        case axelar
+        case bandProtocol = "band-protocol"
+        case bitsong
+        case canto
+        case chihuahua
+        case comdex
+        case coreum
+        case cosmos
+        case crescent
+        case cronos
+        case cudos
+        case desmos
+        case dydx
+        case evmos
+        case fetchAi = "fetch-ai"
+        case gravityBridge = "gravity-bridge"
+        case injective
+        case irisnet
+        case juno
+        case kava
+        case kiNetwork = "ki-network"
+        case marsProtocol = "mars-protocol"
+        case nym
+        case okexChain = "okex-chain"
+        case onomy
+        case osmosis
+        case persistence
+        case quicksilver
+        case regen
+        case secret
+        case sentinel
+        case sommelier
+        case stafi
+        case stargaze
+        case stride
+        case teritori
+        case tgrade
+        case umee
+        case polkadot
+        case kusama
+        case westend
+        case binanceBeacon = "binancebeacon"
+        case near
+        case solana
+        case tezos
+        case tron
     }
 }

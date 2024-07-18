@@ -30,7 +30,7 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
     var supportedBlockchainsIds: [String] = []
 
-    @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
+    @AppStorageCompat(FeatureStorageKeys.stakingBlockchainsIds)
     var stakingBlockchainsIds: [String] = []
 
     @AppStorageCompat(FeatureStorageKeys.performanceMonitorEnabled)

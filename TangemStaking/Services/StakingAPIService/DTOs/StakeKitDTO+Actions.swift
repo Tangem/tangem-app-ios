@@ -99,11 +99,10 @@ extension StakeKitDTO {
                 let status: ActionStatus
                 let type: ActionType
                 let currentStepIndex: Int
-                let amount: Decimal
+                let amount: String
                 let validatorAddress: String?
-                let validatorAddresses: [String]?
+                let validatorAddresses: [Address]?
                 let transactions: [Transaction.Response]?
-                let createdAt: Date
             }
         }
     }

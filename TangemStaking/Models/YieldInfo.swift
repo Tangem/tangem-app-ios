@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct YieldInfo {
+public struct YieldInfo: Hashable {
     public let id: String
 
     // Rewards

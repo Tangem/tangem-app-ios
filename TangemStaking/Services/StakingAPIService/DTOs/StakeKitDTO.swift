@@ -46,7 +46,7 @@ enum StakeKitDTO {
         }
     }
 
-    struct Address: Encodable {
+    struct Address: Codable {
         let address: String
     }
 
