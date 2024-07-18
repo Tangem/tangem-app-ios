@@ -86,13 +86,15 @@ private extension StakingDetailsViewModel {
     }
 
     func setupView(yield: YieldInfo, balanceInfo: StakingBalanceInfo) {
-        let available = (walletModel.balanceValue ?? 0) - balanceInfo.blocked
+        let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
+        let aprs = yield.validators.compactMap(\.apr)
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
                 staked: balanceInfo.blocked,
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
+                rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
                 minimumRequirement: yield.minimumRequirement,
                 warmupPeriod: yield.warmupPeriod,
                 unbondingPeriod: yield.unbondingPeriod,
@@ -122,7 +124,7 @@ private extension StakingDetailsViewModel {
 
         averageRewardingViewData = .init(
             rewardType: inputData.rewardType.title,
-            rewardFormatted: percentFormatter.format(inputData.rewardRate, option: .staking),
+            rewardFormatted: inputData.rewardRateValues.formatted(formatter: percentFormatter),
             periodProfitFormatted: periodProfitFormatted,
             profitFormatted: profitFormatted.map { .loaded(text: $0) } ?? .noData
         )
@@ -139,7 +141,7 @@ private extension StakingDetailsViewModel {
             currencyCode: walletModel.tokenItem.currencySymbol
         )
 
-        let rewardRateFormatted = percentFormatter.format(inputData.rewardRate, option: .staking)
+        let rewardRateFormatted = inputData.rewardRateValues.formatted(formatter: percentFormatter)
 
         let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
         let minimumFormatted = balanceFormatter.formatCryptoBalance(
@@ -168,6 +170,7 @@ extension StakingDetailsViewModel {
         let staked: Decimal
         let rewardType: RewardType
         let rewardRate: Decimal
+        let rewardRateValues: RewardRateValues
         let minimumRequirement: Decimal
         let warmupPeriod: Period
         let unbondingPeriod: Period
@@ -206,5 +209,16 @@ private extension RewardClaimingType {
 private extension RewardScheduleType {
     var title: String {
         rawValue.capitalizingFirstLetter()
+    }
+}
+
+private extension RewardRateValues {
+    func formatted(formatter: PercentFormatter) -> String {
+        switch self {
+        case .single(let value):
+            formatter.format(value, option: .staking)
+        case .interval(let min, let max):
+            formatter.formatInterval(min: min, max: max, option: .staking)
+        }
     }
 }
