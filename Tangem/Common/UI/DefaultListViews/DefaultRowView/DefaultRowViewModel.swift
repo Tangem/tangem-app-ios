@@ -39,8 +39,8 @@ class DefaultRowViewModel: ObservableObject, Identifiable {
         self.action = action
     }
 
-    func update(secodnaryAction: (() -> Void)? = nil) {
-        secondaryAction = secodnaryAction
+    func update(secondaryAction: (() -> Void)? = nil) {
+        self.secondaryAction = secondaryAction
     }
 }
 
