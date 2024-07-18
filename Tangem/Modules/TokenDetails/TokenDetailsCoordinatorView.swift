@@ -32,6 +32,9 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenDetailsCoordinator) {
                 TokenDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
@@ -48,9 +51,6 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             }
             .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
                 ExpressCoordinatorView(coordinator: $0)
-            }
-            .sheet(item: $coordinator.stakingDetailsCoordinator) {
-                StakingDetailsCoordinatorView(coordinator: $0)
             }
 
         NavHolder()

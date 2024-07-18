@@ -64,13 +64,13 @@ struct CommonWalletModelsFactory {
         )
     }
 
-    private func makeStakingBalanceProvider(tokenItem: TokenItem, address: String) -> StakingBalanceProvider? {
-        guard StakingFeatureProvider().isAvailable(for: tokenItem) else {
+    func makeStakingManager(tokenItem: TokenItem, address: String) -> StakingManager? {
+        guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem) else {
             return nil
         }
 
-        let provider = StakingDependenciesFactory().makeStakingAPIProvider()
-        return CommonStakingBalanceProvider(item: tokenItem.stakingTokenItem, address: address, provider: provider)
+        let wallet = StakingWallet(item: tokenItem.stakingTokenItem, address: address)
+        return StakingDependenciesFactory().makeStakingManager(integrationId: integrationId, wallet: wallet)
     }
 }
 
@@ -97,8 +97,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: .coin)
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
+                stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
                 transactionHistoryService: transactionHistoryService,
-                stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom
@@ -118,8 +118,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: amountType)
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
+                    stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
                     transactionHistoryService: transactionHistoryService,
-                    stakingBalanceProvider: makeStakingBalanceProvider(tokenItem: tokenItem, address: walletManager.wallet.address),
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom

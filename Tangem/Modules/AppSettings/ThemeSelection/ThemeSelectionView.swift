@@ -13,16 +13,11 @@ struct ThemeSelectionView: View {
 
     var body: some View {
         GroupedScrollView {
-            SelectableGropedSection(
-                viewModel.themeViewModels,
-                selection: $viewModel.currentThemeOption,
-                content: {
-                    DefaultSelectableRowView(viewModel: $0)
-                },
-                footer: {
-                    DefaultFooterView(Localization.appSettingsThemeSelectionFooter)
-                }
-            )
+            GroupedSection(viewModel.themeViewModels) {
+                DefaultSelectableRowView(data: $0, selection: $viewModel.currentThemeOption)
+            } footer: {
+                DefaultFooterView(Localization.appSettingsThemeSelectionFooter)
+            }
         }
         .interContentPadding(8)
         .background(Colors.Background.secondary.ignoresSafeArea(edges: .all))

@@ -16,30 +16,63 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
         }
 
-        return try EnterAction(transactions: transactions.map(mapToTransactionInfo))
+        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
+            try ActionTransaction(
+                id: transaction.id,
+                stepIndex: transaction.stepIndex,
+                type: mapToTransactionType(from: transaction.type),
+                status: mapToTransactionStatus(from: transaction.status)
+            )
+        }
+
+        return try EnterAction(
+            id: response.id,
+            status: mapToActionStatus(from: response.status),
+            currentStepIndex: response.currentStepIndex,
+            transactions: actionTransaction
+        )
     }
 
     // MARK: - Transaction
 
     func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> TransactionInfo {
-        guard let hexData = response.hash.map(Data.init(hexString:)) else {
-            throw StakeKitMapperError.noData("Transaction.hash not found")
+        guard let unsignedTransaction = response.unsignedTransaction else {
+            throw StakeKitMapperError.noData("Transaction.unsignedTransaction not found")
         }
 
-        return TransactionInfo(id: response.id, hexData: hexData)
+        guard let fee = response.gasEstimate.flatMap({ Decimal(stringValue: $0.amount) }) else {
+            throw StakeKitMapperError.noData("Transaction.gasEstimate not found")
+        }
+
+        guard let stakeId = response.stakeId else {
+            throw StakeKitMapperError.noData("Transaction.stakeId not found")
+        }
+
+        return try TransactionInfo(
+            id: response.id,
+            actionId: stakeId,
+            network: response.network.rawValue,
+            type: mapToTransactionType(from: response.type),
+            status: mapToTransactionStatus(from: response.status),
+            unsignedTransactionData: Data(hexString: unsignedTransaction),
+            fee: fee
+        )
     }
 
     // MARK: - Balance
 
-    func mapToBalanceInfo(from response: StakeKitDTO.Balances.Response) throws -> StakingBalanceInfo {
-        guard let token = response.balances.first?.token else {
-            throw StakeKitMapperError.noData("Balances.Response.first.token not found")
+    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> StakingBalanceInfo? {
+        // There isn't any balances
+        guard let balance = response.first?.balances.first else {
+            return nil
         }
 
-        let blocked = response.balances.reduce(0) { $0 + $1.amount }
+        guard let blocked = Decimal(stringValue: balance.amount) else {
+            throw StakeKitMapperError.noData("Balance.amount not found")
+        }
 
         return StakingBalanceInfo(
-            item: mapToStakingTokenItem(from: token),
+            item: mapToStakingTokenItem(from: balance.token),
             blocked: blocked
         )
     }
@@ -83,6 +116,43 @@ struct StakeKitMapper {
     }
 
     // MARK: - Inner types
+
+    func mapToTransactionType(from type: StakeKitDTO.Transaction.Response.TransactionType) throws -> TransactionType {
+        switch type {
+        case .stake: .stake
+        case .enter: .enter
+        case .exit: .unstake
+        case .claim: .claim
+        case .claimRewards: .claimRewards
+        case .reinvest, .send, .approve, .unknown:
+            throw StakeKitMapperError.notImplement
+        }
+    }
+
+    func mapToTransactionStatus(from status: StakeKitDTO.Transaction.Response.Status) throws -> TransactionStatus {
+        switch status {
+        case .created: .created
+        case .waitingForSignature: .waitingForSignature
+        case .broadcasted: .broadcasted
+        case .pending: .pending
+        case .confirmed: .confirmed
+        case .failed: .failed
+        case .notFound, .blocked, .signed, .skipped, .unknown:
+            throw StakeKitMapperError.notImplement
+        }
+    }
+
+    func mapToActionStatus(from status: StakeKitDTO.Actions.ActionStatus) throws -> ActionStatus {
+        switch status {
+        case .created: .created
+        case .waitingForNext: .waitingForNext
+        case .processing: .processing
+        case .failed: .failed
+        case .success: .success
+        case .canceled, .unknown:
+            throw StakeKitMapperError.notImplement
+        }
+    }
 
     func mapToStakingTokenItem(from token: StakeKitDTO.Token) -> StakingTokenItem {
         StakingTokenItem(coinId: token.coinGeckoId, contractAdress: token.address)

@@ -14,20 +14,32 @@ class StakingFeatureProvider {
         FeatureProvider.isAvailable(.staking)
     }
 
-    func isAvailable(for tokenItem: TokenItem) -> Bool {
+    func yieldId(for tokenItem: TokenItem) -> String? {
         guard isStakingAvailable else {
-            return false
+            return nil
         }
 
         guard AppUtils().canStake(for: tokenItem) else {
-            return false
+            return nil
         }
 
-        if supportedBlockchainIds.contains(tokenItem.blockchain.networkId) {
-            return true
+        let networkId = tokenItem.blockchain.networkId
+        let isSupported = supportedBlockchainIds.contains(networkId)
+        let isTesting = FeatureStorage().stakingBlockchainsIds.contains(networkId)
+
+        guard isSupported || isTesting else {
+            return nil
         }
 
-        return FeatureStorage().stakingBlockchainsIds.contains(tokenItem.blockchain.networkId)
+        guard let yieldId = yieldIds[tokenItem.blockchain.networkId] else {
+            return nil
+        }
+
+        return yieldId
+    }
+
+    func isAvailable(for tokenItem: TokenItem) -> Bool {
+        yieldId(for: tokenItem) != nil
     }
 }
 
@@ -41,6 +53,13 @@ extension StakingFeatureProvider {
         [
             "solana",
             "cosmos",
+        ]
+    }
+
+    var yieldIds: [String: String] {
+        [
+            "solana": "solana-sol-native-multivalidator-staking",
+            "cosmos": "cosmos-atom-native-staking",
         ]
     }
 }
