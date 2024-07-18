@@ -67,18 +67,14 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
 
                         if models.last?.id != model.id {
                             separator
-                                .modifier(ifLet: settings.separatorGeometryEffect(model)) {
-                                    $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
-                                }
+                                .matchedGeometryEffect(settings.separatorGeometryEffect(model))
                         }
                     }
                 }
                 .padding(.vertical, settings.innerContentPadding)
                 .background(
                     settings.backgroundColor
-                        .modifier(ifLet: settings.backgroundGeometryEffect) {
-                            $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
-                        }
+                        .matchedGeometryEffect(settings.backgroundGeometryEffect)
                 )
                 .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
 
