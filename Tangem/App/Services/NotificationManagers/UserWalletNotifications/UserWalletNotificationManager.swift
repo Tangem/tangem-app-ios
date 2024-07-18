@@ -28,6 +28,7 @@ final class UserWalletNotificationManager {
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
+
     private var showAppRateNotification = false
     private var shownAppRateNotificationId: NotificationViewId?
 
