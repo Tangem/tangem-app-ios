@@ -1,5 +1,5 @@
 //
-//  NativeStakingView.swift
+//  ActiveStakingView.swift
 //  Tangem
 //
 //  Created by Dmitry Fedorov on 17.07.2024.
@@ -8,10 +8,14 @@
 
 import SwiftUI
 
-struct NativeStakingView: View {
+struct ActiveStakingViewData {
     let usdAmount: String
     let coinAmount: String
-    let rewardsToClaim: String
+    let rewardsToClaim: String?
+}
+
+struct ActiveStakingView: View {
+    let data: ActiveStakingViewData
     let tapAction: () -> Void
 
     var body: some View {
@@ -26,23 +30,26 @@ struct NativeStakingView: View {
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 HStack(spacing: 4) {
-                    Text(usdAmount)
+                    Text(data.usdAmount)
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                    Text("•")
+                    Text(AppConstants.dotSign)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                    Text(coinAmount)
+                    Text(data.coinAmount)
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 }
 
-                Text(Localization.stakingDetailsRewardsToClaim(rewardsToClaim))
-                    .lineLimit(1)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                Text(
+                    data.rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) } ??
+                    Localization.stakingDetailsNoRewardsToClaim
+                )
+                .lineLimit(1)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
 
             Spacer()
@@ -59,5 +66,14 @@ struct NativeStakingView: View {
 }
 
 #Preview {
-    NativeStakingView(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: "0,43$", tapAction: {})
+    VStack {
+        ActiveStakingView(
+            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: "0,43$"),
+            tapAction: {}
+        )
+        ActiveStakingView(
+            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: nil),
+            tapAction: {}
+        )
+    }
 }
