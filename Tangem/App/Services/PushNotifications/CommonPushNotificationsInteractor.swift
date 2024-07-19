@@ -83,6 +83,11 @@ final class CommonPushNotificationsInteractor {
         )
     }
 
+    private func logAuthorizationStatus() async {
+        let state: Analytics.ParameterValue = await pushNotificationsService.isAuthorized ? .allow : .cancel
+        Analytics.log(.pushPermissionStatus, params: [.state: state])
+    }
+
     private func analyticsSourceValue(for flow: PushNotificationsPermissionRequestFlow) -> Analytics.ParameterValue {
         switch flow {
         case .welcomeOnboarding:
@@ -135,6 +140,7 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
     func allowRequest(in flow: PushNotificationsPermissionRequestFlow) async {
         logAllowRequest(in: flow)
         await pushNotificationsService.requestAuthorizationAndRegister()
+        await logAuthorizationStatus()
         runOnMain {
             canRequestAuthorization = false
         }

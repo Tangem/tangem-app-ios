@@ -11,6 +11,17 @@ import UIKit
 import UserNotifications
 
 final class PushNotificationsService {
+    /// - Note: Checks only explicit authorization (`UNAuthorizationStatus.authorized`) and ignores implicit
+    /// authorization statuses such as `UNAuthorizationStatus.provisional` or `UNAuthorizationStatus.ephemeral`.
+    @MainActor
+    var isAuthorized: Bool {
+        get async {
+            let notificationSettings = await userNotificationCenter.notificationSettings()
+
+            return notificationSettings.authorizationStatus == .authorized
+        }
+    }
+
     private let requestedAuthorizationOptions: UNAuthorizationOptions = [
         .alert,
         .badge,
