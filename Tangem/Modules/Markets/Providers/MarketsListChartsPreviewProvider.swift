@@ -59,6 +59,10 @@ final class MarketsListChartsHistoryProvider {
             provider.items = copyItems
         }
     }
+
+    func reset() {
+        items = [:]
+    }
 }
 
 // MARK: Private

@@ -71,12 +71,17 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         bindWithProviders(chartsProvider: chartsProvider, filter: filterProvider)
     }
 
+    deinit {
+        // TODO: - Need to remove
+        print("MarketsItemViewModel - deinit")
+    }
+
     func onAppear() {
-        prefetchDataSource?.tokekItemViewModel(prefetchRowsAt: index)
+        prefetchDataSource?.prefetchRows(at: index)
     }
 
     func onDisappear() {
-        prefetchDataSource?.tokekItemViewModel(cancelPrefetchingForRowsAt: index)
+        prefetchDataSource?.cancelPrefetchingForRows(at: index)
     }
 
     // MARK: - Private Implementation

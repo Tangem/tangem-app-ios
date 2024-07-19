@@ -68,6 +68,8 @@ final class MarketsViewModel: ObservableObject {
         tokenViewModels = []
         viewDidAppear = false
 
+        chartsHistoryProvider.reset()
+
         dataProvider.reset(nil, with: nil)
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
@@ -107,10 +109,6 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                guard value.order != .rating else {
-                    return
-                }
-
                 viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
