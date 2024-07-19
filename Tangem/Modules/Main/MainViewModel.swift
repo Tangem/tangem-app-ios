@@ -104,10 +104,9 @@ final class MainViewModel: ObservableObject {
         coordinator?.openDetails(for: userWalletModel)
     }
 
+    /// Handles `SwiftUI.View.onAppear(perform:)`.
     func onViewAppear() {
         Analytics.log(.mainScreenOpened)
-
-        bottomSheetVisibility.show()
 
         addPendingUserWalletModelsIfNeeded { [weak self] in
             self?.swipeDiscoveryHelper.scheduleSwipeDiscoveryIfNeeded()
@@ -116,9 +115,19 @@ final class MainViewModel: ObservableObject {
         openPushNotificationsAuthorizationIfNeeded()
     }
 
+    /// Handles `SwiftUI.View.onDisappear(perform:)`.
     func onViewDisappear() {
-        bottomSheetVisibility.hide()
         swipeDiscoveryHelper.cancelScheduledSwipeDiscovery()
+    }
+
+    /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
+    func onDidAppear() {
+        bottomSheetVisibility.show()
+    }
+
+    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
+    func onWillDisappear() {
+        bottomSheetVisibility.hide()
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
