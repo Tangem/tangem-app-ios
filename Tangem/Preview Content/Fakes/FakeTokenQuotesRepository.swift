@@ -32,8 +32,10 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
             filter.insert(id)
             let quote = TokenQuote(
                 currencyId: id,
-                change: Decimal(floatLiteral: Double.random(in: -10 ... 10)),
                 price: Decimal(floatLiteral: Double.random(in: 1 ... 50000)),
+                priceChange24h: Decimal(floatLiteral: Double.random(in: -10 ... 10)),
+                priceChange7d: Decimal(floatLiteral: Double.random(in: -100 ... 100)),
+                priceChange30d: Decimal(floatLiteral: Double.random(in: -1000 ... 1000)),
                 prices24h: [
                     Double.random(in: -10 ... 10),
                     Double.random(in: -10 ... 10),
@@ -48,11 +50,27 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
     }
 
     func quote(for item: TokenItem) -> TokenQuote? {
-        TokenQuote(currencyId: item.currencyId!, change: 3.3, price: 1, prices24h: [1, 2, 3], currencyCode: AppSettings.shared.selectedCurrencyCode)
+        TokenQuote(
+            currencyId: item.currencyId!,
+            price: 1,
+            priceChange24h: 3.3,
+            priceChange7d: 43.3,
+            priceChange30d: 93.3,
+            prices24h: [1, 2, 3],
+            currencyCode: AppSettings.shared.selectedCurrencyCode
+        )
     }
 
     func quote(for currencyId: String) async throws -> TokenQuote {
-        await TokenQuote(currencyId: currencyId, change: 3.3, price: 1, prices24h: [1, 2, 3], currencyCode: AppSettings.shared.selectedCurrencyCode)
+        await TokenQuote(
+            currencyId: currencyId,
+            price: 1,
+            priceChange24h: 3.3,
+            priceChange7d: 43.3,
+            priceChange30d: 93.3,
+            prices24h: [1, 2, 3],
+            currencyCode: AppSettings.shared.selectedCurrencyCode
+        )
     }
 
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {

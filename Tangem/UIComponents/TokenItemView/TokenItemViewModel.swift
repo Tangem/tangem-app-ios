@@ -153,7 +153,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             return
         }
 
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: quote.change)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: quote.priceChange24h)
 
         let priceText = priceFormatter.formatFiatBalance(quote.price)
         tokenPrice = .loaded(text: priceText)
