@@ -13,12 +13,31 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MarketsCoordinator
 
     var body: some View {
-        ZStack {
-            if let model = coordinator.rootViewModel {
-                MarketsView(viewModel: model)
+        if let model = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
+                    VStack(spacing: 0.0) {
+                        header
 
-                sheets
+                        MarketsView(viewModel: model)
+                            .navigationLinks(links)
+                    }
+
+                    sheets
+                }
+                .onOverlayContentStateChange { state in
+                    coordinator.onOverlayContentStateChange(state)
+                }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var header: some View {
+        if let headerViewModel = coordinator.headerViewModel {
+            MainBottomSheetHeaderView(viewModel: headerViewModel)
+        } else {
+            EmptyView()
         }
     }
 
@@ -31,14 +50,13 @@ struct MarketsCoordinatorView: CoordinatorView {
             ) {
                 MarketsListOrderBottonSheetView(viewModel: $0)
             }
-            .sheet(item: $coordinator.tokenMarketsDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
-            }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .emptyNavigationLink()
+            .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            }
     }
 }

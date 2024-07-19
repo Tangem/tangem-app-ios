@@ -17,12 +17,14 @@ final class MainBottomSheetHeaderViewModel: ObservableObject {
     @Published var enteredSearchText = ""
     @Published var inputShouldBecomeFocused = false
 
-    func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
-        if case .top(.tapGesture) = state {
+    func onBottomSheetAppear(isTapGesture: Bool) {
+        if isTapGesture {
             inputShouldBecomeFocused = true
-        } else {
-            // Needed to clear the token search field after the bottom sheet is collapsed
-            enteredSearchText = ""
         }
+    }
+
+    func onBottomSheetDisappear() {
+        // Needed to clear the token search field after the bottom sheet is collapsed
+        enteredSearchText = ""
     }
 }
