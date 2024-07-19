@@ -11500,7 +11500,6 @@
 				DAC53CFA27BE63830027147D /* StoriesView.swift in Sources */,
 				EF031A652C0A32C3001535C9 /* SendGeometryEffectNames.swift in Sources */,
 				B669136C2C417C9A0016B0EE /* OverlayContentContainerViewModifier.swift in Sources */,
-				EF031A652C0A32C3001535C9 /* SendGeometryEffectNames.swift in Sources */,
 				B6805B722A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift in Sources */,
 				5DE2038E24EE8A510044EF46 /* ActivityIndicatorView.swift in Sources */,
 				B05A13AE29FBED3000FB511A /* ScrollableButtonsView.swift in Sources */,
