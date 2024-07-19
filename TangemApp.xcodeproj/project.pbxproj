@@ -671,6 +671,7 @@
 		B0FE0B3529712C170046EE2C /* WalletConnectV2Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */; };
 		B0FE0B37297138CC0046EE2C /* WalletConnectSavedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B36297138CC0046EE2C /* WalletConnectSavedSession.swift */; };
 		B0FE0B3A297140D10046EE2C /* WalletConnectV2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */; };
+		B0FF12682C4A815600C81ED8 /* MainWindowSizeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FF12672C4A815600C81ED8 /* MainWindowSizeKey.swift */; };
 		B0FF51C82C3C0FA800746705 /* TokenMarketsDetailsStatisticsRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FF51C72C3C0FA800746705 /* TokenMarketsDetailsStatisticsRecordView.swift */; };
 		B60275292A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60275282A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift */; };
 		B602752B2A7A651000865EA7 /* ShadowAnimatableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B602752A2A7A651000865EA7 /* ShadowAnimatableModifier.swift */; };
@@ -2536,6 +2537,7 @@
 		B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2Utils.swift; sourceTree = "<group>"; };
 		B0FE0B36297138CC0046EE2C /* WalletConnectSavedSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSavedSession.swift; sourceTree = "<group>"; };
 		B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2Error.swift; sourceTree = "<group>"; };
+		B0FF12672C4A815600C81ED8 /* MainWindowSizeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowSizeKey.swift; sourceTree = "<group>"; };
 		B0FF51C72C3C0FA800746705 /* TokenMarketsDetailsStatisticsRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMarketsDetailsStatisticsRecordView.swift; sourceTree = "<group>"; };
 		B1645742B30AF3A0C015827A /* Pods-TangemExpressTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		B4168BD54C4E22ED50BC39F9 /* Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; sourceTree = "<group>"; };
@@ -5379,6 +5381,7 @@
 		B0958BA529F6B698007CD76D /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
+				B0FF12662C4A811000C81ED8 /* EnvironmentKeys */,
 				B0EA18AB2C465D5D0023B72A /* DescriptionBottomSheet */,
 				B041C96C2C3FF72F00CE027A /* ProgressViewStyle */,
 				2D5DCC342C330A33000EE379 /* WalletSelectorItemView */,
@@ -6187,6 +6190,14 @@
 				B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		B0FF12662C4A811000C81ED8 /* EnvironmentKeys */ = {
+			isa = PBXGroup;
+			children = (
+				B0FF12672C4A815600C81ED8 /* MainWindowSizeKey.swift */,
+			);
+			path = EnvironmentKeys;
 			sourceTree = "<group>";
 		};
 		B603959E2C3793DE00591E18 /* PushNotifications */ = {
@@ -10370,6 +10381,7 @@
 				B02B74B629879F4A006473F2 /* WalletConnectMessageHandler.swift in Sources */,
 				2D5EBAA62ADD15EA00A25AC4 /* ManageTokensNetworkSelectorRoutable.swift in Sources */,
 				B69610982A428C9B00CF88B7 /* OrganizeTokensListSectionView.swift in Sources */,
+				B0FF12682C4A815600C81ED8 /* MainWindowSizeKey.swift in Sources */,
 				B072E12E2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift in Sources */,
 				B69E78762A6978E2007E358A /* CardInfoPagePreviewContainerView.swift in Sources */,
 				B06C08672A73FCDE00D982BC /* SingleWalletMainContentView.swift in Sources */,

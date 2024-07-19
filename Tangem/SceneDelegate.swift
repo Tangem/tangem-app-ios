@@ -31,9 +31,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             appCoordinator.start(with: .init(newScan: nil))
             let weakifyAdapter = StatusBarStyleConfiguratorWeakifyAdapter()
-            let appView = AppCoordinatorView(coordinator: appCoordinator).environment(\.statusBarStyleConfigurator, weakifyAdapter)
+
+            let appView = AppCoordinatorView(coordinator: appCoordinator)
+                .environment(\.statusBarStyleConfigurator, weakifyAdapter)
+                .environment(\.mainWindowSize, window.screen.bounds.size)
+
             let rootViewController = RootHostingController(rootView: appView)
             weakifyAdapter.adaptee = rootViewController
+
             window.rootViewController = rootViewController
             self.window = window
             window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
