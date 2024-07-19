@@ -12,6 +12,11 @@ struct ActiveStakingViewData {
     let usdAmount: String
     let coinAmount: String
     let rewardsToClaim: String?
+    
+    var rewardsToClaimText: String {
+        rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) }
+        ?? Localization.stakingDetailsNoRewardsToClaim
+    }
 }
 
 struct ActiveStakingView: View {
@@ -44,12 +49,9 @@ struct ActiveStakingView: View {
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 }
 
-                Text(
-                    data.rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) } ??
-                        Localization.stakingDetailsNoRewardsToClaim
-                )
-                .lineLimit(1)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                Text(data.rewardsToClaimText)
+                    .lineLimit(1)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
 
             Spacer()
@@ -59,9 +61,6 @@ struct ActiveStakingView: View {
                 .foregroundColor(Colors.Icon.informative)
                 .padding(.trailing, 2)
         }
-        .padding(14)
-        .background(Colors.Background.primary)
-        .cornerRadiusContinuous(14)
     }
 }
 
