@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SendFeeView: View {
     @ObservedObject var viewModel: SendFeeViewModel
-    let namespace: Namespace.ID
+    let namespace: Namespace
 
     private var auxiliaryViewTransition: AnyTransition {
         .offset(y: 250).combined(with: .opacity)
@@ -27,7 +27,7 @@ struct SendFeeView: View {
                                 Text(Localization.commonNetworkFeeTitle)
                                     .font(Fonts.Regular.footnote)
                                     .hidden()
-                                    .matchedGeometryEffect(id: SendViewNamespaceId.feeTitle.rawValue, in: namespace)
+                                    .matchedGeometryEffect(id: namespace.names.feeTitle, in: namespace.id)
                             }
                     } else {
                         feeRowView(feeRowViewModel, isLast: isLast)
@@ -41,7 +41,7 @@ struct SendFeeView: View {
                 }
             }
             .backgroundColor(Colors.Background.action)
-            .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
+            .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
             .separatorStyle(.none)
 
             if !viewModel.animatingAuxiliaryViewsOnAppear,
@@ -66,14 +66,14 @@ struct SendFeeView: View {
 
     private func feeRowView(_ feeRowViewModel: FeeRowViewModel, isLast: Bool) -> some View {
         FeeRowView(viewModel: feeRowViewModel)
-            .setNamespace(namespace)
-            .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: feeRowViewModel.option).rawValue)
-            .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: feeRowViewModel.option).rawValue)
+            .setNamespace(namespace.id)
+            .setOptionNamespaceId(namespace.names.feeOption(feeOption: feeRowViewModel.option))
+            .setAmountNamespaceId(namespace.names.feeAmount(feeOption: feeRowViewModel.option))
             .overlay(alignment: .bottom) {
                 if !isLast {
                     Separator(height: .minimal, color: Colors.Stroke.primary)
                         .padding(.trailing, -GroupedSectionConstants.defaultHorizontalPadding)
-                        .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: feeRowViewModel.option).rawValue, in: namespace)
+                        .matchedGeometryEffect(id: namespace.names.feeSeparator(feeOption: feeRowViewModel.option), in: namespace.id)
                 }
             }
     }
@@ -85,6 +85,13 @@ struct SendFeeView: View {
                 viewModel.openFeeExplanation()
                 return .handled
             })
+    }
+}
+
+extension SendFeeView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendFeeViewGeometryEffectNames
     }
 }
 

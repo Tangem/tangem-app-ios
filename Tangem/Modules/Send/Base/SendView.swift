@@ -91,7 +91,10 @@ struct SendView: View {
     private var currentPage: some View {
         switch viewModel.step.type {
         case .destination(let sendDestinationViewModel):
-            SendDestinationView(viewModel: sendDestinationViewModel, namespace: namespace)
+            SendDestinationView(
+                viewModel: sendDestinationViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         case .amount(let sendAmountViewModel):
             SendAmountView(
                 viewModel: sendAmountViewModel,
@@ -99,16 +102,25 @@ struct SendView: View {
             )
             .amountMinTextScale(Constants.amountMinTextScale)
         case .fee(let sendFeeViewModel):
-            SendFeeView(viewModel: sendFeeViewModel, namespace: namespace)
+            SendFeeView(
+                viewModel: sendFeeViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         case .validators(let stakingValidatorsViewModel):
             StakingValidatorsView(
                 viewModel: stakingValidatorsViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
         case .summary(let sendSummaryViewModel):
-            SendSummaryView(viewModel: sendSummaryViewModel, namespace: namespace)
+            SendSummaryView(
+                viewModel: sendSummaryViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         case .finish(let sendFinishViewModel):
-            SendFinishView(viewModel: sendFinishViewModel, namespace: namespace)
+            SendFinishView(
+                viewModel: sendFinishViewModel,
+                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+            )
         }
     }
 

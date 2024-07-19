@@ -14,11 +14,8 @@ struct AccessCodeRecoverySettingsView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             GroupedScrollView {
-                SelectableGropedSection(
-                    viewModel.viewModels,
-                    selection: $viewModel.isUserCodeRecoveryAllowed
-                ) {
-                    DefaultSelectableRowView(viewModel: $0)
+                GroupedSection(viewModel.viewModels) {
+                    DefaultSelectableRowView(data: $0, selection: $viewModel.isUserCodeRecoveryAllowed)
                 }
             }
             .disabled(viewModel.isLoading)

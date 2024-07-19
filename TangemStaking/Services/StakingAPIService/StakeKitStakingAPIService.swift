@@ -14,7 +14,11 @@ class StakeKitStakingAPIService: StakingAPIService {
     private let provider: MoyaProvider<StakeKitTarget>
     private let credential: StakingAPICredential
 
-    private let decoder: JSONDecoder = .init()
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential) {
         self.provider = provider
@@ -29,12 +33,16 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .getYield(request))
     }
 
-    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> StakeKitDTO.Balances.Response {
+    func getBalances(request: StakeKitDTO.Balances.Request) async throws -> [StakeKitDTO.Balances.Response] {
         try await _request(target: .getBalances(request))
     }
 
     func enterAction(request: StakeKitDTO.Actions.Enter.Request) async throws -> StakeKitDTO.Actions.Enter.Response {
         try await _request(target: .enterAction(request))
+    }
+
+    func transaction(id: String) async throws -> StakeKitDTO.Transaction.Response {
+        try await _request(target: .transaction(id: id))
     }
 
     func constructTransaction(id: String, request: StakeKitDTO.ConstructTransaction.Request) async throws -> StakeKitDTO.Transaction.Response {

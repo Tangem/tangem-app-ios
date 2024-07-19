@@ -26,17 +26,17 @@ extension EnvironmentValues {
 
 private enum OverlayContentContainerEnvironmentKey: EnvironmentKey {
     static var defaultValue: OverlayContentContainer {
-        return DummyOverlayContentContainer()
+        return DummyOverlayContentContainerViewControllerAdapter()
     }
 }
 
 private enum OverlayContentStateObserverEnvironmentKey: EnvironmentKey {
     static var defaultValue: OverlayContentStateObserver {
-        return DummyOverlayContentContainer()
+        return DummyOverlayContentContainerViewControllerAdapter()
     }
 }
 
-private struct DummyOverlayContentContainer: OverlayContentContainer, OverlayContentStateObserver {
+private struct DummyOverlayContentContainerViewControllerAdapter: OverlayContentContainer, OverlayContentStateObserver {
     func installOverlay(_ overlayView: some View) {
         assertionFailure("Inject proper `OverlayContentContainer` implementation into the view hierarchy")
     }

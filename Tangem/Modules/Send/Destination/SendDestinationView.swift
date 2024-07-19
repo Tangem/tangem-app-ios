@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SendDestinationView: View {
     @ObservedObject var viewModel: SendDestinationViewModel
-    let namespace: Namespace.ID
+    let namespace: Namespace
 
     private var auxiliaryViewTransition: AnyTransition {
         .offset(y: 100).combined(with: .opacity)
@@ -20,12 +20,12 @@ struct SendDestinationView: View {
         GroupedScrollView(spacing: 20) {
             GroupedSection(viewModel.addressViewModel) {
                 SendDestinationTextView(viewModel: $0)
-                    .setNamespace(namespace)
-                    .setContainerNamespaceId(SendViewNamespaceId.addressContainer.rawValue)
-                    .setTitleNamespaceId(SendViewNamespaceId.addressTitle.rawValue)
-                    .setIconNamespaceId(SendViewNamespaceId.addressIcon.rawValue)
-                    .setTextNamespaceId(SendViewNamespaceId.addressText.rawValue)
-                    .setClearButtonNamespaceId(SendViewNamespaceId.addressClearButton.rawValue)
+                    .setNamespace(namespace.id)
+                    .setContainerNamespaceId(namespace.names.addressContainer)
+                    .setTitleNamespaceId(namespace.names.addressTitle)
+                    .setIconNamespaceId(namespace.names.addressIcon)
+                    .setTextNamespaceId(namespace.names.addressText)
+                    .setClearButtonNamespaceId(namespace.names.addressClearButton)
             } footer: {
                 if !viewModel.animatingAuxiliaryViewsOnAppear, let viewModel = viewModel.addressViewModel {
                     Text(viewModel.description)
@@ -35,18 +35,18 @@ struct SendDestinationView: View {
             }
             .backgroundColor(Colors.Background.action)
             .geometryEffect(.init(
-                id: SendViewNamespaceId.addressBackground.rawValue,
-                namespace: namespace
+                id: namespace.names.addressBackground,
+                namespace: namespace.id
             ))
 
             GroupedSection(viewModel.additionalFieldViewModel) {
                 SendDestinationTextView(viewModel: $0)
-                    .setNamespace(namespace)
-                    .setContainerNamespaceId(SendViewNamespaceId.addressAdditionalFieldContainer.rawValue)
-                    .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                    .setIconNamespaceId(SendViewNamespaceId.addressAdditionalFieldIcon.rawValue)
-                    .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
-                    .setClearButtonNamespaceId(SendViewNamespaceId.addressAdditionalFieldClearButton.rawValue)
+                    .setNamespace(namespace.id)
+                    .setContainerNamespaceId(namespace.names.addressAdditionalFieldContainer)
+                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                    .setIconNamespaceId(namespace.names.addressAdditionalFieldIcon)
+                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
+                    .setClearButtonNamespaceId(namespace.names.addressAdditionalFieldClearButton)
                     .padding(.vertical, 2)
             } footer: {
                 if let additionalFieldViewModel = viewModel.additionalFieldViewModel, !viewModel.animatingAuxiliaryViewsOnAppear {
@@ -57,8 +57,8 @@ struct SendDestinationView: View {
             }
             .backgroundColor(Colors.Background.action)
             .geometryEffect(.init(
-                id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue,
-                namespace: namespace
+                id: namespace.names.addressAdditionalFieldBackground,
+                namespace: namespace.id
             ))
 
             if viewModel.showSuggestedDestinations,
@@ -71,6 +71,13 @@ struct SendDestinationView: View {
         .onAppear(perform: viewModel.onAuxiliaryViewAppear)
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
         .animation(SendView.Constants.defaultAnimation, value: viewModel.showSuggestedDestinations)
+    }
+}
+
+extension SendDestinationView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendDestinationViewGeometryEffectNames
     }
 }
 
