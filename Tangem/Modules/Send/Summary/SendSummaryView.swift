@@ -10,11 +10,11 @@ import SwiftUI
 
 struct SendSummaryView: View {
     @ObservedObject var viewModel: SendSummaryViewModel
-    let namespace: Namespace.ID
+    let namespace: Namespace
 
     private var amountMinTextScale: CGFloat?
 
-    init(viewModel: SendSummaryViewModel, namespace: Namespace.ID) {
+    init(viewModel: SendSummaryViewModel, namespace: Namespace) {
         self.viewModel = viewModel
         self.namespace = namespace
     }
@@ -67,28 +67,28 @@ struct SendSummaryView: View {
             switch type {
             case .address(let address, let corners):
                 SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
-                    .setNamespace(namespace)
+                    .namespace(.init(id: namespace.id, names: namespace.names))
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
                         sectionBackground(type: viewModel.editableType)
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                            .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
+                            .matchedGeometryEffect(id: namespace.names.addressBackground, in: namespace.id)
                     )
             case .additionalField(let type, let value):
                 DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                    .setNamespace(namespace)
-                    .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                    .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
+                    .setNamespace(namespace.id)
+                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
                         sectionBackground(type: viewModel.editableType)
                             .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                            .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
+                            .matchedGeometryEffect(id: namespace.names.addressAdditionalFieldBackground, in: namespace.id)
                     )
             }
         }
         .backgroundColor(.clear)
-        .geometryEffect(.init(id: SendViewNamespaceId.destinationContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.destinationContainer, namespace: namespace.id))
         .horizontalPadding(0)
         .separatorStyle(.single)
         .contentShape(Rectangle())
@@ -104,14 +104,14 @@ struct SendSummaryView: View {
         GroupedSection(viewModel.amountSummaryViewData) { data in
             SendAmountSummaryView(data: data)
                 .amountMinTextScale(amountMinTextScale)
-                .setNamespace(namespace)
-                .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
-                .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
-                .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
+                .setNamespace(namespace.id)
+                .setIconNamespaceId(namespace.names.tokenIcon)
+                .setAmountCryptoNamespaceId(namespace.names.amountCryptoText)
+                .setAmountFiatNamespaceId(namespace.names.amountFiatText)
         }
         .innerContentPadding(0)
         .backgroundColor(sectionBackground(type: viewModel.editableType))
-        .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditAmount)
         .onTapGesture {
@@ -124,19 +124,19 @@ struct SendSummaryView: View {
     private var feeSection: some View {
         GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
             SendFeeSummaryView(data: data)
-                .setNamespace(namespace)
-                .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
-                .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: data.feeOption).rawValue)
-                .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: data.feeOption).rawValue)
+                .setNamespace(namespace.id)
+                .setTitleNamespaceId(namespace.names.feeTitle)
+                .setOptionNamespaceId(namespace.names.feeOption(feeOption: data.feeOption))
+                .setAmountNamespaceId(namespace.names.feeAmount(feeOption: data.feeOption))
                 .overlay(alignment: .bottom) {
                     feeRowViewSeparator(for: data.feeOption)
                 }
                 .overlay {
                     ForEach(viewModel.deselectedFeeRowViewModels) { model in
                         FeeRowView(viewModel: model)
-                            .setNamespace(namespace)
-                            .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: model.option).rawValue)
-                            .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: model.option).rawValue)
+                            .setNamespace(namespace.id)
+                            .setOptionNamespaceId(namespace.names.feeOption(feeOption: model.option))
+                            .setAmountNamespaceId(namespace.names.feeAmount(feeOption: model.option))
                             .allowsHitTesting(false)
                             .hidden()
                             .overlay(alignment: .bottom) {
@@ -147,7 +147,7 @@ struct SendSummaryView: View {
         }
         // Fee uses a regular background regardless of whether it's enabled or not
         .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
+        .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditFee)
         .onTapGesture {
@@ -159,7 +159,7 @@ struct SendSummaryView: View {
         Separator(height: .minimal, color: Colors.Stroke.primary)
             .padding(.leading, GroupedSectionConstants.defaultHorizontalPadding)
             .opacity(0)
-            .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: option).rawValue, in: namespace)
+            .matchedGeometryEffect(id: namespace.names.feeSeparator(feeOption: option), in: namespace.id)
     }
 
     private func sectionBackground(type: SendSummaryViewModel.EditableType) -> Color {
@@ -191,6 +191,13 @@ struct SendSummaryView: View {
 extension SendSummaryView: Setupable {
     func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
         map { $0.amountMinTextScale = amountMinTextScale }
+    }
+}
+
+extension SendSummaryView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendSummaryViewGeometryEffectNames
     }
 }
 
