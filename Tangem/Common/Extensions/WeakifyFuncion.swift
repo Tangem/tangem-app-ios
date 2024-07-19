@@ -33,3 +33,11 @@ func weakify<Owner: AnyObject, Param1, Param2>(_ owner: Owner, forFunction build
         }
     }
 }
+
+func weakify<Owner: AnyObject>(_ owner: Owner, forFunction builder: @escaping (Owner) -> () async -> Void) -> () async -> Void {
+    return { [weak owner] in
+        if let owner = owner {
+            await builder(owner)()
+        }
+    }
+}
