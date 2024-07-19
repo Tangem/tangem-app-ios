@@ -46,7 +46,7 @@ struct ActiveStakingView: View {
 
                 Text(
                     data.rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) } ??
-                    Localization.stakingDetailsNoRewardsToClaim
+                        Localization.stakingDetailsNoRewardsToClaim
                 )
                 .lineLimit(1)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
