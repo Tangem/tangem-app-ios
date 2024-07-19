@@ -93,7 +93,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
-        if tokenItemViewModels.count == 1 {
+        if isOneTokenInPortfolio {
             let filteredActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
 
             return filteredActions.filter { actionType in
