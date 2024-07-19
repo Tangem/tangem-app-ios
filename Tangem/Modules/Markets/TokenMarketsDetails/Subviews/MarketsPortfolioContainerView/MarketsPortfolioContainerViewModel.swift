@@ -20,6 +20,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView = .empty
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
+    @Published var isLoading: Bool = true
 
     // This strict condition is conditioned by the requirements
     var isOneTokenInPortfolio: Bool {

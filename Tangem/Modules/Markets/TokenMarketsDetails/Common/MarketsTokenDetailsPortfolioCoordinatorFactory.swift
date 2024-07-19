@@ -19,7 +19,7 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
 
     // MARK: - Utils
 
-    func buildExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {
+    private func buildExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {
         return ExchangeCryptoUtility(
             blockchain: walletModel.blockchainNetwork.blockchain,
             address: walletModel.defaultAddress,
@@ -107,8 +107,9 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
         return exchangeUtility.buyURL
     }
 
-    func makeSellCryptoRequest(from closeURL: URL, with exchangeUtility: ExchangeCryptoUtility) -> SellCryptoRequest? {
-        exchangeUtility.extractSellCryptoRequest(from: closeURL.absoluteString)
+    func makeSellCryptoRequest(from closeURL: URL, with walletModel: WalletModel) -> SellCryptoRequest? {
+        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
+        return exchangeUtility.extractSellCryptoRequest(from: closeURL.absoluteString)
     }
 
     func makeSell(
@@ -126,5 +127,10 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
         )
         coordinator.start(with: options)
         return coordinator
+    }
+
+    func makeSellURL(for walletModel: WalletModel) -> URL? {
+        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
+        return exchangeUtility.sellURL
     }
 }

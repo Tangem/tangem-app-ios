@@ -62,6 +62,7 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
+                    .skeletonable(isShown: viewModel.isLoading)
                 }
             }
         }
@@ -105,10 +106,8 @@ struct MarketsPortfolioContainerView: View {
                     if isFirstItem {
                         let isSingleItem = elementItems.count == 1
                         roundedCornersVerticalEdge = isSingleItem ? .all : .topEdge
-                    } else if isLastItem {
-                        roundedCornersVerticalEdge = .bottomEdge
                     } else {
-                        roundedCornersVerticalEdge = nil
+                        roundedCornersVerticalEdge = isLastItem ? .bottomEdge : nil
                     }
 
                     return MarketsPortfolioTokenItemView(
@@ -134,7 +133,10 @@ struct MarketsPortfolioContainerView: View {
                 .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            MainButton(title: Localization.marketsAddToPortfolioButton) {
+            MainButton(
+                title: Localization.marketsAddToPortfolioButton,
+                isLoading: viewModel.isLoading
+            ) {
                 viewModel.onAddTapAction()
             }
         }

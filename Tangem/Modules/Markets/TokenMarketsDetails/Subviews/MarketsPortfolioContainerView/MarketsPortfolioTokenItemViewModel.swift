@@ -25,7 +25,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     var tokenName: String {
-        "\(walletModel.tokenItem.currencySymbol) \(walletModel.tokenItem.networkName)"
+        walletModel.tokenItem.networkName
     }
 
     let userWalletId: UserWalletId

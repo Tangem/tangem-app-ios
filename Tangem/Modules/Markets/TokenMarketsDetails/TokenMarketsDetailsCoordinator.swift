@@ -148,16 +148,14 @@ extension TokenMarketsDetailsCoordinator {
             return
         }
 
-        let exchangeUtility = portfolioCoordinatorFactory.buildExchangeCryptoUtility(for: walletModel)
-
-        guard let url = exchangeUtility.sellURL else {
+        guard let url = portfolioCoordinatorFactory.makeSellURL(for: walletModel) else {
             return
         }
 
         safariHandle = safariManager.openURL(url) { [weak self] closeURL in
             self?.safariHandle = nil
 
-            if let request = self?.portfolioCoordinatorFactory.makeSellCryptoRequest(from: closeURL, with: exchangeUtility) {
+            if let request = self?.portfolioCoordinatorFactory.makeSellCryptoRequest(from: closeURL, with: walletModel) {
                 self?.openSendToSell(with: request, for: walletModel, with: userWalletModel)
             }
         }
