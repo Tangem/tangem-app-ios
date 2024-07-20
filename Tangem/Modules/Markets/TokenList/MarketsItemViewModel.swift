@@ -32,13 +32,15 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Private Properties
 
-    private var bag = Set<AnyCancellable>()
+    private var chartsSubscribtion: AnyCancellable?
 
     private let priceChangeUtility = PriceChangeUtility()
     private let priceFormatter = CommonTokenPriceFormatter()
     private let marketCapFormatter = MarketCapFormatter()
 
     private weak var prefetchDataSource: MarketsListPrefetchDataSource?
+    private let chartsProvider: MarketsListChartsHistoryProvider
+    private let filterProvider: MarketsListDataFilterProvider
 
     // MARK: - Init
 
@@ -48,6 +50,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         chartsProvider: MarketsListChartsHistoryProvider,
         filterProvider: MarketsListDataFilterProvider
     ) {
+        self.chartsProvider = chartsProvider
+        self.filterProvider = filterProvider
+
         index = data.index
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
@@ -67,38 +72,39 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
 
         self.prefetchDataSource = prefetchDataSource
-
-        bindWithProviders(chartsProvider: chartsProvider, filter: filterProvider)
     }
 
     deinit {
         // TODO: - Need to remove
-        print("MarketsItemViewModel - deinit")
+        print("MarketsItemViewModel - deinit \(index)")
+        chartsSubscribtion?.cancel()
+        chartsSubscribtion = nil
     }
 
     func onAppear() {
+        bind()
         prefetchDataSource?.prefetchRows(at: index)
     }
 
     func onDisappear() {
+        chartsSubscribtion?.cancel()
         prefetchDataSource?.cancelPrefetchingForRows(at: index)
     }
 
     // MARK: - Private Implementation
 
-    private func bindWithProviders(chartsProvider: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
-        chartsProvider
+    private func bind() {
+        chartsSubscribtion = chartsProvider
             .$items
             .receive(on: DispatchQueue.main)
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, charts in
-                viewModel.findAndAssignChartsValue(from: charts, with: filter.currentFilterValue.interval)
+                viewModel.findAndAssignChartsValue(from: charts, with: viewModel.filterProvider.currentFilterValue.interval)
             })
-            .store(in: &bag)
 
         // You need to immediately find the value of the graph if it is already present
-        findAndAssignChartsValue(from: chartsProvider.items, with: filter.currentFilterValue.interval)
+        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
     }
 
     private func findAndAssignChartsValue(

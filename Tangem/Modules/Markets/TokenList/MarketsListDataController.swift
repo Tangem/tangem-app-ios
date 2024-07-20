@@ -10,7 +10,9 @@ import Foundation
 import Combine
 
 class MarketsListDataController {
-    var viewDidAppear: Bool
+    var visableRangeAreaPublisher: some Publisher<VisabaleArea, Never> {
+        visableRangeAreaValue.eraseToAnyPublisher()
+    }
 
     // MARK: - Privaate Properties
 
@@ -18,9 +20,10 @@ class MarketsListDataController {
 
     private let onAppearLastValue: CurrentValueSubject<Int, Never> = .init(0)
     private let onDisappearLastValue: CurrentValueSubject<Int, Never> = .init(0)
-    private let visableRangeAreaValue: CurrentValueSubject<VisabaleArea, Never>
+    private let visableRangeAreaValue: CurrentValueSubject<VisabaleArea, Never> = .init(VisabaleArea(range: 0 ... 0, direction: .down))
 
     private var bag = Set<AnyCancellable>()
+    private var viewDidAppear: Bool
 
     // MARK: - Init
 
@@ -28,17 +31,26 @@ class MarketsListDataController {
         self.dataProvider = dataProvider
         self.viewDidAppear = viewDidAppear
 
-        visableRangeAreaValue = .init(VisabaleArea(range: 0 ... dataProvider.items.count, direction: .down))
-
         bind()
     }
 
-    func bind() {
+    func update(viewDidAppear: Bool) {
+        self.viewDidAppear = viewDidAppear
+    }
+
+    // MARK: - Private Implementation
+
+    private func bind() {
         onAppearLastValue
+            .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { controller, onAppearValue in
+                guard controller.viewDidAppear else {
+                    return
+                }
+
                 let closeRange = min(onAppearValue, controller.onDisappearLastValue.value) ... max(onAppearValue, controller.onDisappearLastValue.value)
                 let direction: Direction = onAppearValue > controller.onDisappearLastValue.value ? .down : .up
 
@@ -49,10 +61,15 @@ class MarketsListDataController {
             .store(in: &bag)
 
         onDisappearLastValue
+            .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { controller, onDisappearValue in
+                guard controller.viewDidAppear else {
+                    return
+                }
+
                 let closeRange = min(controller.onAppearLastValue.value, onDisappearValue) ... max(controller.onAppearLastValue.value, onDisappearValue)
                 let direction: Direction = controller.visableRangeAreaValue.value.direction
 
@@ -63,6 +80,7 @@ class MarketsListDataController {
             .store(in: &bag)
 
         visableRangeAreaValue
+            .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
@@ -78,10 +96,8 @@ class MarketsListDataController {
             .store(in: &bag)
     }
 
-    // MARK: - Private Implementation
-
     private func fetchMoreIfPossible(with range: ClosedRange<Int>) {
-        guard viewDidAppear, dataProvider.canFetchMore else {
+        guard dataProvider.canFetchMore else {
             return
         }
 
