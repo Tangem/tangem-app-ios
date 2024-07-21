@@ -19,7 +19,7 @@ class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
     // MARK: - Private Properties
 
     private var subscription: AnyCancellable?
-    private var dissmis: (() -> Void)?
+    private var dismiss: (() -> Void)?
 
     private let provider: MarketsListDataFilterProvider
 
