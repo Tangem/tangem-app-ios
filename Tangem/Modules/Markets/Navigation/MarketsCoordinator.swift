@@ -18,15 +18,16 @@ class MarketsCoordinator: CoordinatorObject {
 
     // MARK: - Root Published
 
-    @Published private(set) var rootViewModel: MarketsViewModel? = nil
+    @Published private(set) var rootViewModel: MarketsViewModel?
 
     // MARK: - Coordinators
 
-    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
+    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator?
 
     // MARK: - Child ViewModels
 
-    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel? = nil
+    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
+    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel?
 
     // MARK: - Init
 
@@ -35,25 +36,27 @@ class MarketsCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    // MARK: - Implmentation
+    // MARK: - Implementation
 
     func start(with options: MarketsCoordinator.Options) {
-        rootViewModel = .init(searchTextPublisher: options.searchTextPublisher, coordinator: self)
+        let headerViewModel = MainBottomSheetHeaderViewModel()
+        self.headerViewModel = headerViewModel
+        rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
     }
 
-    func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
+    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
         if state.isBottom {
-            rootViewModel?.onBottomDisappear()
+            rootViewModel?.onBottomSheetDisappear()
+            headerViewModel?.onBottomSheetDisappear()
         } else {
-            rootViewModel?.onBottomAppear()
+            rootViewModel?.onBottomSheetAppear()
+            headerViewModel?.onBottomSheetAppear(isTapGesture: state.isTapGesture)
         }
     }
 }
 
 extension MarketsCoordinator {
-    struct Options {
-        let searchTextPublisher: AnyPublisher<String, Never>
-    }
+    struct Options {}
 }
 
 extension MarketsCoordinator: MarketsRoutable {

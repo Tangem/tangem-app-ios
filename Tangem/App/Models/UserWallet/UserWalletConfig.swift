@@ -25,9 +25,6 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
     /// Curves to create during card initialization
     var createWalletCurves: [EllipticCurve] { get }
 
-    /// `validationCurves` cannot be equal to `createWalletCurves`  for the first generation of Wallet because the bls curve was added later. But we can perform validation with `createWalletCurves` during backup or card initialization for new users
-    var validationCurves: [EllipticCurve] { get }
-
     var derivationStyle: DerivationStyle? { get }
 
     var tangemSigner: TangemSigner { get }
@@ -111,10 +108,6 @@ extension UserWalletConfig {
 
     var hasDefaultToken: Bool {
         (defaultBlockchains.first?.tokens.count ?? 0) > 0
-    }
-
-    var validationCurves: [EllipticCurve] {
-        createWalletCurves
     }
 }
 

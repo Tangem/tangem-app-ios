@@ -763,8 +763,7 @@
 "wallet_settings_title" = "Wallet settings";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Use %@ or scan a card to unlock access to your wallet";
-"warning_backup_errors_message" = "Please withdraw all funds from this wallet, reset it to factory settings, and create a new one. Access to the current wallet will be lost.";
-"warning_backup_errors_title" = "Activation error";
+"warning_backup_errors_message" = "It seems that the card activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card to your device. Please contact our Support team for assistance.";
 "warning_beacon_chain_retirement_content" = "According to BNB network developers, support for the BEP-2 standard will end in June 2024. To avoid losing assets with this standard, please convert them to the BEP-20 standard. Use our swap service or third-party services to transfer funds to the BNB Smart Chain network.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain will shut down";
 "warning_button_could_be_better" = "可以更好";
