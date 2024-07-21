@@ -527,6 +527,7 @@ private struct DApps {
         "dydx.exchange",
         "pro.apex.exchange",
         "services.dfx.swiss",
+        "sandbox.game",
     ]
 
     func isSupported(_ dAppURL: String) -> Bool {
