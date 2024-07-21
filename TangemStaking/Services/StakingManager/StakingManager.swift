@@ -7,11 +7,41 @@
 //
 
 import Foundation
+import Combine
 
 public protocol StakingManager {
-    func getYield() throws -> YieldInfo
+    var state: StakingManagerState { get }
+    var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 
-    // Actual info from Stakek.it
-    func getFee(amount: Decimal, validator: String) async throws
+    func updateState() async throws
+
+    func getFee(amount: Decimal, validator: String) async throws -> Decimal
     func getTransaction() async throws
+}
+
+public enum StakingManagerState: Hashable, CustomStringConvertible {
+    case loading
+    case notEnabled
+    case availableToStake(YieldInfo)
+    case availableToUnstake(StakingBalanceInfo, YieldInfo)
+    case availableToClaimRewards(StakingBalanceInfo, YieldInfo)
+
+    public var isAvailable: Bool {
+        switch self {
+        case .loading, .notEnabled:
+            return false
+        case .availableToStake, .availableToUnstake, .availableToClaimRewards:
+            return true
+        }
+    }
+
+    public var description: String {
+        switch self {
+        case .loading: "loading"
+        case .notEnabled: "notEnabled"
+        case .availableToStake: "availableToStake"
+        case .availableToUnstake: "availableToUnstake"
+        case .availableToClaimRewards: "availableToClaimRewards"
+        }
+    }
 }

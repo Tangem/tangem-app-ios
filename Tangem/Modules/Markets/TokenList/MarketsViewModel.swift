@@ -56,7 +56,7 @@ final class MarketsViewModel: ObservableObject {
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
-    func onBottomAppear() {
+    func onBottomSheetAppear() {
         // Need for locked fetchMore process when bottom sheet not yet open
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.viewDidAppear = true
@@ -65,12 +65,10 @@ final class MarketsViewModel: ObservableObject {
         Analytics.log(.manageTokensScreenOpened)
     }
 
-    func onBottomDisappear() {
+    func onBottomSheetDisappear() {
         viewDidAppear = false
         tokenViewModels = []
-
 //        chartsHistoryProvider.reset()
-
         dataProvider.reset(nil, with: nil)
 
         // Need reset state bottom sheet for next open bottom sheet
@@ -124,11 +122,9 @@ private extension MarketsViewModel {
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
-                if viewModel.tokenViewModels.isEmpty, items.count >= 25 {
-                    viewModel.tokenViewModels = items[0 ..< 50].enumerated().compactMap { index, item in
-                        let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, by: index)
-                        return tokenViewModel
-                    }
+                viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, by: index)
+                    return tokenViewModel
                 }
             })
             .store(in: &bag)
@@ -158,33 +154,33 @@ private extension MarketsViewModel {
     }
 
     private func downPaginationFlow(with visibleArea: MarketsListDataController.VisabaleArea) {
-        let offsetConstant = 25
-        let memoryLastCount = tokenViewModels.count
-
-        let upperItemIndex = visibleArea.range.upperBound + 2 * offsetConstant < dataProvider.items.count ?
-            visibleArea.range.upperBound + 2 * offsetConstant : 0
-
-        print("upperItemIndex = \(visibleArea.range.upperBound)")
-        print("memoryLastCount = \(memoryLastCount)")
-
-        if memoryLastCount - visibleArea.range.upperBound < offsetConstant {
-            print("need append items")
-
-            let rangeItems = dataProvider.items[memoryLastCount ... upperItemIndex]
-
-            var copyTokenViewModels = tokenViewModels
-
-            let tokenViewModelsToAppend = rangeItems.enumerated().compactMap { index, item in
-                let tokenViewModel = mapToTokenViewModel(tokenItemModel: item, by: memoryLastCount + index)
-                return tokenViewModel
-            }
-
-            copyTokenViewModels.append(contentsOf: tokenViewModelsToAppend)
-
-            tokenViewModels = copyTokenViewModels
-
-            print("count = \(tokenViewModels.count)")
-        }
+//        let offsetConstant = 25
+//        let memoryLastCount = tokenViewModels.count
+//
+//        let upperItemIndex = visibleArea.range.upperBound + 2 * offsetConstant < dataProvider.items.count ?
+//            visibleArea.range.upperBound + 2 * offsetConstant : 0
+//
+//        print("upperItemIndex = \(visibleArea.range.upperBound)")
+//        print("memoryLastCount = \(memoryLastCount)")
+//
+//        if memoryLastCount - visibleArea.range.upperBound < offsetConstant {
+//            print("need append items")
+//
+//            let rangeItems = dataProvider.items[memoryLastCount ... upperItemIndex]
+//
+//            var copyTokenViewModels = tokenViewModels
+//
+//            let tokenViewModelsToAppend = rangeItems.enumerated().compactMap { index, item in
+//                let tokenViewModel = mapToTokenViewModel(tokenItemModel: item, by: memoryLastCount + index)
+//                return tokenViewModel
+//            }
+//
+//            copyTokenViewModels.append(contentsOf: tokenViewModelsToAppend)
+//
+//            tokenViewModels = copyTokenViewModels
+//
+//            print("count = \(tokenViewModels.count)")
+//        }
     }
 
     // MARK: - Private Implementation

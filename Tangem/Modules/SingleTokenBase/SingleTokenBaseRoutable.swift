@@ -19,6 +19,6 @@ protocol SingleTokenBaseRoutable: AnyObject {
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void)
     func openP2PTutorial()
     func openExpress(input: CommonExpressModulesFactory.InputModel)
-    func openStaking(wallet: WalletModel)
+    func openStaking(options: StakingDetailsCoordinator.Options)
     func openInSafari(url: URL)
 }

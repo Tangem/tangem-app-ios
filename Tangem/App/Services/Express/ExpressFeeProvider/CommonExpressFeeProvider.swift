@@ -42,7 +42,7 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
             supportsEIP1559: wallet.tokenItem.blockchain.supportsEIP1559
         )
 
-        let amount = parameters.calculateFee(decimalValue: wallet.tokenItem.decimalValue)
+        let amount = parameters.calculateFee(decimalValue: wallet.feeTokenItem.decimalValue)
         return Fee(makeAmount(amount: amount))
     }
 
@@ -97,8 +97,8 @@ private extension CommonExpressFeeProvider {
 
         let gasLimit = parameters.gasLimit * BigUInt(112) / BigUInt(100)
         let newParameters = parameters.changingGasLimit(to: gasLimit)
-        let feeValue = newParameters.calculateFee(decimalValue: wallet.tokenItem.blockchain.decimalValue)
-        let amount = Amount(with: wallet.tokenItem.blockchain, value: feeValue)
+        let feeValue = newParameters.calculateFee(decimalValue: wallet.feeTokenItem.decimalValue)
+        let amount = Amount(with: wallet.feeTokenItem.blockchain, type: wallet.feeTokenItem.amountType, value: feeValue)
         return Fee(amount, parameters: newParameters)
     }
 }

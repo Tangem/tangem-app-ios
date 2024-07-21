@@ -9,20 +9,21 @@
 import Foundation
 import SwiftUI
 
-struct ValidatorView: SelectableView {
+struct ValidatorView: View {
     private let data: ValidatorViewData
+    private let selection: Binding<String>
 
-    var isSelected: Binding<String>?
-    var selectionId: String { data.id }
+    private var namespace: Namespace?
 
-    init(data: ValidatorViewData) {
+    init(data: ValidatorViewData, selection: Binding<String>) {
         self.data = data
+        self.selection = selection
     }
 
     var body: some View {
         switch data.detailsType {
         case .checkmark:
-            Button(action: { isSelectedProxy.wrappedValue.toggle() }) {
+            Button(action: { selection.isActive(compare: data.id).toggle() }) {
                 content
             }
         case .none, .chevron, .balance:
@@ -49,12 +50,18 @@ struct ValidatorView: SelectableView {
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
+            .matchedGeometryEffect(
+                namespace.map { .init(id: $0.names.validatorIcon(id: data.id), namespace: $0.id) }
+            )
     }
 
     private var info: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                .matchedGeometryEffect(
+                    namespace.map { .init(id: $0.names.validatorTitle(id: data.id), namespace: $0.id) }
+                )
 
             if let aprFormatted = data.aprFormatted {
                 HStack(spacing: 4) {
@@ -64,6 +71,9 @@ struct ValidatorView: SelectableView {
                     Text(aprFormatted)
                         .style(Fonts.Regular.footnote, color: Colors.Text.accent)
                 }
+                .matchedGeometryEffect(
+                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.id), namespace: $0.id) }
+                )
             }
         }
         .lineLimit(1)
@@ -73,7 +83,7 @@ struct ValidatorView: SelectableView {
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: isSelectedProxy.wrappedValue)
+            CircleCheckmarkIcon(isSelected: selection.isActive(compare: data.id).wrappedValue)
         case .chevron:
             Assets.chevron.image
         case .balance(let crypto, let fiat):
@@ -88,6 +98,21 @@ struct ValidatorView: SelectableView {
     }
 }
 
+// MARK: - Setupable
+
+extension ValidatorView: Setupable {
+    func geometryEffect(_ namespace: Namespace) -> Self {
+        map { $0.namespace = namespace }
+    }
+}
+
+extension ValidatorView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any StakingValidatorsViewGeometryEffectNames
+    }
+}
+
 #Preview("SelectableValidatorView") {
     struct StakingValidatorPreview: View {
         @State private var selected: String = ""
@@ -96,7 +121,7 @@ struct ValidatorView: SelectableView {
             ZStack {
                 Colors.Background.secondary.ignoresSafeArea()
 
-                SelectableGropedSection([
+                GroupedSection([
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "InfStones",
@@ -111,9 +136,8 @@ struct ValidatorView: SelectableView {
                         aprFormatted: nil,
                         detailsType: .checkmark
                     ),
-
-                ], selection: $selected) {
-                    ValidatorView(data: $0)
+                ]) {
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }
@@ -148,7 +172,7 @@ struct ValidatorView: SelectableView {
                     ),
 
                 ]) {
-                    ValidatorView(data: $0)
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }
@@ -175,7 +199,7 @@ struct ValidatorView: SelectableView {
                         detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
                     ),
                 ]) {
-                    ValidatorView(data: $0)
+                    ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }

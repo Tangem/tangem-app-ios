@@ -15,7 +15,9 @@ struct MarketsItemView: View {
     private let iconSize = CGSize(bothDimensions: 36)
 
     var body: some View {
-        Button(action: viewModel.didTapAction) {
+        Button(action: {
+            viewModel.didTapAction?()
+        }) {
             HStack(spacing: 12) {
                 IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
@@ -86,17 +88,18 @@ struct MarketsItemView: View {
     }
 
     private var priceHistoryView: some View {
-        VStack {
-            if let charts = viewModel.charts {
-                LineChartView(
-                    color: viewModel.priceChangeState.signType?.textColor ?? Colors.Text.tertiary,
-                    data: charts
-                )
-            } else {
-                makeSkeletonView(by: Constants.skeletonMediumWidthValue)
-            }
-        }
-        .frame(width: 56, height: 32, alignment: .center)
+        VStack {}
+//        VStack {
+//            if let charts = viewModel.charts {
+//                LineChartView(
+//                    color: viewModel.priceChangeState.signType?.textColor ?? Colors.Text.tertiary,
+//                    data: charts
+//                )
+//            } else {
+//                makeSkeletonView(by: Constants.skeletonMediumWidthValue)
+//            }
+//        }
+//        .frame(width: 56, height: 32, alignment: .center)
     }
 
     private func makeSkeletonView(by value: String) -> some View {

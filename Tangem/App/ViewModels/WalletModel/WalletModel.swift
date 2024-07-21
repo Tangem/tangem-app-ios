@@ -10,12 +10,13 @@ import Foundation
 import Combine
 import CombineExt
 import BlockchainSdk
+import TangemStaking
+import TangemFoundation
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     var walletModelId: WalletModel.Id {
         .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
@@ -35,20 +36,16 @@ class WalletModel {
         transactionHistoryState()
     }
 
-    var stakingStatePublisher: AnyPublisher<StakingState, Never> {
-        stakingState()
-    }
-
-    var transactionHistoryNotLoaded: Bool {
-        if case .initial = _transactionHistoryService?.state {
-            return true
-        } else {
-            return false
-        }
-    }
-
     var isSupportedTransactionHistory: Bool {
         _transactionHistoryService != nil
+    }
+
+    var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
+        _stakingManager.map { $0.statePublisher } ?? .just(output: .notEnabled)
+    }
+
+    var stakingManagerState: StakingManagerState {
+        _stakingManager?.state ?? .notEnabled
     }
 
     var shouldShowFeeSelector: Bool {
@@ -221,7 +218,7 @@ class WalletModel {
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
             swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
-            stakingRepositoryProxy.enabledYieldsPublisher.mapToVoid()
+            stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()
     }
@@ -233,8 +230,8 @@ class WalletModel {
     let isCustom: Bool
 
     private let walletManager: WalletManager
+    private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
-    private let _stakingBalanceProvider: StakingBalanceProvider?
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -254,15 +251,15 @@ class WalletModel {
 
     init(
         walletManager: WalletManager,
+        stakingManager: StakingManager?,
         transactionHistoryService: TransactionHistoryService?,
-        stakingBalanceProvider: StakingBalanceProvider?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
+        _stakingManager = stakingManager
         _transactionHistoryService = transactionHistoryService
-        _stakingBalanceProvider = stakingBalanceProvider
         self.amountType = amountType
         self.isCustom = isCustom
 
@@ -349,9 +346,9 @@ class WalletModel {
 
         updateWalletModelSubscription = walletManager
             .updatePublisher()
-            .combineLatest(loadQuotes())
+            .combineLatest(loadQuotes(), updateStakingManagerState()) { state, _, _ in state }
             .receive(on: updateQueue)
-            .sink { [weak self] newState, _ in
+            .sink { [weak self] newState in
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Finished common update for \(self)")
@@ -643,25 +640,13 @@ extension WalletModel {
 // MARK: - Staking
 
 extension WalletModel {
-    private func updateStakingState() {
-        _stakingBalanceProvider?.updateBalance()
-    }
-
-    private func stakingState() -> AnyPublisher<WalletModel.StakingState, Never> {
-        guard let _stakingBalanceProvider else {
-            return .just(output: .notSupported)
+    func updateStakingManagerState() -> AnyPublisher<Void, Never> {
+        Future.async { [weak self] in
+            try await self?._stakingManager?.updateState()
         }
-
-        return _stakingBalanceProvider.balancePublisher
-            .map { balance in
-                switch balance {
-                case .none:
-                    return .availableToStake
-                case .some(let balance):
-                    return .staked(balance: balance)
-                }
-            }
-            .eraseToAnyPublisher()
+        // Here we have to skip the error to let the PTR to complete
+        .replaceError(with: ())
+        .eraseToAnyPublisher()
     }
 }
 
@@ -728,8 +713,8 @@ extension WalletModel {
         walletManager as? AssetRequirementsManager
     }
 
-    var stakingBalanceProvider: StakingBalanceProvider? {
-        _stakingBalanceProvider
+    var stakingManager: StakingManager? {
+        _stakingManager
     }
 }
 

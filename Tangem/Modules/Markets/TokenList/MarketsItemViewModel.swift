@@ -10,16 +10,17 @@ import Foundation
 import Combine
 
 class MarketsItemViewModel: Identifiable, ObservableObject {
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+
     // MARK: - Published
+
+    @Published var priceValue: String = ""
+    @Published var priceChangeState: TokenPriceChangeView.State = .empty
+    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
+//    @Published var charts: [Double]? = nil
 
     var marketRating: String?
     var marketCap: String?
-
-    var priceValue: String
-    var priceChangeState: TokenPriceChangeView.State
-
-    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
-    @Published var charts: [Double]? = nil
 
     // MARK: - Properties
 
@@ -28,11 +29,11 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     let imageURL: URL?
     let name: String
     let symbol: String
-    let didTapAction: () -> Void
+    let didTapAction: (() -> Void)?
 
     // MARK: - Private Properties
 
-    private var chartsSubscribtion: AnyCancellable?
+//    private var bag = Set<AnyCancellable>()
 
     private let priceChangeUtility = PriceChangeUtility()
     private let priceFormatter = CommonTokenPriceFormatter()
@@ -52,13 +53,14 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     ) {
         self.chartsProvider = chartsProvider
         self.filterProvider = filterProvider
+        self.prefetchDataSource = prefetchDataSource
 
         index = data.index
         id = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
         name = data.name
         symbol = data.symbol.uppercased()
-        didTapAction = data.didTapAction
+        didTapAction = nil
 
         if let marketRating = data.marketRating {
             self.marketRating = "\(marketRating)"
@@ -68,43 +70,68 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
         }
 
-        priceValue = priceFormatter.formatFiatBalance(data.priceValue)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
-
-        self.prefetchDataSource = prefetchDataSource
+//        setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
+//        bindToQuotesUpdates()
     }
 
     deinit {
         // TODO: - Need to remove
         print("MarketsItemViewModel - deinit \(index)")
-        chartsSubscribtion?.cancel()
-        chartsSubscribtion = nil
     }
 
     func onAppear() {
-        bind()
         prefetchDataSource?.prefetchRows(at: index)
+        bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     func onDisappear() {
-        chartsSubscribtion?.cancel()
         prefetchDataSource?.cancelPrefetchingForRows(at: index)
     }
 
     // MARK: - Private Implementation
 
-    private func bind() {
-        chartsSubscribtion = chartsProvider
-            .$items
-            .receive(on: DispatchQueue.main)
-            .delay(for: 0.3, scheduler: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, charts in
-                viewModel.findAndAssignChartsValue(from: charts, with: viewModel.filterProvider.currentFilterValue.interval)
-            })
+    private func setupPriceInfo(price: Decimal?, priceChangeValue: Decimal?) {
+        priceValue = priceFormatter.formatFiatBalance(price)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangeValue)
+    }
+
+    private func bindToQuotesUpdates() {
+//        quotesRepository.quotesPublisher
+//            .withWeakCaptureOf(self)
+//            .compactMap { viewModel, quotes in
+//                quotes[viewModel.id]
+//            }
+//            .withWeakCaptureOf(self)
+//            .sink { viewModel, quoteInfo in
+//                let priceChangeValue: Decimal?
+//                switch viewModel.filterProvider.currentFilterValue.interval {
+//                case .day:
+//                    priceChangeValue = quoteInfo.priceChange24h
+//                case .week:
+//                    priceChangeValue = quoteInfo.priceChange7d
+//                case .month:
+//                    priceChangeValue = quoteInfo.priceChange30d
+//                default:
+//                    priceChangeValue = nil
+//                }
+//                viewModel.setupPriceInfo(price: quoteInfo.price, priceChangeValue: priceChangeValue)
+//            }
+//            .store(in: &bag)
+    }
+
+    private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
+//        charts
+//            .$items
+//            .receive(on: DispatchQueue.main)
+//            .delay(for: 0.3, scheduler: DispatchQueue.main)
+//            .withWeakCaptureOf(self)
+//            .sink(receiveValue: { viewModel, charts in
+//                viewModel.findAndAssignChartsValue(from: charts, with: viewModel.filterProvider.currentFilterValue.interval)
+//            })
+//            .store(in: &bag)
 
         // You need to immediately find the value of the graph if it is already present
-        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
+//        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
     }
 
     private func findAndAssignChartsValue(
@@ -116,7 +143,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
-        charts = chartsDoubleConvertedValues
+//        charts = chartsDoubleConvertedValues
     }
 
     private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
@@ -139,9 +166,5 @@ extension MarketsItemViewModel {
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
         let didTapAction: () -> Void
-    }
-
-    enum Constants {
-        static let priceChangeStateValueDevider: Decimal = 0.01
     }
 }

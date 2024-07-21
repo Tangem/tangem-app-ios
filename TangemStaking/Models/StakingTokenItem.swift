@@ -1,17 +1,12 @@
 //
-//  StakingWallet.swift
+//  StakingTokenItem.swift
 //  TangemStaking
 //
-//  Created by Sergey Balashov on 24.05.2024.
+//  Created by Sergey Balashov on 15.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
-
-public protocol StakingWallet {
-    var stakingTokenItem: StakingTokenItem { get }
-    var defaultAddress: String { get }
-}
 
 public struct StakingTokenItem: Hashable {
     public let coinId: String
