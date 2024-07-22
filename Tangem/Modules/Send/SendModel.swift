@@ -31,6 +31,7 @@ class SendModel {
 
     // MARK: - Dependencies
 
+    var sendAmountInteractor: SendAmountInteractor!
     var sendFeeInteractor: SendFeeInteractor!
     var informationRelevanceService: InformationRelevanceService!
     weak var router: SendModelRoutable?
@@ -281,7 +282,7 @@ extension SendModel: SendFeeOutput {
 
 extension SendModel: SendSummaryInput, SendSummaryOutput {
     var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
-        _transaction.map { $0.map { .transfer($0) } }.eraseToAnyPublisher()
+        _transaction.map { $0?.value.map { .transfer($0) } }.eraseToAnyPublisher()
     }
 }
 
@@ -321,7 +322,7 @@ extension SendModel: SendNotificationManagerInput {
     }
 
     var bsdkTransactionPublisher: AnyPublisher<BSDKTransaction?, Never> {
-        _transaction.eraseToAnyPublisher()
+        _transaction.map { $0?.value }.eraseToAnyPublisher()
     }
 
     var transactionCreationError: AnyPublisher<Error?, Never> {
