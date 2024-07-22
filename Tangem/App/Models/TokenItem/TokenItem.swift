@@ -92,7 +92,7 @@ enum TokenItem: Hashable, Codable {
         case .token(let token, _):
             return token.name
         case .blockchain(let blockchainNetwork):
-            return blockchainNetwork.blockchain.сoinDisplayName
+            return blockchainNetwork.blockchain.coinDisplayName
         }
     }
 
