@@ -54,8 +54,13 @@ struct SellFlowBaseBuilder {
         // Update the fees in case we in the sell flow
         fee.interactor.updateFees()
 
-        notificationManager.setup(input: sendModel)
-        notificationManager.setupManager(with: sendModel)
+        // If we want to notifications in the sell flow
+        // 1. Uncomment code below
+        // 2. Set the `sendAmountInteractor` into `sendModel`
+        // to support the amount changes from the notification's buttons
+
+        // notificationManager.setup(input: sendModel)
+        // notificationManager.setupManager(with: sendModel)
 
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)
