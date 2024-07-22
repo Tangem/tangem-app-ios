@@ -371,7 +371,7 @@ private extension ManageTokensNetworkSelectorViewModel {
         } else {
             alert = alertBuilder.errorCanRemoveAlertDeleteTokenIfNeeded(
                 tokenItem: tokenItem,
-                dissmisAction: { [weak self] item in
+                dismissAction: { [weak self] item in
                     self?.updateSelection(item)
                 }
             )

@@ -53,7 +53,7 @@ final class MarketsViewModel: ObservableObject {
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
-    func onBottomAppear() {
+    func onBottomSheetAppear() {
         // Need for locked fetchMore process when bottom sheet not yet open
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.viewDidAppear = true
@@ -62,7 +62,7 @@ final class MarketsViewModel: ObservableObject {
         Analytics.log(.manageTokensScreenOpened)
     }
 
-    func onBottomDisappear() {
+    func onBottomSheetDisappear() {
         dataProvider.reset(nil, with: nil)
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)

@@ -93,9 +93,6 @@
 		2DC5677B2B0E047700B0244F /* MainBottomSheetHeaderInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567722B0E047700B0244F /* MainBottomSheetHeaderInputView.swift */; };
 		2DC5677C2B0E047700B0244F /* MainBottomSheetHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567732B0E047700B0244F /* MainBottomSheetHeaderViewModel.swift */; };
 		2DC5677D2B0E047700B0244F /* MainBottomSheetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567742B0E047700B0244F /* MainBottomSheetHeaderView.swift */; };
-		2DC5677E2B0E047700B0244F /* MainBottomSheetHeaderCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567762B0E047700B0244F /* MainBottomSheetHeaderCoordinatorView.swift */; };
-		2DC5677F2B0E047700B0244F /* MainBottomSheetCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567772B0E047700B0244F /* MainBottomSheetCoordinator.swift */; };
-		2DC567802B0E047700B0244F /* MainBottomSheetContentCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC567782B0E047700B0244F /* MainBottomSheetContentCoordinatorView.swift */; };
 		2DC567812B0E047700B0244F /* MainBottomSheetVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5677A2B0E047700B0244F /* MainBottomSheetVisibility.swift */; };
 		2DC5DAAD29B782420039154A /* TonCenterApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */; };
 		2DCAEE4B2B13E4F800C87E09 /* GetBlockAccessTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */; };
@@ -722,6 +719,7 @@
 		B644EC292ACBF469007D9F4B /* DragGesturePassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B644EC282ACBF469007D9F4B /* DragGesturePassthroughView.swift */; };
 		B64598FF2B59B4AC000FD73F /* RateAppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64598FE2B59B4AC000FD73F /* RateAppAction.swift */; };
 		B64781E22C22F74300B0E882 /* CustomTokenContractAddressConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */; };
+		B64959832C414E8900B71164 /* RootViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64959822C414E8900B71164 /* RootViewControllerFactory.swift */; };
 		B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
 		B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */; };
@@ -840,7 +838,6 @@
 		B6E9A8C52A997B09005CF137 /* MainFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E9A8C42A997B09005CF137 /* MainFooterView.swift */; };
 		B6E9A8C72A9A35B5005CF137 /* MainFooterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E9A8C62A9A35B5005CF137 /* MainFooterViewModel.swift */; };
 		B6E9A8C92A9A410A005CF137 /* CardsInfoPagerView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E9A8C82A9A410A005CF137 /* CardsInfoPagerView+.swift */; };
-		B6E9AEA92B0E3B0B003183C8 /* MainBottomSheetOverlayCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E9AEA82B0E3B0B003183C8 /* MainBottomSheetOverlayCoordinatorView.swift */; };
 		B6EAA5F72A399853003909F0 /* View+onTouchesBegan.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EAA5F62A399853003909F0 /* View+onTouchesBegan.swift */; };
 		B6EAA5F92A3998A3003909F0 /* OrganizeTokensDragAndDropController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EAA5F82A3998A3003909F0 /* OrganizeTokensDragAndDropController.swift */; };
 		B6ED082C2A7D9DCD0090E51F /* UserTokensReorderingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED082B2A7D9DCD0090E51F /* UserTokensReorderingOptions.swift */; };
@@ -1909,9 +1906,6 @@
 		2DC567722B0E047700B0244F /* MainBottomSheetHeaderInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderInputView.swift; sourceTree = "<group>"; };
 		2DC567732B0E047700B0244F /* MainBottomSheetHeaderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderViewModel.swift; sourceTree = "<group>"; };
 		2DC567742B0E047700B0244F /* MainBottomSheetHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderView.swift; sourceTree = "<group>"; };
-		2DC567762B0E047700B0244F /* MainBottomSheetHeaderCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderCoordinatorView.swift; sourceTree = "<group>"; };
-		2DC567772B0E047700B0244F /* MainBottomSheetCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetCoordinator.swift; sourceTree = "<group>"; };
-		2DC567782B0E047700B0244F /* MainBottomSheetContentCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetContentCoordinatorView.swift; sourceTree = "<group>"; };
 		2DC5677A2B0E047700B0244F /* MainBottomSheetVisibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetVisibility.swift; sourceTree = "<group>"; };
 		2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TonCenterApiKeys.swift; sourceTree = "<group>"; };
 		2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBlockAccessTokens.swift; sourceTree = "<group>"; };
@@ -2609,6 +2603,7 @@
 		B64598FC2B59A81D000FD73F /* MainViewPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewPage.swift; sourceTree = "<group>"; };
 		B64598FE2B59B4AC000FD73F /* RateAppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateAppAction.swift; sourceTree = "<group>"; };
 		B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTokenContractAddressConverter.swift; sourceTree = "<group>"; };
+		B64959822C414E8900B71164 /* RootViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerFactory.swift; sourceTree = "<group>"; };
 		B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerAnimationFactory.swift; sourceTree = "<group>"; };
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
 		B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentStateObserverViewModifier.swift; sourceTree = "<group>"; };
@@ -2727,7 +2722,6 @@
 		B6E9A8C42A997B09005CF137 /* MainFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFooterView.swift; sourceTree = "<group>"; };
 		B6E9A8C62A9A35B5005CF137 /* MainFooterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFooterViewModel.swift; sourceTree = "<group>"; };
 		B6E9A8C82A9A410A005CF137 /* CardsInfoPagerView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardsInfoPagerView+.swift"; sourceTree = "<group>"; };
-		B6E9AEA82B0E3B0B003183C8 /* MainBottomSheetOverlayCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetOverlayCoordinatorView.swift; sourceTree = "<group>"; };
 		B6EAA5F62A399853003909F0 /* View+onTouchesBegan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+onTouchesBegan.swift"; sourceTree = "<group>"; };
 		B6EAA5F82A3998A3003909F0 /* OrganizeTokensDragAndDropController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensDragAndDropController.swift; sourceTree = "<group>"; };
 		B6ED082B2A7D9DCD0090E51F /* UserTokensReorderingOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokensReorderingOptions.swift; sourceTree = "<group>"; };
@@ -3945,17 +3939,6 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
-		2DC567752B0E047700B0244F /* Navigation */ = {
-			isa = PBXGroup;
-			children = (
-				2DC567772B0E047700B0244F /* MainBottomSheetCoordinator.swift */,
-				2DC567762B0E047700B0244F /* MainBottomSheetHeaderCoordinatorView.swift */,
-				2DC567782B0E047700B0244F /* MainBottomSheetContentCoordinatorView.swift */,
-				B6E9AEA82B0E3B0B003183C8 /* MainBottomSheetOverlayCoordinatorView.swift */,
-			);
-			path = Navigation;
-			sourceTree = "<group>";
-		};
 		2DC567792B0E047700B0244F /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -4164,6 +4147,7 @@
 				5D3F77CD24BF56DC00E8695B /* Preview Content */,
 				5D3F77C524BF56D800E8695B /* AppDelegate.swift */,
 				B046EE172578D38E00EA38A5 /* SceneDelegate.swift */,
+				B64959822C414E8900B71164 /* RootViewControllerFactory.swift */,
 				DC751ADB2ABB750A0039A4D2 /* Tangem-Bridging-Header.h */,
 				5D3F77D024BF56DC00E8695B /* LaunchScreen.storyboard */,
 				DA64C36F27CCAD7E005B5E9A /* InfoPlist.strings */,
@@ -8540,7 +8524,6 @@
 		EF763E902A7935B400D12644 /* MainBottomSheet */ = {
 			isa = PBXGroup;
 			children = (
-				2DC567752B0E047700B0244F /* Navigation */,
 				2DC567712B0E047700B0244F /* Header */,
 				B67688ED2B078EBB006C94F7 /* Overlay */,
 				2DC567792B0E047700B0244F /* Other */,
@@ -10445,6 +10428,7 @@
 				EFC84B2D2C37FBB300546882 /* SendSummaryStep.swift in Sources */,
 				EFB6800E2B29BD4B00842BE3 /* SheetModifier.swift in Sources */,
 				B09BB861259A075600B92000 /* NavigationBar.swift in Sources */,
+				B64959832C414E8900B71164 /* RootViewControllerFactory.swift in Sources */,
 				5DF2522B24F9439D0015B429 /* UIImage+.swift in Sources */,
 				B0F62C4825DE4ABE005C8BA0 /* EmailType.swift in Sources */,
 				DC70BFD72B9105BF002205BA /* SecurityOptionChangingCardInteractor.swift in Sources */,
@@ -10814,7 +10798,6 @@
 				DADBECE22BBE910C007E7885 /* CustomEvmFeeService.swift in Sources */,
 				B04126EF29CC322D00A8BB43 /* OnboardingSeedPhraseUserValidationViewModel.swift in Sources */,
 				B00FA51C2C05C496007041B0 /* OnboardingAddTokensDelegate.swift in Sources */,
-				2DC5677E2B0E047700B0244F /* MainBottomSheetHeaderCoordinatorView.swift in Sources */,
 				5D6784CE25EB92F300149995 /* TestnetTokensRepository.swift in Sources */,
 				2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */,
 				DA5CD09A2A25F4F2008FD876 /* PromotionCoordinator.swift in Sources */,
@@ -11101,7 +11084,6 @@
 				B02B74B82987A628006473F2 /* WalletConnectV2SignTypedData.swift in Sources */,
 				EFB999AF2C3D9A7F00F6A987 /* CommonSendStepsManager.swift in Sources */,
 				B6C3B56E2AA1823A0017241C /* CardsInfoPagerScrollState.swift in Sources */,
-				2DC567802B0E047700B0244F /* MainBottomSheetContentCoordinatorView.swift in Sources */,
 				EF9E38002B73FCAC004B694C /* BannerNotificationFactory.swift in Sources */,
 				DA91770E2A25DD3F006CD67B /* OneInchGradientViews.swift in Sources */,
 				DA8C673E2B0B455700E1C9B8 /* DefaultTextWithTitleRowView.swift in Sources */,
@@ -11547,7 +11529,6 @@
 				B0DD162A2A331C2100CB23AA /* TokenDetailsView.swift in Sources */,
 				DAC53CFA27BE63830027147D /* StoriesView.swift in Sources */,
 				EF031A652C0A32C3001535C9 /* SendGeometryEffectNames.swift in Sources */,
-				EF031A652C0A32C3001535C9 /* SendGeometryEffectNames.swift in Sources */,
 				B669136C2C417C9A0016B0EE /* OverlayContentContainerViewModifier.swift in Sources */,
 				B6805B722A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift in Sources */,
 				5DE2038E24EE8A510044EF46 /* ActivityIndicatorView.swift in Sources */,
@@ -11602,7 +11583,6 @@
 				B064284629BF451F00A8AA20 /* OnboardingSeedPhraseImportView.swift in Sources */,
 				2DBE29C32B3C4A8100109D5E /* DetentBottomSheetModifier.swift in Sources */,
 				B0F3391D2BEB4C9500441688 /* LoadingSingleWalletMainContentViewModel.swift in Sources */,
-				B6E9AEA92B0E3B0B003183C8 /* MainBottomSheetOverlayCoordinatorView.swift in Sources */,
 				B0F318FB2A739418009F131E /* WalletPublicKeyDerivationStubs.swift in Sources */,
 				65B4DEE02885334F001524CF /* View+LegacyBottomSheet.swift in Sources */,
 				EFB932182C3EC18300C999E9 /* StakingValidatorsView.swift in Sources */,
@@ -11831,7 +11811,6 @@
 				B0625A2229CB3C6500EDD245 /* SeedPhraseInputProcessor.swift in Sources */,
 				B0DD162B2A331C2100CB23AA /* TokenDetailsViewModel.swift in Sources */,
 				B06C085B2A73FC3B00D982BC /* MultiWalletMainContentRoutable.swift in Sources */,
-				2DC5677F2B0E047700B0244F /* MainBottomSheetCoordinator.swift in Sources */,
 				EFEE23B12BFF69790099917E /* ScanCardSettingsView.swift in Sources */,
 				B6AA137A2A2A37B700B53937 /* CardInfoPageWarningIconOnlyCellPreviewView.swift in Sources */,
 				EF692A492951E7C8001F4B8A /* Localizable+Generated.swift in Sources */,

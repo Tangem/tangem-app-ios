@@ -38,18 +38,24 @@ private enum OverlayContentStateObserverEnvironmentKey: EnvironmentKey {
 
 private struct DummyOverlayContentContainerViewControllerAdapter: OverlayContentContainer, OverlayContentStateObserver {
     func installOverlay(_ overlayView: some View) {
-        assertionFailure("Inject proper `OverlayContentContainer` implementation into the view hierarchy")
+        assertIfNeeded(for: OverlayContentContainer.self)
     }
 
     func removeOverlay() {
-        assertionFailure("Inject proper `OverlayContentContainer` implementation into the view hierarchy")
+        assertIfNeeded(for: OverlayContentContainer.self)
     }
 
     func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
-        assertionFailure("Inject proper `OverlayContentStateObserver` implementation into the view hierarchy")
+        assertIfNeeded(for: OverlayContentStateObserver.self)
     }
 
     func removeObserver(forToken token: any Hashable) {
-        assertionFailure("Inject proper `OverlayContentStateObserver` implementation into the view hierarchy")
+        assertIfNeeded(for: OverlayContentStateObserver.self)
+    }
+
+    private func assertIfNeeded<T>(for type: T) {
+        if FeatureProvider.isAvailable(.markets) {
+            assertionFailure("Inject proper `\(type)` implementation into the view hierarchy")
+        }
     }
 }

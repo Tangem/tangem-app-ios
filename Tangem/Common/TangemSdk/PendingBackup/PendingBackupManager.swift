@@ -19,8 +19,7 @@ class PendingBackupManager {
     func onProceedBackup(_ card: Card) {
         let cardInfo = CardInfo(card: CardDTO(card: card), walletData: .none, name: "")
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
-        // We can use createWalletCurves for validation here because of the new setup
-        let curvesValidator = CurvesValidator(expectedCurves: config.createWalletCurves)
+
         let backupValidator = BackupValidator()
 
         // clean card from existing pending backup
@@ -33,7 +32,7 @@ class PendingBackupManager {
         }
 
         let pendingBackupCard = PendingBackupCard(
-            hasWalletsError: !curvesValidator.validate(card.wallets.map { $0.curve }),
+            hasWalletsError: false,
             hasBackupError: !backupValidator.validate(backupStatus: cardInfo.card.backupStatus, wallets: cardInfo.card.wallets)
         )
 
