@@ -72,8 +72,16 @@ struct LineChartView: View {
                 path.move(to: first)
             }
 
-            for point in points.dropFirst(1) {
-                path.addLine(to: point)
+            for index in 0 ..< points.count {
+                if index == 0 {
+                    let midPoint = midPointForPoints(p1: points[index], p2: points[index + 1])
+                    path.addLine(to: midPoint)
+                } else if index > 0, index < points.count - 1 {
+                    let midPoint = midPointForPoints(p1: points[index], p2: points[index + 1])
+                    path.addQuadCurve(to: midPoint, control: points[index])
+                } else {
+                    path.addLine(to: points[index])
+                }
             }
         }
     }
@@ -83,6 +91,11 @@ struct LineChartView: View {
         path.addLine(to: CGPoint(x: size.width, y: size.height))
         path.addLine(to: CGPoint(x: 0, y: size.height))
         return path
+    }
+
+    /// halfway of two points
+    func midPointForPoints(p1: CGPoint, p2: CGPoint) -> CGPoint {
+        return CGPoint(x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2)
     }
 }
 
