@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import Kingfisher
 
 final class MarketsViewModel: ObservableObject {
     // MARK: - Injected & Published Properties
@@ -34,6 +35,8 @@ final class MarketsViewModel: ObservableObject {
     private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewDidAppear: viewDidAppear)
 
     private var bag = Set<AnyCancellable>()
+
+    private let imageCache = KingfisherManager.shared.cache
 
     // MARK: - Init
 
@@ -61,6 +64,8 @@ final class MarketsViewModel: ObservableObject {
             self.viewDidAppear = true
         }
 
+        onAppearPrepareImageCache()
+
         Analytics.log(.manageTokensScreenOpened)
     }
 
@@ -73,6 +78,8 @@ final class MarketsViewModel: ObservableObject {
 
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
+
+        onDisappearPrepareImageCache()
     }
 
     func fetchMore() {
@@ -150,18 +157,27 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId],
-            didTapAction: { [weak self] in
-                self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
-            }
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId]
         )
 
         return MarketsItemViewModel(
             inputData,
             prefetchDataSource: listDataController,
             chartsProvider: chartsHistoryProvider,
-            filterProvider: filterProvider
+            filterProvider: filterProvider,
+            onTapAction: { [weak self] in
+                self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
+            }
         )
+    }
+
+    private func onAppearPrepareImageCache() {
+        imageCache.memoryStorage.config.countLimit = 250
+    }
+
+    private func onDisappearPrepareImageCache() {
+        imageCache.memoryStorage.removeAll()
+        imageCache.memoryStorage.config.countLimit = .max
     }
 }
 

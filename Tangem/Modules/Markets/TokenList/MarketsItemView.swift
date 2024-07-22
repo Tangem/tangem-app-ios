@@ -20,9 +20,6 @@ struct MarketsItemView: View {
         }) {
             HStack(spacing: 12) {
                 IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
-//                Circle()
-//                    .fill(Colors.Background.secondary)
-//                    .frame(size: .init(bothDimensions: 26))
 
                 VStack {
                     tokenInfoView
@@ -40,7 +37,6 @@ struct MarketsItemView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 15)
-            .animation(nil) // Disable animations on scroll reuse
             .onAppear {
                 viewModel.onAppear()
             }
@@ -131,8 +127,16 @@ extension MarketsItemView {
                 marketCap: token.marketCap,
                 marketRating: token.marketRating,
                 priceValue: token.currentPrice,
-                priceChangeStateValue: nil,
-                didTapAction: {}
+                priceChangeStateValue: nil
+            )
+
+            return MarketsItemView(
+                viewModel: .init(
+                    inputData, prefetchDataSource: nil,
+                    chartsProvider: .init(),
+                    filterProvider: .init(),
+                    onTapAction: nil
+                )
             )
         }
     }

@@ -50,7 +50,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         _ data: InputData,
         prefetchDataSource: MarketsListPrefetchDataSource?,
         chartsProvider: MarketsListChartsHistoryProvider,
-        filterProvider: MarketsListDataFilterProvider
+        filterProvider: MarketsListDataFilterProvider,
+        onTapAction: (() -> Void)?
     ) {
         self.chartsProvider = chartsProvider
         self.filterProvider = filterProvider
@@ -61,7 +62,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         imageURL = iconURLBuilder.tokenIconURL(id: id, size: .large)
         name = data.name
         symbol = data.symbol.uppercased()
-        didTapAction = nil
+
+        didTapAction = onTapAction
 
         if let marketRating = data.marketRating {
             self.marketRating = "\(marketRating)"
@@ -72,7 +74,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
+
         bindToQuotesUpdates()
+        bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     deinit {
@@ -82,7 +86,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     func onAppear() {
         prefetchDataSource?.prefetchRows(at: index)
-        bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     func onDisappear() {
@@ -166,6 +169,5 @@ extension MarketsItemViewModel {
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
-        let didTapAction: () -> Void
     }
 }
