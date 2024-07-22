@@ -79,7 +79,7 @@ extension Analytics {
         case valid = "Valid"
 
         case userWalletId = "User Wallet ID"
-        
+
         case sendBlockchain = "Send Blockchain"
         case receiveBlockchain = "Receive Blockchain"
     }
