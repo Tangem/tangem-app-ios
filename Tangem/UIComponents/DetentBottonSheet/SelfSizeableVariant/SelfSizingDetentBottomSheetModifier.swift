@@ -48,7 +48,7 @@ private extension SelfSizingDetentBottomSheetModifier {
     func aboveIOS16SheetUpdate(item: Item?, on content: Content) -> some View {
         content.sheet(item: $item) { item in
             let sheetView = SelfSizingDetentBottomSheetContainer(bottomSheetHeight: settings.contentHeightBinding) { sheetContent(item) }
-                .background(settings.backgroundColor)
+                .background(settings.backgroundColor?.ignoresSafeArea())
                 .presentationDragIndicator(.hidden)
                 .presentationDetents(Set(detents.map { $0.detentsAboveIOS16 }))
 
@@ -70,7 +70,7 @@ private extension SelfSizingDetentBottomSheetModifier {
             SelfSizingDetentBottomSheetContainer(bottomSheetHeight: settings.contentHeightBinding) {
                 sheetContent(item)
             }
-            .background(settings.backgroundColor)
+            .background(settings.backgroundColor?.ignoresSafeArea())
             .presentationConfiguration { controller in
                 controller.detents = detents.map { $0.detentsBelowIOS16 }
                 controller.preferredCornerRadius = settings.cornerRadius

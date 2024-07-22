@@ -18,6 +18,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
+    @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // MARK: - Dependencies
 
@@ -149,16 +150,61 @@ private extension StakingDetailsViewModel {
 
         let warmupFormatted = inputData.warmupPeriod.formatted(formatter: daysFormatter)
 
+        var rewardSecondaryAction: (() -> Void)?
+        if let rewardTypeDescrption = inputData.rewardType.description {
+            rewardSecondaryAction = { [weak self] in
+                self?.openBottomSheet(title: inputData.rewardType.title, description: rewardTypeDescrption)
+            }
+        }
+
         detailsViewModels = [
             DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted)),
-            DefaultRowViewModel(title: inputData.rewardType.title, detailsType: .text(rewardRateFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsUnbondingPeriod, detailsType: .text(unbondingFormatted)),
+            DefaultRowViewModel(
+                title: inputData.rewardType.title,
+                detailsType: .text(
+                    rewardRateFormatted
+                ),
+                secondaryAction: rewardSecondaryAction
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsUnbondingPeriod,
+                detailsType: .text(unbondingFormatted),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsUnbondingPeriod,
+                    description: Localization.stakingDetailsUnbondingPeriodInfo
+                ) }
+            ),
             DefaultRowViewModel(title: Localization.stakingDetailsMinimumRequirement, detailsType: .text(minimumFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsRewardClaiming, detailsType: .text(inputData.rewardClaimingType.title)),
-            DefaultRowViewModel(title: Localization.stakingDetailsWarmupPeriod, detailsType: .text(warmupFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsRewardSchedule, detailsType: .text(inputData.rewardScheduleType.title)),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardClaiming,
+                detailsType: .text(inputData.rewardClaimingType.title),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsRewardClaiming,
+                    description: Localization.stakingDetailsRewardClaimingInfo
+                ) }
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsWarmupPeriod,
+                detailsType: .text(warmupFormatted),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsWarmupPeriod,
+                    description: Localization.stakingDetailsWarmupPeriodInfo
+                ) }
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardSchedule,
+                detailsType: .text(inputData.rewardScheduleType.title),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsRewardSchedule,
+                    description: Localization.stakingDetailsRewardScheduleInfo
+                ) }
+            ),
         ]
+    }
+
+    func openBottomSheet(title: String, description: String) {
+        descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 }
 
@@ -193,7 +239,21 @@ private extension DateComponentsFormatter {
 
 private extension RewardType {
     var title: String {
-        rawValue.uppercased()
+        switch self {
+        case .apr:
+            Localization.stakingDetailsApr
+        case .apy:
+            Localization.stakingDetailsApy
+        case .variable:
+            rawValue.uppercased()
+        }
+    }
+
+    var description: String? {
+        guard case .apy = self else {
+            return nil
+        }
+        return Localization.stakingDetailsApyInfo
     }
 }
 
