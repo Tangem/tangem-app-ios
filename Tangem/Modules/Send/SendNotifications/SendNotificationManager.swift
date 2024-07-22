@@ -64,14 +64,13 @@ private extension CommonSendNotificationManager {
         }
         .store(in: &bag)
 
-        Publishers.CombineLatest(
-            input.isFeeIncludedPublisher,
-            input.selectedFeePublisher.compactMap { $0.value.value?.amount.value }
-        )
-        .sink { [weak self] isFeeIncluded, feeValue in
-            self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)
-        }
-        .store(in: &bag)
+        input.selectedFeePublisher
+            .compactMap { $0.value.value?.amount.value }
+            .combineLatest(input.isFeeIncludedPublisher)
+            .sink { [weak self] feeValue, isFeeIncluded in
+                self?.updateFeeInclusionEvent(isFeeIncluded: isFeeIncluded, feeCryptoValue: feeValue)
+            }
+            .store(in: &bag)
 
         input.transactionCreationError
             .withWeakCaptureOf(self)
@@ -242,7 +241,7 @@ private extension CommonSendNotificationManager {
                 hideAllValidationErrorEvent()
             }
         default:
-            AppLog.shared.debug("Transaction error will not show to user")
+            AppLog.shared.debug("Transaction error \(String(describing: error)) will not show to user")
             hideAllValidationErrorEvent()
         }
     }
@@ -260,7 +259,11 @@ private extension CommonSendNotificationManager {
             }
         }
 
-        notificationInputsSubject.value.appendIfNotContains(input)
+        if let index = notificationInputsSubject.value.firstIndex(where: { $0.id == input.id }) {
+            notificationInputsSubject.value[index] = input
+        } else {
+            notificationInputsSubject.value.append(input)
+        }
     }
 
     func hideAllValidationErrorEvent() {

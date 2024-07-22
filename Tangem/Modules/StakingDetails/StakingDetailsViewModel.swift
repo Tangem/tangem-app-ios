@@ -18,6 +18,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
+    @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // MARK: - Dependencies
 
@@ -86,13 +87,15 @@ private extension StakingDetailsViewModel {
     }
 
     func setupView(yield: YieldInfo, balanceInfo: StakingBalanceInfo) {
-        let available = (walletModel.balanceValue ?? 0) - balanceInfo.blocked
+        let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
+        let aprs = yield.validators.compactMap(\.apr)
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
                 staked: balanceInfo.blocked,
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
+                rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
                 minimumRequirement: yield.minimumRequirement,
                 warmupPeriod: yield.warmupPeriod,
                 unbondingPeriod: yield.unbondingPeriod,
@@ -122,7 +125,7 @@ private extension StakingDetailsViewModel {
 
         averageRewardingViewData = .init(
             rewardType: inputData.rewardType.title,
-            rewardFormatted: percentFormatter.format(inputData.rewardRate, option: .staking),
+            rewardFormatted: inputData.rewardRateValues.formatted(formatter: percentFormatter),
             periodProfitFormatted: periodProfitFormatted,
             profitFormatted: profitFormatted.map { .loaded(text: $0) } ?? .noData
         )
@@ -139,7 +142,7 @@ private extension StakingDetailsViewModel {
             currencyCode: walletModel.tokenItem.currencySymbol
         )
 
-        let rewardRateFormatted = percentFormatter.format(inputData.rewardRate, option: .staking)
+        let rewardRateFormatted = inputData.rewardRateValues.formatted(formatter: percentFormatter)
 
         let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
         let minimumFormatted = balanceFormatter.formatCryptoBalance(
@@ -149,16 +152,61 @@ private extension StakingDetailsViewModel {
 
         let warmupFormatted = inputData.warmupPeriod.formatted(formatter: daysFormatter)
 
+        var rewardSecondaryAction: (() -> Void)?
+        if let rewardTypeDescrption = inputData.rewardType.description {
+            rewardSecondaryAction = { [weak self] in
+                self?.openBottomSheet(title: inputData.rewardType.title, description: rewardTypeDescrption)
+            }
+        }
+
         detailsViewModels = [
             DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
             DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted)),
-            DefaultRowViewModel(title: inputData.rewardType.title, detailsType: .text(rewardRateFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsUnbondingPeriod, detailsType: .text(unbondingFormatted)),
+            DefaultRowViewModel(
+                title: inputData.rewardType.title,
+                detailsType: .text(
+                    rewardRateFormatted
+                ),
+                secondaryAction: rewardSecondaryAction
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsUnbondingPeriod,
+                detailsType: .text(unbondingFormatted),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsUnbondingPeriod,
+                    description: Localization.stakingDetailsUnbondingPeriodInfo
+                ) }
+            ),
             DefaultRowViewModel(title: Localization.stakingDetailsMinimumRequirement, detailsType: .text(minimumFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsRewardClaiming, detailsType: .text(inputData.rewardClaimingType.title)),
-            DefaultRowViewModel(title: Localization.stakingDetailsWarmupPeriod, detailsType: .text(warmupFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsRewardSchedule, detailsType: .text(inputData.rewardScheduleType.title)),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardClaiming,
+                detailsType: .text(inputData.rewardClaimingType.title),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsRewardClaiming,
+                    description: Localization.stakingDetailsRewardClaimingInfo
+                ) }
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsWarmupPeriod,
+                detailsType: .text(warmupFormatted),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsWarmupPeriod,
+                    description: Localization.stakingDetailsWarmupPeriodInfo
+                ) }
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardSchedule,
+                detailsType: .text(inputData.rewardScheduleType.title),
+                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    title: Localization.stakingDetailsRewardSchedule,
+                    description: Localization.stakingDetailsRewardScheduleInfo
+                ) }
+            ),
         ]
+    }
+
+    func openBottomSheet(title: String, description: String) {
+        descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 }
 
@@ -168,6 +216,7 @@ extension StakingDetailsViewModel {
         let staked: Decimal
         let rewardType: RewardType
         let rewardRate: Decimal
+        let rewardRateValues: RewardRateValues
         let minimumRequirement: Decimal
         let warmupPeriod: Period
         let unbondingPeriod: Period
@@ -193,7 +242,21 @@ private extension DateComponentsFormatter {
 
 private extension RewardType {
     var title: String {
-        rawValue.uppercased()
+        switch self {
+        case .apr:
+            Localization.stakingDetailsApr
+        case .apy:
+            Localization.stakingDetailsApy
+        case .variable:
+            rawValue.uppercased()
+        }
+    }
+
+    var description: String? {
+        guard case .apy = self else {
+            return nil
+        }
+        return Localization.stakingDetailsApyInfo
     }
 }
 
@@ -206,5 +269,16 @@ private extension RewardClaimingType {
 private extension RewardScheduleType {
     var title: String {
         rawValue.capitalizingFirstLetter()
+    }
+}
+
+private extension RewardRateValues {
+    func formatted(formatter: PercentFormatter) -> String {
+        switch self {
+        case .single(let value):
+            formatter.format(value, option: .staking)
+        case .interval(let min, let max):
+            formatter.formatInterval(min: min, max: max, option: .staking)
+        }
     }
 }

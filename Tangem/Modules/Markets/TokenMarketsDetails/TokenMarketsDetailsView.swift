@@ -14,14 +14,7 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
 
     var body: some View {
-        VStack(spacing: 0) {
-            SheetHandleView(backgroundColor: Colors.Background.tertiary)
-
-            NavigationView {
-                content
-            }
-        }
-        .background(Colors.Background.tertiary)
+        content
     }
 
     var content: some View {

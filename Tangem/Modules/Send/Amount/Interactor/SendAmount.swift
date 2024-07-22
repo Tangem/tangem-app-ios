@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SendAmount {
+struct SendAmount: Hashable {
     private(set) var type: SendAmountType
 
     var main: Decimal? { type.main }

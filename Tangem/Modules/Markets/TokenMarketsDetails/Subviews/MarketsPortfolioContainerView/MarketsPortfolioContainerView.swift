@@ -14,12 +14,24 @@ struct MarketsPortfolioContainerView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            headerView
+        VStack(spacing: .zero) {
+            // Token list block
+            VStack(alignment: .leading, spacing: .zero) {
+                headerView
 
-            contentView
+                contentView
+            }
+            .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { view in
+                view.defaultRoundedBackground(with: Colors.Background.action)
+            }, else: { view in
+                // Need because token list offset by -Y value, it is required to compress the container
+                view.padding(.bottom, -Constants.defaultVerticalOffsetSpacingBetweenContent)
+            })
+
+            // Quick action block
+            quickActionsView
+                .padding(.top, Constants.defaultVerticalOffsetSpacingBetweenContent) // Need because token list offset by -Y value
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
     }
 
     private var headerView: some View {
@@ -50,9 +62,21 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
+                    .skeletonable(isShown: viewModel.isLoading)
                 }
             }
         }
+        .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { headerView in
+            headerView
+                .padding(.bottom, 10)
+        }, else: { headerView in
+            headerView
+                .padding(.top, 14)
+                .padding(.horizontal, 14)
+                .padding(.bottom, Constants.defaultVerticalOffsetSpacingBetweenContent + 10)
+                .background(Colors.Background.action)
+                .modifier(HeaderCornerRadiusModifier())
+        })
     }
 
     private var contentView: some View {
@@ -69,20 +93,50 @@ struct MarketsPortfolioContainerView: View {
     }
 
     private var listView: some View {
-        VStack(spacing: .zero) {
-            ForEach(viewModel.tokenItemViewModels) {
-                MarketsPortfolioTokenItemView(viewModel: $0)
+        LazyVStack(spacing: .zero) {
+            let elementItems = viewModel.tokenItemViewModels
+
+            ForEach(indexed: elementItems.indexed()) { itemIndex, itemViewModel in
+                if #available(iOS 16.0, *) {
+                    let roundedCornersVerticalEdge: RoundedCornersVerticalEdge?
+
+                    let isFirstItem = itemIndex == 0
+                    let isLastItem = itemIndex == elementItems.count - 1
+
+                    if isFirstItem {
+                        let isSingleItem = elementItems.count == 1
+                        roundedCornersVerticalEdge = isSingleItem ? .all : .topEdge
+                    } else {
+                        roundedCornersVerticalEdge = isLastItem ? .bottomEdge : nil
+                    }
+
+                    return MarketsPortfolioTokenItemView(
+                        viewModel: itemViewModel,
+                        cornerRadius: Constants.cornerRadius,
+                        roundedCornersVerticalEdge: roundedCornersVerticalEdge
+                    )
+                } else {
+                    return MarketsPortfolioTokenItemView(
+                        viewModel: itemViewModel,
+                        cornerRadius: Constants.cornerRadius
+                    )
+                }
             }
         }
+        .background(Colors.Background.action.cornerRadiusContinuous(Constants.cornerRadius))
+        .offset(y: -Constants.defaultVerticalOffsetSpacingBetweenContent)
     }
 
     private var emptyView: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text(Localization.marketsAddToMyPortfolioDescription)
                 .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            MainButton(title: Localization.marketsAddToPortfolioButton) {
+            MainButton(
+                title: Localization.marketsAddToPortfolioButton,
+                isLoading: viewModel.isLoading
+            ) {
                 viewModel.onAddTapAction()
             }
         }
@@ -98,6 +152,18 @@ struct MarketsPortfolioContainerView: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var quickActionsView: some View {
+        if viewModel.isOneTokenInPortfolio, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+            MarketsPortfolioQuickActionsView(
+                actions: viewModel.buildContextActions(for: tokenItemViewModel),
+                onTapAction: { actionType in
+                    viewModel.didTapContextAction(actionType, for: tokenItemViewModel)
+                }
+            )
+        }
+    }
 }
 
 extension MarketsPortfolioContainerView {
@@ -108,6 +174,27 @@ extension MarketsPortfolioContainerView {
 
         var id: Int {
             rawValue
+        }
+    }
+}
+
+private extension MarketsPortfolioContainerView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 14.0
+        static let defaultVerticalOffsetSpacingBetweenContent: CGFloat = 14
+    }
+}
+
+private extension MarketsPortfolioContainerView {
+    struct HeaderCornerRadiusModifier: ViewModifier {
+        func body(content: Content) -> some View {
+            if #available(iOS 16.0, *) {
+                content
+                    .cornerRadiusContinuous(topLeadingRadius: Constants.cornerRadius, topTrailingRadius: Constants.cornerRadius)
+            } else {
+                content
+                    .cornerRadius(20, corners: [.topLeft, .topRight])
+            }
         }
     }
 }

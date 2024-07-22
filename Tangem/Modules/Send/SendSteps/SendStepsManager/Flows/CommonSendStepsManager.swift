@@ -18,6 +18,10 @@ class CommonSendStepsManager {
     private var stack: [SendStep]
     private weak var output: SendStepsManagerOutput?
 
+    private var isEditAction: Bool {
+        stack.contains(where: { $0.type.isSummary })
+    }
+
     init(
         destinationStep: SendDestinationStep,
         amountStep: SendAmountStep,
@@ -55,7 +59,6 @@ class CommonSendStepsManager {
     }
 
     private func next(step: SendStep) {
-        let isEditAction = stack.contains(where: { $0.type.isSummary })
         stack.append(step)
 
         switch step.type {
@@ -172,6 +175,10 @@ extension CommonSendStepsManager: SendSummaryStepsRoutable {
 
 extension CommonSendStepsManager: SendDestinationStepRoutable {
     func destinationStepFulfilled() {
-        performNext()
+        if isEditAction {
+            performContinue()
+        } else {
+            performNext()
+        }
     }
 }

@@ -688,7 +688,8 @@ extension ExpressViewModel: NotificationTapDelegate {
              .stake,
              .openFeedbackMail,
              .openAppStoreReview,
-             .swap:
+             .swap,
+             .support:
             return
         }
     }

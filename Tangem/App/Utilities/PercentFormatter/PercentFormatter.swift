@@ -33,6 +33,22 @@ struct PercentFormatter {
 
         return "\(value)%"
     }
+
+    func formatInterval(min: Decimal, max: Decimal, option: Option) -> String {
+        let minFormatter = NumberFormatter()
+        minFormatter.locale = locale
+        minFormatter.maximumFractionDigits = option.fractionDigits
+        minFormatter.minimumFractionDigits = option.fractionDigits
+
+        if option.clearPrefix {
+            minFormatter.positivePrefix = ""
+            minFormatter.negativePrefix = ""
+        }
+
+        let minFormatted = minFormatter.string(from: min as NSDecimalNumber) ?? "\(min)"
+        let maxFormatted = format(max, option: option)
+        return "\(minFormatted) - \(maxFormatted)"
+    }
 }
 
 extension PercentFormatter {
@@ -43,8 +59,8 @@ extension PercentFormatter {
 
         var fractionDigits: Int {
             switch self {
-            case .priceChange: 2
-            case .express, .staking: 1
+            case .priceChange, .staking: 2
+            case .express: 1
             }
         }
 

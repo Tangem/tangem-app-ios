@@ -49,7 +49,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     var rateFormatted: String { walletModel.rateFormatted }
 
     var priceChangeState: TokenPriceChangeView.State {
-        guard let change = walletModel.quote?.change else {
+        guard let change = walletModel.quote?.priceChange24h else {
             return .noData
         }
 

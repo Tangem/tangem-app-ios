@@ -29,7 +29,7 @@ struct MarketsTokensNetworkSelectorAlertBuilder {
 
     func errorCanRemoveAlertDeleteTokenIfNeeded(
         tokenItem: TokenItem,
-        dissmisAction: @escaping (TokenItem) -> Void
+        dismissAction: @escaping (TokenItem) -> Void
     ) -> AlertBinder {
         let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.blockchain.currencySymbol)
 
@@ -43,7 +43,7 @@ struct MarketsTokensNetworkSelectorAlertBuilder {
             title: Text(title),
             message: Text(message),
             dismissButton: .default(Text(Localization.commonOk), action: {
-                dissmisAction(tokenItem)
+                dismissAction(tokenItem)
             })
         ))
     }

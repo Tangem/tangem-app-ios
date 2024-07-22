@@ -28,7 +28,9 @@ final class UserWalletNotificationManager {
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
+
     private var showAppRateNotification = false
+    private var shownAppRateNotificationId: NotificationViewId?
 
     init(
         userWalletModel: UserWalletModel,
@@ -113,8 +115,13 @@ final class UserWalletNotificationManager {
         validateHashesCount()
     }
 
+    private func hideNotification(with id: NotificationViewId) {
+        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+
     private func showAppRateNotificationIfNeeded() {
         guard showAppRateNotification else {
+            hideShownAppRateNotificationIfNeeded()
             return
         }
 
@@ -136,8 +143,18 @@ final class UserWalletNotificationManager {
             buttonAction: buttonAction,
             dismissAction: dismissAction
         )
+        shownAppRateNotificationId = input.id
 
         addInputIfNeeded(input)
+    }
+
+    private func hideShownAppRateNotificationIfNeeded() {
+        guard let shownAppRateNotificationId else {
+            return
+        }
+
+        hideNotification(with: shownAppRateNotificationId)
+        self.shownAppRateNotificationId = nil
     }
 
     private func addInputIfNeeded(_ input: NotificationViewInput) {
@@ -298,6 +315,6 @@ extension UserWalletNotificationManager: NotificationManager {
             }
         }
 
-        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+        hideNotification(with: id)
     }
 }

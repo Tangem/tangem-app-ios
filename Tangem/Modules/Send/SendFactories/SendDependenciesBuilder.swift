@@ -102,8 +102,7 @@ struct SendDependenciesBuilder {
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
-            userWalletModel: userWalletModel,
-            tokenItem: walletModel.tokenItem,
+            walletModel: walletModel,
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
             transactionSigner: userWalletModel.signer,

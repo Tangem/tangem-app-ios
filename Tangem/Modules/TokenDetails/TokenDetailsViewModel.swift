@@ -105,7 +105,8 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .openLink,
              .stake,
              .openFeedbackMail,
-             .openAppStoreReview:
+             .openAppStoreReview,
+             .support:
             super.didTapNotification(with: id, action: action)
         }
     }
