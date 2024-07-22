@@ -242,7 +242,7 @@ private extension CommonSendNotificationManager {
                 hideAllValidationErrorEvent()
             }
         default:
-            AppLog.shared.debug("Transaction error will not show to user")
+            AppLog.shared.debug("Transaction error \(String(describing: error)) will not show to user")
             hideAllValidationErrorEvent()
         }
     }

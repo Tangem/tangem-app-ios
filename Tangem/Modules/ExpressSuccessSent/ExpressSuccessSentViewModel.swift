@@ -65,6 +65,8 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
                 .commission: data.feeOption.rawValue.capitalizingFirstLetter(),
                 .sendToken: data.source.tokenItem.currencySymbol,
                 .receiveToken: data.destination.tokenItem.currencySymbol,
+                .sendBlockchain: data.source.tokenItem.blockchain.displayName,
+                .receiveBlockchain: data.destination.tokenItem.blockchain.displayName,
             ]
         )
     }

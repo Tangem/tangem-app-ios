@@ -118,6 +118,19 @@ private extension SendAmountViewModel {
             }
             .store(in: &bag)
 
+        interactor
+            .externalAmountPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, amount in
+                viewModel.setExternalAmount(amount?.main)
+                viewModel.alternativeAmount = amount?.formatAlternative(
+                    currencySymbol: viewModel.tokenItem.currencySymbol
+                )
+            }
+            .store(in: &bag)
+
         sendQRCodeService
             .qrCodeAmount
             .compactMap { $0 }

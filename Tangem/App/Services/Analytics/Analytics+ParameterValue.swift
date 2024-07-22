@@ -62,6 +62,7 @@ extension Analytics {
         case enabled = "Enabled"
         case disabled = "Disabled"
         case reset = "Reset"
+        case allow = "Allow"
         case cancel = "Cancel"
 
         case errorCode = "Error Code"

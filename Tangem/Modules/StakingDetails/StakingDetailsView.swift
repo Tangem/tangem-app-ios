@@ -39,6 +39,14 @@ struct StakingDetailsView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
+        .bottomSheet(
+            item: $viewModel.descriptionBottomSheetInfo,
+            backgroundColor: Colors.Background.tertiary
+        ) {
+            DescriptionBottomSheetView(
+                info: DescriptionBottomSheetInfo(title: $0.title, description: $0.description)
+            )
+        }
     }
 
     private var banner: some View {
