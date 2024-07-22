@@ -401,8 +401,12 @@ extension OnboardingViewModel {
         UIApplication.shared.endEditing()
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: userWalletModel?.walletModelsManager.walletModels ?? [],
-            userWalletEmailData: input.cardInput.emailData
+            data: [
+                .init(
+                    userWalletEmailData: input.cardInput.emailData,
+                    walletModels: userWalletModel?.walletModelsManager.walletModels ?? []
+                ),
+            ]
         )
 
         let emailConfig = input.cardInput.config?.emailConfig ?? .default
