@@ -84,10 +84,11 @@ final class SingleTokenNotificationManager {
         if case .koinos = walletModel.tokenItem.blockchain,
            let currentMana = amounts[.feeResource(.mana)]?.value,
            let maxMana = amounts[.coin]?.value {
+            let formatter = BalanceFormatter()
             events.append(
                 .manaLevel(
-                    currentMana: "\(currentMana)",
-                    maxMana: "\(maxMana)"
+                    currentMana: formatter.formatDecimal(currentMana, formattingOptions: .defaultFiatFormattingOptions),
+                    maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
                 )
             )
         }
