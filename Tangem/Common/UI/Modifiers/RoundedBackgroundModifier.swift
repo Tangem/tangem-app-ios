@@ -21,9 +21,7 @@ struct RoundedBackgroundModifier: ViewModifier {
             .padding(.horizontal, horizontalPadding)
             .background(
                 backgroundColor
-                    .modifier(ifLet: geometryEffect) {
-                        $0.matchedGeometryEffect(id: $1.id, in: $1.namespace, isSource: $1.isSource)
-                    }
+                    .matchedGeometryEffect(geometryEffect)
             )
             .cornerRadiusContinuous(cornerRadius)
     }

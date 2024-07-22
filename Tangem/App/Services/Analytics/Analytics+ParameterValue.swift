@@ -38,6 +38,7 @@ extension Analytics {
         case settings = "Settings"
         case signIn = "Sign In"
         case receive = "Receive"
+        case stories = "Stories"
 
         case transactionSourceSend = "Send"
         case transactionSourceSwap = "Swap"
@@ -61,6 +62,7 @@ extension Analytics {
         case enabled = "Enabled"
         case disabled = "Disabled"
         case reset = "Reset"
+        case allow = "Allow"
         case cancel = "Cancel"
 
         case errorCode = "Error Code"
@@ -154,6 +156,8 @@ extension Analytics {
         case feedbackEmail = "Feedback"
         /// The review sheet dismissed w/o further interactions (`RateAppResponse.dismissed`).
         case appRateDismissed = "Close"
+
+        // MARK: - Common
 
         static func toggleState(for boolean: Bool) -> ParameterValue {
             return boolean ? .on : .off

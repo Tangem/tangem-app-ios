@@ -14,7 +14,6 @@ import TangemStaking
 
 final class MultiWalletMainContentViewModel: ObservableObject {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-    @Injected(\.stakingRepositoryProxy) private var stakingRepository: StakingRepositoryProxy
 
     // MARK: - ViewState
 
@@ -344,6 +343,21 @@ extension MultiWalletMainContentViewModel {
         coordinator?.openOrganizeTokens(for: userWalletModel)
     }
 
+    private func openSupport() {
+        Analytics.log(.requestSupport, params: [.source: .main])
+
+        let dataCollector = DetailsFeedbackDataCollector(
+            walletModels: userWalletModel.walletModelsManager.walletModels,
+            userWalletEmailData: userWalletModel.emailData
+        )
+
+        coordinator?.openMail(
+            with: dataCollector,
+            emailType: .appFeedback(subject: EmailConfig.default.subject),
+            recipient: EmailConfig.default.recipient
+        )
+    }
+
     private func openBuy(for walletModel: WalletModel) {
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
             error = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
@@ -391,6 +405,8 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             rateAppController.openFeedbackMail()
         case .openAppStoreReview:
             rateAppController.openAppStoreReview()
+        case .support:
+            openSupport()
         default:
             break
         }
@@ -455,12 +471,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
     }
 
     private func canStake(walletModel: WalletModel) -> Bool {
-        [
-            StakingFeatureProvider().isAvailable(for: walletModel.tokenItem),
-            userWalletModel.config.isFeatureVisible(.staking),
-            stakingRepository.getYield(item: walletModel.stakingTokenItem) != nil,
-            !walletModel.isCustom,
-        ].allConforms { $0 }
+        StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
     }
 }
 

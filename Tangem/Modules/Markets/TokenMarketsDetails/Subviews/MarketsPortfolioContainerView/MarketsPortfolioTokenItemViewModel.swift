@@ -14,41 +14,70 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
     @Published var fiatBalanceValue: String = ""
     @Published var balanceValue: String = ""
+    @Published var contextActions: [TokenActionType] = []
 
-    let id: UUID = .init()
+    var id: WalletModel.ID {
+        walletModel.id
+    }
 
-    let tokenIconInfo: TokenIconInfo
+    var tokenIconInfo: TokenIconInfo {
+        TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+    }
+
+    var tokenName: String {
+        walletModel.tokenItem.networkName
+    }
+
+    let userWalletId: UserWalletId
     let walletName: String
-    let tokenName: String
 
     // MARK: - Private Properties
 
-    private weak var walletModel: WalletModel?
+    let walletModel: WalletModel
+    private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
+    private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
 
     private var updateSubscription: AnyCancellable?
 
     // MARK: - Init
 
-    init(walletName: String, walletModel: WalletModel) {
+    init(
+        userWalletId: UserWalletId,
+        walletName: String,
+        walletModel: WalletModel,
+        contextActionsProvider: MarketsPortfolioContextActionsProvider?,
+        contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
+    ) {
+        self.userWalletId = userWalletId
         self.walletName = walletName
         self.walletModel = walletModel
-
-        tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
-        tokenName = "\(walletModel.tokenItem.currencySymbol) \(walletModel.tokenItem.networkName)"
+        self.contextActionsProvider = contextActionsProvider
+        self.contextActionsDelegate = contextActionsDelegate
 
         bind()
+        buildContextActions()
     }
 
     func bind() {
-        updateSubscription = walletModel?
+        updateSubscription = walletModel
             .walletDidChangePublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModelState in
                 if walletModelState.isSuccessfullyLoaded {
-                    viewModel.fiatBalanceValue = viewModel.walletModel?.fiatBalance ?? ""
-                    viewModel.balanceValue = viewModel.walletModel?.balance ?? ""
+                    viewModel.fiatBalanceValue = viewModel.walletModel.fiatBalance
+                    viewModel.balanceValue = viewModel.walletModel.balance
                 }
             }
+    }
+
+    func didTapContextAction(_ actionType: TokenActionType) {
+        contextActionsDelegate?.didTapContextAction(actionType, for: self)
+    }
+
+    // MARK: - Private Implementation
+
+    private func buildContextActions() {
+        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
     }
 }

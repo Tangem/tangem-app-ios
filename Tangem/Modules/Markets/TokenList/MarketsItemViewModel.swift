@@ -10,16 +10,17 @@ import Foundation
 import Combine
 
 class MarketsItemViewModel: Identifiable, ObservableObject {
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+
     // MARK: - Published
+
+    @Published var priceValue: String = ""
+    @Published var priceChangeState: TokenPriceChangeView.State = .empty
+    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
+    @Published var charts: [Double]? = nil
 
     var marketRating: String?
     var marketCap: String?
-
-    var priceValue: String
-    var priceChangeState: TokenPriceChangeView.State
-
-    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
-    @Published var charts: [Double]? = nil
 
     // MARK: - Properties
 
@@ -30,6 +31,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     let didTapAction: () -> Void
 
     // MARK: - Private Properties
+
+    private weak var filterProvider: MarketsListDataFilterProvider?
 
     private var bag = Set<AnyCancellable>()
 
@@ -54,13 +57,43 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
         }
 
-        priceValue = priceFormatter.formatFiatBalance(data.priceValue)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: data.priceChangeStateValue)
+        setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
+        bindToQuotesUpdates()
 
+        self.filterProvider = filterProvider
         bindWithProviders(charts: chartsProvider, filter: filterProvider)
     }
 
     // MARK: - Private Implementation
+
+    private func setupPriceInfo(price: Decimal?, priceChangeValue: Decimal?) {
+        priceValue = priceFormatter.formatFiatBalance(price)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangeValue)
+    }
+
+    private func bindToQuotesUpdates() {
+        quotesRepository.quotesPublisher
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, quotes in
+                quotes[viewModel.id]
+            }
+            .withWeakCaptureOf(self)
+            .sink { viewModel, quoteInfo in
+                let priceChangeValue: Decimal?
+                switch viewModel.filterProvider?.currentFilterValue.interval {
+                case .day:
+                    priceChangeValue = quoteInfo.priceChange24h
+                case .week:
+                    priceChangeValue = quoteInfo.priceChange7d
+                case .month:
+                    priceChangeValue = quoteInfo.priceChange30d
+                default:
+                    priceChangeValue = nil
+                }
+                viewModel.setupPriceInfo(price: quoteInfo.price, priceChangeValue: priceChangeValue)
+            }
+            .store(in: &bag)
+    }
 
     private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
         charts
@@ -98,9 +131,5 @@ extension MarketsItemViewModel {
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
         let didTapAction: () -> Void
-    }
-
-    enum Constants {
-        static let priceChangeStateValueDevider: Decimal = 0.01
     }
 }

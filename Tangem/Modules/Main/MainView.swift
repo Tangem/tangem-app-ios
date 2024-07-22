@@ -43,6 +43,8 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
+        .onDidAppear(viewModel.onDidAppear)
+        .onWillDisappear(viewModel.onWillDisappear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
