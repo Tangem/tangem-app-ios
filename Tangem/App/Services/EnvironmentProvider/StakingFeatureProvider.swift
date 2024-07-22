@@ -41,6 +41,15 @@ class StakingFeatureProvider {
     func isAvailable(for tokenItem: TokenItem) -> Bool {
         yieldId(for: tokenItem) != nil
     }
+
+    func canStake(with userWalletModel: UserWalletModel, by walletModel: WalletModel) -> Bool {
+        [
+            isAvailable(for: walletModel.tokenItem),
+            userWalletModel.config.isFeatureVisible(.staking),
+            yieldId(for: walletModel.tokenItem) != nil,
+            !walletModel.isCustom,
+        ].allConforms { $0 }
+    }
 }
 
 extension StakingFeatureProvider {
