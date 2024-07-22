@@ -32,6 +32,7 @@ final class MarketsViewModel: ObservableObject {
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
+    
     private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewDidAppear: viewDidAppear)
 
     private var bag = Set<AnyCancellable>()
