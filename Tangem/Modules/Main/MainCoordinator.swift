@@ -383,10 +383,6 @@ extension MainCoordinator: VisaWalletRoutable {
 // MARK: - RateAppRoutable protocol conformance
 
 extension MainCoordinator: RateAppRoutable {
-    func openFeedbackMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
-        openMail(with: dataCollector, emailType: emailType, recipient: recipient)
-    }
-
     func openAppStoreReview() {
         isAppStoreReviewRequested = true
     }

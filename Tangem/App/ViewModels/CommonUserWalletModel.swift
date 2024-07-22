@@ -167,20 +167,7 @@ class CommonUserWalletModel {
             return false
         }
 
-        guard validateCurves(card.wallets.map { $0.curve }) else {
-            return false
-        }
-
         guard validateBackup(card.backupStatus, wallets: card.wallets) else {
-            return false
-        }
-
-        return true
-    }
-
-    private func validateCurves(_ curves: [EllipticCurve]) -> Bool {
-        let curvesValidator = CurvesValidator(expectedCurves: config.validationCurves)
-        if !curvesValidator.validate(curves) {
             return false
         }
 
