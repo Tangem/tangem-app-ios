@@ -39,6 +39,7 @@
 "balance_hidden_title" = "Балансы скрыты";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт в приложении";
 "button_start_backup_process" = "Начать резервное копирование";
+"buy_token_description" = "From your fiat card or bank account";
 "card_settings_access_code_recovery_disabled_description" = "Отключите эту опцию, если не хотите, чтобы эта карта использовалась для сброса кодов доступа на другие карты этого кошелька. Обратите внимание, сброс кода также не будет доступен на этой карте.";
 "card_settings_access_code_recovery_enabled_description" = "Использовать эту карту для сброса кода доступа на других картах в этом кошельке";
 "card_settings_access_code_recovery_footer" = "Отключить возможность сброса кода доступа на этой карте или других картах этого кошелька";
@@ -258,6 +259,7 @@
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
+"exсhange_token_description" = "From another currency in your wallet";
 "feedback_preface_rate_negative" = "Расскажите, каких функций вам не хватает, и мы постараемся вам помочь.";
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта?";
 "feedback_preface_support" = "Привет, команда поддержки,";
@@ -319,6 +321,7 @@
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
+"markets_quick_actions" = "Quick actions";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
 "markets_selector_interval_1m_title" = "1m";
@@ -465,6 +468,7 @@
 "qr_scanner_camera_denied_title" = "Доступ к камере запрещен";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) в сети %3$@";
 "receive_bottom_sheet_warning_message_full" = "Отправляйте только %@ на этот адрес. Использование другой сети может привести к утрате средств.";
+"receive_token_description" = "Show QR-code or share your address";
 "referral_button_participate" = "Участвовать";
 "referral_error_failed_to_load_info" = "Не удалось загрузить информацию по реферальной программе. Пожалуйста, попробуйте позже.";
 "referral_error_failed_to_load_info_with_reason" = "Не удалось загрузить информацию по реферальной программе. Код ошибки: %@. Пожалуйста, попробуйте позже.";

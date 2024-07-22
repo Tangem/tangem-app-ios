@@ -54,6 +54,7 @@ struct SendSummaryView: View {
 
             descriptionView
         }
+        .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .alert(item: $viewModel.alert) { $0.alert }
         .onAppear(perform: viewModel.onAppear)
@@ -181,7 +182,6 @@ struct SendSummaryView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
                 .visible(viewModel.transactionDescriptionIsVisible)
-                .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         }
     }
 }

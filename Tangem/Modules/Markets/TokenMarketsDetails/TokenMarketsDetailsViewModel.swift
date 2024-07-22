@@ -98,6 +98,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
 
+    // MARK: - Init
+
     init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         currentPriceSubject = .init(tokenInfo.currentPrice ?? 0.0)
         self.tokenInfo = tokenInfo
@@ -124,15 +126,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     // MARK: - Actions
-
-    func onAddToPortfolioTapAction() {
-        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
-            assertionFailure("TokenItem list is empty")
-            return
-        }
-
-        coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
-    }
 
     func openLinkAction(_ link: String) {
         guard let url = URL(string: link) else {
@@ -165,6 +158,14 @@ private extension TokenMarketsDetailsViewModel {
                     newPrice,
                     formattingOptions: viewModel.fiatBalanceFormattingOptions
                 )
+            }
+            .store(in: &bag)
+
+        $isLoading
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isLoading in
+                viewModel.portfolioViewModel?.isLoading = isLoading
             }
             .store(in: &bag)
     }
@@ -214,11 +215,18 @@ private extension TokenMarketsDetailsViewModel {
         makeBlocksViewModels(using: model)
     }
 
-    func makePreloadBlocksViewModels() {
+    private func makePreloadBlocksViewModels() {
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
-            addTapAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.onAddToPortfolioTapAction)
+            coordinator: coordinator,
+            addTokenTapAction: { [weak self] in
+                guard let self, let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
+                    return
+                }
+
+                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
+            }
         )
     }
 

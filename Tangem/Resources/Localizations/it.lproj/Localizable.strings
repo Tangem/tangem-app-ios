@@ -39,6 +39,7 @@
 "balance_hidden_title" = "Balances are hidden";
 "biometry_touch_id_reason" = "Touch ID is used to save your cards in the app";
 "button_start_backup_process" = "Start backup process";
+"buy_token_description" = "From your fiat card or bank account";
 "card_settings_access_code_recovery_disabled_description" = "Disable this option if you don't want this card to be used to reset access codes on other cards in this wallet. Please note that this will also prevent you from resetting the access code on this card.";
 "card_settings_access_code_recovery_enabled_description" = "Allows you to use this card to reset access code on other cards in this wallet";
 "card_settings_access_code_recovery_footer" = "Disable the ability to reset the access code on this card or other cards in this wallet";
@@ -258,6 +259,7 @@
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
+"exсhange_token_description" = "From another currency in your wallet";
 "feedback_preface_rate_negative" = "Tell us what functions you are missing, and we will try to help you.";
 "feedback_preface_scan_failed" = "Please tell us what card do you have";
 "feedback_preface_support" = "Hi support team,";
@@ -319,6 +321,7 @@
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
+"markets_quick_actions" = "Quick actions";
 "markets_select_network" = "Select network";
 "markets_select_wallet" = "Select wallet";
 "markets_selector_interval_1m_title" = "1m";
@@ -465,6 +468,7 @@
 "qr_scanner_camera_denied_title" = "Camera access denied";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
+"receive_token_description" = "Show QR-code or share your address";
 "referral_button_participate" = "Participate";
 "referral_error_failed_to_load_info" = "Failed to load the information about the referral program. Please try again later.";
 "referral_error_failed_to_load_info_with_reason" = "Failed to load the information about the referral program. Error code: %@. Please try again later.";

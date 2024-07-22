@@ -32,7 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             appCoordinator.start(with: .init(newScan: nil))
             let appView = AppCoordinatorView(coordinator: appCoordinator)
             let factory = RootViewControllerFactory()
-            let rootViewController = factory.makeRootViewController(for: appView)
+            let rootViewController = factory.makeRootViewController(for: appView, window: window)
             window.rootViewController = rootViewController
             self.window = window
             window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle

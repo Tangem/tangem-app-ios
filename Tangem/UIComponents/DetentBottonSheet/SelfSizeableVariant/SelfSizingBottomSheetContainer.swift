@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottomSheetContent>: View {
+    @Environment(\.mainWindowSize) private var mainWindowSize: CGSize
+
     /// Binding to update detent height to fit content
     @Binding var bottomSheetHeight: CGFloat
     @State private var contentHeight: CGFloat = 0
@@ -33,6 +35,7 @@ struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottom
             .frame(height: handleHeight, alignment: .center)
 
             sheetContent
+                .frame(minWidth: mainWindowSize.width)
         }
         .frame(alignment: .top) // TODO: Remove this frame when migrate increase min iOS to 16.
         .ignoresSafeArea(edges: .bottom)
