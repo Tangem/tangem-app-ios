@@ -42,7 +42,7 @@ final class CommonRateAppController {
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.feedbackRequestDelay) { [weak self] in
                 let collector = NegativeFeedbackDataCollector(userWalletEmailData: userWallet.emailData)
                 let recipient = userWallet.config.emailConfig?.recipient ?? EmailConfig.default.recipient
-                self?.coordinator?.openFeedbackMail(with: collector, emailType: emailType, recipient: recipient)
+                self?.coordinator?.openMail(with: collector, emailType: emailType, recipient: recipient)
             }
         case .openAppStoreReview:
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.feedbackRequestDelay) { [weak self] in

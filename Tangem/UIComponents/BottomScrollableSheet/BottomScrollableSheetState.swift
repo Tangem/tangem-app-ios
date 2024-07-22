@@ -23,4 +23,11 @@ enum BottomScrollableSheetState: Equatable {
         }
         return false
     }
+
+    var isTapGesture: Bool {
+        if case .top(.tapGesture) = self {
+            return true
+        }
+        return false
+    }
 }
