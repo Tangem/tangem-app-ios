@@ -143,9 +143,10 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
         notificationManager
             .notificationPublisher
+            .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] notificationInputs in
-                self?.notificationInputs = notificationInputs
+            .sink { viewModel, notificationInputs in
+                viewModel.notificationInputs = notificationInputs
             }
             .store(in: &bag)
     }
