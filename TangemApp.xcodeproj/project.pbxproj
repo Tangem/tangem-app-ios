@@ -1674,6 +1674,7 @@
 		EFF466E22AC709BE00ACC3EA /* BalanceTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF466E12AC709BE00ACC3EA /* BalanceTitleView.swift */; };
 		EFF466E32ACC337500ACC3EA /* FakeTokenQuotesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01178482AC1B86200C5AD07 /* FakeTokenQuotesRepository.swift */; };
 		EFF466EA2ACD928800ACC3EA /* PendingTransactionRecordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */; };
+		EFF763F12C4E60BA00E846F4 /* Result+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF763F02C4E60BA00E846F4 /* Result+.swift */; };
 		EFF9A2FA2BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */; };
 		EFF9A2FB2BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F62BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift */; };
 		EFF9A2FC2BD6B45E007C63D2 /* UserWalletSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F72BD6B45E007C63D2 /* UserWalletSettingsView.swift */; };
@@ -3577,6 +3578,7 @@
 		EFF466E12AC709BE00ACC3EA /* BalanceTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceTitleView.swift; sourceTree = "<group>"; };
 		EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingTransactionRecordMapper.swift; sourceTree = "<group>"; };
 		EFF5CF1928C796B1000EE8DB /* Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Alpha.xcconfig; sourceTree = "<group>"; };
+		EFF763F02C4E60BA00E846F4 /* Result+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+.swift"; sourceTree = "<group>"; };
 		EFF82D232B9A0905004DF1A0 /* Publisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+Async.swift"; sourceTree = "<group>"; };
 		EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsCoordinator.swift; sourceTree = "<group>"; };
 		EFF9A2F62BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsCoordinatorView.swift; sourceTree = "<group>"; };
@@ -7973,6 +7975,7 @@
 			children = (
 				EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */,
 				EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */,
+				EFF763F02C4E60BA00E846F4 /* Result+.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -11866,6 +11869,7 @@
 				EF2D9CC12BBDAB2E0055C485 /* Sequence+Async.swift in Sources */,
 				EF2D9CC02BBDAB290055C485 /* Publisher+ThrowingAsyncMap.swift in Sources */,
 				EF2D9CBE2BBDAB290055C485 /* Publisher+AsyncMap.swift in Sources */,
+				EFF763F12C4E60BA00E846F4 /* Result+.swift in Sources */,
 				EF2D9CC62BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift in Sources */,
 				EF2D9CC32BBDAB350055C485 /* MoyaProvider+AsyncRequest.swift in Sources */,
 				EF2D9C8A2BBDA87A0055C485 /* TangemFoundation.docc in Sources */,
