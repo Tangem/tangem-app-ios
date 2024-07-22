@@ -22,26 +22,6 @@
         <string>%li карток</string>
       </dict>
     </dict>
-    <key>common_days</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li день</string>
-        <key>few</key>
-        <string>%li днів</string>
-        <key>many</key>
-        <string>%li днів</string>
-        <key>other</key>
-        <string>%li днів</string>
-      </dict>
-    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>

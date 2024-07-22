@@ -310,9 +310,6 @@
 "main_scan_card_warning_view_subtitle" = "Pour accéder à tous les réseaux, vous devez scanner la carte";
 "main_scan_card_warning_view_title" = "Scannez votre carte";
 "main_tokens" = "Jetons";
-"main_travala_promotion_button" = "Réservez maintenant";
-"main_travala_promotion_description" = "Économisez **50 $** en réservant via notre partenaire Travala : **%1@ - %2@**";
-"main_travala_promotion_title" = "Réservez vos vacances avec Tangem et payez en crypto";
 "manage_tokens_add" = "Ajouter";
 "manage_tokens_edit" = "Modifier";
 "manage_tokens_list_header_title" = "Capitalisation boursière des crypto";
@@ -712,6 +709,7 @@
 "token_details_token_type_subtitle_no_standard" = "Jeton dans le %%image%% %1$@ réseau";
 "token_details_unable_hide_alert_message" = "Le jeton %1$@ (%2$@) est la principale devise du réseau %3$@ et ne peut pas être masqué tant que vous avez d'autres jetons de ce réseau dans la liste";
 "token_details_unable_hide_alert_title" = "Impossible de masquer %@";
+"token_swap_promotion_button" = "Échangez maintenant";
 "transaction_history_contract_address" = "contrat : %@";
 "transaction_history_empty_transactions" = "Vous n'avez pas encore de transactions";
 "transaction_history_error_failed_to_load" = "Échec du chargement de l'historique des transactions.\nCliquez sur le bouton de rechargement pour mettre à jour les informations.";

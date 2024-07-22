@@ -310,9 +310,6 @@
 "main_scan_card_warning_view_subtitle" = "Чтобы получить доступ ко всем сетям, вам необходимо отсканировать карту";
 "main_scan_card_warning_view_title" = "Отсканируйте карту";
 "main_tokens" = "Токены";
-"main_travala_promotion_button" = "Забронировать";
-"main_travala_promotion_description" = "Оплатите его криптой и сэкономьте **50 долларов** через нашего партнера Travala: **%1@ - %2@**";
-"main_travala_promotion_title" = "Забронируйте отпуск с Tangem";
 "manage_tokens_add" = "Добавить";
 "manage_tokens_edit" = "Изменить";
 "manage_tokens_list_header_title" = "Рыночная капитализация";
@@ -485,7 +482,7 @@
 "onboarding_wallet_info_title_third" = "Код доступа";
 "organize_tokens_group" = "Группы";
 "organize_tokens_sort_by_balance" = "По балансу";
-"organize_tokens_title" = "Сортировка токенов";
+"organize_tokens_title" = "Упорядочить токены";
 "organize_tokens_ungroup" = "Список";
 "push_additional_fee" = "Дополнительная комиссия";
 "push_previous_fee" = "Предыдущая комиссия";
@@ -712,6 +709,7 @@
 "token_details_token_type_subtitle_no_standard" = "Токен в сети %%image%% %1$@";
 "token_details_unable_hide_alert_message" = "Токен %1$@ (%2$@) является основной валютой в сети %3$@ и не может быть скрыт до тех пор, пока у вас в списке есть другие токены этой сети";
 "token_details_unable_hide_alert_title" = "Невозможно скрыть %@";
+"token_swap_promotion_button" = "Обменять";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас еще нет транзакций";
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";

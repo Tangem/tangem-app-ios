@@ -310,9 +310,6 @@
 "main_scan_card_warning_view_subtitle" = "すべてのネットワークにアクセスするには、カードをスキャンする必要があります。";
 "main_scan_card_warning_view_title" = "カードをスキャンする";
 "main_tokens" = "トークン";
-"main_travala_promotion_button" = "今すぐ予約";
-"main_travala_promotion_description" = "Travalaからのご予約で**$50**割引に：**%1@ -%2@**";
-"main_travala_promotion_title" = "Tangemで休暇を予約し、暗号資産で支払いましょう。";
 "manage_tokens_add" = "追加";
 "manage_tokens_edit" = "編集";
 "manage_tokens_list_header_title" = "コインの時価総額";
@@ -712,6 +709,7 @@
 "token_details_token_type_subtitle_no_standard" = "%%image%% %1$@ネットワーク上のトークン";
 "token_details_unable_hide_alert_message" = "%1$@ ( %2$@ ) トークンは%3$@ネットワークの主要通貨であり、このネットワーク上の他のトークンがリストにある限り、非表示にすることはできません。";
 "token_details_unable_hide_alert_title" = "%@を非表示にできません";
+"token_swap_promotion_button" = "今すぐスワップ";
 "transaction_history_contract_address" = "コントラクト: %@";
 "transaction_history_empty_transactions" = "まだ取引はありません";
 "transaction_history_error_failed_to_load" = "取引履歴の読み込みに失敗しました。\n情報を更新するには、リロードボタンをクリックしてください。";

@@ -310,9 +310,6 @@
 "main_scan_card_warning_view_subtitle" = "Для доступу до всіх мереж необхідно відсканувати картку";
 "main_scan_card_warning_view_title" = "Відскануйте картку";
 "main_tokens" = "Токени";
-"main_travala_promotion_button" = "Забронювати";
-"main_travala_promotion_description" = "Оплатіть криптою та заощадьте **50 доларів** через нашого партнера Travala: ** %1@ - %2@ **";
-"main_travala_promotion_title" = "Забронюйте відпустку з Tangem";
 "manage_tokens_add" = "Додати";
 "manage_tokens_edit" = "Редагувати";
 "manage_tokens_list_header_title" = "Ринкова капіталізація";
@@ -712,6 +709,7 @@
 "token_details_token_type_subtitle_no_standard" = "Токен у мережі %%image%% %1$@";
 "token_details_unable_hide_alert_message" = "Токен %1$@ (%2$@) є основною валютою в мережі %3$@ і не може бути прихований до тих пір, поки у вас в списку є інші токени цієї мережі";
 "token_details_unable_hide_alert_title" = "Неможливо приховати %@";
+"token_swap_promotion_button" = "Обміняти";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас ще немає транзакцій";
 "transaction_history_error_failed_to_load" = "Не вдалося завантажити історію транзакцій.\nНатисніть кнопку перезавантаження, щоб оновити інформацію.";

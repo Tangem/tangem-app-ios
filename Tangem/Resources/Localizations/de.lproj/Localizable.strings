@@ -310,9 +310,6 @@
 "main_scan_card_warning_view_subtitle" = "Um auf alle Netzwerke zugreifen zu können, musst du die Karte scannen";
 "main_scan_card_warning_view_title" = "Scanne deine Karte";
 "main_tokens" = "Token";
-"main_travala_promotion_button" = "Jetzt buchen";
-"main_travala_promotion_description" = "Spare **$50** bei Buchung über unseren Partner Travala: **%1@ - %2@**";
-"main_travala_promotion_title" = "Buche deinen Urlaub mit Tangem und zahle diesen in Krypto";
 "manage_tokens_add" = "Hinzufügen";
 "manage_tokens_edit" = "Bearbeiten";
 "manage_tokens_list_header_title" = "\nCoinMarketCap";
@@ -712,6 +709,7 @@
 "token_details_token_type_subtitle_no_standard" = "Token in %%image%% %1$@ Netzwerk";
 "token_details_unable_hide_alert_message" = "Der %1$@ (%2$@) Token ist die Hauptwährung im %3$@ Netzwerk und kann nicht versteckt werden, solange du andere Token dieses Netzwerks in der Liste aktiv hast.";
 "token_details_unable_hide_alert_title" = "%@ kann nicht ausgeblendet werden";
+"token_swap_promotion_button" = "Jetzt tauschen";
 "transaction_history_contract_address" = "Vertrag: %@";
 "transaction_history_empty_transactions" = "Du hast noch keine Transaktionen";
 "transaction_history_error_failed_to_load" = "Der Transaktionsverlauf konnte nicht geladen werden.\nKlicke auf die Schaltfläche Neu laden, um die Informationen zu aktualisieren.";
