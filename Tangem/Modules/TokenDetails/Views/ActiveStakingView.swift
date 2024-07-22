@@ -12,10 +12,10 @@ struct ActiveStakingViewData {
     let usdAmount: String
     let coinAmount: String
     let rewardsToClaim: String?
-    
+
     var rewardsToClaimText: String {
         rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) }
-        ?? Localization.stakingDetailsNoRewardsToClaim
+            ?? Localization.stakingDetailsNoRewardsToClaim
     }
 }
 
