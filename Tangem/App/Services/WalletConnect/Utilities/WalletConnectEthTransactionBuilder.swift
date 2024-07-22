@@ -36,6 +36,23 @@ struct CommonWalletConnectEthTransactionBuilder {
         ).async()
         return gasLimitBigInt
     }
+
+    private func getFee(
+        for tx: WalletConnectEthTransaction,
+        with amount: Amount,
+        blockchain: Blockchain,
+        using ethereumNetworkProvider: EthereumNetworkProvider
+    ) async throws -> Fee {
+        async let gasLimit = getGasLimit(for: tx, with: amount, using: ethereumNetworkProvider)
+
+        let gasPrice = tx.gasPrice?.hexToInteger.map { BigUInt($0) }
+        let feeParameters = try await ethereumNetworkProvider.getFee(gasLimit: gasLimit, supportsEIP1559: blockchain.supportsEIP1559, gasPrice: gasPrice)
+        let feeValue = feeParameters.calculateFee(decimalValue: blockchain.decimalValue)
+        let gasAmount = Amount(with: blockchain, value: feeValue)
+
+        let fee = Fee(gasAmount, parameters: feeParameters)
+        return fee
+    }
 }
 
 extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionBuilder {
@@ -55,17 +72,8 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
         }
 
         let valueAmount = Amount(with: blockchain, type: .coin, value: value)
-
         async let walletUpdate = walletModel.update(silent: false).async()
-        async let baseFee = ethereumNetworkProvider.getBaseFee().async()
-        async let priorityFee = ethereumNetworkProvider.getPriorityFee().async()
-        async let gasLimit = getGasLimit(for: wcTransaction, with: valueAmount, using: ethereumNetworkProvider)
-
-        let feeParameters = try await EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
-        let feeValue = feeParameters.calculateFee(decimalValue: blockchain.decimalValue)
-        let gasAmount = Amount(with: blockchain, value: feeValue)
-
-        let fee = Fee(gasAmount, parameters: feeParameters)
+        let fee = try await getFee(for: wcTransaction, with: valueAmount, blockchain: blockchain, using: ethereumNetworkProvider)
         let _ = try await walletUpdate
 
         var transaction = try await walletModel.transactionCreator.createTransaction(

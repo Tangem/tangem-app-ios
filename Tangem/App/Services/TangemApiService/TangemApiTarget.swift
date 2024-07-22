@@ -55,14 +55,30 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
-        case .marketsGeneral:
-            return "/market_general"
+        case .coinsList:
+            return "/coins/list"
+        case .coinsHistoryPreview:
+            return "/coins/history_preview"
+        case .tokenMarketsDetails(let request):
+            return "/coins/\(request.tokenId)"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features, .marketsGeneral:
+        case .rates,
+             .currencies,
+             .coins,
+             .quotes,
+             .geo,
+             .getUserWalletTokens,
+             .loadReferralProgramInfo,
+             .promotion,
+             .apiList,
+             .features,
+             .coinsList,
+             .coinsHistoryPreview,
+             .tokenMarketsDetails:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -137,8 +153,15 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
-        case .marketsGeneral(let requestData):
+        case .coinsList(let requestData):
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
+        case .coinsHistoryPreview(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding(destination: .queryString, arrayEncoding: .noBrackets))
+        case .tokenMarketsDetails(let request):
+            return .requestParameters(parameters: [
+                "currency": request.currency,
+                "language": request.language,
+            ], encoding: URLEncoding.default)
         }
     }
 
@@ -181,7 +204,9 @@ extension TangemApiTarget {
         case awardNewUser(walletId: String, address: String, code: String)
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
-        case marketsGeneral(_ requestModel: MarketsDTO.General.Request)
+        case coinsList(_ requestModel: MarketsDTO.General.Request)
+        case coinsHistoryPreview(_ requestModel: MarketsDTO.ChartsHistory.Request)
+        case tokenMarketsDetails(request: MarketsDTO.Coins.Request)
 
         // Configs
         case apiList

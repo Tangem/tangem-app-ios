@@ -109,7 +109,8 @@ class CommonPendingExpressTransactionsManager {
                 for pendingTransaction in pendingTransactionsToRequest {
                     let record = pendingTransaction.transactionRecord
 
-                    guard record.transactionStatus.isTransactionInProgress else {
+                    // We have not any sense to update the terminated status
+                    guard !record.transactionStatus.isTerminated else {
                         transactionsInProgress.append(pendingTransaction)
                         transactionsToSchedule.append(pendingTransaction)
                         continue
@@ -179,8 +180,8 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
-            // We should show only CEX transaction on UI
-            guard record.provider.type == .cex else {
+            // We should show only `supportStatusTracking` transaction on UI
+            guard record.provider.type.supportStatusTracking else {
                 return false
             }
 

@@ -10,132 +10,194 @@ import SwiftUI
 
 struct SendSummaryView: View {
     @ObservedObject var viewModel: SendSummaryViewModel
-    let namespace: Namespace.ID
+    let namespace: Namespace
+
+    private var amountMinTextScale: CGFloat?
+
+    init(viewModel: SendSummaryViewModel, namespace: Namespace) {
+        self.viewModel = viewModel
+        self.namespace = namespace
+    }
 
     var body: some View {
-        GroupedScrollView(spacing: 14) {
-            if !viewModel.animatingDestinationOnAppear {
-                GroupedSection(viewModel.destinationViewTypes) { type in
-                    switch type {
-                    case .address(let address, let corners):
-                        SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
-                            .setNamespace(namespace)
-                            .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                            .background(
-                                viewModel.destinationBackground
-                                    .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                                    .matchedGeometryEffect(id: SendViewNamespaceId.addressBackground.rawValue, in: namespace)
-                            )
-                    case .additionalField(let type, let value):
-                        DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                            .setNamespace(namespace)
-                            .setTitleNamespaceId(SendViewNamespaceId.addressAdditionalFieldTitle.rawValue)
-                            .setTextNamespaceId(SendViewNamespaceId.addressAdditionalFieldText.rawValue)
-                            .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                            .background(
-                                viewModel.destinationBackground
-                                    .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                                    .matchedGeometryEffect(id: SendViewNamespaceId.addressAdditionalFieldBackground.rawValue, in: namespace)
-                            )
-                    }
+        VStack(alignment: .center, spacing: 14) {
+            GroupedScrollView(spacing: 14) {
+                if !viewModel.animatingDestinationOnAppear {
+                    destinationSection
                 }
-                .backgroundColor(.clear)
-                .geometryEffect(.init(id: SendViewNamespaceId.destinationContainer.rawValue, namespace: namespace))
-                .horizontalPadding(0)
-                .separatorStyle(.single)
-                .contentShape(Rectangle())
-                .allowsHitTesting(viewModel.canEditDestination)
-                .onTapGesture {
-                    viewModel.didTapSummary(for: .destination)
+
+                if !viewModel.animatingAmountOnAppear {
+                    amountSection
+                }
+
+                if !viewModel.animatingFeeOnAppear {
+                    feeSection
+                }
+
+                if viewModel.showHint {
+                    HintView(
+                        text: Localization.sendSummaryTapHint,
+                        font: Fonts.Regular.footnote,
+                        textColor: Colors.Text.secondary,
+                        backgroundColor: Colors.Button.secondary
+                    )
+                    .padding(.top, 8)
+                    .transition(
+                        .asymmetric(insertion: .offset(y: 20), removal: .identity).combined(with: .opacity)
+                    )
+                }
+
+                ForEach(viewModel.notificationInputs) { input in
+                    NotificationView(input: input)
                 }
             }
 
-            if !viewModel.animatingAmountOnAppear {
-                GroupedSection(viewModel.amountSummaryViewData) { data in
-                    amountSectionContent(data: data)
-                }
-                .innerContentPadding(0)
-                .backgroundColor(viewModel.amountBackground)
-                .geometryEffect(.init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace))
-                .contentShape(Rectangle())
-                .allowsHitTesting(viewModel.canEditAmount)
-                .onTapGesture {
-                    viewModel.didTapSummary(for: .amount)
-                }
-            }
-
-            if !viewModel.animatingFeeOnAppear {
-                GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
-                    feeSectionContent(data: data)
-                        .overlay(alignment: .bottom) {
-                            feeRowViewSeparator(for: data.feeOption)
-                        }
-                        .overlay {
-                            ForEach(viewModel.deselectedFeeRowViewModels) { model in
-                                FeeRowView(viewModel: model)
-                                    .setNamespace(namespace)
-                                    .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: model.option).rawValue)
-                                    .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: model.option).rawValue)
-                                    .allowsHitTesting(false)
-                                    .hidden()
-                                    .overlay(alignment: .bottom) {
-                                        feeRowViewSeparator(for: model.option)
-                                    }
-                            }
-                        }
-                }
-                // Fee uses a regular background regardless of whether it's enabled or not
-                .backgroundColor(Colors.Background.action)
-                .geometryEffect(.init(id: SendViewNamespaceId.feeContainer.rawValue, namespace: namespace))
-                .contentShape(Rectangle())
-                .allowsHitTesting(viewModel.canEditFee)
-                .onTapGesture {
-                    viewModel.didTapSummary(for: .fee)
-                }
-            }
-
-            if viewModel.showHint {
-                HintView(
-                    text: Localization.sendSummaryTapHint,
-                    font: Fonts.Regular.footnote,
-                    textColor: Colors.Text.secondary,
-                    backgroundColor: Colors.Button.secondary
-                )
-                .padding(.top, 8)
-                .transition(SendView.Constants.hintViewTransition)
-            }
-
-            ForEach(viewModel.notificationInputs) { input in
-                NotificationView(input: input)
-            }
+            descriptionView
         }
+        .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
         .alert(item: $viewModel.alert) { $0.alert }
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
     }
 
+    // MARK: - Destination
+
+    private var destinationSection: some View {
+        GroupedSection(viewModel.destinationViewTypes) { type in
+            switch type {
+            case .address(let address, let corners):
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
+                    .namespace(.init(id: namespace.id, names: namespace.names))
+                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                    .background(
+                        sectionBackground(type: viewModel.editableType)
+                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
+                            .matchedGeometryEffect(id: namespace.names.addressBackground, in: namespace.id)
+                    )
+            case .additionalField(let type, let value):
+                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
+                    .setNamespace(namespace.id)
+                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
+                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
+                    .background(
+                        sectionBackground(type: viewModel.editableType)
+                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
+                            .matchedGeometryEffect(id: namespace.names.addressAdditionalFieldBackground, in: namespace.id)
+                    )
+            }
+        }
+        .backgroundColor(.clear)
+        .geometryEffect(.init(id: namespace.names.destinationContainer, namespace: namespace.id))
+        .horizontalPadding(0)
+        .separatorStyle(.single)
+        .contentShape(Rectangle())
+        .allowsHitTesting(viewModel.canEditDestination)
+        .onTapGesture {
+            viewModel.userDidTapDestination()
+        }
+    }
+
+    // MARK: - Amount
+
+    private var amountSection: some View {
+        GroupedSection(viewModel.amountSummaryViewData) { data in
+            SendAmountSummaryView(data: data)
+                .amountMinTextScale(amountMinTextScale)
+                .setNamespace(namespace.id)
+                .setIconNamespaceId(namespace.names.tokenIcon)
+                .setAmountCryptoNamespaceId(namespace.names.amountCryptoText)
+                .setAmountFiatNamespaceId(namespace.names.amountFiatText)
+        }
+        .innerContentPadding(0)
+        .backgroundColor(sectionBackground(type: viewModel.editableType))
+        .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
+        .contentShape(Rectangle())
+        .allowsHitTesting(viewModel.canEditAmount)
+        .onTapGesture {
+            viewModel.userDidTapAmount()
+        }
+    }
+
+    // MARK: - Fee
+
+    private var feeSection: some View {
+        GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
+            SendFeeSummaryView(data: data)
+                .setNamespace(namespace.id)
+                .setTitleNamespaceId(namespace.names.feeTitle)
+                .setOptionNamespaceId(namespace.names.feeOption(feeOption: data.feeOption))
+                .setAmountNamespaceId(namespace.names.feeAmount(feeOption: data.feeOption))
+                .overlay(alignment: .bottom) {
+                    feeRowViewSeparator(for: data.feeOption)
+                }
+                .overlay {
+                    ForEach(viewModel.deselectedFeeRowViewModels) { model in
+                        FeeRowView(viewModel: model)
+                            .setNamespace(namespace.id)
+                            .setOptionNamespaceId(namespace.names.feeOption(feeOption: model.option))
+                            .setAmountNamespaceId(namespace.names.feeAmount(feeOption: model.option))
+                            .allowsHitTesting(false)
+                            .hidden()
+                            .overlay(alignment: .bottom) {
+                                feeRowViewSeparator(for: model.option)
+                            }
+                    }
+                }
+        }
+        // Fee uses a regular background regardless of whether it's enabled or not
+        .backgroundColor(Colors.Background.action)
+        .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
+        .contentShape(Rectangle())
+        .allowsHitTesting(viewModel.canEditFee)
+        .onTapGesture {
+            viewModel.userDidTapFee()
+        }
+    }
+
     private func feeRowViewSeparator(for option: FeeOption) -> some View {
         Separator(height: .minimal, color: Colors.Stroke.primary)
             .padding(.leading, GroupedSectionConstants.defaultHorizontalPadding)
             .opacity(0)
-            .matchedGeometryEffect(id: SendViewNamespaceId.feeSeparator(feeOption: option).rawValue, in: namespace)
+            .matchedGeometryEffect(id: namespace.names.feeSeparator(feeOption: option), in: namespace.id)
     }
 
-    private func amountSectionContent(data: SendAmountSummaryViewData) -> some View {
-        SendAmountSummaryView(data: data)
-            .setNamespace(namespace)
-            .setIconNamespaceId(SendViewNamespaceId.tokenIcon.rawValue)
-            .setAmountCryptoNamespaceId(SendViewNamespaceId.amountCryptoText.rawValue)
-            .setAmountFiatNamespaceId(SendViewNamespaceId.amountFiatText.rawValue)
+    private func sectionBackground(type: SendSummaryViewModel.EditableType) -> Color {
+        switch type {
+        case .editable:
+            Colors.Background.action
+        case .disable:
+            Colors.Button.disabled
+        }
     }
 
-    private func feeSectionContent(data: SendFeeSummaryViewModel) -> some View {
-        SendFeeSummaryView(data: data)
-            .setNamespace(namespace)
-            .setTitleNamespaceId(SendViewNamespaceId.feeTitle.rawValue)
-            .setOptionNamespaceId(SendViewNamespaceId.feeOption(feeOption: data.feeOption).rawValue)
-            .setAmountNamespaceId(SendViewNamespaceId.feeAmount(feeOption: data.feeOption).rawValue)
+    // MARK: - Description
+
+    @ViewBuilder
+    private var descriptionView: some View {
+        if let transactionDescription = viewModel.transactionDescription {
+            Text(.init(transactionDescription))
+                .style(Fonts.Regular.caption1, color: Colors.Text.primary1)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
+                .visible(viewModel.transactionDescriptionIsVisible)
+        }
+    }
+}
+
+// MARK: - Setupable protocol conformance
+
+extension SendSummaryView: Setupable {
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
+    }
+}
+
+extension SendSummaryView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendSummaryViewGeometryEffectNames
     }
 }
 

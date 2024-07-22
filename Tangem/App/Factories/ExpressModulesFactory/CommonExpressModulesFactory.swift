@@ -73,12 +73,18 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
             feeFormatter: feeFormatter,
             pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
             expressInteractor: expressInteractor,
+            providerName: providerName,
+            selectedPolicy: selectedPolicy,
             coordinator: coordinator
         )
     }
@@ -134,6 +140,7 @@ private extension CommonExpressModulesFactory {
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
     var signer: TransactionSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
+    var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
     var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
 
     var expressTokensListAdapter: ExpressTokensListAdapter {
@@ -163,7 +170,8 @@ private extension CommonExpressModulesFactory {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: analyticsLogger
         )
 
         let interactor = ExpressInteractor(

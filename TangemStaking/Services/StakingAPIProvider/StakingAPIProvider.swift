@@ -10,7 +10,13 @@ import Foundation
 
 public protocol StakingAPIProvider {
     func enabledYields() async throws -> [YieldInfo]
-    func yieldInfo(integrationId: String) async throws -> YieldInfo
+    func yield(integrationId: String) async throws -> YieldInfo
+    func balance(wallet: StakingWallet) async throws -> StakingBalanceInfo?
 
-    func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws
+    func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction
+
+    func transaction(id: String) async throws -> TransactionInfo
+    func patchTransaction(id: String) async throws -> TransactionInfo
+    func submitTransaction(hash: String, signedTransaction: String) async throws
+    func submitHash(hash: String, transactionId: String) async throws
 }

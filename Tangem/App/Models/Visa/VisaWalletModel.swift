@@ -261,7 +261,7 @@ extension VisaWalletModel: VisaWalletMainHeaderSubtitleDataSource {
         }
 
         let converter = BalanceConverter()
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 }
 

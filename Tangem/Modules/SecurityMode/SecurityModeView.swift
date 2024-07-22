@@ -17,11 +17,8 @@ struct SecurityModeView: View {
             Colors.Background.secondary.edgesIgnoringSafeArea(.all)
 
             GroupedScrollView {
-                SelectableGropedSection(
-                    viewModel.securityViewModels,
-                    selection: $viewModel.currentSecurityOption
-                ) {
-                    DefaultSelectableRowView(viewModel: $0)
+                GroupedSection(viewModel.securityViewModels) {
+                    DefaultSelectableRowView(data: $0, selection: $viewModel.currentSecurityOption)
                 }
             }
             .interContentPadding(8)

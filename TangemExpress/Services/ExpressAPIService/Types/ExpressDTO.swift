@@ -68,6 +68,7 @@ enum ExpressDTO {
             let imageSmall: String?
             let termsOfUse: String?
             let privacyPolicy: String?
+            let recommended: Bool?
         }
     }
 
@@ -136,9 +137,7 @@ enum ExpressDTO {
 
         struct Response: Decodable {
             let providerId: Provider.Id
-            let externalTxId: String
             let status: ExpressTransactionStatus
-            let externalTxUrl: String
         }
     }
 

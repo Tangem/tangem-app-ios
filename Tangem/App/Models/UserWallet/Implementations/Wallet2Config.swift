@@ -61,16 +61,7 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var isWalletsCreated: Bool {
-        // Temporary disable strict checking because of possible usecases with activated wallet2 cards with legacy apps
-        // let validator = CurvesValidator(expectedCurves: createWalletCurves)
-
-        /// It is allowed to skip backup In the case of demo cards and cards with `cardLinked` backup status .
-        /// To handle cards with incorrectly created wallets in these cases, a check for backup status was added.
-//        if card.backupStatus == .noBackup {
-//            return validator.validate(card.walletCurves)
-//        } else {
         return !card.wallets.isEmpty
-//        }
     }
 
     var canImportKeys: Bool {
@@ -233,6 +224,12 @@ extension Wallet2Config: UserWalletConfig {
         // Kaspa reseller
         case "AF31":
             return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
+        // Lemon, Aqua, Grapefruit
+        case "AF40", "AF41", "AF42":
+            return Assets.Cards.lemonAquaGrapefruit
+        // Peach, Air, Glass
+        case "AF43", "AF44", "AF45":
+            return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
@@ -314,7 +311,11 @@ extension Wallet2Config: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            if card.firmwareVersion.doubleValue >= 4.52 {
+                return .available
+            }
+
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

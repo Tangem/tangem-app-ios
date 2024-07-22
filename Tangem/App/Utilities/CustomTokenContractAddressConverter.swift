@@ -16,7 +16,7 @@ struct CustomTokenContractAddressConverter {
         self.blockchain = blockchain
     }
 
-    func convert(_ originalAddress: String) -> String {
+    func convert(_ originalAddress: String, symbol: String?) -> String {
         switch blockchain {
         case .hedera:
             do {
@@ -25,6 +25,13 @@ struct CustomTokenContractAddressConverter {
                 // In case of failure, we consider the address a not-EVM address and return it as is
                 let converter = HederaTokenContractAddressConverter()
                 return try converter.convertFromEVMToHedera(originalAddress)
+            } catch {
+                return originalAddress
+            }
+        case .cardano:
+            do {
+                let converter = CardanoTokenContractAddressService()
+                return try converter.convertToFingerprint(address: originalAddress, symbol: symbol)
             } catch {
                 return originalAddress
             }
@@ -38,7 +45,6 @@ struct CustomTokenContractAddressConverter {
              .rsk,
              .bitcoinCash,
              .binance,
-             .cardano,
              .xrp,
              .ducatus,
              .tezos,
@@ -88,7 +94,9 @@ struct CustomTokenContractAddressConverter {
              .taraxa,
              .radiant,
              .base,
-             .joystream:
+             .bittensor,
+             .joystream,
+             .koinos:
             // Did you get a compilation error here? If so, check if the network supports multiple token contract address
             // formats (as Hedera does, for example) and add the appropriate conversion logic here if needed
             return originalAddress

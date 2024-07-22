@@ -10,7 +10,10 @@ import Foundation
 
 enum MarketsDTO {
     enum General {}
+    enum ChartsHistory {}
 }
+
+// MARK: - General
 
 extension MarketsDTO.General {
     struct Request: Encodable {
@@ -47,12 +50,15 @@ extension MarketsDTO.General {
                 "currency": currency,
                 "offset": offset,
                 "limit": limit,
-                "interval": interval.rawValue,
+                "interval": interval.marketsListId,
                 "order": order.rawValue,
-                "general_coins": generalCoins,
             ]
 
-            if let search {
+            if generalCoins {
+                params["general_coins"] = generalCoins
+            }
+
+            if let search, !search.isEmpty {
                 params["search"] = search
             }
 
@@ -62,5 +68,38 @@ extension MarketsDTO.General {
 
     struct Response: Decodable {
         let tokens: [MarketsTokenModel]
+        let total: Int
+        let limit: Int
+        let offset: Int
+    }
+}
+
+// MARK: - HistoryPreview
+
+extension MarketsDTO.ChartsHistory {
+    struct Request: Encodable {
+        let currency: String
+        let coinIds: [String]
+        let interval: MarketsPriceIntervalType
+
+        init(
+            currency: String,
+            coinIds: [String],
+            interval: MarketsPriceIntervalType
+        ) {
+            self.currency = currency
+            self.coinIds = coinIds
+            self.interval = interval
+        }
+
+        // MARK: - Helper
+
+        var parameters: [String: Any] {
+            [
+                "currency": currency,
+                "coin_ids": coinIds.joined(separator: ","),
+                "interval": interval.marketsListId,
+            ]
+        }
     }
 }

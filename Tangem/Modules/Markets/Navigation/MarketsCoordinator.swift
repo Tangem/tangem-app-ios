@@ -16,19 +16,18 @@ class MarketsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
-    weak var delegate: MarketsCoordinatorDelegate?
-
     // MARK: - Root Published
 
-    @Published private(set) var manageTokensViewModel: MarketsViewModel? = nil
+    @Published private(set) var rootViewModel: MarketsViewModel?
+
+    // MARK: - Coordinators
+
+    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator?
 
     // MARK: - Child ViewModels
 
-    @Published var networkSelectorViewModel: ManageTokensNetworkSelectorViewModel? = nil
-    @Published var walletSelectorViewModel: WalletSelectorViewModel? = nil
-    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel? = nil
-
-    @Published var addCustomTokenCoordinator: AddCustomTokenCoordinator?
+    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
+    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel?
 
     // MARK: - Init
 
@@ -37,76 +36,38 @@ class MarketsCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    // MARK: - Implmentation
+    // MARK: - Implementation
 
     func start(with options: MarketsCoordinator.Options) {
-        assert(delegate != nil)
-        manageTokensViewModel = .init(searchTextPublisher: options.searchTextPublisher, coordinator: self)
+        let headerViewModel = MainBottomSheetHeaderViewModel()
+        self.headerViewModel = headerViewModel
+        rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
     }
 
-    func onBottomScrollableSheetStateChange(_ state: BottomScrollableSheetState) {
+    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
         if state.isBottom {
-            manageTokensViewModel?.onBottomDisappear()
+            rootViewModel?.onBottomSheetDisappear()
+            headerViewModel?.onBottomSheetDisappear()
         } else {
-            manageTokensViewModel?.onBottomAppear()
+            rootViewModel?.onBottomSheetAppear()
+            headerViewModel?.onBottomSheetAppear(isTapGesture: state.isTapGesture)
         }
     }
 }
 
 extension MarketsCoordinator {
-    struct Options {
-        let searchTextPublisher: AnyPublisher<String, Never>
-    }
+    struct Options {}
 }
 
 extension MarketsCoordinator: MarketsRoutable {
-    func openAddCustomToken(dataSource: MarketsDataSource) {
-        guard let userWalletModel = dataSource.defaultUserWalletModel else { return }
-
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.addCustomTokenCoordinator = nil
-            self?.dismiss()
-        }
-
-        let addCustomTokenCoordinator = AddCustomTokenCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        addCustomTokenCoordinator.start(with: .init(userWalletModel: userWalletModel))
-        self.addCustomTokenCoordinator = addCustomTokenCoordinator
-    }
-
-    func openTokenSelector(dataSource: MarketsDataSource, coinId: String, tokenItems: [TokenItem]) {
-        networkSelectorViewModel = ManageTokensNetworkSelectorViewModel(
-            parentDataSource: dataSource,
-            coinId: coinId,
-            tokenItems: tokenItems,
-            coordinator: self
-        )
-    }
-
-    func showGenerateAddressesWarning(
-        numberOfNetworks: Int,
-        currentWalletNumber: Int,
-        totalWalletNumber: Int,
-        action: @escaping () -> Void
-    ) {
-        delegate?.showGenerateAddressesWarning(
-            numberOfNetworks: numberOfNetworks,
-            currentWalletNumber: currentWalletNumber,
-            totalWalletNumber: totalWalletNumber,
-            action: action
-        )
-    }
-
-    func hideGenerateAddressesWarning() {
-        delegate?.hideGenerateAddressesWarning()
-    }
-
     func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider) {
         marketsListOrderBottonSheetViewModel = .init(from: provider)
     }
-}
 
-extension MarketsCoordinator: ManageTokensNetworkSelectorRoutable {
-    func openWalletSelector(with dataSource: WalletSelectorDataSource) {
-        walletSelectorViewModel = WalletSelectorViewModel(dataSource: dataSource)
+    func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {
+        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator()
+        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
+
+        self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
     }
 }

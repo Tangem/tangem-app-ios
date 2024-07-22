@@ -31,6 +31,9 @@ struct MainCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenDetailsCoordinator) {
                 TokenDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
@@ -67,9 +70,6 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)
             }
-            .sheet(item: $coordinator.stakingDetailsCoordinator) {
-                StakingDetailsCoordinatorView(coordinator: $0)
-            }
 
         NavHolder()
             .bottomSheet(
@@ -84,6 +84,12 @@ struct MainCoordinatorView: CoordinatorView {
                 settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
+            }
+            .bottomSheet(
+                item: $coordinator.pushNotificationsViewModel,
+                backgroundColor: Colors.Background.primary
+            ) {
+                PushNotificationsBottomSheetView(viewModel: $0)
             }
 
         NavHolder()

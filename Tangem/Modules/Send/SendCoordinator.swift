@@ -39,8 +39,17 @@ class SendCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let factory = SendModulesFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
-        rootViewModel = factory.makeSendViewModel(type: options.type, coordinator: self)
+        let factory = SendFlowFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
+
+        switch options.type {
+        case .send:
+            rootViewModel = factory.makeSendViewModel(router: self)
+        case .sell(let parameters):
+            rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
+        case .staking(let manager):
+            // TODO: IOS-7105
+            break
+        }
     }
 }
 

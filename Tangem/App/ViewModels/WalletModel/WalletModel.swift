@@ -10,12 +10,13 @@ import Foundation
 import Combine
 import CombineExt
 import BlockchainSdk
+import TangemStaking
+import TangemFoundation
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
 
     var walletModelId: WalletModel.Id {
         .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
@@ -35,39 +36,25 @@ class WalletModel {
         transactionHistoryState()
     }
 
-    var transactionHistoryNotLoaded: Bool {
-        if case .initial = _transactionHistoryService?.state {
-            return true
-        } else {
-            return false
-        }
-    }
-
     var isSupportedTransactionHistory: Bool {
         _transactionHistoryService != nil
+    }
+
+    var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
+        _stakingManager.map { $0.statePublisher } ?? .just(output: .notEnabled)
+    }
+
+    var stakingManagerState: StakingManagerState {
+        _stakingManager?.state ?? .notEnabled
     }
 
     var shouldShowFeeSelector: Bool {
         walletManager.allowsFeeSelection
     }
 
-    var supportsCustomFees: Bool {
-        let blockchain = blockchainNetwork.blockchain
-
-        if case .bitcoin = blockchain, bitcoinTransactionFeeCalculator != nil {
-            return true
-        }
-
-        if blockchain.isEvm {
-            return true
-        }
-
-        return false
-    }
-
     var tokenItem: TokenItem {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return .blockchain(blockchainNetwork)
         case .token(let token):
             return .token(token, blockchainNetwork)
@@ -82,12 +69,24 @@ class WalletModel {
             return .token(value, blockchainNetwork)
         case .sameCurrency:
             return tokenItem
+        case .feeResource(let type):
+            // We use this when displaying the fee currency on the 'Send' screen.
+            // This is because when sending KOIN, we use MANA as the fee.
+            return .token(
+                Token(
+                    name: type.rawValue,
+                    symbol: type.rawValue.uppercased(),
+                    contractAddress: "",
+                    decimalCount: 0
+                ),
+                blockchainNetwork
+            )
         }
     }
 
     var name: String {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return wallet.blockchain.displayName
         case .token(let token):
             return token.name
@@ -96,7 +95,7 @@ class WalletModel {
 
     var isMainToken: Bool {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return true
         case .token:
             return false
@@ -134,7 +133,7 @@ class WalletModel {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 
     var rateFormatted: String {
@@ -219,7 +218,7 @@ class WalletModel {
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
             swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
-            stakingRepositoryProxy.enabledYieldsPuiblisher.mapToVoid()
+            stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()
     }
@@ -231,6 +230,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let walletManager: WalletManager
+    private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
@@ -251,12 +251,14 @@ class WalletModel {
 
     init(
         walletManager: WalletManager,
+        stakingManager: StakingManager?,
         transactionHistoryService: TransactionHistoryService?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
+        _stakingManager = stakingManager
         _transactionHistoryService = transactionHistoryService
         self.amountType = amountType
         self.isCustom = isCustom
@@ -344,9 +346,9 @@ class WalletModel {
 
         updateWalletModelSubscription = walletManager
             .updatePublisher()
-            .combineLatest(loadQuotes())
+            .combineLatest(loadQuotes(), updateStakingManagerState()) { state, _, _ in state }
             .receive(on: updateQueue)
-            .sink { [weak self] newState, _ in
+            .sink { [weak self] newState in
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Finished common update for \(self)")
@@ -635,6 +637,19 @@ extension WalletModel {
     }
 }
 
+// MARK: - Staking
+
+extension WalletModel {
+    func updateStakingManagerState() -> AnyPublisher<Void, Never> {
+        Future.async { [weak self] in
+            try await self?._stakingManager?.updateState()
+        }
+        // Here we have to skip the error to let the PTR to complete
+        .replaceError(with: ())
+        .eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Interfaces
 
 extension WalletModel {
@@ -696,6 +711,10 @@ extension WalletModel {
 
     var assetRequirementsManager: AssetRequirementsManager? {
         walletManager as? AssetRequirementsManager
+    }
+
+    var stakingManager: StakingManager? {
+        _stakingManager
     }
 }
 

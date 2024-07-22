@@ -13,9 +13,6 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
-
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
@@ -83,6 +80,19 @@ final class SingleTokenNotificationManager {
             events.append(.bnbBeaconChainRetirement)
         }
 
+        let amounts = walletModel.wallet.amounts
+        if case .koinos = walletModel.tokenItem.blockchain,
+           let currentMana = amounts[.feeResource(.mana)]?.value,
+           let maxMana = amounts[.coin]?.value {
+            let formatter = BalanceFormatter()
+            events.append(
+                .manaLevel(
+                    currentMana: formatter.formatDecimal(currentMana, formattingOptions: .defaultFiatFormattingOptions),
+                    maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
+                )
+            )
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -99,7 +109,7 @@ final class SingleTokenNotificationManager {
             factory.buildNotificationInput(
                 for: $0,
                 buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                    self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
                 dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
@@ -165,7 +175,7 @@ final class SingleTokenNotificationManager {
                 factory.buildNotificationInput(
                     for: event,
                     buttonAction: { [weak self] id, actionType in
-                        self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                        self?.delegate?.didTapNotification(with: id, action: actionType)
                     },
                     dismissAction: { [weak self] id in
                         self?.dismissNotification(with: id)
@@ -220,11 +230,7 @@ final class SingleTokenNotificationManager {
     }
 
     func makeStakingNotificationEvent() -> TokenNotificationEvent? {
-        guard FeatureProvider.isAvailable(.staking) else {
-            return nil
-        }
-
-        guard let yield = stakingRepositoryProxy.getYield(item: walletModel.stakingTokenItem) else {
+        guard case .availableToStake(let yield) = walletModel.stakingManagerState else {
             return nil
         }
 
@@ -258,19 +264,6 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
-            return
-        }
-
-        guard let event = notification.settings.event as? BannerNotificationEvent else {
-            return
-        }
-
-        switch event {
-        case .travala:
-            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
-        }
-
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
     }
 }

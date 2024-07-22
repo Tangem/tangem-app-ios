@@ -15,14 +15,10 @@ struct MarketsListOrderBottonSheetView: View {
         VStack(spacing: .zero) {
             BottomSheetHeaderView(title: Localization.marketsSortByTitle)
 
-            SelectableGropedSection(
-                viewModel.listOptionViewModel,
-                selection: $viewModel.currentOrderType,
-                content: {
-                    DefaultSelectableRowView(viewModel: $0)
-                }
-            )
-            .backgroundColor(Colors.Background.action)
+            GroupedSection(viewModel.listOptionViewModel) {
+                DefaultSelectableRowView(data: $0, selection: $viewModel.currentOrderType)
+            }
+            .settings(\.backgroundColor, Colors.Background.action)
         }
         .padding(.horizontal, 16)
     }

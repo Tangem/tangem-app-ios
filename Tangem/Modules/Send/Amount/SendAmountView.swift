@@ -10,29 +10,17 @@ import SwiftUI
 
 struct SendAmountView: View {
     @ObservedObject var viewModel: SendAmountViewModel
-    let namespace: Namespace.ID
+    let namespace: Namespace
+
+    private var amountMinTextScale: CGFloat?
 
     var body: some View {
         GroupedScrollView(spacing: 14) {
-            amountSectionContent
+            amountContainer
 
             if !viewModel.animatingAuxiliaryViewsOnAppear {
-                HStack {
-                    SendCurrencyPicker(
-                        data: .init(
-                            cryptoIconURL: viewModel.cryptoIconURL,
-                            cryptoCurrencyCode: viewModel.cryptoCurrencyCode,
-                            fiatIconURL: viewModel.fiatIconURL,
-                            fiatCurrencyCode: viewModel.fiatCurrencyCode,
-                            disabled: viewModel.currencyPickerDisabled
-                        ),
-                        useFiatCalculation: $viewModel.useFiatCalculation
-                    )
-
-                    MainButton(title: Localization.sendMaxAmount, style: .secondary, action: viewModel.didTapMaxAmount)
-                        .frame(width: 108)
-                }
-                .transition(SendView.Constants.auxiliaryViewTransition(for: .amount))
+                segmentControl
+                    .transition(.offset(y: 100).combined(with: .opacity))
             }
         }
         .onAppear(perform: viewModel.onAppear)
@@ -40,8 +28,8 @@ struct SendAmountView: View {
         .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
     }
 
-    private var amountSectionContent: some View {
-        VStack(spacing: 34) {
+    private var amountContainer: some View {
+        VStack(spacing: 32) {
             if !viewModel.animatingAuxiliaryViewsOnAppear {
                 walletInfoView
                     // Because the top padding have to be is 16 to the white background
@@ -52,45 +40,47 @@ struct SendAmountView: View {
 
             amountContent
         }
-        .frame(maxWidth: .infinity)
         .defaultRoundedBackground(
             with: Colors.Background.action,
-            geometryEffect: .init(id: SendViewNamespaceId.amountContainer.rawValue, namespace: namespace)
+            geometryEffect: .init(
+                id: namespace.names.amountContainer,
+                namespace: namespace.id
+            )
         )
     }
 
     private var walletInfoView: some View {
         VStack(spacing: 4) {
-            Text(viewModel.walletName)
+            Text(viewModel.userWalletName)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
                 .lineLimit(1)
-                .matchedGeometryEffect(id: SendViewNamespaceId.walletName.rawValue, in: namespace)
+                .matchedGeometryEffect(id: namespace.names.walletName, in: namespace.id)
 
             SensitiveText(viewModel.balance)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .lineLimit(1)
-                .matchedGeometryEffect(id: SendViewNamespaceId.walletBalance.rawValue, in: namespace)
+                .matchedGeometryEffect(id: namespace.names.walletBalance, in: namespace.id)
         }
     }
 
     private var amountContent: some View {
         VStack(spacing: 18) {
             TokenIcon(tokenIconInfo: viewModel.tokenIconInfo, size: CGSize(width: 36, height: 36))
-                .matchedGeometryEffect(id: SendViewNamespaceId.tokenIcon.rawValue, in: namespace)
+                .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {
                 SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                    // A small delay must be introduced to fix a glitch in a transition animation when changing screens
-                    .initialFocusBehavior(.delayedFocus(duration: 2 * SendView.Constants.animationDuration))
+                    .initialFocusBehavior(.immediateFocus)
                     .alignment(.center)
                     .prefixSuffixOptions(viewModel.currentFieldOptions)
-                    .matchedGeometryEffect(id: SendViewNamespaceId.amountCryptoText.rawValue, in: namespace)
+                    .minTextScale(amountMinTextScale)
+                    .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout
-                Text(viewModel.amountAlternative ?? " ")
+                Text(viewModel.alternativeAmount ?? " ")
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                     .lineLimit(1)
-                    .matchedGeometryEffect(id: SendViewNamespaceId.amountFiatText.rawValue, in: namespace)
+                    .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
 
                 Text(viewModel.error ?? " ")
                     .style(Fonts.Regular.caption1, color: Colors.Text.warning)
@@ -98,46 +88,67 @@ struct SendAmountView: View {
             }
         }
     }
-}
 
-struct SendAmountView_Previews: PreviewProvider {
-    @Namespace static var namespace
+    private var segmentControl: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 8) {
+                SendCurrencyPicker(
+                    data: viewModel.currencyPickerData,
+                    useFiatCalculation: viewModel.isFiatCalculation.asBinding
+                )
 
-    static let tokenIconInfo = TokenIconInfo(
-        name: "Tether",
-        blockchainIconName: "ethereum.fill",
-        imageURL: IconURLBuilder().tokenIconURL(id: "tether"),
-        isCustom: false,
-        customTokenColor: nil
-    )
+                MainButton(title: Localization.sendMaxAmount, style: .secondary) {
+                    viewModel.userDidTapMaxAmount()
+                }
+                .frame(width: proxy.size.width / 3)
+            }
+        }
+    }
 
-    static let walletInfo = SendWalletInfo(
-        walletName: "Family Wallet",
-        balanceValue: 2130.88,
-        balance: "2 130,88 USDT (2 129,92 $)",
-        blockchain: .ethereum(testnet: false),
-        currencyId: "tether",
-        feeCurrencySymbol: "ETH",
-        feeCurrencyId: "ethereum",
-        isFeeApproximate: false,
-        tokenIconInfo: tokenIconInfo,
-        cryptoIconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/coins/large/tether.png")!,
-        cryptoCurrencyCode: "USDT",
-        fiatIconURL: URL(string: "https://vectorflags.s3-us-west-2.amazonaws.com/flags/us-square-01.png")!,
-        fiatCurrencyCode: "USD",
-        amountFractionDigits: 6,
-        feeFractionDigits: 6,
-        feeAmountType: .coin,
-        canUseFiatCalculation: true
-    )
-
-    static let viewModel = SendAmountViewModel(
-        input: SendAmountViewModelInputMock(),
-        fiatCryptoAdapter: SendFiatCryptoAdapterMock(),
-        walletInfo: walletInfo
-    )
-
-    static var previews: some View {
-        SendAmountView(viewModel: viewModel, namespace: namespace)
+    init(
+        viewModel: SendAmountViewModel,
+        namespace: Namespace
+    ) {
+        self.viewModel = viewModel
+        self.namespace = namespace
     }
 }
+
+extension SendAmountView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendAmountViewGeometryEffectNames
+    }
+}
+
+// MARK: - Setupable protocol conformance
+
+extension SendAmountView: Setupable {
+    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
+        map { $0.amountMinTextScale = amountMinTextScale }
+    }
+}
+
+/*
+ struct SendAmountView_Previews: PreviewProvider {
+     static let viewModel = SendAmountViewModel(
+         inputModel: SendDependenciesBuilder (userWalletName: "Wallet", wallet: .mockETH).makeStakingAmountInput(),
+         cryptoFiatAmountConverter: .init(),
+         input: StakingAmountInputMock(),
+         output: StakingAmountOutputMock()
+     )
+
+     @Namespace static var namespace
+
+     static var previews: some View {
+         ZStack {
+             Colors.Background.tertiary.ignoresSafeArea()
+
+             SendAmountView(
+                 viewModel: viewModel,
+                 namespace: .init(id: namespace, names: StakingViewNamespaceID())
+             )
+         }
+     }
+ }
+ */

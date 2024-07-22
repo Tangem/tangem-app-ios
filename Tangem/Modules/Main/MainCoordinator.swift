@@ -18,6 +18,7 @@ class MainCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     // MARK: - Root view model
 
@@ -41,8 +42,8 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalWebViewModel: WebViewContainerViewModel?
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel?
     @Published var organizeTokensViewModel: OrganizeTokensViewModel?
-
-    @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel? = nil
+    @Published var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel?
+    @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel?
 
     // MARK: - Helpers
 
@@ -60,11 +61,14 @@ class MainCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         let swipeDiscoveryHelper = WalletSwipeDiscoveryHelper()
+        let factory = PushNotificationsHelpersFactory()
+        let pushNotificationsAvailabilityProvider = factory.makeAvailabilityProviderForAfterLogin(using: pushNotificationsInteractor)
         let viewModel = MainViewModel(
             selectedUserWalletId: options.userWalletModel.userWalletId,
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self)
+            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -115,6 +119,12 @@ extension MainCoordinator: MainRoutable {
 
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
+
+    func openPushNotificationsAuthorization() {
+        let factory = PushNotificationsHelpersFactory()
+        let permissionManager = factory.makePermissionManagerForAfterLogin(using: pushNotificationsInteractor)
+        pushNotificationsViewModel = PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }
 }
 
@@ -263,7 +273,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .sell(amount: amountToSend, destination: destination, tag: tag)
+            type: .sell(parameters: .init(amount: amountToSend.value, destination: destination, tag: tag))
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -317,13 +327,13 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openStaking(wallet: WalletModel) {
+    func openStaking(options: StakingDetailsCoordinator.Options) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.stakingDetailsCoordinator = nil
         }
 
         let coordinator = StakingDetailsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        coordinator.start(with: .init(wallet: wallet))
+        coordinator.start(with: options)
         stakingDetailsCoordinator = coordinator
     }
 
@@ -373,11 +383,15 @@ extension MainCoordinator: VisaWalletRoutable {
 // MARK: - RateAppRoutable protocol conformance
 
 extension MainCoordinator: RateAppRoutable {
-    func openFeedbackMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String) {
-        openMail(with: dataCollector, emailType: emailType, recipient: recipient)
-    }
-
     func openAppStoreReview() {
         isAppStoreReviewRequested = true
+    }
+}
+
+// MARK: - PushNotificationsPermissionRequestDelegate protocol conformance
+
+extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
+    func didFinishPushNotificationOnboarding() {
+        pushNotificationsViewModel = nil
     }
 }

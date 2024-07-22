@@ -17,6 +17,7 @@ struct WalletOnboardingStepsBuilder {
     private let canBackup: Bool
     private let hasBackup: Bool
     private let canSkipBackup: Bool
+    private let isPushNotificationsAvailable: Bool
     private let backupService: BackupService
 
     private var otherSteps: [WalletOnboardingStep] {
@@ -28,7 +29,7 @@ struct WalletOnboardingStepsBuilder {
             steps.append(.saveUserWallet)
         }
 
-        if PushNotificationsProvider.isAvailable {
+        if isPushNotificationsAvailable {
             steps.append(.pushNotifications)
         }
 
@@ -75,6 +76,7 @@ struct WalletOnboardingStepsBuilder {
         canBackup: Bool,
         hasBackup: Bool,
         canSkipBackup: Bool,
+        isPushNotificationsAvailable: Bool,
         backupService: BackupService
     ) {
         self.cardId = cardId
@@ -84,6 +86,7 @@ struct WalletOnboardingStepsBuilder {
         self.canBackup = canBackup
         self.hasBackup = hasBackup
         self.canSkipBackup = canSkipBackup
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
         self.backupService = backupService
     }
 }

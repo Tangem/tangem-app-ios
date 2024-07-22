@@ -12,31 +12,32 @@ import Combine
 struct DecimalNumberTextField: View {
     @ObservedObject private var viewModel: ViewModel
 
-    // Septupable properties
+    // Setupable properties
     private var placeholder: String = "0"
     private var appearance: Appearance = .init()
 
     // Internal state
-    @State private var textFieldText: String = ""
-    @State private var size: CGSize = .zero
+    @Binding private var textFieldText: String
 
-    init(viewModel: ViewModel) {
+    init(
+        viewModel: ViewModel,
+        textFieldText: Binding<String>
+    ) {
         self.viewModel = viewModel
+        _textFieldText = textFieldText
     }
 
     var body: some View {
         ZStack(alignment: .leading) {
+            // A dummy invisible view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
             Text(textFieldText.isEmpty ? placeholder : textFieldText)
                 .font(appearance.font)
-                .opacity(0)
+                .hidden(true)
                 .layoutPriority(1)
-                .readGeometry(\.frame.size, bindTo: $size)
 
             textField
-                .frame(width: size.width)
         }
         .lineLimit(1)
-        .animation(.none, value: size.width)
     }
 
     private var textField: some View {
@@ -124,7 +125,10 @@ extension DecimalNumberTextField: Setupable {
 
 struct DecimalNumberTextField_Previews: PreviewProvider {
     static var previews: some View {
-        DecimalNumberTextField(viewModel: .init(maximumFractionDigits: 8))
+        DecimalNumberTextField(
+            viewModel: .init(maximumFractionDigits: 8),
+            textFieldText: .constant("")
+        )
     }
 }
 

@@ -12,6 +12,7 @@ import TangemSdk
 import BlockchainSdk
 
 class FakeUserWalletModel: UserWalletModel, ObservableObject {
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
     var name: String { "" }
     let emailData: [EmailCollectedData] = []
@@ -95,7 +96,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
         return true
     }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
     func addAssociatedCard(_ cardId: String) {}
 }
 
