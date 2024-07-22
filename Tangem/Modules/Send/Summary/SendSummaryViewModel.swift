@@ -97,7 +97,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
-            self.transactionDescriptionIsVisible = self.transactionDescription != nil
+            self.transactionDescriptionIsVisible = true
         }
 
         Analytics.log(.sendConfirmScreenOpened)
@@ -143,6 +143,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
         notificationManager
             .notificationPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notificationInputs in
                 self?.notificationInputs = notificationInputs
             }
