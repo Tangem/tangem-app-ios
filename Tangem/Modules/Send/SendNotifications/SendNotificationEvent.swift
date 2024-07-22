@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum SendNotificationEvent: Hashable {
+enum SendNotificationEvent {
     // The send flow specific notifications
     case networkFeeUnreachable
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
@@ -22,6 +22,17 @@ enum SendNotificationEvent: Hashable {
 }
 
 extension SendNotificationEvent: NotificationEvent {
+    var id: NotificationViewId {
+        switch self {
+        case .networkFeeUnreachable: "networkFeeUnreachable".hashValue
+        case .feeWillBeSubtractFromSendingAmount: "feeWillBeSubtractFromSendingAmount".hashValue
+        case .customFeeTooHigh: "customFeeTooHigh".hashValue
+        case .customFeeTooLow: "customFeeTooLow".hashValue
+        case .withdrawalNotificationEvent(let withdrawalNotificationEvent): withdrawalNotificationEvent.id
+        case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
+        }
+    }
+
     var title: NotificationView.Title {
         switch self {
         case .networkFeeUnreachable:
