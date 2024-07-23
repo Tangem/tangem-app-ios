@@ -48,7 +48,7 @@ struct BlockchainSDKNotificationMapper {
         case .maximumUTXO(let blockchainName, let newAmount, let maxUtxo):
             return .amountExceedMaximumUTXO(amount: newAmount.value, amountFormatted: newAmount.string(), blockchainName: blockchainName, maxUTXO: maxUtxo)
         case .reserve(let amount):
-            return .insufficientAmountToReserveAtDestination(minimumAmountFormatted: "\(amount.value)\(tokenItemSymbol)")
+            return .insufficientAmountToReserveAtDestination(minimumAmountFormatted: amount.string())
         case .cardanoHasTokens:
             return .cardanoCannotBeSentBecauseHasTokens
         case .cardanoInsufficientBalanceToSendToken:
