@@ -1,6 +1,6 @@
 //
-//  ChartsView.swift
-//  ContextMenu
+//  LineChartView.swift
+//  LineChartView
 //
 //  Created by skibinalexander on 16.07.2024.
 //
