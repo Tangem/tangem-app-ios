@@ -82,8 +82,12 @@ private extension CommonExpressTransactionBuilder {
             )
 
             // In EVM-like blockchains we should add the txData to the transaction
-            if wallet.ethereumNetworkProvider != nil {
-                transaction.params = EthereumTransactionParams(data: data)
+            if let ethereumNetworkProvider = wallet.ethereumNetworkProvider {
+                let nonce = try await ethereumNetworkProvider.getPendingTxCount(source).async()
+                transaction.params = EthereumTransactionParams(
+                    data: data,
+                    nonce: nonce
+                )
             }
 
             return transaction
