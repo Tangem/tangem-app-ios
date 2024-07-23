@@ -19,15 +19,44 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
 
             sheets
         }
+        .bindAlert($coordinator.error)
     }
 
+    @ViewBuilder
     var sheets: some View {
         NavHolder()
+            .sheet(item: $coordinator.sendCoordinator) {
+                SendCoordinatorView(coordinator: $0)
+            }
+            .sheet(item: $coordinator.modalWebViewModel) {
+                WebViewContainer(viewModel: $0)
+            }
+            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
+                ExpressCoordinatorView(coordinator: $0)
+            }
+            .sheet(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
+
+        NavHolder()
+            .bottomSheet(
+                item: $coordinator.warningBankCardViewModel,
+                backgroundColor: Colors.Background.primary
+            ) {
+                WarningBankCardView(viewModel: $0)
+                    .padding(.bottom, 10)
+            }
             .detentBottomSheet(
                 item: $coordinator.networkSelectorViewModel,
                 detents: [.large]
             ) { viewModel in
                 MarketsTokensNetworkSelectorView(viewModel: viewModel)
+            }
+            .bottomSheet(
+                item: $coordinator.receiveBottomSheetViewModel,
+                settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
+            ) {
+                ReceiveBottomSheetView(viewModel: $0)
             }
     }
 }

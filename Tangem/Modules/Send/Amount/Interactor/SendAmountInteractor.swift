@@ -12,10 +12,14 @@ import Combine
 protocol SendAmountInteractor {
     var errorPublisher: AnyPublisher<String?, Never> { get }
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
+    var externalAmountPublisher: AnyPublisher<SendAmount?, Never> { get }
 
     func update(amount: Decimal?) -> SendAmount?
     func update(type: SendAmountCalculationType) -> SendAmount?
     func updateToMaxAmount() -> SendAmount?
+
+    /// Use this method if have to updated from notification
+    func externalUpdate(amount: Decimal?)
 }
 
 class CommonSendAmountInteractor {
@@ -29,6 +33,7 @@ class CommonSendAmountInteractor {
     private var type: SendAmountCalculationType
     private var _error: CurrentValueSubject<Error?, Never> = .init(nil)
     private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
+    private var _externalAmount: PassthroughSubject<SendAmount?, Never> = .init()
 
     init(
         input: SendAmountInput,
@@ -48,11 +53,23 @@ class CommonSendAmountInteractor {
 
     private func validateAndUpdate(amount: SendAmount?) {
         do {
-            try amount?.crypto.map { try validator.validate(amount: $0) }
-            _error.send(.none)
-            _isValid.send(amount != nil)
-            output?.amountDidChanged(amount: amount)
+            switch amount?.type {
+            case .typical(.some(let crypto), _) where crypto > 0,
+                 .alternative(_, .some(let crypto)) where crypto > 0:
+
+                try validator.validate(amount: crypto)
+                _error.send(.none)
+                _isValid.send(true)
+                output?.amountDidChanged(amount: amount)
+            default:
+                // Field is empty or zero
+                notValid(error: .none)
+            }
         } catch {
+            notValid(error: error)
+        }
+
+        func notValid(error: Error?) {
             _error.send(error)
             _isValid.send(false)
             output?.amountDidChanged(amount: .none)
@@ -100,6 +117,10 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
         _isValid.eraseToAnyPublisher()
     }
 
+    var externalAmountPublisher: AnyPublisher<SendAmount?, Never> {
+        _externalAmount.eraseToAnyPublisher()
+    }
+
     func update(amount: Decimal?) -> SendAmount? {
         guard let amount else {
             validateAndUpdate(amount: nil)
@@ -135,6 +156,11 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
             validateAndUpdate(amount: amount)
             return amount
         }
+    }
+
+    func externalUpdate(amount: Decimal?) {
+        let amount = update(amount: amount)
+        _externalAmount.send(amount)
     }
 }
 

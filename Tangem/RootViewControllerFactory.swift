@@ -11,7 +11,7 @@ import UIKit
 import SwiftUI
 
 struct RootViewControllerFactory {
-    func makeRootViewController(for rootView: some View) -> UIViewController {
+    func makeRootViewController(for rootView: some View, window: UIWindow) -> UIViewController {
         guard FeatureProvider.isAvailable(.markets) else {
             return UIHostingController(rootView: rootView)
         }
@@ -21,6 +21,7 @@ struct RootViewControllerFactory {
         let rootView = rootView
             .environment(\.overlayContentContainer, adapter)
             .environment(\.overlayContentStateObserver, adapter)
+            .environment(\.mainWindowSize, window.screen.bounds.size)
 
         let contentViewController = UIHostingController(rootView: rootView)
 

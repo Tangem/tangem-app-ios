@@ -56,7 +56,7 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
         selectedAction = selectedPolicy
         subheader = Localization.givePermissionSwapSubtitle(providerName, currencySymbol)
         menuRowViewModel = .init(
-            title: Localization.swappingPermissionRowsAmount(currencySymbol),
+            title: Localization.givePermissionRowsAmount(currencySymbol),
             actions: [.unlimited, .specified]
         )
 
@@ -203,9 +203,9 @@ extension ExpressApprovePolicy: DefaultMenuRowViewModelAction {
     public var title: String {
         switch self {
         case .specified:
-            return Localization.swappingPermissionCurrentTransaction
+            return Localization.givePermissionCurrentTransaction
         case .unlimited:
-            return Localization.swappingPermissionUnlimited
+            return Localization.givePermissionUnlimited
         }
     }
 }

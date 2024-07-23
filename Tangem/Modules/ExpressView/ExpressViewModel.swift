@@ -790,7 +790,7 @@ extension ExpressViewModel {
             case .insufficientFunds:
                 return Localization.swappingInsufficientFunds
             case .givePermission:
-                return Localization.swappingGivePermission
+                return Localization.givePermissionTitle
             case .permitAndSwap:
                 return Localization.swappingPermitAndSwap
             }

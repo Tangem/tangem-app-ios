@@ -14,9 +14,13 @@ public protocol StakingManager {
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 
     func updateState() async throws
+    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo
+}
 
-    func getFee(amount: Decimal, validator: String) async throws -> Decimal
-    func getTransaction() async throws
+public enum StakingActionType {
+    case stake(amount: Decimal, validator: String)
+    case claimRewards
+    case unstake
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {
@@ -32,6 +36,17 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
             return false
         case .availableToStake, .availableToUnstake, .availableToClaimRewards:
             return true
+        }
+    }
+
+    public var yieldInfo: YieldInfo? {
+        switch self {
+        case .loading, .notEnabled:
+            return nil
+        case .availableToStake(let yieldInfo),
+             .availableToUnstake(_, let yieldInfo),
+             .availableToClaimRewards(_, let yieldInfo):
+            return yieldInfo
         }
     }
 

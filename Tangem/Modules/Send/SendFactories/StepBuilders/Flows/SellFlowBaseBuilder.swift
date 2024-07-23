@@ -54,15 +54,21 @@ struct SellFlowBaseBuilder {
         // Update the fees in case we in the sell flow
         fee.interactor.updateFees()
 
-        notificationManager.setup(input: sendModel)
+        // If we want to notifications in the sell flow
+        // 1. Uncomment code below
+        // 2. Set the `sendAmountInteractor` into `sendModel`
+        // to support the amount changes from the notification's buttons
+
+        // notificationManager.setup(input: sendModel)
+        // notificationManager.setupManager(with: sendModel)
 
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInteractor: fee.interactor)
+        summary.step.setup(sendFeeInput: sendModel)
 
         finish.setup(sendDestinationInput: sendModel)
         finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInteractor: fee.interactor)
+        finish.setup(sendFeeInput: sendModel)
         finish.setup(sendFinishInput: sendModel)
 
         let stepsManager = CommonSellStepsManager(
@@ -73,11 +79,24 @@ struct SellFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
-        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
+        let interactor = CommonSendBaseInteractor(
+            input: sendModel,
+            output: sendModel,
+            walletModel: walletModel,
+            emailDataProvider: userWalletModel
+        )
+
+        let viewModel = SendViewModel(
+            interactor: interactor,
+            stepsManager: stepsManager,
+            userWalletModel: userWalletModel,
+            feeTokenItem: walletModel.feeTokenItem,
+            coordinator: router
+        )
         stepsManager.set(output: viewModel)
 
         fee.step.set(alertPresenter: viewModel)
+        sendModel.router = viewModel
 
         return viewModel
     }

@@ -100,12 +100,15 @@ extension DetailsViewModel {
             return
         }
 
-        // Collect data from the all wallets
-        let walletModels = userWalletRepository.models.flatMap { $0.walletModelsManager.walletModels }
-        let emailData = userWalletRepository.models.flatMap { $0.emailData }
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
+
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: walletModels,
-            userWalletEmailData: emailData
+            data: data
         )
 
         coordinator?.openMail(
@@ -132,9 +135,15 @@ extension DetailsViewModel {
 
         Analytics.log(.settingsButtonChat)
 
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
+
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: selectedUserWalletModel.walletModelsManager.walletModels,
-            userWalletEmailData: selectedUserWalletModel.emailData
+            data: data
         )
 
         coordinator?.openSupportChat(input: .init(

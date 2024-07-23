@@ -14,9 +14,6 @@ class StakingManagerMock: StakingManager {
     var state: StakingManagerState { .notEnabled }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { .just(output: state) }
 
-    func updateState() {}
-
-    func getFee(amount: Decimal, validator: String) async throws -> Decimal { 0.12345 }
-
-    func getTransaction() async throws {}
+    func updateState() async throws {}
+    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo { .mock }
 }

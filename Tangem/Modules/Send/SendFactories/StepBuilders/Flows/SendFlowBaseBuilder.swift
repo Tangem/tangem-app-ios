@@ -34,7 +34,7 @@ struct SendFlowBaseBuilder {
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: sendModel, output: sendModel),
-            sendFeeInteractor: fee.interactor,
+            sendFeeLoader: fee.interactor,
             sendQRCodeService: sendQRCodeService
         )
 
@@ -59,20 +59,22 @@ struct SendFlowBaseBuilder {
         )
 
         // We have to set dependicies here after all setups is completed
+        sendModel.sendAmountInteractor = amount.interactor
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
         )
 
         notificationManager.setup(input: sendModel)
+        notificationManager.setupManager(with: sendModel)
 
         summary.step.setup(sendDestinationInput: sendModel)
         summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInteractor: fee.interactor)
+        summary.step.setup(sendFeeInput: sendModel)
 
         finish.setup(sendDestinationInput: sendModel)
         finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInteractor: fee.interactor)
+        finish.setup(sendFeeInput: sendModel)
         finish.setup(sendFinishInput: sendModel)
 
         let stepsManager = CommonSendStepsManager(
@@ -87,10 +89,17 @@ struct SendFlowBaseBuilder {
         destination.step.set(stepRouter: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
-        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
+        let viewModel = SendViewModel(
+            interactor: interactor,
+            stepsManager: stepsManager,
+            userWalletModel: userWalletModel,
+            feeTokenItem: walletModel.feeTokenItem,
+            coordinator: router
+        )
 
         stepsManager.set(output: viewModel)
         fee.step.set(alertPresenter: viewModel)
+        sendModel.router = viewModel
 
         return viewModel
     }
