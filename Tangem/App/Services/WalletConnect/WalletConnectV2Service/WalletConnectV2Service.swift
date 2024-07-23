@@ -95,9 +95,13 @@ final class WalletConnectV2Service {
     }
 
     func disconnectSession(with id: Int) async {
-        guard let session = await sessionsStorage.session(with: id) else { return }
+        guard let session = await sessionsStorage.session(with: id) else {
+            log("Failed to find session with id: \(id). Attempt to disconnect session failed")
+            return
+        }
 
         do {
+            log("Attempt to disconnect session with topic: \(session.topic)")
             try await signApi.disconnect(topic: session.topic)
 
             Analytics.log(
@@ -108,11 +112,13 @@ final class WalletConnectV2Service {
                 ]
             )
 
+            log("Session with topic: \(session.topic) was disconnected from SignAPI. Removing from storage")
             await sessionsStorage.remove(session)
         } catch {
             let internalError = WalletConnectV2ErrorMappingUtils().mapWCv2Error(error)
             switch internalError {
             case .sessionForTopicNotFound, .symmetricKeyForTopicNotFound:
+                log("Failed to remove session with \(session.topic) from SignAPI. Reason: \(internalError.localizedDescription). Removing anyway from storage")
                 await sessionsStorage.remove(session)
                 return
             default:
@@ -239,6 +245,7 @@ final class WalletConnectV2Service {
 
                 canEstablishNewSessionSubject.send(true)
 
+                log("Saving session with topic: \(savedSession.topic).\ndApp url: \(savedSession.sessionInfo.dAppInfo.url)")
                 await sessionsStorage.save(savedSession)
             }
             .sink()
@@ -252,6 +259,7 @@ final class WalletConnectV2Service {
                 log("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
 
                 guard let session = await sessionsStorage.session(with: topic) else {
+                    log("Receive Delete session message with topic: \(topic). Delete reason: \(reason). But session not found.")
                     return
                 }
 
