@@ -42,6 +42,10 @@ struct MarketsView: View {
                     MarketsItemView(viewModel: $0)
                 }
 
+                if viewModel.isSerching {
+                    // TODO: - Need show button
+                }
+
                 // Need for display list skeleton view
                 if viewModel.isLoading {
                     ForEach(0 ..< 20) { _ in

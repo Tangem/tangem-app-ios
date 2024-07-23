@@ -18,6 +18,7 @@ final class MarketsViewModel: ObservableObject {
     @Published var viewDidAppear: Bool = false
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isLoading: Bool = false
+    @Published var isSerching: Bool = false
 
     // MARK: - Properties
 
@@ -92,6 +93,7 @@ private extension MarketsViewModel {
                     return
                 }
 
+                viewModel.isSerching = !value.isEmpty
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
