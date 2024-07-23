@@ -14,6 +14,7 @@ protocol SendDestinationInteractor {
     var transactionHistoryPublisher: AnyPublisher<[SendSuggestedDestinationTransactionRecord], Never> { get }
 
     var isValidatingDestination: AnyPublisher<Bool, Never> { get }
+    var canEmbedAdditionalField: AnyPublisher<Bool, Never> { get }
     var destinationValid: AnyPublisher<Bool, Never> { get }
     var destinationError: AnyPublisher<String?, Never> { get }
     var destinationAdditionalFieldError: AnyPublisher<String?, Never> { get }
@@ -34,6 +35,7 @@ class CommonSendDestinationInteractor {
     private let parametersBuilder: SendTransactionParametersBuilder
 
     private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
+    private let _canEmbedAdditionalField: CurrentValueSubject<Bool, Never> = .init(true)
     private let _destinationValid: CurrentValueSubject<Bool, Never> = .init(false)
     private let _destinationError: CurrentValueSubject<Error?, Never> = .init(nil)
     private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
@@ -126,6 +128,10 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
         _isValidatingDestination.eraseToAnyPublisher()
     }
 
+    var canEmbedAdditionalField: AnyPublisher<Bool, Never> {
+        _canEmbedAdditionalField.eraseToAnyPublisher()
+    }
+
     var destinationValid: AnyPublisher<Bool, Never> {
         _destinationValid.eraseToAnyPublisher()
     }
@@ -143,6 +149,8 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
             update(destination: .success(.none), source: source)
             return
         }
+
+        _canEmbedAdditionalField.send(validator.canEmbedAdditionalField(into: address))
 
         do {
             try validator.validate(destination: address)

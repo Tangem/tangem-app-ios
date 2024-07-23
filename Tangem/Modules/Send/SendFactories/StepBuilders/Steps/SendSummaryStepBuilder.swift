@@ -19,7 +19,7 @@ struct SendSummaryStepBuilder {
         io: IO,
         sendTransactionDispatcher: any SendTransactionDispatcher,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         editableType: SendSummaryViewModel.EditableType
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
@@ -37,6 +37,7 @@ struct SendSummaryStepBuilder {
         let step = SendSummaryStep(
             viewModel: viewModel,
             interactor: interactor,
+            input: io.input,
             tokenItem: walletModel.tokenItem,
             walletName: builder.walletName()
         )
@@ -51,7 +52,7 @@ private extension SendSummaryStepBuilder {
     func makeSendSummaryViewModel(
         interactor: SendSummaryInteractor,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         editableType: SendSummaryViewModel.EditableType
     ) -> SendSummaryViewModel {
         let settings = SendSummaryViewModel.Settings(

@@ -23,14 +23,14 @@ struct ExpressApproveView: View {
                 GroupedSection(viewModel.menuRowViewModel) {
                     DefaultMenuRowView(viewModel: $0, selection: $viewModel.selectedAction)
                 } footer: {
-                    DefaultFooterView(Localization.swappingPermissionPolicyTypeFooter)
+                    DefaultFooterView(Localization.givePermissionPolicyTypeFooter)
                 }
                 .backgroundColor(Colors.Background.action)
 
                 GroupedSection(viewModel.feeRowViewModel) {
                     DefaultRowView(viewModel: $0)
                 } footer: {
-                    DefaultFooterView(Localization.swappingPermissionFeeFooter)
+                    DefaultFooterView(Localization.givePermissionFeeFooter)
                 }
                 .backgroundColor(Colors.Background.action)
 
@@ -61,7 +61,7 @@ struct ExpressApproveView: View {
     private var buttons: some View {
         VStack(spacing: 10) {
             MainButton(
-                title: Localization.swappingPermissionButtonsApprove,
+                title: Localization.commonApprove,
                 icon: .trailing(Assets.tangemIcon),
                 isLoading: viewModel.isLoading,
                 isDisabled: viewModel.mainButtonIsDisabled,

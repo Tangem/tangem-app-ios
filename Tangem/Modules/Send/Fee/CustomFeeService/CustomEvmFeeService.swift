@@ -191,7 +191,7 @@ extension CustomEvmFeeService: CustomFeeService {
             fieldSuffix: feeTokenItem.currencySymbol,
             fractionDigits: feeTokenItem.decimalCount,
             amountAlternativePublisher: customFeeInFiat.eraseToAnyPublisher(),
-            footer: Localization.sendEvmCustomFeeFooter,
+            footer: Localization.sendCustomAmountFeeFooter,
             onFieldChange: { [weak self] value in
                 self?.didChangeCustomFee(value)
             }

@@ -36,7 +36,7 @@ class SendModel {
     var informationRelevanceService: InformationRelevanceService!
     weak var router: SendModelRoutable?
 
-    // MARK: - Private stuff
+    // MARK: - Private injections
 
     private let walletModel: WalletModel
     private let sendTransactionDispatcher: SendTransactionDispatcher
@@ -166,7 +166,7 @@ private extension SendModel {
         }
 
         return sendTransactionDispatcher
-            .send(transaction: transaction)
+            .send(transaction: .transfer(transaction))
             .withWeakCaptureOf(self)
             .compactMap { sender, result in
                 sender.proceed(transaction: transaction, result: result)
@@ -257,13 +257,12 @@ extension SendModel: SendFeeInput {
         _selectedFee.eraseToAnyPublisher()
     }
 
-    var cryptoAmountPublisher: AnyPublisher<BlockchainSdk.Amount, Never> {
-        _amount
-            .withWeakCaptureOf(self)
-            .compactMap { model, amount in
-                amount?.crypto.flatMap { model.makeAmount(decimal: $0) }
-            }
-            .eraseToAnyPublisher()
+    var feesPublisher: AnyPublisher<[SendFee], Never> {
+        sendFeeInteractor.feesPublisher
+    }
+
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
+        _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
     }
 
     var destinationAddressPublisher: AnyPublisher<String?, Never> {
@@ -282,8 +281,8 @@ extension SendModel: SendFeeOutput {
 // MARK: - SendSummaryInput, SendSummaryOutput
 
 extension SendModel: SendSummaryInput, SendSummaryOutput {
-    var transactionPublisher: AnyPublisher<BlockchainSdk.Transaction?, Never> {
-        _transaction.map { $0?.value }.eraseToAnyPublisher()
+    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
+        _transaction.map { $0?.value.map { .transfer($0) } }.eraseToAnyPublisher()
     }
 }
 
@@ -320,6 +319,10 @@ extension SendModel: SendNotificationManagerInput {
 
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
         _isFeeIncluded.eraseToAnyPublisher()
+    }
+
+    var bsdkTransactionPublisher: AnyPublisher<BSDKTransaction?, Never> {
+        _transaction.map { $0?.value }.eraseToAnyPublisher()
     }
 
     var transactionCreationError: AnyPublisher<Error?, Never> {

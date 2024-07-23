@@ -22,12 +22,17 @@ struct SendSummaryView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             GroupedScrollView(spacing: 14) {
-                if !viewModel.animatingDestinationOnAppear {
-                    destinationSection
+                if !viewModel.animatingDestinationOnAppear,
+                   let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
+                    destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
                 }
 
                 if !viewModel.animatingAmountOnAppear {
                     amountSection
+                }
+
+                if !viewModel.animatingValidatorOnAppear {
+                    validatorSection
                 }
 
                 if !viewModel.animatingFeeOnAppear {
@@ -63,11 +68,11 @@ struct SendSummaryView: View {
 
     // MARK: - Destination
 
-    private var destinationSection: some View {
+    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
                     .namespace(.init(id: namespace.id, names: namespace.names))
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
@@ -117,6 +122,25 @@ struct SendSummaryView: View {
         .allowsHitTesting(viewModel.canEditAmount)
         .onTapGesture {
             viewModel.userDidTapAmount()
+        }
+    }
+
+    // MARK: - Validator
+
+    private var validatorSection: some View {
+        GroupedSection(viewModel.selectedValidatorData) { data in
+            ValidatorView(data: data, selection: .constant(""))
+                .geometryEffect(.init(id: namespace.id, names: namespace.names))
+        } header: {
+            DefaultHeaderView(Localization.stakingValidator)
+                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+                .padding(.top, 12)
+        }
+        .settings(\.backgroundColor, sectionBackground(type: viewModel.editableType))
+        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.userDidTapValidator()
         }
     }
 

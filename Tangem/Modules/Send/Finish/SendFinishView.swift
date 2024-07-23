@@ -18,9 +18,13 @@ struct SendFinishView: View {
                 header(transactionTime: transactionTime)
             }
 
-            destinationSection
+            if let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
+                destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
+            }
 
             amountSection
+
+            validatorSection
 
             feeSection
         }
@@ -51,11 +55,11 @@ struct SendFinishView: View {
 
     // MARK: - Destination
 
-    private var destinationSection: some View {
+    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
         GroupedSection(viewModel.destinationViewTypes) { type in
             switch type {
             case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: viewModel.addressTextViewHeightModel, address: address)
+                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
                     .namespace(.init(id: namespace.id, names: namespace.names))
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
@@ -95,6 +99,20 @@ struct SendFinishView: View {
         .innerContentPadding(0)
         .backgroundColor(Colors.Background.action)
         .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
+    }
+
+    // MARK: - Validator
+
+    private var validatorSection: some View {
+        GroupedSection(viewModel.selectedValidatorData) { data in
+            ValidatorView(data: data, selection: .constant(""))
+                .geometryEffect(.init(id: namespace.id, names: namespace.names))
+        } header: {
+            DefaultHeaderView(Localization.stakingValidator)
+                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+        }
+        .settings(\.backgroundColor, Colors.Background.action)
+        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
     }
 
     // MARK: - Fee

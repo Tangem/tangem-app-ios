@@ -56,17 +56,17 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func getFee(amount: Decimal, validator: String) async throws -> Decimal {
-        switch state {
-        case .availableToStake(let yieldInfo):
-            return try await getFeeToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
+    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo {
+        switch (state, action) {
+        case (.availableToStake(let yieldInfo), .stake(let amount, let validator)):
+            try await getTransactionToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
+        case (.availableToUnstake(_, _), .unstake):
+            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6898
+        case (.availableToClaimRewards(_, _), .claimRewards):
+            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6899
         default:
-            throw StakingManagerError.notImplemented
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
         }
-    }
-
-    func getTransaction() async throws {
-        // TBD: https://tangem.atlassian.net/browse/IOS-6897
     }
 }
 
@@ -83,7 +83,7 @@ private extension CommonStakingManager {
         return .availableToStake(yield)
     }
 
-    func getFeeToStake(amount: Decimal, validator: String, integrationId: String) async throws -> Decimal {
+    func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
         let action = try await provider.enterAction(
             amount: amount,
             address: wallet.address,
@@ -92,9 +92,12 @@ private extension CommonStakingManager {
         )
 
         let transactionId = action.transactions[action.currentStepIndex].id
+        // We have to wait that stakek.it prepared the transaction
+        // Otherwise we may get the 404 error
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
         let transaction = try await provider.patchTransaction(id: transactionId)
 
-        return transaction.fee
+        return transaction
     }
 }
 
@@ -107,6 +110,7 @@ private extension CommonStakingManager {
 }
 
 public enum StakingManagerError: Error {
+    case stakingManagerStateNotSupportTransactionAction(action: StakingActionType)
     case notImplemented
     case notFound
 }

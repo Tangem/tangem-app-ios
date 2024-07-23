@@ -92,6 +92,8 @@ struct SendDependenciesBuilder {
         )
     }
 
+    // MARK: - Send, Sell
+
     func makeSendModel(
         sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters? = .none
@@ -136,5 +138,18 @@ struct SendDependenciesBuilder {
         }()
 
         return SendModel.PredefinedValues(source: source, destination: destination, tag: additionalField, amount: amount)
+    }
+
+    // MARK: - Staking
+
+    func makeStakingModel(
+        stakingManager: any StakingManager,
+        sendTransactionDispatcher: any SendTransactionDispatcher
+    ) -> StakingModel {
+        StakingModel(
+            stakingManager: stakingManager,
+            sendTransactionDispatcher: sendTransactionDispatcher,
+            feeTokenItem: walletModel.feeTokenItem
+        )
     }
 }

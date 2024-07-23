@@ -50,13 +50,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
-    func transaction(id: String) async throws -> TransactionInfo {
+    func transaction(id: String) async throws -> StakingTransactionInfo {
         let response = try await service.transaction(id: id)
         let transactionInfo = try mapper.mapToTransactionInfo(from: response)
         return transactionInfo
     }
 
-    func patchTransaction(id: String) async throws -> TransactionInfo {
+    func patchTransaction(id: String) async throws -> StakingTransactionInfo {
         let response = try await service.constructTransaction(id: id, request: .init(gasArgs: .none))
         let transactionInfo = try mapper.mapToTransactionInfo(from: response)
         return transactionInfo
