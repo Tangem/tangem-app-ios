@@ -84,6 +84,7 @@ extension SendFeeStep: SendStep {
             return
         }
 
+        interactor.updateFees()
         viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
