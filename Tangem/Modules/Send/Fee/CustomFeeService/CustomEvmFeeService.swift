@@ -124,18 +124,18 @@ class CustomEvmFeeService {
     private func calculateFee(for feeValue: Decimal?) -> Fee {
         let feeDecimalValue = feeTokenItem.decimalValue
 
-        guard
-            let feeValue,
-            let currentGasLimit = gasLimit.value,
-            let currentPriorityFee = priorityFee.value,
-            let enteredFeeInSmallestDenomination = BigUInt(decimal: (feeValue * feeDecimalValue).rounded(roundingMode: .down))
-        else {
+        guard let feeValue, let currentGasLimit = gasLimit.value else {
+            return zeroFee
+        }
+
+        let enteredFeeInSmallestDenomination = (feeValue * feeDecimalValue).rounded(roundingMode: .down)
+        guard let enteredFeeInSmallestDenomination = BigUInt(decimal: enteredFeeInSmallestDenomination) else {
             return zeroFee
         }
 
         let parameters: EthereumFeeParameters
 
-        if feeTokenItem.blockchain.supportsEIP1559 {
+        if feeTokenItem.blockchain.supportsEIP1559, let currentPriorityFee = priorityFee.value {
             let maxFeePerGas = (enteredFeeInSmallestDenomination / currentGasLimit)
             parameters = EthereumEIP1559FeeParameters(gasLimit: currentGasLimit, maxFeePerGas: maxFeePerGas, priorityFee: currentPriorityFee)
         } else {
