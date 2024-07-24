@@ -20,25 +20,36 @@ class CommonSendSummaryInteractor {
 
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
+    private let blockchain: Blockchain
 
     init(
         input: SendSummaryInput,
         output: SendSummaryOutput,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        descriptionBuilder: SendTransactionSummaryDescriptionBuilder
+        descriptionBuilder: SendTransactionSummaryDescriptionBuilder,
+        blockchain: Blockchain
     ) {
         self.input = input
         self.output = output
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
+        self.blockchain = blockchain
     }
 
     private func mapToDescription(transaction: SendTransactionType) -> String? {
         switch transaction {
         case .transfer(let bsdkTransaction):
+            let isNoFiatFee = switch blockchain.feePaidCurrency {
+            case .feeResource:
+                true
+            default:
+                false
+            }
+
             return descriptionBuilder.makeDescription(
                 amount: bsdkTransaction.amount.value,
-                fee: bsdkTransaction.fee.amount.value
+                fee: bsdkTransaction.fee.amount.value,
+                isNoFiatFee: isNoFiatFee
             )
         case .staking(let stakingTransaction):
             return nil // Waiting texts

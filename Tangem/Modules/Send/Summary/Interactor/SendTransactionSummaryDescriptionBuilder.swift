@@ -17,9 +17,10 @@ struct SendTransactionSummaryDescriptionBuilder {
         self.feeTokenItem = feeTokenItem
     }
 
-    func makeDescription(amount: Decimal, fee: Decimal) -> String? {
+    func makeDescription(amount: Decimal, fee: Decimal, isNoFiatFee: Bool) -> String? {
         let amountInFiat = tokenItem.id.flatMap { BalanceConverter().convertToFiat(amount, currencyId: $0) }
-        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
+        let feeInFiat = isNoFiatFee ? 0 : feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
+
         let totalInFiat = [amountInFiat, feeInFiat].compactMap { $0 }.reduce(0, +)
 
         let formattingOptions = BalanceFormattingOptions(
@@ -31,8 +32,18 @@ struct SendTransactionSummaryDescriptionBuilder {
 
         let formatter = BalanceFormatter()
         let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
 
-        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
+        if isNoFiatFee {
+            let feeFormatter = CommonFeeFormatter(balanceFormatter: formatter, balanceConverter: .init())
+            return Localization.sendSummaryTransactionDescriptionNoFiatFee(
+                totalInFiatFormatted,
+                feeFormatter.format(fee: fee, tokenItem: feeTokenItem)
+            )
+        }
+
+        return Localization.sendSummaryTransactionDescription(
+            totalInFiatFormatted,
+            formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
+        )
     }
 }

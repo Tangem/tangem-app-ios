@@ -77,7 +77,8 @@ private extension SendSummaryStepBuilder {
             input: io.input,
             output: io.output,
             sendTransactionDispatcher: sendTransactionDispatcher,
-            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
+            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder(),
+            blockchain: walletModel.tokenItem.blockchain
         )
     }
 
