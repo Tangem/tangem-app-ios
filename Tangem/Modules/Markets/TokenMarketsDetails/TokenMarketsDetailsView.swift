@@ -100,10 +100,12 @@ struct TokenMarketsDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var chart: some View {
-        // TODO: Insert chart here
-        Image(systemName: "chart.xyaxis.line")
-            .style(Font.system(size: 80), color: Colors.Icon.accent)
+        if let viewModel = viewModel.historyChartViewModel {
+            MarketsHistoryChartView(viewModel: viewModel)
+                .frame(height: 180.0 + 13.0) // TODO: Andrey Fedorov - Adjust height according to mockups
+        }
     }
 
     private var contentBlocks: some View {

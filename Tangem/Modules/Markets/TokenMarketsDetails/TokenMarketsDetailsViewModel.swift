@@ -26,6 +26,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
     @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+    @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
@@ -238,6 +239,9 @@ private extension TokenMarketsDetailsViewModel {
         if let metrics = model.metrics {
             metricsViewModel = .init(metrics: metrics, infoRouter: self)
         }
+
+        // TODO: Andrey Fedorov - Add actual implementation
+        historyChartViewModel = MarketsHistoryChartViewModel(selectedPriceIntervalPublisher: Just(.week))
 
         pricePerformanceViewModel = .init(
             pricePerformanceData: model.pricePerformance,
