@@ -14,28 +14,24 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
 
     var body: some View {
-        content
-    }
-
-    var content: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 24) {
-                header
+                Group {
+                    header
 
-                MarketsPickerView(
-                    marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
-                    options: viewModel.priceChangeIntervalOptions,
-                    shouldStretchToFill: true,
-                    titleFactory: { $0.tokenDetailsNameLocalized }
-                )
-                .padding(.horizontal, 16)
+                    picker
+                }
+                .padding(.horizontal, 16.0)
 
                 chart
 
-                description
+                Group {
+                    description
 
-                contentBlocks
-                    .padding(.bottom, 45)
+                    contentBlocks
+                        .padding(.bottom, 45)
+                }
+                .padding(.horizontal, 16.0)
             }
             .padding(.top, 14)
         }
@@ -48,13 +44,14 @@ struct TokenMarketsDetailsView: View {
             sheetHeight: $descriptionBottomSheetHeight,
             backgroundColor: Colors.Background.action
         )
-        .onChange(of: viewModel.descriptionBottomSheetInfo, perform: { value in
+        .onChange(of: viewModel.descriptionBottomSheetInfo) { value in
             if value == nil {
                 descriptionBottomSheetHeight = 0
             }
-        })
+        }
     }
 
+    @ViewBuilder
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
@@ -73,7 +70,16 @@ struct TokenMarketsDetailsView: View {
 
             IconView(url: viewModel.iconURL, size: .init(bothDimensions: 48), forceKingfisher: true)
         }
-        .padding(.horizontal, 16)
+    }
+
+    @ViewBuilder
+    private var picker: some View {
+        MarketsPickerView(
+            marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
+            options: viewModel.priceChangeIntervalOptions,
+            shouldStretchToFill: true,
+            titleFactory: { $0.tokenDetailsNameLocalized }
+        )
     }
 
     @ViewBuilder
@@ -96,7 +102,6 @@ struct TokenMarketsDetailsView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
         }
     }
 
@@ -108,11 +113,11 @@ struct TokenMarketsDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var contentBlocks: some View {
         VStack(spacing: 14) {
             if let portfolioViewModel = viewModel.portfolioViewModel {
                 MarketsPortfolioContainerView(viewModel: portfolioViewModel)
-                    .padding(.horizontal, 16)
             }
 
             if viewModel.isLoading {
@@ -134,16 +139,17 @@ struct TokenMarketsDetailsView: View {
                     TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
                 }
                 .animation(nil, value: viewModel.isLoading)
-                .padding(.horizontal, 16)
             }
         }
         .animation(.default, value: viewModel.isLoading)
     }
 }
 
+// MARK: - Previews
+
 #Preview {
     let tokenInfo = MarketsTokenModel(
-        id: "bitcoint",
+        id: "bitcoin",
         name: "Bitcoin",
         symbol: "BTC",
         currentPrice: nil,
