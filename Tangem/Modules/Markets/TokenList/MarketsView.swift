@@ -96,7 +96,7 @@ struct MarketsView: View {
         VStack(alignment: .center) {
             HStack(alignment: .center) {
                 Text(Localization.marketsSearchTokenNoResultTitle)
-                    .style(.caption, color: Colors.Text.tertiary)
+                    .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
             }
         }
     }
@@ -105,7 +105,7 @@ struct MarketsView: View {
         VStack(alignment: .center, spacing: 8) {
             HStack(spacing: .zero) {
                 Text(Localization.marketsSearchSeeTokensUnder100k)
-                    .style(.footnote, color: Colors.Text.tertiary)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
 
             HStack(spacing: .zero) {
@@ -114,7 +114,7 @@ struct MarketsView: View {
                 }, label: {
                     HStack(spacing: .zero) {
                         Text(Localization.marketsSearchShowTokens)
-                            .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                            .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
                     }
                 })
                 .roundedBackground(with: Colors.Button.secondary, verticalPadding: 8, horizontalPadding: 14, radius: 10)

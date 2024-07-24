@@ -87,6 +87,7 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onTryLoadList() {
+        resetUI()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
 }
@@ -95,14 +96,13 @@ final class MarketsViewModel: ObservableObject {
 
 private extension MarketsViewModel {
     func fetch(with searchText: String = "", by filter: MarketsListDataProvider.Filter) {
-        emptyTokensState = nil
         dataProvider.fetch(searchText, with: filter)
     }
 
     func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
         searchTextPublisher?
             .dropFirst()
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
@@ -111,8 +111,7 @@ private extension MarketsViewModel {
                 }
 
                 if viewModel.currentSearchValue != value {
-                    viewModel.tokenViewModels = []
-                    viewModel.isShowUnderCapButton = false
+                    viewModel.resetUI()
                 }
 
                 viewModel.currentSearchValue = value
@@ -138,22 +137,15 @@ private extension MarketsViewModel {
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
-                guard viewModel.dataProvider.errorIsEmpty else {
-                    viewModel.tokenViewModels = []
-                    return
-                }
-
-                viewModel.isShowUnderCapButton = viewModel.isSerching &&
-                    !viewModel.dataProvider.isGeneralCoins &&
-                    !items.isEmpty &&
-                    !viewModel.dataProvider.canFetchMore
-
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
                 viewModel.tokenViewModels = items.compactMap { item in
                     let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
                     return tokenViewModel
                 }
+
+                viewModel.showUnderCapButtonIfNeeded()
+                viewModel.showTokensEmptyStateIfNeeded()
             })
             .store(in: &bag)
 
@@ -163,27 +155,21 @@ private extension MarketsViewModel {
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                guard viewModel.dataProvider.errorIsEmpty else {
+                guard !viewModel.dataProvider.showError else {
                     viewModel.isLoading = false
                     return
-                }
-
-                if isLoading {
-                    viewModel.emptyTokensState = nil
-                } else {
-                    viewModel.emptyTokensState = viewModel.dataProvider.items.isEmpty ? .noResults : nil
                 }
 
                 viewModel.isLoading = isLoading
             })
             .store(in: &bag)
 
-        dataProvider.$errorIsEmpty
+        dataProvider.$showError
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, errorIsEmpty in
-                if !errorIsEmpty {
-                    viewModel.tokenViewModels = []
+            .sink(receiveValue: { viewModel, showError in
+                if showError {
+                    viewModel.resetUI()
                     viewModel.emptyTokensState = .error
                 }
             })
@@ -207,6 +193,27 @@ private extension MarketsViewModel {
         )
 
         return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
+    }
+
+    private func showUnderCapButtonIfNeeded() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self else { return }
+
+            isShowUnderCapButton = isSerching &&
+                !dataProvider.isGeneralCoins &&
+                !dataProvider.items.isEmpty
+        }
+    }
+
+    private func showTokensEmptyStateIfNeeded() {
+        emptyTokensState = tokenViewModels.isEmpty && !dataProvider.isLoading ? .noResults : nil
+    }
+
+    private func resetUI() {
+        tokenViewModels = []
+        isShowUnderCapButton = false
+        isLoading = false
+        emptyTokensState = nil
     }
 }
 
