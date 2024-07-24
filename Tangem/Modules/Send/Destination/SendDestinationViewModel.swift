@@ -158,19 +158,27 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
             wallets: suggestedWallets,
             recentTransactions: recentTransactions
         ) { [weak self] destination in
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            self?.userDidTapSuggestedDestination(destination)
+        }
+    }
 
-            self?._destinationText.send(destination.address)
-            self?.interactor.update(destination: destination.address, source: destination.type.source)
+    private func userDidTapSuggestedDestination(_ destination: SendSuggestedDestination) {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
 
-            if let additionalField = destination.additionalField {
-                self?._destinationAdditionalFieldText.send(additionalField)
-            }
+        _destinationText.send(destination.address)
+        interactor.update(destination: destination.address, source: destination.type.source)
 
-            // Give some time to update UI fields
-            DispatchQueue.main.async {
-                self?.stepRouter?.destinationStepFulfilled()
-            }
+        if let additionalField = destination.additionalField {
+            _destinationAdditionalFieldText.send(additionalField)
+        }
+
+        guard !interactor.hasError else {
+            return
+        }
+
+        // Give some time to update UI fields
+        DispatchQueue.main.async {
+            self.stepRouter?.destinationStepFulfilled()
         }
     }
 }
