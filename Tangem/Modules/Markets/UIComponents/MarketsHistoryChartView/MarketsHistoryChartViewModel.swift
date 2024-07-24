@@ -10,7 +10,7 @@ import Combine
 
 final class MarketsHistoryChartViewModel: ObservableObject {
     @Published private(set) var viewState: ViewState = .idle
-    @Published /*private(set)*/ var selectedPriceInterval: MarketsPriceIntervalType = .all
+    @Published /* private(set) */ var selectedPriceInterval: MarketsPriceIntervalType = .all
 
     let xAxisLabelCount = 3
 
@@ -31,7 +31,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
                 let data = try self.makeLineChartViewData(from: .default)
                 self.viewState = .loaded(data: data)
             } catch {
-                self.viewState = .failed/*(error: error)*/
+                self.viewState = .failed /* (error: error) */
             }
         }
     }
@@ -94,7 +94,7 @@ extension MarketsHistoryChartViewModel {
         case idle
         case loading
         case loaded(data: LineChartViewData)
-        case failed/*(error: Error)*/
+        case failed /* (error: Error) */
     }
 
     // TODO: Andrey Fedorov - Add actual implementation

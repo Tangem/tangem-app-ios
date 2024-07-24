@@ -26,7 +26,7 @@ struct LineChartViewWrapper: UIViewRepresentable {
 
         return chartView
     }
-    
+
     func updateUIView(_ uiView: UIViewType, context: Context) {
         let configurator = LineChartViewConfigurator(chartData: chartData)
         configurator.configure(uiView)
@@ -35,7 +35,7 @@ struct LineChartViewWrapper: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator(view: self,  selectedPriceInterval: selectedPriceInterval)
+        return Coordinator(view: self, selectedPriceInterval: selectedPriceInterval)
     }
 }
 

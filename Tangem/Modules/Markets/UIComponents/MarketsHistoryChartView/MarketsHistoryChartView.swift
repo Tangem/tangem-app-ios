@@ -10,7 +10,7 @@ import SwiftUI
 // For SwiftUI previews
 #if targetEnvironment(simulator)
 import Combine
-#endif  // targetEnvironment(simulator)
+#endif // targetEnvironment(simulator)
 
 struct MarketsHistoryChartView: View {
     @ObservedObject var viewModel: MarketsHistoryChartViewModel
@@ -21,7 +21,7 @@ struct MarketsHistoryChartView: View {
         Group {
             if let chartData {
                 LineChartViewWrapper(
-                    selectedPriceInterval: viewModel.selectedPriceInterval, 
+                    selectedPriceInterval: viewModel.selectedPriceInterval,
                     chartData: chartData
                 ) { chartView in
                     chartView.pinchZoomEnabled = false
