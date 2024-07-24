@@ -16,6 +16,8 @@ struct MarketsCoordinatorView: CoordinatorView {
         if let model = coordinator.rootViewModel {
             NavigationView {
                 ZStack {
+                    Colors.Background.primary.ignoresSafeArea()
+
                     VStack(spacing: 0.0) {
                         header
 

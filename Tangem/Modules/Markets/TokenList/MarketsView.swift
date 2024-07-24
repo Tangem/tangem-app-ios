@@ -14,10 +14,14 @@ struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
     var body: some View {
-        VStack {
-            header
+        ZStack {
+            VStack {
+                header
 
-            list
+                list
+            }
+
+            emptyList
         }
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
@@ -25,11 +29,21 @@ struct MarketsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(Localization.marketsCommonTitle)
-                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
-                .lineLimit(1)
+            if viewModel.isSerching {
+                HStack {
+                    Text(Localization.marketsSearchResultTitle)
+                        .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                        .lineLimit(1)
 
-            MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
+                    Spacer()
+                }
+            } else {
+                Text(Localization.marketsCommonTitle)
+                    .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+                    .lineLimit(1)
+
+                MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 16)
@@ -38,14 +52,10 @@ struct MarketsView: View {
     private var list: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                if viewModel.tokenViewModels.isEmpty, !viewModel.isLoading {
-                    noResultTitleView
-                }
-
                 ForEach(viewModel.tokenViewModels) {
                     MarketsItemView(viewModel: $0)
                 }
-                
+
                 if viewModel.isShowUnderCapButton {
                     underCapView
                 }
@@ -65,15 +75,32 @@ struct MarketsView: View {
             }
         }
     }
-    
+
+    @ViewBuilder
+    private var emptyList: some View {
+        if let state = viewModel.emptyTokensState {
+            Group {
+                switch state {
+                case .noResults:
+                    // Display empty state if needed
+                    noResultTitleView
+                case .error:
+                    // Display error state if needed
+                    errorListView
+                }
+            }
+        }
+    }
+
     private var noResultTitleView: some View {
         VStack(alignment: .center) {
             HStack(alignment: .center) {
                 Text(Localization.marketsSearchTokenNoResultTitle)
+                    .style(.caption, color: Colors.Text.tertiary)
             }
         }
     }
-    
+
     private var underCapView: some View {
         VStack(alignment: .center, spacing: 8) {
             HStack(spacing: .zero) {
@@ -93,5 +120,36 @@ struct MarketsView: View {
                 .roundedBackground(with: Colors.Button.secondary, verticalPadding: 8, horizontalPadding: 14, radius: 10)
             }
         }
+        .padding(.vertical, 12)
+    }
+
+    private var errorListView: some View {
+        VStack(alignment: .center, spacing: 12) {
+            HStack(spacing: .zero) {
+                Text(Localization.marketsLoadingErrorTitle)
+                    .style(.caption, color: Colors.Text.tertiary)
+            }
+
+            HStack(spacing: .zero) {
+                Button(action: {
+                    viewModel.onTryLoadList()
+                }, label: {
+                    HStack(spacing: .zero) {
+                        Text(Localization.tryToLoadDataAgainButtonTitle)
+                            .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                    }
+                })
+                .roundedBackground(with: Colors.Button.secondary, verticalPadding: 8, horizontalPadding: 14, radius: 10)
+            }
+        }
+    }
+}
+
+extension MarketsView {
+    enum EmptyTokensState: Int, Identifiable, Hashable {
+        var id: Int { rawValue }
+
+        case noResults
+        case error
     }
 }

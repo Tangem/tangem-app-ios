@@ -18,13 +18,17 @@ final class MarketsViewModel: ObservableObject {
     @Published var viewDidAppear: Bool = false
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isLoading: Bool = false
-    @Published var isSerching: Bool = false
     @Published var isShowUnderCapButton: Bool = false
+    @Published var emptyTokensState: MarketsView.EmptyTokensState?
 
     // MARK: - Properties
 
     var hasNextPage: Bool {
         dataProvider.canFetchMore
+    }
+
+    var isSerching: Bool {
+        !currentSearchValue.isEmpty
     }
 
     private weak var coordinator: MarketsRoutable?
@@ -34,6 +38,8 @@ final class MarketsViewModel: ObservableObject {
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
 
     private var bag = Set<AnyCancellable>()
+
+    private var currentSearchValue: String = ""
 
     // MARK: - Init
 
@@ -79,19 +85,24 @@ final class MarketsViewModel: ObservableObject {
         dataProvider.isGeneralCoins = true
         dataProvider.fetchMore()
     }
+
+    func onTryLoadList() {
+        fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
+    }
 }
 
 // MARK: - Private Implementation
 
 private extension MarketsViewModel {
     func fetch(with searchText: String = "", by filter: MarketsListDataProvider.Filter) {
+        emptyTokensState = nil
         dataProvider.fetch(searchText, with: filter)
     }
 
     func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
         searchTextPublisher?
             .dropFirst()
-            .debounce(for: 0.5, scheduler: DispatchQueue.main)
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
@@ -99,8 +110,7 @@ private extension MarketsViewModel {
                     return
                 }
 
-                viewModel.isSerching = !value.isEmpty
-                viewModel.isShowUnderCapButton = !value.isEmpty && !viewModel.dataProvider.isGeneralCoins
+                viewModel.currentSearchValue = value
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -120,9 +130,19 @@ private extension MarketsViewModel {
     func dataProviderBind() {
         dataProvider.$items
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .delay(for: 0.1, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
+                guard viewModel.dataProvider.errorIsEmpty else {
+                    viewModel.tokenViewModels = []
+                    return
+                }
+
+                viewModel.isShowUnderCapButton = viewModel.isSerching &&
+                    !viewModel.dataProvider.isGeneralCoins &&
+                    !items.isEmpty &&
+                    !viewModel.dataProvider.canFetchMore
+
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
                 viewModel.tokenViewModels = items.compactMap { item in
@@ -133,11 +153,34 @@ private extension MarketsViewModel {
             .store(in: &bag)
 
         dataProvider.$isLoading
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
+                guard viewModel.dataProvider.errorIsEmpty else {
+                    viewModel.isLoading = false
+                    return
+                }
+
+                if isLoading {
+                    viewModel.emptyTokensState = nil
+                } else {
+                    viewModel.emptyTokensState = viewModel.dataProvider.items.isEmpty ? .noResults : nil
+                }
+
                 viewModel.isLoading = isLoading
+            })
+            .store(in: &bag)
+
+        dataProvider.$errorIsEmpty
+            .receive(on: DispatchQueue.main)
+            .delay(for: 0.3, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, errorIsEmpty in
+                if !errorIsEmpty {
+                    viewModel.emptyTokensState = .error
+                }
             })
             .store(in: &bag)
     }

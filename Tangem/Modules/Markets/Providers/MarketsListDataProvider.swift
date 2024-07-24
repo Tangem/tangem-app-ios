@@ -20,6 +20,7 @@ final class MarketsListDataProvider {
 
     @Published var items: [MarketsTokenModel] = []
     @Published var isLoading: Bool = false
+    @Published var errorIsEmpty: Bool = true
 
     // MARK: - Public Properties
 
@@ -35,7 +36,7 @@ final class MarketsListDataProvider {
 
     // Tells if all items have been loaded
     var canFetchMore: Bool {
-        if isLoading {
+        if isLoading || !errorIsEmpty {
             return false
         }
 
@@ -43,8 +44,7 @@ final class MarketsListDataProvider {
             return true
         }
 
-        let countPages = totalTokensCount / limitPerPage
-        return currentOffset < countPages
+        return currentOffset <= totalTokensCount
     }
 
     // MARK: Private Properties
@@ -79,6 +79,8 @@ final class MarketsListDataProvider {
 
         isLoading = false
         isGeneralCoins = false
+
+        errorIsEmpty = true
     }
 
     func fetch(_ searchText: String, with filter: Filter) {
@@ -96,15 +98,17 @@ final class MarketsListDataProvider {
             } catch {
                 AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens did receive error \(error.localizedDescription)")
                 provider.isLoading = false
+                provider.errorIsEmpty = false
                 return
             }
 
             provider.currentOffset = response.offset + response.limit
             provider.totalTokensCount = response.total
 
-            provider.isLoading = false
-
             self.items.append(contentsOf: response.tokens)
+
+            provider.isLoading = false
+            provider.errorIsEmpty = true
         }
     }
 
