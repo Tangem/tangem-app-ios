@@ -14,20 +14,25 @@ struct StakingValidatorsView: View {
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
-            GroupedSection(viewModel.validators) {
-                ValidatorView(data: $0, selection: $viewModel.selectedValidator)
+            GroupedSection(viewModel.validators) { data in
+                let isSelected = data.id == viewModel.selectedValidator
+
+                ValidatorView(data: data, selection: $viewModel.selectedValidator)
                     .geometryEffect(.init(id: namespace.id, names: namespace.names))
-                    .modifier(if: $0.id == viewModel.selectedValidator) {
+                    .modifier(if: isSelected) {
                         $0.overlay(alignment: .topLeading) {
-                            DefaultHeaderView("Validator")
+                            DefaultHeaderView(Localization.stakingValidator)
                                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+                                .hidden()
                         }
                     }
+                    .visible(isSelected || viewModel.deselectedValidatorsIsVisible)
             }
             .settings(\.backgroundColor, Colors.Background.action)
             .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
         }
         .onAppear(perform: viewModel.onAppear)
+        .onDisappear(perform: viewModel.onDisappear)
     }
 }
 

@@ -13,15 +13,19 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li carte</string>
+        <string>%li картка</string>
+        <key>few</key>
+        <string>%li картки</string>
+        <key>many</key>
+        <string>%li карток</string>
         <key>other</key>
-        <string>%li cartes</string>
+        <string>%li карток</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li %#@portefeuilles_en tout@</string>
+      <string>%li із %#@total_wallets@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
@@ -29,9 +33,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li portefeuille</string>
+        <string>%li гаманця</string>
+        <key>few</key>
+        <string>%li гаманців</string>
+        <key>many</key>
+        <string>%li гаманців</string>
         <key>other</key>
-        <string>%li portefeuilles</string>
+        <string>%li гаманців</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -61,9 +69,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string>Запишіть це %li слово у порядку, вказаному нижче, та збережіть його у надійному місці.</string>
+        <key>few</key>
+        <string>Запишіть ці %li слова у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+        <key>many</key>
+        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
         <key>other</key>
-        <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
+        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_words_count</key>
@@ -77,9 +89,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string>%li слово</string>
+        <key>few</key>
+        <string>%li слова</string>
+        <key>many</key>
+        <string>%li слів</string>
         <key>other</key>
-        <string>%li mots</string>
+        <string>%li слів</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -93,9 +109,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>pour le portefeuille %li</string>
+        <string>за %li гаманець</string>
+        <key>few</key>
+        <string>за %li гаманця</string>
+        <key>many</key>
+        <string>за %li гаманців</string>
         <key>other</key>
-        <string>pour les portefeuilles %li </string>
+        <string>за %li гаманців</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -109,9 +129,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li portefeuille</string>
+        <string>%li гаманець</string>
+        <key>few</key>
+        <string>%li гаманця</string>
+        <key>many</key>
+        <string>%li гаманців</string>
         <key>other</key>
-        <string>%li portefeuilles</string>
+        <string>%li гаманців</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>
@@ -125,9 +149,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
+        <string>Використовуйте вашу картку, щоб отримати адресу для %li мережі</string>
+        <key>few</key>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <key>many</key>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
         <key>other</key>
-        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
       </dict>
     </dict>
   </dict>

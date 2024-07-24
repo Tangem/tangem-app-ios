@@ -87,7 +87,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .staking(_, _, let earnUpToFormatted, _):
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
         case .manaLevel:
-            return .string(Localization.tokenDetailsManaLevelTitle)
+            return .string(Localization.koinosManaLevelTitle)
         }
     }
 
@@ -127,7 +127,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .staking(let tokenSymbol, _, _, let rewardPeriodFormatted):
             return Localization.tokenDetailsStakingBlockSubtitle(tokenSymbol, rewardPeriodFormatted)
         case .manaLevel(let currentMana, let maxMana):
-            return Localization.tokenDetailsManaLevelDescription(currentMana, maxMana)
+            return Localization.koinosManaLevelDescription(currentMana, maxMana)
         }
     }
 

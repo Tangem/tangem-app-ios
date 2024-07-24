@@ -12,26 +12,22 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>%li carte</string>
         <key>other</key>
-        <string>%li cartes</string>
+        <string>%li カード</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li %#@portefeuilles_en tout@</string>
+      <string>%li / %#@すべての_ウォレット@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>%li portefeuille</string>
         <key>other</key>
-        <string>%li portefeuilles</string>
+        <string>%li ウォレット\n%li ウォレット</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -44,10 +40,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>Based on %li rating</string>
         <key>other</key>
-        <string>Based on %li ratings</string>
+        <string>%li のレーティングに基づいて</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
@@ -60,10 +54,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>Empty</string>
         <key>other</key>
-        <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
+        <string>これらの %li 単語を以下の順番通りに書き留め、安全かつ秘密の場所に保管してください。</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_words_count</key>
@@ -76,10 +68,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>Empty</string>
         <key>other</key>
-        <string>%li mots</string>
+        <string> %li 単語</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -92,10 +82,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>pour le portefeuille %li</string>
         <key>other</key>
-        <string>pour les portefeuilles %li </string>
+        <string>%liのウォレット</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -108,10 +96,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>%li portefeuille</string>
         <key>other</key>
-        <string>%li portefeuilles</string>
+        <string>%li ウォレット</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>
@@ -124,10 +110,8 @@
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
-        <key>one</key>
-        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
-        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+        <string>%li ネットワークのアドレスを取得するために、カードを利用してください</string>
       </dict>
     </dict>
   </dict>

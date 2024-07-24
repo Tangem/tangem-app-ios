@@ -35,7 +35,7 @@ struct StakeKitMapper {
 
     // MARK: - Transaction
 
-    func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> TransactionInfo {
+    func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> StakingTransactionInfo {
         guard let unsignedTransaction = response.unsignedTransaction else {
             throw StakeKitMapperError.noData("Transaction.unsignedTransaction not found")
         }
@@ -48,7 +48,7 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Transaction.stakeId not found")
         }
 
-        return try TransactionInfo(
+        return try StakingTransactionInfo(
             id: response.id,
             actionId: stakeId,
             network: response.network.rawValue,

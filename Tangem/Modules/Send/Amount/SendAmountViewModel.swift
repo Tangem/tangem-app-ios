@@ -42,7 +42,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
 
     private let tokenItem: TokenItem
     private let interactor: SendAmountInteractor
-    private let sendQRCodeService: SendQRCodeService
+    private let sendQRCodeService: SendQRCodeService?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory
 
     private var bag: Set<AnyCancellable> = []
@@ -50,7 +50,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     init(
         initial: SendAmountViewModel.Settings,
         interactor: SendAmountInteractor,
-        sendQRCodeService: SendQRCodeService
+        sendQRCodeService: SendQRCodeService?
     ) {
         userWalletName = initial.userWalletName
         balance = initial.balanceFormatted
@@ -131,7 +131,7 @@ private extension SendAmountViewModel {
             }
             .store(in: &bag)
 
-        sendQRCodeService
+        sendQRCodeService?
             .qrCodeAmount
             .compactMap { $0 }
             .withWeakCaptureOf(self)

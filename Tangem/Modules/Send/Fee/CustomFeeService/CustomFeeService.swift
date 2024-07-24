@@ -18,7 +18,7 @@ protocol CustomFeeService: AnyObject {
 }
 
 protocol CustomFeeServiceInput: AnyObject {
-    var cryptoAmountPublisher: AnyPublisher<Amount, Never> { get }
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> { get }
     var destinationAddressPublisher: AnyPublisher<String, Never> { get }
 }
 

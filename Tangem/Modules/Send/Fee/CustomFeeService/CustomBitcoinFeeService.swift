@@ -14,6 +14,7 @@ class CustomBitcoinFeeService {
     private weak var input: CustomFeeServiceInput?
     private weak var output: CustomFeeServiceOutput?
 
+    private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
     private let bitcoinTransactionFeeCalculator: BitcoinTransactionFeeCalculator
 
@@ -28,9 +29,11 @@ class CustomBitcoinFeeService {
     }
 
     init(
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem,
         bitcoinTransactionFeeCalculator: BitcoinTransactionFeeCalculator
     ) {
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
         self.bitcoinTransactionFeeCalculator = bitcoinTransactionFeeCalculator
     }
@@ -86,11 +89,12 @@ class CustomBitcoinFeeService {
         return BalanceFormatter().formatFiatBalance(fiat)
     }
 
-    private func recalculateCustomFee(satoshiPerByte: Int?, amount: Amount, destination: String) -> Fee {
+    private func recalculateCustomFee(satoshiPerByte: Int?, amount: Decimal, destination: String) -> Fee {
         guard let satoshiPerByte else {
             return zeroFee
         }
 
+        let amount = Amount(with: tokenItem.blockchain, type: tokenItem.amountType, value: amount)
         let newFee = bitcoinTransactionFeeCalculator.calculateFee(
             satoshiPerByte: satoshiPerByte,
             amount: amount,

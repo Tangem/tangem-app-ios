@@ -12,4 +12,5 @@ protocol SendSummaryStepsRoutable: AnyObject {
     func summaryStepRequestEditDestination()
     func summaryStepRequestEditAmount()
     func summaryStepRequestEditFee()
+    func summaryStepRequestEditValidators()
 }

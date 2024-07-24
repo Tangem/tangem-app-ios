@@ -14,7 +14,7 @@ protocol SendFinishViewModelSetupable: AnyObject {
     func setup(sendFinishInput: SendFinishInput)
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
-    func setup(sendFeeInteractor: SendFeeInteractor)
+    func setup(sendFeeInput: SendFeeInput)
 }
 
 class SendFinishViewModel: ObservableObject, Identifiable {
@@ -24,9 +24,10 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
+    @Published var selectedValidatorData: ValidatorViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
 
-    @ObservedObject var addressTextViewHeightModel: AddressTextViewHeightModel
+    let addressTextViewHeightModel: AddressTextViewHeightModel?
 
     private let tokenItem: TokenItem
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
@@ -37,7 +38,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
     init(
         settings: Settings,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         sectionViewModelFactory: SendSummarySectionViewModelFactory,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
@@ -96,8 +97,8 @@ extension SendFinishViewModel: SendFinishViewModelSetupable {
             .store(in: &bag)
     }
 
-    func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor.selectedFeePublisher
+    func setup(sendFeeInput input: SendFeeInput) {
+        input.selectedFeePublisher
             .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)

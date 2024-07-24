@@ -15,7 +15,7 @@ struct SendFinishStepBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendFinishStep(
-        addressTextViewHeightModel: AddressTextViewHeightModel
+        addressTextViewHeightModel: AddressTextViewHeightModel?
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             addressTextViewHeightModel: addressTextViewHeightModel
@@ -30,7 +30,7 @@ struct SendFinishStepBuilder {
 // MARK: - Private
 
 private extension SendFinishStepBuilder {
-    func makeSendFinishViewModel(addressTextViewHeightModel: AddressTextViewHeightModel) -> SendFinishViewModel {
+    func makeSendFinishViewModel(addressTextViewHeightModel: AddressTextViewHeightModel?) -> SendFinishViewModel {
         SendFinishViewModel(
             settings: .init(tokenItem: walletModel.tokenItem),
             addressTextViewHeightModel: addressTextViewHeightModel,
