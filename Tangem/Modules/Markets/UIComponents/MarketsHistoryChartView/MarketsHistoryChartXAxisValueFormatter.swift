@@ -27,7 +27,7 @@ extension MarketsHistoryChartXAxisValueFormatter: AxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
         let factory = MarketsHistoryChartDateFormatterFactory.shared
         let dateFormatter = factory.makeDateFormatter(for: selectedPriceInterval)
-        let timeInterval = value / 1000.0 // `value` is a time stamp (in microseconds)
+        let timeInterval = value / 1000.0 // `value` is a timestamp (in milliseconds)
         let date = Date(timeIntervalSince1970: timeInterval)
 
         return dateFormatter.string(from: date)

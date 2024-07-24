@@ -16,7 +16,7 @@ struct LineChartViewData: Equatable {
 
     struct XAxis: Equatable {
         struct Value: Equatable {
-            /// In microseconds.
+            /// In milliseconds.
             let timeStamp: UInt64
             let price: Decimal
         }

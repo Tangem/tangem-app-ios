@@ -9,6 +9,6 @@
 import Foundation
 
 struct MarketsChartsHistoryItemModel: Decodable {
-    /// `[timestamp: price]`
+    /// `[timestamp (in milliseconds): price]`
     let prices: [String: Decimal]
 }
