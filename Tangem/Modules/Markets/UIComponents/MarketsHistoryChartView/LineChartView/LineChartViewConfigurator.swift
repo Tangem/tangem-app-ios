@@ -15,8 +15,10 @@ struct LineChartViewConfigurator {
 
     func configure(_ chartView: LineChartViewWrapper.UIViewType) {
         let dataSet = makeDataSet()
-
         chartView.data = LineChartData(dataSet: dataSet)
+
+        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
+        // but that's ok - graphical charts are never 100% accurate by design
         chartView.leftAxis.axisMinimum = chartData.yAxis.minValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
         chartView.leftAxis.axisMaximum = chartData.yAxis.maxValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
     }
