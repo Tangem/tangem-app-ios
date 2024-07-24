@@ -10,14 +10,14 @@ import SwiftUI
 import DGCharts
 
 struct LineChartViewWrapper: UIViewRepresentable {
-    typealias UIViewType = LineChartView
+    typealias UIViewType = DGCharts.LineChartView
 
     let selectedPriceInterval: MarketsPriceIntervalType
     let chartData: LineChartViewData
     let onMake: (_ chartView: UIViewType) -> Void
 
     func makeUIView(context: Context) -> UIViewType {
-        let chartView = LineChartView()
+        let chartView = UIViewType()
         chartView.delegate = context.coordinator
         chartView.xAxis.valueFormatter = context.coordinator.xAxisValueFormatter
         onMake(chartView)

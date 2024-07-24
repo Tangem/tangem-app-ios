@@ -7,11 +7,7 @@
 //
 
 import SwiftUI
-
-// For SwiftUI previews
-#if targetEnvironment(simulator)
-import Combine
-#endif // targetEnvironment(simulator)
+import Combine // TODO: Andrey Fedorov - Get rid of this import (needed only for SwiftUI previews)
 
 struct MarketsHistoryChartView: View {
     @ObservedObject var viewModel: MarketsHistoryChartViewModel
