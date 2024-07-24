@@ -19,6 +19,7 @@ final class MarketsViewModel: ObservableObject {
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isLoading: Bool = false
     @Published var isSerching: Bool = false
+    @Published var isShowUnderCapButton: Bool = false
 
     // MARK: - Properties
 
@@ -73,6 +74,11 @@ final class MarketsViewModel: ObservableObject {
     func fetchMore() {
         dataProvider.fetchMore()
     }
+
+    func onShowUnderCapAction() {
+        dataProvider.isGeneralCoins = true
+        dataProvider.fetchMore()
+    }
 }
 
 // MARK: - Private Implementation
@@ -94,6 +100,7 @@ private extension MarketsViewModel {
                 }
 
                 viewModel.isSerching = !value.isEmpty
+                viewModel.isShowUnderCapButton = !value.isEmpty && !viewModel.dataProvider.isGeneralCoins
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)

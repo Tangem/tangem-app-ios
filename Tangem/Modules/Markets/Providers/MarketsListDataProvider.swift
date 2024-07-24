@@ -23,6 +23,8 @@ final class MarketsListDataProvider {
 
     // MARK: - Public Properties
 
+    var isGeneralCoins = false
+
     var lastSearchTextValue: String? {
         return lastSearchText
     }
@@ -76,9 +78,10 @@ final class MarketsListDataProvider {
         totalTokensCount = nil
 
         isLoading = false
+        isGeneralCoins = false
     }
 
-    func fetch(_ searchText: String, with filter: Filter, generalCoins: Bool = false) {
+    func fetch(_ searchText: String, with filter: Filter) {
         if lastSearchText != searchText || filter != lastFilter {
             reset(searchText, with: filter)
         }
@@ -89,7 +92,7 @@ final class MarketsListDataProvider {
             let response: MarketsDTO.General.Response
 
             do {
-                response = try await provider.loadItems(searchText, with: filter, generalCoins: generalCoins)
+                response = try await provider.loadItems(searchText, with: filter, generalCoins: provider.isGeneralCoins)
             } catch {
                 AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens did receive error \(error.localizedDescription)")
                 provider.isLoading = false

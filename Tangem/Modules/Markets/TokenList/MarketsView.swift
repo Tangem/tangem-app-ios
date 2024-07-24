@@ -38,12 +38,16 @@ struct MarketsView: View {
     private var list: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
+                if viewModel.tokenViewModels.isEmpty, !viewModel.isLoading {
+                    noResultTitleView
+                }
+
                 ForEach(viewModel.tokenViewModels) {
                     MarketsItemView(viewModel: $0)
                 }
-
-                if viewModel.isSerching {
-                    // TODO: - Need show button
+                
+                if viewModel.isShowUnderCapButton {
+                    underCapView
                 }
 
                 // Need for display list skeleton view
@@ -58,6 +62,35 @@ struct MarketsView: View {
                         .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
                         .onAppear(perform: viewModel.fetchMore)
                 }
+            }
+        }
+    }
+    
+    private var noResultTitleView: some View {
+        VStack(alignment: .center) {
+            HStack(alignment: .center) {
+                Text(Localization.marketsSearchTokenNoResultTitle)
+            }
+        }
+    }
+    
+    private var underCapView: some View {
+        VStack(alignment: .center, spacing: 8) {
+            HStack(spacing: .zero) {
+                Text(Localization.marketsSearchSeeTokensUnder100k)
+                    .style(.footnote, color: Colors.Text.tertiary)
+            }
+
+            HStack(spacing: .zero) {
+                Button(action: {
+                    viewModel.onShowUnderCapAction()
+                }, label: {
+                    HStack(spacing: .zero) {
+                        Text(Localization.marketsSearchShowTokens)
+                            .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                    }
+                })
+                .roundedBackground(with: Colors.Button.secondary, verticalPadding: 8, horizontalPadding: 14, radius: 10)
             }
         }
     }
