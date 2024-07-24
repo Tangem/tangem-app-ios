@@ -21,16 +21,24 @@ struct MarketsHistoryChartView: View {
                     selectedPriceInterval: viewModel.selectedPriceInterval,
                     chartData: chartData
                 ) { chartView in
+                    chartView.minOffset = 0.0
+                    chartView.extraTopOffset = 26.0
                     chartView.pinchZoomEnabled = false
                     chartView.doubleTapToZoomEnabled = false
                     chartView.highlightPerTapEnabled = false
                     chartView.xAxis.drawGridLinesEnabled = false
-                    chartView.xAxis.labelPosition = .bottomInside
+                    chartView.xAxis.labelPosition = .bottom
                     chartView.xAxis.drawAxisLineEnabled = false
+                    chartView.xAxis.labelFont = UIFonts.Regular.caption2
+                    chartView.xAxis.labelTextColor = .textTertiary
+                    chartView.xAxis.yOffset = 26.0
+                    chartView.leftAxis.gridLineWidth = 1.0
+                    chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
                     chartView.leftAxis.labelPosition = .insideChart
                     chartView.leftAxis.drawAxisLineEnabled = false
-                    chartView.leftAxis.gridColor = UIColor.iconInformative
                     chartView.leftAxis.setLabelCount(viewModel.xAxisLabelCount, force: true)
+                    chartView.leftAxis.labelFont = UIFonts.Regular.caption2
+                    chartView.leftAxis.labelTextColor = .textTertiary
                     chartView.rightAxis.enabled = false
                     chartView.legend.enabled = false
                 }
