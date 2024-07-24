@@ -110,6 +110,11 @@ private extension MarketsViewModel {
                     return
                 }
 
+                if viewModel.currentSearchValue != value {
+                    viewModel.tokenViewModels = []
+                    viewModel.isShowUnderCapButton = false
+                }
+
                 viewModel.currentSearchValue = value
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
@@ -130,7 +135,7 @@ private extension MarketsViewModel {
     func dataProviderBind() {
         dataProvider.$items
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.1, scheduler: DispatchQueue.main)
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
                 guard viewModel.dataProvider.errorIsEmpty else {
@@ -155,7 +160,7 @@ private extension MarketsViewModel {
         dataProvider.$isLoading
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
                 guard viewModel.dataProvider.errorIsEmpty else {
@@ -175,10 +180,10 @@ private extension MarketsViewModel {
 
         dataProvider.$errorIsEmpty
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, errorIsEmpty in
                 if !errorIsEmpty {
+                    viewModel.tokenViewModels = []
                     viewModel.emptyTokensState = .error
                 }
             })
