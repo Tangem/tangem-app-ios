@@ -10,15 +10,15 @@ import Foundation
 
 struct LineChartViewData: Equatable {
     struct YAxis: Equatable {
-        let minValue: Double
-        let maxValue: Double
+        let minValue: Decimal
+        let maxValue: Decimal
     }
 
     struct XAxis: Equatable {
         struct Value: Equatable {
             /// In microseconds.
             let timeStamp: UInt64
-            let price: Double
+            let price: Decimal
         }
 
         let values: [Value]

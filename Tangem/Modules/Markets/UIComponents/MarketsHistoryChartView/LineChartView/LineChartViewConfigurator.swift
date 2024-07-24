@@ -17,8 +17,8 @@ struct LineChartViewConfigurator {
         let dataSet = makeDataSet()
 
         chartView.data = LineChartData(dataSet: dataSet)
-        chartView.leftAxis.axisMinimum = chartData.yAxis.minValue // TODO: Andrey Fedorov - Round yMin/yMax
-        chartView.leftAxis.axisMaximum = chartData.yAxis.maxValue // TODO: Andrey Fedorov - Round yMin/yMax
+        chartView.leftAxis.axisMinimum = chartData.yAxis.minValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
+        chartView.leftAxis.axisMaximum = chartData.yAxis.maxValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
     }
 
     private func makeDataSet() -> LineChartDataSet {
@@ -30,7 +30,7 @@ struct LineChartViewConfigurator {
             let timeInterval = timeStamp / 1000.0
             let date = Date(timeIntervalSince1970: timeInterval) // TODO: Andrey Fedorov - Do we need this date?
 
-            return ChartDataEntry(x: timeStamp, y: value.price, data: date)
+            return ChartDataEntry(x: timeStamp, y: value.price.doubleValue, data: date)
         }
 
         let dataSet = LineChartDataSet(entries: chartDataEntries)

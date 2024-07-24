@@ -29,7 +29,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         // FIXME: Andrey Fedorov - Test only, remove when not needed
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             do {
-                let data = try self.makeLineChartViewData(from: .default)
+                let data = try self.makeLineChartViewData(from: .ethereumWeek)
                 self.viewState = .loaded(data: data)
             } catch {
                 self.viewState = .failed /* (error: error) */
@@ -45,7 +45,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 
     // TODO: Andrey Fedorov - Parse in BG
     // TODO: Andrey Fedorov - Cache parsed data
-    private func makeLineChartViewData(from model: Model) throws -> LineChartViewData {
+    private func makeLineChartViewData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData {
         let yAxis = try makeYAxisData(from: model)
         let xAxis = try makeXAxisData(from: model)
 
@@ -55,7 +55,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         )
     }
 
-    private func makeYAxisData(from model: Model) throws -> LineChartViewData.YAxis {
+    private func makeYAxisData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData.YAxis {
         // TODO: Andrey Fedorov - Use single loop for both
         let minYAxisValue = model
             .prices
@@ -72,7 +72,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         return LineChartViewData.YAxis(minValue: minYAxisValue, maxValue: maxYAxisValue)
     }
 
-    private func makeXAxisData(from model: Model) throws -> LineChartViewData.XAxis {
+    private func makeXAxisData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData.XAxis {
         let xAxisValues = try model
             .prices
             .map { key, value in
