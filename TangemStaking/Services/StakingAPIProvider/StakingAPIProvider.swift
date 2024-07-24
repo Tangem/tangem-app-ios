@@ -15,8 +15,8 @@ public protocol StakingAPIProvider {
 
     func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction
 
-    func transaction(id: String) async throws -> TransactionInfo
-    func patchTransaction(id: String) async throws -> TransactionInfo
+    func transaction(id: String) async throws -> StakingTransactionInfo
+    func patchTransaction(id: String) async throws -> StakingTransactionInfo
     func submitTransaction(hash: String, signedTransaction: String) async throws
     func submitHash(hash: String, transactionId: String) async throws
 }

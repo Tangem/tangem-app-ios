@@ -347,8 +347,12 @@ extension MultiWalletMainContentViewModel {
         Analytics.log(.requestSupport, params: [.source: .main])
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: userWalletModel.walletModelsManager.walletModels,
-            userWalletEmailData: userWalletModel.emailData
+            data: [
+                .init(
+                    userWalletEmailData: userWalletModel.emailData,
+                    walletModels: userWalletModel.walletModelsManager.walletModels
+                ),
+            ]
         )
 
         coordinator?.openMail(

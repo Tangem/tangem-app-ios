@@ -32,6 +32,18 @@ class CommonSendSummaryInteractor {
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
     }
+
+    private func mapToDescription(transaction: SendTransactionType) -> String? {
+        switch transaction {
+        case .transfer(let bsdkTransaction):
+            return descriptionBuilder.makeDescription(
+                amount: bsdkTransaction.amount.value,
+                fee: bsdkTransaction.fee.amount.value
+            )
+        case .staking(let stakingTransaction):
+            return nil // Waiting texts
+        }
+    }
 }
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
@@ -50,10 +62,7 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
             .withWeakCaptureOf(self)
             .map { interactor, transaction in
                 transaction.flatMap { transaction in
-                    interactor.descriptionBuilder.makeDescription(
-                        amount: transaction.amount.value,
-                        fee: transaction.fee.amount.value
-                    )
+                    interactor.mapToDescription(transaction: transaction)
                 }
             }
             .eraseToAnyPublisher()

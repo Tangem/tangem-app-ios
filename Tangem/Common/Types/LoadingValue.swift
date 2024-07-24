@@ -70,3 +70,15 @@ extension LoadingValue: Hashable where Value: Hashable {
         }
     }
 }
+
+// MARK: - Hashable
+
+extension LoadingValue {
+    public func mapValue<T>(_ transform: (Value) throws -> T) rethrows -> LoadingValue<T> {
+        switch self {
+        case .loading: .loading
+        case .loaded(let value): .loaded(try transform(value))
+        case .failedToLoad(let error): .failedToLoad(error: error)
+        }
+    }
+}

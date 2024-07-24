@@ -17,8 +17,8 @@ struct SendAmountStepBuilder {
 
     func makeSendAmountStep(
         io: IO,
-        sendFeeInteractor: any SendFeeInteractor,
-        sendQRCodeService: any SendQRCodeService
+        sendFeeLoader: any SendFeeLoader,
+        sendQRCodeService: SendQRCodeService?
     ) -> ReturnValue {
         let interactor = makeSendAmountInteractor(io: io)
         let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
@@ -26,7 +26,7 @@ struct SendAmountStepBuilder {
         let step = SendAmountStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendFeeInteractor: sendFeeInteractor
+            sendFeeLoader: sendFeeLoader
         )
 
         return (step: step, interactor: interactor)
@@ -38,7 +38,7 @@ struct SendAmountStepBuilder {
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(
         interactor: SendAmountInteractor,
-        sendQRCodeService: any SendQRCodeService
+        sendQRCodeService: SendQRCodeService?
     ) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
             userWalletName: builder.walletName(),

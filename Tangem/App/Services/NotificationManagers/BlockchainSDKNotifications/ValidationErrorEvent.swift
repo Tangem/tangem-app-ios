@@ -50,9 +50,9 @@ extension ValidationErrorEvent: NotificationEvent {
         case .cardanoInsufficientBalanceToSendToken:
             return .string(Localization.cardanoInsufficientBalanceToSendTokenTitle)
         case .notEnoughMana:
-            return .string(Localization.sendNotificationNotEnoughManaTitle)
+            return .string(Localization.koinosInsufficientManaToSendKoinTitle)
         case .manaLimit:
-            return .string(Localization.sendNotificationManaLimitTitle)
+            return .string(Localization.koinosManaExceedsKoinBalanceTitle)
         case .koinosInsufficientBalanceToSendKoin:
             return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
         }
@@ -85,9 +85,9 @@ extension ValidationErrorEvent: NotificationEvent {
         case .cardanoInsufficientBalanceToSendToken(let tokenSymbol):
             return Localization.cardanoInsufficientBalanceToSendTokenDescription(tokenSymbol)
         case .notEnoughMana(let current, let max):
-            return Localization.sendNotificationNotEnoughManaDescription(current, max)
+            return Localization.koinosInsufficientManaToSendKoinDescription(current, max)
         case .manaLimit(let validMax):
-            return Localization.sendNotificationManaLimitDescription(validMax)
+            return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
         case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
         }

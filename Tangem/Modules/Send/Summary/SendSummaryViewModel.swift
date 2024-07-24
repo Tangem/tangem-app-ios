@@ -13,7 +13,8 @@ import Combine
 protocol SendSummaryViewModelSetupable: AnyObject {
     func setup(sendDestinationInput: SendDestinationInput)
     func setup(sendAmountInput: SendAmountInput)
-    func setup(sendFeeInteractor: SendFeeInteractor)
+    func setup(sendFeeInput: SendFeeInput)
+    func setup(stakingValidatorsInput: StakingValidatorsInput)
 }
 
 class SendSummaryViewModel: ObservableObject, Identifiable {
@@ -22,11 +23,14 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
     @Published var amountSummaryViewData: SendAmountSummaryViewData?
+    @Published var selectedValidatorData: ValidatorViewData?
     @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
+    @Published var selectedValidatorViewModel: ValidatorViewData?
     @Published var deselectedFeeRowViewModels: [FeeRowViewModel] = []
 
     @Published var animatingDestinationOnAppear = false
     @Published var animatingAmountOnAppear = false
+    @Published var animatingValidatorOnAppear = false
     @Published var animatingFeeOnAppear = false
     @Published var showHint = false
 
@@ -36,7 +40,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var transactionDescription: String?
     @Published var transactionDescriptionIsVisible: Bool = false
 
-    let addressTextViewHeightModel: AddressTextViewHeightModel
+    let addressTextViewHeightModel: AddressTextViewHeightModel?
     var didProperlyDisappear: Bool = true
 
     var canEditAmount: Bool { editableType == .editable }
@@ -48,14 +52,14 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     weak var router: SendSummaryStepsRoutable?
 
-    private var isVisible = false
+    private lazy var stakingValidatorViewMapper = StakingValidatorViewMapper()
     private var bag: Set<AnyCancellable> = []
 
     init(
         settings: Settings,
         interactor: SendSummaryInteractor,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
+        addressTextViewHeightModel: AddressTextViewHeightModel?,
         sectionViewModelFactory: SendSummarySectionViewModelFactory
     ) {
         editableType = settings.editableType
@@ -74,13 +78,20 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         case .destination:
             animatingAmountOnAppear = true
             animatingFeeOnAppear = true
+            animatingValidatorOnAppear = true
         case .amount:
             animatingDestinationOnAppear = true
             animatingFeeOnAppear = true
+            animatingValidatorOnAppear = true
         case .fee:
             animatingDestinationOnAppear = true
             animatingAmountOnAppear = true
-        default:
+            animatingValidatorOnAppear = true
+        case .validators:
+            animatingDestinationOnAppear = true
+            animatingAmountOnAppear = true
+            animatingFeeOnAppear = true
+        case .summary, .finish:
             break
         }
 
@@ -89,14 +100,13 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        isVisible = true
-
         selectedFeeSummaryViewModel?.setAnimateTitleOnAppear(true)
 
         withAnimation(SendView.Constants.defaultAnimation) {
             self.animatingDestinationOnAppear = false
             self.animatingAmountOnAppear = false
             self.animatingFeeOnAppear = false
+            self.animatingValidatorOnAppear = false
             self.transactionDescriptionIsVisible = true
         }
 
@@ -110,9 +120,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         }
     }
 
-    func onDisappear() {
-        isVisible = false
-    }
+    func onDisappear() {}
 
     func userDidTapDestination() {
         didTapSummary()
@@ -122,6 +130,11 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     func userDidTapAmount() {
         didTapSummary()
         router?.summaryStepRequestEditAmount()
+    }
+
+    func userDidTapValidator() {
+        didTapSummary()
+        router?.summaryStepRequestEditValidators()
     }
 
     func userDidTapFee() {
@@ -189,8 +202,8 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .store(in: &bag)
     }
 
-    func setup(sendFeeInteractor interactor: SendFeeInteractor) {
-        interactor
+    func setup(sendFeeInput input: SendFeeInput) {
+        input
             .feesPublisher
             .map { feeValues in
                 let multipleFeeOptions = feeValues.count > 1
@@ -202,26 +215,27 @@ extension SendSummaryViewModel: SendSummaryViewModelSetupable {
             .assign(to: \.canEditFee, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.CombineLatest(interactor.feesPublisher, interactor.selectedFeePublisher)
+        Publishers.CombineLatest(input.feesPublisher, input.selectedFeePublisher)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, args in
                 let (feeValues, selectedFee) = args
-                var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
-                var deselectedFeeRowViewModels: [FeeRowViewModel] = []
-
-                for feeValue in feeValues {
-                    if feeValue.option == selectedFee.option {
-                        selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: feeValue)
-                    } else {
-                        let model = viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
-                        deselectedFeeRowViewModels.append(model)
-                    }
+                viewModel.selectedFeeSummaryViewModel = viewModel.sectionViewModelFactory.makeFeeViewData(from: selectedFee)
+                viewModel.deselectedFeeRowViewModels = feeValues.filter { $0.option != selectedFee.option }.map { feeValue in
+                    viewModel.sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue)
                 }
-
-                viewModel.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
-                viewModel.deselectedFeeRowViewModels = deselectedFeeRowViewModels
             }
+            .store(in: &bag)
+    }
+
+    func setup(stakingValidatorsInput input: any StakingValidatorsInput) {
+        input.selectedValidatorPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, validator in
+                viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: validator, detailsType: .chevron)
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.selectedValidatorData, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

@@ -13,16 +13,16 @@ import SwiftUI
 class SendAmountStep {
     private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
-    private let sendFeeInteractor: SendFeeInteractor
+    private let sendFeeLoader: SendFeeLoader
 
     init(
         viewModel: SendAmountViewModel,
         interactor: SendAmountInteractor,
-        sendFeeInteractor: SendFeeInteractor
+        sendFeeLoader: SendFeeLoader
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
-        self.sendFeeInteractor = sendFeeInteractor
+        self.sendFeeLoader = sendFeeLoader
     }
 }
 
@@ -52,6 +52,6 @@ extension SendAmountStep: SendStep {
             return
         }
 
-        sendFeeInteractor.updateFees()
+        sendFeeLoader.updateFees()
     }
 }

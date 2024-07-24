@@ -95,7 +95,7 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
                 style: .additionalField(name: additionalFieldType.name),
                 input: _destinationAdditionalFieldText.eraseToAnyPublisher(),
                 isValidating: .just(output: false),
-                isDisabled: .just(output: false),
+                isDisabled: interactor.canEmbedAdditionalField.map { !$0 }.eraseToAnyPublisher(),
                 addressTextViewHeightModel: .init(),
                 errorText: interactor.destinationAdditionalFieldError
             ) { [weak self] value in

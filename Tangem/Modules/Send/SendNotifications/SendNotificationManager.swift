@@ -14,7 +14,7 @@ protocol SendNotificationManagerInput {
     var selectedFeePublisher: AnyPublisher<SendFee, Never> { get }
     var isFeeIncludedPublisher: AnyPublisher<Bool, Never> { get }
 
-    var transactionPublisher: AnyPublisher<BSDKTransaction?, Never> { get }
+    var bsdkTransactionPublisher: AnyPublisher<BSDKTransaction?, Never> { get }
     var transactionCreationError: AnyPublisher<Error?, Never> { get }
 }
 
@@ -81,7 +81,7 @@ private extension CommonSendNotificationManager {
 
         if let withdrawalNotificationProvider {
             input
-                .transactionPublisher
+                .bsdkTransactionPublisher
                 .withWeakCaptureOf(self)
                 .map { manager, transaction in
                     transaction.flatMap {
