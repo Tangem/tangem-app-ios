@@ -73,7 +73,7 @@ class MarketsListDataController {
                 case .down:
                     controller.fetchMoreIfPossible(with: visibleArea.range)
                 case .up:
-                    controller.removeLastIfPossible(with: visibleArea.range)
+                    break
                 }
             }
             .store(in: &bag)
@@ -85,18 +85,8 @@ class MarketsListDataController {
         }
 
         let itemsInUpperBufferZone = dataProvider.items.count - range.upperBound
-        if itemsInUpperBufferZone < Constants.prefetchMoreRowsCount {
+        if itemsInUpperBufferZone < Constants.itemsInBufferZone {
             dataProvider.fetchMore()
-        }
-    }
-
-    // Need for optimization in memory cache rows
-    private func removeLastIfPossible(with range: ClosedRange<Int>) {
-        let offsetToRemove = Constants.prefetchMoreRowsCount * 2
-        let findLastToRemoveRows = (dataProvider.items.count - range.upperBound) > offsetToRemove ? Constants.prefetchMoreRowsCount : nil
-
-        if let findLastToRemoveRows {
-            dataProvider.removeItems(count: findLastToRemoveRows)
         }
     }
 }
@@ -129,6 +119,6 @@ extension MarketsListDataController: MarketsListPrefetchDataSource {
 
 extension MarketsListDataController {
     enum Constants {
-        static let prefetchMoreRowsCount = 20
+        static let itemsInBufferZone = 20
     }
 }

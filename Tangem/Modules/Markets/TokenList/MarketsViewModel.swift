@@ -130,6 +130,7 @@ private extension MarketsViewModel {
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
+                // Refactor this. Each time data provider receive next page - whole item models list recreated.
                 viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
                     let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: index)
                     return tokenViewModel

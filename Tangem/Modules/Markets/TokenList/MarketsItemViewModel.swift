@@ -25,7 +25,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Properties
 
     let index: Int
-    let id: String
+    let tokenId: String
     let imageURL: URL?
     let name: String
     let symbol: String
@@ -40,10 +40,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     private let marketCapFormatter = MarketCapFormatter()
 
     private weak var prefetchDataSource: MarketsListPrefetchDataSource?
-    private let chartsProvider: MarketsListChartsHistoryProvider
-    private let filterProvider: MarketsListDataFilterProvider
-
-    private let iconURLBuilder = IconURLBuilder()
+    private weak var filterProvider: MarketsListDataFilterProvider?
 
     // MARK: - Init
 
@@ -54,13 +51,12 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         filterProvider: MarketsListDataFilterProvider,
         onTapAction: (() -> Void)?
     ) {
-        self.chartsProvider = chartsProvider
         self.filterProvider = filterProvider
         self.prefetchDataSource = prefetchDataSource
 
         index = data.index
-        id = data.id
-        imageURL = iconURLBuilder.tokenIconURL(id: id, size: .large)
+        tokenId = data.id
+        imageURL = IconURLBuilder().tokenIconURL(id: tokenId, size: .large)
         name = data.name
         symbol = data.symbol.uppercased()
 
@@ -81,8 +77,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     deinit {
-        // TODO: - Need to remove
-        print("MarketsItemViewModel - deinit \(index)")
+        print("MarketsItemViewModel deinitialized - index: \(index)")
     }
 
     func onAppear() {
@@ -104,7 +99,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         quotesRepository.quotesPublisher
             .withWeakCaptureOf(self)
             .compactMap { viewModel, quotes in
-                quotes[viewModel.id]
+                quotes[viewModel.tokenId]
             }
             .receive(on: DispatchQueue.main)
             .withPrevious()
@@ -112,7 +107,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .sink { elements in
                 let (viewModel, (previousValue, newQuote)) = elements
                 let priceChangeValue: Decimal?
-                switch viewModel.filterProvider.currentFilterValue.interval {
+                switch viewModel.filterProvider?.currentFilterValue.interval {
                 case .day:
                     priceChangeValue = newQuote.priceChange24h
                 case .week:
@@ -129,25 +124,27 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
-        charts
-            .$items
+        charts.$items
+            .combineLatest(filter.filterPublisher)
             .receive(on: DispatchQueue.main)
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, charts in
-                viewModel.findAndAssignChartsValue(from: charts, with: viewModel.filterProvider.currentFilterValue.interval)
+            .sink(receiveValue: { elements in
+                let (viewModel, (charts, filter)) = elements
+
+                viewModel.findAndAssignChartsValue(from: charts, with: filter.interval)
             })
             .store(in: &bag)
 
         // You need to immediately find the value of the graph if it is already present
-        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
+        findAndAssignChartsValue(from: charts.items, with: filter.currentFilterValue.interval)
     }
 
     private func findAndAssignChartsValue(
         from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
         with interval: MarketsPriceIntervalType
     ) {
-        guard let chart = chartsDictionary.first(where: { $0.key == id }) else {
+        guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
             return
         }
 
