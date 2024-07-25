@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import Combine // TODO: Andrey Fedorov - Get rid of this import (needed only for SwiftUI previews)
 
 struct MarketsHistoryChartView: View {
     @ObservedObject var viewModel: MarketsHistoryChartViewModel
@@ -71,17 +70,13 @@ struct MarketsHistoryChartView: View {
 // MARK: - Previews
 
 #Preview {
-    VStack {
-        MarketsHistoryChartView(
-            viewModel: .init(selectedPriceIntervalPublisher: Just(.all))
-        )
+    let factory = MarketsHistoryChartViewModelFactory()
 
-        MarketsHistoryChartView(
-            viewModel: .init(selectedPriceIntervalPublisher: Just(.halfYear))
-        )
+    return VStack {
+        MarketsHistoryChartView(viewModel: factory.makeAll())
 
-        MarketsHistoryChartView(
-            viewModel: .init(selectedPriceIntervalPublisher: Just(.week))
-        )
+        MarketsHistoryChartView(viewModel: factory.makeHalfYear())
+
+        MarketsHistoryChartView(viewModel: factory.makeWeek())
     }
 }
