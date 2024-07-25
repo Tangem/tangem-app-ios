@@ -25,8 +25,8 @@ struct PercentFormatter {
         formatter.negativePrefix = "-"
         formatter.positivePrefix = "+"
 
-        formatter.positiveSuffix = "%"
-        formatter.negativeSuffix = "%"
+        formatter.positiveSuffix = " %"
+        formatter.negativeSuffix = " %"
 
         if option.clearPrefix {
             formatter.positivePrefix = ""
