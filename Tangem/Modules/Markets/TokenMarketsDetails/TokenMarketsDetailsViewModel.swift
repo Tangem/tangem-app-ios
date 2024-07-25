@@ -13,6 +13,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published var price: String
+    @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var shortDescription: String?
     @Published var fullDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
@@ -152,12 +153,15 @@ private extension TokenMarketsDetailsViewModel {
 
         currentPriceSubject
             .receive(on: DispatchQueue.main)
+            .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { viewModel, newPrice in
+            .sink { elements in
+                let (viewModel, (previousValue, newValue)) = elements
                 viewModel.price = viewModel.balanceFormatter.formatFiatBalance(
-                    newPrice,
+                    newValue,
                     formattingOptions: viewModel.fiatBalanceFormattingOptions
                 )
+                viewModel.priceChangeAnimation = .calculateChange(from: previousValue, to: newValue)
             }
             .store(in: &bag)
 
