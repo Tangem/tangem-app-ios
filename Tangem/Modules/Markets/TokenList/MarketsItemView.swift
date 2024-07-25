@@ -59,8 +59,8 @@ struct MarketsItemView: View {
             }
 
             HStack(spacing: 6) {
-                if let marketRaiting = viewModel.marketRating {
-                    Text(marketRaiting)
+                if let marketRating = viewModel.marketRating {
+                    Text(marketRating)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                         .padding(.horizontal, 5)
                         .background(Colors.Field.primary)
@@ -80,6 +80,12 @@ struct MarketsItemView: View {
             Text(viewModel.priceValue)
                 .lineLimit(1)
                 .truncationMode(.middle)
+                .blinkForegroundColor(
+                    publisher: viewModel.$priceChangeAnimation,
+                    positiveColor: Colors.Text.accent,
+                    negativeColor: Colors.Text.warning,
+                    originalColor: Colors.Text.primary1
+                )
                 .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
             TokenPriceChangeView(state: viewModel.priceChangeState)
