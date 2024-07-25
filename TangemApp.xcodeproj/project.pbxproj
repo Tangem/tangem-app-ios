@@ -823,6 +823,9 @@
 		B6ACD0122AD6A888005A6CA3 /* OrganizeTokensDragAndDropGestureContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ACD0112AD6A888005A6CA3 /* OrganizeTokensDragAndDropGestureContextProvider.swift */; };
 		B6ACD0142AD6A8A1005A6CA3 /* OrganizeTokensDragAndDropGesturePredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ACD0132AD6A8A1005A6CA3 /* OrganizeTokensDragAndDropGesturePredicate.swift */; };
 		B6AD952C2A30072000FE845A /* TokenItemViewLeadingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD952B2A30072000FE845A /* TokenItemViewLeadingComponent.swift */; };
+		B6AE4DA12C530A2D00070D96 /* MarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE4DA02C530A2D00070D96 /* MarketsHistoryChartProvider.swift */; };
+		B6AE4DA32C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE4DA22C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift */; };
+		B6AE4DA52C530C7500070D96 /* MarketsHistoryChartProviderStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE4DA42C530C7500070D96 /* MarketsHistoryChartProviderStub.swift */; };
 		B6AEF9742A796713004663C3 /* TokenSectionsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */; };
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
 		B6BAF5162C5107E500BDD351 /* MarketsChartsHistoryItemModel+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BAF5152C5107E500BDD351 /* MarketsChartsHistoryItemModel+.swift */; };
@@ -2723,6 +2726,9 @@
 		B6ACD0112AD6A888005A6CA3 /* OrganizeTokensDragAndDropGestureContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensDragAndDropGestureContextProvider.swift; sourceTree = "<group>"; };
 		B6ACD0132AD6A8A1005A6CA3 /* OrganizeTokensDragAndDropGesturePredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensDragAndDropGesturePredicate.swift; sourceTree = "<group>"; };
 		B6AD952B2A30072000FE845A /* TokenItemViewLeadingComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenItemViewLeadingComponent.swift; sourceTree = "<group>"; };
+		B6AE4DA02C530A2D00070D96 /* MarketsHistoryChartProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartProvider.swift; sourceTree = "<group>"; };
+		B6AE4DA22C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarketsHistoryChartProvider.swift; sourceTree = "<group>"; };
+		B6AE4DA42C530C7500070D96 /* MarketsHistoryChartProviderStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartProviderStub.swift; sourceTree = "<group>"; };
 		B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenSectionsAdapter.swift; sourceTree = "<group>"; };
 		B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIPanGestureRecognizer+.swift"; sourceTree = "<group>"; };
 		B6BAF5152C5107E500BDD351 /* MarketsChartsHistoryItemModel+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarketsChartsHistoryItemModel+.swift"; sourceTree = "<group>"; };
@@ -3776,6 +3782,8 @@
 				2D1BB3762C07503B008392F7 /* MarketsListDataProvider.swift */,
 				2D5DCC402C330B43000EE379 /* MarketsWalletSelectorProvider.swift */,
 				B0CF5A5A2C2D492100B197D4 /* MarketsTokenDetailsDataProvider.swift */,
+				B6AE4DA02C530A2D00070D96 /* MarketsHistoryChartProvider.swift */,
+				B6AE4DA22C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -6203,6 +6211,7 @@
 				B6FECF4E2C4032930030A8A9 /* PushNotificationsAvailabilityProviderStub.swift */,
 				B6FECF4C2C4032930030A8A9 /* PushNotificationsPermissionManagerStub.swift */,
 				B6FECF4D2C4032930030A8A9 /* PushNotificationsPermissionRequestDelegateStub.swift */,
+				B6AE4DA42C530C7500070D96 /* MarketsHistoryChartProviderStub.swift */,
 			);
 			path = Stubs;
 			sourceTree = "<group>";
@@ -11033,6 +11042,7 @@
 				B0C807232620549F00F7DADE /* WalletConnectSessionItemView.swift in Sources */,
 				DC7D39EF29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift in Sources */,
 				B0BA266E2BAD71630055C6C1 /* OnboardingAccessCodeViewModel.swift in Sources */,
+				B6AE4DA32C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift in Sources */,
 				EFA580632893E6AA00110DB0 /* BiometricAuthorizationUtils.swift in Sources */,
 				DAA5E30228D21369003C0E80 /* UserWalletStorageAgreementView.swift in Sources */,
 				EF7B9CF5286C7023004C33A9 /* CardSettingsCoordinator.swift in Sources */,
@@ -11368,6 +11378,7 @@
 				DC70C01B2B95EEEF002205BA /* KeysDerivingCardInteractor.swift in Sources */,
 				B60275292A7A626200865EA7 /* CornerRadiusAnimatableModifier.swift in Sources */,
 				DA5BB72E2AF3FA97004CB8D0 /* AddressIconViewModel.swift in Sources */,
+				B6AE4DA52C530C7500070D96 /* MarketsHistoryChartProviderStub.swift in Sources */,
 				B0E1C2422C2430C6005309E1 /* AlertBuilder.swift in Sources */,
 				B002416F2C2441EF00416397 /* HideTokenAlertBuilder.swift in Sources */,
 				EF08A0EF283D1914008BD923 /* Moya+.swift in Sources */,
@@ -11463,6 +11474,7 @@
 				B6A8DAA52A4C96C4004CB1E7 /* ObjectDescription.swift in Sources */,
 				2D1BB36E2C074629008392F7 /* MarketsPriceIntervalType.swift in Sources */,
 				DC939F9A2C3C0323002D0326 /* XPUBGenerator.swift in Sources */,
+				B6AE4DA12C530A2D00070D96 /* MarketsHistoryChartProvider.swift in Sources */,
 				B64781E22C22F74300B0E882 /* CustomTokenContractAddressConverter.swift in Sources */,
 				EF339E562C22DADC00B5CDC9 /* DestinationAdditionalFieldType.swift in Sources */,
 				EFD5FE432C1369AE0047242E /* GeometryEffect.swift in Sources */,
