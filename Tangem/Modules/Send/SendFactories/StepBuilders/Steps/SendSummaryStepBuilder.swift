@@ -77,8 +77,7 @@ private extension SendSummaryStepBuilder {
             input: io.input,
             output: io.output,
             sendTransactionDispatcher: sendTransactionDispatcher,
-            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder(),
-            blockchain: walletModel.tokenItem.blockchain
+            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
         )
     }
 
@@ -93,6 +92,11 @@ private extension SendSummaryStepBuilder {
     }
 
     func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
-        SendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        switch walletModel.wallet.blockchain {
+        case .koinos:
+            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        default:
+            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        }
     }
 }
