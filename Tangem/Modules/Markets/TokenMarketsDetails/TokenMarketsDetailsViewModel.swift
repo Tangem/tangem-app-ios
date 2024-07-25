@@ -118,6 +118,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadDetailedInfo()
 
         makePreloadBlocksViewModels()
+        makeHistoryChartViewModel()
     }
 
     deinit {
@@ -231,6 +232,10 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
+    private func makeHistoryChartViewModel() {
+        historyChartViewModel = MarketsHistoryChartViewModel(selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType)
+    }
+
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
             insightsViewModel = .init(insights: insights, infoRouter: self)
@@ -239,9 +244,6 @@ private extension TokenMarketsDetailsViewModel {
         if let metrics = model.metrics {
             metricsViewModel = .init(metrics: metrics, infoRouter: self)
         }
-
-        // TODO: Andrey Fedorov - Add actual implementation
-        historyChartViewModel = MarketsHistoryChartViewModel(selectedPriceIntervalPublisher: Just(.week))
 
         pricePerformanceViewModel = .init(
             pricePerformanceData: model.pricePerformance,

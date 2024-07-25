@@ -109,7 +109,6 @@ struct TokenMarketsDetailsView: View {
     private var chart: some View {
         if let viewModel = viewModel.historyChartViewModel {
             MarketsHistoryChartView(viewModel: viewModel)
-                .frame(height: 202.0)
         }
     }
 

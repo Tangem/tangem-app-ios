@@ -13,6 +13,18 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     @Published private(set) var viewState: ViewState = .idle
     @Published /* private(set) */ var selectedPriceInterval: MarketsPriceIntervalType = .all
 
+    var allowsHitTesting: Bool {
+        switch viewState {
+        case .loading(let previousData) where previousData != nil:
+            return false
+        case .idle,
+             .loading,
+             .loaded,
+             .failed:
+            return true
+        }
+    }
+
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -22,7 +34,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     }
 
     func onViewAppear() {
-        viewState = .loading
+        viewState = .loading(previousData: nil)
 
         // FIXME: Andrey Fedorov - Test only, remove when not needed
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -33,6 +45,10 @@ final class MarketsHistoryChartViewModel: ObservableObject {
                 self.viewState = .failed /* (error: error) */
             }
         }
+    }
+
+    func reload() {
+        // TODO: Andrey Fedorov - Add actual implementation
     }
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
@@ -130,7 +146,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 extension MarketsHistoryChartViewModel {
     enum ViewState: Equatable {
         case idle
-        case loading
+        case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
         case failed /* (error: Error) */
     }
@@ -138,5 +154,20 @@ extension MarketsHistoryChartViewModel {
     // TODO: Andrey Fedorov - Add actual implementation
     enum Error: Swift.Error {
         case invalidData
+    }
+}
+
+// MARK: - Convenience extensions
+
+private extension MarketsHistoryChartViewModel.ViewState {
+    var data: LineChartViewData? {
+        switch self {
+        case .loading(let data),
+             .loaded(let data as LineChartViewData?):
+            return data
+        case .idle,
+             .failed:
+            return nil
+        }
     }
 }

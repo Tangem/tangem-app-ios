@@ -11,58 +11,93 @@ import SwiftUI
 struct MarketsHistoryChartView: View {
     @ObservedObject var viewModel: MarketsHistoryChartViewModel
 
-    @State private var chartData: LineChartViewData?
-
     var body: some View {
         Group {
-            if let chartData {
-                LineChartViewWrapper(
-                    selectedPriceInterval: viewModel.selectedPriceInterval,
-                    chartData: chartData
-                ) { chartView in
-                    chartView.minOffset = 0.0
-                    chartView.extraTopOffset = 26.0
-                    chartView.pinchZoomEnabled = false
-                    chartView.doubleTapToZoomEnabled = false
-                    chartView.highlightPerTapEnabled = false
-                    chartView.xAxis.drawGridLinesEnabled = false
-                    chartView.xAxis.labelPosition = .bottom
-                    chartView.xAxis.drawAxisLineEnabled = false
-                    chartView.xAxis.labelFont = UIFonts.Regular.caption2
-                    chartView.xAxis.labelTextColor = .textTertiary
-                    chartView.xAxis.yOffset = 26.0
-                    chartView.xAxis.xOffset = 0.0
-                    chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable when the logic for X axis labels will be finalized
-                    chartView.leftAxis.gridLineWidth = 1.0
-                    chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
-                    chartView.leftAxis.labelPosition = .insideChart
-                    chartView.leftAxis.drawAxisLineEnabled = false
-                    chartView.leftAxis.labelFont = UIFonts.Regular.caption2
-                    chartView.leftAxis.labelTextColor = .textTertiary
-                    chartView.rightAxis.enabled = false
-                    chartView.legend.enabled = false
-                }
-            } else {
-                // TODO: Andrey Fedorov - Show idle/empty state instead?
-                Color.clear
+            switch viewModel.viewState {
+            case .idle:
+                Color.clear // `EmptyView` won't call `onAppear`
+            case .loading(let previousData):
+                makeLoadingView(for: previousData)
+            case .loaded(let chartData):
+                makeChartView(for: chartData)
+            case .failed:
+                errorView
             }
         }
+        .frame(height: 202.0)
+        .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
-        .onChange(of: viewModel.viewState) { [oldValue = viewModel.viewState] newValue in
-            onViewStateChange(oldValue: oldValue, newValue: newValue)
+    }
+
+    @ViewBuilder
+    private var errorView: some View {
+        VStack(spacing: 12.0) {
+            Text(Localization.marketsLoadingErrorTitle)
+                .style(Fonts.Regular.caption1.weight(.medium).bold(), color: Colors.Text.tertiary)
+
+            Button(action: viewModel.reload) {
+                Text(Localization.tryToLoadDataAgainButtonTitle)
+                    .style(Fonts.Regular.caption1.weight(.medium).bold(), color: Colors.Text.primary1)
+            }
+            .padding(.vertical, 7.0)
+            .padding(.horizontal, 12.0)
+            .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8.0)
         }
     }
 
-    private func onViewStateChange(
-        oldValue: MarketsHistoryChartViewModel.ViewState,
-        newValue: MarketsHistoryChartViewModel.ViewState
-    ) {
-        switch (oldValue, newValue) {
-        case (_, .loaded(let data)):
-            chartData = data
-        default:
-            // TODO: Andrey Fedorov - Add actual implementation
-            break
+    @ViewBuilder
+    private var standaloneLoadingView: some View {
+        ProgressView()
+            .progressViewStyle(.circular)
+    }
+
+    @ViewBuilder
+    private var overlayLoadingView: some View {
+        Colors.Background
+            .plain
+            .opacity(0.4)
+            .overlay {
+                standaloneLoadingView
+            }
+    }
+
+    @ViewBuilder
+    private func makeChartView(for chartData: LineChartViewData) -> some View {
+        LineChartViewWrapper(
+            selectedPriceInterval: viewModel.selectedPriceInterval,
+            chartData: chartData
+        ) { chartView in
+            chartView.minOffset = 0.0
+            chartView.extraTopOffset = 26.0
+            chartView.pinchZoomEnabled = false
+            chartView.doubleTapToZoomEnabled = false
+            chartView.highlightPerTapEnabled = false
+            chartView.xAxis.drawGridLinesEnabled = false
+            chartView.xAxis.labelPosition = .bottom
+            chartView.xAxis.drawAxisLineEnabled = false
+            chartView.xAxis.labelFont = UIFonts.Regular.caption2
+            chartView.xAxis.labelTextColor = .textTertiary
+            chartView.xAxis.yOffset = 26.0
+            chartView.xAxis.xOffset = 0.0
+            chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable when the logic for X axis labels will be finalized
+            chartView.leftAxis.gridLineWidth = 1.0
+            chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
+            chartView.leftAxis.labelPosition = .insideChart
+            chartView.leftAxis.drawAxisLineEnabled = false
+            chartView.leftAxis.labelFont = UIFonts.Regular.caption2
+            chartView.leftAxis.labelTextColor = .textTertiary
+            chartView.rightAxis.enabled = false
+            chartView.legend.enabled = false
+        }
+    }
+
+    @ViewBuilder
+    private func makeLoadingView(for chartData: LineChartViewData?) -> some View {
+        if let chartData {
+            makeChartView(for: chartData)
+                .overlay { overlayLoadingView }
+        } else {
+            standaloneLoadingView
         }
     }
 }
