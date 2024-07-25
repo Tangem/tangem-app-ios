@@ -41,7 +41,7 @@ struct TokenMarketsDetailsView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Text(viewModel.tokenName))
-        .background(Colors.Background.tertiary)
+        .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,

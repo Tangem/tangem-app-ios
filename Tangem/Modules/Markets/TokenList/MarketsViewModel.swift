@@ -21,9 +21,9 @@ final class MarketsViewModel: ObservableObject {
 
     // MARK: - Properties
 
-    private var viewDidAppear: Bool = false {
+    private var isViewVisible: Bool = false {
         didSet {
-            listDataController.update(viewDidAppear: viewDidAppear)
+            listDataController.update(viewDidAppear: isViewVisible)
         }
     }
 
@@ -32,8 +32,8 @@ final class MarketsViewModel: ObservableObject {
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
-    
-    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewDidAppear: viewDidAppear)
+
+    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, isViewVisible: isViewVisible)
 
     private var bag = Set<AnyCancellable>()
 
@@ -62,7 +62,7 @@ final class MarketsViewModel: ObservableObject {
     func onBottomSheetAppear() {
         // Need for locked fetchMore process when bottom sheet not yet open
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.viewDidAppear = true
+            self.isViewVisible = true
         }
 
         onAppearPrepareImageCache()
@@ -71,7 +71,7 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomSheetDisappear() {
-        viewDidAppear = false
+        isViewVisible = false
 
         tokenViewModels = []
         chartsHistoryProvider.reset()
@@ -102,7 +102,7 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                guard viewModel.viewDidAppear else {
+                guard viewModel.isViewVisible else {
                     return
                 }
 
@@ -131,7 +131,7 @@ private extension MarketsViewModel {
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
                 viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
-                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, by: index)
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: index)
                     return tokenViewModel
                 }
             })
@@ -149,7 +149,7 @@ private extension MarketsViewModel {
 
     // MARK: - Private Implementation
 
-    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel, by index: Int) -> MarketsItemViewModel {
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel, with index: Int) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
             index: index,
             id: tokenItemModel.id,

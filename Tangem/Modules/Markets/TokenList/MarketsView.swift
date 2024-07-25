@@ -20,6 +20,7 @@ struct MarketsView: View {
             list
         }
         .scrollDismissesKeyboardCompat(.immediately)
+        .background(Colors.Background.primary)
         .alert(item: $viewModel.alert, content: { $0.alert })
     }
 

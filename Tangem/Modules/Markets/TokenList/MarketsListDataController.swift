@@ -10,87 +10,70 @@ import Foundation
 import Combine
 
 class MarketsListDataController {
-    var visableRangeAreaPublisher: some Publisher<VisabaleArea, Never> {
-        visableRangeAreaValue.eraseToAnyPublisher()
+    var visibleRangeAreaPublisher: some Publisher<VisibleArea, Never> {
+        visibleRangeAreaSubject.eraseToAnyPublisher()
     }
 
-    // MARK: - Privaate Properties
+    // MARK: - Private Properties
 
     private let dataProvider: MarketsListDataProvider
 
-    private let onAppearLastValue: CurrentValueSubject<Int, Never> = .init(0)
-    private let onDisappearLastValue: CurrentValueSubject<Int, Never> = .init(0)
-    private let visableRangeAreaValue: CurrentValueSubject<VisabaleArea, Never> = .init(VisabaleArea(range: 0 ... 0, direction: .down))
+    private let lastAppearedIndexSubject: CurrentValueSubject<Int, Never> = .init(0)
+    private let lastDisappearedIndexSubject: CurrentValueSubject<Int, Never> = .init(0)
+    private let visibleRangeAreaSubject: CurrentValueSubject<VisibleArea, Never> = .init(VisibleArea(range: 0 ... 1, direction: .down))
 
     private var bag = Set<AnyCancellable>()
-    private var viewDidAppear: Bool
+    private var isViewVisible: Bool
 
     // MARK: - Init
 
-    init(dataProvider: MarketsListDataProvider, viewDidAppear: Bool) {
+    init(dataProvider: MarketsListDataProvider, isViewVisible: Bool) {
         self.dataProvider = dataProvider
-        self.viewDidAppear = viewDidAppear
+        self.isViewVisible = isViewVisible
 
         bind()
     }
 
     func update(viewDidAppear: Bool) {
-        self.viewDidAppear = viewDidAppear
+        isViewVisible = viewDidAppear
     }
 
     // MARK: - Private Implementation
 
     private func bind() {
-        onAppearLastValue
-            .dropFirst()
-            .removeDuplicates()
+        lastAppearedIndexSubject.dropFirst().removeDuplicates()
+            .combineLatest(lastDisappearedIndexSubject.dropFirst().removeDuplicates())
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink { controller, onAppearValue in
-                guard controller.viewDidAppear else {
-                    return
+            .sink(receiveValue: { elements in
+                let (controller, (appearedIndex, disappearedIndex)) = elements
+
+                let range: ClosedRange<Int>
+                let direction: Direction
+                if appearedIndex > disappearedIndex {
+                    direction = .down
+                    range = disappearedIndex ... appearedIndex
+                } else {
+                    direction = .up
+                    range = appearedIndex ... disappearedIndex
                 }
 
-                let closeRange = min(onAppearValue, controller.onDisappearLastValue.value) ... max(onAppearValue, controller.onDisappearLastValue.value)
-                let direction: Direction = onAppearValue > controller.onDisappearLastValue.value ? .down : .up
-
-                controller
-                    .visableRangeAreaValue
-                    .send(.init(range: closeRange, direction: direction))
-            }
+                let visibleArea = VisibleArea(range: range, direction: direction)
+                controller.visibleRangeAreaSubject.send(visibleArea)
+            })
             .store(in: &bag)
 
-        onDisappearLastValue
+        visibleRangeAreaSubject
             .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink { controller, onDisappearValue in
-                guard controller.viewDidAppear else {
-                    return
-                }
-
-                let closeRange = min(controller.onAppearLastValue.value, onDisappearValue) ... max(controller.onAppearLastValue.value, onDisappearValue)
-                let direction: Direction = controller.visableRangeAreaValue.value.direction
-
-                controller
-                    .visableRangeAreaValue
-                    .send(.init(range: closeRange, direction: direction))
-            }
-            .store(in: &bag)
-
-        visableRangeAreaValue
-            .dropFirst()
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { controller, visabaleArea in
-                if case .down = visabaleArea.direction {
-                    controller.fetchMoreIfPossible(with: visabaleArea.range)
-                }
-
-                if case .up = visabaleArea.direction {
-                    controller.removeLastIfPossible(with: visabaleArea.range)
+            .sink { controller, visibleArea in
+                switch visibleArea.direction {
+                case .down:
+                    controller.fetchMoreIfPossible(with: visibleArea.range)
+                case .up:
+                    controller.removeLastIfPossible(with: visibleArea.range)
                 }
             }
             .store(in: &bag)
@@ -101,15 +84,16 @@ class MarketsListDataController {
             return
         }
 
-        if (dataProvider.items.count - range.upperBound) < Constants.prefetchMoreCountRows {
+        let itemsInUpperBufferZone = dataProvider.items.count - range.upperBound
+        if itemsInUpperBufferZone < Constants.prefetchMoreRowsCount {
             dataProvider.fetchMore()
         }
     }
 
     // Need for optimization in memory cache rows
     private func removeLastIfPossible(with range: ClosedRange<Int>) {
-        let offsetToRemove = Constants.prefetchMoreCountRows * 2
-        let findLastToRemoveRows = (dataProvider.items.count - range.upperBound) > offsetToRemove ? Constants.prefetchMoreCountRows : nil
+        let offsetToRemove = Constants.prefetchMoreRowsCount * 2
+        let findLastToRemoveRows = (dataProvider.items.count - range.upperBound) > offsetToRemove ? Constants.prefetchMoreRowsCount : nil
 
         if let findLastToRemoveRows {
             dataProvider.removeItems(count: findLastToRemoveRows)
@@ -123,7 +107,7 @@ extension MarketsListDataController {
         case down
     }
 
-    struct VisabaleArea: Equatable {
+    struct VisibleArea: Equatable {
         let range: ClosedRange<Int>
         let direction: Direction
     }
@@ -133,11 +117,11 @@ extension MarketsListDataController {
 
 extension MarketsListDataController: MarketsListPrefetchDataSource {
     func prefetchRows(at index: Int) {
-        onAppearLastValue.send(index)
+        lastAppearedIndexSubject.send(index)
     }
 
     func cancelPrefetchingForRows(at index: Int) {
-        onDisappearLastValue.send(index)
+        lastDisappearedIndexSubject.send(index)
     }
 }
 
@@ -145,6 +129,6 @@ extension MarketsListDataController: MarketsListPrefetchDataSource {
 
 extension MarketsListDataController {
     enum Constants {
-        static let prefetchMoreCountRows = 100
+        static let prefetchMoreRowsCount = 20
     }
 }
