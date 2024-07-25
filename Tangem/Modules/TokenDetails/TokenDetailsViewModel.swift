@@ -17,7 +17,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
     @Published private var balance: LoadingValue<BalanceInfo> = .loading
-    @Published private var availableBalance: BalanceInfo?
+    @Published private var stakingManagerState: StakingManagerState?
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
@@ -219,8 +219,9 @@ private extension TokenDetailsViewModel {
 
         walletModel.stakingManagerStatePublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                self?.updateAvailableBalance(stakingManagerState: state)
+            .sink { _ in } receiveValue: { [weak self] newState in
+                AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
+                self?.updateStakingManagerState(newState)
             }
             .store(in: &bag)
 
@@ -262,17 +263,8 @@ private extension TokenDetailsViewModel {
         }
     }
 
-    private func updateAvailableBalance(stakingManagerState: StakingManagerState) {
-        switch stakingManagerState {
-        case .availableToUnstake(let stakingBalanceInfo, _),
-             .availableToClaimRewards(let stakingBalanceInfo, _):
-            availableBalance = BalanceInfo(
-                balance: walletModel.availableBalance,
-                fiatBalance: walletModel.availableFiatBalance
-            )
-        default:
-            break
-        }
+    private func updateStakingManagerState(_ state: StakingManagerState) {
+        stakingManagerState = state
     }
 
     private func didTapPendingExpressTransaction(with id: String) {
@@ -315,6 +307,19 @@ extension TokenDetailsViewModel: BalanceProvider {
 
 extension TokenDetailsViewModel: AvailableBalanceProvider {
     var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
-        $availableBalance.eraseToAnyPublisher()
+        $stakingManagerState
+            .withWeakCaptureOf(self)
+            .map { viewModel, state in
+                switch state {
+                case .availableToUnstake, .availableToClaimRewards:
+                    return BalanceInfo(
+                        balance: viewModel.walletModel.availableBalance,
+                        fiatBalance: viewModel.walletModel.availableFiatBalance
+                    )
+                default:
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }
