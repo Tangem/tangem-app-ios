@@ -607,7 +607,7 @@
 "send_sending" = "送金中...";
 "send_summary_tap_hint" = "変更するには任意の箇所をタップしてください";
 "send_summary_title" = "%@を送金する";
-"send_summary_transaction_description" = "** %1$@ ** を送金する (ネットワーク手数料%2$@を含む)";
+"send_summary_transaction_description" = "**%1$@** を送金する (ネットワーク手数料%2$@を含む)";
 "send_summary_transaction_description_no_fiat_fee" = "**%1$@** と %2$@ を送金しています。";
 "send_title_currency_format" = "%@を送信しています";
 "send_total_label" = "合計";
