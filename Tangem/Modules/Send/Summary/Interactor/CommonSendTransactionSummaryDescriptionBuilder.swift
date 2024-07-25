@@ -1,5 +1,5 @@
 //
-//  SendTransactionSummaryDescriptionBuilderProtocol.swift
+//  CommonSendTransactionSummaryDescriptionBuilder.swift
 //  Tangem
 //
 //  Created by Aleksei Muraveinik on 25.07.24.

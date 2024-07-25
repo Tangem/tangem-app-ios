@@ -970,7 +970,7 @@
 		DA8C67342B0B451F00E1C9B8 /* AmountSummaryViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C67302B0B451F00E1C9B8 /* AmountSummaryViewData.swift */; };
 		DA8C673D2B0B455700E1C9B8 /* DefaultTextWithTitleRowViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C673B2B0B455700E1C9B8 /* DefaultTextWithTitleRowViewData.swift */; };
 		DA8C673E2B0B455700E1C9B8 /* DefaultTextWithTitleRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C673C2B0B455700E1C9B8 /* DefaultTextWithTitleRowView.swift */; };
-		DA90396B2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilderProtocol.swift */; };
+		DA90396B2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilder.swift */; };
 		DA90396D2C520E0E002C1E6E /* KoinosSendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA90396C2C520E0E002C1E6E /* KoinosSendTransactionSummaryDescriptionBuilder.swift */; };
 		DA91770E2A25DD3F006CD67B /* OneInchGradientViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA91770D2A25DD3F006CD67B /* OneInchGradientViews.swift */; };
 		DA9493E72B9978A900F2BE0F /* EmailDataProviderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9493E62B9978A900F2BE0F /* EmailDataProviderMock.swift */; };
@@ -2877,7 +2877,7 @@
 		DA8C67302B0B451F00E1C9B8 /* AmountSummaryViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmountSummaryViewData.swift; sourceTree = "<group>"; };
 		DA8C673B2B0B455700E1C9B8 /* DefaultTextWithTitleRowViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultTextWithTitleRowViewData.swift; sourceTree = "<group>"; };
 		DA8C673C2B0B455700E1C9B8 /* DefaultTextWithTitleRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultTextWithTitleRowView.swift; sourceTree = "<group>"; };
-		DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendTransactionSummaryDescriptionBuilderProtocol.swift; sourceTree = "<group>"; };
+		DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		DA90396C2C520E0E002C1E6E /* KoinosSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KoinosSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		DA91770D2A25DD3F006CD67B /* OneInchGradientViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneInchGradientViews.swift; sourceTree = "<group>"; };
 		DA9493E62B9978A900F2BE0F /* EmailDataProviderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailDataProviderMock.swift; sourceTree = "<group>"; };
@@ -8578,7 +8578,7 @@
 			children = (
 				EF1D1AE72C29C171000CB941 /* SendSummaryInteractor.swift */,
 				EF7A072B2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift */,
-				DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilderProtocol.swift */,
+				DA90396A2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilder.swift */,
 				DA90396C2C520E0E002C1E6E /* KoinosSendTransactionSummaryDescriptionBuilder.swift */,
 			);
 			path = Interactor;
@@ -10748,7 +10748,7 @@
 				B675C3762BACB8AA007BE1DC /* PolkadotAccountHealthChecker.swift in Sources */,
 				DCBAF69F2A4AF4660029480A /* TwinWalletManagerFactory.swift in Sources */,
 				EFE7D5842AA224C50047D93A /* FetchMore.swift in Sources */,
-				DA90396B2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilderProtocol.swift in Sources */,
+				DA90396B2C520DEB002C1E6E /* CommonSendTransactionSummaryDescriptionBuilder.swift in Sources */,
 				B6ED08302A7D9FA70090E51F /* OrganizeTokensOptionsEditing.swift in Sources */,
 				DAB5E335297E8CBF00A4E9CF /* SignificantFractionDigitRounder.swift in Sources */,
 				EFE7D57B2AA209990047D93A /* TokenQuote.swift in Sources */,
