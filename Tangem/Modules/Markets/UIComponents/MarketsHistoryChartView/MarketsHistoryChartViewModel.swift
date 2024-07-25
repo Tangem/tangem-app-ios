@@ -13,8 +13,6 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     @Published private(set) var viewState: ViewState = .idle
     @Published /* private(set) */ var selectedPriceInterval: MarketsPriceIntervalType = .all
 
-    let xAxisLabelCount = 3
-
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -47,7 +45,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // TODO: Andrey Fedorov - Cache parsed data
     private func makeLineChartViewData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData {
         let yAxis = try makeYAxisData(from: model)
-        let xAxis = try makeXAxisData(from: model)
+        let xAxis = try makeXAxisData(from: model, selectedPriceInterval: selectedPriceInterval)
 
         return LineChartViewData(
             yAxis: yAxis,
@@ -65,14 +63,20 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             .prices
             .max(by: \.value)?.value
 
-        guard let minYAxisValue, let maxYAxisValue else {
+        guard
+            let minYAxisValue,
+            let maxYAxisValue
+        else {
             throw Error.invalidData
         }
 
-        return LineChartViewData.YAxis(minValue: minYAxisValue, maxValue: maxYAxisValue)
+        return LineChartViewData.YAxis(labelCount: 3, axisMinValue: minYAxisValue, axisMaxValue: maxYAxisValue)
     }
 
-    private func makeXAxisData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData.XAxis {
+    private func makeXAxisData(
+        from model: MarketsChartsHistoryItemModel,
+        selectedPriceInterval: MarketsPriceIntervalType
+    ) throws -> LineChartViewData.XAxis {
         let xAxisValues = try model
             .prices
             .map { key, value in
@@ -84,7 +88,40 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             }
             .sorted(by: \.timeStamp)
 
-        return LineChartViewData.XAxis(values: xAxisValues)
+        guard
+            let startTimeStamp = xAxisValues.first?.timeStamp,
+            let endTimeStamp = xAxisValues.last?.timeStamp
+        else {
+            throw Error.invalidData
+        }
+
+        let range = Decimal(endTimeStamp - startTimeStamp)
+        let labelCount = labelCount(for: selectedPriceInterval)
+        let interval = range / Decimal(labelCount + 1)
+        let minXAxisValue = Decimal(startTimeStamp) + interval
+        let maxXAxisValue = Decimal(endTimeStamp) - interval
+
+        return LineChartViewData.XAxis(
+            labelCount: labelCount,
+            axisMinValue: minXAxisValue,
+            axisMaxValue: maxXAxisValue,
+            values: xAxisValues
+        )
+    }
+
+    private func labelCount(for selectedPriceInterval: MarketsPriceIntervalType) -> Int {
+        switch selectedPriceInterval {
+        case .week:
+            5
+        case .day,
+             .month,
+             .quarter,
+             .halfYear,
+             .year:
+            6
+        case .all:
+            7
+        }
     }
 }
 

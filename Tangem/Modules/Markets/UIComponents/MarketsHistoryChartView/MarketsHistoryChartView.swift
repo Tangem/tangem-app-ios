@@ -32,11 +32,12 @@ struct MarketsHistoryChartView: View {
                     chartView.xAxis.labelFont = UIFonts.Regular.caption2
                     chartView.xAxis.labelTextColor = .textTertiary
                     chartView.xAxis.yOffset = 26.0
+                    chartView.xAxis.xOffset = 0.0
+                    chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable when the logic for X axis labels will be finalized
                     chartView.leftAxis.gridLineWidth = 1.0
                     chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
                     chartView.leftAxis.labelPosition = .insideChart
                     chartView.leftAxis.drawAxisLineEnabled = false
-                    chartView.leftAxis.setLabelCount(viewModel.xAxisLabelCount, force: true)
                     chartView.leftAxis.labelFont = UIFonts.Regular.caption2
                     chartView.leftAxis.labelTextColor = .textTertiary
                     chartView.rightAxis.enabled = false

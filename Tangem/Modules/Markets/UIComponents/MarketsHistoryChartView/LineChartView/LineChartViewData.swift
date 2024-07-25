@@ -10,8 +10,9 @@ import Foundation
 
 struct LineChartViewData: Equatable {
     struct YAxis: Equatable {
-        let minValue: Decimal
-        let maxValue: Decimal
+        let labelCount: Int
+        let axisMinValue: Decimal
+        let axisMaxValue: Decimal
     }
 
     struct XAxis: Equatable {
@@ -21,6 +22,9 @@ struct LineChartViewData: Equatable {
             let price: Decimal
         }
 
+        let labelCount: Int
+        let axisMinValue: Decimal
+        let axisMaxValue: Decimal
         let values: [Value]
     }
 

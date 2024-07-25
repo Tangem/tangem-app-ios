@@ -17,10 +17,27 @@ struct LineChartViewConfigurator {
         let dataSet = makeDataSet()
         chartView.data = LineChartData(dataSet: dataSet)
 
+        configureYAxis(on: chartView, using: chartData.yAxis)
+        configureXAxis(on: chartView, using: chartData.xAxis)
+    }
+
+    private func configureYAxis(on chartView: LineChartViewWrapper.UIViewType, using yAxisData: LineChartViewData.YAxis) {
+        chartView.leftAxis.setLabelCount(yAxisData.labelCount, force: true)
         // We're losing some precision here due to the `Decimal` -> `Double` conversion,
         // but that's ok - graphical charts are never 100% accurate by design
-        chartView.leftAxis.axisMinimum = chartData.yAxis.minValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
-        chartView.leftAxis.axisMaximum = chartData.yAxis.maxValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax
+        chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax if needed
+        chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax if needed
+    }
+
+    private func configureXAxis(on chartView: LineChartViewWrapper.UIViewType, using xAxisData: LineChartViewData.XAxis) {
+        chartView.xAxis.setLabelCount(xAxisData.labelCount, force: true)
+        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
+        // but that's ok - graphical charts are never 100% accurate by design
+        // TODO: Andrey Fedorov - Setting `axisMinimum`/`axisMaximum` actually clips the entire chart within these bounds, so custom X Axis renderer required
+        /*
+         chartView.xAxis.axisMinimum = xAxisData.axisMinValue.doubleValue
+         chartView.xAxis.axisMaximum = xAxisData.axisMaxValue.doubleValue
+          */
     }
 
     private func makeDataSet() -> LineChartDataSet {
