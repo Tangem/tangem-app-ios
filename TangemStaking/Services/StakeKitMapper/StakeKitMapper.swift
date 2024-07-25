@@ -73,7 +73,9 @@ struct StakeKitMapper {
 
         return StakingBalanceInfo(
             item: mapToStakingTokenItem(from: balance.token),
-            blocked: blocked
+            blocked: blocked,
+            balanceGroupType: mapToBalanceGroupType(from: balance.type),
+            hasRewards: mapToHasRewards(from: balance)
         )
     }
 
@@ -187,6 +189,23 @@ struct StakeKitMapper {
         case .era: .era
         case .epoch: .epoch
         }
+    }
+
+    func mapToBalanceGroupType(
+        from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
+    ) -> BalanceGroupType {
+        switch balanceType {
+        case .preparing, .available, .locked, .staked:
+            return .active
+        case .unstaking, .unstaked, .unlocking:
+            return .unstaked
+        case .rewards, .unknown:
+            return .unknown
+        }
+    }
+
+    func mapToHasRewards(from balance: StakeKitDTO.Balances.Response.Balance) -> Bool {
+        balance.type == .rewards || balance.pendingActions.contains { $0.type == .claimRewards }
     }
 }
 

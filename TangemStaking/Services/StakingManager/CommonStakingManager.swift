@@ -79,8 +79,19 @@ private extension CommonStakingManager {
     }
 
     func state(balance: StakingBalanceInfo?, yield: YieldInfo) -> StakingManagerState {
-        // TODO: Add different states
-        return .availableToStake(yield)
+        guard let balance else {
+            return .availableToStake(yield)
+        }
+
+        if balance.balanceGroupType.isActiveOrUnstaked {
+            if balance.hasRewards {
+                return .availableToClaimRewards(balance, yield)
+            } else {
+                return .availableToUnstake(balance, yield)
+            }
+        } else {
+            return .availableToStake(yield)
+        }
     }
 
     func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {

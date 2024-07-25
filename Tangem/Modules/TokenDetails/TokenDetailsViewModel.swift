@@ -11,11 +11,13 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 import TangemExpress
+import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
     @Published private var balance: LoadingValue<BalanceInfo> = .loading
+    @Published private var availableBalance: BalanceInfo?
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
@@ -71,7 +73,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         )
         notificationManager.setupManager(with: self)
         bannerNotificationManager?.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
+        balanceWithButtonsModel = .init(balanceProvider: self, availableBalanceProvider: self, buttonsProvider: self)
 
         prepareSelf()
     }
@@ -215,6 +217,13 @@ private extension TokenDetailsViewModel {
             }
             .store(in: &bag)
 
+        walletModel.stakingManagerStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.updateAvailableBalance(stakingManagerState: state)
+            }
+            .store(in: &bag)
+
         pendingExpressTransactionsManager.pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
@@ -250,6 +259,19 @@ private extension TokenDetailsViewModel {
         case .noDerivation:
             // User can't reach this screen without derived keys
             balance = .failedToLoad(error: "")
+        }
+    }
+
+    private func updateAvailableBalance(stakingManagerState: StakingManagerState) {
+        switch stakingManagerState {
+        case .availableToUnstake(let stakingBalanceInfo, _),
+             .availableToClaimRewards(let stakingBalanceInfo, _):
+            availableBalance = BalanceInfo(
+                balance: walletModel.availableBalance,
+                fiatBalance: walletModel.availableFiatBalance
+            )
+        default:
+            break
         }
     }
 
@@ -289,4 +311,10 @@ private extension TokenDetailsViewModel {
 
 extension TokenDetailsViewModel: BalanceProvider {
     var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
+}
+
+extension TokenDetailsViewModel: AvailableBalanceProvider {
+    var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
+        $availableBalance.eraseToAnyPublisher()
+    }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     @Published var isLoadingFiatBalance = true
@@ -17,15 +18,39 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
 
     @Published var buttons: [FixedSizeButtonWithIconInfo] = []
 
+    @Published var balanceTypeValues: [BalanceType]?
+    @Published var selectedBalanceType: BalanceType = .all {
+        didSet {
+            updateBalances()
+        }
+    }
+
+    private var balance: BalanceInfo? {
+        didSet {
+            if balance != nil {
+                updateBalances()
+            } else {
+                setupEmptyBalances()
+            }
+        }
+    }
+
+    private var availableBalance: BalanceInfo? {
+        didSet {
+            balanceTypeValues = (availableBalance == nil) ? nil : BalanceType.allCases
+        }
+    }
+
     private weak var balanceProvider: BalanceProvider?
+    private weak var availableBalanceProvider: AvailableBalanceProvider?
     private weak var buttonsProvider: ActionButtonsProvider?
 
     private var bag = Set<AnyCancellable>()
 
-    init(balanceProvider: BalanceProvider?, buttonsProvider: ActionButtonsProvider?) {
+    init(balanceProvider: BalanceProvider?, availableBalanceProvider: AvailableBalanceProvider?, buttonsProvider: ActionButtonsProvider?) {
         self.balanceProvider = balanceProvider
+        self.availableBalanceProvider = availableBalanceProvider
         self.buttonsProvider = buttonsProvider
-
         bind()
     }
 
@@ -37,10 +62,10 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
                 case .loading:
                     return
                 case .loaded(let balance):
-                    self?.updateBalances(for: balance)
+                    self?.balance = balance
                 case .failedToLoad(let error):
                     AppLog.shared.debug("Failed to load balance. Reason: \(error)")
-                    self?.setupEmptyBalances()
+                    self?.balance = nil
                     self?.isLoadingFiatBalance = false
                 }
                 self?.isLoadingBalance = false
@@ -53,6 +78,13 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
                 self?.buttons = buttons
             }
             .store(in: &bag)
+
+        availableBalanceProvider?.availableBalancePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] availableBalance in
+                self?.availableBalance = availableBalance
+            })
+            .store(in: &bag)
     }
 
     private func setupEmptyBalances() {
@@ -60,11 +92,37 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
         cryptoBalance = BalanceFormatter.defaultEmptyBalanceString
     }
 
-    private func updateBalances(for newBalance: BalanceInfo) {
+    private func updateBalances() {
         let formatter = BalanceFormatter()
 
+        let balanceInfo: BalanceInfo
+
+        if selectedBalanceType == .all, let balance {
+            balanceInfo = balance
+        } else if selectedBalanceType == .available, let availableBalance {
+            balanceInfo = availableBalance
+        } else {
+            return
+        }
+
         isLoadingFiatBalance = false
-        cryptoBalance = newBalance.balance
-        fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: newBalance.fiatBalance)
+
+        cryptoBalance = balanceInfo.balance
+        fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: balanceInfo.fiatBalance)
+    }
+}
+
+extension BalanceWithButtonsViewModel {
+    enum BalanceType: String, CaseIterable, Hashable, Identifiable {
+        case all
+        case available
+
+        var title: String {
+            rawValue.capitalized
+        }
+
+        var id: String {
+            rawValue
+        }
     }
 }

@@ -727,3 +727,43 @@ extension WalletModel: TransactionHistoryFetcher {
         _transactionHistoryService?.clearHistory()
     }
 }
+
+extension WalletModel {
+    private var stakingBalanceInfo: StakingBalanceInfo? {
+        switch stakingManager?.state {
+        case .availableToUnstake(let balanceInfo, _),
+             .availableToClaimRewards(let balanceInfo, _):
+            return balanceInfo
+        default:
+            return nil
+        }
+    }
+
+    private var availableBalanceValue: Decimal? {
+        guard let stakingBalanceInfo, let balanceValue else {
+            return nil
+        }
+        return balanceValue - stakingBalanceInfo.blocked
+    }
+
+    private var availableFiatValue: Decimal? {
+        guard let availableBalanceValue,
+              canUseQuotes,
+              let currencyId = tokenItem.currencyId
+        else {
+            return nil
+        }
+        return converter.convertToFiat(availableBalanceValue, currencyId: currencyId)
+    }
+
+    var availableBalance: String {
+        guard let availableBalanceValue else {
+            return BalanceFormatter.defaultEmptyBalanceString
+        }
+        return formatter.formatCryptoBalance(availableBalanceValue, currencyCode: tokenItem.currencySymbol)
+    }
+
+    var availableFiatBalance: String {
+        formatter.formatFiatBalance(availableFiatValue)
+    }
+}
