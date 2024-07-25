@@ -608,7 +608,7 @@
 "send_summary_tap_hint" = "Berühre an beliebiger Stelle für Änderungen";
 "send_summary_title" = "Versende %@";
 "send_summary_transaction_description" = "Du sendest **%1$@** inklusive der Netzwerkgebühr %2$@";
-"send_summary_transaction_description_no_fiat_fee" = "Du sendest ** %1$@ ** und %2$@";
+"send_summary_transaction_description_no_fiat_fee" = "Du sendest **%1$@** und %2$@";
 "send_title_currency_format" = "Senden %@";
 "send_total_label" = "Gesamt";
 "send_total_subtitle_asset_format" = "%1$@ und %2$@ werden gesendet";
