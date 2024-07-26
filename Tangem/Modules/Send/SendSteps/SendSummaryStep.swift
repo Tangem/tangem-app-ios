@@ -45,31 +45,37 @@ extension SendSummaryStep: SendStep {
 
     var type: SendStepType { .summary(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         input.transactionPublisher.map { $0 != nil }.eraseToAnyPublisher()
-    }
-
-    func willAppear(previous step: any SendStep) {
-        viewModel.setupAnimations(previousStep: step.type)
     }
 }
 
 // MARK: - SendSummaryViewModelSetupable
 
-extension SendSummaryStep: SendSummaryViewModelSetupable {
-    func setup(sendDestinationInput: any SendDestinationInput) {
-        viewModel.setup(sendDestinationInput: sendDestinationInput)
-    }
+// extension SendSummaryStep: SendSummaryViewModelSetupable {
+//    func setup(sendDestinationViewModel: SendDestinationViewModel) {
+//        viewModel.setup(sendDestinationViewModel: sendDestinationViewModel)
+//    }
 
-    func setup(sendAmountInput: any SendAmountInput) {
-        viewModel.setup(sendAmountInput: sendAmountInput)
-    }
+//    func setup(sendAmountViewModel: SendAmountViewModel) {
+//        viewModel.setup(sendAmountViewModel: sendAmountViewModel)
+//    }
 
-    func setup(sendFeeInput: any SendFeeInput) {
-        viewModel.setup(sendFeeInput: sendFeeInput)
-    }
+//    func setup(sendDestinationInput: any SendDestinationInput) {
+//        viewModel.setup(sendDestinationInput: sendDestinationInput)
+//    }
 
-    func setup(stakingValidatorsInput: any StakingValidatorsInput) {
-        viewModel.setup(stakingValidatorsInput: stakingValidatorsInput)
-    }
-}
+//    func setup(sendAmountInput: any SendAmountInput) {
+//        viewModel.setup(sendAmountInput: sendAmountInput)
+//    }
+
+//    func setup(sendFeeInput: any SendFeeInput) {
+//        viewModel.setup(sendFeeInput: sendFeeInput)
+//    }
+//
+//    func setup(stakingValidatorsInput: any StakingValidatorsInput) {
+//        viewModel.setup(stakingValidatorsInput: stakingValidatorsInput)
+//    }
+// }

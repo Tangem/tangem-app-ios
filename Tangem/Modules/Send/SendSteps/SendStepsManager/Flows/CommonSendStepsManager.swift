@@ -94,7 +94,7 @@ class CommonSendStepsManager {
 
 extension CommonSendStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: destinationStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: destinationStep, mainButtonType: .next, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

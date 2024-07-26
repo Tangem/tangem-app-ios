@@ -11,7 +11,8 @@ import Combine
 import UIKit
 
 class SendDestinationCompactViewModel: ObservableObject, Identifiable {
-    @Published var viewSize: CGSize = .zero
+    // Use the estimated size as initial value
+    @Published var viewSize: CGSize = .init(width: 361, height: 88)
     @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
 
     let addressTextViewHeightModel: AddressTextViewHeightModel

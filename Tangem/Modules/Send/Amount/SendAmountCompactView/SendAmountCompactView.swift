@@ -11,7 +11,7 @@ import SwiftUI
 
 struct SendAmountCompactView: View {
     @ObservedObject var viewModel: SendAmountCompactViewModel
-    let background: Color
+    let type: SendCompactViewEditableType
     let namespace: SendAmountView.Namespace
 
     var body: some View {
@@ -19,9 +19,15 @@ struct SendAmountCompactView: View {
             amountContent
         }
         .innerContentPadding(16)
-        .backgroundColor(background)
+        .backgroundColor(type.background)
         .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
         .readGeometry(\.size, bindTo: $viewModel.viewSize)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if case .enabled(.some(let action)) = type {
+                action()
+            }
+        }
     }
 
     private var amountContent: some View {

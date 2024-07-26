@@ -51,11 +51,19 @@ struct SendFlowBaseBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: .editable
+            editableType: .editable,
+            sendDestinationCompactViewModel: destination.compact,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: sendModel,
+            sendDestinationCompactViewModel: destination.compact,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         // We have to set dependicies here after all setups is completed
@@ -68,14 +76,8 @@ struct SendFlowBaseBuilder {
         notificationManager.setup(input: sendModel)
         notificationManager.setupManager(with: sendModel)
 
-        summary.step.setup(sendDestinationInput: sendModel)
-        summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInput: sendModel)
-
-        finish.setup(sendDestinationInput: sendModel)
-        finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInput: sendModel)
-        finish.setup(sendFinishInput: sendModel)
+        // We have to do it after sendModel fully setup
+        fee.compact.bind(input: sendModel)
 
         let stepsManager = CommonSendStepsManager(
             destinationStep: destination.step,

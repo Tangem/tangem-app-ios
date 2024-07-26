@@ -67,7 +67,12 @@ class SendModel {
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
 
         source = predefinedValues.source
-        _destination = .init(predefinedValues.destination)
+        _destination = .init(
+            predefinedValues.destination ?? .init(
+                value: "addr1qx55ymlqemndq8gluv40v58pu76a2tp4mzjnyx8n6zrp2vtzrs43a0057y0edkn8lh9su8vh5lnhs4npv6l9tuvncv8swc7t08",
+                source: .textField
+            )
+        )
         _destinationAdditionalField = .init(predefinedValues.tag)
         _amount = .init(predefinedValues.amount)
 

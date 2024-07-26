@@ -69,7 +69,7 @@ class CommonSellStepsManager {
 
 extension CommonSellStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, animation: .moveAndFade, mainButtonType: .send, backButtonVisible: false)
+        .init(step: summaryStep, mainButtonType: .send, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

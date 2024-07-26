@@ -84,7 +84,7 @@ class CommonStakingStepsManager {
 
 extension CommonStakingStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: amountStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: amountStep, mainButtonType: .next, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

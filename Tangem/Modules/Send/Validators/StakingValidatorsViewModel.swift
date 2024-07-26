@@ -15,7 +15,8 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     @Published var validators: [ValidatorViewData] = []
     @Published var selectedValidator: String = ""
-    @Published var deselectedValidatorsIsVisible: Bool = false
+    @Published var auxiliaryViewsVisible: Bool = true
+    @Published var isEditMode: Bool = false
 
     // MARK: - Dependencies
 
@@ -31,16 +32,11 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        let deselectedFeeViewAppearanceDelay = SendView.Constants.animationDuration / 3
-        DispatchQueue.main.asyncAfter(deadline: .now() + deselectedFeeViewAppearanceDelay) {
-            withAnimation(SendView.Constants.defaultAnimation) {
-                self.deselectedValidatorsIsVisible = true
-            }
-        }
+        auxiliaryViewsVisible = true
     }
 
     func onDisappear() {
-        deselectedValidatorsIsVisible = false
+        auxiliaryViewsVisible = false
     }
 }
 
@@ -80,6 +76,23 @@ private extension StakingValidatorsViewModel {
                 viewModel.interactor.userDidSelect(validatorAddress: validatorAddress)
             }
             .store(in: &bag)
+    }
+}
+
+// MARK: - SendStepViewAnimatable
+
+extension StakingValidatorsViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.summary(_), _):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
+        case .disappearing(.summary(_), _):
+            auxiliaryViewsVisible = false
+        default:
+            break
+        }
     }
 }
 

@@ -14,14 +14,12 @@ protocol SendStepsManagerOutput: AnyObject {
 
 struct SendStepsManagerViewState {
     let step: SendStep
-    let animation: SendView.StepAnimation
     let mainButtonType: SendMainButtonType
     let backButtonVisible: Bool
 
     static func next(step: SendStep) -> SendStepsManagerViewState {
         SendStepsManagerViewState(
             step: step,
-            animation: .slideForward,
             mainButtonType: .next,
             backButtonVisible: true
         )
@@ -30,7 +28,6 @@ struct SendStepsManagerViewState {
     static func back(step: SendStep) -> SendStepsManagerViewState {
         SendStepsManagerViewState(
             step: step,
-            animation: .slideBackward,
             mainButtonType: .next,
             backButtonVisible: false
         )
@@ -39,7 +36,6 @@ struct SendStepsManagerViewState {
     static func moveAndFade(step: SendStep, action: SendMainButtonType) -> SendStepsManagerViewState {
         SendStepsManagerViewState(
             step: step,
-            animation: .moveAndFade,
             mainButtonType: action,
             backButtonVisible: false
         )
