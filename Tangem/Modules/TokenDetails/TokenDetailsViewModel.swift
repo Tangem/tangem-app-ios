@@ -315,5 +315,4 @@ extension TokenDetailsViewModel {
     var availableBalance: BalanceInfo {
         BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
     }
-
 }

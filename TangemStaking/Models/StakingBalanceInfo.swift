@@ -12,13 +12,11 @@ public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
     public let blocked: Decimal
     public let balanceGroupType: BalanceGroupType
-    public let hasRewards: Bool
 
-    public init(item: StakingTokenItem, blocked: Decimal, balanceGroupType: BalanceGroupType, hasRewards: Bool) {
+    public init(item: StakingTokenItem, blocked: Decimal, balanceGroupType: BalanceGroupType) {
         self.item = item
         self.blocked = blocked
         self.balanceGroupType = balanceGroupType
-        self.hasRewards = hasRewards
     }
 }
 
