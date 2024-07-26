@@ -28,7 +28,7 @@ struct MarketsHistoryChartView: View {
             .transition(.opacity)
         }
         .frame(height: 202.0)
-        .animation(.linear(duration: 0.1), value: viewModel.viewState)
+        .animation(.linear(duration: 0.15), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
     }
@@ -58,9 +58,27 @@ struct MarketsHistoryChartView: View {
 
     @ViewBuilder
     private var overlayLoadingView: some View {
-        Colors.Background
-            .plain
-            .opacity(0.4)
+        Color.clear
+            .overlay {
+                let overlayColor = Colors
+                    .Background
+                    .primary
+                    .opacity(2.0 / 3.0)
+
+                LinearGradient(
+                    colors: [
+                        .clear,
+                        overlayColor,
+                        overlayColor,
+                        overlayColor,
+                        overlayColor,
+                        .clear,
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .padding(.vertical, -28.0) // Extend the gradient beyond the parent view's bounds
+            }
             .overlay {
                 standaloneLoadingView
             }
@@ -70,7 +88,9 @@ struct MarketsHistoryChartView: View {
     private func makeLoadingView(for chartData: LineChartViewData?) -> some View {
         if let chartData {
             makeChartView(for: chartData)
-                .overlay { overlayLoadingView }
+                .overlay {
+                    overlayLoadingView
+                }
         } else {
             standaloneLoadingView
         }
