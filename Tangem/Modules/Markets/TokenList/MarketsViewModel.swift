@@ -17,9 +17,9 @@ final class MarketsViewModel: ObservableObject {
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var viewDidAppear: Bool = false
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
-    @Published var isLoading: Bool = false
     @Published var isShowUnderCapButton: Bool = false
-    @Published var emptyTokensState: MarketsView.EmptyTokensState?
+    @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published var shouldResetScrollPosition: Bool = false
 
     // MARK: - Properties
 
@@ -27,7 +27,7 @@ final class MarketsViewModel: ObservableObject {
         dataProvider.canFetchMore
     }
 
-    var isSerching: Bool {
+    var isSearching: Bool {
         !currentSearchValue.isEmpty
     }
 
@@ -71,9 +71,10 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomSheetDisappear() {
-        dataProvider.reset(nil, with: nil)
+        dataProvider.reset()
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
+        currentSearchValue = ""
         viewDidAppear = false
     }
 
@@ -82,6 +83,7 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onShowUnderCapAction() {
+        isShowUnderCapButton = false
         dataProvider.isGeneralCoins = true
         dataProvider.fetchMore()
     }
@@ -133,34 +135,56 @@ private extension MarketsViewModel {
 
     func dataProviderBind() {
         dataProvider.$items
+            .dropFirst()
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
+                print("\nMarketsList Receive new list of items. Number of items: \(items.count)\n")
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
-                viewModel.tokenViewModels = items.compactMap { item in
+                let tokenViewModels = items.compactMap { item in
                     let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
                     return tokenViewModel
                 }
+                viewModel.tokenViewModels = tokenViewModels
 
+                print("\nMarketsList Receive new list of items. Number of created view models: \(tokenViewModels.count)\n")
                 viewModel.showUnderCapButtonIfNeeded()
-                viewModel.showTokensEmptyStateIfNeeded()
             })
+            .store(in: &bag)
+
+        $tokenListLoadingState
+            .sink { newState in
+                print("\nMarketsList Receive new list state: \(newState)\n")
+            }
             .store(in: &bag)
 
         dataProvider.$isLoading
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                guard !viewModel.dataProvider.showError else {
-                    viewModel.isLoading = false
+                print("\nMarketsList Receive is loading flag from data provider: \(isLoading)\nShow error: \(viewModel.dataProvider.showError)\n")
+                if viewModel.dataProvider.showError {
                     return
                 }
 
-                viewModel.isLoading = isLoading
+                if isLoading {
+                    viewModel.tokenListLoadingState = .loading
+                    return
+                }
+
+                if viewModel.dataProvider.items.isEmpty {
+                    viewModel.tokenListLoadingState = .noResults
+                    return
+                }
+
+                if !viewModel.dataProvider.canFetchMore {
+                    viewModel.tokenListLoadingState = .allDataLoaded
+                    return
+                }
+
+                viewModel.tokenListLoadingState = .idle
             })
             .store(in: &bag)
 
@@ -170,7 +194,7 @@ private extension MarketsViewModel {
             .sink(receiveValue: { viewModel, showError in
                 if showError {
                     viewModel.resetUI()
-                    viewModel.emptyTokensState = .error
+                    viewModel.tokenListLoadingState = .error
                 }
             })
             .store(in: &bag)
@@ -199,21 +223,15 @@ private extension MarketsViewModel {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self else { return }
 
-            isShowUnderCapButton = isSerching &&
+            isShowUnderCapButton = isSearching &&
                 !dataProvider.isGeneralCoins &&
                 !dataProvider.items.isEmpty
+            print("\nMarketsList Receive should display under cap button: \(isShowUnderCapButton)\n")
         }
     }
 
-    private func showTokensEmptyStateIfNeeded() {
-        emptyTokensState = tokenViewModels.isEmpty && !dataProvider.isLoading ? .noResults : nil
-    }
-
     private func resetUI() {
-        tokenViewModels = []
         isShowUnderCapButton = false
-        isLoading = false
-        emptyTokensState = nil
     }
 }
 
