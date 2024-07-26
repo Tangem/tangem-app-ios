@@ -41,7 +41,7 @@ struct TokenMarketsDetailsView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Text(viewModel.tokenName))
-        .background(Colors.Background.tertiary)
+        .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
@@ -59,6 +59,12 @@ struct TokenMarketsDetailsView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(viewModel.price)
+                    .blinkForegroundColor(
+                        publisher: viewModel.$priceChangeAnimation,
+                        positiveColor: Colors.Text.accent,
+                        negativeColor: Colors.Text.warning,
+                        originalColor: Colors.Text.primary1
+                    )
                     .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {

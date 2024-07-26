@@ -21,9 +21,11 @@ enum MarketsListOrderType: String, CaseIterable, Encodable, CustomStringConverti
 
     var description: String {
         switch self {
-        // TODO: - Need localize
-        default:
-            return rawValue
+        case .rating: return Localization.marketsSortByRatingTitle
+        case .trending: return Localization.marketsSortByTrendingTitle
+        case .buyers: return Localization.marketsSortByExperiencedBuyersTitle
+        case .gainers: return Localization.marketsSortByTopGainersTitle
+        case .losers: return Localization.marketsSortByTopLosersTitle
         }
     }
 }

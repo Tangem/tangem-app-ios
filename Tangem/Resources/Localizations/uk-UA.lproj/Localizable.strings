@@ -607,8 +607,8 @@
 "send_sending" = "Надсилання...";
 "send_summary_tap_hint" = "Торкніться будь-якого поля, щоб змінити його";
 "send_summary_title" = "Надіслати %@";
-"send_summary_transaction_description" = "Ви надсилаєте ** %1$@ **, включно з комісію мережі %2$@";
-"send_summary_transaction_description_no_fiat_fee" = "Ви надсилаєте ** %1$@ ** і %2$@";
+"send_summary_transaction_description" = "Ви надсилаєте **%1$@**, включно з комісію мережі %2$@";
+"send_summary_transaction_description_no_fiat_fee" = "Ви надсилаєте **%1$@** і %2$@";
 "send_title_currency_format" = "Надсилання %@";
 "send_total_label" = "Всього";
 "send_total_subtitle_asset_format" = "%1$@ та %2$@ буде надіслано";

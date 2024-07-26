@@ -22,6 +22,7 @@ struct MarketsView: View {
             }
         }
         .scrollDismissesKeyboardCompat(.immediately)
+        .background(Colors.Background.primary)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
     }
@@ -61,12 +62,6 @@ struct MarketsView: View {
                 // Need for display list skeleton view
                 if case .loading = viewModel.tokenListLoadingState {
                     loadingSkeletons
-                }
-
-                if viewModel.hasNextPage, viewModel.viewDidAppear {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
-                        .onAppear(perform: viewModel.fetchMore)
                 }
             }
         }

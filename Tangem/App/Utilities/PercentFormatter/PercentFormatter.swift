@@ -22,6 +22,12 @@ struct PercentFormatter {
         formatter.maximumFractionDigits = option.fractionDigits
         formatter.minimumFractionDigits = option.fractionDigits
 
+        formatter.negativePrefix = "-"
+        formatter.positivePrefix = "+"
+
+        formatter.positiveSuffix = " %"
+        formatter.negativeSuffix = " %"
+
         if option.clearPrefix {
             formatter.positivePrefix = ""
             formatter.negativePrefix = ""

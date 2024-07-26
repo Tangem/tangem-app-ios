@@ -40,6 +40,6 @@ struct MarketsTokenDetailsLinkChipsData: Identifiable {
     let action: () -> Void
 
     var id: String {
-        link
+        link + text
     }
 }
