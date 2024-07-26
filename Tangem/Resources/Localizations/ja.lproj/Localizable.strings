@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "速度と料金";
 "common_generate_addresses" = "アドレスを取得する";
 "common_go_to_provider" = "プロバイダーへ移動";
+"common_go_to_token" = "Go to token";
 "common_import" = "インポート";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "%@による交換";
 "express_exchange_notification_failed_text" = "返金を受けるには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_failed_title" = "プロバイダーによる操作が失敗しました。";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
 "express_exchange_notification_verification_text" = "確認するには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_verification_title" = "プロバイダーによる本人確認手続きが必要です。";
 "express_exchange_status_canceled" = "キャンセルされました";

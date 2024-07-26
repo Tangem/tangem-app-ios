@@ -12,7 +12,8 @@ protocol PendingExpressTransactionAnalyticsTracker {
     func trackStatusForTransaction(
         with transactionId: String,
         tokenSymbol: String,
-        status: PendingExpressTransactionStatus
+        status: PendingExpressTransactionStatus,
+        provider: ExpressPendingTransactionRecord.Provider
     )
 }
 

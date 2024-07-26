@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "Скорость и комиссия";
 "common_generate_addresses" = "Получить адреса";
 "common_go_to_provider" = "К провайдеру";
+"common_go_to_token" = "Перейти в токен";
 "common_import" = "Импортировать";
 "common_later" = "Позже";
 "common_learn_and_earn" = "Learn & Earn";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "Обмен через %@";
 "express_exchange_notification_failed_text" = "Чтобы вернуть ваши деньги, посетите сайт провайдера";
 "express_exchange_notification_failed_title" = "Операция не выполнена провайдером";
+"express_exchange_notification_refund_text" = "Отправленные средства были возвращены в %1$s на ваш кошелек в соответствии с правилами OKX или моста обмена. %2$s";
+"express_exchange_notification_refund_title" = "Сумма была возвращена в %1$s (%2$s сети)";
 "express_exchange_notification_verification_text" = "Посетите сайт провайдера для проверки";
 "express_exchange_notification_verification_title" = "Провайдер запрашивает прохождение верификации";
 "express_exchange_status_canceled" = "Отменен";

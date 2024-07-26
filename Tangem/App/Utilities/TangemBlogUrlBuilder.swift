@@ -27,6 +27,7 @@ extension TangemBlogUrlBuilder {
     enum Post {
         case fee
         case scanCard
+        case refundedDex
     }
 }
 
@@ -37,6 +38,8 @@ private extension TangemBlogUrlBuilder.Post {
             "what-is-a-transaction-fee-and-why-do-we-need-it"
         case .scanCard:
             "scan-tangem-card"
+        case .refundedDex:
+            "an-overview-of-cross-chain-bridges"
         }
     }
 }

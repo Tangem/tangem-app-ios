@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "Vitesse et frais";
 "common_generate_addresses" = "Obtenir des adresses";
 "common_go_to_provider" = "Aller au fournisseur";
+"common_go_to_token" = "Go to token";
 "common_import" = "Importez";
 "common_later" = "Plus tard";
 "common_learn_and_earn" = "Apprendre et Gagner";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "Échange par %@";
 "express_exchange_notification_failed_text" = "Visitez le site Web du fournisseur pour obtenir un remboursement";
 "express_exchange_notification_failed_title" = "Opération échouée par le fournisseur";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
 "express_exchange_notification_verification_text" = "Visitez le site Web du fournisseur pour la vérification";
 "express_exchange_notification_verification_title" = "Vérification KYC requise par le fournisseur";
 "express_exchange_status_canceled" = "Annulé";

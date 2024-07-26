@@ -11,7 +11,7 @@ import BlockchainSdk
 
 struct SendDestinationStepBuilder {
     typealias IO = (input: SendDestinationInput, output: SendDestinationOutput)
-    typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor)
+    typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor, compact: SendDestinationCompactViewModel)
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
@@ -41,7 +41,19 @@ struct SendDestinationStepBuilder {
             tokenItem: walletModel.tokenItem
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendDestinationCompactViewModel(
+            input: io.input,
+            addressTextViewHeightModel: addressTextViewHeightModel
+        )
+
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendDestinationCompactViewModel(
+        input: SendDestinationInput,
+        addressTextViewHeightModel: AddressTextViewHeightModel
+    ) -> SendDestinationCompactViewModel {
+        .init(input: input, addressTextViewHeightModel: addressTextViewHeightModel)
     }
 }
 
