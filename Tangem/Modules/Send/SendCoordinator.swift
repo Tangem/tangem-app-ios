@@ -48,6 +48,8 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
         case .staking(let manager):
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
+        case .unstaking(let manager):
+            rootViewModel = factory.makeUnstakingViewModel(manager: manager, router: self)
         }
     }
 }
