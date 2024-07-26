@@ -563,7 +563,7 @@
 "send_fee_picker_priority" = "Priorität";
 "send_fee_unreachable_error_text" = "Überprüfe deine Netzwerkverbindung";
 "send_fee_unreachable_error_title" = "Informationen zur Netzwerkgebühr nicht erreichbar";
-"send_from_wallet" = "Von ** %@ **";
+"send_from_wallet" = "Von **%@**";
 "send_gas_limit" = "Grenzwert Gasgebühr";
 "send_gas_limit_footer" = "Dies ist die maximale Gasgebühr, die für den Abschluss einer Transaktion oder eines Vertrags ausgegeben wird. Ein Gaslimit verhindert unerwartete oder unbegrenzte Gebühren bei der Ausführung einer Transaktion.";
 "send_gas_price" = "Gaspreis";
@@ -608,7 +608,7 @@
 "send_summary_tap_hint" = "Berühre an beliebiger Stelle für Änderungen";
 "send_summary_title" = "Versende %@";
 "send_summary_transaction_description" = "Du sendest **%1$@** inklusive der Netzwerkgebühr %2$@";
-"send_summary_transaction_description_no_fiat_fee" = "Du sendest ** %1$@ ** und %2$@";
+"send_summary_transaction_description_no_fiat_fee" = "Du sendest **%1$@** und %2$@";
 "send_title_currency_format" = "Senden %@";
 "send_total_label" = "Gesamt";
 "send_total_subtitle_asset_format" = "%1$@ und %2$@ werden gesendet";

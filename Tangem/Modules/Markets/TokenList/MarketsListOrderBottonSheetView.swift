@@ -21,5 +21,6 @@ struct MarketsListOrderBottonSheetView: View {
             .settings(\.backgroundColor, Colors.Background.action)
         }
         .padding(.horizontal, 16)
+        .padding(.bottom, 10)
     }
 }

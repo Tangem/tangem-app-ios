@@ -9,20 +9,22 @@
 import Foundation
 import SwiftUI
 import Combine
+import Kingfisher
 
 final class MarketsViewModel: ObservableObject {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
-    @Published var viewDidAppear: Bool = false
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isLoading: Bool = false
 
     // MARK: - Properties
 
-    var hasNextPage: Bool {
-        dataProvider.canFetchMore
+    private var isViewVisible: Bool = false {
+        didSet {
+            listDataController.update(viewDidAppear: isViewVisible)
+        }
     }
 
     private weak var coordinator: MarketsRoutable?
@@ -31,7 +33,11 @@ final class MarketsViewModel: ObservableObject {
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
 
+    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, isViewVisible: isViewVisible)
+
     private var bag = Set<AnyCancellable>()
+
+    private let imageCache = KingfisherManager.shared.cache
 
     // MARK: - Init
 
@@ -56,17 +62,25 @@ final class MarketsViewModel: ObservableObject {
     func onBottomSheetAppear() {
         // Need for locked fetchMore process when bottom sheet not yet open
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.viewDidAppear = true
+            self.isViewVisible = true
         }
+
+        onAppearPrepareImageCache()
 
         Analytics.log(.manageTokensScreenOpened)
     }
 
     func onBottomSheetDisappear() {
+        isViewVisible = false
+
+        tokenViewModels = []
+        chartsHistoryProvider.reset()
         dataProvider.reset(nil, with: nil)
+
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
-        viewDidAppear = false
+
+        onDisappearPrepareImageCache()
     }
 
     func fetchMore() {
@@ -88,7 +102,7 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                guard viewModel.viewDidAppear else {
+                guard viewModel.isViewVisible else {
                     return
                 }
 
@@ -116,8 +130,9 @@ private extension MarketsViewModel {
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
-                viewModel.tokenViewModels = items.compactMap { item in
-                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item)
+                // Refactor this. Each time data provider receive next page - whole item models list recreated.
+                viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
+                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: index)
                     return tokenViewModel
                 }
             })
@@ -135,21 +150,36 @@ private extension MarketsViewModel {
 
     // MARK: - Private Implementation
 
-    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
+    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel, with index: Int) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
+            index: index,
             id: tokenItemModel.id,
             name: tokenItemModel.name,
             symbol: tokenItemModel.symbol,
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId],
-            didTapAction: { [weak self] in
+            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId]
+        )
+
+        return MarketsItemViewModel(
+            inputData,
+            prefetchDataSource: listDataController,
+            chartsProvider: chartsHistoryProvider,
+            filterProvider: filterProvider,
+            onTapAction: { [weak self] in
                 self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
             }
         )
+    }
 
-        return MarketsItemViewModel(inputData, chartsProvider: chartsHistoryProvider, filterProvider: filterProvider)
+    private func onAppearPrepareImageCache() {
+        imageCache.memoryStorage.config.countLimit = 250
+    }
+
+    private func onDisappearPrepareImageCache() {
+        imageCache.memoryStorage.removeAll()
+        imageCache.memoryStorage.config.countLimit = .max
     }
 }
 

@@ -75,7 +75,7 @@ class WalletModel {
             return .token(
                 Token(
                     name: type.rawValue,
-                    symbol: type.rawValue.uppercased(),
+                    symbol: type.rawValue,
                     contractAddress: "",
                     decimalCount: 0
                 ),
