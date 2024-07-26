@@ -15,6 +15,7 @@ final class CommonMarketsHistoryChartProvider {}
 
 extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
     func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> MarketsChartsHistoryItemModel {
+        #if ALPHA_OR_BETA
         try await Task.sleep(seconds: 2.0)
 
         switch interval {
@@ -33,5 +34,8 @@ extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
         case .all:
             return .ethereumAll
         }
+        #else
+        throw "Not implemented"
+        #endif // ALPHA_OR_BETA
     }
 }
