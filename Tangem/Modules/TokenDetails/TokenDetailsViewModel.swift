@@ -17,7 +17,6 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
     @Published private var balance: LoadingValue<BalanceInfo> = .loading
-    @Published private var stakingManagerState: StakingManagerState?
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
@@ -217,14 +216,6 @@ private extension TokenDetailsViewModel {
             }
             .store(in: &bag)
 
-        walletModel.stakingManagerStatePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] newState in
-                AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
-                self?.updateStakingManagerState(newState)
-            }
-            .store(in: &bag)
-
         pendingExpressTransactionsManager.pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
@@ -261,10 +252,6 @@ private extension TokenDetailsViewModel {
             // User can't reach this screen without derived keys
             balance = .failedToLoad(error: "")
         }
-    }
-
-    private func updateStakingManagerState(_ state: StakingManagerState) {
-        stakingManagerState = state
     }
 
     private func didTapPendingExpressTransaction(with id: String) {
@@ -307,19 +294,26 @@ extension TokenDetailsViewModel: BalanceProvider {
 
 extension TokenDetailsViewModel: AvailableBalanceProvider {
     var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
-        $stakingManagerState
+        guard let stakingManager = walletModel.stakingManager else {
+            return Just(nil).eraseToAnyPublisher()
+        }
+        return stakingManager.statePublisher
             .withWeakCaptureOf(self)
             .map { viewModel, state in
                 switch state {
-                case .availableToUnstake, .availableToClaimRewards:
-                    return BalanceInfo(
-                        balance: viewModel.walletModel.availableBalance,
-                        fiatBalance: viewModel.walletModel.availableFiatBalance
-                    )
+                case .staked:
+                    return viewModel.availableBalance
                 default:
                     return nil
                 }
             }
             .eraseToAnyPublisher()
     }
+}
+
+extension TokenDetailsViewModel {
+    var availableBalance: BalanceInfo {
+        BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
+    }
+
 }

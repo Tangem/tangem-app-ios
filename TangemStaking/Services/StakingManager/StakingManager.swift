@@ -27,14 +27,13 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
     case availableToStake(YieldInfo)
-    case availableToUnstake(StakingBalanceInfo, YieldInfo)
-    case availableToClaimRewards(StakingBalanceInfo, YieldInfo)
+    case staked(StakingBalanceInfo, YieldInfo)
 
     public var isAvailable: Bool {
         switch self {
         case .loading, .notEnabled:
             return false
-        case .availableToStake, .availableToUnstake, .availableToClaimRewards:
+        case .availableToStake, .staked:
             return true
         }
     }
@@ -44,8 +43,7 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .loading, .notEnabled:
             return nil
         case .availableToStake(let yieldInfo),
-             .availableToUnstake(_, let yieldInfo),
-             .availableToClaimRewards(_, let yieldInfo):
+             .staked(_, let yieldInfo):
             return yieldInfo
         }
     }
@@ -55,8 +53,7 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .loading: "loading"
         case .notEnabled: "notEnabled"
         case .availableToStake: "availableToStake"
-        case .availableToUnstake: "availableToUnstake"
-        case .availableToClaimRewards: "availableToClaimRewards"
+        case .staked: "staked"
         }
     }
 }
