@@ -78,23 +78,23 @@ class PriceChangeFormatterTests: XCTestCase {
         let formatter = PriceChangeFormatter(percentFormatter: .init(locale: .init(identifier: "ru_RU")))
 
         let result = formatter.format(0.00000001, option: .express)
-        XCTAssertEqual(result.formattedText, "0,0 %")
+        XCTAssertEqual(result.formattedText, "+0,0 %")
         XCTAssertEqual(result.signType, .neutral)
 
         let result1 = formatter.format(-0.00000001, option: .express)
-        XCTAssertEqual(result1.formattedText, "0,0 %")
+        XCTAssertEqual(result1.formattedText, "+0,0 %")
         XCTAssertEqual(result1.signType, .neutral)
 
         let result2 = formatter.format(0.0000000, option: .express)
-        XCTAssertEqual(result2.formattedText, "0,0 %")
+        XCTAssertEqual(result2.formattedText, "+0,0 %")
         XCTAssertEqual(result2.signType, .neutral)
 
         let result3 = formatter.format(-0.0000000, option: .express)
-        XCTAssertEqual(result3.formattedText, "0,0 %")
+        XCTAssertEqual(result3.formattedText, "+0,0 %")
         XCTAssertEqual(result3.signType, .neutral)
 
         let result4 = formatter.format(0.09, option: .express)
-        XCTAssertEqual(result4.formattedText, "9,0 %")
+        XCTAssertEqual(result4.formattedText, "+9,0 %")
         XCTAssertEqual(result4.signType, .positive)
 
         let result5 = formatter.format(-0.09, option: .express)
@@ -102,11 +102,11 @@ class PriceChangeFormatterTests: XCTestCase {
         XCTAssertEqual(result5.signType, .negative)
 
         let result6 = formatter.format(0, option: .express)
-        XCTAssertEqual(result6.formattedText, "0,0 %")
+        XCTAssertEqual(result6.formattedText, "+0,0 %")
         XCTAssertEqual(result6.signType, .neutral)
 
         let result7 = formatter.format(0.16, option: .express)
-        XCTAssertEqual(result7.formattedText, "16,0 %")
+        XCTAssertEqual(result7.formattedText, "+16,0 %")
         XCTAssertEqual(result7.signType, .positive)
 
         let result8 = formatter.format(-0.14, option: .express)
@@ -114,7 +114,7 @@ class PriceChangeFormatterTests: XCTestCase {
         XCTAssertEqual(result8.signType, .negative)
 
         let result9 = formatter.format(0.09, option: .express)
-        XCTAssertEqual(result9.formattedText, "9,0 %")
+        XCTAssertEqual(result9.formattedText, "+9,0 %")
         XCTAssertEqual(result9.signType, .positive)
 
         let result10 = formatter.format(-0.09, option: .express)
@@ -126,11 +126,11 @@ class PriceChangeFormatterTests: XCTestCase {
         XCTAssertEqual(result11.signType, .negative)
 
         let result12 = formatter.format(0.001, option: .express)
-        XCTAssertEqual(result12.formattedText, "0,1 %")
+        XCTAssertEqual(result12.formattedText, "+0,1 %")
         XCTAssertEqual(result12.signType, .positive)
 
         let result13 = formatter.format(-0.0001, option: .express)
-        XCTAssertEqual(result13.formattedText, "0,0 %")
+        XCTAssertEqual(result13.formattedText, "+0,0 %")
         XCTAssertEqual(result13.signType, .neutral)
     }
 }
