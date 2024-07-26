@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemStaking
 
 final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     @Published var isLoadingFiatBalance = true

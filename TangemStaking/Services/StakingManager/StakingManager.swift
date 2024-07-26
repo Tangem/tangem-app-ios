@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-public protocol StakingManager: AnyObject {
+public protocol StakingManager {
     var state: StakingManagerState { get }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 

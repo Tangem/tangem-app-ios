@@ -11,7 +11,6 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 import TangemExpress
-import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
