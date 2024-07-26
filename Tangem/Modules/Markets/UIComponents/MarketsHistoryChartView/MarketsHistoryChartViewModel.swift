@@ -208,11 +208,10 @@ extension MarketsHistoryChartViewModel {
         case idle
         case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
-        case failed /* (error: Error) */
+        case failed
     }
 
-    // TODO: Andrey Fedorov - Add actual implementation
-    enum Error: Swift.Error {
+    private enum Error: Swift.Error {
         case invalidData
     }
 }

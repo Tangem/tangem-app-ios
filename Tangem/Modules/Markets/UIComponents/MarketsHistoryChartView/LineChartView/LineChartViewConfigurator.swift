@@ -45,11 +45,7 @@ struct LineChartViewConfigurator {
         let fill = makeFill(chartColor: chartColor)
 
         let chartDataEntries = chartData.xAxis.values.map { value in
-            let timeStamp = Double(value.timeStamp)
-            let timeInterval = timeStamp / 1000.0
-            let date = Date(timeIntervalSince1970: timeInterval) // TODO: Andrey Fedorov - Do we need this date?
-
-            return ChartDataEntry(x: timeStamp, y: value.price.doubleValue, data: date)
+            return ChartDataEntry(x: Double(value.timeStamp), y: value.price.doubleValue)
         }
 
         let dataSet = LineChartDataSet(entries: chartDataEntries)

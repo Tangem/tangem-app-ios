@@ -11,8 +11,9 @@ import DGCharts
 
 struct LineChartViewWrapper: UIViewRepresentable {
     typealias UIViewType = DGCharts.LineChartView
+    typealias PriceInterval = MarketsPriceIntervalType
 
-    let selectedPriceInterval: MarketsPriceIntervalType
+    let selectedPriceInterval: PriceInterval
     let chartData: LineChartViewData
     let onMake: (_ chartView: UIViewType) -> Void
 
@@ -51,13 +52,13 @@ extension LineChartViewWrapper {
 
         fileprivate init(
             view: LineChartViewWrapper,
-            selectedPriceInterval: MarketsPriceIntervalType
+            selectedPriceInterval: PriceInterval
         ) {
             self.view = view
             _xAxisValueFormatter = MarketsHistoryChartXAxisValueFormatter(selectedPriceInterval: selectedPriceInterval)
         }
 
-        fileprivate func setSelectedPriceInterval(_ interval: MarketsPriceIntervalType) {
+        fileprivate func setSelectedPriceInterval(_ interval: PriceInterval) {
             _xAxisValueFormatter.setSelectedPriceInterval(interval)
         }
 

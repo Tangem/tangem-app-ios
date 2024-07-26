@@ -66,6 +66,16 @@ struct MarketsHistoryChartView: View {
     }
 
     @ViewBuilder
+    private func makeLoadingView(for chartData: LineChartViewData?) -> some View {
+        if let chartData {
+            makeChartView(for: chartData)
+                .overlay { overlayLoadingView }
+        } else {
+            standaloneLoadingView
+        }
+    }
+
+    @ViewBuilder
     private func makeChartView(for chartData: LineChartViewData) -> some View {
         LineChartViewWrapper(
             selectedPriceInterval: viewModel.selectedPriceInterval,
@@ -92,16 +102,6 @@ struct MarketsHistoryChartView: View {
             chartView.leftAxis.labelTextColor = .textTertiary
             chartView.rightAxis.enabled = false
             chartView.legend.enabled = false
-        }
-    }
-
-    @ViewBuilder
-    private func makeLoadingView(for chartData: LineChartViewData?) -> some View {
-        if let chartData {
-            makeChartView(for: chartData)
-                .overlay { overlayLoadingView }
-        } else {
-            standaloneLoadingView
         }
     }
 }
