@@ -11,9 +11,8 @@ import SwiftUI
 struct DefaultTextWithTitleRowView: View {
     let data: DefaultTextWithTitleRowViewData
 
-    private var namespace: Namespace.ID?
-    private var titleNamespaceId: String?
-    private var textNamespaceId: String?
+    private var titleGeometryEffect: GeometryEffect?
+    private var textGeometryEffect: GeometryEffect?
 
     init(data: DefaultTextWithTitleRowViewData) {
         self.data = data
@@ -24,12 +23,12 @@ struct DefaultTextWithTitleRowView: View {
             Text(data.title)
                 .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                 .lineLimit(1)
-                .matchedGeometryEffectOptional(id: titleNamespaceId, in: namespace)
+                .matchedGeometryEffect(titleGeometryEffect)
 
             Text(data.text)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .matchedGeometryEffectOptional(id: textNamespaceId, in: namespace)
+                .matchedGeometryEffect(textGeometryEffect)
         }
         .padding(.vertical, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -37,16 +36,12 @@ struct DefaultTextWithTitleRowView: View {
 }
 
 extension DefaultTextWithTitleRowView: Setupable {
-    func setNamespace(_ namespace: Namespace.ID) -> Self {
-        map { $0.namespace = namespace }
+    func titleGeometryEffect(_ effect: GeometryEffect?) -> Self {
+        map { $0.titleGeometryEffect = effect }
     }
 
-    func setTitleNamespaceId(_ titleNamespaceId: String?) -> Self {
-        map { $0.titleNamespaceId = titleNamespaceId }
-    }
-
-    func setTextNamespaceId(_ textNamespaceId: String?) -> Self {
-        map { $0.textNamespaceId = textNamespaceId }
+    func textGeometryEffect(_ effect: GeometryEffect?) -> Self {
+        map { $0.textGeometryEffect = effect }
     }
 }
 
