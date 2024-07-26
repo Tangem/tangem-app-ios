@@ -9,6 +9,12 @@
 import Foundation
 
 struct LineChartViewData: Equatable {
+    enum Trend {
+        case uptrend
+        case downtrend
+        case neutral
+    }
+
     struct YAxis: Equatable {
         let labelCount: Int
         let axisMinValue: Decimal
@@ -28,6 +34,7 @@ struct LineChartViewData: Equatable {
         let values: [Value]
     }
 
+    let trend: Trend
     let yAxis: YAxis
     let xAxis: XAxis
 }

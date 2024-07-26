@@ -118,9 +118,10 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         dispatchPrecondition(condition: .notOnQueue(.main))
         #endif // ALPHA_OR_BETA
         let yAxis = try makeYAxisData(from: model)
-        let xAxis = try makeXAxisData(from: model, selectedPriceInterval: selectedPriceInterval)
+        let (xAxis, trend) = try makeXAxisDataAndTrend(from: model, selectedPriceInterval: selectedPriceInterval)
 
         return LineChartViewData(
+            trend: trend,
             yAxis: yAxis,
             xAxis: xAxis
         )
@@ -149,10 +150,12 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         return LineChartViewData.YAxis(labelCount: 3, axisMinValue: minYAxisValue, axisMaxValue: maxYAxisValue)
     }
 
-    private func makeXAxisData(
+    private func makeXAxisDataAndTrend(
         from model: MarketsChartsHistoryItemModel,
         selectedPriceInterval: MarketsPriceIntervalType
-    ) throws -> LineChartViewData.XAxis {
+    ) throws -> (xAxis: LineChartViewData.XAxis, trend: LineChartViewData.Trend) {
+        // For performance reasons, we use these sorted values to create
+        // both `LineChartViewData.XAxis` and `LineChartViewData.Trend`
         let xAxisValues = try model
             .prices
             .map { key, value in
@@ -165,24 +168,45 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             .sorted(by: \.timeStamp)
 
         guard
-            let startTimeStamp = xAxisValues.first?.timeStamp,
-            let endTimeStamp = xAxisValues.last?.timeStamp
+            let firstValue = xAxisValues.first,
+            let lastValue = xAxisValues.last
         else {
             throw Error.invalidData
         }
 
-        let range = Decimal(endTimeStamp - startTimeStamp)
+        let startTimeStamp = Decimal(firstValue.timeStamp)
+        let endTimeStamp = Decimal(lastValue.timeStamp)
+        let range = endTimeStamp - startTimeStamp
         let labelCount = labelCount(for: selectedPriceInterval)
         let interval = range / Decimal(labelCount + 1)
-        let minXAxisValue = Decimal(startTimeStamp) + interval
-        let maxXAxisValue = Decimal(endTimeStamp) - interval
+        let minXAxisValue = startTimeStamp + interval
+        let maxXAxisValue = endTimeStamp - interval
 
-        return LineChartViewData.XAxis(
+        let xAxis = LineChartViewData.XAxis(
             labelCount: labelCount,
             axisMinValue: minXAxisValue,
             axisMaxValue: maxXAxisValue,
             values: xAxisValues
         )
+
+        let trend = makeTrend(firstValue: firstValue, lastValue: lastValue)
+
+        return (xAxis, trend)
+    }
+
+    private func makeTrend(
+        firstValue: LineChartViewData.XAxis.Value,
+        lastValue: LineChartViewData.XAxis.Value
+    ) -> LineChartViewData.Trend {
+        if firstValue.price < lastValue.price {
+            return .uptrend
+        }
+
+        if firstValue.price > lastValue.price {
+            return .downtrend
+        }
+
+        return .neutral
     }
 
     private func labelCount(for selectedPriceInterval: MarketsPriceIntervalType) -> Int {

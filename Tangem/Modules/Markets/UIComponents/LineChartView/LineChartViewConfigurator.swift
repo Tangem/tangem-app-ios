@@ -42,7 +42,7 @@ struct LineChartViewConfigurator {
     }
 
     private func makeDataSet() -> LineChartDataSet {
-        let chartColor = UIColor.iconAccent
+        let chartColor = makeChartColor(for: chartData.trend)
         let fill = makeFill(chartColor: chartColor)
 
         let chartDataEntries = chartData.xAxis.values.map { value in
@@ -79,6 +79,16 @@ struct LineChartViewConfigurator {
         }
 
         return LinearGradientFill(gradient: gradient, angle: 90.0)
+    }
+
+    private func makeChartColor(for trend: LineChartViewData.Trend) -> UIColor {
+        switch trend {
+        case .uptrend,
+             .neutral:
+            return .iconAccent
+        case .downtrend:
+            return .iconWarning
+        }
     }
 }
 
