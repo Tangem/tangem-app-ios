@@ -28,8 +28,5 @@ struct SendFeeCompactView: View {
         .backgroundColor(Colors.Background.action)
         .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
         .readGeometry(\.size, bindTo: $viewModel.viewSize)
-        .simultaneousGesture(TapGesture().onEnded {
-            print("->> onTapGesture SendFeeCompactView")
-        })
     }
 }
