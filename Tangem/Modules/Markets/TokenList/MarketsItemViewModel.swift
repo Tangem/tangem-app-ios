@@ -15,6 +15,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Published
 
     @Published var priceValue: String = ""
+    @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var priceChangeState: TokenPriceChangeView.State = .empty
     // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
     @Published var charts: [Double]? = nil
@@ -77,20 +78,24 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .compactMap { viewModel, quotes in
                 quotes[viewModel.id]
             }
+            .receive(on: DispatchQueue.main)
+            .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { viewModel, quoteInfo in
+            .sink { elements in
+                let (viewModel, (previousValue, newQuote)) = elements
                 let priceChangeValue: Decimal?
                 switch viewModel.filterProvider?.currentFilterValue.interval {
                 case .day:
-                    priceChangeValue = quoteInfo.priceChange24h
+                    priceChangeValue = newQuote.priceChange24h
                 case .week:
-                    priceChangeValue = quoteInfo.priceChange7d
+                    priceChangeValue = newQuote.priceChange7d
                 case .month:
-                    priceChangeValue = quoteInfo.priceChange30d
+                    priceChangeValue = newQuote.priceChange30d
                 default:
                     priceChangeValue = nil
                 }
-                viewModel.setupPriceInfo(price: quoteInfo.price, priceChangeValue: priceChangeValue)
+                viewModel.setupPriceInfo(price: newQuote.price, priceChangeValue: priceChangeValue)
+                viewModel.priceChangeAnimation = .calculateChange(from: previousValue?.price, to: newQuote.price)
             }
             .store(in: &bag)
     }
