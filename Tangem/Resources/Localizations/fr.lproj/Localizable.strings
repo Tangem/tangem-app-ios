@@ -549,8 +549,8 @@
 "send_custom_evm_max_fee_footer" = "Il s'agit du coût que vous êtes prêt à payer pour chaque unité de gaz. Plus le prix du gaz est élevé, plus votre transaction sera traitée rapidement. (Frais de priorité inclus)";
 "send_custom_evm_priority_fee" = "Frais de priorité";
 "send_custom_evm_priority_fee_footer" = "Les frais qu'un utilisateur peut payer aux mineurs ou aux validateurs pour accélérer l'inclusion de leur transaction dans un bloc.";
-"send_custom_kaspa_per_utxo_footer" = "The fee required for using each unspent transaction output (UTXO) in the Kaspa network. The more UTXOs you use in a transaction, the higher the fee will be.";
-"send_custom_kaspa_per_utxo_title" = "KAS per UTXO";
+"send_custom_kaspa_per_utxo_footer" = "Les frais requis pour l'utilisation de chaque sortie de transaction non dépensée (UTXO) dans le réseau Kaspa. Plus vous utilisez d’UTXO dans une transaction, plus les frais seront élevés.";
+"send_custom_kaspa_per_utxo_title" = "KAS pour UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_hint_address" = "Adresse";
 "send_destination_tag_field" = "Destination Tag";
@@ -618,6 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (incl. les commissions : %2$@)";
 "send_total_subtitle_format" = "Sera envoyé %@";
 "send_transaction_success" = "La transaction a été signée avec succès et envoyée au nœud de blockchain. Le solde du portefeuille sera mis à jour après un certain temps";
+"send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron(TRX) in your account.";
 "send_validation_invalid_address" = "Adresse incorrecte";
 "send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Transaction envoyée";
@@ -649,6 +650,7 @@
 "staking_details_unbonding_period_info" = "La période que vous devez attendre après avoir demandé le retrait des fonds du staking avant que les jetons ne soient disponibles.";
 "staking_details_warmup_period" = "Période d'échauffement";
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
+"staking_initial_info_title" = "Stake %@";
 "staking_native" = "Native staking";
 "staking_notification_earn_rewards_text" = "Le staking vous permet d'en gagner %1@. Vos récompenses de staking arrivent tous les ~%2@ jours.";
 "staking_notification_earn_rewards_title" = "Gagnez des récompenses de staking";
@@ -789,7 +791,7 @@
 "wallet_settings_title" = "Paramètres du portefeuille";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Utilisez %@ ou scannez une carte pour déverrouiller l'accès à votre portefeuille";
-"warning_backup_errors_message" = "It seems that the card activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card to your device. Please contact our Support team for assistance.";
+"warning_backup_errors_message" = "Il semble que l'activation de la carte ne se soit pas déroulée correctement. Cela peut être dû à un problème avec le module NFC de votre appareil ou à une mauvaise connexion de la carte sur votre appareil. Veuillez contacter notre équipe de support pour obtenir de l’aide.";
 "warning_beacon_chain_retirement_content" = "Selon les développeurs du réseau BNB, le support de la norme BEP-2\nprendra fin en juin 2024. Pour éviter de perdre des actifs avec cette norme, veuillez les convertir à la norme BEP-20. Utilisez notre service de d'échange pour les transférer sur le réseau BNB Smart Chain.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain va s'arrêter de fonctionner";
 "warning_button_could_be_better" = "Pourrait être mieux";
