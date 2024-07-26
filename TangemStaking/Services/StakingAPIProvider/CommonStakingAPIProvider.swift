@@ -50,6 +50,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
+    func exitAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> ExitAction {
+        let request = StakeKitDTO.Actions.Exit.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+        )
+
+        let response = try await service.exitAction(request: request)
+        let enterAction = try mapper.mapToExitAction(from: response)
+        return enterAction
+    }
+
+    func pendingAction() async throws {
+        // TODO: https://tangem.atlassian.net/browse/IOS-7482
+    }
+
     func transaction(id: String) async throws -> StakingTransactionInfo {
         let response = try await service.transaction(id: id)
         let transactionInfo = try mapper.mapToTransactionInfo(from: response)

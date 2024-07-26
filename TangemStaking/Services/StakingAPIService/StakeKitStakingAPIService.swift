@@ -41,6 +41,14 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .enterAction(request))
     }
 
+    func exitAction(request: StakeKitDTO.Actions.Exit.Request) async throws -> StakeKitDTO.Actions.Exit.Response {
+        try await _request(target: .exitAction(request))
+    }
+
+    func pendingAction(request: StakeKitDTO.Actions.Pending.Request) async throws -> StakeKitDTO.Actions.Pending.Response {
+        try await _request(target: .pendingAction(request))
+    }
+
     func transaction(id: String) async throws -> StakeKitDTO.Transaction.Response {
         try await _request(target: .transaction(id: id))
     }
