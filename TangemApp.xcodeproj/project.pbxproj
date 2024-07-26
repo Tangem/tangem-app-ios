@@ -1221,6 +1221,11 @@
 		DC939F992C3C0323002D0326 /* CommonXPUBGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F952C3C0323002D0326 /* CommonXPUBGenerator.swift */; };
 		DC939F9A2C3C0323002D0326 /* XPUBGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F962C3C0323002D0326 /* XPUBGenerator.swift */; };
 		DC939F9B2C3C0323002D0326 /* XPUBGeneratorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F972C3C0323002D0326 /* XPUBGeneratorFactory.swift */; };
+		DC96325F2C5140CE009B250A /* ExpressRefundedTokenHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC96325E2C5140CE009B250A /* ExpressRefundedTokenHandler.swift */; };
+		DC9632612C5140DB009B250A /* CommonExpressRefundedTokenHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632602C5140DB009B250A /* CommonExpressRefundedTokenHandler.swift */; };
+		DC9632632C5141B8009B250A /* TokenFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632622C5141B8009B250A /* TokenFinder.swift */; };
+		DC9632662C51434C009B250A /* CommonTokenFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632652C51434C009B250A /* CommonTokenFinder.swift */; };
+		DC9632682C515566009B250A /* ExpressRefundedTokenHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */; };
 		DC9A4A2D2AB4ADD30031C7C2 /* UserCodeRecovering.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */; };
 		DC9A4A302AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */; };
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
@@ -3131,6 +3136,11 @@
 		DC939F952C3C0323002D0326 /* CommonXPUBGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonXPUBGenerator.swift; sourceTree = "<group>"; };
 		DC939F962C3C0323002D0326 /* XPUBGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPUBGenerator.swift; sourceTree = "<group>"; };
 		DC939F972C3C0323002D0326 /* XPUBGeneratorFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPUBGeneratorFactory.swift; sourceTree = "<group>"; };
+		DC96325E2C5140CE009B250A /* ExpressRefundedTokenHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressRefundedTokenHandler.swift; sourceTree = "<group>"; };
+		DC9632602C5140DB009B250A /* CommonExpressRefundedTokenHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressRefundedTokenHandler.swift; sourceTree = "<group>"; };
+		DC9632622C5141B8009B250A /* TokenFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenFinder.swift; sourceTree = "<group>"; };
+		DC9632652C51434C009B250A /* CommonTokenFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenFinder.swift; sourceTree = "<group>"; };
+		DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressRefundedTokenHandlerMock.swift; sourceTree = "<group>"; };
 		DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecovering.swift; sourceTree = "<group>"; };
 		DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecoveringCardInteractor.swift; sourceTree = "<group>"; };
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
@@ -5691,6 +5701,7 @@
 		B0AF2DED2B1D8FD2001A8696 /* Express */ = {
 			isa = PBXGroup;
 			children = (
+				DC96325D2C5140B4009B250A /* ExpressRefundedTokenHandler */,
 				EF5820462B33348B00940387 /* ExpressExchangeDataDecoder */,
 				EF6A8B012B278A5700CA3535 /* ExpressRepository */,
 				EF6A8AFC2B2786D400CA3535 /* ExpressFeeProvider */,
@@ -7214,6 +7225,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DC9632642C514335009B250A /* TokenFinder */,
 				DC592B912C41A7EA005AB9A7 /* Staking */,
 				B62C65C62C38D04F00189AD4 /* PushNotifications */,
 				B098F3972C0474AD00F79989 /* ManageTokens */,
@@ -7779,6 +7791,24 @@
 			name = XPUB;
 			path = Tangem/Common/BlockchainSDK/XPUB;
 			sourceTree = SOURCE_ROOT;
+		};
+		DC96325D2C5140B4009B250A /* ExpressRefundedTokenHandler */ = {
+			isa = PBXGroup;
+			children = (
+				DC96325E2C5140CE009B250A /* ExpressRefundedTokenHandler.swift */,
+				DC9632602C5140DB009B250A /* CommonExpressRefundedTokenHandler.swift */,
+			);
+			path = ExpressRefundedTokenHandler;
+			sourceTree = "<group>";
+		};
+		DC9632642C514335009B250A /* TokenFinder */ = {
+			isa = PBXGroup;
+			children = (
+				DC9632622C5141B8009B250A /* TokenFinder.swift */,
+				DC9632652C51434C009B250A /* CommonTokenFinder.swift */,
+			);
+			path = TokenFinder;
+			sourceTree = "<group>";
 		};
 		DC9A4A2E2AB4AE1C0031C7C2 /* UserCodeRecovering */ = {
 			isa = PBXGroup;
@@ -8646,6 +8676,7 @@
 				EF9E2A522B56A5DF00418559 /* WalletModel+Mock.swift */,
 				EF9E2A542B56A6E800418559 /* UserWalletModelMock.swift */,
 				DA9493E62B9978A900F2BE0F /* EmailDataProviderMock.swift */,
+				DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -10573,6 +10604,7 @@
 				B0B3FF6E2C0757E700B61EF7 /* ManageTokensView.swift in Sources */,
 				EF0DC11C2A0CE29E007E3DA7 /* ExpressApproveViewModel.swift in Sources */,
 				B62EE31C2B28977B006BA412 /* RateAppResponse.swift in Sources */,
+				DC9632612C5140DB009B250A /* CommonExpressRefundedTokenHandler.swift in Sources */,
 				EFC84B092C37FAB500546882 /* SendAmountStepBuilder.swift in Sources */,
 				DC70C01F2B95F196002205BA /* KeysDerivingMock.swift in Sources */,
 				EFAD02472A824E6700E9B959 /* TransactionViewModel.swift in Sources */,
@@ -10762,6 +10794,7 @@
 				B65CB3FE2A98A93F00C31199 /* UserTokensReorderingAction.swift in Sources */,
 				B67DC1EA2B7C4C48008ACB0E /* BlockchainAccountCreatorStub.swift in Sources */,
 				DC13D04029DF2D470003895C /* BackupServiceFactory.swift in Sources */,
+				DC96325F2C5140CE009B250A /* ExpressRefundedTokenHandler.swift in Sources */,
 				B675C3762BACB8AA007BE1DC /* PolkadotAccountHealthChecker.swift in Sources */,
 				DCBAF69F2A4AF4660029480A /* TwinWalletManagerFactory.swift in Sources */,
 				EFE7D5842AA224C50047D93A /* FetchMore.swift in Sources */,
@@ -10873,6 +10906,7 @@
 				DA559C322B0261F400F59584 /* SendModel.swift in Sources */,
 				EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */,
 				EFC84AC22C35CB2900546882 /* SendFinishViewModel.swift in Sources */,
+				DC9632682C515566009B250A /* ExpressRefundedTokenHandlerMock.swift in Sources */,
 				B0B09BCF295B54FB001D6BA4 /* WalletConnectSessionsStorage.swift in Sources */,
 				B0E9E2FF2679DA8000269C7A /* AmountView.swift in Sources */,
 				EFB932192C3EC18300C999E9 /* StakingValidatorsViewModel.swift in Sources */,
@@ -11684,6 +11718,7 @@
 				B004A3E82B17672000C66CA9 /* PendingExpressTransactionView.swift in Sources */,
 				B62C65D42C38D06B00189AD4 /* CommonPushNotificationsInteractor.swift in Sources */,
 				B0C4F77526F08CDE0086D815 /* OnboardingProgressStateIndicatable.swift in Sources */,
+				DC9632632C5141B8009B250A /* TokenFinder.swift in Sources */,
 				B63442612AFE90A700C87481 /* CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift in Sources */,
 				B6157AAD2C322733000640B4 /* OnboardingFeatureDescriptionView.swift in Sources */,
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
@@ -11848,6 +11883,7 @@
 				EF9E2A472B5532A600418559 /* ExpressCurrencyViewModel.swift in Sources */,
 				DA559C4A2B02622600F59584 /* SendRoutableMock.swift in Sources */,
 				DC66BC0A285B755800CDF765 /* PushTxRoutable.swift in Sources */,
+				DC9632662C51434C009B250A /* CommonTokenFinder.swift in Sources */,
 				B050F5082B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift in Sources */,
 				DC7D3A0729E06365007BCD23 /* GenericBackupServiceFactory.swift in Sources */,
 				B03662652B6385C70064E073 /* VisaTransactionDetailsViewModelMock.swift in Sources */,

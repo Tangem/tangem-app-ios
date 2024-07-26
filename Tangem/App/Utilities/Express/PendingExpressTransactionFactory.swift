@@ -17,7 +17,11 @@ struct PendingExpressTransactionFactory {
     private let awaitingHashStatusesList: [PendingExpressTransactionStatus] = [.awaitingHash]
     private let unknownHashStatusesList: [PendingExpressTransactionStatus] = [.unknown]
 
-    func buildPendingExpressTransaction(currentExpressStatus: ExpressTransactionStatus, for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
+    func buildPendingExpressTransaction(
+        currentExpressStatus: ExpressTransactionStatus,
+        refundedTokenItem: TokenItem?,
+        for transactionRecord: ExpressPendingTransactionRecord
+    ) -> PendingExpressTransaction {
         let currentStatus: PendingExpressTransactionStatus
         var statusesList: [PendingExpressTransactionStatus] = defaultStatusesList
         var transactionRecord = transactionRecord
@@ -54,6 +58,8 @@ struct PendingExpressTransactionFactory {
         }
 
         transactionRecord.transactionStatus = currentStatus
+        transactionRecord.refundedTokenItem = refundedTokenItem
+
         return .init(
             transactionRecord: transactionRecord,
             statuses: statusesList

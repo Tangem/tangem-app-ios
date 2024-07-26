@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "Geschwindigkeit und Gebühr";
 "common_generate_addresses" = "Adressen abrufen";
 "common_go_to_provider" = "Zum Anbieter gehen";
+"common_go_to_token" = "Go to token";
 "common_import" = "Importieren";
 "common_later" = "Später";
 "common_learn_and_earn" = "Lernen und verdienen";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "Getauscht von %@";
 "express_exchange_notification_failed_text" = "Besuche die Website des Anbieters, um dein Geld zurückzuerhalten";
 "express_exchange_notification_failed_title" = "Fehler beim Vorgang durch Anbieter";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
 "express_exchange_notification_verification_text" = "Besuche die Website des Anbieters zur Überprüfung";
 "express_exchange_notification_verification_title" = "KYC-Überprüfung durch den Anbieter erforderlich";
 "express_exchange_status_canceled" = "Abgebrochen";

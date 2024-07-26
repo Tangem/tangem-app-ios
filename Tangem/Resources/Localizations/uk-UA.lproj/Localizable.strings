@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "Швидкість та комісія";
 "common_generate_addresses" = "Отримати адреси";
 "common_go_to_provider" = "Перейти до провайдера";
+"common_go_to_token" = "Go to token";
 "common_import" = "Імпортувати";
 "common_later" = "Пізніше";
 "common_learn_and_earn" = "Навчайся та заробляй";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "Обмін через %@";
 "express_exchange_notification_failed_text" = "Щоб повернути ваші кошти, відвідайте сайт провайдера";
 "express_exchange_notification_failed_title" = "Операція не виконана провайдером";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
 "express_exchange_notification_verification_text" = "Відвідайте сайт провайдера для перевірки";
 "express_exchange_notification_verification_title" = "Провайдер вимагає проходження KYC верифікації";
 "express_exchange_status_canceled" = "Скасовано";
