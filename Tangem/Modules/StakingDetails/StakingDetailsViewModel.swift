@@ -19,7 +19,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
-    @Published var actionButtonType: ActionButtonType = .unstake
+    @Published var actionButtonType: ActionButtonType = .stake
 
     // MARK: - Dependencies
 
