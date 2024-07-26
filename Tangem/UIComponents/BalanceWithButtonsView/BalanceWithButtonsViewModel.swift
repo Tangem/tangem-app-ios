@@ -18,71 +18,56 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     @Published var buttons: [FixedSizeButtonWithIconInfo] = []
 
     @Published var balanceTypeValues: [BalanceType]?
-    @Published var selectedBalanceType: BalanceType = .all {
-        didSet {
-            updateBalances()
-        }
-    }
+    @Published var selectedBalanceType: BalanceType = .all
 
-    private var balance: BalanceInfo? {
-        didSet {
-            if balance != nil {
-                updateBalances()
-            } else {
-                setupEmptyBalances()
-            }
-        }
-    }
-
-    private var availableBalance: BalanceInfo? {
-        didSet {
-            balanceTypeValues = (availableBalance == nil) ? nil : BalanceType.allCases
-        }
-    }
-
-    private weak var balanceProvider: BalanceProvider?
-    private weak var availableBalanceProvider: AvailableBalanceProvider?
-    private weak var buttonsProvider: ActionButtonsProvider?
+    private let balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never>
+    private let availableBalancePublisher: AnyPublisher<BalanceInfo?, Never>
+    private let buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never>
 
     private var bag = Set<AnyCancellable>()
 
-    init(balanceProvider: BalanceProvider?, availableBalanceProvider: AvailableBalanceProvider?, buttonsProvider: ActionButtonsProvider?) {
-        self.balanceProvider = balanceProvider
-        self.availableBalanceProvider = availableBalanceProvider
-        self.buttonsProvider = buttonsProvider
+    init(
+        balanceProvider: BalanceProvider?,
+        availableBalanceProvider: AvailableBalanceProvider?,
+        buttonsProvider: ActionButtonsProvider?
+    ) {
+        balancePublisher = balanceProvider?.balancePublisher ?? Empty().eraseToAnyPublisher()
+        availableBalancePublisher = availableBalanceProvider?.availableBalancePublisher
+            ?? Empty().eraseToAnyPublisher()
+        buttonsPublisher = buttonsProvider?.buttonsPublisher ?? Empty().eraseToAnyPublisher()
         bind()
     }
 
     private func bind() {
-        balanceProvider?.balancePublisher
+        Publishers.CombineLatest3(balancePublisher, availableBalancePublisher, $selectedBalanceType)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] balanceState in
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, state in
+                let (balanceState, availableBalanceInfo, selectedBalanceType) = state
                 switch balanceState {
                 case .loading:
                     return
-                case .loaded(let balance):
-                    self?.balance = balance
+                case .loaded(let balanceInfo):
+                    viewModel.updateBalances(
+                        balanceInfo: balanceInfo,
+                        availableBalanceInfo: availableBalanceInfo,
+                        selectedBalanceType: selectedBalanceType
+                    )
                 case .failedToLoad(let error):
                     AppLog.shared.debug("Failed to load balance. Reason: \(error)")
-                    self?.balance = nil
-                    self?.isLoadingFiatBalance = false
+                    viewModel.setupEmptyBalances()
+                    viewModel.isLoadingFiatBalance = false
                 }
-                self?.isLoadingBalance = false
+                viewModel.balanceTypeValues = (availableBalanceInfo == nil) ? nil : BalanceType.allCases
+                viewModel.isLoadingBalance = false
             })
             .store(in: &bag)
 
-        buttonsProvider?.buttonsPublisher
+        buttonsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] buttons in
                 self?.buttons = buttons
             }
-            .store(in: &bag)
-
-        availableBalanceProvider?.availableBalancePublisher
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] availableBalance in
-                self?.availableBalance = availableBalance
-            })
             .store(in: &bag)
     }
 
@@ -91,23 +76,28 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
         cryptoBalance = BalanceFormatter.defaultEmptyBalanceString
     }
 
-    private func updateBalances() {
+    private func updateBalances(
+        balanceInfo: BalanceInfo?,
+        availableBalanceInfo: BalanceInfo?,
+        selectedBalanceType: BalanceType
+    ) {
         let formatter = BalanceFormatter()
 
-        let balanceInfo: BalanceInfo
+        let displayBalanceInfo: BalanceInfo
 
-        if selectedBalanceType == .all, let balance {
-            balanceInfo = balance
-        } else if selectedBalanceType == .available, let availableBalance {
-            balanceInfo = availableBalance
+        if selectedBalanceType == .all, let balanceInfo {
+            displayBalanceInfo = balanceInfo
+        } else if selectedBalanceType == .available, let availableBalanceInfo {
+            displayBalanceInfo = availableBalanceInfo
         } else {
+            AppLog.shared.debug("Attempt to display balances before they are loaded")
             return
         }
 
         isLoadingFiatBalance = false
 
-        cryptoBalance = balanceInfo.balance
-        fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: balanceInfo.fiatBalance)
+        cryptoBalance = displayBalanceInfo.balance
+        fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: displayBalanceInfo.fiatBalance)
     }
 }
 
