@@ -10,8 +10,10 @@ import Foundation
 import Combine
 
 final class MarketsHistoryChartViewModel: ObservableObject {
+    // MARK: - View state
+
     @Published private(set) var viewState: ViewState = .idle
-    @Published /* private(set) */ var selectedPriceInterval: MarketsPriceIntervalType = .all
+    @Published private(set) var selectedPriceInterval: MarketsPriceIntervalType
 
     var allowsHitTesting: Bool {
         switch viewState {
@@ -25,11 +27,20 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Dependencies
+
+    private let historyChartProvider: MarketsHistoryChartProvider
     private var bag: Set<AnyCancellable> = []
 
+    // MARK: - Initialization/Deinitialization
+
     init(
+        historyChartProvider: MarketsHistoryChartProvider,
+        selectedPriceInterval: MarketsPriceIntervalType,
         selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>
     ) {
+        self.historyChartProvider = historyChartProvider
+        _selectedPriceInterval = .init(initialValue: selectedPriceInterval)
         bind(selectedPriceIntervalPublisher: selectedPriceIntervalPublisher)
     }
 

@@ -105,7 +105,7 @@ struct MarketsHistoryChartView: View {
 // MARK: - Previews
 
 #Preview {
-    let factory = MarketsHistoryChartViewModelFactory()
+    let factory = FakeMarketsHistoryChartViewModelFactory()
 
     return VStack {
         MarketsHistoryChartView(viewModel: factory.makeAll())
