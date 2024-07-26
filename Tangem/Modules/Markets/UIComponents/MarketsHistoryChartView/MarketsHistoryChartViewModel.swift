@@ -127,20 +127,23 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     }
 
     private func makeYAxisData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData.YAxis {
-        // TODO: Andrey Fedorov - Use single loop for both
-        let minYAxisValue = model
-            .prices
-            .min(by: \.value)?.value
-
-        let maxYAxisValue = model
-            .prices
-            .max(by: \.value)?.value
+        let prices = model.prices
 
         guard
-            let minYAxisValue,
-            let maxYAxisValue
+            var minYAxisValue = prices.first?.value,
+            var maxYAxisValue = prices.first?.value
         else {
             throw Error.invalidData
+        }
+
+        // A single foreach loop is used for performance reasons
+        for (_, value) in prices {
+            if value < minYAxisValue {
+                minYAxisValue = value
+            }
+            if value > maxYAxisValue {
+                maxYAxisValue = value
+            }
         }
 
         return LineChartViewData.YAxis(labelCount: 3, axisMinValue: minYAxisValue, axisMaxValue: maxYAxisValue)
