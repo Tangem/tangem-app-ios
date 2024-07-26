@@ -21,8 +21,6 @@ struct StakingDetailsView: View {
             GroupedScrollView(alignment: .leading, spacing: 14) {
                 banner
 
-                averageRewardingView
-
                 GroupedSection(viewModel.detailsViewModels) {
                     DefaultRowView(viewModel: $0)
                 }
@@ -54,17 +52,23 @@ struct StakingDetailsView: View {
             Assets.whatIsStakingBanner.image
                 .resizable()
                 .cornerRadiusContinuous(18)
+                .overlay(alignment: .bottomLeading) {
+                    whatIsStakingText
+                }
         }
     }
-
-    private var averageRewardingView: some View {
-        GroupedSection(viewModel.averageRewardingViewData) {
-            AverageRewardingView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingDetailsAverageRewardRate)
-        }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
+    
+    private var whatIsStakingText: some View {
+        Text("What is staking")
+            .font(Font.system(size: 24, weight: .medium))
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .padding([.bottom, .leading], 16)
     }
 
     private var rewardView: some View {
