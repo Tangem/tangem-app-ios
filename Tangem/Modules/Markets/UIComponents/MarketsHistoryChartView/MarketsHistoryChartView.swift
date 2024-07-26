@@ -12,19 +12,23 @@ struct MarketsHistoryChartView: View {
     @ObservedObject var viewModel: MarketsHistoryChartViewModel
 
     var body: some View {
-        Group {
-            switch viewModel.viewState {
-            case .idle:
-                Color.clear // `EmptyView` won't call `onAppear`
-            case .loading(let previousData):
-                makeLoadingView(for: previousData)
-            case .loaded(let chartData):
-                makeChartView(for: chartData)
-            case .failed:
-                errorView
+        ZStack {
+            Group {
+                switch viewModel.viewState {
+                case .idle:
+                    EmptyView()
+                case .loading(let previousData):
+                    makeLoadingView(for: previousData)
+                case .loaded(let chartData):
+                    makeChartView(for: chartData)
+                case .failed:
+                    errorView
+                }
             }
+            .transition(.opacity)
         }
         .frame(height: 202.0)
+        .animation(.linear(duration: 0.1), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
     }
