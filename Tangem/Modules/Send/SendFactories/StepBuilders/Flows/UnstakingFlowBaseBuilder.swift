@@ -33,6 +33,7 @@ struct UnstakingFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
+            actionType: .unstake,
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             editableType: .noEditable,

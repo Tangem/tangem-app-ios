@@ -70,7 +70,7 @@ struct SendFeeView: View {
             }
         }
         .coordinateSpace(name: coordinateSpaceName)
-        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.auxiliaryViewsVisible)
         .transition(transitionService.transitionToFeeStep())
         .onAppear(perform: viewModel.onAppear)
     }

@@ -45,7 +45,10 @@ class SendTransitionService {
     }
 
     func transitionToAmountStep(isEditMode: Bool) -> AnyTransition {
-        isEditMode ? .offset(y: -amountContentOffset.y) : .move(edge: .trailing)
+        // HACK: I don't know why but in the staking flow
+        // when amountContentOffset.y == 0 animation doesn't work
+        let offset = max(-amountContentOffset.y, 1)
+        return isEditMode ? .offset(y: offset) : .move(edge: .trailing)
     }
 
     func transitionToAmountCompactView(isEditMode: Bool) -> AnyTransition {

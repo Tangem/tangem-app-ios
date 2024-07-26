@@ -193,7 +193,6 @@ extension SendAmountViewModel: SendStepViewAnimatable {
             } else {
                 auxiliaryViewsVisible = false
             }
-
             UIApplication.shared.endEditing()
 
         default:
