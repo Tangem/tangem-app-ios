@@ -640,7 +640,7 @@
 "staking_details_reward_claiming_info" = "A way to receive staking rewards. It can be claimed automatically or manually.";
 "staking_details_reward_schedule" = "Reward schedule";
 "staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards.";
-"staking_details_rewards_to_claim" = "Rewards to claim: %s";
+"staking_details_rewards_to_claim" = "Rewards to claim: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
 "staking_details_unbonding_period_info" = "The period you must wait after requesting to withdraw funds from staking before the tokens become available.";

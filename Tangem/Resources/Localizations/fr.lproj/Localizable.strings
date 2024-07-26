@@ -640,7 +640,7 @@
 "staking_details_reward_claiming_info" = "Un moyen de recevoir des récompenses de staking. Il peut être réclamé automatiquement ou manuellement.";
 "staking_details_reward_schedule" = "Calendrier de récompenses";
 "staking_details_reward_schedule_info" = "Il s'agit d'un calendrier qui détermine le moment où les participants au staking reçoivent leurs récompenses.";
-"staking_details_rewards_to_claim" = "Récompenses à réclamer : %s";
+"staking_details_rewards_to_claim" = "Récompenses à réclamer : %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Période de détachement";
 "staking_details_unbonding_period_info" = "La période que vous devez attendre après avoir demandé le retrait des fonds du staking avant que les jetons ne soient disponibles.";

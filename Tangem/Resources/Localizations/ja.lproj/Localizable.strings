@@ -640,7 +640,7 @@
 "staking_details_reward_claiming_info" = "ステーキング報酬を受け取る方法。自動または手動で請求できます。";
 "staking_details_reward_schedule" = "報酬スケジュール";
 "staking_details_reward_schedule_info" = "これは、ステーキングの参加者がいつ報酬を受け取るかを決定するスケジュールです。";
-"staking_details_rewards_to_claim" = "受け取る報酬: %s";
+"staking_details_rewards_to_claim" = "受け取る報酬: %@";
 "staking_details_title" = "ステーキング%@";
 "staking_details_unbonding_period" = "解約完了までの期間";
 "staking_details_unbonding_period_info" = "ステーキングから資金の引き出しを要求した後、トークンが利用可能になるまでの待機期間。";

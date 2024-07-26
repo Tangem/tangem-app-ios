@@ -640,7 +640,7 @@
 "staking_details_reward_claiming_info" = "Спосіб отримання винагороди за стейкінг. Його можна отримати автоматично або вручну.";
 "staking_details_reward_schedule" = "Розклад винагород";
 "staking_details_reward_schedule_info" = "Це графік, який визначає коли учасники стейкінгу отримують свої винагороди.";
-"staking_details_rewards_to_claim" = "Нагороди для отримання: %s";
+"staking_details_rewards_to_claim" = "Нагороди для отримання: %@";
 "staking_details_title" = "Стейкінг %@";
 "staking_details_unbonding_period" = "Період розблокування";
 "staking_details_unbonding_period_info" = "Період, який ви повинні чекати після запиту на виведення коштів зі стейкінгу, перш ніж токени стануть доступними.";

@@ -640,7 +640,7 @@
 "staking_details_reward_claiming_info" = "Способ получения вознаграждений за стейкинг. Он может быть автоматическим или ручным.";
 "staking_details_reward_schedule" = "Период возрагражения";
 "staking_details_reward_schedule_info" = "Это период, определяющий, когда участники стейкинга получат свои вознаграждения.";
-"staking_details_rewards_to_claim" = "Rewards to claim: %s";
+"staking_details_rewards_to_claim" = "Rewards to claim: %@";
 "staking_details_title" = "Стейкинг %@";
 "staking_details_unbonding_period" = "Период вывода";
 "staking_details_unbonding_period_info" = "Период, который необходимо подождать после запроса на вывод средств из стейкинга, прежде чем токены станут доступны.";
