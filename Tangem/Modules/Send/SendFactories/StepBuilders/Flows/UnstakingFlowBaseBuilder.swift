@@ -35,7 +35,7 @@ struct UnstakingFlowBaseBuilder {
             io: (input: unstakingModel, output: unstakingModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            editableType: .disable,
+            editableType: .noEditable,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,

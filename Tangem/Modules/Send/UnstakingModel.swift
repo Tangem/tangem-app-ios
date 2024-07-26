@@ -14,7 +14,7 @@ import BlockchainSdk
 class UnstakingModel {
     // MARK: - Data
 
-    private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
+    private let _amount: CurrentValueSubject<SendAmount?, Never>
     private let _transaction = CurrentValueSubject<LoadingValue<StakingTransactionInfo>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -36,6 +36,9 @@ class UnstakingModel {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.feeTokenItem = feeTokenItem
+
+        // TODO: fill it from stakingManager.state in the bind()
+        _amount = .init(.init(type: .typical(crypto: 100.145, fiat: 1443.65)))
 
         bind()
     }
@@ -68,7 +71,7 @@ private extension UnstakingModel {
     }
 
     func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
-        var value = transaction?.mapValue { tx in
+        let value = transaction?.mapValue { tx in
             Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: tx.fee))
         }
 

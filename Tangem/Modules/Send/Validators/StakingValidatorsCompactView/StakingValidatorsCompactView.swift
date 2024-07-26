@@ -11,8 +11,8 @@ import SwiftUI
 
 struct StakingValidatorsCompactView: View {
     @ObservedObject var viewModel: StakingValidatorsCompactViewModel
+    let type: SendCompactViewEditableType
     let namespace: StakingValidatorsView.Namespace
-    let tapAction: () -> Void
 
     var body: some View {
         GroupedSection(viewModel.selectedValidatorData) { data in
@@ -28,7 +28,9 @@ struct StakingValidatorsCompactView: View {
         .readGeometry(\.size, bindTo: $viewModel.viewSize)
         .contentShape(Rectangle())
         .onTapGesture {
-            tapAction()
+            if case .enabled(.some(let action)) = type {
+                action()
+            }
         }
     }
 }

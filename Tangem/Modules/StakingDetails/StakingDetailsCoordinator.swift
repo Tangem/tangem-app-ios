@@ -105,7 +105,9 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
     func openUnstakingFlow() {
         guard let options else { return }
 
-        let coordinator = SendCoordinator(dismissAction: { _ in })
+        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
+            self?.sendCoordinator = nil
+        })
 
         coordinator.start(with: .init(
             walletModel: options.walletModel,
