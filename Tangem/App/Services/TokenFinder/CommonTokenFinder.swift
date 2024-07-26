@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemExpress
 
 class CommonTokenFinder: TokenFinder {
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
@@ -22,6 +23,10 @@ class CommonTokenFinder: TokenFinder {
     func findToken(contractAddress: String, networkId: String) async throws -> TokenItem {
         guard let blockchain = supportedBlockchains.first(where: { $0.networkId == networkId }) else {
             throw Error.unknownNetworkId
+        }
+
+        if contractAddress == ExpressConstants.coinContractAddress {
+            return .blockchain(.init(blockchain, derivationPath: nil))
         }
 
         let requestModel = CoinsList.Request(
