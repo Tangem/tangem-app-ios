@@ -27,10 +27,12 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Dependencies
+    // MARK: - Dependencies & internal state
 
     private let historyChartProvider: MarketsHistoryChartProvider
+    private var loadHistoryChartTask: Cancellable?
     private var bag: Set<AnyCancellable> = []
+    private var didAppear = false
 
     // MARK: - Initialization/Deinitialization
 
@@ -44,33 +46,77 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         bind(selectedPriceIntervalPublisher: selectedPriceIntervalPublisher)
     }
 
-    func onViewAppear() {
-        viewState = .loading(previousData: nil)
+    // MARK: - Public API
 
-        // FIXME: Andrey Fedorov - Test only, remove when not needed
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            do {
-                let data = try self.makeLineChartViewData(from: .ethereumWeek)
-                self.viewState = .loaded(data: data)
-            } catch {
-                self.viewState = .failed /* (error: error) */
-            }
+    func onViewAppear() {
+        if !didAppear {
+            didAppear = true
+            loadHistoryChart(selectedPriceInterval: selectedPriceInterval)
         }
     }
 
     func reload() {
-        // TODO: Andrey Fedorov - Add actual implementation
+        loadHistoryChart(selectedPriceInterval: selectedPriceInterval)
     }
+
+    // MARK: - Setup & updating UI
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
         selectedPriceIntervalPublisher
-            .assign(to: \.selectedPriceInterval, on: self, ownership: .weak)
+            .sink(receiveValue: weakify(self, forFunction: MarketsHistoryChartViewModel.loadHistoryChart(selectedPriceInterval:)))
             .store(in: &bag)
     }
 
-    // TODO: Andrey Fedorov - Parse in BG
-    // TODO: Andrey Fedorov - Cache parsed data
-    private func makeLineChartViewData(from model: MarketsChartsHistoryItemModel) throws -> LineChartViewData {
+    @MainActor
+    private func updateViewState(_ newValue: ViewState, selectedPriceInterval: MarketsPriceIntervalType?) {
+        viewState = newValue
+
+        if let selectedPriceInterval {
+            self.selectedPriceInterval = selectedPriceInterval
+        }
+    }
+
+    // MARK: - Data fetching
+
+    private func loadHistoryChart(selectedPriceInterval: MarketsPriceIntervalType) {
+        loadHistoryChartTask?.cancel()
+        viewState = .loading(previousData: viewState.data)
+        loadHistoryChartTask = runTask(in: self) { [interval = selectedPriceInterval] viewModel in
+            do {
+                let model = try await viewModel.historyChartProvider.loadHistoryChart(for: interval)
+                await viewModel.handleLoadHistoryChart(.success(model), selectedPriceInterval: interval)
+            } catch {
+                await viewModel.handleLoadHistoryChart(.failure(error), selectedPriceInterval: interval)
+            }
+        }.eraseToAnyCancellable()
+    }
+
+    private func handleLoadHistoryChart(
+        _ result: Result<MarketsChartsHistoryItemModel, Swift.Error>,
+        selectedPriceInterval: MarketsPriceIntervalType
+    ) async {
+        do {
+            let model = try result.get()
+            let chartViewData = try makeLineChartViewData(from: model, selectedPriceInterval: selectedPriceInterval)
+            await updateViewState(.loaded(data: chartViewData), selectedPriceInterval: selectedPriceInterval)
+        } catch is CancellationError {
+            // No-op, cancelling a load request is perfectly normal
+        } catch {
+            // There is no point in updating `selectedPriceInterval` on failure, so nil is passed instead
+            await updateViewState(.failed, selectedPriceInterval: nil)
+        }
+    }
+
+    // MARK: - Data parsing
+
+    // TODO: Andrey Fedorov - Perform parsing in the `historyChartProvider` and cache parsed data (IOS-7109)
+    private func makeLineChartViewData(
+        from model: MarketsChartsHistoryItemModel,
+        selectedPriceInterval: MarketsPriceIntervalType
+    ) throws -> LineChartViewData {
+        #if ALPHA_OR_BETA
+        dispatchPrecondition(condition: .notOnQueue(.main))
+        #endif // ALPHA_OR_BETA
         let yAxis = try makeYAxisData(from: model)
         let xAxis = try makeXAxisData(from: model, selectedPriceInterval: selectedPriceInterval)
 
