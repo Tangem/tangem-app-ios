@@ -53,9 +53,8 @@ final class MarketsHistoryChartDateFormatterFactory {
         switch intervalType {
         case .day:
             "HH:mm"
-        case .week:
-            "d MMM"
-        case .month,
+        case .week,
+             .month,
              .quarter,
              .halfYear:
             "dd MMM"
