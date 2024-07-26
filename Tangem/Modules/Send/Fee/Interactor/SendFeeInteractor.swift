@@ -72,19 +72,28 @@ class CommonSendFeeInteractor {
     }
 
     func bind() {
-        _fees
+        let suggestedFeeToUse = _fees
             .withWeakCaptureOf(self)
             .compactMap { interactor, fees in
-                fees.value.flatMap { interactor.initialFeeForUpdate(fees: $0) }
+                fees.value.flatMap { interactor.feeForAutoupdate(fees: $0) }
             }
+            .share()
+
+        suggestedFeeToUse
             // Only once
             .first()
             .withWeakCaptureOf(self)
             .sink { interactor, fee in
-                interactor.initialSelectedFeeUpdateIfNeeded(fee: fee)
                 fee.value.value.map {
                     interactor.customFeeService?.initialSetupCustomFee($0)
                 }
+            }
+            .store(in: &bag)
+
+        suggestedFeeToUse
+            .withWeakCaptureOf(self)
+            .sink { interactor, fee in
+                interactor.autoupdateSelectedFee(fee: fee)
             }
             .store(in: &bag)
     }
@@ -227,18 +236,14 @@ private extension CommonSendFeeInteractor {
         }
     }
 
-    private func initialFeeForUpdate(fees: [Fee]) -> SendFee? {
+    private func feeForAutoupdate(fees: [Fee]) -> SendFee? {
         let values = mapToDefaultFees(fees: fees)
         let option = input?.selectedFee.option ?? .market
         let market = values.first(where: { $0.option == option })
         return market
     }
 
-    private func initialSelectedFeeUpdateIfNeeded(fee: SendFee) {
-        guard input?.selectedFee.value.value == nil else {
-            return
-        }
-
+    private func autoupdateSelectedFee(fee: SendFee) {
         output?.feeDidChanged(fee: fee)
     }
 }
