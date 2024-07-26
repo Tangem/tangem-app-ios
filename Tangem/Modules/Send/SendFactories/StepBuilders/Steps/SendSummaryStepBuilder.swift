@@ -19,7 +19,6 @@ struct SendSummaryStepBuilder {
         io: IO,
         sendTransactionDispatcher: any SendTransactionDispatcher,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel?,
         editableType: SendSummaryViewModel.EditableType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,

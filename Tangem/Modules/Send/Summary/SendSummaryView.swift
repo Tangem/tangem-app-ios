@@ -15,6 +15,8 @@ struct SendSummaryView: View {
 
     private let coordinateSpaceName = UUID()
 
+    // We use ZStack for each step to hold the place where
+    // the compact version of the step will be appeared.
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             GroupedScrollView(spacing: 14) {
@@ -155,17 +157,6 @@ struct SendSummaryView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
                 .visible(viewModel.transactionDescriptionIsVisible)
-        }
-    }
-}
-
-extension SendSummaryViewModel.EditableType {
-    var sectionBackground: Color {
-        switch self {
-        case .editable:
-            Colors.Background.action
-        case .disable:
-            Colors.Button.disabled
         }
     }
 }

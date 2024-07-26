@@ -16,7 +16,6 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     @Published var validators: [ValidatorViewData] = []
     @Published var selectedValidator: String = ""
     @Published var auxiliaryViewsVisible: Bool = true
-    @Published var isEditMode: Bool = false
 
     // MARK: - Dependencies
 
@@ -87,7 +86,6 @@ extension StakingValidatorsViewModel: SendStepViewAnimatable {
         case .appearing(.summary(_)):
             // Will be shown with animation
             auxiliaryViewsVisible = false
-            isEditMode = true
         case .disappearing(.summary(_)):
             auxiliaryViewsVisible = false
         default:

@@ -171,16 +171,18 @@ private extension SendAmountViewModel {
 extension SendAmountViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
         switch state {
-        case .appearing(.summary(_)):
-            // Will be shown with animation
-            auxiliaryViewsVisible = false
-            isEditMode = true
-
         case .appearing(.destination(_)):
             // Have to be always visible
             auxiliaryViewsVisible = true
             isEditMode = false
 
+        case .disappearing(.destination(_)):
+            UIApplication.shared.endEditing()
+
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
         case .disappearing(.summary(_)):
             // Have to use this HACK to force re-render view with the new transition
             // Will look at it "if" later
@@ -190,11 +192,11 @@ extension SendAmountViewModel: SendStepViewAnimatable {
             } else {
                 auxiliaryViewsVisible = false
             }
+
             UIApplication.shared.endEditing()
-        case .disappearing(.destination(_)):
-            UIApplication.shared.endEditing()
+
         default:
-            break
+            assertionFailure("Not implemented")
         }
     }
 }

@@ -41,7 +41,7 @@ struct StakingValidatorsView: View {
         }
         .coordinateSpace(name: coordinateSpaceName)
         .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
-        .transition(transitionService.transitionToValidatorsStep(isEditMode: viewModel.isEditMode))
+        .transition(transitionService.transitionToValidatorsStep())
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
     }

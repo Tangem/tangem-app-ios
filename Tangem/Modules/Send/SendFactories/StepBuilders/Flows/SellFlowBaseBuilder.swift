@@ -21,7 +21,6 @@ struct SellFlowBaseBuilder {
 
     func makeSendViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
 
         let sendModel = builder.makeSendModel(
@@ -30,8 +29,7 @@ struct SellFlowBaseBuilder {
         )
 
         let sendDestinationCompactViewModel = sendDestinationStepBuilder.makeSendDestinationCompactViewModel(
-            input: sendModel,
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: sendModel
         )
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
@@ -48,7 +46,6 @@ struct SellFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
             editableType: .disable,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,

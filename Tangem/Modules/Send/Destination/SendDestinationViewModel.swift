@@ -184,24 +184,24 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
 extension SendDestinationViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
         switch state {
-        case .appearing(.summary(_)):
-            // Will be shown with animation
-            auxiliaryViewsVisible = false
-            isEditMode = true
-
         case .appearing(.amount(_)):
             // Have to be always visible
             auxiliaryViewsVisible = true
             isEditMode = false
+        case .disappearing(.amount(_)):
+            UIApplication.shared.endEditing()
+
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
         case .disappearing(.summary(_)):
             auxiliaryViewsVisible = false
             isEditMode = true
             UIApplication.shared.endEditing()
 
-        case .disappearing:
-            UIApplication.shared.endEditing()
         default:
-            break
+            assertionFailure("Not implemented")
         }
     }
 }

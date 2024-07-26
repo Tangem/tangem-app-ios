@@ -98,12 +98,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         }
     }
 
-    func onDisappear() {
-//        destinationVisible = false
-//        amountVisible = false
-//        validatorVisible = false
-//        feeVisible = false
-    }
+    func onDisappear() {}
 
     func userDidTapDestination() {
         didTapSummary()

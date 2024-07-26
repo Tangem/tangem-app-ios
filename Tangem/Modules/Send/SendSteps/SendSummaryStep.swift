@@ -51,31 +51,3 @@ extension SendSummaryStep: SendStep {
         input.transactionPublisher.map { $0 != nil }.eraseToAnyPublisher()
     }
 }
-
-// MARK: - SendSummaryViewModelSetupable
-
-// extension SendSummaryStep: SendSummaryViewModelSetupable {
-//    func setup(sendDestinationViewModel: SendDestinationViewModel) {
-//        viewModel.setup(sendDestinationViewModel: sendDestinationViewModel)
-//    }
-
-//    func setup(sendAmountViewModel: SendAmountViewModel) {
-//        viewModel.setup(sendAmountViewModel: sendAmountViewModel)
-//    }
-
-//    func setup(sendDestinationInput: any SendDestinationInput) {
-//        viewModel.setup(sendDestinationInput: sendDestinationInput)
-//    }
-
-//    func setup(sendAmountInput: any SendAmountInput) {
-//        viewModel.setup(sendAmountInput: sendAmountInput)
-//    }
-
-//    func setup(sendFeeInput: any SendFeeInput) {
-//        viewModel.setup(sendFeeInput: sendFeeInput)
-//    }
-//
-//    func setup(stakingValidatorsInput: any StakingValidatorsInput) {
-//        viewModel.setup(stakingValidatorsInput: stakingValidatorsInput)
-//    }
-// }

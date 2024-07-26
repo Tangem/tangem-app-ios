@@ -20,7 +20,6 @@ struct SendFlowBaseBuilder {
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let sendQRCodeService = builder.makeSendQRCodeService()
 
@@ -42,7 +41,6 @@ struct SendFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendFeeInteractor: fee.interactor,
             sendQRCodeService: sendQRCodeService,
-            addressTextViewHeightModel: addressTextViewHeightModel,
             router: router
         )
 
@@ -50,7 +48,6 @@ struct SendFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
             editableType: .editable,
             sendDestinationCompactViewModel: destination.compact,
             sendAmountCompactViewModel: amount.compact,

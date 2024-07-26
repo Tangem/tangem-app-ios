@@ -57,8 +57,8 @@ class SendTransitionService {
 
     // MARK: - Validators
 
-    func transitionToValidatorsStep(isEditMode: Bool) -> AnyTransition {
-        isEditMode ? .offset(y: -validatorsContentOffset.y) : .move(edge: .trailing)
+    func transitionToValidatorsStep() -> AnyTransition {
+        .offset(y: -validatorsContentOffset.y)
     }
 
     func transitionToValidatorsCompactView(isEditMode: Bool) -> AnyTransition {
