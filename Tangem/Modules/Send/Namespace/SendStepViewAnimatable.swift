@@ -13,18 +13,6 @@ protocol SendStepViewAnimatable {
 }
 
 enum SendStepVisibilityState: Hashable {
-    case appearing(previousStep: SendStepType, isEditAction: Bool)
-    case appeared
-
-    case disappearing(nextStep: SendStepType, isEditAction: Bool)
-    case disappeared
-
-    var isEditAction: Bool {
-        switch self {
-        case .appearing(_, let isEditAction), .disappearing(_, let isEditAction):
-            return isEditAction
-        default:
-            return false
-        }
-    }
+    case appearing(previousStep: SendStepType)
+    case disappearing(nextStep: SendStepType)
 }

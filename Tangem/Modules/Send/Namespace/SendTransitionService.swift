@@ -77,8 +77,8 @@ class SendTransitionService {
             .animation(SendTransitionService.Constants.auxiliaryViewAnimation)
     }
 
-    func transitionToFeeStep(isEditMode: Bool) -> AnyTransition {
-        isEditMode ? .offset(y: -feeContentOffset.y) : .move(edge: .trailing)
+    func transitionToFeeStep() -> AnyTransition {
+        .offset(y: -feeContentOffset.y)
     }
 
     func transitionToFeeCompactView(isEditMode: Bool) -> AnyTransition {

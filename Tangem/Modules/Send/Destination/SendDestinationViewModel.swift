@@ -117,8 +117,6 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
         interactor
             .destinationValid
             .removeDuplicates()
-            // HACK: making sure it doesn't interfere with textview's updates
-//            .delay(for: 0.01, scheduler: DispatchQueue.main)
             .sink { [weak self] destinationValid in
                 self?.showSuggestedDestinations = !destinationValid
             }
@@ -186,16 +184,16 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
 extension SendDestinationViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
         switch state {
-        case .appearing(.summary(_), _):
+        case .appearing(.summary(_)):
             // Will be shown with animation
             auxiliaryViewsVisible = false
             isEditMode = true
 
-        case .appearing(.amount(_), _):
+        case .appearing(.amount(_)):
             // Have to be always visible
             auxiliaryViewsVisible = true
             isEditMode = false
-        case .disappearing(.summary(_), _):
+        case .disappearing(.summary(_)):
             auxiliaryViewsVisible = false
             isEditMode = true
             UIApplication.shared.endEditing()

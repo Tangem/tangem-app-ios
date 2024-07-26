@@ -76,7 +76,7 @@ final class SendViewModel: ObservableObject {
         self.coordinator = coordinator
 
         step = stepsManager.initialState.step
-        mainButtonType = stepsManager.initialState.mainButtonType
+        mainButtonType = stepsManager.initialState.action
 
         bind()
         bind(step: stepsManager.initialState.step)
@@ -221,22 +221,20 @@ extension SendViewModel: SendViewAlertPresenter {
 
 extension SendViewModel: SendStepsManagerOutput {
     func update(state: SendStepsManagerViewState) {
-        let isEditAction = mainButtonType == .continue
-
         step.willDisappear(next: state.step)
         step.sendStepViewAnimatable.viewDidChangeVisibilityState(
-            .disappearing(nextStep: state.step.type, isEditAction: isEditAction)
+            .disappearing(nextStep: state.step.type)
         )
 
         state.step.willAppear(previous: step)
         state.step.sendStepViewAnimatable.viewDidChangeVisibilityState(
-            .appearing(previousStep: step.type, isEditAction: isEditAction)
+            .appearing(previousStep: step.type)
         )
 
-        mainButtonType = state.mainButtonType
+        mainButtonType = state.action
         showBackButton = state.backButtonVisible
 
-        // Give some time to update `stepAnimation`
+        // Give some time to update `transitions`
         DispatchQueue.main.async {
             self.step = state.step
         }

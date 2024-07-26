@@ -17,7 +17,6 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     @Published private(set) var customFeeModels: [SendCustomFeeInputFieldModel] = []
 
     @Published private(set) var auxiliaryViewsVisible: Bool = true
-    @Published private(set) var isEditMode: Bool = false
 
     @Published private(set) var networkFeeUnreachableNotificationViewInput: NotificationViewInput?
 
@@ -170,13 +169,11 @@ class SendFeeViewModel: ObservableObject, Identifiable {
 extension SendFeeViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
         switch state {
-        case .appearing(.summary(_), _):
+        case .appearing(.summary(_)):
             // Will be shown with animation
             auxiliaryViewsVisible = false
-            isEditMode = true
-        case .disappearing(.summary(_), _):
+        case .disappearing(.summary(_)):
             auxiliaryViewsVisible = false
-            isEditMode = true
         default:
             break
         }

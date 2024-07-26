@@ -71,7 +71,7 @@ struct SendFeeView: View {
         }
         .coordinateSpace(name: coordinateSpaceName)
         .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
-        .transition(transitionService.transitionToFeeStep(isEditMode: viewModel.isEditMode))
+        .transition(transitionService.transitionToFeeStep())
         .onAppear(perform: viewModel.onAppear)
     }
 

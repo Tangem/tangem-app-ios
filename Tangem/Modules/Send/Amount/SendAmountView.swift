@@ -58,7 +58,6 @@ struct SendAmountView: View {
         // Because the top padding have to be is 16 to the white background
         // But the bottom padding have to be is 12
         .padding(.top, 4)
-//        .transition(transitionService.amountAuxiliaryViewTransition)
     }
 
     private var amountContent: some View {

@@ -152,12 +152,8 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
 extension SendSummaryViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
-        guard state.isEditAction else {
-            return
-        }
-
         switch state {
-        case .appearing(.destination(_), _):
+        case .appearing(.destination(_)):
             destinationEditMode = true
             amountEditMode = false
             validatorEditMode = false
@@ -168,7 +164,10 @@ extension SendSummaryViewModel: SendStepViewAnimatable {
             validatorVisible = true
             feeVisible = true
 
-        case .appearing(.amount(_), _):
+            showHint = false
+            transactionDescriptionIsVisible = false
+
+        case .appearing(.amount(_)):
             destinationEditMode = false
             amountEditMode = true
             validatorEditMode = false
@@ -179,7 +178,10 @@ extension SendSummaryViewModel: SendStepViewAnimatable {
             validatorVisible = true
             feeVisible = true
 
-        case .appearing(.validators(_), _):
+            showHint = false
+            transactionDescriptionIsVisible = false
+
+        case .appearing(.validators(_)):
             destinationEditMode = false
             amountEditMode = false
             validatorEditMode = true
@@ -189,7 +191,10 @@ extension SendSummaryViewModel: SendStepViewAnimatable {
             amountVisible = true
             validatorVisible = false
             feeVisible = true
-        case .appearing(.fee(_), _):
+
+            showHint = false
+            transactionDescriptionIsVisible = false
+        case .appearing(.fee(_)):
             destinationEditMode = false
             amountEditMode = false
             validatorEditMode = false
@@ -199,19 +204,19 @@ extension SendSummaryViewModel: SendStepViewAnimatable {
             amountVisible = true
             validatorVisible = true
             feeVisible = false
-        case .appeared, .disappeared, .disappearing:
-            break
+
+            showHint = false
+            transactionDescriptionIsVisible = false
         default:
-            assertionFailure("Not implemented")
+            // Do not update ids
+            return
         }
 
+        // Force to update the compact view transition
         sendDestinationCompactViewModelId = .init()
         sendAmountCompactViewModelId = .init()
         stakingValidatorsCompactViewModelId = .init()
         sendFeeCompactViewModelId = .init()
-
-        showHint = false
-        transactionDescriptionIsVisible = false
     }
 }
 

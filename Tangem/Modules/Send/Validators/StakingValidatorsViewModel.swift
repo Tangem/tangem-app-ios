@@ -84,11 +84,11 @@ private extension StakingValidatorsViewModel {
 extension StakingValidatorsViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
         switch state {
-        case .appearing(.summary(_), _):
+        case .appearing(.summary(_)):
             // Will be shown with animation
             auxiliaryViewsVisible = false
             isEditMode = true
-        case .disappearing(.summary(_), _):
+        case .disappearing(.summary(_)):
             auxiliaryViewsVisible = false
         default:
             break

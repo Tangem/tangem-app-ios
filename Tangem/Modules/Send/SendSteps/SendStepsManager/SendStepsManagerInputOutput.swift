@@ -14,30 +14,12 @@ protocol SendStepsManagerOutput: AnyObject {
 
 struct SendStepsManagerViewState {
     let step: SendStep
-    let mainButtonType: SendMainButtonType
+    let action: SendMainButtonType
     let backButtonVisible: Bool
 
-    static func next(step: SendStep) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            mainButtonType: .next,
-            backButtonVisible: true
-        )
-    }
-
-    static func back(step: SendStep) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            mainButtonType: .next,
-            backButtonVisible: false
-        )
-    }
-
-    static func moveAndFade(step: SendStep, action: SendMainButtonType) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            mainButtonType: action,
-            backButtonVisible: false
-        )
+    init(step: SendStep, action: SendMainButtonType, backButtonVisible: Bool = false) {
+        self.step = step
+        self.action = action
+        self.backButtonVisible = backButtonVisible
     }
 }
