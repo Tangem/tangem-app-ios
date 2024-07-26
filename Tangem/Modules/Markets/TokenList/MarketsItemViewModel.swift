@@ -17,7 +17,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     @Published var priceValue: String = ""
     @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var priceChangeState: TokenPriceChangeView.State = .empty
-    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
     @Published var charts: [Double]? = nil
 
     var marketRating: String?
@@ -25,15 +24,14 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Properties
 
-    let id: String
+    let index: Int
+    let tokenId: String
     let imageURL: URL?
     let name: String
     let symbol: String
-    let didTapAction: () -> Void
+    let didTapAction: (() -> Void)?
 
     // MARK: - Private Properties
-
-    private weak var filterProvider: MarketsListDataFilterProvider?
 
     private var bag = Set<AnyCancellable>()
 
@@ -41,14 +39,28 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     private let priceFormatter = CommonTokenPriceFormatter()
     private let marketCapFormatter = MarketCapFormatter()
 
+    private weak var prefetchDataSource: MarketsListPrefetchDataSource?
+    private weak var filterProvider: MarketsListDataFilterProvider?
+
     // MARK: - Init
 
-    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider, filterProvider: MarketsListDataFilterProvider) {
-        id = data.id
-        imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
+    init(
+        _ data: InputData,
+        prefetchDataSource: MarketsListPrefetchDataSource?,
+        chartsProvider: MarketsListChartsHistoryProvider,
+        filterProvider: MarketsListDataFilterProvider,
+        onTapAction: (() -> Void)?
+    ) {
+        self.filterProvider = filterProvider
+        self.prefetchDataSource = prefetchDataSource
+
+        index = data.index
+        tokenId = data.id
+        imageURL = IconURLBuilder().tokenIconURL(id: tokenId, size: .large)
         name = data.name
         symbol = data.symbol.uppercased()
-        didTapAction = data.didTapAction
+
+        didTapAction = onTapAction
 
         if let marketRating = data.marketRating {
             self.marketRating = "\(marketRating)"
@@ -59,10 +71,21 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
-        bindToQuotesUpdates()
 
-        self.filterProvider = filterProvider
+        bindToQuotesUpdates()
         bindWithProviders(charts: chartsProvider, filter: filterProvider)
+    }
+
+    deinit {
+        print("MarketsItemViewModel deinitialized - index: \(index)")
+    }
+
+    func onAppear() {
+        prefetchDataSource?.prefetchRows(at: index)
+    }
+
+    func onDisappear() {
+        prefetchDataSource?.cancelPrefetchingForRows(at: index)
     }
 
     // MARK: - Private Implementation
@@ -76,7 +99,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         quotesRepository.quotesPublisher
             .withWeakCaptureOf(self)
             .compactMap { viewModel, quotes in
-                quotes[viewModel.id]
+                quotes[viewModel.tokenId]
             }
             .receive(on: DispatchQueue.main)
             .withPrevious()
@@ -101,33 +124,46 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
-        charts
-            .$items
+        charts.$items
+            .combineLatest(filter.filterPublisher)
             .receive(on: DispatchQueue.main)
             .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, charts in
-                guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
-                    return
-                }
+            .sink(receiveValue: { elements in
+                let (viewModel, (charts, filter)) = elements
 
-                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value[filter.currentFilterValue.interval])
-                viewModel.charts = chartsDoubleConvertedValues
+                viewModel.findAndAssignChartsValue(from: charts, with: filter.interval)
             })
             .store(in: &bag)
+
+        // You need to immediately find the value of the graph if it is already present
+        findAndAssignChartsValue(from: charts.items, with: filter.currentFilterValue.interval)
     }
 
-    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsChartsHistoryItemModel?) -> [Double]? {
-        guard let chartPreviewItem else { return nil }
+    private func findAndAssignChartsValue(
+        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
+        with interval: MarketsPriceIntervalType
+    ) {
+        guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
+            return
+        }
 
-        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
+        let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
+        charts = chartsDoubleConvertedValues
+    }
+
+    private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let model else { return nil }
+
+        let chartsDecimalValues: [Decimal] = model.prices.values.map { $0 }
         let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
         return chartsDoubleConvertedValues
     }
 }
 
 extension MarketsItemViewModel {
-    struct InputData {
+    struct InputData: Identifiable {
+        let index: Int
         let id: String
         let name: String
         let symbol: String
@@ -135,6 +171,5 @@ extension MarketsItemViewModel {
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?
-        let didTapAction: () -> Void
     }
 }

@@ -563,7 +563,7 @@
 "send_fee_picker_priority" = "優先";
 "send_fee_unreachable_error_text" = "ネットワーク接続を確認してください";
 "send_fee_unreachable_error_title" = "ネットワーク手数料についての情報にアクセスできません";
-"send_from_wallet" = "** %@ ** より";
+"send_from_wallet" = "**%@** より";
 "send_gas_limit" = "ガス上限";
 "send_gas_limit_footer" = "これは、取引または契約を完了するために使用されるガスの最大額です。ガス上限を設定することで、取引実行時に予期せぬ請求や無制限の請求を防ぐことができます。";
 "send_gas_price" = "ガス代";
@@ -607,7 +607,7 @@
 "send_sending" = "送金中...";
 "send_summary_tap_hint" = "変更するには任意の箇所をタップしてください";
 "send_summary_title" = "%@を送金する";
-"send_summary_transaction_description" = "** %1$@ ** を送金する (ネットワーク手数料%2$@を含む)";
+"send_summary_transaction_description" = "**%1$@** を送金する (ネットワーク手数料%2$@を含む)";
 "send_summary_transaction_description_no_fiat_fee" = "**%1$@** と %2$@ を送金しています。";
 "send_title_currency_format" = "%@を送信しています";
 "send_total_label" = "合計";

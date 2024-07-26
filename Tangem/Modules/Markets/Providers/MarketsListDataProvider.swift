@@ -41,8 +41,7 @@ final class MarketsListDataProvider {
             return true
         }
 
-        let countPages = totalTokensCount / limitPerPage
-        return currentOffset < countPages
+        return currentOffset <= totalTokensCount
     }
 
     // MARK: Private Properties
@@ -51,7 +50,7 @@ final class MarketsListDataProvider {
     private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage: Int = 20
+    private let limitPerPage: Int = 150
 
     // Total tokens value by pages
     private var totalTokensCount: Int?
@@ -112,6 +111,15 @@ final class MarketsListDataProvider {
             AppLog.shared.debug("\(String(describing: self)) error optional parameter lastSearchText or lastFilter")
         }
     }
+
+    func removeItems(count: Int) {
+        guard items.count > count else {
+            return
+        }
+
+        items.removeLast(count)
+        currentOffset = items.count
+    }
 }
 
 // MARK: Private
@@ -138,10 +146,10 @@ private extension MarketsListDataProvider {
 
 extension MarketsListDataProvider {
     final class Filter: Hashable, Equatable {
-        var interval: MarketsPriceIntervalType = .day
-        var order: MarketsListOrderType = .rating
+        let interval: MarketsPriceIntervalType
+        let order: MarketsListOrderType
 
-        init(interval: MarketsPriceIntervalType, order: MarketsListOrderType) {
+        init(interval: MarketsPriceIntervalType = .day, order: MarketsListOrderType = .rating) {
             self.interval = interval
             self.order = order
         }

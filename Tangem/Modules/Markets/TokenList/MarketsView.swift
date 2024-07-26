@@ -20,6 +20,7 @@ struct MarketsView: View {
             list
         }
         .scrollDismissesKeyboardCompat(.immediately)
+        .background(Colors.Background.primary)
         .alert(item: $viewModel.alert, content: { $0.alert })
     }
 
@@ -47,12 +48,6 @@ struct MarketsView: View {
                     ForEach(0 ..< 20) { _ in
                         MarketsSkeletonItemView()
                     }
-                }
-
-                if viewModel.hasNextPage, viewModel.viewDidAppear {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
-                        .onAppear(perform: viewModel.fetchMore)
                 }
             }
         }
