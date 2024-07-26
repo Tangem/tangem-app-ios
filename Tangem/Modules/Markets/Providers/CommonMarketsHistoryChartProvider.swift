@@ -16,7 +16,7 @@ final class CommonMarketsHistoryChartProvider {}
 extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
     func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> MarketsChartsHistoryItemModel {
         #if ALPHA_OR_BETA
-        try await Task.sleep(seconds: 2.0)
+        try await Task.sleep(seconds: 1.5)
 
         switch interval {
         case .day:
