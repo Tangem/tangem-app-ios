@@ -10,7 +10,7 @@ import Foundation
 
 struct SendFeeStepBuilder {
     typealias IO = (input: SendFeeInput, output: SendFeeOutput)
-    typealias ReturnValue = (step: SendFeeStep, interactor: SendFeeInteractor)
+    typealias ReturnValue = (step: SendFeeStep, interactor: SendFeeInteractor, compact: SendFeeCompactViewModel)
 
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
@@ -32,7 +32,17 @@ struct SendFeeStepBuilder {
             feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder()
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendFeeCompactViewModel(input: io.input)
+
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendFeeCompactViewModel(input: SendFeeInput) -> SendFeeCompactViewModel {
+        .init(
+            input: input,
+            feeTokenItem: walletModel.feeTokenItem,
+            isFeeApproximate: builder.isFeeApproximate()
+        )
     }
 }
 

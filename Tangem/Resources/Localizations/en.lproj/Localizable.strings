@@ -105,6 +105,7 @@
 "common_fee_selector_title" = "Speed and fee";
 "common_generate_addresses" = "Get addresses";
 "common_go_to_provider" = "Go to provider";
+"common_go_to_token" = "Go to token";
 "common_import" = "Import";
 "common_later" = "Later";
 "common_learn_and_earn" = "Learn & Earn";
@@ -228,6 +229,8 @@
 "express_exchange_by" = "Exchange by %@";
 "express_exchange_notification_failed_text" = "Visit provider’s website to refund your money";
 "express_exchange_notification_failed_title" = "Operation failed by provider";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
 "express_exchange_notification_verification_text" = "Visit provider’s website for verification";
 "express_exchange_notification_verification_title" = "KYC verification required by provider";
 "express_exchange_status_canceled" = "Canceled";

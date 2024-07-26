@@ -10,7 +10,7 @@ import Foundation
 
 extension StakeKitDTO {
     enum Actions {
-        enum ActionType: String, Hashable, Decodable {
+        enum ActionType: String, Hashable, Codable {
             case stake = "STAKE"
             case unstake = "UNSTAKE"
             case claimRewards = "CLAIM_REWARDS"
@@ -29,7 +29,7 @@ extension StakeKitDTO {
             case unknown = "UNKNOWN"
         }
 
-        enum ActionStatus: String, Hashable, Decodable {
+        enum ActionStatus: String, Hashable, Codable {
             case canceled = "CANCELED"
             case created = "CREATED"
             case waitingForNext = "WAITING_FOR_NEXT"
@@ -103,6 +103,48 @@ extension StakeKitDTO {
                 let validatorAddress: String?
                 let validatorAddresses: [Address]?
                 let transactions: [Transaction.Response]?
+            }
+        }
+
+        enum Exit {
+            struct Request: Encodable {
+                let integrationId: String
+                let addresses: Address
+                let args: Args
+
+                struct Args: Encodable {
+                    let amount: String
+                    let validatorAddress: String?
+                    let validatorAddresses: [Address]
+                }
+            }
+
+            struct Response: Decodable {
+                let id: String
+                let integrationId: String
+                let status: ActionStatus
+                let type: ActionType
+                let currentStepIndex: Int
+                let amount: String
+                let validatorAddress: String?
+                let validatorAddresses: [Address]?
+                let transactions: [Transaction.Response]?
+            }
+        }
+
+        enum Pending {
+            struct Request: Encodable {
+                let type: ActionType
+                let passthrough: String
+                let args: Args
+
+                struct Args: Encodable {
+                    // TODO: https://tangem.atlassian.net/browse/IOS-7482
+                }
+            }
+
+            struct Response: Decodable {
+                // TODO: https://tangem.atlassian.net/browse/IOS-7482
             }
         }
     }

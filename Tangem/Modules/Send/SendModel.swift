@@ -357,7 +357,8 @@ extension SendModel: NotificationTapDelegate {
              .openFeedbackMail,
              .openAppStoreReview,
              .empty,
-             .support:
+             .support,
+             .openCurrency:
             assertionFailure("Notification tap not handled")
         }
     }

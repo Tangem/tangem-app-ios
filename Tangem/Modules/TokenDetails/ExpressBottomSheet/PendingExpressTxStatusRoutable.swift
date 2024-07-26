@@ -9,5 +9,6 @@
 import Foundation
 
 protocol PendingExpressTxStatusRoutable: AnyObject {
-    func openPendingExpressTxStatus(at url: URL)
+    func openURL(_ url: URL)
+    func openCurrency(tokenItem: TokenItem)
 }

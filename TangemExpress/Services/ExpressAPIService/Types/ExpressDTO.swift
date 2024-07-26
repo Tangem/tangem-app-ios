@@ -138,6 +138,8 @@ enum ExpressDTO {
         struct Response: Decodable {
             let providerId: Provider.Id
             let status: ExpressTransactionStatus
+            let refundNetwork: String?
+            let refundTokenAddress: String?
         }
     }
 

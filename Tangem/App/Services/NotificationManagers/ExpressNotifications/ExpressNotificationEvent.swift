@@ -29,6 +29,8 @@ enum ExpressNotificationEvent: Hashable {
     // The notifications which is used only on the PendingExpressTxStatusBottomSheetView
     case verificationRequired
     case cexOperationFailed
+
+    case refunded(tokenItem: TokenItem)
 }
 
 extension ExpressNotificationEvent: NotificationEvent {
@@ -62,6 +64,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return event.title
         case .validationErrorEvent(let event, _):
             return event.title
+        case .refunded(tokenItem: let tokenItem):
+            return .string(Localization.expressExchangeNotificationRefundTitle(tokenItem.currencySymbol, tokenItem.networkName))
         }
     }
 
@@ -96,6 +100,10 @@ extension ExpressNotificationEvent: NotificationEvent {
             return event.description
         case .validationErrorEvent(let event, _):
             return event.description
+        case .refunded(tokenItem: let tokenItem):
+            let url = TangemBlogUrlBuilder().url(post: .refundedDex)
+            let readMore = "[\(Localization.commonReadMore)](\(url.absoluteString))"
+            return Localization.expressExchangeNotificationRefundText(tokenItem.currencySymbol, readMore)
         }
     }
 
@@ -113,7 +121,8 @@ extension ExpressNotificationEvent: NotificationEvent {
              .refreshRequired,
              .verificationRequired,
              .cexOperationFailed,
-             .notEnoughReceivedAmountForReserve:
+             .notEnoughReceivedAmountForReserve,
+             .refunded:
             return .action
         case .withdrawalNotificationEvent(let event):
             return event.colorScheme
@@ -145,6 +154,9 @@ extension ExpressNotificationEvent: NotificationEvent {
             return event.icon
         case .validationErrorEvent(let event, _):
             return event.icon
+        case .refunded(let tokenItem):
+            let iconInfo = TokenIconInfoBuilder().build(from: tokenItem, isCustom: false)
+            return .init(iconType: .icon(iconInfo), size: CGSize(bothDimensions: 36))
         }
     }
 
@@ -154,7 +166,8 @@ extension ExpressNotificationEvent: NotificationEvent {
              .hasPendingTransaction,
              .hasPendingApproveTransaction,
              .verificationRequired,
-             .feeWillBeSubtractFromSendingAmount:
+             .feeWillBeSubtractFromSendingAmount,
+             .refunded:
             return .info
         case .notEnoughFeeForTokenTx,
              .tooSmallAmountToSwap,
@@ -184,6 +197,8 @@ extension ExpressNotificationEvent: NotificationEvent {
             return event.buttonActionType
         case .withdrawalNotificationEvent(let event):
             return event.buttonActionType
+        case .refunded:
+            return .openCurrency
         default:
             return nil
         }
@@ -200,7 +215,7 @@ extension ExpressNotificationEvent: NotificationEvent {
 
     var removingOnFullLoadingState: Bool {
         switch self {
-        case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed:
+        case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed, .refunded:
             return false
         case .permissionNeeded,
              .hasPendingTransaction,
