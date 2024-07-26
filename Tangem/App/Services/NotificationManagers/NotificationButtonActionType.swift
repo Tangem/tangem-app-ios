@@ -125,6 +125,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .leaveAmount,
              .support,
              .stake,
+             .openFeedbackMail,
              .openCurrency,
              .swap:
             return .secondary
