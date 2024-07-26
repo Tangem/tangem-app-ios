@@ -43,7 +43,7 @@ struct MarketsHistoryChartView: View {
                 Text(Localization.tryToLoadDataAgainButtonTitle)
                     .style(Fonts.Regular.caption1.weight(.medium).bold(), color: Colors.Text.primary1)
             }
-            .padding(.vertical, 7.0)
+            .padding(.vertical, 8.0)
             .padding(.horizontal, 12.0)
             .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8.0)
         }

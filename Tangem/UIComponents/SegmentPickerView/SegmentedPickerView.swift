@@ -139,8 +139,8 @@ private extension SegmentedPickerView {
         var body: some View {
             Button(action: action) {
                 content
+                    .padding(.vertical, 2.0)
                     .frame(maxWidth: shouldStretchToFill ? .infinity : targetWidth)
-                    .frame(height: 24.0)
                     .background {
                         if isSelected {
                             selectionView
