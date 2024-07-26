@@ -70,7 +70,7 @@ extension LineChartViewWrapper {
 
         func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
             // TODO: Andrey Fedorov - Add actual implementation (IOS-6745)
-            print("\(#function) called at \(CACurrentMediaTime())")
+            print("\(#function) called at \(CACurrentMediaTime()) with \(entry)")
         }
     }
 }
