@@ -148,7 +148,6 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
-                print("\nMarketsList Receive new list of items. Number of items: \(items.count)\n")
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
                 // Refactor this. Each time data provider receive next page - whole item models list recreated.
@@ -158,15 +157,8 @@ private extension MarketsViewModel {
                 }
                 viewModel.tokenViewModels = tokenViewModels
 
-                print("\nMarketsList Receive new list of items. Number of created view models: \(tokenViewModels.count)\n")
                 viewModel.showUnderCapButtonIfNeeded()
             })
-            .store(in: &bag)
-
-        $tokenListLoadingState
-            .sink { newState in
-                print("\nMarketsList Receive new list state: \(newState)\n")
-            }
             .store(in: &bag)
 
         dataProvider.$isLoading
@@ -174,7 +166,6 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                print("\nMarketsList Receive is loading flag from data provider: \(isLoading)\nShow error: \(viewModel.dataProvider.showError)\n")
                 if viewModel.dataProvider.showError {
                     return
                 }
@@ -251,7 +242,6 @@ private extension MarketsViewModel {
             isShowUnderCapButton = isSearching &&
                 !dataProvider.isGeneralCoins &&
                 !dataProvider.items.isEmpty
-            print("\nMarketsList Receive should display under cap button: \(isShowUnderCapButton)\n")
         }
     }
 
