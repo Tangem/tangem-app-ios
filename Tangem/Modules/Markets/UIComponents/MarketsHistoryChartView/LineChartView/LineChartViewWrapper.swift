@@ -9,6 +9,7 @@
 import SwiftUI
 import DGCharts
 
+/// Wrapper for `DGCharts.LineChartView` view.
 struct LineChartViewWrapper: UIViewRepresentable {
     typealias UIViewType = DGCharts.LineChartView
     typealias PriceInterval = MarketsPriceIntervalType
@@ -63,13 +64,13 @@ extension LineChartViewWrapper {
         }
 
         func chartViewDidEndPanning(_ chartView: ChartViewBase) {
-            // TODO: Andrey Fedorov - Add actual implementation
+            // TODO: Andrey Fedorov - Add actual implementation (IOS-6745)
             print("\(#function) called at \(CACurrentMediaTime())")
         }
 
         func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-            // TODO: Andrey Fedorov - Add actual implementation
-            print("\(#function) called at \(CACurrentMediaTime()) with \(String(describing: entry.data))")
+            // TODO: Andrey Fedorov - Add actual implementation (IOS-6745)
+            print("\(#function) called at \(CACurrentMediaTime())")
         }
     }
 }

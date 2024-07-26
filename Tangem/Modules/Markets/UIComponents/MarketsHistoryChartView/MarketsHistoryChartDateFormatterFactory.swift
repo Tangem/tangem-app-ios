@@ -13,9 +13,7 @@ final class MarketsHistoryChartDateFormatterFactory {
     static let shared = MarketsHistoryChartDateFormatterFactory()
 
     private var notificationCenter: NotificationCenter { .default }
-
     private var cache = NSCacheWrapper<MarketsPriceIntervalType, DateFormatter>()
-
     private var bag: Set<AnyCancellable> = []
 
     private init() {

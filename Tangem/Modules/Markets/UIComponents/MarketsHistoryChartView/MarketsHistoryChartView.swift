@@ -51,6 +51,7 @@ struct MarketsHistoryChartView: View {
 
     @ViewBuilder
     private var standaloneLoadingView: some View {
+        // TODO: Andrey Fedorov - Replace with a custom loading indicator (IOS-7476)
         ProgressView()
             .progressViewStyle(.circular)
     }
@@ -93,7 +94,7 @@ struct MarketsHistoryChartView: View {
             chartView.xAxis.labelTextColor = .textTertiary
             chartView.xAxis.yOffset = 26.0
             chartView.xAxis.xOffset = 0.0
-            chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable when the logic for X axis labels will be finalized
+            chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable if a custom renderer is used (IOS-7476)
             chartView.leftAxis.gridLineWidth = 1.0
             chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
             chartView.leftAxis.labelPosition = .insideChart

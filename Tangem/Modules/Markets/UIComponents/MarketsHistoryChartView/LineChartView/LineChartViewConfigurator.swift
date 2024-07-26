@@ -25,15 +25,16 @@ struct LineChartViewConfigurator {
         chartView.leftAxis.setLabelCount(yAxisData.labelCount, force: true)
         // We're losing some precision here due to the `Decimal` -> `Double` conversion,
         // but that's ok - graphical charts are never 100% accurate by design
-        chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax if needed
-        chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue // TODO: Andrey Fedorov - Round yMin/yMax if needed
+        // TODO: Andrey Fedorov - Round yMin/yMax if needed (IOS-7476)
+        chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue
+        chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue
     }
 
     private func configureXAxis(on chartView: LineChartViewWrapper.UIViewType, using xAxisData: LineChartViewData.XAxis) {
         chartView.xAxis.setLabelCount(xAxisData.labelCount, force: true)
         // We're losing some precision here due to the `Decimal` -> `Double` conversion,
         // but that's ok - graphical charts are never 100% accurate by design
-        // TODO: Andrey Fedorov - Setting `axisMinimum`/`axisMaximum` actually clips the entire chart within these bounds, so custom X Axis renderer required
+        // TODO: Andrey Fedorov - Setting `axisMinimum`/`axisMaximum` actually clips the entire chart within these bounds, use custom X axis renderer to avoid this (IOS-7476)
         /*
          chartView.xAxis.axisMinimum = xAxisData.axisMinValue.doubleValue
          chartView.xAxis.axisMaximum = xAxisData.axisMaxValue.doubleValue
