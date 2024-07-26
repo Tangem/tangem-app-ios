@@ -17,7 +17,9 @@ final class MarketsViewModel: ObservableObject {
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
-    @Published var isLoading: Bool = false
+    @Published var isShowUnderCapButton: Bool = false
+    @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published var shouldResetScrollPosition: Bool = false
 
     // MARK: - Properties
 
@@ -25,6 +27,10 @@ final class MarketsViewModel: ObservableObject {
         didSet {
             listDataController.update(viewDidAppear: isViewVisible)
         }
+    }
+
+    var isSearching: Bool {
+        !currentSearchValue.isEmpty
     }
 
     private weak var coordinator: MarketsRoutable?
@@ -36,6 +42,7 @@ final class MarketsViewModel: ObservableObject {
     private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, isViewVisible: isViewVisible)
 
     private var bag = Set<AnyCancellable>()
+    private var currentSearchValue: String = ""
 
     private let imageCache = KingfisherManager.shared.cache
 
@@ -71,20 +78,28 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onBottomSheetDisappear() {
-        isViewVisible = false
-
-        tokenViewModels = []
-        chartsHistoryProvider.reset()
-        dataProvider.reset(nil, with: nil)
-
+        dataProvider.reset()
         // Need reset state bottom sheet for next open bottom sheet
         fetch(with: "", by: filterProvider.currentFilterValue)
-
+        currentSearchValue = ""
+        isViewVisible = false
+        chartsHistoryProvider.reset()
         onDisappearPrepareImageCache()
     }
 
     func fetchMore() {
         dataProvider.fetchMore()
+    }
+
+    func onShowUnderCapAction() {
+        isShowUnderCapButton = false
+        dataProvider.isGeneralCoins = true
+        dataProvider.fetchMore()
+    }
+
+    func onTryLoadList() {
+        resetUI()
+        fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
 }
 
@@ -106,6 +121,11 @@ private extension MarketsViewModel {
                     return
                 }
 
+                if viewModel.currentSearchValue != value {
+                    viewModel.resetUI()
+                }
+
+                viewModel.currentSearchValue = value
                 viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
             }
             .store(in: &bag)
@@ -124,26 +144,59 @@ private extension MarketsViewModel {
 
     func dataProviderBind() {
         dataProvider.$items
+            .dropFirst()
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
                 // Refactor this. Each time data provider receive next page - whole item models list recreated.
-                viewModel.tokenViewModels = items.enumerated().compactMap { index, item in
+                let tokenViewModels = items.enumerated().compactMap { index, item in
                     let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: index)
                     return tokenViewModel
                 }
+                viewModel.tokenViewModels = tokenViewModels
+
+                viewModel.showUnderCapButtonIfNeeded()
             })
             .store(in: &bag)
 
         dataProvider.$isLoading
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
-                viewModel.isLoading = isLoading
+                if viewModel.dataProvider.showError {
+                    return
+                }
+
+                if isLoading {
+                    viewModel.tokenListLoadingState = .loading
+                    return
+                }
+
+                if viewModel.dataProvider.items.isEmpty {
+                    viewModel.tokenListLoadingState = .noResults
+                    return
+                }
+
+                if !viewModel.dataProvider.canFetchMore {
+                    viewModel.tokenListLoadingState = .allDataLoaded
+                    return
+                }
+
+                viewModel.tokenListLoadingState = .idle
+            })
+            .store(in: &bag)
+
+        dataProvider.$showError
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, showError in
+                if showError {
+                    viewModel.resetUI()
+                    viewModel.tokenListLoadingState = .error
+                }
             })
             .store(in: &bag)
     }
@@ -180,6 +233,20 @@ private extension MarketsViewModel {
     private func onDisappearPrepareImageCache() {
         imageCache.memoryStorage.removeAll()
         imageCache.memoryStorage.config.countLimit = .max
+    }
+
+    private func showUnderCapButtonIfNeeded() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self else { return }
+
+            isShowUnderCapButton = isSearching &&
+                !dataProvider.isGeneralCoins &&
+                !dataProvider.items.isEmpty
+        }
+    }
+
+    private func resetUI() {
+        isShowUnderCapButton = false
     }
 }
 
