@@ -51,7 +51,7 @@ struct TokenDetailsView: View {
                             fiatBalance: stakedBalance.fiatBalance,
                             rewardsToClaim: viewModel.stakingRewardsBalance?.fiatBalance
                         ),
-                        tapAction: {}
+                        tapAction: viewModel.openStaking
                     )
                     .padding(14)
                     .background(Colors.Background.primary)
