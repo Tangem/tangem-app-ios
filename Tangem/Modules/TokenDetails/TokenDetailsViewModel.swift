@@ -71,7 +71,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         )
         notificationManager.setupManager(with: self)
         bannerNotificationManager?.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
+        balanceWithButtonsModel = .init(balanceProvider: self, availableBalanceProvider: self, buttonsProvider: self)
 
         prepareSelf()
     }
@@ -290,4 +290,29 @@ private extension TokenDetailsViewModel {
 
 extension TokenDetailsViewModel: BalanceProvider {
     var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
+}
+
+extension TokenDetailsViewModel: AvailableBalanceProvider {
+    var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
+        guard let stakingManager = walletModel.stakingManager else {
+            return Just(nil).eraseToAnyPublisher()
+        }
+        return stakingManager.statePublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, state in
+                switch state {
+                case .staked:
+                    return viewModel.availableBalance
+                default:
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
+extension TokenDetailsViewModel {
+    var availableBalance: BalanceInfo {
+        BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
+    }
 }

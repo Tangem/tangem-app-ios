@@ -12,6 +12,7 @@
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
+		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
 		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
 		290167CAE4AB04EF14809C71 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1A9153420AB02B11100282 /* Pods_Tangem_TangemUITests.framework */; };
 		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
@@ -1845,6 +1846,7 @@
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
+		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
@@ -3890,6 +3892,7 @@
 		2DB361492C14FB9200BB1D38 /* SegmentPickerView */ = {
 			isa = PBXGroup;
 			children = (
+				0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */,
 				2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */,
 				2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */,
 				2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */,
@@ -11140,6 +11143,7 @@
 				DADD18F82AA7516B0044AA66 /* UITraitCollection+.swift in Sources */,
 				2D22765E2C0F0A4F006BB6A1 /* MarketsListOrderBottonSheetView.swift in Sources */,
 				EF339E492C21FBEC00B5CDC9 /* SendFeeInteractor.swift in Sources */,
+				0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */,
 				DC0A584A282C07A20031BECC /* WalletConnectService.swift in Sources */,
 				DA559C3B2B0261F400F59584 /* SendSummaryViewModel.swift in Sources */,
 				5D4B8BB927EDB327002CE87C /* ArrowView.swift in Sources */,

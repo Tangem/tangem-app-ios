@@ -60,6 +60,7 @@ class FakeBalanceWithButtonsInfoProvider {
     func map(_ provider: FakeTokenBalanceProvider) -> BalanceWithButtonsViewModel {
         BalanceWithButtonsViewModel(
             balanceProvider: provider,
+            availableBalanceProvider: nil,
             buttonsProvider: provider
         )
     }
