@@ -11,9 +11,21 @@ import Foundation
 public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
     public let blocked: Decimal
+    public let balanceGroupType: BalanceGroupType
 
-    public init(item: StakingTokenItem, blocked: Decimal) {
+    public init(item: StakingTokenItem, blocked: Decimal, balanceGroupType: BalanceGroupType) {
         self.item = item
         self.blocked = blocked
+        self.balanceGroupType = balanceGroupType
+    }
+}
+
+public enum BalanceGroupType {
+    case active
+    case unstaked
+    case unknown
+
+    var isActiveOrUnstaked: Bool {
+        self == .active || self == .unstaked
     }
 }

@@ -13,6 +13,10 @@ protocol BalanceProvider: AnyObject {
     var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { get }
 }
 
+protocol AvailableBalanceProvider: AnyObject {
+    var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> { get }
+}
+
 struct BalanceInfo {
     let balance: String
     let fiatBalance: String

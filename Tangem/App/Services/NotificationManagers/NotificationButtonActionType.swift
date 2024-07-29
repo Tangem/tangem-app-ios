@@ -111,7 +111,6 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         case .generateAddresses,
              .openLink,
              .openAppStoreReview,
-             .swap,
              .empty:
             return .primary
         case .backupCard,
@@ -127,7 +126,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .support,
              .stake,
              .openFeedbackMail,
-             .openCurrency:
+             .openCurrency,
+             .swap:
             return .secondary
         }
     }

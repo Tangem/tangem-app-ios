@@ -53,9 +53,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Based on %li rating</string>
+        <string>На основі %li оцінки</string>
+        <key>few</key>
+        <string>На основі %li оцінок</string>
+        <key>many</key>
+        <string>На основі %li оцінок</string>
         <key>other</key>
-        <string>Based on %li ratings</string>
+        <string>На основі %li оцінок</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
