@@ -20,8 +20,11 @@ final class MarketsListDataProvider {
 
     @Published var items: [MarketsTokenModel] = []
     @Published var isLoading: Bool = false
+    @Published var showError: Bool = false
 
     // MARK: - Public Properties
+
+    var isGeneralCoins = false
 
     var lastSearchTextValue: String? {
         return lastSearchText
@@ -33,7 +36,7 @@ final class MarketsListDataProvider {
 
     // Tells if all items have been loaded
     var canFetchMore: Bool {
-        if isLoading {
+        if isLoading || showError {
             return false
         }
 
@@ -64,43 +67,49 @@ final class MarketsListDataProvider {
 
     // MARK: - Implementation
 
-    func reset(_ searchText: String?, with filter: Filter?) {
-        AppLog.shared.debug("\(String(describing: self)) reset market list tokens")
+    func reset() {
+        log("Reset market list tokens")
 
-        lastSearchText = searchText
-        lastFilter = filter
+        lastSearchText = nil
+        lastFilter = nil
 
-        items = []
-        currentOffset = 0
-        totalTokensCount = nil
+        clearSearchResults()
 
         isLoading = false
     }
 
-    func fetch(_ searchText: String, with filter: Filter, generalCoins: Bool = false) {
-        if lastSearchText != searchText || filter != lastFilter {
-            reset(searchText, with: filter)
-        }
-
+    func fetch(_ searchText: String, with filter: Filter) {
         isLoading = true
 
+        if lastSearchText != searchText || lastFilter != filter {
+            clearSearchResults()
+        }
+
+        lastSearchText = searchText
+        lastFilter = filter
+
         runTask(in: self) { provider in
+            defer {
+                provider.isLoading = false
+            }
             let response: MarketsDTO.General.Response
 
             do {
-                response = try await provider.loadItems(searchText, with: filter, generalCoins: generalCoins)
+                let searchText = searchText.trimmed()
+
+                response = try await provider.loadItems(searchText, with: filter)
             } catch {
-                AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens did receive error \(error.localizedDescription)")
-                provider.isLoading = false
+                provider.log("Failed to load next page. Error: \(error)")
+                provider.showError = true
                 return
             }
 
             provider.currentOffset = response.offset + response.limit
             provider.totalTokensCount = response.total
 
-            provider.isLoading = false
+            provider.showError = false
 
-            self.items.append(contentsOf: response.tokens)
+            provider.items.append(contentsOf: response.tokens)
         }
     }
 
@@ -108,24 +117,28 @@ final class MarketsListDataProvider {
         if let lastSearchText, let lastFilter {
             fetch(lastSearchText, with: lastFilter)
         } else {
-            AppLog.shared.debug("\(String(describing: self)) error optional parameter lastSearchText or lastFilter")
+            log("Error optional parameter lastSearchText or lastFilter")
         }
     }
 
-    func removeItems(count: Int) {
-        guard items.count > count else {
-            return
-        }
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[\(String(describing: self))] - \(message())")
+    }
 
-        items.removeLast(count)
-        currentOffset = items.count
+    private func clearSearchResults() {
+        items = []
+        currentOffset = 0
+        totalTokensCount = nil
+
+        showError = false
+        isGeneralCoins = false
     }
 }
 
 // MARK: Private
 
 private extension MarketsListDataProvider {
-    func loadItems(_ searchText: String, with filter: Filter, generalCoins: Bool) async throws -> MarketsDTO.General.Response {
+    func loadItems(_ searchText: String, with filter: Filter) async throws -> MarketsDTO.General.Response {
         let searchText = searchText.trimmed()
 
         let requestModel = MarketsDTO.General.Request(
@@ -134,11 +147,11 @@ private extension MarketsListDataProvider {
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
-            generalCoins: generalCoins,
+            generalCoins: isGeneralCoins,
             search: searchText
         )
 
-        AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
+        log("Loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
         return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }

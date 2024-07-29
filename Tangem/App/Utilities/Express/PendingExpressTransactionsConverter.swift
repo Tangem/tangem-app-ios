@@ -65,10 +65,11 @@ struct PendingExpressTransactionsConverter {
         let isFinished = currentStatus.isTerminated
         if isFinished {
             // Always display cross for failed state
+            // TODO: Refactor for clarity
             switch status {
             case .failed:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: true))
-            case .canceled, .unknown:
+            case .canceled, .unknown, .refunded:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: false))
             case .awaitingHash:
                 return .init(title: status.passedStatusTitle, state: .exclamationMark)
@@ -86,11 +87,11 @@ struct PendingExpressTransactionsConverter {
         switch status {
         case .failed, .unknown:
             state = .cross(passed: false)
+        case .verificationRequired, .awaitingHash:
+            state = .exclamationMark
         case .refunded:
             // Refunded state is the final state and it can't be pending (with loader)
             state = isFinished ? .checkmark : .empty
-        case .verificationRequired, .awaitingHash:
-            state = .exclamationMark
         case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .canceled:
             break
         }

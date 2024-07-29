@@ -19,6 +19,8 @@ struct StakeKitTarget: Moya.TargetType {
         case getBalances(StakeKitDTO.Balances.Request)
 
         case enterAction(StakeKitDTO.Actions.Enter.Request)
+        case exitAction(StakeKitDTO.Actions.Exit.Request)
+        case pendingAction(StakeKitDTO.Actions.Pending.Request)
 
         case transaction(id: String)
         case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)
@@ -40,6 +42,10 @@ struct StakeKitTarget: Moya.TargetType {
             return "yields/balances/scan"
         case .enterAction:
             return "actions/enter"
+        case .exitAction:
+            return "actions/exit"
+        case .pendingAction:
+            return "actions/pending"
         case .constructTransaction(let id, _), .transaction(let id):
             return "transactions/\(id)"
         case .submitTransaction(let id, _):
@@ -53,7 +59,7 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .getYield, .enabledYields, .transaction:
             return .get
-        case .enterAction, .getBalances, .submitTransaction, .submitHash:
+        case .enterAction, .exitAction, .pendingAction, .getBalances, .submitTransaction, .submitHash:
             return .post
         case .constructTransaction:
             return .patch
@@ -65,6 +71,10 @@ struct StakeKitTarget: Moya.TargetType {
         case .getYield, .enabledYields, .transaction:
             return .requestPlain
         case .enterAction(let request):
+            return .requestJSONEncodable(request)
+        case .pendingAction(let request):
+            return .requestJSONEncodable(request)
+        case .exitAction(let request):
             return .requestJSONEncodable(request)
         case .getBalances(let request):
             return .requestJSONEncodable(request)

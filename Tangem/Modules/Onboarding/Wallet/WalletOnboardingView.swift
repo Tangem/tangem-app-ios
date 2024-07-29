@@ -12,7 +12,7 @@ struct WalletOnboardingView: View {
     @ObservedObject var viewModel: WalletOnboardingViewModel
 
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let infoPagerHeight: CGFloat = 146
+    private let infoPagerHeight: CGFloat = 156
 
     var currentStep: WalletOnboardingStep {
         viewModel.currentStep
