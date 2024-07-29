@@ -63,6 +63,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
         selectedPriceIntervalPublisher
+            .dropFirst() // Initial loading will be triggered in `onViewAppear`
             .sink(receiveValue: weakify(self, forFunction: MarketsHistoryChartViewModel.loadHistoryChart(selectedPriceInterval:)))
             .store(in: &bag)
     }
