@@ -144,17 +144,20 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
         with interval: MarketsPriceIntervalType
     ) {
-        guard
-            let chart = chartsDictionary.first(where: { $0.key == tokenId }),
-            let model = chart.value[interval]
-        else {
+        guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
             return
         }
 
-        let mapper = TokenMarketsHistoryChartMapper()
-        charts = try? mapper
-            .mapAndSortValues(from: model)
-            .map(\.price.doubleValue)
+        let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
+        charts = chartsDoubleConvertedValues
+    }
+
+    private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let model else { return nil }
+
+        let chartsDecimalValues: [Decimal] = model.prices.values.map { $0 }
+        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
+        return chartsDoubleConvertedValues
     }
 }
 
