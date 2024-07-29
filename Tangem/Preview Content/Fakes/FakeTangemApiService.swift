@@ -111,6 +111,12 @@ class FakeTangemApiService: TangemApiService {
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
         throw "Not implemented"
     }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        throw "Not implemented"
+    }
 }
 
 private struct FakeCoinListProvider {

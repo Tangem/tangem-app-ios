@@ -237,7 +237,7 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     private func makeHistoryChartViewModel() {
-        let historyChartProvider = CommonMarketsHistoryChartProvider()
+        let historyChartProvider = CommonMarketsHistoryChartProvider(tokenId: tokenInfo.id)
         historyChartViewModel = MarketsHistoryChartViewModel(
             historyChartProvider: historyChartProvider,
             selectedPriceInterval: selectedPriceChangeIntervalType,

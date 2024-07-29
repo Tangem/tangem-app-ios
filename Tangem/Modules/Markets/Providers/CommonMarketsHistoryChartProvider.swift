@@ -8,34 +8,31 @@
 
 import Foundation
 
-// TODO: Andrey Fedorov - Add actual implementation (IOS-7109)
-final class CommonMarketsHistoryChartProvider {}
+// TODO: Andrey Fedorov - Add parsing and caching
+final class CommonMarketsHistoryChartProvider {
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+
+    private let tokenId: TokenItemId
+
+    private var selectedCurrencyCode: String {
+        return AppSettings.shared.selectedCurrencyCode
+    }
+
+    init(tokenId: TokenItemId) {
+        self.tokenId = tokenId
+    }
+}
 
 // MARK: - MarketsHistoryChartProvider protocol conformance
 
 extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
     func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> MarketsChartsHistoryItemModel {
-        #if ALPHA_OR_BETA
-        try await Task.sleep(seconds: 1.5)
+        let requestModel = MarketsDTO.ChartsHistory.HistoryRequest(
+            currency: selectedCurrencyCode,
+            tokenId: tokenId,
+            interval: interval
+        )
 
-        switch interval {
-        case .day:
-            return .ethereumDay
-        case .week:
-            return .ethereumWeek
-        case .month:
-            return .ethereumMonth
-        case .quarter:
-            return .ethereumQuarter
-        case .halfYear:
-            return .ethereumHalfYear
-        case .year:
-            return .ethereumYear
-        case .all:
-            return .ethereumAll
-        }
-        #else
-        throw "Not implemented"
-        #endif // ALPHA_OR_BETA
+        return try await tangemApiService.loadHistoryChart(requestModel: requestModel)
     }
 }
