@@ -67,7 +67,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         if let marketCap = data.marketCap {
-            self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
+            self.marketCap = marketCapFormatter.formatDecimal(marketCap)
         }
 
         setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
@@ -167,7 +167,7 @@ extension MarketsItemViewModel {
         let id: String
         let name: String
         let symbol: String
-        let marketCap: UInt64?
+        let marketCap: Decimal?
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?

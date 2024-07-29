@@ -112,6 +112,23 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             coordinator: coordinator
         )
     }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        let tokenFinder = CommonTokenFinder(supportedBlockchains: userWalletModel.config.supportedBlockchains)
+
+        let expressRefundedTokenHandler = CommonExpressRefundedTokenHandler(
+            userTokensManager: userWalletModel.userTokensManager,
+            tokenFinder: tokenFinder
+        )
+
+        let pendingExpressTransactionsManager = CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: expressRefundedTokenHandler
+        )
+
+        return pendingExpressTransactionsManager
+    }
 }
 
 // MARK: Dependencies
@@ -141,7 +158,6 @@ private extension CommonExpressModulesFactory {
     var signer: TransactionSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
     var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
-    var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
 
     var expressTokensListAdapter: ExpressTokensListAdapter {
         CommonExpressTokensListAdapter(userWalletModel: userWalletModel)

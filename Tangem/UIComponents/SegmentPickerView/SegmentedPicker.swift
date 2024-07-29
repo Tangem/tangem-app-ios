@@ -45,10 +45,9 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
                 .foregroundStyle(Colors.Text.primary1)
                 .opacity(isSelected ? 0.0 : 1.0)
         }
-        .frame(height: 24) // TODO: discuss
         .animation(.default, value: isSelected)
         .lineLimit(1)
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
         .padding(.horizontal, 12)
     }
 

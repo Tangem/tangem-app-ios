@@ -10,7 +10,7 @@ import Foundation
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
-    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
+    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor, compact: SendAmountCompactViewModel)
 
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
@@ -29,7 +29,16 @@ struct SendAmountStepBuilder {
             sendFeeLoader: sendFeeLoader
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendAmountCompactViewModel(input: io.input)
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendAmountCompactViewModel(input: SendAmountInput) -> SendAmountCompactViewModel {
+        .init(
+            input: input,
+            tokenIconInfo: builder.makeTokenIconInfo(),
+            tokenItem: walletModel.tokenItem
+        )
     }
 }
 
