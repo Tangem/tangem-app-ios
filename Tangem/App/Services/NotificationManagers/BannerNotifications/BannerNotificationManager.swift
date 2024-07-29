@@ -74,6 +74,8 @@ class BannerNotificationManager {
 
             let buttonAction: NotificationView.NotificationButtonTapAction = { [weak manager, placement] id, action in
                 manager?.delegate?.didTapNotification(with: id, action: action)
+                manager?.bannerPromotionService.hide(promotion: programName, on: placement)
+                manager?.dismissNotification(with: id)
 
                 Analytics.log(
                     .promotionBannerClicked,
