@@ -15,6 +15,12 @@ struct LineChartViewData: Equatable {
         case neutral
     }
 
+    struct Value: Equatable {
+        /// In milliseconds.
+        let timeStamp: UInt64
+        let price: Decimal
+    }
+
     struct YAxis: Equatable {
         let labelCount: Int
         /// Axis min value, do not confuse with the min value of the data set.
@@ -24,12 +30,6 @@ struct LineChartViewData: Equatable {
     }
 
     struct XAxis: Equatable {
-        struct Value: Equatable {
-            /// In milliseconds.
-            let timeStamp: UInt64
-            let price: Decimal
-        }
-
         let labelCount: Int
         /// Axis min value, do not confuse with the min value of the data set.
         let axisMinValue: Decimal
