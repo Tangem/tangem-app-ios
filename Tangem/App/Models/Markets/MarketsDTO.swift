@@ -77,7 +77,10 @@ extension MarketsDTO.General {
 // MARK: - HistoryPreview
 
 extension MarketsDTO.ChartsHistory {
-    struct Request: Encodable {
+    typealias PreviewResponse = [String: MarketsChartsHistoryItemModel]
+    typealias HistoryResponse = MarketsChartsHistoryItemModel
+
+    struct PreviewRequest: Encodable {
         let currency: String
         let coinIds: [String]
         let interval: MarketsPriceIntervalType

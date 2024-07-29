@@ -259,14 +259,16 @@ extension CommonTangemApiService: TangemApiService {
         return try await request(for: .coinsList(requestModel), decoder: decoder)
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try await request(for: .coinsHistoryPreview(requestModel), decoder: decoder)
+        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: decoder)
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
-        return try await request(for: .tokenMarketsDetails(request: requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .tokenMarketsDetails(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     // MARK: - Init

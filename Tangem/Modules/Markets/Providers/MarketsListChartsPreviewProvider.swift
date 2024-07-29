@@ -31,7 +31,7 @@ final class MarketsListChartsHistoryProvider {
         }
 
         runTask(in: self) { provider in
-            let response: [String: MarketsChartsHistoryItemModel]
+            let response: MarketsDTO.ChartsHistory.PreviewResponse
 
             do {
                 // Need for filtered coins already received
@@ -68,8 +68,11 @@ final class MarketsListChartsHistoryProvider {
 // MARK: Private
 
 private extension MarketsListChartsHistoryProvider {
-    func loadItems(for coinIds: [String], with interval: MarketsPriceIntervalType) async throws -> [String: MarketsChartsHistoryItemModel] {
-        let requestModel = MarketsDTO.ChartsHistory.Request(
+    func loadItems(
+        for coinIds: [String],
+        with interval: MarketsPriceIntervalType
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        let requestModel = MarketsDTO.ChartsHistory.PreviewRequest(
             currency: selectedCurrencyCode,
             coinIds: coinIds,
             interval: interval
@@ -77,6 +80,6 @@ private extension MarketsListChartsHistoryProvider {
 
         AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
-        return try await tangemApiService.loadCoinsHistoryPreview(requestModel: requestModel)
+        return try await tangemApiService.loadCoinsHistoryChartPreview(requestModel: requestModel)
     }
 }
