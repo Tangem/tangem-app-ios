@@ -105,4 +105,10 @@ extension MarketsDTO.ChartsHistory {
             ]
         }
     }
+
+    struct HistoryRequest: Encodable {
+        let currency: String
+        let tokenId: TokenItemId
+        let interval: MarketsPriceIntervalType
+    }
 }

@@ -15,7 +15,7 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, Identifiable, Equa
     case quarter = "3m"
     case halfYear = "6m"
     case year = "1y"
-    case all = "all_time"
+    case all
 
     var id: String {
         rawValue
