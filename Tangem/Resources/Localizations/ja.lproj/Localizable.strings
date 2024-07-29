@@ -105,7 +105,7 @@
 "common_fee_selector_title" = "速度と料金";
 "common_generate_addresses" = "アドレスを取得する";
 "common_go_to_provider" = "プロバイダーへ移動";
-"common_go_to_token" = "Go to token";
+"common_go_to_token" = "トークンへ移動";
 "common_import" = "インポート";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
@@ -229,8 +229,8 @@
 "express_exchange_by" = "%@による交換";
 "express_exchange_notification_failed_text" = "返金を受けるには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_failed_title" = "プロバイダーによる操作が失敗しました。";
-"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
-"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
+"express_exchange_notification_refund_text" = "OKXまたはブリッジのルールにより、取引金額は%1$sでウォレットに返金されました。 %2$s";
+"express_exchange_notification_refund_title" = "金額は %1$s（%2$sネットワーク）で返金されました";
 "express_exchange_notification_verification_text" = "確認するには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_verification_title" = "プロバイダーによる本人確認手続きが必要です。";
 "express_exchange_status_canceled" = "キャンセルされました";
@@ -618,6 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (%2$@: 手数料を含む)";
 "send_total_subtitle_format" = "%@が送信されます";
 "send_transaction_success" = "取引は正常に署名され、ブロックチェーンノードに送信されました。ウォレットの残高はしばらくして更新されます。";
+"send_tron_account_activation_error" = "%1$@はTronネットワークのアセットです。手数料を計算して取引を行うには、アカウントにTron（TRX）を入金する必要があります。";
 "send_validation_invalid_address" = "無効なアドレス";
 "send_wallet_balance_format" = "%1$@ ( %2$@ )";
 "sent_transaction_sent_title" = "取引が送信されました";
@@ -649,6 +650,7 @@
 "staking_details_unbonding_period_info" = "ステーキングから資金の引き出しを要求した後、トークンが利用可能になるまでの待機期間。";
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
+"staking_initial_info_title" = "Stake %@";
 "staking_native" = "ネイティブステーキング";
 "staking_notification_earn_rewards_text" = "ステーキングにより%1@を獲得できます。ステーキング報酬は ~ %2@日ごとに届きます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
@@ -789,7 +791,7 @@
 "wallet_settings_title" = "ウォレット設定";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "%@を使用するか、カードをスキャンしてウォレットにアクセスしてください";
-"warning_backup_errors_message" = "It seems that the card activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card to your device. Please contact our Support team for assistance.";
+"warning_backup_errors_message" = "カードのアクティベーションが正しく完了しませんでした。デバイスの NFCモジュールに問題があるか、カードをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
 "warning_button_could_be_better" = "もっと良くなるはず";

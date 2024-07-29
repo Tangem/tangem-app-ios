@@ -618,6 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (вкл. комиссию: %2$@)";
 "send_total_subtitle_format" = "%@ будет отправлено";
 "send_transaction_success" = "Транзакция успешно подписана и отправлена в блокчейн. Баланс будет обновлен через некоторое время";
+"send_tron_account_activation_error" = "%1$@ — это монета в сети Tron. Чтобы рассчитать комиссию и совершить транзакцию, вам необходимо внести немного Tron (TRX) на свой адрес.";
 "send_validation_invalid_address" = "Неверный адрес";
 "send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Транзакция отправлена";
@@ -649,6 +650,7 @@
 "staking_details_unbonding_period_info" = "Период, который необходимо подождать после запроса на вывод средств из стейкинга, прежде чем токены станут доступны.";
 "staking_details_warmup_period" = "Период прогрева";
 "staking_details_warmup_period_info" = "Время, необходимое для начала процесса стейкинга.";
+"staking_initial_info_title" = "Stake %@";
 "staking_native" = "Native staking";
 "staking_notification_earn_rewards_text" = "Staking allow you to earn %1@. Your staking rewards arrive every ~%2@ days.";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";

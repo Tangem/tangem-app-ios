@@ -45,9 +45,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Based on %li rating</string>
+        <string>Bewertung, basierend auf %li</string>
         <key>other</key>
-        <string>Based on %li ratings</string>
+        <string>Bewertungen, basierend auf %li</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
