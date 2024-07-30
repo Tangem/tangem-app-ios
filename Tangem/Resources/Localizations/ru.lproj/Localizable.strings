@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Балансы скрыты";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт в приложении";
 "button_start_backup_process" = "Начать резервное копирование";
-"buy_token_description" = "From your fiat card or bank account";
+"buy_token_description" = "With your bank card or bank account";
 "card_settings_access_code_recovery_disabled_description" = "Отключите эту опцию, если не хотите, чтобы эта карта использовалась для сброса кодов доступа на другие карты этого кошелька. Обратите внимание, сброс кода также не будет доступен на этой карте.";
 "card_settings_access_code_recovery_enabled_description" = "Использовать эту карту для сброса кода доступа на других картах в этом кошельке";
 "card_settings_access_code_recovery_footer" = "Отключить возможность сброса кода доступа на этой карте или других картах этого кошелька";
@@ -229,8 +229,8 @@
 "express_exchange_by" = "Обмен через %@";
 "express_exchange_notification_failed_text" = "Чтобы вернуть ваши деньги, посетите сайт провайдера";
 "express_exchange_notification_failed_title" = "Операция не выполнена провайдером";
-"express_exchange_notification_refund_text" = "Отправленные средства были возвращены в %1$s на ваш кошелек в соответствии с правилами OKX или моста обмена. %2$s";
-"express_exchange_notification_refund_title" = "Сумма была возвращена в %1$s (%2$s сети)";
+"express_exchange_notification_refund_text" = "Отправленные средства были возвращены в %1$@ на ваш кошелек в соответствии с правилами OKX или моста обмена. %2$@";
+"express_exchange_notification_refund_title" = "Сумма была возвращена в %1$@ (%2$@ сети)";
 "express_exchange_notification_verification_text" = "Посетите сайт провайдера для проверки";
 "express_exchange_notification_verification_title" = "Провайдер запрашивает прохождение верификации";
 "express_exchange_status_canceled" = "Отменен";
@@ -269,7 +269,7 @@
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
-"exсhange_token_description" = "From another currency in your wallet";
+"exсhange_token_description" = "With another currency in your wallet";
 "feedback_preface_rate_negative" = "Расскажите, каких функций вам не хватает, и мы постараемся вам помочь.";
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта?";
 "feedback_preface_support" = "Привет, команда поддержки,";
@@ -285,7 +285,7 @@
 "give_permission_policy_type_footer" = "Укажите лимит доступа к выбранному токену";
 "give_permission_rows_amount" = "Количество %@";
 "give_permission_staking_footer" = "Функция подтверждения необходима для предоставления другому адресу разрешения на использование определенного количества ваших токенов.По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту StakeKit разрешение использовать ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете осуществить стейкинг токена.";
-"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %s";
+"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %@";
 "give_permission_swap_subtitle" = "Чтобы продолжить, вам нужно разрешить смарт-контракту %1@ использовать ваш %2@";
 "give_permission_title" = "Дать разрешение";
 "give_permission_unlimited" = "Безлимитно";
@@ -338,7 +338,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
-"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
+"markets_generate_addresses_notification" = "Чтобы создать адреса для выбранных сетей, необходимо отсканировать свой кошелек Tangem.";
 "markets_loading_error_title" = "Unable to load the data…";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Result";
@@ -496,7 +496,7 @@
 "qr_scanner_camera_denied_title" = "Доступ к камере запрещен";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) в сети %3$@";
 "receive_bottom_sheet_warning_message_full" = "Отправляйте только %@ на этот адрес. Использование другой сети может привести к утрате средств.";
-"receive_token_description" = "Show QR-code or share your address";
+"receive_token_description" = "Show a QR-code or share your address";
 "referral_button_participate" = "Участвовать";
 "referral_error_failed_to_load_info" = "Не удалось загрузить информацию по реферальной программе. Пожалуйста, попробуйте позже.";
 "referral_error_failed_to_load_info_with_reason" = "Не удалось загрузить информацию по реферальной программе. Код ошибки: %@. Пожалуйста, попробуйте позже.";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "Имя";
 "staking_active" = "Active";
 "staking_active_footer" = "To unstake your assets, click here.";
-"staking_amount_requirement_error" = "Сумма для стейкинда должна быть не менее %s";
+"staking_amount_requirement_error" = "Сумма для стейкинда должна быть не менее %@";
 "staking_details_apr" = "APR";
 "staking_details_apy" = "APY";
 "staking_details_apy_info" = "Годовой процентный доход, который вы можете получить от участия в стейкинге.";
@@ -644,7 +644,7 @@
 "staking_details_reward_claiming_info" = "Способ получения вознаграждений за стейкинг. Он может быть автоматическим или ручным.";
 "staking_details_reward_schedule" = "Период возрагражения";
 "staking_details_reward_schedule_info" = "Это период, определяющий, когда участники стейкинга получат свои вознаграждения.";
-"staking_details_rewards_to_claim" = "Rewards to claim: %s";
+"staking_details_rewards_to_claim" = "Rewards to claim: %@";
 "staking_details_title" = "Стейкинг %@";
 "staking_details_unbonding_period" = "Период вывода";
 "staking_details_unbonding_period_info" = "Период, который необходимо подождать после запроса на вывод средств из стейкинга, прежде чем токены станут доступны.";
@@ -656,8 +656,9 @@
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_rewards" = "Rewards";
 "staking_stake_more" = "Stake more";
-"staking_unstaked" = "Unstacked";
+"staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "Validator";
 "story_awe_description" = "Держите свои криптосбережения в безопасности. Приватные ключи надежно хранятся на карте.";
 "story_awe_title" = "Революционный аппаратный кошелек";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Продажа средств станет доступной после завершения транзакции(-ий) в сети %@";
 "token_button_unavailability_reason_pending_transaction_send" = "Отправка средств станет доступной после завершения транзакции(-ий) в сети %@";
 "token_button_unavailability_reason_sell_unavailable" = "В данный момент продажа %@ недоступна. Следите за нашими обновлениями.";
-"token_button_unavailability_reason_staking_unavailable" = "В данный момент стейкинг монеты %s недоступен. Следите за нашими обновлениями.";
+"token_button_unavailability_reason_staking_unavailable" = "В данный момент стейкинг монеты %@ недоступен. Следите за нашими обновлениями.";
 "token_details_choose_address" = "Выберите адрес";
 "token_details_generate_xpub" = "Сгенерировать XPUB";
 "token_details_hide_alert_hide" = "Скрыть";

@@ -229,8 +229,8 @@
 "express_exchange_by" = "%@による交換";
 "express_exchange_notification_failed_text" = "返金を受けるには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_failed_title" = "プロバイダーによる操作が失敗しました。";
-"express_exchange_notification_refund_text" = "OKXまたはブリッジのルールにより、取引金額は%1$sでウォレットに返金されました。 %2$s";
-"express_exchange_notification_refund_title" = "金額は %1$s（%2$sネットワーク）で返金されました";
+"express_exchange_notification_refund_text" = "OKXまたはブリッジのルールにより、取引金額は%1$@でウォレットに返金されました。%2$@";
+"express_exchange_notification_refund_title" = "金額は %1$@（%2$@ネットワーク）で返金されました";
 "express_exchange_notification_verification_text" = "確認するには、プロバイダーのウェブサイトにアクセスしてください。";
 "express_exchange_notification_verification_title" = "プロバイダーによる本人確認手続きが必要です。";
 "express_exchange_status_canceled" = "キャンセルされました";
@@ -285,7 +285,7 @@
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";
 "give_permission_rows_amount" = "金額%@";
 "give_permission_staking_footer" = "承認機能は、別のアドレスに特定の量のトークンを使用する許可を与えるために必要です。設計上スマートコントラクトは、承認しない限りトークンにアクセスできません。トークンを「ロック解除」すると、StakeKitスマート コントラクトがトークンを使用する権限が与えられます。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためにガス料金（あなたが支払う）を受け取ります。承認後、トークンをステーキングできます。";
-"give_permission_staking_subtitle" = "続行するには、StakeKitスマートコントラクトが%sを使用することを許可する必要があります";
+"give_permission_staking_subtitle" = "続行するには、StakeKitスマートコントラクトが%@を使用することを許可する必要があります";
 "give_permission_swap_subtitle" = "続行するには、%1@スマートコントラクトに%2@を使用する権限を付与してください";
 "give_permission_title" = "許可を与える";
 "give_permission_unlimited" = "無制限";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "名前";
 "staking_active" = "アクティブ";
 "staking_active_footer" = "資産のステーキングを解除するには、ここをクリックしてください。";
-"staking_amount_requirement_error" = "ステーキング金額は %s 以上である必要があります";
+"staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_details_apr" = "APR";
 "staking_details_apy" = "APY";
 "staking_details_apy_info" = "ステーキングに参加することで得られる年間収益率。";
@@ -644,7 +644,7 @@
 "staking_details_reward_claiming_info" = "ステーキング報酬を受け取る方法。自動または手動で請求できます。";
 "staking_details_reward_schedule" = "報酬スケジュール";
 "staking_details_reward_schedule_info" = "これは、ステーキングの参加者がいつ報酬を受け取るかを決定するスケジュールです。";
-"staking_details_rewards_to_claim" = "受け取る報酬: %s";
+"staking_details_rewards_to_claim" = "受け取る報酬: %@";
 "staking_details_title" = "ステーキング%@";
 "staking_details_unbonding_period" = "解約完了までの期間";
 "staking_details_unbonding_period_info" = "ステーキングから資金の引き出しを要求した後、トークンが利用可能になるまでの待機期間。";
@@ -658,6 +658,7 @@
 "staking_stake_more" = "もっとステーキングする";
 "staking_unstaked" = "スタックされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "バリデーター";
 "story_awe_description" = "カード内に秘密鍵を保管しながら暗号資産を安全に保管します";
 "story_awe_title" = "革新的なハードウェアウォレット";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "ネットワーク%@内の保留中の取引が完了すると、資金の売却が可能になります。";
 "token_button_unavailability_reason_pending_transaction_send" = "ネットワーク%@内の保留中の取引が完了すると、送金が可能になります。";
 "token_button_unavailability_reason_sell_unavailable" = "現在、 %@の売却はご利用いただけません。アップデート情報をご確認ください。";
-"token_button_unavailability_reason_staking_unavailable" = "%s のステーキングは現在ご利用いただけません。最新情報をご確認ください。";
+"token_button_unavailability_reason_staking_unavailable" = "%@ のステーキングは現在ご利用いただけません。最新情報をご確認ください。";
 "token_details_choose_address" = "アドレスを選択";
 "token_details_generate_xpub" = "XPUBを生成する";
 "token_details_hide_alert_hide" = "非表示";

@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Les soldes sont masqués";
 "biometry_touch_id_reason" = "Touch ID est utilisé pour enregistrer vos cartes dans l'application";
 "button_start_backup_process" = "Démarrer le processus de sauvegarde";
-"buy_token_description" = "From your fiat card or bank account";
+"buy_token_description" = "With your bank card or bank account";
 "card_settings_access_code_recovery_disabled_description" = "Désactivez cette option si vous ne voulez pas que cette carte soit utilisée pour réinitialiser les codes d'accès sur d'autres cartes de ce portefeuille. Veuillez noter que cela vous empêchera également de réinitialiser le code d'accès sur cette carte.";
 "card_settings_access_code_recovery_enabled_description" = "Vous permet d'utiliser cette carte pour réinitialiser le code d'accès sur d'autres cartes de ce portefeuille";
 "card_settings_access_code_recovery_footer" = "Désactivez la possibilité de réinitialiser le code d'accès sur cette carte ou sur d'autres cartes de ce portefeuille";
@@ -229,8 +229,8 @@
 "express_exchange_by" = "Échange par %@";
 "express_exchange_notification_failed_text" = "Visitez le site Web du fournisseur pour obtenir un remboursement";
 "express_exchange_notification_failed_title" = "Opération échouée par le fournisseur";
-"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
-"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$@ to your wallet due to OKX or bridge rules. %2$@";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$@ (%2$@ network)";
 "express_exchange_notification_verification_text" = "Visitez le site Web du fournisseur pour la vérification";
 "express_exchange_notification_verification_title" = "Vérification KYC requise par le fournisseur";
 "express_exchange_status_canceled" = "Annulé";
@@ -269,7 +269,7 @@
 "express_token_list_empty_search" = "Aucun jeton trouvé. Veuillez essayer une autre demande";
 "express_transaction_id" = "ID : %@";
 "express_transaction_id_copied" = "ID de transaction copié";
-"exсhange_token_description" = "From another currency in your wallet";
+"exсhange_token_description" = "With another currency in your wallet";
 "feedback_preface_rate_negative" = "Dites-nous quelles fonctions vous manquent, et nous essaierons de vous aider.";
 "feedback_preface_scan_failed" = "Veuillez nous dire quelle carte vous avez";
 "feedback_preface_support" = "Chère équipe de support,";
@@ -285,12 +285,12 @@
 "give_permission_policy_type_footer" = "Spécifiez la limite approuvée pour le jeton sélectionné";
 "give_permission_rows_amount" = "Montant %@";
 "give_permission_staking_footer" = "The Approve function is needed to grant permission to another address to use a specific amount of your tokens. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the StakeKit smart contract to use them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can stake your token after giving approval.";
-"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %s";
+"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %@";
 "give_permission_swap_subtitle" = "Pour continuer, accordez aux smart contracts de %1@ l'autorisation d'utiliser votre %2@";
 "give_permission_title" = "Donner l'autorisation";
 "give_permission_unlimited" = "Illimité";
-"home_button_order" = "Commander une carte";
-"home_button_scan" = "Scannez la carte";
+"home_button_order" = "Commandez";
+"home_button_scan" = "Scannez";
 "initial_message_change_access_code_body" = "Touchez, pour modifier le code d'accès";
 "initial_message_change_passcode_body" = "Touchez, pour modifier le mot de passe";
 "initial_message_create_wallet_body" = "Pour créer le portefeuille, appuyez sur la carte comme indiqué ci-dessus et ne la retirez pas jusqu'à la fin de l'opération";
@@ -338,7 +338,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "Mon portfolio";
 "markets_common_title" = "Marché";
-"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
+"markets_generate_addresses_notification" = "Pour générer des adresses pour les réseaux sélectionnés, vous devez scanner votre carte Tangem.";
 "markets_loading_error_title" = "Unable to load the data…";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Result";
@@ -496,7 +496,7 @@
 "qr_scanner_camera_denied_title" = "Accès à la caméra refusé";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) sur le réseau %3$@";
 "receive_bottom_sheet_warning_message_full" = "Envoyez uniquement %@ à cette adresse. L'envoi de toute autre devise entraînera sa perte irréversible.";
-"receive_token_description" = "Show QR-code or share your address";
+"receive_token_description" = "Show a QR-code or share your address";
 "referral_button_participate" = "Participer";
 "referral_error_failed_to_load_info" = "Échec du chargement des informations sur le programme de parrainage. Veuillez réessayer plus tard.";
 "referral_error_failed_to_load_info_with_reason" = "Échec du chargement des informations sur le programme de parrainage. Code d'erreur : %@. Veuillez réessayer plus tard.";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "Nom";
 "staking_active" = "Actif";
 "staking_active_footer" = "Afin d'unstaker vos actifs, cliquez ici.";
-"staking_amount_requirement_error" = "The amount to stake must be at least %s";
+"staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_details_apr" = "APR";
 "staking_details_apy" = "APY";
 "staking_details_apy_info" = "Le pourcentage de rendement annuel que vous pouvez gagner en participant au staking.";
@@ -644,7 +644,7 @@
 "staking_details_reward_claiming_info" = "Un moyen de recevoir des récompenses de staking. Il peut être réclamé automatiquement ou manuellement.";
 "staking_details_reward_schedule" = "Calendrier de récompenses";
 "staking_details_reward_schedule_info" = "Il s'agit d'un calendrier qui détermine le moment où les participants au staking reçoivent leurs récompenses.";
-"staking_details_rewards_to_claim" = "Récompenses à réclamer : %s";
+"staking_details_rewards_to_claim" = "Récompenses à réclamer: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Période de détachement";
 "staking_details_unbonding_period_info" = "La période que vous devez attendre après avoir demandé le retrait des fonds du staking avant que les jetons ne soient disponibles.";
@@ -658,6 +658,7 @@
 "staking_stake_more" = "Staker plus";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "Validateur";
 "story_awe_description" = "Stockez vos actifs crypto en toute sécurité tout en conservant les clés privées contenues dans votre carte";
 "story_awe_title" = "Portefeuille matériel révolutionnaire";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "La vente de fonds sera disponible une fois que la ou les transactions en attente dans le réseau %@ seront terminées";
 "token_button_unavailability_reason_pending_transaction_send" = "L'envoi de fonds sera disponible une fois la ou les transactions en attente dans le réseau %@ terminées.";
 "token_button_unavailability_reason_sell_unavailable" = "La vente de %@ n'est pas disponible pour le moment. Veuillez consulter nos mises à jour.";
-"token_button_unavailability_reason_staking_unavailable" = "Le staking %s n’est pas disponible pour le moment. Veuillez consulter nos mises à jour.";
+"token_button_unavailability_reason_staking_unavailable" = "Le staking %@ n’est pas disponible pour le moment. Veuillez consulter nos mises à jour.";
 "token_details_choose_address" = "Choisissez une adresse";
 "token_details_generate_xpub" = "Générer XPUB";
 "token_details_hide_alert_hide" = "Masquer";
@@ -737,7 +738,7 @@
 "twins_scan_twin_with_number" = "Appuyez sur la carte jumelle avec le numéro %@ et ne la retirez pas jusqu'à la fin de l'opération";
 "unlock_wallet_description_full" = "Utilisez %@ ou scannez une carte pour avoir accès à votre portefeuille";
 "user_push_notification_agreement_argument_one" = "Restez à jour avec les dernières fonctionnalités et actualités";
-"user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
+"user_push_notification_agreement_argument_two" = "Soyez le premier informé des nouvelles promotions";
 "user_push_notification_agreement_header" = "Souhaitez-vous utiliser les notifications push?";
 "user_wallet_list_add_button" = "Ajouter un nouveau portefeuille";
 "user_wallet_list_delete_prompt" = "Êtes-vous sûr de vouloir supprimer ce portefeuille ?";
