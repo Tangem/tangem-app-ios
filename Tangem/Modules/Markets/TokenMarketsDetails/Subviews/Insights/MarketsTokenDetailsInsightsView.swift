@@ -127,8 +127,7 @@ extension MarketsTokenDetailsInsightsView {
                 liquidityChange: [:],
                 buyPressureChange: [:],
                 experiencedBuyerChange: [:]
-            )
-            )!,
+            ))!,
             infoRouter: nil
         )
     )
