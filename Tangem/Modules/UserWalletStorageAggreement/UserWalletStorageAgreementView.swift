@@ -73,7 +73,7 @@ struct UserWalletStorageAgreementView: View {
             .padding(.horizontal, 16.0)
             .layoutPriority(101) // Higher layout priority causes spacers to collapse if there is not enough vertical space
         }
-        .padding(.bottom)
+        .padding(.bottom, 6)
     }
 
     private var iconColor: Color {
