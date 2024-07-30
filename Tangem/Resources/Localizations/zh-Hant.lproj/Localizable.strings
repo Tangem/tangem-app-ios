@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Balances are hidden";
 "biometry_touch_id_reason" = "Touch ID 用於將您的卡片保存在應用程序中";
 "button_start_backup_process" = "Start backup process";
-"buy_token_description" = "From your fiat card or bank account";
+"buy_token_description" = "With your bank card or bank account";
 "card_settings_access_code_recovery_disabled_description" = "如果您不希望使用此卡重置此錢包中其他卡上的訪問密碼，請禁用此選項。請注意，這也會阻止您重置此卡上的訪問密碼。";
 "card_settings_access_code_recovery_enabled_description" = "允許您使用此卡重置此錢包中其他卡上的訪問密碼";
 "card_settings_access_code_recovery_footer" = "禁用重置此卡或此錢包中其他卡上的訪問密碼的功能";
@@ -229,8 +229,8 @@
 "express_exchange_by" = "Exchange by %@";
 "express_exchange_notification_failed_text" = "Visit provider’s website to refund your money";
 "express_exchange_notification_failed_title" = "Operation failed by provider";
-"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$s to your wallet due to OKX or bridge rules. %2$s";
-"express_exchange_notification_refund_title" = "The amount was refunded in %1$s (%2$s network)";
+"express_exchange_notification_refund_text" = "The transaction amount was refunded in %1$@ to your wallet due to OKX or bridge rules. %2$@";
+"express_exchange_notification_refund_title" = "The amount was refunded in %1$@ (%2$@ network)";
 "express_exchange_notification_verification_text" = "Visit provider’s website for verification";
 "express_exchange_notification_verification_title" = "KYC verification required by provider";
 "express_exchange_status_canceled" = "Canceled";
@@ -269,7 +269,7 @@
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
-"exсhange_token_description" = "From another currency in your wallet";
+"exсhange_token_description" = "With another currency in your wallet";
 "feedback_preface_rate_negative" = "告訴我們您缺少哪些功能，我們會盡力幫助您";
 "feedback_preface_scan_failed" = "請告訴我們你有什麼卡";
 "feedback_preface_support" = "嗨! 幫助團隊，";
@@ -285,7 +285,7 @@
 "give_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "give_permission_rows_amount" = "數量 %@";
 "give_permission_staking_footer" = "The Approve function is needed to grant permission to another address to use a specific amount of your tokens. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the StakeKit smart contract to use them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can stake your token after giving approval.";
-"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %s";
+"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %@";
 "give_permission_swap_subtitle" = "要繼續，您需要允許 %1@ 智能合約使用您的 %2@";
 "give_permission_title" = "賦予權限";
 "give_permission_unlimited" = "Unlimited";
@@ -338,7 +338,7 @@
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
-"markets_generate_addresses_notification" = "To generate addresses for selected networks, you need to attach a Tangem card";
+"markets_generate_addresses_notification" = "To generate addresses for selected networks, you must scan your Tangem Wallet card.";
 "markets_loading_error_title" = "Unable to load the data…";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Result";
@@ -496,7 +496,7 @@
 "qr_scanner_camera_denied_title" = "Camera access denied";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
-"receive_token_description" = "Show QR-code or share your address";
+"receive_token_description" = "Show a QR-code or share your address";
 "referral_button_participate" = "參與";
 "referral_error_failed_to_load_info" = "無法加載有關推薦計劃的消息。請稍後再試";
 "referral_error_failed_to_load_info_with_reason" = "無法加載有關推薦計劃的消息。原因：%@。請稍後再試";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "Name";
 "staking_active" = "Active";
 "staking_active_footer" = "To unstake your assets, click here.";
-"staking_amount_requirement_error" = "The amount to stake must be at least %s";
+"staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_details_apr" = "APR";
 "staking_details_apy" = "APY";
 "staking_details_apy_info" = "The annual percentage return you can earn from participating in staking.";
@@ -644,7 +644,7 @@
 "staking_details_reward_claiming_info" = "A way to receive staking rewards. It can be claimed automatically or manually.";
 "staking_details_reward_schedule" = "Reward schedule";
 "staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards.";
-"staking_details_rewards_to_claim" = "Rewards to claim: %s";
+"staking_details_rewards_to_claim" = "Rewards to claim: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
 "staking_details_unbonding_period_info" = "The period you must wait after requesting to withdraw funds from staking before the tokens become available.";
@@ -656,8 +656,9 @@
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_rewards" = "Rewards";
 "staking_stake_more" = "Stake more";
-"staking_unstaked" = "Unstacked";
+"staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "Validator";
 "story_awe_description" = "安全地存儲您的加密貨幣，同時將私鑰保存在您的卡中";
 "story_awe_title" = "創新式的硬體錢包";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Selling funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_pending_transaction_send" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_sell_unavailable" = "Selling %@ is not available at the moment. Please check our updates.";
-"token_button_unavailability_reason_staking_unavailable" = "Staking %s is not available at the moment. Please check our updates.";
+"token_button_unavailability_reason_staking_unavailable" = "Staking %@ is not available at the moment. Please check our updates.";
 "token_details_choose_address" = "Choose address";
 "token_details_generate_xpub" = "Generate XPUB";
 "token_details_hide_alert_hide" = "隱藏";
