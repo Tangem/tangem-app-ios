@@ -8,6 +8,8 @@
 
 import Foundation
 
+// TODO: Andrey Fedorov - Improve naming (IOS-7109)
 struct MarketsChartsHistoryItemModel: Decodable {
+    /// `[timestamp (in milliseconds): price]`
     let prices: [String: Decimal]
 }
