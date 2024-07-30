@@ -27,11 +27,12 @@ protocol TangemApiService: AnyObject, Initializable {
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response
 
-    /// Get history preview chart data for a list of tokens
+    /// Get preview history chart data for a list of tokens
     func loadCoinsHistoryChartPreview(
         requestModel: MarketsDTO.ChartsHistory.PreviewRequest
     ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse
 
+    /// Get detail history chart data for a given token
     func loadHistoryChart(
         requestModel: MarketsDTO.ChartsHistory.HistoryRequest
     ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse

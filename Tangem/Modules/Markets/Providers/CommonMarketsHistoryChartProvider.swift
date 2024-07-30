@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO: Andrey Fedorov - Add parsing and caching
 final class CommonMarketsHistoryChartProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
