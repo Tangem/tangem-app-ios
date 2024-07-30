@@ -137,7 +137,17 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+                // If use filter for losers or gainers, the order of the list may change. 
+                // Otherwise, we just get new charts for a given interval.
+                // The charts will also be updated when the list is updated
+                if value.order == .losers || value.order == .gainers {
+                    viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+                } else {
+                    viewModel.chartsHistoryProvider.fetch(
+                        for: viewModel.dataProvider.items.map { $0.id },
+                        with: viewModel.filterProvider.currentFilterValue.interval
+                    )
+                }
             }
             .store(in: &bag)
     }
