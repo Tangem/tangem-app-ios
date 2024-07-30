@@ -229,8 +229,8 @@
 "express_exchange_by" = "Обмін через %@";
 "express_exchange_notification_failed_text" = "Щоб повернути ваші кошти, відвідайте сайт провайдера";
 "express_exchange_notification_failed_title" = "Операція не виконана провайдером";
-"express_exchange_notification_refund_text" = "Сума транзакції була повернута в %1$s на ваш гаманець відповідно до правил OKX або мосту обміну. %2$s";
-"express_exchange_notification_refund_title" = "Сума була повернута в %1$s (%2$s мережі)";
+"express_exchange_notification_refund_text" = "Сума транзакції була повернута в %1$@ на ваш гаманець відповідно до правил OKX або мосту обміну. %2$@";
+"express_exchange_notification_refund_title" = "Сума була повернута в %1$@ (%2$@ мережі)";
 "express_exchange_notification_verification_text" = "Відвідайте сайт провайдера для перевірки";
 "express_exchange_notification_verification_title" = "Провайдер вимагає проходження KYC верифікації";
 "express_exchange_status_canceled" = "Скасовано";
@@ -285,7 +285,7 @@
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";
 "give_permission_rows_amount" = "Кількість %@";
 "give_permission_staking_footer" = "Функція підтвердження необхідна для надання дозволу іншій адресі на використання певної кількості ваших токенів. За задумом, смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту StakeKit використовувати їх. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви зможете застейкати свій токен після того, як дасте дозвіл.";
-"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту StakeKit використовувати ваш %s";
+"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту StakeKit використовувати ваш %@";
 "give_permission_swap_subtitle" = "Щоб продовжити, вам потрібно надати дозвіл смарт-контракту %1@ використовувати ваш %2@";
 "give_permission_title" = "Надати дозвіл";
 "give_permission_unlimited" = "Необмежено";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "Ім'я";
 "staking_active" = "Активний";
 "staking_active_footer" = "Щоб вивести активи зі стейкінгу, натисніть тут.";
-"staking_amount_requirement_error" = "Сума для стейкінгу має бути не менше %s";
+"staking_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
 "staking_details_apr" = "APR";
 "staking_details_apy" = "APY";
 "staking_details_apy_info" = "Річний відсоток, який ви можете отримати, беручи участь у стейкінгу.";
@@ -644,13 +644,13 @@
 "staking_details_reward_claiming_info" = "Спосіб отримання винагороди за стейкінг. Його можна отримати автоматично або вручну.";
 "staking_details_reward_schedule" = "Розклад винагород";
 "staking_details_reward_schedule_info" = "Це графік, який визначає коли учасники стейкінгу отримують свої винагороди.";
-"staking_details_rewards_to_claim" = "Нагороди для отримання: %s";
+"staking_details_rewards_to_claim" = "Нагороди для отримання: %@";
 "staking_details_title" = "Стейкінг %@";
 "staking_details_unbonding_period" = "Період розблокування";
 "staking_details_unbonding_period_info" = "Період, який ви повинні чекати після запиту на виведення коштів зі стейкінгу, перш ніж токени стануть доступними.";
 "staking_details_warmup_period" = "Період блокування";
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
-"staking_initial_info_title" = "Stake %@";
+"staking_initial_info_title" = "Стейкінг %@";
 "staking_native" = "Нативний стейкінг";
 "staking_notification_earn_rewards_text" = "Стейкінг дозволяє заробляти %1@. Ваші винагороди за стейкінг надходять кожні ~%2@ днів.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
@@ -658,6 +658,7 @@
 "staking_stake_more" = "Застейкати більше";
 "staking_unstaked" = "Не застейканий";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "Валідатор";
 "story_awe_description" = "Тримайте свою криптовалюту в безпеці. Приватні ключі надійно зберігаються на картці.";
 "story_awe_title" = "Революційний апаратний гаманець";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Продаж коштів стане доступним після завершення транзакції(-ій) в мережі %@";
 "token_button_unavailability_reason_pending_transaction_send" = "Надсилання коштів стане доступним після завершення транзакції(-ій) в мережі %@";
 "token_button_unavailability_reason_sell_unavailable" = "Наразі продаж %@ недоступний. Слідкуйте за нашими оновленнями.";
-"token_button_unavailability_reason_staking_unavailable" = "Стейкінг %s зараз недоступний. Будь ласка, слідкуйте за нашими оновленнями.";
+"token_button_unavailability_reason_staking_unavailable" = "Стейкінг %@ зараз недоступний. Будь ласка, слідкуйте за нашими оновленнями.";
 "token_details_choose_address" = "Оберіть адресу";
 "token_details_generate_xpub" = "Згенерувати XPUB";
 "token_details_hide_alert_hide" = "Приховати";

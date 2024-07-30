@@ -229,8 +229,8 @@
 "express_exchange_by" = "Getauscht von %@";
 "express_exchange_notification_failed_text" = "Besuche die Website des Anbieters, um dein Geld zurückzuerhalten";
 "express_exchange_notification_failed_title" = "Fehler beim Vorgang durch Anbieter";
-"express_exchange_notification_refund_text" = "Der Transaktionsbetrag wurde aufgrund von OKX- oder Bridge-Regeln in %1$s auf deine Wallet zurückerstattet. %2$s";
-"express_exchange_notification_refund_title" = "Der Betrag wurde in %1$s (%2$s Netzwerk) zurückerstattet.";
+"express_exchange_notification_refund_text" = "Der Transaktionsbetrag wurde aufgrund von OKX- oder Bridge-Regeln in %1$@ auf deine Wallet zurückerstattet. %2$@";
+"express_exchange_notification_refund_title" = "Der Betrag wurde in %1$@ (%2$@ Netzwerk) zurückerstattet.";
 "express_exchange_notification_verification_text" = "Besuche die Website des Anbieters zur Überprüfung";
 "express_exchange_notification_verification_title" = "KYC-Überprüfung durch den Anbieter erforderlich";
 "express_exchange_status_canceled" = "Abgebrochen";
@@ -285,7 +285,7 @@
 "give_permission_policy_type_footer" = "Gib das Genehmigungslimit für das ausgewählte Token an";
 "give_permission_rows_amount" = "Betrag %@";
 "give_permission_staking_footer" = "Die Genehmigungsfunktion ist erforderlich, um einer anderen Adresse die Berechtigung zur Verwendung einer bestimmten Menge Ihrer Token zu erteilen. Standardmäßig können Smart Contracts nicht auf deine Token zugreifen, es sei denn, du stimmen zu. Indem du deine Token \"freischaltest\", autorisierst du den StakeKit Smart Contract, sie zu verwenden. Die Miner des Netzwerks erhalten eine Gasgebühr (von dir bezahlt), um diese Aktion in der Blockchain aufzuzeichnen. Du kannst deine Token einsetzen, nachdem du die Genehmigung erteilt hast.";
-"give_permission_staking_subtitle" = "Um fortzufahren, musst du StakeKit Smart Contract erlauben, deine %s zu verwenden";
+"give_permission_staking_subtitle" = "Um fortzufahren, musst du StakeKit Smart Contract erlauben, deine %@ zu verwenden";
 "give_permission_swap_subtitle" = "Um fortzufahren, erteile %1@ Smart Contracts die Berechtigung, dein zu %2@ verwenden.";
 "give_permission_title" = "Erlaubnis erteilen";
 "give_permission_unlimited" = "Unbegrenzt";
@@ -628,7 +628,7 @@
 "settings_wallet_name_title" = "Name";
 "staking_active" = "Aktiv";
 "staking_active_footer" = "Um deine Kryptos zu unstaken, klick hier.";
-"staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %s betragen";
+"staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
 "staking_details_apr" = "Effektiver Jahreszins";
 "staking_details_apy" = "Jährliche prozentuale Rendite";
 "staking_details_apy_info" = "Die jährliche prozentuale Rendite, die du durch die Teilnahme am Staking erzielen kannst.";
@@ -644,7 +644,7 @@
 "staking_details_reward_claiming_info" = "Eine Möglichkeit, Staking-Belohnungen zu erhalten. Es kann automatisch oder manuell beansprucht werden.";
 "staking_details_reward_schedule" = "Belohnungszeitplan";
 "staking_details_reward_schedule_info" = "Dabei handelt es sich um einen Zeitplan, der festlegt, wann die Teilnehmer am Staking ihre Belohnungen erhalten.";
-"staking_details_rewards_to_claim" = "Belohnungen, die du beanspruchen kannst: %s";
+"staking_details_rewards_to_claim" = "Belohnungen, die du beanspruchen kannst: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Entbindungsdauer";
 "staking_details_unbonding_period_info" = "Der Zeitraum, den du nach der Beantragung der Abhebung von Geldern aus dem Staking warten musst, bevor die Token verfügbar werden.";
@@ -658,6 +658,7 @@
 "staking_stake_more" = "Mehr staken";
 "staking_unstaked" = "unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
+"staking_unstaking" = "Unstaking";
 "staking_validator" = "Validator/ Prüfer";
 "story_awe_description" = "Bewahre deine Krypto-Assets sicher auf, während die privaten Schlüssel auf deiner Karte bleiben";
 "story_awe_title" = "Revolutionäre Hardware-Wallet";
@@ -701,7 +702,7 @@
 "token_button_unavailability_reason_pending_transaction_sell" = "Das Geld für den Verkauf steht zur Verfügung, sobald die ausstehende(n) Transaktion(en) im Netzwerk %@ abgeschlossen ist/sind.";
 "token_button_unavailability_reason_pending_transaction_send" = "Die Geldsendung wird verfügbar, sobald die ausstehende(n) Transaktion(en) im Netzwerk %@ abgeschlossen ist/sind.";
 "token_button_unavailability_reason_sell_unavailable" = "Der Verkauf von %@ ist im Moment nicht verfügbar. Bitte prüfe später ob es Updates gibt.";
-"token_button_unavailability_reason_staking_unavailable" = "Staking %s ist aktuell nicht verfügbar. Prüfe bitte ob es ein neues Update gibt.";
+"token_button_unavailability_reason_staking_unavailable" = "Staking %@ ist aktuell nicht verfügbar. Prüfe bitte ob es ein neues Update gibt.";
 "token_details_choose_address" = "Adresse wählen";
 "token_details_generate_xpub" = "Generiere XPUB";
 "token_details_hide_alert_hide" = "Ausblenden";
@@ -736,8 +737,8 @@
 "twins_recreate_warning" = "Diese Aktion ist unumkehrbar. Du hast keinen Zugriff mehr auf die alte Wallet.";
 "twins_scan_twin_with_number" = "Tippe auf die Doppelkarte mit der Nummer %@ und entferne sie erst am Ende des Vorgangs.";
 "unlock_wallet_description_full" = "Verwende %@ oder scanne eine Karte, um Zugriff auf deine Wallet zu erhalten.";
-"user_push_notification_agreement_argument_one" = "Bleib  auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
-"user_push_notification_agreement_argument_two" = "Sei  der Erste, der von neuen Aktionen erfährt";
+"user_push_notification_agreement_argument_one" = "Bleib auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
+"user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";
 "user_wallet_list_add_button" = "Neues Wallet hinzufügen";
 "user_wallet_list_delete_prompt" = "Möchtest du diese Wallet wirklich löschen?";
