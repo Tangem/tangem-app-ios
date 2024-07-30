@@ -13,7 +13,7 @@ class TOSViewModel: ObservableObject {
     let bottomOverlayHeight: CGFloat
     let webViewModel: WebViewContainerViewModel
 
-    init(bottomOverlayHeight: CGFloat = 150) {
+    init(bottomOverlayHeight: CGFloat = 116) {
         self.bottomOverlayHeight = bottomOverlayHeight
 
         webViewModel = .init(
