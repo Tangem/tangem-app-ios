@@ -24,7 +24,7 @@ extension StakeKitDTO {
                 let type: BalanceType
                 let amount: String
                 let date: Date?
-                let pricePerShare: Decimal
+                let pricePerShare: String
                 let pendingActions: [PendingAction]
                 let token: Token
                 let validatorAddress: String?
@@ -32,15 +32,15 @@ extension StakeKitDTO {
                 let providerId: String?
 
                 enum BalanceType: String, Decodable {
-                    case available = "AVAILABLE"
-                    case staked = "STAKED"
-                    case unstaking = "UNSTAKING"
-                    case unstaked = "UNSTAKED"
-                    case preparing = "PREPARING"
-                    case rewards = "REWARDS"
-                    case locked = "LOCKED"
-                    case unlocking = "UNLOCKING"
-                    case unknown = "UNKNOWN"
+                    case available
+                    case staked
+                    case unstaking
+                    case unstaked
+                    case preparing
+                    case rewards
+                    case locked
+                    case unlocking
+                    case unknown
                 }
 
                 struct PendingAction: Decodable {

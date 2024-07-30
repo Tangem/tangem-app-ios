@@ -49,7 +49,7 @@ struct ManageTokensView: View {
         }
         .background(Colors.Background.primary.ignoresSafeArea())
         .navigationTitle(Text(Localization.addTokensTitle))
-        .scrollDismissesKeyboardCompat(.interactively)
+        .scrollDismissesKeyboardCompat(.immediately)
         .keyboardType(.alphabet)
         .bindAlert($viewModel.alert)
         .toolbar(content: {

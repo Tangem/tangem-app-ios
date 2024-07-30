@@ -28,6 +28,10 @@ extension Decimal {
         (self as NSDecimalNumber).stringValue
     }
 
+    var doubleValue: Double {
+        (self as NSDecimalNumber).doubleValue
+    }
+
     func intValue(roundingMode: NSDecimalNumber.RoundingMode = .down) -> Int {
         (rounded(roundingMode: roundingMode) as NSDecimalNumber).intValue
     }

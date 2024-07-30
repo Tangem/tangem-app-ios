@@ -11,24 +11,25 @@ import TangemStaking
 
 struct StakingValidatorsStepBuilder {
     typealias IO = (input: StakingValidatorsInput, output: StakingValidatorsOutput)
-    typealias ReturnValue = (step: StakingValidatorsStep, interactor: StakingValidatorsInteractor)
-
-    let walletModel: WalletModel
-    let builder: SendDependenciesBuilder
+    typealias ReturnValue = (step: StakingValidatorsStep, interactor: StakingValidatorsInteractor, compact: StakingValidatorsCompactViewModel)
 
     func makeStakingValidatorsStep(io: IO, manager: any StakingManager) -> ReturnValue {
         let interactor = makeStakingValidatorsInteractor(io: io, manager: manager)
         let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
-
         let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor)
+        let compact = makeStakingValidatorsCompactViewModel(input: io.input)
 
-        return (step: step, interactor: interactor)
+        return (step: step, interactor: interactor, compact: compact)
     }
 }
 
 // MARK: - Private
 
 private extension StakingValidatorsStepBuilder {
+    func makeStakingValidatorsCompactViewModel(input: any StakingValidatorsInput) -> StakingValidatorsCompactViewModel {
+        .init(input: input)
+    }
+
     func makeStakingValidatorsViewModel(interactor: StakingValidatorsInteractor) -> StakingValidatorsViewModel {
         StakingValidatorsViewModel(interactor: interactor)
     }

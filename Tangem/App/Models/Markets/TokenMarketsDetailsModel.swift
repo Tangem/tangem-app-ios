@@ -30,18 +30,21 @@ struct TokenMarketsDetailsInsights {
     let buyPressure: [MarketsPriceIntervalType: Decimal]
     let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
 
-    init?(dto: MarketsDTO.Coins.Insight?) {
+    init?(dto: MarketsDTO.Coins.Insights?) {
         guard let dto else {
             return nil
         }
 
-        func mapToInterval(_ dict: [String: Decimal]) -> [MarketsPriceIntervalType: Decimal] {
+        func mapToInterval(_ dict: [String: Decimal?]) -> [MarketsPriceIntervalType: Decimal] {
             return dict.reduce(into: [:]) { partialResult, pair in
-                guard let interval = MarketsPriceIntervalType(rawValue: pair.key) else {
+                guard
+                    let interval = MarketsPriceIntervalType(rawValue: pair.key),
+                    let value = pair.value
+                else {
                     return
                 }
 
-                partialResult[interval] = pair.value
+                partialResult[interval] = value
             }
         }
 

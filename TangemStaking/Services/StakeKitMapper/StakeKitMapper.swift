@@ -33,6 +33,28 @@ struct StakeKitMapper {
         )
     }
 
+    func mapToExitAction(from response: StakeKitDTO.Actions.Exit.Response) throws -> ExitAction {
+        guard let transactions = response.transactions, !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
+            try ActionTransaction(
+                id: transaction.id,
+                stepIndex: transaction.stepIndex,
+                type: mapToTransactionType(from: transaction.type),
+                status: mapToTransactionStatus(from: transaction.status)
+            )
+        }
+
+        return try ExitAction(
+            id: response.id,
+            status: mapToActionStatus(from: response.status),
+            currentStepIndex: response.currentStepIndex,
+            transactions: actionTransaction
+        )
+    }
+
     // MARK: - Transaction
 
     func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> StakingTransactionInfo {
@@ -73,7 +95,8 @@ struct StakeKitMapper {
 
         return StakingBalanceInfo(
             item: mapToStakingTokenItem(from: balance.token),
-            blocked: blocked
+            blocked: blocked,
+            balanceGroupType: mapToBalanceGroupType(from: balance.type)
         )
     }
 
@@ -186,6 +209,19 @@ struct StakeKitMapper {
         case .month: .month
         case .era: .era
         case .epoch: .epoch
+        }
+    }
+
+    func mapToBalanceGroupType(
+        from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
+    ) -> BalanceGroupType {
+        switch balanceType {
+        case .preparing, .available, .locked, .staked:
+            return .active
+        case .unstaking, .unstaked, .unlocking:
+            return .unstaked
+        case .rewards, .unknown:
+            return .unknown
         }
     }
 }

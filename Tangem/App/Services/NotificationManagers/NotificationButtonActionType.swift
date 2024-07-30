@@ -32,6 +32,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     /// No action
     case empty
     case support
+    case openCurrency
 
     var id: Int { hashValue }
 
@@ -73,6 +74,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return ""
         case .support:
             return Localization.detailsRowTitleContactToSupport
+        case .openCurrency:
+            return Localization.commonGoToToken
         }
     }
 
@@ -97,7 +100,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .openFeedbackMail,
              .openAppStoreReview,
              .empty,
-             .support:
+             .support,
+             .openCurrency:
             return nil
         }
     }
@@ -107,7 +111,6 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         case .generateAddresses,
              .openLink,
              .openAppStoreReview,
-             .swap,
              .empty:
             return .primary
         case .backupCard,
@@ -122,7 +125,9 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .leaveAmount,
              .support,
              .stake,
-             .openFeedbackMail:
+             .openFeedbackMail,
+             .openCurrency,
+             .swap:
             return .secondary
         }
     }

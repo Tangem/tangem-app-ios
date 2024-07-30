@@ -69,9 +69,12 @@ struct SendFinishView: View {
                     )
             case .additionalField(let type, let value):
                 DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                    .setNamespace(namespace.id)
-                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
-                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
+                    .titleGeometryEffect(
+                        .init(id: namespace.names.addressAdditionalFieldTitle, namespace: namespace.id)
+                    )
+                    .textGeometryEffect(
+                        .init(id: namespace.names.addressAdditionalFieldText, namespace: namespace.id)
+                    )
                     .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
                     .background(
                         Colors.Background.action

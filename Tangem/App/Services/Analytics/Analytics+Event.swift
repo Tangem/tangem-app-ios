@@ -219,6 +219,7 @@ extension Analytics {
         case tokenSwapStatus = "[Token] Swap Status"
         case tokenSwapStatusScreenOpened = "[Token] Swap Status Opened"
         case tokenButtonGoToProvider = "[Token] Button - Go To Provider"
+        case tokenButtonGoToToken = "[Token] Button - Go to Token"
 
         // MARK: - App settings
 

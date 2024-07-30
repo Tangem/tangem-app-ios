@@ -67,7 +67,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         if let marketCap = data.marketCap {
-            self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
+            self.marketCap = marketCapFormatter.formatDecimal(marketCap)
         }
 
         setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
@@ -148,16 +148,25 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             return
         }
 
-        let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
-        charts = chartsDoubleConvertedValues
+        let model = chart.value[interval]
+        charts = makeChartsValues(from: model)
     }
 
-    private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
-        guard let model else { return nil }
+    private func makeChartsValues(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
+        guard let model else {
+            return nil
+        }
 
-        let chartsDecimalValues: [Decimal] = model.prices.values.map { $0 }
-        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
-        return chartsDoubleConvertedValues
+        do {
+            let mapper = TokenMarketsHistoryChartMapper()
+
+            return try mapper
+                .mapAndSortValues(from: model)
+                .map(\.price.doubleValue)
+        } catch {
+            AppLog.shared.error(error)
+            return nil
+        }
     }
 }
 
@@ -167,7 +176,7 @@ extension MarketsItemViewModel {
         let id: String
         let name: String
         let symbol: String
-        let marketCap: UInt64?
+        let marketCap: Decimal?
         let marketRating: Int?
         let priceValue: Decimal?
         let priceChangeStateValue: Decimal?

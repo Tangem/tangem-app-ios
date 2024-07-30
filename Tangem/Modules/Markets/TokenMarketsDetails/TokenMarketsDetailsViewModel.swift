@@ -27,6 +27,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
     @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+    @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
@@ -118,6 +119,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadDetailedInfo()
 
         makePreloadBlocksViewModels()
+        makeHistoryChartViewModel()
     }
 
     deinit {
@@ -231,6 +233,15 @@ private extension TokenMarketsDetailsViewModel {
 
                 coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
             }
+        )
+    }
+
+    private func makeHistoryChartViewModel() {
+        let historyChartProvider = CommonMarketsHistoryChartProvider()
+        historyChartViewModel = MarketsHistoryChartViewModel(
+            historyChartProvider: historyChartProvider,
+            selectedPriceInterval: selectedPriceChangeIntervalType,
+            selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType
         )
     }
 
