@@ -32,7 +32,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 
     private let historyChartProvider: MarketsHistoryChartProvider
     private var loadHistoryChartTask: Cancellable?
-    private var bag: Set<AnyCancellable> = []
+    private var selectedPriceIntervalSubscription: Cancellable?
     private var delayedLoadingStateSubscription: Cancellable?
     private var isDelayedLoadingStateCancelled = false
     private var didAppear = false
@@ -65,10 +65,9 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Setup & updating UI
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
-        selectedPriceIntervalPublisher
+        selectedPriceIntervalSubscription = selectedPriceIntervalPublisher
             .dropFirst() // Initial loading will be triggered in `onViewAppear`
             .sink(receiveValue: weakify(self, forFunction: MarketsHistoryChartViewModel.loadHistoryChart(selectedPriceInterval:)))
-            .store(in: &bag)
     }
 
     @MainActor
