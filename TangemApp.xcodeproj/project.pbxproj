@@ -3822,14 +3822,13 @@
 		2D1BB3752C07501C008392F7 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
+				B6EA54E02C58DDB1007C3AF4 /* HistoryChart */,
 				2D57CA852C3D0B0D0070D477 /* MarketsWalletDataSource.swift */,
 				2D5F47912C21F1FC00AB6C4B /* MarketsListChartsPreviewProvider.swift */,
 				2D22765F2C0F0BEC006BB6A1 /* MarketsListDataFilterProvider.swift */,
 				2D1BB3762C07503B008392F7 /* MarketsListDataProvider.swift */,
 				2D5DCC402C330B43000EE379 /* MarketsWalletSelectorProvider.swift */,
 				B0CF5A5A2C2D492100B197D4 /* MarketsTokenDetailsDataProvider.swift */,
-				B6AE4DA02C530A2D00070D96 /* MarketsHistoryChartProvider.swift */,
-				B6AE4DA22C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -6794,6 +6793,15 @@
 				B6C428532ACE973C00605E71 /* MainBottomSheet */,
 			);
 			path = MainFooterView;
+			sourceTree = "<group>";
+		};
+		B6EA54E02C58DDB1007C3AF4 /* HistoryChart */ = {
+			isa = PBXGroup;
+			children = (
+				B6AE4DA02C530A2D00070D96 /* MarketsHistoryChartProvider.swift */,
+				B6AE4DA22C530B1700070D96 /* CommonMarketsHistoryChartProvider.swift */,
+			);
+			path = HistoryChart;
 			sourceTree = "<group>";
 		};
 		B6FB04E32B1FEED9000BB59E /* StatusBarConfiguration */ = {

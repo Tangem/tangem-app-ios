@@ -157,7 +157,7 @@ extension MarketsHistoryChartViewModel {
 private extension MarketsHistoryChartViewModel {
     private enum Constants {
         static let loadingStateDelay: TimeInterval = 0.3
-        static let loadingStateTolerance: TimeInterval = 0.3
+        static let loadingStateTolerance: TimeInterval = 0.05
     }
 }
 
