@@ -122,12 +122,13 @@ extension MarketsTokenDetailsInsightsView {
 
     return MarketsTokenDetailsInsightsView(
         viewModel: .init(
-            insights: .init(dto: .init(
+            insights: .init(dto: MarketsDTO.Coins.Insights(
                 holdersChange: [:],
                 liquidityChange: [:],
                 buyPressureChange: [:],
                 experiencedBuyerChange: [:]
-            ))!,
+            )
+            )!,
             infoRouter: nil
         )
     )
