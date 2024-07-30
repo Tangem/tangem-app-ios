@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CombineExt
 
 final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - View state
@@ -32,6 +33,8 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     private let historyChartProvider: MarketsHistoryChartProvider
     private var loadHistoryChartTask: Cancellable?
     private var bag: Set<AnyCancellable> = []
+    private var delayedLoadingStateSubscription: Cancellable?
+    private var isDelayedLoadingStateCancelled = false
     private var didAppear = false
 
     // MARK: - Initialization/Deinitialization
@@ -70,6 +73,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 
     @MainActor
     private func updateViewState(_ newValue: ViewState, selectedPriceInterval: MarketsPriceIntervalType?) {
+        cancelScheduledLoadingState()
         viewState = newValue
 
         if let selectedPriceInterval {
@@ -77,11 +81,41 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         }
     }
 
+    private func scheduleLoadingState(previousData: LineChartViewData?) {
+        isDelayedLoadingStateCancelled = false
+        delayedLoadingStateSubscription = Timer
+            .TimerPublisher(
+                interval: Constants.loadingStateDelay,
+                tolerance: Constants.loadingStateTolerance,
+                runLoop: .main,
+                mode: .common
+            )
+            .autoconnect()
+            .mapToValue(ViewState.loading(previousData: previousData))
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newState in
+                // `isDelayedLoadingStateCancelled` acts as an additional synchronization point in case the timer will
+                // fire on the next run loop tick after cancellation of `delayedLoadingStateSubscription` cancellable
+                if !viewModel.isDelayedLoadingStateCancelled {
+                    viewModel.viewState = newState
+                }
+            }
+    }
+
+    private func cancelScheduledLoadingState() {
+        isDelayedLoadingStateCancelled = true
+        delayedLoadingStateSubscription?.cancel()
+    }
+
     // MARK: - Data fetching
 
     private func loadHistoryChart(selectedPriceInterval: MarketsPriceIntervalType) {
         loadHistoryChartTask?.cancel()
-        viewState = .loading(previousData: viewState.data)
+
+        // If data fetching takes a relatively short amount of time, there is no point in showing the loading indicator at all
+        // Therefore, we don't switch to the loading state unless data fetching takes more than `Constants.loadingStateDelay` seconds
+        scheduleLoadingState(previousData: viewState.data)
+
         loadHistoryChartTask = runTask(in: self) { [interval = selectedPriceInterval] viewModel in
             do {
                 let chartViewData = try await viewModel.historyChartProvider.loadHistoryChart(for: interval)
@@ -116,6 +150,15 @@ extension MarketsHistoryChartViewModel {
         case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
         case failed
+    }
+}
+
+// MARK: - Constants
+
+private extension MarketsHistoryChartViewModel {
+    private enum Constants {
+        static let loadingStateDelay: TimeInterval = 0.3
+        static let loadingStateTolerance: TimeInterval = 0.3
     }
 }
 
