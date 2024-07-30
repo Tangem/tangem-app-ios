@@ -29,6 +29,8 @@ enum AppConstants {
     static let dotSign = "•"
     static let rubCurrencyCode = "RUB"
     static let rubSign = "₽"
+    static let usdCurrencyCode = "USD"
+    static let usdSign = "$"
 
     static let sessionId = UUID().uuidString
 
