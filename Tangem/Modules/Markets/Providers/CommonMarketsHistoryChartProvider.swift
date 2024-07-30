@@ -13,26 +13,38 @@ final class CommonMarketsHistoryChartProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     private let tokenId: TokenItemId
+    private let yAxisLabelCount: Int
 
     private var selectedCurrencyCode: String {
         return AppSettings.shared.selectedCurrencyCode
     }
 
-    init(tokenId: TokenItemId) {
+    init(
+        tokenId: TokenItemId,
+        yAxisLabelCount: Int
+    ) {
         self.tokenId = tokenId
+        self.yAxisLabelCount = yAxisLabelCount
     }
 }
 
 // MARK: - MarketsHistoryChartProvider protocol conformance
 
 extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
-    func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> MarketsChartsHistoryItemModel {
+    func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> LineChartViewData {
         let requestModel = MarketsDTO.ChartsHistory.HistoryRequest(
             currency: selectedCurrencyCode,
             tokenId: tokenId,
             interval: interval
         )
 
-        return try await tangemApiService.loadHistoryChart(requestModel: requestModel)
+        let model = try await tangemApiService.loadHistoryChart(requestModel: requestModel)
+        let mapper = TokenMarketsHistoryChartMapper()
+
+        return try mapper.mapLineChartViewData(
+            from: model,
+            selectedPriceInterval: interval,
+            yAxisLabelCount: yAxisLabelCount
+        )
     }
 }

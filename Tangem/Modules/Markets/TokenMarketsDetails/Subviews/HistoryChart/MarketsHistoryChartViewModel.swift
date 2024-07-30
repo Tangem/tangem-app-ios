@@ -84,8 +84,8 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         viewState = .loading(previousData: viewState.data)
         loadHistoryChartTask = runTask(in: self) { [interval = selectedPriceInterval] viewModel in
             do {
-                let model = try await viewModel.historyChartProvider.loadHistoryChart(for: interval)
-                await viewModel.handleLoadHistoryChart(.success(model), selectedPriceInterval: interval)
+                let chartViewData = try await viewModel.historyChartProvider.loadHistoryChart(for: interval)
+                await viewModel.handleLoadHistoryChart(.success(chartViewData), selectedPriceInterval: interval)
             } catch {
                 await viewModel.handleLoadHistoryChart(.failure(error), selectedPriceInterval: interval)
             }
@@ -93,17 +93,11 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     }
 
     private func handleLoadHistoryChart(
-        _ result: Result<MarketsChartsHistoryItemModel, Swift.Error>,
+        _ result: Result<LineChartViewData, Error>,
         selectedPriceInterval: MarketsPriceIntervalType
     ) async {
         do {
-            let model = try result.get()
-            let mapper = TokenMarketsHistoryChartMapper()
-            let chartViewData = try mapper.mapLineChartViewData(
-                from: model,
-                selectedPriceInterval: selectedPriceInterval,
-                yAxisLabelCount: Constants.yAxisLabelCount
-            )
+            let chartViewData = try result.get()
             await updateViewState(.loaded(data: chartViewData), selectedPriceInterval: selectedPriceInterval)
         } catch is CancellationError {
             // No-op, cancelling a load request is perfectly normal
@@ -122,14 +116,6 @@ extension MarketsHistoryChartViewModel {
         case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
         case failed
-    }
-}
-
-// MARK: - Constants
-
-private extension MarketsHistoryChartViewModel {
-    private enum Constants {
-        static let yAxisLabelCount = 3
     }
 }
 
