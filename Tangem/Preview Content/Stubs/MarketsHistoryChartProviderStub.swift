@@ -10,7 +10,7 @@ import Foundation
 
 struct MarketsHistoryChartProviderStub: MarketsHistoryChartProvider {
     func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> LineChartViewData {
-        let model = MarketsChartsHistoryItemModel(
+        let model = MarketsChartModel(
             prices: [
                 "1678060800000": Decimal(stringValue: "1563.22566200563"),
                 "1678147200000": Decimal(stringValue: "1567.350146525219"),

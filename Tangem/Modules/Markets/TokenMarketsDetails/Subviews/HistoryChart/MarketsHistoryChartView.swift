@@ -51,7 +51,6 @@ struct MarketsHistoryChartView: View {
 
     @ViewBuilder
     private var standaloneLoadingView: some View {
-        // TODO: Andrey Fedorov - Replace with a custom loading indicator (IOS-7476)
         ProgressView()
             .progressViewStyle(.circular)
     }

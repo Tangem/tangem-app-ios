@@ -15,7 +15,7 @@ final class MarketsListChartsHistoryProvider {
 
     // MARK: Published Properties
 
-    @Published var items: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]] = [:]
+    @Published var items: [String: [MarketsPriceIntervalType: MarketsChartModel]] = [:]
 
     // MARK: - Private Properties
 
@@ -50,7 +50,7 @@ final class MarketsListChartsHistoryProvider {
             }
 
             // It is necessary in order to set the value once in the value of items
-            var copyItems: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]] = provider.items
+            var copyItems: [String: [MarketsPriceIntervalType: MarketsChartModel]] = provider.items
 
             for (key, value) in response {
                 copyItems[key] = [interval: value]
