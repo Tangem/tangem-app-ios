@@ -10,11 +10,12 @@ import SwiftUI
 
 class TOSViewModel: ObservableObject {
     let url = AppConstants.tosURL
+    let bottomOverlayHeight: CGFloat
     let webViewModel: WebViewContainerViewModel
 
-    let bottomOverlayHeight: CGFloat = 150
+    init(bottomOverlayHeight: CGFloat = 150) {
+        self.bottomOverlayHeight = bottomOverlayHeight
 
-    init() {
         webViewModel = .init(
             url: url,
             title: "",
