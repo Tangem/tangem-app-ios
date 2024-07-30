@@ -12,6 +12,7 @@ import Foundation
 final class CommonMarketsHistoryChartProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
+    private let cache = NSCacheWrapper<MarketsPriceIntervalType, LineChartViewData>()
     private let tokenId: TokenItemId
     private let yAxisLabelCount: Int
 
@@ -32,6 +33,11 @@ final class CommonMarketsHistoryChartProvider {
 
 extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
     func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> LineChartViewData {
+        // NSCache is thread-safe by design, no synchronization needed
+        if let cachedHistoryChart = cache.value(forKey: interval) {
+            return cachedHistoryChart
+        }
+
         let requestModel = MarketsDTO.ChartsHistory.HistoryRequest(
             currency: selectedCurrencyCode,
             tokenId: tokenId,
@@ -40,11 +46,15 @@ extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
 
         let model = try await tangemApiService.loadHistoryChart(requestModel: requestModel)
         let mapper = TokenMarketsHistoryChartMapper()
-
-        return try mapper.mapLineChartViewData(
+        let historyChart = try mapper.mapLineChartViewData(
             from: model,
             selectedPriceInterval: interval,
             yAxisLabelCount: yAxisLabelCount
         )
+
+        // NSCache is thread-safe by design, no synchronization needed
+        cache.setValue(historyChart, forKey: interval)
+
+        return historyChart
     }
 }
