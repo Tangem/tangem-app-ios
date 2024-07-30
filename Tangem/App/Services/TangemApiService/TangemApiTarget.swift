@@ -169,7 +169,7 @@ struct TangemApiTarget: TargetType {
             return .requestParameters(
                 parameters: [
                     "currency": requestModel.currency,
-                    "interval": requestModel.interval.rawValue,
+                    "interval": requestModel.interval.historyChartId,
                 ],
                 encoding: URLEncoding.default
             )
