@@ -13,6 +13,7 @@ import Combine
 protocol SendDestinationInteractor {
     var transactionHistoryPublisher: AnyPublisher<[SendSuggestedDestinationTransactionRecord], Never> { get }
 
+    var hasError: Bool { get }
     var isValidatingDestination: AnyPublisher<Bool, Never> { get }
     var canEmbedAdditionalField: AnyPublisher<Bool, Never> { get }
     var destinationValid: AnyPublisher<Bool, Never> { get }
@@ -111,6 +112,10 @@ class CommonSendDestinationInteractor {
 // MARK: - SendDestinationInteractor
 
 extension CommonSendDestinationInteractor: SendDestinationInteractor {
+    var hasError: Bool {
+        _destinationError.value != nil || _destinationAdditionalFieldError.value != nil
+    }
+
     var transactionHistoryPublisher: AnyPublisher<[SendSuggestedDestinationTransactionRecord], Never> {
         transactionHistoryProvider
             .transactionHistoryPublisher
