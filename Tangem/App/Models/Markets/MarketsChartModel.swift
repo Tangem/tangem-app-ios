@@ -1,5 +1,5 @@
 //
-//  MarketsChartsHistoryItemModel.swift
+//  MarketsChartModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 18.06.2024.
@@ -8,8 +8,7 @@
 
 import Foundation
 
-// TODO: Andrey Fedorov - Improve naming (IOS-7109)
-struct MarketsChartsHistoryItemModel: Decodable {
+struct MarketsChartModel: Decodable {
     /// `[timestamp (in milliseconds): price]`
     let prices: [String: Decimal]
 }

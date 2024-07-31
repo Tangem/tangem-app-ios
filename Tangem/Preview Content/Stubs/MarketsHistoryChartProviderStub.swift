@@ -9,8 +9,8 @@
 import Foundation
 
 struct MarketsHistoryChartProviderStub: MarketsHistoryChartProvider {
-    func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> MarketsChartsHistoryItemModel {
-        return .init(
+    func loadHistoryChart(for interval: MarketsPriceIntervalType) async throws -> LineChartViewData {
+        let model = MarketsChartModel(
             prices: [
                 "1678060800000": Decimal(stringValue: "1563.22566200563"),
                 "1678147200000": Decimal(stringValue: "1567.350146525219"),
@@ -19,6 +19,14 @@ struct MarketsHistoryChartProviderStub: MarketsHistoryChartProvider {
                 "1678406400000": Decimal(stringValue: "1440.167661880184"),
                 "1678492800000": Decimal(stringValue: "1429.603169104185"),
             ].compactMapValues { $0 }
+        )
+
+        let mapper = TokenMarketsHistoryChartMapper()
+
+        return try mapper.mapLineChartViewData(
+            from: model,
+            selectedPriceInterval: interval,
+            yAxisLabelCount: 5
         )
     }
 }

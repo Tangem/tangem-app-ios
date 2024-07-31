@@ -28,7 +28,7 @@ struct MarketsHistoryChartView: View {
             .transition(.opacity)
         }
         .frame(height: 200.0)
-        .animation(.linear(duration: 0.15), value: viewModel.viewState)
+        .animation(.linear(duration: 0.2), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
     }
@@ -51,7 +51,6 @@ struct MarketsHistoryChartView: View {
 
     @ViewBuilder
     private var standaloneLoadingView: some View {
-        // TODO: Andrey Fedorov - Replace with a custom loading indicator (IOS-7476)
         ProgressView()
             .progressViewStyle(.circular)
     }

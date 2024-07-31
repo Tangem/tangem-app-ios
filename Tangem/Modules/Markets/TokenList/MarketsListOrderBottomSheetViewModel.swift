@@ -1,5 +1,5 @@
 //
-//  MarketsListOrderViewModel.swift
+//  MarketsListOrderBottomSheetViewModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 03.06.2024.
@@ -12,7 +12,7 @@ import Combine
 import CombineExt
 import SwiftUI
 
-class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
+class MarketsListOrderBottomSheetViewModel: ObservableObject, Identifiable {
     @Published var listOptionViewModel: [DefaultSelectableRowViewModel<MarketsListOrderType>]
     @Published var currentOrderType: MarketsListOrderType
 
@@ -25,7 +25,8 @@ class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
 
     // MARK: - Init
 
-    init(from provider: MarketsListDataFilterProvider) {
+    init(from provider: MarketsListDataFilterProvider, onDismiss: (() -> Void)?) {
+        dismiss = onDismiss
         currentOrderType = provider.currentFilterValue.order
 
         listOptionViewModel = provider.supportedOrderTypes.map {
@@ -54,5 +55,6 @@ class MarketsListOrderBottonSheetViewModel: ObservableObject, Identifiable {
     private func update(option: MarketsListOrderType) {
         currentOrderType = option
         provider.didSelectMarketOrder(option)
+        dismiss?()
     }
 }

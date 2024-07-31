@@ -20,15 +20,11 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, Identifiable, Equa
     var id: String {
         rawValue
     }
+}
 
-    var marketsListId: String {
-        switch self {
-        case .day: return "24h"
-        case .week: return "1w"
-        default: return "30d"
-        }
-    }
+// MARK: - Custom localized string representation
 
+extension MarketsPriceIntervalType {
     var tokenDetailsNameLocalized: String {
         switch self {
         case .day: return Localization.marketsSelectorInterval24hTitle
@@ -38,6 +34,40 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, Identifiable, Equa
         case .halfYear: return Localization.marketsSelectorInterval6mTitle
         case .year: return Localization.marketsSelectorInterval1yTitle
         case .all: return Localization.marketsSelectorIntervalAllTitle
+        }
+    }
+}
+
+// MARK: - Custom serialization
+
+extension MarketsPriceIntervalType {
+    /// `/coins/history_preview` endpoint requires custom ids for some intervals.
+    var marketsListId: String {
+        switch self {
+        case .month,
+             .quarter,
+             .halfYear,
+             .year,
+             .all:
+            return "30d"
+        case .day,
+             .week:
+            return rawValue
+        }
+    }
+
+    /// `"/coins/{id}/history"` endpoint requires custom ids for some intervals.
+    var historyChartId: String {
+        switch self {
+        case .all:
+            return "all"
+        case .day,
+             .week,
+             .month,
+             .quarter,
+             .halfYear,
+             .year:
+            return rawValue
         }
     }
 }
