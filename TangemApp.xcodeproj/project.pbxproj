@@ -518,6 +518,8 @@
 		B0A4C4A22A271CD20060E039 /* BalanceWithButtonsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A4C4A12A271CD20060E039 /* BalanceWithButtonsViewModel.swift */; };
 		B0A596542991FC1200C7C512 /* UtorgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A596532991FC1200C7C512 /* UtorgService.swift */; };
 		B0A596562992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A596552992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift */; };
+		B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7DB4D2C58E2AC00986D95 /* MarketsQuotesUpdater.swift */; };
+		B0A7DB502C58E56F00986D95 /* MarketsListStateUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7DB4F2C58E56F00986D95 /* MarketsListStateUpdater.swift */; };
 		B0A884A12A6A5D6300210321 /* WalletConnectWalletModelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A884A02A6A5D6300210321 /* WalletConnectWalletModelProvider.swift */; };
 		B0A943602565010900A7958E /* TwinsWalletCreationUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A9435F2565010900A7958E /* TwinsWalletCreationUtil.swift */; };
 		B0A948FF2ACD999C00C80B0A /* WeakifyFuncion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A948FE2ACD999C00C80B0A /* WeakifyFuncion.swift */; };
@@ -2430,6 +2432,8 @@
 		B0A4C4A12A271CD20060E039 /* BalanceWithButtonsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceWithButtonsViewModel.swift; sourceTree = "<group>"; };
 		B0A596532991FC1200C7C512 /* UtorgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtorgService.swift; sourceTree = "<group>"; };
 		B0A596552992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSizeButtonWithIconInfo.swift; sourceTree = "<group>"; };
+		B0A7DB4D2C58E2AC00986D95 /* MarketsQuotesUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsQuotesUpdater.swift; sourceTree = "<group>"; };
+		B0A7DB4F2C58E56F00986D95 /* MarketsListStateUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListStateUpdater.swift; sourceTree = "<group>"; };
 		B0A884A02A6A5D6300210321 /* WalletConnectWalletModelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectWalletModelProvider.swift; sourceTree = "<group>"; };
 		B0A9435F2565010900A7958E /* TwinsWalletCreationUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinsWalletCreationUtil.swift; sourceTree = "<group>"; };
 		B0A948FE2ACD999C00C80B0A /* WeakifyFuncion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakifyFuncion.swift; sourceTree = "<group>"; };
@@ -4004,6 +4008,7 @@
 				2DD5C3982C4EA6570000658D /* MarketsListPrefetchDataSource.swift */,
 				2DC5675D2B0DFFAF00B0244F /* MarketsView.swift */,
 				2DC5675E2B0DFFAF00B0244F /* MarketsViewModel.swift */,
+				B0A7DB4F2C58E56F00986D95 /* MarketsListStateUpdater.swift */,
 			);
 			path = TokenList;
 			sourceTree = "<group>";
@@ -5725,6 +5730,14 @@
 			path = BalanceWithButtonsView;
 			sourceTree = "<group>";
 		};
+		B0A7DB4C2C58E29A00986D95 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B0A7DB4D2C58E2AC00986D95 /* MarketsQuotesUpdater.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		B0A8849F2A6A5D1700210321 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -7212,6 +7225,7 @@
 				2D1BB3752C07501C008392F7 /* Providers */,
 				2DC567592B0DFFAF00B0244F /* TokenList */,
 				B0A1BC0F2C296B3800DECCFD /* TokenMarketsDetails */,
+				B0A7DB4C2C58E29A00986D95 /* Utilities */,
 				2D5DCC2B2C3309F1000EE379 /* TokensNetworkSelector */,
 				2DB648812C35877000DA100D /* UIComponents */,
 			);
@@ -11335,6 +11349,7 @@
 				5D39516125597DB1002CC452 /* BalanceViewModel.swift in Sources */,
 				5D4B8BC327EDD601002CE87C /* CardInfo.swift in Sources */,
 				B63127D42A2F52E2007C124C /* OrganizeTokensListSection.swift in Sources */,
+				B0A7DB502C58E56F00986D95 /* MarketsListStateUpdater.swift in Sources */,
 				DC261CB7292CF6B700875E64 /* UncompletedBackupRoutable.swift in Sources */,
 				DA559C3A2B0261F400F59584 /* SendView.swift in Sources */,
 				DAB19D4E2B2C72C400DD08C4 /* AddCustomTokenNotificationEvent.swift in Sources */,
@@ -11877,6 +11892,7 @@
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
 				B0E20E0A2C2AEA5B00213580 /* SheetHandleView.swift in Sources */,
 				B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */,
+				B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdater.swift in Sources */,
 				EF9E2A442B55329800418559 /* ExpressCurrencyView.swift in Sources */,
 				EF9448E22ADFD4F800F4AFAC /* InformationHiddenBalancesRoutable.swift in Sources */,
 				B04EADEC2A80D659009B5768 /* SingleTokenBaseViewModel.swift in Sources */,
