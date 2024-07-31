@@ -10,15 +10,18 @@ import Foundation
 import SwiftUI
 import Combine
 
-class SendAmountViewModel: ObservableObject, Identifiable {
+class SendAmountViewModel: ObservableObject {
     // MARK: - ViewState
-
-    @Published var animatingAuxiliaryViewsOnAppear: Bool = false
 
     let userWalletName: String
     let balance: String
     let tokenIconInfo: TokenIconInfo
     let currencyPickerData: SendCurrencyPickerData
+
+    @Published var id: UUID = .init()
+
+    @Published var auxiliaryViewsVisible: Bool = true
+    @Published var isEditMode: Bool = false
 
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
@@ -35,8 +38,6 @@ class SendAmountViewModel: ObservableObject, Identifiable {
             set: { $0.amountType = $1 ? .fiat : .crypto }
         )
     }
-
-    var didProperlyDisappear = false
 
     // MARK: - Dependencies
 
@@ -73,11 +74,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        if animatingAuxiliaryViewsOnAppear {
-            Analytics.log(.sendScreenReopened, params: [.source: .amount])
-        } else {
-            Analytics.log(.sendAmountScreenOpened)
-        }
+        auxiliaryViewsVisible = true
     }
 
     func userDidTapMaxAmount() {
@@ -169,9 +166,40 @@ private extension SendAmountViewModel {
     }
 }
 
-// MARK: - AuxiliaryViewAnimatable
+// MARK: - SendStepViewAnimatable
 
-extension SendAmountViewModel: AuxiliaryViewAnimatable {}
+extension SendAmountViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.destination(_)):
+            // Have to be always visible
+            auxiliaryViewsVisible = true
+            isEditMode = false
+
+        case .disappearing(.destination(_)):
+            UIApplication.shared.endEditing()
+
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
+        case .disappearing(.summary(_)):
+            // Have to use this HACK to force re-render view with the new transition
+            // Will look at it "if" later
+            if !isEditMode {
+                isEditMode = true
+                id = UUID()
+            } else {
+                auxiliaryViewsVisible = false
+            }
+
+            UIApplication.shared.endEditing()
+
+        default:
+            assertionFailure("Not implemented")
+        }
+    }
+}
 
 extension SendAmountViewModel {
     struct Settings {

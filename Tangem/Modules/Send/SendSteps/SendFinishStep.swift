@@ -25,27 +25,9 @@ extension SendFinishStep: SendStep {
 
     var type: SendStepType { .finish(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
-    }
-}
-
-// MARK: - SendFinishViewModelSetupable
-
-extension SendFinishStep: SendFinishViewModelSetupable {
-    func setup(sendFinishInput: any SendFinishInput) {
-        viewModel.setup(sendFinishInput: sendFinishInput)
-    }
-
-    func setup(sendDestinationInput: any SendDestinationInput) {
-        viewModel.setup(sendDestinationInput: sendDestinationInput)
-    }
-
-    func setup(sendAmountInput: any SendAmountInput) {
-        viewModel.setup(sendAmountInput: sendAmountInput)
-    }
-
-    func setup(sendFeeInput: any SendFeeInput) {
-        viewModel.setup(sendFeeInput: sendFeeInput)
     }
 }

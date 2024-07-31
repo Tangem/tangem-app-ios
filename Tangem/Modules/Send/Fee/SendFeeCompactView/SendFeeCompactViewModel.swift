@@ -11,12 +11,15 @@ import Combine
 import BlockchainSdk
 
 class SendFeeCompactViewModel: ObservableObject, Identifiable {
-    @Published var viewSize: CGSize = .zero
+    // Use the estimated size as initial value
+    @Published var viewSize: CGSize = .init(width: 361, height: 76)
     @Published var selectedFeeRowViewModel: FeeRowViewModel?
+    @Published var canEditFee: Bool = false
 
     private let feeTokenItem: TokenItem
     private let isFeeApproximate: Bool
-    private var inputSubscription: AnyCancellable?
+    private var selectedFeeSubscription: AnyCancellable?
+    private var canEditFeeSubscription: AnyCancellable?
 
     private let feeFormatter: FeeFormatter = CommonFeeFormatter(
         balanceFormatter: BalanceFormatter(),
@@ -33,12 +36,23 @@ class SendFeeCompactViewModel: ObservableObject, Identifiable {
     }
 
     func bind(input: SendFeeInput) {
-        inputSubscription = input.selectedFeePublisher
+        selectedFeeSubscription = input.selectedFeePublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedFee in
                 viewModel.selectedFeeRowViewModel = viewModel.mapToFeeRowViewModel(fee: selectedFee)
             }
+
+        canEditFeeSubscription = input
+            .feesPublisher
+            .map { feeValues in
+                let multipleFeeOptions = feeValues.count > 1
+                let hasError = feeValues.contains { $0.value.error != nil }
+
+                return multipleFeeOptions && !hasError
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.canEditFee, on: self, ownership: .weak)
     }
 
     private func mapToFeeRowViewModel(fee: SendFee) -> FeeRowViewModel {
@@ -51,10 +65,6 @@ class SendFeeCompactViewModel: ObservableObject, Identifiable {
             )
         }
 
-        return FeeRowViewModel(
-            option: fee.option,
-            formattedFeeComponents: feeComponents,
-            isSelected: .constant(true)
-        )
+        return FeeRowViewModel(option: fee.option, components: feeComponents, style: .plain)
     }
 }

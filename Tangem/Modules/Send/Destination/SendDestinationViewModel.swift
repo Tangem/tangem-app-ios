@@ -12,14 +12,21 @@ import BlockchainSdk
 import SwiftUI
 
 class SendDestinationViewModel: ObservableObject, Identifiable {
+    @Published var auxiliaryViewsVisible: Bool = true
+    @Published var isEditMode: Bool = false
+
     @Published var addressViewModel: SendDestinationTextViewModel?
     @Published var additionalFieldViewModel: SendDestinationTextViewModel?
 
     @Published var suggestedDestinationViewModel: SendSuggestedDestinationViewModel?
-    @Published var animatingAuxiliaryViewsOnAppear: Bool = false
     @Published var showSuggestedDestinations = true
 
-    var didProperlyDisappear: Bool = false
+    let addressDescription: String
+    let additionalFieldDescription: String
+
+    var additionalFieldViewModelHasValue: Bool {
+        additionalFieldViewModel?.text.isEmpty == false
+    }
 
     // MARK: - Private
 
@@ -51,6 +58,9 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.router = router
 
+        addressDescription = Localization.sendRecipientAddressFooter(settings.networkName)
+        additionalFieldDescription = Localization.sendRecipientMemoFooter
+
         suggestedWallets = settings.suggestedWallets.map { wallet in
             SendSuggestedDestinationWallet(name: wallet.name, address: wallet.address)
         }
@@ -67,16 +77,12 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        if animatingAuxiliaryViewsOnAppear {
-            Analytics.log(.sendScreenReopened, params: [.source: .address])
-        } else {
-            Analytics.log(.sendAddressScreenOpened)
-        }
+        auxiliaryViewsVisible = true
     }
 
     private func setupView() {
         addressViewModel = SendDestinationTextViewModel(
-            style: .address(networkName: settings.networkName),
+            style: .address,
             input: _destinationText.eraseToAnyPublisher(),
             isValidating: interactor.isValidatingDestination,
             isDisabled: .just(output: false),
@@ -111,8 +117,6 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
         interactor
             .destinationValid
             .removeDuplicates()
-            // HACK: making sure it doesn't interfere with textview's updates
-            .delay(for: 0.01, scheduler: DispatchQueue.main)
             .sink { [weak self] destinationValid in
                 self?.showSuggestedDestinations = !destinationValid
             }
@@ -183,9 +187,32 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
     }
 }
 
-// MARK: - AuxiliaryViewAnimatable
+// MARK: - SendStepViewAnimatable
 
-extension SendDestinationViewModel: AuxiliaryViewAnimatable {}
+extension SendDestinationViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.amount(_)):
+            // Have to be always visible
+            auxiliaryViewsVisible = true
+            isEditMode = false
+        case .disappearing(.amount(_)):
+            UIApplication.shared.endEditing()
+
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
+        case .disappearing(.summary(_)):
+            auxiliaryViewsVisible = false
+            isEditMode = true
+            UIApplication.shared.endEditing()
+
+        default:
+            assertionFailure("Not implemented")
+        }
+    }
+}
 
 extension SendDestinationViewModel {
     struct Settings {
