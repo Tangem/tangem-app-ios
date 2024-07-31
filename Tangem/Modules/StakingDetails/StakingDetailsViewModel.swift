@@ -19,7 +19,8 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
-    @Published var validatorsViewData: ValidatorsViewData?
+    @Published var activeValidatorsViewData: ValidatorsViewData?
+    @Published var unstakedValidatorsViewData: ValidatorsViewData?
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // MARK: - Dependencies
@@ -100,7 +101,11 @@ private extension StakingDetailsViewModel {
                 guard let balanceInfo = balancesInfo.filter({ $0.validatorAddress == validatorInfo.address }).first else {
                     return nil
                 }
-                return ValidatorBalanceInfo(validator: validatorInfo, balance: balanceInfo.blocked)
+                return ValidatorBalanceInfo(
+                    validator: validatorInfo,
+                    balance: balanceInfo.blocked,
+                    balanceGroupType: balanceInfo.balanceGroupType
+                )
             }
         }
         setupView(
@@ -116,7 +121,8 @@ private extension StakingDetailsViewModel {
                 unbondingPeriod: yield.unbondingPeriod,
                 rewardClaimingType: yield.rewardClaimingType,
                 rewardScheduleType: yield.rewardScheduleType,
-                validatorBalances: validatorBalances
+                activeValidators: validatorBalances.filter { $0.balanceGroupType == .active },
+                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unstaked }
             )
         )
     }
@@ -251,7 +257,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupValidatorsView(input: StakingDetailsData) {
-        let validators = input.validatorBalances.map { validatorBalance in
+        let mapToValidatorsData: (ValidatorBalanceInfo) -> ValidatorViewData = { [self] validatorBalance in
             let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
                 validatorBalance.balance,
                 currencyCode: walletModel.tokenItem.currencySymbol
@@ -262,10 +268,16 @@ private extension StakingDetailsViewModel {
             let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
+                subtitleType: validatorBalance.balanceGroupType == .unstaked ? .unboundPeriod(days: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())) : .arp,
                 detailsType: .balance(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)
             )
         }
-        validatorsViewData = ValidatorsViewData(validators: validators)
+        activeValidatorsViewData = ValidatorsViewData(
+            validators: input.activeValidators.map(mapToValidatorsData)
+        )
+        unstakedValidatorsViewData = ValidatorsViewData(
+            validators: input.unstakedValidators.map(mapToValidatorsData)
+        )
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -286,7 +298,8 @@ extension StakingDetailsViewModel {
         let unbondingPeriod: Period
         let rewardClaimingType: RewardClaimingType
         let rewardScheduleType: RewardScheduleType
-        let validatorBalances: [ValidatorBalanceInfo]
+        let activeValidators: [ValidatorBalanceInfo]
+        let unstakedValidators: [ValidatorBalanceInfo]
     }
 }
 

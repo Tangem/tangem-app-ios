@@ -12,8 +12,13 @@ struct ValidatorViewData: Hashable, Identifiable {
     let id: String
     let name: String
     let imageURL: URL?
-    let aprFormatted: String?
+    let subtitle: AttributedString?
     let detailsType: DetailsType?
+
+    enum SubtitleType {
+        case arp
+        case unboundPeriod(days: String)
+    }
 
     enum DetailsType: Hashable {
         case checkmark

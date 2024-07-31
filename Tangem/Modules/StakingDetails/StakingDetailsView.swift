@@ -29,7 +29,8 @@ struct StakingDetailsView: View {
 
                 rewardView
 
-                validatorsView
+                activeValidatorsView
+                unstakedValidatorsView
 
                 FixedSpacer(height: bottomViewHeight)
             }
@@ -89,18 +90,40 @@ struct StakingDetailsView: View {
         .innerContentPadding(12)
     }
 
-    private var validatorsView: some View {
+    private var activeValidatorsView: some View {
+        validatorsView(
+            validatorsViewData: viewModel.activeValidatorsViewData,
+            header: Localization.stakingActive,
+            footer: Localization.stakingActiveFooter
+        )
+    }
+
+    private var unstakedValidatorsView: some View {
+        validatorsView(
+            validatorsViewData: viewModel.unstakedValidatorsViewData,
+            header: Localization.stakingUnstaked,
+            footer: Localization.stakingUnstakedFooter
+        )
+    }
+
+    private func validatorsView(validatorsViewData: ValidatorsViewData?, header: String, footer: String) -> some View {
         GroupedSection(
-            viewModel.validatorsViewData,
+            validatorsViewData,
             content: { data in
                 ForEach(indexed: data.validators.indexed()) { validatorIndex, validator in
-                    ValidatorView(data: validator)
+                    VStack {
+                        ValidatorView(data: validator)
+                        ValidatorView(data: validator)
+                    }
                 }
             }, header: {
-                DefaultHeaderView(Localization.stakingActive)
+                DefaultHeaderView(header)
+            }, footer: {
+                Text(footer)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
         )
-//        .interItemSpacing(10)
+        .interItemSpacing(10)
         .innerContentPadding(12)
     }
 

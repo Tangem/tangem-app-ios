@@ -79,10 +79,10 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
                     }
                     .padding(.vertical, settings.innerContentPadding)
 
-//                        Spacer(minLength: 0)
-//
-//                        accessoryView()
-//                            .padding(.horizontal, settings.horizontalPadding)
+                    Spacer(minLength: 0)
+
+                    accessoryView()
+                        .padding(.horizontal, settings.horizontalPadding)
                 }
                 .background(
                     settings.backgroundColor

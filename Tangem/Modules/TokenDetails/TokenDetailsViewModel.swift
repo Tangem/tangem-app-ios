@@ -299,6 +299,8 @@ extension TokenDetailsViewModel: AvailableBalanceProvider {
             return Just(nil).eraseToAnyPublisher()
         }
         return stakingManager.statePublisher
+            .receive(on: DispatchQueue.main)
+            .filter { $0 != .loading }
             .withWeakCaptureOf(self)
             .map { viewModel, state in
                 switch state {
@@ -309,12 +311,14 @@ extension TokenDetailsViewModel: AvailableBalanceProvider {
                 }
             }
             .handleEvents(receiveOutput: { [weak self] value in
-                guard let self, let stakedBalance else { return }
-                activeStakingViewData = ActiveStakingViewData(
-                    balance: stakedBalance.balance,
-                    fiatBalance: stakedBalance.fiatBalance,
-                    rewardsToClaim: stakingRewardsBalance?.fiatBalance
-                )
+                guard let self else { return }
+                activeStakingViewData = stakedBalance.flatMap {
+                    ActiveStakingViewData(
+                        balance: $0.balance,
+                        fiatBalance: $0.fiatBalance,
+                        rewardsToClaim: self.stakingRewardsBalance?.fiatBalance
+                    )
+                }
             })
             .eraseToAnyPublisher()
     }

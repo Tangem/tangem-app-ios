@@ -48,7 +48,7 @@ struct ValidatorView: View {
                     )
             }
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 6)
     }
 
     private var image: some View {
@@ -66,13 +66,9 @@ struct ValidatorView: View {
                     namespace.map { .init(id: $0.names.validatorTitle(id: data.id), namespace: $0.id) }
                 )
 
-            if let aprFormatted = data.aprFormatted {
+            if let subtitle = data.subtitle {
                 HStack(spacing: 4) {
-                    Text("APR")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-
-                    Text(aprFormatted)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.accent)
+                    Text(subtitle)
                 }
                 .matchedGeometryEffect(
                     namespace.map { .init(id: $0.names.validatorSubtitle(id: data.id), namespace: $0.id) }
@@ -129,14 +125,14 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
+                        subtitle: "0.08%",
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        aprFormatted: nil,
+                        subtitle: nil,
                         detailsType: .checkmark
                     ),
                 ]) {
@@ -163,14 +159,14 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
+                        subtitle: "0.08%",
                         detailsType: .chevron
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "Aconcagua",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        aprFormatted: nil,
+                        subtitle: nil,
                         detailsType: .chevron
                     ),
 
@@ -198,7 +194,7 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
+                        subtitle: "0.08%",
                         detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
                     ),
                 ]) {

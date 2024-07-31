@@ -43,9 +43,11 @@ public enum BalanceGroupType {
 public struct ValidatorBalanceInfo {
     public let validator: ValidatorInfo
     public let balance: Decimal
+    public let balanceGroupType: BalanceGroupType
 
-    public init(validator: ValidatorInfo, balance: Decimal) {
+    public init(validator: ValidatorInfo, balance: Decimal, balanceGroupType: BalanceGroupType) {
         self.validator = validator
         self.balance = balance
+        self.balanceGroupType = balanceGroupType
     }
 }
