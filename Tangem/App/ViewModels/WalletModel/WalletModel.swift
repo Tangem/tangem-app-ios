@@ -765,4 +765,26 @@ extension WalletModel {
     var availableFiatBalance: String {
         formatter.formatFiatBalance(availableFiatValue)
     }
+
+    var stakedBalance: String? {
+        guard let stakingBalanceInfo else {
+            return nil
+        }
+
+        return formatter.formatCryptoBalance(stakingBalanceInfo.blocked, currencyCode: tokenItem.currencySymbol)
+    }
+
+    var stakedFiatBalance: String? {
+        stakingBalanceInfo.flatMap { formatter.formatFiatBalance($0.blocked) }
+    }
+
+    var stakingRewardsBalance: String? {
+        stakingBalanceInfo?.rewards.flatMap {
+            formatter.formatCryptoBalance($0, currencyCode: tokenItem.currencySymbol)
+        }
+    }
+
+    var stakingRewardsFiatBalance: String? {
+        stakingBalanceInfo?.rewards.flatMap { formatter.formatFiatBalance($0) }
+    }
 }

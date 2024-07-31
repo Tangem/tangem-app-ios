@@ -22,9 +22,9 @@ struct SendDestinationStepBuilder {
         io: IO,
         sendFeeInteractor: any SendFeeInteractor,
         sendQRCodeService: SendQRCodeService,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
     ) -> ReturnValue {
+        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let interactor = makeSendDestinationInteractor(io: io)
 
         let viewModel = makeSendDestinationViewModel(
@@ -51,7 +51,7 @@ struct SendDestinationStepBuilder {
 
     func makeSendDestinationCompactViewModel(
         input: SendDestinationInput,
-        addressTextViewHeightModel: AddressTextViewHeightModel
+        addressTextViewHeightModel: AddressTextViewHeightModel = .init()
     ) -> SendDestinationCompactViewModel {
         .init(input: input, addressTextViewHeightModel: addressTextViewHeightModel)
     }

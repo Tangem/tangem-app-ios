@@ -237,7 +237,10 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     private func makeHistoryChartViewModel() {
-        let historyChartProvider = CommonMarketsHistoryChartProvider()
+        let historyChartProvider = CommonMarketsHistoryChartProvider(
+            tokenId: tokenInfo.id,
+            yAxisLabelCount: Constants.historyChartYAxisLabelCount
+        )
         historyChartViewModel = MarketsHistoryChartViewModel(
             historyChartProvider: historyChartProvider,
             selectedPriceInterval: selectedPriceChangeIntervalType,
@@ -282,5 +285,13 @@ extension TokenMarketsDetailsViewModel {
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
         descriptionBottomSheetInfo = .init(title: title, description: message)
+    }
+}
+
+// MARK: - Constants
+
+private extension TokenMarketsDetailsViewModel {
+    private enum Constants {
+        static let historyChartYAxisLabelCount = 3
     }
 }

@@ -315,4 +315,20 @@ extension TokenDetailsViewModel {
     var availableBalance: BalanceInfo {
         BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
     }
+
+    var stakedBalance: BalanceInfo? {
+        guard let stakedBalance = walletModel.stakedBalance,
+              let stakedFiatBalance = walletModel.stakedFiatBalance else {
+            return nil
+        }
+        return BalanceInfo(balance: stakedBalance, fiatBalance: stakedFiatBalance)
+    }
+
+    var stakingRewardsBalance: BalanceInfo? {
+        guard let stakingRewardsBalance = walletModel.stakingRewardsBalance,
+              let stakingRewardsFiatBalance = walletModel.stakingRewardsFiatBalance else {
+            return nil
+        }
+        return BalanceInfo(balance: stakingRewardsBalance, fiatBalance: stakingRewardsFiatBalance)
+    }
 }

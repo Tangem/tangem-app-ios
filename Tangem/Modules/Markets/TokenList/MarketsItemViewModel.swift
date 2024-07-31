@@ -141,7 +141,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     private func findAndAssignChartsValue(
-        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
+        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartModel]],
         with interval: MarketsPriceIntervalType
     ) {
         guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
@@ -152,7 +152,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         charts = makeChartsValues(from: model)
     }
 
-    private func makeChartsValues(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
+    private func makeChartsValues(from model: MarketsChartModel?) -> [Double]? {
         guard let model else {
             return nil
         }

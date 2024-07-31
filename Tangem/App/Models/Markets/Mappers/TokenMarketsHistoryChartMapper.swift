@@ -10,7 +10,7 @@ import Foundation
 
 struct TokenMarketsHistoryChartMapper {
     /// - Note: Can be used for both 'preview' and 'history' charts.
-    func mapAndSortValues(from model: MarketsChartsHistoryItemModel) throws -> [LineChartViewData.Value] {
+    func mapAndSortValues(from model: MarketsChartModel) throws -> [LineChartViewData.Value] {
         return try model
             .prices
             .map { key, value in
@@ -25,7 +25,7 @@ struct TokenMarketsHistoryChartMapper {
 
     /// - Note: Maps both `LineChartViewData.XAxis` and `LineChartViewData.Trend` for performance reasons.
     func mapXAxisDataAndTrend(
-        from model: MarketsChartsHistoryItemModel,
+        from model: MarketsChartModel,
         selectedPriceInterval: MarketsPriceIntervalType
     ) throws -> (xAxis: LineChartViewData.XAxis, trend: LineChartViewData.Trend) {
         // For performance reasons, we use these sorted values to create
@@ -60,7 +60,7 @@ struct TokenMarketsHistoryChartMapper {
     }
 
     func mapYAxisData(
-        from model: MarketsChartsHistoryItemModel,
+        from model: MarketsChartModel,
         yAxisLabelCount: Int
     ) throws -> LineChartViewData.YAxis {
         let prices = model.prices
@@ -126,7 +126,7 @@ extension TokenMarketsHistoryChartMapper {
     /// Convenience method, aggregates results from both `mapYAxisData(from:yAxisLabelCount:)`
     /// and `mapXAxisDataAndTrend(from:selectedPriceInterval:)` method calls.
     func mapLineChartViewData(
-        from model: MarketsChartsHistoryItemModel,
+        from model: MarketsChartModel,
         selectedPriceInterval: MarketsPriceIntervalType,
         yAxisLabelCount: Int
     ) throws -> LineChartViewData {
