@@ -25,7 +25,7 @@ struct MainBottomSheetHeaderInputView: View {
     private var searchBar: some View {
         CustomSearchBar(
             searchText: $searchText,
-            placeholder: Localization.manageTokensSearchPlaceholder,
+            placeholder: Localization.commonSearch,
             keyboardType: .alphabet
         )
         .padding(.horizontal, 16)
