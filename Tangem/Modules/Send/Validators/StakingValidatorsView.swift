@@ -10,7 +10,10 @@ import SwiftUI
 
 struct StakingValidatorsView: View {
     @ObservedObject var viewModel: StakingValidatorsViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
+
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
@@ -19,6 +22,11 @@ struct StakingValidatorsView: View {
 
                 ValidatorView(data: data, selection: $viewModel.selectedValidator)
                     .geometryEffect(.init(id: namespace.id, names: namespace.names))
+                    .readContentOffset(inCoordinateSpace: .named(coordinateSpaceName)) { value in
+                        if isSelected {
+                            transitionService.selectedValidatorContentOffset = value
+                        }
+                    }
                     .modifier(if: isSelected) {
                         $0.overlay(alignment: .topLeading) {
                             DefaultHeaderView(Localization.stakingValidator)
@@ -26,11 +34,14 @@ struct StakingValidatorsView: View {
                                 .hidden()
                         }
                     }
-                    .visible(isSelected || viewModel.deselectedValidatorsIsVisible)
+                    .visible(viewModel.auxiliaryViewsVisible)
             }
             .settings(\.backgroundColor, Colors.Background.action)
             .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
         }
+        .coordinateSpace(name: coordinateSpaceName)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
+        .transition(transitionService.transitionToValidatorsStep())
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
     }
@@ -53,6 +64,7 @@ struct StakingValidatorsView_Preview: PreviewProvider {
     static var previews: some View {
         StakingValidatorsView(
             viewModel: viewModel,
+            transitionService: .init(),
             namespace: .init(
                 id: namespace,
                 names: SendGeometryEffectNames()

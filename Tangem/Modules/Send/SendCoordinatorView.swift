@@ -18,7 +18,7 @@ struct SendCoordinatorView: CoordinatorView {
     var body: some View {
         ZStack {
             if let rootViewModel = coordinator.rootViewModel {
-                SendView(viewModel: rootViewModel)
+                SendView(viewModel: rootViewModel, transitionService: .init())
                     .navigationLinks(links)
             }
 

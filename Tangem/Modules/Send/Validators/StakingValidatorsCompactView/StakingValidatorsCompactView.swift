@@ -12,6 +12,7 @@ import SwiftUI
 struct StakingValidatorsCompactView: View {
     @ObservedObject var viewModel: StakingValidatorsCompactViewModel
     let namespace: StakingValidatorsView.Namespace
+    let tapAction: () -> Void
 
     var body: some View {
         GroupedSection(viewModel.selectedValidatorData) { data in
@@ -25,5 +26,9 @@ struct StakingValidatorsCompactView: View {
         .settings(\.backgroundColor, Colors.Background.action)
         .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
         .readGeometry(\.size, bindTo: $viewModel.viewSize)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            tapAction()
+        }
     }
 }

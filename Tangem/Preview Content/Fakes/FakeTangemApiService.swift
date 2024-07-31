@@ -99,16 +99,22 @@ class FakeTangemApiService: TangemApiService {
     func initialize() {}
 
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
-        let provider = FakeMarketListProvider()
-        return try provider.parseCoinResponse()
+        throw "Not implemented"
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
-        let provider = FakeMarketListProvider()
-        return try provider.parseHistoryPreviewResponse()
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        throw "Not implemented"
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
+        throw "Not implemented"
+    }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
         throw "Not implemented"
     }
 }
@@ -119,17 +125,5 @@ private struct FakeCoinListProvider {
         let mapper = CoinsResponseMapper(supportedBlockchains: Set(Blockchain.allMainnetCases))
         let coinModels = mapper.mapToCoinModels(response)
         return coinModels
-    }
-}
-
-// MARK: - Markets Implementation
-
-private struct FakeMarketListProvider {
-    func parseCoinResponse() throws -> MarketsDTO.General.Response {
-        throw "Not implemented"
-    }
-
-    func parseHistoryPreviewResponse() throws -> [String: MarketsChartsHistoryItemModel] {
-        throw "Not implemented"
     }
 }

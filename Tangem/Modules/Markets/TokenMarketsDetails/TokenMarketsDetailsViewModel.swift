@@ -27,6 +27,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
     @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+    @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
@@ -118,6 +119,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadDetailedInfo()
 
         makePreloadBlocksViewModels()
+        makeHistoryChartViewModel()
     }
 
     deinit {
@@ -234,6 +236,18 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
+    private func makeHistoryChartViewModel() {
+        let historyChartProvider = CommonMarketsHistoryChartProvider(
+            tokenId: tokenInfo.id,
+            yAxisLabelCount: Constants.historyChartYAxisLabelCount
+        )
+        historyChartViewModel = MarketsHistoryChartViewModel(
+            historyChartProvider: historyChartProvider,
+            selectedPriceInterval: selectedPriceChangeIntervalType,
+            selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType
+        )
+    }
+
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
             insightsViewModel = .init(insights: insights, infoRouter: self)
@@ -271,5 +285,13 @@ extension TokenMarketsDetailsViewModel {
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
         descriptionBottomSheetInfo = .init(title: title, description: message)
+    }
+}
+
+// MARK: - Constants
+
+private extension TokenMarketsDetailsViewModel {
+    private enum Constants {
+        static let historyChartYAxisLabelCount = 3
     }
 }

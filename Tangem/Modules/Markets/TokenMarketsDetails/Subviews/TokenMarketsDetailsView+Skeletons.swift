@@ -22,7 +22,6 @@ extension TokenMarketsDetailsView {
 
                 links
             }
-            .padding(.horizontal, 16)
         }
 
         private var insights: some View {
