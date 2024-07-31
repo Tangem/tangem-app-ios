@@ -731,8 +731,8 @@ extension WalletModel: TransactionHistoryFetcher {
 extension WalletModel {
     private var stakingBalanceInfo: StakingBalanceInfo? {
         switch stakingManager?.state {
-        case .staked(let balanceInfo, _):
-            return balanceInfo
+        case .staked(let balancesInfo, _):
+            return balancesInfo.max(by: { $0.blocked > $1.blocked })
         default:
             return nil
         }

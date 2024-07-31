@@ -13,12 +13,20 @@ public struct StakingBalanceInfo: Hashable {
     public let blocked: Decimal
     public let rewards: Decimal?
     public let balanceGroupType: BalanceGroupType
+    public let validatorAddress: String?
 
-    public init(item: StakingTokenItem, blocked: Decimal, rewards: Decimal?, balanceGroupType: BalanceGroupType) {
+    public init(
+        item: StakingTokenItem,
+        blocked: Decimal,
+        rewards: Decimal?,
+        balanceGroupType: BalanceGroupType,
+        validatorAddress: String?
+    ) {
         self.item = item
         self.blocked = blocked
         self.rewards = rewards
         self.balanceGroupType = balanceGroupType
+        self.validatorAddress = validatorAddress
     }
 }
 
@@ -29,5 +37,15 @@ public enum BalanceGroupType {
 
     var isActiveOrUnstaked: Bool {
         self == .active || self == .unstaked
+    }
+}
+
+public struct ValidatorBalanceInfo {
+    public let validator: ValidatorInfo
+    public let balance: Decimal
+
+    public init(validator: ValidatorInfo, balance: Decimal) {
+        self.validator = validator
+        self.balance = balance
     }
 }

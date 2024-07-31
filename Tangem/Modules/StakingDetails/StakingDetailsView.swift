@@ -29,6 +29,8 @@ struct StakingDetailsView: View {
 
                 rewardView
 
+                validatorsView
+
                 FixedSpacer(height: bottomViewHeight)
             }
             .interContentPadding(14)
@@ -49,11 +51,14 @@ struct StakingDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var banner: some View {
-        Button(action: { viewModel.userDidTapBanner() }) {
-            Assets.whatIsStakingBanner.image
-                .resizable()
-                .cornerRadiusContinuous(18)
+        if viewModel.displayHeaderView {
+            Button(action: { viewModel.userDidTapBanner() }) {
+                Assets.whatIsStakingBanner.image
+                    .resizable()
+                    .cornerRadiusContinuous(18)
+            }
         }
     }
 
@@ -68,12 +73,34 @@ struct StakingDetailsView: View {
     }
 
     private var rewardView: some View {
-        GroupedSection(viewModel.rewardViewData) {
-            RewardView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingRewards)
-        }
+        GroupedSection(
+            viewModel.rewardViewData,
+            content: {
+                RewardView(data: $0)
+            }, header: {
+                DefaultHeaderView(Localization.stakingRewards)
+            }, accessoryView: {
+                Assets.chevron.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+            }
+        )
         .interItemSpacing(12)
+        .innerContentPadding(12)
+    }
+
+    private var validatorsView: some View {
+        GroupedSection(
+            viewModel.validatorsViewData,
+            content: { data in
+                ForEach(indexed: data.validators.indexed()) { validatorIndex, validator in
+                    ValidatorView(data: validator)
+                }
+            }, header: {
+                DefaultHeaderView(Localization.stakingActive)
+            }
+        )
+//        .interItemSpacing(10)
         .innerContentPadding(12)
     }
 

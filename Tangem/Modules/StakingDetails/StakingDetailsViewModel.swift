@@ -15,9 +15,11 @@ final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
+    @Published var displayHeaderView: Bool = false
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
+    @Published var validatorsViewData: ValidatorsViewData?
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // MARK: - Dependencies
@@ -64,35 +66,48 @@ final class StakingDetailsViewModel: ObservableObject {
 
 private extension StakingDetailsViewModel {
     func loadValues() {
-        guard case .availableToStake(let yield) = stakingManager.state else {
-            return
+        Task {
+            try await stakingManager.updateState()
         }
-
-        _yieldInfo.send(.loaded(yield))
-        // TODO: Dmitry Fedorov
-        _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23, rewards: nil, balanceGroupType: .active)))
     }
 
     func bind() {
-        Publishers.CombineLatest(
-            _yieldInfo.compactMap { $0.value },
-            _balanceInfo.compactMap { $0.value }
-        )
-        .withWeakCaptureOf(self)
-        .receive(on: DispatchQueue.main)
-        .sink { viewModel, args in
-            viewModel.setupView(yield: args.0, balanceInfo: args.1)
-        }
-        .store(in: &bag)
+        stakingManager
+            .statePublisher
+            .compactMap { state -> ([StakingBalanceInfo]?, YieldInfo)? in
+                switch state {
+                case .loading: nil
+                case .notEnabled: nil
+                case .availableToStake(let yieldInfo): (nil, yieldInfo)
+                case .staked(let stakingBalanceInfo, let yieldInfo): (stakingBalanceInfo, yieldInfo)
+                }
+            }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, args in
+                viewModel.setupView(yield: args.1, balancesInfo: args.0)
+            }
+            .store(in: &bag)
     }
 
-    func setupView(yield: YieldInfo, balanceInfo: StakingBalanceInfo) {
-        let available = walletModel.balanceValue ?? 0 - balanceInfo.blocked
+    func setupView(yield: YieldInfo, balancesInfo: [StakingBalanceInfo]?) {
+        let maxBlockedBalance: Decimal = (balancesInfo ?? []).max(by: { $0.blocked > $1.blocked })?.blocked ?? .zero
+        let available = walletModel.balanceValue ?? .zero - maxBlockedBalance
         let aprs = yield.validators.compactMap(\.apr)
+        var validatorBalances: [ValidatorBalanceInfo] = []
+        if let balancesInfo {
+            validatorBalances = yield.validators.compactMap { validatorInfo -> ValidatorBalanceInfo? in
+                guard let balanceInfo = balancesInfo.filter({ $0.validatorAddress == validatorInfo.address }).first else {
+                    return nil
+                }
+                return ValidatorBalanceInfo(validator: validatorInfo, balance: balanceInfo.blocked)
+            }
+        }
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
-                staked: balanceInfo.blocked,
+                staked: maxBlockedBalance,
+                rewards: Decimal(stringValue: "1"),
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
                 rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
@@ -100,14 +115,22 @@ private extension StakingDetailsViewModel {
                 warmupPeriod: yield.warmupPeriod,
                 unbondingPeriod: yield.unbondingPeriod,
                 rewardClaimingType: yield.rewardClaimingType,
-                rewardScheduleType: yield.rewardScheduleType
+                rewardScheduleType: yield.rewardScheduleType,
+                validatorBalances: validatorBalances
             )
         )
     }
 
     func setupView(inputData: StakingDetailsData) {
+        setupHeaderView(inputData: inputData)
         setupAverageRewardingViewData(inputData: inputData)
         setupDetailsSection(inputData: inputData)
+        setupRewardView(inputData: inputData)
+        setupValidatorsView(input: inputData)
+    }
+
+    func setupHeaderView(inputData: StakingDetailsData) {
+        displayHeaderView = inputData.staked.isZero
     }
 
     func setupAverageRewardingViewData(inputData: StakingDetailsData) {
@@ -205,6 +228,46 @@ private extension StakingDetailsViewModel {
         ]
     }
 
+    func setupRewardView(inputData: StakingDetailsData) {
+        guard !inputData.staked.isZero else {
+            rewardViewData = nil
+            return
+        }
+        let state: RewardViewData.State
+        if let rewards = inputData.rewards {
+            let rewardsCryptoFormatted = balanceFormatter.formatCryptoBalance(
+                rewards,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+            let rewardsFiat = walletModel.tokenItem.currencyId.flatMap {
+                BalanceConverter().convertToFiat(rewards, currencyId: $0)
+            }
+            let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
+            state = .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted)
+        } else {
+            state = .noRewards
+        }
+        rewardViewData = RewardViewData(state: state)
+    }
+
+    func setupValidatorsView(input: StakingDetailsData) {
+        let validators = input.validatorBalances.map { validatorBalance in
+            let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
+                validatorBalance.balance,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+            let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
+                BalanceConverter().convertToFiat(validatorBalance.balance, currencyId: $0)
+            }
+            let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
+            return StakingValidatorViewMapper().mapToValidatorViewData(
+                info: validatorBalance.validator,
+                detailsType: .balance(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)
+            )
+        }
+        validatorsViewData = ValidatorsViewData(validators: validators)
+    }
+
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
@@ -214,6 +277,7 @@ extension StakingDetailsViewModel {
     struct StakingDetailsData {
         let available: Decimal
         let staked: Decimal
+        let rewards: Decimal?
         let rewardType: RewardType
         let rewardRate: Decimal
         let rewardRateValues: RewardRateValues
@@ -222,6 +286,7 @@ extension StakingDetailsViewModel {
         let unbondingPeriod: Period
         let rewardClaimingType: RewardClaimingType
         let rewardScheduleType: RewardScheduleType
+        let validatorBalances: [ValidatorBalanceInfo]
     }
 }
 

@@ -11,11 +11,11 @@ import SwiftUI
 
 struct ValidatorView: View {
     private let data: ValidatorViewData
-    private let selection: Binding<String>
+    private let selection: Binding<String>?
 
     private var namespace: Namespace?
 
-    init(data: ValidatorViewData, selection: Binding<String>) {
+    init(data: ValidatorViewData, selection: Binding<String>? = nil) {
         self.data = data
         self.selection = selection
     }
@@ -23,7 +23,7 @@ struct ValidatorView: View {
     var body: some View {
         switch data.detailsType {
         case .checkmark:
-            Button(action: { selection.isActive(compare: data.id).toggle() }) {
+            Button(action: { selection?.isActive(compare: data.id).toggle() }) {
                 content
             }
         case .none, .chevron, .balance:
@@ -83,7 +83,7 @@ struct ValidatorView: View {
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: selection.isActive(compare: data.id).wrappedValue)
+            CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.id).wrappedValue ?? false)
         case .chevron:
             Assets.chevron.image
         case .balance(let crypto, let fiat):

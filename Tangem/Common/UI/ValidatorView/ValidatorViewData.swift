@@ -21,3 +21,8 @@ struct ValidatorViewData: Hashable, Identifiable {
         case balance(crypto: String, fiat: String)
     }
 }
+
+struct ValidatorsViewData: Hashable, Identifiable {
+    var id: Int { hashValue }
+    let validators: [ValidatorViewData]
+}
