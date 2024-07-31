@@ -6,11 +6,20 @@
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 
+import FirebaseAnalytics
 import Foundation
 import UIKit
 
 enum AppConstants {
-    static let webShopUrl = URL(string: "https://buy.tangem.com?utm_source=tangem&utm_medium=app")!
+    static let webShopUrl: URL = {
+        var urlComponents = URLComponents(string: "https://buy.tangem.com")!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "utm_source", value: "tangem"),
+            URLQueryItem(name: "utm_medium", value: "app"),
+            URLQueryItem(name: "app_instance_id", value: FirebaseAnalytics.Analytics.appInstanceID()),
+        ]
+        return urlComponents.url!
+    }()
 
     static var isSmallScreen: Bool {
         UIScreen.main.bounds.width < 375 || UIScreen.main.bounds.height < 650
