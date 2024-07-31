@@ -47,6 +47,8 @@ extension SendFeeStep: SendStep {
 
     var type: SendStepType { .fee(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
     }
@@ -80,12 +82,13 @@ extension SendFeeStep: SendStep {
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        if step.type.isSummary {
+            Analytics.log(.sendScreenReopened, params: [.source: .fee])
+        } else {
+            Analytics.log(.sendFeeScreenOpened)
         }
 
         interactor.updateFees()
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {

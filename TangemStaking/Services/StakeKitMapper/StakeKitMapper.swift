@@ -85,7 +85,7 @@ struct StakeKitMapper {
 
     func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> StakingBalanceInfo? {
         // There isn't any balances
-        guard let balance = response.first?.balances.first else {
+        guard let balances = response.first?.balances, let balance = balances.first else {
             return nil
         }
 
@@ -96,6 +96,7 @@ struct StakeKitMapper {
         return StakingBalanceInfo(
             item: mapToStakingTokenItem(from: balance.token),
             blocked: blocked,
+            rewards: mapToRewards(from: balances),
             balanceGroupType: mapToBalanceGroupType(from: balance.type)
         )
     }
@@ -223,6 +224,14 @@ struct StakeKitMapper {
         case .rewards, .unknown:
             return .unknown
         }
+    }
+
+    func mapToRewards(from balances: [StakeKitDTO.Balances.Response.Balance]) -> Decimal? {
+        let rewards = balances
+            .filter { $0.type == .rewards || $0.pendingActions.contains { $0.type == .claimRewards } }
+            .compactMap { Decimal(stringValue: $0.amount) }
+            .reduce(Decimal.zero, +)
+        return rewards.isZero ? nil : rewards
     }
 }
 

@@ -42,11 +42,11 @@ class CommonSellStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
+            output?.update(state: .init(step: step, action: .close))
         case .fee where isEditAction:
-            output?.update(state: .moveAndFade(step: step, action: .continue))
+            output?.update(state: .init(step: step, action: .continue))
         case .amount, .destination, .fee, .validators:
             assertionFailure("There is no next step")
         }
@@ -58,9 +58,9 @@ class CommonSellStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         default:
-            output?.update(state: .back(step: step))
+            output?.update(state: .init(step: step, action: .next))
         }
     }
 }
@@ -69,7 +69,7 @@ class CommonSellStepsManager {
 
 extension CommonSellStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, animation: .moveAndFade, mainButtonType: .send, backButtonVisible: false)
+        .init(step: summaryStep, action: .send, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

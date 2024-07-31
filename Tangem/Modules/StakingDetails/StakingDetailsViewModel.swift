@@ -70,7 +70,7 @@ private extension StakingDetailsViewModel {
 
         _yieldInfo.send(.loaded(yield))
         // TODO: Dmitry Fedorov
-        _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23, balanceGroupType: .active)))
+        _balanceInfo.send(.loaded(.init(item: walletModel.tokenItem.stakingTokenItem, blocked: 1.23, rewards: nil, balanceGroupType: .active)))
     }
 
     func bind() {

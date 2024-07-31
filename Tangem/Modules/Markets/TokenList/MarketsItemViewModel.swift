@@ -141,23 +141,32 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     }
 
     private func findAndAssignChartsValue(
-        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartsHistoryItemModel]],
+        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartModel]],
         with interval: MarketsPriceIntervalType
     ) {
         guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
             return
         }
 
-        let chartsDoubleConvertedValues = makeChartsValue(from: chart.value[interval])
-        charts = chartsDoubleConvertedValues
+        let model = chart.value[interval]
+        charts = makeChartsValues(from: model)
     }
 
-    private func makeChartsValue(from model: MarketsChartsHistoryItemModel?) -> [Double]? {
-        guard let model else { return nil }
+    private func makeChartsValues(from model: MarketsChartModel?) -> [Double]? {
+        guard let model else {
+            return nil
+        }
 
-        let chartsDecimalValues: [Decimal] = model.prices.values.map { $0 }
-        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
-        return chartsDoubleConvertedValues
+        do {
+            let mapper = TokenMarketsHistoryChartMapper()
+
+            return try mapper
+                .mapAndSortValues(from: model)
+                .map(\.price.doubleValue)
+        } catch {
+            AppLog.shared.error(error)
+            return nil
+        }
     }
 }
 

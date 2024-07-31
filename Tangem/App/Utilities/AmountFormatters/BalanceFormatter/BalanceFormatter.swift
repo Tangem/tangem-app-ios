@@ -101,8 +101,13 @@ struct BalanceFormatter {
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
-        if currencyCode == AppConstants.rubCurrencyCode {
+        switch currencyCode {
+        case AppConstants.rubCurrencyCode:
             formatter.currencySymbol = AppConstants.rubSign
+        case AppConstants.usdCurrencyCode:
+            formatter.currencySymbol = AppConstants.usdSign
+        default:
+            break
         }
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)

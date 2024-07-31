@@ -23,11 +23,7 @@ final class MarketsViewModel: ObservableObject {
 
     // MARK: - Properties
 
-    private var isViewVisible: Bool = false {
-        didSet {
-            listDataController.update(viewDidAppear: isViewVisible)
-        }
-    }
+    @Published var isViewVisible: Bool = false
 
     var isSearching: Bool {
         !currentSearchValue.isEmpty
@@ -38,8 +34,9 @@ final class MarketsViewModel: ObservableObject {
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
+    private let quotesUpdater = MarketsQuotesUpdater()
 
-    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, isViewVisible: isViewVisible)
+    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
 
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
@@ -60,6 +57,7 @@ final class MarketsViewModel: ObservableObject {
         searchTextBind(searchTextPublisher: searchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
+        bind()
         dataProviderBind()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -137,7 +135,36 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+                // If we change the sorting, we always rebuild the list.
+                guard value.order == viewModel.dataProvider.lastFilterValue?.order else {
+                    viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+                    return
+                }
+
+                // If the sorting value has not changed, and order filter for losers or gainers, the order of the list may also change.
+                // Otherwise, we just get new charts for a given interval.
+                // The charts will also be updated when the list is updated
+                if value.order == .losers || value.order == .gainers {
+                    viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
+                } else {
+                    viewModel.chartsHistoryProvider.fetch(
+                        for: viewModel.dataProvider.items.map { $0.id },
+                        with: viewModel.filterProvider.currentFilterValue.interval
+                    )
+                }
+            }
+            .store(in: &bag)
+    }
+
+    func bind() {
+        $isViewVisible
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isVisible in
+                if isVisible {
+                    viewModel.quotesUpdater.resumeUpdates()
+                } else {
+                    viewModel.quotesUpdater.pauseUpdates()
+                }
             }
             .store(in: &bag)
     }
@@ -253,5 +280,35 @@ private extension MarketsViewModel {
 extension MarketsViewModel: MarketsOrderHeaderViewModelOrderDelegate {
     func orderActionButtonDidTap() {
         coordinator?.openFilterOrderBottonSheet(with: filterProvider)
+    }
+}
+
+extension MarketsViewModel: MarketsListStateUpdater {
+    func invalidateCells(in range: ClosedRange<Int>) {
+        var invalidatedIds = Set<String>()
+        for index in range {
+            guard index < tokenViewModels.count else {
+                break
+            }
+
+            let tokenViewModel = tokenViewModels[index]
+            invalidatedIds.insert(tokenViewModel.tokenId)
+        }
+
+        quotesUpdater.stopUpdatingQuotes(for: invalidatedIds)
+    }
+
+    func setupUpdates(for range: ClosedRange<Int>) {
+        var idsToUpdate = Set<String>()
+        for index in range {
+            guard index < tokenViewModels.count else {
+                break
+            }
+
+            let tokenViewModel = tokenViewModels[index]
+            idsToUpdate.insert(tokenViewModel.tokenId)
+        }
+
+        quotesUpdater.scheduleQuotesUpdate(for: idsToUpdate)
     }
 }
