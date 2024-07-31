@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct MarketsListOrderBottonSheetView: View {
-    @ObservedObject var viewModel: MarketsListOrderBottonSheetViewModel
+struct MarketsListOrderBottomSheetView: View {
+    @ObservedObject var viewModel: MarketsListOrderBottomSheetViewModel
 
     var body: some View {
         VStack(spacing: .zero) {
