@@ -26,6 +26,8 @@ enum ValidationErrorEvent: Hashable {
     case notEnoughMana(current: Decimal, max: Decimal)
     case manaLimit(availableAmount: Decimal)
     case koinosInsufficientBalanceToSendKoin
+
+    case accountNotActivated
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -55,6 +57,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.koinosManaExceedsKoinBalanceTitle)
         case .koinosInsufficientBalanceToSendKoin:
             return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
+        case .accountNotActivated:
+            return .string(Localization.sendFeeUnreachableErrorTitle)
         }
     }
 
@@ -90,6 +94,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
         case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
+        case .accountNotActivated:
+            return Localization.sendTronAccountActivationError("Tether")
         }
     }
 
@@ -116,7 +122,8 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .accountNotActivated:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
@@ -134,7 +141,8 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .accountNotActivated:
             return .critical
         }
     }
@@ -164,7 +172,8 @@ extension ValidationErrorEvent {
              .cardanoCannotBeSentBecauseHasTokens,
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .accountNotActivated:
             return nil
         }
     }

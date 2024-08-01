@@ -618,7 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (費用包含: %2$@)";
 "send_total_subtitle_format" = "%@ 將被發送";
 "send_transaction_success" = "交易已成功簽署並發送至區塊鏈節點。錢包餘額稍後更新";
-"send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron(TRX) in your account.";
+"send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron (TRX) in your account.";
 "send_validation_invalid_address" = "無效地址";
 "send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Transaction sent";
