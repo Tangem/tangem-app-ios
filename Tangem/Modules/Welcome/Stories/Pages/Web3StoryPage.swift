@@ -67,7 +67,7 @@ struct Web3StoryPage: View {
 
             StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
         .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)

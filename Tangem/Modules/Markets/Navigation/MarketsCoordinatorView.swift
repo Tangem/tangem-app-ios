@@ -45,10 +45,10 @@ struct MarketsCoordinatorView: CoordinatorView {
     private var sheets: some View {
         NavHolder()
             .bottomSheet(
-                item: $coordinator.marketsListOrderBottonSheetViewModel,
+                item: $coordinator.marketsListOrderBottomSheetViewModel,
                 backgroundColor: Colors.Background.tertiary
             ) {
-                MarketsListOrderBottonSheetView(viewModel: $0)
+                MarketsListOrderBottomSheetView(viewModel: $0)
             }
     }
 
