@@ -211,6 +211,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             currentIndex: currentIndex,
             currentStatus: pendingTransaction.transactionRecord.transactionStatus,
             refundedTokenItem: pendingTransaction.transactionRecord.refundedTokenItem,
+            hasExternalURL: pendingTransaction.transactionRecord.externalTxURL != nil,
             delay: delay
         )
     }
@@ -220,6 +221,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         currentIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
         refundedTokenItem: TokenItem?,
+        hasExternalURL: Bool,
         delay: TimeInterval
     ) {
         self.statusesList = statusesList
@@ -232,12 +234,15 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         switch currentStatus {
         case .failed:
             showGoToProviderHeaderButton = false
-            let input = notificationFactory.buildNotificationInput(
-                for: .cexOperationFailed,
-                buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
-            )
 
-            inputs.append(input)
+            if hasExternalURL {
+                let input = notificationFactory.buildNotificationInput(
+                    for: .cexOperationFailed,
+                    buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
+                )
+
+                inputs.append(input)
+            }
 
         case .verificationRequired:
             showGoToProviderHeaderButton = false
