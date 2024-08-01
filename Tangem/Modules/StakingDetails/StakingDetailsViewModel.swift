@@ -19,8 +19,8 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
-    @Published var activeValidatorsViewData: ValidatorsViewData?
-    @Published var unstakedValidatorsViewData: ValidatorsViewData?
+    @Published private(set) var activeValidators: [ValidatorViewData] = []
+    @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // MARK: - Dependencies
@@ -272,12 +272,8 @@ private extension StakingDetailsViewModel {
                 detailsType: .balance(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)
             )
         }
-        activeValidatorsViewData = ValidatorsViewData(
-            validators: input.activeValidators.map(mapToValidatorsData)
-        )
-        unstakedValidatorsViewData = ValidatorsViewData(
-            validators: input.unstakedValidators.map(mapToValidatorsData)
-        )
+        activeValidators = input.activeValidators.map(mapToValidatorsData)
+        unstakedValidators = input.unstakedValidators.map(mapToValidatorsData)
     }
 
     func openBottomSheet(title: String, description: String) {

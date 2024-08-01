@@ -76,8 +76,10 @@ struct StakingDetailsView: View {
     private var rewardView: some View {
         GroupedSection(
             viewModel.rewardViewData,
-            content: {
-                RewardView(data: $0)
+            content: { data in
+                Button(action: {}, label: {
+                    RewardView(data: data)
+                })
             }, header: {
                 DefaultHeaderView(Localization.stakingRewards)
             }, accessoryView: {
@@ -92,7 +94,7 @@ struct StakingDetailsView: View {
 
     private var activeValidatorsView: some View {
         validatorsView(
-            validatorsViewData: viewModel.activeValidatorsViewData,
+            validators: viewModel.activeValidators,
             header: Localization.stakingActive,
             footer: Localization.stakingActiveFooter
         )
@@ -100,22 +102,19 @@ struct StakingDetailsView: View {
 
     private var unstakedValidatorsView: some View {
         validatorsView(
-            validatorsViewData: viewModel.unstakedValidatorsViewData,
+            validators: viewModel.unstakedValidators,
             header: Localization.stakingUnstaked,
             footer: Localization.stakingUnstakedFooter
         )
     }
 
-    private func validatorsView(validatorsViewData: ValidatorsViewData?, header: String, footer: String) -> some View {
+    private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
         GroupedSection(
-            validatorsViewData,
+            validators,
             content: { data in
-                ForEach(indexed: data.validators.indexed()) { validatorIndex, validator in
-                    VStack {
-                        ValidatorView(data: validator)
-                        ValidatorView(data: validator)
-                    }
-                }
+                Button(action: {}, label: {
+                    ValidatorView(data: data)
+                })
             }, header: {
                 DefaultHeaderView(header)
             }, footer: {
