@@ -20,7 +20,6 @@ struct SendFlowBaseBuilder {
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let sendQRCodeService = builder.makeSendQRCodeService()
 
@@ -34,7 +33,7 @@ struct SendFlowBaseBuilder {
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: sendModel, output: sendModel),
-            sendFeeInteractor: fee.interactor,
+            sendFeeLoader: fee.interactor,
             sendQRCodeService: sendQRCodeService
         )
 
@@ -42,7 +41,6 @@ struct SendFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendFeeInteractor: fee.interactor,
             sendQRCodeService: sendQRCodeService,
-            addressTextViewHeightModel: addressTextViewHeightModel,
             router: router
         )
 
@@ -50,30 +48,33 @@ struct SendFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: .editable
+            editableType: .editable,
+            sendDestinationCompactViewModel: destination.compact,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: sendModel,
+            sendDestinationCompactViewModel: destination.compact,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         // We have to set dependicies here after all setups is completed
+        sendModel.sendAmountInteractor = amount.interactor
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
         )
 
         notificationManager.setup(input: sendModel)
+        notificationManager.setupManager(with: sendModel)
 
-        summary.step.setup(sendDestinationInput: sendModel)
-        summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInteractor: fee.interactor)
-
-        finish.setup(sendDestinationInput: sendModel)
-        finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInteractor: fee.interactor)
-        finish.setup(sendFinishInput: sendModel)
+        // We have to do it after sendModel fully setup
+        fee.compact.bind(input: sendModel)
 
         let stepsManager = CommonSendStepsManager(
             destinationStep: destination.step,
@@ -87,10 +88,17 @@ struct SendFlowBaseBuilder {
         destination.step.set(stepRouter: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
-        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
+        let viewModel = SendViewModel(
+            interactor: interactor,
+            stepsManager: stepsManager,
+            userWalletModel: userWalletModel,
+            feeTokenItem: walletModel.feeTokenItem,
+            coordinator: router
+        )
 
         stepsManager.set(output: viewModel)
         fee.step.set(alertPresenter: viewModel)
+        sendModel.router = viewModel
 
         return viewModel
     }

@@ -115,7 +115,7 @@ private extension CommonTokenQuotesRepository {
         let currencyCode = AppSettings.shared.selectedCurrencyCode
 
         // TODO: - Remove when lastUpdatedAt will be available on production api
-        let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .lastUpdatedAt] : [.price, .priceChange24h]
+        let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .lastUpdatedAt, .priceChange7d, .priceChange30d] : [.price, .priceChange24h]
 
         // We get here currencyIds. But on in the API model we named it like coinIds
         let request = QuotesDTO.Request(
@@ -143,8 +143,10 @@ private extension CommonTokenQuotesRepository {
         let quotes = quotes.map { quote in
             TokenQuote(
                 currencyId: quote.id,
-                change: quote.priceChange,
                 price: quote.price,
+                priceChange24h: quote.priceChange,
+                priceChange7d: quote.priceChange7d,
+                priceChange30d: quote.priceChange30d,
                 prices24h: quote.prices24h,
                 currencyCode: currencyCode
             )

@@ -29,8 +29,10 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return yieldInfo
     }
 
-    func balance(address: String, network: String) async throws -> StakingBalanceInfo {
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: address), network: network)
+    func balance(wallet: StakingWallet) async throws -> StakingBalanceInfo? {
+        assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
+
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
         let response = try await service.getBalances(request: request)
         let balanceInfo = try mapper.mapToBalanceInfo(from: response)
         return balanceInfo
@@ -48,13 +50,39 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
-    func patchTransaction(id: String) async throws -> TransactionInfo {
+    func exitAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> ExitAction {
+        let request = StakeKitDTO.Actions.Exit.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+        )
+
+        let response = try await service.exitAction(request: request)
+        let enterAction = try mapper.mapToExitAction(from: response)
+        return enterAction
+    }
+
+    func pendingAction() async throws {
+        // TODO: https://tangem.atlassian.net/browse/IOS-7482
+    }
+
+    func transaction(id: String) async throws -> StakingTransactionInfo {
+        let response = try await service.transaction(id: id)
+        let transactionInfo = try mapper.mapToTransactionInfo(from: response)
+        return transactionInfo
+    }
+
+    func patchTransaction(id: String) async throws -> StakingTransactionInfo {
         let response = try await service.constructTransaction(id: id, request: .init(gasArgs: .none))
         let transactionInfo = try mapper.mapToTransactionInfo(from: response)
         return transactionInfo
     }
 
     func submitTransaction(hash: String, signedTransaction: String) async throws {
-        let response = try await service.submitTransaction(id: hash, request: .init(signedTransaction: signedTransaction))
+        _ = try await service.submitTransaction(id: hash, request: .init(signedTransaction: signedTransaction))
+    }
+
+    func submitHash(hash: String, transactionId: String) async throws {
+        _ = try await service.submitHash(id: transactionId, request: .init(hash: hash))
     }
 }

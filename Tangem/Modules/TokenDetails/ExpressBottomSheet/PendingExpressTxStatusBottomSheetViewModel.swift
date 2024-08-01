@@ -31,7 +31,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var statusesList: [PendingExpressTransactionStatusRow.StatusRowData] = []
     @Published var currentStatusIndex = 0
     @Published var showGoToProviderHeaderButton = true
-    @Published var notificationViewInput: NotificationViewInput? = nil
+    @Published var notificationViewInputs: [NotificationViewInput] = []
 
     private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
     private weak var pendingTransactionsManager: (any PendingExpressTransactionsManager)?
@@ -46,6 +46,9 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private var notificationUpdateWorkItem: DispatchWorkItem?
     private weak var router: PendingExpressTxStatusRoutable?
     private var successToast: Toast<SuccessToast>?
+    private var externalProviderTxURL: URL? {
+        pendingTransaction.transactionRecord.externalTxURL.flatMap { URL(string: $0) }
+    }
 
     init(
         pendingTransaction: PendingExpressTransaction,
@@ -92,7 +95,13 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     func onAppear() {
-        Analytics.log(event: .tokenSwapStatusScreenOpened, params: [.token: currentTokenItem.currencySymbol])
+        Analytics.log(
+            event: .tokenSwapStatusScreenOpened,
+            params: [
+                .token: currentTokenItem.currencySymbol,
+                .provider: pendingTransaction.transactionRecord.provider.name,
+            ]
+        )
     }
 
     func openProviderFromStatusHeader() {
@@ -116,14 +125,16 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func openProvider() {
-        guard
-            let urlString = pendingTransaction.transactionRecord.externalTxURL,
-            let url = URL(string: urlString)
-        else {
+        guard let url = externalProviderTxURL else {
             return
         }
 
-        router?.openPendingExpressTxStatus(at: url)
+        router?.openURL(url)
+    }
+
+    private func openCurrency(tokenItem: TokenItem) {
+        Analytics.log(.tokenButtonGoToToken)
+        router?.openCurrency(tokenItem: tokenItem)
     }
 
     private func loadEmptyFiatRates() {
@@ -178,21 +189,29 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                     return
                 }
 
-                if pendingTx.transactionRecord.transactionStatus.shouldHide {
-                    viewModel.pendingTransactionsManager?.hideTransaction(with: pendingTx.transactionRecord.expressTransactionId)
+                // We will hide it via separate notification in case of refunded token
+                if pendingTx.transactionRecord.transactionStatus.isTerminated, pendingTx.transactionRecord.refundedTokenItem == nil {
+                    viewModel.hidePendingTx(expressTransactionId: pendingTx.transactionRecord.expressTransactionId)
                 }
 
                 viewModel.updateUI(with: pendingTx, delay: Constants.notificationAnimationDelay)
             }
     }
 
+    private func hidePendingTx(expressTransactionId: String) {
+        pendingTransactionsManager?.hideTransaction(with: expressTransactionId)
+    }
+
     private func updateUI(with pendingTransaction: PendingExpressTransaction, delay: TimeInterval) {
         let converter = PendingExpressTransactionsConverter()
         let (list, currentIndex) = converter.convertToStatusRowDataList(for: pendingTransaction)
+
         updateUI(
             statusesList: list,
             currentIndex: currentIndex,
             currentStatus: pendingTransaction.transactionRecord.transactionStatus,
+            refundedTokenItem: pendingTransaction.transactionRecord.refundedTokenItem,
+            hasExternalURL: pendingTransaction.transactionRecord.externalTxURL != nil,
             delay: delay
         )
     }
@@ -201,6 +220,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         statusesList: [PendingExpressTransactionStatusRow.StatusRowData],
         currentIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
+        refundedTokenItem: TokenItem?,
+        hasExternalURL: Bool,
         delay: TimeInterval
     ) {
         self.statusesList = statusesList
@@ -208,14 +229,20 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
         let notificationFactory = NotificationsFactory()
 
+        var inputs: [NotificationViewInput] = []
+
         switch currentStatus {
         case .failed:
             showGoToProviderHeaderButton = false
-            let input = notificationFactory.buildNotificationInput(
-                for: .cexOperationFailed,
-                buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
-            )
-            scheduleNotificationUpdate(input, delay: delay)
+
+            if hasExternalURL {
+                let input = notificationFactory.buildNotificationInput(
+                    for: .cexOperationFailed,
+                    buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
+                )
+
+                inputs.append(input)
+            }
 
         case .verificationRequired:
             showGoToProviderHeaderButton = false
@@ -223,23 +250,33 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 for: .verificationRequired,
                 buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
             )
-            scheduleNotificationUpdate(input, delay: delay)
+
+            inputs.append(input)
 
         case .canceled:
             showGoToProviderHeaderButton = false
-            scheduleNotificationUpdate(nil, delay: delay)
         default:
-            showGoToProviderHeaderButton = true
-            scheduleNotificationUpdate(nil, delay: delay)
+            showGoToProviderHeaderButton = externalProviderTxURL != nil
         }
+
+        if let refundedTokenItem {
+            let input = notificationFactory.buildNotificationInput(
+                for: .refunded(tokenItem: refundedTokenItem),
+                buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
+            )
+
+            inputs.append(input)
+        }
+
+        scheduleNotificationUpdate(inputs, delay: delay)
     }
 
-    private func scheduleNotificationUpdate(_ newInput: NotificationViewInput?, delay: TimeInterval) {
+    private func scheduleNotificationUpdate(_ newInputs: [NotificationViewInput], delay: TimeInterval) {
         notificationUpdateWorkItem?.cancel()
         notificationUpdateWorkItem = nil
 
         notificationUpdateWorkItem = DispatchWorkItem(block: { [weak self] in
-            self?.notificationViewInput = newInput
+            self?.notificationViewInputs = newInputs
         })
 
         // We need to delay notification appearance/disappearance animations
@@ -250,31 +287,41 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
 extension PendingExpressTxStatusBottomSheetViewModel {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
-        guard let event = notificationViewInput?.settings.event as? ExpressNotificationEvent else {
+        guard let notificationViewInput = notificationViewInputs.first(where: { $0.id == id }),
+              let event = notificationViewInput.settings.event as? ExpressNotificationEvent else {
             return
         }
 
-        let placeValue: Analytics.ParameterValue?
         switch event {
         case .verificationRequired:
-            placeValue = .kyc
-        case .cexOperationFailed:
-            placeValue = .fail
-        default:
-            placeValue = nil
-        }
-
-        if let placeValue {
             Analytics.log(
                 event: .tokenButtonGoToProvider,
                 params: [
                     .token: currentTokenItem.currencySymbol,
-                    .place: placeValue.rawValue,
+                    .place: Analytics.ParameterValue.kyc.rawValue,
                 ]
             )
-        }
 
-        openProvider()
+            openProvider()
+
+        case .cexOperationFailed:
+            Analytics.log(
+                event: .tokenButtonGoToProvider,
+                params: [
+                    .token: currentTokenItem.currencySymbol,
+                    .place: Analytics.ParameterValue.fail.rawValue,
+                ]
+            )
+
+            openProvider()
+
+        case .refunded(let tokenItem):
+            hidePendingTx(expressTransactionId: pendingTransaction.transactionRecord.expressTransactionId)
+            openCurrency(tokenItem: tokenItem)
+
+        default:
+            break
+        }
     }
 }
 

@@ -18,6 +18,10 @@ class CommonSendStepsManager {
     private var stack: [SendStep]
     private weak var output: SendStepsManagerOutput?
 
+    private var isEditAction: Bool {
+        stack.contains(where: { $0.type.isSummary })
+    }
+
     init(
         destinationStep: SendDestinationStep,
         amountStep: SendAmountStep,
@@ -55,20 +59,19 @@ class CommonSendStepsManager {
     }
 
     private func next(step: SendStep) {
-        let isEditAction = stack.contains(where: { $0.type.isSummary })
         stack.append(step)
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
+            output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction,
              .destination where isEditAction,
              .fee where isEditAction:
-            output?.update(state: .moveAndFade(step: step, action: .continue))
+            output?.update(state: .init(step: step, action: .continue))
         case .amount, .destination:
-            output?.update(state: .next(step: step))
+            output?.update(state: .init(step: step, action: .next, backButtonVisible: true))
         case .fee, .validators:
             assertionFailure("There is no next step")
         }
@@ -80,9 +83,9 @@ class CommonSendStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         default:
-            output?.update(state: .back(step: step))
+            output?.update(state: .init(step: step, action: .next))
         }
     }
 }
@@ -91,7 +94,7 @@ class CommonSendStepsManager {
 
 extension CommonSendStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: destinationStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: destinationStep, action: .next, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {
@@ -172,6 +175,10 @@ extension CommonSendStepsManager: SendSummaryStepsRoutable {
 
 extension CommonSendStepsManager: SendDestinationStepRoutable {
     func destinationStepFulfilled() {
-        performNext()
+        if isEditAction {
+            performContinue()
+        } else {
+            performNext()
+        }
     }
 }

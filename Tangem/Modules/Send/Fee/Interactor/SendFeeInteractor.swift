@@ -10,7 +10,11 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-protocol SendFeeInteractor {
+protocol SendFeeLoader {
+    func updateFees()
+}
+
+protocol SendFeeInteractor: SendFeeLoader {
     var selectedFee: SendFee? { get }
     var selectedFeePublisher: AnyPublisher<SendFee, Never> { get }
 
@@ -18,7 +22,6 @@ protocol SendFeeInteractor {
     var customFeeInputFieldModels: [SendCustomFeeInputFieldModel] { get }
 
     func update(selectedFee: SendFee)
-    func updateFees()
 }
 
 class CommonSendFeeInteractor {
@@ -28,7 +31,7 @@ class CommonSendFeeInteractor {
     private let provider: SendFeeProvider
     private let customFeeService: CustomFeeService?
 
-    private let _cryptoAmount: CurrentValueSubject<Amount?, Never> = .init(nil)
+    private let _cryptoAmount: CurrentValueSubject<Decimal?, Never> = .init(nil)
     private let _destination: CurrentValueSubject<String?, Never> = .init(nil)
     private let _fees: CurrentValueSubject<LoadingValue<[Fee]>, Never> = .init(.loading)
     private let _customFee: CurrentValueSubject<Fee?, Never> = .init(.none)
@@ -69,19 +72,28 @@ class CommonSendFeeInteractor {
     }
 
     func bind() {
-        _fees
+        let suggestedFeeToUse = _fees
             .withWeakCaptureOf(self)
             .compactMap { interactor, fees in
-                fees.value.flatMap { interactor.initialFeeForUpdate(fees: $0) }
+                fees.value.flatMap { interactor.feeForAutoupdate(fees: $0) }
             }
+            .share()
+
+        suggestedFeeToUse
             // Only once
             .first()
             .withWeakCaptureOf(self)
             .sink { interactor, fee in
-                interactor.initialSelectedFeeUpdateIfNeeded(fee: fee)
                 fee.value.value.map {
                     interactor.customFeeService?.initialSetupCustomFee($0)
                 }
+            }
+            .store(in: &bag)
+
+        suggestedFeeToUse
+            .withWeakCaptureOf(self)
+            .sink { interactor, fee in
+                interactor.autoupdateSelectedFee(fee: fee)
             }
             .store(in: &bag)
     }
@@ -161,7 +173,7 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
 // MARK: - CustomFeeServiceInput
 
 extension CommonSendFeeInteractor: CustomFeeServiceInput {
-    var cryptoAmountPublisher: AnyPublisher<Amount, Never> {
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
         _cryptoAmount.compactMap { $0 }.eraseToAnyPublisher()
     }
 
@@ -224,14 +236,14 @@ private extension CommonSendFeeInteractor {
         }
     }
 
-    private func initialFeeForUpdate(fees: [Fee]) -> SendFee? {
+    private func feeForAutoupdate(fees: [Fee]) -> SendFee? {
         let values = mapToDefaultFees(fees: fees)
         let option = input?.selectedFee.option ?? .market
-        let initialFee = values.first(where: { $0.option == option })
-        return initialFee
+        let market = values.first(where: { $0.option == option })
+        return market
     }
 
-    private func initialSelectedFeeUpdateIfNeeded(fee: SendFee) {
+    private func autoupdateSelectedFee(fee: SendFee) {
         output?.feeDidChanged(fee: fee)
     }
 }

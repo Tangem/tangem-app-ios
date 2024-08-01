@@ -10,33 +10,27 @@ import SwiftUI
 
 struct SendAmountView: View {
     @ObservedObject var viewModel: SendAmountViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
-
-    private var amountMinTextScale: CGFloat?
 
     var body: some View {
         GroupedScrollView(spacing: 14) {
             amountContainer
 
-            if !viewModel.animatingAuxiliaryViewsOnAppear {
+            if viewModel.auxiliaryViewsVisible {
                 segmentControl
-                    .transition(.offset(y: 100).combined(with: .opacity))
             }
         }
+        .id(viewModel.id)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
+        .transition(transitionService.transitionToAmountStep(isEditMode: viewModel.isEditMode))
         .onAppear(perform: viewModel.onAppear)
-        .onAppear(perform: viewModel.onAuxiliaryViewAppear)
-        .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
     }
 
     private var amountContainer: some View {
         VStack(spacing: 32) {
-            if !viewModel.animatingAuxiliaryViewsOnAppear {
-                walletInfoView
-                    // Because the top padding have to be is 16 to the white background
-                    // But the bottom padding have to be is 12
-                    .padding(.top, 4)
-                    .transition(.offset(y: -100).combined(with: .opacity))
-            }
+            walletInfoView
+                .visible(viewModel.auxiliaryViewsVisible)
 
             amountContent
         }
@@ -61,6 +55,9 @@ struct SendAmountView: View {
                 .lineLimit(1)
                 .matchedGeometryEffect(id: namespace.names.walletBalance, in: namespace.id)
         }
+        // Because the top padding have to be is 16 to the white background
+        // But the bottom padding have to be is 12
+        .padding(.top, 4)
     }
 
     private var amountContent: some View {
@@ -69,12 +66,17 @@ struct SendAmountView: View {
                 .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {
-                SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                    .initialFocusBehavior(.immediateFocus)
-                    .alignment(.center)
-                    .prefixSuffixOptions(viewModel.currentFieldOptions)
-                    .minTextScale(amountMinTextScale)
-                    .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+                ZStack {
+                    SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+                        .initialFocusBehavior(.noFocus)
+                        .alignment(.center)
+                        .prefixSuffixOptions(viewModel.currentFieldOptions)
+                        .minTextScale(SendView.Constants.amountMinTextScale)
+                }
+                // We have to keep frame until SendDecimalNumberTextField size fix
+                // Just on appear it has the zero height. Is cause break animation
+                .frame(height: 35)
+                .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout
                 Text(viewModel.alternativeAmount ?? " ")
@@ -103,14 +105,7 @@ struct SendAmountView: View {
                 .frame(width: proxy.size.width / 3)
             }
         }
-    }
-
-    init(
-        viewModel: SendAmountViewModel,
-        namespace: Namespace
-    ) {
-        self.viewModel = viewModel
-        self.namespace = namespace
+        .transition(transitionService.amountAuxiliaryViewTransition)
     }
 }
 
@@ -118,14 +113,6 @@ extension SendAmountView {
     struct Namespace {
         let id: SwiftUI.Namespace.ID
         let names: any SendAmountViewGeometryEffectNames
-    }
-}
-
-// MARK: - Setupable protocol conformance
-
-extension SendAmountView: Setupable {
-    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
-        map { $0.amountMinTextScale = amountMinTextScale }
     }
 }
 

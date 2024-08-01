@@ -254,19 +254,23 @@ extension CommonTangemApiService: TangemApiService {
     // MARK: - Markets Implementation
 
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try await request(for: .coinsList(requestModel), decoder: decoder)
+        return try await request(for: .coinsList(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try await request(for: .coinsHistoryPreview(requestModel), decoder: decoder)
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
-        return try await request(for: .tokenMarketsDetails(request: requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .tokenMarketsDetails(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        return try await request(for: .historyChart(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     // MARK: - Init

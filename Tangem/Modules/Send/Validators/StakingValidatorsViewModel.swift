@@ -8,12 +8,14 @@
 
 import Combine
 import TangemStaking
+import SwiftUI
 
 final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
     @Published var validators: [ValidatorViewData] = []
     @Published var selectedValidator: String = ""
+    @Published var auxiliaryViewsVisible: Bool = true
 
     // MARK: - Dependencies
 
@@ -28,7 +30,13 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
         bind()
     }
 
-    func onAppear() {}
+    func onAppear() {
+        auxiliaryViewsVisible = true
+    }
+
+    func onDisappear() {
+        auxiliaryViewsVisible = false
+    }
 }
 
 // MARK: - Private
@@ -49,6 +57,40 @@ private extension StakingValidatorsViewModel {
             }
             .assign(to: \.validators, on: self, ownership: .weak)
             .store(in: &bag)
+
+        interactor
+            .selectedValidatorPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, selectedValidator in
+                viewModel.selectedValidator = selectedValidator.address
+            }
+            .store(in: &bag)
+
+        $selectedValidator
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, validatorAddress in
+                viewModel.interactor.userDidSelect(validatorAddress: validatorAddress)
+            }
+            .store(in: &bag)
+    }
+}
+
+// MARK: - SendStepViewAnimatable
+
+extension StakingValidatorsViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+        case .disappearing(.summary(_)):
+            auxiliaryViewsVisible = false
+        default:
+            break
+        }
     }
 }
 

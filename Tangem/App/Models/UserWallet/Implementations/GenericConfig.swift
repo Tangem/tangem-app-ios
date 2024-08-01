@@ -45,10 +45,6 @@ extension GenericConfig: UserWalletConfig {
         [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
-    var validationCurves: [EllipticCurve] {
-        [.secp256k1, .ed25519]
-    }
-
     var derivationStyle: DerivationStyle? {
         guard hasFeature(.hdWallets) else {
             return nil

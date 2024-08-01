@@ -10,15 +10,15 @@ import Foundation
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
-    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
+    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor, compact: SendAmountCompactViewModel)
 
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
     func makeSendAmountStep(
         io: IO,
-        sendFeeInteractor: any SendFeeInteractor,
-        sendQRCodeService: any SendQRCodeService
+        sendFeeLoader: any SendFeeLoader,
+        sendQRCodeService: SendQRCodeService?
     ) -> ReturnValue {
         let interactor = makeSendAmountInteractor(io: io)
         let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
@@ -26,10 +26,19 @@ struct SendAmountStepBuilder {
         let step = SendAmountStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendFeeInteractor: sendFeeInteractor
+            sendFeeLoader: sendFeeLoader
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendAmountCompactViewModel(input: io.input)
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendAmountCompactViewModel(input: SendAmountInput) -> SendAmountCompactViewModel {
+        .init(
+            input: input,
+            tokenIconInfo: builder.makeTokenIconInfo(),
+            tokenItem: walletModel.tokenItem
+        )
     }
 }
 
@@ -38,7 +47,7 @@ struct SendAmountStepBuilder {
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(
         interactor: SendAmountInteractor,
-        sendQRCodeService: any SendQRCodeService
+        sendQRCodeService: SendQRCodeService?
     ) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
             userWalletName: builder.walletName(),

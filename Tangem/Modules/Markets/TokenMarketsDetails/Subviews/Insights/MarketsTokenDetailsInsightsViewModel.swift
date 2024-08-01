@@ -37,8 +37,13 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         let currencyCode = AppSettings.shared.selectedCurrencyCode
         numberFormatter.currencyCode = currencyCode
 
-        if currencyCode == AppConstants.rubCurrencyCode {
+        switch currencyCode {
+        case AppConstants.rubCurrencyCode:
             numberFormatter.currencySymbol = AppConstants.rubSign
+        case AppConstants.usdCurrencyCode:
+            numberFormatter.currencySymbol = AppConstants.usdSign
+        default:
+            break
         }
 
         return numberFormatter

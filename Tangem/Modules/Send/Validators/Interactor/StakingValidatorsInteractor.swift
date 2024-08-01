@@ -17,7 +17,6 @@ protocol StakingValidatorsInteractor {
     func userDidSelect(validatorAddress: String)
 }
 
-// TODO: https://tangem.atlassian.net/browse/IOS-7105
 class CommonStakingValidatorsInteractor {
     private weak var input: StakingValidatorsInput?
     private weak var output: StakingValidatorsOutput?
@@ -34,6 +33,32 @@ class CommonStakingValidatorsInteractor {
         self.input = input
         self.output = output
         self.manager = manager
+
+        setupView()
+    }
+}
+
+// MARK: - Private
+
+private extension CommonStakingValidatorsInteractor {
+    func setupView() {
+        guard let yield = manager.state.yieldInfo else {
+            AppLog.shared.debug("StakingManager.Yields not found")
+            return
+        }
+
+        guard !yield.validators.isEmpty else {
+            AppLog.shared.debug("Yield.Validators is empty")
+            return
+        }
+
+        if let defaultValidator = yield.validators.first(where: { $0.address == yield.defaultValidator }) {
+            output?.userDidSelected(validator: defaultValidator)
+        } else if let first = yield.validators.first {
+            output?.userDidSelected(validator: first)
+        }
+
+        _validators.send(yield.validators)
     }
 }
 

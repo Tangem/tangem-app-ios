@@ -35,4 +35,16 @@ extension Swift.Collection {
     subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
+
+    func min<T>(by keyPath: KeyPath<Element, T>) -> Element? where T: Comparable {
+        return self.min { lhs, rhs in
+            lhs[keyPath: keyPath] < rhs[keyPath: keyPath]
+        }
+    }
+
+    func max<T>(by keyPath: KeyPath<Element, T>) -> Element? where T: Comparable {
+        return self.max { lhs, rhs in
+            lhs[keyPath: keyPath] < rhs[keyPath: keyPath]
+        }
+    }
 }

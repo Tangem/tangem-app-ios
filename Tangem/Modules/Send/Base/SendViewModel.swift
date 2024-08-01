@@ -17,12 +17,8 @@ protocol SendViewAlertPresenter: AnyObject {
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
 
-    @Published var stepAnimation: SendView.StepAnimation
     @Published var step: SendStep {
-        willSet {
-            step.willDisappear(next: newValue)
-            newValue.willAppear(previous: step)
-        } didSet {
+        didSet {
             bind(step: step)
         }
     }
@@ -56,6 +52,9 @@ final class SendViewModel: ObservableObject {
 
     private let interactor: SendBaseInteractor
     private let stepsManager: SendStepsManager
+    private let userWalletModel: UserWalletModel
+    private let feeTokenItem: TokenItem
+
     private weak var coordinator: SendRoutable?
 
     private var bag: Set<AnyCancellable> = []
@@ -66,26 +65,21 @@ final class SendViewModel: ObservableObject {
     init(
         interactor: SendBaseInteractor,
         stepsManager: SendStepsManager,
+        userWalletModel: UserWalletModel,
+        feeTokenItem: TokenItem,
         coordinator: SendRoutable
     ) {
         self.interactor = interactor
         self.stepsManager = stepsManager
+        self.userWalletModel = userWalletModel
+        self.feeTokenItem = feeTokenItem
         self.coordinator = coordinator
 
         step = stepsManager.initialState.step
-        stepAnimation = stepsManager.initialState.animation
-        mainButtonType = stepsManager.initialState.mainButtonType
+        mainButtonType = stepsManager.initialState.action
 
         bind()
         bind(step: stepsManager.initialState.step)
-    }
-
-    func onCurrentPageAppear() {
-        step.didAppear()
-    }
-
-    func onCurrentPageDisappear() {
-        step.didDisappear()
     }
 
     func userDidTapActionButton() {
@@ -135,7 +129,7 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
-    private func performSend() {
+    func performSend() {
         sendSubscription = interactor.send()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
@@ -144,7 +138,7 @@ private extension SendViewModel {
             }
     }
 
-    private func proceed(result: SendTransactionDispatcherResult) {
+    func proceed(result: SendTransactionDispatcherResult) {
         switch result {
         case .success(let url):
             transactionURL = url
@@ -172,21 +166,21 @@ private extension SendViewModel {
         }
     }
 
-    private func openMail(transaction: BSDKTransaction, error: SendTxError) {
+    func openMail(transaction: BSDKTransaction, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
         coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
-    private func bind(step: SendStep) {
+    func bind(step: SendStep) {
         isValidSubscription = step.isValidPublisher
             .map { !$0 }
             .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
     }
 
-    private func bind() {
+    func bind() {
         interactor.isLoading
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
@@ -198,6 +192,20 @@ private extension SendViewModel {
         interactor.isLoading
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
+    }
+}
+
+// MARK: - SendModelRoutable
+
+extension SendViewModel: SendModelRoutable {
+    func openNetworkCurrency() {
+        let walletModels = userWalletModel.walletModelsManager.walletModels
+        guard let feeCurrencyWalletModel = walletModels.first(where: { $0.tokenItem == feeTokenItem }) else {
+            assertionFailure("Network currency WalletModel not found")
+            return
+        }
+
+        coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
     }
 }
 
@@ -213,11 +221,20 @@ extension SendViewModel: SendViewAlertPresenter {
 
 extension SendViewModel: SendStepsManagerOutput {
     func update(state: SendStepsManagerViewState) {
-        stepAnimation = state.animation
-        mainButtonType = state.mainButtonType
+        step.willDisappear(next: state.step)
+        step.sendStepViewAnimatable.viewDidChangeVisibilityState(
+            .disappearing(nextStep: state.step.type)
+        )
+
+        state.step.willAppear(previous: step)
+        state.step.sendStepViewAnimatable.viewDidChangeVisibilityState(
+            .appearing(previousStep: step.type)
+        )
+
+        mainButtonType = state.action
         showBackButton = state.backButtonVisible
 
-        // Give some time to update `stepAnimation`
+        // Give some time to update `transitions`
         DispatchQueue.main.async {
             self.step = state.step
         }

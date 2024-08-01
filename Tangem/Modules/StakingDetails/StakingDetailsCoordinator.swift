@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class StakingDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
@@ -19,7 +20,12 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
+    @Published var sendCoordinator: SendCoordinator?
+    @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+
     // MARK: - Child view models
+
+    private var options: Options?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -30,8 +36,13 @@ class StakingDetailsCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let factory = StakingModulesFactory(walletModel: options.wallet)
-        rootViewModel = factory.makeStakingDetailsViewModel(coordinator: self)
+        self.options = options
+
+        rootViewModel = StakingDetailsViewModel(
+            walletModel: options.walletModel,
+            stakingManager: options.manager,
+            coordinator: self
+        )
     }
 }
 
@@ -39,10 +50,63 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
 extension StakingDetailsCoordinator {
     struct Options {
-        let wallet: WalletModel
+        let userWalletModel: UserWalletModel
+        let walletModel: WalletModel
+        let manager: StakingManager
+    }
+}
+
+// MARK: - Private
+
+private extension StakingDetailsCoordinator {
+    func openFeeCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.tokenDetailsCoordinator = nil
+        }
+
+        let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
+        coordinator.start(
+            with: .init(
+                userWalletModel: userWalletModel,
+                walletModel: model,
+                userTokensManager: userWalletModel.userTokensManager
+            )
+        )
+
+        tokenDetailsCoordinator = coordinator
     }
 }
 
 // MARK: - StakingDetailsRoutable
 
-extension StakingDetailsCoordinator: StakingDetailsRoutable {}
+extension StakingDetailsCoordinator: StakingDetailsRoutable {
+    func openStakingFlow() {
+        guard let options else { return }
+
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: .staking(manager: options.manager)
+        ))
+        sendCoordinator = coordinator
+    }
+
+    func openUnstakingFlow() {
+        // TBD: https://tangem.atlassian.net/browse/IOS-6898
+    }
+
+    func openClaimRewardsFlow() {
+        // TBD: https://tangem.atlassian.net/browse/IOS-6899
+    }
+}

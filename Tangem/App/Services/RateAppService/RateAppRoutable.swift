@@ -9,6 +9,6 @@
 import Foundation
 
 protocol RateAppRoutable: AnyObject {
-    func openFeedbackMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
+    func openMail(with dataCollector: EmailDataCollector, emailType: EmailType, recipient: String)
     func openAppStoreReview()
 }

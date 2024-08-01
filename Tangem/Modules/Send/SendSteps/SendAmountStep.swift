@@ -13,16 +13,16 @@ import SwiftUI
 class SendAmountStep {
     private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
-    private let sendFeeInteractor: SendFeeInteractor
+    private let sendFeeLoader: SendFeeLoader
 
     init(
         viewModel: SendAmountViewModel,
         interactor: SendAmountInteractor,
-        sendFeeInteractor: SendFeeInteractor
+        sendFeeLoader: SendFeeLoader
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
-        self.sendFeeInteractor = sendFeeInteractor
+        self.sendFeeLoader = sendFeeLoader
     }
 }
 
@@ -33,16 +33,18 @@ extension SendAmountStep: SendStep {
 
     var type: SendStepType { .amount(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        if step.type.isSummary {
+            Analytics.log(.sendScreenReopened, params: [.source: .amount])
+        } else {
+            Analytics.log(.sendAmountScreenOpened)
         }
-
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {
@@ -52,6 +54,6 @@ extension SendAmountStep: SendStep {
             return
         }
 
-        sendFeeInteractor.updateFees()
+        sendFeeLoader.updateFees()
     }
 }

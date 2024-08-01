@@ -12,6 +12,8 @@ struct SellFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
 
+    let sendDestinationStepBuilder: SendDestinationStepBuilder
+    let sendAmountStepBuilder: SendAmountStepBuilder
     let sendFeeStepBuilder: SendFeeStepBuilder
     let sendSummaryStepBuilder: SendSummaryStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
@@ -19,12 +21,19 @@ struct SellFlowBaseBuilder {
 
     func makeSendViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
 
         let sendModel = builder.makeSendModel(
             sendTransactionDispatcher: sendTransactionDispatcher,
             predefinedSellParameters: sellParameters
+        )
+
+        let sendDestinationCompactViewModel = sendDestinationStepBuilder.makeSendDestinationCompactViewModel(
+            input: sendModel
+        )
+
+        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
+            input: sendModel
         )
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
@@ -37,12 +46,19 @@ struct SellFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: .disable
+            editableType: .disable,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: sendModel,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         // We have to set dependicies here after all setups is completed
@@ -54,16 +70,13 @@ struct SellFlowBaseBuilder {
         // Update the fees in case we in the sell flow
         fee.interactor.updateFees()
 
-        notificationManager.setup(input: sendModel)
+        // If we want to notifications in the sell flow
+        // 1. Uncomment code below
+        // 2. Set the `sendAmountInteractor` into `sendModel`
+        // to support the amount changes from the notification's buttons
 
-        summary.step.setup(sendDestinationInput: sendModel)
-        summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInteractor: fee.interactor)
-
-        finish.setup(sendDestinationInput: sendModel)
-        finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInteractor: fee.interactor)
-        finish.setup(sendFinishInput: sendModel)
+        // notificationManager.setup(input: sendModel)
+        // notificationManager.setupManager(with: sendModel)
 
         let stepsManager = CommonSellStepsManager(
             feeStep: fee.step,
@@ -73,11 +86,24 @@ struct SellFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
-        let viewModel = SendViewModel(interactor: interactor, stepsManager: stepsManager, coordinator: router)
+        let interactor = CommonSendBaseInteractor(
+            input: sendModel,
+            output: sendModel,
+            walletModel: walletModel,
+            emailDataProvider: userWalletModel
+        )
+
+        let viewModel = SendViewModel(
+            interactor: interactor,
+            stepsManager: stepsManager,
+            userWalletModel: userWalletModel,
+            feeTokenItem: walletModel.feeTokenItem,
+            coordinator: router
+        )
         stepsManager.set(output: viewModel)
 
         fee.step.set(alertPresenter: viewModel)
+        sendModel.router = viewModel
 
         return viewModel
     }

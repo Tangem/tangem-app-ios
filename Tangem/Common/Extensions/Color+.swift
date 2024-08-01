@@ -134,6 +134,22 @@ extension UIColor {
         return UIColor(named: "IconInformative")!
     }
 
+    @nonobjc static var iconAccent: UIColor {
+        UIColor(named: "IconAccent")!
+    }
+
+    @nonobjc static var iconInactive: UIColor {
+        UIColor(named: "IconInactive")!
+    }
+
+    @nonobjc static var iconWarning: UIColor {
+        UIColor(named: "IconWarning")!
+    }
+
+    @nonobjc static var textTertiary: UIColor {
+        UIColor(named: "TextTertiary")!
+    }
+
     // ☝️☝️☝️ End of UIColors from the new palette ☝️☝️☝️
 
     // MARK: Background
@@ -168,10 +184,6 @@ extension UIColor {
 
     @nonobjc static var tangemCritical: UIColor {
         UIColor(named: "tangem_critical")!
-    }
-
-    @nonobjc static var iconAccent: UIColor {
-        UIColor(named: "IconAccent")!
     }
 }
 

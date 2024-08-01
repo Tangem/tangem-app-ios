@@ -66,6 +66,7 @@ extension StakeKitDTO {
             }
 
             enum TransactionType: String, Decodable {
+                case stake = "STAKE"
                 case enter = "ENTER"
                 case reinvest = "REINVEST"
                 case exit = "EXIT"
@@ -77,8 +78,8 @@ extension StakeKitDTO {
             }
 
             struct GasEstimate: Decodable {
-                let gasLimit: Decimal?
-                let amount: Decimal?
+                let gasLimit: String?
+                let amount: String
                 let token: Token?
             }
         }

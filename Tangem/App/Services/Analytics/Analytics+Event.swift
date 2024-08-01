@@ -219,6 +219,7 @@ extension Analytics {
         case tokenSwapStatus = "[Token] Swap Status"
         case tokenSwapStatusScreenOpened = "[Token] Swap Status Opened"
         case tokenButtonGoToProvider = "[Token] Button - Go To Provider"
+        case tokenButtonGoToToken = "[Token] Button - Go to Token"
 
         // MARK: - App settings
 
@@ -276,5 +277,12 @@ extension Analytics {
         // MARK: - Promo
 
         case promoChangellyActivity = "[Promo] Changelly Activity"
+
+        // MARK: - Push notifications
+
+        case pushButtonAllow = "[Push] Button - Allow"
+        case pushButtonPostpone = "[Push] Button - Later"
+        case pushButtonCancel = "[Push] Button - Cancel"
+        case pushPermissionStatus = "[Push] Permission Status"
     }
 }

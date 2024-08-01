@@ -69,6 +69,35 @@ final class CommonPushNotificationsInteractor {
             await interactor.pushNotificationsService.registerIfPossible()
         }
     }
+
+    private func logAllowRequest(in flow: PushNotificationsPermissionRequestFlow) {
+        let source = analyticsSourceValue(for: flow)
+        Analytics.log(.pushButtonAllow, params: [.source: source])
+    }
+
+    private func logPostponeOrCancelRequest(in flow: PushNotificationsPermissionRequestFlow, isCancelled: Bool) {
+        let source = analyticsSourceValue(for: flow)
+        Analytics.log(
+            isCancelled ? .pushButtonCancel : .pushButtonPostpone,
+            params: [.source: source]
+        )
+    }
+
+    private func logAuthorizationStatus() async {
+        let state: Analytics.ParameterValue = await pushNotificationsService.isAuthorized ? .allow : .cancel
+        Analytics.log(.pushPermissionStatus, params: [.state: state])
+    }
+
+    private func analyticsSourceValue(for flow: PushNotificationsPermissionRequestFlow) -> Analytics.ParameterValue {
+        switch flow {
+        case .welcomeOnboarding:
+            return .stories
+        case .walletOnboarding:
+            return .onboarding
+        case .afterLogin:
+            return .main
+        }
+    }
 }
 
 // MARK: - PushNotificationsInteractor protocol conformance
@@ -108,8 +137,10 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
         }
     }
 
-    func allowRequest(in _: PushNotificationsPermissionRequestFlow) async {
+    func allowRequest(in flow: PushNotificationsPermissionRequestFlow) async {
+        logAllowRequest(in: flow)
         await pushNotificationsService.requestAuthorizationAndRegister()
+        await logAuthorizationStatus()
         runOnMain {
             canRequestAuthorization = false
         }
@@ -129,14 +160,18 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
     }
 
     func postponeRequest(in flow: PushNotificationsPermissionRequestFlow) {
+        let isCancelled: Bool
+
         switch flow {
         case .welcomeOnboarding:
             saveLaunchCountAndDateOfPostponedRequest()
             didPostponeAuthorizationRequestOnWelcomeOnboarding = true
             didPostponeAuthorizationRequestOnWelcomeOnboardingInCurrentSession = true
+            isCancelled = false
         case .walletOnboarding:
             saveLaunchCountAndDateOfPostponedRequest()
             didPostponeAuthorizationRequestOnWalletOnboarding = true
+            isCancelled = false
         case .afterLogin where hasSavedWalletsFromPreviousVersion == true:
             saveLaunchCountAndDateOfPostponedRequest()
             numberOfRequestsPostponedByExistingUser += 1
@@ -144,11 +179,17 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
             // for the `Constants.maxNumberOfPostponedRequests`-th times
             if numberOfRequestsPostponedByExistingUser >= Constants.maxNumberOfPostponedRequests {
                 canRequestAuthorization = false
+                isCancelled = true
+            } else {
+                isCancelled = false
             }
         case .afterLogin:
             // Stop all future authorization requests
             canRequestAuthorization = false
+            isCancelled = true
         }
+
+        logPostponeOrCancelRequest(in: flow, isCancelled: isCancelled)
     }
 }
 

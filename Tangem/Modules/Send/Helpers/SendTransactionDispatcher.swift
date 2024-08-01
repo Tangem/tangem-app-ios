@@ -14,7 +14,7 @@ import enum TangemSdk.TangemSdkError
 protocol SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { get }
 
-    func send(transaction: BSDKTransaction) -> AnyPublisher<SendTransactionDispatcherResult, Never>
+    func send(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Never>
 }
 
 enum SendTransactionDispatcherResult {
@@ -49,7 +49,11 @@ class CommonSendTransactionDispatcher {
 extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
 
-    func send(transaction: BSDKTransaction) -> AnyPublisher<SendTransactionDispatcherResult, Never> {
+    func send(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Never> {
+        guard case .transfer(let transaction) = transaction else {
+            return .just(output: .transactionNotFound)
+        }
+
         _isSending.send(true)
 
         return walletModel

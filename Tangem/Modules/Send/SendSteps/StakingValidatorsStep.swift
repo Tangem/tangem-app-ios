@@ -30,7 +30,9 @@ extension StakingValidatorsStep: SendStep {
 
     var type: SendStepType { .validators(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        .just(output: false) // TODO: https://tangem.atlassian.net/browse/IOS-7105
+        .just(output: true)
     }
 }

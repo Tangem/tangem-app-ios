@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TokenActionType {
+enum TokenActionType: String {
     case buy
     case send
     case receive
@@ -50,4 +50,21 @@ enum TokenActionType {
         default: return false
         }
     }
+
+    var description: String? {
+        switch self {
+        case .buy: return Localization.buyTokenDescription
+        case .send: return nil
+        case .receive: return Localization.receiveTokenDescription
+        case .exchange: return Localization.exсhangeTokenDescription
+        case .stake: return nil
+        case .sell: return nil
+        case .copyAddress: return nil
+        case .hide: return nil
+        }
+    }
+}
+
+extension TokenActionType: CaseIterable, Identifiable {
+    var id: String { rawValue }
 }

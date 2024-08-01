@@ -10,17 +10,40 @@ import SwiftUI
 
 struct StakingValidatorsView: View {
     @ObservedObject var viewModel: StakingValidatorsViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
+
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
-            SelectableGropedSection(viewModel.validators, selection: $viewModel.selectedValidator) {
-                ValidatorView(data: $0)
+            GroupedSection(viewModel.validators) { data in
+                let isSelected = data.id == viewModel.selectedValidator
+
+                ValidatorView(data: data, selection: $viewModel.selectedValidator)
+                    .geometryEffect(.init(id: namespace.id, names: namespace.names))
+                    .readContentOffset(inCoordinateSpace: .named(coordinateSpaceName)) { value in
+                        if isSelected {
+                            transitionService.selectedValidatorContentOffset = value
+                        }
+                    }
+                    .modifier(if: isSelected) {
+                        $0.overlay(alignment: .topLeading) {
+                            DefaultHeaderView(Localization.stakingValidator)
+                                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
+                                .hidden()
+                        }
+                    }
+                    .visible(viewModel.auxiliaryViewsVisible)
             }
             .settings(\.backgroundColor, Colors.Background.action)
             .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
         }
+        .coordinateSpace(name: coordinateSpaceName)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
+        .transition(transitionService.transitionToValidatorsStep())
         .onAppear(perform: viewModel.onAppear)
+        .onDisappear(perform: viewModel.onDisappear)
     }
 }
 
@@ -41,6 +64,7 @@ struct StakingValidatorsView_Preview: PreviewProvider {
     static var previews: some View {
         StakingValidatorsView(
             viewModel: viewModel,
+            transitionService: .init(),
             namespace: .init(
                 id: namespace,
                 names: SendGeometryEffectNames()

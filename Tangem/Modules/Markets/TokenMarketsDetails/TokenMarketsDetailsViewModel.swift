@@ -10,7 +10,10 @@ import Foundation
 import Combine
 
 class TokenMarketsDetailsViewModel: ObservableObject {
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+
     @Published var price: String
+    @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var shortDescription: String?
     @Published var fullDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
@@ -24,8 +27,9 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
     @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+    @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
-    @Injected(\.safariManager) var safariManager: SafariManager
+    @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -86,12 +90,16 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         formatEpsilonAsLowestRepresentableValue: false,
         roundingType: .defaultFiat(roundingMode: .bankers)
     )
+    private let quotesUpdateTimeInterval: TimeInterval = 60.0
 
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let walletDataProvider = MarketsWalletDataProvider()
+
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
+
+    // MARK: - Init
 
     init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
         currentPriceSubject = .init(tokenInfo.currentPrice ?? 0.0)
@@ -110,31 +118,73 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadDetailedInfo()
 
         makePreloadBlocksViewModels()
+        makeHistoryChartViewModel()
     }
 
-    private func bind() {
-        currentPriceSubject
+    deinit {
+        print("TokenMarketsDetailsViewModel deinit")
+    }
+
+    // MARK: - Actions
+
+    func openLinkAction(_ link: String) {
+        guard let url = URL(string: link) else {
+            log("Failed to create link from: \(link)")
+            return
+        }
+
+        coordinator?.openURL(url)
+    }
+}
+
+// MARK: - Private functions
+
+private extension TokenMarketsDetailsViewModel {
+    func bind() {
+        quotesRepository.quotesPublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink { viewModel, newPrice in
+            .compactMap { viewModel, quotes in
+                quotes[viewModel.tokenInfo.id]?.price
+            }
+            .assign(to: \.value, on: currentPriceSubject, ownership: .weak)
+            .store(in: &bag)
+
+        currentPriceSubject
+            .receive(on: DispatchQueue.main)
+            .withPrevious()
+            .withWeakCaptureOf(self)
+            .sink { elements in
+                let (viewModel, (previousValue, newValue)) = elements
                 viewModel.price = viewModel.balanceFormatter.formatFiatBalance(
-                    newPrice,
+                    newValue,
                     formattingOptions: viewModel.fiatBalanceFormattingOptions
                 )
+                viewModel.priceChangeAnimation = .calculateChange(from: previousValue, to: newValue)
+            }
+            .store(in: &bag)
+
+        $isLoading
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isLoading in
+                viewModel.portfolioViewModel?.isLoading = isLoading
             }
             .store(in: &bag)
     }
 
-    private func loadDetailedInfo() {
+    func loadDetailedInfo() {
         runTask(in: self) { viewModel in
             do {
-                viewModel.log("Attempt to load token markets data for token with id: \(viewModel.tokenInfo.id)")
-                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: viewModel.tokenInfo.id)
+                let currencyId = viewModel.tokenInfo.id
+                viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
+                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
 
                 await runOnMain {
                     viewModel.setupUI(using: result)
                     viewModel.isLoading = false
                 }
+
             } catch {
                 await runOnMain { viewModel.alert = error.alertBinder }
                 viewModel.log("Failed to load detailed info. Reason: \(error)")
@@ -142,8 +192,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }
     }
 
-    private func setupUI(using model: TokenMarketsDetailsModel) {
-        price = balanceFormatter.formatFiatBalance(model.currentPrice, formattingOptions: fiatBalanceFormattingOptions)
+    func updatePrice(_ newPrice: Decimal) {
+        price = balanceFormatter.formatFiatBalance(newPrice, formattingOptions: fiatBalanceFormattingOptions)
+    }
+
+    func setupUI(using model: TokenMarketsDetailsModel) {
         loadedPriceChangeInfo = model.priceChangePercentage
         loadedInfo = model
         shortDescription = model.shortDescription
@@ -156,11 +209,30 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
-            addTapAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.onAddToPortfolioTapAction)
+            coordinator: coordinator,
+            addTokenTapAction: { [weak self] in
+                guard let self, let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
+                    return
+                }
+
+                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
+            }
         )
     }
 
-    private func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
+    private func makeHistoryChartViewModel() {
+        let historyChartProvider = CommonMarketsHistoryChartProvider(
+            tokenId: tokenInfo.id,
+            yAxisLabelCount: Constants.historyChartYAxisLabelCount
+        )
+        historyChartViewModel = MarketsHistoryChartViewModel(
+            historyChartProvider: historyChartProvider,
+            selectedPriceInterval: selectedPriceChangeIntervalType,
+            selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType
+        )
+    }
+
+    func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
             insightsViewModel = .init(insights: insights, infoRouter: self)
         }
@@ -169,47 +241,41 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             metricsViewModel = .init(metrics: metrics, infoRouter: self)
         }
 
-        pricePerformanceViewModel = .init(pricePerformanceData: model.pricePerformance, currentPricePublisher: currentPriceSubject.eraseToAnyPublisher())
+        pricePerformanceViewModel = .init(
+            pricePerformanceData: model.pricePerformance,
+            currentPricePublisher: currentPriceSubject.eraseToAnyPublisher()
+        )
 
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
     }
 
-    private func log(_ message: @autoclosure () -> String) {
+    func log(_ message: @autoclosure () -> String) {
         AppLog.shared.debug("[TokenMarketsDetailsViewModel] - \(message())")
-    }
-
-    // MARK: - Actions
-
-    func onAddToPortfolioTapAction() {
-        guard let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
-            assertionFailure("TokenItem list is empty")
-            return
-        }
-
-        coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
-    }
-
-    func openLinkAction(_ link: String) {
-        guard let url = URL(string: link) else {
-            log("Failed to create link from: \(link)")
-            return
-        }
-
-        coordinator?.openURL(url)
     }
 }
 
 extension TokenMarketsDetailsViewModel {
     func openFullDescription() {
-        // TODO: Will be added in IOS-7291
-        print("Open full description tapped")
+        guard let fullDescription else {
+            return
+        }
+
+        openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
     }
 }
 
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
-        // TODO: Will be added in IOS-7291
+        descriptionBottomSheetInfo = .init(title: title, description: message)
+    }
+}
+
+// MARK: - Constants
+
+private extension TokenMarketsDetailsViewModel {
+    private enum Constants {
+        static let historyChartYAxisLabelCount = 3
     }
 }

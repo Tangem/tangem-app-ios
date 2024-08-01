@@ -14,7 +14,6 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
     let allowMultilineText: Bool
     let name: String
     let showAddressIcon: Bool
-    let description: String
     let addressTextViewHeightModel: AddressTextViewHeightModel
     let didEnterDestination: (String) -> Void
     let didPasteDestination: (String) -> Void
@@ -46,7 +45,6 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
         allowMultilineText = style.allowMultilineText
         name = style.name
         showAddressIcon = style.showAddressIcon
-        description = style.description
         self.addressTextViewHeightModel = addressTextViewHeightModel
         self.didEnterDestination = didEnterDestination
         self.didPasteDestination = didPasteDestination
@@ -152,7 +150,7 @@ class SendDestinationTextViewModel: ObservableObject, Identifiable {
 
 extension SendDestinationTextViewModel {
     enum Style {
-        case address(networkName: String)
+        case address
         case additionalField(name: String)
     }
 }
@@ -182,15 +180,6 @@ private extension SendDestinationTextViewModel.Style {
             true
         case .additionalField:
             false
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .address(let networkName):
-            Localization.sendRecipientAddressFooter(networkName)
-        case .additionalField:
-            Localization.sendRecipientMemoFooter
         }
     }
 

@@ -59,8 +59,7 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .mantle(testnet: false),
-            .bittensor(curve: ed25519Curve(for: version)),
-            .koinos(testnet: false),
+            .internetComputer(curve: .secp256k1),
         ]
     }
 
@@ -127,7 +126,8 @@ struct SupportedBlockchains {
             .joystream(curve: ed25519Curve(for: version)),
             .manta(testnet: false),
             .radiant(testnet: false),
-            .internetComputer(curve: .secp256k1),
+            .bittensor(curve: ed25519Curve(for: version)),
+            .koinos(testnet: false),
         ]
     }
 

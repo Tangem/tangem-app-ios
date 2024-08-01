@@ -8,6 +8,9 @@
 
 import Foundation
 
-public struct EnterAction {
-    let transactions: [TransactionInfo]
+public struct EnterAction: Hashable {
+    public let id: String
+    public let status: ActionStatus
+    public let currentStepIndex: Int
+    public let transactions: [ActionTransaction]
 }

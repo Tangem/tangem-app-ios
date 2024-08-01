@@ -25,12 +25,14 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     @available(*, unavailable, message: "Token trust lines support not implemented yet")
     case addTokenTrustline
     case stake
-    /// Rate the app.
+    /// Rate the app
     case openFeedbackMail
     /// Rate the app.
     case openAppStoreReview
     /// No action
     case empty
+    case support
+    case openCurrency
 
     var id: Int { hashValue }
 
@@ -70,6 +72,10 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.tokenSwapPromotionButton
         case .empty:
             return ""
+        case .support:
+            return Localization.detailsRowTitleContactToSupport
+        case .openCurrency:
+            return Localization.commonGoToToken
         }
     }
 
@@ -93,7 +99,9 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .stake,
              .openFeedbackMail,
              .openAppStoreReview,
-             .empty:
+             .empty,
+             .support,
+             .openCurrency:
             return nil
         }
     }
@@ -103,7 +111,6 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         case .generateAddresses,
              .openLink,
              .openAppStoreReview,
-             .swap,
              .empty:
             return .primary
         case .backupCard,
@@ -116,8 +123,11 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .reduceAmountTo,
              .addHederaTokenAssociation,
              .leaveAmount,
+             .support,
              .stake,
-             .openFeedbackMail:
+             .openFeedbackMail,
+             .openCurrency,
+             .swap:
             return .secondary
         }
     }

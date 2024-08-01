@@ -21,9 +21,14 @@ struct CustomFeeServiceFactory {
         if case .bitcoin = blockchain,
            let bitcoinTransactionFeeCalculator = walletModel.bitcoinTransactionFeeCalculator {
             return CustomBitcoinFeeService(
+                tokenItem: walletModel.tokenItem,
                 feeTokenItem: walletModel.feeTokenItem,
                 bitcoinTransactionFeeCalculator: bitcoinTransactionFeeCalculator
             )
+        }
+
+        if case .kaspa = blockchain {
+            return CustomKaspaFeeService(feeTokenItem: walletModel.feeTokenItem)
         }
 
         if blockchain.isEvm {

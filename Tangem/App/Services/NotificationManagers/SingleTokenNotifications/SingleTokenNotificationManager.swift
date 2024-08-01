@@ -13,8 +13,6 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
-    @Injected(\.stakingRepositoryProxy) private var stakingRepositoryProxy: StakingRepositoryProxy
-
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
@@ -86,10 +84,11 @@ final class SingleTokenNotificationManager {
         if case .koinos = walletModel.tokenItem.blockchain,
            let currentMana = amounts[.feeResource(.mana)]?.value,
            let maxMana = amounts[.coin]?.value {
+            let formatter = BalanceFormatter()
             events.append(
                 .manaLevel(
-                    currentMana: "\(currentMana)",
-                    maxMana: "\(maxMana)"
+                    currentMana: formatter.formatDecimal(currentMana, formattingOptions: .defaultFiatFormattingOptions),
+                    maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
                 )
             )
         }
@@ -231,11 +230,7 @@ final class SingleTokenNotificationManager {
     }
 
     func makeStakingNotificationEvent() -> TokenNotificationEvent? {
-        guard FeatureProvider.isAvailable(.staking) else {
-            return nil
-        }
-
-        guard let yield = stakingRepositoryProxy.getYield(item: walletModel.stakingTokenItem) else {
+        guard case .availableToStake(let yield) = walletModel.stakingManagerState else {
             return nil
         }
 

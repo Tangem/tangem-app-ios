@@ -17,15 +17,26 @@ extension Decimal {
         formatter.currencyCode = code
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = maximumFractionDigits
-        if code == "RUB" {
-            formatter.currencySymbol = "₽"
+
+        switch code {
+        case AppConstants.rubCurrencyCode:
+            formatter.currencySymbol = AppConstants.rubSign
+        case AppConstants.usdCurrencyCode:
+            formatter.currencySymbol = AppConstants.usdSign
+        default:
+            break
         }
+
         // formatter.roundingMode = .down
         return formatter.string(from: self as NSDecimalNumber) ?? "\(self) \(code)"
     }
 
     var stringValue: String {
         (self as NSDecimalNumber).stringValue
+    }
+
+    var doubleValue: Double {
+        (self as NSDecimalNumber).doubleValue
     }
 
     func intValue(roundingMode: NSDecimalNumber.RoundingMode = .down) -> Int {

@@ -13,18 +13,21 @@ import SwiftUI
 class SendSummaryStep {
     private let viewModel: SendSummaryViewModel
     private let interactor: SendSummaryInteractor
+    private let input: SendSummaryInput
     private let tokenItem: TokenItem
     private let walletName: String
 
     init(
         viewModel: SendSummaryViewModel,
         interactor: SendSummaryInteractor,
+        input: SendSummaryInput,
         tokenItem: TokenItem,
         walletName: String
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.tokenItem = tokenItem
+        self.input = input
         self.walletName = walletName
     }
 
@@ -42,27 +45,9 @@ extension SendSummaryStep: SendStep {
 
     var type: SendStepType { .summary(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        .just(output: true)
-    }
-
-    func willAppear(previous step: any SendStep) {
-        viewModel.setupAnimations(previousStep: step.type)
-    }
-}
-
-// MARK: - SendSummaryViewModelSetupable
-
-extension SendSummaryStep: SendSummaryViewModelSetupable {
-    func setup(sendDestinationInput: any SendDestinationInput) {
-        viewModel.setup(sendDestinationInput: sendDestinationInput)
-    }
-
-    func setup(sendAmountInput: any SendAmountInput) {
-        viewModel.setup(sendAmountInput: sendAmountInput)
-    }
-
-    func setup(sendFeeInteractor: any SendFeeInteractor) {
-        viewModel.setup(sendFeeInteractor: sendFeeInteractor)
+        input.transactionPublisher.map { $0 != nil }.eraseToAnyPublisher()
     }
 }

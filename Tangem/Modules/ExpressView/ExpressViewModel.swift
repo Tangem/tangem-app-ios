@@ -688,7 +688,9 @@ extension ExpressViewModel: NotificationTapDelegate {
              .stake,
              .openFeedbackMail,
              .openAppStoreReview,
-             .swap:
+             .swap,
+             .support,
+             .openCurrency:
             return
         }
     }
@@ -726,7 +728,8 @@ private extension ExpressViewModel {
              .withdrawalNotificationEvent,
              .validationErrorEvent,
              .verificationRequired,
-             .cexOperationFailed:
+             .cexOperationFailed,
+             .refunded:
             return nil
         }
     }
@@ -789,7 +792,7 @@ extension ExpressViewModel {
             case .insufficientFunds:
                 return Localization.swappingInsufficientFunds
             case .givePermission:
-                return Localization.swappingGivePermission
+                return Localization.givePermissionTitle
             case .permitAndSwap:
                 return Localization.swappingPermitAndSwap
             }

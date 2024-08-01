@@ -44,6 +44,20 @@ struct TokenDetailsView: View {
                     )
                 }
 
+                if let stakedBalance = viewModel.stakedBalance {
+                    ActiveStakingView(
+                        data: ActiveStakingViewData(
+                            balance: stakedBalance.balance,
+                            fiatBalance: stakedBalance.fiatBalance,
+                            rewardsToClaim: viewModel.stakingRewardsBalance?.fiatBalance
+                        ),
+                        tapAction: viewModel.openStaking
+                    )
+                    .padding(14)
+                    .background(Colors.Background.primary)
+                    .cornerRadiusContinuous(14)
+                }
+
                 ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
                     PendingExpressTransactionView(info: transactionInfo)
                         .transition(.notificationTransition)
@@ -143,11 +157,12 @@ private extension TokenDetailsView {
     )
     let pendingTxsManager = CommonPendingExpressTransactionsManager(
         userWalletId: userWalletModel.userWalletId.stringValue,
-        walletModel: walletModel
+        walletModel: walletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
     )
     let coordinator = TokenDetailsCoordinator()
 
-    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem))
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
 
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,

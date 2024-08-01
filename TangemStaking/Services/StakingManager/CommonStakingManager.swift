@@ -7,49 +7,115 @@
 //
 
 import Foundation
+import Combine
 
 class CommonStakingManager {
+    private let integrationId: String
     private let wallet: StakingWallet
-    private let repository: StakingRepository
     private let provider: StakingAPIProvider
     private let logger: Logger
 
+    // MARK: Private
+
+    private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
+
     init(
+        integrationId: String,
         wallet: StakingWallet,
-        repository: StakingRepository,
         provider: StakingAPIProvider,
         logger: Logger
     ) {
+        self.integrationId = integrationId
         self.wallet = wallet
-        self.repository = repository
         self.provider = provider
         self.logger = logger
     }
 }
 
+// MARK: - StakingManager
+
 extension CommonStakingManager: StakingManager {
-    func getYield() throws -> YieldInfo {
-        guard let yield = repository.getYield(item: wallet.stakingTokenItem) else {
-            throw StakingManagerError.notFound
+    var state: StakingManagerState {
+        _state.value
+    }
+
+    var statePublisher: AnyPublisher<StakingManagerState, Never> {
+        _state.eraseToAnyPublisher()
+    }
+
+    func updateState() async throws {
+        updateState(.loading)
+        do {
+            async let balance = provider.balance(wallet: wallet)
+            async let yield = provider.yield(integrationId: integrationId)
+
+            try await updateState(state(balance: balance, yield: yield))
+        } catch {
+            logger.error(error)
+            throw error
+        }
+    }
+
+    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo {
+        switch (state, action) {
+        case (.availableToStake(let yieldInfo), .stake(let amount, let validator)):
+            try await getTransactionToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
+        case (.staked(_, _), .unstake):
+            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6898
+        default:
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+        }
+    }
+}
+
+// MARK: - Private
+
+private extension CommonStakingManager {
+    func updateState(_ state: StakingManagerState) {
+        log("Update state to \(state)")
+        _state.send(state)
+    }
+
+    func state(balance: StakingBalanceInfo?, yield: YieldInfo) -> StakingManagerState {
+        guard let balance else {
+            return .availableToStake(yield)
         }
 
-        return yield
+        if balance.balanceGroupType.isActiveOrUnstaked {
+            return .staked(balance, yield)
+        } else {
+            return .availableToStake(yield)
+        }
     }
 
-    func getFee(amount: Decimal, validator: String) async throws {
+    func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
         let action = try await provider.enterAction(
             amount: amount,
-            address: wallet.defaultAddress,
+            address: wallet.address,
             validator: validator,
-            integrationId: getYield().id
+            integrationId: integrationId
         )
-    }
 
-    func getTransaction() async throws {
-        // TBD: https://tangem.atlassian.net/browse/IOS-6897
+        let transactionId = action.transactions[action.currentStepIndex].id
+        // We have to wait that stakek.it prepared the transaction
+        // Otherwise we may get the 404 error
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        let transaction = try await provider.patchTransaction(id: transactionId)
+
+        return transaction
+    }
+}
+
+// MARK: - Log
+
+private extension CommonStakingManager {
+    func log(_ args: Any) {
+        logger.debug("[Staking] \(self) \(args)")
     }
 }
 
 public enum StakingManagerError: Error {
+    case stakingManagerStateNotSupportTransactionAction(action: StakingActionType)
+    case notImplemented
     case notFound
 }
