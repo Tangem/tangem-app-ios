@@ -39,6 +39,6 @@ struct OnboardingSeedPassphraseInfoBottomSheetView: View {
             }
             .padding(.horizontal, 16)
         }
-        .padding(.bottom, 10)
+        .padding(.bottom, 6)
     }
 }

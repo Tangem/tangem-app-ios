@@ -27,6 +27,8 @@ struct ExpressPendingTransactionRecord: Codable, Equatable {
     var isHidden: Bool
     var transactionStatus: PendingExpressTransactionStatus
 
+    var refundedTokenItem: TokenItem?
+
     var fee: Decimal {
         convertToDecimal(feeString)
     }

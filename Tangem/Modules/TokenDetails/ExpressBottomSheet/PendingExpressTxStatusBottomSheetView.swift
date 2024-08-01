@@ -38,8 +38,8 @@ struct PendingExpressTxStatusBottomSheetView: View {
 
                 statusesView
 
-                if let input = viewModel.notificationViewInput {
-                    NotificationView(input: input)
+                ForEach(viewModel.notificationViewInputs) {
+                    NotificationView(input: $0)
                         .transition(.bottomNotificationTransition)
                 }
             }
@@ -50,7 +50,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
         // This animations are set explicitly to synchronise them with the delayed appearance of the notification
         .animation(animation, value: viewModel.statusesList)
         .animation(animation, value: viewModel.currentStatusIndex)
-        .animation(animation, value: viewModel.notificationViewInput)
+        .animation(animation, value: viewModel.notificationViewInputs)
         .animation(animation, value: viewModel.showGoToProviderHeaderButton)
     }
 
@@ -209,13 +209,14 @@ struct ExpressPendingTxStatusBottomSheetView_Preview: PreviewProvider {
             isHidden: false,
             transactionStatus: .awaitingDeposit
         )
-        let pendingTransaction = factory.buildPendingExpressTransaction(currentExpressStatus: .sending, for: record)
+        let pendingTransaction = factory.buildPendingExpressTransaction(currentExpressStatus: .sending, refundedTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)), for: record)
         return .init(
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: CommonPendingExpressTransactionsManager(
                 userWalletId: userWalletId,
-                walletModel: .mockETH
+                walletModel: .mockETH,
+                expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
             ),
             router: TokenDetailsCoordinator()
         )

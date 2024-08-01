@@ -116,8 +116,18 @@ struct ExpressAPIMapper {
     func mapToExpressTransaction(response: ExpressDTO.ExchangeStatus.Response) -> ExpressTransaction {
         ExpressTransaction(
             providerId: .init(response.providerId),
-            externalStatus: response.status
+            externalStatus: response.status,
+            refundedCurrency: mapToRefundedExpressCurrency(response: response)
         )
+    }
+
+    private func mapToRefundedExpressCurrency(response: ExpressDTO.ExchangeStatus.Response) -> ExpressCurrency? {
+        guard let refundContractAddress = response.refundContractAddress,
+              let refundNetwork = response.refundNetwork else {
+            return nil
+        }
+
+        return ExpressCurrency(contractAddress: refundContractAddress, network: refundNetwork)
     }
 }
 

@@ -13,13 +13,16 @@ class BannerNotificationManager {
     @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
 
+    private let analyticsService = NotificationsAnalyticsService()
+
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
     private weak var delegate: NotificationTapDelegate?
     private var promotionUpdateTask: Task<Void, Never>?
     private let placement: BannerPromotionPlacement
 
-    init(placement: BannerPromotionPlacement) {
+    init(placement: BannerPromotionPlacement, contextDataProvider: AnalyticsContextDataProvider?) {
         self.placement = placement
+        analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
 
     private func setupOKX() {
@@ -71,6 +74,8 @@ class BannerNotificationManager {
 
             let buttonAction: NotificationView.NotificationButtonTapAction = { [weak manager, placement] id, action in
                 manager?.delegate?.didTapNotification(with: id, action: action)
+                manager?.bannerPromotionService.hide(promotion: programName, on: placement)
+                manager?.dismissNotification(with: id)
 
                 Analytics.log(
                     .promotionBannerClicked,

@@ -10,6 +10,8 @@ import SwiftUI
 
 struct SendView: View {
     @ObservedObject var viewModel: SendViewModel
+    let transitionService: SendTransitionService
+
     @Namespace private var namespace
 
     private let backButtonStyle: MainButton.Style = .secondary
@@ -23,14 +25,11 @@ struct SendView: View {
 
             ZStack(alignment: .bottom) {
                 currentPage
-                    .transition(viewModel.stepAnimation.transition)
                     .allowsHitTesting(!viewModel.isUserInteractionDisabled)
-                    .onAppear(perform: viewModel.onCurrentPageAppear)
-                    .onDisappear(perform: viewModel.onCurrentPageDisappear)
 
                 bottomOverlay
             }
-            .animation(Constants.defaultAnimation, value: viewModel.step.type)
+            .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.step.type)
         }
         .background(backgroundColor.ignoresSafeArea())
         .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
@@ -38,34 +37,39 @@ struct SendView: View {
         .alert(item: $viewModel.alert) { $0.alert }
         .safeAreaInset(edge: .bottom) {
             bottomContainer
-                .animation(Constants.defaultAnimation, value: viewModel.showBackButton)
+                .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.showBackButton)
         }
     }
 
     @ViewBuilder
     private var headerView: some View {
         if let title = viewModel.title {
-            headerText(title: title)
-                .overlay(alignment: .leading) {
+            ZStack(alignment: .center) {
+                HStack {
                     Button(Localization.commonClose, action: viewModel.dismiss)
                         .foregroundColor(viewModel.closeButtonColor)
                         .disabled(viewModel.closeButtonDisabled)
-                }
-                .modifier(ifLet: viewModel.step.navigationTrailingViewType) { view, type in
-                    view.overlay(alignment: .trailing) {
-                        switch type {
-                        case .qrCodeButton(let action):
-                            Button(action: action) {
-                                Assets.qrCode.image
-                                    .renderingMode(.template)
-                                    .foregroundColor(Colors.Icon.primary1)
-                            }
+
+                    Spacer()
+
+                    switch viewModel.step.navigationTrailingViewType {
+                    case .none:
+                        EmptyView()
+                    case .qrCodeButton(let action):
+                        Button(action: action) {
+                            Assets.qrCode.image
+                                .renderingMode(.template)
+                                .foregroundColor(Colors.Icon.primary1)
                         }
                     }
                 }
-                .frame(height: 44)
-                .padding(.top, 8)
-                .padding(.horizontal, 16)
+
+                headerText(title: title)
+            }
+            .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.step.navigationTrailingViewType)
+            .frame(height: 44)
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
         }
     }
 
@@ -75,7 +79,6 @@ struct SendView: View {
             Text(title)
                 .multilineTextAlignment(.center)
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
-                .animation(.default, value: title)
 
             if let subtitle = viewModel.subtitle {
                 Text(subtitle)
@@ -84,7 +87,7 @@ struct SendView: View {
             }
         }
         .lineLimit(1)
-        .frame(maxWidth: .infinity)
+        .infinityFrame(axis: .horizontal, alignment: .center)
     }
 
     @ViewBuilder
@@ -93,27 +96,31 @@ struct SendView: View {
         case .destination(let sendDestinationViewModel):
             SendDestinationView(
                 viewModel: sendDestinationViewModel,
+                transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
         case .amount(let sendAmountViewModel):
             SendAmountView(
                 viewModel: sendAmountViewModel,
+                transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
-            .amountMinTextScale(Constants.amountMinTextScale)
         case .fee(let sendFeeViewModel):
             SendFeeView(
                 viewModel: sendFeeViewModel,
+                transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
         case .validators(let stakingValidatorsViewModel):
             StakingValidatorsView(
                 viewModel: stakingValidatorsViewModel,
+                transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
         case .summary(let sendSummaryViewModel):
             SendSummaryView(
                 viewModel: sendSummaryViewModel,
+                transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
         case .finish(let sendFinishViewModel):
@@ -154,7 +161,6 @@ struct SendView: View {
                         action: viewModel.userDidTapBackButton
                     )
                     .transition(.move(edge: .leading).combined(with: .opacity))
-                    .animation(SendView.Constants.backButtonAnimation, value: viewModel.showBackButton)
                 }
 
                 MainButton(
@@ -209,31 +215,6 @@ private struct SendViewBackButton: View {
 extension SendView {
     enum Constants {
         static let amountMinTextScale = 0.5
-        static let animationDuration: TimeInterval = 0.3
-        static let defaultAnimation: Animation = .spring(duration: animationDuration)
-        static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
-    }
-}
-
-extension SendView {
-    enum StepAnimation {
-        case slideForward
-        case slideBackward
-        case moveAndFade
-
-        var transition: AnyTransition {
-            switch self {
-            case .slideForward:
-                return .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading))
-            case .slideBackward:
-                return .asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing))
-            case .moveAndFade:
-                return .asymmetric(
-                    insertion: .offset(),
-                    removal: .opacity.animation(.spring(duration: SendView.Constants.animationDuration / 2))
-                )
-            }
-        }
     }
 }
 

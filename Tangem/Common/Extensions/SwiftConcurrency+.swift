@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class Combine.AnyCancellable
 
 @discardableResult
 func runTask(_ code: @escaping () async -> Void) -> Task<Void, Never> {
@@ -148,5 +149,11 @@ extension Task where Success == Never, Failure == Never {
             // Sleep for a while between cancellation checks.
             try await Task.sleep(nanoseconds: cancellationCheckIntervalUint64)
         }
+    }
+}
+
+extension Task {
+    func eraseToAnyCancellable() -> AnyCancellable {
+        return AnyCancellable(cancel)
     }
 }

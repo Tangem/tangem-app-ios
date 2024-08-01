@@ -40,6 +40,8 @@ extension SendDestinationStep: SendStep {
 
     var type: SendStepType { .destination(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
         .qrCodeButton { [weak self] in
             self?.viewModel.scanQRCode()
@@ -51,16 +53,14 @@ extension SendDestinationStep: SendStep {
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        if step.type.isSummary {
+            Analytics.log(.sendScreenReopened, params: [.source: .address])
+        } else {
+            Analytics.log(.sendAddressScreenOpened)
         }
-
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         guard step.type.isSummary else {
             return
         }

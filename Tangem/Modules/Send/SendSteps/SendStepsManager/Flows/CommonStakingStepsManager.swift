@@ -55,14 +55,12 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
+            output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction, .validators where isEditAction:
-            output?.update(state: .moveAndFade(step: step, action: .continue))
-        case .amount:
-            output?.update(state: .next(step: step))
-        case .destination, .validators, .fee:
+            output?.update(state: .init(step: step, action: .continue))
+        case .amount, .destination, .validators, .fee:
             assertionFailure("There is no next step")
         }
     }
@@ -73,9 +71,9 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .send))
         default:
-            output?.update(state: .back(step: step))
+            assertionFailure("There is no back step")
         }
     }
 }
@@ -84,7 +82,7 @@ class CommonStakingStepsManager {
 
 extension CommonStakingStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: amountStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: amountStep, action: .next, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

@@ -43,6 +43,9 @@ struct ValidatorView: View {
                 Spacer(minLength: 12)
 
                 detailsView(detailsType: detailsType)
+                    .matchedGeometryEffect(
+                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.id), namespace: $0.id) }
+                    )
             }
         }
         .padding(.vertical, 12)

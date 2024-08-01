@@ -11,6 +11,10 @@ import Foundation
 class AsyncTaskScheduler {
     private var task: Task<Void, Error>?
 
+    var isScheduled: Bool {
+        !(task?.isCancelled ?? true)
+    }
+
     func scheduleJob(interval: TimeInterval, repeats: Bool, action: @escaping () async throws -> Void) {
         task?.cancel()
         task = Task {

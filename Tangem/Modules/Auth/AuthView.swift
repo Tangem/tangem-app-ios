@@ -71,7 +71,8 @@ struct AuthView: View {
                 action: viewModel.unlockWithCard
             )
         }
-        .padding()
+        .padding([.top, .horizontal])
+        .padding(.bottom, 6)
     }
 }
 

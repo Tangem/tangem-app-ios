@@ -100,6 +100,14 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             coordinator: coordinator
         )
     }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+        )
+    }
 }
 
 // MARK: Dependencies

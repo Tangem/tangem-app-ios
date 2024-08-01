@@ -27,6 +27,9 @@ struct StakingFlowBaseBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher
         )
 
+        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
+        sendFeeCompactViewModel.bind(input: stakingModel)
+
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: stakingModel, output: stakingModel),
             sendFeeLoader: stakingModel,
@@ -42,19 +45,20 @@ struct StakingFlowBaseBuilder {
             io: (input: stakingModel, output: stakingModel),
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: .none,
-            editableType: .editable
+            editableType: .editable,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
-        let finish = sendFinishStepBuilder.makeSendFinishStep(addressTextViewHeightModel: .none)
-
-        summary.step.setup(sendAmountInput: stakingModel)
-        summary.step.setup(sendFeeInput: stakingModel)
-        summary.step.setup(stakingValidatorsInput: stakingModel)
-
-        finish.setup(sendAmountInput: stakingModel)
-        finish.setup(sendFeeInput: stakingModel)
-        finish.setup(sendFinishInput: stakingModel)
+        let finish = sendFinishStepBuilder.makeSendFinishStep(
+            input: stakingModel,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
+        )
 
         let stepsManager = CommonStakingStepsManager(
             amountStep: amount.step,
