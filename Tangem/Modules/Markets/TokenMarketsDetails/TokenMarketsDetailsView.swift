@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
+    @Environment(\.mainWindowSize) private var mainWindowSize: CGSize
 
     @State private var descriptionBottomSheetHeight: CGFloat = 0
 
@@ -24,14 +25,20 @@ struct TokenMarketsDetailsView: View {
                 .padding(.horizontal, 16.0)
 
                 chart
+                    .hidden(viewModel.allDataLoadFailed)
+                    .overlay(content: {
+                        MarketsUnableToLoadDataView(
+                            isButtonBusy: viewModel.isLoading,
+                            retryButtonAction: viewModel.reloadAllData
+                        )
+                        .frame(width: mainWindowSize.width)
+                        .hidden(!viewModel.allDataLoadFailed)
+                    })
 
-                Group {
-                    description
-
-                    contentBlocks
-                        .padding(.bottom, 45)
-                }
-                .padding(.horizontal, 16.0)
+                content
+                    .hidden(viewModel.allDataLoadFailed)
+                    .padding(.horizontal, 16.0)
+                    .transition(.opacity)
             }
             .padding(.top, 14)
         }
@@ -49,6 +56,9 @@ struct TokenMarketsDetailsView: View {
                 descriptionBottomSheetHeight = 0
             }
         }
+        .animation(.default, value: viewModel.state)
+        .animation(.default, value: viewModel.isLoading)
+        .animation(.default, value: viewModel.allDataLoadFailed)
     }
 
     @ViewBuilder
@@ -89,10 +99,74 @@ struct TokenMarketsDetailsView: View {
     }
 
     @ViewBuilder
-    private var description: some View {
-        if let shortDescription = viewModel.shortDescription {
+    private var chart: some View {
+        if let viewModel = viewModel.historyChartViewModel {
+            MarketsHistoryChartView(viewModel: viewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        VStack(spacing: 14) {
+            switch viewModel.state {
+            case .loading:
+                portfolioView
+
+                ContentBlockSkeletons()
+            case .loaded(let model):
+                description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
+
+                portfolioView
+
+                contentBlocks
+                    .padding(.bottom, 46.0)
+            case .failedToLoadDetails:
+                MarketsUnableToLoadDataView(
+                    isButtonBusy: viewModel.isLoading,
+                    retryButtonAction: viewModel.loadDetailedInfo
+                )
+                .padding(.vertical, 6)
+            case .failedToLoadAllData:
+                EmptyView()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var portfolioView: some View {
+        if let portfolioViewModel = viewModel.portfolioViewModel {
+            MarketsPortfolioContainerView(viewModel: portfolioViewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var contentBlocks: some View {
+        VStack(spacing: 14) {
+            portfolioView
+
             Group {
-                if viewModel.fullDescription == nil {
+                if let insightsViewModel = viewModel.insightsViewModel {
+                    MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                }
+
+                if let metricsViewModel = viewModel.metricsViewModel {
+                    MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                }
+
+                if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
+                    MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
+                }
+
+                TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func description(shortDescription: String?, fullDescription: String?) -> some View {
+        if let shortDescription {
+            Group {
+                if fullDescription == nil {
                     Text(shortDescription)
                         .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                         .multilineTextAlignment(.leading)
@@ -110,43 +184,11 @@ struct TokenMarketsDetailsView: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private var chart: some View {
-        if let viewModel = viewModel.historyChartViewModel {
-            MarketsHistoryChartView(viewModel: viewModel)
-        }
-    }
-
-    @ViewBuilder
-    private var contentBlocks: some View {
-        VStack(spacing: 14) {
-            if let portfolioViewModel = viewModel.portfolioViewModel {
-                MarketsPortfolioContainerView(viewModel: portfolioViewModel)
-            }
-
-            if viewModel.isLoading {
-                ContentBlockSkeletons()
-            } else {
-                Group {
-                    if let insightsViewModel = viewModel.insightsViewModel {
-                        MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
-                    }
-
-                    if let metricsViewModel = viewModel.metricsViewModel {
-                        MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
-                    }
-
-                    if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
-                        MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
-                    }
-
-                    TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
-                }
-                .animation(nil, value: viewModel.isLoading)
-            }
-        }
-        .animation(.default, value: viewModel.isLoading)
+extension TokenMarketsDetailsView {
+    enum Constants {
+        static let chartHeight: CGFloat = 200.0
     }
 }
 

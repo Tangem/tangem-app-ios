@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MarketsTokenDetailsMetrics: Codable {
+struct MarketsTokenDetailsMetrics: Codable, Equatable {
     let marketRating: Int?
     let circulatingSupply: Decimal?
     let marketCap: Decimal?

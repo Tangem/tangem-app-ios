@@ -37,7 +37,7 @@ struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottom
             sheetContent
                 .frame(minWidth: mainWindowSize.width)
         }
-        .frame(alignment: .top) // TODO: Remove this frame when migrate increase min iOS to 16.
+        .frame(alignment: .top) // TODO: Remove this frame when migrate to minimum iOS 16.
         .ignoresSafeArea(edges: .bottom)
         .readGeometry(onChange: { geometry in
             containerHeight = geometry.size.height

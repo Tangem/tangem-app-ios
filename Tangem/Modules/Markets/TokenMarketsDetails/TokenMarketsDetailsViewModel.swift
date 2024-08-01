@@ -14,11 +14,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     @Published var price: String
     @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
-    @Published var shortDescription: String?
-    @Published var fullDescription: String?
     @Published var selectedPriceChangeIntervalType = MarketsPriceIntervalType.day
     @Published var isLoading = true
     @Published var alert: AlertBinder?
+    @Published var state: ViewState = .loading
 
     // MARK: Blocks
 
@@ -30,6 +29,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+
+    @Published private var pickedTimeInterval: TimeInterval?
+    @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
+    @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
+    @Published private var currentPriceSubject: CurrentValueSubject<Decimal, Never>
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -69,10 +73,9 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         return iconBuilder.tokenIconURL(id: tokenInfo.id, size: .large)
     }
 
-    @Published private var pickedTimeInterval: TimeInterval?
-    @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
-    @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
-    @Published private var currentPriceSubject: CurrentValueSubject<Decimal, Never>
+    var allDataLoadFailed: Bool {
+        state == .failedToLoadAllData
+    }
 
     private weak var coordinator: TokenMarketsDetailsRoutable?
 
@@ -119,6 +122,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         makePreloadBlocksViewModels()
         makeHistoryChartViewModel()
+        bindToChartStateUpdates()
     }
 
     deinit {
@@ -126,6 +130,39 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     // MARK: - Actions
+
+    func reloadAllData() {
+        loadDetailedInfo()
+        historyChartViewModel?.reload()
+    }
+
+    func loadDetailedInfo() {
+        isLoading = true
+        runTask(in: self) { viewModel in
+            do {
+                let currencyId = viewModel.tokenInfo.id
+                viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
+                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
+
+                await runOnMain {
+                    viewModel.setupUI(using: result)
+                    viewModel.isLoading = false
+                }
+
+            } catch {
+                await runOnMain {
+                    if case .failed = viewModel.historyChartViewModel?.viewState {
+                        viewModel.state = .failedToLoadAllData
+                    } else if viewModel.state != .failedToLoadAllData {
+                        viewModel.state = .failedToLoadDetails
+                    }
+
+                    viewModel.isLoading = false
+                }
+                viewModel.log("Failed to load detailed info. Reason: \(error)")
+            }
+        }
+    }
 
     func openLinkAction(_ link: String) {
         guard let url = URL(string: link) else {
@@ -173,23 +210,31 @@ private extension TokenMarketsDetailsViewModel {
             .store(in: &bag)
     }
 
-    func loadDetailedInfo() {
-        runTask(in: self) { viewModel in
-            do {
-                let currencyId = viewModel.tokenInfo.id
-                viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
-                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
+    func bindToChartStateUpdates() {
+        historyChartViewModel?.$viewState
+            .receive(on: DispatchQueue.main)
+            .withPrevious()
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { elements in
+                let (viewModel, (previousChartState, newChartState)) = elements
 
-                await runOnMain {
-                    viewModel.setupUI(using: result)
-                    viewModel.isLoading = false
+                switch (previousChartState, newChartState) {
+                case (.failed, .failed), (.failed, .loading):
+                    // We need to process this cases before other so that view state remains unchanged.
+                    return
+                case (_, .failed):
+                    if case .failedToLoadDetails = viewModel.state {
+                        viewModel.state = .failedToLoadAllData
+                    }
+                case (.loading, .loaded):
+                    if case .failedToLoadAllData = viewModel.state {
+                        viewModel.state = .failedToLoadDetails
+                    }
+                default:
+                    break
                 }
-
-            } catch {
-                await runOnMain { viewModel.alert = error.alertBinder }
-                viewModel.log("Failed to load detailed info. Reason: \(error)")
-            }
-        }
+            })
+            .store(in: &bag)
     }
 
     func updatePrice(_ newPrice: Decimal) {
@@ -199,8 +244,7 @@ private extension TokenMarketsDetailsViewModel {
     func setupUI(using model: TokenMarketsDetailsModel) {
         loadedPriceChangeInfo = model.priceChangePercentage
         loadedInfo = model
-        shortDescription = model.shortDescription
-        fullDescription = model.fullDescription
+        state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
     }
@@ -258,7 +302,7 @@ private extension TokenMarketsDetailsViewModel {
 
 extension TokenMarketsDetailsViewModel {
     func openFullDescription() {
-        guard let fullDescription else {
+        guard let fullDescription = loadedInfo?.fullDescription else {
             return
         }
 
@@ -277,5 +321,14 @@ extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 private extension TokenMarketsDetailsViewModel {
     private enum Constants {
         static let historyChartYAxisLabelCount = 3
+    }
+}
+
+extension TokenMarketsDetailsViewModel {
+    enum ViewState: Equatable {
+        case loading
+        case failedToLoadDetails
+        case failedToLoadAllData
+        case loaded(model: TokenMarketsDetailsModel)
     }
 }

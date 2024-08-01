@@ -122,20 +122,10 @@ struct MarketsView: View {
     }
 
     private var errorStateView: some View {
-        VStack(spacing: 12) {
-            Text(Localization.marketsLoadingErrorTitle)
-                .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
-
-            Button(action: {
-                viewModel.onTryLoadList()
-            }, label: {
-                HStack(spacing: .zero) {
-                    Text(Localization.tryToLoadDataAgainButtonTitle)
-                        .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
-                }
-            })
-            .roundedBackground(with: Colors.Button.secondary, verticalPadding: 6, horizontalPadding: 12, radius: 10)
-        }
+        MarketsUnableToLoadDataView(
+            isButtonBusy: viewModel.tokenListLoadingState == .loading,
+            retryButtonAction: viewModel.onTryLoadList
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
     }
