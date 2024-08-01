@@ -220,7 +220,7 @@ private extension CommonExpressManager {
     func bestProvider() async -> ExpressAvailableProvider? {
         // If we have more then one provider then selected the best
         if availableProviders.count > 1 {
-            if let recommendedProvider = recommendedProvder() {
+            if let recommendedProvider = await recommendedProvder() {
                 return recommendedProvider
             }
             // Try to find the best with expectAmount
@@ -255,8 +255,18 @@ private extension CommonExpressManager {
         return nil
     }
 
-    func recommendedProvder() -> ExpressAvailableProvider? {
-        availableProviders.first(where: { $0.provider.recommended == true })
+    func recommendedProvder() async -> ExpressAvailableProvider? {
+        for provider in availableProviders {
+            if await provider.getState().isError {
+                continue
+            }
+
+            if provider.provider.recommended == true {
+                return provider
+            }
+        }
+
+        return nil
     }
 
     func updateStatesInProviders(request: ExpressManagerSwappingPairRequest, approvePolicy: ExpressApprovePolicy) async {
