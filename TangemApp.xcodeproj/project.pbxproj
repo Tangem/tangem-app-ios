@@ -1125,6 +1125,7 @@
 		DC2AB6EF2C08E46F0050796C /* WelcomeOnboardingStepRoutableStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2AB6EE2C08E46F0050796C /* WelcomeOnboardingStepRoutableStub.swift */; };
 		DC2CD3432B0FE3D600C0D677 /* SendCurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2CD3412B0FE3D600C0D677 /* SendCurrencyViewModel.swift */; };
 		DC2CD3442B0FE3D600C0D677 /* SendCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2CD3422B0FE3D600C0D677 /* SendCurrencyView.swift */; };
+		DC32C2402C5BE36F007E8208 /* SendCryptoValueFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC32C23F2C5BE36F007E8208 /* SendCryptoValueFormatterTests.swift */; };
 		DC37A0772A584BD000C2A3F2 /* WalletModelsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37A0752A584BD000C2A3F2 /* WalletModelsManagerMock.swift */; };
 		DC37A0782A584BD000C2A3F2 /* UserTokensManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37A0762A584BD000C2A3F2 /* UserTokensManagerMock.swift */; };
 		DC3B49F42893E50700C207EA /* StoredUserWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3B49F32893E50700C207EA /* StoredUserWallet.swift */; };
@@ -3063,6 +3064,7 @@
 		DC2AB6EE2C08E46F0050796C /* WelcomeOnboardingStepRoutableStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeOnboardingStepRoutableStub.swift; sourceTree = "<group>"; };
 		DC2CD3412B0FE3D600C0D677 /* SendCurrencyViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendCurrencyViewModel.swift; sourceTree = "<group>"; };
 		DC2CD3422B0FE3D600C0D677 /* SendCurrencyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendCurrencyView.swift; sourceTree = "<group>"; };
+		DC32C23F2C5BE36F007E8208 /* SendCryptoValueFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCryptoValueFormatterTests.swift; sourceTree = "<group>"; };
 		DC37A0752A584BD000C2A3F2 /* WalletModelsManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletModelsManagerMock.swift; sourceTree = "<group>"; };
 		DC37A0762A584BD000C2A3F2 /* UserTokensManagerMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserTokensManagerMock.swift; sourceTree = "<group>"; };
 		DC3B49F32893E50700C207EA /* StoredUserWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredUserWallet.swift; sourceTree = "<group>"; };
@@ -4282,6 +4284,7 @@
 				B03AC9922BD8DB26000CBC50 /* APIListTests.swift */,
 				B097A3652C106AC1003CFD38 /* APIURLValidatorTests.swift */,
 				DC19EB312C187192003DD903 /* CommonXPUBGeneratorTests.swift */,
+				DC32C23F2C5BE36F007E8208 /* SendCryptoValueFormatterTests.swift */,
 			);
 			path = TangemTests;
 			sourceTree = "<group>";
@@ -12099,6 +12102,7 @@
 				B03AC9932BD8DB26000CBC50 /* APIListTests.swift in Sources */,
 				DC4BF175298A4B810052EC19 /* IncomingActionsTests.swift in Sources */,
 				DC19EB322C187192003DD903 /* CommonXPUBGeneratorTests.swift in Sources */,
+				DC32C2402C5BE36F007E8208 /* SendCryptoValueFormatterTests.swift in Sources */,
 				0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */,
 				EF6221B3292B5FCD00D1D4A0 /* DecimalNumberFormatterTests.swift in Sources */,
 				DC7AC96A292BE2C900580668 /* TangemTests.swift in Sources */,
