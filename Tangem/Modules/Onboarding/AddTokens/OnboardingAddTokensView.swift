@@ -32,7 +32,7 @@ struct OnboardingAddTokensView: View {
                 Spacer()
 
                 MainButton(settings: viewModel.buttonSettings)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 6)
                     .padding(.horizontal, 16)
                     .background(
                         ListFooterOverlayShadowView()
