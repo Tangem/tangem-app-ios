@@ -38,6 +38,15 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var isStaked: Bool {
+        switch self {
+        case .staked:
+            return true
+        default:
+            return false
+        }
+    }
+
     public var yieldInfo: YieldInfo? {
         switch self {
         case .loading, .notEnabled:

@@ -12,43 +12,68 @@ import TangemStaking
 struct StakingValidatorViewMapper {
     private let percentFormatter = PercentFormatter()
 
+    enum ValidatorStakeState: Hashable {
+        case active(apr: Decimal?)
+        case unstaked(unboundingPeriod: String)
+
+        var isUnstaked: Bool {
+            if case .unstaked = self {
+                return true
+            }
+            return false
+        }
+    }
+
     func mapToValidatorViewData(
         info: ValidatorInfo,
-        subtitleType: ValidatorViewData.SubtitleType = .arp,
+        state: ValidatorStakeState? = nil,
         detailsType: ValidatorViewData.DetailsType?
     ) -> ValidatorViewData {
-        let subtitle: AttributedString?
-        switch subtitleType {
-        case .arp:
-            var localizedPart = AttributedString("ARP")
-            localizedPart.foregroundColor = Colors.Text.tertiary
-            localizedPart.font = Fonts.Regular.footnote
-
-            let arpPart = info.apr
-                .map {
-                    let formatted = percentFormatter.format($0, option: .staking)
-                    var result = AttributedString(formatted)
-                    result.foregroundColor = Colors.Text.accent
-                    result.font = Fonts.Regular.footnote
-                    return result
-                }
-            subtitle = localizedPart + " " + (arpPart ?? "")
-        case .unboundPeriod(let days):
-            var localizedPart = AttributedString(Localization.stakingDetailsUnbondingPeriod)
-            localizedPart.foregroundColor = Colors.Text.tertiary
-            localizedPart.font = Fonts.Regular.footnote
-
-            var periodPart = AttributedString(days)
-            periodPart.foregroundColor = Colors.Text.accent
-            periodPart.font = Fonts.Regular.footnote
-            subtitle = localizedPart + " " + periodPart
-        }
+        let state = state ?? .active(apr: info.apr)
         return ValidatorViewData(
             id: info.address,
             name: info.name,
             imageURL: info.iconURL,
-            subtitle: subtitle,
+            hasMonochromeIcon: state.isUnstaked,
+            subtitle: subtitle(for: state),
             detailsType: detailsType
         )
+    }
+
+    private func subtitle(for state: ValidatorStakeState) -> AttributedString {
+        switch state {
+        case .active(let apr):
+            aprString(apr: apr)
+        case .unstaked(let unboundingPeriod):
+            unboundingPeriodString(unboundingPeriodDays: unboundingPeriod)
+        }
+    }
+
+    private func aprString(apr: Decimal?) -> AttributedString {
+        var descriptionPart = AttributedString(Localization.stakingDetailsApr)
+        descriptionPart.foregroundColor = Colors.Text.tertiary
+        descriptionPart.font = Fonts.Regular.footnote
+
+        let percentFormatter = PercentFormatter()
+        let valuePart = apr
+            .map {
+                let formatted = percentFormatter.format($0, option: .staking)
+                var result = AttributedString(formatted)
+                result.foregroundColor = Colors.Text.accent
+                result.font = Fonts.Regular.footnote
+                return result
+            }
+        return descriptionPart + " " + (valuePart ?? "")
+    }
+
+    private func unboundingPeriodString(unboundingPeriodDays: String) -> AttributedString {
+        var descriptionPart = AttributedString(Localization.stakingDetailsUnbondingPeriod)
+        descriptionPart.foregroundColor = Colors.Text.tertiary
+        descriptionPart.font = Fonts.Regular.footnote
+
+        var valuePart = AttributedString(unboundingPeriodDays)
+        valuePart.foregroundColor = Colors.Text.accent
+        valuePart.font = Fonts.Regular.footnote
+        return descriptionPart + " " + valuePart
     }
 }

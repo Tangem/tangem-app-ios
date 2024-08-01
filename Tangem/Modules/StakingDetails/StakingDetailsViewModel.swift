@@ -22,6 +22,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published private(set) var buttonTitle: String = Localization.commonStake
 
     // MARK: - Dependencies
 
@@ -37,9 +38,6 @@ final class StakingDetailsViewModel: ObservableObject {
         formatter.allowedUnits = [.day]
         return formatter
     }()
-
-    private let _yieldInfo = CurrentValueSubject<LoadingValue<YieldInfo>, Never>(.loading)
-    private let _balanceInfo = CurrentValueSubject<LoadingValue<StakingBalanceInfo>, Never>(.loading)
 
     private var bag: Set<AnyCancellable> = []
 
@@ -108,11 +106,12 @@ private extension StakingDetailsViewModel {
                 )
             }
         }
+        let rewards = balancesInfo?.compactMap(\.rewards).reduce(Decimal.zero, +)
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
                 staked: maxBlockedBalance,
-                rewards: Decimal(stringValue: "1"),
+                rewards: rewards.flatMap { $0.isZero ? nil : $0 },
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
                 rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
@@ -133,6 +132,7 @@ private extension StakingDetailsViewModel {
         setupDetailsSection(inputData: inputData)
         setupRewardView(inputData: inputData)
         setupValidatorsView(input: inputData)
+        setupButtonTitle(inputData: inputData)
     }
 
     func setupHeaderView(inputData: StakingDetailsData) {
@@ -266,14 +266,26 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(validatorBalance.balance, currencyId: $0)
             }
             let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
+
+            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState =
+                switch validatorBalance.balanceGroupType {
+            case .active, .unknown: .active(apr: validatorBalance.validator.apr)
+            case .unstaked: .unstaked(
+                    unboundingPeriod: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())
+                )
+            }
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
-                subtitleType: validatorBalance.balanceGroupType == .unstaked ? .unboundPeriod(days: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())) : .arp,
+                state: validatorStakeState,
                 detailsType: .balance(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)
             )
         }
         activeValidators = input.activeValidators.map(mapToValidatorsData)
         unstakedValidators = input.unstakedValidators.map(mapToValidatorsData)
+    }
+
+    func setupButtonTitle(inputData: StakingDetailsData) {
+        buttonTitle = inputData.staked.isZero ? Localization.commonStake : Localization.stakingStakeMore
     }
 
     func openBottomSheet(title: String, description: String) {

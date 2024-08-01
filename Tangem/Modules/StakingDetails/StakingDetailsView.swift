@@ -127,7 +127,7 @@ struct StakingDetailsView: View {
     }
 
     private var actionButton: some View {
-        MainButton(title: Localization.commonStake) {
+        MainButton(title: viewModel.buttonTitle) {
             viewModel.userDidTapActionButton()
         }
         .padding(.horizontal, 16)

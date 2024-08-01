@@ -53,6 +53,7 @@ struct ValidatorView: View {
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
+            .saturation(data.hasMonochromeIcon ? 0 : 1)
             .matchedGeometryEffect(
                 namespace.map { .init(id: $0.names.validatorIcon(id: data.id), namespace: $0.id) }
             )
@@ -125,13 +126,15 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        subtitle: "0.08%",
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
+                        hasMonochromeIcon: true,
                         subtitle: nil,
                         detailsType: .checkmark
                     ),
@@ -159,13 +162,15 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        subtitle: "0.08%",
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
                         detailsType: .chevron
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
                         name: "Aconcagua",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
+                        hasMonochromeIcon: true,
                         subtitle: nil,
                         detailsType: .chevron
                     ),
@@ -194,7 +199,8 @@ extension ValidatorView {
                         id: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        subtitle: "0.08%",
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
                         detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
                     ),
                 ]) {
