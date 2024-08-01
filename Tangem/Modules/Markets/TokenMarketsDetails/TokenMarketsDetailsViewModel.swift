@@ -226,7 +226,7 @@ private extension TokenMarketsDetailsViewModel {
                     if case .failedToLoadDetails = viewModel.state {
                         viewModel.state = .failedToLoadAllData
                     }
-                case (.loading, .loaded):
+                case (.loading, .loaded), (.failed, .loaded):
                     if case .failedToLoadAllData = viewModel.state {
                         viewModel.state = .failedToLoadDetails
                     }
