@@ -39,9 +39,14 @@ class SendAmountCompactViewModel: ObservableObject, Identifiable {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, amount in
-                viewModel.amount = amount?.format(currencySymbol: viewModel.tokenItem.currencySymbol)
+                viewModel.amount = amount?.format(
+                    currencySymbol: viewModel.tokenItem.currencySymbol,
+                    decimalCount: viewModel.tokenItem.decimalCount
+                )
+
                 viewModel.alternativeAmount = amount?.formatAlternative(
-                    currencySymbol: viewModel.tokenItem.currencySymbol
+                    currencySymbol: viewModel.tokenItem.currencySymbol,
+                    decimalCount: viewModel.tokenItem.decimalCount
                 )
             }
             .store(in: &bag)
