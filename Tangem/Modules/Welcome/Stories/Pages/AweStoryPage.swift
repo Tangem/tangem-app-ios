@@ -58,7 +58,7 @@ struct AweStoryPage: View {
 
                 StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                     .padding(.horizontal)
-                    .padding(.bottom)
+                    .padding(.bottom, 6)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

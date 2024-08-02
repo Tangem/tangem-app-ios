@@ -80,7 +80,7 @@ class SendAmountViewModel: ObservableObject {
     func userDidTapMaxAmount() {
         let amount = interactor.updateToMaxAmount()
         decimalNumberTextFieldViewModel.update(value: amount?.main)
-        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol)
+        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol, decimalCount: tokenItem.decimalCount)
     }
 }
 
@@ -123,7 +123,8 @@ private extension SendAmountViewModel {
             .sink { viewModel, amount in
                 viewModel.setExternalAmount(amount?.main)
                 viewModel.alternativeAmount = amount?.formatAlternative(
-                    currencySymbol: viewModel.tokenItem.currencySymbol
+                    currencySymbol: viewModel.tokenItem.currencySymbol,
+                    decimalCount: viewModel.tokenItem.decimalCount
                 )
             }
             .store(in: &bag)
@@ -146,12 +147,12 @@ private extension SendAmountViewModel {
 
     func textFieldValueDidChanged(amount: Decimal?) {
         let amount = interactor.update(amount: amount)
-        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol)
+        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol, decimalCount: tokenItem.decimalCount)
     }
 
     func update(amountType: SendAmountCalculationType) {
         let amount = interactor.update(type: amountType)
-        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol)
+        alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol, decimalCount: tokenItem.decimalCount)
 
         switch amountType {
         case .crypto:
