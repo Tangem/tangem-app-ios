@@ -73,7 +73,7 @@ struct OnboardingSeedPhraseIntroView: View {
 
             bottomButtons
                 .padding(.horizontal, 16)
-                .padding(.bottom, 8)
+                .padding(.bottom, 6)
         }
     }
 

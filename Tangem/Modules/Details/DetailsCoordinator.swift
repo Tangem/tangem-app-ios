@@ -108,7 +108,7 @@ extension DetailsCoordinator: DetailsRoutable {
     }
 
     func openTOS() {
-        tosViewModel = .init()
+        tosViewModel = .init(bottomOverlayHeight: 0)
     }
 
     func openScanCardManual() {

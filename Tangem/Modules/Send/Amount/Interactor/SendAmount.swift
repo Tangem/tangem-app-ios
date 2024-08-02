@@ -27,11 +27,21 @@ struct SendAmount: Hashable {
     func format(
         currencySymbol: String,
         balanceFormatter: BalanceFormatter = .init(),
-        formattingOptions: BalanceFormattingOptions = .sendAmountFormattingOptions
+        decimalCount: Int
     ) -> String? {
         switch type {
         case .typical(let crypto, _):
-            return balanceFormatter.formatCryptoBalance(crypto, currencyCode: currencySymbol, formattingOptions: formattingOptions)
+            guard let crypto else {
+                return BalanceFormatter.defaultEmptyBalanceString
+            }
+
+            let formatter = SendCryptoValueFormatter(
+                decimals: decimalCount,
+                currencySymbol: currencySymbol,
+                trimFractions: false
+            )
+
+            return formatter.string(from: crypto)
         case .alternative(let fiat, _):
             return fiat.map { balanceFormatter.formatFiatBalance($0) }
         }
@@ -40,24 +50,25 @@ struct SendAmount: Hashable {
     func formatAlternative(
         currencySymbol: String,
         balanceFormatter: BalanceFormatter = .init(),
-        formattingOptions: BalanceFormattingOptions = .sendAmountFormattingOptions
+        decimalCount: Int
     ) -> String? {
         switch type {
         case .typical(_, let fiat):
             return fiat.map { balanceFormatter.formatFiatBalance($0) }
         case .alternative(_, let crypto):
-            return balanceFormatter.formatCryptoBalance(crypto, currencyCode: currencySymbol, formattingOptions: formattingOptions)
+            guard let crypto else {
+                return BalanceFormatter.defaultEmptyBalanceString
+            }
+
+            let formatter = SendCryptoValueFormatter(
+                decimals: decimalCount,
+                currencySymbol: currencySymbol,
+                trimFractions: true
+            )
+
+            return formatter.string(from: crypto)
         }
     }
-}
-
-private extension BalanceFormattingOptions {
-    static let sendAmountFormattingOptions = BalanceFormattingOptions(
-        minFractionDigits: 0,
-        maxFractionDigits: BalanceFormattingOptions.defaultCryptoFormattingOptions.maxFractionDigits,
-        formatEpsilonAsLowestRepresentableValue: BalanceFormattingOptions.defaultCryptoFormattingOptions.formatEpsilonAsLowestRepresentableValue,
-        roundingType: BalanceFormattingOptions.defaultCryptoFormattingOptions.roundingType
-    )
 }
 
 extension SendAmount {

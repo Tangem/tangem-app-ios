@@ -139,7 +139,7 @@ enum ExpressDTO {
             let providerId: Provider.Id
             let status: ExpressTransactionStatus
             let refundNetwork: String?
-            let refundTokenAddress: String?
+            let refundContractAddress: String?
         }
     }
 

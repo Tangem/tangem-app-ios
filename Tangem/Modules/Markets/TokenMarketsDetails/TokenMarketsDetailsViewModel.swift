@@ -96,7 +96,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let walletDataProvider = MarketsWalletDataProvider()
 
-    private var quotesUpdateScheduler: AsyncTaskScheduler?
     private var loadedInfo: TokenMarketsDetailsModel?
     private var bag = Set<AnyCancellable>()
 
@@ -124,8 +123,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     deinit {
         print("TokenMarketsDetailsViewModel deinit")
-        quotesUpdateScheduler?.cancel()
-        quotesUpdateScheduler = nil
     }
 
     // MARK: - Actions
@@ -181,7 +178,6 @@ private extension TokenMarketsDetailsViewModel {
             do {
                 let currencyId = viewModel.tokenInfo.id
                 viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
-                await viewModel.updateQuotes()
                 let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
 
                 await runOnMain {
@@ -189,23 +185,11 @@ private extension TokenMarketsDetailsViewModel {
                     viewModel.isLoading = false
                 }
 
-                viewModel.scheduleQuotesUpdate()
             } catch {
                 await runOnMain { viewModel.alert = error.alertBinder }
                 viewModel.log("Failed to load detailed info. Reason: \(error)")
             }
         }
-    }
-
-    func scheduleQuotesUpdate() {
-        log("Scheduling quote update for \(tokenInfo.id)")
-        quotesUpdateScheduler = .init()
-        quotesUpdateScheduler?.scheduleJob(interval: quotesUpdateTimeInterval, repeats: true, action: weakify(self, forFunction: TokenMarketsDetailsViewModel.updateQuotes))
-    }
-
-    func updateQuotes() async {
-        log("Updating quotes for \(tokenInfo.id)")
-        await quotesRepository.loadQuotes(currencyIds: [tokenInfo.id])
     }
 
     func updatePrice(_ newPrice: Decimal) {
