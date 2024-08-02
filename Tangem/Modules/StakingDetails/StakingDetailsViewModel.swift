@@ -15,7 +15,7 @@ final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
-    @Published var hideStakingInfoBanner = AppSettings.shared.hideStakingInfoBanner
+    @Published var hideStakingInfoBanner = false // AppSettings.shared.hideStakingInfoBanner
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
@@ -53,7 +53,10 @@ final class StakingDetailsViewModel: ObservableObject {
         bind()
     }
 
-    func userDidTapBanner() {}
+    func userDidTapBanner() {
+        coordinator?.openWhatIsStaking()
+    }
+
     func userDidTapActionButton() {
         coordinator?.openStakingFlow()
     }

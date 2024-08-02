@@ -13,4 +13,5 @@ protocol StakingDetailsRoutable: AnyObject {
     func openStakingFlow()
     func openClaimRewardsFlow()
     func openUnstakingFlow()
+    func openWhatIsStaking()
 }

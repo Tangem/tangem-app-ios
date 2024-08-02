@@ -28,10 +28,12 @@ extension TangemBlogUrlBuilder {
         case fee
         case scanCard
         case refundedDex
+        case whatIsStaking
     }
 }
 
 private extension TangemBlogUrlBuilder.Post {
+    #warning("provide coorrect value for whatIsStaking")
     var path: String {
         switch self {
         case .fee:
@@ -39,6 +41,8 @@ private extension TangemBlogUrlBuilder.Post {
         case .scanCard:
             "scan-tangem-card"
         case .refundedDex:
+            "an-overview-of-cross-chain-bridges"
+        case .whatIsStaking:
             "an-overview-of-cross-chain-bridges"
         }
     }
