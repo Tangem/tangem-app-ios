@@ -108,7 +108,7 @@ private extension CommonSendNotificationManager {
                 return false
             }
             let notification: SendNotificationEvent = hasActivationError
-                ? .validationErrorEvent(.accountNotActivated(assetName: tokenItem.name))
+                ? .accountNotActivated(assetName: tokenItem.name)
                 : .networkFeeUnreachable
             show(notification: notification)
         } else {
@@ -243,8 +243,7 @@ private extension CommonSendNotificationManager {
                  .notEnoughMana,
                  .manaLimit,
                  .koinosInsufficientBalanceToSendKoin,
-                 .insufficientAmountToReserveAtDestination,
-                 .accountNotActivated:
+                 .insufficientAmountToReserveAtDestination:
                 show(notification: .validationErrorEvent(validationErrorEvent))
             case .invalidNumber:
                 hideAllValidationErrorEvent()
