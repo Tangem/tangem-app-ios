@@ -19,7 +19,9 @@ struct StakingDetailsView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             GroupedScrollView(alignment: .leading, spacing: 14) {
-                banner
+                if !viewModel.hideStakingInfoBanner {
+                    banner
+                }
 
                 GroupedSection(viewModel.detailsViewModels) {
                     DefaultRowView(viewModel: $0)
@@ -48,19 +50,23 @@ struct StakingDetailsView: View {
     }
 
     private var banner: some View {
-        Button(action: { viewModel.userDidTapBanner() }) {
-            Assets.whatIsStakingBanner.image
-                .resizable()
-                .cornerRadiusContinuous(18)
-                .overlay(alignment: .bottomLeading) {
-                    whatIsStakingText
-                }
+        Button(action: viewModel.userDidTapBanner) {
+            ZStack(alignment: .leading) {
+                Assets.whatIsStakingBanner.image
+                    .resizable()
+                    .cornerRadiusContinuous(18)
+                whatIsStakingText
+                    .padding(.leading, 14)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            closeBannerButton
         }
     }
-    
+
     private var whatIsStakingText: some View {
-        Text("What is staking")
-            .font(Font.system(size: 24, weight: .medium))
+        Text("What is staking?")
+            .font(Fonts.Bold.title1)
             .foregroundStyle(
                 LinearGradient(
                     colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
@@ -68,7 +74,20 @@ struct StakingDetailsView: View {
                     endPoint: .trailing
                 )
             )
-            .padding([.bottom, .leading], 16)
+    }
+
+    private var closeBannerButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.userDidTapHideBanner()
+            }
+        }) {
+            Assets.cross.image
+                .foregroundColor(Colors.Icon.constant)
+                .opacity(0.5)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+        }
     }
 
     private var rewardView: some View {
