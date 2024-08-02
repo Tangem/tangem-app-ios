@@ -101,8 +101,15 @@ private extension CommonSendNotificationManager {
 private extension CommonSendNotificationManager {
     func updateNetworkFeeUnreachable(errors: [Error]) {
         if !errors.isEmpty {
-            let hasActivationError = errors.contains { $0 as? ValidationError == ValidationError.accountNotActivated }
-            let notification: SendNotificationEvent = hasActivationError ? .validationErrorEvent(.accountNotActivated) : .networkFeeUnreachable
+            let hasActivationError = errors.contains { error in
+                if case WalletError.accountNotActivated = error {
+                    return true
+                }
+                return false
+            }
+            let notification: SendNotificationEvent = hasActivationError
+                ? .validationErrorEvent(.accountNotActivated(assetName: tokenItem.name))
+                : .networkFeeUnreachable
             show(notification: notification)
         } else {
             hideAllNotification { event in

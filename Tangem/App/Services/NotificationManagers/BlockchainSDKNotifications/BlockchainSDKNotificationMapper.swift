@@ -64,8 +64,6 @@ struct BlockchainSDKNotificationMapper {
             return .manaLimit(availableAmount: availableAmount)
         case .feeExceedsMaxFeeResource:
             return .koinosInsufficientBalanceToSendKoin
-        case .accountNotActivated:
-            return .accountNotActivated
         }
     }
 

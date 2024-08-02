@@ -27,7 +27,7 @@ enum ValidationErrorEvent: Hashable {
     case manaLimit(availableAmount: Decimal)
     case koinosInsufficientBalanceToSendKoin
 
-    case accountNotActivated
+    case accountNotActivated(assetName: String)
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -94,8 +94,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
         case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
-        case .accountNotActivated:
-            return Localization.sendTronAccountActivationError("Tether")
+        case .accountNotActivated(let assetName):
+            return Localization.sendTronAccountActivationError(assetName)
         }
     }
 
