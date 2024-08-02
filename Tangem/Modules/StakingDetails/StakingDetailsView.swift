@@ -83,13 +83,20 @@ struct StakingDetailsView: View {
             }, header: {
                 DefaultHeaderView(Localization.stakingRewards)
             }, accessoryView: {
-                Assets.chevron.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.informative)
+                rewardAccossoryView
             }
         )
         .interItemSpacing(12)
         .innerContentPadding(12)
+    }
+
+    @ViewBuilder
+    private var rewardAccossoryView: some View {
+        if viewModel.rewardViewData?.hasRewards == true {
+            Assets.chevron.image
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.informative)
+        }
     }
 
     private var activeValidatorsView: some View {
