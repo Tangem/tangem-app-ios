@@ -181,6 +181,41 @@ extension ExpressInteractor {
     }
 }
 
+// MARK: - ApproveService
+
+extension ExpressInteractor: ApproveService {
+    var approveFeeValue: LoadingValue<Fee> {
+        mapToApproveFeeLoadingValue(state: getState())
+    }
+
+    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
+        state
+            .withWeakCaptureOf(self)
+            .map { interactor, state in
+                interactor.mapToApproveFeeLoadingValue(state: state)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee> {
+        switch state {
+        case .permissionRequired(let state, _):
+            guard let fee = state.fees[getFeeOption()] else {
+                return .failedToLoad(error: ExpressInteractorError.feeNotFound)
+            }
+
+            return .loaded(fee)
+        case .loading:
+            return .loading
+        case .restriction(.requiredRefresh(let error), _):
+            return .failedToLoad(error: error)
+        default:
+            AppLog.shared.debug("Wrong state for this view \(state)")
+            return .failedToLoad(error: CommonError.notImplemented)
+        }
+    }
+}
+
 // MARK: - Send
 
 extension ExpressInteractor {

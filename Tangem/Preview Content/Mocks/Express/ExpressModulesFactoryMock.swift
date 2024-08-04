@@ -67,12 +67,16 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         coordinator: ExpressApproveRoutable
     ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, "USDT"),
+                tokenItem: .token(.tetherMock, .init(.ethereum(testnet: false), derivationPath: .none)),
+                feeTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)),
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
             pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
-            providerName: providerName,
-            selectedPolicy: selectedPolicy,
+            approveService: expressInteractor,
             coordinator: coordinator
         )
     }

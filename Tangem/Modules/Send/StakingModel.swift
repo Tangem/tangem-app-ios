@@ -289,7 +289,43 @@ extension StakingModel: StakingNotificationManagerInput {
     }
 }
 
+// MARK: - ApproveService
+
+extension StakingModel: ApproveService {
+    var approveFeeValue: LoadingValue<Fee> {
+        mapToLoadingValue(state: getState())
+    }
+
+    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
+        state
+            .withWeakCaptureOf(self)
+            .map { interactor, state in
+                interactor.mapToLoadingValue(state: state)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    private func mapToLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee> {
+        switch state {
+        case .permissionRequired(let state, _):
+            guard let fee = state.fees[getFeeOption()] else {
+                return .failedToLoad(error: ExpressInteractorError.feeNotFound)
+            }
+
+            return .loaded(fee)
+        case .loading:
+            return .loading
+        case .restriction(.requiredRefresh(let error), _):
+            return .failedToLoad(error: error)
+        default:
+            AppLog.shared.debug("Wrong state for this view \(state)")
+            return .failedToLoad(error: CommonError.notImplemented)
+        }
+    }
+}
+
 enum StakingModelError: Error {
     case amountNotFound
     case validatorNotFound
 }
+
