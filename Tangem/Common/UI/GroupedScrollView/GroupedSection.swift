@@ -62,10 +62,8 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
                         .padding(.horizontal, settings.horizontalPadding)
 
                     ForEach(models) { model in
-                        HStack {
-                            content(model)
-                                .padding(.horizontal, settings.horizontalPadding)
-                        }
+                        content(model)
+                            .padding(.horizontal, settings.horizontalPadding)
 
                         if models.last?.id != model.id {
                             separator
