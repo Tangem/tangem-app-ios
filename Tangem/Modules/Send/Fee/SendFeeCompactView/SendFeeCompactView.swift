@@ -11,8 +11,8 @@ import SwiftUI
 
 struct SendFeeCompactView: View {
     @ObservedObject var viewModel: SendFeeCompactViewModel
+    let type: SendCompactViewEditableType
     let namespace: SendFeeView.Namespace
-    let tapAction: () -> Void
 
     var body: some View {
         GroupedSection(viewModel.selectedFeeRowViewModel) { feeRowViewModel in
@@ -40,7 +40,9 @@ struct SendFeeCompactView: View {
         .contentShape(Rectangle())
         .allowsHitTesting(viewModel.canEditFee)
         .onTapGesture {
-            tapAction()
+            if case .enabled(.some(let action)) = type {
+                action()
+            }
         }
     }
 }

@@ -73,8 +73,8 @@ struct SendSummaryView: View {
                         if viewModel.validatorVisible {
                             StakingValidatorsCompactView(
                                 viewModel: stakingValidatorsCompactViewModel,
-                                namespace: .init(id: namespace.id, names: namespace.names),
-                                tapAction: viewModel.userDidTapValidator
+                                type: .enabled(action: viewModel.userDidTapValidator),
+                                namespace: .init(id: namespace.id, names: namespace.names)
                             )
                             .readContentOffset(
                                 inCoordinateSpace: .named(coordinateSpaceName),
@@ -97,8 +97,8 @@ struct SendSummaryView: View {
                         if viewModel.feeVisible {
                             SendFeeCompactView(
                                 viewModel: sendFeeCompactViewModel,
-                                namespace: .init(id: namespace.id, names: namespace.names),
-                                tapAction: viewModel.userDidTapFee
+                                type: .enabled(action: viewModel.userDidTapFee),
+                                namespace: .init(id: namespace.id, names: namespace.names)
                             )
                             .readContentOffset(
                                 inCoordinateSpace: .named(coordinateSpaceName),

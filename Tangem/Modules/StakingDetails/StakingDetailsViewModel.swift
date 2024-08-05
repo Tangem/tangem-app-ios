@@ -15,10 +15,12 @@ final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
+    @Published var hideStakingInfoBanner = AppSettings.shared.hideStakingInfoBanner
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var actionButtonType: ActionButtonType = .stake
 
     // MARK: - Dependencies
 
@@ -52,9 +54,22 @@ final class StakingDetailsViewModel: ObservableObject {
         bind()
     }
 
-    func userDidTapBanner() {}
+    func userDidTapBanner() {
+        coordinator?.openWhatIsStaking()
+    }
+
     func userDidTapActionButton() {
-        coordinator?.openStakingFlow()
+        switch actionButtonType {
+        case .stake:
+            coordinator?.openStakingFlow()
+        case .unstake:
+            coordinator?.openUnstakingFlow()
+        }
+    }
+
+    func userDidTapHideBanner() {
+        AppSettings.shared.hideStakingInfoBanner = true
+        hideStakingInfoBanner = true
     }
 
     func onAppear() {
@@ -211,6 +226,18 @@ private extension StakingDetailsViewModel {
 }
 
 extension StakingDetailsViewModel {
+    enum ActionButtonType: Hashable {
+        case stake
+        case unstake
+
+        var title: String {
+            switch self {
+            case .stake: Localization.commonStake
+            case .unstake: Localization.commonUnstake
+            }
+        }
+    }
+
     struct StakingDetailsData {
         let available: Decimal
         let staked: Decimal
