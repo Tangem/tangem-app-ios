@@ -729,20 +729,20 @@ extension WalletModel: TransactionHistoryFetcher {
 }
 
 extension WalletModel {
-    private var stakingBalanceInfo: StakingBalanceInfo? {
+    private var stakingBalancesInfo: [StakingBalanceInfo]? {
         switch stakingManager?.state {
-        case .staked(let balanceInfo, _):
-            return balanceInfo
+        case .staked(let balancesInfo, _):
+            return balancesInfo
         default:
             return nil
         }
     }
 
     private var availableBalanceValue: Decimal? {
-        guard let stakingBalanceInfo, let balanceValue else {
+        guard let stakingBalancesInfo, let balanceValue else {
             return nil
         }
-        return balanceValue - stakingBalanceInfo.blocked
+        return balanceValue - stakingBalancesInfo.sumBlocked()
     }
 
     private var availableFiatValue: Decimal? {
@@ -767,24 +767,24 @@ extension WalletModel {
     }
 
     var stakedBalance: String? {
-        guard let stakingBalanceInfo else {
+        guard let stakingBalancesInfo else {
             return nil
         }
 
-        return formatter.formatCryptoBalance(stakingBalanceInfo.blocked, currencyCode: tokenItem.currencySymbol)
+        return formatter.formatCryptoBalance(stakingBalancesInfo.sumBlocked(), currencyCode: tokenItem.currencySymbol)
     }
 
     var stakedFiatBalance: String? {
-        stakingBalanceInfo.flatMap { formatter.formatFiatBalance($0.blocked) }
+        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.sumBlocked()) }
     }
 
     var stakingRewardsBalance: String? {
-        stakingBalanceInfo?.rewards.flatMap {
-            formatter.formatCryptoBalance($0, currencyCode: tokenItem.currencySymbol)
+        stakingBalancesInfo.flatMap {
+            formatter.formatCryptoBalance($0.sumRewards(), currencyCode: tokenItem.currencySymbol)
         }
     }
 
     var stakingRewardsFiatBalance: String? {
-        stakingBalanceInfo?.rewards.flatMap { formatter.formatFiatBalance($0) }
+        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.sumRewards()) }
     }
 }

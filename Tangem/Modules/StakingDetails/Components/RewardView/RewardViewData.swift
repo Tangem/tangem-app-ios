@@ -12,6 +12,13 @@ struct RewardViewData: Hashable, Identifiable {
     var id: Int { hashValue }
 
     let state: State
+
+    var hasRewards: Bool {
+        switch state {
+        case .noRewards: false
+        case .rewards: true
+        }
+    }
 }
 
 extension RewardViewData {

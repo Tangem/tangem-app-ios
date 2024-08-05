@@ -16,7 +16,7 @@ class StakeKitStakingAPIService: StakingAPIService {
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        decoder.dateDecodingStrategy = .customIso8601
         return decoder
     }()
 
@@ -94,4 +94,11 @@ private extension StakeKitStakingAPIService {
             return nil
         }
     }
+}
+
+extension JSONDecoder.DateDecodingStrategy {
+    static var customIso8601: JSONDecoder.DateDecodingStrategy = {
+        let dateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        return .formatted(dateFormatter)
+    }()
 }

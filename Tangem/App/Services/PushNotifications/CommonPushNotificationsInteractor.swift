@@ -19,17 +19,6 @@ final class CommonPushNotificationsInteractor {
     @AppStorageCompat(StorageKeys.canRequestAuthorization)
     private var canRequestAuthorization = true
 
-    /// Note: - Updated only in `.newUser(state: .walletOnboarding)` and `.existingUser` flows.
-    @AppStorageCompat(StorageKeys.postponedAuthorizationRequestLaunchCount)
-    private var postponedAuthorizationRequestLaunchCount: Int? = nil
-
-    /// Note: - Updated only in `.newUser(state: .walletOnboarding)` and `.existingUser` flows.
-    @AppStorageCompat(StorageKeys.postponedAuthorizationRequestDate)
-    private var postponedAuthorizationRequestDate: Date? = nil
-
-    @AppStorageCompat(StorageKeys.numberOfRequestsPostponedByExistingUser)
-    private var numberOfRequestsPostponedByExistingUser = 0
-
     @AppStorageCompat(StorageKeys.didPostponeAuthorizationRequestOnWalletOnboarding)
     private var didPostponeAuthorizationRequestOnWalletOnboarding = false
 
@@ -48,11 +37,6 @@ final class CommonPushNotificationsInteractor {
         pushNotificationsService: PushNotificationsService
     ) {
         self.pushNotificationsService = pushNotificationsService
-    }
-
-    private func saveLaunchCountAndDateOfPostponedRequest() {
-        postponedAuthorizationRequestLaunchCount = currentLaunchCount
-        postponedAuthorizationRequestDate = .now
     }
 
     private func updateSavedWalletsStatusIfNeeded() {
@@ -118,22 +102,7 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
             return !didPostponeAuthorizationRequestOnWelcomeOnboardingInCurrentSession
                 && !didPostponeAuthorizationRequestOnWalletOnboarding
         case .afterLogin:
-            guard
-                let postponedAuthorizationRequestLaunchCount,
-                let postponedAuthorizationRequestDate
-            else {
-                // `postponedAuthorizationRequestLaunchCount` and `postponedAuthorizationRequestDate` can be nil in some cases,
-                // for example on the first call with `PermissionRequestFlow.afterLogin` if user has saved wallets
-                return true
-            }
-
-            let launchCountSinceLastPostponedRequest = postponedAuthorizationRequestLaunchCount
-                + Constants.finalAuthorizationRequestNumberOfLaunchesDiff
-
-            let timeIntervalSinceLastPostponedRequest = abs(postponedAuthorizationRequestDate.timeIntervalSinceNow)
-
-            return currentLaunchCount >= launchCountSinceLastPostponedRequest
-                && timeIntervalSinceLastPostponedRequest >= Constants.finalAuthorizationRequestTimeIntervalDiff
+            return hasSavedWalletsFromPreviousVersion ?? false
         }
     }
 
@@ -148,13 +117,10 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
 
     func canPostponeRequest(in flow: PushNotificationsPermissionRequestFlow) -> Bool {
         switch flow {
-        case .welcomeOnboarding, .walletOnboarding:
+        case .welcomeOnboarding:
             return true
-        case .afterLogin where hasSavedWalletsFromPreviousVersion == true:
-            // In this case only the first `Constants.maxNumberOfRequestsCanBePostponed`-th
-            // permissions authorization requests can be postponed
-            return numberOfRequestsPostponedByExistingUser < Constants.maxNumberOfRequestsCanBePostponed
-        case .afterLogin:
+        case .walletOnboarding,
+             .afterLogin:
             return false
         }
     }
@@ -164,25 +130,12 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
 
         switch flow {
         case .welcomeOnboarding:
-            saveLaunchCountAndDateOfPostponedRequest()
             didPostponeAuthorizationRequestOnWelcomeOnboarding = true
             didPostponeAuthorizationRequestOnWelcomeOnboardingInCurrentSession = true
             isCancelled = false
         case .walletOnboarding:
-            saveLaunchCountAndDateOfPostponedRequest()
             didPostponeAuthorizationRequestOnWalletOnboarding = true
-            isCancelled = false
-        case .afterLogin where hasSavedWalletsFromPreviousVersion == true:
-            saveLaunchCountAndDateOfPostponedRequest()
-            numberOfRequestsPostponedByExistingUser += 1
-            // Stop all future authorization requests if the user postpones the request
-            // for the `Constants.maxNumberOfPostponedRequests`-th times
-            if numberOfRequestsPostponedByExistingUser >= Constants.maxNumberOfPostponedRequests {
-                canRequestAuthorization = false
-                isCancelled = true
-            } else {
-                isCancelled = false
-            }
+            isCancelled = true
         case .afterLogin:
             // Stop all future authorization requests
             canRequestAuthorization = false
@@ -210,19 +163,5 @@ private extension CommonPushNotificationsInteractor {
         case canRequestAuthorization = "can_request_authorization"
         case didPostponeAuthorizationRequestOnWelcomeOnboarding = "did_postpone_authorization_request_on_welcome_onboarding"
         case didPostponeAuthorizationRequestOnWalletOnboarding = "did_postpone_authorization_request_on_wallet_onboarding"
-        case numberOfRequestsPostponedByExistingUser = "number_of_requests_postponed_by_existing_user"
-        case postponedAuthorizationRequestLaunchCount = "postponed_authorization_request_launch_count"
-        case postponedAuthorizationRequestDate = "postponed_authorization_request_date"
-    }
-
-    enum Constants {
-        // Five active sessions.
-        static let finalAuthorizationRequestNumberOfLaunchesDiff = 5
-        /// Three days.
-        static let finalAuthorizationRequestTimeIntervalDiff: TimeInterval = 3600 * 24 * 3
-        /// Note: Only applicable if user has saved wallets.
-        static let maxNumberOfRequestsCanBePostponed = 1
-        /// Note: Only applicable if user has saved wallets.
-        static let maxNumberOfPostponedRequests = 2
     }
 }
