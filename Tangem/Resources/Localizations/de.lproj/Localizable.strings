@@ -654,6 +654,7 @@
 "staking_native" = "Natives Staking";
 "staking_notification_earn_rewards_text" = "Mit Staking kannst du %1@ verdienen. Deine Staking-Belohnungen kommen alle ~%2@ Tage.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
+"staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
 "staking_rewards" = "Belohnungen";
 "staking_stake_more" = "Mehr staken";
 "staking_unstaked" = "unstaken";

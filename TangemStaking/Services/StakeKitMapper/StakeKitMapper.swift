@@ -176,7 +176,7 @@ struct StakeKitMapper {
     }
 
     func mapToStakingTokenItem(from token: StakeKitDTO.Token) -> StakingTokenItem {
-        StakingTokenItem(coinId: token.coinGeckoId, contractAdress: token.address)
+        StakingTokenItem(coinId: token.coinGeckoId, contractAddress: token.address)
     }
 
     func mapToRewardType(from rewardType: StakeKitDTO.Yield.Info.Response.RewardType) -> RewardType {

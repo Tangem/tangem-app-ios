@@ -228,3 +228,11 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
         send()
     }
 }
+
+// MARK: - StakingNotificationManagerInput
+
+extension StakingModel: StakingNotificationManagerInput {
+    var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
+        stakingManager.statePublisher
+    }
+}

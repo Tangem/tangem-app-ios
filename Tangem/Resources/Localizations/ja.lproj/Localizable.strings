@@ -654,6 +654,7 @@
 "staking_native" = "ネイティブステーキング";
 "staking_notification_earn_rewards_text" = "ステーキングにより%1@を獲得できます。ステーキング報酬は ~ %2@日ごとに届きます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
+"staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
 "staking_rewards" = "報酬";
 "staking_stake_more" = "もっとステーキングする";
 "staking_unstaked" = "スタックされていない";
