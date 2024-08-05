@@ -47,7 +47,7 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
         }
         .animation(.default, value: isSelected)
         .lineLimit(1)
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
         .padding(.horizontal, 12)
     }
 

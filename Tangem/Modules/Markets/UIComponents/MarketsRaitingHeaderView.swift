@@ -34,7 +34,7 @@ struct MarketsRatingHeaderView: View {
                     .image
             }
             .padding(.horizontal, 10)
-            .padding(.vertical, 4)
+            .padding(.vertical, 5)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Colors.Button.secondary)
