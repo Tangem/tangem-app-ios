@@ -69,6 +69,8 @@ extension Error {
             default:
                 return false
             }
+        case is CancellationError:
+            return true
         default:
             return false
         }

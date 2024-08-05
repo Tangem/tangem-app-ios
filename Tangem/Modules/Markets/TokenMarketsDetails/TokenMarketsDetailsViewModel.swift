@@ -33,7 +33,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private var pickedTimeInterval: TimeInterval?
     @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
     @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
-    @Published private var currentPriceSubject: CurrentValueSubject<Decimal, Never>
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -93,6 +92,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         formatEpsilonAsLowestRepresentableValue: false,
         roundingType: .defaultFiat(roundingMode: .bankers)
     )
+    private let currentPriceSubject: CurrentValueSubject<Decimal, Never>
     private let quotesUpdateTimeInterval: TimeInterval = 60.0
 
     private let tokenInfo: MarketsTokenModel
