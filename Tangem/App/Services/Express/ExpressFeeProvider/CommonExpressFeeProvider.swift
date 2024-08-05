@@ -27,7 +27,7 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
     }
 
     func estimatedFee(amount: Decimal) async throws -> ExpressFee {
-        let amount = makeAmount(amount: amount)
+        let amount = makeAmount(amount: amount, isFeeTokenItem: false)
         let fees = try await wallet.estimatedFee(amount: amount).async()
         return try mapToExpressFee(fees: fees)
     }
@@ -43,11 +43,11 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
         )
 
         let amount = parameters.calculateFee(decimalValue: wallet.feeTokenItem.decimalValue)
-        return Fee(makeAmount(amount: amount))
+        return Fee(makeAmount(amount: amount, isFeeTokenItem: false))
     }
 
-    func getFee(amount: Decimal, destination: String, hexData: Data?) async throws -> ExpressFee {
-        let amount = makeAmount(amount: amount)
+    func getFee(amount: Decimal, destination: String, hexData: Data?, isFeeTokenItem: Bool) async throws -> ExpressFee {
+        let amount = makeAmount(amount: amount, isFeeTokenItem: isFeeTokenItem)
 
         // If EVM network we should pass data in the fee calculation
         if let ethereumNetworkProvider = wallet.ethereumNetworkProvider, let hexData {
@@ -71,10 +71,10 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
 // MARK: - Private
 
 private extension CommonExpressFeeProvider {
-    func makeAmount(amount: Decimal) -> Amount {
+    func makeAmount(amount: Decimal, isFeeTokenItem: Bool) -> Amount {
         Amount(
             with: wallet.blockchainNetwork.blockchain,
-            type: wallet.amountType,
+            type: isFeeTokenItem ? wallet.feeTokenItem.amountType : wallet.amountType,
             value: amount
         )
     }

@@ -22,7 +22,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
-    @Published private(set) var buttonTitle: String = Localization.commonStake
+    @Published var actionButtonType: ActionButtonType = .stake
 
     // MARK: - Dependencies
 
@@ -55,7 +55,12 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func userDidTapBanner() {}
     func userDidTapActionButton() {
-        coordinator?.openStakingFlow()
+        switch actionButtonType {
+        case .stake:
+            coordinator?.openStakingFlow()
+        case .unstake:
+            coordinator?.openUnstakingFlow()
+        }
     }
 
     func onAppear() {
@@ -294,6 +299,18 @@ private extension StakingDetailsViewModel {
 }
 
 extension StakingDetailsViewModel {
+    enum ActionButtonType: Hashable {
+        case stake
+        case unstake
+
+        var title: String {
+            switch self {
+            case .stake: Localization.commonStake
+            case .unstake: Localization.commonUnstake
+            }
+        }
+    }
+
     struct StakingDetailsData {
         let available: Decimal
         let staked: Decimal
