@@ -90,8 +90,8 @@ private extension StakingDetailsViewModel {
     }
 
     func setupView(yield: YieldInfo, balancesInfo: [StakingBalanceInfo]?) {
-        let maxBlockedBalance: Decimal = (balancesInfo ?? []).max(by: { $0.blocked > $1.blocked })?.blocked ?? .zero
-        let available = walletModel.balanceValue ?? .zero - maxBlockedBalance
+        let stakedBalance = balancesInfo.flatMap { $0.sumBlocked() } ?? .zero
+        let available = walletModel.balanceValue ?? .zero - stakedBalance
         let aprs = yield.validators.compactMap(\.apr)
         var validatorBalances: [ValidatorBalanceInfo] = []
         if let balancesInfo {
@@ -106,12 +106,12 @@ private extension StakingDetailsViewModel {
                 )
             }
         }
-        let rewards = balancesInfo?.compactMap(\.rewards).reduce(Decimal.zero, +)
+        let rewards = balancesInfo?.sumRewards()
         setupView(
             inputData: StakingDetailsData(
                 available: available, // Maybe add skeleton?
-                staked: maxBlockedBalance,
-                rewards: rewards.flatMap { $0.isZero ? nil : $0 },
+                staked: stakedBalance,
+                rewards: rewards,
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
                 rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
@@ -277,7 +277,7 @@ private extension StakingDetailsViewModel {
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
                 state: validatorStakeState,
-                detailsType: .balance(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)
+                detailsType: .chevron(BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted))
             )
         }
         activeValidators = input.activeValidators.map(mapToValidatorsData)

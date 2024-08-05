@@ -73,30 +73,14 @@ struct StakingDetailsView: View {
         .innerContentPadding(12)
     }
 
-    private var rewardView: some View {
-        GroupedSection(
-            viewModel.rewardViewData,
-            content: { data in
-                Button(action: {}, label: {
-                    RewardView(data: data)
-                })
-            }, header: {
-                DefaultHeaderView(Localization.stakingRewards)
-            }, accessoryView: {
-                rewardAccossoryView
-            }
-        )
-        .interItemSpacing(12)
-        .innerContentPadding(12)
-    }
-
     @ViewBuilder
-    private var rewardAccossoryView: some View {
-        if viewModel.rewardViewData?.hasRewards == true {
-            Assets.chevron.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.informative)
+    private var rewardView: some View {
+        GroupedSection(viewModel.rewardViewData) { data in
+            Button(action: {}, label: {
+                RewardView(data: data)
+            })
         }
+        .innerContentPadding(12)
     }
 
     private var activeValidatorsView: some View {

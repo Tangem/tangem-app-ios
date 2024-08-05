@@ -30,6 +30,16 @@ public struct StakingBalanceInfo: Hashable {
     }
 }
 
+public extension Array where Element == StakingBalanceInfo {
+    func sumBlocked() -> Decimal {
+        reduce(Decimal.zero) { $0 + $1.blocked }
+    }
+
+    func sumRewards() -> Decimal {
+        compactMap(\.rewards).reduce(Decimal.zero, +)
+    }
+}
+
 public enum BalanceGroupType {
     case active
     case unstaked

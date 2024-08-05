@@ -13,10 +13,22 @@ struct RewardView: View {
     let data: RewardViewData
 
     var body: some View {
-        HStack(spacing: 4) {
-            content
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                DefaultHeaderView(Localization.stakingRewards)
+                HStack(spacing: 4) {
+                    content
+                }
+                .infinityFrame(axis: .horizontal, alignment: .leading)
+            }
+
+            if data.hasRewards {
+                Spacer(minLength: 12)
+                Assets.chevron.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+            }
         }
-        .infinityFrame(axis: .horizontal, alignment: .leading)
     }
 
     @ViewBuilder

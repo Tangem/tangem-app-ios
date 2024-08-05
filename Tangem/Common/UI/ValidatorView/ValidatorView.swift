@@ -84,17 +84,29 @@ struct ValidatorView: View {
         switch detailsType {
         case .checkmark:
             CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.id).wrappedValue ?? false)
-        case .chevron:
-            Assets.chevron.image
-        case .balance(let crypto, let fiat):
-            VStack(alignment: .trailing, spacing: 2, content: {
-                Text(crypto)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-
-                Text(fiat)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-            })
+        case .chevron(let balanceInfo):
+            HStack(spacing: 20) {
+                if let balanceInfo {
+                    balanceView(balanceInfo: balanceInfo)
+                }
+                Assets.chevron.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.informative)
+            }
+        case .balance(let balanceInfo):
+            balanceView(balanceInfo: balanceInfo)
         }
+    }
+
+    @ViewBuilder
+    private func balanceView(balanceInfo: BalanceInfo) -> some View {
+        VStack(alignment: .trailing, spacing: 2, content: {
+            Text(balanceInfo.balance)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+            Text(balanceInfo.fiatBalance)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        })
     }
 }
 
@@ -164,7 +176,7 @@ extension ValidatorView {
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         hasMonochromeIcon: true,
                         subtitle: AttributedString("0.08%"),
-                        detailsType: .chevron
+                        detailsType: .chevron()
                     ),
                     ValidatorViewData(
                         id: UUID().uuidString,
@@ -172,7 +184,7 @@ extension ValidatorView {
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
                         hasMonochromeIcon: true,
                         subtitle: nil,
-                        detailsType: .chevron
+                        detailsType: .chevron()
                     ),
 
                 ]) {
@@ -201,7 +213,7 @@ extension ValidatorView {
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         hasMonochromeIcon: true,
                         subtitle: AttributedString("0.08%"),
-                        detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
+                        detailsType: .balance(BalanceInfo(balance: "543 USD", fiatBalance: "5 SOL"))
                     ),
                 ]) {
                     ValidatorView(data: $0, selection: $selected)

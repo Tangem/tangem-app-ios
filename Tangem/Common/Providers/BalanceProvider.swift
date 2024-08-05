@@ -17,7 +17,7 @@ protocol AvailableBalanceProvider: AnyObject {
     var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> { get }
 }
 
-struct BalanceInfo {
+struct BalanceInfo: Hashable {
     let balance: String
     let fiatBalance: String
 }

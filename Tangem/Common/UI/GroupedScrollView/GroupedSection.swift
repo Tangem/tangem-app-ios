@@ -22,12 +22,11 @@ import SwiftUI
  `- footerSpacing`
  `Footer`
  */
-struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: View, AccessoryView: View>: View {
+struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: View>: View {
     private let models: [Model]
     private let content: (Model) -> Content
     private let header: () -> Header
     private let footer: () -> Footer
-    private let accessoryView: () -> AccessoryView
 
     private var settings: Settings = .init()
 
@@ -35,55 +34,46 @@ struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: 
         _ models: [Model],
         @ViewBuilder content: @escaping (Model) -> Content,
         @ViewBuilder header: @escaping () -> Header = { EmptyView() },
-        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() },
-        @ViewBuilder accessoryView: @escaping () -> AccessoryView = { EmptyView() }
+        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() }
     ) {
         self.models = models
         self.content = content
         self.header = header
         self.footer = footer
-        self.accessoryView = accessoryView
     }
 
     init(
         _ model: Model?,
         @ViewBuilder content: @escaping (Model) -> Content,
         @ViewBuilder header: @escaping () -> Header = { EmptyView() },
-        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() },
-        @ViewBuilder accessoryView: @escaping () -> AccessoryView = { EmptyView() }
+        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() }
     ) {
         models = model.map { [$0] } ?? []
         self.content = content
         self.header = header
         self.footer = footer
-        self.accessoryView = accessoryView
     }
 
     var body: some View {
         if !models.isEmpty {
             VStack(alignment: .leading, spacing: GroupedSectionConstants.footerSpacing) {
-                HStack {
-                    VStack(alignment: settings.contentAlignment, spacing: settings.interItemSpacing) {
-                        header()
-                            .padding(.horizontal, settings.horizontalPadding)
+                VStack(alignment: settings.contentAlignment, spacing: settings.interItemSpacing) {
+                    header()
+                        .padding(.horizontal, settings.horizontalPadding)
 
-                        ForEach(models) { model in
+                    ForEach(models) { model in
+                        HStack {
                             content(model)
                                 .padding(.horizontal, settings.horizontalPadding)
+                        }
 
-                            if models.last?.id != model.id {
-                                separator
-                                    .matchedGeometryEffect(settings.separatorGeometryEffect(model))
-                            }
+                        if models.last?.id != model.id {
+                            separator
+                                .matchedGeometryEffect(settings.separatorGeometryEffect(model))
                         }
                     }
-                    .padding(.vertical, settings.innerContentPadding)
-
-                    Spacer(minLength: 0)
-
-                    accessoryView()
-                        .padding(.horizontal, settings.horizontalPadding)
                 }
+                .padding(.vertical, settings.innerContentPadding)
                 .background(
                     settings.backgroundColor
                         .matchedGeometryEffect(settings.backgroundGeometryEffect)

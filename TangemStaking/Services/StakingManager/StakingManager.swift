@@ -40,10 +40,8 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
 
     public var isStaked: Bool {
         switch self {
-        case .staked:
-            return true
-        default:
-            return false
+        case .staked: true
+        default: false
         }
     }
 
