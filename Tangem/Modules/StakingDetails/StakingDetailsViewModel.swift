@@ -58,7 +58,7 @@ final class StakingDetailsViewModel: ObservableObject {
         switch actionButtonType {
         case .stake:
             coordinator?.openStakingFlow()
-        case .unstake:
+        case .stakeMore:
             coordinator?.openUnstakingFlow()
         }
     }
@@ -290,7 +290,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupButtonTitle(inputData: StakingDetailsData) {
-        buttonTitle = inputData.staked.isZero ? Localization.commonStake : Localization.stakingStakeMore
+        actionButtonType = inputData.staked.isZero ? .stake : .stakeMore
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -301,12 +301,12 @@ private extension StakingDetailsViewModel {
 extension StakingDetailsViewModel {
     enum ActionButtonType: Hashable {
         case stake
-        case unstake
+        case stakeMore
 
         var title: String {
             switch self {
             case .stake: Localization.commonStake
-            case .unstake: Localization.commonUnstake
+            case .stakeMore: Localization.stakingStakeMore
             }
         }
     }
