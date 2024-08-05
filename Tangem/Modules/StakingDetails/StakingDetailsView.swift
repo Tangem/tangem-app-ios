@@ -84,6 +84,7 @@ struct StakingDetailsView: View {
             }
         }) {
             Assets.cross.image
+                .renderingMode(.template)
                 .foregroundColor(Colors.Icon.constant)
                 .opacity(0.5)
                 .padding(.vertical, 12)
