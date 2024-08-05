@@ -9,7 +9,6 @@
 import Foundation
 import Moya
 import SwiftUI
-import TangemSdk
 
 extension Error {
     var detailedError: Error {
@@ -60,8 +59,6 @@ extension BindableErrorWrapper: LocalizedError {
 extension Error {
     var isCancellation: Bool {
         switch self {
-        case let sdkError as TangemSdkError:
-            return sdkError.isUserCancelled
         case let moyaError as MoyaError:
             switch moyaError {
             case .underlying(let error, _):
