@@ -37,16 +37,16 @@ struct SendFinishView: View {
             if let stakingValidatorsCompactViewModel = viewModel.stakingValidatorsCompactViewModel {
                 StakingValidatorsCompactView(
                     viewModel: stakingValidatorsCompactViewModel,
-                    namespace: .init(id: namespace.id, names: namespace.names),
-                    tapAction: {}
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
                 )
             }
 
             if let sendFeeCompactViewModel = viewModel.sendFeeCompactViewModel {
                 SendFeeCompactView(
                     viewModel: sendFeeCompactViewModel,
-                    namespace: .init(id: namespace.id, names: namespace.names),
-                    tapAction: {}
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
                 )
             }
         }

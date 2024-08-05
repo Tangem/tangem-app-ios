@@ -172,11 +172,11 @@ private extension DEXExpressProviderManager {
         var fee = try await feeProvider.getFee(
             amount: txValue,
             destination: data.destinationAddress,
-            hexData: data.txData.map { Data(hexString: $0) }
+            hexData: data.txData.map { Data(hexString: $0) },
+            isFeeTokenItem: true // decimals for txValue (other native fee) must be equal to main coin decimals
         )
 
         try Task.checkCancellation()
-
         if let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) {
             fee = include(otherNativeFee: otherNativeFee, in: fee)
             log("The fee was increased by otherNativeFee \(otherNativeFee)")
@@ -199,7 +199,12 @@ private extension DEXExpressProviderManager {
 
         let contractAddress = request.pair.source.expressCurrency.contractAddress
         let data = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
-        let fee = try await feeProvider.getFee(amount: 0, destination: request.pair.source.expressCurrency.contractAddress, hexData: data)
+        let fee = try await feeProvider.getFee(
+            amount: 0,
+            destination: request.pair.source.expressCurrency.contractAddress,
+            hexData: data,
+            isFeeTokenItem: false
+        )
         try Task.checkCancellation()
 
         // For approve use the fastest fee
