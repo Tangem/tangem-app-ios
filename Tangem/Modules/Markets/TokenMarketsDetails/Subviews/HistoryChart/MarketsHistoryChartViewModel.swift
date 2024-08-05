@@ -133,7 +133,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             let chartViewData = try result.get()
             await updateViewState(.loaded(data: chartViewData), selectedPriceInterval: selectedPriceInterval)
         } catch {
-            if error.isCancellation {
+            if error.isCancellationError {
                 return
             }
             // There is no point in updating `selectedPriceInterval` on failure, so nil is passed instead

@@ -57,7 +57,7 @@ extension BindableErrorWrapper: LocalizedError {
 }
 
 extension Error {
-    var isCancellation: Bool {
+    var isCancellationError: Bool {
         switch self {
         case let moyaError as MoyaError:
             switch moyaError {
@@ -68,6 +68,8 @@ extension Error {
             }
         case is CancellationError:
             return true
+        case let urlError as URLError:
+            return urlError.code == URLError.Code.cancelled
         default:
             return false
         }

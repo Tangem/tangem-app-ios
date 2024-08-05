@@ -177,11 +177,17 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
 private extension TokenMarketsDetailsViewModel {
     func handleLoadDetailedInfo(_ result: Result<TokenMarketsDetailsModel, Error>) async {
+        defer {
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
+        }
+
         do {
             let detailsModel = try result.get()
             await setupUI(using: detailsModel)
         } catch {
-            if error.isCancellation {
+            if error.isCancellationError {
                 return
             }
 
@@ -197,7 +203,6 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
-        isLoading = false
     }
 
     @MainActor
@@ -207,8 +212,6 @@ private extension TokenMarketsDetailsViewModel {
         } else if state != .failedToLoadAllData {
             state = .failedToLoadDetails
         }
-
-        isLoading = false
     }
 }
 
