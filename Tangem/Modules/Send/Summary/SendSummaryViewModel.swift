@@ -41,6 +41,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         switch editableType {
         case .disable: .disabled
         case .editable: .enabled(action: userDidTapDestination)
+        case .noEditable: .enabled()
         }
     }
 
@@ -48,6 +49,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         switch editableType {
         case .disable: .disabled
         case .editable: .enabled(action: userDidTapAmount)
+        case .noEditable: .enabled()
         }
     }
 
@@ -224,5 +226,6 @@ extension SendSummaryViewModel {
     enum EditableType: Hashable {
         case disable
         case editable
+        case noEditable
     }
 }
