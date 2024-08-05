@@ -19,9 +19,9 @@ struct StakingDetailsView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             GroupedScrollView(alignment: .leading, spacing: 14) {
-                banner
-
-                averageRewardingView
+                if !viewModel.hideStakingInfoBanner {
+                    banner
+                }
 
                 GroupedSection(viewModel.detailsViewModels) {
                     DefaultRowView(viewModel: $0)
@@ -54,23 +54,46 @@ struct StakingDetailsView: View {
 
     @ViewBuilder
     private var banner: some View {
-        if viewModel.displayHeaderView {
-            Button(action: { viewModel.userDidTapBanner() }) {
+        Button(action: viewModel.userDidTapBanner) {
+            ZStack(alignment: .leading) {
                 Assets.whatIsStakingBanner.image
                     .resizable()
                     .cornerRadiusContinuous(18)
+                whatIsStakingText
+                    .padding(.leading, 14)
             }
+        }
+        .overlay(alignment: .topTrailing) {
+            closeBannerButton
         }
     }
 
-    private var averageRewardingView: some View {
-        GroupedSection(viewModel.averageRewardingViewData) {
-            AverageRewardingView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingDetailsAverageRewardRate)
+    #warning("provide localization")
+    private var whatIsStakingText: some View {
+        Text("What is staking?")
+            .font(Fonts.Bold.title1)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+    }
+
+    private var closeBannerButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.userDidTapHideBanner()
+            }
+        }) {
+            Assets.cross.image
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.constant)
+                .opacity(0.5)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
         }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
     }
 
     @ViewBuilder

@@ -15,7 +15,7 @@ final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
-    @Published var displayHeaderView: Bool = false
+    @Published var hideStakingInfoBanner = AppSettings.shared.hideStakingInfoBanner
     @Published var detailsViewModels: [DefaultRowViewModel] = []
     @Published var averageRewardingViewData: AverageRewardingViewData?
     @Published var rewardViewData: RewardViewData?
@@ -53,14 +53,17 @@ final class StakingDetailsViewModel: ObservableObject {
         bind()
     }
 
-    func userDidTapBanner() {}
+    func userDidTapBanner() {
+        coordinator?.openWhatIsStaking()
+    }
+
     func userDidTapActionButton() {
-        switch actionButtonType {
-        case .stake:
-            coordinator?.openStakingFlow()
-        case .stakeMore:
-            coordinator?.openUnstakingFlow()
-        }
+        coordinator?.openStakingFlow()
+    }
+
+    func userDidTapHideBanner() {
+        AppSettings.shared.hideStakingInfoBanner = true
+        hideStakingInfoBanner = true
     }
 
     func onAppear() {
@@ -141,7 +144,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupHeaderView(inputData: StakingDetailsData) {
-        displayHeaderView = inputData.staked.isZero
+        hideStakingInfoBanner = hideStakingInfoBanner && inputData.staked.isZero
     }
 
     func setupAverageRewardingViewData(inputData: StakingDetailsData) {
@@ -193,9 +196,17 @@ private extension StakingDetailsViewModel {
             }
         }
 
-        detailsViewModels = [
+        var viewModels = [
             DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
-            DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted)),
+        ]
+
+        if !inputData.staked.isZero {
+            viewModels.append(
+                DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted))
+            )
+        }
+
+        viewModels.append(contentsOf: [
             DefaultRowViewModel(
                 title: inputData.rewardType.title,
                 detailsType: .text(
@@ -236,7 +247,9 @@ private extension StakingDetailsViewModel {
                     description: Localization.stakingDetailsRewardScheduleInfo
                 ) }
             ),
-        ]
+        ])
+
+        detailsViewModels = viewModels
     }
 
     func setupRewardView(inputData: StakingDetailsData) {
