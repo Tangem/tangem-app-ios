@@ -9,8 +9,8 @@
 import Foundation
 
 enum StakingNotificationEvent {
-    case stake(tokenSymbol: String, days: String)
-    case unstake
+    case stake(tokenSymbol: String, periodFormatted: String)
+    case unstake(periodFormatted: String)
 }
 
 extension StakingNotificationEvent: NotificationEvent {
@@ -30,10 +30,10 @@ extension StakingNotificationEvent: NotificationEvent {
 
     var description: String? {
         switch self {
-        case .stake(let tokenSymbol, let days):
-            return Localization.stakingNotificationEarnRewardsText(tokenSymbol, days)
-        case .unstake:
-            return ".string(Localization.commonUnstake)"
+        case .stake(let tokenSymbol, let periodFormatted):
+            return Localization.stakingNotificationEarnRewardsText(tokenSymbol, periodFormatted)
+        case .unstake(let periodFormatted):
+            return Localization.stakingNotificationUnstakeText(periodFormatted)
         }
     }
 

@@ -19,10 +19,16 @@ protocol StakingNotificationManager: NotificationManager {
 }
 
 class CommonStakingNotificationManager {
+    private let tokenItem: TokenItem
+
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
+    private var stakingManagerStateSubscription: AnyCancellable?
+
     private weak var delegate: NotificationTapDelegate?
 
-    private var stakingManagerStateSubscription: AnyCancellable?
+    init(tokenItem: TokenItem) {
+        self.tokenItem = tokenItem
+    }
 }
 
 // MARK: - Bind
@@ -43,9 +49,12 @@ private extension CommonStakingNotificationManager {
         case .loading, .notEnabled:
             break
         case .availableToStake(let yield):
-            show(notification: .stake(tokenSymbol: yield.item.coinId, days: yield.rewardScheduleType.rawValue))
+            show(notification: .stake(
+                tokenSymbol: tokenItem.currencySymbol,
+                periodFormatted: yield.rewardScheduleType.rawValue
+            ))
         case .staked(_, let yield):
-            show(notification: .unstake)
+            show(notification: .unstake(periodFormatted: yield.rewardScheduleType.rawValue))
         }
     }
 }
