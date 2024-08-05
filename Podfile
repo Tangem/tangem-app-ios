@@ -31,7 +31,7 @@ end
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-646'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-648'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem10'
@@ -182,7 +182,7 @@ post_install do |installer|
     "BlockchainSdk",
     "https://github.com/tangem/wallet-core-binaries-ios.git",
     "TangemWalletCoreBinariesWrapper",
-    { :kind => "exactVersion", :version => "4.0.21-tangem6" }
+    { :kind => "exactVersion", :version => "4.0.46-tangem1" }
   )
 
   # `SwiftProtobuf` SPM package for `BlockchainSdk` pod
@@ -210,6 +210,15 @@ post_install do |installer|
    "https://github.com/tesseract-one/ScaleCodec.swift",
    "ScaleCodec",
    { :kind => "exactVersion", :version => "0.2.1" }
+  )
+
+  # `IcpKit` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+   installer.pods_project,
+   "BlockchainSdk",
+   "https://github.com/tangem/IcpKit.git",
+   "IcpKit",
+   { :kind => "exactVersion", :version => "0.1.2-tangem3" }
   )
 
   # `SwiftProtobuf` SPM package for `BinanceChain` pod

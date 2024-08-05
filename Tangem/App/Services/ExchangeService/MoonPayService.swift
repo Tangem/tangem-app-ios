@@ -381,6 +381,7 @@ private extension Blockchain {
         case .joystream: return nil
         case .bittensor: return nil
         case .koinos: return nil
+        case .internetComputer: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -452,6 +453,7 @@ private extension Blockchain {
         case .joystream: return nil
         case .bittensor: return nil
         case .koinos: return nil
+        case .internetComputer: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
