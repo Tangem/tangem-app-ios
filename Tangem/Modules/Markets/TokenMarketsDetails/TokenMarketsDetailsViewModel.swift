@@ -100,6 +100,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let walletDataProvider = MarketsWalletDataProvider()
 
     private var loadedInfo: TokenMarketsDetailsModel?
+    private var loadingTask: AnyCancellable?
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
@@ -127,6 +128,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     deinit {
         print("TokenMarketsDetailsViewModel deinit")
+        loadingTask?.cancel()
+        loadingTask = nil
     }
 
     // MARK: - Actions
@@ -138,30 +141,18 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     func loadDetailedInfo() {
         isLoading = true
-        runTask(in: self) { viewModel in
+        loadingTask?.cancel()
+        loadingTask = runTask(in: self) { viewModel in
             do {
                 let currencyId = viewModel.tokenInfo.id
                 viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
                 let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
-
-                await runOnMain {
-                    viewModel.setupUI(using: result)
-                    viewModel.isLoading = false
-                }
-
+                await viewModel.handleLoadDetailedInfo(.success(result))
             } catch {
-                await runOnMain {
-                    if case .failed = viewModel.historyChartViewModel?.viewState {
-                        viewModel.state = .failedToLoadAllData
-                    } else if viewModel.state != .failedToLoadAllData {
-                        viewModel.state = .failedToLoadDetails
-                    }
-
-                    viewModel.isLoading = false
-                }
-                viewModel.log("Failed to load detailed info. Reason: \(error)")
+                await viewModel.handleLoadDetailedInfo(.failure(error))
             }
-        }
+            viewModel.loadingTask = nil
+        }.eraseToAnyCancellable()
     }
 
     func openLinkAction(_ link: String) {
@@ -171,6 +162,53 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }
 
         coordinator?.openURL(url)
+    }
+
+    func openFullDescription() {
+        guard let fullDescription = loadedInfo?.fullDescription else {
+            return
+        }
+
+        openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
+    }
+}
+
+// MARK: - Details response processing
+
+private extension TokenMarketsDetailsViewModel {
+    func handleLoadDetailedInfo(_ result: Result<TokenMarketsDetailsModel, Error>) async {
+        do {
+            let detailsModel = try result.get()
+            await setupUI(using: detailsModel)
+        } catch {
+            if error.isCancellation {
+                return
+            }
+
+            await setupFailedState()
+            log("Failed to load detailed info. Reason: \(error)")
+        }
+    }
+
+    @MainActor
+    func setupUI(using model: TokenMarketsDetailsModel) {
+        loadedPriceChangeInfo = model.priceChangePercentage
+        loadedInfo = model
+        state = .loaded(model: model)
+
+        makeBlocksViewModels(using: model)
+        isLoading = false
+    }
+
+    @MainActor
+    func setupFailedState() {
+        if case .failed = historyChartViewModel?.viewState {
+            state = .failedToLoadAllData
+        } else if state != .failedToLoadAllData {
+            state = .failedToLoadDetails
+        }
+
+        isLoading = false
     }
 }
 
@@ -219,9 +257,13 @@ private extension TokenMarketsDetailsViewModel {
                 let (viewModel, (previousChartState, newChartState)) = elements
 
                 switch (previousChartState, newChartState) {
-                case (.failed, .failed), (.failed, .loading):
+                case (.failed, .failed):
                     // We need to process this cases before other so that view state remains unchanged.
                     return
+                case (.failed, .loading):
+                    if case .failedToLoadAllData = viewModel.state {
+                        viewModel.isLoading = true
+                    }
                 case (_, .failed):
                     if case .failedToLoadDetails = viewModel.state {
                         viewModel.state = .failedToLoadAllData
@@ -230,6 +272,10 @@ private extension TokenMarketsDetailsViewModel {
                     if case .failedToLoadAllData = viewModel.state {
                         viewModel.state = .failedToLoadDetails
                     }
+
+                    if viewModel.loadingTask == nil {
+                        viewModel.isLoading = false
+                    }
                 default:
                     break
                 }
@@ -237,19 +283,7 @@ private extension TokenMarketsDetailsViewModel {
             .store(in: &bag)
     }
 
-    func updatePrice(_ newPrice: Decimal) {
-        price = balanceFormatter.formatFiatBalance(newPrice, formattingOptions: fiatBalanceFormattingOptions)
-    }
-
-    func setupUI(using model: TokenMarketsDetailsModel) {
-        loadedPriceChangeInfo = model.priceChangePercentage
-        loadedInfo = model
-        state = .loaded(model: model)
-
-        makeBlocksViewModels(using: model)
-    }
-
-    private func makePreloadBlocksViewModels() {
+    func makePreloadBlocksViewModels() {
         portfolioViewModel = .init(
             userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
@@ -264,7 +298,7 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
-    private func makeHistoryChartViewModel() {
+    func makeHistoryChartViewModel() {
         let historyChartProvider = CommonMarketsHistoryChartProvider(
             tokenId: tokenInfo.id,
             yAxisLabelCount: Constants.historyChartYAxisLabelCount
@@ -294,21 +328,17 @@ private extension TokenMarketsDetailsViewModel {
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
     }
+}
 
+// MARK: - Logging
+
+private extension TokenMarketsDetailsViewModel {
     func log(_ message: @autoclosure () -> String) {
         AppLog.shared.debug("[TokenMarketsDetailsViewModel] - \(message())")
     }
 }
 
-extension TokenMarketsDetailsViewModel {
-    func openFullDescription() {
-        guard let fullDescription = loadedInfo?.fullDescription else {
-            return
-        }
-
-        openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
-    }
-}
+// MARK: - Navigation
 
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {

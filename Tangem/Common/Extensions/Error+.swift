@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import SwiftUI
+import TangemSdk
 
 extension Error {
     var detailedError: Error {
@@ -54,4 +55,22 @@ extension BindableErrorWrapper: LocalizedError {
     var recoverySuggestion: String? { (error as? LocalizedError)?.recoverySuggestion }
 
     var helpAnchor: String? { (error as? LocalizedError)?.helpAnchor }
+}
+
+extension Error {
+    var isCancellation: Bool {
+        switch self {
+        case let sdkError as TangemSdkError:
+            return sdkError.isUserCancelled
+        case let moyaError as MoyaError:
+            switch moyaError {
+            case .underlying(let error, _):
+                return error.asAFError?.isExplicitlyCancelledError ?? false
+            default:
+                return false
+            }
+        default:
+            return false
+        }
+    }
 }
