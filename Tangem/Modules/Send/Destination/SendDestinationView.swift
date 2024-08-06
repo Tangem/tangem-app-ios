@@ -69,8 +69,8 @@ struct SendDestinationView: View {
             }
         }
         .transition(transitionService.transitionToDestinationStep(isEditMode: viewModel.isEditMode))
-        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
-        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.showSuggestedDestinations)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.auxiliaryViewsVisible)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.showSuggestedDestinations)
         .onAppear(perform: viewModel.onAppear)
     }
 }

@@ -34,7 +34,7 @@ struct MarketsRatingHeaderView: View {
                     .image
             }
             .padding(.horizontal, 10)
-            .padding(.vertical, 4)
+            .padding(.vertical, 5)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Colors.Button.secondary)
@@ -48,6 +48,7 @@ struct MarketsRatingHeaderView: View {
                 marketPriceIntervalType: $viewModel.marketPriceIntervalType,
                 options: viewModel.marketPriceIntervalTypeOptions,
                 shouldStretchToFill: false,
+                style: .init(textVerticalPadding: 4),
                 titleFactory: { $0.tokenDetailsNameLocalized }
             )
         }

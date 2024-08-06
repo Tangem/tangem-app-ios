@@ -46,10 +46,10 @@ extension CommonStakingManager: StakingManager {
     func updateState() async throws {
         updateState(.loading)
         do {
-            async let balance = provider.balance(wallet: wallet)
+            async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
 
-            try await updateState(state(balance: balance, yield: yield))
+            try await updateState(state(balances: balances, yield: yield))
         } catch {
             logger.error(error)
             throw error
@@ -76,13 +76,13 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balance: StakingBalanceInfo?, yield: YieldInfo) -> StakingManagerState {
-        guard let balance else {
+    func state(balances: [StakingBalanceInfo]?, yield: YieldInfo) -> StakingManagerState {
+        guard let balances else {
             return .availableToStake(yield)
         }
 
-        if balance.balanceGroupType.isActiveOrUnstaked {
-            return .staked(balance, yield)
+        if balances.contains(where: { $0.balanceGroupType.isActiveOrUnstaked }) {
+            return .staked(balances, yield)
         } else {
             return .availableToStake(yield)
         }

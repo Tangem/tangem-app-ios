@@ -17,6 +17,7 @@ struct SendSummaryStepBuilder {
 
     func makeSendSummaryStep(
         io: IO,
+        actionType: SendFlowActionType,
         sendTransactionDispatcher: any SendTransactionDispatcher,
         notificationManager: NotificationManager,
         editableType: SendSummaryViewModel.EditableType,
@@ -42,10 +43,9 @@ struct SendSummaryStepBuilder {
 
         let step = SendSummaryStep(
             viewModel: viewModel,
-            interactor: interactor,
             input: io.input,
-            tokenItem: walletModel.tokenItem,
-            walletName: builder.walletName()
+            title: builder.summaryTitle(action: actionType),
+            subtitle: builder.summarySubtitle(action: actionType)
         )
 
         return (step: step, interactor: interactor)

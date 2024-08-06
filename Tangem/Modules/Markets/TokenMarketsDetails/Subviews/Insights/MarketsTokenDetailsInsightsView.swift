@@ -35,12 +35,13 @@ struct MarketsTokenDetailsInsightsView: View {
                     marketPriceIntervalType: $viewModel.selectedInterval,
                     options: viewModel.availableIntervals,
                     shouldStretchToFill: false,
+                    style: .init(textVerticalPadding: 2),
                     titleFactory: { $0.tokenDetailsNameLocalized }
                 )
             }
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 10, content: {
-                ForEach(viewModel.records.indexed(), id: \.1.id) { index, info in
+                ForEach(viewModel.records.indexed(), id: \.0) { index, info in
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
@@ -54,12 +55,13 @@ struct MarketsTokenDetailsInsightsView: View {
                             firstItemWidth = value
                         }
                     })
+                    .transition(.opacity)
                     .padding(.vertical, 10)
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
         }
-        .animation(nil)
+        .animation(.default, value: viewModel.selectedInterval)
         .defaultRoundedBackground(with: Colors.Background.action)
     }
 }

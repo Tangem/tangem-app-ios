@@ -17,12 +17,7 @@ protocol SendViewAlertPresenter: AnyObject {
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
 
-    @Published var step: SendStep {
-        didSet {
-            bind(step: step)
-        }
-    }
-
+    @Published var step: SendStep
     @Published var mainButtonType: SendMainButtonType
     @Published var showBackButton = false
 
@@ -43,11 +38,7 @@ final class SendViewModel: ObservableObject {
     }
 
     var shouldShowDismissAlert: Bool {
-        if case .finish = step.type {
-            return false
-        }
-
-        return mainButtonType == .send || mainButtonType == .continue
+        mainButtonType.shouldShowDismissAlert
     }
 
     private let interactor: SendBaseInteractor
@@ -88,7 +79,7 @@ final class SendViewModel: ObservableObject {
             stepsManager.performNext()
         case .continue:
             stepsManager.performContinue()
-        case .send:
+        case .action:
             performSend()
         case .close:
             coordinator?.dismiss()
@@ -237,6 +228,18 @@ extension SendViewModel: SendStepsManagerOutput {
         // Give some time to update `transitions`
         DispatchQueue.main.async {
             self.step = state.step
+            self.bind(step: state.step)
+        }
+    }
+}
+
+extension SendMainButtonType {
+    var shouldShowDismissAlert: Bool {
+        switch self {
+        case .continue, .action:
+            return true
+        case .next, .close:
+            return false
         }
     }
 }

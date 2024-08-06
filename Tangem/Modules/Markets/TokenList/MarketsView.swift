@@ -13,6 +13,8 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    private let scrollTopAnchorID = "markets_scroll_view_top_anchor_id"
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if viewModel.isSearching {
@@ -50,18 +52,26 @@ struct MarketsView: View {
     @ViewBuilder
     private var list: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.tokenViewModels) {
-                    MarketsItemView(viewModel: $0)
-                }
+            ScrollViewReader { proxy in
+                Color.clear.frame(height: 0)
+                    .id(scrollTopAnchorID)
 
-                if viewModel.isShowUnderCapButton {
-                    showTokensUnderCapView
-                }
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.tokenViewModels) {
+                        MarketsItemView(viewModel: $0)
+                    }
 
-                // Need for display list skeleton view
-                if case .loading = viewModel.tokenListLoadingState {
-                    loadingSkeletons
+                    if viewModel.isShowUnderCapButton {
+                        showTokensUnderCapView
+                    }
+
+                    // Need for display list skeleton view
+                    if case .loading = viewModel.tokenListLoadingState {
+                        loadingSkeletons
+                    }
+                }
+                .onReceive(viewModel.resetScrollPositionPublisher) { _ in
+                    proxy.scrollTo(scrollTopAnchorID)
                 }
             }
         }
@@ -122,33 +132,23 @@ struct MarketsView: View {
     }
 
     private var errorStateView: some View {
-        VStack(spacing: 12) {
-            Text(Localization.marketsLoadingErrorTitle)
-                .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
-
-            Button(action: {
-                viewModel.onTryLoadList()
-            }, label: {
-                HStack(spacing: .zero) {
-                    Text(Localization.tryToLoadDataAgainButtonTitle)
-                        .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
-                }
-            })
-            .roundedBackground(with: Colors.Button.secondary, verticalPadding: 6, horizontalPadding: 12, radius: 10)
-        }
+        MarketsUnableToLoadDataView(
+            isButtonBusy: viewModel.tokenListLoadingState == .loading,
+            retryButtonAction: viewModel.onTryLoadList
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
     }
 }
 
 extension MarketsView {
-    enum ListLoadingState: Int, Identifiable, Hashable {
-        var id: Int { rawValue }
-
+    enum ListLoadingState: String, Identifiable, Hashable {
         case noResults
         case error
         case loading
         case allDataLoaded
         case idle
+
+        var id: String { rawValue }
     }
 }

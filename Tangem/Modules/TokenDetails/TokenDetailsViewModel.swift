@@ -22,6 +22,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: walletModel.tokenItem)
+    @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
@@ -298,6 +299,8 @@ extension TokenDetailsViewModel: AvailableBalanceProvider {
             return Just(nil).eraseToAnyPublisher()
         }
         return stakingManager.statePublisher
+            .receive(on: DispatchQueue.main)
+            .filter { $0 != .loading }
             .withWeakCaptureOf(self)
             .map { viewModel, state in
                 switch state {
@@ -307,6 +310,16 @@ extension TokenDetailsViewModel: AvailableBalanceProvider {
                     return nil
                 }
             }
+            .handleEvents(receiveOutput: { [weak self] value in
+                guard let self else { return }
+                activeStakingViewData = stakedBalance.flatMap {
+                    ActiveStakingViewData(
+                        balance: $0.balance,
+                        fiatBalance: $0.fiatBalance,
+                        rewardsToClaim: self.stakingRewardsBalance?.fiatBalance
+                    )
+                }
+            })
             .eraseToAnyPublisher()
     }
 }

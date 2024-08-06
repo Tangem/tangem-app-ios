@@ -83,22 +83,19 @@ struct StakeKitMapper {
 
     // MARK: - Balance
 
-    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> StakingBalanceInfo? {
-        // There isn't any balances
-        guard let balances = response.first?.balances, let balance = balances.first else {
-            return nil
+    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo]? {
+        try response.first?.balances.map { balance in
+            guard let blocked = Decimal(stringValue: balance.amount) else {
+                throw StakeKitMapperError.noData("Balance.amount not found")
+            }
+            return StakingBalanceInfo(
+                item: mapToStakingTokenItem(from: balance.token),
+                blocked: blocked,
+                rewards: mapToRewards(from: balance),
+                balanceGroupType: mapToBalanceGroupType(from: balance.type),
+                validatorAddress: balance.validatorAddress
+            )
         }
-
-        guard let blocked = Decimal(stringValue: balance.amount) else {
-            throw StakeKitMapperError.noData("Balance.amount not found")
-        }
-
-        return StakingBalanceInfo(
-            item: mapToStakingTokenItem(from: balance.token),
-            blocked: blocked,
-            rewards: mapToRewards(from: balances),
-            balanceGroupType: mapToBalanceGroupType(from: balance.type)
-        )
     }
 
     // MARK: - Yield
@@ -226,12 +223,11 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToRewards(from balances: [StakeKitDTO.Balances.Response.Balance]) -> Decimal? {
-        let rewards = balances
-            .filter { $0.type == .rewards || $0.pendingActions.contains { $0.type == .claimRewards } }
-            .compactMap { Decimal(stringValue: $0.amount) }
-            .reduce(Decimal.zero, +)
-        return rewards.isZero ? nil : rewards
+    func mapToRewards(from balance: StakeKitDTO.Balances.Response.Balance) -> Decimal? {
+        guard balance.type == .rewards || balance.pendingActions.contains(where: { $0.type == .claimRewards }) else {
+            return nil
+        }
+        return Decimal(stringValue: balance.amount)
     }
 }
 

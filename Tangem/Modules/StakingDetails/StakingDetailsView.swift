@@ -29,6 +29,9 @@ struct StakingDetailsView: View {
 
                 rewardView
 
+                activeValidatorsView
+                unstakedValidatorsView
+
                 FixedSpacer(height: bottomViewHeight)
             }
             .interContentPadding(14)
@@ -49,6 +52,7 @@ struct StakingDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var banner: some View {
         Button(action: viewModel.userDidTapBanner) {
             ZStack(alignment: .leading) {
@@ -92,13 +96,47 @@ struct StakingDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var rewardView: some View {
-        GroupedSection(viewModel.rewardViewData) {
-            RewardView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingRewards)
+        GroupedSection(viewModel.rewardViewData) { data in
+            Button(action: {}, label: {
+                RewardView(data: data)
+            })
         }
-        .interItemSpacing(12)
+        .innerContentPadding(12)
+    }
+
+    private var activeValidatorsView: some View {
+        validatorsView(
+            validators: viewModel.activeValidators,
+            header: Localization.stakingActive,
+            footer: Localization.stakingActiveFooter
+        )
+    }
+
+    private var unstakedValidatorsView: some View {
+        validatorsView(
+            validators: viewModel.unstakedValidators,
+            header: Localization.stakingUnstaked,
+            footer: Localization.stakingUnstakedFooter
+        )
+    }
+
+    private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
+        GroupedSection(
+            validators,
+            content: { data in
+                Button(action: {}, label: {
+                    ValidatorView(data: data)
+                })
+            }, header: {
+                DefaultHeaderView(header)
+            }, footer: {
+                Text(footer)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
+        )
+        .interItemSpacing(10)
         .innerContentPadding(12)
     }
 

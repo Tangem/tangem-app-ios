@@ -42,7 +42,7 @@ class CommonSellStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action(.send)))
         case .finish:
             output?.update(state: .init(step: step, action: .close))
         case .fee where isEditAction:
@@ -58,7 +58,7 @@ class CommonSellStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action(.send)))
         default:
             output?.update(state: .init(step: step, action: .next))
         }
@@ -69,7 +69,7 @@ class CommonSellStepsManager {
 
 extension CommonSellStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .send, backButtonVisible: false)
+        .init(step: summaryStep, action: .action(.send), backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

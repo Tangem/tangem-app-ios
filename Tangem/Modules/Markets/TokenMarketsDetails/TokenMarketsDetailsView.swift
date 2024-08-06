@@ -24,14 +24,20 @@ struct TokenMarketsDetailsView: View {
                 .padding(.horizontal, 16.0)
 
                 chart
+                    .hidden(viewModel.allDataLoadFailed)
+                    .overlay(content: {
+                        MarketsUnableToLoadDataView(
+                            isButtonBusy: viewModel.isLoading,
+                            retryButtonAction: viewModel.reloadAllData
+                        )
+                        .infinityFrame(axis: .horizontal)
+                        .hidden(!viewModel.allDataLoadFailed)
+                    })
 
-                Group {
-                    description
-
-                    contentBlocks
-                        .padding(.bottom, 45)
-                }
-                .padding(.horizontal, 16.0)
+                content
+                    .hidden(viewModel.allDataLoadFailed)
+                    .padding(.horizontal, 16.0)
+                    .transition(.opacity)
             }
             .padding(.top, 14)
         }
@@ -49,6 +55,9 @@ struct TokenMarketsDetailsView: View {
                 descriptionBottomSheetHeight = 0
             }
         }
+        .animation(.default, value: viewModel.state)
+        .animation(.default, value: viewModel.isLoading)
+        .animation(.default, value: viewModel.allDataLoadFailed)
     }
 
     @ViewBuilder
@@ -84,31 +93,9 @@ struct TokenMarketsDetailsView: View {
             marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
             options: viewModel.priceChangeIntervalOptions,
             shouldStretchToFill: true,
+            style: .init(textVerticalPadding: 4),
             titleFactory: { $0.tokenDetailsNameLocalized }
         )
-    }
-
-    @ViewBuilder
-    private var description: some View {
-        if let shortDescription = viewModel.shortDescription {
-            Group {
-                if viewModel.fullDescription == nil {
-                    Text(shortDescription)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                        .multilineTextAlignment(.leading)
-                } else {
-                    Button(action: viewModel.openFullDescription) {
-                        Group {
-                            Text("\(shortDescription) ")
-                                + Text(Localization.commonReadMore)
-                                .foregroundColor(Colors.Text.accent)
-                        }
-                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                        .multilineTextAlignment(.leading)
-                    }
-                }
-            }
-        }
     }
 
     @ViewBuilder
@@ -119,34 +106,83 @@ struct TokenMarketsDetailsView: View {
     }
 
     @ViewBuilder
-    private var contentBlocks: some View {
+    private var content: some View {
         VStack(spacing: 14) {
-            if let portfolioViewModel = viewModel.portfolioViewModel {
-                MarketsPortfolioContainerView(viewModel: portfolioViewModel)
-            }
+            switch viewModel.state {
+            case .loading:
+                portfolioView
 
-            if viewModel.isLoading {
                 ContentBlockSkeletons()
-            } else {
-                Group {
-                    if let insightsViewModel = viewModel.insightsViewModel {
-                        MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
-                    }
+            case .loaded(let model):
+                description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
 
-                    if let metricsViewModel = viewModel.metricsViewModel {
-                        MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
-                    }
+                portfolioView
 
-                    if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
-                        MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
-                    }
-
-                    TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
-                }
-                .animation(nil, value: viewModel.isLoading)
+                contentBlocks
+            case .failedToLoadDetails:
+                MarketsUnableToLoadDataView(
+                    isButtonBusy: viewModel.isLoading,
+                    retryButtonAction: viewModel.loadDetailedInfo
+                )
+                .padding(.vertical, 6)
+            case .failedToLoadAllData:
+                EmptyView()
             }
         }
-        .animation(.default, value: viewModel.isLoading)
+    }
+
+    @ViewBuilder
+    private var portfolioView: some View {
+        if let portfolioViewModel = viewModel.portfolioViewModel {
+            MarketsPortfolioContainerView(viewModel: portfolioViewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var contentBlocks: some View {
+        VStack(spacing: 14) {
+            if let insightsViewModel = viewModel.insightsViewModel {
+                MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+            }
+
+            if let metricsViewModel = viewModel.metricsViewModel {
+                MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+            }
+
+            if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
+                MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
+            }
+
+            TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+        }
+        .padding(.bottom, 46.0)
+    }
+
+    @ViewBuilder
+    private func description(shortDescription: String?, fullDescription: String?) -> some View {
+        if let shortDescription {
+            if fullDescription == nil {
+                Text(shortDescription)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                    .multilineTextAlignment(.leading)
+            } else {
+                Button(action: viewModel.openFullDescription) {
+                    Group {
+                        Text("\(shortDescription) ")
+                            + Text(Localization.commonReadMore)
+                            .foregroundColor(Colors.Text.accent)
+                    }
+                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                    .multilineTextAlignment(.leading)
+                }
+            }
+        }
+    }
+}
+
+private extension TokenMarketsDetailsView {
+    enum Constants {
+        static let chartHeight: CGFloat = 200.0
     }
 }
 

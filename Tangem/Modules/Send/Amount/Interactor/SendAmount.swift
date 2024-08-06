@@ -38,7 +38,7 @@ struct SendAmount: Hashable {
             let formatter = SendCryptoValueFormatter(
                 decimals: decimalCount,
                 currencySymbol: currencySymbol,
-                trimFractions: false
+                trimFractions: true
             )
 
             return formatter.string(from: crypto)

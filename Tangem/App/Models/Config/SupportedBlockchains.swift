@@ -59,6 +59,7 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .mantle(testnet: false),
+            .internetComputer(curve: .secp256k1),
         ]
     }
 

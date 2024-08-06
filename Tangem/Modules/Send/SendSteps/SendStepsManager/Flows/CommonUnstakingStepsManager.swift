@@ -41,7 +41,7 @@ class CommonUnstakingStepsManager {
 
 extension CommonUnstakingStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .send, backButtonVisible: false)
+        .init(step: summaryStep, action: .action(.unstake), backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

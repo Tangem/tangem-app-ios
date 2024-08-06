@@ -28,7 +28,7 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
 
         input.selectedValidatorPublisher
             .map { validator in
-                stakingValidatorViewMapper.mapToValidatorViewData(info: validator, detailsType: .chevron)
+                stakingValidatorViewMapper.mapToValidatorViewData(info: validator, detailsType: .chevron())
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.selectedValidatorData, on: self, ownership: .weak)
