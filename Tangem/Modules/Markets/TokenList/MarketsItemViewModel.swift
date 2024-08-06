@@ -98,7 +98,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private func setupPriceInfo(price: Decimal?, priceChangeValue: Decimal?) {
         priceValue = priceFormatter.formatFiatBalance(price)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangeValue)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: priceChangeValue)
     }
 
     private func bindToIntervalUpdates() {
