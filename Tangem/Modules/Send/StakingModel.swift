@@ -26,6 +26,7 @@ class StakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let pendingHashesSender: StakingPendingHashesSender
     private let feeTokenItem: TokenItem
 
     private var bag: Set<AnyCancellable> = []
@@ -33,10 +34,12 @@ class StakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        pendingHashesSender: StakingPendingHashesSender,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.pendingHashesSender = pendingHashesSender
         self.feeTokenItem = feeTokenItem
 
         bind()
@@ -77,7 +80,7 @@ private extension StakingModel {
     }
 
     func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
-        var value = transaction?.mapValue { tx in
+        let value = transaction?.mapValue { tx in
             Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: tx.fee))
         }
 
@@ -94,13 +97,15 @@ private extension StakingModel {
         }
 
         return sendTransactionDispatcher
-            .send(transaction: .staking(transaction))
+            .sendPublisher(transaction: .staking(mapToStakeKitTransaction(transaction)))
             .withWeakCaptureOf(self)
             .compactMap { sender, result in
                 sender.proceed(transaction: transaction, result: result)
                 return result
             }
             .eraseToAnyPublisher()
+
+        // TODO: submit hash, handle retries
     }
 
     private func proceed(transaction: StakingTransactionInfo, result: SendTransactionDispatcherResult) {
@@ -108,6 +113,7 @@ private extension StakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
+             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:
@@ -116,6 +122,18 @@ private extension StakingModel {
         case .success:
             _transactionTime.send(Date())
         }
+    }
+
+    // TODO: get fee, amount and source address
+    private func mapToStakeKitTransaction(_ transaction: StakingTransactionInfo) -> StakeKitTransaction {
+        let stakeKitTransaction = StakeKitTransaction(
+            amount: Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0),
+            fee: Fee(Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0)),
+            sourceAddress: "",
+            unsignedData: transaction.unsignedTransactionData
+        )
+
+        return stakeKitTransaction
     }
 }
 
@@ -202,7 +220,15 @@ extension StakingModel: SendFeeOutput {
 extension StakingModel: SendSummaryInput, SendSummaryOutput {
     var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
         _transaction
-            .map { $0?.value.flatMap { .staking($0) } }
+            .withWeakCaptureOf(self)
+            .map { model, txValue in
+                guard let tx = txValue?.value else {
+                    return nil
+                }
+
+                let stakeKitTx = model.mapToStakeKitTransaction(tx)
+                return SendTransactionType.staking(stakeKitTx)
+            }
             .eraseToAnyPublisher()
     }
 }

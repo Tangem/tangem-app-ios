@@ -21,7 +21,10 @@ struct StakingFlowBaseBuilder {
 
     func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendTransactionDispatcher = StakingTransactionDispatcher(
+            walletModel: walletModel,
+            transactionSigner: userWalletModel.signer
+        )
         let stakingModel = builder.makeStakingModel(
             stakingManager: manager,
             sendTransactionDispatcher: sendTransactionDispatcher

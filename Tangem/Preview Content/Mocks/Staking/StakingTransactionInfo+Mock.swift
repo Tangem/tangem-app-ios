@@ -16,7 +16,7 @@ extension StakingTransactionInfo {
         network: "solana",
         type: .enter,
         status: .created,
-        unsignedTransactionData: Data(),
+        unsignedTransactionData: "",
         fee: 1.23
     )
 }

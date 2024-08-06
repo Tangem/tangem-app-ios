@@ -113,7 +113,7 @@ private extension UnstakingModel {
         }
 
         return sendTransactionDispatcher
-            .send(transaction: .staking(transaction))
+            .sendPublisher(transaction: .staking(mapToStakeKitTransaction(transaction)))
             .withWeakCaptureOf(self)
             .compactMap { sender, result in
                 sender.proceed(transaction: transaction, result: result)
@@ -129,12 +129,25 @@ private extension UnstakingModel {
              .transactionNotFound,
              .demoAlert,
              .userCancelled,
-             .sendTxError:
+             .sendTxError,
+             .stakingUnsupported:
             // TODO: Add analytics
             break
         case .success:
             _transactionTime.send(Date())
         }
+    }
+
+    // TODO: get fee, amount and source address
+    private func mapToStakeKitTransaction(_ transaction: StakingTransactionInfo) -> StakeKitTransaction {
+        let stakeKitTransaction = StakeKitTransaction(
+            amount: Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0),
+            fee: Fee(Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0)),
+            sourceAddress: "",
+            unsignedData: transaction.unsignedTransactionData
+        )
+
+        return stakeKitTransaction
     }
 }
 
@@ -205,7 +218,15 @@ extension UnstakingModel: SendFeeOutput {
 extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
     var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
         _transaction
-            .map { $0?.value.flatMap { .staking($0) } }
+            .withWeakCaptureOf(self)
+            .map { model, txValue in
+                guard let tx = txValue?.value else {
+                    return nil
+                }
+
+                let stakeKitTx = model.mapToStakeKitTransaction(tx)
+                return SendTransactionType.staking(stakeKitTx)
+            }
             .eraseToAnyPublisher()
     }
 }

@@ -169,6 +169,7 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
             feeTokenItem: walletModel.feeTokenItem
         )
     }
