@@ -34,9 +34,4 @@ public extension ExpressWallet {
         let decimalValue = pow(10, decimalCount)
         return value / decimalValue
     }
-
-    func feeCurrencyConvertFromWEI(value: Decimal) -> Decimal {
-        let decimalValue = pow(10, feeCurrencyDecimalCount)
-        return value / decimalValue
-    }
 }
