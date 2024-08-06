@@ -13,6 +13,7 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
 
     let options: [Option]
     let shouldStretchToFill: Bool
+    let style: Style
     let titleFactory: (Option) -> String
 
     var body: some View {
@@ -47,13 +48,20 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
         }
         .animation(.default, value: isSelected)
         .lineLimit(1)
-        .padding(.vertical, 2)
-        .padding(.horizontal, 12)
+        .padding(.vertical, style.textVerticalPadding)
+        .padding(.horizontal, style.textHorizontalPadding)
     }
 
     private var selectionView: some View {
         Colors.Background.primary
             .clipShape(RoundedRectangle(cornerRadius: Constants.selectionViewCornerRadius))
+    }
+}
+
+extension SegmentedPicker {
+    struct Style {
+        let textVerticalPadding: CGFloat
+        var textHorizontalPadding: CGFloat = 12.0
     }
 }
 
