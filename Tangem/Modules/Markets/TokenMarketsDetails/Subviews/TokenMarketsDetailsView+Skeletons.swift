@@ -34,8 +34,9 @@ extension TokenMarketsDetailsView {
 
                     MarketsPickerView(
                         marketPriceIntervalType: .constant(.day),
-                        options: [.day, .month, .year],
+                        options: [.day, .week, .month],
                         shouldStretchToFill: false,
+                        style: .init(textVerticalPadding: 2),
                         titleFactory: { $0.tokenDetailsNameLocalized }
                     )
                 }
@@ -96,8 +97,9 @@ extension TokenMarketsDetailsView {
 
                     MarketsPickerView(
                         marketPriceIntervalType: .constant(.day),
-                        options: [.day, .month, .year],
+                        options: [.day, .week, .month],
                         shouldStretchToFill: false,
+                        style: .init(textVerticalPadding: 2),
                         titleFactory: { $0.tokenDetailsNameLocalized }
                     )
                 }

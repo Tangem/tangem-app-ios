@@ -19,11 +19,12 @@ final class MarketsViewModel: ObservableObject {
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var isShowUnderCapButton: Bool = false
     @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published var shouldResetScrollPosition: Bool = false
 
     // MARK: - Properties
 
     @Published var isViewVisible: Bool = false
+
+    let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
     var isSearching: Bool {
         !currentSearchValue.isEmpty
@@ -189,6 +190,17 @@ private extension MarketsViewModel {
             .store(in: &bag)
 
         dataProvider.$isLoading
+            .combineLatest($tokenListLoadingState, $tokenViewModels)
+            .filter { $0.0 && $0.1 == .loading && $0.2.isEmpty }
+            .receive(on: DispatchQueue.main)
+            .mapToVoid()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.resetScrollPositionPublisher.send(())
+            }
+            .store(in: &bag)
+
+        dataProvider.$isLoading
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
@@ -239,7 +251,7 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId]
+            priceChangeStateValues: tokenItemModel.priceChangePercentage
         )
 
         return MarketsItemViewModel(

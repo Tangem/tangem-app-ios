@@ -95,7 +95,8 @@ struct TokenInteractionAvailabilityProvider {
              .base,
              .bittensor,
              .joystream,
-             .koinos:
+             .koinos,
+             .internetComputer:
 
             // Checking that we have at least one valid (non-empty) address
             //

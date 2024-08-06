@@ -29,13 +29,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return yieldInfo
     }
 
-    func balance(wallet: StakingWallet) async throws -> StakingBalanceInfo? {
+    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]? {
         assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
 
         let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
         let response = try await service.getBalances(request: request)
-        let balanceInfo = try mapper.mapToBalanceInfo(from: response)
-        return balanceInfo
+        let balancesInfo = try mapper.mapToBalanceInfo(from: response)
+        return balancesInfo
     }
 
     func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction {
@@ -54,7 +54,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         let request = StakeKitDTO.Actions.Exit.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+            args: .init(amount: amount.description, validatorAddress: validator)
         )
 
         let response = try await service.exitAction(request: request)

@@ -133,7 +133,7 @@ extension MarketsItemView {
                 marketCap: token.marketCap,
                 marketRating: token.marketRating,
                 priceValue: token.currentPrice,
-                priceChangeStateValue: nil
+                priceChangeStateValues: [:]
             )
 
             return MarketsItemView(

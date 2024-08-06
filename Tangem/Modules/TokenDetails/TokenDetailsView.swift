@@ -44,13 +44,9 @@ struct TokenDetailsView: View {
                     )
                 }
 
-                if let stakedBalance = viewModel.stakedBalance {
+                if let activeStakingViewData = viewModel.activeStakingViewData {
                     ActiveStakingView(
-                        data: ActiveStakingViewData(
-                            balance: stakedBalance.balance,
-                            fiatBalance: stakedBalance.fiatBalance,
-                            rewardsToClaim: viewModel.stakingRewardsBalance?.fiatBalance
-                        ),
+                        data: activeStakingViewData,
                         tapAction: viewModel.openStaking
                     )
                     .padding(14)

@@ -132,9 +132,10 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         do {
             let chartViewData = try result.get()
             await updateViewState(.loaded(data: chartViewData), selectedPriceInterval: selectedPriceInterval)
-        } catch is CancellationError {
-            // No-op, cancelling a load request is perfectly normal
         } catch {
+            if error.isCancellationError {
+                return
+            }
             // There is no point in updating `selectedPriceInterval` on failure, so nil is passed instead
             await updateViewState(.failed, selectedPriceInterval: nil)
         }

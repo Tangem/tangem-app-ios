@@ -55,7 +55,7 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action(.stake)))
         case .finish:
             output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction, .validators where isEditAction:
@@ -71,7 +71,7 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action(.stake)))
         default:
             assertionFailure("There is no back step")
         }

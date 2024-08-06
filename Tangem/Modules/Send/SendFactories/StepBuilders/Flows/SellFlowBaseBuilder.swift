@@ -44,6 +44,7 @@ struct SellFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: sendModel, output: sendModel),
+            actionType: .send,
             sendTransactionDispatcher: sendTransactionDispatcher,
             notificationManager: notificationManager,
             editableType: .disable,

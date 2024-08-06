@@ -22,7 +22,8 @@ struct MarketsHistoryChartView: View {
                 case .loaded(let chartData):
                     makeChartView(for: chartData)
                 case .failed:
-                    errorView
+                    // No need to add state for button, because view will switch to loading state and remove this view
+                    MarketsUnableToLoadDataView(isButtonBusy: false, retryButtonAction: viewModel.reload)
                 }
             }
             .transition(.opacity)
@@ -31,22 +32,6 @@ struct MarketsHistoryChartView: View {
         .animation(.linear(duration: 0.2), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
-    }
-
-    @ViewBuilder
-    private var errorView: some View {
-        VStack(spacing: 12.0) {
-            Text(Localization.marketsLoadingErrorTitle)
-                .style(Fonts.Regular.caption1.weight(.medium).bold(), color: Colors.Text.tertiary)
-
-            Button(action: viewModel.reload) {
-                Text(Localization.tryToLoadDataAgainButtonTitle)
-                    .style(Fonts.Regular.caption1.weight(.medium).bold(), color: Colors.Text.primary1)
-            }
-            .padding(.vertical, 8.0)
-            .padding(.horizontal, 12.0)
-            .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8.0)
-        }
     }
 
     @ViewBuilder
