@@ -14,7 +14,7 @@ import BlockchainSdk
 class UnstakingModel {
     // MARK: - Data
 
-    private let _amount: CurrentValueSubject<SendAmount?, Never>
+    private let _amount = CurrentValueSubject<SendAmount?, Never>(.none)
     private let _transaction = CurrentValueSubject<LoadingValue<StakingTransactionInfo>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -24,6 +24,8 @@ class UnstakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let validator: String
+    private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
     private var bag: Set<AnyCancellable> = []
@@ -31,14 +33,15 @@ class UnstakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        validator: String,
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.validator = validator
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-
-        // TODO: fill it from stakingManager.state in the bind()
-        _amount = .init(.init(type: .typical(crypto: 100.145, fiat: 1443.65)))
 
         bind()
     }
@@ -48,13 +51,20 @@ class UnstakingModel {
 
 private extension UnstakingModel {
     func bind() {
-        Just(stakingManager.state) // TODO: Any input data (?)
+        stakingManager.statePublisher
+            .withWeakCaptureOf(self)
+            .sink { model, state in
+                model.update(state: state)
+            }
+            .store(in: &bag)
+
+        Just(validator) // TODO: Any input data (?)
             .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
-            .tryAsyncMap { model, state in
+            .tryAsyncMap { model, validator in
                 model._transaction.send(.loading)
 
-                return try await model.stakingManager.transaction(action: .unstake)
+                return try await model.stakingManager.transaction(action: .unstake(validator: validator))
             }
             .mapToResult()
             .withWeakCaptureOf(self)
@@ -68,6 +78,21 @@ private extension UnstakingModel {
                 }
             }
             .store(in: &bag)
+    }
+
+    func update(state: StakingManagerState) {
+        switch state {
+        case .staked(let balances, _):
+            guard let balance = balances.first(where: { $0.validatorAddress == validator }) else {
+                assertionFailure("The balance for validator \(validator) not found")
+                return
+            }
+
+            let fiat = tokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(balance.blocked, currencyId: $0) }
+            _amount.send(.init(type: .typical(crypto: balance.blocked, fiat: fiat)))
+        default:
+            assertionFailure("The state \(state) doesn't support in this UnstakingModel")
+        }
     }
 
     func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
