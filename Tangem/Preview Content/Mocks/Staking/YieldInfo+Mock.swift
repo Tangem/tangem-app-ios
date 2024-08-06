@@ -12,6 +12,7 @@ import TangemStaking
 extension YieldInfo {
     static let mock: YieldInfo = .init(
         id: "tron-trx-native-staking",
+        isAvailable: true,
         apy: 0.03712381,
         rewardType: .apr,
         rewardRate: 0.03712381,

@@ -109,6 +109,7 @@ struct StakeKitMapper {
 
         return try YieldInfo(
             id: response.id,
+            isAvailable: response.isAvailable,
             apy: response.apy,
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRate: response.rewardRate,

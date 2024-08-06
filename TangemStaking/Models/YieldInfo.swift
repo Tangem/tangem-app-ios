@@ -10,6 +10,7 @@ import Foundation
 
 public struct YieldInfo: Hashable {
     public let id: String
+    public let isAvailable: Bool
 
     // Rewards
     public let apy: Decimal
@@ -33,6 +34,7 @@ public struct YieldInfo: Hashable {
 
     public init(
         id: String,
+        isAvailable: Bool,
         apy: Decimal,
         rewardType: RewardType,
         rewardRate: Decimal,
@@ -46,6 +48,7 @@ public struct YieldInfo: Hashable {
         rewardScheduleType: RewardScheduleType
     ) {
         self.id = id
+        self.isAvailable = isAvailable
         self.apy = apy
         self.rewardType = rewardType
         self.rewardRate = rewardRate

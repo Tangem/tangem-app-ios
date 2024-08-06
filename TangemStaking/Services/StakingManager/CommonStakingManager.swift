@@ -123,6 +123,10 @@ private extension CommonStakingManager {
     }
 
     func state(balances: [StakingBalanceInfo]?, yield: YieldInfo) -> StakingManagerState {
+        guard yield.isAvailable else {
+            return .temporaryUnavailable(yield)
+        }
+
         guard let balances, balances.contains(where: { $0.balanceGroupType.isActiveOrUnstaked }) else {
             return .availableToStake(yield)
         }

@@ -46,7 +46,7 @@ private extension CommonStakingNotificationManager {
 
     func update(state: StakingManagerState) {
         switch state {
-        case .loading, .notEnabled:
+        case .loading, .notEnabled, .temporaryUnavailable:
             break
         case .availableToStake(let yield):
             show(notification: .stake(

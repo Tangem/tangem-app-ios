@@ -97,7 +97,7 @@ private extension StakingDetailsViewModel {
         switch state {
         case .loading, .notEnabled:
             break
-        case .availableToStake(let yieldInfo):
+        case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
             setupView(yield: yieldInfo, balancesInfo: nil)
             actionButtonType = .stake
         case .staked(let staked):
