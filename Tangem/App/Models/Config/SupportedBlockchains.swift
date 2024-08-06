@@ -60,6 +60,7 @@ struct SupportedBlockchains {
         [
             .mantle(testnet: false),
             .internetComputer(curve: .secp256k1),
+            .blast(testnet: false),
         ]
     }
 
