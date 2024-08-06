@@ -30,6 +30,7 @@ struct StakingDetailsView: View {
                 rewardView
 
                 activeValidatorsView
+
                 unstakedValidatorsView
 
                 FixedSpacer(height: bottomViewHeight)
@@ -126,7 +127,9 @@ struct StakingDetailsView: View {
         GroupedSection(
             validators,
             content: { data in
-                Button(action: {}, label: {
+                Button(action: {
+                    viewModel.userDidTapValidator(validator: data.id)
+                }, label: {
                     ValidatorView(data: data)
                 })
             }, header: {
