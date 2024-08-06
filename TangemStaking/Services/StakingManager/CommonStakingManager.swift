@@ -101,7 +101,10 @@ private extension CommonStakingManager {
             integrationId: integrationId
         )
 
-        let transactionId = action.transactions[action.currentStepIndex].id
+        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
+            throw StakingManagerError.transactionNotFound
+        }
+
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
@@ -117,7 +120,10 @@ private extension CommonStakingManager {
             integrationId: integrationId
         )
 
-        let transactionId = action.transactions[action.currentStepIndex].id
+        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
+            throw StakingManagerError.transactionNotFound
+        }
+
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
@@ -138,6 +144,7 @@ private extension CommonStakingManager {
 public enum StakingManagerError: Error {
     case stakingManagerStateNotSupportTransactionAction(action: StakingActionType)
     case stakedBalanceNotFound(validator: String)
+    case transactionNotFound
     case notImplemented
     case notFound
 }
