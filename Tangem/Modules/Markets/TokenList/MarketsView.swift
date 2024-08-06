@@ -13,6 +13,8 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    private let scrollTopAnchorID = "markets_scroll_view_top_anchor_id"
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if viewModel.isSearching {
@@ -50,18 +52,26 @@ struct MarketsView: View {
     @ViewBuilder
     private var list: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.tokenViewModels) {
-                    MarketsItemView(viewModel: $0)
-                }
+            ScrollViewReader { proxy in
+                Color.clear.frame(height: 0)
+                    .id(scrollTopAnchorID)
 
-                if viewModel.isShowUnderCapButton {
-                    showTokensUnderCapView
-                }
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.tokenViewModels) {
+                        MarketsItemView(viewModel: $0)
+                    }
 
-                // Need for display list skeleton view
-                if case .loading = viewModel.tokenListLoadingState {
-                    loadingSkeletons
+                    if viewModel.isShowUnderCapButton {
+                        showTokensUnderCapView
+                    }
+
+                    // Need for display list skeleton view
+                    if case .loading = viewModel.tokenListLoadingState {
+                        loadingSkeletons
+                    }
+                }
+                .onReceive(viewModel.resetScrollPositionPublisher) { _ in
+                    proxy.scrollTo(scrollTopAnchorID)
                 }
             }
         }
@@ -132,13 +142,13 @@ struct MarketsView: View {
 }
 
 extension MarketsView {
-    enum ListLoadingState: Int, Identifiable, Hashable {
-        var id: Int { rawValue }
-
+    enum ListLoadingState: String, Identifiable, Hashable {
         case noResults
         case error
         case loading
         case allDataLoaded
         case idle
+
+        var id: String { rawValue }
     }
 }

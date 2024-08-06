@@ -65,14 +65,18 @@ private extension CommonExpressTransactionBuilder {
         sourceAddress: String? = nil,
         destination: Destination
     ) async throws -> Transaction {
-        let amountValue = amount / wallet.tokenItem.decimalValue
-        let amount = Amount(with: wallet.tokenItem.blockchain, type: wallet.amountType, value: amountValue)
         let source = sourceAddress ?? wallet.defaultAddress
 
         switch destination {
         case .send(let string):
+            let amountValue = amount / wallet.tokenItem.decimalValue
+            let amount = Amount(with: wallet.tokenItem.blockchain, type: wallet.tokenItem.amountType, value: amountValue)
+
             return try await wallet.transactionCreator.createTransaction(amount: amount, fee: fee, destinationAddress: string)
         case .contractCall(let contract, let data):
+            let amountValue = amount / wallet.feeTokenItem.decimalValue
+            let amount = Amount(with: wallet.feeTokenItem.blockchain, type: wallet.feeTokenItem.amountType, value: amountValue)
+
             var transaction = BlockchainSdk.Transaction(
                 amount: amount,
                 fee: fee,
