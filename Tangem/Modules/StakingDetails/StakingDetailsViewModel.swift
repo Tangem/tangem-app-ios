@@ -22,7 +22,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
-    @Published var actionButtonType: ActionButtonType = .stake
+    @Published var actionButtonType: ActionButtonType?
 
     // MARK: - Dependencies
 
@@ -85,20 +85,25 @@ private extension StakingDetailsViewModel {
     func bind() {
         stakingManager
             .statePublisher
-            .compactMap { state -> ([StakingBalanceInfo]?, YieldInfo)? in
-                switch state {
-                case .loading: nil
-                case .notEnabled: nil
-                case .availableToStake(let yieldInfo): (nil, yieldInfo)
-                case .staked(let stakingBalanceInfo, let yieldInfo): (stakingBalanceInfo, yieldInfo)
-                }
-            }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, args in
-                viewModel.setupView(yield: args.1, balancesInfo: args.0)
+            .sink { viewModel, state in
+                viewModel.setupView(state: state)
             }
             .store(in: &bag)
+    }
+
+    func setupView(state: StakingManagerState) {
+        switch state {
+        case .loading, .notEnabled:
+            break
+        case .availableToStake(let yieldInfo):
+            setupView(yield: yieldInfo, balancesInfo: nil)
+            actionButtonType = .stake
+        case .staked(let staked):
+            setupView(yield: staked.yieldInfo, balancesInfo: staked.balances)
+            actionButtonType = staked.canStakeMore ? .stakeMore : .none
+        }
     }
 
     func setupView(yield: YieldInfo, balancesInfo: [StakingBalanceInfo]?) {

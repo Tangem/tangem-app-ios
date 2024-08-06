@@ -53,8 +53,8 @@ private extension CommonStakingNotificationManager {
                 tokenSymbol: tokenItem.currencySymbol,
                 periodFormatted: yield.rewardScheduleType.rawValue
             ))
-        case .staked(_, let yield):
-            show(notification: .unstake(periodFormatted: yield.rewardScheduleType.rawValue))
+        case .staked(let staked):
+            show(notification: .unstake(periodFormatted: staked.yieldInfo.rewardScheduleType.rawValue))
         }
     }
 }

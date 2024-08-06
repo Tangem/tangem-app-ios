@@ -88,7 +88,8 @@ struct StakeKitMapper {
             guard let blocked = Decimal(stringValue: balance.amount) else {
                 throw StakeKitMapperError.noData("Balance.amount not found")
             }
-            return StakingBalanceInfo(
+
+            return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 blocked: blocked,
                 rewards: mapToRewards(from: balance),
@@ -176,8 +177,12 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingTokenItem(from token: StakeKitDTO.Token) -> StakingTokenItem {
-        StakingTokenItem(coinId: token.coinGeckoId, contractAddress: token.address)
+    func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingTokenItem {
+        guard let network = StakeKitNetworkType(rawValue: token.coinGeckoId) else {
+            throw StakeKitMapperError.noData("StakeKitNetworkType not found")
+        }
+
+        return StakingTokenItem(network: network, contractAddress: token.address)
     }
 
     func mapToRewardType(from rewardType: StakeKitDTO.Yield.Info.Response.RewardType) -> RewardType {

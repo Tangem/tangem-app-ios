@@ -40,7 +40,7 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
     case availableToStake(YieldInfo)
-    case staked([StakingBalanceInfo], YieldInfo)
+    case staked(Staked)
 
     public var isAvailable: Bool {
         switch self {
@@ -62,9 +62,10 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         switch self {
         case .loading, .notEnabled:
             return nil
-        case .availableToStake(let yieldInfo),
-             .staked(_, let yieldInfo):
+        case .availableToStake(let yieldInfo):
             return yieldInfo
+        case .staked(let staked):
+            return staked.yieldInfo
         }
     }
 
@@ -74,6 +75,18 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .notEnabled: "notEnabled"
         case .availableToStake: "availableToStake"
         case .staked: "staked"
+        }
+    }
+}
+
+public extension StakingManagerState {
+    struct Staked: Hashable {
+        public let balances: [StakingBalanceInfo]
+        public let yieldInfo: YieldInfo
+        public let canStakeMore: Bool
+
+        public func balance(validator: String) -> StakingBalanceInfo? {
+            balances.first(where: { $0.validatorAddress == validator })
         }
     }
 }

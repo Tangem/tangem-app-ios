@@ -84,8 +84,8 @@ private extension UnstakingModel {
 
     func update(state: StakingManagerState) {
         switch state {
-        case .staked(let balances, _):
-            guard let balance = balances.first(where: { $0.validatorAddress == validator }) else {
+        case .staked(let staked):
+            guard let balance = staked.balance(validator: validator) else {
                 assertionFailure("The balance for validator \(validator) not found")
                 return
             }

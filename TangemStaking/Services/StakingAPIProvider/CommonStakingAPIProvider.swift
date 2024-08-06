@@ -30,9 +30,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]? {
-        assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
-
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
         let response = try await service.getBalances(request: request)
         let balancesInfo = try mapper.mapToBalanceInfo(from: response)
         return balancesInfo
