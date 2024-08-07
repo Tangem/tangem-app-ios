@@ -116,6 +116,7 @@ struct SendView: View {
                 viewModel: sendSummaryViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .amountMinTextScale(Constants.amountMinTextScale)
         case .finish(let sendFinishViewModel):
             SendFinishView(
                 viewModel: sendFinishViewModel,
