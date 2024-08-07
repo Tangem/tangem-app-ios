@@ -207,8 +207,9 @@ struct SendDecimalNumberTextField: View {
             // is not actually needed at the moment. This scaled state should not affect view dimensions at all, because
             // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by the same value, 1%)
             let onePercent = 0.01
-            let defaultScaleMultiplier = 1.0 + onePercent
-            let defaultWidthMultiplier = 1.0 - onePercent
+            let multiplierBase = 1.0
+            let defaultScaleMultiplier = multiplierBase + onePercent
+            let defaultWidthMultiplier = multiplierBase - onePercent
 
             return (1.0 * defaultScaleMultiplier, maxWidth * defaultWidthMultiplier)
         }
