@@ -53,7 +53,7 @@ final class MarketsListDataProvider {
     private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage: Int = 150
+    private let limitPerPage: Int = 40
 
     // Total tokens value by pages
     private var totalTokensCount: Int?
