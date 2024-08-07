@@ -186,4 +186,8 @@ struct SendDependenciesBuilder {
             feeTokenItem: walletModel.feeTokenItem
         )
     }
+
+    func makeStakingNotificationManager() -> StakingNotificationManager {
+        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
+    }
 }

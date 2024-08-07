@@ -654,6 +654,7 @@
 "staking_native" = "Нативний стейкінг";
 "staking_notification_earn_rewards_text" = "Стейкінг дозволяє заробляти %1@. Ваші винагороди за стейкінг надходять кожні ~%2@ днів.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
+"staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
 "staking_rewards" = "Винагороди";
 "staking_stake_more" = "Застейкати більше";
 "staking_unstaked" = "Не застейканий";

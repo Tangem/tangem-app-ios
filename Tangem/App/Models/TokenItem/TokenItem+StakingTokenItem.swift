@@ -13,7 +13,7 @@ extension TokenItem {
     var stakingTokenItem: TangemStaking.StakingTokenItem {
         StakingTokenItem(
             coinId: id ?? blockchain.coinId,
-            contractAdress: contractAddress
+            contractAddress: contractAddress
         )
     }
 }
