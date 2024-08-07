@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SendAmountView: View {
     @ObservedObject var viewModel: SendAmountViewModel
+
     let transitionService: SendTransitionService
     let namespace: Namespace
 
@@ -66,17 +67,12 @@ struct SendAmountView: View {
                 .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {
-                ZStack {
-                    SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                        .initialFocusBehavior(.noFocus)
-                        .alignment(.center)
-                        .prefixSuffixOptions(viewModel.currentFieldOptions)
-                        .minTextScale(SendView.Constants.amountMinTextScale)
-                }
-                // We have to keep frame until SendDecimalNumberTextField size fix
-                // Just on appear it has the zero height. Is cause break animation
-                .frame(height: 35)
-                .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+                SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+                    .initialFocusBehavior(.noFocus)
+                    .alignment(.center)
+                    .prefixSuffixOptions(viewModel.currentFieldOptions)
+                    .minTextScale(SendView.Constants.amountMinTextScale)
+                    .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout
                 Text(viewModel.alternativeAmount ?? " ")
