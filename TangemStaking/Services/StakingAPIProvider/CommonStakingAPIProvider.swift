@@ -54,7 +54,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         let request = StakeKitDTO.Actions.Exit.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+            args: .init(amount: amount.description, validatorAddress: validator)
         )
 
         let response = try await service.exitAction(request: request)

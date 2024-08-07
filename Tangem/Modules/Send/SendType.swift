@@ -13,7 +13,7 @@ enum SendType {
     case send
     case sell(parameters: PredefinedSellParameters)
     case staking(manager: StakingManager)
-    case unstaking(manager: StakingManager)
+    case unstaking(manager: StakingManager, validator: String)
 }
 
 struct PredefinedSellParameters {

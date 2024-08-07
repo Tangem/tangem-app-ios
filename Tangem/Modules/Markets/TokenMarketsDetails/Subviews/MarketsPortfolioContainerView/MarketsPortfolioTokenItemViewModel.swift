@@ -16,8 +16,8 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published var balanceValue: String = ""
     @Published var contextActions: [TokenActionType] = []
 
-    var id: WalletModel.ID {
-        walletModel.id
+    var id: Int {
+        hashValue
     }
 
     var tokenIconInfo: TokenIconInfo {
@@ -79,5 +79,16 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
     private func buildContextActions() {
         contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+    }
+}
+
+extension MarketsPortfolioTokenItemViewModel: Hashable {
+    static func == (lhs: MarketsPortfolioTokenItemViewModel, rhs: MarketsPortfolioTokenItemViewModel) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(userWalletId)
+        hasher.combine(walletModel.id)
     }
 }
