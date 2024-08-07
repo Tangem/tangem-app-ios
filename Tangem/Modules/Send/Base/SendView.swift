@@ -211,7 +211,7 @@ extension SendView {
         static let amountMinTextScale = 0.5
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .spring(duration: animationDuration)
-        static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
+        fileprivate static let backButtonAnimation: Animation = .easeOut(duration: 0.1)
     }
 }
 
