@@ -71,7 +71,7 @@ struct SendAmountView: View {
                         .initialFocusBehavior(.noFocus)
                         .alignment(.center)
                         .prefixSuffixOptions(viewModel.currentFieldOptions)
-                        .minTextScale(SendView.Constants.amountMinTextScale)
+                        .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 }
                 // We have to keep frame until SendDecimalNumberTextField size fix
                 // Just on appear it has the zero height. Is cause break animation

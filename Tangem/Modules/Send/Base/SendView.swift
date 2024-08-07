@@ -212,12 +212,6 @@ private struct SendViewBackButton: View {
     }
 }
 
-extension SendView {
-    enum Constants {
-        static let amountMinTextScale = 0.5
-    }
-}
-
 // MARK: - Preview
 
 /*
