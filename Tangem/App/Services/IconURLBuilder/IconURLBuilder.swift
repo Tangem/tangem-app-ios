@@ -16,8 +16,7 @@ struct IconURLBuilder {
     }
 
     func tokenIconURL(id: String, size: TokenURLIconSize = .large) -> URL {
-        let id = id == "cyber" ? "cyberconnect" : id
-        return baseURL
+        baseURL
             .appendingPathComponent("coins")
             .appendingPathComponent(size.rawValue)
             .appendingPathComponent("\(id).png")
