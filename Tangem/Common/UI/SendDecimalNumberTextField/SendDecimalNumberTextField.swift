@@ -20,8 +20,6 @@ struct SendDecimalNumberTextField: View {
 
     // Internal state
     @FocusState private var isInputActive: Bool
-    @State private var textFieldText: String = ""
-    @State private var measuredTextSize: CGSize = .zero
 
     // Setupable
     private var initialFocusBehavior: InitialFocusBehavior = .noFocus
@@ -39,7 +37,7 @@ struct SendDecimalNumberTextField: View {
             text += makePrefixSuffixText(prefix, hasSpaceBeforeText: false, hasSpaceAfterText: hasSpace)
         }
 
-        text += (textFieldText.nilIfEmpty ?? Constants.placeholder)
+        text += (viewModel.textFieldText.nilIfEmpty ?? Constants.placeholder)
 
         if case .suffix(.some(let suffix), let hasSpace) = prefixSuffixOptions {
             text += makePrefixSuffixText(suffix, hasSpaceBeforeText: hasSpace, hasSpaceAfterText: false)
@@ -91,7 +89,7 @@ struct SendDecimalNumberTextField: View {
             .infinityFrame() // Provides centered alignment within `GeometryReader`
             .overlay(textSizeMeasurer)
         }
-        .frame(height: measuredTextSize.height)
+        .frame(height: viewModel.measuredTextSize.height)
     }
 
     /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
@@ -111,12 +109,12 @@ struct SendDecimalNumberTextField: View {
             .fixedSize()
             .hidden(true) // Native `.hidden()` may affect layout
             .allowsHitTesting(false)
-            .readGeometry(\.size, bindTo: $measuredTextSize)
+            .readGeometry(\.size, bindTo: $viewModel.measuredTextSize)
     }
 
     @ViewBuilder
     private var textField: some View {
-        DecimalNumberTextField(viewModel: viewModel, textFieldText: $textFieldText)
+        DecimalNumberTextField(viewModel: viewModel)
             .appearance(appearance)
             .placeholder(Constants.placeholder)
             .focused($isInputActive)
@@ -192,7 +190,7 @@ struct SendDecimalNumberTextField: View {
 
     private func scaleAndWidth(using proxy: GeometryProxy) -> (scale: CGFloat, width: CGFloat) {
         let maxWidth = proxy.size.width
-        let measuredWidth = measuredTextSize.width
+        let measuredWidth = viewModel.measuredTextSize.width
 
         guard
             let minTextScale,

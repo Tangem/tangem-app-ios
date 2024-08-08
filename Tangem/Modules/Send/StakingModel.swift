@@ -19,6 +19,7 @@ class StakingModel {
 
     private let _transaction = CurrentValueSubject<LoadingValue<StakingTransactionInfo>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _fee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
 
     // MARK: - Dependencies
 
@@ -52,35 +53,36 @@ private extension StakingModel {
                 _amount.compactMap { $0?.crypto },
                 _selectedValidator.compactMap { $0.value }
             )
-            .setFailureType(to: Error.self)
-            .withWeakCaptureOf(self)
-            .tryAsyncMap { model, args in
+            .sink { [weak self] args in
                 let (amount, validator) = args
-                model._transaction.send(.loading)
-
-                return try await model.stakingManager.transaction(
-                    action: .stake(amount: amount, validator: validator.address)
-                )
-            }
-            .mapToResult()
-            .withWeakCaptureOf(self)
-            .sink { model, result in
-                switch result {
-                case .success(let transaction):
-                    model._transaction.send(.loaded(transaction))
-                case .failure(let error):
-                    AppLog.shared.error(error)
-                    model._transaction.send(.failedToLoad(error: error))
-                }
+                self?.estimateFee(amount: amount, validator: validator.address)
             }
             .store(in: &bag)
     }
 
-    func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
-        var value = transaction?.mapValue { tx in
-            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: tx.fee))
+    private func estimateFee(amount: Decimal, validator: String) {
+        runTask(in: self) { model in
+            await model.updateEstimateFee(.loading)
+            do {
+                let fee = try await model.stakingManager.estimateFee(
+                    action: StakingAction(amount: amount, validator: validator, type: .stake)
+                )
+                await model.updateEstimateFee(.loaded(fee))
+            } catch {
+                await model.updateEstimateFee(.failedToLoad(error: error))
+            }
         }
+    }
 
+    @MainActor
+    private func updateEstimateFee(_ result: LoadingValue<Decimal>) {
+        _fee.send(result)
+    }
+
+    func mapToSendFee(_ fee: LoadingValue<Decimal>?) -> SendFee {
+        let value = fee?.mapValue { fee in
+            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
+        }
         return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
@@ -89,21 +91,38 @@ private extension StakingModel {
 
 private extension StakingModel {
     private func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        guard let transaction = _transaction.value?.value else {
-            return .just(output: .transactionNotFound)
-        }
-
-        return sendTransactionDispatcher
-            .send(transaction: .staking(transaction))
+        Publishers
+            .CombineLatest(
+                _amount.compactMap { $0?.crypto },
+                _selectedValidator.compactMap { $0.value }
+            )
+            .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
-            .compactMap { sender, result in
-                sender.proceed(transaction: transaction, result: result)
-                return result
+            .tryAsyncMap { args in
+                let (model, (amount, validator)) = args
+                let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
+                return try await model.stakingManager.transaction(action: action)
             }
+            .mapToResult()
+            .withWeakCaptureOf(self)
+            .flatMap { model, result in
+                switch result {
+                case .success(let transaction):
+                    return model.sendTransactionDispatcher
+                        .send(transaction: .staking(transaction))
+                        .eraseToAnyPublisher()
+                case .failure:
+                    return Just(.transactionNotFound)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .handleEvents(receiveOutput: { [weak self] output in
+                self?.proceed(result: output)
+            })
             .eraseToAnyPublisher()
     }
 
-    private func proceed(transaction: StakingTransactionInfo, result: SendTransactionDispatcherResult) {
+    private func proceed(result: SendTransactionDispatcherResult) {
         switch result {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
@@ -163,14 +182,14 @@ extension StakingModel: StakingValidatorsOutput {
 
 extension StakingModel: SendFeeInput {
     var selectedFee: SendFee {
-        return mapToSendFee(transaction: _transaction.value)
+        mapToSendFee(_fee.value)
     }
 
     var selectedFeePublisher: AnyPublisher<SendFee, Never> {
-        _transaction
+        _fee
             .withWeakCaptureOf(self)
-            .map { model, transaction in
-                model.mapToSendFee(transaction: transaction)
+            .map { model, fee in
+                model.mapToSendFee(fee)
             }
             .eraseToAnyPublisher()
     }
