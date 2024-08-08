@@ -178,6 +178,7 @@ struct SupportedBlockchains {
             .taraxa(testnet: true),
             .base(testnet: true),
             .koinos(testnet: true),
+            .blast(testnet: true)
         ]
     }
 
