@@ -618,7 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (incl. les commissions : %2$@)";
 "send_total_subtitle_format" = "Sera envoyé %@";
 "send_transaction_success" = "La transaction a été signée avec succès et envoyée au nœud de blockchain. Le solde du portefeuille sera mis à jour après un certain temps";
-"send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron(TRX) in your account.";
+"send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron (TRX) in your account.";
 "send_validation_invalid_address" = "Adresse incorrecte";
 "send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Transaction envoyée";

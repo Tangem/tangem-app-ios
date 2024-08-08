@@ -69,7 +69,11 @@ struct ExpressAPIMapper {
         )
     }
 
-    func mapToExpressTransactionData(request: ExpressDTO.ExchangeData.Request, response: ExpressDTO.ExchangeData.Response) throws -> ExpressTransactionData {
+    func mapToExpressTransactionData(
+        item: ExpressSwappableItem,
+        request: ExpressDTO.ExchangeData.Request,
+        response: ExpressDTO.ExchangeData.Response
+    ) throws -> ExpressTransactionData {
         let txDetails = try exchangeDataDecoder.decode(txDetailsJson: response.txDetailsJson, signature: response.signature)
 
         guard request.requestId == txDetails.requestId else {
@@ -88,12 +92,25 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
-        guard let txValue = Decimal(string: txDetails.txValue) else {
+        guard var txValue = Decimal(string: txDetails.txValue) else {
             throw ExpressAPIMapperError.mapToDecimalError(txDetails.txValue)
         }
 
         fromAmount /= pow(10, response.fromDecimals)
         toAmount /= pow(10, response.toDecimals)
+
+        switch item.providerInfo.type {
+        case .cex:
+            // For CEX we have txValue amount as value which have to be sent
+            txValue /= pow(10, item.source.decimalCount)
+        case .dex, .dexBridge:
+            // For DEX we have txValue amount as coin. Because it's EVM
+            txValue /= pow(10, item.source.feeCurrencyDecimalCount)
+        }
+
+        let otherNativeFee = txDetails.otherNativeFee
+            .flatMap(Decimal.init)
+            .map { $0 / pow(10, item.source.feeCurrencyDecimalCount) }
 
         return ExpressTransactionData(
             requestId: txDetails.requestId,
@@ -104,9 +121,9 @@ struct ExpressAPIMapper {
             sourceAddress: txDetails.txFrom,
             destinationAddress: txDetails.txTo,
             extraDestinationId: txDetails.txExtraId,
-            value: txValue,
+            txValue: txValue,
             txData: txDetails.txData,
-            otherNativeFee: txDetails.otherNativeFee.flatMap(Decimal.init),
+            otherNativeFee: otherNativeFee,
             estimatedGasLimit: txDetails.gas.flatMap(Int.init),
             externalTxId: txDetails.externalTxId,
             externalTxUrl: txDetails.externalTxUrl
