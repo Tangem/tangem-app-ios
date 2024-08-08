@@ -102,6 +102,13 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeStakingTransactionDispatcher() -> SendTransactionDispatcher {
+        StakingTransactionDispatcher(
+            walletModel: walletModel,
+            transactionSigner: userWalletModel.signer
+        )
+    }
+
     func makeSendQRCodeService() -> SendQRCodeService {
         CommonSendQRCodeService(
             parser: QRCodeParser(
@@ -186,5 +193,9 @@ struct SendDependenciesBuilder {
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeStakingNotificationManager() -> StakingNotificationManager {
+        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
     }
 }

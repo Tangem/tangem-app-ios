@@ -31,7 +31,7 @@ extension YieldInfo {
             ),
         ],
         defaultValidator: nil,
-        item: .init(coinId: "tron", contractAdress: nil),
+        item: .init(coinId: "tron", contractAddress: nil),
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),
         rewardClaimingType: .manual,

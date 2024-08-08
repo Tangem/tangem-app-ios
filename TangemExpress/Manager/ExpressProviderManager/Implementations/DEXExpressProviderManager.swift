@@ -137,8 +137,7 @@ private extension DEXExpressProviderManager {
     }
 
     func proceed(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState {
-        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
-        if txValue > request.pair.source.getFeeCurrencyBalance() {
+        if data.txValue > request.pair.source.getFeeCurrencyBalance() {
             let estimateFee = try await estimateFee(request: request, data: data)
             return .restriction(estimateFee, quote: quote)
         }
@@ -153,7 +152,7 @@ private extension DEXExpressProviderManager {
     }
 
     func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
-        let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) ?? 0
+        let otherNativeFee = data.otherNativeFee ?? 0
 
         if let estimatedGasLimit = data.estimatedGasLimit {
             let estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
@@ -167,17 +166,17 @@ private extension DEXExpressProviderManager {
     }
 
     func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {
-        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+        guard let txData = data.txData.map(Data.init(hexString:)) else {
+            throw ExpressProviderError.transactionDataNotFound
+        }
 
         var fee = try await feeProvider.getFee(
-            amount: txValue,
-            destination: data.destinationAddress,
-            hexData: data.txData.map { Data(hexString: $0) },
-            isFeeTokenItem: true // decimals for txValue (other native fee) must be equal to main coin decimals
+            amount: .dex(txValue: data.txValue, txData: txData),
+            destination: data.destinationAddress
         )
 
         try Task.checkCancellation()
-        if let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) {
+        if let otherNativeFee = data.otherNativeFee {
             fee = include(otherNativeFee: otherNativeFee, in: fee)
             log("The fee was increased by otherNativeFee \(otherNativeFee)")
         }
@@ -198,12 +197,11 @@ private extension DEXExpressProviderManager {
         }()
 
         let contractAddress = request.pair.source.expressCurrency.contractAddress
-        let data = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
+        let txData = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
+
         let fee = try await feeProvider.getFee(
-            amount: 0,
-            destination: request.pair.source.expressCurrency.contractAddress,
-            hexData: data,
-            isFeeTokenItem: false
+            amount: .dex(txValue: 0, txData: txData),
+            destination: request.pair.source.expressCurrency.contractAddress
         )
         try Task.checkCancellation()
 
@@ -211,7 +209,7 @@ private extension DEXExpressProviderManager {
         let fastest = fee.fastest
         return ExpressManagerState.PermissionRequired(
             policy: approvePolicy,
-            data: .init(spender: spender, toContractAddress: contractAddress, data: data),
+            data: .init(spender: spender, toContractAddress: contractAddress, data: txData),
             fee: .single(fastest),
             quote: quote
         )

@@ -618,7 +618,7 @@
 "send_total_subtitle_fiat_format" = "≈ %1$@ (вкл. комісію: %2$@ )";
 "send_total_subtitle_format" = "%@ буде надіслано";
 "send_transaction_success" = "Транзакція успішно підписана і відправлена до блокчейну. Баланс гаманця буде оновлено через деякий час";
-"send_tron_account_activation_error" = "%1$@ — це монета у мережі Tron. Щоб розрахувати комісію та здійснити транзакцію, вам необхідно внести певну кількість Tron(TRX) на свій рахунок.";
+"send_tron_account_activation_error" = "%1$@ — це монета у мережі Tron. Щоб розрахувати комісію та здійснити транзакцію, вам необхідно внести певну кількість Tron (TRX) на свій рахунок.";
 "send_validation_invalid_address" = "Недійсна адреса";
 "send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Трансакцію надіслано";
@@ -654,6 +654,7 @@
 "staking_native" = "Нативний стейкінг";
 "staking_notification_earn_rewards_text" = "Стейкінг дозволяє заробляти %1@. Ваші винагороди за стейкінг надходять кожні ~%2@ днів.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
+"staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
 "staking_rewards" = "Винагороди";
 "staking_stake_more" = "Застейкати більше";
 "staking_unstaked" = "Не застейканий";

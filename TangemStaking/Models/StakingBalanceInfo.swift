@@ -14,19 +14,22 @@ public struct StakingBalanceInfo: Hashable {
     public let rewards: Decimal?
     public let balanceGroupType: BalanceGroupType
     public let validatorAddress: String?
+    public let passthrough: String?
 
     public init(
         item: StakingTokenItem,
         blocked: Decimal,
         rewards: Decimal?,
         balanceGroupType: BalanceGroupType,
-        validatorAddress: String?
+        validatorAddress: String?,
+        passthrough: String?
     ) {
         self.item = item
         self.blocked = blocked
         self.rewards = rewards
         self.balanceGroupType = balanceGroupType
         self.validatorAddress = validatorAddress
+        self.passthrough = passthrough
     }
 }
 

@@ -50,9 +50,7 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         let emailDataCollector = SendScreenDataCollector(
             userWalletEmailData: emailDataProvider.emailData,
             walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
+            transaction: transaction,
             isFeeIncluded: input.isFeeIncluded,
             lastError: error
         )

@@ -38,6 +38,66 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return balancesInfo
     }
 
+    func estimateStakeFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.EnterAction.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [])
+        )
+
+        let response = try await service.estimateGasEnterAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction fee not found")
+        }
+        return result
+    }
+
+    func estimateUnstakeFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.ExitAction.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator)
+        )
+
+        let response = try await service.estimateGasExitAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("ExitAction fee not found")
+        }
+        return result
+    }
+
+    func estimateClaimRewardsFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String,
+        passthrough: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.PendingAction.Request(
+            type: .claimRewards,
+            integrationId: integrationId,
+            passthrough: passthrough,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator)
+        )
+
+        let response = try await service.estimateGasPendingAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("PendingAction fee not found")
+        }
+        return result
+    }
+
     func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction {
         let request = StakeKitDTO.Actions.Enter.Request(
             integrationId: integrationId,

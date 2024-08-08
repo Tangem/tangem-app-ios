@@ -56,17 +56,57 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo {
-        switch (state, action) {
-        case (.availableToStake(let yieldInfo), .stake(let amount, let validator)):
-            return try await getTransactionToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
+    func estimateFee(action: StakingAction) async throws -> Decimal {
+        switch (state, action.type) {
+        case (.availableToStake(let yieldInfo), .stake):
+            return try await provider.estimateStakeFee(
+                amount: action.amount,
+                address: wallet.address,
+                validator: action.validator,
+                integrationId: yieldInfo.id
+            )
+        case (.staked(_, let yieldInfo), .unstake):
+            return try await provider.estimateUnstakeFee(
+                amount: action.amount,
+                address: wallet.address,
+                validator: action.validator,
+                integrationId: yieldInfo.id
+            )
+        case (.staked(let balanceInfo, let yieldInfo), .claimRewards):
+            guard let passthrough = balanceInfo.first(where: { $0.passthrough != nil })?.passthrough else {
+                fallthrough
+            }
+            return try await provider.estimateClaimRewardsFee(
+                amount: action.amount,
+                address: wallet.address,
+                validator: action.validator,
+                integrationId: yieldInfo.id,
+                passthrough: passthrough
+            )
+        default:
+            log("Invalid staking manager state: \(state), for action: \(action)")
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+        }
+    }
 
-        case (.staked(let balances, let yieldInfo), .unstake(let validator)):
-            guard let balance = balances.first(where: { $0.validatorAddress == validator }) else {
-                throw StakingManagerError.stakedBalanceNotFound(validator: validator)
+    func transaction(action: StakingAction) async throws -> StakingTransactionInfo {
+        switch (state, action.type) {
+        case (.availableToStake(let yieldInfo), .stake):
+            return try await getTransactionToStake(
+                amount: action.amount,
+                validator: action.validator,
+                integrationId: yieldInfo.id
+            )
+        case (.staked(let balances, let yieldInfo), .unstake):
+            guard let balance = balances.first(where: { $0.validatorAddress == action.validator }) else {
+                throw StakingManagerError.stakedBalanceNotFound(validator: action.validator)
             }
 
-            return try await getTransactionToUnstake(amount: balance.blocked, validator: validator, integrationId: yieldInfo.id)
+            return try await getTransactionToUnstake(
+                amount: balance.blocked,
+                validator: action.validator,
+                integrationId: yieldInfo.id
+            )
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
         }
@@ -142,7 +182,7 @@ private extension CommonStakingManager {
 }
 
 public enum StakingManagerError: Error {
-    case stakingManagerStateNotSupportTransactionAction(action: StakingActionType)
+    case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
     case stakedBalanceNotFound(validator: String)
     case transactionNotFound
     case notImplemented
