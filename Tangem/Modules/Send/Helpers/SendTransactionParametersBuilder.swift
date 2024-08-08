@@ -98,7 +98,8 @@ struct SendTransactionParametersBuilder {
              .joystream,
              .koinos,
              .internetComputer,
-             .cyber:
+             .cyber,
+             .blast:
             return nil
         }
     }
