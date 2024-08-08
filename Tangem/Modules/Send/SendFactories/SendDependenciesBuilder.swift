@@ -175,12 +175,19 @@ struct SendDependenciesBuilder {
 
     func makeUnstakingModel(
         stakingManager: any StakingManager,
-        sendTransactionDispatcher: any SendTransactionDispatcher
+        sendTransactionDispatcher: any SendTransactionDispatcher,
+        validator: String
     ) -> UnstakingModel {
         UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            validator: validator,
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeStakingNotificationManager() -> StakingNotificationManager {
+        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
     }
 }

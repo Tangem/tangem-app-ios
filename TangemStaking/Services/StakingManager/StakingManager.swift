@@ -20,7 +20,7 @@ public protocol StakingManager {
 public enum StakingActionType {
     case stake(amount: Decimal, validator: String)
     case claimRewards
-    case unstake
+    case unstake(validator: String)
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {

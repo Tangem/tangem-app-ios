@@ -83,6 +83,16 @@ struct NotificationsFactory {
         )
     }
 
+    func buildNotificationInput(
+        for event: StakingNotificationEvent
+    ) -> NotificationViewInput {
+        return .init(
+            style: .plain,
+            severity: event.severity,
+            settings: .init(event: event, dismissAction: nil)
+        )
+    }
+
     private func tokenNotificationStyle(
         for event: TokenNotificationEvent,
         action: NotificationView.NotificationButtonTapAction?

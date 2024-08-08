@@ -27,7 +27,7 @@ struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
 
         var transaction = try await buildTransaction(
             wallet: wallet,
-            amount: data.value,
+            amount: data.txValue,
             fee: fee,
             sourceAddress: data.sourceAddress,
             destination: destination
@@ -69,13 +69,11 @@ private extension CommonExpressTransactionBuilder {
 
         switch destination {
         case .send(let string):
-            let amountValue = amount / wallet.tokenItem.decimalValue
-            let amount = Amount(with: wallet.tokenItem.blockchain, type: wallet.tokenItem.amountType, value: amountValue)
+            let amount = Amount(with: wallet.tokenItem.blockchain, type: wallet.tokenItem.amountType, value: amount)
 
             return try await wallet.transactionCreator.createTransaction(amount: amount, fee: fee, destinationAddress: string)
         case .contractCall(let contract, let data):
-            let amountValue = amount / wallet.feeTokenItem.decimalValue
-            let amount = Amount(with: wallet.feeTokenItem.blockchain, type: wallet.feeTokenItem.amountType, value: amountValue)
+            let amount = Amount(with: wallet.feeTokenItem.blockchain, type: wallet.feeTokenItem.amountType, value: amount)
 
             var transaction = BlockchainSdk.Transaction(
                 amount: amount,
@@ -87,7 +85,7 @@ private extension CommonExpressTransactionBuilder {
             )
 
             // In EVM-like blockchains we should add the txData to the transaction
-            if wallet.ethereumNetworkProvider != nil {
+            if wallet.tokenItem.blockchain.isEvm {
                 transaction.params = EthereumTransactionParams(data: data)
             }
 

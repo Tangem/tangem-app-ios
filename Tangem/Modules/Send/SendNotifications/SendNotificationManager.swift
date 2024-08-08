@@ -50,8 +50,7 @@ private extension CommonSendNotificationManager {
         input.feeValues
             .withWeakCaptureOf(self)
             .sink { manager, feeValues in
-                let hasError = feeValues.contains { $0.value.error != nil }
-                manager.updateNetworkFeeUnreachable(isVisible: hasError)
+                manager.updateNetworkFeeUnreachable(errors: feeValues.compactMap(\.value.error))
             }
             .store(in: &bag)
 
@@ -100,9 +99,18 @@ private extension CommonSendNotificationManager {
 // MARK: - Fee
 
 private extension CommonSendNotificationManager {
-    func updateNetworkFeeUnreachable(isVisible: Bool) {
-        if isVisible {
-            show(notification: .networkFeeUnreachable)
+    func updateNetworkFeeUnreachable(errors: [Error]) {
+        if !errors.isEmpty {
+            let hasActivationError = errors.contains { error in
+                if case WalletError.accountNotActivated = error {
+                    return true
+                }
+                return false
+            }
+            let notification: SendNotificationEvent = hasActivationError
+                ? .accountNotActivated(assetName: tokenItem.name)
+                : .networkFeeUnreachable
+            show(notification: notification)
         } else {
             hideAllNotification { event in
                 if case .networkFeeUnreachable = event {

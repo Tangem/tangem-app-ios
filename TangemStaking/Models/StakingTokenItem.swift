@@ -10,10 +10,10 @@ import Foundation
 
 public struct StakingTokenItem: Hashable {
     public let coinId: String
-    public let contractAdress: String?
+    public let contractAddress: String?
 
-    public init(coinId: String, contractAdress: String?) {
+    public init(coinId: String, contractAddress: String?) {
         self.coinId = coinId
-        self.contractAdress = contractAdress
+        self.contractAddress = contractAddress
     }
 }

@@ -33,6 +33,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Private Properties
 
+    private let initialPrice: Decimal?
+    private let initialPriceChangeValues: [String: Decimal]
+
     private var bag = Set<AnyCancellable>()
 
     private let priceChangeUtility = PriceChangeUtility()
@@ -54,6 +57,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         self.filterProvider = filterProvider
         self.prefetchDataSource = prefetchDataSource
 
+        initialPrice = data.priceValue
+        initialPriceChangeValues = data.priceChangeStateValues
+
         index = data.index
         tokenId = data.id
         imageURL = IconURLBuilder().tokenIconURL(id: tokenId, size: .large)
@@ -70,14 +76,14 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             self.marketCap = marketCapFormatter.formatDecimal(marketCap)
         }
 
-        setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
+        setupPriceInfo(
+            price: data.priceValue,
+            priceChangeValue: data.priceChangeStateValues[filterProvider.currentFilterValue.interval.rawValue]
+        )
 
+        bindToIntervalUpdates()
         bindToQuotesUpdates()
         bindWithProviders(charts: chartsProvider, filter: filterProvider)
-    }
-
-    deinit {
-        print("MarketsItemViewModel deinitialized - index: \(index)")
     }
 
     func onAppear() {
@@ -92,7 +98,25 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private func setupPriceInfo(price: Decimal?, priceChangeValue: Decimal?) {
         priceValue = priceFormatter.formatFiatBalance(price)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangeValue)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: priceChangeValue)
+    }
+
+    private func bindToIntervalUpdates() {
+        filterProvider?.filterPublisher
+            .dropFirst()
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, filter in
+                if let newQuote = viewModel.quotesRepository.quotes[viewModel.tokenId] {
+                    viewModel.updatePrice(by: newQuote, with: filter.interval)
+                } else {
+                    viewModel.setupPriceInfo(
+                        price: viewModel.initialPrice,
+                        priceChangeValue: viewModel.initialPriceChangeValues[filter.interval.rawValue]
+                    )
+                }
+            }
+            .store(in: &bag)
     }
 
     private func bindToQuotesUpdates() {
@@ -106,18 +130,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .withWeakCaptureOf(self)
             .sink { elements in
                 let (viewModel, (previousValue, newQuote)) = elements
-                let priceChangeValue: Decimal?
-                switch viewModel.filterProvider?.currentFilterValue.interval {
-                case .day:
-                    priceChangeValue = newQuote.priceChange24h
-                case .week:
-                    priceChangeValue = newQuote.priceChange7d
-                case .month:
-                    priceChangeValue = newQuote.priceChange30d
-                default:
-                    priceChangeValue = nil
-                }
-                viewModel.setupPriceInfo(price: newQuote.price, priceChangeValue: priceChangeValue)
+
+                viewModel.updatePrice(by: newQuote, with: viewModel.filterProvider?.currentFilterValue.interval)
                 viewModel.priceChangeAnimation = .calculateChange(from: previousValue?.price, to: newQuote.price)
             }
             .store(in: &bag)
@@ -168,6 +182,23 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             return nil
         }
     }
+
+    private func updatePrice(by newQuote: TokenQuote, with interval: MarketsPriceIntervalType?) {
+        let priceChangeValue: Decimal?
+
+        switch interval {
+        case .day:
+            priceChangeValue = newQuote.priceChange24h
+        case .week:
+            priceChangeValue = newQuote.priceChange7d
+        case .month:
+            priceChangeValue = newQuote.priceChange30d
+        default:
+            priceChangeValue = nil
+        }
+
+        setupPriceInfo(price: newQuote.price, priceChangeValue: priceChangeValue)
+    }
 }
 
 extension MarketsItemViewModel {
@@ -179,6 +210,6 @@ extension MarketsItemViewModel {
         let marketCap: Decimal?
         let marketRating: Int?
         let priceValue: Decimal?
-        let priceChangeStateValue: Decimal?
+        let priceChangeStateValues: [String: Decimal]
     }
 }

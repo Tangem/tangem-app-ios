@@ -251,7 +251,7 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId]
+            priceChangeStateValues: tokenItemModel.priceChangePercentage
         )
 
         return MarketsItemViewModel(

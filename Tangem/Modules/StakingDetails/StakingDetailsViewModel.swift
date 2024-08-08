@@ -61,6 +61,10 @@ final class StakingDetailsViewModel: ObservableObject {
         coordinator?.openStakingFlow()
     }
 
+    func userDidTapValidator(validator: String) {
+        coordinator?.openUnstakingFlow(validator: validator)
+    }
+
     func userDidTapHideBanner() {
         AppSettings.shared.hideStakingInfoBanner = true
         hideStakingInfoBanner = true
@@ -292,6 +296,7 @@ private extension StakingDetailsViewModel {
                     unboundingPeriod: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())
                 )
             }
+
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
                 state: validatorStakeState,
