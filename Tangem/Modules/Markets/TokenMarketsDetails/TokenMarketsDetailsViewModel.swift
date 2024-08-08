@@ -158,9 +158,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }.eraseToAnyCancellable()
     }
 
-    func openLinkAction(_ link: String) {
-        guard let url = URL(string: link) else {
-            log("Failed to create link from: \(link)")
+    func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
+        Analytics.log(event: .marketsButtonLinks, params: [.link: info.title])
+
+        guard let url = URL(string: info.link) else {
+            log("Failed to create link from: \(info.link)")
             return
         }
 
@@ -312,6 +314,7 @@ private extension TokenMarketsDetailsViewModel {
             yAxisLabelCount: Constants.historyChartYAxisLabelCount
         )
         historyChartViewModel = MarketsHistoryChartViewModel(
+            tokenSymbol: tokenInfo.symbol,
             historyChartProvider: historyChartProvider,
             selectedPriceInterval: selectedPriceChangeIntervalType,
             selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType

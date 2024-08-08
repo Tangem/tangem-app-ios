@@ -11,7 +11,7 @@ import Foundation
 struct MarketsTokenDetailsLinksMapper {
     private let defaultIcon = Assets.arrowRightUp
 
-    let openLinkAction: (String) -> Void
+    let openLinkAction: (MarketsTokenDetailsLinks.LinkInfo) -> Void
 
     func mapToSections(_ links: MarketsTokenDetailsLinks) -> [TokenMarketsDetailsLinkSection] {
         return [
@@ -41,8 +41,7 @@ struct MarketsTokenDetailsLinksMapper {
             icon: .leading(icon),
             link: linkInfo.link,
             action: {
-                Analytics.log(event: .marketsButtonLinks, params: [.link: linkInfo.title])
-                openLinkAction(linkInfo.link)
+                openLinkAction(linkInfo)
             }
         )
     }
