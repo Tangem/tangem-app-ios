@@ -105,7 +105,8 @@ struct SendDependenciesBuilder {
     func makeStakingTransactionDispatcher() -> SendTransactionDispatcher {
         StakingTransactionDispatcher(
             walletModel: walletModel,
-            transactionSigner: userWalletModel.signer
+            transactionSigner: userWalletModel.signer,
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
         )
     }
 
@@ -176,7 +177,6 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
-            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
             feeTokenItem: walletModel.feeTokenItem
         )
     }

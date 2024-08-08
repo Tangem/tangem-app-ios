@@ -27,7 +27,6 @@ class StakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let pendingHashesSender: StakingPendingHashesSender
     private let feeTokenItem: TokenItem
 
     private var bag: Set<AnyCancellable> = []
@@ -35,12 +34,10 @@ class StakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        pendingHashesSender: StakingPendingHashesSender,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.pendingHashesSender = pendingHashesSender
         self.feeTokenItem = feeTokenItem
 
         bind()

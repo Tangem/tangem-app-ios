@@ -23,12 +23,14 @@ struct SendTransactionMapper {
         return .success(hash: result.hash, url: explorerUrl)
     }
 
-    func mapError(_ error: SendTxError, transaction: SendTransactionType) -> Just<SendTransactionDispatcherResult> {
-        switch error.error {
-        case TangemSdkError.userCancelled:
+    func mapError(_ error: Error, transaction: SendTransactionType) -> Just<SendTransactionDispatcherResult> {
+        let sendError = error as? SendTxError ?? SendTxError(error: error)
+        let internalError = sendError.error
+
+        if internalError.toTangemSdkError().isUserCancelled {
             return Just(.userCancelled)
-        default:
-            return Just(.sendTxError(transaction: transaction, error: error))
         }
+
+        return Just(.sendTxError(transaction: transaction, error: sendError))
     }
 }
