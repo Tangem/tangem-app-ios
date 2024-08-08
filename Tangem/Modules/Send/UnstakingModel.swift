@@ -121,7 +121,7 @@ private extension UnstakingModel {
             .withWeakCaptureOf(self)
             .flatMap { model, transaction in
                 model.sendTransactionDispatcher
-                    .sendPublisher(transaction: .staking(model.mapToStakeKitTransaction(transaction)))
+                    .sendPublisher(transaction: .staking(StakeKitMapper().mapToStakeKitTransaction(transaction)))
                     .handleEvents(receiveOutput: { [weak model] output in
                         model?.proceed(transaction: transaction, result: output)
                     })
@@ -144,18 +144,6 @@ private extension UnstakingModel {
         case .success:
             _transactionTime.send(Date())
         }
-    }
-
-    // TODO: get fee, amount and source address
-    private func mapToStakeKitTransaction(_ transaction: StakingTransactionInfo) -> StakeKitTransaction {
-        let stakeKitTransaction = StakeKitTransaction(
-            amount: Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0),
-            fee: Fee(Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0)),
-            sourceAddress: "",
-            unsignedData: transaction.unsignedTransactionData
-        )
-
-        return stakeKitTransaction
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import BlockchainSdk
 
 struct StakeKitMapper {
     // MARK: - Actions
@@ -79,6 +80,18 @@ struct StakeKitMapper {
             unsignedTransactionData: unsignedTransaction,
             fee: fee
         )
+    }
+
+    // TODO: get fee, amount and source address
+    func mapToStakeKitTransaction(_ transaction: StakingTransactionInfo) -> StakeKitTransaction {
+        let stakeKitTransaction = StakeKitTransaction(
+            amount: Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0),
+            fee: Fee(Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0)),
+            sourceAddress: "",
+            unsignedData: transaction.unsignedTransactionData
+        )
+
+        return stakeKitTransaction
     }
 
     // MARK: - Balance
