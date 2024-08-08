@@ -109,7 +109,7 @@ private extension StakingModel {
             .withWeakCaptureOf(self)
             .flatMap { model, transaction in
                 model.sendTransactionDispatcher
-                    .sendPublisher(transaction: .staking(StakeKitMapper().mapToStakeKitTransaction(transaction)))
+                    .sendPublisher(transaction: .staking(StakingMapper().mapToStakeKitTransaction(transaction)))
             }
             .handleEvents(receiveOutput: { [weak self] output in
                 self?.proceed(result: output)
@@ -224,7 +224,7 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
                     return nil
                 }
 
-                let stakeKitTx = model.mapToStakeKitTransaction(tx)
+                let stakeKitTx = StakingMapper().mapToStakeKitTransaction(tx)
                 return SendTransactionType.staking(stakeKitTx)
             }
             .eraseToAnyPublisher()
