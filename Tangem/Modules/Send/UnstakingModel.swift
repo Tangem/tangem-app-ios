@@ -62,9 +62,8 @@ private extension UnstakingModel {
         _amount.compactMap { $0?.crypto }
             .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
-            .tryAsyncMap { args in
-                let (model, amount) = args
-                model._transaction.send(.loading)
+            .tryAsyncMap { model, amount in
+                model._fee.send(.loading)
 
                 let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
                 return try await model.stakingManager.estimateFee(action: action)

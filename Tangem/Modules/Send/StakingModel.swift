@@ -61,16 +61,15 @@ private extension StakingModel {
     }
 
     private func estimateFee(amount: Decimal, validator: String) {
-        Task { [weak self] in
-            guard let self else { return }
-            await updateEstimateFee(.loading)
+        runTask(in: self) { model in
+            await model.updateEstimateFee(.loading)
             do {
-                let fee = try await stakingManager.estimateFee(
+                let fee = try await model.stakingManager.estimateFee(
                     action: StakingAction(amount: amount, validator: validator, type: .stake)
                 )
-                await updateEstimateFee(.loaded(fee))
+                await model.updateEstimateFee(.loaded(fee))
             } catch {
-                await updateEstimateFee(.failedToLoad(error: error))
+                await model.updateEstimateFee(.failedToLoad(error: error))
             }
         }
     }
@@ -111,19 +110,19 @@ private extension StakingModel {
                 case .success(let transaction):
                     return model.sendTransactionDispatcher
                         .send(transaction: .staking(transaction))
-                        .handleEvents(receiveOutput: { [weak model] output in
-                            model?.proceed(transaction: transaction, result: output)
-                        })
                         .eraseToAnyPublisher()
-                case .failure(let error):
+                case .failure:
                     return Just(.transactionNotFound)
                         .eraseToAnyPublisher()
                 }
             }
+            .handleEvents(receiveOutput: { [weak self] output in
+                self?.proceed(result: output)
+            })
             .eraseToAnyPublisher()
     }
 
-    private func proceed(transaction: StakingTransactionInfo, result: SendTransactionDispatcherResult) {
+    private func proceed(result: SendTransactionDispatcherResult) {
         switch result {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,

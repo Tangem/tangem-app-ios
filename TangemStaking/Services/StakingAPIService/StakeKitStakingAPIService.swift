@@ -37,15 +37,15 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .getBalances(request))
     }
 
-    func estimateGasEnterAction(request: StakeKitDTO.EstimateGas.EnterAction.Request) async throws -> StakeKitDTO.EstimateGas.Response {
+    func estimateGasEnterAction(request: StakeKitDTO.EstimateGas.EnterAction.Request) async throws -> StakeKitDTO.EstimateGas.EnterAction.Response {
         try await _request(target: .estimateGasEnterAction(request))
     }
 
-    func estimateGasExitAction(request: StakeKitDTO.EstimateGas.ExitAction.Request) async throws -> StakeKitDTO.EstimateGas.Response {
+    func estimateGasExitAction(request: StakeKitDTO.EstimateGas.ExitAction.Request) async throws -> StakeKitDTO.EstimateGas.ExitAction.Response {
         try await _request(target: .estimateGasExitAction(request))
     }
 
-    func estimateGasPendingAction(request: StakeKitDTO.EstimateGas.PendingAction.Request) async throws -> StakeKitDTO.EstimateGas.Response {
+    func estimateGasPendingAction(request: StakeKitDTO.EstimateGas.PendingAction.Request) async throws -> StakeKitDTO.EstimateGas.PendingAction.Response {
         try await _request(target: .estimateGasPendingAction(request))
     }
 
