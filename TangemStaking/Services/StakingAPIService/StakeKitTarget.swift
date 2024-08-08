@@ -22,6 +22,10 @@ struct StakeKitTarget: Moya.TargetType {
         case exitAction(StakeKitDTO.Actions.Exit.Request)
         case pendingAction(StakeKitDTO.Actions.Pending.Request)
 
+        case estimateGasEnterAction(StakeKitDTO.EstimateGas.EnterAction.Request)
+        case estimateGasExitAction(StakeKitDTO.EstimateGas.ExitAction.Request)
+        case estimateGasPendingAction(StakeKitDTO.EstimateGas.PendingAction.Request)
+
         case transaction(id: String)
         case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)
         case submitTransaction(id: String, body: StakeKitDTO.SubmitTransaction.Request)
@@ -40,6 +44,12 @@ struct StakeKitTarget: Moya.TargetType {
             return "yields/\(stakekitDTO.integrationId)"
         case .getBalances:
             return "yields/balances/scan"
+        case .estimateGasEnterAction:
+            return "actions/enter/estimate-gas"
+        case .estimateGasExitAction:
+            return "actions/exit/estimate-gas"
+        case .estimateGasPendingAction:
+            return "actions/pending/estimate-gas"
         case .enterAction:
             return "actions/enter"
         case .exitAction:
@@ -59,7 +69,8 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .getYield, .enabledYields, .transaction:
             return .get
-        case .enterAction, .exitAction, .pendingAction, .getBalances, .submitTransaction, .submitHash:
+        case .enterAction, .exitAction, .pendingAction, .getBalances, .submitTransaction, .submitHash,
+             .estimateGasEnterAction, .estimateGasExitAction, .estimateGasPendingAction:
             return .post
         case .constructTransaction:
             return .patch
@@ -84,6 +95,12 @@ struct StakeKitTarget: Moya.TargetType {
             return .requestJSONEncodable(body)
         case .submitHash(_, let body):
             return .requestJSONEncodable(body)
+        case .estimateGasEnterAction(let request):
+            return .requestJSONEncodable(request)
+        case .estimateGasExitAction(let request):
+            return .requestJSONEncodable(request)
+        case .estimateGasPendingAction(let request):
+            return .requestJSONEncodable(request)
         }
     }
 

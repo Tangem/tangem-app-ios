@@ -93,7 +93,8 @@ struct StakeKitMapper {
                 blocked: blocked,
                 rewards: mapToRewards(from: balance),
                 balanceGroupType: mapToBalanceGroupType(from: balance.type),
-                validatorAddress: balance.validatorAddress
+                validatorAddress: balance.validatorAddress,
+                passthrough: mapToPassthrough(from: balance)
             )
         }
     }
@@ -224,10 +225,21 @@ struct StakeKitMapper {
     }
 
     func mapToRewards(from balance: StakeKitDTO.Balances.Response.Balance) -> Decimal? {
-        guard balance.type == .rewards || balance.pendingActions.contains(where: { $0.type == .claimRewards }) else {
+        guard rewardsPendingAction(from: balance) != nil else {
             return nil
         }
         return Decimal(stringValue: balance.amount)
+    }
+
+    func mapToPassthrough(from balance: StakeKitDTO.Balances.Response.Balance) -> String? {
+        rewardsPendingAction(from: balance)?.passthrough
+    }
+
+    private func rewardsPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> StakeKitDTO.Balances.Response.Balance.PendingAction? {
+        guard balance.type == .rewards else {
+            return nil
+        }
+        return balance.pendingActions.first { $0.type == .claimRewards }
     }
 }
 

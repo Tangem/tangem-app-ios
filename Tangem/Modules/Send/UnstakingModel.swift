@@ -17,6 +17,7 @@ class UnstakingModel {
     private let _amount = CurrentValueSubject<SendAmount?, Never>(.none)
     private let _transaction = CurrentValueSubject<LoadingValue<StakingTransactionInfo>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _fee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
 
     // MARK: - Dependencies
 
@@ -58,23 +59,24 @@ private extension UnstakingModel {
             }
             .store(in: &bag)
 
-        Just(validator) // TODO: Any input data (?)
+        _amount.compactMap { $0?.crypto }
             .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
-            .tryAsyncMap { model, validator in
-                model._transaction.send(.loading)
+            .tryAsyncMap { model, amount in
+                model._fee.send(.loading)
 
-                return try await model.stakingManager.transaction(action: .unstake(validator: validator))
+                let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
+                return try await model.stakingManager.estimateFee(action: action)
             }
             .mapToResult()
             .withWeakCaptureOf(self)
             .sink { model, result in
                 switch result {
-                case .success(let transaction):
-                    model._transaction.send(.loaded(transaction))
+                case .success(let fee):
+                    model._fee.send(.loaded(fee))
                 case .failure(let error):
                     AppLog.shared.error(error)
-                    model._transaction.send(.failedToLoad(error: error))
+                    model._fee.send(.failedToLoad(error: error))
                 }
             }
             .store(in: &bag)
@@ -95,11 +97,10 @@ private extension UnstakingModel {
         }
     }
 
-    func mapToSendFee(transaction: LoadingValue<StakingTransactionInfo>?) -> SendFee {
-        let value = transaction?.mapValue { tx in
-            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: tx.fee))
+    func mapToSendFee(_ fee: LoadingValue<Decimal>?) -> SendFee {
+        let value = fee?.mapValue { fee in
+            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
         }
-
         return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
@@ -108,16 +109,29 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        guard let transaction = _transaction.value?.value else {
-            return .just(output: .transactionNotFound)
-        }
-
-        return sendTransactionDispatcher
-            .send(transaction: .staking(transaction))
+        _amount.compactMap { $0?.crypto }
+            .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
-            .compactMap { sender, result in
-                sender.proceed(transaction: transaction, result: result)
-                return result
+            .tryAsyncMap { args in
+                let (model, amount) = args
+                let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
+                return try await model.stakingManager.transaction(action: action)
+            }
+            .mapToResult()
+            .withWeakCaptureOf(self)
+            .flatMap { model, result in
+                switch result {
+                case .success(let transaction):
+                    return model.sendTransactionDispatcher
+                        .send(transaction: .staking(transaction))
+                        .handleEvents(receiveOutput: { [weak model] output in
+                            model?.proceed(transaction: transaction, result: output)
+                        })
+                        .eraseToAnyPublisher()
+                case .failure:
+                    return Just(.transactionNotFound)
+                        .eraseToAnyPublisher()
+                }
             }
             .eraseToAnyPublisher()
     }
@@ -166,14 +180,14 @@ extension UnstakingModel: SendAmountOutput {
 
 extension UnstakingModel: SendFeeInput {
     var selectedFee: SendFee {
-        return mapToSendFee(transaction: _transaction.value)
+        mapToSendFee(_fee.value)
     }
 
     var selectedFeePublisher: AnyPublisher<SendFee, Never> {
-        _transaction
+        _fee
             .withWeakCaptureOf(self)
-            .map { model, transaction in
-                model.mapToSendFee(transaction: transaction)
+            .map { model, fee in
+                model.mapToSendFee(fee)
             }
             .eraseToAnyPublisher()
     }
