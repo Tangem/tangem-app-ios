@@ -127,12 +127,15 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     deinit {
-        print("TokenMarketsDetailsViewModel deinit")
         loadingTask?.cancel()
         loadingTask = nil
     }
 
     // MARK: - Actions
+
+    func onAppear() {
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
+    }
 
     func reloadAllData() {
         loadDetailedInfo()
@@ -296,6 +299,8 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
+
                 coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
             }
         )
@@ -315,7 +320,7 @@ private extension TokenMarketsDetailsViewModel {
 
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
-            insightsViewModel = .init(insights: insights, infoRouter: self)
+            insightsViewModel = .init(tokenSymbol: model.symbol, insights: insights, infoRouter: self)
         }
 
         if let metrics = model.metrics {
@@ -323,6 +328,7 @@ private extension TokenMarketsDetailsViewModel {
         }
 
         pricePerformanceViewModel = .init(
+            tokenSymbol: model.symbol,
             pricePerformanceData: model.pricePerformance,
             currentPricePublisher: currentPriceSubject.eraseToAnyPublisher()
         )

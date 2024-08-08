@@ -41,6 +41,7 @@ struct MarketsTokenDetailsLinksMapper {
             icon: .leading(icon),
             link: linkInfo.link,
             action: {
+                Analytics.log(event: .marketsButtonLinks, params: [.link: linkInfo.title])
                 openLinkAction(linkInfo.link)
             }
         )

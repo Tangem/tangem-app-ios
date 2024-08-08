@@ -79,10 +79,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     // MARK: - Implementation
 
-    func selectWalletActionDidTap() {
-        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
-    }
-
     func saveChangesOnTapAction() {
         guard
             let userWalletModel = walletDataProvider.selectedUserWalletModel,
@@ -210,10 +206,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .manageTokensSwitcherChanged, params: [
-            .token: tokenItem.currencySymbol,
-            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
-        ])
+        Analytics.log(event: .marketsTokenNetworkSelected, params: [.token: tokenItem.currencySymbol, .count: "\(pendingAdd.count)"])
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {
@@ -221,10 +214,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             return
         }
 
-        Analytics.log(
-            event: .manageTokensWalletSelected,
-            params: [.source: Analytics.ParameterValue.mainToken.rawValue]
-        )
+        Analytics.log(.marketsWalletSelected)
 
         pendingAdd = []
 

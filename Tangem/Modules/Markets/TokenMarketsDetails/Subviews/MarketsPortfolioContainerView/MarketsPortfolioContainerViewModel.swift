@@ -162,6 +162,8 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             return
         }
 
+        Analytics.log(event: .marketsActionButtons, params: [.button: action.analyticsParameterValue])
+
         switch action {
         case .buy:
             coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)

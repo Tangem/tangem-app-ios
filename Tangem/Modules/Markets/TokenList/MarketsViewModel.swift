@@ -73,7 +73,7 @@ final class MarketsViewModel: ObservableObject {
 
         onAppearPrepareImageCache()
 
-        Analytics.log(.manageTokensScreenOpened)
+        Analytics.log(.marketsScreenOpened)
     }
 
     func onBottomSheetDisappear() {
