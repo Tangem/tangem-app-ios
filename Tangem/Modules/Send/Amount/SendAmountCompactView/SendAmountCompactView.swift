@@ -43,7 +43,7 @@ struct SendAmountCompactView: View {
                             color: DecimalNumberTextField.Appearance().textColor
                         )
                         .infinityFrame(axis: .horizontal, alignment: .center)
-                        .minimumScaleFactor(SendView.Constants.amountMinTextScale)
+                        .minimumScaleFactor(SendAmountStep.Constants.amountMinTextScale)
                         .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
                 }
                 // We have to keep frame until SendDecimalNumberTextField size fix
