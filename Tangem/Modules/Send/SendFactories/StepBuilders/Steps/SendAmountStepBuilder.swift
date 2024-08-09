@@ -18,9 +18,10 @@ struct SendAmountStepBuilder {
     func makeSendAmountStep(
         io: IO,
         sendFeeLoader: any SendFeeLoader,
-        sendQRCodeService: SendQRCodeService?
+        sendQRCodeService: SendQRCodeService?,
+        sendAmountValidator: SendAmountValidator
     ) -> ReturnValue {
-        let interactor = makeSendAmountInteractor(io: io)
+        let interactor = makeSendAmountInteractor(io: io, sendAmountValidator: sendAmountValidator)
         let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
 
         let step = SendAmountStep(
@@ -65,18 +66,14 @@ private extension SendAmountStepBuilder {
         )
     }
 
-    private func makeSendAmountInteractor(io: IO) -> SendAmountInteractor {
+    private func makeSendAmountInteractor(io: IO, sendAmountValidator: SendAmountValidator) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
             tokenItem: walletModel.tokenItem,
             balanceValue: walletModel.balanceValue ?? 0,
-            validator: makeSendAmountValidator(),
+            validator: sendAmountValidator,
             type: .crypto
         )
-    }
-
-    private func makeSendAmountValidator() -> SendAmountValidator {
-        CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 }

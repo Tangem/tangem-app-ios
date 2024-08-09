@@ -102,6 +102,14 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeStakingTransactionDispatcher() -> SendTransactionDispatcher {
+        StakingTransactionDispatcher(
+            walletModel: walletModel,
+            transactionSigner: userWalletModel.signer,
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
+        )
+    }
+
     func makeSendQRCodeService() -> SendQRCodeService {
         CommonSendQRCodeService(
             parser: QRCodeParser(
@@ -160,6 +168,10 @@ struct SendDependenciesBuilder {
         return SendModel.PredefinedValues(source: source, destination: destination, tag: additionalField, amount: amount)
     }
 
+    func makeSendAmountValidator() -> SendAmountValidator {
+        CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(
@@ -169,6 +181,7 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
@@ -182,12 +195,20 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
             validator: validator,
-            tokenItem: walletModel.tokenItem,
+            amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
 
     func makeStakingNotificationManager() -> StakingNotificationManager {
         CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
+    }
+
+    func makeStakingSendAmountValidator(stakingManager: any StakingManager) -> SendAmountValidator {
+        StakingSendAmountValidator(
+            tokenItem: walletModel.tokenItem,
+            validator: walletModel.transactionValidator,
+            stakingManagerStatePublisher: stakingManager.statePublisher
+        )
     }
 }

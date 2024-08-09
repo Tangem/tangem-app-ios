@@ -143,13 +143,16 @@ struct StakingDetailsView: View {
         .innerContentPadding(12)
     }
 
+    @ViewBuilder
     private var actionButton: some View {
-        MainButton(title: viewModel.actionButtonType.title) {
-            viewModel.userDidTapActionButton()
+        if let actionButtonType = viewModel.actionButtonType {
+            MainButton(title: actionButtonType.title) {
+                viewModel.userDidTapActionButton()
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .readGeometry(\.size.height, bindTo: $bottomViewHeight)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .readGeometry(\.size.height, bindTo: $bottomViewHeight)
     }
 }
 

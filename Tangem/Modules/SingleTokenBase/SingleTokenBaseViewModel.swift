@@ -292,6 +292,14 @@ extension SingleTokenBaseViewModel {
             .debounce(for: 0.1, scheduler: DispatchQueue.main)
             .assign(to: \.tokenNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
+
+        walletModel.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateActionButtons()
+            }
+            .store(in: &bag)
     }
 
     private func updatePendingTransactionView() {

@@ -105,12 +105,12 @@ struct SendScreenDataCollector: EmailDataCollector {
     private let isFeeIncluded: Bool
     private let lastError: SendTxError?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: SendTxError?) {
+    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, transaction: SendTransactionType, isFeeIncluded: Bool, lastError: SendTxError?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
-        self.fee = fee
-        self.destination = destination
-        self.amount = amount
+        fee = transaction.fee.amount
+        destination = transaction.destinationAddress
+        amount = transaction.amount
         self.isFeeIncluded = isFeeIncluded
         self.lastError = lastError
     }
@@ -230,4 +230,35 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
 struct DetailsFeedbackData {
     let userWalletEmailData: [EmailCollectedData]
     let walletModels: [WalletModel]
+}
+
+// MARK: - SendTransactionType
+
+private extension SendTransactionType {
+    var amount: Amount {
+        switch self {
+        case .staking(let transaction):
+            return transaction.amount
+        case .transfer(let transaction):
+            return transaction.amount
+        }
+    }
+
+    var fee: Fee {
+        switch self {
+        case .staking(let transaction):
+            return transaction.fee
+        case .transfer(let transaction):
+            return transaction.fee
+        }
+    }
+
+    var destinationAddress: String {
+        switch self {
+        case .staking:
+            return ""
+        case .transfer(let transaction):
+            return transaction.destinationAddress
+        }
+    }
 }

@@ -23,6 +23,7 @@ extension StakeKitDTO {
 
             struct Response: Decodable {
                 let id: String
+                let isAvailable: Bool
                 let token: Token
                 let tokens: [Token]?
                 let args: Actions

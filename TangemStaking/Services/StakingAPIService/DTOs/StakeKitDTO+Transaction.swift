@@ -37,7 +37,7 @@ extension StakeKitDTO {
 
         struct Response: Decodable {
             let id: String
-            let network: NetworkType
+            let network: StakeKitNetworkType
             let status: Status
             let type: TransactionType
             let hash: String?

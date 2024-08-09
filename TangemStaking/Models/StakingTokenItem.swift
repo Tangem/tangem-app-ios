@@ -9,11 +9,11 @@
 import Foundation
 
 public struct StakingTokenItem: Hashable {
-    public let coinId: String
+    public let network: StakeKitNetworkType
     public let contractAddress: String?
 
-    public init(coinId: String, contractAddress: String?) {
-        self.coinId = coinId
+    public init(network: StakeKitNetworkType, contractAddress: String?) {
+        self.network = network
         self.contractAddress = contractAddress
     }
 }
