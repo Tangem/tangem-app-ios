@@ -28,17 +28,23 @@ class StakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let feeTokenItem: TokenItem
+    private let stakingMapper: StakingMapper
 
     private var bag: Set<AnyCancellable> = []
 
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.feeTokenItem = feeTokenItem
+        stakingMapper = StakingMapper(
+            amountTokenItem: amountTokenItem,
+            feeTokenItem: feeTokenItem
+        )
 
         bind()
     }
@@ -101,12 +107,15 @@ private extension StakingModel {
             .tryAsyncMap { args in
                 let (model, (amount, validator)) = args
                 let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
-                return try await model.stakingManager.transaction(action: action)
+                let transactionInfo = try await model.stakingManager.transaction(action: action)
+                return (transactionInfo, amount)
             }
             .withWeakCaptureOf(self)
-            .flatMap { model, transaction in
-                model.sendTransactionDispatcher
-                    .sendPublisher(transaction: .staking(StakingMapper().mapToStakeKitTransaction(transaction)))
+            .flatMap { args in
+                let (model, (transactionInfo, amount)) = args
+                let transaction = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: 0)
+                return model.sendTransactionDispatcher
+                    .sendPublisher(transaction: .staking(transaction))
             }
             .handleEvents(receiveOutput: { [weak self] output in
                 self?.proceed(result: output)
@@ -221,7 +230,7 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
                     return nil
                 }
 
-                let stakeKitTx = StakingMapper().mapToStakeKitTransaction(tx)
+                let stakeKitTx = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: tx, value: 0)
                 return SendTransactionType.staking(stakeKitTx)
             }
             .eraseToAnyPublisher()

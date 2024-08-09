@@ -26,8 +26,9 @@ class UnstakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let validator: String
-    private let tokenItem: TokenItem
+    private let amountTokenItem: TokenItem
     private let feeTokenItem: TokenItem
+    private let stakingMapper: StakingMapper
 
     private var bag: Set<AnyCancellable> = []
 
@@ -35,14 +36,18 @@ class UnstakingModel {
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
         validator: String,
-        tokenItem: TokenItem,
+        amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.validator = validator
-        self.tokenItem = tokenItem
+        self.amountTokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
+        stakingMapper = StakingMapper(
+            amountTokenItem: amountTokenItem,
+            feeTokenItem: feeTokenItem
+        )
 
         bind()
     }
@@ -90,7 +95,7 @@ private extension UnstakingModel {
                 return
             }
 
-            let fiat = tokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(balance.blocked, currencyId: $0) }
+            let fiat = amountTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(balance.blocked, currencyId: $0) }
             _amount.send(.init(type: .typical(crypto: balance.blocked, fiat: fiat)))
         default:
             assertionFailure("The state \(state) doesn't support in this UnstakingModel")
@@ -116,14 +121,18 @@ private extension UnstakingModel {
             .tryAsyncMap { args in
                 let (model, amount) = args
                 let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
-                return try await model.stakingManager.transaction(action: action)
+                let transactionInfo = try await model.stakingManager.transaction(action: action)
+                return (transactionInfo, amount)
             }
             .withWeakCaptureOf(self)
-            .flatMap { model, transaction in
-                model.sendTransactionDispatcher
-                    .sendPublisher(transaction: .staking(StakingMapper().mapToStakeKitTransaction(transaction)))
+            .flatMap { args in
+                let (model, (transactionInfo, amount)) = args
+                let transaction = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: amount)
+
+                return model.sendTransactionDispatcher
+                    .sendPublisher(transaction: .staking(transaction))
                     .handleEvents(receiveOutput: { [weak model] output in
-                        model?.proceed(transaction: transaction, result: output)
+                        model?.proceed(transaction: transactionInfo, result: output)
                     })
             }
             .replaceError(with: .transactionNotFound) // TODO: refactor combine/concurrency
@@ -220,7 +229,7 @@ extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
                     return nil
                 }
 
-                let stakeKitTx = StakingMapper().mapToStakeKitTransaction(tx)
+                let stakeKitTx = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: tx, value: 0)
                 return SendTransactionType.staking(stakeKitTx)
             }
             .eraseToAnyPublisher()

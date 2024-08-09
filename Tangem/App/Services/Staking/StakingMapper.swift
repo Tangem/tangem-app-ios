@@ -11,13 +11,23 @@ import BlockchainSdk
 import TangemStaking
 
 struct StakingMapper {
-    // TODO: get fee, amount and source address
-    func mapToStakeKitTransaction(_ transaction: StakingTransactionInfo) -> StakeKitTransaction {
+    private let amountTokenItem: TokenItem
+    private let feeTokenItem: TokenItem
+
+    init(amountTokenItem: TokenItem, feeTokenItem: TokenItem) {
+        self.amountTokenItem = amountTokenItem
+        self.feeTokenItem = feeTokenItem
+    }
+
+    func mapToStakeKitTransaction(transactionInfo: StakingTransactionInfo, value: Decimal) -> StakeKitTransaction {
+        let amount = Amount(with: amountTokenItem.blockchain, type: amountTokenItem.amountType, value: value)
+        let feeAmount = Amount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: transactionInfo.fee)
+
         let stakeKitTransaction = StakeKitTransaction(
-            amount: Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0),
-            fee: Fee(Amount(type: .coin, currencySymbol: "", value: 0, decimals: 0)),
+            amount: amount,
+            fee: Fee(feeAmount),
             sourceAddress: "",
-            unsignedData: transaction.unsignedTransactionData
+            unsignedData: transactionInfo.unsignedTransactionData
         )
 
         return stakeKitTransaction

@@ -177,6 +177,7 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
@@ -190,7 +191,7 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
             validator: validator,
-            tokenItem: walletModel.tokenItem,
+            amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
