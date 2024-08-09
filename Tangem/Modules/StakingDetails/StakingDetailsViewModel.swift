@@ -22,6 +22,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var actionButtonLoading: Bool = false
     @Published var actionButtonType: ActionButtonType?
 
     // MARK: - Dependencies
@@ -95,13 +96,20 @@ private extension StakingDetailsViewModel {
 
     func setupView(state: StakingManagerState) {
         switch state {
-        case .loading, .notEnabled:
-            break
+        case .loading:
+            actionButtonLoading = true
+        case .notEnabled:
+            actionButtonLoading = false
+            actionButtonType = .none
         case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
             setupView(yield: yieldInfo, balancesInfo: nil)
+
+            actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
             setupView(yield: staked.yieldInfo, balancesInfo: staked.balances)
+
+            actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
         }
     }
@@ -149,7 +157,6 @@ private extension StakingDetailsViewModel {
         setupDetailsSection(inputData: inputData)
         setupRewardView(inputData: inputData)
         setupValidatorsView(input: inputData)
-        setupButtonTitle(inputData: inputData)
     }
 
     func setupHeaderView(inputData: StakingDetailsData) {
@@ -299,10 +306,6 @@ private extension StakingDetailsViewModel {
         }
         activeValidators = input.activeValidators.map(mapToValidatorsData)
         unstakedValidators = input.unstakedValidators.map(mapToValidatorsData)
-    }
-
-    func setupButtonTitle(inputData: StakingDetailsData) {
-        actionButtonType = inputData.staked.isZero ? .stake : .stakeMore
     }
 
     func openBottomSheet(title: String, description: String) {
