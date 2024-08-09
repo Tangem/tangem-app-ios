@@ -145,8 +145,8 @@ private extension StakingDetailsViewModel {
                 unbondingPeriod: yield.unbondingPeriod,
                 rewardClaimingType: yield.rewardClaimingType,
                 rewardScheduleType: yield.rewardScheduleType,
-                activeValidators: validatorBalances.filter { $0.balanceGroupType == .active },
-                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unstaked }
+                activeValidators: validatorBalances.filter { $0.balanceGroupType != .unbonding },
+                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unbonding }
             )
         )
     }
@@ -290,13 +290,14 @@ private extension StakingDetailsViewModel {
             }
             let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
-            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState =
+            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState = {
                 switch validatorBalance.balanceGroupType {
-            case .active, .unknown: .active(apr: validatorBalance.validator.apr)
-            case .unstaked: .unstaked(
-                    unboundingPeriod: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())
-                )
-            }
+                case .unknown: .unknown
+                case .warmup: .warmup(period: input.warmupPeriod.formatted(formatter: daysFormatter))
+                case .active: .active(apr: validatorBalance.validator.apr)
+                case .unbonding: .unbounding(period: input.unbondingPeriod.formatted(formatter: daysFormatter))
+                }
+            }()
 
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,

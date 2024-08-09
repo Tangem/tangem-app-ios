@@ -144,7 +144,7 @@ private extension CommonStakingManager {
             return .temporaryUnavailable(yield)
         }
 
-        guard let balances, balances.contains(where: { $0.balanceGroupType.isActiveOrUnstaked }) else {
+        guard let balances, !balances.isEmpty else {
             return .availableToStake(yield)
         }
 

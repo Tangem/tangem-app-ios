@@ -223,10 +223,12 @@ struct StakeKitMapper {
         from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
     ) -> BalanceGroupType {
         switch balanceType {
-        case .preparing, .available, .locked, .staked:
+        case .preparing:
+            return .warmup
+        case .available, .locked, .staked:
             return .active
         case .unstaking, .unstaked, .unlocking:
-            return .unstaked
+            return .unbonding
         case .rewards, .unknown:
             return .unknown
         }
