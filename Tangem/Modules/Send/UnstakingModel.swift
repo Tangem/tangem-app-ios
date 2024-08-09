@@ -94,13 +94,17 @@ private extension UnstakingModel {
 
     func update(state: StakingManagerState) {
         switch state {
+        case .loading:
+            break
         case .staked(let staked):
             guard let balance = staked.balance(validator: validator) else {
                 assertionFailure("The balance for validator \(validator) not found")
                 return
             }
 
-            let fiat = amountTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(balance.blocked, currencyId: $0) }
+            let fiat = amountTokenItem.currencyId.flatMap {
+                BalanceConverter().convertToFiat(balance.blocked, currencyId: $0)
+            }
             _amount.send(.init(type: .typical(crypto: balance.blocked, fiat: fiat)))
         default:
             assertionFailure("The state \(state) doesn't support in this UnstakingModel")

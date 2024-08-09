@@ -16,8 +16,6 @@ class StakingTransactionDispatcher {
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
 
-    private let _isSending = CurrentValueSubject<Bool, Never>(false)
-
     private var transactionSendResult: TransactionSendResult?
 
     init(
@@ -34,16 +32,9 @@ class StakingTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension StakingTransactionDispatcher: SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
-
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .staking(let transactionId, let stakeKitTransaction) = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
-        }
-
-        _isSending.send(true)
-        defer {
-            _isSending.send(false)
         }
 
         let mapper = SendTransactionMapper()
@@ -89,16 +80,5 @@ private extension StakingTransactionDispatcher {
         // Save it if `sendHash` will failed
         transactionSendResult = result
         return result
-    }
-
-    private func handleCompletion(_ completion: Subscribers.Completion<SendTxError>) {
-        _isSending.send(false)
-
-        switch completion {
-        case .finished:
-            walletModel.updateAfterSendingTransaction()
-        default:
-            break
-        }
     }
 }

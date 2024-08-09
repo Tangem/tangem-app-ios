@@ -14,8 +14,6 @@ class DemoSendTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
 
-    private let _isSending = CurrentValueSubject<Bool, Never>(false)
-
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner
@@ -28,14 +26,11 @@ class DemoSendTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension DemoSendTransactionDispatcher: SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
-
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .transfer = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
 
-        _isSending.send(true)
         let hash = Data.randomData(count: 32)
 
         do {
@@ -45,10 +40,6 @@ extension DemoSendTransactionDispatcher: SendTransactionDispatcher {
                 .async()
         } catch {
             throw SendTransactionMapper().mapError(error, transaction: transaction)
-        }
-
-        defer {
-            _isSending.send(false)
         }
 
         throw SendTransactionDispatcherResult.Error.demoAlert
