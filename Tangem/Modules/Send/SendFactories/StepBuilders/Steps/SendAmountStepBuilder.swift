@@ -45,7 +45,7 @@ private extension SendAmountStepBuilder {
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
             balanceValue: walletModel.balanceValue ?? 0,
-            balanceFormatted: walletModel.balance,
+            balanceFormatted: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
             currencyPickerData: builder.makeCurrencyPickerData()
         )
 
