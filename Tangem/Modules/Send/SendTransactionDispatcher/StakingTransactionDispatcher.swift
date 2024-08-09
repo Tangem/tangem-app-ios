@@ -16,7 +16,7 @@ class StakingTransactionDispatcher {
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
 
-    private var cachedResult: CachedResult?
+    private var transactionSentResult: TransactionSentResult?
 
     init(
         walletModel: WalletModel,
@@ -40,24 +40,21 @@ extension StakingTransactionDispatcher: SendTransactionDispatcher {
         let mapper = SendTransactionMapper()
 
         do {
-            if let cachedResult {
-                let hash = StakingPendingHash(transactionId: cachedResult.id, hash: cachedResult.result.hash)
-                try await pendingHashesSender.sendHash(hash)
-                return mapper.mapResult(cachedResult.result, blockchain: walletModel.blockchainNetwork.blockchain)
+            if let transactionSentResult {
+                return try await sendHash(result: transactionSentResult)
             }
 
             let result = try await sendStakeKit(transaction: stakeKitTransaction)
-
+            let sentResult = TransactionSentResult(id: transactionId, result: result)
             // Save it if `sendHash` will failed
-            cachedResult = .init(id: transactionId, result: result)
+            transactionSentResult = sentResult
 
-            let hash = StakingPendingHash(transactionId: transactionId, hash: result.hash)
-            try await pendingHashesSender.sendHash(hash)
+            let dispatcherResult = try await sendHash(result: sentResult)
 
             // Clear after success tx was successfully sent
-            cachedResult = nil
+            transactionSentResult = nil
 
-            return mapper.mapResult(result, blockchain: walletModel.blockchainNetwork.blockchain)
+            return dispatcherResult
         } catch {
             throw mapper.mapError(error, transaction: transaction)
         }
@@ -83,10 +80,16 @@ private extension StakingTransactionDispatcher {
         walletModel.updateAfterSendingTransaction()
         return result
     }
+
+    func sendHash(result: TransactionSentResult) async throws -> SendTransactionDispatcherResult {
+        let hash = StakingPendingHash(transactionId: result.id, hash: result.result.hash)
+        try await pendingHashesSender.sendHash(hash)
+        return SendTransactionMapper().mapResult(result.result, blockchain: walletModel.blockchainNetwork.blockchain)
+    }
 }
 
 extension StakingTransactionDispatcher {
-    struct CachedResult {
+    struct TransactionSentResult {
         let id: String
         let result: TransactionSendResult
     }
