@@ -121,6 +121,7 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performSend() {
+        sendTask?.cancel()
         sendTask = runTask(in: self) { viewModel in
             do {
                 let result = try await viewModel.interactor.send()

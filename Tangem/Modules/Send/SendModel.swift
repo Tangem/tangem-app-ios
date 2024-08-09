@@ -162,21 +162,19 @@ private extension SendModel {
 
         do {
             let result = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
-            transactionDidSent(transaction: transaction, result: result)
+            proceed(transaction: transaction, result: result)
             return result
+        } catch let error as SendTransactionDispatcherResult.Error {
+            proceed(error: error)
+            // rethrows the error forward to display alert
+            throw error
         } catch {
-            if case SendTransactionDispatcherResult.Error.sendTxError(let transaction, let error) = error {
-                Analytics.log(event: .sendErrorTransactionRejected, params: [
-                    .token: walletModel.tokenItem.currencySymbol,
-                ])
-            }
-
             // rethrows the error forward to display alert
             throw error
         }
     }
 
-    private func transactionDidSent(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
+    private func proceed(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
         logTransactionAnalytics()
 
@@ -186,6 +184,22 @@ private extension SendModel {
                 in: walletModel.tokenItem.blockchain,
                 for: transaction.destinationAddress
             )
+        }
+    }
+
+    private func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
+        case .informationRelevanceServiceError,
+             .informationRelevanceServiceFeeWasIncreased,
+             .transactionNotFound,
+             .demoAlert,
+             .userCancelled,
+             .stakingUnsupported:
+            break
+        case .sendTxError:
+            Analytics.log(event: .sendErrorTransactionRejected, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+            ])
         }
     }
 }
@@ -275,11 +289,9 @@ extension SendModel: SendSummaryInput, SendSummaryOutput {
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
         _transaction.map { transaction -> SendSummaryTransactionData? in
-            guard let transaction = transaction?.value else {
-                return nil
+            transaction?.value.map {
+                .send(amount: $0.amount.value, fee: $0.fee.amount.value)
             }
-
-            return .send(amount: transaction.amount.value, fee: transaction.fee.amount.value)
         }
         .eraseToAnyPublisher()
     }

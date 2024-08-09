@@ -30,6 +30,7 @@ class UnstakingModel {
     private let feeTokenItem: TokenItem
     private let stakingMapper: StakingMapper
 
+    private var estimatedFeeTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -57,34 +58,38 @@ class UnstakingModel {
 
 private extension UnstakingModel {
     func bind() {
-        stakingManager.statePublisher
+        stakingManager
+            .statePublisher
             .withWeakCaptureOf(self)
             .sink { model, state in
                 model.update(state: state)
             }
             .store(in: &bag)
 
-        _amount.compactMap { $0?.crypto }
-            .setFailureType(to: Error.self)
+        _amount
+            .compactMap { $0?.crypto }
             .withWeakCaptureOf(self)
-            .tryAsyncMap { model, amount in
-                model._estimatedFee.send(.loading)
-
-                let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
-                return try await model.stakingManager.estimateFee(action: action)
-            }
-            .mapToResult()
-            .withWeakCaptureOf(self)
-            .sink { model, result in
-                switch result {
-                case .success(let fee):
-                    model._estimatedFee.send(.loaded(fee))
-                case .failure(let error):
-                    AppLog.shared.error(error)
-                    model._estimatedFee.send(.failedToLoad(error: error))
-                }
+            .sink { model, amount in
+                model.estimateFee(amount: amount)
             }
             .store(in: &bag)
+    }
+
+    func estimateFee(amount: Decimal) {
+        estimatedFeeTask?.cancel()
+
+        estimatedFeeTask = runTask(in: self) { model in
+            model._estimatedFee.send(.loading)
+
+            do {
+                let action = StakingAction(amount: amount, validator: model.validator, type: .unstake)
+                let fee = try await model.stakingManager.estimateFee(action: action)
+                model._estimatedFee.send(.loaded(fee))
+            } catch {
+                AppLog.shared.error(error)
+                model._estimatedFee.send(.failedToLoad(error: error))
+            }
+        }
     }
 
     func update(state: StakingManagerState) {
@@ -117,9 +122,6 @@ private extension UnstakingModel {
         guard let amount = _amount.value?.crypto else {
             throw StakingModelError.amountNotFound
         }
-
-        _isLoading.send(true)
-        defer { _isLoading.send(false) }
 
         let action = StakingAction(amount: amount, validator: validator, type: .unstake)
         let transactionInfo = try await stakingManager.transaction(action: action)
@@ -251,7 +253,10 @@ extension UnstakingModel: SendBaseInput, SendBaseOutput {
     }
 
     func sendTransaction() async throws -> SendTransactionDispatcherResult {
-        try await send()
+        _isLoading.send(true)
+        defer { _isLoading.send(false) }
+
+        return try await send()
     }
 }
 

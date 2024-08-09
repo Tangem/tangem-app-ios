@@ -10,6 +10,7 @@ import Foundation
 import TangemStaking
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 class StakingModel {
     // MARK: - Data
@@ -70,22 +71,17 @@ private extension StakingModel {
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
-            await model.updateEstimateFee(.loading)
+            model._estimatedFee.send(.loading)
 
             do {
                 let fee = try await model.stakingManager.estimateFee(
                     action: StakingAction(amount: amount, validator: validator, type: .stake)
                 )
-                await model.updateEstimateFee(.loaded(fee))
+                model._estimatedFee.send(.loaded(fee))
             } catch {
-                await model.updateEstimateFee(.failedToLoad(error: error))
+                model._estimatedFee.send(.failedToLoad(error: error))
             }
         }
-    }
-
-    @MainActor
-    private func updateEstimateFee(_ result: LoadingValue<Decimal>) {
-        _estimatedFee.send(result)
     }
 
     func mapToSendFee(_ fee: LoadingValue<Decimal>?) -> SendFee {
@@ -108,9 +104,6 @@ private extension StakingModel {
         guard let validator = _selectedValidator.value.value else {
             throw StakingModelError.amountNotFound
         }
-
-        _isLoading.send(true)
-        defer { _isLoading.send(false) }
 
         let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
         let transactionInfo = try await stakingManager.transaction(action: action)
@@ -265,7 +258,10 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
     }
 
     func sendTransaction() async throws -> SendTransactionDispatcherResult {
-        try await send()
+        _isLoading.send(true)
+        defer { _isLoading.send(false) }
+
+        return try await send()
     }
 }
 
