@@ -22,9 +22,9 @@ struct StakeKitTarget: Moya.TargetType {
         case exitAction(StakeKitDTO.Actions.Exit.Request)
         case pendingAction(StakeKitDTO.Actions.Pending.Request)
 
-        case estimateGasEnterAction(StakeKitDTO.Actions.EstimateGasEnter.Request)
-        case estimateGasExitAction(StakeKitDTO.Actions.EstimateGasExit.Request)
-        case estimateGasPendingAction(StakeKitDTO.Actions.EstimateGasPending.Request)
+        case estimateGasEnterAction(StakeKitDTO.EstimateGas.Enter.Request)
+        case estimateGasExitAction(StakeKitDTO.EstimateGas.Exit.Request)
+        case estimateGasPendingAction(StakeKitDTO.EstimateGas.Pending.Request)
 
         case transaction(id: String)
         case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)

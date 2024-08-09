@@ -1361,6 +1361,7 @@
 		EF2D9CC62BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29C12B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */; };
 		EF2D9CF92BBDAFBB0055C485 /* DebouncedCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF729B3F2AEFC1DA00D80205 /* DebouncedCollector.swift */; };
 		EF2D9CFA2BBEBD310055C485 /* ThreadSafeContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B635EE442A607422008B5F87 /* ThreadSafeContainerTests.swift */; };
+		EF2FE4652C6671190015940A /* StakeKitDTO+EstimateGas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */; };
 		EF339E492C21FBEC00B5CDC9 /* SendFeeInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF339E482C21FBEC00B5CDC9 /* SendFeeInteractor.swift */; };
 		EF339E4F2C21FC9500B5CDC9 /* SendFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF339E4E2C21FC9500B5CDC9 /* SendFee.swift */; };
 		EF339E512C21FCCC00B5CDC9 /* SendFeeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF339E502C21FCCC00B5CDC9 /* SendFeeProvider.swift */; };
@@ -3316,6 +3317,7 @@
 		EF2D9CB72BBDA9090055C485 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
 		EF2EFDE12865C05D00798051 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		EF2EFDE22865C07100798051 /* Beta.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Beta.xcconfig; sourceTree = "<group>"; };
+		EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+EstimateGas.swift"; sourceTree = "<group>"; };
 		EF339E482C21FBEC00B5CDC9 /* SendFeeInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeeInteractor.swift; sourceTree = "<group>"; };
 		EF339E4E2C21FC9500B5CDC9 /* SendFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFee.swift; sourceTree = "<group>"; };
 		EF339E502C21FCCC00B5CDC9 /* SendFeeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeeProvider.swift; sourceTree = "<group>"; };
@@ -9500,6 +9502,7 @@
 				EFBC5C8D2C00B8A000B662E0 /* StakeKitDTO.swift */,
 				EFBC5C8F2C00B8B800B662E0 /* StakeKitDTO+Yield.swift */,
 				EFB019402C4160EF009EE857 /* StakeKitDTO+Balances.swift */,
+				EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */,
 				EF407E652C04D75100366733 /* StakeKitDTO+Actions.swift */,
 				EFB0193E2C4160D7009EE857 /* StakeKitDTO+Transaction.swift */,
 				EFB019462C4172D6009EE857 /* StakeKitDTO+NetworkType.swift */,
@@ -12325,6 +12328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFEE238C2BFF62D50099917E /* TangemStaking.docc in Sources */,
+				EF2FE4652C6671190015940A /* StakeKitDTO+EstimateGas.swift in Sources */,
 				DC592B872C41961D005AB9A7 /* StakeKitDTO+SubmitHash.swift in Sources */,
 				EF407E6A2C04D7F400366733 /* RewardScheduleType.swift in Sources */,
 				EFB019472C4172D6009EE857 /* StakeKitDTO+NetworkType.swift in Sources */,

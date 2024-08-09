@@ -42,7 +42,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         validator: String,
         integrationId: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.Actions.EstimateGasEnter.Request(
+        let request = StakeKitDTO.EstimateGas.Enter.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
             args: .init(amount: amount.description, validatorAddress: validator)
@@ -61,7 +61,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         validator: String,
         integrationId: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.Actions.EstimateGasExit.Request(
+        let request = StakeKitDTO.EstimateGas.Exit.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
             args: .init(amount: amount.description, validatorAddress: validator)
@@ -81,7 +81,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         integrationId: String,
         passthrough: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.Actions.EstimateGasPending.Request(
+        let request = StakeKitDTO.EstimateGas.Pending.Request(
             type: .claimRewards,
             integrationId: integrationId,
             passthrough: passthrough,
@@ -100,7 +100,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         let request = StakeKitDTO.Actions.Enter.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+            args: .init(amount: amount.description, validatorAddress: validator)
         )
 
         let response = try await service.enterAction(request: request)

@@ -13,9 +13,9 @@ protocol StakingAPIService {
     func getYield(request: StakeKitDTO.Yield.Info.Request) async throws -> StakeKitDTO.Yield.Info.Response
     func getBalances(request: StakeKitDTO.Balances.Request) async throws -> [StakeKitDTO.Balances.Response]
 
-    func estimateGasEnterAction(request: StakeKitDTO.Actions.EstimateGasEnter.Request) async throws -> StakeKitDTO.Actions.EstimateGasEnter.Response
-    func estimateGasExitAction(request: StakeKitDTO.Actions.EstimateGasExit.Request) async throws -> StakeKitDTO.Actions.EstimateGasExit.Response
-    func estimateGasPendingAction(request: StakeKitDTO.Actions.EstimateGasPending.Request) async throws -> StakeKitDTO.Actions.EstimateGasPending.Response
+    func estimateGasEnterAction(request: StakeKitDTO.EstimateGas.Enter.Request) async throws -> StakeKitDTO.EstimateGas.Enter.Response
+    func estimateGasExitAction(request: StakeKitDTO.EstimateGas.Exit.Request) async throws -> StakeKitDTO.EstimateGas.Exit.Response
+    func estimateGasPendingAction(request: StakeKitDTO.EstimateGas.Pending.Request) async throws -> StakeKitDTO.EstimateGas.Pending.Response
 
     func enterAction(request: StakeKitDTO.Actions.Enter.Request) async throws -> StakeKitDTO.Actions.Enter.Response
     func exitAction(request: StakeKitDTO.Actions.Exit.Request) async throws -> StakeKitDTO.Actions.Exit.Response
