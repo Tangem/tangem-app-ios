@@ -36,7 +36,7 @@ class StakingSendAmountValidator {
                 case .availableToStake(let yieldInfo):
                     return yieldInfo.enterMinimumRequirement
                 case .staked(let staked):
-                    return staked.yieldInfo.exitMinimumRequirement
+                    return staked.yieldInfo.enterMinimumRequirement
                 default:
                     return nil
                 }

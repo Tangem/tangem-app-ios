@@ -73,17 +73,23 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .submitTransaction(id: id, body: request))
     }
 
-    func submitHash(id: String, request: StakeKitDTO.SubmitHash.Request) async throws -> StakeKitDTO.SubmitHash.Response {
+    func submitHash(id: String, request: StakeKitDTO.SubmitHash.Request) async throws {
         try await _request(target: .submitHash(id: id, body: request))
     }
 }
 
 private extension StakeKitStakingAPIService {
-    func _request<T: Decodable>(target: StakeKitTarget.Target) async throws -> T {
-        let request = StakeKitTarget(apiKey: credential.apiKey, target: target)
-        var response: Moya.Response
+    func _request(target: StakeKitTarget.Target) async throws {
+        _ = try await response(target: target)
+    }
 
-        response = try await provider.requestPublisher(request).async()
+    func _request<T: Decodable>(target: StakeKitTarget.Target) async throws -> T {
+        return try await decoder.decode(T.self, from: response(target: target).data)
+    }
+
+    func response(target: StakeKitTarget.Target) async throws -> Moya.Response {
+        let request = StakeKitTarget(apiKey: credential.apiKey, target: target)
+        var response = try await provider.requestPublisher(request).async()
 
         do {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
@@ -95,7 +101,7 @@ private extension StakeKitStakingAPIService {
             throw error
         }
 
-        return try decoder.decode(T.self, from: response.data)
+        return response
     }
 
     func tryMapError(target: StakeKitTarget, response: Moya.Response) -> Error? {

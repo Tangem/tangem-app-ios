@@ -100,7 +100,7 @@ extension StakeKitDTO {
                 let currentStepIndex: Int
                 let amount: String
                 let validatorAddress: String?
-                let validatorAddresses: [Address]?
+                let validatorAddresses: [String]?
                 let transactions: [Transaction.Response]?
             }
         }

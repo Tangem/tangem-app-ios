@@ -129,9 +129,8 @@ private extension SendViewModel {
             } catch let error as SendTransactionDispatcherResult.Error {
                 await viewModel.proceed(error: error)
             } catch {
-                await runOnMain {
-                    viewModel.showAlert(error.alertBinder)
-                }
+                AppLog.shared.error(error)
+                await runOnMain { viewModel.showAlert(error.alertBinder) }
             }
         }
     }

@@ -141,6 +141,6 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func submitHash(hash: String, transactionId: String) async throws {
-        _ = try await service.submitHash(id: transactionId, request: .init(hash: hash))
+        try await service.submitHash(id: transactionId, request: .init(hash: hash))
     }
 }
