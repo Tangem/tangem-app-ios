@@ -179,7 +179,7 @@ private extension ExpressModulesFactoryMock {
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
             expressAPIProvider: expressAPIProvider,
-            signer: signer,
+            transactionDispatcher: CommonSendTransactionDispatcher(walletModel: initialWalletModel, transactionSigner: signer),
             logger: logger
         )
 

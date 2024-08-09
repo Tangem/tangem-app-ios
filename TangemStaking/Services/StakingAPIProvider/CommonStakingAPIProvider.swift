@@ -30,9 +30,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]? {
-        assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
-
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
         let response = try await service.getBalances(request: request)
         let balancesInfo = try mapper.mapToBalanceInfo(from: response)
         return balancesInfo
@@ -44,10 +42,10 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         validator: String,
         integrationId: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.EnterAction.Request(
+        let request = StakeKitDTO.Actions.EstimateGasEnter.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [])
+            args: .init(amount: amount.description, validatorAddress: validator)
         )
 
         let response = try await service.estimateGasEnterAction(request: request)
@@ -63,7 +61,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         validator: String,
         integrationId: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.ExitAction.Request(
+        let request = StakeKitDTO.Actions.EstimateGasExit.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
             args: .init(amount: amount.description, validatorAddress: validator)
@@ -83,7 +81,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         integrationId: String,
         passthrough: String
     ) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.PendingAction.Request(
+        let request = StakeKitDTO.Actions.EstimateGasPending.Request(
             type: .claimRewards,
             integrationId: integrationId,
             passthrough: passthrough,

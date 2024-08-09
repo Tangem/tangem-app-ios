@@ -28,17 +28,23 @@ class StakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let feeTokenItem: TokenItem
+    private let stakingMapper: StakingMapper
 
     private var bag: Set<AnyCancellable> = []
 
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.feeTokenItem = feeTokenItem
+        stakingMapper = StakingMapper(
+            amountTokenItem: amountTokenItem,
+            feeTokenItem: feeTokenItem
+        )
 
         bind()
     }
@@ -53,8 +59,7 @@ private extension StakingModel {
                 _amount.compactMap { $0?.crypto },
                 _selectedValidator.compactMap { $0.value }
             )
-            .sink { [weak self] args in
-                let (amount, validator) = args
+            .sink { [weak self] amount, validator in
                 self?.estimateFee(amount: amount, validator: validator.address)
             }
             .store(in: &bag)
@@ -101,24 +106,20 @@ private extension StakingModel {
             .tryAsyncMap { args in
                 let (model, (amount, validator)) = args
                 let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
-                return try await model.stakingManager.transaction(action: action)
+                let transactionInfo = try await model.stakingManager.transaction(action: action)
+                return (transactionInfo, amount)
             }
-            .mapToResult()
             .withWeakCaptureOf(self)
-            .flatMap { model, result in
-                switch result {
-                case .success(let transaction):
-                    return model.sendTransactionDispatcher
-                        .send(transaction: .staking(transaction))
-                        .eraseToAnyPublisher()
-                case .failure:
-                    return Just(.transactionNotFound)
-                        .eraseToAnyPublisher()
-                }
+            .flatMap { args in
+                let (model, (transactionInfo, amount)) = args
+                let transaction = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: 0)
+                return model.sendTransactionDispatcher
+                    .sendPublisher(transaction: .staking(transaction))
             }
             .handleEvents(receiveOutput: { [weak self] output in
                 self?.proceed(result: output)
             })
+            .replaceError(with: .transactionNotFound) // TODO: refactor combine/concurrency
             .eraseToAnyPublisher()
     }
 
@@ -127,6 +128,7 @@ private extension StakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
+             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:
@@ -221,7 +223,15 @@ extension StakingModel: SendFeeOutput {
 extension StakingModel: SendSummaryInput, SendSummaryOutput {
     var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
         _transaction
-            .map { $0?.value.flatMap { .staking($0) } }
+            .withWeakCaptureOf(self)
+            .map { model, txValue in
+                guard let tx = txValue?.value else {
+                    return nil
+                }
+
+                let stakeKitTx = model.stakingMapper.mapToStakeKitTransaction(transactionInfo: tx, value: 0)
+                return SendTransactionType.staking(stakeKitTx)
+            }
             .eraseToAnyPublisher()
     }
 }

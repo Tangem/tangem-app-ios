@@ -76,7 +76,7 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
-            unsignedTransactionData: Data(hexString: unsignedTransaction),
+            unsignedTransactionData: unsignedTransaction,
             fee: fee
         )
     }
@@ -88,7 +88,8 @@ struct StakeKitMapper {
             guard let blocked = Decimal(stringValue: balance.amount) else {
                 throw StakeKitMapperError.noData("Balance.amount not found")
             }
-            return StakingBalanceInfo(
+
+            return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 blocked: blocked,
                 rewards: mapToRewards(from: balance),
@@ -102,16 +103,19 @@ struct StakeKitMapper {
     // MARK: - Yield
 
     func mapToYieldInfo(from response: StakeKitDTO.Yield.Info.Response) throws -> YieldInfo {
-        guard let enterAction = response.args.enter else {
-            throw StakeKitMapperError.noData("EnterAction not found")
+        guard let enterAction = response.args.enter,
+              let exitAction = response.args.exit else {
+            throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
         return try YieldInfo(
             id: response.id,
+            isAvailable: response.isAvailable,
             apy: response.apy,
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRate: response.rewardRate,
-            minimumRequirement: enterAction.args.amount.minimum,
+            enterMinimumRequirement: enterAction.args.amount.minimum,
+            exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: response.validators.compactMap(mapToValidatorInfo),
             defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
@@ -176,8 +180,12 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingTokenItem(from token: StakeKitDTO.Token) -> StakingTokenItem {
-        StakingTokenItem(coinId: token.coinGeckoId, contractAddress: token.address)
+    func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingTokenItem {
+        guard let network = StakeKitNetworkType(rawValue: token.coinGeckoId) else {
+            throw StakeKitMapperError.noData("StakeKitNetworkType not found")
+        }
+
+        return StakingTokenItem(network: network, contractAddress: token.address)
     }
 
     func mapToRewardType(from rewardType: StakeKitDTO.Yield.Info.Response.RewardType) -> RewardType {

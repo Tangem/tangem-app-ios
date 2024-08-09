@@ -166,7 +166,7 @@ private extension SendModel {
         }
 
         return sendTransactionDispatcher
-            .send(transaction: .transfer(transaction))
+            .sendPublisher(transaction: .transfer(transaction))
             .withWeakCaptureOf(self)
             .compactMap { sender, result in
                 sender.proceed(transaction: transaction, result: result)
@@ -181,7 +181,8 @@ private extension SendModel {
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
              .demoAlert,
-             .userCancelled:
+             .userCancelled,
+             .stakingUnsupported:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [

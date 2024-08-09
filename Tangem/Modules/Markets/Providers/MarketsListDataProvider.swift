@@ -24,8 +24,6 @@ final class MarketsListDataProvider {
 
     // MARK: - Public Properties
 
-    var isGeneralCoins = false
-
     var lastSearchTextValue: String? {
         return lastSearchText
     }
@@ -49,7 +47,7 @@ final class MarketsListDataProvider {
 
     // MARK: Private Properties
 
-    // Tracks last page ofsset loaded. Used to load next page (current + 1)
+    // Tracks last page offset loaded. Used to load next page (current + 1)
     private var currentOffset: Int = 0
 
     // Limit of records per page
@@ -60,6 +58,7 @@ final class MarketsListDataProvider {
 
     private var lastSearchText: String?
     private var lastFilter: Filter?
+    private var taskCancellable: AnyCancellable?
 
     private var selectedCurrencyCode: String {
         AppSettings.shared.selectedCurrencyCode
@@ -88,7 +87,9 @@ final class MarketsListDataProvider {
         lastSearchText = searchText
         lastFilter = filter
 
-        runTask(in: self) { provider in
+        taskCancellable?.cancel()
+
+        taskCancellable = runTask(in: self) { provider in
             defer {
                 provider.isLoading = false
             }
@@ -99,6 +100,10 @@ final class MarketsListDataProvider {
 
                 response = try await provider.loadItems(searchText, with: filter)
             } catch {
+                if error.isCancellationError {
+                    return
+                }
+
                 provider.log("Failed to load next page. Error: \(error)")
                 provider.showError = true
                 return
@@ -110,7 +115,7 @@ final class MarketsListDataProvider {
             provider.showError = false
 
             provider.items.append(contentsOf: response.tokens)
-        }
+        }.eraseToAnyCancellable()
     }
 
     func fetchMore() {
@@ -131,7 +136,6 @@ final class MarketsListDataProvider {
         totalTokensCount = nil
 
         showError = false
-        isGeneralCoins = false
     }
 }
 
@@ -147,7 +151,6 @@ private extension MarketsListDataProvider {
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
-            generalCoins: isGeneralCoins,
             search: searchText
         )
 

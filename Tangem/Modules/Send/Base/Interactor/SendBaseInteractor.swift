@@ -14,7 +14,7 @@ protocol SendBaseInteractor {
     var isLoading: AnyPublisher<Bool, Never> { get }
 
     func send() -> AnyPublisher<SendTransactionDispatcherResult, Never>
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
+    func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
 }
 
 class CommonSendBaseInteractor {
@@ -46,13 +46,11 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         output.sendTransaction()
     }
 
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
+    func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
         let emailDataCollector = SendScreenDataCollector(
             userWalletEmailData: emailDataProvider.emailData,
             walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
+            transaction: transaction,
             isFeeIncluded: input.isFeeIncluded,
             lastError: error
         )

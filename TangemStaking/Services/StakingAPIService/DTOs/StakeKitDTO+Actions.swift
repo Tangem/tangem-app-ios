@@ -80,6 +80,50 @@ extension StakeKitDTO {
             struct Response: Decodable {}
         }
 
+        enum EstimateGasEnter {
+            struct Request: Encodable {
+                let integrationId: String
+                let addresses: Address
+                let args: Args
+
+                struct Address: Encodable {
+                    let address: String
+                    let explorerUrl: String?
+
+                    init(address: String, explorerUrl: String? = nil) {
+                        self.address = address
+                        self.explorerUrl = explorerUrl
+                    }
+                }
+            }
+
+            struct Args: Encodable {
+                let amount: String
+                let validatorAddress: String
+            }
+
+            struct Response: Decodable {
+                let amount: String?
+                let token: Token
+                let gasLimit: String
+            }
+        }
+
+        typealias EstimateGasExit = EstimateGasEnter
+
+        enum EstimateGasPending {
+            struct Request: Encodable {
+                let type: Actions.ActionType
+                let integrationId: String
+                let passthrough: String
+                let addresses: Address
+                let args: Args
+            }
+
+            typealias Args = EstimateGasEnter.Args
+            typealias Response = EstimateGasEnter.Response
+        }
+
         enum Enter {
             struct Request: Encodable {
                 let integrationId: String
