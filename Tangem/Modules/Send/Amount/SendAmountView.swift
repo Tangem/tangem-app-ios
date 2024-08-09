@@ -71,7 +71,7 @@ struct SendAmountView: View {
                     .initialFocusBehavior(.noFocus)
                     .alignment(.center)
                     .prefixSuffixOptions(viewModel.currentFieldOptions)
-                    .minTextScale(SendView.Constants.amountMinTextScale)
+                    .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                     .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
 
                 // Keep empty text so that the view maintains its place in the layout

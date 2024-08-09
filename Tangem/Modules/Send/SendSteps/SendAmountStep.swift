@@ -57,3 +57,11 @@ extension SendAmountStep: SendStep {
         sendFeeLoader.updateFees()
     }
 }
+
+// MARK: - Constants
+
+extension SendAmountStep {
+    enum Constants {
+        static let amountMinTextScale = 0.5
+    }
+}

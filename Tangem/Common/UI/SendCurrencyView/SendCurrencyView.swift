@@ -24,7 +24,7 @@ struct SendCurrencyView: View {
             SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
                 .toolbarType(maxAmountAction.map { .maxAmount(action: $0) })
                 .initialFocusBehavior(.immediateFocus)
-                .minTextScale(Constants.amountMinTextScale)
+                .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 .offset(x: isShaking ? 10 : 0)
                 .simultaneousGesture(TapGesture().onEnded {
                     viewModel.textFieldDidTapped()
@@ -53,14 +53,6 @@ extension SendCurrencyView: Setupable {
 
     func didTapChangeCurrency(_ block: @escaping () -> Void) -> Self {
         map { $0.didTapChangeCurrency = block }
-    }
-}
-
-// MARK: - Constants
-
-private extension SendCurrencyView {
-    enum Constants {
-        static let amountMinTextScale = 0.5
     }
 }
 

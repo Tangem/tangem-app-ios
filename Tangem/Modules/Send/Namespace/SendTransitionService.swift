@@ -101,7 +101,6 @@ class SendTransitionService {
 
 extension SendTransitionService {
     enum Constants {
-        static let amountMinTextScale = 0.5
         static let animationDuration: TimeInterval = 0.3
         static let defaultAnimation: Animation = .easeIn(duration: animationDuration)
 
