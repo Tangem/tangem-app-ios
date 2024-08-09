@@ -18,6 +18,7 @@ class StakingModel {
     private let _selectedValidator = CurrentValueSubject<LoadingValue<ValidatorInfo>, Never>(.loading)
     private let _estimatedFee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Dependencies
 
@@ -107,6 +108,9 @@ private extension StakingModel {
         guard let validator = _selectedValidator.value.value else {
             throw StakingModelError.amountNotFound
         }
+
+        _isLoading.send(true)
+        defer { _isLoading.send(false) }
 
         let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
         let transactionInfo = try await stakingManager.transaction(action: action)
@@ -257,7 +261,7 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
     var isFeeIncluded: Bool { false }
 
     var isLoading: AnyPublisher<Bool, Never> {
-        sendTransactionDispatcher.isSending
+        _isLoading.eraseToAnyPublisher()
     }
 
     func sendTransaction() async throws -> SendTransactionDispatcherResult {

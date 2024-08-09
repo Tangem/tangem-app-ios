@@ -183,14 +183,17 @@ private extension SendViewModel {
 
     func bind() {
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
     }

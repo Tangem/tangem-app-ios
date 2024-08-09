@@ -12,12 +12,11 @@ import TangemFoundation
 import struct BlockchainSdk.SendTxError
 
 protocol SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { get }
-
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult
 }
 
 extension SendTransactionDispatcher {
+    @available(*, deprecated, message: "Used only in LegacySendViewModel")
     func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Error> {
         Future.async {
             try await send(transaction: transaction)

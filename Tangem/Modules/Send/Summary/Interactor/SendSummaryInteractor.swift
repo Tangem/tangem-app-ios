@@ -35,10 +35,6 @@ class CommonSendSummaryInteractor {
 }
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
-    var isSending: AnyPublisher<Bool, Never> {
-        sendTransactionDispatcher.isSending
-    }
-
     var transactionDescription: AnyPublisher<String?, Never> {
         guard let input else {
             assertionFailure("SendFeeInput is not found")

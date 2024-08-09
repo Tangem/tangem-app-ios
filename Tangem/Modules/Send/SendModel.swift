@@ -26,6 +26,7 @@ class SendModel {
 
     private let _transaction = CurrentValueSubject<Result<BSDKTransaction, Error>?, Never>(nil)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _isSending = CurrentValueSubject<Bool, Never>(false)
 
     private let _withdrawalNotification = CurrentValueSubject<WithdrawalNotification?, Never>(nil)
 
@@ -300,11 +301,14 @@ extension SendModel: SendBaseInput, SendBaseOutput {
     }
 
     var isLoading: AnyPublisher<Bool, Never> {
-        sendTransactionDispatcher.isSending
+        _isSending.eraseToAnyPublisher()
     }
 
     func sendTransaction() async throws -> SendTransactionDispatcherResult {
-        try await sendIfInformationIsActual()
+        _isSending.send(true)
+        defer { _isSending.send(false) }
+
+        return try await sendIfInformationIsActual()
     }
 }
 

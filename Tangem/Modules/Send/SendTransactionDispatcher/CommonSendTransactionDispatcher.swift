@@ -14,8 +14,6 @@ class CommonSendTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
 
-    private let _isSending = CurrentValueSubject<Bool, Never>(false)
-
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner
@@ -28,16 +26,9 @@ class CommonSendTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
-
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .transfer(let transferTransaction) = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
-        }
-
-        _isSending.send(true)
-        defer {
-            _isSending.send(false)
         }
 
         let mapper = SendTransactionMapper()
