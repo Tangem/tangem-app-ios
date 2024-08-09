@@ -36,67 +36,61 @@ class StakingTransactionDispatcher {
 extension StakingTransactionDispatcher: SendTransactionDispatcher {
     var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
 
-    func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        guard case .staking(let stakeKitTransaction) = transaction else {
-            return .just(output: .transactionNotFound)
+    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
+        guard case .staking(let transactionId, let stakeKitTransaction) = transaction else {
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
-
-        guard let stakeKitTransactionSender = walletModel.stakeKitTransactionSender else {
-            return .just(output: .stakingUnsupported)
-        }
-
-        let sendPublisher = transactionSendResult.map {
-            Just($0)
-                .setFailureType(to: SendTxError.self)
-                .eraseToAnyPublisher()
-        }
-            ?? stakeKitTransactionSender
-            .sendStakeKit(transaction: stakeKitTransaction, signer: transactionSigner)
-            .eraseToAnyPublisher()
 
         _isSending.send(true)
+        defer {
+            _isSending.send(false)
+        }
 
-        return sendPublisher
-            .receive(on: DispatchQueue.main)
-            .handleEvents(
-                receiveOutput: { [weak self] transactionSendResult in
-                    self?.transactionSendResult = transactionSendResult
-                },
-                receiveCompletion: { [weak self] completion in
-                    self?._isSending.send(false)
+        let mapper = SendTransactionMapper()
 
-                    if case .finished = completion {
-                        self?.walletModel.updateAfterSendingTransaction()
-                    }
-                }
-            )
-            .withWeakCaptureOf(self)
-            .eraseError()
-            .tryAsyncMap { args in
-                let (model, transaction) = args
-                let hash = StakingPendingHash(transactionId: "", hash: transaction.hash)
-                try await model.pendingHashesSender.sendHash(hash)
-                return transaction
-            }
-            .withWeakCaptureOf(self)
-            .map { sender, result in
-                SendTransactionMapper().mapResult(
-                    result,
-                    blockchain: sender.walletModel.blockchainNetwork.blockchain
-                )
-            }
-            .catch { SendTransactionMapper().mapError($0, transaction: transaction) }
-            .eraseToAnyPublisher()
-    }
+        do {
+            let result = try await sendStakeKit(transaction: stakeKitTransaction)
+            let hash = StakingPendingHash(transactionId: transactionId, hash: result.hash)
 
-    func send(transaction: SendTransactionType) async throws -> String {
-        fatalError("Not implemented")
+            try await pendingHashesSender.sendHash(hash)
+
+            // Clear after success tx was successfully sent
+            transactionSendResult = nil
+
+            return mapper.mapResult(result, blockchain: walletModel.blockchainNetwork.blockchain)
+        } catch {
+            throw mapper.mapError(error, transaction: transaction)
+        }
     }
 }
 
 // MARK: - Private
 
 private extension StakingTransactionDispatcher {
+    func stakeKitTransactionSender() throws -> StakeKitTransactionSender {
+        guard let stakeKitTransactionSender = walletModel.stakeKitTransactionSender else {
+            throw SendTransactionDispatcherResult.Error.stakingUnsupported
+        }
+
+        return stakeKitTransactionSender
+    }
+
+    func sendStakeKit(transaction: StakeKitTransaction) async throws -> TransactionSendResult {
+        if let transactionSendResult {
+            return transactionSendResult
+        }
+
+        let result = try await stakeKitTransactionSender()
+            .sendStakeKit(transaction: transaction, signer: transactionSigner)
+            .async()
+
+        walletModel.updateAfterSendingTransaction()
+
+        // Save it if `sendHash` will failed
+        transactionSendResult = result
+        return result
+    }
+
     private func handleCompletion(_ completion: Subscribers.Completion<SendTxError>) {
         _isSending.send(false)
 

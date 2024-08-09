@@ -49,6 +49,7 @@ struct SendFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             actionType: .send,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .editable,
             sendDestinationCompactViewModel: destination.compact,

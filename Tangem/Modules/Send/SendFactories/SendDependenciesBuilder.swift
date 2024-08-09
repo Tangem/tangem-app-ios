@@ -172,6 +172,15 @@ struct SendDependenciesBuilder {
         CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 
+    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        switch walletModel.tokenItem.blockchain {
+        case .koinos:
+            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        default:
+            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        }
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(
@@ -210,5 +219,9 @@ struct SendDependenciesBuilder {
             validator: walletModel.transactionValidator,
             stakingManagerStatePublisher: stakingManager.statePublisher
         )
+    }
+
+    func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 }

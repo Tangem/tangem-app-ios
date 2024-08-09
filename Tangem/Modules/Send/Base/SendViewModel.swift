@@ -50,7 +50,7 @@ final class SendViewModel: ObservableObject {
 
     private var bag: Set<AnyCancellable> = []
 
-    private var sendSubscription: AnyCancellable?
+    private var sendTask: Task<Void, Never>?
     private var isValidSubscription: AnyCancellable?
 
     init(
@@ -121,19 +121,29 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performSend() {
-        sendSubscription = interactor.send()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, result in
-                viewModel.proceed(result: result)
+        sendTask = runTask(in: self) { viewModel in
+            do {
+                let result = try await viewModel.interactor.send()
+                await viewModel.proceed(result: result)
+            } catch let error as SendTransactionDispatcherResult.Error {
+                await viewModel.proceed(error: error)
+            } catch {
+                await runOnMain {
+                    viewModel.showAlert(error.alertBinder)
+                }
             }
+        }
     }
 
+    @MainActor
     func proceed(result: SendTransactionDispatcherResult) {
-        switch result {
-        case .success(_, let url):
-            transactionURL = url
-            stepsManager.performFinish()
+        transactionURL = result.url
+        stepsManager.performFinish()
+    }
+
+    @MainActor
+    func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
         case .userCancelled, .transactionNotFound, .stakingUnsupported:
             break
         case .informationRelevanceServiceError:

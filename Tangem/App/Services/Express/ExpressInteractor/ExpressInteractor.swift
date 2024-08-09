@@ -465,7 +465,7 @@ private extension ExpressInteractor {
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: state.data, fee: fee)
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        return TransactionSendResultState(hash: result, data: state.data, fee: fee, provider: provider)
+        return TransactionSendResultState(hash: result.hash, data: state.data, fee: fee, provider: provider)
     }
 
     func sendCEXTransaction(state: PreviewCEXState, provider: ExpressProvider) async throws -> TransactionSendResultState {
@@ -475,7 +475,7 @@ private extension ExpressInteractor {
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: data, fee: fee)
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        return TransactionSendResultState(hash: result, data: data, fee: fee, provider: provider)
+        return TransactionSendResultState(hash: result.hash, data: data, fee: fee, provider: provider)
     }
 }
 

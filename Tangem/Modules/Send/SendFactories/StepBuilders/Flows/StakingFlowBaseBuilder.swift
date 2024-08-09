@@ -48,6 +48,7 @@ struct StakingFlowBaseBuilder {
             io: (input: stakingModel, output: stakingModel),
             actionType: .stake,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .editable,
             sendDestinationCompactViewModel: .none,

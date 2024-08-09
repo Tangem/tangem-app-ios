@@ -138,67 +138,53 @@ private extension SendModel {
 // MARK: - Send
 
 private extension SendModel {
-    private func sendIfInformationIsActual() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
+    private func sendIfInformationIsActual() async throws -> SendTransactionDispatcherResult {
         if informationRelevanceService.isActual {
-            return send()
+            return try await send()
         }
 
-        return informationRelevanceService
-            .updateInformation()
-            .mapToResult()
-            .withWeakCaptureOf(self)
-            .flatMap { manager, result -> AnyPublisher<SendTransactionDispatcherResult, Never> in
-                switch result {
-                case .failure:
-                    return .just(output: .informationRelevanceServiceError)
-                case .success(.feeWasIncreased):
-                    return .just(output: .informationRelevanceServiceFeeWasIncreased)
-                case .success(.ok):
-                    return manager.send()
-                }
-            }
-            .eraseToAnyPublisher()
-    }
-
-    private func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        guard let transaction = _transaction.value?.value else {
-            return .just(output: .transactionNotFound)
-        }
-
-        return sendTransactionDispatcher
-            .sendPublisher(transaction: .transfer(transaction))
-            .withWeakCaptureOf(self)
-            .compactMap { sender, result in
-                sender.proceed(transaction: transaction, result: result)
-                return result
-            }
-            .eraseToAnyPublisher()
-    }
-
-    private func proceed(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
+        let result = try await informationRelevanceService.updateInformation().mapToResult().async()
         switch result {
-        case .informationRelevanceServiceError,
-             .informationRelevanceServiceFeeWasIncreased,
-             .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .stakingUnsupported:
-            break
-        case .sendTxError:
-            Analytics.log(event: .sendErrorTransactionRejected, params: [
-                .token: walletModel.tokenItem.currencySymbol,
-            ])
-        case .success:
-            _transactionTime.send(Date())
-            logTransactionAnalytics()
+        case .failure:
+            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceError
+        case .success(.feeWasIncreased):
+            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
+        case .success(.ok):
+            return try await send()
+        }
+    }
 
-            transaction.amount.type.token.map { token in
-                UserWalletFinder().addToken(
-                    token,
-                    in: walletModel.tokenItem.blockchain,
-                    for: transaction.destinationAddress
-                )
+    private func send() async throws -> SendTransactionDispatcherResult {
+        guard let transaction = _transaction.value?.value else {
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
+        }
+
+        do {
+            let result = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+            transactionDidSent(transaction: transaction, result: result)
+            return result
+        } catch {
+            if case SendTransactionDispatcherResult.Error.sendTxError(let transaction, let error) = error {
+                Analytics.log(event: .sendErrorTransactionRejected, params: [
+                    .token: walletModel.tokenItem.currencySymbol,
+                ])
             }
+
+            // rethrows the error forward to display alert
+            throw error
+        }
+    }
+
+    private func transactionDidSent(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
+        _transactionTime.send(Date())
+        logTransactionAnalytics()
+
+        transaction.amount.type.token.map { token in
+            UserWalletFinder().addToken(
+                token,
+                in: walletModel.tokenItem.blockchain,
+                for: transaction.destinationAddress
+            )
         }
     }
 }
@@ -282,8 +268,19 @@ extension SendModel: SendFeeOutput {
 // MARK: - SendSummaryInput, SendSummaryOutput
 
 extension SendModel: SendSummaryInput, SendSummaryOutput {
-    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
-        _transaction.map { $0?.value.map { .transfer($0) } }.eraseToAnyPublisher()
+    var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
+        _transaction.map { $0?.value != nil }.eraseToAnyPublisher()
+    }
+
+    var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
+        _transaction.map { transaction -> SendSummaryTransactionData? in
+            guard let transaction = transaction?.value else {
+                return nil
+            }
+
+            return .send(amount: transaction.amount.value, fee: transaction.fee.amount.value)
+        }
+        .eraseToAnyPublisher()
     }
 }
 
@@ -306,8 +303,8 @@ extension SendModel: SendBaseInput, SendBaseOutput {
         sendTransactionDispatcher.isSending
     }
 
-    func sendTransaction() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        sendIfInformationIsActual()
+    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+        try await sendIfInformationIsActual()
     }
 }
 

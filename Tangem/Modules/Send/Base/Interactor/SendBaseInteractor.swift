@@ -13,7 +13,7 @@ import BlockchainSdk
 protocol SendBaseInteractor {
     var isLoading: AnyPublisher<Bool, Never> { get }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never>
+    func send() async throws -> SendTransactionDispatcherResult
     func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
 }
 
@@ -42,8 +42,8 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         input.isLoading
     }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        output.sendTransaction()
+    func send() async throws -> SendTransactionDispatcherResult {
+        try await output.sendTransaction()
     }
 
     func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {

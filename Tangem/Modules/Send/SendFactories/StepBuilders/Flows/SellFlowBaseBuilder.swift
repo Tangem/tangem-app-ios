@@ -46,6 +46,7 @@ struct SellFlowBaseBuilder {
             io: (input: sendModel, output: sendModel),
             actionType: .send,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .disable,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,

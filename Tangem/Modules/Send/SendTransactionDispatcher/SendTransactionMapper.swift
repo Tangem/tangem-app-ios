@@ -20,17 +20,17 @@ struct SendTransactionMapper {
         let provider = factory.makeProvider(for: blockchain)
         let explorerUrl = provider.url(transaction: result.hash)
 
-        return .success(hash: result.hash, url: explorerUrl)
+        return SendTransactionDispatcherResult(hash: result.hash, url: explorerUrl)
     }
 
-    func mapError(_ error: Error, transaction: SendTransactionType) -> Just<SendTransactionDispatcherResult> {
+    func mapError(_ error: Error, transaction: SendTransactionType) -> SendTransactionDispatcherResult.Error {
         let sendError = error as? SendTxError ?? SendTxError(error: error)
         let internalError = sendError.error
 
         if internalError.toTangemSdkError().isUserCancelled {
-            return Just(.userCancelled)
+            return .userCancelled
         }
 
-        return Just(.sendTxError(transaction: transaction, error: sendError))
+        return .sendTxError(transaction: transaction, error: sendError)
     }
 }
