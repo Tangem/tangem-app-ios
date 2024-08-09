@@ -16,8 +16,8 @@ class WalletConnectV2SendTransactionHandler {
     private let walletModel: WalletModel
     private let transactionBuilder: WalletConnectEthTransactionBuilder
     private let messageComposer: WalletConnectV2MessageComposable
-    private let signer: TangemSigner
     private let uiDelegate: WalletConnectUIDelegate
+    private let transactionDispatcher: SendTransactionDispatcher
 
     private var transactionToSend: Transaction?
 
@@ -46,8 +46,8 @@ class WalletConnectV2SendTransactionHandler {
 
         self.messageComposer = messageComposer
         self.transactionBuilder = transactionBuilder
-        self.signer = signer
         self.uiDelegate = uiDelegate
+        transactionDispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
     }
 }
 
@@ -67,7 +67,7 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             throw WalletConnectV2Error.missingTransaction
         }
 
-        let txResult = try await walletModel.send(transaction, signer: signer).async()
+        let hash = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
         Analytics.log(.transactionSent, params: [.source: .transactionSourceWalletConnect])
 
@@ -77,6 +77,6 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             approveAction: {}
         ))
 
-        return RPCResult.response(AnyCodable(txResult.hash))
+        return RPCResult.response(AnyCodable(hash))
     }
 }

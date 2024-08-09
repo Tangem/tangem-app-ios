@@ -361,6 +361,12 @@ class WalletModel {
         return newUpdatePublisher.eraseToAnyPublisher()
     }
 
+    func updateAfterSendingTransaction() {
+        // Force update transactions history to take a new pending transaction from the local storage
+        _localPendingTransactionSubject.send(())
+        startUpdatingTimer()
+    }
+
     private func walletManagerDidUpdate(_ walletManagerState: WalletManagerState) {
         switch walletManagerState {
         case .loaded:
@@ -398,12 +404,6 @@ class WalletModel {
         DispatchQueue.main.async { [weak self] in // captured as weak at call stack
             self?._state.value = state
         }
-    }
-
-    private func updateAfterSendingTransaction() {
-        // Force update transactions history to take a new pending transaction from the local storage
-        _localPendingTransactionSubject.send(())
-        startUpdatingTimer()
     }
 
     // MARK: - Load Quotes
@@ -445,28 +445,6 @@ class WalletModel {
         .sink { [weak self] in
             self?.updateTimer?.cancel()
         }
-    }
-
-    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        if isDemo {
-            let hash = Data.randomData(count: 32)
-            return signer.sign(hash: hash, walletPublicKey: wallet.publicKey)
-                .mapSendError(tx: hash.hexString)
-                .map { _ in TransactionSendResult(hash: hash.hexString) }
-                .receive(on: DispatchQueue.main)
-                .eraseSendError()
-                .eraseToAnyPublisher()
-        }
-
-        return walletManager
-            .send(tx, signer: signer)
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .handleEvents(receiveOutput: { walletModel, _ in
-                walletModel.updateAfterSendingTransaction()
-            })
-            .map(\.1)
-            .eraseToAnyPublisher()
     }
 
     func estimatedFee(amount: Amount) -> AnyPublisher<[Fee], Error> {
@@ -715,6 +693,10 @@ extension WalletModel {
 
     var stakingManager: StakingManager? {
         _stakingManager
+    }
+
+    var stakeKitTransactionSender: StakeKitTransactionSender? {
+        walletManager as? StakeKitTransactionSender
     }
 }
 

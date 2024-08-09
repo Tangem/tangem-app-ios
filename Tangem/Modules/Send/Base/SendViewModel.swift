@@ -131,10 +131,10 @@ private extension SendViewModel {
 
     func proceed(result: SendTransactionDispatcherResult) {
         switch result {
-        case .success(let url):
+        case .success(_, let url):
             transactionURL = url
             stepsManager.performFinish()
-        case .userCancelled, .transactionNotFound:
+        case .userCancelled, .transactionNotFound, .stakingUnsupported:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
@@ -157,7 +157,7 @@ private extension SendViewModel {
         }
     }
 
-    func openMail(transaction: BSDKTransaction, error: SendTxError) {
+    func openMail(transaction: SendTransactionType, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
