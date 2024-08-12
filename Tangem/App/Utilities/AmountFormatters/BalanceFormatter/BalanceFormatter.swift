@@ -47,13 +47,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
-        formatter.usesGroupingSeparator = true
-        formatter.currencySymbol = currencyCode
-        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
-        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
+        let formatter = buildDefaultCryptoFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
@@ -94,8 +88,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = NumberFormatter()
-        prepareFiatFormatter(for: currencyCode, formatter: formatter)
+        let formatter = buildDefaultFiatFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
@@ -134,11 +127,11 @@ struct BalanceFormatter {
         return attributedString
     }
 
-    func prepareFiatFormatter(
+    func buildDefaultFiatFormatter(
         for currencyCode: String,
-        formatter: NumberFormatter,
         formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions
-    ) {
+    ) -> NumberFormatter {
+        let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
@@ -154,5 +147,20 @@ struct BalanceFormatter {
         default:
             break
         }
+        return formatter
+    }
+
+    func buildDefaultCryptoFormatter(
+        for currencyCode: String,
+        formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions
+    ) -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .currency
+        formatter.usesGroupingSeparator = true
+        formatter.currencySymbol = currencyCode
+        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
+        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
+        return formatter
     }
 }

@@ -27,12 +27,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         intervalInsights[selectedInterval] ?? []
     }
 
-    private let fiatAmountFormatter: NumberFormatter = {
-        let numberFormatter = NumberFormatter()
-        BalanceFormatter().prepareFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formatter: numberFormatter)
-
-        return numberFormatter
-    }()
+    private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode)
 
     private let nonCurrencyFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
@@ -44,27 +39,43 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         return numberFormatter
     }()
 
+    private let insights: TokenMarketsDetailsInsights
     private let notationFormatter: DefaultAmountNotationFormatter
 
     private weak var infoRouter: MarketsTokenDetailsBottomSheetRouter?
     private var intervalInsights: [MarketsPriceIntervalType: [MarketsTokenDetailsInsightsView.RecordInfo]] = [:]
+
+    private var currencyCodeChangeSubscription: AnyCancellable?
 
     init(
         insights: TokenMarketsDetailsInsights,
         notationFormatter: DefaultAmountNotationFormatter,
         infoRouter: MarketsTokenDetailsBottomSheetRouter?
     ) {
+        self.insights = insights
         self.notationFormatter = notationFormatter
         self.infoRouter = infoRouter
 
-        setupInsights(using: insights)
+        setupInsights()
+        bindToCurrencyCodeUpdates()
     }
 
     func showInfoBottomSheet(for infoProvider: MarketsTokenDetailsInfoDescriptionProvider) {
         infoRouter?.openInfoBottomSheet(title: infoProvider.title, message: infoProvider.infoDescription)
     }
 
-    private func setupInsights(using insights: TokenMarketsDetailsInsights) {
+    private func bindToCurrencyCodeUpdates() {
+        currencyCodeChangeSubscription = AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newCurrencyCode in
+                viewModel.fiatAmountFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: newCurrencyCode)
+                viewModel.setupInsights()
+            }
+    }
+
+    private func setupInsights() {
         let amountNotationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
 
         intervalInsights = availableIntervals.reduce(into: [:]) { partialResult, interval in

@@ -9,8 +9,8 @@
 import Foundation
 
 class DefaultAmountNotationFormatter {
-    private let isWithLeadingCurrencySymbol: Bool
-    private let defaultEmptyValue: String = BalanceFormatter.defaultEmptyBalanceString
+    let isWithLeadingCurrencySymbol: Bool
+    let defaultEmptyValue: String = BalanceFormatter.defaultEmptyBalanceString
 
     init(locale: Locale = .current) {
         /// This part is used to determine if currency symbol for selected locale is placed after amount value or before.
@@ -18,9 +18,9 @@ class DefaultAmountNotationFormatter {
         let currencyStyle = Decimal.FormatStyle.Currency(code: "USD", locale: locale).attributed
         let formattedString = Decimal(1).formatted(currencyStyle)
 
-        if let symbolInfo = formattedString.runs[\.numberSymbol].first(where: { $0.0 == .currency }) {
-            let isTrailing = symbolInfo.1.lowerBound == formattedString.characters.startIndex
-            isWithLeadingCurrencySymbol = isTrailing
+        if let symbolRange = formattedString.runs[\.numberSymbol].first(where: { $0.0 == .currency })?.1 {
+            let isLeading = symbolRange.lowerBound == formattedString.characters.startIndex
+            isWithLeadingCurrencySymbol = isLeading
         } else {
             isWithLeadingCurrencySymbol = false
         }
@@ -37,7 +37,9 @@ class DefaultAmountNotationFormatter {
             return defaultEmptyValue
         }
 
-        let baseStyle = Decimal.FormatStyle.number.precision(precision).notation(.compactName)
+        // We need to use US locale to prevent differences in suffixes. Different locales uses different suffixes
+        // For now we use only US suffixes (K, M, B, T)
+        let baseStyle = Decimal.FormatStyle.number.precision(precision).notation(.compactName).locale(.init(identifier: "en_US"))
         let formatterAmount = value.formatted(baseStyle)
         return addCurrencySymbol(formattedAmount: formatterAmount, currencySymbol: currencySymbol)
     }
@@ -64,9 +66,10 @@ class DefaultAmountNotationFormatter {
     }
 
     private func addCurrencySymbol(formattedAmount: String, currencySymbol: String) -> String {
-        let separator = (currencySymbol.isEmpty || currencySymbol.count == 1) ? "" : " "
+        let leadingSeparator = (currencySymbol.isEmpty || currencySymbol.count == 1) ? "" : " "
+        let trailingSeparator = (currencySymbol.isEmpty) ? "" : " "
         return isWithLeadingCurrencySymbol ?
-            currencySymbol + separator + formattedAmount :
-            formattedAmount + " " + currencySymbol
+            currencySymbol + leadingSeparator + formattedAmount :
+            formattedAmount + trailingSeparator + currencySymbol
     }
 }

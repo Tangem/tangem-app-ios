@@ -7,12 +7,26 @@
 //
 
 import Foundation
+import Combine
 
-struct MarketsTokenDetailsMetricsViewModel {
-    let records: [MarketsTokenDetailsMetricsView.RecordInfo]
+class MarketsTokenDetailsMetricsViewModel: ObservableObject {
+    @Published var records: [MarketsTokenDetailsMetricsView.RecordInfo] = []
 
     private let notationFormatter: DefaultAmountNotationFormatter
     private weak var infoRouter: MarketsTokenDetailsBottomSheetRouter?
+
+    private let formattingOptions = BalanceFormattingOptions(
+        minFractionDigits: 0,
+        maxFractionDigits: 0,
+        formatEpsilonAsLowestRepresentableValue: false,
+        roundingType: .default(roundingMode: .plain, scale: 0)
+    )
+
+    private let metrics: MarketsTokenDetailsMetrics
+    private let cryptoCurrencyCode: String
+
+    private var currencyCodeChangeSubscription: AnyCancellable?
+    private lazy var fiatFormatter: NumberFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
 
     init(
         metrics: MarketsTokenDetailsMetrics,
@@ -20,15 +34,34 @@ struct MarketsTokenDetailsMetricsViewModel {
         cryptoCurrencyCode: String,
         infoRouter: MarketsTokenDetailsBottomSheetRouter?
     ) {
+        self.metrics = metrics
         self.notationFormatter = notationFormatter
+        self.cryptoCurrencyCode = cryptoCurrencyCode
         self.infoRouter = infoRouter
 
+        setupRecords()
+        bindToCurrencyCodeUpdate()
+    }
+
+    func showInfoBottomSheet(for type: MarketsTokenDetailsInfoDescriptionProvider) {
+        infoRouter?.openInfoBottomSheet(title: type.title, message: type.infoDescription)
+    }
+
+    private func bindToCurrencyCodeUpdate() {
+        currencyCodeChangeSubscription = AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newCurrencyCode in
+                viewModel.fiatFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: newCurrencyCode, formattingOptions: viewModel.formattingOptions)
+                viewModel.setupRecords()
+            }
+    }
+
+    private func setupRecords() {
         let amountNotationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
         let formatter = BalanceFormatter()
-        let fiatFormatter = NumberFormatter()
-        let options = BalanceFormattingOptions(minFractionDigits: 0, maxFractionDigits: 0, formatEpsilonAsLowestRepresentableValue: false, roundingType: .default(roundingMode: .plain, scale: 0))
-        formatter.prepareFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formatter: fiatFormatter, formattingOptions: options)
-        let fiatCurrencySymbol = fiatFormatter.currencySymbol ?? ""
+
         let emptyValue = BalanceFormatter.defaultEmptyBalanceString
 
         func formatFiatValue(_ value: Decimal?) -> String {
@@ -36,7 +69,7 @@ struct MarketsTokenDetailsMetricsViewModel {
                 return emptyValue
             }
 
-            return formatter.formatFiatBalance(value, formattingOptions: options)
+            return formatter.formatFiatBalance(value, formattingOptions: formattingOptions)
         }
 
         func formatCryptoValue(_ value: Decimal?) -> String {
@@ -45,19 +78,15 @@ struct MarketsTokenDetailsMetricsViewModel {
 
         var rating = emptyValue
         if let marketRating = metrics.marketRating, marketRating > 0 {
-            rating = formatter.formatCryptoBalance(Decimal(marketRating), currencyCode: "", formattingOptions: options)
+            rating = formatter.formatCryptoBalance(Decimal(marketRating), currencyCode: "", formattingOptions: formattingOptions)
         }
         records = [
-            .init(type: .marketCapitalization, recordData: notationFormatter.format(metrics.marketCap, currencySymbol: fiatCurrencySymbol)),
+            .init(type: .marketCapitalization, recordData: notationFormatter.format(metrics.marketCap, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .marketRating, recordData: rating),
-            .init(type: .tradingVolume, recordData: notationFormatter.format(metrics.volume24H, currencySymbol: fiatCurrencySymbol)),
-            .init(type: .fullyDilutedValuation, recordData: notationFormatter.format(metrics.fullyDilutedValuation, currencySymbol: fiatCurrencySymbol)),
+            .init(type: .tradingVolume, recordData: notationFormatter.format(metrics.volume24H, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
+            .init(type: .fullyDilutedValuation, recordData: notationFormatter.format(metrics.fullyDilutedValuation, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .circulatingSupply, recordData: notationFormatter.format(metrics.circulatingSupply, currencySymbol: cryptoCurrencyCode)),
             .init(type: .totalSupply, recordData: notationFormatter.format(metrics.totalSupply, currencySymbol: cryptoCurrencyCode)),
         ]
-    }
-
-    func showInfoBottomSheet(for type: MarketsTokenDetailsInfoDescriptionProvider) {
-        infoRouter?.openInfoBottomSheet(title: type.title, message: type.infoDescription)
     }
 }
