@@ -33,6 +33,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private var pickedTimeInterval: TimeInterval?
     @Published private var loadedHistoryInfo: [TimeInterval: Decimal] = [:]
     @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
+    @Published private var tokenInsights: TokenMarketsDetailsInsights?
 
     let priceChangeIntervalOptions = MarketsPriceIntervalType.allCases
 
@@ -256,6 +257,15 @@ private extension TokenMarketsDetailsViewModel {
                 viewModel.portfolioViewModel?.isLoading = isLoading
             }
             .store(in: &bag)
+
+        AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.reloadAllData()
+            }
+            .store(in: &bag)
     }
 
     func bindToChartStateUpdates() {
@@ -324,14 +334,7 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
-        if let insights = model.insights {
-            insightsViewModel = .init(
-                tokenSymbol: model.symbol,
-                insights: insights,
-                notationFormatter: defaultAmountNotationFormatter,
-                infoRouter: self
-            )
-        }
+        setupInsights(model.insights)
 
         if let metrics = model.metrics {
             metricsViewModel = .init(metrics: metrics, notationFormatter: defaultAmountNotationFormatter, cryptoCurrencyCode: model.symbol, infoRouter: self)
@@ -346,6 +349,27 @@ private extension TokenMarketsDetailsViewModel {
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
+    }
+
+    func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
+        defer {
+            tokenInsights = insights
+        }
+
+        guard let insights else {
+            insightsViewModel = nil
+            return
+        }
+
+        if insightsViewModel == nil {
+            insightsViewModel = .init(
+                tokenSymbol: tokenInfo.symbol,
+                insights: insights,
+                insightsPublisher: $tokenInsights,
+                notationFormatter: defaultAmountNotationFormatter,
+                infoRouter: self
+            )
+        }
     }
 }
 

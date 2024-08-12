@@ -42,6 +42,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     private let tokenSymbol: String
     private let insights: TokenMarketsDetailsInsights
     private let notationFormatter: DefaultAmountNotationFormatter
+    private let insightsPublisher: any Publisher<TokenMarketsDetailsInsights?, Never>
 
     private weak var infoRouter: MarketsTokenDetailsBottomSheetRouter?
     private var intervalInsights: [MarketsPriceIntervalType: [MarketsTokenDetailsInsightsView.RecordInfo]] = [:]
@@ -50,12 +51,14 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     init(
         tokenSymbol: String,
         insights: TokenMarketsDetailsInsights,
+        insightsPublisher: some Publisher<TokenMarketsDetailsInsights?, Never>,
         notationFormatter: DefaultAmountNotationFormatter,
         infoRouter: MarketsTokenDetailsBottomSheetRouter?
     ) {
         self.tokenSymbol = tokenSymbol
         self.insights = insights
         self.notationFormatter = notationFormatter
+        self.insightsPublisher = insightsPublisher
         self.infoRouter = infoRouter
 
         setupInsights()
