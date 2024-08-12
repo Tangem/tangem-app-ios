@@ -181,7 +181,7 @@ struct StakeKitMapper {
     }
 
     func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingTokenItem {
-        guard let network = StakeKitNetworkType(rawValue: token.coinGeckoId) else {
+        guard let network = StakeKitNetworkType(rawValue: token.network) else {
             throw StakeKitMapperError.noData("StakeKitNetworkType not found")
         }
 

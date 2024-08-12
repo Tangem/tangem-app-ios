@@ -19,7 +19,7 @@ struct UnstakingFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, validator: String, router: SendRoutable) -> SendViewModel {
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendTransactionDispatcher = builder.makeStakingTransactionDispatcher()
         let unstakingModel = builder.makeUnstakingModel(
             stakingManager: manager,
             sendTransactionDispatcher: sendTransactionDispatcher,
