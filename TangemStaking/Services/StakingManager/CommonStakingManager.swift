@@ -65,22 +65,34 @@ extension CommonStakingManager: StakingManager {
                 validator: action.validator,
                 integrationId: yieldInfo.id
             )
-        case (.staked(_, let yieldInfo), .unstake):
+        case (.staked(let staked), .stake):
+            return try await provider.estimateStakeFee(
+                amount: action.amount,
+                address: wallet.address,
+                validator: action.validator,
+                integrationId: staked.yieldInfo.id
+            )
+        case (.staked(let staked), .unstake):
             return try await provider.estimateUnstakeFee(
                 amount: action.amount,
                 address: wallet.address,
                 validator: action.validator,
-                integrationId: yieldInfo.id
+                integrationId: staked.yieldInfo.id
             )
-        case (.staked(let balanceInfo, let yieldInfo), .claimRewards):
-            guard let passthrough = balanceInfo.first(where: { $0.passthrough != nil })?.passthrough else {
-                fallthrough
+        case (.staked(let staked), .claimRewards):
+            guard let balance = staked.balance(validator: action.validator) else {
+                throw StakingManagerError.stakedBalanceNotFound(validator: action.validator)
             }
+
+            guard let passthrough = balance.passthrough else {
+                throw StakingManagerError.pendingActionNotFound(validator: action.validator)
+            }
+
             return try await provider.estimateClaimRewardsFee(
                 amount: action.amount,
                 address: wallet.address,
                 validator: action.validator,
-                integrationId: yieldInfo.id,
+                integrationId: staked.yieldInfo.id,
                 passthrough: passthrough
             )
         default:
@@ -97,15 +109,21 @@ extension CommonStakingManager: StakingManager {
                 validator: action.validator,
                 integrationId: yieldInfo.id
             )
-        case (.staked(let balances, let yieldInfo), .unstake):
-            guard let balance = balances.first(where: { $0.validatorAddress == action.validator }) else {
+        case (.staked(let staked), .stake):
+            return try await getTransactionToStake(
+                amount: action.amount,
+                validator: action.validator,
+                integrationId: staked.yieldInfo.id
+            )
+        case (.staked(let staked), .unstake):
+            guard let balance = staked.balance(validator: action.validator) else {
                 throw StakingManagerError.stakedBalanceNotFound(validator: action.validator)
             }
 
             return try await getTransactionToUnstake(
                 amount: balance.blocked,
                 validator: action.validator,
-                integrationId: yieldInfo.id
+                integrationId: staked.yieldInfo.id
             )
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
@@ -122,15 +140,17 @@ private extension CommonStakingManager {
     }
 
     func state(balances: [StakingBalanceInfo]?, yield: YieldInfo) -> StakingManagerState {
-        guard let balances else {
+        guard yield.isAvailable else {
+            return .temporaryUnavailable(yield)
+        }
+
+        guard let balances, !balances.isEmpty else {
             return .availableToStake(yield)
         }
 
-        if balances.contains(where: { $0.balanceGroupType.isActiveOrUnstaked }) {
-            return .staked(balances, yield)
-        } else {
-            return .availableToStake(yield)
-        }
+        let canStakeMore = canStakeMore(item: yield.item)
+
+        return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
     func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
@@ -173,6 +193,19 @@ private extension CommonStakingManager {
     }
 }
 
+// MARK: - Helping
+
+private extension CommonStakingManager {
+    func canStakeMore(item: StakingTokenItem) -> Bool {
+        switch item.network {
+        case .solana:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
 // MARK: - Log
 
 private extension CommonStakingManager {
@@ -181,10 +214,28 @@ private extension CommonStakingManager {
     }
 }
 
-public enum StakingManagerError: Error {
+public enum StakingManagerError: LocalizedError {
     case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
     case stakedBalanceNotFound(validator: String)
+    case pendingActionNotFound(validator: String)
     case transactionNotFound
     case notImplemented
     case notFound
+
+    public var errorDescription: String? {
+        switch self {
+        case .stakingManagerStateNotSupportTransactionAction(let action):
+            "stakingManagerStateNotSupportTransactionAction \(action)"
+        case .stakedBalanceNotFound(let validator):
+            "stakedBalanceNotFound \(validator)"
+        case .pendingActionNotFound(let validator):
+            "pendingActionNotFound \(validator)"
+        case .transactionNotFound:
+            "transactionNotFound"
+        case .notImplemented:
+            "notImplemented"
+        case .notFound:
+            "notFound"
+        }
+    }
 }

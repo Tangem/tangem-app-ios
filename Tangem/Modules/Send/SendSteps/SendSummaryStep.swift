@@ -45,6 +45,6 @@ extension SendSummaryStep: SendStep {
     var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        input.transactionPublisher.map { $0 != nil }.eraseToAnyPublisher()
+        input.isReadyToSendPublisher.eraseToAnyPublisher()
     }
 }

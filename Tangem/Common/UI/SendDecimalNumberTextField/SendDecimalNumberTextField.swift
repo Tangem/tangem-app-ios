@@ -196,7 +196,20 @@ struct SendDecimalNumberTextField: View {
             let minTextScale,
             measuredWidth > maxWidth
         else {
-            return (1.0, maxWidth)
+            // Apparently, SwiftUI structural identity changes when the scale of the view changes from 1.0 (no scaling)
+            // to any other value and vice versa, from any other value back to back to 1.0 (no scaling).
+            // This change of SwiftUI structural identity causes a reset of some of the view's internal state
+            // (including `@Focused` properties), which in turn causes the active first responder to resign, i.e. hide the keyboard.
+            //
+            // The workaround here prevents this by placing the view into a `scaled` state, even if text scaling
+            // is not actually needed at the moment. This scaled state should not affect view dimensions at all, because
+            // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by the same value, 1%)
+            let onePercent = 0.01
+            let multiplierBase = 1.0
+            let defaultScaleMultiplier = multiplierBase + onePercent
+            let defaultWidthMultiplier = multiplierBase - onePercent
+
+            return (1.0 * defaultScaleMultiplier, maxWidth * defaultWidthMultiplier)
         }
 
         // It turns out that in some cases, HStack inserts some space (1pt) between neighboring child views,

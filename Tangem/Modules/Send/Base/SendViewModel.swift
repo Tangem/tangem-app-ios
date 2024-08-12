@@ -50,7 +50,7 @@ final class SendViewModel: ObservableObject {
 
     private var bag: Set<AnyCancellable> = []
 
-    private var sendSubscription: AnyCancellable?
+    private var sendTask: Task<Void, Never>?
     private var isValidSubscription: AnyCancellable?
 
     init(
@@ -121,20 +121,30 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performSend() {
-        sendSubscription = interactor.send()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, result in
-                viewModel.proceed(result: result)
+        sendTask?.cancel()
+        sendTask = runTask(in: self) { viewModel in
+            do {
+                let result = try await viewModel.interactor.send()
+                await viewModel.proceed(result: result)
+            } catch let error as SendTransactionDispatcherResult.Error {
+                await viewModel.proceed(error: error)
+            } catch {
+                AppLog.shared.error(error)
+                await runOnMain { viewModel.showAlert(error.alertBinder) }
             }
+        }
     }
 
+    @MainActor
     func proceed(result: SendTransactionDispatcherResult) {
-        switch result {
-        case .success(let url):
-            transactionURL = url
-            stepsManager.performFinish()
-        case .userCancelled, .transactionNotFound:
+        transactionURL = result.url
+        stepsManager.performFinish()
+    }
+
+    @MainActor
+    func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
+        case .userCancelled, .transactionNotFound, .stakingUnsupported:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
@@ -157,7 +167,7 @@ private extension SendViewModel {
         }
     }
 
-    func openMail(transaction: BSDKTransaction, error: SendTxError) {
+    func openMail(transaction: SendTransactionType, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
@@ -173,14 +183,17 @@ private extension SendViewModel {
 
     func bind() {
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
     }

@@ -12,7 +12,7 @@ extension StakeKitDTO {
     enum Balances {
         struct Request: Encodable {
             let addresses: Address
-            let network: String
+            let network: StakeKitNetworkType
         }
 
         struct Response: Decodable {

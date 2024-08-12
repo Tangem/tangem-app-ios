@@ -10,10 +10,12 @@ import Foundation
 import TangemStaking
 
 extension TokenItem {
-    var stakingTokenItem: TangemStaking.StakingTokenItem {
-        StakingTokenItem(
-            coinId: id ?? blockchain.coinId,
-            contractAddress: contractAddress
-        )
+    var stakingTokenItem: TangemStaking.StakingTokenItem? {
+        StakeKitNetworkType(rawValue: id ?? blockchain.coinId).map { network in
+            StakingTokenItem(
+                network: network,
+                contractAddress: contractAddress
+            )
+        }
     }
 }

@@ -13,7 +13,5 @@ extension StakeKitDTO {
         struct Request: Encodable {
             let hash: String
         }
-
-        struct Response: Decodable {}
     }
 }

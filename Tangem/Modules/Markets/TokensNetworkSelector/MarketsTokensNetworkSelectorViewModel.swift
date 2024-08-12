@@ -29,6 +29,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         pendingAdd.isEmpty
     }
 
+    var isShowWalletSelector: Bool {
+        walletDataProvider.userWalletModels.count > 1
+    }
+
     // MARK: - Private Implementation
 
     private var bag = Set<AnyCancellable>()
@@ -75,56 +79,16 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
         bind()
-        setup()
     }
 
     // MARK: - Implementation
 
-    func selectWalletActionDidTap() {
-        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
-    }
-
     func saveChangesOnTapAction() {
-        guard
-            let userWalletModel = walletDataProvider.selectedUserWalletModel,
-            !isSaving
-        else {
+        guard let userTokensManager = selectedUserWalletModel?.userTokensManager else {
             return
         }
 
-        isSaving = true
-
-        do {
-            try applyChanges(with: userWalletModel.userTokensManager)
-        } catch {
-            AppLog.shared.debug("\(String(describing: self)) undefined error applyChanges \(error.localizedDescription)")
-            isSaving = false
-            return
-        }
-
-        userWalletModel.userTokensManager.deriveIfNeeded { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                
-                self.isSaving = false
-
-                if case .failure(let error) = result {
-                    // Need to reset state selection, set the current values
-                    self.reset(with: userWalletModel.userTokensManager)
-
-                    if !error.isUserCancelled {
-                        self.alert = error.alertBinder
-                    }
-
-                    return
-                }
-
-                // Copy tokens to readonly state, which have been success added
-                self.readonlyTokens.append(contentsOf: self.pendingAdd)
-                self.pendingAdd = []
-                self.updateSelectionByTokenItems()
-            }
-        }
+        applyChanges(with: userTokensManager)
     }
 
     // MARK: - Private Implementation
@@ -168,15 +132,36 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             }
     }
 
-    /// This method that shows a configure notification input result if the condition is single currency by coinId
-    private func setup() {
-        guard walletDataProvider.userWalletModels.isEmpty else {
+    private func applyChanges(with userTokensManager: UserTokensManager) {
+        guard !isSaving else {
             return
         }
-    }
 
-    private func applyChanges(with userTokensManager: UserTokensManager) throws {
-        try userTokensManager.update(itemsToRemove: [], itemsToAdd: pendingAdd)
+        isSaving = true
+
+        userTokensManager.update(itemsToRemove: [], itemsToAdd: pendingAdd) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+
+                self.isSaving = false
+
+                if case .failure(let error) = result {
+                    // Need to reset state selection, set the current values
+                    self.reset(with: userTokensManager)
+
+                    if !error.isUserCancelled {
+                        self.alert = error.alertBinder
+                    }
+
+                    return
+                }
+
+                // Copy tokens to readonly state, which have been success added
+                self.readonlyTokens.append(contentsOf: self.pendingAdd)
+                self.pendingAdd = []
+                self.updateSelectionByTokenItems()
+            }
+        }
     }
 
     private func onSelect(_ selected: Bool, _ tokenItem: TokenItem) throws {
@@ -233,10 +218,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .manageTokensSwitcherChanged, params: [
-            .token: tokenItem.currencySymbol,
-            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
-        ])
+        Analytics.log(event: .marketsTokenNetworkSelected, params: [.token: tokenItem.currencySymbol, .count: "\(pendingAdd.count)"])
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {

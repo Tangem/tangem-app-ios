@@ -67,6 +67,7 @@ struct MarketsTokenDetailsPricePerformanceView: View {
 
 #Preview {
     MarketsTokenDetailsPricePerformanceView(viewModel: .init(
+        tokenSymbol: "BTC",
         pricePerformanceData: [
             .day: .init(lowPrice: 0.98, highPrice: 0.989),
             .month: .init(lowPrice: 0.97, highPrice: 1.01),
