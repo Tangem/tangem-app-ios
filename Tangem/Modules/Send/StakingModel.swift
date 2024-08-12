@@ -11,13 +11,18 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 import TangemFoundation
+import enum TangemExpress.ExpressApprovePolicy
 
 class StakingModel {
+    // TODO: Move it to TangemService layer
+    typealias ApprovePolicy = TangemExpress.ExpressApprovePolicy
+
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
     private let _selectedValidator = CurrentValueSubject<LoadingValue<ValidatorInfo>, Never>(.loading)
-    private let _estimatedFee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
+    private let _state = CurrentValueSubject<LoadingValue<State>?, Never>(.none)
+    private let _approvePolicy = CurrentValueSubject<ApprovePolicy, Never>(.unlimited)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -27,6 +32,11 @@ class StakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let transactionCreator: TransactionCreator
+    private var ethereumNetworkProvider: EthereumNetworkProvider?
+    private var ethereumTransactionDataBuilder: EthereumTransactionDataBuilder?
+    private let sourceAddress: String
+    private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
     private let stakingMapper: StakingMapper
 
@@ -37,12 +47,20 @@ class StakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        transactionCreator: TransactionCreator,
+        ethereumNetworkProvider: EthereumNetworkProvider?,
+        sourceAddress: String,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.transactionCreator = transactionCreator
+        self.ethereumNetworkProvider = ethereumNetworkProvider
+        self.sourceAddress = sourceAddress
+        tokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
+
         stakingMapper = StakingMapper(
             amountTokenItem: amountTokenItem,
             feeTokenItem: feeTokenItem
@@ -52,17 +70,26 @@ class StakingModel {
     }
 }
 
+// MARK: - Public
+
+extension StakingModel {
+    var state: AnyPublisher<State, Never> {
+        _state.compactMap { $0?.value }.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Bind
 
 private extension StakingModel {
     func bind() {
         Publishers
-            .CombineLatest(
+            .CombineLatest3(
                 _amount.compactMap { $0?.crypto },
-                _selectedValidator.compactMap { $0.value }
+                _selectedValidator.compactMap { $0.value },
+                _approvePolicy
             )
-            .sink { [weak self] amount, validator in
-                self?.estimateFee(amount: amount, validator: validator.address)
+            .sink { [weak self] amount, validator, approvePolicy in
+                self?.inputDataDidChange(amount: amount, validator: validator.address, approvePolicy: approvePolicy)
             }
             .store(in: &bag)
 
@@ -83,26 +110,69 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    private func estimateFee(amount: Decimal, validator: String) {
+    private func inputDataDidChange(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) {
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
-            model._estimatedFee.send(.loading)
-
             do {
-                let fee = try await model.stakingManager.estimateFee(
-                    action: StakingAction(amount: amount, validator: validator, type: .stake)
-                )
-                model._estimatedFee.send(.loaded(fee))
+                model._state.send(.loading)
+                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: approvePolicy)
+                model._state.send(.loaded(newState))
             } catch {
-                model._estimatedFee.send(.failedToLoad(error: error))
+                model._state.send(.failedToLoad(error: error))
             }
         }
     }
 
-    func mapToSendFee(_ fee: LoadingValue<Decimal>?) -> SendFee {
-        let value = fee?.mapValue { fee in
-            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
+    private func state(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
+        if let state = try await checkAllowanceIfNeeded(amount: amount, validator: validator, approvePolicy: approvePolicy) {
+            return state
+        }
+
+        let estimateFee = try await stakingManager.estimateFee(
+            action: StakingAction(amount: amount, validator: validator, type: .stake)
+        )
+
+        return .readyToStake(fee: estimateFee)
+    }
+
+    private func checkAllowanceIfNeeded(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State? {
+        guard tokenItem.blockchain.isEvm,
+              let contract = tokenItem.contractAddress,
+              let ethereumNetworkProvider,
+              let ethereumTransactionDataBuilder else {
+            return nil
+        }
+
+        let allowance = try await ethereumNetworkProvider.getAllowance(
+            owner: sourceAddress,
+            spender: validator,
+            contractAddress: contract
+        ).async()
+
+        let weiAmount = amount * tokenItem.decimalValue
+        let approveAmount = approvePolicy.amount(weiAmount)
+
+        // If we don't have enough allowance
+        guard allowance < approveAmount else {
+            return nil
+        }
+
+        let data = try ethereumTransactionDataBuilder.buildForApprove(spender: validator, amount: approveAmount)
+        let amount = BSDKAmount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: 0)
+        let fee = try await ethereumNetworkProvider.getFee(destination: contract, value: amount.encodedForSend, data: data).async()
+
+        // Use fastest
+        guard let fee = fee[safe: 2] else {
+            throw StakingModelError.approveFeeNotFound
+        }
+
+        return .readyToApprove(contract: contract, data: data, fee: fee)
+    }
+
+    func mapToSendFee(_ state: LoadingValue<State>?) -> SendFee {
+        let value = state?.mapValue { state in
+            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: state.fee))
         }
 
         return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
@@ -202,14 +272,14 @@ extension StakingModel: StakingValidatorsOutput {
 
 extension StakingModel: SendFeeInput {
     var selectedFee: SendFee {
-        mapToSendFee(_estimatedFee.value)
+        mapToSendFee(_state.value)
     }
 
     var selectedFeePublisher: AnyPublisher<SendFee, Never> {
-        _estimatedFee
+        _state
             .withWeakCaptureOf(self)
-            .map { model, fee in
-                model.mapToSendFee(fee)
+            .map { model, state in
+                model.mapToSendFee(state)
             }
             .eraseToAnyPublisher()
     }
@@ -240,17 +310,17 @@ extension StakingModel: SendFeeOutput {
 
 extension StakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
-        _estimatedFee.map { $0?.value != nil }.eraseToAnyPublisher()
+        _state.map { $0?.value != nil }.eraseToAnyPublisher()
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        Publishers.CombineLatest(_amount, _estimatedFee)
-            .map { amount, fee in
-                guard let amount, let fee = fee?.value else {
+        Publishers.CombineLatest(_amount, _state)
+            .map { amount, state in
+                guard let amount, let state = state?.value else {
                     return nil
                 }
 
-                return .staking(amount: amount, fee: fee)
+                return .staking(amount: amount, fee: state.fee)
             }
             .eraseToAnyPublisher()
     }
@@ -293,39 +363,55 @@ extension StakingModel: StakingNotificationManagerInput {
 
 extension StakingModel: ApproveService {
     var approveFeeValue: LoadingValue<Fee> {
-        mapToLoadingValue(state: getState())
+        selectedFee.value
     }
 
     var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
-        state
+        _state
             .withWeakCaptureOf(self)
-            .map { interactor, state in
-                interactor.mapToLoadingValue(state: state)
+            .map { model, state in
+                model.mapToSendFee(state).value
             }
             .eraseToAnyPublisher()
     }
 
-    private func mapToLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee> {
-        switch state {
-        case .permissionRequired(let state, _):
-            guard let fee = state.fees[getFeeOption()] else {
-                return .failedToLoad(error: ExpressInteractorError.feeNotFound)
-            }
+    func updateApprovePolicy(policy: ExpressApprovePolicy) {
+        _approvePolicy.send(policy)
+    }
 
-            return .loaded(fee)
-        case .loading:
-            return .loading
-        case .restriction(.requiredRefresh(let error), _):
-            return .failedToLoad(error: error)
-        default:
-            AppLog.shared.debug("Wrong state for this view \(state)")
-            return .failedToLoad(error: CommonError.notImplemented)
+    func sendApproveTransaction() async throws {
+        guard case .readyToApprove(let contract, let data, let fee) = _state.value?.value else {
+            throw StakingModelError.approveDataNotFound
+        }
+
+        let transaction = try await transactionCreator.createTransaction(
+            amount: .init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: 0),
+            fee: fee,
+            destinationAddress: contract,
+            contractAddress: contract
+        )
+
+        _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+    }
+}
+
+extension StakingModel {
+    enum State: Hashable {
+        case readyToApprove(contract: String, data: Data, fee: Fee)
+        case readyToStake(fee: Decimal)
+
+        var fee: Decimal {
+            switch self {
+            case .readyToApprove(_, _, let fee): fee.amount.value
+            case .readyToStake(let fee): fee
+            }
         }
     }
 }
 
-enum StakingModelError: Error {
+enum StakingModelError: String, Hashable, Error {
     case amountNotFound
     case validatorNotFound
+    case approveFeeNotFound
+    case approveDataNotFound
 }
-

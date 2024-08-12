@@ -11,4 +11,13 @@ import Foundation
 public enum ExpressApprovePolicy: Hashable, CaseIterable {
     case unlimited
     case specified
+
+    public func amount(_ amount: Decimal) -> Decimal {
+        switch self {
+        case .specified:
+            return amount
+        case .unlimited:
+            return .greatestFiniteMagnitude
+        }
+    }
 }

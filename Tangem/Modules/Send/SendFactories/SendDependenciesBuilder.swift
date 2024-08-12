@@ -190,6 +190,9 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            transactionCreator: walletModel.transactionCreator,
+            ethereumNetworkProvider: walletModel.ethereumNetworkProvider,
+            sourceAddress: walletModel.defaultAddress,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
