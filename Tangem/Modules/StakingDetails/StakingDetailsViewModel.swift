@@ -22,6 +22,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var actionButtonLoading: Bool = false
     @Published var actionButtonType: ActionButtonType?
 
     // MARK: - Dependencies
@@ -95,13 +96,20 @@ private extension StakingDetailsViewModel {
 
     func setupView(state: StakingManagerState) {
         switch state {
-        case .loading, .notEnabled:
-            break
-        case .availableToStake(let yieldInfo):
+        case .loading:
+            actionButtonLoading = true
+        case .notEnabled:
+            actionButtonLoading = false
+            actionButtonType = .none
+        case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
             setupView(yield: yieldInfo, balancesInfo: nil)
+
+            actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
             setupView(yield: staked.yieldInfo, balancesInfo: staked.balances)
+
+            actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
         }
     }
@@ -132,13 +140,13 @@ private extension StakingDetailsViewModel {
                 rewardType: yield.rewardType,
                 rewardRate: yield.rewardRate,
                 rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
-                minimumRequirement: yield.minimumRequirement,
+                minimumRequirement: yield.enterMinimumRequirement,
                 warmupPeriod: yield.warmupPeriod,
                 unbondingPeriod: yield.unbondingPeriod,
                 rewardClaimingType: yield.rewardClaimingType,
                 rewardScheduleType: yield.rewardScheduleType,
-                activeValidators: validatorBalances.filter { $0.balanceGroupType == .active },
-                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unstaked }
+                activeValidators: validatorBalances.filter { $0.balanceGroupType != .unbonding },
+                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unbonding }
             )
         )
     }
@@ -149,7 +157,6 @@ private extension StakingDetailsViewModel {
         setupDetailsSection(inputData: inputData)
         setupRewardView(inputData: inputData)
         setupValidatorsView(input: inputData)
-        setupButtonTitle(inputData: inputData)
     }
 
     func setupHeaderView(inputData: StakingDetailsData) {
@@ -183,11 +190,6 @@ private extension StakingDetailsViewModel {
             currencyCode: walletModel.tokenItem.currencySymbol
         )
 
-        let stakedFormatted = balanceFormatter.formatCryptoBalance(
-            inputData.staked,
-            currencyCode: walletModel.tokenItem.currencySymbol
-        )
-
         let rewardRateFormatted = inputData.rewardRateValues.formatted(formatter: percentFormatter)
 
         let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
@@ -208,12 +210,6 @@ private extension StakingDetailsViewModel {
         var viewModels = [
             DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
         ]
-
-        if !inputData.staked.isZero {
-            viewModels.append(
-                DefaultRowViewModel(title: Localization.stakingDetailsOnStake, detailsType: .text(stakedFormatted))
-            )
-        }
 
         viewModels.append(contentsOf: [
             DefaultRowViewModel(
@@ -294,13 +290,14 @@ private extension StakingDetailsViewModel {
             }
             let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
-            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState =
+            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState = {
                 switch validatorBalance.balanceGroupType {
-            case .active, .unknown: .active(apr: validatorBalance.validator.apr)
-            case .unstaked: .unstaked(
-                    unboundingPeriod: input.unbondingPeriod.formatted(formatter: DateComponentsFormatter())
-                )
-            }
+                case .unknown: .unknown
+                case .warmup: .warmup(period: input.warmupPeriod.formatted(formatter: daysFormatter))
+                case .active: .active(apr: validatorBalance.validator.apr)
+                case .unbonding: .unbounding(period: input.unbondingPeriod.formatted(formatter: daysFormatter))
+                }
+            }()
 
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
@@ -310,10 +307,6 @@ private extension StakingDetailsViewModel {
         }
         activeValidators = input.activeValidators.map(mapToValidatorsData)
         unstakedValidators = input.unstakedValidators.map(mapToValidatorsData)
-    }
-
-    func setupButtonTitle(inputData: StakingDetailsData) {
-        actionButtonType = inputData.staked.isZero ? .stake : .stakeMore
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -372,7 +365,7 @@ private extension RewardType {
         case .apr:
             Localization.stakingDetailsApr
         case .apy:
-            Localization.stakingDetailsApy
+            Localization.stakingDetailsAnnualPercentageRate
         case .variable:
             rawValue.uppercased()
         }
@@ -382,7 +375,7 @@ private extension RewardType {
         guard case .apy = self else {
             return nil
         }
-        return Localization.stakingDetailsApyInfo
+        return Localization.stakingDetailsAnnualPercentageRateInfo
     }
 }
 

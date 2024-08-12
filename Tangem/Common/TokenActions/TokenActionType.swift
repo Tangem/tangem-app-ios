@@ -63,6 +63,10 @@ enum TokenActionType: String {
         case .hide: return nil
         }
     }
+
+    var analyticsParameterValue: String {
+        rawValue.capitalizingFirstLetter()
+    }
 }
 
 extension TokenActionType: CaseIterable, Identifiable {

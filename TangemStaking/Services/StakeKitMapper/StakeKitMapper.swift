@@ -103,16 +103,19 @@ struct StakeKitMapper {
     // MARK: - Yield
 
     func mapToYieldInfo(from response: StakeKitDTO.Yield.Info.Response) throws -> YieldInfo {
-        guard let enterAction = response.args.enter else {
-            throw StakeKitMapperError.noData("EnterAction not found")
+        guard let enterAction = response.args.enter,
+              let exitAction = response.args.exit else {
+            throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
         return try YieldInfo(
             id: response.id,
+            isAvailable: response.isAvailable,
             apy: response.apy,
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRate: response.rewardRate,
-            minimumRequirement: enterAction.args.amount.minimum,
+            enterMinimumRequirement: enterAction.args.amount.minimum,
+            exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: response.validators.compactMap(mapToValidatorInfo),
             defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
@@ -220,10 +223,12 @@ struct StakeKitMapper {
         from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
     ) -> BalanceGroupType {
         switch balanceType {
-        case .preparing, .available, .locked, .staked:
+        case .preparing:
+            return .warmup
+        case .available, .locked, .staked:
             return .active
         case .unstaking, .unstaked, .unlocking:
-            return .unstaked
+            return .unbonding
         case .rewards, .unknown:
             return .unknown
         }

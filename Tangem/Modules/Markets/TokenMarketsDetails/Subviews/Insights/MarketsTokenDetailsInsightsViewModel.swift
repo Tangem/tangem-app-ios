@@ -27,6 +27,10 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         intervalInsights[selectedInterval] ?? []
     }
 
+    private let tokenSymbol: String
+
+    private var bag = Set<AnyCancellable>()
+
     private let fiatAmountFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = .current
@@ -61,7 +65,8 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     private weak var infoRouter: MarketsTokenDetailsBottomSheetRouter?
     private var intervalInsights: [MarketsPriceIntervalType: [MarketsTokenDetailsInsightsView.RecordInfo]] = [:]
 
-    init(insights: TokenMarketsDetailsInsights, infoRouter: MarketsTokenDetailsBottomSheetRouter?) {
+    init(tokenSymbol: String, insights: TokenMarketsDetailsInsights, infoRouter: MarketsTokenDetailsBottomSheetRouter?) {
+        self.tokenSymbol = tokenSymbol
         self.infoRouter = infoRouter
 
         setupInsights(using: insights)
@@ -100,5 +105,25 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                 .init(type: .liquidity, recordData: liquidity),
             ]
         }
+    }
+
+    private func bind() {
+        $selectedInterval
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { value in
+                let weakSelf = value.0
+                let interval = value.1
+
+                Analytics.log(
+                    event: .marketsButtonPeriod,
+                    params: [
+                        .token: weakSelf.tokenSymbol,
+                        .period: interval.rawValue,
+                        .source: Analytics.MarketsIntervalTypeSourceType.insights.rawValue,
+                    ]
+                )
+            })
+            .store(in: &bag)
     }
 }

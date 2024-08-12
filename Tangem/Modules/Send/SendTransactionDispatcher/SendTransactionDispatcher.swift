@@ -7,31 +7,39 @@
 //
 
 import Foundation
-import BlockchainSdk
 import Combine
-import enum TangemSdk.TangemSdkError
+import TangemFoundation
+import struct BlockchainSdk.SendTxError
 
 protocol SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { get }
-
-    func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Never>
-    func send(transaction: SendTransactionType) async throws -> String
+    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult
 }
 
-enum SendTransactionDispatcherResult {
-    case informationRelevanceServiceError
-    case informationRelevanceServiceFeeWasIncreased
-
-    case transactionNotFound
-    case userCancelled
-    case sendTxError(transaction: SendTransactionType, error: SendTxError)
-    case success(hash: String, url: URL?)
-
-    case demoAlert
-
-    case stakingUnsupported
+extension SendTransactionDispatcher {
+    @available(*, deprecated, message: "Used only in LegacySendViewModel")
+    func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Error> {
+        Future.async {
+            try await send(transaction: transaction)
+        }
+        .eraseToAnyPublisher()
+    }
 }
 
-enum SendTransactionDispatcherError: Error {
-    case transactionNotFound
+struct SendTransactionDispatcherResult: Hashable {
+    let hash: String
+    let url: URL?
+}
+
+extension SendTransactionDispatcherResult {
+    enum Error: Swift.Error {
+        case informationRelevanceServiceError
+        case informationRelevanceServiceFeeWasIncreased
+
+        case transactionNotFound
+        case userCancelled
+        case sendTxError(transaction: SendTransactionType, error: SendTxError)
+
+        case demoAlert
+        case stakingUnsupported
+    }
 }

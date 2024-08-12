@@ -237,7 +237,7 @@ struct DetailsFeedbackData {
 private extension SendTransactionType {
     var amount: Amount {
         switch self {
-        case .staking(let transaction):
+        case .staking(_, let transaction):
             return transaction.amount
         case .transfer(let transaction):
             return transaction.amount
@@ -246,7 +246,7 @@ private extension SendTransactionType {
 
     var fee: Fee {
         switch self {
-        case .staking(let transaction):
+        case .staking(_, let transaction):
             return transaction.fee
         case .transfer(let transaction):
             return transaction.fee

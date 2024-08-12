@@ -14,8 +14,6 @@ class CommonSendTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
 
-    private let _isSending = CurrentValueSubject<Bool, Never>(false)
-
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner
@@ -28,62 +26,19 @@ class CommonSendTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
-    var isSending: AnyPublisher<Bool, Never> { _isSending.eraseToAnyPublisher() }
-
-    func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Never> {
+    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .transfer(let transferTransaction) = transaction else {
-            return .just(output: .transactionNotFound)
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
 
-        return send(transaction: transferTransaction)
-            .withWeakCaptureOf(self)
-            .map { sender, result in
-                SendTransactionMapper().mapResult(
-                    result,
-                    blockchain: sender.walletModel.blockchainNetwork.blockchain
-                )
-            }
-            .catch { SendTransactionMapper().mapError($0, transaction: transaction) }
-            .eraseToAnyPublisher()
-    }
+        let mapper = SendTransactionMapper()
 
-    func send(transaction: SendTransactionType) async throws -> String {
-        guard case .transfer(let transferTransaction) = transaction else {
-            throw SendTransactionDispatcherError.transactionNotFound
-        }
-
-        let result = try await send(transaction: transferTransaction).async()
-        return result.hash
-    }
-}
-
-// MARK: - Private
-
-private extension CommonSendTransactionDispatcher {
-    func send(transaction: BSDKTransaction) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        _isSending.send(true)
-
-        return walletModel.transactionSender
-            .send(transaction, signer: transactionSigner)
-            .receive(on: DispatchQueue.main)
-            .handleEvents(receiveCompletion: { [weak self] completion in
-                self?._isSending.send(false)
-
-                if case .finished = completion {
-                    self?.walletModel.updateAfterSendingTransaction()
-                }
-            })
-            .eraseToAnyPublisher()
-    }
-
-    func handleCompletion(_ completion: Subscribers.Completion<SendTxError>) {
-        _isSending.send(false)
-
-        switch completion {
-        case .finished:
+        do {
+            let hash = try await walletModel.transactionSender.send(transferTransaction, signer: transactionSigner).async()
             walletModel.updateAfterSendingTransaction()
-        default:
-            break
+            return mapper.mapResult(hash, blockchain: walletModel.blockchainNetwork.blockchain)
+        } catch {
+            throw mapper.mapError(error, transaction: transaction)
         }
     }
 }

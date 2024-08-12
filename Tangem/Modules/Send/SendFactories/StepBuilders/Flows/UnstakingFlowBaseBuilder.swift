@@ -38,6 +38,7 @@ struct UnstakingFlowBaseBuilder {
             io: (input: unstakingModel, output: unstakingModel),
             actionType: .unstake,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .noEditable,
             sendDestinationCompactViewModel: .none,

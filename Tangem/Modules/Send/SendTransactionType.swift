@@ -12,5 +12,5 @@ import TangemStaking
 
 enum SendTransactionType {
     case transfer(BSDKTransaction)
-    case staking(StakeKitTransaction)
+    case staking(transactionId: String, transaction: StakeKitTransaction)
 }

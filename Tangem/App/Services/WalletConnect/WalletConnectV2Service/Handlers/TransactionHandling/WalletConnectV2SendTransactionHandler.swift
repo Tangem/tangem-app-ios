@@ -67,7 +67,7 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             throw WalletConnectV2Error.missingTransaction
         }
 
-        let hash = try await transactionDispatcher.send(transaction: .transfer(transaction))
+        let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
         Analytics.log(.transactionSent, params: [.source: .transactionSourceWalletConnect])
 
@@ -77,6 +77,6 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             approveAction: {}
         ))
 
-        return RPCResult.response(AnyCodable(hash))
+        return RPCResult.response(AnyCodable(result.hash))
     }
 }

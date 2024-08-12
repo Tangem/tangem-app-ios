@@ -12,10 +12,12 @@ import TangemStaking
 extension YieldInfo {
     static let mock: YieldInfo = .init(
         id: "tron-trx-native-staking",
+        isAvailable: true,
         apy: 0.03712381,
         rewardType: .apr,
         rewardRate: 0.03712381,
-        minimumRequirement: 1,
+        enterMinimumRequirement: 1,
+        exitMinimumRequirement: 1,
         validators: [
             .init(
                 address: UUID().uuidString,
