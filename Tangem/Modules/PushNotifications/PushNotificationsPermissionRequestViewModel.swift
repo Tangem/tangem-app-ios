@@ -24,7 +24,7 @@ final class PushNotificationsPermissionRequestViewModel: ObservableObject, Ident
         self.delegate = delegate
 
         allowButtonTitle = Localization.commonAllow
-        laterButtonTitle = permissionManager.canPostponePermissionRequest ? Localization.commonLater : Localization.commonCancel
+        laterButtonTitle = Localization.commonLater
     }
 
     func didTapAllow() {
