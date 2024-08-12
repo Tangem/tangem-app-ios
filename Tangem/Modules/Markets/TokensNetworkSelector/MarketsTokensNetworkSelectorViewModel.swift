@@ -165,9 +165,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func onSelect(_ selected: Bool, _ tokenItem: TokenItem) throws {
-        guard
-            let userTokensManager = walletDataProvider.selectedUserWalletModel?.userTokensManager
-        else {
+        guard let userTokensManager = selectedUserWalletModel?.userTokensManager else {
             return
         }
 
