@@ -14,6 +14,7 @@ struct FakeMarketsHistoryChartViewModelFactory {
         let selectedPriceInterval: MarketsPriceIntervalType = .all
 
         return MarketsHistoryChartViewModel(
+            tokenSymbol: "BTC",
             historyChartProvider: MarketsHistoryChartProviderStub(),
             selectedPriceInterval: selectedPriceInterval,
             selectedPriceIntervalPublisher: Just(selectedPriceInterval)
@@ -24,6 +25,7 @@ struct FakeMarketsHistoryChartViewModelFactory {
         let selectedPriceInterval: MarketsPriceIntervalType = .halfYear
 
         return MarketsHistoryChartViewModel(
+            tokenSymbol: "BTC",
             historyChartProvider: MarketsHistoryChartProviderStub(),
             selectedPriceInterval: selectedPriceInterval,
             selectedPriceIntervalPublisher: Just(selectedPriceInterval)
@@ -34,6 +36,7 @@ struct FakeMarketsHistoryChartViewModelFactory {
         let selectedPriceInterval: MarketsPriceIntervalType = .week
 
         return MarketsHistoryChartViewModel(
+            tokenSymbol: "BTC",
             historyChartProvider: MarketsHistoryChartProviderStub(),
             selectedPriceInterval: selectedPriceInterval,
             selectedPriceIntervalPublisher: Just(selectedPriceInterval)

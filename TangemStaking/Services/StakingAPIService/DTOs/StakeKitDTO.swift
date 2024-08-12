@@ -11,14 +11,15 @@ import Foundation
 enum StakeKitDTO {
     // MARK: - Common
 
-    struct APIError: Decodable, Error {
+    struct APIError: Decodable, LocalizedError {
         let message: String?
         let level: String?
+
+        var errorDescription: String? { message }
     }
 
     struct Token: Codable {
-        let coinGeckoId: String
-        let network: String?
+        let network: String
         let name: String?
         let decimals: Int?
         let address: String?

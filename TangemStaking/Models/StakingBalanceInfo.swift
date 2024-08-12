@@ -44,13 +44,10 @@ public extension Array where Element == StakingBalanceInfo {
 }
 
 public enum BalanceGroupType {
+    case warmup
     case active
-    case unstaked
+    case unbonding
     case unknown
-
-    var isActiveOrUnstaked: Bool {
-        self == .active || self == .unstaked
-    }
 }
 
 public struct ValidatorBalanceInfo {

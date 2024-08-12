@@ -36,6 +36,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
 
     // MARK: - Dependencies & internal state
 
+    private let tokenSymbol: String
     private let historyChartProvider: MarketsHistoryChartProvider
     private var loadHistoryChartTask: Cancellable?
     private var selectedPriceIntervalSubscription: Cancellable?
@@ -46,10 +47,12 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Initialization/Deinitialization
 
     init(
+        tokenSymbol: String,
         historyChartProvider: MarketsHistoryChartProvider,
         selectedPriceInterval: MarketsPriceIntervalType,
         selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>
     ) {
+        self.tokenSymbol = tokenSymbol
         self.historyChartProvider = historyChartProvider
         _selectedPriceInterval = .init(initialValue: selectedPriceInterval)
         bind(selectedPriceIntervalPublisher: selectedPriceIntervalPublisher)
@@ -129,6 +132,15 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Data fetching
 
     private func loadHistoryChart(selectedPriceInterval: MarketsPriceIntervalType) {
+        Analytics.log(
+            event: .marketsButtonPeriod,
+            params: [
+                .token: tokenSymbol,
+                .period: selectedPriceInterval.rawValue,
+                .source: Analytics.MarketsIntervalTypeSourceType.chart.rawValue,
+            ]
+        )
+
         loadHistoryChartTask?.cancel()
 
         // If data fetching takes a relatively short amount of time, there is no point in showing the loading indicator at all

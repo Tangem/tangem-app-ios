@@ -10,16 +10,16 @@ import Foundation
 import TangemStaking
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 class StakingModel {
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
     private let _selectedValidator = CurrentValueSubject<LoadingValue<ValidatorInfo>, Never>(.loading)
-
-    private let _transaction = CurrentValueSubject<LoadingValue<StakingTransactionInfo>?, Never>(.none)
+    private let _estimatedFee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
-    private let _fee = CurrentValueSubject<LoadingValue<Decimal>?, Never>(.none)
+    private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Dependencies
 
@@ -28,17 +28,25 @@ class StakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let feeTokenItem: TokenItem
+    private let stakingMapper: StakingMapper
 
+    private var estimatedFeeTask: Task<Void, Never>?
+    private var sendTransactionTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.feeTokenItem = feeTokenItem
+        stakingMapper = StakingMapper(
+            amountTokenItem: amountTokenItem,
+            feeTokenItem: feeTokenItem
+        )
 
         bind()
     }
@@ -53,36 +61,50 @@ private extension StakingModel {
                 _amount.compactMap { $0?.crypto },
                 _selectedValidator.compactMap { $0.value }
             )
-            .sink { [weak self] args in
-                let (amount, validator) = args
+            .sink { [weak self] amount, validator in
                 self?.estimateFee(amount: amount, validator: validator.address)
             }
+            .store(in: &bag)
+
+        stakingManager
+            .statePublisher
+            .compactMap { $0.yieldInfo }
+            .map { yieldInfo -> LoadingValue<ValidatorInfo>in
+                let defaultValidator = yieldInfo.validators.first(where: { $0.address == yieldInfo.defaultValidator })
+                if let validator = defaultValidator ?? yieldInfo.validators.first {
+                    return .loaded(validator)
+                }
+
+                return .failedToLoad(error: StakingModelError.validatorNotFound)
+            }
+            // Only for initial set
+            .first()
+            .assign(to: \._selectedValidator.value, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
     private func estimateFee(amount: Decimal, validator: String) {
-        runTask(in: self) { model in
-            await model.updateEstimateFee(.loading)
+        estimatedFeeTask?.cancel()
+
+        estimatedFeeTask = runTask(in: self) { model in
+            model._estimatedFee.send(.loading)
+
             do {
                 let fee = try await model.stakingManager.estimateFee(
                     action: StakingAction(amount: amount, validator: validator, type: .stake)
                 )
-                await model.updateEstimateFee(.loaded(fee))
+                model._estimatedFee.send(.loaded(fee))
             } catch {
-                await model.updateEstimateFee(.failedToLoad(error: error))
+                model._estimatedFee.send(.failedToLoad(error: error))
             }
         }
-    }
-
-    @MainActor
-    private func updateEstimateFee(_ result: LoadingValue<Decimal>) {
-        _fee.send(result)
     }
 
     func mapToSendFee(_ fee: LoadingValue<Decimal>?) -> SendFee {
         let value = fee?.mapValue { fee in
             Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
         }
+
         return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
@@ -90,50 +112,48 @@ private extension StakingModel {
 // MARK: - Send
 
 private extension StakingModel {
-    private func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        Publishers
-            .CombineLatest(
-                _amount.compactMap { $0?.crypto },
-                _selectedValidator.compactMap { $0.value }
+    private func send() async throws -> SendTransactionDispatcherResult {
+        guard let amount = _amount.value?.crypto else {
+            throw StakingModelError.amountNotFound
+        }
+
+        guard let validator = _selectedValidator.value.value else {
+            throw StakingModelError.amountNotFound
+        }
+
+        let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
+        let transactionInfo = try await stakingManager.transaction(action: action)
+        let transaction = stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: amount)
+
+        do {
+            let result = try await sendTransactionDispatcher.send(
+                transaction: .staking(transactionId: transactionInfo.id, transaction: transaction)
             )
-            .setFailureType(to: Error.self)
-            .withWeakCaptureOf(self)
-            .tryAsyncMap { args in
-                let (model, (amount, validator)) = args
-                let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
-                return try await model.stakingManager.transaction(action: action)
-            }
-            .mapToResult()
-            .withWeakCaptureOf(self)
-            .flatMap { model, result in
-                switch result {
-                case .success(let transaction):
-                    return model.sendTransactionDispatcher
-                        .send(transaction: .staking(transaction))
-                        .eraseToAnyPublisher()
-                case .failure:
-                    return Just(.transactionNotFound)
-                        .eraseToAnyPublisher()
-                }
-            }
-            .handleEvents(receiveOutput: { [weak self] output in
-                self?.proceed(result: output)
-            })
-            .eraseToAnyPublisher()
+            proceed(result: result)
+            return result
+        } catch let error as SendTransactionDispatcherResult.Error {
+            proceed(error: error)
+            throw error
+        } catch {
+            throw error
+        }
     }
 
     private func proceed(result: SendTransactionDispatcherResult) {
-        switch result {
+        _transactionTime.send(Date())
+    }
+
+    private func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
+             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:
             // TODO: Add analytics
             break
-        case .success:
-            _transactionTime.send(Date())
         }
     }
 }
@@ -182,11 +202,11 @@ extension StakingModel: StakingValidatorsOutput {
 
 extension StakingModel: SendFeeInput {
     var selectedFee: SendFee {
-        mapToSendFee(_fee.value)
+        mapToSendFee(_estimatedFee.value)
     }
 
     var selectedFeePublisher: AnyPublisher<SendFee, Never> {
-        _fee
+        _estimatedFee
             .withWeakCaptureOf(self)
             .map { model, fee in
                 model.mapToSendFee(fee)
@@ -219,9 +239,19 @@ extension StakingModel: SendFeeOutput {
 // MARK: - SendSummaryInput, SendSummaryOutput
 
 extension StakingModel: SendSummaryInput, SendSummaryOutput {
-    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> {
-        _transaction
-            .map { $0?.value.flatMap { .staking($0) } }
+    var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
+        _estimatedFee.map { $0?.value != nil }.eraseToAnyPublisher()
+    }
+
+    var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
+        Publishers.CombineLatest(_amount, _estimatedFee)
+            .map { amount, fee in
+                guard let amount, let fee = fee?.value else {
+                    return nil
+                }
+
+                return .staking(amount: amount, fee: fee)
+            }
             .eraseToAnyPublisher()
     }
 }
@@ -240,11 +270,14 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
     var isFeeIncluded: Bool { false }
 
     var isLoading: AnyPublisher<Bool, Never> {
-        sendTransactionDispatcher.isSending
+        _isLoading.eraseToAnyPublisher()
     }
 
-    func sendTransaction() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        send()
+    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+        _isLoading.send(true)
+        defer { _isLoading.send(false) }
+
+        return try await send()
     }
 }
 
@@ -254,4 +287,9 @@ extension StakingModel: StakingNotificationManagerInput {
     var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
         stakingManager.statePublisher
     }
+}
+
+enum StakingModelError: Error {
+    case amountNotFound
+    case validatorNotFound
 }

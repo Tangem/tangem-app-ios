@@ -33,6 +33,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     @Published private var selectedDate: Date?
     @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
+    @Published private var tokenInsights: TokenMarketsDetailsInsights?
 
     var tokenName: String {
         tokenInfo.name
@@ -80,6 +81,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         formatEpsilonAsLowestRepresentableValue: false,
         roundingType: .defaultFiat(roundingMode: .bankers)
     )
+    private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
+
     private let currentPriceSubject: CurrentValueSubject<Decimal, Never>
     private let quotesUpdateTimeInterval: TimeInterval = 60.0
 
@@ -110,12 +113,15 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     deinit {
-        print("TokenMarketsDetailsViewModel deinit")
         loadingTask?.cancel()
         loadingTask = nil
     }
 
     // MARK: - Actions
+
+    func onAppear() {
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
+    }
 
     func reloadAllData() {
         loadDetailedInfo()
@@ -138,9 +144,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }.eraseToAnyCancellable()
     }
 
-    func openLinkAction(_ link: String) {
-        guard let url = URL(string: link) else {
-            log("Failed to create link from: \(link)")
+    func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
+        Analytics.log(event: .marketsButtonLinks, params: [.link: info.title])
+
+        guard let url = URL(string: info.link) else {
+            log("Failed to create link from: \(info.link)")
             return
         }
 
@@ -242,6 +250,15 @@ private extension TokenMarketsDetailsViewModel {
                 viewModel.updateSelectedDate(externallySelectedDate: nil, selectedPriceChangeIntervalType: intervalType)
             }
             .store(in: &bag)
+
+        AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.reloadAllData()
+            }
+            .store(in: &bag)
     }
 
     func bindToHistoryChartViewModel() {
@@ -307,6 +324,8 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
+
                 coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
             }
         )
@@ -318,6 +337,7 @@ private extension TokenMarketsDetailsViewModel {
             yAxisLabelCount: Constants.historyChartYAxisLabelCount
         )
         historyChartViewModel = MarketsHistoryChartViewModel(
+            tokenSymbol: tokenInfo.symbol,
             historyChartProvider: historyChartProvider,
             selectedPriceInterval: selectedPriceChangeIntervalType,
             selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType
@@ -325,15 +345,14 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
-        if let insights = model.insights {
-            insightsViewModel = .init(insights: insights, infoRouter: self)
-        }
+        setupInsights(model.insights)
 
         if let metrics = model.metrics {
-            metricsViewModel = .init(metrics: metrics, infoRouter: self)
+            metricsViewModel = .init(metrics: metrics, notationFormatter: defaultAmountNotationFormatter, cryptoCurrencyCode: model.symbol, infoRouter: self)
         }
 
         pricePerformanceViewModel = .init(
+            tokenSymbol: model.symbol,
             pricePerformanceData: model.pricePerformance,
             currentPricePublisher: currentPriceSubject.eraseToAnyPublisher()
         )
@@ -363,6 +382,27 @@ private extension TokenMarketsDetailsViewModel {
             selectedDate: externallySelectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
         )
+    }
+
+    func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
+        defer {
+            tokenInsights = insights
+        }
+
+        guard let insights else {
+            insightsViewModel = nil
+            return
+        }
+
+        if insightsViewModel == nil {
+            insightsViewModel = .init(
+                tokenSymbol: tokenInfo.symbol,
+                insights: insights,
+                insightsPublisher: $tokenInsights,
+                notationFormatter: defaultAmountNotationFormatter,
+                infoRouter: self
+            )
+        }
     }
 }
 

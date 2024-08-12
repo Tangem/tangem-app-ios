@@ -65,11 +65,12 @@ struct CommonWalletModelsFactory {
     }
 
     func makeStakingManager(tokenItem: TokenItem, address: String) -> StakingManager? {
-        guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem) else {
+        guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem),
+              let item = tokenItem.stakingTokenItem else {
             return nil
         }
 
-        let wallet = StakingWallet(item: tokenItem.stakingTokenItem, address: address)
+        let wallet = StakingWallet(item: item, address: address)
         return StakingDependenciesFactory().makeStakingManager(integrationId: integrationId, wallet: wallet)
     }
 }

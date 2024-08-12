@@ -16,7 +16,9 @@ struct MarketsTokensNetworkSelectorView: View {
             ZStack(alignment: .bottom) {
                 ScrollView {
                     VStack(spacing: 14) {
-                        MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+                        if viewModel.isShowWalletSelector {
+                            MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+                        }
 
                         contentView
 

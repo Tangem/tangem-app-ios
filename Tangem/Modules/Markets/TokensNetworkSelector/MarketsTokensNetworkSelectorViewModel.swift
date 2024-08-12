@@ -29,6 +29,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         pendingAdd.isEmpty
     }
 
+    var isShowWalletSelector: Bool {
+        walletDataProvider.userWalletModels.count > 1
+    }
+
     // MARK: - Private Implementation
 
     private var bag = Set<AnyCancellable>()
@@ -72,16 +76,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
         bind()
-        setup()
 
         reloadSelectorItemsFromTokenItems()
     }
 
     // MARK: - Implementation
-
-    func selectWalletActionDidTap() {
-        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
-    }
 
     func saveChangesOnTapAction() {
         guard
@@ -133,13 +132,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                     position: .init(with: index, total: tokenItems.count)
                 )
             }
-    }
-
-    /// This method that shows a configure notification input result if the condition is single currency by coinId
-    private func setup() {
-        guard walletDataProvider.userWalletModels.isEmpty else {
-            return
-        }
     }
 
     private func saveChanges(with userTokensManager: UserTokensManager) {
@@ -210,10 +202,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .manageTokensSwitcherChanged, params: [
-            .token: tokenItem.currencySymbol,
-            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
-        ])
+        Analytics.log(event: .marketsTokenNetworkSelected, params: [.token: tokenItem.currencySymbol, .count: "\(pendingAdd.count)"])
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {
@@ -221,10 +210,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             return
         }
 
-        Analytics.log(
-            event: .manageTokensWalletSelected,
-            params: [.source: Analytics.ParameterValue.mainToken.rawValue]
-        )
+        Analytics.log(.marketsWalletSelected)
 
         pendingAdd = []
 

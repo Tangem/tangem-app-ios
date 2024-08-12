@@ -123,6 +123,8 @@ extension MarketsTokenDetailsMetricsView {
                 totalSupply: 112286364258.112,
                 fullyDilutedValuation: 112234033891
             ),
+            notationFormatter: .init(),
+            cryptoCurrencyCode: "USDT",
             infoRouter: nil
         )
     )

@@ -9,5 +9,5 @@
 import Foundation
 
 protocol SendTransactionSummaryDescriptionBuilder {
-    func makeDescription(amount: Decimal, fee: Decimal) -> String?
+    func makeDescription(transactionType: SendSummaryTransactionData) -> String?
 }

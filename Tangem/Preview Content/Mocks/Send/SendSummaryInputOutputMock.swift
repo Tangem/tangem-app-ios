@@ -11,7 +11,8 @@ import Combine
 import BlockchainSdk
 
 class SendSummaryInputOutputMock: SendSummaryInput, SendSummaryOutput {
-    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> { .just(output: .none) }
+    var isReadyToSendPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
+    var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> { .just(output: .none) }
 }
 
 class SendSummaryInteractorMock: SendSummaryInteractor {
