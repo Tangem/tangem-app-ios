@@ -29,6 +29,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         pendingAdd.isEmpty
     }
 
+    var isShowWalletSelector: Bool {
+        walletDataProvider.userWalletModels.count > 1
+    }
+
     // MARK: - Private Implementation
 
     private var bag = Set<AnyCancellable>()
@@ -72,7 +76,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
         bind()
-        setup()
 
         reloadSelectorItemsFromTokenItems()
     }
@@ -129,13 +132,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                     position: .init(with: index, total: tokenItems.count)
                 )
             }
-    }
-
-    /// This method that shows a configure notification input result if the condition is single currency by coinId
-    private func setup() {
-        guard walletDataProvider.userWalletModels.isEmpty else {
-            return
-        }
     }
 
     private func saveChanges(with userTokensManager: UserTokensManager) {

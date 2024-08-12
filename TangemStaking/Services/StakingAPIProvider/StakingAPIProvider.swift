@@ -11,7 +11,7 @@ import Foundation
 public protocol StakingAPIProvider {
     func enabledYields() async throws -> [YieldInfo]
     func yield(integrationId: String) async throws -> YieldInfo
-    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]?
+    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]
 
     func estimateStakeFee(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> Decimal
     func estimateUnstakeFee(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> Decimal
