@@ -65,6 +65,22 @@ private extension StakingModel {
                 self?.estimateFee(amount: amount, validator: validator.address)
             }
             .store(in: &bag)
+
+        stakingManager
+            .statePublisher
+            .compactMap { $0.yieldInfo }
+            .map { yieldInfo -> LoadingValue<ValidatorInfo>in
+                let defaultValidator = yieldInfo.validators.first(where: { $0.address == yieldInfo.defaultValidator })
+                if let validator = defaultValidator ?? yieldInfo.validators.first {
+                    return .loaded(validator)
+                }
+
+                return .failedToLoad(error: StakingModelError.validatorNotFound)
+            }
+            // Only for initial set
+            .first()
+            .assign(to: \._selectedValidator.value, on: self, ownership: .weak)
+            .store(in: &bag)
     }
 
     private func estimateFee(amount: Decimal, validator: String) {

@@ -74,7 +74,7 @@ extension StakeKitDTO {
                 case claim = "CLAIM"
                 case claimRewards = "CLAIM_REWARDS"
                 case send = "SEND"
-                case approve = "APPROVE"
+                case approval = "APPROVAL"
                 case unknown = "UNKNOWN"
             }
 

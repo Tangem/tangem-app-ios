@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MarketsTokenDetailsInsightsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsInsightsViewModel
@@ -121,6 +122,7 @@ extension MarketsTokenDetailsInsightsView {
         .init(type: .holdersChange, recordData: "+100"),
         .init(type: .liquidity, recordData: "+445,9K"),
     ]
+    let insights = CurrentValueSubject<TokenMarketsDetailsInsights?, Never>(nil)
 
     return MarketsTokenDetailsInsightsView(
         viewModel: .init(
@@ -131,6 +133,8 @@ extension MarketsTokenDetailsInsightsView {
                 buyPressureChange: [:],
                 experiencedBuyerChange: [:]
             ))!,
+            insightsPublisher: insights,
+            notationFormatter: .init(),
             infoRouter: nil
         )
     )
