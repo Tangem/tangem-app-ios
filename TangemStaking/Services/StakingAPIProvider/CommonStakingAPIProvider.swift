@@ -30,19 +30,77 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]? {
-        assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
-
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
         let response = try await service.getBalances(request: request)
         let balancesInfo = try mapper.mapToBalanceInfo(from: response)
         return balancesInfo
+    }
+
+    func estimateStakeFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Enter.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator)
+        )
+
+        let response = try await service.estimateGasEnterAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction fee not found")
+        }
+        return result
+    }
+
+    func estimateUnstakeFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Exit.Request(
+            integrationId: integrationId,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator)
+        )
+
+        let response = try await service.estimateGasExitAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("ExitAction fee not found")
+        }
+        return result
+    }
+
+    func estimateClaimRewardsFee(
+        amount: Decimal,
+        address: String,
+        validator: String,
+        integrationId: String,
+        passthrough: String
+    ) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Pending.Request(
+            type: .claimRewards,
+            integrationId: integrationId,
+            passthrough: passthrough,
+            addresses: .init(address: address),
+            args: .init(amount: amount.description, validatorAddress: validator)
+        )
+
+        let response = try await service.estimateGasPendingAction(request: request)
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("PendingAction fee not found")
+        }
+        return result
     }
 
     func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction {
         let request = StakeKitDTO.Actions.Enter.Request(
             integrationId: integrationId,
             addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
+            args: .init(amount: amount.description, validatorAddress: validator)
         )
 
         let response = try await service.enterAction(request: request)
@@ -83,6 +141,6 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func submitHash(hash: String, transactionId: String) async throws {
-        _ = try await service.submitHash(id: transactionId, request: .init(hash: hash))
+        try await service.submitHash(id: transactionId, request: .init(hash: hash))
     }
 }

@@ -129,12 +129,15 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     deinit {
-        print("TokenMarketsDetailsViewModel deinit")
         loadingTask?.cancel()
         loadingTask = nil
     }
 
     // MARK: - Actions
+
+    func onAppear() {
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
+    }
 
     func reloadAllData() {
         loadDetailedInfo()
@@ -157,9 +160,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         }.eraseToAnyCancellable()
     }
 
-    func openLinkAction(_ link: String) {
-        guard let url = URL(string: link) else {
-            log("Failed to create link from: \(link)")
+    func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
+        Analytics.log(event: .marketsButtonLinks, params: [.link: info.title])
+
+        guard let url = URL(string: info.link) else {
+            log("Failed to create link from: \(info.link)")
             return
         }
 
@@ -298,6 +303,8 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
+
                 coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
             }
         )
@@ -309,6 +316,7 @@ private extension TokenMarketsDetailsViewModel {
             yAxisLabelCount: Constants.historyChartYAxisLabelCount
         )
         historyChartViewModel = MarketsHistoryChartViewModel(
+            tokenSymbol: tokenInfo.symbol,
             historyChartProvider: historyChartProvider,
             selectedPriceInterval: selectedPriceChangeIntervalType,
             selectedPriceIntervalPublisher: $selectedPriceChangeIntervalType
@@ -317,7 +325,12 @@ private extension TokenMarketsDetailsViewModel {
 
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
         if let insights = model.insights {
-            insightsViewModel = .init(insights: insights, notationFormatter: defaultAmountNotationFormatter, infoRouter: self)
+            insightsViewModel = .init(
+                tokenSymbol: model.symbol,
+                insights: insights,
+                notationFormatter: defaultAmountNotationFormatter,
+                infoRouter: self
+            )
         }
 
         if let metrics = model.metrics {
@@ -325,6 +338,7 @@ private extension TokenMarketsDetailsViewModel {
         }
 
         pricePerformanceViewModel = .init(
+            tokenSymbol: model.symbol,
             pricePerformanceData: model.pricePerformance,
             currentPricePublisher: currentPriceSubject.eraseToAnyPublisher()
         )

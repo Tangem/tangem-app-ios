@@ -19,6 +19,7 @@ class SendAmountViewModel: ObservableObject {
     let currencyPickerData: SendCurrencyPickerData
 
     @Published var id: UUID = .init()
+    @Published var text: String = ""
 
     @Published var auxiliaryViewsVisible: Bool = true
     @Published var isEditMode: Bool = false

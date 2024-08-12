@@ -13,13 +13,16 @@ struct StakingValidatorViewMapper {
     private let percentFormatter = PercentFormatter()
 
     enum ValidatorStakeState: Hashable {
+        case unknown
+        case warmup(period: String)
         case active(apr: Decimal?)
-        case unstaked(unboundingPeriod: String)
+        case unbounding(period: String)
 
         var isUnstaked: Bool {
-            if case .unstaked = self {
+            if case .unbounding = self {
                 return true
             }
+
             return false
         }
     }
@@ -42,10 +45,14 @@ struct StakingValidatorViewMapper {
 
     private func subtitle(for state: ValidatorStakeState) -> AttributedString {
         switch state {
+        case .unknown:
+            .init(.unknown)
+        case .warmup(let period):
+            periodString(text: Localization.stakingDetailsWarmupPeriod, days: period)
         case .active(let apr):
             aprString(apr: apr)
-        case .unstaked(let unboundingPeriod):
-            unboundingPeriodString(unboundingPeriodDays: unboundingPeriod)
+        case .unbounding(let period):
+            periodString(text: Localization.stakingDetailsUnbondingPeriod, days: period)
         }
     }
 
@@ -66,12 +73,12 @@ struct StakingValidatorViewMapper {
         return descriptionPart + " " + (valuePart ?? "")
     }
 
-    private func unboundingPeriodString(unboundingPeriodDays: String) -> AttributedString {
-        var descriptionPart = AttributedString(Localization.stakingDetailsUnbondingPeriod)
+    private func periodString(text: String, days: String) -> AttributedString {
+        var descriptionPart = AttributedString(text)
         descriptionPart.foregroundColor = Colors.Text.tertiary
         descriptionPart.font = Fonts.Regular.footnote
 
-        var valuePart = AttributedString(unboundingPeriodDays)
+        var valuePart = AttributedString(days)
         valuePart.foregroundColor = Colors.Text.accent
         valuePart.font = Fonts.Regular.footnote
         return descriptionPart + " " + valuePart

@@ -124,6 +124,7 @@ extension MarketsTokenDetailsInsightsView {
 
     return MarketsTokenDetailsInsightsView(
         viewModel: .init(
+            tokenSymbol: "BTC",
             insights: .init(dto: MarketsDTO.Coins.Insights(
                 holdersChange: [:],
                 liquidityChange: [:],

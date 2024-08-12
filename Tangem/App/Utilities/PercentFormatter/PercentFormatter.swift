@@ -72,8 +72,8 @@ extension PercentFormatter {
 
         var clearPrefix: Bool {
             switch self {
-            case .priceChange: true
-            case .express, .staking: false
+            case .priceChange, .staking: true
+            case .express: false
             }
         }
     }

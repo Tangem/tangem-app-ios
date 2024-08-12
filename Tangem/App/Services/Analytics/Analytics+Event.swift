@@ -284,5 +284,19 @@ extension Analytics {
         case pushButtonPostpone = "[Push] Button - Later"
         case pushButtonCancel = "[Push] Button - Cancel"
         case pushPermissionStatus = "[Push] Permission Status"
+
+        // MARK: - Markets
+
+        case marketsScreenOpened = "[Markets] Markets Screen Opened"
+        case marketsTokenChartScreenOpened = "[Markets] Token Chart Screen Opened"
+        case marketsTokensSort = "[Markets] Tokens Sort"
+        case marketsTokenPeriod = "[Markets] Token Period"
+        case marketsButtonPeriod = "[Markets] Button - Period"
+        case marketsButtonReadMore = "[Markets] Button - Read More"
+        case marketsButtonLinks = "[Markets] Button - Links"
+        case marketsButtonAddToPortfolio = "[Markets] Button - Add To Portfolio"
+        case marketsWalletSelected = "[Markets] Wallet Selected"
+        case marketsTokenNetworkSelected = "[Markets] Token Network Selected"
+        case marketsActionButtons = "[Markets] Action Buttons"
     }
 }

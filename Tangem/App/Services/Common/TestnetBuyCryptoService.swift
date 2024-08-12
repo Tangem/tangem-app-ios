@@ -24,6 +24,7 @@ class TestnetBuyCryptoService {
     private func buyErc20Token(_ token: Token, walletModel: WalletModel, signer: TangemSigner) {
         let amountToSend = Amount(with: walletModel.wallet.blockchain, value: 0)
         let destinationAddress = token.contractAddress
+        let dispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
 
         var subs: AnyCancellable!
 
@@ -39,8 +40,8 @@ class TestnetBuyCryptoService {
                     return .anyFail(error: "Failed to create topup transaction for token. Try again later")
                 }
 
-                return walletModel
-                    .send(tx, signer: signer)
+                return dispatcher
+                    .sendPublisher(transaction: .transfer(tx))
                     .eraseError()
                     .mapToVoid()
                     .eraseToAnyPublisher()
@@ -54,6 +55,8 @@ class TestnetBuyCryptoService {
                 } else {
                     AppPresenter.shared.show(AlertBuilder.makeSuccessAlertController(message: "Transaction signed and sent to testnet. Wait for a while and reload balance"))
                 }
+
+                withExtendedLifetime(dispatcher) {}
                 bag.remove(subs)
                 subs = nil
             } receiveValue: { _ in }

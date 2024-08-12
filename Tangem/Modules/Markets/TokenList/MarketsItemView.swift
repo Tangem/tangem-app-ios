@@ -103,7 +103,7 @@ struct MarketsItemView: View {
                 makeSkeletonView(by: Constants.skeletonMediumWidthValue)
             }
         }
-        .frame(width: 56, height: 32, alignment: .center)
+        .frame(width: 56, height: 24, alignment: .center)
     }
 
     private func makeSkeletonView(by value: String) -> some View {

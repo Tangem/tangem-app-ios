@@ -58,6 +58,9 @@ struct TokenMarketsDetailsView: View {
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 
     @ViewBuilder

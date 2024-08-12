@@ -88,8 +88,7 @@ extension StakeKitDTO {
 
                 struct Args: Encodable {
                     let amount: String
-                    let validatorAddress: String?
-                    let validatorAddresses: [Address]
+                    let validatorAddress: String
                 }
             }
 
@@ -101,7 +100,7 @@ extension StakeKitDTO {
                 let currentStepIndex: Int
                 let amount: String
                 let validatorAddress: String?
-                let validatorAddresses: [Address]?
+                let validatorAddresses: [String]?
                 let transactions: [Transaction.Response]?
             }
         }
@@ -133,17 +132,22 @@ extension StakeKitDTO {
 
         enum Pending {
             struct Request: Encodable {
-                let type: ActionType
+                let type: Actions.ActionType
+                let integrationId: String
                 let passthrough: String
+                let addresses: Address
                 let args: Args
+            }
 
-                struct Args: Encodable {
-                    // TODO: https://tangem.atlassian.net/browse/IOS-7482
-                }
+            struct Args: Encodable {
+                let amount: String
+                let validatorAddress: String
             }
 
             struct Response: Decodable {
-                // TODO: https://tangem.atlassian.net/browse/IOS-7482
+                let amount: String?
+                let token: Token
+                let gasLimit: String
             }
         }
     }

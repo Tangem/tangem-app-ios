@@ -29,6 +29,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
 
     private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode)
 
+
     private let nonCurrencyFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = .current
@@ -39,40 +40,31 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         return numberFormatter
     }()
 
+    private let tokenSymbol: String
     private let insights: TokenMarketsDetailsInsights
     private let notationFormatter: DefaultAmountNotationFormatter
 
     private weak var infoRouter: MarketsTokenDetailsBottomSheetRouter?
     private var intervalInsights: [MarketsPriceIntervalType: [MarketsTokenDetailsInsightsView.RecordInfo]] = [:]
-
-    private var currencyCodeChangeSubscription: AnyCancellable?
+    private var bag = Set<AnyCancellable>()
 
     init(
+        tokenSymbol: String,
         insights: TokenMarketsDetailsInsights,
         notationFormatter: DefaultAmountNotationFormatter,
         infoRouter: MarketsTokenDetailsBottomSheetRouter?
     ) {
+        self.tokenSymbol = tokenSymbol
         self.insights = insights
         self.notationFormatter = notationFormatter
         self.infoRouter = infoRouter
 
         setupInsights()
-        bindToCurrencyCodeUpdates()
+        bind()
     }
 
     func showInfoBottomSheet(for infoProvider: MarketsTokenDetailsInfoDescriptionProvider) {
         infoRouter?.openInfoBottomSheet(title: infoProvider.title, message: infoProvider.infoDescription)
-    }
-
-    private func bindToCurrencyCodeUpdates() {
-        currencyCodeChangeSubscription = AppSettings.shared.$selectedCurrencyCode
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, newCurrencyCode in
-                viewModel.fiatAmountFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: newCurrencyCode)
-                viewModel.setupInsights()
-            }
     }
 
     private func setupInsights() {
@@ -112,5 +104,35 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                 .init(type: .liquidity, recordData: liquidity),
             ]
         }
+    }
+
+    private func bind() {
+        $selectedInterval
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { value in
+                let weakSelf = value.0
+                let interval = value.1
+
+                Analytics.log(
+                    event: .marketsButtonPeriod,
+                    params: [
+                        .token: weakSelf.tokenSymbol,
+                        .period: interval.rawValue,
+                        .source: Analytics.MarketsIntervalTypeSourceType.insights.rawValue,
+                    ]
+                )
+            })
+            .store(in: &bag)
+
+        AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newCurrencyCode in
+                viewModel.fiatAmountFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: newCurrencyCode)
+                viewModel.setupInsights()
+            }
+            .store(in: &bag)
     }
 }
