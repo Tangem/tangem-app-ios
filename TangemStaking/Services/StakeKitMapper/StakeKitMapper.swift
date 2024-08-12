@@ -83,10 +83,19 @@ struct StakeKitMapper {
 
     // MARK: - Balance
 
-    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo]? {
-        try response.first?.balances.map { balance in
+    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo] {
+        guard let balances = response.first?.balances else {
+            throw StakeKitMapperError.noData("Balances not found")
+        }
+
+        return try balances.compactMap { balance in
             guard let blocked = Decimal(stringValue: balance.amount) else {
-                throw StakeKitMapperError.noData("Balance.amount not found")
+                return nil
+            }
+
+            // For Polygon token we can receive a staking balance with zero amount
+            guard blocked > 0 else {
+                return nil
             }
 
             return try StakingBalanceInfo(
@@ -145,12 +154,10 @@ struct StakeKitMapper {
 
     func mapToTransactionType(from type: StakeKitDTO.Transaction.Response.TransactionType) throws -> TransactionType {
         switch type {
+        case .approval: .approval
         case .stake: .stake
-        case .enter: .enter
-        case .exit, .unstake: .unstake
-        case .claim: .claim
-        case .claimRewards: .claimRewards
-        case .reinvest, .send, .approve, .unknown:
+        case .unstake: .unstake
+        case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -181,7 +188,7 @@ struct StakeKitMapper {
     }
 
     func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingTokenItem {
-        guard let network = StakeKitNetworkType(rawValue: token.coinGeckoId) else {
+        guard let network = StakeKitNetworkType(rawValue: token.network) else {
             throw StakeKitMapperError.noData("StakeKitNetworkType not found")
         }
 
