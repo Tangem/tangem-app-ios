@@ -109,16 +109,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             .store(in: &bag)
     }
 
-    private func reset(with userTokensManager: UserTokensManager) {
-        do {
-            try userTokensManager.update(itemsToRemove: pendingAdd, itemsToAdd: [])
-            pendingAdd = []
-            updateSelectionByTokenItems()
-        } catch {
-            AppLog.shared.debug("\(String(describing: self)) undefined error reset \(error.localizedDescription)")
-        }
-    }
-
     private func reloadSelectorItemsFromTokenItems() {
         tokenItemViewModels = tokenItems
             .enumerated()
@@ -146,9 +136,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.isSaving = false
 
                 if case .failure(let error) = result {
-                    // Need to reset state selection, set the current values
-                    self.reset(with: userTokensManager)
-
                     if !error.isUserCancelled {
                         self.alert = error.alertBinder
                     }
