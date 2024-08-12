@@ -81,6 +81,8 @@ final class SendViewModel: ObservableObject {
             stepsManager.performNext()
         case .continue:
             stepsManager.performContinue()
+        case .action(.approve):
+            performApprove()
         case .action:
             performSend()
         case .close:
@@ -122,6 +124,14 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
+    func performApprove() {
+        guard let (settings, approveService) = interactor.makeDataForExpressApproveViewModel() else {
+            return
+        }
+
+        coordinator?.openApproveView(settings: settings, approveService: approveService)
+    }
+
     func performSend() {
         sendTask?.cancel()
         sendTask = runTask(in: self) { viewModel in

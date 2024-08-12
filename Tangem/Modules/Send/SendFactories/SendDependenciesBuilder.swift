@@ -22,7 +22,7 @@ struct SendDependenciesBuilder {
     func summaryTitle(action: SendFlowActionType) -> String {
         switch action {
         case .send: Localization.sendSummaryTitle(walletModel.tokenItem.currencySymbol)
-        case .stake: "\(action.title) \(walletModel.tokenItem.currencySymbol)"
+        case .approve, .stake: "\(Localization.commonStake) \(walletModel.tokenItem.currencySymbol)"
         case .unstake: action.title
         case .withdraw: action.title
         case .claimRewards: action.title
@@ -33,7 +33,7 @@ struct SendDependenciesBuilder {
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .stake: walletName()
+        case .approve, .stake: walletName()
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
@@ -192,6 +192,7 @@ struct SendDependenciesBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
             ethereumNetworkProvider: walletModel.ethereumNetworkProvider,
+            ethereumTransactionDataBuilder: walletModel.ethereumTransactionDataBuilder,
             sourceAddress: walletModel.defaultAddress,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem

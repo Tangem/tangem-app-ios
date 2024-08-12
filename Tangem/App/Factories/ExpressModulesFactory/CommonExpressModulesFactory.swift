@@ -88,7 +88,6 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
                 selectedPolicy: selectedPolicy
             ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
             approveService: expressInteractor,
             coordinator: coordinator

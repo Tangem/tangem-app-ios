@@ -65,7 +65,8 @@ struct UnstakingFlowBaseBuilder {
             input: unstakingModel,
             output: unstakingModel,
             walletModel: walletModel,
-            emailDataProvider: userWalletModel
+            emailDataProvider: userWalletModel,
+            stakingModel: .none
         )
 
         let viewModel = SendViewModel(

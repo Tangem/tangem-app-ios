@@ -90,7 +90,14 @@ struct SendFlowBaseBuilder {
         summary.step.set(router: stepsManager)
         destination.step.set(stepRouter: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let interactor = CommonSendBaseInteractor(
+            input: sendModel,
+            output: sendModel,
+            walletModel: walletModel,
+            emailDataProvider: userWalletModel,
+            stakingModel: .none
+        )
+
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,

@@ -33,8 +33,8 @@ class StakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let transactionCreator: TransactionCreator
-    private var ethereumNetworkProvider: EthereumNetworkProvider?
-    private var ethereumTransactionDataBuilder: EthereumTransactionDataBuilder?
+    private let ethereumNetworkProvider: EthereumNetworkProvider?
+    private let ethereumTransactionDataBuilder: EthereumTransactionDataBuilder?
     private let sourceAddress: String
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
@@ -49,6 +49,7 @@ class StakingModel {
         sendTransactionDispatcher: SendTransactionDispatcher,
         transactionCreator: TransactionCreator,
         ethereumNetworkProvider: EthereumNetworkProvider?,
+        ethereumTransactionDataBuilder: EthereumTransactionDataBuilder?,
         sourceAddress: String,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -57,6 +58,7 @@ class StakingModel {
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.transactionCreator = transactionCreator
         self.ethereumNetworkProvider = ethereumNetworkProvider
+        self.ethereumTransactionDataBuilder = ethereumTransactionDataBuilder
         self.sourceAddress = sourceAddress
         tokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
@@ -73,6 +75,10 @@ class StakingModel {
 // MARK: - Public
 
 extension StakingModel {
+    var selectedPolicy: ApprovePolicy {
+        _approvePolicy.value
+    }
+
     var state: AnyPublisher<State, Never> {
         _state.compactMap { $0?.value }.eraseToAnyPublisher()
     }

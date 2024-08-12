@@ -31,7 +31,6 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     private let feeTokenItem: TokenItem
 
     private let feeFormatter: FeeFormatter
-    private let pendingTransactionRepository: ExpressPendingTransactionRepository
     private let logger: Logger
     private let approveService: ApproveService
     private weak var coordinator: ExpressApproveRoutable?
@@ -42,13 +41,11 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     init(
         settings: Settings,
         feeFormatter: FeeFormatter,
-        pendingTransactionRepository: ExpressPendingTransactionRepository,
         logger: Logger,
         approveService: ApproveService,
         coordinator: ExpressApproveRoutable
     ) {
         self.feeFormatter = feeFormatter
-        self.pendingTransactionRepository = pendingTransactionRepository
         self.logger = logger
         self.approveService = approveService
         self.coordinator = coordinator

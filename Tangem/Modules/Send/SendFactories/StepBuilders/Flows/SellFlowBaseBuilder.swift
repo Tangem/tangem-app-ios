@@ -92,7 +92,8 @@ struct SellFlowBaseBuilder {
             input: sendModel,
             output: sendModel,
             walletModel: walletModel,
-            emailDataProvider: userWalletModel
+            emailDataProvider: userWalletModel,
+            stakingModel: .none
         )
 
         let viewModel = SendViewModel(
