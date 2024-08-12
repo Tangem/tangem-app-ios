@@ -54,7 +54,7 @@ extension CustomKaspaFeeService: CustomFeeService {
         }
 
         calculationModel.setup(
-            utxoCount: 3, // kaspaFeeParameters.utxoCount,
+            utxoCount: kaspaFeeParameters.utxoCount,
             valuePerUtxo: kaspaFeeParameters.valuePerUtxo
         )
     }
