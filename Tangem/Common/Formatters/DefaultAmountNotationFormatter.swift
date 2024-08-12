@@ -26,24 +26,6 @@ class DefaultAmountNotationFormatter {
         }
     }
 
-    /// System implementation of notation suffix generation with rounding behaviour
-    /// Awaiting https://developer.apple.com/documentation/foundation/decimal/formatstyle/currency/4405506-notation  for iOS18+. Currently in beta
-    func format(
-        _ value: Decimal?,
-        precision: NumberFormatStyleConfiguration.Precision = .fractionLength(2 ... 2),
-        currencySymbol: String
-    ) -> String {
-        guard let value else {
-            return defaultEmptyValue
-        }
-
-        // We need to use US locale to prevent differences in suffixes. Different locales uses different suffixes
-        // For now we use only US suffixes (K, M, B, T)
-        let baseStyle = Decimal.FormatStyle.number.precision(precision).notation(.compactName).locale(.init(identifier: "en_US_POSIX"))
-        let formatterAmount = value.formatted(baseStyle)
-        return addCurrencySymbol(formattedAmount: formatterAmount, currencySymbol: currencySymbol)
-    }
-
     /// Use this function when you need to use custom notation rules. E.g. values below 100k should be written fully without notation
     func format(
         _ value: Decimal?,

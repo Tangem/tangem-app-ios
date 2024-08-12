@@ -17,7 +17,7 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
 
     private let formattingOptions = BalanceFormattingOptions(
         minFractionDigits: 0,
-        maxFractionDigits: 0,
+        maxFractionDigits: 2,
         formatEpsilonAsLowestRepresentableValue: false,
         roundingType: .default(roundingMode: .plain, scale: 0)
     )
@@ -27,6 +27,7 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
 
     private var currencyCodeChangeSubscription: AnyCancellable?
     private lazy var fiatFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
+    private let cryptoFormatter: NumberFormatter
 
     init(
         metrics: MarketsTokenDetailsMetrics,
@@ -38,6 +39,7 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
         self.notationFormatter = notationFormatter
         self.cryptoCurrencyCode = cryptoCurrencyCode
         self.infoRouter = infoRouter
+        cryptoFormatter = BalanceFormatter().makeDefaultCryptoFormatter(for: cryptoCurrencyCode, formattingOptions: formattingOptions)
 
         setupRecords()
         bindToCurrencyCodeUpdate()
@@ -85,8 +87,8 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
             .init(type: .marketRating, recordData: rating),
             .init(type: .tradingVolume, recordData: notationFormatter.format(metrics.volume24H, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .fullyDilutedValuation, recordData: notationFormatter.format(metrics.fullyDilutedValuation, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
-            .init(type: .circulatingSupply, recordData: notationFormatter.format(metrics.circulatingSupply, currencySymbol: cryptoCurrencyCode)),
-            .init(type: .totalSupply, recordData: notationFormatter.format(metrics.totalSupply, currencySymbol: cryptoCurrencyCode)),
+            .init(type: .circulatingSupply, recordData: notationFormatter.format(metrics.circulatingSupply, notationFormatter: amountNotationFormatter, numberFormatter: cryptoFormatter, addingSignPrefix: false)),
+            .init(type: .totalSupply, recordData: notationFormatter.format(metrics.totalSupply, notationFormatter: amountNotationFormatter, numberFormatter: cryptoFormatter, addingSignPrefix: false)),
         ]
     }
 }
