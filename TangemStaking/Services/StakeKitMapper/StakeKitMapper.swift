@@ -83,10 +83,19 @@ struct StakeKitMapper {
 
     // MARK: - Balance
 
-    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo]? {
-        try response.first?.balances.map { balance in
+    func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo] {
+        guard let balances = response.first?.balances else {
+            throw StakeKitMapperError.noData("Balances not found")
+        }
+
+        return try balances.compactMap { balance in
             guard let blocked = Decimal(stringValue: balance.amount) else {
-                throw StakeKitMapperError.noData("Balance.amount not found")
+                return nil
+            }
+
+            // For Polygon token we can receive a staking balance with zero amount
+            guard blocked > 0 else {
+                return nil
             }
 
             return try StakingBalanceInfo(

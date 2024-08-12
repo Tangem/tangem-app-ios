@@ -139,12 +139,12 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balances: [StakingBalanceInfo]?, yield: YieldInfo) -> StakingManagerState {
+    func state(balances: [StakingBalanceInfo], yield: YieldInfo) -> StakingManagerState {
         guard yield.isAvailable else {
             return .temporaryUnavailable(yield)
         }
 
-        guard let balances, !balances.isEmpty else {
+        guard !balances.isEmpty else {
             return .availableToStake(yield)
         }
 

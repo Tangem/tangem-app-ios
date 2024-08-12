@@ -29,7 +29,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return yieldInfo
     }
 
-    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo]? {
+    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo] {
         let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
         let response = try await service.getBalances(request: request)
         let balancesInfo = try mapper.mapToBalanceInfo(from: response)

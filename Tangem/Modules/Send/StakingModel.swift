@@ -77,8 +77,8 @@ private extension StakingModel {
 
                 return .failedToLoad(error: StakingModelError.validatorNotFound)
             }
+            // Only for initial set
             .first()
-            .print("Validator did select ->>")
             .assign(to: \._selectedValidator.value, on: self, ownership: .weak)
             .store(in: &bag)
     }
