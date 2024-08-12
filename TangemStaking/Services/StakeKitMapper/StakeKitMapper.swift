@@ -154,12 +154,10 @@ struct StakeKitMapper {
 
     func mapToTransactionType(from type: StakeKitDTO.Transaction.Response.TransactionType) throws -> TransactionType {
         switch type {
+        case .approval: .approval
         case .stake: .stake
-        case .enter: .enter
-        case .exit, .unstake: .unstake
-        case .claim: .claim
-        case .claimRewards: .claimRewards
-        case .reinvest, .send, .approve, .unknown:
+        case .unstake: .unstake
+        case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
             throw StakeKitMapperError.notImplement
         }
     }
