@@ -17,6 +17,8 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     private let billionValue = Decimal(75_548_643_234)
     private let trillionValue = Decimal(998_879_524_973_125)
 
+    private let defaultUSLocale = Locale(identifier: "en_US")
+
     func testFormatterCurrencySymbolPositionFlag() {
         // USA
         let usFormatter = DefaultAmountNotationFormatter(locale: .init(identifier: "en_US"))
@@ -48,9 +50,10 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     }
 
     func testFormatWithNotationFormatterLeadingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "en_US"))
+        let locale = defaultUSLocale
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let notationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD", locale: locale)
 
         // Fiat USD
 
@@ -103,7 +106,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
         XCTAssertEqual(formattedTrillion, "$998.88T")
 
         // Crypto
-        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT")
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
 
         let formattedThousandUSDT = formatter.format(
             thousandValue,
@@ -155,11 +158,12 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     }
 
     func testFormatWithNotationFormatterTrailingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "de_DE"))
+        let locale = Locale(identifier: "de_DE")
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let notationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
 
         // Fiat USD
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR", locale: locale)
 
         let formattedThousand = formatter.format(
             thousandValue,
@@ -167,7 +171,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedThousand, "1,987 €")
+        XCTAssertEqual(formattedThousand, "1.987 €")
 
         let formattedTenThousand = formatter.format(
             tenThousandValue,
@@ -175,7 +179,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedTenThousand, "10,987 €")
+        XCTAssertEqual(formattedTenThousand, "10.987 €")
 
         let formattedHundredThousands = formatter.format(
             hundredThousandValue,
@@ -191,7 +195,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedMillion, "123.54M €")
+        XCTAssertEqual(formattedMillion, "123,54M €")
 
         let formattedBillion = formatter.format(
             billionValue,
@@ -199,7 +203,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedBillion, "75.55B €")
+        XCTAssertEqual(formattedBillion, "75,55B €")
 
         let formattedTrillion = formatter.format(
             trillionValue,
@@ -207,10 +211,10 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedTrillion, "998.88T €")
+        XCTAssertEqual(formattedTrillion, "998,88T €")
 
         // Crypto
-        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT")
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
 
         let formattedThousandUSDT = formatter.format(
             thousandValue,
@@ -218,7 +222,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: cryptoFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedThousandUSDT, "1,987 USDT")
+        XCTAssertEqual(formattedThousandUSDT, "1.987 USDT")
 
         let formattedTenThousandUSDT = formatter.format(
             tenThousandValue,
@@ -226,7 +230,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: cryptoFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedTenThousandUSDT, "10,987 USDT")
+        XCTAssertEqual(formattedTenThousandUSDT, "10.987 USDT")
 
         let formattedHundredThousandsUSDT = formatter.format(
             hundredThousandValue,
@@ -242,7 +246,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: cryptoFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedMillionUSDT, "123.54M USDT")
+        XCTAssertEqual(formattedMillionUSDT, "123,54M USDT")
 
         let formattedBillionUSDT = formatter.format(
             billionValue,
@@ -250,7 +254,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: cryptoFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedBillionUSDT, "75.55B USDT")
+        XCTAssertEqual(formattedBillionUSDT, "75,55B USDT")
 
         let formattedTrillionUSDT = formatter.format(
             trillionValue,
@@ -258,15 +262,124 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: cryptoFormatter,
             addingSignPrefix: false
         )
-        XCTAssertEqual(formattedTrillionUSDT, "998.88T USDT")
+        XCTAssertEqual(formattedTrillionUSDT, "998,88T USDT")
+    }
+
+    func testFormatRUWithNotationFormatterTrailingSymbol() {
+        let locale = Locale(identifier: "ru_RU")
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
+        let notationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
+
+        // Fiat USD
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "RUB", locale: locale)
+
+        let formattedThousand = formatter.format(
+            thousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedThousand, "1 987 ₽")
+
+        let formattedTenThousand = formatter.format(
+            tenThousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedTenThousand, "10 987 ₽")
+
+        let formattedHundredThousands = formatter.format(
+            hundredThousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedHundredThousands, "190K ₽")
+
+        let formattedMillion = formatter.format(
+            millionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedMillion, "123,54M ₽")
+
+        let formattedBillion = formatter.format(
+            billionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedBillion, "75,55B ₽")
+
+        let formattedTrillion = formatter.format(
+            trillionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: fiatFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedTrillion, "998,88T ₽")
+
+        // Crypto
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
+
+        let formattedThousandUSDT = formatter.format(
+            thousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedThousandUSDT, "1 987 USDT")
+
+        let formattedTenThousandUSDT = formatter.format(
+            tenThousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedTenThousandUSDT, "10 987 USDT")
+
+        let formattedHundredThousandsUSDT = formatter.format(
+            hundredThousandValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedHundredThousandsUSDT, "190K USDT")
+
+        let formattedMillionUSDT = formatter.format(
+            millionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedMillionUSDT, "123,54M USDT")
+
+        let formattedBillionUSDT = formatter.format(
+            billionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedBillionUSDT, "75,55B USDT")
+
+        let formattedTrillionUSDT = formatter.format(
+            trillionValue,
+            notationFormatter: notationFormatter,
+            numberFormatter: cryptoFormatter,
+            addingSignPrefix: false
+        )
+        XCTAssertEqual(formattedTrillionUSDT, "998,88T USDT")
     }
 
     func testSystemFormatWithLeadingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "en_US"))
+        let locale = defaultUSLocale
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let precision = NumberFormatStyleConfiguration.Precision.fractionLength(0 ... 2)
 
         // Fiat USD
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD", locale: locale)
 
         let formattedThousand = formatter.format(
             thousandValue,
@@ -311,7 +424,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
         XCTAssertEqual(formattedTrillion, "$998.88T")
 
         // Crypto
-        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT")
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
 
         let formattedThousandUSDT = formatter.format(
             thousandValue,
@@ -357,11 +470,12 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     }
 
     func testSystemFormatWithTrailingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "de_DE"))
+        let locale = Locale(identifier: "de_DE")
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let precision = NumberFormatStyleConfiguration.Precision.fractionLength(0 ... 2)
 
         // Fiat USD
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR", locale: locale)
 
         let formattedThousand = formatter.format(
             thousandValue,
@@ -406,7 +520,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
         XCTAssertEqual(formattedTrillion, "998.88T €")
 
         // Crypto
-        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT")
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
 
         let formattedThousandUSDT = formatter.format(
             thousandValue,
@@ -452,10 +566,11 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     }
 
     func testNilDecimal() {
+        let locale = defaultUSLocale
         let formatter = DefaultAmountNotationFormatter()
         let notationFormatter = AmountNotationSuffixFormatter()
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD")
-        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD", locale: locale)
+        let cryptoFormatter = cryptoNumberFormatter(currencyCode: "USDT", locale: locale)
 
         let emptyValue = formatter.defaultEmptyValue
 
@@ -529,11 +644,12 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
     }
 
     func testSignPrefixWithTrailingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "de_DE"))
+        let locale = Locale(identifier: "de_DE")
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let notationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
 
         // Fiat USD
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "EUR", locale: locale)
 
         let formattedThousand = formatter.format(
             thousandValue,
@@ -541,7 +657,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: true
         )
-        XCTAssertEqual(formattedThousand, "+1,987 €")
+        XCTAssertEqual(formattedThousand, "+1.987 €")
 
         let formattedTenThousand = formatter.format(
             tenThousandValue,
@@ -549,7 +665,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: true
         )
-        XCTAssertEqual(formattedTenThousand, "+10,987 €")
+        XCTAssertEqual(formattedTenThousand, "+10.987 €")
 
         let formattedHundredThousands = formatter.format(
             hundredThousandValue,
@@ -565,7 +681,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: true
         )
-        XCTAssertEqual(formattedMillion, "-123.54M €")
+        XCTAssertEqual(formattedMillion, "-123,54M €")
 
         let formattedBillion = formatter.format(
             billionValue * -1,
@@ -573,7 +689,7 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: true
         )
-        XCTAssertEqual(formattedBillion, "-75.55B €")
+        XCTAssertEqual(formattedBillion, "-75,55B €")
 
         let formattedTrillion = formatter.format(
             trillionValue * -1,
@@ -581,13 +697,14 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
             numberFormatter: fiatFormatter,
             addingSignPrefix: true
         )
-        XCTAssertEqual(formattedTrillion, "-998.88T €")
+        XCTAssertEqual(formattedTrillion, "-998,88T €")
     }
 
     func testSignPrefixWithLeadingSymbol() {
-        let formatter = DefaultAmountNotationFormatter(locale: .init(identifier: "en_US"))
+        let locale = Locale(identifier: "en_US")
+        let formatter = DefaultAmountNotationFormatter(locale: locale)
         let notationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
-        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD")
+        let fiatFormatter = fiatNumberFormatter(currencyCode: "USD", locale: locale)
 
         // Fiat USD
 
@@ -642,24 +759,24 @@ class DefaultAmountNotationFormatterTests: XCTestCase {
 }
 
 extension DefaultAmountNotationFormatterTests {
-    private func fiatNumberFormatter(currencyCode: String) -> NumberFormatter {
+    private func fiatNumberFormatter(currencyCode: String, locale: Locale) -> NumberFormatter {
         let options = BalanceFormattingOptions(
             minFractionDigits: 0,
             maxFractionDigits: 2,
             formatEpsilonAsLowestRepresentableValue: true,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
-        let numberFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: currencyCode, formattingOptions: options)
+        let numberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: currencyCode, locale: locale, formattingOptions: options)
         return numberFormatter
     }
 
-    private func cryptoNumberFormatter(currencyCode: String) -> NumberFormatter {
+    private func cryptoNumberFormatter(currencyCode: String, locale: Locale) -> NumberFormatter {
         let options = BalanceFormattingOptions(
             minFractionDigits: 0,
             maxFractionDigits: 2,
             formatEpsilonAsLowestRepresentableValue: true,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
-        return BalanceFormatter().buildDefaultCryptoFormatter(for: currencyCode, formattingOptions: options)
+        return BalanceFormatter().makeDefaultCryptoFormatter(for: currencyCode, locale: locale, formattingOptions: options)
     }
 }

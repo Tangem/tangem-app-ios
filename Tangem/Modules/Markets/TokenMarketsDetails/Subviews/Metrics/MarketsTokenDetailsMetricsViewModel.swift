@@ -26,7 +26,7 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
     private let cryptoCurrencyCode: String
 
     private var currencyCodeChangeSubscription: AnyCancellable?
-    private lazy var fiatFormatter: NumberFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
+    private lazy var fiatFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
 
     init(
         metrics: MarketsTokenDetailsMetrics,
@@ -53,7 +53,7 @@ class MarketsTokenDetailsMetricsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, newCurrencyCode in
-                viewModel.fiatFormatter = BalanceFormatter().buildDefaultFiatFormatter(for: newCurrencyCode, formattingOptions: viewModel.formattingOptions)
+                viewModel.fiatFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: newCurrencyCode, formattingOptions: viewModel.formattingOptions)
                 viewModel.setupRecords()
             }
     }

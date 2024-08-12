@@ -47,7 +47,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = buildDefaultCryptoFormatter(for: currencyCode, formattingOptions: formattingOptions)
+        let formatter = makeDefaultCryptoFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
@@ -88,7 +88,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = buildDefaultFiatFormatter(for: currencyCode, formattingOptions: formattingOptions)
+        let formatter = makeDefaultFiatFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
@@ -127,12 +127,13 @@ struct BalanceFormatter {
         return attributedString
     }
 
-    func buildDefaultFiatFormatter(
+    func makeDefaultFiatFormatter(
         for currencyCode: String,
+        locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions
     ) -> NumberFormatter {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = locale
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
         formatter.currencyCode = currencyCode
@@ -150,12 +151,13 @@ struct BalanceFormatter {
         return formatter
     }
 
-    func buildDefaultCryptoFormatter(
+    func makeDefaultCryptoFormatter(
         for currencyCode: String,
+        locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions
     ) -> NumberFormatter {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = locale
         formatter.numberStyle = .currency
         formatter.usesGroupingSeparator = true
         formatter.currencySymbol = currencyCode

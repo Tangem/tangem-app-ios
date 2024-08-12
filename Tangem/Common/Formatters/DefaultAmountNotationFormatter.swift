@@ -39,7 +39,7 @@ class DefaultAmountNotationFormatter {
 
         // We need to use US locale to prevent differences in suffixes. Different locales uses different suffixes
         // For now we use only US suffixes (K, M, B, T)
-        let baseStyle = Decimal.FormatStyle.number.precision(precision).notation(.compactName).locale(.init(identifier: "en_US"))
+        let baseStyle = Decimal.FormatStyle.number.precision(precision).notation(.compactName).locale(.init(identifier: "en_US_POSIX"))
         let formatterAmount = value.formatted(baseStyle)
         return addCurrencySymbol(formattedAmount: formatterAmount, currencySymbol: currencySymbol)
     }
