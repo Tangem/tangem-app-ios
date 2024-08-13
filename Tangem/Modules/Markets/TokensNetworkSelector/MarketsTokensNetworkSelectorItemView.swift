@@ -45,12 +45,12 @@ struct MarketsTokensNetworkSelectorItemView: View {
 
                 Spacer(minLength: 0)
 
-                Button {
-                    viewModel.onSelectedTapAction()
-                } label: {
-                    selectedCheckmark
-                }
-                .disabled(viewModel.isReadonly)
+                Toggle("", isOn: $viewModel.isSelected)
+                    .labelsHidden()
+                    .tint(Colors.Control.checked)
+                    .offset(x: 2)
+                    .scaleEffect(0.8)
+                    .disabled(viewModel.isReadonly)
             }
             .padding(.vertical, 16)
         }
