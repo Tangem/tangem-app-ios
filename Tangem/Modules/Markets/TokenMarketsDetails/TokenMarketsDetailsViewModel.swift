@@ -139,11 +139,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
     }
 
-    func reloadAllData() {
-        loadDetailedInfo()
-        historyChartViewModel?.reload()
-    }
-
     func loadDetailedInfo() {
         isLoading = true
         loadingTask?.cancel()
@@ -294,7 +289,7 @@ private extension TokenMarketsDetailsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.reloadAllData()
+                viewModel.loadDetailedInfo()
             }
             .store(in: &bag)
     }

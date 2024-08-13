@@ -28,7 +28,7 @@ struct TokenMarketsDetailsView: View {
                     .overlay(content: {
                         MarketsUnableToLoadDataView(
                             isButtonBusy: viewModel.isLoading,
-                            retryButtonAction: viewModel.reloadAllData
+                            retryButtonAction: viewModel.loadDetailedInfo
                         )
                         .infinityFrame(axis: .horizontal)
                         .hidden(!viewModel.allDataLoadFailed)
