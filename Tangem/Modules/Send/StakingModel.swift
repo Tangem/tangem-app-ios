@@ -30,7 +30,6 @@ class StakingModel {
     private let transactionCreator: TransactionCreator
     private let stakingTransactionDispatcher: SendTransactionDispatcher
     private let allowanceProvider: AllowanceProvider
-    private let sourceAddress: String
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
     private let stakingMapper: StakingMapper
@@ -44,7 +43,6 @@ class StakingModel {
         transactionCreator: TransactionCreator,
         stakingTransactionDispatcher: SendTransactionDispatcher,
         allowanceProvider: AllowanceProvider,
-        sourceAddress: String,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
@@ -52,7 +50,6 @@ class StakingModel {
         self.transactionCreator = transactionCreator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
         self.allowanceProvider = allowanceProvider
-        self.sourceAddress = sourceAddress
         tokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
 
@@ -129,10 +126,9 @@ private extension StakingModel {
             case .permissionRequired(let approveData):
                 return .readyToApprove(approveData: approveData)
             case .approveTransactionInProgress:
-                _isLoading.send(true)
                 return .approveTransactionInProgress
             case .enoughAllowance:
-                _isLoading.send(false)
+                break
             }
         }
 
@@ -178,7 +174,7 @@ private extension StakingModel {
         }
 
         guard let validator = _selectedValidator.value.value else {
-            throw StakingModelError.amountNotFound
+            throw StakingModelError.validatorNotFound
         }
 
         let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
@@ -300,7 +296,7 @@ extension StakingModel: SendFeeOutput {
 
 extension StakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
-        _state.map { $0?.value != nil }.eraseToAnyPublisher()
+        _state.map { $0?.value?.fee != nil }.eraseToAnyPublisher()
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
@@ -384,6 +380,7 @@ extension StakingModel: ApproveService {
 
         _ = try await stakingTransactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
+        _state.send(.loaded(.approveTransactionInProgress))
     }
 }
 
@@ -406,6 +403,5 @@ extension StakingModel {
 enum StakingModelError: String, Hashable, Error {
     case amountNotFound
     case validatorNotFound
-    case approveFeeNotFound
     case approveDataNotFound
 }

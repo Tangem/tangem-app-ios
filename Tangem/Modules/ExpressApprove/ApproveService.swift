@@ -9,12 +9,11 @@
 import Foundation
 import Combine
 import BlockchainSdk
-import TangemExpress
 
 protocol ApproveService {
     var approveFeeValue: LoadingValue<Fee> { get }
     var approveFeeValuePublisher: AnyPublisher<LoadingValue<Fee>, Never> { get }
 
-    func updateApprovePolicy(policy: ExpressApprovePolicy)
+    func updateApprovePolicy(policy: ApprovePolicy)
     func sendApproveTransaction() async throws
 }
