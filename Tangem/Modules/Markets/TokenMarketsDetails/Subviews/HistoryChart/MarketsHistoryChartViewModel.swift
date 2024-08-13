@@ -39,10 +39,10 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     private let tokenSymbol: String
     private let historyChartProvider: MarketsHistoryChartProvider
     private var loadHistoryChartTask: Cancellable?
-    private var selectedPriceIntervalSubscription: Cancellable?
     private var delayedLoadingStateSubscription: Cancellable?
     private var isDelayedLoadingStateCancelled = false
     private var didAppear = false
+    private var bag: Set<AnyCancellable> = []
 
     // MARK: - Initialization/Deinitialization
 
@@ -88,9 +88,20 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Setup & updating UI
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
-        selectedPriceIntervalSubscription = selectedPriceIntervalPublisher
+        selectedPriceIntervalPublisher
             .dropFirst() // Initial loading will be triggered in `onViewAppear`
             .sink(receiveValue: weakify(self, forFunction: MarketsHistoryChartViewModel.loadHistoryChart(selectedPriceInterval:)))
+            .store(in: &bag)
+
+        AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, selectedCurrencyCode in
+                viewModel.historyChartProvider.setCurrencyCode(selectedCurrencyCode)
+                viewModel.reload()
+            }
+            .store(in: &bag)
     }
 
     @MainActor
