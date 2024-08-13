@@ -21,14 +21,8 @@ struct TokenMarketsDetailsDateHelper {
         selectedDate: Date?,
         selectedPriceChangeIntervalType: MarketsPriceIntervalType
     ) -> Date? {
-        guard
-            let selectedDate
-        else {
-            // Fallback to the date defined by the selected `MarketsPriceIntervalType`
-            return makeDate(using: selectedPriceChangeIntervalType)
-        }
-
-        return selectedDate
+        // Fallback to the date defined by the selected `MarketsPriceIntervalType` if `selectedDate` is nil
+        return selectedDate ?? makeDate(using: selectedPriceChangeIntervalType)
     }
 
     private func makeDate(using selectedPriceChangeIntervalType: MarketsPriceIntervalType) -> Date? {

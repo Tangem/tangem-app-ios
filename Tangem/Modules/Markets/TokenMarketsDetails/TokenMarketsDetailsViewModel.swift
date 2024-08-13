@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CombineExt
 
 class TokenMarketsDetailsViewModel: ObservableObject {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
@@ -65,6 +66,9 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private let balanceFormatter = BalanceFormatter()
 
+    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper(fiatBalanceFormattingOptions: fiatBalanceFormattingOptions)
+    private lazy var dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
+
     // The date when this VM was initialized (i.e. the screen was opened)
     private let initialDate = Date()
 
@@ -83,8 +87,18 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     )
     private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
-    private let currentPriceSubject: CurrentValueSubject<Decimal, Never>
-    private let quotesUpdateTimeInterval: TimeInterval = 60.0
+    private var isReceivingSelectedChartValues = false
+
+    private lazy var currentPricePublisher: some Publisher<Decimal, Never> = {
+        let currencyId = tokenInfo.id
+
+        return quotesRepository.quotesPublisher
+            .receive(on: DispatchQueue.main)
+            .map { $0[currencyId]?.price }
+            .prepend(tokenInfo.currentPrice)
+            .compactMap { $0 }
+            .share(replay: 1)
+    }()
 
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
@@ -96,15 +110,17 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // MARK: - Init
 
-    init(tokenInfo: MarketsTokenModel, dataProvider: MarketsTokenDetailsDataProvider, coordinator: TokenMarketsDetailsRoutable?) {
-        currentPriceSubject = .init(tokenInfo.currentPrice ?? 0.0)
+    init(
+        tokenInfo: MarketsTokenModel,
+        dataProvider: MarketsTokenDetailsDataProvider,
+        coordinator: TokenMarketsDetailsRoutable?
+    ) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
         self.coordinator = coordinator
         selectedPriceChangeIntervalType = .day
         loadedPriceChangeInfo = tokenInfo.priceChangePercentage
 
-        updatePriceInfo(externallySelectedPrice: nil, selectedPriceChangeIntervalType: selectedPriceChangeIntervalType)
         bind()
         loadDetailedInfo()
         makePreloadBlocksViewModels()
@@ -210,26 +226,22 @@ private extension TokenMarketsDetailsViewModel {
 
 private extension TokenMarketsDetailsViewModel {
     func bind() {
-        quotesRepository.quotesPublisher
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .compactMap { viewModel, quotes in
-                quotes[viewModel.tokenInfo.id]?.price
-            }
-            .assign(to: \.value, on: currentPriceSubject, ownership: .weak)
-            .store(in: &bag)
-
-        currentPriceSubject
-            .receive(on: DispatchQueue.main)
+        currentPricePublisher
             .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { elements in
-                let (viewModel, (previousValue, newValue)) = elements
-                viewModel.price = viewModel.balanceFormatter.formatFiatBalance(
-                    newValue,
-                    formattingOptions: viewModel.fiatBalanceFormattingOptions
+            .filter { !$0.0.isReceivingSelectedChartValues } // Filtered out if the chart is being dragged
+            .sink { input in
+                let (viewModel, (oldValue, newValue)) = input
+                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
+                let priceInfo = viewModel.priceHelper.makePriceInfo(
+                    currentPrice: newValue,
+                    priceChangeInfo: viewModel.loadedPriceChangeInfo,
+                    selectedPriceChangeIntervalType: selectedIntervalType
                 )
-                viewModel.priceChangeAnimation = .calculateChange(from: previousValue, to: newValue)
+                // No need to update `priceChangeState` property here since it's updated by subscribing to
+                // either `selectedPriceChangeIntervalType` or `selectedChartValuePublisher` properties
+                viewModel.price = priceInfo.price
+                viewModel.priceChangeAnimation = .calculateChange(from: oldValue, to: newValue)
             }
             .store(in: &bag)
 
@@ -243,11 +255,21 @@ private extension TokenMarketsDetailsViewModel {
 
         $selectedPriceChangeIntervalType
             .removeDuplicates()
+            .withLatestFrom(currentPricePublisher) { ($0, $1) }
             .withWeakCaptureOf(self)
-            .sink { viewModel, intervalType in
-                // The order of calling these two methods matters, do not change
-                viewModel.updatePriceInfo(externallySelectedPrice: nil, selectedPriceChangeIntervalType: intervalType)
-                viewModel.updateSelectedDate(externallySelectedDate: nil, selectedPriceChangeIntervalType: intervalType)
+            .sink { input in
+                let (viewModel, (selectedIntervalType, currentPrice)) = input
+                let priceInfo = viewModel.priceHelper.makePriceInfo(
+                    currentPrice: currentPrice,
+                    priceChangeInfo: viewModel.loadedPriceChangeInfo,
+                    selectedPriceChangeIntervalType: selectedIntervalType
+                )
+                // No need to update `price` property here since it's updated by subscribing to `currentPricePublisher`
+                viewModel.priceChangeState = priceInfo.priceChangeState
+                viewModel.updateSelectedDate(
+                    externallySelectedDate: nil,
+                    selectedPriceChangeIntervalType: selectedIntervalType
+                )
             }
             .store(in: &bag)
 
@@ -262,7 +284,12 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func bindToHistoryChartViewModel() {
-        historyChartViewModel?.$viewState
+        guard let historyChartViewModel else {
+            return
+        }
+
+        historyChartViewModel
+            .$viewState
             .receive(on: DispatchQueue.main)
             .withPrevious()
             .withWeakCaptureOf(self)
@@ -271,7 +298,7 @@ private extension TokenMarketsDetailsViewModel {
 
                 switch (previousChartState, newChartState) {
                 case (.failed, .failed):
-                    // We need to process this cases before other so that view state remains unchanged.
+                    // We need to process these cases before other so that view state remains unchanged.
                     return
                 case (.failed, .loading):
                     if case .failedToLoadAllData = viewModel.state {
@@ -295,20 +322,49 @@ private extension TokenMarketsDetailsViewModel {
             })
             .store(in: &bag)
 
-        historyChartViewModel?
+        let selectedChartValuePublisher = historyChartViewModel
             .selectedChartValuePublisher
             .removeDuplicates()
+            .share(replay: 1)
+
+        selectedChartValuePublisher
+            .map { $0 != nil }
+            .assign(to: \.isReceivingSelectedChartValues, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        selectedChartValuePublisher
+            .withLatestFrom(currentPricePublisher) { ($0, $1) }
+            .withWeakCaptureOf(self)
+            .sink { input in
+                let (viewModel, (selectedChartValue, currentPrice)) = input
+                let priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo
+                if let selectedPrice = selectedChartValue?.price {
+                    priceInfo = viewModel.priceHelper.makePriceInfo(
+                        currentPrice: currentPrice,
+                        selectedPrice: selectedPrice
+                    )
+                } else {
+                    // If there is no `selectedChartValue` - we're setting both `price` and `priceChangeState`
+                    // to the latest value received from the `currentPricePublisher` publisher
+                    let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
+                    priceInfo = viewModel.priceHelper.makePriceInfo(
+                        currentPrice: currentPrice,
+                        priceChangeInfo: viewModel.loadedPriceChangeInfo,
+                        selectedPriceChangeIntervalType: selectedIntervalType
+                    )
+                }
+                viewModel.price = priceInfo.price
+                viewModel.priceChangeState = priceInfo.priceChangeState
+            }
+            .store(in: &bag)
+
+        selectedChartValuePublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, selectedChartValue in
-                let intervalType = viewModel.selectedPriceChangeIntervalType
-                // The order of calling these two methods matters, do not change
-                viewModel.updatePriceInfo(
-                    externallySelectedPrice: selectedChartValue?.price,
-                    selectedPriceChangeIntervalType: intervalType
-                )
+                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
                 viewModel.updateSelectedDate(
                     externallySelectedDate: selectedChartValue?.date,
-                    selectedPriceChangeIntervalType: intervalType
+                    selectedPriceChangeIntervalType: selectedIntervalType
                 )
             }
             .store(in: &bag)
@@ -362,28 +418,6 @@ private extension TokenMarketsDetailsViewModel {
         ).mapToSections(model.links)
     }
 
-    func updatePriceInfo(externallySelectedPrice: Decimal?, selectedPriceChangeIntervalType: MarketsPriceIntervalType) {
-        let priceHelper = TokenMarketsDetailsPriceInfoHelper(
-            tokenInfo: tokenInfo,
-            priceChangeInfo: loadedPriceChangeInfo,
-            fiatBalanceFormattingOptions: fiatBalanceFormattingOptions
-        )
-        let priceInfo = priceHelper.makePriceInfo(
-            selectedPrice: externallySelectedPrice,
-            selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
-        )
-        price = priceInfo.price
-        priceChangeState = priceInfo.priceChangeState
-    }
-
-    func updateSelectedDate(externallySelectedDate: Date?, selectedPriceChangeIntervalType: MarketsPriceIntervalType) {
-        let dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
-        selectedDate = dateHelper.makeDate(
-            selectedDate: externallySelectedDate,
-            selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
-        )
-    }
-
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
         defer {
             tokenInsights = insights
@@ -403,6 +437,13 @@ private extension TokenMarketsDetailsViewModel {
                 infoRouter: self
             )
         }
+    }
+
+    func updateSelectedDate(externallySelectedDate: Date?, selectedPriceChangeIntervalType: MarketsPriceIntervalType) {
+        selectedDate = dateHelper.makeDate(
+            selectedDate: externallySelectedDate,
+            selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
+        )
     }
 }
 
