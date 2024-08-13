@@ -59,12 +59,9 @@ final class CommonPushNotificationsInteractor {
         Analytics.log(.pushButtonAllow, params: [.source: source])
     }
 
-    private func logPostponeOrCancelRequest(in flow: PushNotificationsPermissionRequestFlow, isCancelled: Bool) {
+    private func logPostponedRequest(in flow: PushNotificationsPermissionRequestFlow) {
         let source = analyticsSourceValue(for: flow)
-        Analytics.log(
-            isCancelled ? .pushButtonCancel : .pushButtonPostpone,
-            params: [.source: source]
-        )
+        Analytics.log(.pushButtonPostpone, params: [.source: source])
     }
 
     private func logAuthorizationStatus() async {
@@ -115,34 +112,19 @@ extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
         }
     }
 
-    func canPostponeRequest(in flow: PushNotificationsPermissionRequestFlow) -> Bool {
-        switch flow {
-        case .welcomeOnboarding:
-            return true
-        case .walletOnboarding,
-             .afterLogin:
-            return false
-        }
-    }
-
     func postponeRequest(in flow: PushNotificationsPermissionRequestFlow) {
-        let isCancelled: Bool
-
         switch flow {
         case .welcomeOnboarding:
             didPostponeAuthorizationRequestOnWelcomeOnboarding = true
             didPostponeAuthorizationRequestOnWelcomeOnboardingInCurrentSession = true
-            isCancelled = false
         case .walletOnboarding:
             didPostponeAuthorizationRequestOnWalletOnboarding = true
-            isCancelled = true
         case .afterLogin:
             // Stop all future authorization requests
             canRequestAuthorization = false
-            isCancelled = true
         }
 
-        logPostponeOrCancelRequest(in: flow, isCancelled: isCancelled)
+        logPostponedRequest(in: flow)
     }
 }
 

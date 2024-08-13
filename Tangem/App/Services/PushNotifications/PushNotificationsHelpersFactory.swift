@@ -50,7 +50,6 @@ struct PushNotificationsHelpersFactory {
     ) -> InteractorTrampoline {
         return InteractorTrampoline(
             isAvailable: { interactor.isAvailable(in: flow) },
-            canPostponePermissionRequest: { interactor.canPostponeRequest(in: flow) },
             allowRequest: { await interactor.allowRequest(in: flow) },
             postponeRequest: { interactor.postponeRequest(in: flow) }
         )
@@ -64,26 +63,21 @@ private extension PushNotificationsHelpersFactory {
     /// interfaces to the opaque wrapped underlying entity using closures.
     final class InteractorTrampoline: PushNotificationsAvailabilityProvider, PushNotificationsPermissionManager {
         typealias IsAvailable = () -> Bool
-        typealias CanPostponePermissionRequest = IsAvailable
         typealias AllowRequest = () async -> Void
         typealias PostponeRequest = () -> Void
 
         var isAvailable: Bool { _isAvailable() }
-        var canPostponePermissionRequest: Bool { _canPostponePermissionRequest() }
 
         private let _isAvailable: IsAvailable
-        private let _canPostponePermissionRequest: CanPostponePermissionRequest
         private let _allowRequest: AllowRequest
         private let _postponeRequest: PostponeRequest
 
         init(
             isAvailable: @escaping IsAvailable,
-            canPostponePermissionRequest: @escaping CanPostponePermissionRequest,
             allowRequest: @escaping AllowRequest,
             postponeRequest: @escaping PostponeRequest
         ) {
             _isAvailable = isAvailable
-            _canPostponePermissionRequest = canPostponePermissionRequest
             _allowRequest = allowRequest
             _postponeRequest = postponeRequest
         }
