@@ -143,18 +143,14 @@ final class MarketsListDataProvider {
 
 private extension MarketsListDataProvider {
     func loadItems(_ searchText: String, with filter: Filter) async throws -> MarketsDTO.General.Response {
-        // Prepare search text without special characters
         let searchText = searchText.trimmed()
-
-        // Always use raiting sorting for search
-        let order: MarketsListOrderType = searchText.isEmpty ? filter.order : .rating
 
         let requestModel = MarketsDTO.General.Request(
             currency: selectedCurrencyCode,
             offset: currentOffset,
             limit: limitPerPage,
             interval: filter.interval,
-            order: order,
+            order: filter.order,
             search: searchText
         )
 

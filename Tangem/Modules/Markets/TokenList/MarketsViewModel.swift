@@ -141,7 +141,13 @@ private extension MarketsViewModel {
                 }
 
                 viewModel.currentSearchValue = value
-                viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
+
+                let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
+
+                // Always use raiting sorting for search
+                let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
+
+                viewModel.fetch(with: value, by: searchFilter)
             }
             .store(in: &bag)
     }
