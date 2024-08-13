@@ -239,17 +239,26 @@ private extension TokenMarketsDetailsViewModel {
                     selectedPriceChangeIntervalType: selectedIntervalType
                 )
                 // No need to update `priceChangeState` property here since it's updated by subscribing to
-                // either `selectedPriceChangeIntervalType` or `selectedChartValuePublisher` properties
+                // `selectedPriceChangeIntervalType`, `loadedPriceChangeInfo` or `selectedChartValuePublisher` properties
                 viewModel.price = priceInfo.price
                 viewModel.priceChangeAnimation = .calculateChange(from: oldValue, to: newValue)
             }
             .store(in: &bag)
 
-        $isLoading
-            .receive(on: DispatchQueue.main)
+        $loadedPriceChangeInfo
+            .withLatestFrom(currentPricePublisher) { ($0, $1) }
             .withWeakCaptureOf(self)
-            .sink { viewModel, isLoading in
-                viewModel.portfolioViewModel?.isLoading = isLoading
+            .filter { !$0.0.isReceivingSelectedChartValues } // Filtered out if the chart is being dragged
+            .sink { input in
+                let (viewModel, (loadedPriceChangeInfo, currentPrice)) = input
+                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
+                let priceInfo = viewModel.priceHelper.makePriceInfo(
+                    currentPrice: currentPrice,
+                    priceChangeInfo: loadedPriceChangeInfo,
+                    selectedPriceChangeIntervalType: selectedIntervalType
+                )
+                viewModel.price = priceInfo.price
+                viewModel.priceChangeState = priceInfo.priceChangeState
             }
             .store(in: &bag)
 
@@ -270,6 +279,14 @@ private extension TokenMarketsDetailsViewModel {
                     externallySelectedDate: nil,
                     selectedPriceChangeIntervalType: selectedIntervalType
                 )
+            }
+            .store(in: &bag)
+
+        $isLoading
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isLoading in
+                viewModel.portfolioViewModel?.isLoading = isLoading
             }
             .store(in: &bag)
 
