@@ -7458,7 +7458,6 @@
 				DA19D8C42B39AE3C001C91C4 /* QRCodeParser */,
 				B0AF2DED2B1D8FD2001A8696 /* Express */,
 				EF2FE49A2C6BABD20015940A /* AllowanceProvider */,
-				EF0DD7962B026B500099527D /* CommonAllowanceProvider */,
 				EF0DD7932B026B200099527D /* ExpressDestinationService */,
 				EF39A6542AD5A8A600AAB518 /* SmartContractMethodMapper */,
 				B0BE7D932AC2EB0A0012D9EE /* SwapAvailabilityManager */,
@@ -8182,13 +8181,6 @@
 				EF1E97FC2B03F93300D4B511 /* CommonExpressDestinationService.swift */,
 			);
 			path = ExpressDestinationService;
-			sourceTree = "<group>";
-		};
-		EF0DD7962B026B500099527D /* CommonAllowanceProvider */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CommonAllowanceProvider;
 			sourceTree = "<group>";
 		};
 		EF0DD79F2B02B30F0099527D /* ExpressFeeRow */ = {
