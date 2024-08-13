@@ -42,6 +42,7 @@ struct TokenMarketsDetailsDateHelper {
             return initialDate.dateByAdding(-1, .year).date
         case .all:
             // TODO: Andrey Fedorov - How to get the beginning of `all` time interval? Obtain asynchronously from `historyChartViewModel`? (IOS-7476)
+            // Causes fallback to the `Localization.commonAll`
             return nil
         }
     }
