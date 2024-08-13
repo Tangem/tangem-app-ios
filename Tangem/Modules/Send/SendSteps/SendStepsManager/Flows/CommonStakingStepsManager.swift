@@ -43,10 +43,9 @@ class CommonStakingStepsManager {
         state.map { state in
             switch state {
             case .readyToApprove: .approve
-            case .readyToStake: .stake
+            case .approveTransactionInProgress, .readyToStake: .stake
             }
         }
-        .print("action ->>")
         .assign(to: \.action, on: self, ownership: .weak)
         .store(in: &bag)
     }

@@ -189,10 +189,8 @@ private extension ExpressModulesFactoryMock {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

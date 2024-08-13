@@ -15,17 +15,20 @@ class StakingTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
+    private let approveTransactionDispatcher: SendTransactionDispatcher
 
     private var transactionSentResult: TransactionSentResult?
 
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner,
-        pendingHashesSender: StakingPendingHashesSender
+        pendingHashesSender: StakingPendingHashesSender,
+        approveTransactionDispatcher: SendTransactionDispatcher
     ) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.pendingHashesSender = pendingHashesSender
+        self.approveTransactionDispatcher = approveTransactionDispatcher
     }
 }
 
@@ -46,7 +49,7 @@ extension StakingTransactionDispatcher: SendTransactionDispatcher {
 
 private extension StakingTransactionDispatcher {
     func send(transaction: BSDKTransaction) async throws -> SendTransactionDispatcherResult {
-        throw SendTransactionDispatcherResult.Error.stakingUnsupported
+        try await approveTransactionDispatcher.send(transaction: .transfer(transaction))
     }
 
     func send(transactionId: String, transaction: StakeKitTransaction) async throws -> SendTransactionDispatcherResult {

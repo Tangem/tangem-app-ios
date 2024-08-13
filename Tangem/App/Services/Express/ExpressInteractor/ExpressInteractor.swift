@@ -28,7 +28,7 @@ class ExpressInteractor {
     private let userWalletId: String
     private let initialWallet: WalletModel
     private let expressManager: ExpressManager
-    private let allowanceProvider: ExpressAllowanceProvider
+    private let allowanceProvider: UpdatableAllowanceProvider
     private let feeProvider: ExpressFeeProvider
     private let expressRepository: ExpressRepository
     private let expressPendingTransactionRepository: ExpressPendingTransactionRepository
@@ -50,7 +50,7 @@ class ExpressInteractor {
         userWalletId: String,
         initialWallet: WalletModel,
         expressManager: ExpressManager,
-        allowanceProvider: ExpressAllowanceProvider,
+        allowanceProvider: UpdatableAllowanceProvider,
         feeProvider: ExpressFeeProvider,
         expressRepository: ExpressRepository,
         expressPendingTransactionRepository: ExpressPendingTransactionRepository,
@@ -422,7 +422,7 @@ private extension ExpressInteractor {
     }
 
     func map(permissionRequired: ExpressManagerState.PermissionRequired) async throws -> State {
-        let fees = mapToFees(fee: permissionRequired.fee)
+        let fees = mapToFees(fee: .single(permissionRequired.data.fee))
         let amount = makeAmount(value: permissionRequired.quote.fromAmount)
         let fee = try selectedFee(fees: fees)
 
@@ -862,7 +862,7 @@ extension ExpressInteractor {
 
     struct PermissionRequiredState {
         let policy: ExpressApprovePolicy
-        let data: ExpressApproveData
+        let data: ApproveTransactionData
         let fees: [FeeOption: Fee]
     }
 

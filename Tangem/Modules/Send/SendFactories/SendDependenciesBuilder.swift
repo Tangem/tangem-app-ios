@@ -106,7 +106,8 @@ struct SendDependenciesBuilder {
         StakingTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: userWalletModel.signer,
-            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
+            approveTransactionDispatcher: makeSendTransactionDispatcher()
         )
     }
 
@@ -185,14 +186,13 @@ struct SendDependenciesBuilder {
 
     func makeStakingModel(
         stakingManager: any StakingManager,
-        sendTransactionDispatcher: any SendTransactionDispatcher
+        stakingTransactionDispatcher: any SendTransactionDispatcher
     ) -> StakingModel {
         StakingModel(
             stakingManager: stakingManager,
-            sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
-            ethereumNetworkProvider: walletModel.ethereumNetworkProvider,
-            ethereumTransactionDataBuilder: walletModel.ethereumTransactionDataBuilder,
+            stakingTransactionDispatcher: stakingTransactionDispatcher,
+            allowanceProvider: makeAllowanceProvider(),
             sourceAddress: walletModel.defaultAddress,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
@@ -201,7 +201,7 @@ struct SendDependenciesBuilder {
 
     func makeUnstakingModel(
         stakingManager: any StakingManager,
-        sendTransactionDispatcher: any SendTransactionDispatcher,
+        stakingTransactionDispatcher: any SendTransactionDispatcher,
         balanceInfo: StakingBalanceInfo
     ) -> UnstakingModel {
         UnstakingModel(
@@ -227,5 +227,9 @@ struct SendDependenciesBuilder {
 
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+    }
+
+    func makeAllowanceProvider() -> AllowanceProvider {
+        CommonAllowanceProvider(walletModel: walletModel)
     }
 }

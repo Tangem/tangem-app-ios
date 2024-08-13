@@ -160,7 +160,7 @@ private extension ExpressApproveViewModel {
 
 extension ExpressApproveViewModel {
     struct Settings {
-        let subtitle: String // Localization.givePermissionSwapSubtitle(providerName, currencySymbol)
+        let subtitle: String
         let tokenItem: TokenItem
         let feeTokenItem: TokenItem
 
