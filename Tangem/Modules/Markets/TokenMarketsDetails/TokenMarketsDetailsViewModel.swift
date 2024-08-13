@@ -238,7 +238,7 @@ private extension TokenMarketsDetailsViewModel {
                     selectedPriceChangeIntervalType: viewModel.selectedPriceChangeIntervalType
                 )
                 // No need to update `priceChangeState` property here since it's updated by subscribing to
-                // `selectedPriceChangeIntervalType`, `loadedPriceChangeInfo` or `selectedChartValuePublisher` properties
+                // `selectedPriceChangeIntervalType`, `loadedPriceChangeInfo` or `selectedChartValuePublisher`
                 viewModel.price = priceInfo.price
                 viewModel.priceChangeAnimation = .calculateChange(from: oldValue, to: newValue)
             }
@@ -271,7 +271,8 @@ private extension TokenMarketsDetailsViewModel {
                     priceChangeInfo: viewModel.loadedPriceChangeInfo,
                     selectedPriceChangeIntervalType: selectedIntervalType
                 )
-                // No need to update `price` property here since it's updated by subscribing to `currentPricePublisher`
+                // No need to update `price` property here since it's updated by subscribing
+                // to either `currentPricePublisher` or `selectedChartValuePublisher`
                 viewModel.priceChangeState = priceInfo.priceChangeState
                 viewModel.updateSelectedDate(
                     externallySelectedDate: nil,
