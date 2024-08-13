@@ -407,10 +407,24 @@ private extension TokenMarketsDetailsViewModel {
             metricsViewModel = .init(metrics: metrics, notationFormatter: defaultAmountNotationFormatter, cryptoCurrencyCode: model.symbol, infoRouter: self)
         }
 
+        let selectedChartValuePublisher = historyChartViewModel
+            .publisher
+            .flatMap(\.selectedChartValuePublisher)
+            .removeDuplicates()
+            .compactMap { $0?.price }
+
+        let pricePerformanceCurrentPricePublisher = currentPricePublisher
+            .withWeakCaptureOf(self)
+            .filter { !$0.0.isReceivingSelectedChartValues } // Filtered out if the chart is being dragged
+            .map(\.1)
+            .merge(with: selectedChartValuePublisher)
+            .eraseToAnyPublisher()
+
+        // TODO: Andrey Fedorov - Add actual implementation
         pricePerformanceViewModel = .init(
             tokenSymbol: model.symbol,
             pricePerformanceData: model.pricePerformance,
-            currentPricePublisher: currentPriceSubject.eraseToAnyPublisher()
+            currentPricePublisher: pricePerformanceCurrentPricePublisher
         )
 
         linksSections = MarketsTokenDetailsLinksMapper(
