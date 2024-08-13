@@ -15,17 +15,17 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var selectedPriceChangeIntervalType: MarketsPriceIntervalType
-    @Published var isLoading = true
+    @Published private(set) var isLoading = true
     @Published var alert: AlertBinder?
-    @Published var state: ViewState = .loading
+    @Published private(set) var state: ViewState = .loading
 
     // MARK: Blocks
 
-    @Published var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
-    @Published var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
-    @Published var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
-    @Published var linksSections: [TokenMarketsDetailsLinkSection] = []
-    @Published var portfolioViewModel: MarketsPortfolioContainerViewModel?
+    @Published private(set) var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
+    @Published private(set) var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
+    @Published private(set) var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
+    @Published private(set) var linksSections: [TokenMarketsDetailsLinkSection] = []
+    @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
