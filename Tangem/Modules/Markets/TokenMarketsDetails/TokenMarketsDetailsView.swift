@@ -28,7 +28,7 @@ struct TokenMarketsDetailsView: View {
                     .overlay(content: {
                         MarketsUnableToLoadDataView(
                             isButtonBusy: viewModel.isLoading,
-                            retryButtonAction: viewModel.reloadAllData
+                            retryButtonAction: viewModel.loadDetailedInfo
                         )
                         .infinityFrame(axis: .horizontal)
                         .hidden(!viewModel.allDataLoadFailed)
@@ -67,20 +67,24 @@ struct TokenMarketsDetailsView: View {
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(viewModel.price)
-                    .blinkForegroundColor(
-                        publisher: viewModel.$priceChangeAnimation,
-                        positiveColor: Colors.Text.accent,
-                        negativeColor: Colors.Text.warning,
-                        originalColor: Colors.Text.primary1
-                    )
-                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+                if let price = viewModel.price {
+                    Text(price)
+                        .blinkForegroundColor(
+                            publisher: viewModel.$priceChangeAnimation,
+                            positiveColor: Colors.Text.accent,
+                            negativeColor: Colors.Text.warning,
+                            originalColor: Colors.Text.primary1
+                        )
+                        .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+                }
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(viewModel.priceDate)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                    TokenPriceChangeView(state: viewModel.priceChangeState, showSkeletonWhenLoading: true)
+                    if let priceChangeState = viewModel.priceChangeState {
+                        TokenPriceChangeView(state: priceChangeState, showSkeletonWhenLoading: true)
+                    }
                 }
             }
 

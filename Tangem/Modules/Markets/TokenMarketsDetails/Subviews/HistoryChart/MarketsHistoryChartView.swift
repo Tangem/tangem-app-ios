@@ -84,30 +84,36 @@ struct MarketsHistoryChartView: View {
     private func makeChartView(for chartData: LineChartViewData) -> some View {
         LineChartViewWrapper(
             selectedPriceInterval: viewModel.selectedPriceInterval,
-            chartData: chartData
-        ) { chartView in
-            chartView.minOffset = 0.0
-            chartView.extraTopOffset = 26.0
-            chartView.pinchZoomEnabled = false
-            chartView.doubleTapToZoomEnabled = false
-            chartView.highlightPerTapEnabled = false
-            chartView.xAxis.drawGridLinesEnabled = false
-            chartView.xAxis.labelPosition = .bottom
-            chartView.xAxis.drawAxisLineEnabled = false
-            chartView.xAxis.labelFont = UIFonts.Regular.caption2
-            chartView.xAxis.labelTextColor = .textTertiary
-            chartView.xAxis.yOffset = 26.0
-            chartView.xAxis.xOffset = 0.0
-            chartView.xAxis.avoidFirstLastClippingEnabled = true // TODO: Andrey Fedorov - Disable if a custom renderer is used (IOS-7476)
-            chartView.leftAxis.gridLineWidth = 1.0
-            chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
-            chartView.leftAxis.labelPosition = .insideChart
-            chartView.leftAxis.drawAxisLineEnabled = false
-            chartView.leftAxis.labelFont = UIFonts.Regular.caption2
-            chartView.leftAxis.labelTextColor = .textTertiary
-            chartView.rightAxis.enabled = false
-            chartView.legend.enabled = false
-        }
+            chartData: chartData,
+            onValueSelection: viewModel.onValueSelection,
+            onViewMake: { chartView in
+                chartView.minOffset = 0.0
+                chartView.extraTopOffset = 26.0
+                chartView.setScaleEnabled(false)
+                chartView.pinchZoomEnabled = false
+                chartView.doubleTapToZoomEnabled = false
+                chartView.highlightPerTapEnabled = false
+                chartView.xAxis.drawGridLinesEnabled = false
+                chartView.xAxis.labelPosition = .bottom
+                chartView.xAxis.drawAxisLineEnabled = false
+                chartView.xAxis.labelFont = UIFonts.Regular.caption2
+                chartView.xAxis.labelTextColor = .textTertiary
+                chartView.xAxis.yOffset = 26.0
+                chartView.xAxis.xOffset = 0.0
+                // TODO: Andrey Fedorov - Disable if custom X axis renderer is used (IOS-7476)
+                chartView.xAxis.avoidFirstLastClippingEnabled = true
+                // Allows highlight vertical line to be draw outside of the chart minY/maxY (using `verticalHighlightIndicatorInset` property)
+                chartView.clipDataToContentEnabled = false
+                chartView.leftAxis.gridLineWidth = 1.0
+                chartView.leftAxis.gridColor = .iconInactive.withAlphaComponent(0.12)
+                chartView.leftAxis.labelPosition = .insideChart
+                chartView.leftAxis.drawAxisLineEnabled = false
+                chartView.leftAxis.labelFont = UIFonts.Regular.caption2
+                chartView.leftAxis.labelTextColor = .textTertiary
+                chartView.rightAxis.enabled = false
+                chartView.legend.enabled = false
+            }
+        )
     }
 }
 

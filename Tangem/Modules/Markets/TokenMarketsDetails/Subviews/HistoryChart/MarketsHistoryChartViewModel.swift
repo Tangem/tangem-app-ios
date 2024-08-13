@@ -28,15 +28,21 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Chart value selection
+
+    var selectedChartValuePublisher: some Publisher<SelectedChartValue?, Never> { selectedChartValueSubject }
+
+    private let selectedChartValueSubject = PassthroughSubject<SelectedChartValue?, Never>()
+
     // MARK: - Dependencies & internal state
 
     private let tokenSymbol: String
     private let historyChartProvider: MarketsHistoryChartProvider
     private var loadHistoryChartTask: Cancellable?
-    private var selectedPriceIntervalSubscription: Cancellable?
     private var delayedLoadingStateSubscription: Cancellable?
     private var isDelayedLoadingStateCancelled = false
     private var didAppear = false
+    private var bag: Set<AnyCancellable> = []
 
     // MARK: - Initialization/Deinitialization
 
@@ -61,6 +67,20 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         }
     }
 
+    func onValueSelection(_ chartValue: LineChartViewWrapper.ChartValue?) {
+        guard let chartValue else {
+            selectedChartValueSubject.send(nil)
+            return
+        }
+
+        let selectedChartValue = SelectedChartValue(
+            date: Date(milliseconds: chartValue.timeStamp),
+            price: chartValue.price
+        )
+
+        selectedChartValueSubject.send(selectedChartValue)
+    }
+
     func reload() {
         loadHistoryChart(selectedPriceInterval: selectedPriceInterval)
     }
@@ -68,9 +88,20 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Setup & updating UI
 
     private func bind(selectedPriceIntervalPublisher: some Publisher<MarketsPriceIntervalType, Never>) {
-        selectedPriceIntervalSubscription = selectedPriceIntervalPublisher
+        selectedPriceIntervalPublisher
             .dropFirst() // Initial loading will be triggered in `onViewAppear`
             .sink(receiveValue: weakify(self, forFunction: MarketsHistoryChartViewModel.loadHistoryChart(selectedPriceInterval:)))
+            .store(in: &bag)
+
+        AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, selectedCurrencyCode in
+                viewModel.historyChartProvider.setCurrencyCode(selectedCurrencyCode)
+                viewModel.reload()
+            }
+            .store(in: &bag)
     }
 
     @MainActor
@@ -162,6 +193,11 @@ extension MarketsHistoryChartViewModel {
         case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
         case failed
+    }
+
+    struct SelectedChartValue: Equatable {
+        let date: Date
+        let price: Decimal
     }
 }
 

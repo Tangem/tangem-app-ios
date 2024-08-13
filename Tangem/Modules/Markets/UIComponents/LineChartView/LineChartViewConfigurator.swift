@@ -42,61 +42,50 @@ struct LineChartViewConfigurator {
     }
 
     private func makeDataSet() -> LineChartDataSet {
-        let chartColor = makeChartColor(for: chartData.trend)
-        let fill = makeFill(chartColor: chartColor)
+        let utility = LineChartViewUtility()
+        let chartColor = utility.selectedChartLineColor(for: chartData.trend)
+        let chartFill = utility.selectedChartFillGradient(for: chartData.trend)
 
         let chartDataEntries = chartData.xAxis.values.map { value in
-            return ChartDataEntry(x: Double(value.timeStamp), y: value.price.doubleValue)
+            return ChartDataEntry(x: value.timeStamp.doubleValue, y: value.price.doubleValue, data: value)
         }
 
-        let dataSet = LineChartDataSet(entries: chartDataEntries)
+        let dataSet = ColorSplitLineChartDataSet(entries: chartDataEntries)
         dataSet.fillAlpha = 1.0
-        dataSet.fill = fill
+        dataSet.fill = chartFill
         dataSet.drawFilledEnabled = true
         dataSet.drawCirclesEnabled = false
         dataSet.drawValuesEnabled = false
-        dataSet.mode = .cubicBezier
-        dataSet.cubicIntensity = 0.08
-        dataSet.setColor(chartColor)
         dataSet.lineCapType = .round
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
-        dataSet.highlightColor = chartColor
+        dataSet.verticalHighlightIndicatorInset = -8.0
+        dataSet.setColor(chartColor)
+
+        // TODO: Andrey Fedorov - `cubicBezier` line chart does not work at the moment with `ColorSplitLineChartRenderer` renderer (IOS-7476)
+        /*
+         dataSet.mode = .cubicBezier
+         dataSet.cubicIntensity = 0.08
+         */
+
         dataSet.highlightLineWidth = 1.0
         dataSet.highlightLineDashLengths = [6.0, 2.0]
         dataSet.highlightLineDashPhase = 3.0
+        // Will be set dynamically, depending on the chart trend, in `ChartViewDelegate.chartValueSelected(_:entry:highlight:)` method call
+        /* dataSet.highlightColor = chartColor */
+
+        dataSet.drawHighlightCircleEnabled = true
+        dataSet.highlightCircleHoleRadius = 2.0
+
+        dataSet.innerHighlightCircleRadius = 5.0
+        dataSet.innerHighlightCircleAlpha = 1.0
+        // Will be set dynamically, depending on the chart trend, in `ChartViewDelegate.chartValueSelected(_:entry:highlight:)` method call
+        /* dataSet.innerHighlightCircleColor = chartColor */
+
+        dataSet.outerHighlightCircleRadius = 8.0
+        dataSet.outerHighlightCircleAlpha = 0.24
+        // Will be set dynamically, depending on the chart trend, in `ChartViewDelegate.chartValueSelected(_:entry:highlight:)` method call
+        /* dataSet.outerHighlightCircleColor = chartColor */
 
         return dataSet
-    }
-
-    private func makeFill(chartColor: UIColor) -> Fill? {
-        let gradientColors = [
-            chartColor.withAlphaComponent(Constants.fillGradientMinAlpha).cgColor,
-            chartColor.withAlphaComponent(Constants.fillGradientMaxAlpha).cgColor,
-        ]
-
-        guard let gradient = CGGradient(colorsSpace: nil, colors: gradientColors as CFArray, locations: nil) else {
-            return nil
-        }
-
-        return LinearGradientFill(gradient: gradient, angle: 90.0)
-    }
-
-    private func makeChartColor(for trend: LineChartViewData.Trend) -> UIColor {
-        switch trend {
-        case .uptrend,
-             .neutral:
-            return .iconAccent
-        case .downtrend:
-            return .iconWarning
-        }
-    }
-}
-
-// MARK: - Constants
-
-private extension LineChartViewConfigurator {
-    enum Constants {
-        static let fillGradientMinAlpha = 0.0
-        static let fillGradientMaxAlpha = 0.24
     }
 }

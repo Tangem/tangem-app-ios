@@ -30,6 +30,12 @@ struct PriceChangeUtility {
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
+    func calculatePriceChangeStateBetween(currentPrice: Decimal, previousPrice: Decimal) -> TokenPriceChangeView.State {
+        let priceChangePercentage = (currentPrice - previousPrice) / previousPrice * 100.0
+
+        return convertToPriceChangeState(changePercent: priceChangePercentage)
+    }
+
     private func formatPriceChange(_ change: Decimal?) -> PriceChangeFormatter.Result? {
         guard let change else {
             return nil

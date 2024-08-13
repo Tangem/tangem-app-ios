@@ -29,4 +29,6 @@ struct MarketsHistoryChartProviderStub: MarketsHistoryChartProvider {
             yAxisLabelCount: 5
         )
     }
+
+    func setCurrencyCode(_ currencyCode: String) {}
 }
