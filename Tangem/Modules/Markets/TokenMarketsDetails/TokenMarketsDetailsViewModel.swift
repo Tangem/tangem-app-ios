@@ -232,11 +232,10 @@ private extension TokenMarketsDetailsViewModel {
             .filter { !$0.0.isReceivingSelectedChartValues } // Filtered out if the chart is being dragged
             .sink { input in
                 let (viewModel, (oldValue, newValue)) = input
-                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
                 let priceInfo = viewModel.priceHelper.makePriceInfo(
                     currentPrice: newValue,
                     priceChangeInfo: viewModel.loadedPriceChangeInfo,
-                    selectedPriceChangeIntervalType: selectedIntervalType
+                    selectedPriceChangeIntervalType: viewModel.selectedPriceChangeIntervalType
                 )
                 // No need to update `priceChangeState` property here since it's updated by subscribing to
                 // `selectedPriceChangeIntervalType`, `loadedPriceChangeInfo` or `selectedChartValuePublisher` properties
@@ -251,11 +250,10 @@ private extension TokenMarketsDetailsViewModel {
             .filter { !$0.0.isReceivingSelectedChartValues } // Filtered out if the chart is being dragged
             .sink { input in
                 let (viewModel, (loadedPriceChangeInfo, currentPrice)) = input
-                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
                 let priceInfo = viewModel.priceHelper.makePriceInfo(
                     currentPrice: currentPrice,
                     priceChangeInfo: loadedPriceChangeInfo,
-                    selectedPriceChangeIntervalType: selectedIntervalType
+                    selectedPriceChangeIntervalType: viewModel.selectedPriceChangeIntervalType
                 )
                 viewModel.price = priceInfo.price
                 viewModel.priceChangeState = priceInfo.priceChangeState
@@ -363,11 +361,10 @@ private extension TokenMarketsDetailsViewModel {
                 } else {
                     // If there is no `selectedChartValue` - we're setting both `price` and `priceChangeState`
                     // to the latest value received from the `currentPricePublisher` publisher
-                    let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
                     priceInfo = viewModel.priceHelper.makePriceInfo(
                         currentPrice: currentPrice,
                         priceChangeInfo: viewModel.loadedPriceChangeInfo,
-                        selectedPriceChangeIntervalType: selectedIntervalType
+                        selectedPriceChangeIntervalType: viewModel.selectedPriceChangeIntervalType
                     )
                 }
                 viewModel.price = priceInfo.price
@@ -378,10 +375,9 @@ private extension TokenMarketsDetailsViewModel {
         selectedChartValuePublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, selectedChartValue in
-                let selectedIntervalType = viewModel.selectedPriceChangeIntervalType
                 viewModel.updateSelectedDate(
                     externallySelectedDate: selectedChartValue?.date,
-                    selectedPriceChangeIntervalType: selectedIntervalType
+                    selectedPriceChangeIntervalType: viewModel.selectedPriceChangeIntervalType
                 )
             }
             .store(in: &bag)
