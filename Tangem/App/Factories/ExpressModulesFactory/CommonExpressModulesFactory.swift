@@ -146,7 +146,7 @@ private extension CommonExpressModulesFactory {
     }
 
     var notificationManager: NotificationManager {
-        ExpressNotificationManager(expressInteractor: expressInteractor)
+        ExpressNotificationManager(expressInteractor: expressInteractor, contextDataProvider: userWalletModel)
     }
 
     var priceChangeFormatter: PriceChangeFormatter { .init() }

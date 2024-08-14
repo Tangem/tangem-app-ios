@@ -20,8 +20,9 @@ class ExpressNotificationManager {
 
     private var subscription: AnyCancellable?
 
-    init(expressInteractor: ExpressInteractor) {
+    init(expressInteractor: ExpressInteractor, contextDataProvider: AnalyticsContextDataProvider?) {
         self.expressInteractor = expressInteractor
+        analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
 
         bind()
     }
