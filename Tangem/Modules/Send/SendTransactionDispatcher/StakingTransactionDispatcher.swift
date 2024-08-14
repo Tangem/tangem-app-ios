@@ -15,17 +15,20 @@ class StakingTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
+    private let sendTransactionDispatcher: SendTransactionDispatcher
 
     private var transactionSentResult: TransactionSentResult?
 
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner,
-        pendingHashesSender: StakingPendingHashesSender
+        pendingHashesSender: StakingPendingHashesSender,
+        sendTransactionDispatcher: SendTransactionDispatcher
     ) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.pendingHashesSender = pendingHashesSender
+        self.sendTransactionDispatcher = sendTransactionDispatcher
     }
 }
 
@@ -46,14 +49,7 @@ extension StakingTransactionDispatcher: SendTransactionDispatcher {
 
 private extension StakingTransactionDispatcher {
     func send(transaction: BSDKTransaction) async throws -> SendTransactionDispatcherResult {
-        let mapper = SendTransactionMapper()
-
-        do {
-            let result = try await walletModel.transactionSender.send(transaction, signer: transactionSigner).async()
-            return mapper.mapResult(result, blockchain: walletModel.blockchainNetwork.blockchain)
-        } catch {
-            throw mapper.mapError(error, transaction: .transfer(transaction))
-        }
+        try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
     }
 
     func send(transactionId: String, transaction: StakeKitTransaction) async throws -> SendTransactionDispatcherResult {

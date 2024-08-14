@@ -106,7 +106,8 @@ struct SendDependenciesBuilder {
         StakingTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: userWalletModel.signer,
-            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
+            sendTransactionDispatcher: makeSendTransactionDispatcher()
         )
     }
 

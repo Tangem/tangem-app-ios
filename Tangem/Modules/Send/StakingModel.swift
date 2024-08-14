@@ -35,7 +35,6 @@ class StakingModel {
     private let stakingMapper: StakingMapper
 
     private let updateStateSubject = PassthroughSubject<Void, Never>()
-    private lazy var timer = Timer.publish(every: 10, on: .main, in: .common)
 
     private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
@@ -197,7 +196,7 @@ private extension StakingModel {
         timerTask = runTask(in: self) { model in
             try Task.checkCancellation()
 
-            try await Task.sleep(seconds: 10)
+            try await Task.sleep(seconds: 5)
 
             model.log("timer realised")
             model.updateStateSubject.send(())

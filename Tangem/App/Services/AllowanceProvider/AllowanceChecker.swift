@@ -26,7 +26,7 @@ struct AllowanceChecker {
         AppLog.shared.debug("\(walletModel.tokenItem.name) allowance - \(allowance)")
 
         // If we don't have enough allowance
-        guard allowance < amount else {
+        guard allowance <= amount else {
             return false
         }
 
