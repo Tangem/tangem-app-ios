@@ -295,6 +295,5 @@ extension UnstakingModel {
 
 enum UnstakingModelError: Error {
     case passthroughNotFound
-    case validatorNotFound
     case notSupported(String)
 }
