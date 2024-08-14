@@ -121,6 +121,21 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
+    func openWithdrawFlow(validator: String) {
+        guard let options else { return }
+
+        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
+            self?.sendCoordinator = nil
+        })
+
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: .unstaking(manager: options.manager, validator: validator)
+        ))
+        sendCoordinator = coordinator
+    }
+
     func openClaimRewardsFlow() {
         // TBD: https://tangem.atlassian.net/browse/IOS-6899
     }

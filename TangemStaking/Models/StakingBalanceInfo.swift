@@ -47,6 +47,7 @@ public enum BalanceGroupType {
     case warmup
     case active
     case unbonding
+    case withdraw
     case unknown
 }
 

@@ -62,10 +62,6 @@ final class StakingDetailsViewModel: ObservableObject {
         coordinator?.openStakingFlow()
     }
 
-    func userDidTapValidator(validator: String) {
-        coordinator?.openUnstakingFlow(validator: validator)
-    }
-
     func userDidTapHideBanner() {
         AppSettings.shared.hideStakingInfoBanner = true
         hideStakingInfoBanner = true
@@ -148,8 +144,8 @@ private extension StakingDetailsViewModel {
                 unbondingPeriod: yield.unbondingPeriod,
                 rewardClaimingType: yield.rewardClaimingType,
                 rewardScheduleType: yield.rewardScheduleType,
-                activeValidators: validatorBalances.filter { $0.balanceGroupType != .unbonding },
-                unstakedValidators: validatorBalances.filter { $0.balanceGroupType == .unbonding }
+                activeValidators: validatorBalances.filter { $0.balanceGroupType.isActive },
+                unstakedValidators: validatorBalances.filter { !$0.balanceGroupType.isActive }
             )
         )
     }
@@ -292,14 +288,32 @@ private extension StakingDetailsViewModel {
                 case .unknown: .unknown
                 case .warmup: .warmup(period: input.warmupPeriod.formatted(formatter: daysFormatter))
                 case .active: .active(apr: validatorBalance.validator.apr)
-                case .unbonding: .unbounding(period: input.unbondingPeriod.formatted(formatter: daysFormatter))
+                case .unbonding, .withdraw: .unbounding(period: input.unbondingPeriod.formatted(formatter: daysFormatter))
+                }
+            }()
+
+            let action: (() -> Void)? = {
+                switch validatorBalance.balanceGroupType {
+                case .unknown, .warmup, .unbonding:
+                    return nil
+                case .active:
+                    return { [weak self] in
+                        self?.coordinator?.openUnstakingFlow(validator: validatorBalance.validator.address)
+                    }
+                case .withdraw:
+                    return { [weak self] in
+                        self?.coordinator?.openWithdrawFlow(validator: validatorBalance.validator.address)
+                    }
                 }
             }()
 
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,
                 state: validatorStakeState,
-                detailsType: .chevron(BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted))
+                detailsType: .chevron(
+                    BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
+                    action: action
+                )
             )
         }
         activeValidators = input.activeValidators.map(mapToValidatorsData)
@@ -382,6 +396,17 @@ private extension RewardRateValues {
             formatter.format(value, option: .staking)
         case .interval(let min, let max):
             formatter.formatInterval(min: min, max: max, option: .staking)
+        }
+    }
+}
+
+private extension BalanceGroupType {
+    var isActive: Bool {
+        switch self {
+        case .warmup, .active:
+            return true
+        case .unbonding, .withdraw, .unknown:
+            return false
         }
     }
 }

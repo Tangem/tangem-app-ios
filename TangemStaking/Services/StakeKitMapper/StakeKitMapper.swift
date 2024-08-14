@@ -240,8 +240,10 @@ struct StakeKitMapper {
             return .warmup
         case .available, .locked, .staked:
             return .active
-        case .unstaking, .unstaked, .unlocking:
+        case .unstaking, .unlocking:
             return .unbonding
+        case .unstaked:
+            return .withdraw
         case .rewards, .unknown:
             return .unknown
         }

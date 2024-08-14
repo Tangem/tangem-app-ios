@@ -26,6 +26,10 @@ struct ValidatorView: View {
             Button(action: { selection?.isActive(compare: data.id).toggle() }) {
                 content
             }
+        case .chevron(_, .some(let action)):
+            Button(action: action) {
+                content
+            }
         case .none, .chevron, .balance:
             content
         }
@@ -84,14 +88,17 @@ struct ValidatorView: View {
         switch detailsType {
         case .checkmark:
             CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.id).wrappedValue ?? false)
-        case .chevron(let balanceInfo):
+        case .chevron(let balanceInfo, let action):
             HStack(spacing: 20) {
                 if let balanceInfo {
                     balanceView(balanceInfo: balanceInfo)
                 }
-                Assets.chevron.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.informative)
+
+                if action != nil {
+                    Assets.chevron.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.informative)
+                }
             }
         case .balance(let balanceInfo):
             balanceView(balanceInfo: balanceInfo)

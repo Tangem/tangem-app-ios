@@ -18,7 +18,19 @@ struct ValidatorViewData: Hashable, Identifiable {
 
     enum DetailsType: Hashable {
         case checkmark
-        case chevron(_ balance: BalanceInfo? = nil)
+        case chevron(_ balance: BalanceInfo? = nil, action: (() -> Void)? = nil)
         case balance(_ balanceInfo: BalanceInfo)
+
+        static func == (lhs: ValidatorViewData.DetailsType, rhs: ValidatorViewData.DetailsType) -> Bool {
+            lhs.hashValue == rhs.hashValue
+        }
+
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .checkmark: hasher.combine("checkmark")
+            case .chevron(let balance, _): hasher.combine(balance)
+            case .balance(let balance): hasher.combine(balance)
+            }
+        }
     }
 }
