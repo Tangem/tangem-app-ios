@@ -78,7 +78,7 @@ struct AllowanceChecker {
 
         // Use fastest
         guard let fee = fee[safe: 2] else {
-            throw StakingModelError.approveFeeNotFound
+            throw AllowanceCheckerError.approveFeeNotFound
         }
 
         return .init(txData: data, spender: spender, toContractAddress: contract, fee: fee)
@@ -89,4 +89,5 @@ enum AllowanceCheckerError: String, Hashable, LocalizedError {
     case contractAddressNotFound
     case ethereumNetworkProviderNotFound
     case ethereumTransactionDataBuilderNotFound
+    case approveFeeNotFound
 }

@@ -15,7 +15,7 @@ protocol SendBaseInteractor {
 
     func send() async throws -> SendTransactionDispatcherResult
     func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
-    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveService: ApproveService)?
+    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveViewModelInput: ApproveViewModelInput)?
 }
 
 class CommonSendBaseInteractor {
@@ -64,7 +64,7 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         return (dataCollector: emailDataCollector, recipient: recipient)
     }
 
-    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveService: any ApproveService)? {
+    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput)? {
         guard let stakingModel else {
             return nil
         }

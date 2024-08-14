@@ -75,7 +75,7 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             ),
             feeFormatter: feeFormatter,
             logger: logger,
-            approveService: expressInteractor,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }

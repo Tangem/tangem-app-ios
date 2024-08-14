@@ -345,9 +345,9 @@ extension StakingModel: StakingNotificationManagerInput {
     }
 }
 
-// MARK: - ApproveService
+// MARK: - ApproveViewModelInput
 
-extension StakingModel: ApproveService {
+extension StakingModel: ApproveViewModelInput {
     var approveFeeValue: LoadingValue<Fee> {
         selectedFee.value
     }

@@ -125,11 +125,11 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performApprove() {
-        guard let (settings, approveService) = interactor.makeDataForExpressApproveViewModel() else {
+        guard let (settings, approveViewModelInput) = interactor.makeDataForExpressApproveViewModel() else {
             return
         }
 
-        coordinator?.openApproveView(settings: settings, approveService: approveService)
+        coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
     }
 
     func performSend() {

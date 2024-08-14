@@ -193,7 +193,6 @@ struct SendDependenciesBuilder {
             transactionCreator: walletModel.transactionCreator,
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             allowanceProvider: makeAllowanceProvider(),
-            sourceAddress: walletModel.defaultAddress,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )

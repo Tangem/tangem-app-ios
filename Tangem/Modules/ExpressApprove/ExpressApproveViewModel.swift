@@ -32,7 +32,7 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
 
     private let feeFormatter: FeeFormatter
     private let logger: Logger
-    private let approveService: ApproveService
+    private let approveViewModelInput: ApproveViewModelInput
     private weak var coordinator: ExpressApproveRoutable?
 
     private var didBecomeActiveNotificationCancellable: AnyCancellable?
@@ -42,12 +42,12 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
         settings: Settings,
         feeFormatter: FeeFormatter,
         logger: Logger,
-        approveService: ApproveService,
+        approveViewModelInput: ApproveViewModelInput,
         coordinator: ExpressApproveRoutable
     ) {
         self.feeFormatter = feeFormatter
         self.logger = logger
-        self.approveService = approveService
+        self.approveViewModelInput = approveViewModelInput
         self.coordinator = coordinator
 
         tokenItem = settings.tokenItem
@@ -61,7 +61,7 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
         )
 
         feeRowViewModel = DefaultRowViewModel(title: Localization.commonNetworkFeeTitle, detailsType: .none)
-        updateView(state: approveService.approveFeeValue)
+        updateView(state: approveViewModelInput.approveFeeValue)
         bind()
     }
 
@@ -103,7 +103,7 @@ extension ExpressApproveViewModel {
 
 private extension ExpressApproveViewModel {
     func bind() {
-        approveService.approveFeeValuePublisher
+        approveViewModelInput.approveFeeValuePublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, state in
@@ -116,7 +116,7 @@ private extension ExpressApproveViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, policy in
-                viewModel.approveService.updateApprovePolicy(policy: policy)
+                viewModel.approveViewModelInput.updateApprovePolicy(policy: policy)
             }
             .store(in: &bag)
     }
@@ -146,7 +146,7 @@ private extension ExpressApproveViewModel {
     func sendApproveTransaction() {
         runTask(in: self) { viewModel in
             do {
-                try await viewModel.approveService.sendApproveTransaction()
+                try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
             } catch {
                 viewModel.logger.error(error)

@@ -1,5 +1,5 @@
 //
-//  ApproveService.swift
+//  ApproveViewModelInput.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 08.08.2024.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-protocol ApproveService {
+protocol ApproveViewModelInput {
     var approveFeeValue: LoadingValue<Fee> { get }
     var approveFeeValuePublisher: AnyPublisher<LoadingValue<Fee>, Never> { get }
 

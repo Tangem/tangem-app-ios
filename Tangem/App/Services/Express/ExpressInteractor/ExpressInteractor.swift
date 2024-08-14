@@ -181,9 +181,9 @@ extension ExpressInteractor {
     }
 }
 
-// MARK: - ApproveService
+// MARK: - ApproveViewModelInput
 
-extension ExpressInteractor: ApproveService {
+extension ExpressInteractor: ApproveViewModelInput {
     var approveFeeValue: LoadingValue<Fee> {
         mapToApproveFeeLoadingValue(state: getState())
     }

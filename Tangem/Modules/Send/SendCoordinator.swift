@@ -107,7 +107,7 @@ extension SendCoordinator: SendRoutable {
         dismiss(with: (walletModel, userWalletModel))
     }
 
-    func openApproveView(settings: ExpressApproveViewModel.Settings, approveService: any ApproveService) {
+    func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {
         expressApproveViewModel = .init(
             settings: settings,
             feeFormatter: CommonFeeFormatter(
@@ -115,7 +115,7 @@ extension SendCoordinator: SendRoutable {
                 balanceConverter: .init()
             ),
             logger: AppLog.shared,
-            approveService: approveService,
+            approveViewModelInput: approveViewModelInput,
             coordinator: self
         )
     }
