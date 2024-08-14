@@ -59,11 +59,7 @@ extension CommonStakingManager: StakingManager {
 
     func estimateFee(action: StakingAction) async throws -> Decimal {
         switch (state, action.type) {
-        case (.availableToStake(let yieldInfo), .stake):
-            try await provider.estimateStakeFee(
-                request: mapToActionGenericRequest(action: action)
-            )
-        case (.staked(let staked), .stake):
+        case (.availableToStake, .stake), (.staked, .stake):
             try await provider.estimateStakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
@@ -84,11 +80,7 @@ extension CommonStakingManager: StakingManager {
 
     func transaction(action: StakingAction) async throws -> StakingTransactionInfo {
         switch (state, action.type) {
-        case (.availableToStake(let yieldInfo), .stake):
-            try await getStakeTransactionInfo(
-                request: mapToActionGenericRequest(action: action)
-            )
-        case (.staked(let staked), .stake):
+        case (.availableToStake, .stake), (.staked, .stake):
             try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )

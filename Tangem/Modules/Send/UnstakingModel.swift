@@ -54,6 +54,14 @@ class UnstakingModel {
     }
 }
 
+// MARK: - Public
+
+extension UnstakingModel {
+    var state: AnyPublisher<UnstakingModel.State, Never> {
+        _state.compactMap { $0?.value }.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Bind
 
 private extension UnstakingModel {
@@ -139,10 +147,10 @@ private extension UnstakingModel {
             return StakingAction(
                 amount: balanceInfo.blocked,
                 validator: balanceInfo.validatorAddress,
-                type: .stake
+                type: .unstake
             )
         case .withdraw:
-            guard let passthrough = balanceInfo.passthrough else {
+            guard case .withdraw(let passthrough) = balanceInfo.actions.first else {
                 throw UnstakingModelError.passthroughNotFound
             }
 

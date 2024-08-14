@@ -110,62 +110,29 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func validatorBalances(yield: YieldInfo, balances: [StakingBalanceInfo]) -> [ValidatorBalanceInfo] {
-        balances.compactMap { balance -> ValidatorBalanceInfo? in
-            guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
-                return nil
-            }
-
-            return ValidatorBalanceInfo(
-                validator: validator,
-                balance: balance.blocked,
-                balanceGroupType: balance.balanceGroupType
-            )
-        }
-    }
-
     func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
         let stakedBalance = balances.sumBlocked()
-        let available = (walletModel.balanceValue ?? .zero) - stakedBalance
-        let aprs = yield.validators.compactMap(\.apr)
-        let validatorBalances = validatorBalances(yield: yield, balances: balances)
         let rewards = balances.sumRewards()
 
-        setupView(
-            inputData: StakingDetailsData(
-                available: available,
-                staked: stakedBalance,
-                rewards: rewards,
-                rewardType: yield.rewardType,
-                rewardRate: yield.rewardRate,
-                rewardRateValues: RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate),
-                minimumRequirement: yield.enterMinimumRequirement,
-                warmupPeriod: yield.warmupPeriod,
-                unbondingPeriod: yield.unbondingPeriod,
-                rewardClaimingType: yield.rewardClaimingType,
-                rewardScheduleType: yield.rewardScheduleType,
-                activeValidators: validatorBalances.filter { $0.balanceGroupType.isActive },
-                unstakedValidators: validatorBalances.filter { !$0.balanceGroupType.isActive }
-            )
-        )
+        setupHeaderView(staked: stakedBalance)
+        setupDetailsSection(yield: yield, staked: stakedBalance)
+        setupRewardView(staked: stakedBalance, rewards: rewards)
+        setupValidatorsView(yield: yield, balances: balances)
     }
 
-    func setupView(inputData: StakingDetailsData) {
-        setupHeaderView(inputData: inputData)
-        setupDetailsSection(inputData: inputData)
-        setupRewardView(inputData: inputData)
-        setupValidatorsView(input: inputData)
+    func setupHeaderView(staked: Decimal) {
+        hideStakingInfoBanner = hideStakingInfoBanner && staked.isZero
     }
 
-    func setupHeaderView(inputData: StakingDetailsData) {
-        hideStakingInfoBanner = hideStakingInfoBanner && inputData.staked.isZero
-    }
+    func setupDetailsSection(yield: YieldInfo, staked: Decimal) {
+        let available = (walletModel.balanceValue ?? .zero) - staked
+        let aprs = yield.validators.compactMap(\.apr)
+        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate)
 
-    func setupDetailsSection(inputData: StakingDetailsData) {
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
-                detailsType: .text(inputData.rewardRateValues.formatted(formatter: percentFormatter)),
+                detailsType: .text(rewardRateValues.formatted(formatter: percentFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsAnnualPercentageRate,
@@ -177,7 +144,7 @@ private extension StakingDetailsViewModel {
                 title: Localization.stakingDetailsAvailable,
                 detailsType: .text(
                     balanceFormatter.formatCryptoBalance(
-                        inputData.available,
+                        available,
                         currencyCode: walletModel.tokenItem.currencySymbol
                     )
                 )
@@ -186,7 +153,7 @@ private extension StakingDetailsViewModel {
 
         if shouldShowMinimumRequirement() {
             let minimumFormatted = balanceFormatter.formatCryptoBalance(
-                inputData.minimumRequirement,
+                yield.enterMinimumRequirement,
                 currencyCode: walletModel.tokenItem.currencySymbol
             )
 
@@ -202,7 +169,7 @@ private extension StakingDetailsViewModel {
             contentsOf: [
                 DefaultRowViewModel(
                     title: Localization.stakingDetailsUnbondingPeriod,
-                    detailsType: .text(inputData.unbondingPeriod.formatted(formatter: daysFormatter)),
+                    detailsType: .text(yield.unbondingPeriod.formatted(formatter: daysFormatter)),
                     secondaryAction: { [weak self] in
                         self?.openBottomSheet(
                             title: Localization.stakingDetailsUnbondingPeriod,
@@ -212,7 +179,7 @@ private extension StakingDetailsViewModel {
                 ),
                 DefaultRowViewModel(
                     title: Localization.stakingDetailsRewardClaiming,
-                    detailsType: .text(inputData.rewardClaimingType.title),
+                    detailsType: .text(yield.rewardClaimingType.title),
                     secondaryAction: { [weak self] in
                         self?.openBottomSheet(
                             title: Localization.stakingDetailsRewardClaiming,
@@ -223,10 +190,10 @@ private extension StakingDetailsViewModel {
             ]
         )
 
-        if !inputData.warmupPeriod.isZero {
+        if !yield.warmupPeriod.isZero {
             viewModels.append(DefaultRowViewModel(
                 title: Localization.stakingDetailsWarmupPeriod,
-                detailsType: .text(inputData.warmupPeriod.formatted(formatter: daysFormatter)),
+                detailsType: .text(yield.warmupPeriod.formatted(formatter: daysFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsWarmupPeriod,
@@ -238,7 +205,7 @@ private extension StakingDetailsViewModel {
 
         viewModels.append(DefaultRowViewModel(
             title: Localization.stakingDetailsRewardSchedule,
-            detailsType: .text(inputData.rewardScheduleType.title),
+            detailsType: .text(yield.rewardScheduleType.title),
             secondaryAction: { [weak self] in
                 self?.openBottomSheet(
                     title: Localization.stakingDetailsRewardSchedule,
@@ -250,13 +217,13 @@ private extension StakingDetailsViewModel {
         detailsViewModels = viewModels
     }
 
-    func setupRewardView(inputData: StakingDetailsData) {
-        guard !inputData.staked.isZero else {
+    func setupRewardView(staked: Decimal, rewards: Decimal) {
+        switch (staked, rewards) {
+        case (.zero, .zero):
             rewardViewData = nil
-            return
-        }
-        let state: RewardViewData.State
-        if let rewards = inputData.rewards {
+        case (_, .zero):
+            rewardViewData = RewardViewData(state: .noRewards)
+        case (_, let rewards):
             let rewardsCryptoFormatted = balanceFormatter.formatCryptoBalance(
                 rewards,
                 currencyCode: walletModel.tokenItem.currencySymbol
@@ -265,54 +232,67 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(rewards, currencyId: $0)
             }
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
-            state = .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted)
-        } else {
-            state = .noRewards
+            rewardViewData = RewardViewData(
+                state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted)
+            )
         }
-        rewardViewData = RewardViewData(state: state)
     }
 
-    func setupValidatorsView(input: StakingDetailsData) {
-        let mapToValidatorsData: (ValidatorBalanceInfo) -> ValidatorViewData = { [self] validatorBalance in
-            let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-                validatorBalance.balance,
-                currencyCode: walletModel.tokenItem.currencySymbol
-            )
-            let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
-                BalanceConverter().convertToFiat(validatorBalance.balance, currencyId: $0)
-            }
-            let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-
-            let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState = {
-                switch validatorBalance.balanceGroupType {
-                case .unknown: .unknown
-                case .warmup: .warmup(period: input.warmupPeriod.formatted(formatter: daysFormatter))
-                case .active: .active(apr: validatorBalance.validator.apr)
-                case .unbonding, .withdraw: .unbounding(period: input.unbondingPeriod.formatted(formatter: daysFormatter))
-                }
-            }()
-
-            let action: (() -> Void)?
-            switch validatorBalance.balanceGroupType {
-            case .unknown, .warmup, .unbonding:
-                action = nil
-            case .active, .withdraw:
-                action =  { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: validatorBalance)
-                }
-            }
-
-            return StakingValidatorViewMapper().mapToValidatorViewData(
-                info: validatorBalance.validator,
-                state: validatorStakeState,
-                detailsType: .chevron(
-                    BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
-                    action: action
-                )
-            )
+    func setupValidatorsView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+        activeValidators = balances.filter { $0.balanceGroupType.isActive }.compactMap { balance -> ValidatorViewData? in
+            mapToValidatorViewData(yield: yield, balance: balance)
         }
-        activeValidators = input.activeValidators.map(mapToValidatorsData)
-        unstakedValidators = input.unstakedValidators.map(mapToValidatorsData)
+
+        unstakedValidators = balances.filter { !$0.balanceGroupType.isActive }.compactMap { balance -> ValidatorViewData? in
+            mapToValidatorViewData(yield: yield, balance: balance)
+        }
+    }
+
+    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
+        guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
+            return nil
+        }
+
+        let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
+            balance.blocked,
+            currencyCode: walletModel.tokenItem.currencySymbol
+        )
+        let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
+            BalanceConverter().convertToFiat(balance.blocked, currencyId: $0)
+        }
+        let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
+
+        let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState = {
+            switch balance.balanceGroupType {
+            case .unknown:
+                return .unknown
+            case .warmup:
+                return .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+            case .active:
+                return .active(apr: validator.apr)
+            case .unbonding, .withdraw:
+                return .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+            }
+        }()
+
+        let action: (() -> Void)?
+        switch balance.balanceGroupType {
+        case .unknown, .warmup, .unbonding:
+            action = nil
+        case .active, .withdraw:
+            action = { [weak self] in
+                self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+            }
+        }
+
+        return StakingValidatorViewMapper().mapToValidatorViewData(
+            info: validator,
+            state: validatorStakeState,
+            detailsType: .chevron(
+                BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
+                action: action
+            )
+        )
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -338,22 +318,6 @@ extension StakingDetailsViewModel {
             case .stakeMore: Localization.stakingStakeMore
             }
         }
-    }
-
-    struct StakingDetailsData {
-        let available: Decimal
-        let staked: Decimal
-        let rewards: Decimal?
-        let rewardType: RewardType
-        let rewardRate: Decimal
-        let rewardRateValues: RewardRateValues
-        let minimumRequirement: Decimal
-        let warmupPeriod: Period
-        let unbondingPeriod: Period
-        let rewardClaimingType: RewardClaimingType
-        let rewardScheduleType: RewardScheduleType
-        let activeValidators: [ValidatorBalanceInfo]
-        let unstakedValidators: [ValidatorBalanceInfo]
     }
 }
 

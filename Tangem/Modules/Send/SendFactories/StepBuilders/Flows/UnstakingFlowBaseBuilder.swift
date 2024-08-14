@@ -56,6 +56,7 @@ struct UnstakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonUnstakingStepsManager(
+            state: unstakingModel.state,
             summaryStep: summary.step,
             finishStep: finish
         )
