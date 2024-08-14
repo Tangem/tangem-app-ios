@@ -12,7 +12,7 @@ import BlockchainSdk
 import TangemVisa
 
 class VisaWalletModel {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+    @Injected(\.quotesRepositoryUpdater) private var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater
     @Injected(\.keysManager) private var keysManager: KeysManager
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
@@ -116,7 +116,7 @@ class VisaWalletModel {
                     return
                 }
 
-                await self.quotesRepository.loadQuotes(currencyIds: [currencyId])
+                await self.quotesRepositoryUpdater.loadQuotes(currencyIds: [currencyId])
             }
 
             group.addTask { await self.loadBalancesAndLimits() }

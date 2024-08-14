@@ -14,7 +14,8 @@ import TangemStaking
 import TangemFoundation
 
 class WalletModel {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+    @Injected(\.quotesDataProvider) private var quotesDataProvider: TokenQuotesDataProvider
+    @Injected(\.quotesRepositoryUpdater) private var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
 
@@ -148,7 +149,7 @@ class WalletModel {
     var canUseQuotes: Bool { tokenItem.currencyId != nil }
 
     var quote: TokenQuote? {
-        quotesRepository.quote(for: tokenItem)
+        quotesDataProvider.quote(for: tokenItem)
     }
 
     var hasPendingTransactions: Bool {
@@ -276,7 +277,7 @@ class WalletModel {
             }
             .store(in: &bag)
 
-        quotesRepository
+        quotesDataProvider
             .quotesPublisher
             .compactMap { [canUseQuotes, tokenItem] quotes -> Decimal? in
                 guard
@@ -418,7 +419,7 @@ class WalletModel {
 
         AppLog.shared.debug("🔄 Start loading quotes for \(self)")
 
-        return quotesRepository
+        return quotesRepositoryUpdater
             .loadQuotes(currencyIds: [currencyId])
             .handleEvents(receiveOutput: { [weak self] _ in
                 AppLog.shared.debug("🔄 Finished loading quotes for \(String(describing: self))")

@@ -1,5 +1,5 @@
 //
-//  MarketsQuotesUpdater.swift
+//  MarketsQuotesUpdatesScheduler.swift
 //  Tangem
 //
 //  Created by Andrew Son on 30/07/24.
@@ -9,8 +9,8 @@
 import Foundation
 import TangemFoundation
 
-class MarketsQuotesUpdater {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
+class MarketsQuotesUpdatesScheduler {
+    @Injected(\.quotesRepositoryUpdater) private var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater
 
     private let lock = Lock(isRecursive: false)
     private let quotesUpdateTimeInterval: TimeInterval = 60.0
@@ -51,10 +51,15 @@ class MarketsQuotesUpdater {
     }
 
     private func updateQuotes() async {
-        if updateList.isEmpty {
+        var quotesToUpdate = [String]()
+        lock {
+            quotesToUpdate = Array(updateList)
+        }
+
+        if quotesToUpdate.isEmpty {
             return
         }
-        let quotesToUpdate = Array(updateList)
-        await quotesRepository.loadQuotes(currencyIds: quotesToUpdate)
+
+        await quotesRepositoryUpdater.loadQuotes(currencyIds: quotesToUpdate)
     }
 }
