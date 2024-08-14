@@ -87,6 +87,7 @@
 "common_copy" = "Copy";
 "common_copy_address" = "Copy address";
 "common_create" = "Create";
+"common_crypto_fiat_format" = "%1$@ (%2$@)";
 "common_custom" = "Custom";
 "common_delete" = "Rimuovere";
 "common_disabled" = "Disabled";
@@ -621,7 +622,6 @@
 "send_transaction_success" = "La transazione è stata firmata con successo e inviata al nodo blockchain. Il saldo del portafoglio verrà aggiornato dopo un po' di tempo";
 "send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron (TRX) in your account.";
 "send_validation_invalid_address" = "Indirizzo non valido";
-"send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Transaction sent";
 "settings_card_settings_footer" = "Prepare to scan card you want to setup.";
 "settings_forget_wallet" = "Forget wallet";

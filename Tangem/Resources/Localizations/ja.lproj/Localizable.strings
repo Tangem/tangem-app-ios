@@ -87,6 +87,7 @@
 "common_copy" = "コピー";
 "common_copy_address" = "アドレスをコピー";
 "common_create" = "作成";
+"common_crypto_fiat_format" = "%1$@ ( %2$@ )";
 "common_custom" = "設定";
 "common_delete" = "削除";
 "common_disabled" = "無効";
@@ -291,7 +292,7 @@
 "give_permission_title" = "許可を与える";
 "give_permission_unlimited" = "無制限";
 "home_button_order" = "カードを注文";
-"home_button_scan" = "カードをスキャン";
+"home_button_scan" = "スキャン";
 "initial_message_change_access_code_body" = "アクセスコードを変更するには、上図のようにカードをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_change_passcode_body" = "パスコードを変更するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_create_wallet_body" = "ウォレットを作成するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
@@ -621,7 +622,6 @@
 "send_transaction_success" = "取引は正常に署名され、ブロックチェーンノードに送信されました。ウォレットの残高はしばらくして更新されます。";
 "send_tron_account_activation_error" = "%1$@はTronネットワークのアセットです。手数料を計算して取引を行うには、アカウントにTron（TRX）を入金する必要があります。";
 "send_validation_invalid_address" = "無効なアドレス";
-"send_wallet_balance_format" = "%1$@ ( %2$@ )";
 "sent_transaction_sent_title" = "取引が送信されました";
 "settings_card_settings_footer" = "セットアップしたいカードをスキャンするために準備してください。";
 "settings_forget_wallet" = "ウォレット削除";
@@ -631,7 +631,7 @@
 "staking_active_footer" = "資産のステーキングを解除するには、ここをクリックしてください。";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
-"staking_details_annual_percentage_rate" = "Annual percentage rate";
+"staking_details_annual_percentage_rate" = "年率";
 "staking_details_annual_percentage_rate_info" = "ステーキングに参加することで得られる年間収益率。";
 "staking_details_apr" = "APR";
 "staking_details_available" = "利用可能";
