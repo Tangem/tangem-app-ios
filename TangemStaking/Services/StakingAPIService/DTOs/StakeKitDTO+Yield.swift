@@ -164,26 +164,8 @@ extension StakeKitDTO {
                 }
 
                 struct PendingAction: Decodable {
-                    let type: PendingActionType
+                    let type: Actions.ActionType
                     let passthrough: String
-
-                    enum PendingActionType: String, Decodable {
-                        case STAKE
-                        case UNSTAKE
-                        case CLAIM_REWARDS
-                        case RESTAKE_REWARDS
-                        case WITHDRAW
-                        case RESTAKE
-                        case CLAIM_UNSTAKED
-                        case UNLOCK_LOCKED
-                        case STAKE_LOCKED
-                        case VOTE
-                        case REVOKE
-                        case VOTE_LOCKED
-                        case REVOTE
-                        case REBOND
-                        case MIGRATE
-                    }
                 }
             }
         }

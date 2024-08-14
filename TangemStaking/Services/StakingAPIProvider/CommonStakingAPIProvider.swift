@@ -52,6 +52,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
                     mapper.mapToTokenDTO(from: $0)
                 }
             )
+    }
+    
+    func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Enter.Request(
+            integrationId: request.integrationId,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
         )
 
         let response = try await service.estimateGasEnterAction(request: request)
@@ -77,6 +84,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
                     mapper.mapToTokenDTO(from: $0)
                 }
             )
+    }
+    
+    func estimateUnstakeFee(request: ActionGenericRequest) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Exit.Request(
+            integrationId: request.integrationId,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
         )
 
         let response = try await service.estimateGasExitAction(request: request)
@@ -107,6 +121,15 @@ class CommonStakingAPIProvider: StakingAPIProvider {
                     mapper.mapToTokenDTO(from: $0)
                 }
             )
+    }
+    
+    func estimatePendingFee(request: ActionGenericRequest, passthrough: String) async throws -> Decimal {
+        let request = StakeKitDTO.EstimateGas.Pending.Request(
+            //            type: .claimRewards,
+            integrationId: request.integrationId,
+            passthrough: passthrough,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
         )
 
         let response = try await service.estimateGasPendingAction(request: request)
@@ -132,6 +155,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
                     mapper.mapToTokenDTO(from: $0)
                 }
             )
+    }
+    
+    func enterAction(request: ActionGenericRequest) async throws -> EnterAction {
+        let request = StakeKitDTO.EstimateGas.Enter.Request(
+            integrationId: request.integrationId,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
         )
 
         let response = try await service.enterAction(request: request)
@@ -155,6 +185,13 @@ class CommonStakingAPIProvider: StakingAPIProvider {
                     mapper.mapToTokenDTO(from: $0)
                 }
             )
+    }
+    
+    func exitAction(request: ActionGenericRequest) async throws -> ExitAction {
+        let request = StakeKitDTO.EstimateGas.Exit.Request(
+            integrationId: request.integrationId,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
         )
 
         let response = try await service.exitAction(request: request)
@@ -162,8 +199,18 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
-    func pendingAction() async throws {
-        // TODO: https://tangem.atlassian.net/browse/IOS-7482
+    func pendingAction(request: ActionGenericRequest, passthrough: String) async throws -> PendingAction {
+        let request = StakeKitDTO.EstimateGas.Pending.Request(
+            //            type: .claimRewards,
+            integrationId: request.integrationId,
+            passthrough: passthrough,
+            addresses: .init(address: request.address),
+            args: .init(amount: request.amount.description, validatorAddress: request.validator)
+        )
+
+        let response = try await service.pendingAction(request: request)
+        let enterAction = try mapper.mapToPendingAction(from: response)
+        return enterAction
     }
 
     func transaction(id: String) async throws -> StakingTransactionInfo {

@@ -292,20 +292,15 @@ private extension StakingDetailsViewModel {
                 }
             }()
 
-            let action: (() -> Void)? = {
-                switch validatorBalance.balanceGroupType {
-                case .unknown, .warmup, .unbonding:
-                    return nil
-                case .active:
-                    return { [weak self] in
-                        self?.coordinator?.openUnstakingFlow(validator: validatorBalance.validator.address)
-                    }
-                case .withdraw:
-                    return { [weak self] in
-                        self?.coordinator?.openWithdrawFlow(validator: validatorBalance.validator.address)
-                    }
+            let action: (() -> Void)?
+            switch validatorBalance.balanceGroupType {
+            case .unknown, .warmup, .unbonding:
+                action = nil
+            case .active, .withdraw:
+                action =  { [weak self] in
+                    self?.coordinator?.openUnstakingFlow(balanceInfo: validatorBalance)
                 }
-            }()
+            }
 
             return StakingValidatorViewMapper().mapToValidatorViewData(
                 info: validatorBalance.validator,

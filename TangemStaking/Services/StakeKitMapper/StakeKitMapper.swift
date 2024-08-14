@@ -55,6 +55,28 @@ struct StakeKitMapper {
         )
     }
 
+    func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
+        guard let transactions = response.transactions, !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
+            try ActionTransaction(
+                id: transaction.id,
+                stepIndex: transaction.stepIndex,
+                type: mapToTransactionType(from: transaction.type),
+                status: mapToTransactionStatus(from: transaction.status)
+            )
+        }
+
+        return try PendingAction(
+            id: response.id,
+            status: mapToActionStatus(from: response.status),
+            currentStepIndex: response.currentStepIndex,
+            transactions: actionTransaction
+        )
+    }
+
     // MARK: - Transaction
 
     func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> StakingTransactionInfo {

@@ -13,7 +13,7 @@ public struct StakingBalanceInfo: Hashable {
     public let blocked: Decimal
     public let rewards: Decimal?
     public let balanceGroupType: BalanceGroupType
-    public let validatorAddress: String?
+    public let validatorAddress: String
     public let passthrough: String?
 
     public init(
@@ -21,7 +21,7 @@ public struct StakingBalanceInfo: Hashable {
         blocked: Decimal,
         rewards: Decimal?,
         balanceGroupType: BalanceGroupType,
-        validatorAddress: String?,
+        validatorAddress: String,
         passthrough: String?
     ) {
         self.item = item

@@ -106,7 +106,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
-    func openUnstakingFlow(validator: String) {
+    func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
         guard let options else { return }
 
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
@@ -116,22 +116,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, validator: validator)
-        ))
-        sendCoordinator = coordinator
-    }
-
-    func openWithdrawFlow(validator: String) {
-        guard let options else { return }
-
-        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
-            self?.sendCoordinator = nil
-        })
-
-        coordinator.start(with: .init(
-            walletModel: options.walletModel,
-            userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, validator: validator)
+            type: .unstaking(manager: options.manager, balanceInfo: balanceInfo)
         ))
         sendCoordinator = coordinator
     }
