@@ -34,6 +34,10 @@ class StakingModel {
     private let feeTokenItem: TokenItem
     private let stakingMapper: StakingMapper
 
+    private let updateStateSubject = PassthroughSubject<Void, Never>()
+    private lazy var timer = Timer.publish(every: 10, on: .main, in: .common)
+
+    private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
     private var sendTransactionTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
@@ -79,12 +83,13 @@ extension StakingModel {
 private extension StakingModel {
     func bind() {
         Publishers
-            .CombineLatest3(
+            .CombineLatest4(
                 _amount.compactMap { $0?.crypto },
                 _selectedValidator.compactMap { $0.value },
-                _approvePolicy
+                _approvePolicy,
+                updateStateSubject.prepend(()) // CombineLatest has to have first element
             )
-            .sink { [weak self] amount, validator, approvePolicy in
+            .sink { [weak self] amount, validator, approvePolicy, _ in
                 self?.inputDataDidChange(amount: amount, validator: validator.address, approvePolicy: approvePolicy)
             }
             .store(in: &bag)
@@ -106,37 +111,46 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    private func inputDataDidChange(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) {
+    func inputDataDidChange(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) {
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
-                model._state.send(.loading)
+                model.update(state: .loading)
                 let newState = try await model.state(amount: amount, validator: validator, approvePolicy: approvePolicy)
-                model._state.send(.loaded(newState))
+                model.update(state: .loaded(newState))
             } catch {
-                model._state.send(.failedToLoad(error: error))
+                model.update(state: .failedToLoad(error: error))
             }
         }
     }
 
-    private func state(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
+    func state(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
         if let allowanceState = try await allowanceState(amount: amount, validator: validator, approvePolicy: approvePolicy) {
             switch allowanceState {
             case .permissionRequired(let approveData):
+                stopTimer()
                 return .readyToApprove(approveData: approveData)
+
             case .approveTransactionInProgress:
-                return .approveTransactionInProgress
+                return try await .approveTransactionInProgress(
+                    stakingFee: estimateFee(amount: amount, validator: validator)
+                )
+
             case .enoughAllowance:
-                break
+                stopTimer()
             }
         }
 
-        let estimateFee = try await stakingManager.estimateFee(
+        return try await .readyToStake(
+            fee: estimateFee(amount: amount, validator: validator)
+        )
+    }
+
+    func estimateFee(amount: Decimal, validator: String) async throws -> Decimal {
+        try await stakingManager.estimateFee(
             action: StakingAction(amount: amount, validator: validator, type: .stake)
         )
-
-        return .readyToStake(fee: estimateFee)
     }
 
     func allowanceState(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> AllowanceState? {
@@ -162,6 +176,42 @@ private extension StakingModel {
         case .failedToLoad(let error):
             return SendFee(option: .market, value: .failedToLoad(error: error))
         }
+    }
+
+    func update(state: LoadingValue<State>) {
+        log("update state: \(state)")
+        _state.send(state)
+    }
+
+    func log(_ args: String) {
+        AppLog.shared.debug("[Staking] \(objectDescription(self)) \(args)")
+    }
+}
+
+// MARK: - Timer
+
+private extension StakingModel {
+    func restartTimer() {
+        log("Restart timer")
+        timerTask?.cancel()
+        timerTask = runTask(in: self) { model in
+            try Task.checkCancellation()
+
+            try await Task.sleep(seconds: 10)
+
+            model.log("timer realised")
+            model.updateStateSubject.send(())
+
+            try Task.checkCancellation()
+
+            model.restartTimer()
+        }
+    }
+
+    func stopTimer() {
+        log("Stop timer")
+        timerTask?.cancel()
+        timerTask = nil
     }
 }
 
@@ -380,20 +430,23 @@ extension StakingModel: ApproveViewModelInput {
 
         _ = try await stakingTransactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
-        _state.send(.loaded(.approveTransactionInProgress))
+        updateStateSubject.send(())
+
+        // Setup timer for autoupdate
+        restartTimer()
     }
 }
 
 extension StakingModel {
     enum State: Hashable {
         case readyToApprove(approveData: ApproveTransactionData)
-        case approveTransactionInProgress
+        case approveTransactionInProgress(stakingFee: Decimal)
         case readyToStake(fee: Decimal)
 
         var fee: Decimal? {
             switch self {
             case .readyToApprove(let requiredApprove): requiredApprove.fee.amount.value
-            case .approveTransactionInProgress: nil
+            case .approveTransactionInProgress(let fee): fee
             case .readyToStake(let fee): fee
             }
         }
