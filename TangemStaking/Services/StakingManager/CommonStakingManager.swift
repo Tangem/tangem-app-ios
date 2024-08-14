@@ -63,14 +63,14 @@ extension CommonStakingManager: StakingManager {
             try await provider.estimateStakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
-        case (.staked(let staked), .unstake):
+        case (.staked, .unstake):
             try await provider.estimateUnstakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
-        case (.staked(let staked), .withdraw(let passthrough)):
+        case (.staked, .pending(let type)):
             try await provider.estimatePendingFee(
                 request: mapToActionGenericRequest(action: action),
-                passthrough: passthrough
+                type: type
             )
         default:
             log("Invalid staking manager state: \(state), for action: \(action)")
@@ -84,14 +84,14 @@ extension CommonStakingManager: StakingManager {
             try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
-        case (.staked(let staked), .unstake):
+        case (.staked, .unstake):
             try await getUnstakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
-        case (.staked(let staked), .withdraw(let passthrough)):
+        case (.staked, .pending(let type)):
             try await getPendingTransactionInfo(
                 request: mapToActionGenericRequest(action: action),
-                passthrough: passthrough
+                type: type
             )
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
@@ -151,8 +151,8 @@ private extension CommonStakingManager {
         return transaction
     }
 
-    func getPendingTransactionInfo(request: ActionGenericRequest, passthrough: String) async throws -> StakingTransactionInfo {
-        let action = try await provider.pendingAction(request: request, passthrough: passthrough)
+    func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionInfo {
+        let action = try await provider.pendingAction(request: request, type: type)
 
         guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
             throw StakingManagerError.transactionNotFound

@@ -14,7 +14,7 @@ public struct StakingBalanceInfo: Hashable {
     public let rewards: Decimal?
     public let balanceGroupType: BalanceGroupType
     public let validatorAddress: String
-    public let actions: [PendingAction]
+    public let actions: [PendingActionType]
 
     public init(
         item: StakingTokenItem,
@@ -22,7 +22,7 @@ public struct StakingBalanceInfo: Hashable {
         rewards: Decimal?,
         balanceGroupType: BalanceGroupType,
         validatorAddress: String,
-        actions: [PendingAction]
+        actions: [PendingActionType]
     ) {
         self.item = item
         self.blocked = blocked
@@ -40,12 +40,6 @@ public extension Array where Element == StakingBalanceInfo {
 
     func sumRewards() -> Decimal {
         compactMap(\.rewards).reduce(Decimal.zero, +)
-    }
-}
-
-public extension StakingBalanceInfo {
-    enum PendingAction: Hashable {
-        case withdraw(passthrough: String)
     }
 }
 

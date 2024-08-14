@@ -15,7 +15,7 @@ class CommonUnstakingStepsManager {
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
-    private var action: SendFlowActionType = .stake
+    private var action: SendFlowActionType = .unstake
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
     private weak var output: SendStepsManagerOutput?
@@ -60,7 +60,7 @@ class CommonUnstakingStepsManager {
 
 extension CommonUnstakingStepsManager: SendStepsManager {
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action(.unstake), backButtonVisible: false)
+        .init(step: summaryStep, action: .action(action), backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

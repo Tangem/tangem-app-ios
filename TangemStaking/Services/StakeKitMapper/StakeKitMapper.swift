@@ -77,6 +77,12 @@ struct StakeKitMapper {
         )
     }
 
+    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+        switch action {
+        case .withdraw: .withdraw
+        }
+    }
+
     // MARK: - Transaction
 
     func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> StakingTransactionInfo {
@@ -132,8 +138,8 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [StakingBalanceInfo.PendingAction] {
-        balance.pendingActions.compactMap { action -> StakingBalanceInfo.PendingAction? in
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [PendingActionType] {
+        balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
                 return .withdraw(passthrough: action.passthrough)
@@ -194,6 +200,7 @@ struct StakeKitMapper {
         case .approval: .approval
         case .stake: .stake
         case .unstake: .unstake
+        case .withdraw: .withdraw
         case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
             throw StakeKitMapperError.notImplement
         }

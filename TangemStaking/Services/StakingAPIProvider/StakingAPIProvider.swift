@@ -15,28 +15,14 @@ public protocol StakingAPIProvider {
 
     func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal
     func estimateUnstakeFee(request: ActionGenericRequest) async throws -> Decimal
-    func estimatePendingFee(request: ActionGenericRequest, passthrough: String) async throws -> Decimal
+    func estimatePendingFee(request: ActionGenericRequest, type: PendingActionType) async throws -> Decimal
 
     func enterAction(request: ActionGenericRequest) async throws -> EnterAction
     func exitAction(request: ActionGenericRequest) async throws -> ExitAction
-    func pendingAction(request: ActionGenericRequest, passthrough: String) async throws -> PendingAction
+    func pendingAction(request: ActionGenericRequest, type: PendingActionType) async throws -> PendingAction
 
     func transaction(id: String) async throws -> StakingTransactionInfo
     func patchTransaction(id: String) async throws -> StakingTransactionInfo
     func submitTransaction(hash: String, signedTransaction: String) async throws
     func submitHash(hash: String, transactionId: String) async throws
-}
-
-public struct ActionGenericRequest {
-    public let amount: Decimal
-    public let address: String
-    public let validator: String
-    public let integrationId: String
-
-    public init(amount: Decimal, address: String, validator: String, integrationId: String) {
-        self.amount = amount
-        self.address = address
-        self.validator = validator
-        self.integrationId = integrationId
-    }
 }

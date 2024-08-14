@@ -122,7 +122,7 @@ extension StakeKitDTO {
 
         enum Pending {
             struct Request: Encodable {
-//                let type: Actions.ActionType
+                let type: Actions.ActionType
                 let integrationId: String
                 let passthrough: String
                 let addresses: Address

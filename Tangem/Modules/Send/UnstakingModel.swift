@@ -14,12 +14,9 @@ import BlockchainSdk
 class UnstakingModel {
     // MARK: - Data
 
-    private let _amount = CurrentValueSubject<SendAmount?, Never>(.none)
     private let _state = CurrentValueSubject<LoadingValue<State>?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
-
-    // MARK: - Dependencies
 
     // MARK: - Private injections
 
@@ -50,7 +47,7 @@ class UnstakingModel {
             feeTokenItem: feeTokenItem
         )
 
-        bind()
+        updateState()
     }
 }
 
@@ -62,28 +59,10 @@ extension UnstakingModel {
     }
 }
 
-// MARK: - Bind
+// MARK: - Private
 
 private extension UnstakingModel {
-    func bind() {
-        stakingManager
-            .statePublisher
-            .withWeakCaptureOf(self)
-            .sink { model, state in
-                model.update(state: state)
-            }
-            .store(in: &bag)
-
-        _amount
-            .compactMap { $0?.crypto }
-            .withWeakCaptureOf(self)
-            .sink { model, amount in
-                model.estimateFee(amount: amount)
-            }
-            .store(in: &bag)
-    }
-
-    func estimateFee(amount: Decimal) {
+    func updateState() {
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
@@ -103,26 +82,12 @@ private extension UnstakingModel {
         switch action.type {
         case .unstake:
             return .unstaking(fee: fee)
-        case .withdraw:
+        case .pending(.withdraw):
             return .withdraw(fee: fee)
-        case .stake, .claimRewards:
+        case .stake:
             throw UnstakingModelError.notSupported(
                 "UnstakingModel doesn't support actionType: \(action.type)"
             )
-        }
-    }
-
-    func update(state: StakingManagerState) {
-        switch state {
-        case .loading:
-            break
-        case .staked(let staked):
-            let fiat = amountTokenItem.currencyId.flatMap {
-                BalanceConverter().convertToFiat(balanceInfo.blocked, currencyId: $0)
-            }
-            _amount.send(.init(type: .typical(crypto: balanceInfo.blocked, fiat: fiat)))
-        default:
-            assertionFailure("The state \(state) doesn't support in this UnstakingModel")
         }
     }
 
@@ -157,7 +122,7 @@ private extension UnstakingModel {
             return StakingAction(
                 amount: balanceInfo.blocked,
                 validator: balanceInfo.validatorAddress,
-                type: .withdraw(passthrough: passthrough)
+                type: .pending(.withdraw(passthrough: passthrough))
             )
         }
     }
@@ -209,10 +174,16 @@ extension UnstakingModel: SendFeeLoader {
 // MARK: - SendAmountInput
 
 extension UnstakingModel: SendAmountInput {
-    var amount: SendAmount? { _amount.value }
+    var amount: SendAmount? {
+        let fiat = amountTokenItem.currencyId.flatMap {
+            BalanceConverter().convertToFiat(balanceInfo.blocked, currencyId: $0)
+        }
+
+        return .init(type: .typical(crypto: balanceInfo.blocked, fiat: fiat))
+    }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
-        _amount.eraseToAnyPublisher()
+        Just(amount).eraseToAnyPublisher()
     }
 }
 
@@ -245,7 +216,7 @@ extension UnstakingModel: SendFeeInput {
     }
 
     var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
-        _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
+        amountPublisher.compactMap { $0?.crypto }.eraseToAnyPublisher()
     }
 
     var destinationAddressPublisher: AnyPublisher<String?, Never> {

@@ -68,6 +68,7 @@ extension StakeKitDTO {
             enum TransactionType: String, Decodable {
                 case stake = "STAKE"
                 case unstake = "UNSTAKE"
+                case withdraw = "WITHDRAW"
                 case enter = "ENTER"
                 case reinvest = "REINVEST"
                 case exit = "EXIT"
