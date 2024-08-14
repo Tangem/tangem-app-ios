@@ -114,8 +114,6 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupView(yield: YieldInfo) {}
-
     func validatorBalances(yield: YieldInfo, balances: [StakingBalanceInfo]) -> [ValidatorBalanceInfo] {
         balances.compactMap { balance -> ValidatorBalanceInfo? in
             guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
@@ -190,7 +188,7 @@ private extension StakingDetailsViewModel {
             ),
         ]
 
-        if case .polkadot = walletModel.tokenItem.blockchain {
+        if shouldShowMinimumRequirement() {
             let minimumFormatted = balanceFormatter.formatCryptoBalance(
                 inputData.minimumRequirement,
                 currencyCode: walletModel.tokenItem.currencySymbol
@@ -204,28 +202,33 @@ private extension StakingDetailsViewModel {
             )
         }
 
-        viewModels.append(contentsOf: [
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsUnbondingPeriod,
-                detailsType: .text(inputData.unbondingPeriod.formatted(formatter: daysFormatter)),
-                secondaryAction: { [weak self] in
-                    self?.openBottomSheet(
-                        title: Localization.stakingDetailsUnbondingPeriod,
-                        description: Localization.stakingDetailsUnbondingPeriodInfo
-                    )
-                }
-            ),
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsRewardClaiming,
-                detailsType: .text(inputData.rewardClaimingType.title),
-                secondaryAction: { [weak self] in
-                    self?.openBottomSheet(
-                        title: Localization.stakingDetailsRewardClaiming,
-                        description: Localization.stakingDetailsRewardClaimingInfo
-                    )
-                }
-            ),
-            DefaultRowViewModel(
+        viewModels.append(
+            contentsOf: [
+                DefaultRowViewModel(
+                    title: Localization.stakingDetailsUnbondingPeriod,
+                    detailsType: .text(inputData.unbondingPeriod.formatted(formatter: daysFormatter)),
+                    secondaryAction: { [weak self] in
+                        self?.openBottomSheet(
+                            title: Localization.stakingDetailsUnbondingPeriod,
+                            description: Localization.stakingDetailsUnbondingPeriodInfo
+                        )
+                    }
+                ),
+                DefaultRowViewModel(
+                    title: Localization.stakingDetailsRewardClaiming,
+                    detailsType: .text(inputData.rewardClaimingType.title),
+                    secondaryAction: { [weak self] in
+                        self?.openBottomSheet(
+                            title: Localization.stakingDetailsRewardClaiming,
+                            description: Localization.stakingDetailsRewardClaimingInfo
+                        )
+                    }
+                ),
+            ]
+        )
+
+        if !inputData.warmupPeriod.isZero {
+            viewModels.append(DefaultRowViewModel(
                 title: Localization.stakingDetailsWarmupPeriod,
                 detailsType: .text(inputData.warmupPeriod.formatted(formatter: daysFormatter)),
                 secondaryAction: { [weak self] in
@@ -234,18 +237,19 @@ private extension StakingDetailsViewModel {
                         description: Localization.stakingDetailsWarmupPeriodInfo
                     )
                 }
-            ),
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsRewardSchedule,
-                detailsType: .text(inputData.rewardScheduleType.title),
-                secondaryAction: { [weak self] in
-                    self?.openBottomSheet(
-                        title: Localization.stakingDetailsRewardSchedule,
-                        description: Localization.stakingDetailsRewardScheduleInfo
-                    )
-                }
-            ),
-        ])
+            ))
+        }
+
+        viewModels.append(DefaultRowViewModel(
+            title: Localization.stakingDetailsRewardSchedule,
+            detailsType: .text(inputData.rewardScheduleType.title),
+            secondaryAction: { [weak self] in
+                self?.openBottomSheet(
+                    title: Localization.stakingDetailsRewardSchedule,
+                    description: Localization.stakingDetailsRewardScheduleInfo
+                )
+            }
+        ))
 
         detailsViewModels = viewModels
     }
@@ -305,6 +309,13 @@ private extension StakingDetailsViewModel {
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
+
+    func shouldShowMinimumRequirement() -> Bool {
+        switch walletModel.tokenItem.blockchain {
+        case .polkadot, .binance: true
+        default: false
+        }
+    }
 }
 
 extension StakingDetailsViewModel {
@@ -337,18 +348,12 @@ extension StakingDetailsViewModel {
     }
 }
 
-private extension Period {
+extension Period {
     func formatted(formatter: DateComponentsFormatter) -> String {
         switch self {
         case .days(let days):
             return formatter.string(from: DateComponents(day: days)) ?? days.formatted()
         }
-    }
-}
-
-private extension DateComponentsFormatter {
-    func formatted(days: Int) -> String {
-        return string(from: DateComponents(day: days)) ?? days.formatted()
     }
 }
 
@@ -360,7 +365,13 @@ private extension RewardClaimingType {
 
 private extension RewardScheduleType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .block:
+            // TODO: Update Lokalization when have all requirements
+            RewardScheduleType.day.rawValue.capitalizingFirstLetter()
+        case .hour, .day, .week, .month, .era, .epoch:
+            rawValue.capitalizingFirstLetter()
+        }
     }
 }
 
