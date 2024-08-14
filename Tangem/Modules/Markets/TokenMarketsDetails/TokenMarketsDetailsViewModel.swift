@@ -259,7 +259,9 @@ private extension TokenMarketsDetailsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, isLoading in
-                viewModel.portfolioViewModel?.isLoading = isLoading
+                if isLoading {}
+                let state: MarketsPortfolioContainerViewModel.LoadingState = isLoading ? .loading : .loaded(coinModel: viewModel.loadedInfo?.coinModel)
+                viewModel.portfolioViewModel?.update(state: state)
             }
             .store(in: &bag)
 
@@ -330,11 +332,11 @@ private extension TokenMarketsDetailsViewModel {
 
     func makePreloadBlocksViewModels() {
         portfolioViewModel = .init(
-            userWalletModels: walletDataProvider.userWalletModels,
             coinId: tokenInfo.id,
+            walletDataProvider: walletDataProvider,
             coordinator: coordinator,
             addTokenTapAction: { [weak self] in
-                guard let self, let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
+                guard let self, let coinModel = loadedInfo?.coinModel else {
                     return
                 }
 
