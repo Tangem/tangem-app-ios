@@ -11,17 +11,18 @@ import Combine
 
 class CustomKaspaFeeService {
     private let feeTokenItem: TokenItem
-    private let calculationModel: KaspaReactiveFeeCalculationModel
+    private let calculationModel: KaspaFeeCalculationModel
+    private let feeInfoSubject = CurrentValueSubject<KaspaFeeCalculationModel.FeeInfo?, Never>(nil)
 
     private var bag: Set<AnyCancellable> = []
 
     init(feeTokenItem: TokenItem) {
         self.feeTokenItem = feeTokenItem
-        calculationModel = KaspaReactiveFeeCalculationModel(feeTokenItem: feeTokenItem)
+        calculationModel = KaspaFeeCalculationModel(feeTokenItem: feeTokenItem)
     }
 
     private func bind(output: CustomFeeServiceOutput) {
-        calculationModel.feePublisher
+        feePublisher
             .sink { [weak output] fee in
                 output?.customFeeDidChanged(fee)
             }
@@ -53,22 +54,11 @@ extension CustomKaspaFeeService: CustomFeeService {
             return
         }
 
-        calculationModel.setup(
-            utxoCount: kaspaFeeParameters.utxoCount,
-            valuePerUtxo: kaspaFeeParameters.valuePerUtxo
-        )
+        calculationModel.setup(utxoCount: kaspaFeeParameters.utxoCount)
+        feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(kaspaFeeParameters.valuePerUtxo))
     }
 
     func inputFieldModels() -> [SendCustomFeeInputFieldModel] {
-        let amountPublisher = calculationModel.amountPublisher
-
-        let amountAlternativePublisher = amountPublisher
-            .withWeakCaptureOf(self)
-            .map { service, value in
-                service.formatToFiat(value: value)
-            }
-            .eraseToAnyPublisher()
-
         let customFeeModel = SendCustomFeeInputFieldModel(
             title: Localization.sendMaxFee,
             amountPublisher: amountPublisher,
@@ -77,24 +67,58 @@ extension CustomKaspaFeeService: CustomFeeService {
             amountAlternativePublisher: amountAlternativePublisher,
             footer: Localization.sendCustomAmountFeeFooter,
             onFieldChange: { [weak self] decimalValue in
-                guard let decimalValue else { return }
-                self?.calculationModel.changeAmount(decimalValue)
+                guard let decimalValue, let self else { return }
+                feeInfoSubject.send(calculationModel.calculateWithAmount(decimalValue))
             }
         )
 
         let customValuePerUtxoModel = SendCustomFeeInputFieldModel(
             title: Localization.sendCustomKaspaPerUtxoTitle,
-            amountPublisher: calculationModel.valuePerUtxoPublisher,
+            amountPublisher: valuePerUtxoPublisher,
             fieldSuffix: nil,
             fractionDigits: Blockchain.kaspa.decimalCount,
             amountAlternativePublisher: .just(output: nil),
             footer: Localization.sendCustomKaspaPerUtxoFooter,
             onFieldChange: { [weak self] decimalValue in
-                guard let decimalValue else { return }
-                self?.calculationModel.changeValuePerUtxo(decimalValue)
+                guard let decimalValue, let self else { return }
+                feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(decimalValue))
             }
         )
 
         return [customFeeModel, customValuePerUtxoModel]
+    }
+}
+
+// MARK: - Publishers
+
+private extension CustomKaspaFeeService {
+    var feePublisher: AnyPublisher<Fee, Never> {
+        feeInfoSubject
+            .compactMap(\.?.fee)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var amountPublisher: AnyPublisher<Decimal?, Never> {
+        feeInfoSubject
+            .map(\.?.fee.amount.value)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var valuePerUtxoPublisher: AnyPublisher<Decimal?, Never> {
+        feeInfoSubject
+            .map(\.?.params.valuePerUtxo)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var amountAlternativePublisher: AnyPublisher<String?, Never> {
+        amountPublisher
+            .withWeakCaptureOf(self)
+            .map { service, value in
+                service.formatToFiat(value: value)
+            }
+            .eraseToAnyPublisher()
     }
 }
