@@ -117,8 +117,6 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             switch viewModel.state {
             case .loading:
-                portfolioView
-
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)

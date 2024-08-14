@@ -17,9 +17,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    @Published var isLoading: Bool = true
     @Published var isShowTopAddButton: Bool = false
-    @Published var typeView: MarketsPortfolioContainerView.TypeView = .empty
+    @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
 
     // This strict condition is conditioned by the requirements
@@ -61,50 +60,42 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
-    func update(state: LoadingState) {
-        switch state {
-        case .loaded(let coinModel):
-            isLoading = false
+    func updateState(with coinModel: CoinModel?) {
+        let canAddAvailableNetworks = preflightCanAddAvailableNetworks(for: coinModel)
 
-            let isAvailableNetworks = preflightAvailableNetworks(for: coinModel)
-
-            if tokenItemViewModels.isEmpty {
-                typeView = .unavailable
-            } else {
-                isShowTopAddButton = isAvailableNetworks
-                typeView = tokenItemViewModels.isEmpty ? .empty : .list
-            }
-        case .loading:
-            typeView = .loading
-            isLoading = true
+        guard canAddAvailableNetworks else {
+            typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
+            return
         }
+
+        isShowTopAddButton = !tokenItemViewModels.isEmpty
+        typeView = tokenItemViewModels.isEmpty ? .empty : .list
     }
 
     // MARK: - Private Implementation
 
     private func initialSetup() {
         updateTokenList()
-        update(state: .loading)
     }
 
-    private func preflightAvailableNetworks(for coinModel: CoinModel?) -> Bool {
-        guard let coinModel, !coinModel.items.isEmpty else {
+    private func preflightCanAddAvailableNetworks(for coinModel: CoinModel?) -> Bool {
+        guard
+            let coinModel,
+            !coinModel.items.isEmpty,
+            !userWalletModels.filter({ $0.config.hasFeature(.multiCurrency) }).isEmpty
+        else {
             return false
         }
 
-        guard userWalletModels.filter({ $0.config.hasFeature(.multiCurrency) }).isEmpty else {
-            return tokenItemViewModels.isEmpty
-        }
-
         // We are joined the list of available blockchains so far, all user wallet models
-        let joinedSupportedBlockchains = Set(userWalletModels.map { $0.config.supportedBlockchains }.joined())
+        let joinedSupportedBlockchains = Set(userWalletModels.map { $0.config.supportedBlockchains.map { $0.networkId } }.joined())
 
         // We get a list of available blockchains that came in the coin model
-        let coinModelBlockchains = coinModel.items.map { $0.blockchain }
+        let coinModelBlockchains = coinModel.items.map { $0.blockchain.networkId }
 
         // Checking the lists of available networks
-        let isEmptyAvailableBlockchains = joinedSupportedBlockchains.filter { coinModelBlockchains.contains($0) }.isEmpty
-        return !isEmptyAvailableBlockchains
+        let isEmptyAvailableBlockchains = joinedSupportedBlockchains.first(where: { coinModelBlockchains.contains($0) })
+        return isEmptyAvailableBlockchains != nil
     }
 
     private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
@@ -223,12 +214,5 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         case .hide:
             return
         }
-    }
-}
-
-extension MarketsPortfolioContainerViewModel {
-    enum LoadingState {
-        case loading
-        case loaded(coinModel: CoinModel?)
     }
 }

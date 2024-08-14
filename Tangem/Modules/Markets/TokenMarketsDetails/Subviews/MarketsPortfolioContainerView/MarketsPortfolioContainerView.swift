@@ -21,7 +21,7 @@ struct MarketsPortfolioContainerView: View {
 
                 contentView
             }
-            .modifier(if: viewModel.tokenItemViewModels.isEmpty || viewModel.isLoading, then: { view in
+            .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { view in
                 view.defaultRoundedBackground(with: Colors.Background.action)
             }, else: { view in
                 // Need because token list offset by -Y value, it is required to compress the container
@@ -62,11 +62,10 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
-                    .skeletonable(isShown: viewModel.isLoading)
                 }
             }
         }
-        .modifier(if: viewModel.tokenItemViewModels.isEmpty || viewModel.isLoading, then: { headerView in
+        .modifier(if: viewModel.tokenItemViewModels.isEmpty, then: { headerView in
             headerView
                 .padding(.bottom, 10)
         }, else: { headerView in
@@ -88,8 +87,9 @@ struct MarketsPortfolioContainerView: View {
                 listView
             case .unavailable:
                 unavailableView
-            case .loading:
-                loadingView
+            case .none:
+                // Need for dissmis side effect
+                EmptyView()
             }
         }
     }
@@ -135,10 +135,7 @@ struct MarketsPortfolioContainerView: View {
                 .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            MainButton(
-                title: Localization.marketsAddToPortfolioButton,
-                isLoading: viewModel.isLoading
-            ) {
+            MainButton(title: Localization.marketsAddToPortfolioButton) {
                 viewModel.onAddTapAction()
             }
         }
@@ -155,14 +152,6 @@ struct MarketsPortfolioContainerView: View {
         }
     }
 
-    private var loadingView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            skeletonView(width: .infinity, height: 15)
-
-            skeletonView(width: 218, height: 15)
-        }
-    }
-
     @ViewBuilder
     private var quickActionsView: some View {
         if viewModel.isOneTokenInPortfolio, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
@@ -174,12 +163,6 @@ struct MarketsPortfolioContainerView: View {
             )
         }
     }
-
-    private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
-        SkeletonView()
-            .cornerRadiusContinuous(3)
-            .frame(maxWidth: width, minHeight: height, maxHeight: height)
-    }
 }
 
 extension MarketsPortfolioContainerView {
@@ -187,7 +170,6 @@ extension MarketsPortfolioContainerView {
         case empty
         case list
         case unavailable
-        case loading
 
         var id: Int {
             rawValue

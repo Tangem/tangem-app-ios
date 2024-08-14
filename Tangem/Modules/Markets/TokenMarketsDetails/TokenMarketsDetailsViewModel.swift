@@ -259,9 +259,9 @@ private extension TokenMarketsDetailsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, isLoading in
-                if isLoading {}
-                let state: MarketsPortfolioContainerViewModel.LoadingState = isLoading ? .loading : .loaded(coinModel: viewModel.loadedInfo?.coinModel)
-                viewModel.portfolioViewModel?.update(state: state)
+                if !isLoading {
+                    viewModel.portfolioViewModel?.updateState(with: viewModel.loadedInfo?.coinModel)
+                }
             }
             .store(in: &bag)
 

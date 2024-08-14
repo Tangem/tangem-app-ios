@@ -12,6 +12,8 @@ extension TokenMarketsDetailsView {
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
+                portfolio
+
                 insights
 
                 securityScore
@@ -22,6 +24,25 @@ extension TokenMarketsDetailsView {
 
                 links
             }
+        }
+
+        private var portfolio: some View {
+            VStack(spacing: 10) {
+                HStack {
+                    Text(Localization.marketsCommonMyPortfolio)
+                        .lineLimit(1)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                    Spacer()
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    skeletonView(width: .infinity, height: 15)
+
+                    skeletonView(width: 218, height: 15)
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
         }
 
         private var insights: some View {
