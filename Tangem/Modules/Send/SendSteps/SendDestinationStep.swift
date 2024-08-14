@@ -49,7 +49,7 @@ extension SendDestinationStep: SendStep {
     }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        interactor.destinationValid.eraseToAnyPublisher()
+        interactor.allFieldsIsValid.eraseToAnyPublisher()
     }
 
     func willAppear(previous step: any SendStep) {
