@@ -19,6 +19,7 @@ final class SendViewModel: ObservableObject {
 
     @Published var step: SendStep
     @Published var mainButtonType: SendMainButtonType
+    @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
 
     @Published var transactionURL: URL?
@@ -68,6 +69,7 @@ final class SendViewModel: ObservableObject {
 
         step = stepsManager.initialState.step
         mainButtonType = stepsManager.initialState.action
+        flowActionType = stepsManager.initialFlowActionType
 
         bind()
         bind(step: stepsManager.initialState.step)
@@ -242,6 +244,12 @@ extension SendViewModel: SendStepsManagerOutput {
         DispatchQueue.main.async {
             self.step = state.step
             self.bind(step: state.step)
+        }
+    }
+
+    func update(flowActionType: SendFlowActionType) {
+        DispatchQueue.main.async {
+            self.flowActionType = flowActionType
         }
     }
 }

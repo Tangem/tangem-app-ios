@@ -63,7 +63,7 @@ class CommonSendStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .action(.send)))
+            output?.update(state: .init(step: step, action: .action))
         case .finish:
             output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction,
@@ -83,7 +83,7 @@ class CommonSendStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .action(.send)))
+            output?.update(state: .init(step: step, action: .action))
         default:
             output?.update(state: .init(step: step, action: .next))
         }
@@ -93,6 +93,8 @@ class CommonSendStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonSendStepsManager: SendStepsManager {
+    var initialFlowActionType: SendFlowActionType { .send }
+
     var initialState: SendStepsManagerViewState {
         .init(step: destinationStep, action: .next, backButtonVisible: false)
     }

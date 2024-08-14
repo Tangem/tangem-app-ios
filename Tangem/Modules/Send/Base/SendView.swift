@@ -164,7 +164,7 @@ struct SendView: View {
                 }
 
                 MainButton(
-                    title: viewModel.mainButtonType.title,
+                    title: viewModel.mainButtonType.title(action: viewModel.flowActionType),
                     icon: viewModel.mainButtonType.icon,
                     style: .primary,
                     size: .default,

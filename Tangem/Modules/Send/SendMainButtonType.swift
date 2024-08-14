@@ -11,7 +11,7 @@ import Foundation
 enum SendMainButtonType {
     case next
     case `continue`
-    case action(SendFlowActionType)
+    case action
     case close
 }
 
@@ -36,13 +36,13 @@ enum SendFlowActionType: Hashable {
 }
 
 extension SendMainButtonType {
-    var title: String {
+    func title(action: SendFlowActionType) -> String {
         switch self {
         case .next:
             Localization.commonNext
         case .continue:
             Localization.commonContinue
-        case .action(let action):
+        case .action:
             action.title
         case .close:
             Localization.commonClose
