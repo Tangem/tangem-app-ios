@@ -56,7 +56,7 @@ final class KaspaFeeCalculationModel {
         return feeInfo
     }
 
-    private func makeFeeInfo(utxoCount: Int, amount: Decimal, valuePerUtxo: Decimal) -> (Fee, KaspaFeeParameters) {
+    private func makeFeeInfo(utxoCount: Int, amount: Decimal, valuePerUtxo: Decimal) -> FeeInfo {
         let params = KaspaFeeParameters(
             valuePerUtxo: valuePerUtxo,
             utxoCount: utxoCount
