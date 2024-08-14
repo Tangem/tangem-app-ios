@@ -1,5 +1,5 @@
 "add_custom_token_choose_network" = "Netzwerk wählen";
-"add_custom_token_title" = "Token hinzuf.";
+"add_custom_token_title" = "Token anlegen";
 "add_tokens_title" = "Token verwalten";
 "address_qr_code_message_format" = "Sende nur %1$@ ( %2$@ ) vom %3$@ -Netzwerk an diese Adresse. Die Verwendung anderer Token und Netzwerke kann zum Verlust von Geldern führen.";
 "alert_app_feedback_sent_message" = "Vielen Dank für dein Feedback";
@@ -87,6 +87,7 @@
 "common_copy" = "Kopieren";
 "common_copy_address" = "Adresse kopieren";
 "common_create" = "Erstellen";
+"common_crypto_fiat_format" = "%1$@ (%2$@)";
 "common_custom" = "Eigen";
 "common_delete" = "Entfernen";
 "common_disabled" = "Deaktiviert";
@@ -281,7 +282,7 @@
 "feedback_subject_support_tangem" = "Feedback zu Tangem";
 "feedback_subject_tx_failed" = "Eine Transaktion kann nicht gesendet werden";
 "feedback_subject_tx_push_failed" = "Transaktion kann nicht gepusht werden";
-"give_permission_current_transaction" = "diese Transaktion";
+"give_permission_current_transaction" = "Nur diese";
 "give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Sie die Verwendung Ihres Tokens für den Swap genehmigen.";
 "give_permission_policy_type_footer" = "Gib das Genehmigungslimit für das ausgewählte Token an";
 "give_permission_rows_amount" = "Betrag %@";
@@ -441,7 +442,7 @@
 "onboarding_getting_started" = "Erste Schritte";
 "onboarding_linking_error_card_with_wallets" = "Für die Karte, die du hinzufügen möchtest, wurde bereits eine andere Wallets erstellt. Wenn du Guthaben auf dieser Wallets hast, hebe es bitte ab, setze diese Karte zurück und füge sie als Backup hinzu.";
 "onboarding_navbar_save_wallet" = "Sicher deine Wallet";
-"onboarding_navbar_title_creating_backup" = "Backups erstellen";
+"onboarding_navbar_title_creating_backup" = "Backups anlegen";
 "onboarding_seed_button_read_more" = "Lese mehr über die Seed-Phrase";
 "onboarding_seed_generate_title" = "Deine Seed-Phrase";
 "onboarding_seed_import_message" = "Um deine Wallets zu importieren, gib bitte deine Seed-Phrase in das folgende Feld ein";
@@ -487,7 +488,7 @@
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
 "organize_tokens_title" = "Token organisieren";
-"organize_tokens_ungroup" = "Grup. entf.";
+"organize_tokens_ungroup" = "Gruppe löschen";
 "push_additional_fee" = "Zusätzliche Gebühr";
 "push_previous_fee" = "Vorherige Gebühr";
 "push_tx_address_hint" = "Gesamtbetrag der vorherigen Transaktion einschließlich Gebühr";
@@ -621,7 +622,6 @@
 "send_transaction_success" = "Die Transaktion wurde erfolgreich signiert und an den Blockchain-Knoten gesendet. Die Walletbilanz wird aktualisiert";
 "send_tron_account_activation_error" = "%1$@ ist ein Vermögenswert im Tron-Netzwerk. Um die Gebühr zu berechnen und eine Transaktion durchzuführen, musst du etwas Tron (TRX) auf deinem Konto einzahlen.";
 "send_validation_invalid_address" = "Ungültige Adresse";
-"send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Transaktion gesendet";
 "settings_card_settings_footer" = "Bereite das Scannen der Karte vor, die du einrichten möchtest.";
 "settings_forget_wallet" = "Entferne diese Wallet";
@@ -630,7 +630,7 @@
 "staking_active" = "Aktiv";
 "staking_active_footer" = "Um deine Kryptos zu unstaken, klick hier.";
 "staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
-"staking_claim_unstaked" = "nicht gestakte beanspruche";
+"staking_claim_unstaked" = "Nicht gestakte beanspruche";
 "staking_details_annual_percentage_rate" = "Jährliche prozentuale Rendite";
 "staking_details_annual_percentage_rate_info" = "Die jährliche prozentuale Rendite, die du durch die Teilnahme am Staking erzielen kannst.";
 "staking_details_apr" = "Effektiver Jahreszins";
@@ -666,8 +666,8 @@
 "staking_restake_rewards" = "Belohnungen erneut staken";
 "staking_revoke" = "Widerrufen";
 "staking_revote" = "Neuwahl";
-"staking_reward_claiming_auto" = "automatisch";
-"staking_reward_claiming_manual" = "händisch";
+"staking_reward_claiming_auto" = "Automatisch";
+"staking_reward_claiming_manual" = "Händisch";
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Tag";
 "staking_reward_schedule_each_day" = "Täglich";
@@ -681,7 +681,7 @@
 "staking_stake_more" = "Mehr staken";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Staking beenden%@";
-"staking_unlocked_locked" = "gelocktes unlocken";
+"staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
 "staking_unstaking" = "Staking beenden";

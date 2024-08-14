@@ -87,6 +87,7 @@
 "common_copy" = "Копіювати";
 "common_copy_address" = "Скопіювати адресу";
 "common_create" = "Створити";
+"common_crypto_fiat_format" = "%1$@ (%2$@)";
 "common_custom" = "Власна";
 "common_delete" = "Видалити";
 "common_disabled" = "Вимкнуто";
@@ -621,7 +622,6 @@
 "send_transaction_success" = "Транзакція успішно підписана і відправлена до блокчейну. Баланс гаманця буде оновлено через деякий час";
 "send_tron_account_activation_error" = "%1$@ — це монета у мережі Tron. Щоб розрахувати комісію та здійснити транзакцію, вам необхідно внести певну кількість Tron (TRX) на свій рахунок.";
 "send_validation_invalid_address" = "Недійсна адреса";
-"send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Трансакцію надіслано";
 "settings_card_settings_footer" = "Підготуйтеся до сканування картку, яку потрібно налаштувати.";
 "settings_forget_wallet" = "Забути гаманець";
