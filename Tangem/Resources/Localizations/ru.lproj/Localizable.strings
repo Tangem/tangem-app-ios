@@ -44,7 +44,7 @@
 "card_settings_access_code_recovery_disabled_description" = "Отключите эту опцию, если не хотите, чтобы эта карта использовалась для сброса кодов доступа на другие карты этого кошелька. Обратите внимание, сброс кода также не будет доступен на этой карте.";
 "card_settings_access_code_recovery_enabled_description" = "Использовать эту карту для сброса кода доступа на других картах в этом кошельке";
 "card_settings_access_code_recovery_footer" = "Отключить возможность сброса кода доступа на этой карте или других картах этого кошелька";
-"card_settings_access_code_recovery_title" = "Восстановление кода доступа";
+"card_settings_access_code_recovery_title" = "Восстановление доступа";
 "card_settings_action_sheet_reset" = "Сбросить";
 "card_settings_action_sheet_title" = "Вы уверены, что хотите это сделать?";
 "card_settings_change_access_code" = "Смена кода доступа";
@@ -87,6 +87,7 @@
 "common_copy" = "Копировать";
 "common_copy_address" = "Скопировать адрес";
 "common_create" = "Создать";
+"common_crypto_fiat_format" = "%1$@ (%2$@)";
 "common_custom" = "Свое";
 "common_delete" = "Удалить";
 "common_disabled" = "Отключено";
@@ -621,7 +622,6 @@
 "send_transaction_success" = "Транзакция успешно подписана и отправлена в блокчейн. Баланс будет обновлен через некоторое время";
 "send_tron_account_activation_error" = "%1$@ — это монета в сети Tron. Чтобы рассчитать комиссию и совершить транзакцию, вам необходимо внести немного Tron (TRX) на свой адрес.";
 "send_validation_invalid_address" = "Неверный адрес";
-"send_wallet_balance_format" = "%1$@ (%2$@)";
 "sent_transaction_sent_title" = "Транзакция отправлена";
 "settings_card_settings_footer" = "Подготовьтесь к сканированию карты, которую вы хотите настроить.";
 "settings_forget_wallet" = "Забыть кошелек";
