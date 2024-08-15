@@ -845,6 +845,8 @@
 "warning_express_not_enough_fee_for_token_tx_description" = "取引を行うには、 %1$@ %2$@を入金する必要があります。";
 "warning_express_not_enough_fee_for_token_tx_title" = "%@ 手数料を支払えません";
 "warning_express_notification_invalid_reserve_amount_title" = "受け取る金額は、 %@ 以上である必要があります。";
+"warning_express_pair_unavailable_message" = "This may occur because the provider is currently unable to exchange your selected pair. Please wait a moment and try again. (Code %@)";
+"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
 "warning_express_refresh_required_title" = "サービスは一時的に利用できません";
 "warning_express_too_maximum_amount_title" = "スワップするトークンの量は %@ を超えないでください";
 "warning_express_too_minimal_amount_title" = "スワップ金額は %@ 以上である必要があります";

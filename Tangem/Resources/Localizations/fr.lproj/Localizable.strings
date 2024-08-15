@@ -845,6 +845,8 @@
 "warning_express_not_enough_fee_for_token_tx_description" = "Pour effectuer une transaction, vous devez déposer %1$@ %2$@";
 "warning_express_not_enough_fee_for_token_tx_title" = "Impossible de couvrir %@ frais";
 "warning_express_notification_invalid_reserve_amount_title" = "Le montant à recevoir doit être d'au moins %@";
+"warning_express_pair_unavailable_message" = "This may occur because the provider is currently unable to exchange your selected pair. Please wait a moment and try again. (Code %@)";
+"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
 "warning_express_refresh_required_title" = "Service temporairement indisponible";
 "warning_express_too_maximum_amount_title" = "Le nombre de jetons à échanger ne doit pas dépasser %@";
 "warning_express_too_minimal_amount_title" = "Le montant à échanger doit être d'au moins %@";

@@ -845,6 +845,8 @@
 "warning_express_not_enough_fee_for_token_tx_description" = "Чтобы совершить транзакцию, вам необходимо внести немного %1$@ %2$@";
 "warning_express_not_enough_fee_for_token_tx_title" = "Невозможно покрыть комиссию %@";
 "warning_express_notification_invalid_reserve_amount_title" = "Сумма получения не может быть менее %@";
+"warning_express_pair_unavailable_message" = "Это может произойти из-за того, что провайдер временно не предоставляет обмен выбранной вами пары. Пожалуйста, подождите некоторое время и попробуйте снова. (Код %@)";
+"warning_express_pair_unavailable_title" = "Выбранная пара временно недоступна";
 "warning_express_refresh_required_title" = "Cервис временно недоступен";
 "warning_express_too_maximum_amount_title" = "Сумма для обмена должна быть не более %@";
 "warning_express_too_minimal_amount_title" = "Сумма для обмена должна быть не менее %@";

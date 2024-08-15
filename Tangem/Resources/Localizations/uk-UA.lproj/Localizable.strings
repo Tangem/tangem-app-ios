@@ -845,6 +845,8 @@
 "warning_express_not_enough_fee_for_token_tx_description" = "Щоб здійснити транзакцію, вам потрібно внести трохи %1$@ %2$@";
 "warning_express_not_enough_fee_for_token_tx_title" = "Неможливо покрити комісію %@";
 "warning_express_notification_invalid_reserve_amount_title" = "Сума отримання не може бути меншою за %@";
+"warning_express_pair_unavailable_message" = "This may occur because the provider is currently unable to exchange your selected pair. Please wait a moment and try again. (Code %@)";
+"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
 "warning_express_refresh_required_title" = "Сервіс тимчасово недоступний";
 "warning_express_too_maximum_amount_title" = "Сума до обміну не повинна перевищувати %@";
 "warning_express_too_minimal_amount_title" = "Сума для обміну має бути не менше %@";

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemSdk
 
 class CommonStakingManager {
     private let integrationId: String
@@ -60,24 +61,36 @@ extension CommonStakingManager: StakingManager {
         switch (state, action.type) {
         case (.availableToStake(let yieldInfo), .stake):
             return try await provider.estimateStakeFee(
-                amount: action.amount,
-                address: wallet.address,
-                validator: action.validator,
-                integrationId: yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: yieldInfo.id
+                )
             )
         case (.staked(let staked), .stake):
             return try await provider.estimateStakeFee(
-                amount: action.amount,
-                address: wallet.address,
-                validator: action.validator,
-                integrationId: staked.yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: staked.yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: staked.yieldInfo.id
+                )
             )
         case (.staked(let staked), .unstake):
             return try await provider.estimateUnstakeFee(
-                amount: action.amount,
-                address: wallet.address,
-                validator: action.validator,
-                integrationId: staked.yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: staked.yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: staked.yieldInfo.id
+                )
             )
         case (.staked(let staked), .claimRewards):
             guard let balance = staked.balance(validator: action.validator) else {
@@ -89,10 +102,14 @@ extension CommonStakingManager: StakingManager {
             }
 
             return try await provider.estimateClaimRewardsFee(
-                amount: action.amount,
-                address: wallet.address,
-                validator: action.validator,
-                integrationId: staked.yieldInfo.id,
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: staked.yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: staked.yieldInfo.id
+                ),
                 passthrough: passthrough
             )
         default:
@@ -105,15 +122,25 @@ extension CommonStakingManager: StakingManager {
         switch (state, action.type) {
         case (.availableToStake(let yieldInfo), .stake):
             return try await getTransactionToStake(
-                amount: action.amount,
-                validator: action.validator,
-                integrationId: yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: yieldInfo.id
+                )
             )
         case (.staked(let staked), .stake):
             return try await getTransactionToStake(
-                amount: action.amount,
-                validator: action.validator,
-                integrationId: staked.yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: action.amount,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: staked.yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: staked.yieldInfo.id
+                )
             )
         case (.staked(let staked), .unstake):
             guard let balance = staked.balance(validator: action.validator) else {
@@ -121,9 +148,14 @@ extension CommonStakingManager: StakingManager {
             }
 
             return try await getTransactionToUnstake(
-                amount: balance.blocked,
-                validator: action.validator,
-                integrationId: staked.yieldInfo.id
+                params: StakingActionRequestParams(
+                    amount: balance.blocked,
+                    address: wallet.address,
+                    additionalAddresses: additionalAddresses(),
+                    token: staked.yieldInfo.item,
+                    validator: action.validator,
+                    integrationId: staked.yieldInfo.id
+                )
             )
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
@@ -153,13 +185,8 @@ private extension CommonStakingManager {
         return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
-    func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
-        let action = try await provider.enterAction(
-            amount: amount,
-            address: wallet.address,
-            validator: validator,
-            integrationId: integrationId
-        )
+    func getTransactionToStake(params: StakingActionRequestParams) async throws -> StakingTransactionInfo {
+        let action = try await provider.enterAction(params: params)
 
         guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
             throw StakingManagerError.transactionNotFound
@@ -173,12 +200,8 @@ private extension CommonStakingManager {
         return transaction
     }
 
-    func getTransactionToUnstake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
-        let action = try await provider.exitAction(
-            amount: amount, address: wallet.address,
-            validator: validator,
-            integrationId: integrationId
-        )
+    func getTransactionToUnstake(params: StakingActionRequestParams) async throws -> StakingTransactionInfo {
+        let action = try await provider.exitAction(params: params)
 
         guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
             throw StakingManagerError.transactionNotFound
@@ -202,6 +225,19 @@ private extension CommonStakingManager {
             return true
         default:
             return false
+        }
+    }
+
+    func additionalAddresses() -> AdditionalAddresses? {
+        switch wallet.item.network {
+        case .cosmos:
+            guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
+                return nil
+            }
+
+            return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
+        default:
+            return nil
         }
     }
 }

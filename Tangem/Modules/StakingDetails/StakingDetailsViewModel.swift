@@ -17,7 +17,7 @@ final class StakingDetailsViewModel: ObservableObject {
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
     @Published var hideStakingInfoBanner = AppSettings.shared.hideStakingInfoBanner
     @Published var detailsViewModels: [DefaultRowViewModel] = []
-    @Published var averageRewardingViewData: AverageRewardingViewData?
+
     @Published var rewardViewData: RewardViewData?
     @Published private(set) var activeValidators: [ValidatorViewData] = []
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
@@ -102,39 +102,42 @@ private extension StakingDetailsViewModel {
             actionButtonLoading = false
             actionButtonType = .none
         case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
-            setupView(yield: yieldInfo, balancesInfo: nil)
+            setupView(yield: yieldInfo, balances: [])
 
             actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
-            setupView(yield: staked.yieldInfo, balancesInfo: staked.balances)
+            setupView(yield: staked.yieldInfo, balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
         }
     }
 
-    func setupView(yield: YieldInfo, balancesInfo: [StakingBalanceInfo]?) {
-        let stakedBalance = balancesInfo.flatMap { $0.sumBlocked() } ?? .zero
-        let available = walletModel.balanceValue ?? .zero - stakedBalance
-        let aprs = yield.validators.compactMap(\.apr)
-        var validatorBalances: [ValidatorBalanceInfo] = []
-        if let balancesInfo {
-            validatorBalances = yield.validators.compactMap { validatorInfo -> ValidatorBalanceInfo? in
-                guard let balanceInfo = balancesInfo.filter({ $0.validatorAddress == validatorInfo.address }).first else {
-                    return nil
-                }
-                return ValidatorBalanceInfo(
-                    validator: validatorInfo,
-                    balance: balanceInfo.blocked,
-                    balanceGroupType: balanceInfo.balanceGroupType
-                )
+    func validatorBalances(yield: YieldInfo, balances: [StakingBalanceInfo]) -> [ValidatorBalanceInfo] {
+        balances.compactMap { balance -> ValidatorBalanceInfo? in
+            guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
+                return nil
             }
+
+            return ValidatorBalanceInfo(
+                validator: validator,
+                balance: balance.blocked,
+                balanceGroupType: balance.balanceGroupType
+            )
         }
-        let rewards = balancesInfo?.sumRewards()
+    }
+
+    func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+        let stakedBalance = balances.sumBlocked()
+        let available = (walletModel.balanceValue ?? .zero) - stakedBalance
+        let aprs = yield.validators.compactMap(\.apr)
+        let validatorBalances = validatorBalances(yield: yield, balances: balances)
+        let rewards = balances.sumRewards()
+
         setupView(
             inputData: StakingDetailsData(
-                available: available, // Maybe add skeleton?
+                available: available,
                 staked: stakedBalance,
                 rewards: rewards,
                 rewardType: yield.rewardType,
@@ -153,7 +156,6 @@ private extension StakingDetailsViewModel {
 
     func setupView(inputData: StakingDetailsData) {
         setupHeaderView(inputData: inputData)
-        setupAverageRewardingViewData(inputData: inputData)
         setupDetailsSection(inputData: inputData)
         setupRewardView(inputData: inputData)
         setupValidatorsView(input: inputData)
@@ -163,96 +165,91 @@ private extension StakingDetailsViewModel {
         hideStakingInfoBanner = hideStakingInfoBanner && inputData.staked.isZero
     }
 
-    func setupAverageRewardingViewData(inputData: StakingDetailsData) {
-        let days = 30
-        let periodProfitFormatted = daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
-
-        let profitFormatted = walletModel.balanceValue.map { balanceValue in
-            let profit = StakingCalculator().earnValue(
-                invest: balanceValue,
-                apr: inputData.rewardRate,
-                period: .days(days)
-            )
-            return balanceFormatter.formatFiatBalance(profit)
-        }
-
-        averageRewardingViewData = .init(
-            rewardType: inputData.rewardType.title,
-            rewardFormatted: inputData.rewardRateValues.formatted(formatter: percentFormatter),
-            periodProfitFormatted: periodProfitFormatted,
-            profitFormatted: profitFormatted.map { .loaded(text: $0) } ?? .noData
-        )
-    }
-
     func setupDetailsSection(inputData: StakingDetailsData) {
-        let availableFormatted = balanceFormatter.formatCryptoBalance(
-            inputData.available,
-            currencyCode: walletModel.tokenItem.currencySymbol
-        )
-
-        let rewardRateFormatted = inputData.rewardRateValues.formatted(formatter: percentFormatter)
-
-        let unbondingFormatted = inputData.unbondingPeriod.formatted(formatter: daysFormatter)
-        let minimumFormatted = balanceFormatter.formatCryptoBalance(
-            inputData.minimumRequirement,
-            currencyCode: walletModel.tokenItem.currencySymbol
-        )
-
-        let warmupFormatted = inputData.warmupPeriod.formatted(formatter: daysFormatter)
-
-        var rewardSecondaryAction: (() -> Void)?
-        if let rewardTypeDescrption = inputData.rewardType.description {
-            rewardSecondaryAction = { [weak self] in
-                self?.openBottomSheet(title: inputData.rewardType.title, description: rewardTypeDescrption)
-            }
-        }
-
         var viewModels = [
-            DefaultRowViewModel(title: Localization.stakingDetailsAvailable, detailsType: .text(availableFormatted)),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsAnnualPercentageRate,
+                detailsType: .text(inputData.rewardRateValues.formatted(formatter: percentFormatter)),
+                secondaryAction: { [weak self] in
+                    self?.openBottomSheet(
+                        title: Localization.stakingDetailsAnnualPercentageRate,
+                        description: Localization.stakingDetailsAnnualPercentageRateInfo
+                    )
+                }
+            ),
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsAvailable,
+                detailsType: .text(
+                    balanceFormatter.formatCryptoBalance(
+                        inputData.available,
+                        currencyCode: walletModel.tokenItem.currencySymbol
+                    )
+                )
+            ),
         ]
 
-        viewModels.append(contentsOf: [
-            DefaultRowViewModel(
-                title: inputData.rewardType.title,
-                detailsType: .text(
-                    rewardRateFormatted
-                ),
-                secondaryAction: rewardSecondaryAction
-            ),
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsUnbondingPeriod,
-                detailsType: .text(unbondingFormatted),
-                secondaryAction: { [weak self] in self?.openBottomSheet(
+        if shouldShowMinimumRequirement() {
+            let minimumFormatted = balanceFormatter.formatCryptoBalance(
+                inputData.minimumRequirement,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+
+            viewModels.append(
+                DefaultRowViewModel(
+                    title: Localization.stakingDetailsMinimumRequirement,
+                    detailsType: .text(minimumFormatted)
+                )
+            )
+        }
+
+        viewModels.append(
+            contentsOf: [
+                DefaultRowViewModel(
                     title: Localization.stakingDetailsUnbondingPeriod,
-                    description: Localization.stakingDetailsUnbondingPeriodInfo
-                ) }
-            ),
-            DefaultRowViewModel(title: Localization.stakingDetailsMinimumRequirement, detailsType: .text(minimumFormatted)),
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsRewardClaiming,
-                detailsType: .text(inputData.rewardClaimingType.title),
-                secondaryAction: { [weak self] in self?.openBottomSheet(
+                    detailsType: .text(inputData.unbondingPeriod.formatted(formatter: daysFormatter)),
+                    secondaryAction: { [weak self] in
+                        self?.openBottomSheet(
+                            title: Localization.stakingDetailsUnbondingPeriod,
+                            description: Localization.stakingDetailsUnbondingPeriodInfo
+                        )
+                    }
+                ),
+                DefaultRowViewModel(
                     title: Localization.stakingDetailsRewardClaiming,
-                    description: Localization.stakingDetailsRewardClaimingInfo
-                ) }
-            ),
-            DefaultRowViewModel(
+                    detailsType: .text(inputData.rewardClaimingType.title),
+                    secondaryAction: { [weak self] in
+                        self?.openBottomSheet(
+                            title: Localization.stakingDetailsRewardClaiming,
+                            description: Localization.stakingDetailsRewardClaimingInfo
+                        )
+                    }
+                ),
+            ]
+        )
+
+        if !inputData.warmupPeriod.isZero {
+            viewModels.append(DefaultRowViewModel(
                 title: Localization.stakingDetailsWarmupPeriod,
-                detailsType: .text(warmupFormatted),
-                secondaryAction: { [weak self] in self?.openBottomSheet(
-                    title: Localization.stakingDetailsWarmupPeriod,
-                    description: Localization.stakingDetailsWarmupPeriodInfo
-                ) }
-            ),
-            DefaultRowViewModel(
-                title: Localization.stakingDetailsRewardSchedule,
-                detailsType: .text(inputData.rewardScheduleType.title),
-                secondaryAction: { [weak self] in self?.openBottomSheet(
+                detailsType: .text(inputData.warmupPeriod.formatted(formatter: daysFormatter)),
+                secondaryAction: { [weak self] in
+                    self?.openBottomSheet(
+                        title: Localization.stakingDetailsWarmupPeriod,
+                        description: Localization.stakingDetailsWarmupPeriodInfo
+                    )
+                }
+            ))
+        }
+
+        viewModels.append(DefaultRowViewModel(
+            title: Localization.stakingDetailsRewardSchedule,
+            detailsType: .text(inputData.rewardScheduleType.title),
+            secondaryAction: { [weak self] in
+                self?.openBottomSheet(
                     title: Localization.stakingDetailsRewardSchedule,
                     description: Localization.stakingDetailsRewardScheduleInfo
-                ) }
-            ),
-        ])
+                )
+            }
+        ))
 
         detailsViewModels = viewModels
     }
@@ -312,6 +309,13 @@ private extension StakingDetailsViewModel {
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
+
+    func shouldShowMinimumRequirement() -> Bool {
+        switch walletModel.tokenItem.blockchain {
+        case .polkadot, .binance: true
+        default: false
+        }
+    }
 }
 
 extension StakingDetailsViewModel {
@@ -344,38 +348,12 @@ extension StakingDetailsViewModel {
     }
 }
 
-private extension Period {
+extension Period {
     func formatted(formatter: DateComponentsFormatter) -> String {
         switch self {
         case .days(let days):
             return formatter.string(from: DateComponents(day: days)) ?? days.formatted()
         }
-    }
-}
-
-private extension DateComponentsFormatter {
-    func formatted(days: Int) -> String {
-        return string(from: DateComponents(day: days)) ?? days.formatted()
-    }
-}
-
-private extension RewardType {
-    var title: String {
-        switch self {
-        case .apr:
-            Localization.stakingDetailsApr
-        case .apy:
-            Localization.stakingDetailsAnnualPercentageRate
-        case .variable:
-            rawValue.uppercased()
-        }
-    }
-
-    var description: String? {
-        guard case .apy = self else {
-            return nil
-        }
-        return Localization.stakingDetailsAnnualPercentageRateInfo
     }
 }
 
@@ -387,7 +365,13 @@ private extension RewardClaimingType {
 
 private extension RewardScheduleType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .block:
+            // TODO: Update Lokalization when have all requirements
+            RewardScheduleType.day.rawValue.capitalizingFirstLetter()
+        case .hour, .day, .week, .month, .era, .epoch:
+            rawValue.capitalizingFirstLetter()
+        }
     }
 }
 

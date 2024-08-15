@@ -64,13 +64,17 @@ struct CommonWalletModelsFactory {
         )
     }
 
-    func makeStakingManager(tokenItem: TokenItem, address: String) -> StakingManager? {
+    func makeStakingManager(publicKey: Data, tokenItem: TokenItem, address: String) -> StakingManager? {
         guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem),
               let item = tokenItem.stakingTokenItem else {
             return nil
         }
 
-        let wallet = StakingWallet(item: item, address: address)
+        let wallet = StakingWallet(
+            item: item,
+            address: address,
+            publicKey: publicKey
+        )
         return StakingDependenciesFactory().makeStakingManager(integrationId: integrationId, wallet: wallet)
     }
 }
@@ -98,7 +102,11 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: .coin)
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
-                stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
+                stakingManager: makeStakingManager(
+                    publicKey: walletManager.wallet.publicKey.blockchainKey,
+                    tokenItem: tokenItem,
+                    address: walletManager.wallet.address
+                ),
                 transactionHistoryService: transactionHistoryService,
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
@@ -119,7 +127,11 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: amountType)
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
-                    stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
+                    stakingManager: makeStakingManager(
+                        publicKey: walletManager.wallet.publicKey.blockchainKey,
+                        tokenItem: tokenItem,
+                        address: walletManager.wallet.address
+                    ),
                     transactionHistoryService: transactionHistoryService,
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
