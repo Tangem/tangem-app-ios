@@ -125,7 +125,7 @@ private extension ExpressModulesFactoryMock {
     }
 
     var notificationManager: NotificationManager {
-        ExpressNotificationManager(expressInteractor: expressInteractor, contextDataProvider: userWalletModel)
+        ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
     var priceChangeFormatter: PriceChangeFormatter { .init() }
