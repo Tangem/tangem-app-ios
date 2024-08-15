@@ -85,11 +85,6 @@ extension StakeKitDTO {
                 let integrationId: String
                 let addresses: Address
                 let args: Args
-
-                struct Args: Encodable {
-                    let amount: String
-                    let validatorAddress: String
-                }
             }
 
             struct Response: Decodable {
@@ -110,11 +105,6 @@ extension StakeKitDTO {
                 let integrationId: String
                 let addresses: Address
                 let args: Args
-
-                struct Args: Encodable {
-                    let amount: String
-                    let validatorAddress: String?
-                }
             }
 
             struct Response: Decodable {
@@ -139,15 +129,22 @@ extension StakeKitDTO {
                 let args: Args
             }
 
-            struct Args: Encodable {
-                let amount: String
-                let validatorAddress: String
-            }
-
             struct Response: Decodable {
                 let amount: String?
                 let token: Token
                 let gasLimit: String
+            }
+        }
+
+        struct Args: Encodable {
+            let amount: String
+            let validatorAddress: String
+            let inputToken: Token?
+
+            init(amount: String, validatorAddress: String, inputToken: StakeKitDTO.Token? = nil) {
+                self.amount = amount
+                self.validatorAddress = validatorAddress
+                self.inputToken = inputToken
             }
         }
     }

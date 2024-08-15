@@ -26,7 +26,7 @@ public struct YieldInfo: Hashable {
     public let defaultValidator: String?
 
     // Metadata
-    public let item: StakingTokenItem
+    public let item: StakingToken
     public let unbondingPeriod: Period
     public let warmupPeriod: Period
 
@@ -43,7 +43,7 @@ public struct YieldInfo: Hashable {
         exitMinimumRequirement: Decimal,
         validators: [ValidatorInfo],
         defaultValidator: String?,
-        item: StakingTokenItem,
+        item: StakingToken,
         unbondingPeriod: Period,
         warmupPeriod: Period,
         rewardClaimingType: RewardClaimingType,
