@@ -9,9 +9,9 @@
 import Foundation
 
 public struct StakingAction {
-    let amount: Decimal
-    let validator: String
-    let type: ActionType
+    public let amount: Decimal
+    public let validator: String
+    public let type: ActionType
 
     public init(amount: Decimal, validator: String, type: StakingAction.ActionType) {
         self.amount = amount
@@ -19,9 +19,9 @@ public struct StakingAction {
         self.type = type
     }
 
-    public enum ActionType {
+    public enum ActionType: Hashable {
         case stake
-        case claimRewards
         case unstake
+        case pending(PendingActionType)
     }
 }

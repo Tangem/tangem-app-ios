@@ -9,6 +9,24 @@
 import Foundation
 
 struct StakeKitMapper {
+    // MARK: - To DTO
+
+    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+        switch action {
+        case .withdraw: .withdraw
+        }
+    }
+
+    func mapToTokenDTO(from tokenItem: StakingTokenItem) -> StakeKitDTO.Token {
+        StakeKitDTO.Token(
+            network: tokenItem.network.rawValue,
+            name: tokenItem.name,
+            decimals: tokenItem.decimals,
+            address: tokenItem.contractAddress,
+            symbol: tokenItem.symbol
+        )
+    }
+
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
@@ -75,12 +93,6 @@ struct StakeKitMapper {
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
-    }
-
-    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
-        switch action {
-        case .withdraw: .withdraw
-        }
     }
 
     // MARK: - Transaction

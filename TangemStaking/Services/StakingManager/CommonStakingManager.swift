@@ -174,6 +174,8 @@ private extension CommonStakingManager {
         .init(
             amount: action.amount,
             address: wallet.address,
+            additionalAddresses: additionalAddresses(),
+            token: wallet.item,
             validator: action.validator,
             integrationId: integrationId
         )

@@ -18,24 +18,6 @@ public protocol StakingManager {
     func transaction(action: StakingAction) async throws -> StakingTransactionInfo
 }
 
-public struct StakingAction {
-    public let amount: Decimal
-    public let validator: String
-    public let type: ActionType
-
-    public init(amount: Decimal, validator: String, type: StakingAction.ActionType) {
-        self.amount = amount
-        self.validator = validator
-        self.type = type
-    }
-
-    public enum ActionType: Hashable {
-        case stake
-        case unstake
-        case pending(PendingActionType)
-    }
-}
-
 public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
