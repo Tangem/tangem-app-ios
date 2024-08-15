@@ -231,8 +231,7 @@ private extension CommonStakingManager {
     func additionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
         case .cosmos:
-            guard let publicKey = wallet.publicKey,
-                  let compressedPublicKey = try? Secp256k1Key(with: publicKey).compress() else {
+            guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
                 return nil
             }
 
