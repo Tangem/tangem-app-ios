@@ -9,7 +9,7 @@
 import Foundation
 
 public struct StakingBalanceInfo: Hashable {
-    public let item: StakingToken
+    public let item: StakingTokenItem
     public let blocked: Decimal
     public let rewards: Decimal?
     public let balanceGroupType: BalanceGroupType
@@ -17,7 +17,7 @@ public struct StakingBalanceInfo: Hashable {
     public let passthrough: String?
 
     public init(
-        item: StakingToken,
+        item: StakingTokenItem,
         blocked: Decimal,
         rewards: Decimal?,
         balanceGroupType: BalanceGroupType,

@@ -12,7 +12,7 @@ public struct StakingActionRequestParams {
     let amount: Decimal
     let address: String
     let additionalAddresses: AdditionalAddresses?
-    let token: StakingToken?
+    let token: StakingTokenItem?
     let validator: String
     let integrationId: String
 
@@ -20,7 +20,7 @@ public struct StakingActionRequestParams {
         amount: Decimal,
         address: String,
         additionalAddresses: AdditionalAddresses? = nil,
-        token: StakingToken? = nil,
+        token: StakingTokenItem? = nil,
         validator: String,
         integrationId: String
     ) {

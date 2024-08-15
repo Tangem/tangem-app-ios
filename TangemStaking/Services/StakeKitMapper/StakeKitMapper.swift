@@ -187,12 +187,12 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingToken {
+    func mapToStakingTokenItem(from token: StakeKitDTO.Token) throws -> StakingTokenItem {
         guard let network = StakeKitNetworkType(rawValue: token.network) else {
             throw StakeKitMapperError.noData("StakeKitNetworkType not found")
         }
 
-        return StakingToken(
+        return StakingTokenItem(
             network: network,
             contractAddress: token.address,
             name: token.name,
@@ -258,7 +258,7 @@ struct StakeKitMapper {
         rewardsPendingAction(from: balance)?.passthrough
     }
 
-    func mapToTokenDTO(from tokenItem: StakingToken) -> StakeKitDTO.Token {
+    func mapToTokenDTO(from tokenItem: StakingTokenItem) -> StakeKitDTO.Token {
         StakeKitDTO.Token(
             network: tokenItem.network.rawValue,
             name: tokenItem.name,

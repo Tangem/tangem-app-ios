@@ -219,7 +219,7 @@ private extension CommonStakingManager {
 // MARK: - Helping
 
 private extension CommonStakingManager {
-    func canStakeMore(item: StakingToken) -> Bool {
+    func canStakeMore(item: StakingTokenItem) -> Bool {
         switch item.network {
         case .solana:
             return true

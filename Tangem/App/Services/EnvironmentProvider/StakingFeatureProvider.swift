@@ -65,9 +65,9 @@ extension StakingFeatureProvider {
 
     var testableBlockchainIds: Set<StakingTokenItem> {
         [
-            StakingTokenItem(network: .solana, contractAddress: nil),
-            StakingTokenItem(network: .cosmos, contractAddress: nil),
-            StakingTokenItem(network: .ethereum, contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"),
+            StakingTokenItem(network: .solana, contractAddress: nil, name: "Solana", decimals: 9, symbol: "SOL"),
+            StakingTokenItem(network: .cosmos, contractAddress: nil, name: "Cosmos", decimals: 6, symbol: "ATOM"),
+            StakingTokenItem(network: .ethereum, contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", name: "Ethereum", decimals: 18, symbol: "ETH"),
         ]
     }
 
