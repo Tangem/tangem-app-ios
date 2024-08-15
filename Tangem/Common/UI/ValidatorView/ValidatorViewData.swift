@@ -9,7 +9,9 @@
 import Foundation
 
 struct ValidatorViewData: Hashable, Identifiable {
-    let id: String
+    var id: Int { hashValue }
+
+    let address: String
     let name: String
     let imageURL: URL?
     let hasMonochromeIcon: Bool
