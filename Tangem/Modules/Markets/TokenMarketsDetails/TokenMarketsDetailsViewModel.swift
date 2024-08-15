@@ -222,6 +222,7 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
+        portfolioViewModel?.updateState(with: model.coinModel)
     }
 
     @MainActor
@@ -253,16 +254,6 @@ private extension TokenMarketsDetailsViewModel {
             .withPrevious()
             .map(ForegroundBlinkAnimationModifier.Change.calculateChange(from:to:))
             .assign(to: \.priceChangeAnimation, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        $isLoading
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, isLoading in
-                if !isLoading {
-                    viewModel.portfolioViewModel?.updateState(with: viewModel.loadedInfo?.coinModel)
-                }
-            }
             .store(in: &bag)
 
         AppSettings.shared.$selectedCurrencyCode

@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import BlockchainSdk
 
 class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Services
@@ -51,7 +52,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
-        initialSetup()
+        updateTokenList()
     }
 
     // MARK: - Public Implementation
@@ -61,7 +62,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     func updateState(with coinModel: CoinModel?) {
-        let canAddAvailableNetworks = preflightCanAddAvailableNetworks(for: coinModel)
+        let canAddAvailableNetworks = canAddToPortfolio(coinModel: coinModel)
 
         guard canAddAvailableNetworks else {
             typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
@@ -74,28 +75,35 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Private Implementation
 
-    private func initialSetup() {
-        updateTokenList()
-    }
+    /*
+     - We are joined the list of available blockchains so far, all user wallet models
+     - We get a list of available blockchains that came in the coin model
+     - Checking the lists of available networks
+     */
+    private func canAddToPortfolio(coinModel: CoinModel?) -> Bool {
+        let multiCurrencyUserWalletModels = userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
-    private func preflightCanAddAvailableNetworks(for coinModel: CoinModel?) -> Bool {
         guard
             let coinModel,
             !coinModel.items.isEmpty,
-            !userWalletModels.filter({ $0.config.hasFeature(.multiCurrency) }).isEmpty
+            !multiCurrencyUserWalletModels.isEmpty
         else {
             return false
         }
 
-        // We are joined the list of available blockchains so far, all user wallet models
-        let joinedSupportedBlockchains = Set(userWalletModels.map { $0.config.supportedBlockchains.map { $0.networkId } }.joined())
+        var coinModelBlockchains = Set<Blockchain>()
 
-        // We get a list of available blockchains that came in the coin model
-        let coinModelBlockchains = coinModel.items.map { $0.blockchain.networkId }
+        coinModel.items.forEach {
+            coinModelBlockchains.insert($0.blockchain)
+        }
 
-        // Checking the lists of available networks
-        let isEmptyAvailableBlockchains = joinedSupportedBlockchains.first(where: { coinModelBlockchains.contains($0) })
-        return isEmptyAvailableBlockchains != nil
+        for model in multiCurrencyUserWalletModels {
+            if !coinModelBlockchains.intersection(model.config.supportedBlockchains).isEmpty {
+                return true
+            }
+        }
+
+        return false
     }
 
     private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
