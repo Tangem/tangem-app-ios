@@ -212,7 +212,7 @@ private extension TokenItemView {
 struct TokenItemView_Previews: PreviewProvider {
     static var infoProvider: FakeTokenItemInfoProvider = {
         let walletManagers: [FakeWalletManager] = [.ethWithTokensManager, .btcManager, .polygonWithTokensManager, .xrpManager]
-        InjectedValues[\.quotesRepository] = FakeTokenQuotesRepository(walletManagers: walletManagers)
+        InjectedValues.setTokenQuotesRepository(FakeTokenQuotesRepository(walletManagers: walletManagers))
         return FakeTokenItemInfoProvider(walletManagers: walletManagers)
     }()
 

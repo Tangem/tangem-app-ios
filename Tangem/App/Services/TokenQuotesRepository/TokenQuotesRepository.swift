@@ -56,10 +56,16 @@ private struct TokenQuotesRepositoryKey: InjectionKey {
 }
 
 extension InjectedValues {
-    var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater { quotesRepository }
+    var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater { _quotesRepository }
 
-    var quotesRepository: TokenQuotesRepository & TokenQuotesRepositoryUpdater {
+    var quotesRepository: TokenQuotesRepository { _quotesRepository }
+
+    private var _quotesRepository: TokenQuotesRepository & TokenQuotesRepositoryUpdater {
         get { Self[TokenQuotesRepositoryKey.self] }
         set { Self[TokenQuotesRepositoryKey.self] = newValue }
+    }
+
+    static func setTokenQuotesRepository(_ newRepository: TokenQuotesRepository & TokenQuotesRepositoryUpdater) {
+        InjectedValues[\._quotesRepository] = newRepository
     }
 }
