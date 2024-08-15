@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-class TokenQuotesRepositoryMock: TokenQuotesDataProvider {
+class TokenQuotesRepositoryMock: TokenQuotesRepository, TokenQuotesRepositoryUpdater {
     var quotes: Quotes { [:] }
     var quotesPublisher: AnyPublisher<Quotes, Never> { .just(output: .init()) }
 
@@ -28,4 +28,5 @@ class TokenQuotesRepositoryMock: TokenQuotesDataProvider {
     func quote(for item: TokenItem) -> TokenQuote? { nil }
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> { .just }
     func saveQuotes(_ quotes: [Quote], currencyCode: String) {}
+    func saveQuotes(_ quotes: [TokenQuote]) {}
 }

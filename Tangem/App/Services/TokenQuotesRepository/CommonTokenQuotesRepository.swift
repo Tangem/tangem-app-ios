@@ -27,7 +27,7 @@ class CommonTokenQuotesRepository {
 
 // MARK: - TokenQuotesRepository
 
-extension CommonTokenQuotesRepository: TokenQuotesDataProvider {
+extension CommonTokenQuotesRepository: TokenQuotesRepository {
     var quotes: Quotes {
         lock {
             return _quotes.value
@@ -194,7 +194,7 @@ private extension CommonTokenQuotesRepository {
         }
     }
 
-    func log<T>(_ message: @autoclosure () -> T ) {
+    func log<T>(_ message: @autoclosure () -> T) {
         AppLog.shared.debug("[CommonTokenQuotesRepository] \(message())")
     }
 }

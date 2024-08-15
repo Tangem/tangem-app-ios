@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class FakeTokenQuotesRepository: TokenQuotesRepository {
+class FakeTokenQuotesRepository: TokenQuotesRepository, TokenQuotesRepositoryUpdater {
     var quotes: Quotes {
         currentQuotes.value
     }

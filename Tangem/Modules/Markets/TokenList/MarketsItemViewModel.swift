@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class MarketsItemViewModel: Identifiable, ObservableObject {
-    @Injected(\.quotesDataProvider) private var quotesDataProvider: TokenQuotesDataProvider
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     // MARK: - Published
 
@@ -100,13 +100,13 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, filter in
-                viewModel.updatePrice(by: viewModel.quotesDataProvider.quotes[viewModel.tokenId], with: filter.interval)
+                viewModel.updatePrice(by: viewModel.quotesRepository.quotes[viewModel.tokenId], with: filter.interval)
             }
             .store(in: &bag)
     }
 
     private func bindToQuotesUpdates() {
-        quotesDataProvider.quotesPublisher
+        quotesRepository.quotesPublisher
             .withWeakCaptureOf(self)
             .compactMap { viewModel, quotes in
                 quotes[viewModel.tokenId]

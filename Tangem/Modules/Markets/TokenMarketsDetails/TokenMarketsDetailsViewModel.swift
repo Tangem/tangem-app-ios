@@ -11,7 +11,7 @@ import Combine
 import CombineExt
 
 class TokenMarketsDetailsViewModel: ObservableObject {
-    @Injected(\.quotesDataProvider) private var quotesDataProvider: TokenQuotesDataProvider
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published private(set) var isLoading = true
@@ -93,7 +93,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private lazy var quotesPublisher: some Publisher<TokenQuote?, Never> = {
         let currencyId = tokenInfo.id
 
-        return quotesDataProvider
+        return quotesRepository
             .quotesPublisher
             .receive(on: DispatchQueue.main)
             .map { $0[currencyId] }
@@ -147,7 +147,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         let tokenQuoteHelper = MarketsTokenQuoteHelper()
         loadedTokenDetailsPriceChangeInfo = tokenQuoteHelper.makePriceChangeIntervalsDictionary(
-            from: quotesDataProvider.quote(for: tokenInfo.id)
+            from: quotesRepository.quote(for: tokenInfo.id)
         ) ?? tokenInfo.priceChangePercentage
 
         bind()

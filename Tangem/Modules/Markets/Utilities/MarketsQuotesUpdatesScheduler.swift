@@ -10,7 +10,7 @@ import Foundation
 import TangemFoundation
 
 class MarketsQuotesUpdatesScheduler {
-    @Injected(\.quotesRepositoryUpdater) private var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     private let lock = Lock(isRecursive: false)
     private let quotesUpdateTimeInterval: TimeInterval = 60.0
@@ -60,6 +60,6 @@ class MarketsQuotesUpdatesScheduler {
             return
         }
 
-        await quotesRepositoryUpdater.loadQuotes(currencyIds: quotesToUpdate)
+        await quotesRepository.loadQuotes(currencyIds: quotesToUpdate)
     }
 }
