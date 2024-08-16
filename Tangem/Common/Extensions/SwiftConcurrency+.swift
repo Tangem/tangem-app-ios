@@ -68,7 +68,7 @@ func runOnMain<T>(_ code: () throws -> T) rethrows -> T {
 
 extension Task where Success == Never, Failure == Never {
     static func sleep(seconds: Double) async throws {
-        let duration = UInt64(seconds * nanoMultiplier)
+        let duration = UInt64(abs(seconds) * nanoMultiplier)
         try await Task.sleep(nanoseconds: duration)
     }
 }
@@ -126,7 +126,6 @@ enum TaskError: Error {
 
 extension Task where Success == Never, Failure == Never {
     static var defaultCancellationCheckInterval: TimeInterval { 0.1 }
-    static var nanoMultiplier: Double { 1_000_000_000 }
 
     /// Like `Task.sleep` but with cancellation support.
     ///
@@ -153,6 +152,8 @@ extension Task where Success == Never, Failure == Never {
 }
 
 extension Task {
+    static var nanoMultiplier: Double { 1_000_000_000 }
+
     func eraseToAnyCancellable() -> AnyCancellable {
         return AnyCancellable(cancel)
     }
@@ -165,7 +166,7 @@ extension Task where Failure == Error {
         operation: @escaping @Sendable () async throws -> Success
     ) -> Task {
         Task(priority: priority) {
-            let nanosecondsDelay = UInt64(delaySeconds * 1_000_000_000)
+            let nanosecondsDelay = UInt64(abs(delaySeconds) *  nanoMultiplier)
             try await Task<Never, Never>.sleep(nanoseconds: nanosecondsDelay)
             try Task<Never, Never>.checkCancellation()
             return try await operation()
