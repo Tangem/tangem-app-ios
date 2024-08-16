@@ -68,7 +68,7 @@ func runOnMain<T>(_ code: () throws -> T) rethrows -> T {
 
 extension Task where Success == Never, Failure == Never {
     static func sleep(seconds: Double) async throws {
-        let duration = UInt64(abs(seconds) * nanoMultiplier)
+        let duration = UInt64(abs(seconds)) * NSEC_PER_SEC
         try await Task.sleep(nanoseconds: duration)
     }
 }
@@ -140,7 +140,7 @@ extension Task where Success == Never, Failure == Never {
     /// - Parameter deadline: Sleep at least until this time. The actual time the sleep ends can be later.
     /// - Parameter cancellationCheckInterval: The interval in seconds between cancellation checks.
     static func sleepCancellable(until deadline: Date, cancellationCheckInterval: TimeInterval = defaultCancellationCheckInterval) async throws {
-        let cancellationCheckIntervalUint64 = UInt64(cancellationCheckInterval * nanoMultiplier)
+        let cancellationCheckIntervalUint64 = UInt64(cancellationCheckInterval) * NSEC_PER_SEC
         while Date() < deadline {
             if Task.isCancelled {
                 break
@@ -152,8 +152,6 @@ extension Task where Success == Never, Failure == Never {
 }
 
 extension Task {
-    static var nanoMultiplier: Double { 1_000_000_000 }
-
     func eraseToAnyCancellable() -> AnyCancellable {
         return AnyCancellable(cancel)
     }
@@ -166,8 +164,7 @@ extension Task where Failure == Error {
         operation: @escaping @Sendable () async throws -> Success
     ) -> Task {
         Task(priority: priority) {
-            let nanosecondsDelay = UInt64(abs(delaySeconds) *  nanoMultiplier)
-            try await Task<Never, Never>.sleep(nanoseconds: nanosecondsDelay)
+            try await Task<Never, Never>.sleep(seconds: delaySeconds)
             try Task<Never, Never>.checkCancellation()
             return try await operation()
         }
