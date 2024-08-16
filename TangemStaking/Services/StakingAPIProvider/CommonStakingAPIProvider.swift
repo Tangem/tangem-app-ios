@@ -41,7 +41,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             integrationId: request.integrationId,
             addresses: .init(
                 address: request.address,
-                additionalAddresses: request.additionalAddresses.map {
+                additionalAddresses: request.additionalAddresses.flatMap {
                     StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
                 }
             ),
