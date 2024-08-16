@@ -23,10 +23,6 @@ protocol TokenQuotesRepository: AnyObject {
 }
 
 extension TokenQuotesRepository {
-    func loadQuotes(currencyIds: [String]) async {
-        try? await loadQuotes(currencyIds: currencyIds).async()
-    }
-
     func quote(for id: String?) -> TokenQuote? {
         guard let id else {
             return nil
@@ -38,15 +34,38 @@ extension TokenQuotesRepository {
     func quote(for item: TokenItem) -> TokenQuote? {
         return quote(for: item.currencyId)
     }
+
+    func loadQuotes(currencyIds: [String]) async {
+        try? await loadQuotes(currencyIds: currencyIds).async()
+    }
+}
+
+protocol TokenQuotesRepositoryUpdater: AnyObject {
+    func saveQuotes(_ quotes: [TokenQuote])
+    func saveQuote(_ quote: TokenQuote)
+}
+
+extension TokenQuotesRepositoryUpdater {
+    func saveQuote(_ quote: TokenQuote) {
+        saveQuotes([quote])
+    }
 }
 
 private struct TokenQuotesRepositoryKey: InjectionKey {
-    static var currentValue: TokenQuotesRepository = CommonTokenQuotesRepository()
+    static var currentValue: TokenQuotesRepository & TokenQuotesRepositoryUpdater = CommonTokenQuotesRepository()
 }
 
 extension InjectedValues {
-    var quotesRepository: TokenQuotesRepository {
+    var quotesRepositoryUpdater: TokenQuotesRepositoryUpdater { _quotesRepository }
+
+    var quotesRepository: TokenQuotesRepository { _quotesRepository }
+
+    private var _quotesRepository: TokenQuotesRepository & TokenQuotesRepositoryUpdater {
         get { Self[TokenQuotesRepositoryKey.self] }
         set { Self[TokenQuotesRepositoryKey.self] = newValue }
+    }
+
+    static func setTokenQuotesRepository(_ newRepository: TokenQuotesRepository & TokenQuotesRepositoryUpdater) {
+        InjectedValues[\._quotesRepository] = newRepository
     }
 }

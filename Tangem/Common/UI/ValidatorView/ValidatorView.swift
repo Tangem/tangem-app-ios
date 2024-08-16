@@ -23,7 +23,11 @@ struct ValidatorView: View {
     var body: some View {
         switch data.detailsType {
         case .checkmark:
-            Button(action: { selection?.isActive(compare: data.id).toggle() }) {
+            Button(action: { selection?.isActive(compare: data.address).toggle() }) {
+                content
+            }
+        case .chevron(_, .some(let action)):
+            Button(action: action) {
                 content
             }
         case .none, .chevron, .balance:
@@ -44,7 +48,7 @@ struct ValidatorView: View {
 
                 detailsView(detailsType: detailsType)
                     .matchedGeometryEffect(
-                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.id), namespace: $0.id) }
+                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.address), namespace: $0.id) }
                     )
             }
         }
@@ -55,7 +59,7 @@ struct ValidatorView: View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
             .saturation(data.hasMonochromeIcon ? 0 : 1)
             .matchedGeometryEffect(
-                namespace.map { .init(id: $0.names.validatorIcon(id: data.id), namespace: $0.id) }
+                namespace.map { .init(id: $0.names.validatorIcon(id: data.address), namespace: $0.id) }
             )
     }
 
@@ -64,7 +68,7 @@ struct ValidatorView: View {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                 .matchedGeometryEffect(
-                    namespace.map { .init(id: $0.names.validatorTitle(id: data.id), namespace: $0.id) }
+                    namespace.map { .init(id: $0.names.validatorTitle(id: data.address), namespace: $0.id) }
                 )
 
             if let subtitle = data.subtitle {
@@ -72,7 +76,7 @@ struct ValidatorView: View {
                     Text(subtitle)
                 }
                 .matchedGeometryEffect(
-                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.id), namespace: $0.id) }
+                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.address), namespace: $0.id) }
                 )
             }
         }
@@ -83,15 +87,18 @@ struct ValidatorView: View {
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.id).wrappedValue ?? false)
-        case .chevron(let balanceInfo):
+            CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.address).wrappedValue ?? false)
+        case .chevron(let balanceInfo, let action):
             HStack(spacing: 20) {
                 if let balanceInfo {
                     balanceView(balanceInfo: balanceInfo)
                 }
-                Assets.chevron.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.informative)
+
+                if action != nil {
+                    Assets.chevron.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.informative)
+                }
             }
         case .balance(let balanceInfo):
             balanceView(balanceInfo: balanceInfo)
@@ -135,7 +142,7 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         hasMonochromeIcon: true,
@@ -143,7 +150,7 @@ extension ValidatorView {
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
                         hasMonochromeIcon: true,
@@ -171,7 +178,7 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         hasMonochromeIcon: true,
@@ -179,7 +186,7 @@ extension ValidatorView {
                         detailsType: .chevron()
                     ),
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "Aconcagua",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
                         hasMonochromeIcon: true,
@@ -208,7 +215,7 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         hasMonochromeIcon: true,

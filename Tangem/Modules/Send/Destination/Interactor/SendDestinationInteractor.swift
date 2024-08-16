@@ -17,6 +17,7 @@ protocol SendDestinationInteractor {
     var isValidatingDestination: AnyPublisher<Bool, Never> { get }
     var canEmbedAdditionalField: AnyPublisher<Bool, Never> { get }
     var destinationValid: AnyPublisher<Bool, Never> { get }
+    var allFieldsIsValid: AnyPublisher<Bool, Never> { get }
     var destinationError: AnyPublisher<String?, Never> { get }
     var destinationAdditionalFieldError: AnyPublisher<String?, Never> { get }
 
@@ -37,8 +38,11 @@ class CommonSendDestinationInteractor {
 
     private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
     private let _canEmbedAdditionalField: CurrentValueSubject<Bool, Never> = .init(true)
+
     private let _destinationValid: CurrentValueSubject<Bool, Never> = .init(false)
     private let _destinationError: CurrentValueSubject<Error?, Never> = .init(nil)
+
+    private let _additionalFieldValid: CurrentValueSubject<Bool, Never> = .init(true)
     private let _destinationAdditionalFieldError: CurrentValueSubject<Error?, Never> = .init(nil)
 
     init(
@@ -141,6 +145,13 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
         _destinationValid.eraseToAnyPublisher()
     }
 
+    var allFieldsIsValid: AnyPublisher<Bool, Never> {
+        Publishers
+            .CombineLatest(_destinationValid, _additionalFieldValid)
+            .map { $0 && $1 }
+            .eraseToAnyPublisher()
+    }
+
     var destinationError: AnyPublisher<String?, Never> {
         _destinationError.map { $0?.localizedDescription }.eraseToAnyPublisher()
     }
@@ -181,21 +192,26 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
         guard let type = additionalFieldType else {
             assertionFailure("This method doesn't be called if additionalFieldType is nil")
             output?.destinationAdditionalParametersDidChanged(.notSupported)
+            _additionalFieldValid.send(true)
             return
         }
 
         guard !value.isEmpty else {
             output?.destinationAdditionalParametersDidChanged(.empty(type: type))
             _destinationAdditionalFieldError.send(nil)
+            _additionalFieldValid.send(true)
             return
         }
 
         do {
             let type = try proceed(additionalField: value)
             output?.destinationAdditionalParametersDidChanged(type)
+            _destinationAdditionalFieldError.send(nil)
+            _additionalFieldValid.send(true)
         } catch {
             _destinationAdditionalFieldError.send(error)
             output?.destinationAdditionalParametersDidChanged(.empty(type: type))
+            _additionalFieldValid.send(false)
         }
     }
 }

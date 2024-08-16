@@ -34,7 +34,7 @@ struct StakingValidatorViewMapper {
     ) -> ValidatorViewData {
         let state = state ?? .active(apr: info.apr)
         return ValidatorViewData(
-            id: info.address,
+            address: info.address,
             name: info.name,
             imageURL: info.iconURL,
             hasMonochromeIcon: state.isUnstaked,

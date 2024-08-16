@@ -19,6 +19,7 @@ enum SendFlowActionType: Hashable {
     case send
     case stake
     case unstake
+    case withdraw
     case claimRewards
     case restakeRewards
 
@@ -27,6 +28,7 @@ enum SendFlowActionType: Hashable {
         case .send: Localization.commonSend
         case .stake: Localization.commonStake
         case .unstake: Localization.commonUnstake
+        case .withdraw: Localization.stakingWithdraw
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.commonClaimRewards // TODO: Check it action
         }
