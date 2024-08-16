@@ -87,3 +87,9 @@ extension StakeKitDTO {
         }
     }
 }
+
+extension StakeKitDTO.Transaction {
+    struct TronTransaction: Decodable {
+        let rawDataHex: String
+    }
+}

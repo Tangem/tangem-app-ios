@@ -174,10 +174,11 @@ private extension CommonStakingManager {
         .init(
             amount: action.amount,
             address: wallet.address,
-            additionalAddresses: additionalAddresses(),
+            additionalAddresses: getAdditionalAddresses(),
             token: wallet.item,
             validator: action.validator,
-            integrationId: integrationId
+            integrationId: integrationId,
+            tronResource: getTronResource()
         )
     }
 
@@ -189,8 +190,12 @@ private extension CommonStakingManager {
             return false
         }
     }
+}
 
-    func additionalAddresses() -> AdditionalAddresses? {
+// MARK: - Blockchain specific
+
+private extension CommonStakingManager {
+    func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
         case .cosmos:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
@@ -198,6 +203,15 @@ private extension CommonStakingManager {
             }
 
             return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
+        default:
+            return nil
+        }
+    }
+
+    func getTronResource() -> String? {
+        switch wallet.item.network {
+        case .tron:
+            return StakeKitDTO.Actions.ActionArgs.TronResource.energy.rawValue
         default:
             return nil
         }
