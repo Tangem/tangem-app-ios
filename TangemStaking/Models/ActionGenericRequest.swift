@@ -1,26 +1,26 @@
 //
-//  StakingActionRequestParams.swift
+//  ActionGenericRequest.swift
 //  TangemStaking
 //
-//  Created by Dmitry Fedorov on 15.08.2024.
+//  Created by Sergey Balashov on 14.08.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-public struct StakingActionRequestParams {
-    let amount: Decimal
-    let address: String
-    let additionalAddresses: AdditionalAddresses?
-    let token: StakingTokenItem?
-    let validator: String
-    let integrationId: String
+public struct ActionGenericRequest {
+    public let amount: Decimal
+    public let address: String
+    public let additionalAddresses: AdditionalAddresses?
+    public let token: StakingTokenItem
+    public let validator: String
+    public let integrationId: String
 
-    init(
+    public init(
         amount: Decimal,
         address: String,
-        additionalAddresses: AdditionalAddresses? = nil,
-        token: StakingTokenItem? = nil,
+        additionalAddresses: AdditionalAddresses?,
+        token: StakingTokenItem,
         validator: String,
         integrationId: String
     ) {

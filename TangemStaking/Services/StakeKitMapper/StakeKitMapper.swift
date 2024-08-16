@@ -9,6 +9,24 @@
 import Foundation
 
 struct StakeKitMapper {
+    // MARK: - To DTO
+
+    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+        switch action {
+        case .withdraw: .withdraw
+        }
+    }
+
+    func mapToTokenDTO(from tokenItem: StakingTokenItem) -> StakeKitDTO.Token {
+        StakeKitDTO.Token(
+            network: tokenItem.network.rawValue,
+            name: tokenItem.name,
+            decimals: tokenItem.decimals,
+            address: tokenItem.contractAddress,
+            symbol: tokenItem.symbol
+        )
+    }
+
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
@@ -48,6 +66,28 @@ struct StakeKitMapper {
         }
 
         return try ExitAction(
+            id: response.id,
+            status: mapToActionStatus(from: response.status),
+            currentStepIndex: response.currentStepIndex,
+            transactions: actionTransaction
+        )
+    }
+
+    func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
+        guard let transactions = response.transactions, !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
+            try ActionTransaction(
+                id: transaction.id,
+                stepIndex: transaction.stepIndex,
+                type: mapToTransactionType(from: transaction.type),
+                status: mapToTransactionStatus(from: transaction.status)
+            )
+        }
+
+        return try PendingAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
             currentStepIndex: response.currentStepIndex,
@@ -101,11 +141,26 @@ struct StakeKitMapper {
             return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 blocked: blocked,
-                rewards: mapToRewards(from: balance),
+                // TODO: https://tangem.atlassian.net/browse/IOS-7398
+                rewards: .zero,
                 balanceGroupType: mapToBalanceGroupType(from: balance.type),
                 validatorAddress: balance.validatorAddress,
-                passthrough: mapToPassthrough(from: balance)
+                actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
+        }
+    }
+
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [PendingActionType] {
+        balance.pendingActions.compactMap { action in
+            switch action.type {
+            case .withdraw:
+                return .withdraw(passthrough: action.passthrough)
+            case .claimRewards:
+                // TODO: https://tangem.atlassian.net/browse/IOS-7398
+                return nil
+            default:
+                return nil
+            }
         }
     }
 
@@ -157,6 +212,7 @@ struct StakeKitMapper {
         case .approval: .approval
         case .stake: .stake
         case .unstake: .unstake
+        case .withdraw: .withdraw
         case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
             throw StakeKitMapperError.notImplement
         }
@@ -240,40 +296,13 @@ struct StakeKitMapper {
             return .warmup
         case .available, .locked, .staked:
             return .active
-        case .unstaking, .unstaked, .unlocking:
+        case .unstaking, .unlocking:
             return .unbonding
+        case .unstaked:
+            return .withdraw
         case .rewards, .unknown:
             return .unknown
         }
-    }
-
-    func mapToRewards(from balance: StakeKitDTO.Balances.Response.Balance) -> Decimal? {
-        guard rewardsPendingAction(from: balance) != nil else {
-            return nil
-        }
-        return Decimal(stringValue: balance.amount)
-    }
-
-    func mapToPassthrough(from balance: StakeKitDTO.Balances.Response.Balance) -> String? {
-        rewardsPendingAction(from: balance)?.passthrough
-    }
-
-    func mapToTokenDTO(from tokenItem: StakingTokenItem) -> StakeKitDTO.Token {
-        StakeKitDTO.Token(
-            network: tokenItem.network.rawValue,
-            name: tokenItem.name,
-            decimals: tokenItem.decimals,
-            address: tokenItem.contractAddress,
-            symbol: tokenItem.symbol,
-            logoURI: nil
-        )
-    }
-
-    private func rewardsPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> StakeKitDTO.Balances.Response.Balance.PendingAction? {
-        guard balance.type == .rewards else {
-            return nil
-        }
-        return balance.pendingActions.first { $0.type == .claimRewards }
     }
 }
 

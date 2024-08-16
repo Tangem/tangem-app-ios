@@ -18,11 +18,9 @@ struct QuotesMapper {
             let quote = Quote(
                 id: key,
                 price: price,
-                // We received the value 0.12 which means that it's 0.12%
-                // But more comformatable work with value 0.12 = 12%
-                priceChange: value.priceChange24h.map { $0 / 100 },
-                priceChange7d: value.priceChange1w.map { $0 / 100 },
-                priceChange30d: value.priceChange30d.map { $0 / 100 },
+                priceChange: value.priceChange24h,
+                priceChange7d: value.priceChange1w,
+                priceChange30d: value.priceChange30d,
                 prices24h: value.prices24h.map { Array($0.values) }
             )
 

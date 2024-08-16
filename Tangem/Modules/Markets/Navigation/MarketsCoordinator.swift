@@ -41,7 +41,11 @@ class MarketsCoordinator: CoordinatorObject {
     func start(with options: MarketsCoordinator.Options) {
         let headerViewModel = MainBottomSheetHeaderViewModel()
         self.headerViewModel = headerViewModel
-        rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
+        rootViewModel = .init(
+            searchTextPublisher: headerViewModel.enteredSearchTextPublisher,
+            quotesRepositoryUpdateHelper: CommonMarketsQuotesUpdateHelper(),
+            coordinator: self
+        )
     }
 
     func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {

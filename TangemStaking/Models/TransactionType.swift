@@ -12,4 +12,5 @@ public enum TransactionType: String, Hashable {
     case approval
     case stake
     case unstake
+    case withdraw
 }

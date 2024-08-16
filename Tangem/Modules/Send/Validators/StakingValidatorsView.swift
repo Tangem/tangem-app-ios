@@ -18,7 +18,7 @@ struct StakingValidatorsView: View {
     var body: some View {
         GroupedScrollView(spacing: 20) {
             GroupedSection(viewModel.validators) { data in
-                let isSelected = data.id == viewModel.selectedValidator
+                let isSelected = data.address == viewModel.selectedValidator
 
                 ValidatorView(data: data, selection: $viewModel.selectedValidator)
                     .geometryEffect(.init(id: namespace.id, names: namespace.names))
