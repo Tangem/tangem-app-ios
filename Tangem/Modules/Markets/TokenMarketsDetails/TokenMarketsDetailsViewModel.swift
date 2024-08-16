@@ -279,8 +279,8 @@ private extension TokenMarketsDetailsViewModel {
                     return detailsPriceChangeInfo
                 }
 
-                return mergedData
                 let mergedData = quotesPriceChange.merging(detailsPriceChangeInfo, uniquingKeysWith: { quotes, _ in return quotes })
+                return mergedData
             }
             .assign(to: \.priceChangeInfo, on: self, ownership: .weak)
             .store(in: &bag)
