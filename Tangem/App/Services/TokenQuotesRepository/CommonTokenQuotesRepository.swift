@@ -18,7 +18,6 @@ class CommonTokenQuotesRepository {
     private var _quotes: CurrentValueSubject<Quotes, Never> = .init([:])
     private var loadingQueue = PassthroughSubject<QueueItem, Never>()
     private var bag: Set<AnyCancellable> = []
-    private let lock = Lock(isRecursive: true)
 
     init() {
         bind()
@@ -29,9 +28,7 @@ class CommonTokenQuotesRepository {
 
 extension CommonTokenQuotesRepository: TokenQuotesRepository {
     var quotes: Quotes {
-        lock {
-            return _quotes.value
-        }
+        _quotes.value
     }
 
     var quotesPublisher: AnyPublisher<Quotes, Never> {
@@ -67,15 +64,13 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
     }
 
     func saveQuotes(_ quotes: [TokenQuote]) {
-        lock {
-            var current = self.quotes
+        var current = _quotes.value
 
-            quotes.forEach { quote in
-                current[quote.currencyId] = quote
-            }
-
-            _quotes.send(current)
+        quotes.forEach { quote in
+            current[quote.currencyId] = quote
         }
+
+        _quotes.send(current)
     }
 }
 
@@ -124,10 +119,7 @@ private extension CommonTokenQuotesRepository {
             .withWeakCaptureOf(self)
             .flatMap { repository, _ in
                 // Reload saved quotes
-                var idsToLoad: [String] = []
-                repository.lock {
-                    idsToLoad = Array(repository._quotes.value.keys)
-                }
+                let idsToLoad: [String] = Array(repository.quotes.keys)
                 return repository.loadQuotes(currencyIds: idsToLoad)
             }
             .sink()
@@ -189,9 +181,7 @@ private extension CommonTokenQuotesRepository {
 
     func clearRepository() {
         log("Start repository cleanup")
-        lock {
-            _quotes.value.removeAll()
-        }
+        _quotes.value.removeAll()
     }
 
     func log<T>(_ message: @autoclosure () -> T) {

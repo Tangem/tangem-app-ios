@@ -51,10 +51,7 @@ class MarketsQuotesUpdatesScheduler {
     }
 
     private func updateQuotes() async {
-        var quotesToUpdate = [String]()
-        lock {
-            quotesToUpdate = Array(updateList)
-        }
+        let quotesToUpdate = lock { Array(updateList) }
 
         if quotesToUpdate.isEmpty {
             return

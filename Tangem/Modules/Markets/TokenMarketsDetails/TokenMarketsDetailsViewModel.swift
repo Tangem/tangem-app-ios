@@ -97,6 +97,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             .quotesPublisher
             .receive(on: DispatchQueue.main)
             .map { $0[currencyId] }
+            .share(replay: 1)
     }()
 
     private let balanceFormatter = BalanceFormatter()
