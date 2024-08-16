@@ -95,6 +95,7 @@
 "common_done" = "Erledigt";
 "common_enabled" = "Aktiviert";
 "common_error" = "Fehler";
+"common_exchange" = "Exchange";
 "common_explore" = "Erkunden";
 "common_explore_transaction_history" = "Transaktionsverlauf einsehen";
 "common_explorer" = "Explorer";
@@ -654,11 +655,10 @@
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
 "staking_migrate" = "Migrieren";
 "staking_native" = "Natives Staking";
-"staking_notification_earn_rewards_text" = "Staking allow you to earn %1$@. Your staking rewards arrive every %2$@.";
-"staking_notification_earn_rewards_text_period_day" = "day";
-"staking_notification_earn_rewards_text_period_hour" = "hour";
-"staking_notification_earn_rewards_text_period_month" = "month";
-"staking_notification_earn_rewards_text_period_week" = "week";
+"staking_notification_earn_rewards_text_period_day" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jeden tag.";
+"staking_notification_earn_rewards_text_period_hour" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Stunde.";
+"staking_notification_earn_rewards_text_period_month" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jeden Monat.";
+"staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
 "staking_notification_unstake_text" = "Die Belohnungen werden sofort nach dem unstaken gestoppt. Der unstakingprozess dauert %@.";
 "staking_rebond" = "Erneut binden";
@@ -822,6 +822,8 @@
 "wallet_settings_title" = "Wallet-Einstellungen";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Verwende %@ oder scanne eine Karte, um den Zugriff auf deine Wallet freizuschalten.";
+"warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
+"warning_approval_in_progress_title" = "Approval in Progress";
 "warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte auf dein Gerät liegen. Bitte wende dich  an unser Support-Team, um Unterstützung zu erhalten.";
 "warning_beacon_chain_retirement_content" = "Laut den Entwicklern des BNB-Netzes wird die Unterstützung für den BEP-2-Standard im Juni 2024 enden. Um den Verlust von Vermögenswerten mit diesem Standard zu vermeiden, konvertiere bitte in den BEP-20 Standard. Nutze gerne unseren Swap-Service, um sie auf das BNB Smart Chain Netzwerk zu übertragen.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain wird abgeschaltet";

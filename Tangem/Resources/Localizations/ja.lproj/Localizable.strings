@@ -95,6 +95,7 @@
 "common_done" = "完了";
 "common_enabled" = "有効";
 "common_error" = "エラー";
+"common_exchange" = "Exchange";
 "common_explore" = "移動する";
 "common_explore_transaction_history" = "取引履歴を調べる";
 "common_explorer" = "エクスプローラー";
@@ -654,11 +655,10 @@
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";
-"staking_notification_earn_rewards_text" = "Staking allow you to earn %1$@. Your staking rewards arrive every %2$@.";
-"staking_notification_earn_rewards_text_period_day" = "day";
-"staking_notification_earn_rewards_text_period_hour" = "hour";
-"staking_notification_earn_rewards_text_period_month" = "month";
-"staking_notification_earn_rewards_text_period_week" = "week";
+"staking_notification_earn_rewards_text_period_day" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎日受け取れます。";
+"staking_notification_earn_rewards_text_period_hour" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は1時間ごとに受け取れます。";
+"staking_notification_earn_rewards_text_period_month" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎月受け取れます。";
+"staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
 "staking_notification_unstake_text" = "ステーキング解除後、報酬の獲得はすぐに停止します。ステーキング解除プロセスには%@かかります。";
 "staking_rebond" = "再結束";
@@ -822,6 +822,8 @@
 "wallet_settings_title" = "ウォレット設定";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "%@を使用するか、カードをスキャンしてウォレットにアクセスしてください";
+"warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
+"warning_approval_in_progress_title" = "Approval in Progress";
 "warning_backup_errors_message" = "カードのアクティベーションが正しく完了しませんでした。デバイスの NFCモジュールに問題があるか、カードをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
@@ -845,8 +847,8 @@
 "warning_express_not_enough_fee_for_token_tx_description" = "取引を行うには、 %1$@ %2$@を入金する必要があります。";
 "warning_express_not_enough_fee_for_token_tx_title" = "%@ 手数料を支払えません";
 "warning_express_notification_invalid_reserve_amount_title" = "受け取る金額は、 %@ 以上である必要があります。";
-"warning_express_pair_unavailable_message" = "This may occur because the provider is currently unable to exchange your selected pair. Please wait a moment and try again. (Code %@)";
-"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
+"warning_express_pair_unavailable_message" = "これは、選択したペアがプロバイダーでは現在交換できないために発生する可能性があります。しばらく待ってからもう一度お試しください。(コード%@ )";
+"warning_express_pair_unavailable_title" = "選択されたペアは一時的に利用できません";
 "warning_express_refresh_required_title" = "サービスは一時的に利用できません";
 "warning_express_too_maximum_amount_title" = "スワップするトークンの量は %@ を超えないでください";
 "warning_express_too_minimal_amount_title" = "スワップ金額は %@ 以上である必要があります";

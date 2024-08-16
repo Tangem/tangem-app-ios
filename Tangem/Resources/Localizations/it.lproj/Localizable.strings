@@ -95,6 +95,7 @@
 "common_done" = "Fatto";
 "common_enabled" = "Enabled";
 "common_error" = "Errore";
+"common_exchange" = "Exchange";
 "common_explore" = "Explore";
 "common_explore_transaction_history" = "Explore transaction history";
 "common_explorer" = "Explorer";
@@ -133,7 +134,7 @@
 "common_retry" = "Retry";
 "common_save" = "Save";
 "common_save_changes" = "Mantieni le modifiche";
-"common_search" = "Search through the market";
+"common_search" = "Search";
 "common_search_tokens" = "Search tokens";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "Select action";
@@ -336,7 +337,7 @@
 "markets_add_to_my_portfolio_description" = "To buy, exchange, or receive this asset, add it to your portfolio";
 "markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
 "markets_add_to_portfolio_button" = "Add to portfolio";
-"markets_add_token" = "Add token";
+"markets_add_token" = "Add";
 "markets_available networks" = "Available networks";
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
@@ -654,11 +655,10 @@
 "staking_details_warmup_period_info" = "The allocated time for activating participation in staking.";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
-"staking_notification_earn_rewards_text" = "Staking allow you to earn %1$@. Your staking rewards arrive every %2$@.";
-"staking_notification_earn_rewards_text_period_day" = "day";
-"staking_notification_earn_rewards_text_period_hour" = "hour";
-"staking_notification_earn_rewards_text_period_month" = "month";
-"staking_notification_earn_rewards_text_period_week" = "week";
+"staking_notification_earn_rewards_text_period_day" = "Staking allow you to earn %1$@. Your staking rewards arrive every day.";
+"staking_notification_earn_rewards_text_period_hour" = "Staking allow you to earn %1$@. Your staking rewards arrive every hour.";
+"staking_notification_earn_rewards_text_period_month" = "Staking allow you to earn %1$@. Your staking rewards arrive every month.";
+"staking_notification_earn_rewards_text_period_week" = "Staking allow you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
 "staking_rebond" = "Rebond";
@@ -822,6 +822,8 @@
 "wallet_settings_title" = "Wallet settings";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Use %@ or scan a card to unlock access to your wallet";
+"warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
+"warning_approval_in_progress_title" = "Approval in Progress";
 "warning_backup_errors_message" = "It seems that the card activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card to your device. Please contact our Support team for assistance.";
 "warning_beacon_chain_retirement_content" = "According to BNB network developers, support for the BEP-2 standard will end in June 2024. To avoid losing assets with this standard, please convert them to the BEP-20 standard. Use our swap service or third-party services to transfer funds to the BNB Smart Chain network.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain will shut down";

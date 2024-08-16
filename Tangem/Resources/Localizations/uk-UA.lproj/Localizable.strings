@@ -95,6 +95,7 @@
 "common_done" = "Готово";
 "common_enabled" = "Увімкнено";
 "common_error" = "Помилка";
+"common_exchange" = "Exchange";
 "common_explore" = "Оглядач";
 "common_explore_transaction_history" = "Переглянути історію транзакцій";
 "common_explorer" = "Оглядач";
@@ -654,11 +655,10 @@
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
 "staking_migrate" = "Перемістити";
 "staking_native" = "Нативний стейкінг";
-"staking_notification_earn_rewards_text" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг надходять кожні %2$@.";
-"staking_notification_earn_rewards_text_period_day" = "day";
-"staking_notification_earn_rewards_text_period_hour" = "hour";
-"staking_notification_earn_rewards_text_period_month" = "month";
-"staking_notification_earn_rewards_text_period_week" = "week";
+"staking_notification_earn_rewards_text_period_day" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щодня.";
+"staking_notification_earn_rewards_text_period_hour" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються кожну годину.";
+"staking_notification_earn_rewards_text_period_month" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щомісяця.";
+"staking_notification_earn_rewards_text_period_week" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щотиждня.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
 "staking_notification_unstake_text" = "Винагороди припиняють нараховуватися одразу після того, як ви знімаєте ставку. Процес зняття займає %@.";
 "staking_rebond" = "Зʼєднати ще раз";
@@ -822,6 +822,8 @@
 "wallet_settings_title" = "Налаштування гаманця";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Використовуйте %@ або відскануйте картку, щоб розблокувати доступ до гаманця";
+"warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
+"warning_approval_in_progress_title" = "Approval in Progress";
 "warning_backup_errors_message" = "Схоже, що активація картки була виконана неправильно. Це може бути пов'язано з проблемою з модулем NFC вашого пристрою або неправильним прикладанням картки до пристрою. Зверніться за допомогою до нашої служби підтримки.";
 "warning_beacon_chain_retirement_content" = "За рішенням розробників мережі BNB стандарт BEP-2 перестане підтримуватись у червні 2024 року. Щоб не втратити свої активи, їх необхідно конвертувати у стандарт BEP-20. Використовуйте функцію обміну, щоб перевести їх у мережу BNB Smart Chain.";
 "warning_beacon_chain_retirement_title" = "Відключення мережі BNB Beacon Chain";
