@@ -15,17 +15,9 @@ struct MarketsTokenQuoteHelper {
         }
 
         var priceChangeDict = [String: Decimal]()
-        if let dayChange = tokenQuote.priceChange24h {
-            priceChangeDict[MarketsPriceIntervalType.day.rawValue] = dayChange
-        }
-
-        if let weekChange = tokenQuote.priceChange7d {
-            priceChangeDict[MarketsPriceIntervalType.week.rawValue] = weekChange
-        }
-
-        if let monthChange = tokenQuote.priceChange30d {
-            priceChangeDict[MarketsPriceIntervalType.month.rawValue] = monthChange
-        }
+        priceChangeDict[MarketsPriceIntervalType.day.rawValue] = tokenQuote.priceChange24h
+        priceChangeDict[MarketsPriceIntervalType.week.rawValue] = tokenQuote.priceChange7d
+        priceChangeDict[MarketsPriceIntervalType.month.rawValue] = tokenQuote.priceChange30d
 
         return priceChangeDict
     }
