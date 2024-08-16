@@ -12,6 +12,8 @@ extension TokenMarketsDetailsView {
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
+                description
+
                 insights
 
                 securityScore
@@ -21,6 +23,16 @@ extension TokenMarketsDetailsView {
                 pricePerformance
 
                 links
+            }
+        }
+
+        private var description: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(0 ... 1) { _ in
+                    skeletonView(width: .infinity, height: 18)
+                }
+
+                skeletonView(width: 270, height: 18)
             }
         }
 
