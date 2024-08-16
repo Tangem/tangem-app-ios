@@ -14,10 +14,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
-    @Published var selectedPriceChangeIntervalType: MarketsPriceIntervalType
     @Published private(set) var isLoading = true
-    @Published var alert: AlertBinder?
     @Published private(set) var state: ViewState = .loading
+    @Published var selectedPriceChangeIntervalType: MarketsPriceIntervalType
+    @Published var alert: AlertBinder?
 
     // MARK: Blocks
 
@@ -35,7 +35,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private var selectedDate: Date?
     @Published private var priceFromQuoteRepository: Decimal?
     @Published private var priceFromSelectedChartValue: Decimal?
-    @Published private var loadedPriceChangeInfo: [String: Decimal] = [:]
+
+    @Published private var priceChangeInfo: [String: Decimal] = [:]
+    @Published private var loadedTokenDetailsPriceChangeInfo: [String: Decimal] = [:]
+
     @Published private var tokenInsights: TokenMarketsDetailsInsights?
 
     var price: String? { priceInfo?.price }
@@ -53,7 +56,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         return priceHelper.makePriceInfo(
             currentPrice: currentPrice,
-            priceChangeInfo: loadedPriceChangeInfo,
+            priceChangeInfo: priceChangeInfo,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
         )
     }
@@ -83,14 +86,17 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private weak var coordinator: TokenMarketsDetailsRoutable?
 
-    private lazy var currentPricePublisher: some Publisher<Decimal?, Never> = {
+    private lazy var currentPricePublisher: some Publisher<Decimal?, Never> = quotesPublisher
+        .map { $0?.price }
+        .share(replay: 1)
+
+    private lazy var quotesPublisher: some Publisher<TokenQuote?, Never> = {
         let currencyId = tokenInfo.id
 
         return quotesRepository
             .quotesPublisher
             .receive(on: DispatchQueue.main)
-            .map { $0[currencyId]?.price }
-            .prepend(tokenInfo.currentPrice)
+            .map { $0[currencyId] }
             .share(replay: 1)
     }()
 
@@ -119,6 +125,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
+    private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
 
     private var loadedInfo: TokenMarketsDetailsModel?
@@ -130,13 +137,19 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     init(
         tokenInfo: MarketsTokenModel,
         dataProvider: MarketsTokenDetailsDataProvider,
+        marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: TokenMarketsDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
         self.dataProvider = dataProvider
+        self.marketsQuotesUpdateHelper = marketsQuotesUpdateHelper
         self.coordinator = coordinator
         selectedPriceChangeIntervalType = .day
-        loadedPriceChangeInfo = tokenInfo.priceChangePercentage
+
+        let tokenQuoteHelper = MarketsTokenQuoteHelper()
+        loadedTokenDetailsPriceChangeInfo = tokenQuoteHelper.makePriceChangeIntervalsDictionary(
+            from: quotesRepository.quote(for: tokenInfo.id)
+        ) ?? tokenInfo.priceChangePercentage
 
         bind()
         loadDetailedInfo()
@@ -161,9 +174,11 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         loadingTask?.cancel()
         loadingTask = runTask(in: self) { viewModel in
             do {
+                let baseCurrencyCode = await AppSettings.shared.selectedCurrencyCode
                 let currencyId = viewModel.tokenInfo.id
                 viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
-                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId)
+                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId, baseCurrencyCode: baseCurrencyCode)
+                viewModel.marketsQuotesUpdateHelper.updateQuote(marketToken: result, for: baseCurrencyCode)
                 await viewModel.handleLoadDetailedInfo(.success(result))
             } catch {
                 await viewModel.handleLoadDetailedInfo(.failure(error))
@@ -217,7 +232,7 @@ private extension TokenMarketsDetailsViewModel {
 
     @MainActor
     func setupUI(using model: TokenMarketsDetailsModel) {
-        loadedPriceChangeInfo = model.priceChangePercentage
+        loadedTokenDetailsPriceChangeInfo = model.priceChangePercentage
         loadedInfo = model
         state = .loaded(model: model)
 
@@ -253,6 +268,20 @@ private extension TokenMarketsDetailsViewModel {
             .withPrevious()
             .map(ForegroundBlinkAnimationModifier.Change.calculateChange(from:to:))
             .assign(to: \.priceChangeAnimation, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        quotesPublisher
+            .combineLatest($loadedTokenDetailsPriceChangeInfo)
+            .map { quotes, detailsPriceChangeInfo in
+                let tokenQuoteHelper = MarketsTokenQuoteHelper()
+                guard let quotesPriceChange = tokenQuoteHelper.makePriceChangeIntervalsDictionary(from: quotes) else {
+                    return detailsPriceChangeInfo
+                }
+
+                let mergedData = quotesPriceChange.merging(detailsPriceChangeInfo, uniquingKeysWith: { quotes, _ in return quotes })
+                return mergedData
+            }
+            .assign(to: \.priceChangeInfo, on: self, ownership: .weak)
             .store(in: &bag)
 
         $isLoading

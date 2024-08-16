@@ -24,7 +24,6 @@ enum StakeKitDTO {
         let decimals: Int
         let address: String?
         let symbol: String
-        let logoURI: String?
     }
 
     struct Validator: Decodable {

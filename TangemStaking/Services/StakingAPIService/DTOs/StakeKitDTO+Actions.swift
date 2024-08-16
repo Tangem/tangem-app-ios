@@ -130,9 +130,15 @@ extension StakeKitDTO {
             }
 
             struct Response: Decodable {
-                let amount: String?
-                let token: Token
-                let gasLimit: String
+                let id: String
+                let integrationId: String
+                let status: ActionStatus
+                let type: ActionType
+                let currentStepIndex: Int
+                let amount: String
+                let validatorAddress: String?
+                let validatorAddresses: [String]?
+                let transactions: [Transaction.Response]?
             }
         }
 

@@ -38,10 +38,11 @@ final class MarketsViewModel: ObservableObject {
 
     private weak var coordinator: MarketsRoutable?
 
+    private let quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
-    private let quotesUpdater = MarketsQuotesUpdater()
+    private let quotesUpdatesScheduler = MarketsQuotesUpdatesScheduler()
     private let imageCache = KingfisherManager.shared.cache
 
     private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
@@ -58,8 +59,10 @@ final class MarketsViewModel: ObservableObject {
 
     init(
         searchTextPublisher: some Publisher<String, Never>,
+        quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: MarketsRoutable
     ) {
+        self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
@@ -184,9 +187,9 @@ private extension MarketsViewModel {
             .withWeakCaptureOf(self)
             .sink { viewModel, isVisible in
                 if isVisible {
-                    viewModel.quotesUpdater.resumeUpdates()
+                    viewModel.quotesUpdatesScheduler.resumeUpdates()
                 } else {
-                    viewModel.quotesUpdater.pauseUpdates()
+                    viewModel.quotesUpdatesScheduler.pauseUpdates()
                 }
             }
             .store(in: &bag)
@@ -195,6 +198,9 @@ private extension MarketsViewModel {
     func dataProviderBind() {
         dataProvider.$items
             .dropFirst()
+            .handleEvents(receiveOutput: { [weak self] items in
+                self?.quotesRepositoryUpdateHelper.updateQuotes(marketsTokens: items, for: AppSettings.shared.selectedCurrencyCode)
+            })
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
@@ -333,7 +339,7 @@ extension MarketsViewModel: MarketsListStateUpdater {
             invalidatedIds.insert(tokenViewModel.tokenId)
         }
 
-        quotesUpdater.stopUpdatingQuotes(for: invalidatedIds)
+        quotesUpdatesScheduler.stopUpdatingQuotes(for: invalidatedIds)
     }
 
     func setupUpdates(for range: ClosedRange<Int>) {
@@ -347,7 +353,7 @@ extension MarketsViewModel: MarketsListStateUpdater {
             idsToUpdate.insert(tokenViewModel.tokenId)
         }
 
-        quotesUpdater.scheduleQuotesUpdate(for: idsToUpdate)
+        quotesUpdatesScheduler.scheduleQuotesUpdate(for: idsToUpdate)
     }
 }
 

@@ -53,7 +53,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return .noData
         }
 
-        let result = priceChangeFormatter.format(change, option: .priceChange)
+        let result = priceChangeFormatter.formatPercentValue(change, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
