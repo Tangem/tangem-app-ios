@@ -22,6 +22,7 @@ final class MarketsViewModel: ObservableObject {
     // MARK: - Properties
 
     @Published var isViewVisible: Bool = false
+    @Published var isDataProviderBusy: Bool = false
 
     let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
@@ -228,6 +229,8 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
+                viewModel.isDataProviderBusy = isLoading
+
                 if viewModel.dataProvider.showError {
                     return
                 }

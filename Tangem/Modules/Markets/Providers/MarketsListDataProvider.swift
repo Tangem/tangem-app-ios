@@ -53,12 +53,15 @@ final class MarketsListDataProvider {
     // Limit of records per page
     private let limitPerPage: Int = 40
 
+    private let repeatRequestDelayInSeconds: TimeInterval = 10
+
     // Total tokens value by pages
     private var totalTokensCount: Int?
 
     private var lastSearchText: String?
     private var lastFilter: Filter?
     private var taskCancellable: AnyCancellable?
+    private var scheduledFetchTask: AnyCancellable?
 
     private var selectedCurrencyCode: String {
         AppSettings.shared.selectedCurrencyCode
@@ -84,37 +87,25 @@ final class MarketsListDataProvider {
             clearSearchResults()
         }
 
+        guard scheduledFetchTask == nil else {
+            log("Ignoring fetch request. Waiting for scheduled task")
+            return
+        }
+
         lastSearchText = searchText
         lastFilter = filter
 
         taskCancellable?.cancel()
 
         taskCancellable = runTask(in: self) { provider in
-            defer {
-                provider.isLoading = false
-            }
-            let response: MarketsDTO.General.Response
-
             do {
                 let searchText = searchText.trimmed()
 
-                response = try await provider.loadItems(searchText, with: filter)
+                let response = try await provider.loadItems(searchText, with: filter)
+                await provider.handleFetchResult(.success(response))
             } catch {
-                if error.isCancellationError {
-                    return
-                }
-
-                provider.log("Failed to load next page. Error: \(error)")
-                provider.showError = true
-                return
+                await provider.handleFetchResult(.failure(error))
             }
-
-            provider.currentOffset = response.offset + response.limit
-            provider.totalTokensCount = response.total
-
-            provider.showError = false
-
-            provider.items.append(contentsOf: response.tokens)
         }.eraseToAnyCancellable()
     }
 
@@ -122,12 +113,12 @@ final class MarketsListDataProvider {
         if let lastSearchText, let lastFilter {
             fetch(lastSearchText, with: lastFilter)
         } else {
-            log("Error optional parameter lastSearchText or lastFilter")
+            log("Failed to fetch more items for Markets list. Reason: missing lastSearchText or lastFilter")
         }
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[\(String(describing: self))] - \(message())")
+        AppLog.shared.debug("[MarketsListDataProvider] - \(message())")
     }
 
     private func clearSearchResults() {
@@ -135,7 +126,58 @@ final class MarketsListDataProvider {
         currentOffset = 0
         totalTokensCount = nil
 
+        if scheduledFetchTask != nil {
+            scheduledFetchTask?.cancel()
+            scheduledFetchTask = nil
+        }
+
         showError = false
+    }
+}
+
+// MARK: - Handling fetch response
+
+private extension MarketsListDataProvider {
+    func handleFetchResult(_ result: Result<MarketsDTO.General.Response, Error>) async {
+        do {
+            let response = try result.get()
+            currentOffset = response.offset + response.limit
+            totalTokensCount = response.total
+
+            log("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
+            items.append(contentsOf: response.tokens)
+
+            showError = false
+            isLoading = false
+        } catch {
+            if error.isCancellationError {
+                return
+            }
+
+            log("Failed to load next page. Error: \(error)")
+            if items.isEmpty {
+                showError = true
+                isLoading = false
+            } else {
+                scheduleRetryForFailedFetchRequest()
+            }
+        }
+    }
+
+    func scheduleRetryForFailedFetchRequest() {
+        log("Scheduling fetch more task")
+        guard scheduledFetchTask == nil else {
+            log("Task was previously scheduled. Ignoring request")
+            return
+        }
+
+        log("Retry fetch more task scheduled. Request delay: \(repeatRequestDelayInSeconds)")
+        scheduledFetchTask = Task.delayed(withDelay: repeatRequestDelayInSeconds, operation: { [weak self] in
+            guard let self else { return }
+
+            scheduledFetchTask = nil
+            fetchMore()
+        }).eraseToAnyCancellable()
     }
 }
 
