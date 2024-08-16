@@ -22,6 +22,7 @@ class ExpressNotificationManager {
 
     init(expressInteractor: ExpressInteractor) {
         self.expressInteractor = expressInteractor
+        analyticsService.setup(with: self, contextDataProvider: nil)
 
         bind()
     }
@@ -97,7 +98,12 @@ class ExpressNotificationManager {
             event = .notEnoughReceivedAmountForReserve(amountFormatted: "\(minAmount.formatted()) \(tokenSymbol)")
         case .requiredRefresh(let occurredError as ExpressAPIError):
             // For only a express error we use "Service temporary unavailable"
-            event = .refreshRequired(title: Localization.warningExpressRefreshRequiredTitle, message: occurredError.localizedMessage)
+            // or "Selected pair temporarily unavailable" depending on the error code.
+            event = .refreshRequired(
+                title: occurredError.localizedTitle,
+                message: occurredError.localizedMessage,
+                expressErrorCode: occurredError.errorCode
+            )
         case .requiredRefresh:
             event = .refreshRequired(title: Localization.commonError, message: Localization.commonUnknownError)
         case .noDestinationTokens:
@@ -224,6 +230,15 @@ class ExpressNotificationManager {
 }
 
 extension ExpressAPIError {
+    var localizedTitle: String {
+        switch errorCode {
+        case .exchangeNotPossibleError:
+            Localization.warningExpressPairUnavailableTitle
+        default:
+            Localization.warningExpressRefreshRequiredTitle
+        }
+    }
+
     var localizedMessage: String {
         switch errorCode {
         case .exchangeInternalError:
@@ -231,7 +246,7 @@ extension ExpressAPIError {
         case .exchangeProviderNotActiveError, .exchangeProviderNotAvailableError, .exchangeProviderProviderInternalError:
             return Localization.expressErrorSwapPairUnavailable(errorCode.rawValue)
         case .exchangeNotPossibleError:
-            return Localization.expressErrorProviderUnavailable(errorCode.rawValue)
+            return Localization.warningExpressPairUnavailableMessage(errorCode.rawValue)
         default:
             return Localization.expressErrorCode(errorCode.localizedDescription)
         }

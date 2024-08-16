@@ -36,16 +36,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return balancesInfo
     }
 
-    func estimateStakeFee(
-        amount: Decimal,
-        address: String,
-        validator: String,
-        integrationId: String
-    ) async throws -> Decimal {
+    func estimateStakeFee(params: StakingActionRequestParams) async throws -> Decimal {
         let request = StakeKitDTO.EstimateGas.Enter.Request(
-            integrationId: integrationId,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator)
+            integrationId: params.integrationId,
+            addresses: .init(
+                address: params.address,
+                additionalAddresses: params.additionalAddresses.flatMap {
+                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+                }
+            ),
+            args: .init(
+                amount: params.amount.description,
+                validatorAddress: params.validator,
+                inputToken: params.token.flatMap {
+                    mapper.mapToTokenDTO(from: $0)
+                }
+            )
         )
 
         let response = try await service.estimateGasEnterAction(request: request)
@@ -55,16 +61,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return result
     }
 
-    func estimateUnstakeFee(
-        amount: Decimal,
-        address: String,
-        validator: String,
-        integrationId: String
-    ) async throws -> Decimal {
+    func estimateUnstakeFee(params: StakingActionRequestParams) async throws -> Decimal {
         let request = StakeKitDTO.EstimateGas.Exit.Request(
-            integrationId: integrationId,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator)
+            integrationId: params.integrationId,
+            addresses: .init(
+                address: params.address,
+                additionalAddresses: params.additionalAddresses.flatMap {
+                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+                }
+            ),
+            args: .init(
+                amount: params.amount.description,
+                validatorAddress: params.validator,
+                inputToken: params.token.flatMap {
+                    mapper.mapToTokenDTO(from: $0)
+                }
+            )
         )
 
         let response = try await service.estimateGasExitAction(request: request)
@@ -75,18 +87,26 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func estimateClaimRewardsFee(
-        amount: Decimal,
-        address: String,
-        validator: String,
-        integrationId: String,
+        params: StakingActionRequestParams,
         passthrough: String
     ) async throws -> Decimal {
         let request = StakeKitDTO.EstimateGas.Pending.Request(
             type: .claimRewards,
-            integrationId: integrationId,
+            integrationId: params.integrationId,
             passthrough: passthrough,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator)
+            addresses: .init(
+                address: params.address,
+                additionalAddresses: params.additionalAddresses.flatMap {
+                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+                }
+            ),
+            args: .init(
+                amount: params.amount.description,
+                validatorAddress: params.validator,
+                inputToken: params.token.flatMap {
+                    mapper.mapToTokenDTO(from: $0)
+                }
+            )
         )
 
         let response = try await service.estimateGasPendingAction(request: request)
@@ -96,11 +116,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return result
     }
 
-    func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction {
+    func enterAction(params: StakingActionRequestParams) async throws -> EnterAction {
         let request = StakeKitDTO.Actions.Enter.Request(
-            integrationId: integrationId,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator)
+            integrationId: params.integrationId,
+            addresses: .init(
+                address: params.address,
+                additionalAddresses: params.additionalAddresses.flatMap {
+                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+                }
+            ),
+            args: .init(
+                amount: params.amount.description,
+                validatorAddress: params.validator,
+                inputToken: params.token.flatMap {
+                    mapper.mapToTokenDTO(from: $0)
+                }
+            )
         )
 
         let response = try await service.enterAction(request: request)
@@ -108,11 +139,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
-    func exitAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> ExitAction {
+    func exitAction(params: StakingActionRequestParams) async throws -> ExitAction {
         let request = StakeKitDTO.Actions.Exit.Request(
-            integrationId: integrationId,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator)
+            integrationId: params.integrationId,
+            addresses: .init(
+                address: params.address,
+                additionalAddresses: params.additionalAddresses.flatMap {
+                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+                }
+            ),
+            args: .init(
+                amount: params.amount.description,
+                validatorAddress: params.validator,
+                inputToken: params.token.flatMap {
+                    mapper.mapToTokenDTO(from: $0)
+                }
+            )
         )
 
         let response = try await service.exitAction(request: request)

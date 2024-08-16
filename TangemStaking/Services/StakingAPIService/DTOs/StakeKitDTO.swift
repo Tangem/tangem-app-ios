@@ -20,10 +20,10 @@ enum StakeKitDTO {
 
     struct Token: Codable {
         let network: String
-        let name: String?
-        let decimals: Int?
+        let name: String
+        let decimals: Int
         let address: String?
-        let symbol: String?
+        let symbol: String
         let logoURI: String?
     }
 
@@ -49,6 +49,40 @@ enum StakeKitDTO {
 
     struct Address: Codable {
         let address: String
+        let additionalAddresses: AdditionalAddresses?
+
+        init(address: String, additionalAddresses: StakeKitDTO.Address.AdditionalAddresses? = nil) {
+            self.address = address
+            self.additionalAddresses = additionalAddresses
+        }
+
+        struct AdditionalAddresses: Codable {
+            let cosmosPubKey: String?
+            let binanceBeaconAddress: String?
+            let stakeAccounts: [String]?
+            let lidoStakeAccounts: [String]?
+            let tezosPubKey: String?
+            let cAddressBech: String?
+            let pAddressBech: String?
+
+            init(
+                cosmosPubKey: String? = nil,
+                binanceBeaconAddress: String? = nil,
+                stakeAccounts: [String]? = nil,
+                lidoStakeAccounts: [String]? = nil,
+                tezosPubKey: String? = nil,
+                cAddressBech: String? = nil,
+                pAddressBech: String? = nil
+            ) {
+                self.cosmosPubKey = cosmosPubKey
+                self.binanceBeaconAddress = binanceBeaconAddress
+                self.stakeAccounts = stakeAccounts
+                self.lidoStakeAccounts = lidoStakeAccounts
+                self.tezosPubKey = tezosPubKey
+                self.cAddressBech = cAddressBech
+                self.pAddressBech = pAddressBech
+            }
+        }
     }
 
     struct Required: Decodable {

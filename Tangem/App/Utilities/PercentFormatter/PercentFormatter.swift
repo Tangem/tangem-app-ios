@@ -41,17 +41,18 @@ struct PercentFormatter {
     }
 
     func formatInterval(min: Decimal, max: Decimal, option: Option) -> String {
-        let minFormatter = NumberFormatter()
-        minFormatter.locale = locale
-        minFormatter.maximumFractionDigits = option.fractionDigits
-        minFormatter.minimumFractionDigits = option.fractionDigits
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        formatter.locale = locale
+        formatter.maximumFractionDigits = option.fractionDigits
+        formatter.minimumFractionDigits = option.fractionDigits
 
-        if option.clearPrefix {
-            minFormatter.positivePrefix = ""
-            minFormatter.negativePrefix = ""
-        }
+        formatter.positivePrefix = ""
+        formatter.negativePrefix = ""
+        formatter.positiveSuffix = ""
+        formatter.negativeSuffix = ""
 
-        let minFormatted = minFormatter.string(from: min as NSDecimalNumber) ?? "\(min)"
+        let minFormatted = formatter.string(from: min as NSDecimalNumber) ?? "\(min)"
         let maxFormatted = format(max, option: option)
         return "\(minFormatted) - \(maxFormatted)"
     }

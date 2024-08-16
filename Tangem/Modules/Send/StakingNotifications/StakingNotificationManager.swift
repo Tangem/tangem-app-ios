@@ -24,6 +24,13 @@ class CommonStakingNotificationManager {
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
     private var stakingManagerStateSubscription: AnyCancellable?
 
+    private lazy var daysFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.day]
+        return formatter
+    }()
+
     private weak var delegate: NotificationTapDelegate?
 
     init(tokenItem: TokenItem) {
@@ -54,7 +61,9 @@ private extension CommonStakingNotificationManager {
                 periodFormatted: yield.rewardScheduleType.rawValue
             ))
         case .staked(let staked):
-            show(notification: .unstake(periodFormatted: staked.yieldInfo.rewardScheduleType.rawValue))
+            show(notification: .unstake(
+                periodFormatted: staked.yieldInfo.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
         }
     }
 }

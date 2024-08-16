@@ -8,11 +8,12 @@
 
 import Foundation
 import SwiftUI
+import TangemExpress
 
 enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
     case permissionNeeded(providerName: String, currencyCode: String)
-    case refreshRequired(title: String, message: String)
+    case refreshRequired(title: String, message: String, expressErrorCode: ExpressAPIError.Code? = nil)
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
     case notEnoughFeeForTokenTx(mainTokenName: String, mainTokenSymbol: String, blockchainIconName: String)
@@ -38,7 +39,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded:
             return .string(Localization.expressProviderPermissionNeeded)
-        case .refreshRequired(let title, _):
+        case .refreshRequired(let title, _, _):
             return .string(title)
         case .hasPendingTransaction:
             return .string(Localization.warningExpressActiveTransactionTitle)
@@ -73,7 +74,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded(let providerName, let currencyCode):
             return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
-        case .refreshRequired(_, let message):
+        case .refreshRequired(_, let message, _):
             return message
         case .hasPendingTransaction(let symbol):
             return Localization.warningExpressActiveTransactionMessage(symbol)
@@ -241,7 +242,12 @@ extension ExpressNotificationEvent: NotificationEvent {
 // TODO: Add analytics
 extension ExpressNotificationEvent {
     var analyticsEvent: Analytics.Event? {
-        return nil
+        switch self {
+        case .refreshRequired(_, _, .exchangeNotPossibleError):
+            .swapPairIsUnvailableError
+        default:
+            nil
+        }
     }
 
     var analyticsParams: [Analytics.ParameterKey: String] {

@@ -11,6 +11,9 @@
 		0A0DB7582C48FB0000003450 /* RewardRateValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DB7572C48FAFF00003450 /* RewardRateValues.swift */; };
 		0A0E01772C64AA79009E01F2 /* StakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */; };
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
+		0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */; };
+		0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF96A2C6CE96B00163492 /* StakingAction.swift */; };
+		0A3BF96F2C6DDB9000163492 /* StakingActionRequestParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF96E2C6DDB9000163492 /* StakingActionRequestParams.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
@@ -1887,6 +1890,9 @@
 		0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
+		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
+		0A3BF96E2C6DDB9000163492 /* StakingActionRequestParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingActionRequestParams.swift; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
 		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
@@ -9500,6 +9506,9 @@
 				0A0DB7572C48FAFF00003450 /* RewardRateValues.swift */,
 				EF0FBB882C53FFC10095A6BD /* ActionTransaction.swift */,
 				EF0FBB8A2C53FFCD0095A6BD /* ActionStatus.swift */,
+				0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */,
+				0A3BF96A2C6CE96B00163492 /* StakingAction.swift */,
+				0A3BF96E2C6DDB9000163492 /* StakingActionRequestParams.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -12376,6 +12385,7 @@
 				EFB019472C4172D6009EE857 /* StakeKitDTO+NetworkType.swift in Sources */,
 				EF407E5D2C04D64B00366733 /* StakingAPIProvider.swift in Sources */,
 				EFBC5C732C00A74100B662E0 /* YieldInfo.swift in Sources */,
+				0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */,
 				EFBC5C752C00A74100B662E0 /* StakingAPIService.swift in Sources */,
 				EFBC5C902C00B8B800B662E0 /* StakeKitDTO+Yield.swift in Sources */,
 				EF407E382C04B09A00366733 /* Logger.swift in Sources */,
@@ -12394,7 +12404,9 @@
 				EF72DC062C467001003DD97F /* StakingTokenItem.swift in Sources */,
 				EF031A282C08E65A001535C9 /* StakingCalculator.swift in Sources */,
 				EF8DBCDD2C060A03009072CF /* StakingManager.swift in Sources */,
+				0A3BF96F2C6DDB9000163492 /* StakingActionRequestParams.swift in Sources */,
 				EFBC5C792C00A79E00B662E0 /* StakeKitStakingAPIService.swift in Sources */,
+				0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */,
 				EFB019492C4174D1009EE857 /* EnterAction.swift in Sources */,
 				EF407E5F2C04D65B00366733 /* CommonStakingAPIProvider.swift in Sources */,
 				EFB019432C41710F009EE857 /* StakingBalanceInfo.swift in Sources */,

@@ -14,7 +14,10 @@ extension TokenItem {
         StakeKitNetworkType(rawValue: blockchain.coinId).map { network in
             StakingTokenItem(
                 network: network,
-                contractAddress: contractAddress
+                contractAddress: contractAddress,
+                name: name,
+                decimals: decimalCount,
+                symbol: currencySymbol
             )
         }
     }
