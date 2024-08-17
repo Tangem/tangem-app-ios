@@ -32,6 +32,7 @@ struct MarketsCoordinatorView: CoordinatorView {
                     coordinator?.onOverlayContentStateChange(state)
                 }
             }
+            .navigationViewStyle(.stack)
             .tint(Colors.Text.primary1)
         }
     }
