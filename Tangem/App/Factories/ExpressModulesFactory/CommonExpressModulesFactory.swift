@@ -78,13 +78,18 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         selectedPolicy: ExpressApprovePolicy,
         coordinator: ExpressApproveRoutable
     ) -> ExpressApproveViewModel {
-        ExpressApproveViewModel(
+        let tokenItem = expressInteractor.getSender().tokenItem
+
+        return ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, tokenItem.currencySymbol),
+                tokenItem: tokenItem,
+                feeTokenItem: expressInteractor.getSender().feeTokenItem,
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
-            providerName: providerName,
-            selectedPolicy: selectedPolicy,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -210,10 +215,8 @@ private extension CommonExpressModulesFactory {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {
