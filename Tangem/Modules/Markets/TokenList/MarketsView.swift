@@ -13,6 +13,8 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    @Environment(\.overlayContentContainer) private var overlayContentContainer
+
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
@@ -45,11 +47,13 @@ struct MarketsView: View {
         .navigationTitle("Markets")
         .navigationBarTitleDisplayMode(.inline)
         .onWillAppear {
+            navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
             // `UINavigationBar` may be installed into the view hierarchy quite late;
             // therefore, we're triggering introspection in the `viewWillAppear` callback
             responderChainIntrospectionTrigger = UUID()
         }
         .onAppear {
+            navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
             // `UINavigationBar` may be installed into the view hierarchy quite late;
             // therefore, we're triggering introspection in the `onAppear` callback
             responderChainIntrospectionTrigger = UUID()
