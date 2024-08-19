@@ -101,6 +101,20 @@ struct MarketsPortfolioTokenItemView: View {
         }
     }
 
+    private var unreachableView: some View {
+        VStack(alignment: .trailing) {
+            Text(Localization.commonUnreachable)
+                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+        }
+    }
+
+    private var noAddress: some View {
+        VStack(alignment: .trailing) {
+            Text(Localization.commonNoAddress)
+                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+        }
+    }
+
     @ViewBuilder
     private func contextMenuButton(for actionType: TokenActionType) -> some View {
         let action = { viewModel.didTapContextAction(actionType) }
@@ -173,6 +187,18 @@ extension MarketsPortfolioTokenItemView {
         self.viewModel = viewModel
         previewContentShapeCornerRadius = cornerRadius
         roundedCornersConfiguration = RoundedCornersConfiguration()
+    }
+}
+
+extension MarketsPortfolioTokenItemView {
+    enum StateTokenItem: Int, Identifiable, Hashable {
+        case `default`
+        case unreachable
+        case noAddress
+
+        var id: Int {
+            rawValue
+        }
     }
 }
 

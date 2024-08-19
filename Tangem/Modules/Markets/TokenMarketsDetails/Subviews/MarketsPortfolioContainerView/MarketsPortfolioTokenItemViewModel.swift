@@ -12,63 +12,57 @@ import Combine
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Public Properties
 
+    @Published var stateView: MarketsPortfolioTokenItemView.StateTokenItem = .default
     @Published var fiatBalanceValue: String = ""
     @Published var balanceValue: String = ""
     @Published var contextActions: [TokenActionType] = []
+
+    @Published var hasPendingTransactions: Bool = false
+
+    @Published private var missingDerivation: Bool = false
+    @Published private var networkUnreachable: Bool = false
 
     var id: Int {
         hashValue
     }
 
     var tokenIconInfo: TokenIconInfo {
-        TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        TokenIconInfoBuilder().build(from: tokenItemInfoProvider.tokenItem, isCustom: false)
     }
 
     var tokenName: String {
-        walletModel.tokenItem.networkName
+        tokenItemInfoProvider.tokenItem.networkName
     }
 
     let userWalletId: UserWalletId
     let walletName: String
 
+    let tokenItemInfoProvider: TokenItemInfoProvider
+
     // MARK: - Private Properties
 
-    let walletModel: WalletModel
     private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
     private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
 
-    private var updateSubscription: AnyCancellable?
+    private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
 
     init(
         userWalletId: UserWalletId,
         walletName: String,
-        walletModel: WalletModel,
+        tokenItemInfoProvider: TokenItemInfoProvider,
         contextActionsProvider: MarketsPortfolioContextActionsProvider?,
         contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
     ) {
         self.userWalletId = userWalletId
         self.walletName = walletName
-        self.walletModel = walletModel
+        self.tokenItemInfoProvider = tokenItemInfoProvider
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
 
-        bind()
         buildContextActions()
-    }
-
-    func bind() {
-        updateSubscription = walletModel
-            .walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, walletModelState in
-                if walletModelState.isSuccessfullyLoaded {
-                    viewModel.fiatBalanceValue = viewModel.walletModel.fiatBalance
-                    viewModel.balanceValue = viewModel.walletModel.balance
-                }
-            }
+        bind()
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
@@ -76,6 +70,48 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     // MARK: - Private Implementation
+
+    private func bind() {
+        tokenItemInfoProvider.tokenItemStatePublisher
+            .receive(on: DispatchQueue.main)
+            // We need this debounce to prevent initial sequential state updates that can skip `loading` state
+            .debounce(for: 0.1, scheduler: DispatchQueue.main)
+            .sink(receiveValue: weakify(self, forFunction: MarketsPortfolioTokenItemViewModel.setupState(_:)))
+            .store(in: &bag)
+
+        tokenItemInfoProvider.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.buildContextActions()
+            }
+            .store(in: &bag)
+    }
+
+    private func setupState(_ state: TokenItemViewState) {
+        switch state {
+        case .noDerivation:
+            missingDerivation = true
+            networkUnreachable = false
+        case .networkError:
+            missingDerivation = false
+            networkUnreachable = true
+        case .notLoaded:
+            missingDerivation = false
+            networkUnreachable = false
+        case .loaded, .noAccount:
+            missingDerivation = false
+            networkUnreachable = false
+        case .loading:
+            break
+        }
+
+        updatePendingTransactionsStateIfNeeded()
+        buildContextActions()
+    }
+
+    private func updatePendingTransactionsStateIfNeeded() {
+        hasPendingTransactions = tokenItemInfoProvider.hasPendingTransactions
+    }
 
     private func buildContextActions() {
         contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
@@ -89,6 +125,6 @@ extension MarketsPortfolioTokenItemViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(userWalletId)
-        hasher.combine(walletModel.id)
+        hasher.combine(tokenItemInfoProvider.id)
     }
 }
