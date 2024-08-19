@@ -81,6 +81,8 @@ class CommonStakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonStakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { true }
+
     var initialFlowActionType: SendFlowActionType { .stake }
 
     var initialState: SendStepsManagerViewState {

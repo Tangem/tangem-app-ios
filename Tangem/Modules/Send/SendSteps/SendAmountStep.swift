@@ -48,8 +48,6 @@ extension SendAmountStep: SendStep {
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         guard step.type.isSummary else {
             return
         }
