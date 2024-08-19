@@ -93,6 +93,8 @@ class CommonSendStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonSendStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
     var initialFlowActionType: SendFlowActionType { .send }
 
     var initialState: SendStepsManagerViewState {

@@ -62,6 +62,8 @@ class CommonUnstakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonUnstakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
     var initialFlowActionType: SendFlowActionType { .unstake }
 
     var initialState: SendStepsManagerViewState {

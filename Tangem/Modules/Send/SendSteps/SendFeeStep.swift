@@ -92,8 +92,6 @@ extension SendFeeStep: SendStep {
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])

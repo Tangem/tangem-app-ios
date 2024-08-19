@@ -21,6 +21,7 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonType: SendMainButtonType
     @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
+    @Published var isKeyboardActive: Bool = false
 
     @Published var transactionURL: URL?
 
@@ -70,6 +71,7 @@ final class SendViewModel: ObservableObject {
         step = stepsManager.initialState.step
         mainButtonType = stepsManager.initialState.action
         flowActionType = stepsManager.initialFlowActionType
+        isKeyboardActive = stepsManager.initialKeyboardState
 
         bind()
         bind(step: stepsManager.initialState.step)
@@ -92,6 +94,31 @@ final class SendViewModel: ObservableObject {
 
     func userDidTapBackButton() {
         stepsManager.performBack()
+    }
+
+    func onAppear(newStep: any SendStep) {
+        switch (step.type, newStep.type) {
+        case (_, .summary):
+            isKeyboardActive = false
+        default:
+            break
+        }
+    }
+
+    func onDisappear(oldStep: any SendStep) {
+        oldStep.sendStepViewAnimatable.viewDidChangeVisibilityState(.disappeared)
+        step.sendStepViewAnimatable.viewDidChangeVisibilityState(.appeared)
+
+        switch (oldStep.type, step.type) {
+        // It's possible to the destination step
+        // if the destination's TextField will be support @FocusState
+        // case (_, .destination):
+        //    isKeyboardActive = true
+        case (_, .amount):
+            isKeyboardActive = true
+        default:
+            break
+        }
     }
 
     func dismiss() {
