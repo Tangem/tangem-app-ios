@@ -163,13 +163,12 @@ private extension StakingModel {
 
     func mapToSendFee(_ state: LoadingValue<State>?) -> SendFee {
         switch state {
-        case .none,
-             .loading,
-             .loaded(.approveTransactionInProgress):
+        case .none, .loading:
             return SendFee(option: .market, value: .loading)
         case .loaded(.readyToApprove(let approveData)):
             return SendFee(option: .market, value: .loaded(approveData.fee))
-        case .loaded(.readyToStake(let fee)):
+        case .loaded(.readyToStake(let fee)),
+             .loaded(.approveTransactionInProgress(let fee)):
             let fee = Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: fee))
             return SendFee(option: .market, value: .loaded(fee))
         case .failedToLoad(let error):
