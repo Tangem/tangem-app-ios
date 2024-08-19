@@ -11,6 +11,10 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 
+protocol UnstakingModelStateProvider {
+    var state: AnyPublisher<UnstakingModel.State, Never> { get }
+}
+
 class UnstakingModel {
     // MARK: - Data
 
@@ -51,10 +55,10 @@ class UnstakingModel {
     }
 }
 
-// MARK: - Public
+// MARK: - UnstakingModelStateProvider
 
-extension UnstakingModel {
-    var state: AnyPublisher<UnstakingModel.State, Never> {
+extension UnstakingModel: UnstakingModelStateProvider {
+    var state: AnyPublisher<State, Never> {
         _state.compactMap { $0?.value }.eraseToAnyPublisher()
     }
 }
