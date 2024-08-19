@@ -21,6 +21,10 @@ final class OverlayContentContainerViewControllerAdapter {
 // MARK: - OverlayContentContainer protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer {
+    var cornerRadius: CGFloat {
+        return containerViewController?.overlayCornerRadius ?? .zero
+    }
+
     func installOverlay(_ overlayView: some View) {
         // TODO: Andrey Fedorov - UIKit UI component must add this grabber, not a SwiftUI consumer (IOS-7364)
         let overlayViewController = UIHostingController(rootView: overlayView.bottomScrollableSheetGrabber())

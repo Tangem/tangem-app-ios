@@ -51,6 +51,11 @@ private struct DummyOverlayContentContainerViewControllerAdapter:
     OverlayContentContainer,
     OverlayContentStateObserver,
     OverlayContentStateController {
+    var cornerRadius: CGFloat {
+        assertIfNeeded(for: OverlayContentContainer.self)
+        return .zero
+    }
+
     func installOverlay(_ overlayView: some View) {
         assertIfNeeded(for: OverlayContentContainer.self)
     }

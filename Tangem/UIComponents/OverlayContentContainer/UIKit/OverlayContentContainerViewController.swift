@@ -12,6 +12,8 @@ import UIKit
 final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Dependencies
 
+    let overlayCornerRadius: CGFloat
+
     private let contentViewController: UIViewController
     private let overlayCollapsedHeight: CGFloat
     private let overlayExpandedVerticalOffset: CGFloat
@@ -72,11 +74,13 @@ final class OverlayContentContainerViewController: UIViewController {
     init(
         contentViewController: UIViewController,
         overlayCollapsedHeight: CGFloat,
-        overlayExpandedVerticalOffset: CGFloat
+        overlayExpandedVerticalOffset: CGFloat,
+        overlayCornerRadius: CGFloat
     ) {
         self.contentViewController = contentViewController
         self.overlayCollapsedHeight = overlayCollapsedHeight
         self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
+        self.overlayCornerRadius = overlayCornerRadius
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -234,7 +238,7 @@ final class OverlayContentContainerViewController: UIViewController {
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        overlayView.layer.cornerRadius(Constants.cornerRadius, corners: .topEdge)
+        overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
         overlayViewController.didMove(toParent: self)
     }
 
@@ -307,8 +311,8 @@ final class OverlayContentContainerViewController: UIViewController {
 
         // On devices with notch, the corner radius property isn't animated and always has a constant value
         guard !UIDevice.current.hasTopNotch else {
-            if contentLayer.cornerRadius != Constants.cornerRadius {
-                contentLayer.cornerRadius = Constants.cornerRadius
+            if !contentLayer.cornerRadius.isEqual(to: overlayCornerRadius) {
+                contentLayer.cornerRadius = overlayCornerRadius
             }
             return
         }
@@ -321,7 +325,7 @@ final class OverlayContentContainerViewController: UIViewController {
             contentLayer.add(animation, forKey: #function)
         }
 
-        contentLayer.cornerRadius = Constants.cornerRadius * progress.value
+        contentLayer.cornerRadius = overlayCornerRadius * progress.value
     }
 
     private func updateBackgroundShadowViewAlpha() {
@@ -616,7 +620,6 @@ private extension OverlayContentContainerViewController {
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.5
-        static var cornerRadius: CGFloat { UIDevice.current.hasTopNotch ? 24.0 : 16.0 }
         static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(duration: 0.3, curve: .easeOut)

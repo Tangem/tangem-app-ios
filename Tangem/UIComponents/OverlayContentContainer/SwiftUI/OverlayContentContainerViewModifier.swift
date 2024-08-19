@@ -77,9 +77,10 @@ private struct OverlayContentContainerViewModifier<
 
         if let item {
             // `overlay` is a completely different branch of the SwiftUI view hierarchy,
-            // so we must explicitly re-inject `overlayContentStateObserver` and `overlayContentStateController`
-            // environment objects into this branch
+            // so we must explicitly re-inject `overlayContentContainer`, `overlayContentStateObserver`
+            // and `overlayContentStateController` environment objects into this branch
             let overlay = overlayFactory(item)
+                .environment(\.overlayContentContainer, overlayContentContainer)
                 .environment(\.overlayContentStateObserver, overlayContentStateObserver)
                 .environment(\.overlayContentStateController, overlayContentStateController)
 
