@@ -202,12 +202,8 @@ final class OverlayContentContainerViewController: UIViewController {
             contentView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        contentView.layer.masksToBounds = true
-        contentView.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner,
-        ]
-
+        // Actual value for the `cornerRadius` CALayer property will be assigned later in `updateCornerRadius`
+        contentView.layer.cornerRadius(.zero, corners: .topEdge)
         contentViewController.didMove(toParent: self)
     }
 
@@ -238,13 +234,7 @@ final class OverlayContentContainerViewController: UIViewController {
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        overlayView.layer.masksToBounds = true
-        overlayView.layer.cornerRadius = Constants.cornerRadius
-        overlayView.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner,
-        ]
-
+        overlayView.layer.cornerRadius(Constants.cornerRadius, corners: .topEdge)
         overlayViewController.didMove(toParent: self)
     }
 

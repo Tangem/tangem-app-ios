@@ -705,6 +705,8 @@
 		B60395A02C3793E900591E18 /* WelcomeOnboardingPushNotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B603959F2C3793E900591E18 /* WelcomeOnboardingPushNotificationsView.swift */; };
 		B605224B2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605224A2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift */; };
 		B60976A92C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976A82C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift */; };
+		B60976AB2C73881F00778E71 /* CALayer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976AA2C73881F00778E71 /* CALayer+.swift */; };
+		B60976AD2C738AE100778E71 /* UIRectCorner+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976AC2C738AE100778E71 /* UIRectCorner+.swift */; };
 		B60B203A2AC5B5100098C09D /* MainBottomSheetFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B20392AC5B5100098C09D /* MainBottomSheetFooterView.swift */; };
 		B60B203C2AC5BDFA0098C09D /* BottomScrollableSheetShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B203B2AC5BDFA0098C09D /* BottomScrollableSheetShadowView.swift */; };
 		B60B9FDB2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B9FDA2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift */; };
@@ -2669,6 +2671,8 @@
 		B603959F2C3793E900591E18 /* WelcomeOnboardingPushNotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeOnboardingPushNotificationsView.swift; sourceTree = "<group>"; };
 		B605224A2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrganizeTokensDragAndDropController+AuxiliaryTypes.swift"; sourceTree = "<group>"; };
 		B60976A82C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsViewNavigationControllerConfigurator.swift; sourceTree = "<group>"; };
+		B60976AA2C73881F00778E71 /* CALayer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+.swift"; sourceTree = "<group>"; };
+		B60976AC2C738AE100778E71 /* UIRectCorner+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRectCorner+.swift"; sourceTree = "<group>"; };
 		B60B20392AC5B5100098C09D /* MainBottomSheetFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetFooterView.swift; sourceTree = "<group>"; };
 		B60B203B2AC5BDFA0098C09D /* BottomScrollableSheetShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomScrollableSheetShadowView.swift; sourceTree = "<group>"; };
 		B60B9FDA2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListSectionViewModel.swift; sourceTree = "<group>"; };
@@ -5500,6 +5504,8 @@
 				B6FCEE702C40E14300CA9252 /* UIScrollView+.swift */,
 				B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */,
 				B66655702C6EC901001E2C68 /* UIView.AnimationCurve+.swift */,
+				B60976AC2C738AE100778E71 /* UIRectCorner+.swift */,
+				B60976AA2C73881F00778E71 /* CALayer+.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -10799,6 +10805,7 @@
 				EFA5683E2C480F6C0064EBA1 /* StakingTransactionInfo+Mock.swift in Sources */,
 				B06F03442B5A993800F04F0E /* VisaWalletModel.swift in Sources */,
 				DAC53CFC27BE63830027147D /* AweStoryPage.swift in Sources */,
+				B60976AD2C738AE100778E71 /* UIRectCorner+.swift in Sources */,
 				B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */,
 				EF339E542C22DABD00B5CDC9 /* FeeIncludedCalculator.swift in Sources */,
 				EFC84B2D2C37FBB300546882 /* SendSummaryStep.swift in Sources */,
@@ -12029,6 +12036,7 @@
 				B0F319022A7394AA009F131E /* FakeUserWalletRepository.swift in Sources */,
 				B61D2A202B1947E6004F2C2D /* TokenDetailsScrollState.swift in Sources */,
 				B691A8C02AFE43CE0059D182 /* CardsInfoPagerSwipeDiscoveryAnimationModifier.swift in Sources */,
+				B60976AB2C73881F00778E71 /* CALayer+.swift in Sources */,
 				EFEE236A2BFE20860099917E /* StakingDetailsCoordinator.swift in Sources */,
 				EF0FBB742C53BE4A0095A6BD /* StakingValidatorsCompactViewModel.swift in Sources */,
 				EFEE236B2BFE20860099917E /* StakingDetailsCoordinatorView.swift in Sources */,
