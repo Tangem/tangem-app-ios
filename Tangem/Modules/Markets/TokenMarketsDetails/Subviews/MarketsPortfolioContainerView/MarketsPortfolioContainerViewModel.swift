@@ -39,6 +39,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
+    private var bag = Set<AnyCancellable>()
+
     // MARK: - Init
 
     init(
@@ -53,6 +55,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         self.addTokenTapAction = addTokenTapAction
 
         updateTokenList()
+        bind()
     }
 
     // MARK: - Public Implementation
@@ -125,20 +128,88 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                     $0.tokenItem.id?.caseInsensitiveCompare(coinId) == .orderedSame
                 }
 
-                let viewModels = filteredWalletModels.map { walletModel in
-                    return MarketsPortfolioTokenItemViewModel(
-                        userWalletId: userWalletModel.userWalletId,
-                        walletName: userWalletModel.name,
-                        tokenItemInfoProvider: DefaultTokenItemInfoProvider(walletModel: walletModel),
-                        contextActionsProvider: self,
-                        contextActionsDelegate: self
-                    )
+                let filteredEntries = userWalletModel.userTokenListManager
+                    .userTokensList
+                    .entries
+                    .filter { entry in
+                        entry.blockchainNetwork.blockchain.coinId == coinId
+                    }
+
+                let tokenItemTypes: [TokenItemType] = makeItemTypes(walletModels: filteredWalletModels, entries: filteredEntries)
+
+                let viewModels = tokenItemTypes.map { tokenItemType in
+                    makeTokenItemViewModel(from: tokenItemType, with: userWalletModel)
                 }
 
                 partialResult.append(contentsOf: viewModels)
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+    }
+
+    private func bind() {
+        let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
+
+        Publishers.MergeMany(publishers)
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateTokenList()
+            }
+            .store(in: &bag)
+    }
+
+    private func makeItemTypes(walletModels: [WalletModel], entries: [StoredUserTokenList.Entry]) -> [TokenItemType] {
+        let walletModelsKeyedByIds = walletModels.keyedFirst(by: \.id)
+        let blockchainNetworksFromWalletModels = walletModels
+
+            .map(\.blockchainNetwork)
+            .toSet()
+
+        let tokenItemTypes: [TokenItemType] = entries.compactMap { userToken in
+            if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {
+                // Most likely we have wallet model (and derivation too) for this entry
+                return walletModelsKeyedByIds[userToken.walletModelId].map { .default($0) }
+            } else {
+                // Section item for entry without derivation (yet)
+                return .withoutDerivation(userToken)
+            }
+        }
+
+        return tokenItemTypes
+    }
+
+    private func makeTokenItemViewModel(from tokenItemType: TokenItemType, with userWalletModel: UserWalletModel) -> MarketsPortfolioTokenItemViewModel {
+        let tokenInfoProvider: TokenItemInfoProvider
+
+        switch tokenItemType {
+        case .default(let walletModel):
+            tokenInfoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
+        case .withoutDerivation(let userToken):
+            let converter = StorageEntryConverter()
+            let walletModelId = userToken.walletModelId
+            let blockchainNetwork = userToken.blockchainNetwork
+
+            if let token = converter.convertToToken(userToken) {
+                tokenInfoProvider = TokenWithoutDerivationInfoProvider(
+                    id: walletModelId,
+                    tokenItem: .token(token, blockchainNetwork)
+                )
+            } else {
+                tokenInfoProvider = TokenWithoutDerivationInfoProvider(
+                    id: walletModelId,
+                    tokenItem: .blockchain(blockchainNetwork)
+                )
+            }
+        }
+
+        return MarketsPortfolioTokenItemViewModel(
+            userWalletId: userWalletModel.userWalletId,
+            walletName: userWalletModel.name,
+            tokenItemInfoProvider: tokenInfoProvider,
+            contextActionsProvider: self,
+            contextActionsDelegate: self
+        )
     }
 }
 
@@ -221,5 +292,13 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         case .hide:
             return
         }
+    }
+}
+
+extension MarketsPortfolioContainerViewModel {
+    enum TokenItemType: Equatable {
+        /// `Default` means `coin/token with derivation`,  unlike `withoutDerivation` case.
+        case `default`(WalletModel)
+        case withoutDerivation(StoredUserTokenList.Entry)
     }
 }
