@@ -43,7 +43,14 @@ struct CommonWalletConnectEthTransactionBuilder {
         blockchain: Blockchain,
         using ethereumNetworkProvider: EthereumNetworkProvider
     ) async throws -> Fee {
-        async let gasLimit = getGasLimit(for: tx, with: amount, using: ethereumNetworkProvider)
+        var gasLimit = try await getGasLimit(for: tx, with: amount, using: ethereumNetworkProvider)
+
+        // This is a workaround for sending a Mantle transaction.
+        // Unfortunately, Mantle's current implementation does not conform to our existing fee calculation rules.
+        // https://tangem.slack.com/archives/GMXC6PP71/p1719591856597299?thread_ts=1714215815.690169&cid=GMXC6PP71
+        if case .mantle = blockchain {
+            gasLimit = BigUInt(ceil(Double(gasLimit) * 1.6))
+        }
 
         let gasPrice = tx.gasPrice?.hexToInteger.map { BigUInt($0) }
         let feeParameters = try await ethereumNetworkProvider.getFee(gasLimit: gasLimit, supportsEIP1559: blockchain.supportsEIP1559, gasPrice: gasPrice)
