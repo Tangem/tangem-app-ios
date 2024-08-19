@@ -129,7 +129,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                     return MarketsPortfolioTokenItemViewModel(
                         userWalletId: userWalletModel.userWalletId,
                         walletName: userWalletModel.name,
-                        walletModel: walletModel,
+                        tokenItemInfoProvider: DefaultTokenItemInfoProvider(walletModel: walletModel),
                         contextActionsProvider: self,
                         contextActionsDelegate: self
                     )
@@ -146,10 +146,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
     func buildContextActions(for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
-        let walletModel = tokenItemViewModel.walletModel
-
         guard
             let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId }),
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
         else {
             return []
@@ -193,9 +192,9 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
     func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId })
-        let walletModel = tokenItemViewModel.walletModel
+        let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id })
 
-        guard let userWalletModel, let coordinator else {
+        guard let userWalletModel, let walletModel, let coordinator else {
             return
         }
 

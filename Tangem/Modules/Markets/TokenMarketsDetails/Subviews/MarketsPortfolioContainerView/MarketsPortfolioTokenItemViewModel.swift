@@ -21,19 +21,20 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     var tokenIconInfo: TokenIconInfo {
-        TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        TokenIconInfoBuilder().build(from: tokenItemInfoProvider.tokenItem, isCustom: false)
     }
 
     var tokenName: String {
-        walletModel.tokenItem.networkName
+        tokenItemInfoProvider.tokenItem.networkName
     }
 
     let userWalletId: UserWalletId
     let walletName: String
 
+    let tokenItemInfoProvider: TokenItemInfoProvider
+
     // MARK: - Private Properties
 
-    let walletModel: WalletModel
     private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
     private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
 
@@ -44,31 +45,17 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     init(
         userWalletId: UserWalletId,
         walletName: String,
-        walletModel: WalletModel,
+        tokenItemInfoProvider: TokenItemInfoProvider,
         contextActionsProvider: MarketsPortfolioContextActionsProvider?,
         contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
     ) {
         self.userWalletId = userWalletId
         self.walletName = walletName
-        self.walletModel = walletModel
+        self.tokenItemInfoProvider = tokenItemInfoProvider
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
 
-        bind()
         buildContextActions()
-    }
-
-    func bind() {
-        updateSubscription = walletModel
-            .walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, walletModelState in
-                if walletModelState.isSuccessfullyLoaded {
-                    viewModel.fiatBalanceValue = viewModel.walletModel.fiatBalance
-                    viewModel.balanceValue = viewModel.walletModel.balance
-                }
-            }
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
@@ -89,6 +76,6 @@ extension MarketsPortfolioTokenItemViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(userWalletId)
-        hasher.combine(walletModel.id)
+        hasher.combine(tokenItemInfoProvider.id)
     }
 }
