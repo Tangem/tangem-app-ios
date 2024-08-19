@@ -20,10 +20,8 @@ struct SendFlowBaseBuilder {
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let sendQRCodeService = builder.makeSendQRCodeService()
-
-        let sendModel = builder.makeSendModel(sendTransactionDispatcher: sendTransactionDispatcher)
+        let sendModel = builder.makeSendModel()
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
             io: (input: sendModel, output: sendModel),
@@ -48,7 +46,6 @@ struct SendFlowBaseBuilder {
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: sendModel, output: sendModel),
             actionType: .send,
-            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .editable,

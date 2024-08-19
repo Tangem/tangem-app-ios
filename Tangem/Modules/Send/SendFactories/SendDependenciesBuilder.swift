@@ -106,8 +106,7 @@ struct SendDependenciesBuilder {
         StakingTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: userWalletModel.signer,
-            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
-            sendTransactionDispatcher: makeSendTransactionDispatcher()
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
         )
     }
 
@@ -124,9 +123,9 @@ struct SendDependenciesBuilder {
     // MARK: - Send, Sell
 
     func makeSendModel(
-        sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
+        let sendTransactionDispatcher = makeSendTransactionDispatcher()
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
@@ -184,26 +183,25 @@ struct SendDependenciesBuilder {
 
     // MARK: - Staking
 
-    func makeStakingModel(
-        stakingManager: any StakingManager,
-        stakingTransactionDispatcher: any SendTransactionDispatcher
-    ) -> StakingModel {
-        StakingModel(
+    func makeStakingModel(stakingManager: any StakingManager) -> StakingModel {
+        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
+        let sendTransactionDispatcher = makeSendTransactionDispatcher()
+
+        return StakingModel(
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             stakingTransactionDispatcher: stakingTransactionDispatcher,
+            sendTransactionDispatcher: sendTransactionDispatcher,
             allowanceProvider: makeAllowanceProvider(),
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
 
-    func makeUnstakingModel(
-        stakingManager: any StakingManager,
-        stakingTransactionDispatcher: any SendTransactionDispatcher,
-        balanceInfo: StakingBalanceInfo
-    ) -> UnstakingModel {
-        UnstakingModel(
+    func makeUnstakingModel(stakingManager: any StakingManager, balanceInfo: StakingBalanceInfo) -> UnstakingModel {
+        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
+
+        return UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: stakingTransactionDispatcher,
             balanceInfo: balanceInfo,

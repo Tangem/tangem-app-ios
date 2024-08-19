@@ -29,6 +29,7 @@ class StakingModel {
     private let stakingManager: StakingManager
     private let transactionCreator: TransactionCreator
     private let stakingTransactionDispatcher: SendTransactionDispatcher
+    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
@@ -45,6 +46,7 @@ class StakingModel {
         stakingManager: StakingManager,
         transactionCreator: TransactionCreator,
         stakingTransactionDispatcher: SendTransactionDispatcher,
+        sendTransactionDispatcher: SendTransactionDispatcher,
         allowanceProvider: AllowanceProvider,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -52,6 +54,7 @@ class StakingModel {
         self.stakingManager = stakingManager
         self.transactionCreator = transactionCreator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
+        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
         tokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
@@ -426,7 +429,7 @@ extension StakingModel: ApproveViewModelInput {
             destination: .contractCall(contract: approveData.toContractAddress, data: approveData.txData)
         )
 
-        _ = try await stakingTransactionDispatcher.send(transaction: .transfer(transaction))
+        _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
         updateStateSubject.send(())
 

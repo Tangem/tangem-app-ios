@@ -15,20 +15,17 @@ class StakingTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
-    private let sendTransactionDispatcher: SendTransactionDispatcher
 
     private var transactionSentResult: TransactionSentResult?
 
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner,
-        pendingHashesSender: StakingPendingHashesSender,
-        sendTransactionDispatcher: SendTransactionDispatcher
+        pendingHashesSender: StakingPendingHashesSender
     ) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.pendingHashesSender = pendingHashesSender
-        self.sendTransactionDispatcher = sendTransactionDispatcher
     }
 }
 
@@ -36,23 +33,10 @@ class StakingTransactionDispatcher {
 
 extension StakingTransactionDispatcher: SendTransactionDispatcher {
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
-        switch transaction {
-        case .transfer(let bSDKTransaction):
-            try await send(transaction: bSDKTransaction)
-        case .staking(let transactionId, let transaction):
-            try await send(transactionId: transactionId, transaction: transaction)
+        guard case .staking(let transactionId, let stakeKitTransaction) = transaction else {
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
-    }
-}
 
-// MARK: - Private
-
-private extension StakingTransactionDispatcher {
-    func send(transaction: BSDKTransaction) async throws -> SendTransactionDispatcherResult {
-        try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
-    }
-
-    func send(transactionId: String, transaction: StakeKitTransaction) async throws -> SendTransactionDispatcherResult {
         let mapper = SendTransactionMapper()
 
         do {
@@ -60,7 +44,7 @@ private extension StakingTransactionDispatcher {
                 return try await sendHash(result: transactionSentResult)
             }
 
-            let result = try await sendStakeKit(transaction: transaction)
+            let result = try await sendStakeKit(transaction: stakeKitTransaction)
             let sentResult = TransactionSentResult(id: transactionId, result: result)
             // Save it if `sendHash` will failed
             transactionSentResult = sentResult
@@ -72,16 +56,24 @@ private extension StakingTransactionDispatcher {
 
             return dispatcherResult
         } catch {
-            throw mapper.mapError(error, transaction: .staking(transactionId: transactionId, transaction: transaction))
+            throw mapper.mapError(error, transaction: transaction)
         }
     }
+}
 
-    func sendStakeKit(transaction: StakeKitTransaction) async throws -> TransactionSendResult {
+// MARK: - Private
+
+private extension StakingTransactionDispatcher {
+    func stakeKitTransactionSender() throws -> StakeKitTransactionSender {
         guard let stakeKitTransactionSender = walletModel.stakeKitTransactionSender else {
             throw SendTransactionDispatcherResult.Error.stakingUnsupported
         }
 
-        let result = try await stakeKitTransactionSender
+        return stakeKitTransactionSender
+    }
+
+    func sendStakeKit(transaction: StakeKitTransaction) async throws -> TransactionSendResult {
+        let result = try await stakeKitTransactionSender()
             .sendStakeKit(transaction: transaction, signer: transactionSigner)
             .async()
 
