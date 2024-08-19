@@ -47,19 +47,23 @@ private extension CommonStakingNotificationManager {
         case .approveTransactionInProgress:
             break
         case .readyToApprove, .readyToStake:
-            show(notification: .stake(
-                tokenSymbol: tokenItem.currencySymbol,
-                periodFormatted: yield.rewardScheduleType.rawValue
-            ))
+            show(
+                notification: .stake(
+                    tokenSymbol: tokenItem.currencySymbol,
+                    rewardScheduleType: yield.rewardScheduleType
+                )
+            )
         }
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
         switch state {
         case .unstaking, .withdraw:
-            show(notification: .unstake(
-                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
-            ))
+            show(
+                notification: .unstake(
+                    periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+                )
+            )
         }
     }
 }

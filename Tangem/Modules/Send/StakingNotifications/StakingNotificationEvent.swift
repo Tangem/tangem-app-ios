@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import TangemStaking
 
 enum StakingNotificationEvent {
-    case stake(tokenSymbol: String, periodFormatted: String)
+    case stake(tokenSymbol: String, rewardScheduleType: RewardScheduleType)
     case unstake(periodFormatted: String)
 }
 
@@ -30,15 +31,17 @@ extension StakingNotificationEvent: NotificationEvent {
 
     var description: String? {
         switch self {
-        case .stake(let tokenSymbol, let periodFormatted):
-            /*
-             TODO: replace to
-             staking_notification_earn_rewards_text_period_day
-             staking_notification_earn_rewards_text_period_hour
-             staking_notification_earn_rewards_text_period_month
-             staking_notification_earn_rewards_text_period_week
-             */
-            return "UNDEFINED"
+        case .stake(let tokenSymbol, let rewardScheduleType):
+            switch rewardScheduleType {
+            case .hour:
+                return Localization.stakingNotificationEarnRewardsTextPeriodHour(tokenSymbol)
+            case .day:
+                return Localization.stakingNotificationEarnRewardsTextPeriodDay(tokenSymbol)
+            case .week:
+                return Localization.stakingNotificationEarnRewardsTextPeriodWeek(tokenSymbol)
+            case .month:
+                return Localization.stakingNotificationEarnRewardsTextPeriodMonth(tokenSymbol)
+            }
         //  return Localization.stakingNotificationEarnRewardsText(tokenSymbol, periodFormatted)
         case .unstake(let periodFormatted):
             return Localization.stakingNotificationUnstakeText(periodFormatted)
