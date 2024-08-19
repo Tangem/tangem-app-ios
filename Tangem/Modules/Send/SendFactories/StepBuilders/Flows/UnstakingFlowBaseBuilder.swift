@@ -22,7 +22,7 @@ struct UnstakingFlowBaseBuilder {
         let stakingTransactionDispatcher = builder.makeStakingTransactionDispatcher()
         let unstakingModel = builder.makeUnstakingModel(
             stakingManager: manager,
-            sendTransactionDispatcher: stakingTransactionDispatcher,
+            stakingTransactionDispatcher: stakingTransactionDispatcher,
             balanceInfo: balanceInfo
         )
 

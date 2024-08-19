@@ -16,7 +16,6 @@ class CommonStakingStepsManager {
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
-    private var action: SendFlowActionType = .stake
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
 
@@ -40,14 +39,18 @@ class CommonStakingStepsManager {
     }
 
     private func bind() {
-        state.map { state in
-            switch state {
-            case .readyToApprove: .approve
-            case .approveTransactionInProgress, .readyToStake: .stake
+        state
+            .withWeakCaptureOf(self)
+            .sink { manager, state in
+                switch state {
+                case .readyToApprove:
+                    manager.output?.update(flowActionType: .approve)
+
+                case .approveTransactionInProgress, .readyToStake:
+                    manager.output?.update(flowActionType: .stake)
+                }
             }
-        }
-        .assign(to: \.action, on: self, ownership: .weak)
-        .store(in: &bag)
+            .store(in: &bag)
     }
 
     private func currentStep() -> SendStep {

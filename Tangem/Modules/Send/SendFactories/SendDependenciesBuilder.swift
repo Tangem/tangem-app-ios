@@ -205,7 +205,7 @@ struct SendDependenciesBuilder {
     ) -> UnstakingModel {
         UnstakingModel(
             stakingManager: stakingManager,
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            sendTransactionDispatcher: stakingTransactionDispatcher,
             balanceInfo: balanceInfo,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
