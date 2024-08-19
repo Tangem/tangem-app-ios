@@ -13,6 +13,8 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
+
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -47,14 +49,16 @@ struct MarketsView: View {
             // therefore, we're triggering introspection in the `viewWillAppear` callback
             responderChainIntrospectionTrigger = UUID()
         }
+        .onAppear {
+            // `UINavigationBar` may be installed into the view hierarchy quite late;
+            // therefore, we're triggering introspection in the `onAppear` callback
+            responderChainIntrospectionTrigger = UUID()
+        }
         .introspectResponderChain(
             introspectedType: UINavigationController.self,
-            updateOnChangeOf: responderChainIntrospectionTrigger
-        ) { navigationController in
-            // Unlike `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit and `navigationBarHidden(_:)`
-            // from SwiftUI, this approach will hide the navigation bar without breaking the swipe-to-pop gesture
-            navigationController.navigationBar.isHidden = true
-        }
+            updateOnChangeOf: responderChainIntrospectionTrigger,
+            action: navigationControllerConfigurator.configure(_:)
+        )
     }
 
     @ViewBuilder
