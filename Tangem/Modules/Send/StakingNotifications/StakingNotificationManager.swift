@@ -45,25 +45,21 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .approveTransactionInProgress:
-            break
+            show(notification: .approveTransactionInProgress)
         case .readyToApprove, .readyToStake:
-            show(
-                notification: .stake(
-                    tokenSymbol: tokenItem.currencySymbol,
-                    rewardScheduleType: yield.rewardScheduleType
-                )
-            )
+            show(notification: .stake(
+                tokenSymbol: tokenItem.currencySymbol,
+                rewardScheduleType: yield.rewardScheduleType
+            ))
         }
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
         switch state {
         case .unstaking, .withdraw:
-            show(
-                notification: .unstake(
-                    periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
-                )
-            )
+            show(notification: .unstake(
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
         }
     }
 }
@@ -73,11 +69,7 @@ private extension CommonStakingNotificationManager {
 private extension CommonStakingNotificationManager {
     func show(notification event: StakingNotificationEvent) {
         let input = NotificationsFactory().buildNotificationInput(for: event)
-        if let index = notificationInputsSubject.value.firstIndex(where: { $0.id == input.id }) {
-            notificationInputsSubject.value[index] = input
-        } else {
-            notificationInputsSubject.value.append(input)
-        }
+        notificationInputsSubject.value = [input]
     }
 }
 
