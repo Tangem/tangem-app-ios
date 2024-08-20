@@ -15,14 +15,15 @@ protocol StakingNotificationManagerInput {
 }
 
 protocol StakingNotificationManager: NotificationManager {
-    func setup(input: StakingNotificationManagerInput)
+    func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
 }
 
 class CommonStakingNotificationManager {
     private let tokenItem: TokenItem
 
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
-    private var stakingManagerStateSubscription: AnyCancellable?
+    private var stateSubscription: AnyCancellable?
 
     private lazy var daysFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
@@ -41,28 +42,23 @@ class CommonStakingNotificationManager {
 // MARK: - Bind
 
 private extension CommonStakingNotificationManager {
-    func bind(input: StakingNotificationManagerInput) {
-        stakingManagerStateSubscription = input
-            .stakingManagerStatePublisher
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .sink { manager, state in
-                manager.update(state: state)
-            }
-    }
-
-    func update(state: StakingManagerState) {
+    func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
-        case .loading, .notEnabled, .temporaryUnavailable:
-            break
-        case .availableToStake(let yield):
+        case .approveTransactionInProgress:
+            show(notification: .approveTransactionInProgress)
+        case .readyToApprove, .readyToStake:
             show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
-                periodFormatted: yield.rewardScheduleType.rawValue
+                rewardScheduleType: yield.rewardScheduleType
             ))
-        case .staked(let staked):
+        }
+    }
+
+    func update(state: UnstakingModel.State, yield: YieldInfo) {
+        switch state {
+        case .unstaking, .withdraw:
             show(notification: .unstake(
-                periodFormatted: staked.yieldInfo.unbondingPeriod.formatted(formatter: daysFormatter)
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
         }
     }
@@ -73,19 +69,33 @@ private extension CommonStakingNotificationManager {
 private extension CommonStakingNotificationManager {
     func show(notification event: StakingNotificationEvent) {
         let input = NotificationsFactory().buildNotificationInput(for: event)
-        if let index = notificationInputsSubject.value.firstIndex(where: { $0.id == input.id }) {
-            notificationInputsSubject.value[index] = input
-        } else {
-            notificationInputsSubject.value.append(input)
-        }
+        notificationInputsSubject.value = [input]
     }
 }
 
 // MARK: - NotificationManager
 
 extension CommonStakingNotificationManager: StakingNotificationManager {
-    func setup(input: any StakingNotificationManagerInput) {
-        bind(input: input)
+    func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.state.removeDuplicates(),
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0, yield: state.1)
+        }
+    }
+
+    func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.state.removeDuplicates(),
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0, yield: state.1)
+        }
     }
 
     var notificationInputs: [NotificationViewInput] {

@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class CommonStakingStepsManager {
-    private let state: AnyPublisher<StakingModel.State, Never>
+    private let provider: StakingModelStateProvider
     private let amountStep: SendAmountStep
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
@@ -22,13 +22,13 @@ class CommonStakingStepsManager {
     private weak var output: SendStepsManagerOutput?
 
     init(
-        state: AnyPublisher<StakingModel.State, Never>,
+        provider: StakingModelStateProvider,
         amountStep: SendAmountStep,
         validatorsStep: StakingValidatorsStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep
     ) {
-        self.state = state
+        self.provider = provider
         self.amountStep = amountStep
         self.validatorsStep = validatorsStep
         self.summaryStep = summaryStep
@@ -39,7 +39,7 @@ class CommonStakingStepsManager {
     }
 
     private func bind() {
-        state
+        provider.state
             .withWeakCaptureOf(self)
             .sink { manager, state in
                 switch state {

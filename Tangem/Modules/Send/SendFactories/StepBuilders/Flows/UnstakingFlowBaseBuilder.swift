@@ -19,13 +19,9 @@ struct UnstakingFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, balanceInfo: StakingBalanceInfo, router: SendRoutable) -> SendViewModel {
-        let unstakingModel = builder.makeUnstakingModel(
-            stakingManager: manager,
-            balanceInfo: balanceInfo
-        )
-
+        let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, balanceInfo: balanceInfo)
         let notificationManager = builder.makeStakingNotificationManager()
-        notificationManager.setup(input: unstakingModel)
+        notificationManager.setup(provider: unstakingModel, input: unstakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
@@ -53,7 +49,7 @@ struct UnstakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonUnstakingStepsManager(
-            state: unstakingModel.state,
+            provider: unstakingModel,
             summaryStep: summary.step,
             finishStep: finish
         )

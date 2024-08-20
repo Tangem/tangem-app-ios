@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class CommonUnstakingStepsManager {
-    private let state: AnyPublisher<UnstakingModel.State, Never>
+    private let provider: UnstakingModelStateProvider
 
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
@@ -20,11 +20,11 @@ class CommonUnstakingStepsManager {
     private weak var output: SendStepsManagerOutput?
 
     init(
-        state: AnyPublisher<UnstakingModel.State, Never>,
+        provider: UnstakingModelStateProvider,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep
     ) {
-        self.state = state
+        self.provider = provider
         self.summaryStep = summaryStep
         self.finishStep = finishStep
 
@@ -33,7 +33,7 @@ class CommonUnstakingStepsManager {
     }
 
     private func bind() {
-        state
+        provider.state
             .withWeakCaptureOf(self)
             .sink { manager, state in
                 switch state {
