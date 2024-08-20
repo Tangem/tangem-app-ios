@@ -48,7 +48,7 @@ class MarketsCoordinator: CoordinatorObject {
         )
     }
 
-    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
         if state.isBottom {
             rootViewModel?.onBottomSheetDisappear()
             headerViewModel?.onBottomSheetDisappear()

@@ -38,7 +38,11 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer 
 // MARK: - OverlayContentStateObserver protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentStateObserver {
-    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
+        containerViewController?.addObserver(observer, forToken: token)
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
         containerViewController?.addObserver(observer, forToken: token)
     }
 

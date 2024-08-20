@@ -64,7 +64,11 @@ private struct DummyOverlayContentContainerViewControllerAdapter:
         assertIfNeeded(for: OverlayContentContainer.self)
     }
 
-    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
+        assertIfNeeded(for: OverlayContentStateObserver.self)
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
         assertIfNeeded(for: OverlayContentStateObserver.self)
     }
 

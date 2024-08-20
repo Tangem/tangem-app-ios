@@ -31,7 +31,8 @@ final class OverlayContentContainerViewController: UIViewController {
         didSet { onProgressChange(oldValue: oldValue, newValue: progress) }
     }
 
-    private var stateObservers: [AnyHashable: OverlayContentStateObserver.Observer] = [:]
+    private var stateObservers: [AnyHashable: OverlayContentStateObserver.StateObserver] = [:]
+    private var progressObservers: [AnyHashable: OverlayContentStateObserver.ProgressObserver] = [:]
 
     // MARK: - Read-only state
 
@@ -155,12 +156,19 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Warning: This method maintains a strong reference to the given `observer` closure.
     /// Remove this reference by using `removeObserver(forToken:)` method.
-    func addObserver(_ observer: @escaping OverlayContentStateObserver.Observer, forToken token: any Hashable) {
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
         stateObservers[AnyHashable(token)] = observer
+    }
+
+    /// - Warning: This method maintains a strong reference to the given `observer` closure.
+    /// Remove this reference by using `removeObserver(forToken:)` method.
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
+        progressObservers[AnyHashable(token)] = observer
     }
 
     func removeObserver(forToken token: any Hashable) {
         stateObservers.removeValue(forKey: AnyHashable(token))
+        progressObservers.removeValue(forKey: AnyHashable(token))
     }
 
     func expand() {
@@ -364,11 +372,17 @@ final class OverlayContentContainerViewController: UIViewController {
             if isCollapsedState {
                 stateObserver(.bottom)
             } else if isExpandedState {
-                let trigger: OverlayContentStateObserver.State.Trigger = didTap ? .tapGesture : .dragGesture
+                let trigger: OverlayContentState.Trigger = didTap ? .tapGesture : .dragGesture
                 stateObserver(.top(trigger: trigger))
             } else {
                 // No-op
             }
+        }
+    }
+
+    private func notifyProgressObservers() {
+        for progressObserver in progressObservers.values {
+            progressObserver(progress.value)
         }
     }
 
@@ -392,6 +406,7 @@ final class OverlayContentContainerViewController: UIViewController {
         updateCornerRadius()
         updateBackgroundShadowViewAlpha()
         notifyStateObserversIfNeeded()
+        notifyProgressObservers()
 
         if didTap {
             didTap = false
