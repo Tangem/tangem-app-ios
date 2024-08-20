@@ -22,7 +22,7 @@ struct DefaultSelectableRowView<ID: Hashable>: View {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(data.title)
-                        .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                        .style(Fonts.Regular.callout, color: Colors.Text.primary1)
                         .multilineTextAlignment(.leading)
 
                     if let subtitle = data.subtitle {
