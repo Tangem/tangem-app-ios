@@ -26,7 +26,6 @@ extension StakeKitDTO {
             case revote = "REVOTE"
             case rebond = "REBOND"
             case migrate = "MIGRATE"
-            case unknown = "UNKNOWN"
         }
 
         enum ActionStatus: String, Hashable, Codable {
