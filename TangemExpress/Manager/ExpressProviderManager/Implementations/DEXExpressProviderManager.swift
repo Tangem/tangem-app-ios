@@ -13,7 +13,7 @@ actor DEXExpressProviderManager {
 
     private let provider: ExpressProvider
     private let expressAPIProvider: ExpressAPIProvider
-    private let allowanceProvider: AllowanceProvider
+    private let allowanceProvider: ExpressAllowanceProvider
     private let feeProvider: FeeProvider
     private let logger: Logger
     private let mapper: ExpressManagerMapper
@@ -25,7 +25,7 @@ actor DEXExpressProviderManager {
     init(
         provider: ExpressProvider,
         expressAPIProvider: ExpressAPIProvider,
-        allowanceProvider: AllowanceProvider,
+        allowanceProvider: ExpressAllowanceProvider,
         feeProvider: FeeProvider,
         logger: Logger,
         mapper: ExpressManagerMapper
@@ -118,16 +118,18 @@ private extension DEXExpressProviderManager {
         // Check Permission
         if let spender = quote.allowanceContract {
             do {
-                let isPermissionRequired = try await allowanceProvider.isPermissionRequired(request: request, for: spender)
+                let allowanceState = try await allowanceProvider.allowanceState(request: request, spender: spender, policy: approvePolicy)
 
-                if isPermissionRequired {
-                    let permissionRequired = try await makePermissionRequired(request: request, spender: spender, quote: quote, approvePolicy: approvePolicy)
-                    try Task.checkCancellation()
-
-                    return .permissionRequired(permissionRequired)
+                switch allowanceState {
+                case .enoughAllowance:
+                    break
+                case .permissionRequired(let approveData):
+                    return .permissionRequired(
+                        .init(policy: approvePolicy, data: approveData, quote: quote)
+                    )
+                case .approveTransactionInProgress:
+                    return .restriction(.approveTransactionInProgress(spender: spender), quote: quote)
                 }
-            } catch AllowanceProviderError.approveTransactionInProgress {
-                return .restriction(.approveTransactionInProgress(spender: spender), quote: quote)
             } catch {
                 return .error(error, quote: quote)
             }
@@ -184,35 +186,6 @@ private extension DEXExpressProviderManager {
         // better to make the quote from the data
         let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
         return .init(fee: fee, data: data, quote: quoteData)
-    }
-
-    func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {
-        let amount: Decimal = {
-            switch approvePolicy {
-            case .specified:
-                return request.pair.source.convertToWEI(value: request.amount)
-            case .unlimited:
-                return .greatestFiniteMagnitude
-            }
-        }()
-
-        let contractAddress = request.pair.source.expressCurrency.contractAddress
-        let txData = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
-
-        let fee = try await feeProvider.getFee(
-            amount: .dex(txValue: 0, txData: txData),
-            destination: request.pair.source.expressCurrency.contractAddress
-        )
-        try Task.checkCancellation()
-
-        // For approve use the fastest fee
-        let fastest = fee.fastest
-        return ExpressManagerState.PermissionRequired(
-            policy: approvePolicy,
-            data: .init(spender: spender, toContractAddress: contractAddress, data: txData),
-            fee: .single(fastest),
-            quote: quote
-        )
     }
 
     func include(otherNativeFee: Decimal, in fee: ExpressFee) -> ExpressFee {

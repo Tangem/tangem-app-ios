@@ -10,6 +10,7 @@ import Foundation
 
 protocol SendStepsManagerOutput: AnyObject {
     func update(state: SendStepsManagerViewState)
+    func update(flowActionType: SendFlowActionType)
 }
 
 struct SendStepsManagerViewState {

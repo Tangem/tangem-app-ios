@@ -7,28 +7,50 @@
 //
 
 import Foundation
+import Combine
 
 class CommonStakingStepsManager {
+    private let provider: StakingModelStateProvider
     private let amountStep: SendAmountStep
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
     private var stack: [SendStep]
+    private var bag: Set<AnyCancellable> = []
+
     private weak var output: SendStepsManagerOutput?
 
     init(
+        provider: StakingModelStateProvider,
         amountStep: SendAmountStep,
         validatorsStep: StakingValidatorsStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep
     ) {
+        self.provider = provider
         self.amountStep = amountStep
         self.validatorsStep = validatorsStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
 
         stack = [amountStep]
+        bind()
+    }
+
+    private func bind() {
+        provider.state
+            .withWeakCaptureOf(self)
+            .sink { manager, state in
+                switch state {
+                case .readyToApprove:
+                    manager.output?.update(flowActionType: .approve)
+
+                case .approveTransactionInProgress, .readyToStake:
+                    manager.output?.update(flowActionType: .stake)
+                }
+            }
+            .store(in: &bag)
     }
 
     private func currentStep() -> SendStep {
@@ -55,7 +77,7 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .action(.stake)))
+            output?.update(state: .init(step: step, action: .action))
         case .finish:
             output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction, .validators where isEditAction:
@@ -71,7 +93,7 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .init(step: step, action: .action(.stake)))
+            output?.update(state: .init(step: step, action: .action))
         default:
             assertionFailure("There is no back step")
         }
@@ -81,6 +103,10 @@ class CommonStakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonStakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { true }
+
+    var initialFlowActionType: SendFlowActionType { .stake }
+
     var initialState: SendStepsManagerViewState {
         .init(step: amountStep, action: .next, backButtonVisible: false)
     }
