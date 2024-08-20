@@ -67,19 +67,19 @@ struct MarketsPortfolioTokenItemView: View {
                     }
                 }
 
-                if !viewModel.hasError {
-                    HStack(alignment: .center, spacing: 0) {
-                        HStack(spacing: 6, content: {
-                            Text(viewModel.tokenName)
-                                .lineLimit(1)
-                                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                                .layoutPriority(1)
-                        })
-                        .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
-                        .layoutPriority(2)
+                HStack(alignment: .center, spacing: 0) {
+                    HStack(spacing: 6, content: {
+                        Text(viewModel.tokenItem.name)
+                            .lineLimit(1)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .layoutPriority(1)
+                    })
+                    .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+                    .layoutPriority(2)
 
-                        Spacer(minLength: Constants.spacerLength)
+                    Spacer(minLength: Constants.spacerLength)
 
+                    if !viewModel.hasError {
                         LoadableTextView(
                             state: viewModel.balanceCrypto,
                             font: Fonts.Regular.caption1,
@@ -99,52 +99,12 @@ struct MarketsPortfolioTokenItemView: View {
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
-        .modifier(if: !viewModel.contextActions.isEmpty, then: { view in
-            view.contextMenu {
-                ForEach(viewModel.contextActions, id: \.self) { menuAction in
-                    contextMenuButton(for: menuAction)
-                }
+        .contextMenu {
+            ForEach(viewModel.contextActions, id: \.self) { menuAction in
+                contextMenuButton(for: menuAction)
             }
-        })
+        }
     }
-
-    /*
-     private var tokenInfoWithPriceView: some View {
-         VStack(spacing: 4) {
-             HStack(spacing: .zero) {
-                 HStack(spacing: .zero) {
-                     Text(viewModel.walletName)
-                         .lineLimit(1)
-                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-                 }
-                 .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
-
-                 Spacer(minLength: Constants.spacerLength)
-
-                 Text(viewModel.fiatBalanceValue)
-                     .lineLimit(1)
-                     .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-             }
-
-             HStack {
-                 HStack(spacing: .zero) {
-                     Text(viewModel.tokenName)
-                         .lineLimit(1)
-                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                 }
-                 .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
-
-                 Spacer(minLength: Constants.spacerLength)
-
-                 Text(viewModel.balanceValue)
-                     .truncationMode(.middle)
-                     .lineLimit(1)
-                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-             }
-         }
-         .readGeometry(\.size, bindTo: $textBlockSize)
-     }
-      */
 
     @ViewBuilder
     private var background: some View {
@@ -255,18 +215,6 @@ extension MarketsPortfolioTokenItemView {
         self.viewModel = viewModel
         previewContentShapeCornerRadius = cornerRadius
         roundedCornersConfiguration = RoundedCornersConfiguration()
-    }
-}
-
-extension MarketsPortfolioTokenItemView {
-    enum StateTokenItem: Int, Identifiable, Hashable {
-        case `default`
-        case unreachable
-        case noAddress
-
-        var id: Int {
-            rawValue
-        }
     }
 }
 

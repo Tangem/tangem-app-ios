@@ -21,11 +21,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
-
-    // This strict condition is conditioned by the requirements
-    var isOneTokenInPortfolio: Bool {
-        tokenItemViewModels.count == 1
-    }
+    @Published var showQuickAction: Bool = false
 
     // MARK: - Private Properties
 
@@ -33,29 +29,29 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         walletDataProvider.userWalletModels
     }
 
-    private let coinId: String
+    private var coinModel: CoinModel?
     private let walletDataProvider: MarketsWalletDataProvider
+    private let tokenItemInfoProviderFactory = TokenItemInfoProviderFactory()
     private let iconInfoBuilder = TokenIconInfoBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
+
+    private lazy var tokenActionContextBuilder: TokenActionContextBuilder = .init(userWalletModels: walletDataProvider.userWalletModels)
 
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
 
     init(
-        coinId: String,
         walletDataProvider: MarketsWalletDataProvider,
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
-        self.coinId = coinId
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
-        updateTokenList()
         bind()
     }
 
@@ -66,6 +62,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     func updateState(with coinModel: CoinModel?) {
+        self.coinModel = coinModel
+
+        updateTokenList()
+
         let canAddAvailableNetworks = canAddToPortfolio(coinModel: coinModel)
 
         guard canAddAvailableNetworks else {
@@ -110,47 +110,22 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return false
     }
 
-    private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
-        if isOneTokenInPortfolio {
-            let filteredActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
-
-            return filteredActions.filter { actionType in
-                actions.contains(actionType)
-            }
-        }
-
-        return actions
-    }
-
     private func updateTokenList() {
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
             .reduce(into: []) { partialResult, userWalletModel in
-                let filteredWalletModels = userWalletModel.walletModelsManager.walletModels.filter {
-                    $0.tokenItem.id?.caseInsensitiveCompare(coinId) == .orderedSame
-                }
+                let walletModels = userWalletModel.walletModelsManager.walletModels
+                let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
-                let filteredEntries = userWalletModel.userTokenListManager
-                    .userTokensList
-                    .entries
-                    .filter { entry in
-                        entry.blockchainNetwork.blockchain.coinId == coinId
-                    }
-
-                let tokenItemTypes: [TokenItemType] = makeItemTypes(walletModels: filteredWalletModels, entries: filteredEntries)
-
-                let contextActions = MarketsPortfolioContextActions(
-                    coordinator: coordinator,
-                    walletDataProvider: walletDataProvider,
-                    isOneTokenInPortfolio: isOneTokenInPortfolio
-                )
+                let tokenItemTypes: [TokenItemType] = makeItemTypes(walletModels: walletModels, entries: entries)
 
                 let viewModels = tokenItemTypes.map { tokenItemType in
-                    makeTokenItemViewModel(from: tokenItemType, with: userWalletModel, contextActions: contextActions)
+                    makeTokenItemViewModel(from: tokenItemType, with: userWalletModel)
                 }
 
                 partialResult.append(contentsOf: viewModels)
             }
 
+        showQuickAction = tokenItemViewModelByUserWalletModels.count == 1
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
 
@@ -167,119 +142,74 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private func makeItemTypes(walletModels: [WalletModel], entries: [StoredUserTokenList.Entry]) -> [TokenItemType] {
+        guard let coinModel else {
+            return []
+        }
+
         let walletModelsKeyedByIds = walletModels.keyedFirst(by: \.id)
         let blockchainNetworksFromWalletModels = walletModels
             .map(\.blockchainNetwork)
             .toSet()
 
-        let tokenItemTypes: [TokenItemType] = entries.compactMap { userToken in
-            if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {
-                // Most likely we have wallet model (and derivation too) for this entry
-                return walletModelsKeyedByIds[userToken.walletModelId].map { .default($0) }
-            } else {
-                // Section item for entry without derivation (yet)
-                return .withoutDerivation(userToken)
+        let tokenItemTypes: [TokenItemType] = entries
+            .filter { entry in
+                return entry.id == coinModel.id && coinModel.items
+                    .map { $0.blockchain.networkId }
+                    .contains(entry.blockchainNetwork.blockchain.networkId)
             }
-        }
+            .compactMap { userToken in
+                if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {
+                    // Most likely we have wallet model (and derivation too) for this entry
+                    return walletModelsKeyedByIds[userToken.walletModelId].map { .default($0) }
+                } else {
+                    // Section item for entry without derivation (yet)
+                    return .withoutDerivation(userToken)
+                }
+            }
 
         return tokenItemTypes
     }
 
-    private func makeTokenItemViewModel(
-        from tokenItemType: TokenItemType,
-        with userWalletModel: UserWalletModel,
-        contextActions: MarketsPortfolioContextActions
-    ) -> MarketsPortfolioTokenItemViewModel {
-        let tokenInfoProvider: TokenItemInfoProvider
-        let isCustom: Bool
-
-        switch tokenItemType {
-        case .default(let walletModel):
-            tokenInfoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
-            isCustom = walletModel.isCustom
-        case .withoutDerivation(let userToken):
-            isCustom = userToken.isCustom
-            let converter = StorageEntryConverter()
-            let walletModelId = userToken.walletModelId
-            let blockchainNetwork = userToken.blockchainNetwork
-
-            if let token = converter.convertToToken(userToken) {
-                tokenInfoProvider = TokenWithoutDerivationInfoProvider(
-                    id: walletModelId,
-                    tokenItem: .token(token, blockchainNetwork)
-                )
-            } else {
-                tokenInfoProvider = TokenWithoutDerivationInfoProvider(
-                    id: walletModelId,
-                    tokenItem: .blockchain(blockchainNetwork)
-                )
-            }
-        }
-
-        let tokenIcon = iconInfoBuilder.build(from: tokenInfoProvider.tokenItem, isCustom: isCustom)
+    private func makeTokenItemViewModel(from tokenItemType: TokenItemType, with userWalletModel: UserWalletModel) -> MarketsPortfolioTokenItemViewModel {
+        let infoProviderItem = tokenItemInfoProviderFactory.mapTokenItemViewModel(from: tokenItemType, with: userWalletModel)
+        let tokenIcon = iconInfoBuilder.build(from: infoProviderItem.provider.tokenItem, isCustom: infoProviderItem.isCustom)
 
         return MarketsPortfolioTokenItemViewModel(
             userWalletId: userWalletModel.userWalletId,
             walletName: userWalletModel.name,
             tokenIcon: tokenIcon,
-            tokenItemInfoProvider: tokenInfoProvider,
-            contextActionsProvider: contextActions,
-            contextActionsDelegate: contextActions
+            tokenItemInfoProvider: infoProviderItem.provider,
+            contextActionsProvider: self,
+            contextActionsDelegate: self
         )
     }
-}
 
-// MARK: - TokenItemContextActionsProvider
+    private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
+        if showQuickAction {
+            let filteredActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
 
-extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
-        guard
-            let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId }),
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id }),
-            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
-        else {
-            return []
+            return filteredActions.filter { actionType in
+                actions.contains(actionType)
+            }
         }
 
-        let actionsBuilder = TokenActionListBuilder()
-
-        let utility = ExchangeCryptoUtility(
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            address: walletModel.defaultAddress,
-            amountType: walletModel.amountType
-        )
-
-        let canExchange = userWalletModel.config.isFeatureVisible(.exchange)
-        // On the Main view we have to hide send button if we have any sending restrictions
-        let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
-        let canSwap = userWalletModel.config.isFeatureVisible(.swapping) &&
-            swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
-            !walletModel.isCustom
-
-        let canStake = StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
-
-        let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
-        let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
-
-        let contextActions = actionsBuilder.buildTokenContextActions(
-            canExchange: canExchange,
-            canSignTransactions: canSignTransactions,
-            canSend: canSend,
-            canSwap: canSwap,
-            canStake: canStake,
-            canHide: false,
-            isBlockchainReachable: isBlockchainReachable,
-            exchangeUtility: utility
-        )
-
-        return filterAvailableTokenActions(contextActions)
+        return actions
     }
 }
 
+extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
+    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
+        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletId)
+        return filterAvailableTokenActions(actions)
+    }
+}
+
+// MARK: - MarketsPortfolioContextActionsDelegate
+
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
-    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) {
-        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId })
-        let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id })
+    func didTapContextAction(_ action: TokenActionType, for walletModelId: WalletModelId, with userWalletId: UserWalletId) {
+        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
+        let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
 
         guard let userWalletModel, let walletModel, let coordinator else {
             return
@@ -308,13 +238,5 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         case .hide:
             return
         }
-    }
-}
-
-extension MarketsPortfolioContainerViewModel {
-    enum TokenItemType: Equatable {
-        /// `Default` means `coin/token with derivation`,  unlike `withoutDerivation` case.
-        case `default`(WalletModel)
-        case withoutDerivation(StoredUserTokenList.Entry)
     }
 }

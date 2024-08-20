@@ -352,7 +352,6 @@ private extension TokenMarketsDetailsViewModel {
 
     func makePreloadBlocksViewModels() {
         portfolioViewModel = .init(
-            coinId: tokenInfo.id,
             walletDataProvider: walletDataProvider,
             coordinator: coordinator,
             addTokenTapAction: { [weak self] in

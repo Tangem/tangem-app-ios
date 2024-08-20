@@ -154,11 +154,15 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private var quickActionsView: some View {
-        if viewModel.isOneTokenInPortfolio, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+        if viewModel.showQuickAction, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
             MarketsPortfolioQuickActionsView(
-                actions: viewModel.buildContextActions(for: tokenItemViewModel),
+                actions: tokenItemViewModel.contextActions,
                 onTapAction: { actionType in
-                    viewModel.didTapContextAction(actionType, for: tokenItemViewModel)
+                    viewModel.didTapContextAction(
+                        actionType,
+                        for: tokenItemViewModel.tokenItemInfoProvider.id,
+                        with: tokenItemViewModel.userWalletId
+                    )
                 }
             )
         }

@@ -35,10 +35,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     var customTokenColor: Color? { tokenIcon.customTokenColor }
     var tokenItem: TokenItem { tokenItemInfoProvider.tokenItem }
 
-    var tokenName: String {
-        tokenItemInfoProvider.tokenItem.networkName
-    }
-
     var hasError: Bool { missingDerivation || networkUnreachable }
 
     var errorMessage: String? {
@@ -89,7 +85,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
-        contextActionsDelegate?.didTapContextAction(actionType, for: self)
+        contextActionsDelegate?.didTapContextAction(actionType, for: tokenItemInfoProvider.id, with: userWalletId)
     }
 
     // MARK: - Private Implementation
@@ -139,7 +135,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+        contextActions = contextActionsProvider?.buildContextActions(for: tokenItemInfoProvider.id, with: userWalletId) ?? []
     }
 
     private func updateBalances() {
