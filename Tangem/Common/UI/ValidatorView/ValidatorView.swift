@@ -14,6 +14,12 @@ struct ValidatorView: View {
     private let selection: Binding<String>?
 
     private var namespace: Namespace?
+//    private var iconSize: CGSize {
+//        switch data.subtitle {
+//        case .none: CGSize(width: 24, height: 24)
+//        case .some: CGSize(width: 36, height: 36)
+//        }
+//    }
 
     init(data: ValidatorViewData, selection: Binding<String>? = nil) {
         self.data = data
@@ -26,94 +32,76 @@ struct ValidatorView: View {
             Button(action: { selection?.isActive(compare: data.address).toggle() }) {
                 content
             }
-        case .chevron(_, .some(let action)):
+        case .balance(_, .some(let action)):
             Button(action: action) {
                 content
             }
-        case .none, .chevron, .balance:
+        case .none, .balance:
             content
         }
     }
 
     private var content: some View {
-        HStack(spacing: .zero) {
-            HStack(spacing: 12) {
-                image
+        HStack(spacing: 12) {
+            image
 
-                info
+            VStack(alignment: .leading, spacing: 2) {
+                topLineView
+
+                bottomLineView
             }
 
-            if let detailsType = data.detailsType {
-                Spacer(minLength: 12)
-
-                detailsView(detailsType: detailsType)
-                    .matchedGeometryEffect(
-                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.address), namespace: $0.id) }
-                    )
-            }
+            detailsView
         }
         .padding(.vertical, 6)
     }
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
-            .saturation(data.hasMonochromeIcon ? 0 : 1)
+            .saturation(data.isIconMonochrome ? 0 : 1)
             .matchedGeometryEffect(
                 namespace.map { .init(id: $0.names.validatorIcon(id: data.address), namespace: $0.id) }
             )
     }
 
-    private var info: some View {
-        VStack(alignment: .leading, spacing: 2) {
+    private var topLineView: some View {
+        HStack(spacing: 12) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                 .matchedGeometryEffect(
                     namespace.map { .init(id: $0.names.validatorTitle(id: data.address), namespace: $0.id) }
                 )
 
-            if let subtitle = data.subtitle {
-                HStack(spacing: 4) {
-                    Text(subtitle)
-                }
+            if case .balance(let balance, _) = data.detailsType {
+                Text(balance.balance)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var bottomLineView: some View {
+        if let subtitle = data.subtitle {
+            Text(subtitle)
                 .matchedGeometryEffect(
                     namespace.map { .init(id: $0.names.validatorSubtitle(id: data.address), namespace: $0.id) }
                 )
-            }
         }
-        .lineLimit(1)
     }
 
     @ViewBuilder
-    private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
-        switch detailsType {
+    private var detailsView: some View {
+        switch data.detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.address).wrappedValue ?? false)
-        case .chevron(let balanceInfo, let action):
-            HStack(spacing: 20) {
-                if let balanceInfo {
-                    balanceView(balanceInfo: balanceInfo)
-                }
-
-                if action != nil {
-                    Assets.chevron.image
-                        .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.informative)
-                }
-            }
-        case .balance(let balanceInfo):
-            balanceView(balanceInfo: balanceInfo)
+            let isSelected = selection?.isActive(compare: data.address).wrappedValue ?? false
+            CheckIconView(isSelected: isSelected)
+        case .balance(_, .some(_)):
+            Assets.chevron.image
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.informative)
+        default:
+            EmptyView()
         }
-    }
-
-    @ViewBuilder
-    private func balanceView(balanceInfo: BalanceInfo) -> some View {
-        VStack(alignment: .trailing, spacing: 2, content: {
-            Text(balanceInfo.balance)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-
-            Text(balanceInfo.fiatBalance)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-        })
     }
 }
 
@@ -137,96 +125,41 @@ extension ValidatorView {
         @State private var selected: String = ""
 
         var body: some View {
-            ZStack {
-                Colors.Background.secondary.ignoresSafeArea()
-
+            VStack {
                 GroupedSection([
                     ValidatorViewData(
-                        address: UUID().uuidString,
+                        address: "1",
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        hasMonochromeIcon: true,
-                        subtitle: AttributedString("0.08%"),
+                        subtitleType: .active(apr: "0.08%"),
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
-                        address: UUID().uuidString,
+                        address: "2",
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        hasMonochromeIcon: true,
-                        subtitle: nil,
+                        subtitleType: .active(apr: "0.08%"),
                         detailsType: .checkmark
                     ),
                 ]) {
                     ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
-            }
-        }
-    }
-
-    return StakingValidatorPreview()
-}
-
-#Preview("ChevronValidatorView") {
-    struct StakingValidatorPreview: View {
-        @State private var selected: String = ""
-
-        var body: some View {
-            ZStack {
-                Colors.Background.secondary.ignoresSafeArea()
 
                 GroupedSection([
                     ValidatorViewData(
                         address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        hasMonochromeIcon: true,
-                        subtitle: AttributedString("0.08%"),
-                        detailsType: .chevron()
-                    ),
-                    ValidatorViewData(
-                        address: UUID().uuidString,
-                        name: "Aconcagua",
-                        imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        hasMonochromeIcon: true,
-                        subtitle: nil,
-                        detailsType: .chevron()
-                    ),
-
-                ]) {
-                    ValidatorView(data: $0, selection: $selected)
-                }
-                .padding()
-            }
-        }
-    }
-
-    return StakingValidatorPreview()
-}
-
-#Preview("BalanceValidatorView") {
-    struct StakingValidatorPreview: View {
-        @State private var selected: String = ""
-
-        var body: some View {
-            ZStack {
-                Colors.Background.secondary.ignoresSafeArea()
-
-                GroupedSection([
-                    ValidatorViewData(
-                        address: UUID().uuidString,
-                        name: "InfStones",
-                        imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        hasMonochromeIcon: true,
-                        subtitle: AttributedString("0.08%"),
-                        detailsType: .balance(BalanceInfo(balance: "543 USD", fiatBalance: "5 SOL"))
+                        subtitleType: .active(apr: "0.08%"),
+                        detailsType: .balance(BalanceInfo(balance: "543 USD", fiatBalance: "5 SOL"), action: nil)
                     ),
                 ]) {
                     ValidatorView(data: $0, selection: $selected)
                 }
                 .padding()
             }
+            .background(Colors.Background.secondary.ignoresSafeArea())
         }
     }
 

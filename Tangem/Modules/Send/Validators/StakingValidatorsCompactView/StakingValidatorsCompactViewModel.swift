@@ -8,13 +8,20 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
     // Use the estimated size as initial value
     @Published var viewSize: CGSize = .init(width: 361, height: 88)
-    @Published var selectedValidatorData: ValidatorViewData?
+    @Published var selectedValidator: ValidatorInfo?
+
+    var aprFormatted: String? {
+        selectedValidator?.apr.map { percentFormatter.format($0, option: .staking) }
+    }
+
     private weak var input: StakingValidatorsInput?
 
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(input: StakingValidatorsInput) {
@@ -24,14 +31,22 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
     }
 
     func bind(input: StakingValidatorsInput) {
-        let stakingValidatorViewMapper = StakingValidatorViewMapper()
-
-        input.selectedValidatorPublisher
-            .map { validator in
-                stakingValidatorViewMapper.mapToValidatorViewData(info: validator, detailsType: .chevron())
-            }
+        input
+            .selectedValidatorPublisher
+//            .withWeakCaptureOf(self)
+//            .map { viewModel, validator in
+//                return ValidatorViewData(
+//                    address: validator.address,
+//                    name: validator.name,
+//                    imageURL: validator.iconURL,
+//                    subtitleType: validator.apr.map {
+//                        .selection(percentFormatted: viewModel.percentFormatter.format($0, option: .staking))
+//                    },
+//                    detailsType: .checkmark
+//                )
+//            }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.selectedValidatorData, on: self, ownership: .weak)
+            .assign(to: \.selectedValidator, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }
