@@ -125,20 +125,11 @@ extension MarketsItemView {
 
     return ScrollView(.vertical) {
         ForEach(tokens.indexed(), id: \.1.id) { index, token in
-            let inputData = MarketsItemViewModel.InputData(
-                index: index,
-                id: token.id,
-                name: token.name,
-                symbol: token.symbol,
-                marketCap: token.marketCap,
-                marketRating: token.marketRating,
-                priceValue: token.currentPrice,
-                priceChangeStateValues: [:]
-            )
-
-            return MarketsItemView(
+            MarketsItemView(
                 viewModel: .init(
-                    inputData, prefetchDataSource: nil,
+                    index: index,
+                    tokenModel: token,
+                    prefetchDataSource: nil,
                     chartsProvider: .init(),
                     filterProvider: .init(),
                     onTapAction: nil

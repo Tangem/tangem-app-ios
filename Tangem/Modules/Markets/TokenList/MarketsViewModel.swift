@@ -46,7 +46,7 @@ final class MarketsViewModel: ObservableObject {
     private let quotesUpdatesScheduler = MarketsQuotesUpdatesScheduler()
     private let imageCache = KingfisherManager.shared.cache
 
-    private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
+    private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
 
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
@@ -101,10 +101,6 @@ final class MarketsViewModel: ObservableObject {
         onDisappearPrepareImageCache()
     }
 
-    func fetchMore() {
-        dataProvider.fetchMore()
-    }
-
     func onShowUnderCapAction() {
         showItemsBelowCapThreshold = true
 
@@ -113,7 +109,9 @@ final class MarketsViewModel: ObservableObject {
             return
         }
 
-        tokenViewModels = mapToItemViewModel(dataProvider.items)
+        let slicedArray = Array(dataProvider.items[tokenViewModels.count ..< dataProvider.items.count])
+        let itemsUnderCap = mapToItemViewModel(slicedArray, offset: tokenViewModels.count)
+        tokenViewModels.append(contentsOf: itemsUnderCap)
     }
 
     func onTryLoadList() {
@@ -197,80 +195,109 @@ private extension MarketsViewModel {
     }
 
     func dataProviderBind() {
-        dataProvider.$items
-            .dropFirst()
-            .handleEvents(receiveOutput: { [weak self] items in
-                self?.quotesRepositoryUpdateHelper.updateQuotes(marketsTokens: items, for: AppSettings.shared.selectedCurrencyCode)
-            })
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, items in
-                viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
+        let dataProviderEventPipeline = dataProvider.$lastEvent
+            .removeDuplicates()
+            .share(replay: 2)
 
-                // TODO: IOS-7583
-                // Refactor this. Each time data provider receive next page - whole item models list recreated.
-                viewModel.tokenViewModels = viewModel.mapToItemViewModel(items)
-            })
-            .store(in: &bag)
+        dataProviderEventPipeline
+            .filter {
+                if case .appendedItems = $0 {
+                    return false
+                }
 
-        dataProvider.$isLoading
-            .combineLatest($tokenListLoadingState, $tokenViewModels)
-            .filter { $0.0 && $0.1 == .loading && $0.2.isEmpty }
+                return true
+            }
             .receive(on: DispatchQueue.main)
-            .mapToVoid()
+            .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { viewModel, _ in
-                viewModel.resetScrollPositionPublisher.send(())
+            .sink { viewModel, events in
+                let (oldEvent, newEvent) = events
+                switch newEvent {
+                case .loading:
+                    if oldEvent != .failedToFetchData {
+                        viewModel.tokenListLoadingState = .loading
+                    }
+                    viewModel.isDataProviderBusy = true
+                case .idle:
+                    viewModel.isDataProviderBusy = false
+                case .failedToFetchData:
+                    viewModel.isDataProviderBusy = false
+                    if viewModel.dataProvider.items.isEmpty {
+                        viewModel.tokenListLoadingState = .error
+                    } else {
+                        viewModel.tokenListLoadingState = .loading
+                    }
+                case .startInitialFetch, .cleared:
+                    viewModel.tokenListLoadingState = .loading
+                    viewModel.tokenViewModels.removeAll()
+                    viewModel.resetScrollPositionPublisher.send(())
+                    viewModel.isDataProviderBusy = true
+                default:
+                    break
+                }
             }
             .store(in: &bag)
 
-        dataProvider.$isLoading
-            .removeDuplicates()
+        dataProviderEventPipeline
+            .filter {
+                if case .appendedItems = $0 {
+                    return true
+                }
+
+                return false
+            }
+            .handleEvents(receiveOutput: { [weak self] event in
+                guard
+                    let self,
+                    case .appendedItems(let items, _) = event
+                else {
+                    return
+                }
+
+                let idsToFetchMiniCharts = items.map { $0.id }
+                chartsHistoryProvider.fetch(
+                    for: idsToFetchMiniCharts,
+                    with: filterProvider.currentFilterValue.interval
+                )
+
+                quotesRepositoryUpdateHelper.updateQuotes(marketsTokens: items, for: AppSettings.shared.selectedCurrencyCode)
+            })
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, event in
+                guard case .appendedItems(let items, let lastPage) = event else {
+                    return nil
+                }
+
+                let tokenViewModelsToAppend = viewModel.mapToItemViewModel(items, offset: viewModel.tokenViewModels.count)
+                return (tokenViewModelsToAppend, lastPage)
+            }
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, isLoading in
-                viewModel.isDataProviderBusy = isLoading
+            .sink { (viewModel: MarketsViewModel, mappedEvent: ([MarketsItemViewModel], Bool)) in
+                let (items, lastPage) = mappedEvent
 
-                if viewModel.dataProvider.showError {
-                    return
-                }
+                viewModel.tokenViewModels.append(contentsOf: items)
 
-                if isLoading {
-                    viewModel.tokenListLoadingState = .loading
-                    return
-                }
-
-                if viewModel.dataProvider.items.isEmpty {
+                if viewModel.tokenViewModels.isEmpty {
                     viewModel.tokenListLoadingState = .noResults
                     return
                 }
 
-                if !viewModel.dataProvider.canFetchMore {
+                if lastPage {
                     viewModel.tokenListLoadingState = .allDataLoaded
                     return
                 }
 
                 viewModel.tokenListLoadingState = .idle
-            })
-            .store(in: &bag)
-
-        dataProvider.$showError
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, showError in
-                if showError {
-                    viewModel.resetUI()
-                    viewModel.tokenListLoadingState = .error
-                }
-            })
+            }
             .store(in: &bag)
     }
 
     // MARK: - Private Implementation
 
-    private func mapToItemViewModel(_ list: [MarketsTokenModel]) -> [MarketsItemViewModel] {
+    private func mapToItemViewModel(_ list: [MarketsTokenModel], offset: Int) -> [MarketsItemViewModel] {
         let listToProcess = filterItemsBelowMarketCapIfNeeded(list)
-        return listToProcess.enumerated().map { mapToTokenViewModel(index: $0, tokenItemModel: $1) }
+        return listToProcess.enumerated().map { mapToTokenViewModel(index: $0 + offset, tokenItemModel: $1) }
     }
 
     private func filterItemsBelowMarketCapIfNeeded(_ list: [MarketsTokenModel]) -> [MarketsTokenModel] {
@@ -288,19 +315,9 @@ private extension MarketsViewModel {
     }
 
     private func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
-        let inputData = MarketsItemViewModel.InputData(
-            index: index,
-            id: tokenItemModel.id,
-            name: tokenItemModel.name,
-            symbol: tokenItemModel.symbol,
-            marketCap: tokenItemModel.marketCap,
-            marketRating: tokenItemModel.marketRating,
-            priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValues: tokenItemModel.priceChangePercentage
-        )
-
         return MarketsItemViewModel(
-            inputData,
+            index: index,
+            tokenModel: tokenItemModel,
             prefetchDataSource: listDataController,
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,
@@ -321,6 +338,20 @@ private extension MarketsViewModel {
 
     private func resetUI() {
         showItemsBelowCapThreshold = false
+    }
+}
+
+extension MarketsViewModel: MarketsListDataFetcher {
+    var canFetchMore: Bool {
+        dataProvider.canFetchMore && tokenListLoadingState == .idle
+    }
+
+    var totalItems: Int {
+        tokenViewModels.count
+    }
+
+    func fetchMore() {
+        dataProvider.fetchMore()
     }
 }
 

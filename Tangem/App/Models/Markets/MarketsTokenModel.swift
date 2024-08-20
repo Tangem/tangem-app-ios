@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MarketsTokenModel: Identifiable, Decodable {
+struct MarketsTokenModel: Identifiable, Decodable, Equatable {
     let id: String
     let name: String
     let symbol: String
