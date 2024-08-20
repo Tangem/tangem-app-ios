@@ -725,7 +725,7 @@ extension WalletModel {
             return nil
         }
 
-        return balanceValue - stakingBalancesInfo.blocked()
+        return balanceValue - stakingBalancesInfo.staking().sum()
     }
 
     private var availableFiatValue: Decimal? {
@@ -754,20 +754,20 @@ extension WalletModel {
             return nil
         }
 
-        return formatter.formatCryptoBalance(stakingBalancesInfo.blocked(), currencyCode: tokenItem.currencySymbol)
+        return formatter.formatCryptoBalance(stakingBalancesInfo.staking().sum(), currencyCode: tokenItem.currencySymbol)
     }
 
     var stakedFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.blocked()) }
+        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.staking().sum()) }
     }
 
     var stakingRewardsBalance: String? {
         stakingBalancesInfo.flatMap {
-            formatter.formatCryptoBalance($0.rewards(), currencyCode: tokenItem.currencySymbol)
+            formatter.formatCryptoBalance($0.rewards().sum(), currencyCode: tokenItem.currencySymbol)
         }
     }
 
     var stakingRewardsFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.rewards()) }
+        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.rewards().sum()) }
     }
 }

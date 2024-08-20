@@ -42,6 +42,9 @@ class CommonUnstakingStepsManager {
 
                 case .withdraw:
                     manager.output?.update(flowActionType: .withdraw)
+
+                case .claim:
+                    manager.output?.update(flowActionType: .claimRewards)
                 }
             }
             .store(in: &bag)

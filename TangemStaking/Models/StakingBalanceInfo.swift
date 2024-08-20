@@ -31,12 +31,16 @@ public struct StakingBalanceInfo: Hashable {
 }
 
 public extension Array where Element == StakingBalanceInfo {
-    func blocked() -> Decimal {
-        filter { $0.balanceType != .rewards }.reduce(Decimal.zero) { $0 + $1.amount }
+    func staking() -> [StakingBalanceInfo] {
+        filter { $0.balanceType != .rewards }
     }
 
-    func rewards() -> Decimal {
-        filter { $0.balanceType == .rewards }.reduce(Decimal.zero) { $0 + $1.amount }
+    func rewards() -> [StakingBalanceInfo] {
+        filter { $0.balanceType == .rewards }
+    }
+
+    func sum() -> Decimal {
+        reduce(.zero) { $0 + $1.amount }
     }
 }
 

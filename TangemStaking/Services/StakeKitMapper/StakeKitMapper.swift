@@ -14,6 +14,8 @@ struct StakeKitMapper {
     func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
         switch action {
         case .withdraw: .withdraw
+        case .claimRewards: .claimRewards
+        case .restakeRewards: .restakeRewards
         }
     }
 
@@ -116,7 +118,7 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
-            unsignedTransactionData: try mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
+            unsignedTransactionData: mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
         )
     }
@@ -148,16 +150,17 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [PendingActionType] {
-        balance.pendingActions.compactMap { action in
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [PendingActionType] {
+        try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
                 return .withdraw(passthrough: action.passthrough)
             case .claimRewards:
-                // TODO: https://tangem.atlassian.net/browse/IOS-7398
-                return nil
+                return .claimRewards(passthrough: action.passthrough)
+            case .restakeRewards:
+                return .restakeRewards(passthrough: action.passthrough)
             default:
-                return nil
+                throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
         }
     }
@@ -211,6 +214,8 @@ struct StakeKitMapper {
         case .stake: .stake
         case .unstake: .unstake
         case .withdraw: .withdraw
+        case .claimRewards: .claimRewards
+        case .restakeRewards: .restakeRewards
         default:
             throw StakeKitMapperError.notImplement
         }
@@ -224,7 +229,7 @@ struct StakeKitMapper {
         case .pending: .pending
         case .confirmed: .confirmed
         case .failed: .failed
-        case .notFound, .blocked, .signed, .skipped, .unknown:
+        case .notFound, .blocked, .signed, .skipped:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -253,7 +258,7 @@ struct StakeKitMapper {
         case .processing: .processing
         case .failed: .failed
         case .success: .success
-        case .canceled, .unknown:
+        case .canceled:
             throw StakeKitMapperError.notImplement
         }
     }

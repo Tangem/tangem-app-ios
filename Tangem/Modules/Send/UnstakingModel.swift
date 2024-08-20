@@ -88,6 +88,8 @@ private extension UnstakingModel {
             _state.send(.unstaking(fee: state))
         case .pending(.withdraw):
             _state.send(.withdraw(fee: state))
+        case .pending(.claimRewards), .pending(.restakeRewards):
+            _state.send(.claim(fee: state))
         case .stake:
             assertionFailure("UnstakingModel doesn't support actionType: \(action.type)")
         }
@@ -103,7 +105,7 @@ private extension UnstakingModel {
         switch state {
         case .none:
             return SendFee(option: .market, value: .failedToLoad(error: CommonError.noData))
-        case .unstaking(let loadingValue), .withdraw(let loadingValue):
+        case .unstaking(let loadingValue), .withdraw(let loadingValue), .claim(let loadingValue):
             let newValue = loadingValue.mapValue { value in
                 Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: value))
             }
@@ -118,7 +120,7 @@ private extension UnstakingModel {
 private extension UnstakingModel {
     private func stakingAction() throws -> StakingAction {
         switch balanceInfo.balanceType {
-        case .warmup, .unbonding, .rewards:
+        case .warmup, .unbonding:
             throw UnstakingModelError.notSupported(
                 "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceType)"
             )
@@ -137,6 +139,17 @@ private extension UnstakingModel {
                 amount: balanceInfo.amount,
                 validator: balanceInfo.validatorAddress,
                 type: .pending(.withdraw(passthrough: passthrough))
+            )
+
+        case .rewards:
+            guard case .claimRewards(let passthrough) = balanceInfo.actions.first else {
+                throw UnstakingModelError.passthroughNotFound
+            }
+
+            return StakingAction(
+                amount: balanceInfo.amount,
+                validator: balanceInfo.validatorAddress,
+                type: .pending(.claimRewards(passthrough: passthrough))
             )
         }
     }
@@ -297,11 +310,13 @@ extension UnstakingModel {
     enum State: Hashable {
         case unstaking(fee: LoadingValue<Decimal>)
         case withdraw(fee: LoadingValue<Decimal>)
+        case claim(fee: LoadingValue<Decimal>)
 
         var fee: Decimal? {
             switch self {
             case .unstaking(.loaded(let fee)): fee
             case .withdraw(.loaded(let fee)): fee
+            case .claim(.loaded(let fee)): fee
             default: nil
             }
         }

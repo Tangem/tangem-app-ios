@@ -35,7 +35,6 @@ extension StakeKitDTO {
             case processing = "PROCESSING"
             case failed = "FAILED"
             case success = "SUCCESS"
-            case unknown = "UNKNOWN"
         }
 
         struct ActionArgs: Decodable {

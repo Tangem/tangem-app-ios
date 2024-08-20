@@ -62,7 +62,6 @@ extension StakeKitDTO {
                 case confirmed = "CONFIRMED"
                 case failed = "FAILED"
                 case skipped = "SKIPPED"
-                case unknown = "UNKNOWN"
             }
 
             enum TransactionType: String, Decodable {
