@@ -7,22 +7,44 @@
 //
 
 import Foundation
+import Combine
 
 class CommonUnstakingStepsManager {
+    private let provider: UnstakingModelStateProvider
+
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
     private var stack: [SendStep]
+    private var bag: Set<AnyCancellable> = []
     private weak var output: SendStepsManagerOutput?
 
     init(
+        provider: UnstakingModelStateProvider,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep
     ) {
+        self.provider = provider
         self.summaryStep = summaryStep
         self.finishStep = finishStep
 
         stack = [summaryStep]
+        bind()
+    }
+
+    private func bind() {
+        provider.state
+            .withWeakCaptureOf(self)
+            .sink { manager, state in
+                switch state {
+                case .unstaking:
+                    manager.output?.update(flowActionType: .unstake)
+
+                case .withdraw:
+                    manager.output?.update(flowActionType: .withdraw)
+                }
+            }
+            .store(in: &bag)
     }
 
     private func next(step: SendStep) {
@@ -40,8 +62,12 @@ class CommonUnstakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonUnstakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
+    var initialFlowActionType: SendFlowActionType { .unstake }
+
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action(.unstake), backButtonVisible: false)
+        .init(step: summaryStep, action: .action, backButtonVisible: false)
     }
 
     func set(output: SendStepsManagerOutput) {

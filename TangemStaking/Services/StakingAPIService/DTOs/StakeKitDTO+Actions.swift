@@ -66,9 +66,9 @@ extension StakeKitDTO {
                 let bakcId: Required?
             }
 
-            struct TronResource: Codable {
-                let required: Bool
-                let options: [String]
+            enum TronResource: String, Codable {
+                case energy = "ENERGY"
+                case bandwidth = "BANDWIDTH"
             }
         }
 
@@ -85,11 +85,6 @@ extension StakeKitDTO {
                 let integrationId: String
                 let addresses: Address
                 let args: Args
-
-                struct Args: Encodable {
-                    let amount: String
-                    let validatorAddress: String
-                }
             }
 
             struct Response: Decodable {
@@ -110,11 +105,6 @@ extension StakeKitDTO {
                 let integrationId: String
                 let addresses: Address
                 let args: Args
-
-                struct Args: Encodable {
-                    let amount: String
-                    let validatorAddress: String?
-                }
             }
 
             struct Response: Decodable {
@@ -139,15 +129,35 @@ extension StakeKitDTO {
                 let args: Args
             }
 
-            struct Args: Encodable {
-                let amount: String
-                let validatorAddress: String
-            }
-
             struct Response: Decodable {
-                let amount: String?
-                let token: Token
-                let gasLimit: String
+                let id: String
+                let integrationId: String
+                let status: ActionStatus
+                let type: ActionType
+                let currentStepIndex: Int
+                let amount: String
+                let validatorAddress: String?
+                let validatorAddresses: [String]?
+                let transactions: [Transaction.Response]?
+            }
+        }
+
+        struct Args: Encodable {
+            let amount: String
+            let validatorAddress: String
+            let inputToken: Token?
+            let tronResource: String?
+
+            init(
+                amount: String,
+                validatorAddress: String,
+                inputToken: StakeKitDTO.Token? = nil,
+                tronResource: String? = nil
+            ) {
+                self.amount = amount
+                self.validatorAddress = validatorAddress
+                self.inputToken = inputToken
+                self.tronResource = tronResource
             }
         }
     }

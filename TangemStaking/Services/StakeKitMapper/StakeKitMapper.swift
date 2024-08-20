@@ -9,6 +9,24 @@
 import Foundation
 
 struct StakeKitMapper {
+    // MARK: - To DTO
+
+    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+        switch action {
+        case .withdraw: .withdraw
+        }
+    }
+
+    func mapToTokenDTO(from tokenItem: StakingTokenItem) -> StakeKitDTO.Token {
+        StakeKitDTO.Token(
+            network: tokenItem.network.rawValue,
+            name: tokenItem.name,
+            decimals: tokenItem.decimals,
+            address: tokenItem.contractAddress,
+            symbol: tokenItem.symbol
+        )
+    }
+
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
@@ -55,6 +73,28 @@ struct StakeKitMapper {
         )
     }
 
+    func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
+        guard let transactions = response.transactions, !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
+            try ActionTransaction(
+                id: transaction.id,
+                stepIndex: transaction.stepIndex,
+                type: mapToTransactionType(from: transaction.type),
+                status: mapToTransactionStatus(from: transaction.status)
+            )
+        }
+
+        return try PendingAction(
+            id: response.id,
+            status: mapToActionStatus(from: response.status),
+            currentStepIndex: response.currentStepIndex,
+            transactions: actionTransaction
+        )
+    }
+
     // MARK: - Transaction
 
     func mapToTransactionInfo(from response: StakeKitDTO.Transaction.Response) throws -> StakingTransactionInfo {
@@ -76,7 +116,7 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
-            unsignedTransactionData: unsignedTransaction,
+            unsignedTransactionData: try mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
         )
     }
@@ -101,11 +141,26 @@ struct StakeKitMapper {
             return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 blocked: blocked,
-                rewards: mapToRewards(from: balance),
+                // TODO: https://tangem.atlassian.net/browse/IOS-7398
+                rewards: .zero,
                 balanceGroupType: mapToBalanceGroupType(from: balance.type),
                 validatorAddress: balance.validatorAddress,
-                passthrough: mapToPassthrough(from: balance)
+                actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
+        }
+    }
+
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [PendingActionType] {
+        balance.pendingActions.compactMap { action in
+            switch action.type {
+            case .withdraw:
+                return .withdraw(passthrough: action.passthrough)
+            case .claimRewards:
+                // TODO: https://tangem.atlassian.net/browse/IOS-7398
+                return nil
+            default:
+                return nil
+            }
         }
     }
 
@@ -157,6 +212,7 @@ struct StakeKitMapper {
         case .approval: .approval
         case .stake: .stake
         case .unstake: .unstake
+        case .withdraw: .withdraw
         case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
             throw StakeKitMapperError.notImplement
         }
@@ -172,6 +228,23 @@ struct StakeKitMapper {
         case .failed: .failed
         case .notFound, .blocked, .signed, .skipped, .unknown:
             throw StakeKitMapperError.notImplement
+        }
+    }
+
+    func mapToTransactionUnsignedData(from unsignedData: String, network: StakeKitNetworkType) throws -> String {
+        switch network {
+        case .tron:
+            guard let data = unsignedData.data(using: .utf8) else {
+                throw StakeKitMapperError.tronTransactionMappingFailed
+            }
+
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+            let tronTransaction = try decoder.decode(StakeKitDTO.Transaction.TronTransaction.self, from: data)
+            return tronTransaction.rawDataHex
+        default:
+            return unsignedData
         }
     }
 
@@ -192,7 +265,13 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("StakeKitNetworkType not found")
         }
 
-        return StakingTokenItem(network: network, contractAddress: token.address)
+        return StakingTokenItem(
+            network: network,
+            contractAddress: token.address,
+            name: token.name,
+            decimals: token.decimals,
+            symbol: token.symbol
+        )
     }
 
     func mapToRewardType(from rewardType: StakeKitDTO.Yield.Info.Response.RewardType) -> RewardType {
@@ -216,13 +295,10 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
-        case .block: .block
         case .hour: .hour
-        case .day: .day
+        case .block, .epoch, .era, .day: .day
         case .week: .week
         case .month: .month
-        case .era: .era
-        case .epoch: .epoch
         }
     }
 
@@ -234,33 +310,18 @@ struct StakeKitMapper {
             return .warmup
         case .available, .locked, .staked:
             return .active
-        case .unstaking, .unstaked, .unlocking:
+        case .unstaking, .unlocking:
             return .unbonding
+        case .unstaked:
+            return .withdraw
         case .rewards, .unknown:
             return .unknown
         }
-    }
-
-    func mapToRewards(from balance: StakeKitDTO.Balances.Response.Balance) -> Decimal? {
-        guard rewardsPendingAction(from: balance) != nil else {
-            return nil
-        }
-        return Decimal(stringValue: balance.amount)
-    }
-
-    func mapToPassthrough(from balance: StakeKitDTO.Balances.Response.Balance) -> String? {
-        rewardsPendingAction(from: balance)?.passthrough
-    }
-
-    private func rewardsPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> StakeKitDTO.Balances.Response.Balance.PendingAction? {
-        guard balance.type == .rewards else {
-            return nil
-        }
-        return balance.pendingActions.first { $0.type == .claimRewards }
     }
 }
 
 enum StakeKitMapperError: Error {
     case notImplement
     case noData(String)
+    case tronTransactionMappingFailed
 }

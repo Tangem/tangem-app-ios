@@ -14,7 +14,7 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .center, spacing: 24) {
                 Group {
                     header
@@ -117,8 +117,6 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             switch viewModel.state {
             case .loading:
-                portfolioView
-
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
@@ -206,5 +204,5 @@ private extension TokenMarketsDetailsView {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
 }

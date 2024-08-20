@@ -11,8 +11,6 @@ import TangemStaking
 import BlockchainSdk
 
 struct SendDependenciesBuilder {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
-
     private let walletModel: WalletModel
     private let userWalletModel: UserWalletModel
 
@@ -24,8 +22,9 @@ struct SendDependenciesBuilder {
     func summaryTitle(action: SendFlowActionType) -> String {
         switch action {
         case .send: Localization.sendSummaryTitle(walletModel.tokenItem.currencySymbol)
-        case .stake: "\(action.title) \(walletModel.tokenItem.currencySymbol)"
+        case .approve, .stake: "\(Localization.commonStake) \(walletModel.tokenItem.currencySymbol)"
         case .unstake: action.title
+        case .withdraw: action.title
         case .claimRewards: action.title
         case .restakeRewards: action.title
         }
@@ -34,8 +33,9 @@ struct SendDependenciesBuilder {
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .stake: walletName()
+        case .approve, .stake: walletName()
         case .unstake: nil
+        case .withdraw: nil
         case .claimRewards: nil
         case .restakeRewards: nil
         }
@@ -123,9 +123,9 @@ struct SendDependenciesBuilder {
     // MARK: - Send, Sell
 
     func makeSendModel(
-        sendTransactionDispatcher: any SendTransactionDispatcher,
         predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
+        let sendTransactionDispatcher = makeSendTransactionDispatcher()
         let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
@@ -183,27 +183,28 @@ struct SendDependenciesBuilder {
 
     // MARK: - Staking
 
-    func makeStakingModel(
-        stakingManager: any StakingManager,
-        sendTransactionDispatcher: any SendTransactionDispatcher
-    ) -> StakingModel {
-        StakingModel(
+    func makeStakingModel(stakingManager: any StakingManager) -> StakingModel {
+        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
+        let sendTransactionDispatcher = makeSendTransactionDispatcher()
+
+        return StakingModel(
             stakingManager: stakingManager,
+            transactionCreator: walletModel.transactionCreator,
+            stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            allowanceProvider: makeAllowanceProvider(),
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
 
-    func makeUnstakingModel(
-        stakingManager: any StakingManager,
-        sendTransactionDispatcher: any SendTransactionDispatcher,
-        validator: String
-    ) -> UnstakingModel {
-        UnstakingModel(
+    func makeUnstakingModel(stakingManager: any StakingManager, balanceInfo: StakingBalanceInfo) -> UnstakingModel {
+        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
+
+        return UnstakingModel(
             stakingManager: stakingManager,
-            sendTransactionDispatcher: sendTransactionDispatcher,
-            validator: validator,
+            sendTransactionDispatcher: stakingTransactionDispatcher,
+            balanceInfo: balanceInfo,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
@@ -223,5 +224,9 @@ struct SendDependenciesBuilder {
 
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+    }
+
+    func makeAllowanceProvider() -> AllowanceProvider {
+        CommonAllowanceProvider(walletModel: walletModel)
     }
 }

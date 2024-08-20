@@ -127,11 +127,7 @@ struct StakingDetailsView: View {
         GroupedSection(
             validators,
             content: { data in
-                Button(action: {
-                    viewModel.userDidTapValidator(validator: data.id)
-                }, label: {
-                    ValidatorView(data: data)
-                })
+                ValidatorView(data: data)
             }, header: {
                 DefaultHeaderView(header)
             }, footer: {
