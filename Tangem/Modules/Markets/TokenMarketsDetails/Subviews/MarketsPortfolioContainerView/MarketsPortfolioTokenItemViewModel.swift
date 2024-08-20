@@ -8,13 +8,14 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Public Properties
 
-    @Published var stateView: MarketsPortfolioTokenItemView.StateTokenItem = .default
-    @Published var fiatBalanceValue: String = ""
-    @Published var balanceValue: String = ""
+    @Published var balanceCrypto: LoadableTextView.State = .loading
+    @Published var balanceFiat: LoadableTextView.State = .loading
+
     @Published var contextActions: [TokenActionType] = []
 
     @Published var hasPendingTransactions: Bool = false
@@ -26,17 +27,37 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         hashValue
     }
 
-    var tokenIconInfo: TokenIconInfo {
-        TokenIconInfoBuilder().build(from: tokenItemInfoProvider.tokenItem, isCustom: false)
-    }
+    var name: String { tokenIcon.name }
+    var imageURL: URL? { tokenIcon.imageURL }
+    var blockchainIconName: String? { tokenIcon.blockchainIconName }
+    var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation }
+    var isCustom: Bool { tokenIcon.isCustom }
+    var customTokenColor: Color? { tokenIcon.customTokenColor }
+    var tokenItem: TokenItem { tokenItemInfoProvider.tokenItem }
 
     var tokenName: String {
         tokenItemInfoProvider.tokenItem.networkName
     }
 
+    var hasError: Bool { missingDerivation || networkUnreachable }
+
+    var errorMessage: String? {
+        // Don't forget to add check in trailing item in `TokenItemView` when adding new error here
+        if missingDerivation {
+            return Localization.commonNoAddress
+        }
+
+        if networkUnreachable {
+            return Localization.commonUnreachable
+        }
+
+        return nil
+    }
+
     let userWalletId: UserWalletId
     let walletName: String
 
+    let tokenIcon: TokenIconInfo
     let tokenItemInfoProvider: TokenItemInfoProvider
 
     // MARK: - Private Properties
@@ -51,18 +72,20 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     init(
         userWalletId: UserWalletId,
         walletName: String,
+        tokenIcon: TokenIconInfo,
         tokenItemInfoProvider: TokenItemInfoProvider,
         contextActionsProvider: MarketsPortfolioContextActionsProvider?,
         contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
     ) {
         self.userWalletId = userWalletId
         self.walletName = walletName
+        self.tokenIcon = tokenIcon
         self.tokenItemInfoProvider = tokenItemInfoProvider
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
 
-        buildContextActions()
         bind()
+        setupState(tokenItemInfoProvider.tokenItemState)
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
@@ -92,6 +115,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         case .noDerivation:
             missingDerivation = true
             networkUnreachable = false
+            updateBalances()
         case .networkError:
             missingDerivation = false
             networkUnreachable = true
@@ -101,6 +125,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         case .loaded, .noAccount:
             missingDerivation = false
             networkUnreachable = false
+            updateBalances()
         case .loading:
             break
         }
@@ -115,6 +140,11 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
     private func buildContextActions() {
         contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+    }
+
+    private func updateBalances() {
+        balanceCrypto = .loaded(text: tokenItemInfoProvider.balance)
+        balanceFiat = .loaded(text: tokenItemInfoProvider.fiatBalance)
     }
 }
 

@@ -25,9 +25,73 @@ struct MarketsPortfolioTokenItemView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            iconView
+            TokenItemViewLeadingComponent(
+                name: viewModel.name,
+                imageURL: viewModel.imageURL,
+                customTokenColor: viewModel.customTokenColor,
+                blockchainIconName: viewModel.blockchainIconName,
+                hasMonochromeIcon: viewModel.hasMonochromeIcon,
+                isCustom: viewModel.isCustom
+            )
 
-            tokenInfoView
+            VStack(spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    HStack(spacing: 6) {
+                        Text(viewModel.walletName)
+                            .style(
+                                Fonts.Bold.subheadline,
+                                color: viewModel.hasError ? Colors.Text.tertiary : Colors.Text.primary1
+                            )
+                            .lineLimit(1)
+
+                        if viewModel.hasPendingTransactions {
+                            Assets.pendingTxIndicator.image
+                        }
+                    }
+                    .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
+
+                    Spacer(minLength: 8)
+
+                    if viewModel.hasError, let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    } else {
+                        LoadableTextView(
+                            state: viewModel.balanceFiat,
+                            font: Fonts.Regular.subheadline,
+                            textColor: Colors.Text.primary1,
+                            loaderSize: .init(width: 40, height: 12),
+                            isSensitiveText: true
+                        )
+                        .layoutPriority(3)
+                    }
+                }
+
+                if !viewModel.hasError {
+                    HStack(alignment: .center, spacing: 0) {
+                        HStack(spacing: 6, content: {
+                            Text(viewModel.tokenName)
+                                .lineLimit(1)
+                                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                                .layoutPriority(1)
+                        })
+                        .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+                        .layoutPriority(2)
+
+                        Spacer(minLength: Constants.spacerLength)
+
+                        LoadableTextView(
+                            state: viewModel.balanceCrypto,
+                            font: Fonts.Regular.caption1,
+                            textColor: Colors.Text.tertiary,
+                            loaderSize: .init(width: 40, height: 12),
+                            isSensitiveText: true
+                        )
+                        .layoutPriority(3)
+                    }
+                }
+            }
+            .readGeometry(\.size, bindTo: $textBlockSize)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -35,56 +99,52 @@ struct MarketsPortfolioTokenItemView: View {
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
-        .contextMenu {
-            ForEach(viewModel.contextActions, id: \.self) { menuAction in
-                contextMenuButton(for: menuAction)
-            }
-        }
-    }
-
-    private var iconView: some View {
-        TokenIcon(
-            tokenIconInfo: viewModel.tokenIconInfo,
-            size: coinIconSize,
-            isWithOverlays: true
-        )
-    }
-
-    private var tokenInfoView: some View {
-        VStack(spacing: 4) {
-            HStack(spacing: .zero) {
-                HStack(spacing: .zero) {
-                    Text(viewModel.walletName)
-                        .lineLimit(1)
-                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+        .modifier(if: !viewModel.contextActions.isEmpty, then: { view in
+            view.contextMenu {
+                ForEach(viewModel.contextActions, id: \.self) { menuAction in
+                    contextMenuButton(for: menuAction)
                 }
-                .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
-
-                Spacer(minLength: Constants.spacerLength)
-
-                Text(viewModel.fiatBalanceValue)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             }
-
-            HStack {
-                HStack(spacing: .zero) {
-                    Text(viewModel.tokenName)
-                        .lineLimit(1)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                }
-                .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
-
-                Spacer(minLength: Constants.spacerLength)
-
-                Text(viewModel.balanceValue)
-                    .truncationMode(.middle)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-            }
-        }
-        .readGeometry(\.size, bindTo: $textBlockSize)
+        })
     }
+
+    /*
+     private var tokenInfoWithPriceView: some View {
+         VStack(spacing: 4) {
+             HStack(spacing: .zero) {
+                 HStack(spacing: .zero) {
+                     Text(viewModel.walletName)
+                         .lineLimit(1)
+                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                 }
+                 .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
+
+                 Spacer(minLength: Constants.spacerLength)
+
+                 Text(viewModel.fiatBalanceValue)
+                     .lineLimit(1)
+                     .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+             }
+
+             HStack {
+                 HStack(spacing: .zero) {
+                     Text(viewModel.tokenName)
+                         .lineLimit(1)
+                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                 }
+                 .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+
+                 Spacer(minLength: Constants.spacerLength)
+
+                 Text(viewModel.balanceValue)
+                     .truncationMode(.middle)
+                     .lineLimit(1)
+                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+             }
+         }
+         .readGeometry(\.size, bindTo: $textBlockSize)
+     }
+      */
 
     @ViewBuilder
     private var background: some View {
@@ -103,15 +163,23 @@ struct MarketsPortfolioTokenItemView: View {
 
     private var unreachableView: some View {
         VStack(alignment: .trailing) {
-            Text(Localization.commonUnreachable)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            HStack(alignment: .center, spacing: .zero) {
+                Spacer()
+
+                Text(Localization.commonUnreachable)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            }
         }
     }
 
     private var noAddress: some View {
         VStack(alignment: .trailing) {
-            Text(Localization.commonNoAddress)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            HStack(alignment: .center, spacing: .zero) {
+                Spacer()
+
+                Text(Localization.commonNoAddress)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            }
         }
     }
 

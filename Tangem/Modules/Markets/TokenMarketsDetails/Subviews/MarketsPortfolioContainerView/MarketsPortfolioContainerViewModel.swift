@@ -35,6 +35,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private let coinId: String
     private let walletDataProvider: MarketsWalletDataProvider
+    private let iconInfoBuilder = TokenIconInfoBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
@@ -137,8 +138,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
                 let tokenItemTypes: [TokenItemType] = makeItemTypes(walletModels: filteredWalletModels, entries: filteredEntries)
 
+                let contextActions = MarketsPortfolioContextActions(
+                    coordinator: coordinator,
+                    walletDataProvider: walletDataProvider,
+                    isOneTokenInPortfolio: isOneTokenInPortfolio
+                )
+
                 let viewModels = tokenItemTypes.map { tokenItemType in
-                    makeTokenItemViewModel(from: tokenItemType, with: userWalletModel)
+                    makeTokenItemViewModel(from: tokenItemType, with: userWalletModel, contextActions: contextActions)
                 }
 
                 partialResult.append(contentsOf: viewModels)
@@ -162,7 +169,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func makeItemTypes(walletModels: [WalletModel], entries: [StoredUserTokenList.Entry]) -> [TokenItemType] {
         let walletModelsKeyedByIds = walletModels.keyedFirst(by: \.id)
         let blockchainNetworksFromWalletModels = walletModels
-
             .map(\.blockchainNetwork)
             .toSet()
 
@@ -179,13 +185,20 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return tokenItemTypes
     }
 
-    private func makeTokenItemViewModel(from tokenItemType: TokenItemType, with userWalletModel: UserWalletModel) -> MarketsPortfolioTokenItemViewModel {
+    private func makeTokenItemViewModel(
+        from tokenItemType: TokenItemType,
+        with userWalletModel: UserWalletModel,
+        contextActions: MarketsPortfolioContextActions
+    ) -> MarketsPortfolioTokenItemViewModel {
         let tokenInfoProvider: TokenItemInfoProvider
+        let isCustom: Bool
 
         switch tokenItemType {
         case .default(let walletModel):
             tokenInfoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
+            isCustom = walletModel.isCustom
         case .withoutDerivation(let userToken):
+            isCustom = userToken.isCustom
             let converter = StorageEntryConverter()
             let walletModelId = userToken.walletModelId
             let blockchainNetwork = userToken.blockchainNetwork
@@ -203,12 +216,15 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
         }
 
+        let tokenIcon = iconInfoBuilder.build(from: tokenInfoProvider.tokenItem, isCustom: isCustom)
+
         return MarketsPortfolioTokenItemViewModel(
             userWalletId: userWalletModel.userWalletId,
             walletName: userWalletModel.name,
+            tokenIcon: tokenIcon,
             tokenItemInfoProvider: tokenInfoProvider,
-            contextActionsProvider: self,
-            contextActionsDelegate: self
+            contextActionsProvider: contextActions,
+            contextActionsDelegate: contextActions
         )
     }
 }
