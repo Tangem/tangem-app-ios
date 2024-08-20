@@ -710,64 +710,117 @@ extension WalletModel: TransactionHistoryFetcher {
     }
 }
 
+// MARK: - Balance
+
 extension WalletModel {
-    private var stakingBalancesInfo: [StakingBalanceInfo]? {
-        switch stakingManager?.state {
-        case .staked(let staked):
-            return staked.balances
-        default:
+    typealias Balance = (crypto: Decimal?, fiat: Decimal?)
+    typealias BalanceFormatted = (crypto: String, fiat: String)
+
+    var allBalance: Balance {
+        let cryptoBalance: Decimal? = {
+            switch (availableBalance.crypto, stakingManager?.state.blockedBalance) {
+            case (.none, _): nil
+            // What we have to do if we have only blocked balance?
+            case (.some(let available), .none): available
+            case (.some(let available), .some(let blocked)): available + blocked
+            }
+        }()
+
+        let fiatBalance: Decimal? = {
+            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
+        }()
+
+        return (crypto: cryptoBalance, fiat: fiatBalance)
+    }
+
+    var availableBalance: Balance {
+        let cryptoBalance: Decimal? = {
+            if state.isNoAccount {
+                return 0
+            }
+
+            return wallet.amounts[amountType]?.value
+        }()
+
+        let fiatBalance: Decimal? = {
+            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
+        }()
+
+        return (crypto: cryptoBalance, fiat: fiatBalance)
+    }
+
+    var stakedBalance: Balance {
+        let stakingBalance = stakingManagerState.blockedBalance
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return (crypto: stakingBalance, fiat: fiatBalance)
+    }
+
+    var stakedRewardsBalance: Balance {
+        let rewardsToClaim = stakingManagerState.rewardsToClaim
+        let fiatBalance: Decimal? = {
+            guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(rewardsToClaim, currencyId: currencyId)
+        }()
+
+        return (crypto: rewardsToClaim, fiat: fiatBalance)
+    }
+
+    var allBalanceFormatted: BalanceFormatted {
+        formatted(allBalance)
+    }
+
+    var stakedBalanceFormatted: BalanceFormatted {
+        formatted(stakedBalance)
+    }
+
+    var availableBalanceFormatted: BalanceFormatted {
+        formatted(availableBalance)
+    }
+
+    var stakedRewardsBalanceFormatted: BalanceFormatted {
+        formatted(stakedRewardsBalance)
+    }
+
+    private func formatted(_ balance: Balance) -> BalanceFormatted {
+        let cryptoFormatted = formatter.formatCryptoBalance(balance.crypto, currencyCode: tokenItem.currencySymbol)
+        let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
+
+        return (crypto: cryptoFormatted, fiat: fiatFormatted)
+    }
+}
+
+private extension StakingManagerState {
+    var blockedBalance: Decimal? {
+        guard case .staked(let staked) = self else {
             return nil
         }
+
+        return staked.balances.staking().sum()
     }
 
-    private var availableBalanceValue: Decimal? {
-        guard let stakingBalancesInfo, let balanceValue else {
+    var rewardsToClaim: Decimal? {
+        guard case .staked(let staked) = self else {
             return nil
         }
 
-        return balanceValue - stakingBalancesInfo.staking().sum()
-    }
-
-    private var availableFiatValue: Decimal? {
-        guard let availableBalanceValue,
-              canUseQuotes,
-              let currencyId = tokenItem.currencyId
-        else {
-            return nil
-        }
-        return converter.convertToFiat(availableBalanceValue, currencyId: currencyId)
-    }
-
-    var availableBalance: String {
-        guard let availableBalanceValue else {
-            return BalanceFormatter.defaultEmptyBalanceString
-        }
-        return formatter.formatCryptoBalance(availableBalanceValue, currencyCode: tokenItem.currencySymbol)
-    }
-
-    var availableFiatBalance: String {
-        formatter.formatFiatBalance(availableFiatValue)
-    }
-
-    var stakedBalance: String? {
-        guard let stakingBalancesInfo else {
-            return nil
-        }
-
-        return formatter.formatCryptoBalance(stakingBalancesInfo.staking().sum(), currencyCode: tokenItem.currencySymbol)
-    }
-
-    var stakedFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.staking().sum()) }
-    }
-
-    var stakingRewardsBalance: String? {
-        stakingBalancesInfo.flatMap {
-            formatter.formatCryptoBalance($0.rewards().sum(), currencyCode: tokenItem.currencySymbol)
-        }
-    }
-
-    var stakingRewardsFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.rewards().sum()) }
+        return staked.balances.rewards().sum()
     }
 }

@@ -126,8 +126,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let staked = staking.sum()
-        let available = (walletModel.balanceValue ?? .zero) - staked
+        let available = walletModel.availableBalance.crypto
         let aprs = yield.validators.compactMap(\.apr)
         let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate)
 
