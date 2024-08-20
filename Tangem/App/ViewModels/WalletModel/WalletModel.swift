@@ -103,17 +103,11 @@ class WalletModel {
     }
 
     var balanceValue: Decimal? {
-        if state.isNoAccount {
-            return 0
-        }
-
-        return wallet.amounts[amountType]?.value
+        availableBalance.crypto
     }
 
     var balance: String {
-        guard let balanceValue else { return BalanceFormatter.defaultEmptyBalanceString }
-
-        return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
+        availableBalanceFormatted.crypto
     }
 
     var isZeroAmount: Bool {
@@ -121,19 +115,11 @@ class WalletModel {
     }
 
     var fiatBalance: String {
-        formatter.formatFiatBalance(fiatValue)
+        availableBalanceFormatted.fiat
     }
 
     var fiatValue: Decimal? {
-        guard
-            let balanceValue,
-            canUseQuotes,
-            let currencyId = tokenItem.currencyId
-        else {
-            return nil
-        }
-
-        return converter.convertToFiat(balanceValue, currencyId: currencyId)
+        availableBalance.fiat
     }
 
     var rateFormatted: String {
