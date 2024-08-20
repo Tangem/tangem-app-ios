@@ -18,7 +18,6 @@ struct SendSummaryStepBuilder {
     func makeSendSummaryStep(
         io: IO,
         actionType: SendFlowActionType,
-        sendTransactionDispatcher: any SendTransactionDispatcher,
         descriptionBuilder: any SendTransactionSummaryDescriptionBuilder,
         notificationManager: NotificationManager,
         editableType: SendSummaryViewModel.EditableType,
@@ -29,7 +28,6 @@ struct SendSummaryStepBuilder {
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
             io: io,
-            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: descriptionBuilder
         )
 
@@ -84,13 +82,11 @@ private extension SendSummaryStepBuilder {
 
     func makeSendSummaryInteractor(
         io: IO,
-        sendTransactionDispatcher: any SendTransactionDispatcher,
         descriptionBuilder: any SendTransactionSummaryDescriptionBuilder
     ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
             input: io.input,
             output: io.output,
-            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: descriptionBuilder
         )
     }

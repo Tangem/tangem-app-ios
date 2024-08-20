@@ -15,6 +15,7 @@ public struct ActionGenericRequest {
     public let token: StakingTokenItem
     public let validator: String
     public let integrationId: String
+    public let tronResource: String?
 
     public init(
         amount: Decimal,
@@ -22,7 +23,8 @@ public struct ActionGenericRequest {
         additionalAddresses: AdditionalAddresses?,
         token: StakingTokenItem,
         validator: String,
-        integrationId: String
+        integrationId: String,
+        tronResource: String?
     ) {
         self.amount = amount
         self.address = address
@@ -30,5 +32,6 @@ public struct ActionGenericRequest {
         self.token = token
         self.validator = validator
         self.integrationId = integrationId
+        self.tronResource = tronResource
     }
 }

@@ -203,7 +203,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow) (IOS-7364)
+        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7664)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -478,7 +478,7 @@ final class OverlayContentContainerViewController: UIViewController {
             min: overlayExpandedVerticalOffset,
             max: overlayCollapsedVerticalOffset
         )
-        overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7364)
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7664)
         gestureRecognizer.setTranslation(.zero, in: nil)
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)

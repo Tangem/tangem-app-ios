@@ -339,13 +339,7 @@ private extension RewardClaimingType {
 
 private extension RewardScheduleType {
     var title: String {
-        switch self {
-        case .block:
-            // TODO: Update Lokalization when have all requirements
-            RewardScheduleType.day.rawValue.capitalizingFirstLetter()
-        case .hour, .day, .week, .month, .era, .epoch:
-            rawValue.capitalizingFirstLetter()
-        }
+        rawValue.capitalizingFirstLetter()
     }
 }
 

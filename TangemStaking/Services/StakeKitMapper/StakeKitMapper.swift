@@ -116,7 +116,7 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
-            unsignedTransactionData: unsignedTransaction,
+            unsignedTransactionData: try mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
         )
     }
@@ -231,6 +231,23 @@ struct StakeKitMapper {
         }
     }
 
+    func mapToTransactionUnsignedData(from unsignedData: String, network: StakeKitNetworkType) throws -> String {
+        switch network {
+        case .tron:
+            guard let data = unsignedData.data(using: .utf8) else {
+                throw StakeKitMapperError.tronTransactionMappingFailed
+            }
+
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+            let tronTransaction = try decoder.decode(StakeKitDTO.Transaction.TronTransaction.self, from: data)
+            return tronTransaction.rawDataHex
+        default:
+            return unsignedData
+        }
+    }
+
     func mapToActionStatus(from status: StakeKitDTO.Actions.ActionStatus) throws -> ActionStatus {
         switch status {
         case .created: .created
@@ -278,13 +295,10 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
-        case .block: .block
         case .hour: .hour
-        case .day: .day
+        case .block, .epoch, .era, .day: .day
         case .week: .week
         case .month: .month
-        case .era: .era
-        case .epoch: .epoch
         }
     }
 
@@ -309,4 +323,5 @@ struct StakeKitMapper {
 enum StakeKitMapperError: Error {
     case notImplement
     case noData(String)
+    case tronTransactionMappingFailed
 }

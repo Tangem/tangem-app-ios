@@ -11,12 +11,13 @@ import Foundation
 enum SendMainButtonType {
     case next
     case `continue`
-    case action(SendFlowActionType)
+    case action
     case close
 }
 
 enum SendFlowActionType: Hashable {
     case send
+    case approve
     case stake
     case unstake
     case withdraw
@@ -26,6 +27,7 @@ enum SendFlowActionType: Hashable {
     var title: String {
         switch self {
         case .send: Localization.commonSend
+        case .approve: Localization.commonApprove
         case .stake: Localization.commonStake
         case .unstake: Localization.commonUnstake
         case .withdraw: Localization.stakingWithdraw
@@ -36,13 +38,13 @@ enum SendFlowActionType: Hashable {
 }
 
 extension SendMainButtonType {
-    var title: String {
+    func title(action: SendFlowActionType) -> String {
         switch self {
         case .next:
             Localization.commonNext
         case .continue:
             Localization.commonContinue
-        case .action(let action):
+        case .action:
             action.title
         case .close:
             Localization.commonClose
