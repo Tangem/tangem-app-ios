@@ -13,11 +13,7 @@ import TangemStaking
 class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
     // Use the estimated size as initial value
     @Published var viewSize: CGSize = .init(width: 361, height: 88)
-    @Published var selectedValidator: ValidatorInfo?
-
-    var aprFormatted: String? {
-        selectedValidator?.apr.map { percentFormatter.format($0, option: .staking) }
-    }
+    @Published var selectedValidator: ValidatorCompactViewData?
 
     private weak var input: StakingValidatorsInput?
 
@@ -33,20 +29,21 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
     func bind(input: StakingValidatorsInput) {
         input
             .selectedValidatorPublisher
-//            .withWeakCaptureOf(self)
-//            .map { viewModel, validator in
-//                return ValidatorViewData(
-//                    address: validator.address,
-//                    name: validator.name,
-//                    imageURL: validator.iconURL,
-//                    subtitleType: validator.apr.map {
-//                        .selection(percentFormatted: viewModel.percentFormatter.format($0, option: .staking))
-//                    },
-//                    detailsType: .checkmark
-//                )
-//            }
+            .withWeakCaptureOf(self)
+            .map { viewModel, validator in
+                viewModel.mapToValidatorCompactViewData(validator: validator)
+            }
             .receive(on: DispatchQueue.main)
             .assign(to: \.selectedValidator, on: self, ownership: .weak)
             .store(in: &bag)
+    }
+
+    private func mapToValidatorCompactViewData(validator: ValidatorInfo) -> ValidatorCompactViewData {
+        ValidatorCompactViewData(
+            address: validator.address,
+            name: validator.name,
+            imageURL: validator.iconURL,
+            aprFormatted: validator.apr.map { percentFormatter.format($0, option: .staking) }
+        )
     }
 }
