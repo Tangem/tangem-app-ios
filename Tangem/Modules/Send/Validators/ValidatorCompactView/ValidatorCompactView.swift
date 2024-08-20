@@ -27,16 +27,22 @@ struct ValidatorCompactView: View {
             IconView(url: data.imageURL, size: CGSize(width: 24, height: 24))
                 .matchedGeometryEffect(id: namespace.names.validatorIcon(id: data.address), in: namespace.id)
 
-            Text(data.name)
-                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-                .matchedGeometryEffect(id: namespace.names.validatorTitle(id: data.address), in: namespace.id)
-
-            if let aprFormatted = data.aprFormatted {
-                Text(aprFormatted)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.accent)
+            HStack(spacing: 0) {
+                Text(data.name)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                     .matchedGeometryEffect(id: namespace.names.validatorTitle(id: data.address), in: namespace.id)
+
+                if let aprFormatted = data.aprFormatted {
+                    Spacer()
+
+                    Text(aprFormatted)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.accent)
+                        .matchedGeometryEffect(id: namespace.names.validatorDetailsView(id: data.address), in: namespace.id)
+                        .animation(nil, value: aprFormatted)
+                }
             }
         }
-        .padding(.vertical, 6)
+        .infinityFrame(axis: .horizontal)
+        .padding(.vertical, 12)
     }
 }

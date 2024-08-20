@@ -130,13 +130,14 @@ struct StakingDetailsView: View {
                 ValidatorView(data: data)
             }, header: {
                 DefaultHeaderView(header)
+                    .padding(.top, 12)
             }, footer: {
                 Text(footer)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
         )
-        .interItemSpacing(10)
-        .innerContentPadding(12)
+        .interItemSpacing(0)
+        .innerContentPadding(0)
     }
 
     @ViewBuilder

@@ -43,7 +43,9 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
             address: validator.address,
             name: validator.name,
             imageURL: validator.iconURL,
-            aprFormatted: validator.apr.map { percentFormatter.format($0, option: .staking) }
+            aprFormatted: validator.apr.map {
+                "\(Localization.stakingDetailsApr) \(percentFormatter.format($0, option: .staking))"
+            }
         )
     }
 }

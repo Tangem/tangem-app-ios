@@ -42,11 +42,11 @@ struct ValidatorViewData: Hashable, Identifiable {
     private func string(_ text: String, accent: String) -> AttributedString {
         var descriptionPart = AttributedString(text)
         descriptionPart.foregroundColor = Colors.Text.tertiary
-        descriptionPart.font = Fonts.Regular.footnote
+        descriptionPart.font = Fonts.Regular.caption1
 
         var valuePart = AttributedString(accent)
         valuePart.foregroundColor = Colors.Text.accent
-        valuePart.font = Fonts.Regular.footnote
+        valuePart.font = Fonts.Regular.caption1
         return descriptionPart + " " + valuePart
     }
 }

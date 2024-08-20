@@ -14,12 +14,6 @@ struct ValidatorView: View {
     private let selection: Binding<String>?
 
     private var namespace: Namespace?
-//    private var iconSize: CGSize {
-//        switch data.subtitle {
-//        case .none: CGSize(width: 24, height: 24)
-//        case .some: CGSize(width: 36, height: 36)
-//        }
-//    }
 
     init(data: ValidatorViewData, selection: Binding<String>? = nil) {
         self.data = data
@@ -42,18 +36,29 @@ struct ValidatorView: View {
     }
 
     private var content: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: .zero) {
             image
 
-            VStack(alignment: .leading, spacing: 2) {
+            FixedSpacer(width: 12)
+
+            VStack(alignment: .leading, spacing: 0) {
                 topLineView
 
                 bottomLineView
             }
 
-            detailsView
+            if let detailsType = data.detailsType {
+                Spacer(minLength: 12)
+
+                detailsView(detailsType: detailsType)
+                    .matchedGeometryEffect(
+                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.address), namespace: $0.id) }
+                    )
+            }
         }
-        .padding(.vertical, 6)
+        .lineLimit(1)
+        .infinityFrame(axis: .horizontal)
+        .padding(.vertical, 12)
     }
 
     private var image: some View {
@@ -65,7 +70,7 @@ struct ValidatorView: View {
     }
 
     private var topLineView: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 0) {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                 .matchedGeometryEffect(
@@ -73,7 +78,9 @@ struct ValidatorView: View {
                 )
 
             if case .balance(let balance, _) = data.detailsType {
-                Text(balance.balance)
+                Spacer(minLength: 4)
+
+                Text(balance.fiatBalance)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             }
         }
@@ -81,17 +88,26 @@ struct ValidatorView: View {
 
     @ViewBuilder
     private var bottomLineView: some View {
-        if let subtitle = data.subtitle {
-            Text(subtitle)
-                .matchedGeometryEffect(
-                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.address), namespace: $0.id) }
-                )
+        HStack(alignment: .bottom, spacing: 0) {
+            if let subtitle = data.subtitle {
+                Text(subtitle)
+                    .matchedGeometryEffect(
+                        namespace.map { .init(id: $0.names.validatorSubtitle(id: data.address), namespace: $0.id) }
+                    )
+
+                if case .balance(let balance, _) = data.detailsType {
+                    Spacer(minLength: 4)
+
+                    Text(balance.balance)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                }
+            }
         }
     }
 
     @ViewBuilder
-    private var detailsView: some View {
-        switch data.detailsType {
+    private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
+        switch detailsType {
         case .checkmark:
             let isSelected = selection?.isActive(compare: data.address).wrappedValue ?? false
             CheckIconView(isSelected: isSelected)
