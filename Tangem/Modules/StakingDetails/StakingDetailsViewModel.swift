@@ -111,12 +111,12 @@ private extension StakingDetailsViewModel {
     }
 
     func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
-        let stakedBalance = balances.sumBlocked()
-        let rewards = balances.sumRewards()
+        let staked = balances.blocked()
+        let rewards = balances.rewards()
 
-        setupHeaderView(staked: stakedBalance)
-        setupDetailsSection(yield: yield, staked: stakedBalance)
-        setupRewardView(staked: stakedBalance, rewards: rewards)
+        setupHeaderView(staked: staked)
+        setupDetailsSection(yield: yield, staked: staked)
+        setupRewardView(staked: staked, rewards: rewards)
         setupValidatorsView(yield: yield, balances: balances)
     }
 
@@ -239,11 +239,11 @@ private extension StakingDetailsViewModel {
     }
 
     func setupValidatorsView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
-        activeValidators = balances.filter { $0.balanceGroupType.isActive }.compactMap { balance -> ValidatorViewData? in
+        activeValidators = balances.filter { $0.balanceType.isActive }.compactMap { balance -> ValidatorViewData? in
             mapToValidatorViewData(yield: yield, balance: balance)
         }
 
-        unstakedValidators = balances.filter { !$0.balanceGroupType.isActive }.compactMap { balance -> ValidatorViewData? in
+        unstakedValidators = balances.filter { $0.balanceType.isInactive }.compactMap { balance -> ValidatorViewData? in
             mapToValidatorViewData(yield: yield, balance: balance)
         }
     }
@@ -254,16 +254,16 @@ private extension StakingDetailsViewModel {
         }
 
         let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-            balance.blocked,
+            balance.amount,
             currencyCode: walletModel.tokenItem.currencySymbol
         )
         let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balance.blocked, currencyId: $0)
+            BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
         let subtitleType: ValidatorViewData.SubtitleType? = {
-            switch balance.balanceGroupType {
+            switch balance.balanceType {
             case .unknown:
                 .none
             case .warmup:
@@ -276,8 +276,8 @@ private extension StakingDetailsViewModel {
         }()
 
         let action: (() -> Void)? = {
-            switch balance.balanceGroupType {
-            case .unknown, .warmup, .unbonding:
+            switch balance.balanceType {
+            case .rewards, .warmup, .unbonding:
                 return nil
             case .active, .withdraw:
                 return { [weak self] in
@@ -356,12 +356,21 @@ private extension RewardRateValues {
     }
 }
 
-private extension BalanceGroupType {
+private extension BalanceType {
     var isActive: Bool {
         switch self {
         case .warmup, .active:
             return true
-        case .unbonding, .withdraw, .unknown:
+        case .unbonding, .withdraw, .rewards:
+            return false
+        }
+    }
+
+    var isInactive: Bool {
+        switch self {
+        case .unbonding, .withdraw:
+            return true
+        case .warmup, .active, .rewards:
             return false
         }
     }

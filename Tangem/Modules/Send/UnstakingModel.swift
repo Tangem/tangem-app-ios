@@ -117,14 +117,14 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func stakingAction() throws -> StakingAction {
-        switch balanceInfo.balanceGroupType {
-        case .warmup, .unbonding, .unknown:
+        switch balanceInfo.balanceType {
+        case .warmup, .unbonding, .rewards:
             throw UnstakingModelError.notSupported(
-                "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceGroupType)"
+                "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceType)"
             )
         case .active:
             return StakingAction(
-                amount: balanceInfo.blocked,
+                amount: balanceInfo.amount,
                 validator: balanceInfo.validatorAddress,
                 type: .unstake
             )
@@ -134,7 +134,7 @@ private extension UnstakingModel {
             }
 
             return StakingAction(
-                amount: balanceInfo.blocked,
+                amount: balanceInfo.amount,
                 validator: balanceInfo.validatorAddress,
                 type: .pending(.withdraw(passthrough: passthrough))
             )
@@ -190,10 +190,10 @@ extension UnstakingModel: SendFeeLoader {
 extension UnstakingModel: SendAmountInput {
     var amount: SendAmount? {
         let fiat = amountTokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balanceInfo.blocked, currencyId: $0)
+            BalanceConverter().convertToFiat(balanceInfo.amount, currencyId: $0)
         }
 
-        return .init(type: .typical(crypto: balanceInfo.blocked, fiat: fiat))
+        return .init(type: .typical(crypto: balanceInfo.amount, fiat: fiat))
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
