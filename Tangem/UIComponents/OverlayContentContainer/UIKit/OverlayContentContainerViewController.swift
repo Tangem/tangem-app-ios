@@ -619,7 +619,7 @@ private extension OverlayContentContainerViewController {
         static let minContentViewScale = 0.95
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
-        static let maxBackgroundShadowViewAlpha = 0.5
+        static let maxBackgroundShadowViewAlpha = 0.4
         static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(duration: 0.3, curve: .easeOut)
