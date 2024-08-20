@@ -20,11 +20,7 @@ struct StakingFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
-        let sendTransactionDispatcher = builder.makeStakingTransactionDispatcher()
-        let stakingModel = builder.makeStakingModel(
-            stakingManager: manager,
-            sendTransactionDispatcher: sendTransactionDispatcher
-        )
+        let stakingModel = builder.makeStakingModel(stakingManager: manager)
 
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(input: stakingModel)
@@ -47,7 +43,6 @@ struct StakingFlowBaseBuilder {
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: stakingModel, output: stakingModel),
             actionType: .stake,
-            sendTransactionDispatcher: sendTransactionDispatcher,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .editable,
@@ -66,6 +61,7 @@ struct StakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonStakingStepsManager(
+            state: stakingModel.state,
             amountStep: amount.step,
             validatorsStep: validators.step,
             summaryStep: summary.step,
@@ -74,7 +70,14 @@ struct StakingFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: stakingModel, output: stakingModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let interactor = CommonSendBaseInteractor(
+            input: stakingModel,
+            output: stakingModel,
+            walletModel: walletModel,
+            emailDataProvider: userWalletModel,
+            stakingModel: stakingModel
+        )
+
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,

@@ -29,6 +29,7 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel? = nil
     @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
+    @Published var expressApproveViewModel: ExpressApproveViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -104,5 +105,30 @@ extension SendCoordinator: SendRoutable {
 
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {
         dismiss(with: (walletModel, userWalletModel))
+    }
+
+    func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {
+        expressApproveViewModel = .init(
+            settings: settings,
+            feeFormatter: CommonFeeFormatter(
+                balanceFormatter: .init(),
+                balanceConverter: .init()
+            ),
+            logger: AppLog.shared,
+            approveViewModelInput: approveViewModelInput,
+            coordinator: self
+        )
+    }
+}
+
+// MARK: - ExpressApproveRoutable
+
+extension SendCoordinator: ExpressApproveRoutable {
+    func didSendApproveTransaction() {
+        expressApproveViewModel = nil
+    }
+
+    func userDidCancel() {
+        expressApproveViewModel = nil
     }
 }

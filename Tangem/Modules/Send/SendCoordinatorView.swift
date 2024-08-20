@@ -34,6 +34,12 @@ struct SendCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
+            .bottomSheet(
+                item: $coordinator.expressApproveViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                ExpressApproveView(viewModel: $0)
+            }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
