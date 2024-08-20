@@ -905,3 +905,5 @@
 "welcome_unlock_card" = "Сканировать карту";
 "welcome_unlock_description" = "Используйте %@ или отсканируйте карту для входа в приложение";
 "welcome_unlock_title" = "C возвращением!";
+"warning_matic_migration_title" = "Миграция MATIC в POL";
+"warning_matic_migration_message" = "Токен MATIC мигрирует на POL. Однако крайний срок не установлен, и MATIC пока не устарел. Вы можете спокойно продолжать использовать токен MATIC или воспользоваться биржами, чтобы обменять его на POL.";

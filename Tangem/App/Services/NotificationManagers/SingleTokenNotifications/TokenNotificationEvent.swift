@@ -91,7 +91,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .manaLevel:
             return .string(Localization.koinosManaLevelTitle)
         case .maticMigration:
-            return .string("MATIC is being migrated to POL")
+            return .string(Localization.warningMaticMigrationTitle)
         }
     }
 
@@ -133,7 +133,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .manaLevel(let currentMana, let maxMana):
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
         case .maticMigration:
-            return "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL."
+            return Localization.warningMaticMigrationMessage
         }
     }
 
