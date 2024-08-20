@@ -26,8 +26,7 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer 
     }
 
     func installOverlay(_ overlayView: some View) {
-        // TODO: Andrey Fedorov - UIKit UI component must add this grabber, not a SwiftUI consumer (IOS-7364)
-        let overlayViewController = UIHostingController(rootView: overlayView.bottomScrollableSheetGrabber())
+        let overlayViewController = UIHostingController(rootView: overlayView)
         containerViewController?.installOverlay(overlayViewController)
     }
 

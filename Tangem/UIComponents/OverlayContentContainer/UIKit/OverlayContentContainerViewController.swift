@@ -59,6 +59,7 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - IBOutlets/UI
 
     private var overlayViewTopAnchorConstraint: NSLayoutConstraint?
+    private var grabberView: UIView?
     private lazy var backgroundShadowView = UIView(frame: screenBounds)
     private lazy var tapGestureRecognizerHostingView = TouchPassthroughView()
 
@@ -104,6 +105,14 @@ final class OverlayContentContainerViewController: UIViewController {
         setupAppLifecycleHelper()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let grabberView {
+            grabberView.superview?.bringSubviewToFront(grabberView)
+        }
+    }
+
     // MARK: - Public API
 
     func installOverlay(_ newOverlayViewController: UIViewController) {
@@ -132,6 +141,8 @@ final class OverlayContentContainerViewController: UIViewController {
 
         overlayViewTopAnchorConstraint?.isActive = false
         overlayViewTopAnchorConstraint = nil
+
+        grabberView = nil
 
         let overlayView = overlayViewController.view!
         overlayView.removeFromSuperview()
@@ -237,6 +248,13 @@ final class OverlayContentContainerViewController: UIViewController {
             overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - overlayExpandedVerticalOffset),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
+
+        let grabberViewFactory = GrabberViewFactory()
+        let grabberView = grabberViewFactory.makeUIKitView()
+        self.grabberView = grabberView
+
+        overlayView.addSubview(grabberView)
+        grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
 
         overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
         overlayViewController.didMove(toParent: self)
