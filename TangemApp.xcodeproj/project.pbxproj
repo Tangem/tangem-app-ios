@@ -3950,13 +3950,13 @@
 			path = NotificationView;
 			sourceTree = "<group>";
 		};
-		2D535E6D2A0CB4D20081EB76 /* BottonSheetInfoView */ = {
+		2D535E6D2A0CB4D20081EB76 /* BottomSheetInfoView */ = {
 			isa = PBXGroup;
 			children = (
 				2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */,
 				2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */,
 			);
-			path = BottonSheetInfoView;
+			path = BottomSheetInfoView;
 			sourceTree = "<group>";
 		};
 		2D5DCC2B2C3309F1000EE379 /* TokensNetworkSelector */ = {
@@ -5635,7 +5635,7 @@
 				EF81B2A82A6686D2006CD57B /* BottomScrollableSheet */,
 				B0A4C49E2A270F490060E039 /* BalanceWithButtonsView */,
 				EF666C242A2DF9D60044986F /* BottomSheet */,
-				2D535E6D2A0CB4D20081EB76 /* BottonSheetInfoView */,
+				2D535E6D2A0CB4D20081EB76 /* BottomSheetInfoView */,
 				2DBE29BE2B3C4A8100109D5E /* DetentBottonSheet */,
 				B05A13AF29FBF16300FB511A /* ButtonWithIcon */,
 				B675A1E42A1E050C00F624B6 /* CardsInfoPagerView */,
