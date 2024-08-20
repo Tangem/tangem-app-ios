@@ -184,7 +184,7 @@ private extension CommonStakingManager {
 
     func canStakeMore(item: StakingTokenItem) -> Bool {
         switch item.network {
-        case .solana:
+        case .solana, .cosmos:
             return true
         default:
             return false
