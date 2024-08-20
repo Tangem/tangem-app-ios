@@ -48,6 +48,8 @@ struct GrabberViewFactory {
     }
 }
 
+// MARK: - Constants
+
 private extension GrabberViewFactory {
     enum Constants {
         static let topInset = 8.0
