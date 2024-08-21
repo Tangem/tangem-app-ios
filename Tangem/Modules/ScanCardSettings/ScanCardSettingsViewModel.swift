@@ -110,16 +110,13 @@ extension ScanCardSettingsViewModel {
     }
 
     func makeTwinInput(from cardInfo: CardInfo, config: UserWalletConfig, userWalletId: UserWalletId) -> OnboardingInput? {
-        guard
-            let twinData = cardInfo.walletData.twinData,
-            let model = CommonUserWalletModel(cardInfo: cardInfo)
-        else {
+        guard let twinData = cardInfo.walletData.twinData else {
             return nil
         }
 
         let factory = TwinInputFactory(
             firstCardId: cardInfo.card.cardId,
-            cardInput: .userWalletModel(model),
+            cardInput: .cardInfo(cardInfo),
             userWalletToDelete: userWalletId,
             twinData: twinData,
             sdkFactory: config
