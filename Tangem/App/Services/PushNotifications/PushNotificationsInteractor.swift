@@ -11,7 +11,6 @@ import Foundation
 protocol PushNotificationsInteractor: Initializable {
     func isAvailable(in flow: PushNotificationsPermissionRequestFlow) -> Bool
     func allowRequest(in flow: PushNotificationsPermissionRequestFlow) async
-    func canPostponeRequest(in flow: PushNotificationsPermissionRequestFlow) -> Bool
     func postponeRequest(in flow: PushNotificationsPermissionRequestFlow)
 }
 

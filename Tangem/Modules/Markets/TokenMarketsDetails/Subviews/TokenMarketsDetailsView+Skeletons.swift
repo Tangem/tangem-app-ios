@@ -12,6 +12,10 @@ extension TokenMarketsDetailsView {
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
+                description
+
+                portfolio
+
                 insights
 
                 securityScore
@@ -24,22 +28,39 @@ extension TokenMarketsDetailsView {
             }
         }
 
-        private var insights: some View {
-            VStack(spacing: 0) {
+        private var description: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(0 ... 1) { _ in
+                    skeletonView(width: .infinity, height: 18)
+                }
+
+                skeletonView(width: 270, height: 18)
+            }
+        }
+
+        private var portfolio: some View {
+            VStack(spacing: 10) {
                 HStack {
-                    Text(Localization.marketsTokenDetailsInsights)
+                    Text(Localization.marketsCommonMyPortfolio)
+                        .lineLimit(1)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                     Spacer()
-
-                    MarketsPickerView(
-                        marketPriceIntervalType: .constant(.day),
-                        options: [.day, .week, .month],
-                        shouldStretchToFill: false,
-                        style: .init(textVerticalPadding: 2),
-                        titleFactory: { $0.tokenDetailsNameLocalized }
-                    )
                 }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    skeletonView(width: .infinity, height: 15)
+
+                    skeletonView(width: 218, height: 15)
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
+
+        private var insights: some View {
+            VStack(spacing: .zero) {
+                skeletonView(width: .infinity, height: 18)
+                    .padding(.bottom, Constants.bottomPaddingTitleConstant)
 
                 ForEach(0 ... 1) { _ in
                     fillableBlocks
@@ -51,13 +72,7 @@ extension TokenMarketsDetailsView {
         private var securityScore: some View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 2) {
-                    HStack(alignment: .center, spacing: 4) {
-                        Text(Localization.marketsTokenDetailsSecurityScore)
-                            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                        Assets.infoCircle16.image
-                            .foregroundStyle(Colors.Icon.informative)
-                    }
+                    skeletonView(width: 106, height: 16)
 
                     skeletonView(width: 106, height: 16)
                 }
@@ -70,15 +85,9 @@ extension TokenMarketsDetailsView {
         }
 
         private var metrics: some View {
-            VStack(spacing: 0) {
-                HStack {
-                    Text(Localization.marketsTokenDetailsMetrics)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                    Spacer(minLength: 10)
-
-                    skeletonView(width: 70, height: 18)
-                }
+            VStack(spacing: .zero) {
+                skeletonView(width: .infinity, height: 18)
+                    .padding(.bottom, Constants.bottomPaddingTitleConstant)
 
                 ForEach(0 ... 2) { _ in
                     fillableBlocks
@@ -89,20 +98,8 @@ extension TokenMarketsDetailsView {
 
         private var pricePerformance: some View {
             VStack(spacing: 12) {
-                HStack {
-                    Text(Localization.marketsTokenDetailsPricePerformance)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                    Spacer()
-
-                    MarketsPickerView(
-                        marketPriceIntervalType: .constant(.day),
-                        options: [.day, .week, .month],
-                        shouldStretchToFill: false,
-                        style: .init(textVerticalPadding: 2),
-                        titleFactory: { $0.tokenDetailsNameLocalized }
-                    )
-                }
+                skeletonView(width: .infinity, height: 18)
+                    .padding(.bottom, Constants.bottomPaddingTitleConstant)
 
                 HStack {
                     skeletonView(width: 28, height: 18)
@@ -127,10 +124,9 @@ extension TokenMarketsDetailsView {
 
         private var links: some View {
             VStack(alignment: .leading, spacing: 12) {
-                Text(Localization.marketsTokenDetailsLinks)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                    .padding(.bottom, 10)
-                    .padding(.horizontal, 16)
+                skeletonView(width: .infinity, height: 18)
+                    .padding(.horizontal, 14)
+                    .padding(.bottom, Constants.bottomPaddingTitleConstant)
 
                 ForEach(0 ... 2) { index in
                     VStack(alignment: .leading, spacing: 12) {
@@ -166,7 +162,7 @@ extension TokenMarketsDetailsView {
                     }
                 }
             }
-            .padding(.vertical, 10)
+            .padding(.top, 10)
         }
 
         private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
@@ -174,6 +170,12 @@ extension TokenMarketsDetailsView {
                 .cornerRadiusContinuous(3)
                 .frame(maxWidth: width, minHeight: height, maxHeight: height)
         }
+    }
+}
+
+extension TokenMarketsDetailsView.ContentBlockSkeletons {
+    enum Constants {
+        static let bottomPaddingTitleConstant: CGFloat = 8
     }
 }
 

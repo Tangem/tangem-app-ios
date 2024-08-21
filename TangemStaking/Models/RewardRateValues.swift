@@ -9,7 +9,7 @@
 import Foundation
 
 public enum RewardRateValues {
-    case single(_: Decimal)
+    case single(Decimal)
     case interval(min: Decimal, max: Decimal)
 
     public init(aprs: [Decimal], rewardRate: Decimal) {

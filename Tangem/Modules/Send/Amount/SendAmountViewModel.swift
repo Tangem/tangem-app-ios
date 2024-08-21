@@ -19,6 +19,7 @@ class SendAmountViewModel: ObservableObject {
     let currencyPickerData: SendCurrencyPickerData
 
     @Published var id: UUID = .init()
+    @Published var text: String = ""
 
     @Published var auxiliaryViewsVisible: Bool = true
     @Published var isEditMode: Bool = false
@@ -176,10 +177,6 @@ extension SendAmountViewModel: SendStepViewAnimatable {
             // Have to be always visible
             auxiliaryViewsVisible = true
             isEditMode = false
-
-        case .disappearing(.destination(_)):
-            UIApplication.shared.endEditing()
-
         case .appearing(.summary(_)):
             // Will be shown with animation
             auxiliaryViewsVisible = false
@@ -193,10 +190,9 @@ extension SendAmountViewModel: SendStepViewAnimatable {
             } else {
                 auxiliaryViewsVisible = false
             }
-            UIApplication.shared.endEditing()
 
         default:
-            assertionFailure("Not implemented")
+            break
         }
     }
 }

@@ -11,31 +11,28 @@ import Foundation
 struct PriceChangeUtility {
     private let priceChangeFormatter = PriceChangeFormatter()
 
-    func convertToPriceChangeState(change: Decimal?) -> TokenPriceChangeView.State {
-        guard let result = formatPriceChange(change) else {
+    func convertToPriceChangeState(changeFractional: Decimal?) -> TokenPriceChangeView.State {
+        guard let changeFractional else {
             return .noData
         }
 
+        let result = priceChangeFormatter.formatFractionalValue(changeFractional, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
     func convertToPriceChangeState(changePercent: Decimal?) -> TokenPriceChangeView.State {
-        guard
-            let changePercent,
-            let result = formatPriceChange(changePercent * Constants.percentDivider)
-        else {
+        guard let changePercent else {
             return .noData
         }
 
+        let result = priceChangeFormatter.formatPercentValue(changePercent, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
-    private func formatPriceChange(_ change: Decimal?) -> PriceChangeFormatter.Result? {
-        guard let change else {
-            return nil
-        }
+    func calculatePriceChangeStateBetween(currentPrice: Decimal, previousPrice: Decimal) -> TokenPriceChangeView.State {
+        let priceChangePercentage = (currentPrice - previousPrice) / previousPrice * 100.0
 
-        return priceChangeFormatter.format(change, option: .priceChange)
+        return convertToPriceChangeState(changePercent: priceChangePercentage)
     }
 }
 

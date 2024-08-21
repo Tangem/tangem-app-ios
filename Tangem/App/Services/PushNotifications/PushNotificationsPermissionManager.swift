@@ -9,8 +9,6 @@
 import Foundation
 
 protocol PushNotificationsPermissionManager {
-    var canPostponePermissionRequest: Bool { get }
-
     func allowPermissionRequest() async
     func postponePermissionRequest()
 }

@@ -18,7 +18,7 @@ struct SendSummaryStepBuilder {
     func makeSendSummaryStep(
         io: IO,
         actionType: SendFlowActionType,
-        sendTransactionDispatcher: any SendTransactionDispatcher,
+        descriptionBuilder: any SendTransactionSummaryDescriptionBuilder,
         notificationManager: NotificationManager,
         editableType: SendSummaryViewModel.EditableType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
@@ -28,7 +28,7 @@ struct SendSummaryStepBuilder {
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
             io: io,
-            sendTransactionDispatcher: sendTransactionDispatcher
+            descriptionBuilder: descriptionBuilder
         )
 
         let viewModel = makeSendSummaryViewModel(
@@ -82,22 +82,12 @@ private extension SendSummaryStepBuilder {
 
     func makeSendSummaryInteractor(
         io: IO,
-        sendTransactionDispatcher: any SendTransactionDispatcher
+        descriptionBuilder: any SendTransactionSummaryDescriptionBuilder
     ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
             input: io.input,
             output: io.output,
-            sendTransactionDispatcher: sendTransactionDispatcher,
-            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
+            descriptionBuilder: descriptionBuilder
         )
-    }
-
-    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
-        switch walletModel.wallet.blockchain {
-        case .koinos:
-            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
-        default:
-            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
-        }
     }
 }

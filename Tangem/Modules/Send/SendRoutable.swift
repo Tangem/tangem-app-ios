@@ -16,4 +16,5 @@ protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, AnyObject {
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel)
     func openExplorer(url: URL)
     func openShareSheet(url: URL)
+    func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput)
 }

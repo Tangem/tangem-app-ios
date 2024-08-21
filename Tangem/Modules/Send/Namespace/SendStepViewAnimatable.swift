@@ -14,5 +14,7 @@ protocol SendStepViewAnimatable {
 
 enum SendStepVisibilityState: Hashable {
     case appearing(previousStep: SendStepType)
+    case appeared
     case disappearing(nextStep: SendStepType)
+    case disappeared
 }

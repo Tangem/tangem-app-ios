@@ -48,12 +48,18 @@ extension SendAmountStep: SendStep {
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         guard step.type.isSummary else {
             return
         }
 
         sendFeeLoader.updateFees()
+    }
+}
+
+// MARK: - Constants
+
+extension SendAmountStep {
+    enum Constants {
+        static let amountMinTextScale = 0.5
     }
 }

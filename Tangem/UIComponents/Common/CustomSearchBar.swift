@@ -47,7 +47,7 @@ struct CustomSearchBar: View {
                     self.isEditing = isEditing
                     onEditingChanged?(isEditing)
                 })
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 .keyboardType(keyboardType)
                 .autocorrectionDisabled()
 
@@ -58,7 +58,7 @@ struct CustomSearchBar: View {
         .padding(.horizontal, 12)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(Colors.Field.focused)
+                .fill(Colors.Field.primary)
         )
     }
 

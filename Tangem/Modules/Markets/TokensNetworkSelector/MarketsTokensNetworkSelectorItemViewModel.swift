@@ -84,8 +84,4 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
         self.isReadonly = isReadonly
         self.isSelected = isSelected.wrappedValue
     }
-
-    func onSelectedTapAction() {
-        isSelected.toggle()
-    }
 }

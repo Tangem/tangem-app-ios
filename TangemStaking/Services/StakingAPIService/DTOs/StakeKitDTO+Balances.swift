@@ -12,7 +12,7 @@ extension StakeKitDTO {
     enum Balances {
         struct Request: Encodable {
             let addresses: Address
-            let network: String
+            let network: StakeKitNetworkType
         }
 
         struct Response: Decodable {
@@ -27,7 +27,7 @@ extension StakeKitDTO {
                 let pricePerShare: String
                 let pendingActions: [PendingAction]
                 let token: Token
-                let validatorAddress: String?
+                let validatorAddress: String
                 let validatorAddresses: [String]?
                 let providerId: String?
 

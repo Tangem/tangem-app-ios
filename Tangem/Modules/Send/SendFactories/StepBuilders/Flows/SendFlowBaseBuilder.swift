@@ -20,10 +20,8 @@ struct SendFlowBaseBuilder {
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
         let sendQRCodeService = builder.makeSendQRCodeService()
-
-        let sendModel = builder.makeSendModel(sendTransactionDispatcher: sendTransactionDispatcher)
+        let sendModel = builder.makeSendModel()
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
             io: (input: sendModel, output: sendModel),
@@ -34,7 +32,8 @@ struct SendFlowBaseBuilder {
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: sendModel, output: sendModel),
             sendFeeLoader: fee.interactor,
-            sendQRCodeService: sendQRCodeService
+            sendQRCodeService: sendQRCodeService,
+            sendAmountValidator: builder.makeSendAmountValidator()
         )
 
         let destination = sendDestinationStepBuilder.makeSendDestinationStep(
@@ -47,7 +46,7 @@ struct SendFlowBaseBuilder {
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: sendModel, output: sendModel),
             actionType: .send,
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .editable,
             sendDestinationCompactViewModel: destination.compact,
@@ -88,7 +87,14 @@ struct SendFlowBaseBuilder {
         summary.step.set(router: stepsManager)
         destination.step.set(stepRouter: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let interactor = CommonSendBaseInteractor(
+            input: sendModel,
+            output: sendModel,
+            walletModel: walletModel,
+            emailDataProvider: userWalletModel,
+            stakingModel: .none
+        )
+
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,

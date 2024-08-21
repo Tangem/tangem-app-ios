@@ -14,7 +14,7 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .center, spacing: 24) {
                 Group {
                     header
@@ -28,7 +28,7 @@ struct TokenMarketsDetailsView: View {
                     .overlay(content: {
                         MarketsUnableToLoadDataView(
                             isButtonBusy: viewModel.isLoading,
-                            retryButtonAction: viewModel.reloadAllData
+                            retryButtonAction: viewModel.loadDetailedInfo
                         )
                         .infinityFrame(axis: .horizontal)
                         .hidden(!viewModel.allDataLoadFailed)
@@ -58,26 +58,33 @@ struct TokenMarketsDetailsView: View {
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 
     @ViewBuilder
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(viewModel.price)
-                    .blinkForegroundColor(
-                        publisher: viewModel.$priceChangeAnimation,
-                        positiveColor: Colors.Text.accent,
-                        negativeColor: Colors.Text.warning,
-                        originalColor: Colors.Text.primary1
-                    )
-                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+                if let price = viewModel.price {
+                    Text(price)
+                        .blinkForegroundColor(
+                            publisher: viewModel.$priceChangeAnimation,
+                            positiveColor: Colors.Text.accent,
+                            negativeColor: Colors.Text.warning,
+                            originalColor: Colors.Text.primary1
+                        )
+                        .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
+                }
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(viewModel.priceDate)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                    TokenPriceChangeView(state: viewModel.priceChangeState, showSkeletonWhenLoading: true)
+                    if let priceChangeState = viewModel.priceChangeState {
+                        TokenPriceChangeView(state: priceChangeState, showSkeletonWhenLoading: true)
+                    }
                 }
             }
 
@@ -110,8 +117,6 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             switch viewModel.state {
             case .loading:
-                portfolioView
-
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
@@ -199,5 +204,5 @@ private extension TokenMarketsDetailsView {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
 }

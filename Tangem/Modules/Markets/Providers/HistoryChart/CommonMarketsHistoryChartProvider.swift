@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import Combine
+import CombineExt
 
 final class CommonMarketsHistoryChartProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -14,10 +16,7 @@ final class CommonMarketsHistoryChartProvider {
     private let cache = NSCacheWrapper<MarketsPriceIntervalType, LineChartViewData>()
     private let tokenId: TokenItemId
     private let yAxisLabelCount: Int
-
-    private var selectedCurrencyCode: String {
-        return AppSettings.shared.selectedCurrencyCode
-    }
+    private var selectedCurrencyCode = AppSettings.shared.selectedCurrencyCode
 
     init(
         tokenId: TokenItemId,
@@ -55,5 +54,10 @@ extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
         cache.setValue(historyChart, forKey: interval)
 
         return historyChart
+    }
+
+    func setCurrencyCode(_ currencyCode: String) {
+        cache.removeAllObjects()
+        selectedCurrencyCode = currencyCode
     }
 }

@@ -18,39 +18,20 @@ class CommonSendSummaryInteractor {
     private weak var input: SendSummaryInput?
     private weak var output: SendSummaryOutput?
 
-    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
 
     init(
         input: SendSummaryInput,
         output: SendSummaryOutput,
-        sendTransactionDispatcher: SendTransactionDispatcher,
         descriptionBuilder: SendTransactionSummaryDescriptionBuilder
     ) {
         self.input = input
         self.output = output
-        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
-    }
-
-    private func mapToDescription(transaction: SendTransactionType) -> String? {
-        switch transaction {
-        case .transfer(let bsdkTransaction):
-            return descriptionBuilder.makeDescription(
-                amount: bsdkTransaction.amount.value,
-                fee: bsdkTransaction.fee.amount.value
-            )
-        case .staking(let stakingTransaction):
-            return nil // Waiting texts
-        }
     }
 }
 
 extension CommonSendSummaryInteractor: SendSummaryInteractor {
-    var isSending: AnyPublisher<Bool, Never> {
-        sendTransactionDispatcher.isSending
-    }
-
     var transactionDescription: AnyPublisher<String?, Never> {
         guard let input else {
             assertionFailure("SendFeeInput is not found")
@@ -58,11 +39,11 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
         }
 
         return input
-            .transactionPublisher
+            .summaryTransactionDataPublisher
             .withWeakCaptureOf(self)
-            .map { interactor, transaction in
-                transaction.flatMap { transaction in
-                    interactor.mapToDescription(transaction: transaction)
+            .map { interactor, transactionData in
+                transactionData.flatMap {
+                    interactor.descriptionBuilder.makeDescription(transactionType: $0)
                 }
             }
             .eraseToAnyPublisher()

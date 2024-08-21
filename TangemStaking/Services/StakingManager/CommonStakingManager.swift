@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemSdk
 
 class CommonStakingManager {
     private let integrationId: String
@@ -56,12 +57,42 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func transaction(action: StakingActionType) async throws -> StakingTransactionInfo {
-        switch (state, action) {
-        case (.availableToStake(let yieldInfo), .stake(let amount, let validator)):
-            try await getTransactionToStake(amount: amount, validator: validator, integrationId: yieldInfo.id)
-        case (.staked(_, _), .unstake):
-            throw StakingManagerError.notImplemented // TODO: https://tangem.atlassian.net/browse/IOS-6898
+    func estimateFee(action: StakingAction) async throws -> Decimal {
+        switch (state, action.type) {
+        case (.availableToStake, .stake), (.staked, .stake):
+            try await provider.estimateStakeFee(
+                request: mapToActionGenericRequest(action: action)
+            )
+        case (.staked, .unstake):
+            try await provider.estimateUnstakeFee(
+                request: mapToActionGenericRequest(action: action)
+            )
+        case (.staked, .pending(let type)):
+            try await provider.estimatePendingFee(
+                request: mapToActionGenericRequest(action: action),
+                type: type
+            )
+        default:
+            log("Invalid staking manager state: \(state), for action: \(action)")
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+        }
+    }
+
+    func transaction(action: StakingAction) async throws -> StakingTransactionInfo {
+        switch (state, action.type) {
+        case (.availableToStake, .stake), (.staked, .stake):
+            try await getStakeTransactionInfo(
+                request: mapToActionGenericRequest(action: action)
+            )
+        case (.staked, .unstake):
+            try await getUnstakeTransactionInfo(
+                request: mapToActionGenericRequest(action: action)
+            )
+        case (.staked, .pending(let type)):
+            try await getPendingTransactionInfo(
+                request: mapToActionGenericRequest(action: action),
+                type: type
+            )
         default:
             throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
         }
@@ -76,33 +107,114 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balances: [StakingBalanceInfo]?, yield: YieldInfo) -> StakingManagerState {
-        guard let balances else {
+    func state(balances: [StakingBalanceInfo], yield: YieldInfo) -> StakingManagerState {
+        guard yield.isAvailable else {
+            return .temporaryUnavailable(yield)
+        }
+
+        guard !balances.isEmpty else {
             return .availableToStake(yield)
         }
 
-        if balances.contains(where: { $0.balanceGroupType.isActiveOrUnstaked }) {
-            return .staked(balances, yield)
-        } else {
-            return .availableToStake(yield)
-        }
+        let canStakeMore = canStakeMore(item: yield.item)
+
+        return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
-    func getTransactionToStake(amount: Decimal, validator: String, integrationId: String) async throws -> StakingTransactionInfo {
-        let action = try await provider.enterAction(
-            amount: amount,
-            address: wallet.address,
-            validator: validator,
-            integrationId: integrationId
-        )
+    func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionInfo {
+        let action = try await provider.enterAction(request: request)
 
-        let transactionId = action.transactions[action.currentStepIndex].id
+        guard let transactionId = action.transactions.first(where: { $0.type == .stake })?.id else {
+            throw StakingManagerError.transactionNotFound
+        }
+
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
         let transaction = try await provider.patchTransaction(id: transactionId)
 
         return transaction
+    }
+
+    func getUnstakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionInfo {
+        let action = try await provider.exitAction(request: request)
+
+        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
+            throw StakingManagerError.transactionNotFound
+        }
+
+        // We have to wait that stakek.it prepared the transaction
+        // Otherwise we may get the 404 error
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        let transaction = try await provider.patchTransaction(id: transactionId)
+
+        return transaction
+    }
+
+    func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionInfo {
+        let action = try await provider.pendingAction(request: request, type: type)
+
+        guard let transactionId = action.transactions.first(where: { $0.type == .unstake })?.id else {
+            throw StakingManagerError.transactionNotFound
+        }
+
+        // We have to wait that stakek.it prepared the transaction
+        // Otherwise we may get the 404 error
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        let transaction = try await provider.patchTransaction(id: transactionId)
+
+        return transaction
+    }
+}
+
+// MARK: - Helping
+
+private extension CommonStakingManager {
+    func mapToActionGenericRequest(action: StakingAction) -> ActionGenericRequest {
+        .init(
+            amount: action.amount,
+            address: wallet.address,
+            additionalAddresses: getAdditionalAddresses(),
+            token: wallet.item,
+            validator: action.validator,
+            integrationId: integrationId,
+            tronResource: getTronResource()
+        )
+    }
+
+    func canStakeMore(item: StakingTokenItem) -> Bool {
+        switch item.network {
+        case .solana, .cosmos:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: - Blockchain specific
+
+private extension CommonStakingManager {
+    func getAdditionalAddresses() -> AdditionalAddresses? {
+        switch wallet.item.network {
+        case .cosmos:
+            guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
+                return nil
+            }
+
+            return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
+        default:
+            return nil
+        }
+    }
+
+    func getTronResource() -> String? {
+        switch wallet.item.network {
+        case .tron:
+            return StakeKitDTO.Actions.ActionArgs.TronResource.energy.rawValue
+        default:
+            return nil
+        }
     }
 }
 
@@ -114,8 +226,28 @@ private extension CommonStakingManager {
     }
 }
 
-public enum StakingManagerError: Error {
-    case stakingManagerStateNotSupportTransactionAction(action: StakingActionType)
+public enum StakingManagerError: LocalizedError {
+    case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
+    case stakedBalanceNotFound(validator: String)
+    case pendingActionNotFound(validator: String)
+    case transactionNotFound
     case notImplemented
     case notFound
+
+    public var errorDescription: String? {
+        switch self {
+        case .stakingManagerStateNotSupportTransactionAction(let action):
+            "stakingManagerStateNotSupportTransactionAction \(action)"
+        case .stakedBalanceNotFound(let validator):
+            "stakedBalanceNotFound \(validator)"
+        case .pendingActionNotFound(let validator):
+            "pendingActionNotFound \(validator)"
+        case .transactionNotFound:
+            "transactionNotFound"
+        case .notImplemented:
+            "notImplemented"
+        case .notFound:
+            "notFound"
+        }
+    }
 }

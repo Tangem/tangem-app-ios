@@ -1,5 +1,5 @@
 {
-  "originHash" : "75f3574e9c9732ee5b0d472f0fe3908371662aa7d2ee0e95e4ce4e32c0500d12",
+  "originHash" : "075de3e24c2b843c7ca823c45d9a9eb94d54bca81938a008551eefd90553cf5f",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -29,21 +29,21 @@
       }
     },
     {
-      "identity" : "charts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ChartsOrg/Charts",
-      "state" : {
-        "revision" : "dd9c72e3d7e751e769971092a6bd72d39198ae63",
-        "version" : "5.1.0"
-      }
-    },
-    {
       "identity" : "cryptoswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzyzanowskim/CryptoSwift.git",
       "state" : {
         "revision" : "7892a123f7e8d0fe62f9f03728b17bbd4f94df5c",
         "version" : "1.8.1"
+      }
+    },
+    {
+      "identity" : "dgcharts",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/DGCharts",
+      "state" : {
+        "revision" : "d3a5133be92153dc581ed653ea3a6950b18d5eb1",
+        "version" : "5.1.0-tangem1"
       }
     },
     {

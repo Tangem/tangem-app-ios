@@ -53,7 +53,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return .noData
         }
 
-        let result = priceChangeFormatter.format(change, option: .priceChange)
+        let result = priceChangeFormatter.formatPercentValue(change, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
@@ -291,6 +291,14 @@ extension SingleTokenBaseViewModel {
             // TODO: Refactor in IOS-5470
             .debounce(for: 0.1, scheduler: DispatchQueue.main)
             .assign(to: \.tokenNotificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        walletModel.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateActionButtons()
+            }
             .store(in: &bag)
     }
 

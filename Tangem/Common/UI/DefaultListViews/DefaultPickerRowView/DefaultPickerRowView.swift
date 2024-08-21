@@ -20,7 +20,7 @@ struct DefaultPickerRowView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(viewModel.title)
-                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .style(Fonts.Bold.callout, color: Colors.Text.primary1)
 
             Picker("", selection: $selection) {
                 ForEach(viewModel.options, id: \.self) {
@@ -30,7 +30,7 @@ struct DefaultPickerRowView: View {
             .labelsHidden()
             .pickerStyle(.segmented)
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 14)
         .connect(state: $selection, to: viewModel.selection)
     }
 }

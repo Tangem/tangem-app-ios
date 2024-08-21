@@ -103,7 +103,7 @@ struct MarketsItemView: View {
                 makeSkeletonView(by: Constants.skeletonMediumWidthValue)
             }
         }
-        .frame(width: 56, height: 32, alignment: .center)
+        .frame(width: 56, height: 24, alignment: .center)
     }
 
     private func makeSkeletonView(by value: String) -> some View {
@@ -133,7 +133,7 @@ extension MarketsItemView {
                 marketCap: token.marketCap,
                 marketRating: token.marketRating,
                 priceValue: token.currentPrice,
-                priceChangeStateValue: nil
+                priceChangeStateValues: [:]
             )
 
             return MarketsItemView(

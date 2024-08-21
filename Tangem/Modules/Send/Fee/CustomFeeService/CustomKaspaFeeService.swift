@@ -10,67 +10,23 @@ import BlockchainSdk
 import Combine
 
 class CustomKaspaFeeService {
-    private weak var output: CustomFeeServiceOutput?
-
     private let feeTokenItem: TokenItem
-
-    private var utxoCount: Int?
-    private let valuePerUtxo = CurrentValueSubject<Decimal?, Never>(nil)
-
-    private let customFee = CurrentValueSubject<Fee?, Never>(nil)
-    private let customFeeInFiat = CurrentValueSubject<String?, Never>(nil)
+    private let calculationModel: KaspaFeeCalculationModel
+    private let feeInfoSubject = CurrentValueSubject<KaspaFeeCalculationModel.FeeInfo?, Never>(nil)
 
     private var bag: Set<AnyCancellable> = []
 
     init(feeTokenItem: TokenItem) {
         self.feeTokenItem = feeTokenItem
+        calculationModel = KaspaFeeCalculationModel(feeTokenItem: feeTokenItem)
     }
 
-    private func bind() {
-        valuePerUtxo
-            .compactMap { $0 }
-            .withWeakCaptureOf(self)
-            .map { service, valuePerUtxo in
-                service.recalculateCustomFee(valuePerUtxo: valuePerUtxo)
-            }
-            .withWeakCaptureOf(self)
-            .sink { service, value in
-                service.customFee.send(value)
+    private func bind(output: CustomFeeServiceOutput) {
+        feePublisher
+            .sink { [weak output] fee in
+                output?.customFeeDidChanged(fee)
             }
             .store(in: &bag)
-
-        customFee
-            .compactMap { $0 }
-            .withWeakCaptureOf(self)
-            .sink { service, customFee in
-                service.customFeeDidChanged(fee: customFee)
-            }
-            .store(in: &bag)
-    }
-
-    private func recalculateCustomFee(valuePerUtxo: Decimal) -> Fee {
-        guard let utxoCount else {
-            return Fee(Amount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: 0))
-        }
-
-        return Fee(
-            Amount(
-                with: feeTokenItem.blockchain,
-                type: feeTokenItem.amountType,
-                value: valuePerUtxo * Decimal(utxoCount)
-            ),
-            parameters: KaspaFeeParameters(
-                valuePerUtxo: valuePerUtxo,
-                utxoCount: utxoCount
-            )
-        )
-    }
-
-    private func customFeeDidChanged(fee: Fee) {
-        let fortmatted = formatToFiat(value: fee.amount.value)
-        customFeeInFiat.send(fortmatted)
-
-        output?.customFeeDidChanged(fee)
     }
 
     private func formatToFiat(value: Decimal?) -> String? {
@@ -82,62 +38,87 @@ class CustomKaspaFeeService {
         let fiat = BalanceConverter().convertToFiat(value, currencyId: currencyId)
         return BalanceFormatter().formatFiatBalance(fiat)
     }
-
-    private func updateCustomFeeValue(customFeeValue: Decimal?) {
-        let newValuePerUtxo = utxoCount.flatMap { utxoCount in
-            customFeeValue.flatMap { customFeeValue in
-                customFeeValue / Decimal(utxoCount)
-            }
-        }
-        valuePerUtxo.send(newValuePerUtxo)
-    }
 }
 
 // MARK: - CustomKaspaFeeService+CustomFeeService
 
 extension CustomKaspaFeeService: CustomFeeService {
     func setup(input: any CustomFeeServiceInput, output: any CustomFeeServiceOutput) {
-        self.output = output
-
-        bind()
+        bind(output: output)
     }
 
     func initialSetupCustomFee(_ fee: Fee) {
-        assert(customFee.value == nil, "Duplicate initial setup")
+        assert(calculationModel.feeInfo == nil, "Duplicate initial setup")
 
         guard let kaspaFeeParameters = fee.parameters as? KaspaFeeParameters else {
             return
         }
 
-        utxoCount = kaspaFeeParameters.utxoCount
-        valuePerUtxo.send(kaspaFeeParameters.valuePerUtxo)
+        calculationModel.setup(utxoCount: kaspaFeeParameters.utxoCount)
+        feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(kaspaFeeParameters.valuePerUtxo))
     }
 
     func inputFieldModels() -> [SendCustomFeeInputFieldModel] {
         let customFeeModel = SendCustomFeeInputFieldModel(
             title: Localization.sendMaxFee,
-            amountPublisher: customFee.map(\.?.amount.value).eraseToAnyPublisher(),
+            amountPublisher: amountPublisher,
             fieldSuffix: feeTokenItem.currencySymbol,
             fractionDigits: Blockchain.kaspa.decimalCount,
-            amountAlternativePublisher: customFeeInFiat.eraseToAnyPublisher(),
+            amountAlternativePublisher: amountAlternativePublisher,
             footer: Localization.sendCustomAmountFeeFooter,
             onFieldChange: { [weak self] decimalValue in
-                self?.updateCustomFeeValue(customFeeValue: decimalValue)
+                guard let decimalValue, let self else { return }
+                feeInfoSubject.send(calculationModel.calculateWithAmount(decimalValue))
             }
         )
 
         let customValuePerUtxoModel = SendCustomFeeInputFieldModel(
             title: Localization.sendCustomKaspaPerUtxoTitle,
-            amountPublisher: valuePerUtxo.eraseToAnyPublisher(),
+            amountPublisher: valuePerUtxoPublisher,
             fieldSuffix: nil,
             fractionDigits: Blockchain.kaspa.decimalCount,
             amountAlternativePublisher: .just(output: nil),
             footer: Localization.sendCustomKaspaPerUtxoFooter,
             onFieldChange: { [weak self] decimalValue in
-                self?.valuePerUtxo.send(decimalValue)
+                guard let decimalValue, let self else { return }
+                feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(decimalValue))
             }
         )
 
         return [customFeeModel, customValuePerUtxoModel]
+    }
+}
+
+// MARK: - Publishers
+
+private extension CustomKaspaFeeService {
+    var feePublisher: AnyPublisher<Fee, Never> {
+        feeInfoSubject
+            .compactMap(\.?.fee)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var amountPublisher: AnyPublisher<Decimal?, Never> {
+        feeInfoSubject
+            .map(\.?.fee.amount.value)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var valuePerUtxoPublisher: AnyPublisher<Decimal?, Never> {
+        feeInfoSubject
+            .map(\.?.params.valuePerUtxo)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    var amountAlternativePublisher: AnyPublisher<String?, Never> {
+        amountPublisher
+            .withWeakCaptureOf(self)
+            .map { service, value in
+                service.formatToFiat(value: value)
+            }
+            .eraseToAnyPublisher()
     }
 }

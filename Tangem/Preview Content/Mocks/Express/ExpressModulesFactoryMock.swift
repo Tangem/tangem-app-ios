@@ -67,12 +67,15 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         coordinator: ExpressApproveRoutable
     ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, "USDT"),
+                tokenItem: .token(.tetherMock, .init(.ethereum(testnet: false), derivationPath: .none)),
+                feeTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)),
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
-            providerName: providerName,
-            selectedPolicy: selectedPolicy,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -179,17 +182,15 @@ private extension ExpressModulesFactoryMock {
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
             expressAPIProvider: expressAPIProvider,
-            signer: signer,
+            transactionDispatcher: CommonSendTransactionDispatcher(walletModel: initialWalletModel, transactionSigner: signer),
             logger: logger
         )
 
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

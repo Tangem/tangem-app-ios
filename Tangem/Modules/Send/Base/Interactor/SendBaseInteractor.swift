@@ -13,8 +13,9 @@ import BlockchainSdk
 protocol SendBaseInteractor {
     var isLoading: AnyPublisher<Bool, Never> { get }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never>
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
+    func send() async throws -> SendTransactionDispatcherResult
+    func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
+    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveViewModelInput: ApproveViewModelInput)?
 }
 
 class CommonSendBaseInteractor {
@@ -23,17 +24,20 @@ class CommonSendBaseInteractor {
 
     private let walletModel: WalletModel
     private let emailDataProvider: EmailDataProvider
+    private let stakingModel: StakingModel?
 
     init(
         input: SendBaseInput,
         output: SendBaseOutput,
         walletModel: WalletModel,
-        emailDataProvider: EmailDataProvider
+        emailDataProvider: EmailDataProvider,
+        stakingModel: StakingModel?
     ) {
         self.input = input
         self.output = output
         self.walletModel = walletModel
         self.emailDataProvider = emailDataProvider
+        self.stakingModel = stakingModel
     }
 }
 
@@ -42,17 +46,15 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         input.isLoading
     }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        output.sendTransaction()
+    func send() async throws -> SendTransactionDispatcherResult {
+        try await output.sendTransaction()
     }
 
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
+    func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
         let emailDataCollector = SendScreenDataCollector(
             userWalletEmailData: emailDataProvider.emailData,
             walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
+            transaction: transaction,
             isFeeIncluded: input.isFeeIncluded,
             lastError: error
         )
@@ -60,5 +62,20 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
         let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
 
         return (dataCollector: emailDataCollector, recipient: recipient)
+    }
+
+    func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput)? {
+        guard let stakingModel else {
+            return nil
+        }
+
+        let settings = ExpressApproveViewModel.Settings(
+            subtitle: Localization.givePermissionStakingSubtitle(walletModel.tokenItem.currencySymbol),
+            tokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem,
+            selectedPolicy: stakingModel.selectedPolicy
+        )
+
+        return (settings, stakingModel)
     }
 }

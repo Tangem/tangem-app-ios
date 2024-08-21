@@ -17,12 +17,12 @@ final class MarketsViewModel: ObservableObject {
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
-    @Published var isShowUnderCapButton: Bool = false
     @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
 
     // MARK: - Properties
 
     @Published var isViewVisible: Bool = false
+    @Published var isDataProviderBusy: Bool = false
 
     let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
@@ -30,26 +30,40 @@ final class MarketsViewModel: ObservableObject {
         !currentSearchValue.isEmpty
     }
 
+    var shouldDisplayShowTokensUnderCapView: Bool {
+        let hasFilteredItems = tokenViewModels.count != dataProvider.items.count
+        let dataLoaded = !dataProvider.isLoading
+
+        return filterItemsBelowMarketCapThreshold && hasFilteredItems && dataLoaded
+    }
+
     private weak var coordinator: MarketsRoutable?
 
+    private let quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper
     private let filterProvider = MarketsListDataFilterProvider()
     private let dataProvider = MarketsListDataProvider()
     private let chartsHistoryProvider = MarketsListChartsHistoryProvider()
-    private let quotesUpdater = MarketsQuotesUpdater()
+    private let quotesUpdatesScheduler = MarketsQuotesUpdatesScheduler()
+    private let imageCache = KingfisherManager.shared.cache
 
     private lazy var listDataController: MarketsListDataController = .init(dataProvider: dataProvider, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
 
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
+    private var showItemsBelowCapThreshold: Bool = false
 
-    private let imageCache = KingfisherManager.shared.cache
+    private var filterItemsBelowMarketCapThreshold: Bool {
+        isSearching && !showItemsBelowCapThreshold
+    }
 
     // MARK: - Init
 
     init(
         searchTextPublisher: some Publisher<String, Never>,
+        quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: MarketsRoutable
     ) {
+        self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
@@ -73,7 +87,7 @@ final class MarketsViewModel: ObservableObject {
 
         onAppearPrepareImageCache()
 
-        Analytics.log(.manageTokensScreenOpened)
+        Analytics.log(.marketsScreenOpened)
     }
 
     func onBottomSheetDisappear() {
@@ -82,6 +96,7 @@ final class MarketsViewModel: ObservableObject {
         fetch(with: "", by: filterProvider.currentFilterValue)
         currentSearchValue = ""
         isViewVisible = false
+        showItemsBelowCapThreshold = false
         chartsHistoryProvider.reset()
         onDisappearPrepareImageCache()
     }
@@ -91,9 +106,14 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onShowUnderCapAction() {
-        isShowUnderCapButton = false
-        dataProvider.isGeneralCoins = true
-        dataProvider.fetchMore()
+        showItemsBelowCapThreshold = true
+
+        if tokenViewModels.count == dataProvider.items.count, dataProvider.canFetchMore {
+            dataProvider.fetchMore()
+            return
+        }
+
+        tokenViewModels = mapToItemViewModel(dataProvider.items)
     }
 
     func onTryLoadList() {
@@ -125,7 +145,13 @@ private extension MarketsViewModel {
                 }
 
                 viewModel.currentSearchValue = value
-                viewModel.fetch(with: value, by: viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue)
+
+                let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
+
+                // Always use raiting sorting for search
+                let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
+
+                viewModel.fetch(with: value, by: searchFilter)
             }
             .store(in: &bag)
     }
@@ -162,9 +188,9 @@ private extension MarketsViewModel {
             .withWeakCaptureOf(self)
             .sink { viewModel, isVisible in
                 if isVisible {
-                    viewModel.quotesUpdater.resumeUpdates()
+                    viewModel.quotesUpdatesScheduler.resumeUpdates()
                 } else {
-                    viewModel.quotesUpdater.pauseUpdates()
+                    viewModel.quotesUpdatesScheduler.pauseUpdates()
                 }
             }
             .store(in: &bag)
@@ -173,19 +199,17 @@ private extension MarketsViewModel {
     func dataProviderBind() {
         dataProvider.$items
             .dropFirst()
+            .handleEvents(receiveOutput: { [weak self] items in
+                self?.quotesRepositoryUpdateHelper.updateQuotes(marketsTokens: items, for: AppSettings.shared.selectedCurrencyCode)
+            })
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, items in
                 viewModel.chartsHistoryProvider.fetch(for: items.map { $0.id }, with: viewModel.filterProvider.currentFilterValue.interval)
 
+                // TODO: IOS-7583
                 // Refactor this. Each time data provider receive next page - whole item models list recreated.
-                let tokenViewModels = items.enumerated().compactMap { index, item in
-                    let tokenViewModel = viewModel.mapToTokenViewModel(tokenItemModel: item, with: index)
-                    return tokenViewModel
-                }
-                viewModel.tokenViewModels = tokenViewModels
-
-                viewModel.showUnderCapButtonIfNeeded()
+                viewModel.tokenViewModels = viewModel.mapToItemViewModel(items)
             })
             .store(in: &bag)
 
@@ -205,6 +229,8 @@ private extension MarketsViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { viewModel, isLoading in
+                viewModel.isDataProviderBusy = isLoading
+
                 if viewModel.dataProvider.showError {
                     return
                 }
@@ -242,7 +268,26 @@ private extension MarketsViewModel {
 
     // MARK: - Private Implementation
 
-    private func mapToTokenViewModel(tokenItemModel: MarketsTokenModel, with index: Int) -> MarketsItemViewModel {
+    private func mapToItemViewModel(_ list: [MarketsTokenModel]) -> [MarketsItemViewModel] {
+        let listToProcess = filterItemsBelowMarketCapIfNeeded(list)
+        return listToProcess.enumerated().map { mapToTokenViewModel(index: $0, tokenItemModel: $1) }
+    }
+
+    private func filterItemsBelowMarketCapIfNeeded(_ list: [MarketsTokenModel]) -> [MarketsTokenModel] {
+        guard filterItemsBelowMarketCapThreshold else {
+            return list
+        }
+
+        return list.filter {
+            guard let marketCap = $0.marketCap else {
+                return false
+            }
+
+            return marketCap >= Constants.marketCapThreshold
+        }
+    }
+
+    private func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
         let inputData = MarketsItemViewModel.InputData(
             index: index,
             id: tokenItemModel.id,
@@ -251,7 +296,7 @@ private extension MarketsViewModel {
             marketCap: tokenItemModel.marketCap,
             marketRating: tokenItemModel.marketRating,
             priceValue: tokenItemModel.currentPrice,
-            priceChangeStateValue: tokenItemModel.priceChangePercentage[filterProvider.currentFilterValue.interval.marketsListId]
+            priceChangeStateValues: tokenItemModel.priceChangePercentage
         )
 
         return MarketsItemViewModel(
@@ -274,18 +319,8 @@ private extension MarketsViewModel {
         imageCache.memoryStorage.config.countLimit = .max
     }
 
-    private func showUnderCapButtonIfNeeded() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            guard let self else { return }
-
-            isShowUnderCapButton = isSearching &&
-                !dataProvider.isGeneralCoins &&
-                !dataProvider.items.isEmpty
-        }
-    }
-
     private func resetUI() {
-        isShowUnderCapButton = false
+        showItemsBelowCapThreshold = false
     }
 }
 
@@ -307,7 +342,7 @@ extension MarketsViewModel: MarketsListStateUpdater {
             invalidatedIds.insert(tokenViewModel.tokenId)
         }
 
-        quotesUpdater.stopUpdatingQuotes(for: invalidatedIds)
+        quotesUpdatesScheduler.stopUpdatingQuotes(for: invalidatedIds)
     }
 
     func setupUpdates(for range: ClosedRange<Int>) {
@@ -321,6 +356,12 @@ extension MarketsViewModel: MarketsListStateUpdater {
             idsToUpdate.insert(tokenViewModel.tokenId)
         }
 
-        quotesUpdater.scheduleQuotesUpdate(for: idsToUpdate)
+        quotesUpdatesScheduler.scheduleQuotesUpdate(for: idsToUpdate)
+    }
+}
+
+private extension MarketsViewModel {
+    enum Constants {
+        static let marketCapThreshold: Decimal = 100_000.0
     }
 }

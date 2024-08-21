@@ -51,7 +51,7 @@ struct MarketsView: View {
 
     @ViewBuilder
     private var list: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             ScrollViewReader { proxy in
                 Color.clear.frame(height: 0)
                     .id(scrollTopAnchorID)
@@ -61,13 +61,13 @@ struct MarketsView: View {
                         MarketsItemView(viewModel: $0)
                     }
 
-                    if viewModel.isShowUnderCapButton {
-                        showTokensUnderCapView
-                    }
-
                     // Need for display list skeleton view
                     if case .loading = viewModel.tokenListLoadingState {
                         loadingSkeletons
+                    }
+
+                    if viewModel.shouldDisplayShowTokensUnderCapView {
+                        showTokensUnderCapView
                     }
                 }
                 .onReceive(viewModel.resetScrollPositionPublisher) { _ in
@@ -133,7 +133,7 @@ struct MarketsView: View {
 
     private var errorStateView: some View {
         MarketsUnableToLoadDataView(
-            isButtonBusy: viewModel.tokenListLoadingState == .loading,
+            isButtonBusy: viewModel.isDataProviderBusy,
             retryButtonAction: viewModel.onTryLoadList
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)

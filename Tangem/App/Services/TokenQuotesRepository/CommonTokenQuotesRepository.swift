@@ -13,6 +13,7 @@ import TangemFoundation
 
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     private var _quotes: CurrentValueSubject<Quotes, Never> = .init([:])
     private var loadingQueue = PassthroughSubject<QueueItem, Never>()
@@ -27,7 +28,7 @@ class CommonTokenQuotesRepository {
 
 extension CommonTokenQuotesRepository: TokenQuotesRepository {
     var quotes: Quotes {
-        return _quotes.value
+        _quotes.value
     }
 
     var quotesPublisher: AnyPublisher<Quotes, Never> {
@@ -48,9 +49,11 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
 
         return quote
     }
+}
 
+extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
-        AppLog.shared.debug("Request loading quotes for ids: \(currencyIds)")
+        log("Request loading quotes for ids: \(currencyIds)")
 
         let outputPublisher = PassthroughSubject<Void, Never>()
         let item = QueueItem(ids: currencyIds, didLoadPublisher: outputPublisher)
@@ -58,6 +61,16 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
 
         // Return the outputPublisher that the requester knew when quotes were loaded
         return outputPublisher.eraseToAnyPublisher()
+    }
+
+    func saveQuotes(_ quotes: [TokenQuote]) {
+        var current = _quotes.value
+
+        quotes.forEach { quote in
+            current[quote.currencyId] = quote
+        }
+
+        _quotes.send(current)
     }
 }
 
@@ -98,23 +111,35 @@ private extension CommonTokenQuotesRepository {
             .store(in: &bag)
 
         NotificationCenter.default
-            .publisher(for: UIApplication.willEnterForegroundNotification) // We can't use didBecomeActive because of NFC interaction app state changes
+            // We can't use didBecomeActive because of NFC interaction app state changes
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            // We need to add small delay in order to catch UserWalletRepository lock event
+            // If lock event occur - we can clear repository and no need to reload all saved items
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { repository, _ in
                 // Reload saved quotes
-                repository
-                    .loadQuotes(currencyIds: Array(repository._quotes.value.keys))
+                let idsToLoad: [String] = Array(repository.quotes.keys)
+                return repository.loadQuotes(currencyIds: idsToLoad)
             }
             .sink()
+            .store(in: &bag)
+
+        userWalletRepository.eventProvider
+            .withWeakCaptureOf(self)
+            .sink { repository, event in
+                if case .locked = event {
+                    repository.clearRepository()
+                }
+            }
             .store(in: &bag)
     }
 
     func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
-        AppLog.shared.debug("Start loading quotes for ids: \(currencyIds)")
+        log("Start loading quotes for ids: \(currencyIds)")
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
 
-        // TODO: - Remove when lastUpdatedAt will be available on production api
         let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .lastUpdatedAt, .priceChange7d, .priceChange30d] : [.price, .priceChange24h]
 
         // We get here currencyIds. But on in the API model we named it like coinIds
@@ -127,12 +152,12 @@ private extension CommonTokenQuotesRepository {
         return tangemApiService
             .loadQuotes(requestModel: request)
             .map { [weak self] quotes in
-                AppLog.shared.debug("Finish loading quotes for ids: \(currencyIds)")
+                self?.log("Finish loading quotes for ids: \(currencyIds)")
                 self?.saveQuotes(quotes, currencyCode: currencyCode)
                 return ()
             }
-            .catch { error in
-                AppLog.shared.debug("Loading quotes catch error")
+            .catch { [weak self] error in
+                self?.log("Loading quotes catch error")
                 AppLog.shared.error(error: error, params: [:])
                 return Just(())
             }
@@ -147,18 +172,20 @@ private extension CommonTokenQuotesRepository {
                 priceChange24h: quote.priceChange,
                 priceChange7d: quote.priceChange7d,
                 priceChange30d: quote.priceChange30d,
-                prices24h: quote.prices24h,
                 currencyCode: currencyCode
             )
         }
 
-        var current = _quotes.value
+        saveQuotes(quotes)
+    }
 
-        quotes.forEach { quote in
-            current[quote.currencyId] = quote
-        }
+    func clearRepository() {
+        log("Start repository cleanup")
+        _quotes.value.removeAll()
+    }
 
-        _quotes.send(current)
+    func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[CommonTokenQuotesRepository] \(message())")
     }
 }
 

@@ -19,10 +19,8 @@ struct DefaultRowView: View {
     private var isTappable: Bool { viewModel.action != nil }
 
     var body: some View {
-        if isTappable {
-            Button {
-                viewModel.action?()
-            } label: {
+        if let action = viewModel.action {
+            Button(action: action) {
                 content
             }
             .buttonStyle(PlainButtonStyle())
@@ -52,10 +50,11 @@ struct DefaultRowView: View {
         HStack(spacing: 0) {
             Text(viewModel.title)
                 .style(appearance.font, color: appearance.textColor)
+
             if let secondaryAction = viewModel.secondaryAction {
                 Button(action: secondaryAction) {
                     Assets.infoCircle16.image
-                        .padding(4)
+                        .padding(.horizontal, 4)
                         .foregroundColor(Colors.Icon.informative)
                 }
             }
@@ -103,7 +102,7 @@ extension DefaultRowView {
 
         init(
             isChevronVisible: Bool = true,
-            font: Font = Fonts.Regular.body,
+            font: Font = Fonts.Regular.callout,
             textColor: Color = Colors.Text.primary1,
             detailsColor: Color = Colors.Text.tertiary
         ) {

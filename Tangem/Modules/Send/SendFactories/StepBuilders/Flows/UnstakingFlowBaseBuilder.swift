@@ -18,13 +18,10 @@ struct UnstakingFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
-        let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
-        let unstakingModel = builder.makeUnstakingModel(
-            stakingManager: manager,
-            sendTransactionDispatcher: sendTransactionDispatcher
-        )
+    func makeSendViewModel(manager: any StakingManager, balanceInfo: StakingBalanceInfo, router: SendRoutable) -> SendViewModel {
+        let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, balanceInfo: balanceInfo)
+        let notificationManager = builder.makeStakingNotificationManager()
+        notificationManager.setup(provider: unstakingModel, input: unstakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
@@ -34,7 +31,7 @@ struct UnstakingFlowBaseBuilder {
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
             actionType: .unstake,
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .noEditable,
             sendDestinationCompactViewModel: .none,
@@ -52,6 +49,7 @@ struct UnstakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonUnstakingStepsManager(
+            provider: unstakingModel,
             summaryStep: summary.step,
             finishStep: finish
         )
@@ -60,7 +58,8 @@ struct UnstakingFlowBaseBuilder {
             input: unstakingModel,
             output: unstakingModel,
             walletModel: walletModel,
-            emailDataProvider: userWalletModel
+            emailDataProvider: userWalletModel,
+            stakingModel: .none
         )
 
         let viewModel = SendViewModel(

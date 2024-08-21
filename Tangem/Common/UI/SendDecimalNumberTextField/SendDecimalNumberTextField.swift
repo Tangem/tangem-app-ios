@@ -20,8 +20,6 @@ struct SendDecimalNumberTextField: View {
 
     // Internal state
     @FocusState private var isInputActive: Bool
-    @State private var textFieldText: String = ""
-    @State private var measuredTextSize: CGSize = .zero
 
     // Setupable
     private var initialFocusBehavior: InitialFocusBehavior = .noFocus
@@ -39,7 +37,7 @@ struct SendDecimalNumberTextField: View {
             text += makePrefixSuffixText(prefix, hasSpaceBeforeText: false, hasSpaceAfterText: hasSpace)
         }
 
-        text += (textFieldText.nilIfEmpty ?? Constants.placeholder)
+        text += (viewModel.textFieldText.nilIfEmpty ?? Constants.placeholder)
 
         if case .suffix(.some(let suffix), let hasSpace) = prefixSuffixOptions {
             text += makePrefixSuffixText(suffix, hasSpaceBeforeText: hasSpace, hasSpaceAfterText: false)
@@ -91,7 +89,7 @@ struct SendDecimalNumberTextField: View {
             .infinityFrame() // Provides centered alignment within `GeometryReader`
             .overlay(textSizeMeasurer)
         }
-        .frame(height: measuredTextSize.height)
+        .frame(height: viewModel.measuredTextSize.height)
     }
 
     /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
@@ -111,12 +109,12 @@ struct SendDecimalNumberTextField: View {
             .fixedSize()
             .hidden(true) // Native `.hidden()` may affect layout
             .allowsHitTesting(false)
-            .readGeometry(\.size, bindTo: $measuredTextSize)
+            .readGeometry(\.size, bindTo: $viewModel.measuredTextSize)
     }
 
     @ViewBuilder
     private var textField: some View {
-        DecimalNumberTextField(viewModel: viewModel, textFieldText: $textFieldText)
+        DecimalNumberTextField(viewModel: viewModel)
             .appearance(appearance)
             .placeholder(Constants.placeholder)
             .focused($isInputActive)
@@ -192,13 +190,26 @@ struct SendDecimalNumberTextField: View {
 
     private func scaleAndWidth(using proxy: GeometryProxy) -> (scale: CGFloat, width: CGFloat) {
         let maxWidth = proxy.size.width
-        let measuredWidth = measuredTextSize.width
+        let measuredWidth = viewModel.measuredTextSize.width
 
         guard
             let minTextScale,
             measuredWidth > maxWidth
         else {
-            return (1.0, maxWidth)
+            // Apparently, SwiftUI structural identity changes when the scale of the view changes from 1.0 (no scaling)
+            // to any other value and vice versa, from any other value back to back to 1.0 (no scaling).
+            // This change of SwiftUI structural identity causes a reset of some of the view's internal state
+            // (including `@Focused` properties), which in turn causes the active first responder to resign, i.e. hide the keyboard.
+            //
+            // The workaround here prevents this by placing the view into a `scaled` state, even if text scaling
+            // is not actually needed at the moment. This scaled state should not affect view dimensions at all, because
+            // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by the same value, 1%)
+            let onePercent = 0.01
+            let multiplierBase = 1.0
+            let defaultScaleMultiplier = multiplierBase + onePercent
+            let defaultWidthMultiplier = multiplierBase - onePercent
+
+            return (1.0 * defaultScaleMultiplier, maxWidth * defaultWidthMultiplier)
         }
 
         // It turns out that in some cases, HStack inserts some space (1pt) between neighboring child views,

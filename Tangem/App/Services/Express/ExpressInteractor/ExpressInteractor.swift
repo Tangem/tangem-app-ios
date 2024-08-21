@@ -28,14 +28,14 @@ class ExpressInteractor {
     private let userWalletId: String
     private let initialWallet: WalletModel
     private let expressManager: ExpressManager
-    private let allowanceProvider: ExpressAllowanceProvider
+    private let allowanceProvider: UpdatableAllowanceProvider
     private let feeProvider: ExpressFeeProvider
     private let expressRepository: ExpressRepository
     private let expressPendingTransactionRepository: ExpressPendingTransactionRepository
     private let expressDestinationService: ExpressDestinationService
     private let expressTransactionBuilder: ExpressTransactionBuilder
     private let expressAPIProvider: ExpressAPIProvider
-    private let signer: TransactionSigner
+    private let transactionDispatcher: SendTransactionDispatcher
     private let logger: Logger
 
     // MARK: - Options
@@ -50,14 +50,14 @@ class ExpressInteractor {
         userWalletId: String,
         initialWallet: WalletModel,
         expressManager: ExpressManager,
-        allowanceProvider: ExpressAllowanceProvider,
+        allowanceProvider: UpdatableAllowanceProvider,
         feeProvider: ExpressFeeProvider,
         expressRepository: ExpressRepository,
         expressPendingTransactionRepository: ExpressPendingTransactionRepository,
         expressDestinationService: ExpressDestinationService,
         expressTransactionBuilder: ExpressTransactionBuilder,
         expressAPIProvider: ExpressAPIProvider,
-        signer: TransactionSigner,
+        transactionDispatcher: SendTransactionDispatcher,
         logger: Logger
     ) {
         self.userWalletId = userWalletId
@@ -70,7 +70,7 @@ class ExpressInteractor {
         self.expressDestinationService = expressDestinationService
         self.expressTransactionBuilder = expressTransactionBuilder
         self.expressAPIProvider = expressAPIProvider
-        self.signer = signer
+        self.transactionDispatcher = transactionDispatcher
         self.logger = logger
 
         _swappingPair = .init(SwappingPair(sender: initialWallet, destination: .loading))
@@ -181,6 +181,41 @@ extension ExpressInteractor {
     }
 }
 
+// MARK: - ApproveViewModelInput
+
+extension ExpressInteractor: ApproveViewModelInput {
+    var approveFeeValue: LoadingValue<Fee> {
+        mapToApproveFeeLoadingValue(state: getState())
+    }
+
+    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
+        state
+            .withWeakCaptureOf(self)
+            .map { interactor, state in
+                interactor.mapToApproveFeeLoadingValue(state: state)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee> {
+        switch state {
+        case .permissionRequired(let state, _):
+            guard let fee = state.fees[getFeeOption()] else {
+                return .failedToLoad(error: ExpressInteractorError.feeNotFound)
+            }
+
+            return .loaded(fee)
+        case .loading:
+            return .loading
+        case .restriction(.requiredRefresh(let error), _):
+            return .failedToLoad(error: error)
+        default:
+            AppLog.shared.debug("Wrong state for this view \(state)")
+            return .failedToLoad(error: CommonError.notImplemented)
+        }
+    }
+}
+
 // MARK: - Send
 
 extension ExpressInteractor {
@@ -250,7 +285,7 @@ extension ExpressInteractor {
             fee: fee
         )
 
-        let result = try await sender.send(transaction, signer: signer).async()
+        let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
         logger.debug("Sent the approve transaction with result: \(result)")
         allowanceProvider.didSendApproveTransaction(for: state.data.spender)
         logApproveTransactionSentAnalyticsEvent(policy: state.policy)
@@ -387,7 +422,7 @@ private extension ExpressInteractor {
     }
 
     func map(permissionRequired: ExpressManagerState.PermissionRequired) async throws -> State {
-        let fees = mapToFees(fee: permissionRequired.fee)
+        let fees = mapToFees(fee: .single(permissionRequired.data.fee))
         let amount = makeAmount(value: permissionRequired.quote.fromAmount)
         let fee = try selectedFee(fees: fees)
 
@@ -463,7 +498,7 @@ private extension ExpressInteractor {
         let fee = try selectedFee(fees: state.fees)
         let sender = getSender()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: state.data, fee: fee)
-        let result = try await sender.send(transaction, signer: signer).async()
+        let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
         return TransactionSendResultState(hash: result.hash, data: state.data, fee: fee, provider: provider)
     }
@@ -473,7 +508,7 @@ private extension ExpressInteractor {
         let sender = getSender()
         let data = try await expressManager.requestData()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: data, fee: fee)
-        let result = try await sender.send(transaction, signer: signer).async()
+        let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
         return TransactionSendResultState(hash: result.hash, data: data, fee: fee, provider: provider)
     }
@@ -827,7 +862,7 @@ extension ExpressInteractor {
 
     struct PermissionRequiredState {
         let policy: ExpressApprovePolicy
-        let data: ExpressApproveData
+        let data: ApproveTransactionData
         let fees: [FeeOption: Fee]
     }
 

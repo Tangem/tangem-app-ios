@@ -21,7 +21,7 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     private let interactor: StakingValidatorsInteractor
 
-    private let stakingValidatorViewMapper = StakingValidatorViewMapper()
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(interactor: StakingValidatorsInteractor) {
@@ -46,15 +46,22 @@ private extension StakingValidatorsViewModel {
         interactor
             .validatorsPublisher
             .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
             .map { viewModel, validators in
-                // TODO: https://tangem.atlassian.net/browse/IOS-7105
-                viewModel.selectedValidator = validators.first?.address ?? ""
+                validators.map { validatorInfo in
+                    let percentFormatted = validatorInfo.apr.map {
+                        viewModel.percentFormatter.format($0, option: .staking)
+                    }
 
-                return validators.map {
-                    viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: $0, detailsType: .checkmark)
+                    return ValidatorViewData(
+                        address: validatorInfo.address,
+                        name: validatorInfo.name,
+                        imageURL: validatorInfo.iconURL,
+                        subtitleType: .selection(percentFormatted: percentFormatted ?? ""),
+                        detailsType: .checkmark
+                    )
                 }
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.validators, on: self, ownership: .weak)
             .store(in: &bag)
 
@@ -62,6 +69,8 @@ private extension StakingValidatorsViewModel {
             .selectedValidatorPublisher
             .removeDuplicates()
             .withWeakCaptureOf(self)
+            // If viewModel already has selectedValidator
+            .filter { $0.selectedValidator != $1.address }
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedValidator in
                 viewModel.selectedValidator = selectedValidator.address

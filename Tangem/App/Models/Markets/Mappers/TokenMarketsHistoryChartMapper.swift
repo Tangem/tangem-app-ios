@@ -54,7 +54,8 @@ struct TokenMarketsHistoryChartMapper {
             values: values
         )
 
-        let trend = makeTrend(firstValue: firstValue, lastValue: lastValue)
+        let utility = LineChartViewUtility()
+        let trend = utility.chartTrend(firstValue: firstValue, lastValue: lastValue)
 
         return (xAxis, trend)
     }
@@ -87,21 +88,6 @@ struct TokenMarketsHistoryChartMapper {
             axisMinValue: minYAxisValue,
             axisMaxValue: maxYAxisValue
         )
-    }
-
-    private func makeTrend(
-        firstValue: LineChartViewData.Value,
-        lastValue: LineChartViewData.Value
-    ) -> LineChartViewData.Trend {
-        if firstValue.price < lastValue.price {
-            return .uptrend
-        }
-
-        if firstValue.price > lastValue.price {
-            return .downtrend
-        }
-
-        return .neutral
     }
 
     private func makeXAxisLabelCount(for selectedPriceInterval: MarketsPriceIntervalType) -> Int {
