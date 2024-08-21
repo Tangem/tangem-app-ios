@@ -19,22 +19,21 @@ final class MarketsListDataProvider {
     // MARK: Published Properties
 
     @Published var items: [MarketsTokenModel] = []
-    @Published var isLoading: Bool = false
-    @Published var showError: Bool = false
+    @Published var lastEvent: Event = .idle
 
     // MARK: - Public Properties
 
     var lastSearchTextValue: String? {
-        return lastSearchText
+        lastSearchText
     }
 
     var lastFilterValue: Filter? {
-        return lastFilter
+        lastFilter
     }
 
     // Tells if all items have been loaded
     var canFetchMore: Bool {
-        if isLoading || showError {
+        if isLoading {
             return false
         }
 
@@ -46,6 +45,8 @@ final class MarketsListDataProvider {
     }
 
     // MARK: Private Properties
+
+    private(set) var isLoading: Bool = false
 
     // Tracks last page offset loaded. Used to load next page (current + 1)
     private var currentOffset: Int = 0
@@ -77,10 +78,12 @@ final class MarketsListDataProvider {
 
         clearSearchResults()
 
+        lastEvent = .cleared
         isLoading = false
     }
 
     func fetch(_ searchText: String, with filter: Filter) {
+        lastEvent = .loading
         isLoading = true
 
         if lastSearchText != searchText || lastFilter != filter {
@@ -131,7 +134,20 @@ final class MarketsListDataProvider {
             scheduledFetchTask = nil
         }
 
-        showError = false
+        lastEvent = .startInitialFetch
+    }
+}
+
+// MARK: - Events
+
+extension MarketsListDataProvider {
+    enum Event: Equatable {
+        case loading
+        case idle
+        case failedToFetchData
+        case appendedItems(items: [MarketsTokenModel], lastPage: Bool)
+        case startInitialFetch
+        case cleared
     }
 }
 
@@ -144,19 +160,20 @@ private extension MarketsListDataProvider {
             currentOffset = response.offset + response.limit
             totalTokensCount = response.total
 
-            log("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
-            items.append(contentsOf: response.tokens)
-
-            showError = false
+            log("Load new items finished. Is loading set to false.")
             isLoading = false
+            log("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
+
+            items.append(contentsOf: response.tokens)
+            lastEvent = .appendedItems(items: response.tokens, lastPage: currentOffset >= response.total)
         } catch {
             if error.isCancellationError {
                 return
             }
 
+            lastEvent = .failedToFetchData
             log("Failed to load next page. Error: \(error)")
             if items.isEmpty {
-                showError = true
                 isLoading = false
             } else {
                 scheduleRetryForFailedFetchRequest()
