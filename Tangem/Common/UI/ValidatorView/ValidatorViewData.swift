@@ -20,7 +20,7 @@ struct ValidatorViewData: Hashable, Identifiable {
     var isIconMonochrome: Bool {
         switch subtitleType {
         case .selection, .warmup, .active, .none: false
-        case .unbounding: true
+        case .unbounding, .withdraw: true
         }
     }
 
@@ -34,9 +34,28 @@ struct ValidatorViewData: Hashable, Identifiable {
             string(Localization.stakingDetailsWarmupPeriod, accent: percentFormatted)
         case .active(let percentFormatted):
             string(Localization.stakingDetailsApr, accent: percentFormatted)
-        case .unbounding(let percentFormatted):
-            string(Localization.stakingDetailsUnbondingPeriod, accent: percentFormatted)
+        case .unbounding(let unlitDate):
+            unboundingUntilFormatted(unlitDate)
+        case .withdraw:
+            string("Ready to withdraw", accent: "")
         }
+    }
+
+    private func unboundingUntilFormatted(_ date: Date) -> AttributedString {
+        if Calendar.current.isDateInToday(date) {
+            return string(Localization.stakingDetailsUnbondingPeriod, accent: Localization.commonToday)
+        }
+
+        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
+            return string(Localization.stakingDetailsUnbondingPeriod, accent: date.formatted(.dateTime))
+        }
+
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.day]
+
+        let daysFormatted = formatter.string(from: DateComponents(day: days)) ?? days.formatted()
+        return string(Localization.stakingDetailsUnbondingPeriod, accent: daysFormatted)
     }
 
     private func string(_ text: String, accent: String) -> AttributedString {
@@ -55,7 +74,8 @@ extension ValidatorViewData {
     enum SubtitleType: Hashable {
         case warmup(period: String)
         case active(apr: String)
-        case unbounding(period: String)
+        case unbounding(until: Date)
+        case withdraw
         case selection(percentFormatted: String)
     }
 

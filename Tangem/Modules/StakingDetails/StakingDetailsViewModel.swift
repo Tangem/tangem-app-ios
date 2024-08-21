@@ -272,16 +272,11 @@ private extension StakingDetailsViewModel {
 
         let subtitleType: ValidatorViewData.SubtitleType? = {
             switch balance.balanceType {
-            case .rewards:
-                .none
-            case .warmup:
-                .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active:
-                validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding(let date):
-                .unbounding(period: remainDaysFormat(date: date))
-            case .withdraw:
-                .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+            case .rewards: .none
+            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+            case .active: validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
+            case .unbonding(let date): .unbounding(until: date)
+            case .withdraw: .withdraw
             }
         }()
 
