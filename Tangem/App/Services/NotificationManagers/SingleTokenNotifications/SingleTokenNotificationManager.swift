@@ -96,7 +96,9 @@ final class SingleTokenNotificationManager {
         /// We can't use `Blockchain.polygon(testnet: false).currencySymbol` here
         /// because it will be changed after some time to `"POL"`
         // TODO: https://tangem.atlassian.net/browse/IOS-7695
-        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic, walletModel.tokenItem.isToken {
+        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic,
+           walletModel.tokenItem.isToken,
+           walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
             events.append(.maticMigration)
         }
 
