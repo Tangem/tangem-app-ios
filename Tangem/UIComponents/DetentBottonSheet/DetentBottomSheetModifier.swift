@@ -48,6 +48,7 @@ private extension DetentBottomSheetModifier {
                 DetentBottomSheetContainer {
                     sheetContent(item)
                 }
+                .background(settings.background)
                 .presentationDragIndicator(.hidden)
                 .presentationCornerRadius(settings.cornerRadius)
                 .presentationDetents(detents.map { $0.detentsAboveIOS16 }.toSet())
