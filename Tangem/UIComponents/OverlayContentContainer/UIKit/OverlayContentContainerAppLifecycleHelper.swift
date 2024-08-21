@@ -20,23 +20,19 @@ final class OverlayContentContainerAppLifecycleHelper {
     weak var delegate: OverlayContentContainerAppLifecycleHelperDelegate?
 
     private var notificationCenter: NotificationCenter { .default }
-    private var didBind = false
-    private var bag: Set<AnyCancellable> = []
+    private var notificationSubscription: AnyCancellable?
 
     func observeLifecycleIfNeeded() {
-        if didBind {
+        guard notificationSubscription == nil else {
             return
         }
 
-        notificationCenter
+        notificationSubscription = notificationCenter
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .withWeakCaptureOf(self)
-            .sink { object, note in
-                object.onDidBecomeActive()
+            .sink { helper, _ in
+                helper.onDidBecomeActive()
             }
-            .store(in: &bag)
-
-        didBind = true
     }
 
     private func onDidBecomeActive() {
