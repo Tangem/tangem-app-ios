@@ -865,6 +865,8 @@
 "warning_low_signatures_message" = "На цій картці залишається лише %@ підписів. Ви повинні вивести всі свої кошти.";
 "warning_low_signatures_title" = "Низька кількість підписів";
 "warning_manage_tokens_legacy_derivation_message" = "Токени в різних мережах можуть мати різні адреси. Переконайтеся, що ваша адреса відповідає мережі, коли переказуєте кошти.";
+"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
+"warning_matic_migration_title" = "MATIC to POL Migration";
 "warning_missing_derivation_title" = "Деякі адреси відсутні";
 "warning_network_unreachable_message" = "Мережа наразі недоступна. Будь ласка, спробуйте пізніше.";
 "warning_network_unreachable_title" = "Мережа недоступна";

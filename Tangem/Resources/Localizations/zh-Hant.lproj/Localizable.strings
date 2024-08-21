@@ -865,6 +865,8 @@
 "warning_low_signatures_message" = "Only %@ signatures are left on this card. You must withdraw all of your funds.";
 "warning_low_signatures_title" = "Low signature count";
 "warning_manage_tokens_legacy_derivation_message" = "Tokens on different networks can have different addresses. Double-check that your address matches the network when you transfer funds.";
+"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
+"warning_matic_migration_title" = "MATIC to POL Migration";
 "warning_missing_derivation_title" = "Some addresses are missing";
 "warning_network_unreachable_message" = "The network is currently unreachable. Please try again later.";
 "warning_network_unreachable_title" = "網路無法使用";

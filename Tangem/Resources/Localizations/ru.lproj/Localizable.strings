@@ -865,6 +865,8 @@
 "warning_low_signatures_message" = "На этой карте осталось всего %@ подписей. Вам следует вывести все ваши средства.";
 "warning_low_signatures_title" = "Малое количество подписей";
 "warning_manage_tokens_legacy_derivation_message" = "Токены на разных сетях могут иметь разные адреса. Пожалуйста, убедитесь при переводе средств, что ваш адрес соответствует сети.";
+"warning_matic_migration_message" = "Токен MATIC мигрирует на POL. Однако крайний срок не установлен, и MATIC пока не устарел. Вы можете спокойно продолжать использовать токен MATIC или воспользоваться биржами, чтобы обменять его на POL.";
+"warning_matic_migration_title" = "Миграция MATIC в POL";
 "warning_missing_derivation_title" = "Некоторые адреса отсутствуют";
 "warning_network_unreachable_message" = "В данный момент сеть недоступна. Пожалуйста, попробуйте позже.";
 "warning_network_unreachable_title" = "Сеть недоступна";

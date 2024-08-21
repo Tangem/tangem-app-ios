@@ -865,6 +865,8 @@
 "warning_low_signatures_message" = "Il ne reste que %@ signatures sur cette carte. Vous devez retirer tous vos fonds.";
 "warning_low_signatures_title" = "Faible nombre de signatures";
 "warning_manage_tokens_legacy_derivation_message" = "Les jetons sur différents réseaux peuvent avoir des adresses différentes. Vérifiez bien que votre adresse correspond au réseau lorsque vous transférez des fonds.";
+"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
+"warning_matic_migration_title" = "MATIC to POL Migration";
 "warning_missing_derivation_title" = "Certaines adresses sont manquantes";
 "warning_network_unreachable_message" = "Le réseau est actuellement inaccessible. Veuillez réessayer plus tard.";
 "warning_network_unreachable_title" = "Le réseau est inaccessible";
