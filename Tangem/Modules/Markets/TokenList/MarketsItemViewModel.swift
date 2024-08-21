@@ -45,7 +45,8 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Init
 
     init(
-        _ data: InputData,
+        index: Int,
+        tokenModel: MarketsTokenModel,
         prefetchDataSource: MarketsListPrefetchDataSource?,
         chartsProvider: MarketsListChartsHistoryProvider,
         filterProvider: MarketsListDataFilterProvider,
@@ -54,25 +55,25 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         self.filterProvider = filterProvider
         self.prefetchDataSource = prefetchDataSource
 
-        index = data.index
-        tokenId = data.id
-        imageURL = IconURLBuilder().tokenIconURL(id: tokenId, size: .large)
-        name = data.name
-        symbol = data.symbol.uppercased()
+        self.index = index
+        tokenId = tokenModel.id
+        imageURL = IconURLBuilder().tokenIconURL(id: tokenModel.id, size: .large)
+        name = tokenModel.name
+        symbol = tokenModel.symbol.uppercased()
 
         didTapAction = onTapAction
 
-        if let marketRating = data.marketRating {
+        if let marketRating = tokenModel.marketRating {
             self.marketRating = "\(marketRating)"
         }
 
-        if let marketCap = data.marketCap {
+        if let marketCap = tokenModel.marketCap {
             self.marketCap = marketCapFormatter.formatDecimal(marketCap)
         }
 
         setupPriceInfo(
-            price: data.priceValue,
-            priceChangePercent: data.priceChangeStateValues[filterProvider.currentFilterValue.interval.rawValue]
+            price: tokenModel.currentPrice,
+            priceChangePercent: tokenModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
         )
         bindToIntervalUpdates()
         bindToQuotesUpdates()
@@ -189,18 +190,5 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         setupPriceInfo(price: newQuote.price, priceChangePercent: priceChangePercent)
-    }
-}
-
-extension MarketsItemViewModel {
-    struct InputData: Identifiable {
-        let index: Int
-        let id: String
-        let name: String
-        let symbol: String
-        let marketCap: Decimal?
-        let marketRating: Int?
-        let priceValue: Decimal?
-        let priceChangeStateValues: [String: Decimal]
     }
 }
