@@ -21,9 +21,8 @@ struct StakingFlowBaseBuilder {
 
     func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
         let stakingModel = builder.makeStakingModel(stakingManager: manager)
-
         let notificationManager = builder.makeStakingNotificationManager()
-        notificationManager.setup(input: stakingModel)
+        notificationManager.setup(provider: stakingModel, input: stakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
         sendFeeCompactViewModel.bind(input: stakingModel)
@@ -61,7 +60,7 @@ struct StakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonStakingStepsManager(
-            state: stakingModel.state,
+            provider: stakingModel,
             amountStep: amount.step,
             validatorsStep: validators.step,
             summaryStep: summary.step,

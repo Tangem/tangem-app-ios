@@ -12,6 +12,10 @@ import Combine
 import BlockchainSdk
 import TangemFoundation
 
+protocol StakingModelStateProvider {
+    var state: AnyPublisher<StakingModel.State, Never> { get }
+}
+
 class StakingModel {
     // MARK: - Data
 
@@ -74,7 +78,11 @@ extension StakingModel {
     var selectedPolicy: ApprovePolicy {
         _approvePolicy.value
     }
+}
 
+// MARK: - StakingModelStateProvider
+
+extension StakingModel: StakingModelStateProvider {
     var state: AnyPublisher<State, Never> {
         _state.compactMap { $0?.value }.eraseToAnyPublisher()
     }
