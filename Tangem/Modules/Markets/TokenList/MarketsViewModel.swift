@@ -109,7 +109,7 @@ final class MarketsViewModel: ObservableObject {
             return
         }
 
-        let slicedArray = Array(dataProvider.items[tokenViewModels.count ..< dataProvider.items.count])
+        let slicedArray = Array(dataProvider.items[tokenViewModels.count...])
         let itemsUnderCap = mapToItemViewModel(slicedArray, offset: tokenViewModels.count)
         tokenViewModels.append(contentsOf: itemsUnderCap)
     }
@@ -197,16 +197,10 @@ private extension MarketsViewModel {
     func dataProviderBind() {
         let dataProviderEventPipeline = dataProvider.$lastEvent
             .removeDuplicates()
-            .share(replay: 2)
+            .share(replay: 1)
 
         dataProviderEventPipeline
-            .filter {
-                if case .appendedItems = $0 {
-                    return false
-                }
-
-                return true
-            }
+            .filter { !$0.isAppendedItems }
             .receive(on: DispatchQueue.main)
             .withPrevious()
             .withWeakCaptureOf(self)
@@ -239,13 +233,7 @@ private extension MarketsViewModel {
             .store(in: &bag)
 
         dataProviderEventPipeline
-            .filter {
-                if case .appendedItems = $0 {
-                    return true
-                }
-
-                return false
-            }
+            .filter { $0.isAppendedItems }
             .handleEvents(receiveOutput: { [weak self] event in
                 guard
                     let self,
@@ -394,5 +382,15 @@ extension MarketsViewModel: MarketsListStateUpdater {
 private extension MarketsViewModel {
     enum Constants {
         static let marketCapThreshold: Decimal = 100_000.0
+    }
+}
+
+private extension MarketsListDataProvider.Event {
+    var isAppendedItems: Bool {
+        if case .appendedItems = self {
+            return true
+        }
+
+        return false
     }
 }
