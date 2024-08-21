@@ -661,6 +661,7 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
 "staking_notification_unstake_text" = "ステーキング解除後、報酬の獲得はすぐに停止します。ステーキング解除プロセスには%@かかります。";
+"staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "再結束";
 "staking_restake" = "再度ステーキングする";
 "staking_restake_rewards" = "報酬をステーキングする";
@@ -681,6 +682,8 @@
 "staking_stake_more" = "もっとステーキングする";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
+"staking_unbonding" = "Unbonding %@";
+"staking_unbonding_in" = "Unbonding in %@";
 "staking_unlocked_locked" = "ステーキング解除はロックされています";
 "staking_unstaked" = "スタックされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";

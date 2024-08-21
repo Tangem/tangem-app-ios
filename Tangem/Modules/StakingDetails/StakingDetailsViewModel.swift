@@ -348,13 +348,21 @@ extension Period {
 
 private extension RewardClaimingType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .auto: Localization.stakingRewardClaimingAuto
+        case .manual: Localization.stakingRewardClaimingManual
+        }
     }
 }
 
 private extension RewardScheduleType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .hour: Localization.stakingRewardScheduleHour
+        case .day: Localization.stakingRewardScheduleEachDay
+        case .week: Localization.stakingRewardScheduleWeek
+        case .month: Localization.stakingRewardScheduleMonth
+        }
     }
 }
 

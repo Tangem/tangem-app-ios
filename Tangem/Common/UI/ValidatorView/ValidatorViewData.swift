@@ -27,46 +27,50 @@ struct ValidatorViewData: Hashable, Identifiable {
     var subtitle: AttributedString? {
         switch subtitleType {
         case .none:
-            nil
-        case .selection(let percentFormatted):
-            string(Localization.stakingDetailsAnnualPercentageRate, accent: percentFormatted)
-        case .warmup(let percentFormatted):
-            string(Localization.stakingDetailsWarmupPeriod, accent: percentFormatted)
-        case .active(let percentFormatted):
-            string(Localization.stakingDetailsApr, accent: percentFormatted)
+            return nil
+        case .selection(let apr):
+            return string("\(Localization.stakingDetailsAnnualPercentageRate) \(apr)", accent: apr)
+        case .warmup(let period):
+            return string("\(Localization.stakingDetailsWarmupPeriod) \(period)", accent: period)
+        case .active(let apr):
+            return string("\(Localization.stakingDetailsApr) \(apr)", accent: apr)
         case .unbounding(let unlitDate):
-            unboundingUntilFormatted(unlitDate)
+            let (full, accent) = preparedUntil(unlitDate)
+            return string(full, accent: accent)
         case .withdraw:
-            string("Ready to withdraw", accent: "")
+            return string(Localization.stakingReadyToWithdraw)
         }
     }
 
-    private func unboundingUntilFormatted(_ date: Date) -> AttributedString {
+    private func preparedUntil(_ date: Date) -> (full: String, accent: String) {
         if Calendar.current.isDateInToday(date) {
-            return string(Localization.stakingDetailsUnbondingPeriod, accent: Localization.commonToday)
+            return (Localization.stakingUnbonding(Localization.commonToday), Localization.commonToday)
         }
 
         guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
-            return string(Localization.stakingDetailsUnbondingPeriod, accent: date.formatted(.dateTime))
+            let formatted = date.formatted(.dateTime)
+            return (Localization.stakingUnbondingIn(formatted), formatted)
         }
 
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
         formatter.allowedUnits = [.day]
+        let formatted = formatter.string(from: DateComponents(day: days)) ?? days.formatted()
 
-        let daysFormatted = formatter.string(from: DateComponents(day: days)) ?? days.formatted()
-        return string(Localization.stakingDetailsUnbondingPeriod, accent: daysFormatted)
+        return (Localization.stakingUnbondingIn(formatted), formatted)
     }
 
-    private func string(_ text: String, accent: String) -> AttributedString {
-        var descriptionPart = AttributedString(text)
-        descriptionPart.foregroundColor = Colors.Text.tertiary
-        descriptionPart.font = Fonts.Regular.caption1
+    private func string(_ text: String, accent: String? = nil) -> AttributedString {
+        var string = AttributedString(text)
+        string.foregroundColor = Colors.Text.tertiary
+        string.font = Fonts.Regular.caption1
 
-        var valuePart = AttributedString(accent)
-        valuePart.foregroundColor = Colors.Text.accent
-        valuePart.font = Fonts.Regular.caption1
-        return descriptionPart + " " + valuePart
+        if let accent, let range = string.range(of: accent) {
+            string[range].foregroundColor = Colors.Text.accent
+            string[range].font = Fonts.Regular.caption1
+        }
+
+        return string
     }
 }
 
