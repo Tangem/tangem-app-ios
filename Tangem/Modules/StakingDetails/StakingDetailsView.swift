@@ -23,8 +23,11 @@ struct StakingDetailsView: View {
                     banner
                 }
 
-                GroupedSection(viewModel.detailsViewModels) {
-                    DefaultRowView(viewModel: $0)
+                GroupedSection(viewModel.detailsViewModels) { data in
+                    DefaultRowView(viewModel: data)
+                        .if(viewModel.detailsViewModels.first?.id == data.id) {
+                            $0.appearance(.init(detailsColor: Colors.Text.accent))
+                        }
                 }
 
                 rewardView
@@ -130,13 +133,14 @@ struct StakingDetailsView: View {
                 ValidatorView(data: data)
             }, header: {
                 DefaultHeaderView(header)
+                    .padding(.top, 12)
             }, footer: {
                 Text(footer)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
             }
         )
-        .interItemSpacing(10)
-        .innerContentPadding(12)
+        .interItemSpacing(0)
+        .innerContentPadding(0)
     }
 
     @ViewBuilder

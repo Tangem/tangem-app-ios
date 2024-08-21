@@ -21,6 +21,7 @@ final class SendViewModel: ObservableObject {
     @Published var mainButtonType: SendMainButtonType
     @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
+    @Published var isKeyboardActive: Bool = false
 
     @Published var transactionURL: URL?
 
@@ -70,6 +71,7 @@ final class SendViewModel: ObservableObject {
         step = stepsManager.initialState.step
         mainButtonType = stepsManager.initialState.action
         flowActionType = stepsManager.initialFlowActionType
+        isKeyboardActive = stepsManager.initialKeyboardState
 
         bind()
         bind(step: stepsManager.initialState.step)
@@ -81,6 +83,8 @@ final class SendViewModel: ObservableObject {
             stepsManager.performNext()
         case .continue:
             stepsManager.performContinue()
+        case .action where flowActionType == .approve:
+            performApprove()
         case .action:
             performSend()
         case .close:
@@ -90,6 +94,31 @@ final class SendViewModel: ObservableObject {
 
     func userDidTapBackButton() {
         stepsManager.performBack()
+    }
+
+    func onAppear(newStep: any SendStep) {
+        switch (step.type, newStep.type) {
+        case (_, .summary):
+            isKeyboardActive = false
+        default:
+            break
+        }
+    }
+
+    func onDisappear(oldStep: any SendStep) {
+        oldStep.sendStepViewAnimatable.viewDidChangeVisibilityState(.disappeared)
+        step.sendStepViewAnimatable.viewDidChangeVisibilityState(.appeared)
+
+        switch (oldStep.type, step.type) {
+        // It's possible to the destination step
+        // if the destination's TextField will be support @FocusState
+        // case (_, .destination):
+        //    isKeyboardActive = true
+        case (_, .amount):
+            isKeyboardActive = true
+        default:
+            break
+        }
     }
 
     func dismiss() {
@@ -122,6 +151,14 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
+    func performApprove() {
+        guard let (settings, approveViewModelInput) = interactor.makeDataForExpressApproveViewModel() else {
+            return
+        }
+
+        coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
+    }
+
     func performSend() {
         sendTask?.cancel()
         sendTask = runTask(in: self) { viewModel in
