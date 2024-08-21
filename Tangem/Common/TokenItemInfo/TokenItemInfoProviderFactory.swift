@@ -11,7 +11,7 @@ import Foundation
 typealias TokenItemInfoProviderItem = (provider: TokenItemInfoProvider, isCustom: Bool)
 
 struct TokenItemInfoProviderFactory {
-    func mapTokenItemViewModel(from tokenItemType: TokenItemType, with userWalletModel: UserWalletModel) -> TokenItemInfoProviderItem {
+    func mapTokenItemViewModel(from tokenItemType: TokenItemType) -> TokenItemInfoProviderItem {
         let tokenInfoProvider: TokenItemInfoProvider
         let isCustom: Bool
 

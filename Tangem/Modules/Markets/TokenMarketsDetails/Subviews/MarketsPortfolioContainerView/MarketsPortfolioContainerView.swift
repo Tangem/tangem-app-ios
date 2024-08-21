@@ -154,9 +154,9 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private var quickActionsView: some View {
-        if viewModel.showQuickAction, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+        if !viewModel.quickActions.isEmpty, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
             MarketsPortfolioQuickActionsView(
-                actions: tokenItemViewModel.contextActions,
+                actions: viewModel.quickActions,
                 onTapAction: { actionType in
                     viewModel.didTapContextAction(
                         actionType,

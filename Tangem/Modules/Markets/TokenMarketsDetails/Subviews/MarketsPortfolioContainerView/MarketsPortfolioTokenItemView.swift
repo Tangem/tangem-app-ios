@@ -53,8 +53,10 @@ struct MarketsPortfolioTokenItemView: View {
                     Spacer(minLength: 8)
 
                     if viewModel.hasError, let errorMessage = viewModel.errorMessage {
+                        // Need for define size overlay view
                         Text(errorMessage)
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                            .hidden(true)
                     } else {
                         LoadableTextView(
                             state: viewModel.balanceFiat,
