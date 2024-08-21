@@ -143,7 +143,7 @@ struct StakeKitMapper {
             return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 amount: amount,
-                balanceType: mapToBalanceType(from: balance.type),
+                balanceType: mapToBalanceType(from: balance),
                 validatorAddress: balance.validatorAddress,
                 actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
@@ -306,15 +306,19 @@ struct StakeKitMapper {
     }
 
     func mapToBalanceType(
-        from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
-    ) -> BalanceType {
-        switch balanceType {
+        from balance: StakeKitDTO.Balances.Response.Balance
+    ) throws -> BalanceType {
+        switch balance.type {
         case .preparing:
             return .warmup
         case .available, .locked, .staked:
             return .active
         case .unstaking, .unlocking:
-            return .unbonding
+            guard let date = balance.date else {
+                throw StakeKitMapperError.noData("Balance.date for BalanceType.unbonding not found")
+            }
+
+            return .unbonding(date: date)
         case .unstaked:
             return .withdraw
         case .rewards:

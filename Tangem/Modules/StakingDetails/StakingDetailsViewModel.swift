@@ -278,7 +278,9 @@ private extension StakingDetailsViewModel {
                 .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
             case .active:
                 validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding, .withdraw:
+            case .unbonding(let date):
+                .unbounding(period: remainDaysFormat(date: date))
+            case .withdraw:
                 .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
             }
         }()
@@ -304,6 +306,14 @@ private extension StakingDetailsViewModel {
                 action: action
             )
         )
+    }
+
+    func remainDaysFormat(date: Date) -> String {
+        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
+            return date.formatted()
+        }
+
+        return daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
     }
 
     func openBottomSheet(title: String, description: String) {
