@@ -29,14 +29,14 @@ struct ValidatorViewData: Hashable, Identifiable {
         case .none:
             return nil
         case .selection(let apr):
-            return string("\(Localization.stakingDetailsAnnualPercentageRate) \(apr)", accent: apr)
+            return string(Localization.stakingDetailsAnnualPercentageRate, accent: apr)
         case .warmup(let period):
-            return string("\(Localization.stakingDetailsWarmupPeriod) \(period)", accent: period)
+            return string(Localization.stakingDetailsWarmupPeriod, accent: period)
         case .active(let apr):
-            return string("\(Localization.stakingDetailsApr) \(apr)", accent: apr)
+            return string(Localization.stakingDetailsApr, accent: apr)
         case .unbounding(let unlitDate):
-            let (full, accent) = preparedUntil(unlitDate)
-            return string(full, accent: accent)
+            let (text, accent) = preparedUntil(unlitDate)
+            return string(text, accent: accent)
         case .withdraw:
             return string(Localization.stakingReadyToWithdraw)
         }
@@ -44,12 +44,12 @@ struct ValidatorViewData: Hashable, Identifiable {
 
     private func preparedUntil(_ date: Date) -> (full: String, accent: String) {
         if Calendar.current.isDateInToday(date) {
-            return (Localization.stakingUnbonding(Localization.commonToday), Localization.commonToday)
+            return (Localization.stakingUnbonding, Localization.commonToday)
         }
 
         guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
             let formatted = date.formatted(.dateTime)
-            return (Localization.stakingUnbondingIn(formatted), formatted)
+            return (Localization.stakingUnbondingIn, formatted)
         }
 
         let formatter = DateComponentsFormatter()
@@ -57,7 +57,7 @@ struct ValidatorViewData: Hashable, Identifiable {
         formatter.allowedUnits = [.day]
         let formatted = formatter.string(from: DateComponents(day: days)) ?? days.formatted()
 
-        return (Localization.stakingUnbondingIn(formatted), formatted)
+        return (Localization.stakingUnbondingIn, formatted)
     }
 
     private func string(_ text: String, accent: String? = nil) -> AttributedString {
@@ -65,9 +65,11 @@ struct ValidatorViewData: Hashable, Identifiable {
         string.foregroundColor = Colors.Text.tertiary
         string.font = Fonts.Regular.caption1
 
-        if let accent, let range = string.range(of: accent) {
-            string[range].foregroundColor = Colors.Text.accent
-            string[range].font = Fonts.Regular.caption1
+        if let accent {
+            var accent = AttributedString(accent)
+            accent.foregroundColor = Colors.Text.accent
+            accent.font = Fonts.Regular.caption1
+            return string + " " + accent
         }
 
         return string
