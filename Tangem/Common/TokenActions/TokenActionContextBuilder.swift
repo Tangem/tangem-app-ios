@@ -8,11 +8,7 @@
 
 import Foundation
 
-protocol TokenActionContextProvider: AnyObject {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType]
-}
-
-final class TokenActionContextBuilder {
+struct TokenActionContextBuilder {
     // MARK: - Private Properties
 
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -28,7 +24,7 @@ final class TokenActionContextBuilder {
 
 // MARK: - TokenItemContextActionsProvider
 
-extension TokenActionContextBuilder: MarketsPortfolioContextActionsProvider {
+extension TokenActionContextBuilder {
     func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
         guard
             let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }),
