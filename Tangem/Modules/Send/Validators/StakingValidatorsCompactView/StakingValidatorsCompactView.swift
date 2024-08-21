@@ -15,9 +15,8 @@ struct StakingValidatorsCompactView: View {
     let namespace: StakingValidatorsView.Namespace
 
     var body: some View {
-        GroupedSection(viewModel.selectedValidatorData) { data in
-            ValidatorView(data: data, selection: .constant(""))
-                .geometryEffect(.init(id: namespace.id, names: namespace.names))
+        GroupedSection(viewModel.selectedValidator) { data in
+            ValidatorCompactView(data: data, namespace: namespace)
         } header: {
             DefaultHeaderView(Localization.stakingValidator)
                 .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
