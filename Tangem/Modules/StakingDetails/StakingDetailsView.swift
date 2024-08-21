@@ -9,37 +9,32 @@
 import SwiftUI
 
 struct StakingDetailsView: View {
-    @ObservedObject private var viewModel: StakingDetailsViewModel
-    @State private var bottomViewHeight: CGFloat = .zero
-
-    init(viewModel: StakingDetailsViewModel) {
-        self.viewModel = viewModel
-    }
+    @ObservedObject var viewModel: StakingDetailsViewModel
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            GroupedScrollView(alignment: .leading, spacing: 14) {
-                if !viewModel.hideStakingInfoBanner {
-                    banner
-                }
-
-                GroupedSection(viewModel.detailsViewModels) { data in
-                    DefaultRowView(viewModel: data)
-                        .if(viewModel.detailsViewModels.first?.id == data.id) {
-                            $0.appearance(.init(detailsColor: Colors.Text.accent))
-                        }
-                }
-
-                rewardView
-
-                activeValidatorsView
-
-                unstakedValidatorsView
-
-                FixedSpacer(height: bottomViewHeight)
+        GroupedScrollView(alignment: .leading, spacing: 14) {
+            if !viewModel.hideStakingInfoBanner {
+                banner
             }
-            .interContentPadding(14)
 
+            GroupedSection(viewModel.detailsViewModels) { data in
+                DefaultRowView(viewModel: data)
+                    .if(viewModel.detailsViewModels.first?.id == data.id) {
+                        $0.appearance(.init(detailsColor: Colors.Text.accent))
+                    }
+            }
+
+            rewardView
+
+            activeValidatorsView
+
+            unstakedValidatorsView
+        }
+        .interContentPadding(14)
+        .refreshable {
+            await Task { await viewModel.refresh() }.value
+        }
+        .safeAreaInset(edge: .bottom) {
             actionButton
         }
         .background(Colors.Background.secondary)
@@ -103,11 +98,12 @@ struct StakingDetailsView: View {
     @ViewBuilder
     private var rewardView: some View {
         GroupedSection(viewModel.rewardViewData) { data in
-            Button(action: {}, label: {
-                RewardView(data: data)
-            })
+            RewardView(data: data)
+        } header: {
+            DefaultHeaderView(Localization.stakingRewards)
+                .padding(.top, 8)
         }
-        .innerContentPadding(12)
+        .innerContentPadding(4)
     }
 
     private var activeValidatorsView: some View {
@@ -154,7 +150,6 @@ struct StakingDetailsView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
-            .readGeometry(\.size.height, bindTo: $bottomViewHeight)
         }
     }
 }

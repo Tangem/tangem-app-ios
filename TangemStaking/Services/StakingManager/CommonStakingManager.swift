@@ -154,7 +154,15 @@ private extension CommonStakingManager {
     func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionInfo {
         let action = try await provider.pendingAction(request: request, type: type)
 
-        guard let transactionId = action.transactions.first(where: { $0.type == .unstake })?.id else {
+        let transactionType: TransactionType = {
+            switch type {
+            case .withdraw: .unstake
+            case .claimRewards: .claimRewards
+            case .restakeRewards: .restakeRewards
+            }
+        }()
+
+        guard let transactionId = action.transactions.first(where: { $0.type == transactionType })?.id else {
             throw StakingManagerError.transactionNotFound
         }
 

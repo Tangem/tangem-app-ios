@@ -14,6 +14,8 @@ struct StakeKitMapper {
     func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
         switch action {
         case .withdraw: .withdraw
+        case .claimRewards: .claimRewards
+        case .restakeRewards: .restakeRewards
         }
     }
 
@@ -116,7 +118,7 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
-            unsignedTransactionData: try mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
+            unsignedTransactionData: mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
         )
     }
@@ -129,37 +131,36 @@ struct StakeKitMapper {
         }
 
         return try balances.compactMap { balance in
-            guard let blocked = Decimal(stringValue: balance.amount) else {
+            guard let amount = Decimal(stringValue: balance.amount) else {
                 return nil
             }
 
             // For Polygon token we can receive a staking balance with zero amount
-            guard blocked > 0 else {
+            guard amount > 0 else {
                 return nil
             }
 
             return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
-                blocked: blocked,
-                // TODO: https://tangem.atlassian.net/browse/IOS-7398
-                rewards: .zero,
-                balanceGroupType: mapToBalanceGroupType(from: balance.type),
+                amount: amount,
+                balanceType: mapToBalanceType(from: balance.type),
                 validatorAddress: balance.validatorAddress,
                 actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) -> [PendingActionType] {
-        balance.pendingActions.compactMap { action in
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [PendingActionType] {
+        try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
                 return .withdraw(passthrough: action.passthrough)
             case .claimRewards:
-                // TODO: https://tangem.atlassian.net/browse/IOS-7398
-                return nil
+                return .claimRewards(passthrough: action.passthrough)
+            case .restakeRewards:
+                return .restakeRewards(passthrough: action.passthrough)
             default:
-                return nil
+                throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
         }
     }
@@ -213,7 +214,9 @@ struct StakeKitMapper {
         case .stake: .stake
         case .unstake: .unstake
         case .withdraw: .withdraw
-        case .enter, .exit, .claim, .claimRewards, .reinvest, .send, .unknown:
+        case .claimRewards: .claimRewards
+        case .restakeRewards: .restakeRewards
+        default:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -226,7 +229,7 @@ struct StakeKitMapper {
         case .pending: .pending
         case .confirmed: .confirmed
         case .failed: .failed
-        case .notFound, .blocked, .signed, .skipped, .unknown:
+        case .notFound, .blocked, .signed, .skipped:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -255,7 +258,7 @@ struct StakeKitMapper {
         case .processing: .processing
         case .failed: .failed
         case .success: .success
-        case .canceled, .unknown:
+        case .canceled:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -302,9 +305,9 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToBalanceGroupType(
+    func mapToBalanceType(
         from balanceType: StakeKitDTO.Balances.Response.Balance.BalanceType
-    ) -> BalanceGroupType {
+    ) -> BalanceType {
         switch balanceType {
         case .preparing:
             return .warmup
@@ -314,8 +317,8 @@ struct StakeKitMapper {
             return .unbonding
         case .unstaked:
             return .withdraw
-        case .rewards, .unknown:
-            return .unknown
+        case .rewards:
+            return .rewards
         }
     }
 }
