@@ -44,10 +44,10 @@ public extension Array where Element == StakingBalanceInfo {
     }
 }
 
-public enum BalanceType: String, Hashable {
+public enum BalanceType: Hashable {
     case warmup
     case active
-    case unbonding
+    case unbonding(date: Date)
     case withdraw
     case rewards
 }
