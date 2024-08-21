@@ -73,14 +73,14 @@ private extension AppSettingsViewModel {
         $selectedCurrencyCode
             .dropFirst()
             .sink { [weak self] _ in
-                self?.setupView()
+                self?.updateCurrencySelectionViewModel()
             }
             .store(in: &bag)
 
         AppSettings.shared.$appTheme
             .withWeakCaptureOf(self)
-            .sink { viewModel, input in
-                viewModel.setupView()
+            .sink { viewModel, _ in
+                viewModel.updateThemeSettingsViewModel()
             }
             .store(in: &bag)
 
@@ -181,6 +181,14 @@ private extension AppSettingsViewModel {
             detailsType: .text(AppSettings.shared.appTheme.titleForDetails),
             action: coordinator?.openThemeSelection
         )
+    }
+
+    func updateCurrencySelectionViewModel() {
+        currencySelectionViewModel?.update(detailsType: .text(selectedCurrencyCode))
+    }
+
+    func updateThemeSettingsViewModel() {
+        themeSettingsViewModel?.update(detailsType: .text(AppSettings.shared.appTheme.titleForDetails))
     }
 
     func isSavingWalletBinding() -> BindingValue<Bool> {

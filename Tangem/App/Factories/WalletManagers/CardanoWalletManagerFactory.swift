@@ -11,7 +11,7 @@ import TangemSdk
 import BlockchainSdk
 
 struct CardanoWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager {
+    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet], apiList: APIList) throws -> WalletManager {
         let seedKeys: [EllipticCurve: Data] = keys.reduce(into: [:]) { partialResult, cardWallet in
             partialResult[cardWallet.curve] = cardWallet.publicKey
         }
@@ -41,7 +41,7 @@ struct CardanoWalletManagerFactory: AnyWalletManagerFactory {
         let derivationKey = Wallet.PublicKey.HDKey(path: derivationPath, extendedPublicKey: derivedKey)
         let secondDerivationKey = Wallet.PublicKey.HDKey(path: extendedDerivationPath, extendedPublicKey: secondDerivedKey)
 
-        let factory = WalletManagerFactoryProvider().factory
+        let factory = WalletManagerFactoryProvider(apiList: apiList).factory
         let publicKey = Wallet.PublicKey(
             seedKey: seedKey,
             derivationType: .double(first: derivationKey, second: secondDerivationKey)

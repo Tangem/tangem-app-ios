@@ -22,61 +22,21 @@ struct DetentBottomSheetContainer<ContentView: View>: View {
     }
 
     var body: some View {
-        sheetView
-    }
-
-    private var sheetView: some View {
-        content()
-            .overlay(indicator, alignment: .top)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var indicator: some View {
-        ZStack {
+        VStack(spacing: 0) {
             Capsule(style: .continuous)
                 .fill(Colors.Icon.inactive)
                 .frame(size: indicatorSize)
-                .padding(.top, 8)
-                .padding(.bottom, 10)
+                .padding(.vertical, 8)
+
+            content()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 20)
     }
 }
 
 // MARK: - Settings
 
 extension DetentBottomSheetContainer {
-    enum Detent: Hashable {
-        case medium
-        case large
-        case custom(CGFloat)
-        case fraction(CGFloat)
-
-        @available(iOS 16.0, *)
-        var detentsAboveIOS16: PresentationDetent {
-            switch self {
-            case .large:
-                return PresentationDetent.large
-            case .medium:
-                return PresentationDetent.medium
-            case .custom(let height):
-                return .height(height)
-            case .fraction(let value):
-                return .fraction(value)
-            }
-        }
-
-        var detentsAboveIOS15: UISheetPresentationController.Detent {
-            switch self {
-            case .large, .custom(_), .fraction:
-                return UISheetPresentationController.Detent.large()
-            case .medium:
-                return UISheetPresentationController.Detent.medium()
-            }
-        }
-    }
-
     struct Settings {
         let cornerRadius: CGFloat
 

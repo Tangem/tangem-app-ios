@@ -90,8 +90,7 @@ class CommonUserTokensManager {
         guard shouldLoadSwapAvailability else { return }
 
         let converter = StorageEntryConverter()
-        let nonCustomTokens = userTokenListManager.userTokensList.entries.filter { !$0.isCustom }
-        let tokenItems = converter.convertToTokenItem(nonCustomTokens)
+        let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)
         swapAvailabilityController.loadSwapAvailability(for: tokenItems, forceReload: forceReload, userWalletId: userWalletId.stringValue)
     }
 

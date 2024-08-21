@@ -66,7 +66,8 @@ class LockedUserWalletModel: UserWalletModel {
         AnalyticsContextData(
             card: userWallet.cardInfo().card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 
@@ -79,6 +80,8 @@ class LockedUserWalletModel: UserWalletModel {
     }
 
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingCardInteractor(with: userWallet.cardInfo()) }
+
     var name: String { userWallet.cardInfo().name }
 
     let backupInput: OnboardingInput? = nil
@@ -101,9 +104,9 @@ class LockedUserWalletModel: UserWalletModel {
         return true
     }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
 
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {}
+    func addAssociatedCard(_ cardId: String) {}
 }
 
 extension LockedUserWalletModel: MainHeaderSupplementInfoProvider {
@@ -130,7 +133,8 @@ extension LockedUserWalletModel: AnalyticsContextDataProvider {
             productType: config.productType,
             batchId: cardInfo.card.batchId,
             firmware: cardInfo.card.firmwareVersion.stringValue,
-            baseCurrency: baseCurrency
+            baseCurrency: baseCurrency,
+            userWalletId: userWalletId
         )
     }
 }

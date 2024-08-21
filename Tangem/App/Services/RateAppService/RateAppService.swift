@@ -61,6 +61,16 @@ final class RateAppService {
     }
 
     func requestRateAppIfAvailable(with request: RateAppRequest) {
+        var shouldRequestRateApp = false
+
+        defer {
+            if shouldRequestRateApp {
+                requestRateApp()
+            } else {
+                dismissAppRate()
+            }
+        }
+
         if userRespondedToLastRequestedReview {
             return
         }
@@ -99,7 +109,7 @@ final class RateAppService {
             return
         }
 
-        requestRateApp()
+        shouldRequestRateApp = true
     }
 
     func respondToRateAppDialog(with response: RateAppResponse) {
@@ -127,7 +137,7 @@ final class RateAppService {
         case .negative:
             parameterValue = .feedbackEmail
         case .dismissed:
-            parameterValue = .appRateSheetDismissed
+            parameterValue = .appRateDismissed
         }
 
         Analytics.log(.mainNoticeRateTheApp, params: [.result: parameterValue])
@@ -136,7 +146,14 @@ final class RateAppService {
     private func requestRateApp() {
         userDismissedLastRequestedReviewDate = nil
         userDismissedLastRequestedReviewLaunchCount = nil
-        rateAppActionSubject.send(.openAppRateDialog)
+        rateAppActionSubject.send(.requestAppRate)
+    }
+
+    private func dismissAppRate() {
+        // We don't have to update neither `userDismissedLastRequestedReviewDate` nor
+        // `userDismissedLastRequestedReviewLaunchCount` here because the logic in this method is driven
+        // by the app rate service itself (in `requestRateAppIfAvailable(with:)` method), not by the user interactions
+        rateAppActionSubject.send(.dismissAppRate)
     }
 
     private func migrateFromLegacyRateAppIfNeeded() {

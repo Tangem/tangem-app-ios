@@ -23,6 +23,7 @@ struct UserWalletConfigFactory {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
         let isRing = cardInfo.card.batchId == "AC17" || cardInfo.card.batchId == "BA01"
+        let isVisa = cardInfo.card.batchId == "AE04"
 
         switch cardInfo.walletData {
         case .none:
@@ -31,7 +32,7 @@ struct UserWalletConfigFactory {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
             }
 
-            if FirmwareVersion.visaRange.contains(cardInfo.card.firmwareVersion.doubleValue) {
+            if FirmwareVersion.visaRange.contains(cardInfo.card.firmwareVersion.doubleValue), isVisa {
                 return VisaConfig(card: cardInfo.card)
             }
 

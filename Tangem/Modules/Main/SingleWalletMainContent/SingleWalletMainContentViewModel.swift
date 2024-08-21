@@ -18,7 +18,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
     // MARK: - Dependencies
 
     private let userWalletNotificationManager: NotificationManager
-    private let rateAppController: RateAppController
+    private let rateAppController: RateAppInteractionController
 
     private let isPageSelectedSubject = PassthroughSubject<Bool, Never>()
 
@@ -33,7 +33,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         exchangeUtility: ExchangeCryptoUtility,
         userWalletNotificationManager: NotificationManager,
         tokenNotificationManager: NotificationManager,
-        rateAppController: RateAppController,
+        rateAppController: RateAppInteractionController,
         tokenRouter: SingleTokenRoutable,
         delegate: SingleWalletMainContentDelegate?
     ) {
@@ -54,6 +54,26 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
     override func presentActionSheet(_ actionSheet: ActionSheetBinder) {
         delegate?.present(actionSheet: actionSheet)
+    }
+
+    override func copyDefaultAddress() {
+        super.copyDefaultAddress()
+        Analytics.log(event: .buttonCopyAddress, params: [
+            .token: walletModel.tokenItem.currencySymbol,
+            .source: Analytics.ParameterValue.main.rawValue,
+        ])
+        delegate?.displayAddressCopiedToast()
+    }
+
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
+        default:
+            super.didTapNotification(with: id, action: action)
+        }
     }
 
     private func bind() {

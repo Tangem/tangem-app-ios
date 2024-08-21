@@ -16,7 +16,7 @@ struct TokenDetailsView: View {
         headerTopPadding: Constants.headerTopPadding
     )
 
-    private let coorditateSpaceName = UUID()
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         RefreshableScrollView(onRefresh: viewModel.onPullToRefresh(completionHandler:)) {
@@ -24,6 +24,11 @@ struct TokenDetailsView: View {
                 TokenDetailsHeaderView(viewModel: viewModel.tokenDetailsHeaderModel)
 
                 BalanceWithButtonsView(viewModel: viewModel.balanceWithButtonsModel)
+
+                ForEach(viewModel.bannerNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
+                }
 
                 ForEach(viewModel.tokenNotificationInputs) { input in
                     NotificationView(input: input)
@@ -61,7 +66,7 @@ struct TokenDetailsView: View {
             }
             .padding(.top, Constants.headerTopPadding)
             .readContentOffset(
-                inCoordinateSpace: .named(coorditateSpaceName),
+                inCoordinateSpace: .named(coordinateSpaceName),
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
@@ -75,7 +80,7 @@ struct TokenDetailsView: View {
         .onAppear(perform: scrollState.onViewAppear)
         .alert(item: $viewModel.alert) { $0.alert }
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
-        .coordinateSpace(name: coorditateSpaceName)
+        .coordinateSpace(name: coordinateSpaceName)
         .toolbar(content: {
             ToolbarItem(placement: .principal) {
                 TokenIcon(
@@ -98,9 +103,15 @@ struct TokenDetailsView: View {
 
     @ViewBuilder
     private var navbarTrailingButton: some View {
-        if viewModel.canHideToken {
+        if viewModel.hasDotsMenu {
             Menu {
-                Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
+                    Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                }
             } label: {
                 NavbarDotsImage()
             }
@@ -128,21 +139,25 @@ private extension TokenDetailsView {
     let notifManager = SingleTokenNotificationManager(
         walletModel: walletModel,
         walletModelsManager: userWalletModel.walletModelsManager,
-        expressDestinationService: nil,
         contextDataProvider: nil
     )
     let pendingTxsManager = CommonPendingExpressTransactionsManager(
         userWalletId: userWalletModel.userWalletId.stringValue,
-        walletModel: walletModel
+        walletModel: walletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
     )
     let coordinator = TokenDetailsCoordinator()
+
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
 
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,
         walletModel: walletModel,
         exchangeUtility: exchangeUtility,
         notificationManager: notifManager,
+        bannerNotificationManager: bannerNotificationManager,
         pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
     ))

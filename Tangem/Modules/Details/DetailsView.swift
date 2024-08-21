@@ -10,7 +10,6 @@ import SwiftUI
 
 struct DetailsView: View {
     @ObservedObject private var viewModel: DetailsViewModel
-    @State private var socialNetworksViewSize: CGSize = .zero
 
     init(viewModel: DetailsViewModel) {
         self.viewModel = viewModel
@@ -20,13 +19,13 @@ struct DetailsView: View {
         GroupedScrollView(spacing: 24) {
             walletConnectSection
 
-            commonSection
+            userWalletsSection
 
-            settingsSection
+            buyWalletSection
+
+            appSettingsSection
 
             supportSection
-
-            legalSection
 
             environmentSetupSection
 
@@ -38,35 +37,43 @@ struct DetailsView: View {
             ScanTroubleshootingView(
                 isPresented: $viewModel.showTroubleshootingView,
                 tryAgainAction: viewModel.tryAgain,
-                requestSupportAction: viewModel.requestSupport
+                requestSupportAction: viewModel.requestSupport,
+                openScanCardManualAction: viewModel.openScanCardManual
             )
         )
         .alert(item: $viewModel.alert) { $0.alert }
-        .navigationBarTitle(Text(Localization.detailsTitle), displayMode: .inline)
+        .navigationTitle(Localization.detailsTitle)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
     }
 
-    // MARK: - Wallet Connect Section
-
-    @ViewBuilder
     private var walletConnectSection: some View {
         GroupedSection(viewModel.walletConnectRowViewModel) {
             WalletConnectRowView(viewModel: $0)
         }
     }
 
-    // MARK: - Settings Section
-
-    private var settingsSection: some View {
-        GroupedSection(viewModel.settingsSectionViewModels) {
-            DefaultRowView(viewModel: $0)
+    private var userWalletsSection: some View {
+        GroupedSection(viewModel.walletsSectionTypes) { type in
+            switch type {
+            case .wallet(let viewModel):
+                SettingsUserWalletRowView(viewModel: viewModel)
+            case .addOrScanNewUserWalletButton(let viewModel):
+                DefaultRowView(viewModel: viewModel)
+                    .appearance(.accentButton)
+            }
         }
     }
 
-    // MARK: - Legal Section
+    private var buyWalletSection: some View {
+        GroupedSection(viewModel.buyWalletViewModel) {
+            DefaultRowView(viewModel: $0)
+                .appearance(.accentButton)
+        }
+    }
 
-    private var legalSection: some View {
-        GroupedSection(viewModel.legalSectionViewModel) {
+    private var appSettingsSection: some View {
+        GroupedSection(viewModel.appSettingsViewModel) {
             DefaultRowView(viewModel: $0)
         }
     }
@@ -74,16 +81,6 @@ struct DetailsView: View {
     private var supportSection: some View {
         GroupedSection(viewModel.supportSectionModels) {
             DefaultRowView(viewModel: $0)
-        }
-    }
-
-    private var commonSection: some View {
-        GroupedSection(viewModel.commonSectionViewModels) {
-            DefaultRowView(viewModel: $0)
-        } footer: {
-            if viewModel.canCreateBackup {
-                DefaultFooterView(Localization.detailsRowTitleCreateBackupFooter)
-            }
         }
     }
 
@@ -100,18 +97,17 @@ struct DetailsView: View {
             if let applicationInfoFooter = viewModel.applicationInfoFooter {
                 Text(applicationInfoFooter)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    .padding(.top, 8)
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 16)
+        .padding(.top, 24)
+        .padding(.bottom, 8)
     }
 
-    @ViewBuilder
     private var environmentSetupSection: some View {
         GroupedSection(viewModel.environmentSetupViewModel) {
             DefaultRowView(viewModel: $0)
-        } header: {
-            DefaultHeaderView("Setup environment in app")
         }
     }
 
@@ -132,7 +128,6 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             DetailsView(
                 viewModel: DetailsViewModel(
-                    userWalletModel: PreviewCard.tangemWalletEmpty.userWalletModel,
                     coordinator: DetailsCoordinator()
                 )
             )

@@ -27,21 +27,25 @@ struct ExpressSuccessSentView: View {
                         AmountSummaryView(data: $0)
                     }
                     .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.destinationData) {
                         AmountSummaryView(data: $0)
                     }
                     .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.provider) {
                         ProviderRowView(viewModel: $0)
                     }
                     .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.expressFee) {
                         ExpressFeeRowView(viewModel: $0)
                     }
                     .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
                 }
             }
             .padding(.horizontal, 14)

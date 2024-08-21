@@ -17,17 +17,23 @@ struct WalletOnboardingStepsBuilder {
     private let canBackup: Bool
     private let hasBackup: Bool
     private let canSkipBackup: Bool
-    private let touId: String
+    private let isPushNotificationsAvailable: Bool
     private let backupService: BackupService
 
-    private var userWalletSavingSteps: [WalletOnboardingStep] {
-        guard BiometricsUtil.isAvailable,
-              !AppSettings.shared.saveUserWallets,
-              !AppSettings.shared.askedToSaveUserWallets else {
-            return []
+    private var otherSteps: [WalletOnboardingStep] {
+        var steps: [WalletOnboardingStep] = []
+
+        if BiometricsUtil.isAvailable,
+           !AppSettings.shared.saveUserWallets,
+           !AppSettings.shared.askedToSaveUserWallets {
+            steps.append(.saveUserWallet)
         }
 
-        return [.saveUserWallet]
+        if isPushNotificationsAvailable {
+            steps.append(.pushNotifications)
+        }
+
+        return steps
     }
 
     private var backupSteps: [WalletOnboardingStep] {
@@ -58,6 +64,10 @@ struct WalletOnboardingStepsBuilder {
         return steps
     }
 
+    private var addTokensSteps: [WalletOnboardingStep] {
+        FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
+    }
+
     init(
         cardId: String,
         hasWallets: Bool,
@@ -66,7 +76,7 @@ struct WalletOnboardingStepsBuilder {
         canBackup: Bool,
         hasBackup: Bool,
         canSkipBackup: Bool,
-        touId: String,
+        isPushNotificationsAvailable: Bool,
         backupService: BackupService
     ) {
         self.cardId = cardId
@@ -76,7 +86,7 @@ struct WalletOnboardingStepsBuilder {
         self.canBackup = canBackup
         self.hasBackup = hasBackup
         self.canSkipBackup = canSkipBackup
-        self.touId = touId
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
         self.backupService = backupService
     }
 }
@@ -85,17 +95,13 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [WalletOnboardingStep]()
 
-        if !AppSettings.shared.termsOfServicesAccepted.contains(touId) {
-            steps.append(.disclaimer)
-        }
-
         if hasWallets {
             let forceBackup = !canSkipBackup && !hasBackup && canBackup // canBackup is false for cardLinked state
 
             if AppSettings.shared.cardsStartedActivation.contains(cardId) || forceBackup {
-                steps.append(contentsOf: backupSteps + userWalletSavingSteps + [.success])
+                steps.append(contentsOf: backupSteps + otherSteps + addTokensSteps + [.success])
             } else {
-                steps.append(contentsOf: userWalletSavingSteps)
+                steps.append(contentsOf: otherSteps)
             }
         } else {
             // Check is card supports seed phrase, if so add seed phrase steps
@@ -105,7 +111,7 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
             } else {
                 initialSteps = [.createWallet]
             }
-            steps.append(contentsOf: initialSteps + backupSteps + userWalletSavingSteps + [.success])
+            steps.append(contentsOf: initialSteps + backupSteps + otherSteps + addTokensSteps + [.success])
         }
 
         return .wallet(steps)

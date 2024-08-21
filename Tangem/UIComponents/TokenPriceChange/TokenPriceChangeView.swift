@@ -65,5 +65,13 @@ extension TokenPriceChangeView {
         case empty
         case loading
         case loaded(signType: ChangeSignType, text: String)
+
+        var signType: ChangeSignType? {
+            if case .loaded(let signType, _) = self {
+                return signType
+            }
+
+            return nil
+        }
     }
 }

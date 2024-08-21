@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct DefaultRowView: View {
-    // TODO: Make @ObservedObject
-    private let viewModel: DefaultRowViewModel
+    @ObservedObject private var viewModel: DefaultRowViewModel
+    private var appearance: Appearance = .init()
 
     init(viewModel: DefaultRowViewModel) {
         self.viewModel = viewModel
@@ -33,20 +33,33 @@ struct DefaultRowView: View {
 
     private var content: some View {
         HStack {
-            Text(viewModel.title)
-                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+            titleView
 
             Spacer()
 
             detailsView
 
-            if isTappable {
+            if isTappable, appearance.isChevronVisible {
                 Assets.chevron.image
             }
         }
         .lineLimit(1)
         .padding(.vertical, 14)
         .contentShape(Rectangle())
+    }
+
+    private var titleView: some View {
+        HStack(spacing: 0) {
+            Text(viewModel.title)
+                .style(appearance.font, color: appearance.textColor)
+            if let secondaryAction = viewModel.secondaryAction {
+                Button(action: secondaryAction) {
+                    Assets.infoCircle16.image
+                        .padding(4)
+                        .foregroundColor(Colors.Icon.informative)
+                }
+            }
+        }
     }
 
     @ViewBuilder
@@ -58,26 +71,77 @@ struct DefaultRowView: View {
             ActivityIndicatorView(style: .medium, color: .gray)
         case .text(let string):
             Text(string)
-                .style(Fonts.Regular.body, color: Colors.Text.tertiary)
+                .style(appearance.font, color: appearance.detailsColor)
+        case .loadable(let state):
+            LoadableTextView(
+                state: state,
+                font: appearance.font,
+                textColor: appearance.detailsColor,
+                loaderSize: CGSize(width: 60, height: 14)
+            )
         case .icon(let imageType):
             imageType.image
         }
     }
 }
 
-struct DefaultRowView_Preview: PreviewProvider {
-    static let viewModel = DefaultRowViewModel(
-        title: "App settings",
-        detailsType: .text("A Long long long long long long long text"),
-        action: nil
-    )
+extension DefaultRowView: Setupable {
+    func appearance(_ appearance: Appearance) -> Self {
+        map { $0.appearance = appearance }
+    }
+}
 
+extension DefaultRowView {
+    struct Appearance {
+        let isChevronVisible: Bool
+        let font: Font
+        let textColor: Color
+        let detailsColor: Color
+
+        static let destructiveButton = Appearance(isChevronVisible: false, textColor: Colors.Text.warning)
+        static let accentButton = Appearance(isChevronVisible: false, textColor: Colors.Text.accent)
+
+        init(
+            isChevronVisible: Bool = true,
+            font: Font = Fonts.Regular.body,
+            textColor: Color = Colors.Text.primary1,
+            detailsColor: Color = Colors.Text.tertiary
+        ) {
+            self.isChevronVisible = isChevronVisible
+            self.font = font
+            self.textColor = textColor
+            self.detailsColor = detailsColor
+        }
+    }
+}
+
+struct DefaultRowView_Preview: PreviewProvider {
     static var previews: some View {
         ZStack {
-            Colors.Background.secondary
+            Colors.Background.secondary.ignoresSafeArea()
 
-            DefaultRowView(viewModel: viewModel)
-                .padding(.horizontal, 16)
+            GroupedSection(
+                [
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .text("A Long long long long long long long text"),
+                        action: nil
+                    ),
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .loadable(state: .loading),
+                        action: nil
+                    ),
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .loader,
+                        action: nil
+                    ),
+                ]
+            ) {
+                DefaultRowView(viewModel: $0)
+            }
+            .padding()
         }
     }
 }

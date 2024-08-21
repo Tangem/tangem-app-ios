@@ -27,7 +27,8 @@ class TestnetBuyCryptoService {
 
         var subs: AnyCancellable!
 
-        subs = walletModel.getFee(amount: amountToSend, destination: destinationAddress)
+        subs = walletModel
+            .getFee(amount: amountToSend, destination: destinationAddress)
             .flatMap { fees -> AnyPublisher<Void, Error> in
                 guard let fee = fees.first,
                       fee.amount.value <= walletModel.wallet.amounts[.coin]?.value ?? 0 else {
@@ -38,7 +39,11 @@ class TestnetBuyCryptoService {
                     return .anyFail(error: "Failed to create topup transaction for token. Try again later")
                 }
 
-                return walletModel.send(tx, signer: signer).mapToVoid().eraseToAnyPublisher()
+                return walletModel
+                    .send(tx, signer: signer)
+                    .eraseError()
+                    .mapToVoid()
+                    .eraseToAnyPublisher()
             }
             .sink { [weak self] completion in
                 guard let self else { return }

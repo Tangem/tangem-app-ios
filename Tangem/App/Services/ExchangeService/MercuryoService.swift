@@ -270,9 +270,12 @@ private extension Blockchain {
              .mantle,
              .flare,
              .taraxa,
-             .radiant:
+             .radiant,
+             .bittensor,
+             .joystream,
+             .koinos:
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.mercuryo.io/v1.6/lib/currencies
-            return nil // TODO: Andrey Fedorov - Add proper network ids (IOS-6506)
+            return nil
         }
     }
 }

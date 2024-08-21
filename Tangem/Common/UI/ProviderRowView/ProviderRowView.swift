@@ -50,12 +50,12 @@ struct ProviderRowView: View {
                     Text(text)
                         .style(
                             Fonts.Bold.footnote,
-                            color: viewModel.isDisabled ? Colors.Text.secondary : Colors.Text.primary1
+                            color: viewModel.isDisabled ? Colors.Text.secondary : Colors.Text.tertiary
                         )
                 }
 
-                Text(viewModel.provider.type.uppercased())
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                Text(viewModel.provider.type)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
             }
 
             badgeView
@@ -97,6 +97,13 @@ struct ProviderRowView: View {
                 .cornerRadiusContinuous(8)
         case .bestRate:
             Text(Localization.expressProviderBestRate)
+                .style(Fonts.Bold.caption2, color: Colors.Icon.accent)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+                .background(Colors.Icon.accent.opacity(0.1))
+                .cornerRadiusContinuous(8)
+        case .recommended:
+            Text(Localization.expressProviderRecommended)
                 .style(Fonts.Bold.caption2, color: Colors.Icon.accent)
                 .padding(.vertical, 2)
                 .padding(.horizontal, 6)

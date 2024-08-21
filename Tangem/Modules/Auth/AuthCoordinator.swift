@@ -15,13 +15,22 @@ class AuthCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
+    var isNavigationBarHidden: Bool {
+        viewState?.isMain == false
+    }
+
+    var transitionAnimationValue: Bool {
+        viewState?.isMain == false
+    }
+
     // MARK: - Root view model
 
-    @Published private(set) var rootViewModel: AuthViewModel?
+    @Published private(set) var viewState: ViewState? = nil
 
     // MARK: - Child coordinators
 
-    @Published var mainCoordinator: MainCoordinator?
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator?
 
     // MARK: - Child view models
@@ -37,7 +46,7 @@ class AuthCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options = .default) {
-        rootViewModel = .init(unlockOnStart: options.unlockOnStart, coordinator: self)
+        viewState = .auth(AuthViewModel(unlockOnStart: options.unlockOnStart, coordinator: self))
     }
 }
 
@@ -69,11 +78,40 @@ extension AuthCoordinator: AuthRoutable {
         let coordinator = MainCoordinator(popToRootAction: popToRootAction)
         let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
-        mainCoordinator = coordinator
+        viewState = .main(coordinator)
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
         let logsComposer = LogsComposer(infoProvider: dataCollector)
         mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToScanCard)
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
+}
+
+// MARK: ViewState
+
+extension AuthCoordinator {
+    enum ViewState: Equatable {
+        case auth(AuthViewModel)
+        case main(MainCoordinator)
+
+        var isMain: Bool {
+            if case .main = self {
+                return true
+            }
+            return false
+        }
+
+        static func == (lhs: AuthCoordinator.ViewState, rhs: AuthCoordinator.ViewState) -> Bool {
+            switch (lhs, rhs) {
+            case (.auth, .auth), (.main, .main):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }

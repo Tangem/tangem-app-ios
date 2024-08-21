@@ -41,7 +41,7 @@ extension GenericConfig: UserWalletConfig {
         "Wallet"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
@@ -209,7 +209,11 @@ extension GenericConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            if card.firmwareVersion.doubleValue >= 4.52 {
+                return .available
+            }
+
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

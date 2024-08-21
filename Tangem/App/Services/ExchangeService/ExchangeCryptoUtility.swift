@@ -21,8 +21,27 @@ struct ExchangeCryptoUtility {
         self.amountType = amountType
     }
 
-    var buyAvailable: Bool { buyURL != nil }
-    var sellAvailable: Bool { sellURL != nil }
+    var buyAvailable: Bool {
+        switch amountType {
+        case .coin:
+            return exchangeService.canBuy(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
+        case .token(let token):
+            return exchangeService.canBuy(token.symbol, amountType: amountType, blockchain: blockchain)
+        case .reserve, .feeResource:
+            return false
+        }
+    }
+
+    var sellAvailable: Bool {
+        switch amountType {
+        case .coin:
+            return exchangeService.canSell(blockchain.currencySymbol, amountType: amountType, blockchain: blockchain)
+        case .token(let token):
+            return exchangeService.canSell(token.symbol, amountType: amountType, blockchain: blockchain)
+        case .reserve, .feeResource:
+            return false
+        }
+    }
 
     var buyURL: URL? {
         if blockchain.isTestnet {
@@ -35,7 +54,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.getBuyUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
         case .token(let token):
             return exchangeService.getBuyUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
-        case .reserve:
+        case .reserve, .feeResource:
             return nil
         }
     }
@@ -50,7 +69,7 @@ struct ExchangeCryptoUtility {
             return exchangeService.getSellUrl(currencySymbol: blockchain.currencySymbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
         case .token(let token):
             return exchangeService.getSellUrl(currencySymbol: token.symbol, amountType: amountType, blockchain: blockchain, walletAddress: address)
-        case .reserve:
+        case .reserve, .feeResource:
             return nil
         }
     }

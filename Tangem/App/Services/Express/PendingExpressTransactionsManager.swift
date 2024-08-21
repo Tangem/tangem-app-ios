@@ -24,6 +24,7 @@ class CommonPendingExpressTransactionsManager {
     private let userWalletId: String
     private let walletModel: WalletModel
     private let expressAPIProvider: ExpressAPIProvider
+    private let expressRefundedTokenHandler: ExpressRefundedTokenHandler
 
     private let transactionsToUpdateStatusSubject = CurrentValueSubject<[ExpressPendingTransactionRecord], Never>([])
     private let transactionsInProgressSubject = CurrentValueSubject<[PendingExpressTransaction], Never>([])
@@ -34,9 +35,14 @@ class CommonPendingExpressTransactionsManager {
     private var transactionsScheduledForUpdate: [PendingExpressTransaction] = []
     private var tokenItem: TokenItem { walletModel.tokenItem }
 
-    init(userWalletId: String, walletModel: WalletModel) {
+    init(
+        userWalletId: String,
+        walletModel: WalletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandler
+    ) {
         self.userWalletId = userWalletId
         self.walletModel = walletModel
+        self.expressRefundedTokenHandler = expressRefundedTokenHandler
         expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
 
         bind()
@@ -109,7 +115,8 @@ class CommonPendingExpressTransactionsManager {
                 for pendingTransaction in pendingTransactionsToRequest {
                     let record = pendingTransaction.transactionRecord
 
-                    guard record.transactionStatus.isTransactionInProgress else {
+                    // We have not any sense to update the terminated status
+                    guard !record.transactionStatus.isTerminated else {
                         transactionsInProgress.append(pendingTransaction)
                         transactionsToSchedule.append(pendingTransaction)
                         continue
@@ -179,8 +186,8 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
-            // We should show only CEX transaction on UI
-            guard record.provider.type == .cex else {
+            // We should show only `supportStatusTracking` transaction on UI
+            guard record.provider.type.supportStatusTracking else {
                 return false
             }
 
@@ -199,18 +206,38 @@ class CommonPendingExpressTransactionsManager {
         do {
             log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
             let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
-            let pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(currentExpressStatus: expressTransaction.externalStatus, for: transactionRecord)
+            let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
+
+            let pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(
+                currentExpressStatus: expressTransaction.externalStatus,
+                refundedTokenItem: refundedTokenItem,
+                for: transactionRecord
+            )
             log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
+            log("Refunded token: \(String(describing: refundedTokenItem))")
             pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
                 with: pendingTransaction.transactionRecord.expressTransactionId,
                 tokenSymbol: tokenItem.currencySymbol,
-                status: pendingTransaction.transactionRecord.transactionStatus
+                status: pendingTransaction.transactionRecord.transactionStatus,
+                provider: pendingTransaction.transactionRecord.provider
             )
             return pendingTransaction
         } catch {
             log("Failed to load status info for transaction with id: \(transactionRecord.expressTransactionId). Error: \(error)")
             return nil
         }
+    }
+
+    private func handleRefundedTokenIfNeeded(
+        for transaction: ExpressTransaction,
+        providerType: ExpressPendingTransactionRecord.ProviderType
+    ) async -> TokenItem? {
+        guard providerType == .dexBridge,
+              let refundedCurrency = transaction.refundedCurrency else {
+            return nil
+        }
+
+        return try? await expressRefundedTokenHandler.handle(expressCurrency: refundedCurrency)
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {

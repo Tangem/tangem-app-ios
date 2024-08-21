@@ -12,6 +12,7 @@ import Moya
 struct VisaAPITarget: TargetType {
     let isTestnet: Bool
     let target: Target
+    let additionalHeaders: [String: String]
 
     var baseURL: URL {
         if isTestnet {
@@ -46,7 +47,9 @@ struct VisaAPITarget: TargetType {
         }
     }
 
-    var headers: [String: String]? { return nil }
+    var headers: [String: String]? {
+        additionalHeaders
+    }
 }
 
 extension VisaAPITarget {

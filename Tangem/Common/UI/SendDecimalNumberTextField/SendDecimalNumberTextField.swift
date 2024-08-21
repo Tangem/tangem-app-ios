@@ -20,7 +20,8 @@ struct SendDecimalNumberTextField: View {
 
     // Internal state
     @FocusState private var isInputActive: Bool
-    @State private var textFieldHeight: CGFloat = .zero
+    @State private var textFieldText: String = ""
+    @State private var measuredTextSize: CGSize = .zero
 
     // Setupable
     private var initialFocusBehavior: InitialFocusBehavior = .noFocus
@@ -29,6 +30,23 @@ struct SendDecimalNumberTextField: View {
     private var alignment: Alignment = .leading
     private var onFocusChanged: ((Bool) -> Void)?
     private var prefixSuffixOptions: PrefixSuffixOptions?
+    private var minTextScale: CGFloat?
+
+    private var textToMeasure: String {
+        var text = ""
+
+        if case .prefix(.some(let prefix), let hasSpace) = prefixSuffixOptions {
+            text += makePrefixSuffixText(prefix, hasSpaceBeforeText: false, hasSpaceAfterText: hasSpace)
+        }
+
+        text += (textFieldText.nilIfEmpty ?? Constants.placeholder)
+
+        if case .suffix(.some(let suffix), let hasSpace) = prefixSuffixOptions {
+            text += makePrefixSuffixText(suffix, hasSpaceBeforeText: hasSpace, hasSpaceAfterText: false)
+        }
+
+        return text
+    }
 
     private var prefixSuffixColor: Color {
         switch viewModel.value {
@@ -44,36 +62,63 @@ struct SendDecimalNumberTextField: View {
     }
 
     var body: some View {
-        ZStack(alignment: alignment) {
-            HStack(alignment: .center, spacing: 0) {
-                if case .prefix(let prefix, let hasSpace) = prefixSuffixOptions {
-                    prefixSuffixView(prefix, hasSpaceAfterText: hasSpace)
-                }
+        GeometryReader { proxy in
+            ZStack(alignment: alignment) {
+                let (scale, width) = scaleAndWidth(using: proxy)
+                HStack(alignment: .center, spacing: 0) {
+                    if case .prefix(.some(let prefix), let hasSpace) = prefixSuffixOptions {
+                        prefixSuffixView(prefix, hasSpaceAfterText: hasSpace)
+                    }
 
-                textField
+                    textField
 
-                if case .suffix(let suffix, let hasSpace) = prefixSuffixOptions {
-                    prefixSuffixView(suffix, hasSpaceBeforeText: hasSpace)
+                    if case .suffix(.some(let suffix), let hasSpace) = prefixSuffixOptions {
+                        prefixSuffixView(suffix, hasSpaceBeforeText: hasSpace)
+                    }
                 }
+                .frame(width: width, alignment: alignment)
+                .scaleEffect(.init(bothDimensions: scale))
+
+                // Expand the tappable area
+                Color.clear
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isInputActive = true
+                    }
             }
-            .readGeometry(\.frame.size.height, bindTo: $textFieldHeight)
-
-            // Expand the tappable area
-            Color.clear
-                .frame(maxWidth: .infinity)
-                .contentShape(Rectangle())
-                .frame(height: textFieldHeight)
-                .onTapGesture {
-                    isInputActive = true
-                }
+            .lineLimit(1)
+            .infinityFrame() // Provides centered alignment within `GeometryReader`
+            .overlay(textSizeMeasurer)
         }
-        .lineLimit(1)
+        .frame(height: measuredTextSize.height)
+    }
+
+    /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
+    ///
+    /// Other approaches have some issues and disadvantages:
+    /// 1. `NSAttributedString.boundingRect(with:options:context:)` and `CTFramesetterSuggestFrameSizeWithConstraints(_:_:_:_:_:)`
+    /// don't work correctly if the string contains spaces
+    /// 2. `NSLayoutManager.usedRect(for:)` works just fine, but it doesn't support SwiftUI attributes for `NSAttributedString`
+    /// (including the most important one, `font`), and these attributes must be converted to their UIKit counterparts.
+    /// Which is very finicky and fragile since it uses runtime reflection, see https://movingparts.io/fonts-in-swiftui
+    /// and https://github.com/LeoNatan/LNSwiftUIUtils for example.
+    @ViewBuilder
+    private var textSizeMeasurer: some View {
+        TextField(text: .constant(textToMeasure), label: EmptyView.init)
+            .font(appearance.font)
+            .lineLimit(1)
+            .fixedSize()
+            .hidden(true) // Native `.hidden()` may affect layout
+            .allowsHitTesting(false)
+            .readGeometry(\.size, bindTo: $measuredTextSize)
     }
 
     @ViewBuilder
     private var textField: some View {
-        DecimalNumberTextField(viewModel: viewModel)
+        DecimalNumberTextField(viewModel: viewModel, textFieldText: $textFieldText)
             .appearance(appearance)
+            .placeholder(Constants.placeholder)
             .focused($isInputActive)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
@@ -91,12 +136,10 @@ struct SendDecimalNumberTextField: View {
                 }
             }
             .onAppear {
-                guard !isInputActive,
-                      let focusDelayDuration = initialFocusBehavior.delayDuration else {
-                    return
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelayDuration) {
+                switch initialFocusBehavior {
+                case .noFocus:
+                    break
+                case .immediateFocus:
                     isInputActive = true
                 }
             }
@@ -118,29 +161,68 @@ struct SendDecimalNumberTextField: View {
         }
     }
 
-    // This is used to emulate a single space between the prefix/suffix and the amount field
-    private func singleSpaceView() -> some View {
-        Text(" ")
-            .font(appearance.font)
+    @ViewBuilder
+    private func prefixSuffixView(
+        _ text: String,
+        hasSpaceBeforeText: Bool = false,
+        hasSpaceAfterText: Bool = false
+    ) -> some View {
+        Text(makePrefixSuffixText(text, hasSpaceBeforeText: hasSpaceBeforeText, hasSpaceAfterText: hasSpaceAfterText))
+            .style(appearance.font, color: prefixSuffixColor)
+            .onTapGesture {
+                isInputActive = true
+            }
     }
 
-    @ViewBuilder
-    private func prefixSuffixView(_ text: String?, hasSpaceBeforeText: Bool = false, hasSpaceAfterText: Bool = false) -> some View {
-        if let text {
-            if hasSpaceBeforeText {
-                singleSpaceView()
-            }
+    private func makePrefixSuffixText(_ text: String, hasSpaceBeforeText: Bool, hasSpaceAfterText: Bool) -> String {
+        var result = ""
 
-            Text(text)
-                .style(appearance.font, color: prefixSuffixColor)
-                .onTapGesture {
-                    isInputActive = true
-                }
-
-            if hasSpaceAfterText {
-                singleSpaceView()
-            }
+        if hasSpaceBeforeText {
+            result += Constants.spaceCharacter
         }
+
+        result += text
+
+        if hasSpaceAfterText {
+            result += Constants.spaceCharacter
+        }
+
+        return result
+    }
+
+    private func scaleAndWidth(using proxy: GeometryProxy) -> (scale: CGFloat, width: CGFloat) {
+        let maxWidth = proxy.size.width
+        let measuredWidth = measuredTextSize.width
+
+        guard
+            let minTextScale,
+            measuredWidth > maxWidth
+        else {
+            // Apparently, SwiftUI structural identity changes when the scale of the view changes from 1.0 (no scaling)
+            // to any other value and vice versa, from any other value back to back to 1.0 (no scaling).
+            // This change of SwiftUI structural identity causes a reset of some of the view's internal state
+            // (including `@Focused` properties), which in turn causes the active first responder to resign, i.e. hide the keyboard.
+            //
+            // The workaround here prevents this by placing the view into a `scaled` state, even if text scaling
+            // is not actually needed at the moment. This scaled state should not affect view dimensions at all, because
+            // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by the same value, 1%)
+            let onePercent = 0.01
+            let multiplierBase = 1.0
+            let defaultScaleMultiplier = multiplierBase + onePercent
+            let defaultWidthMultiplier = multiplierBase - onePercent
+
+            return (1.0 * defaultScaleMultiplier, maxWidth * defaultWidthMultiplier)
+        }
+
+        // It turns out that in some cases, HStack inserts some space (1pt) between neighboring child views,
+        // despite its spacing being set to zero. This value is used to mitigate this behavior when we have two views
+        // in the HStack (i.e., when we have either prefix or a suffix).
+        let additionalWidth = prefixSuffixOptions != nil ? 1.0 : 0.0
+        let totalWidth = measuredWidth + additionalWidth
+        let scale = clamp(maxWidth / totalWidth, min: minTextScale, max: Constants.maxTextScale)
+        let width = ceil(maxWidth / scale)
+
+        return (scale, width)
     }
 }
 
@@ -170,6 +252,12 @@ extension SendDecimalNumberTextField: Setupable {
     func onFocusChanged(_ action: ((Bool) -> Void)?) -> Self {
         map { $0.onFocusChanged = action }
     }
+
+    /// The scale factor that determines the smallest font size to use during drawing (custom implementation).
+    /// - minTextScale: The desired `minimumScaleFactor` for custom font scaling. If nil, no font scaling applies.
+    func minTextScale(_ minTextScale: CGFloat?) -> Self {
+        map { $0.minTextScale = minTextScale }
+    }
 }
 
 extension SendDecimalNumberTextField {
@@ -180,20 +268,20 @@ extension SendDecimalNumberTextField {
     enum InitialFocusBehavior {
         case noFocus
         case immediateFocus
-        case delayedFocus(duration: TimeInterval)
-
-        var delayDuration: TimeInterval? {
-            switch self {
-            case .noFocus:
-                nil
-            case .immediateFocus:
-                0
-            case .delayedFocus(let duration):
-                duration
-            }
-        }
     }
 }
+
+// MARK: - Constants
+
+private extension SendDecimalNumberTextField {
+    enum Constants {
+        static let spaceCharacter = " "
+        static let placeholder = "0"
+        static let maxTextScale = 1.0
+    }
+}
+
+// MARK: - Previews
 
 struct SendDecimalNumberTextField_Previews: PreviewProvider {
     static var previews: some View {

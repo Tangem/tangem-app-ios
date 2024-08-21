@@ -13,7 +13,9 @@ import TangemSdk
 class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable> {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    let navbarSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 44)
+    var navbarSize: CGSize { OnboardingLayoutConstants.navbarSize }
+    var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
+    var progressBarPadding: CGFloat { OnboardingLayoutConstants.progressBarPadding }
     let resetAnimDuration: Double = 0.3
 
     @Published var steps: [Step] = []
@@ -134,14 +136,34 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     }
 
     lazy var userWalletStorageAgreementViewModel = UserWalletStorageAgreementViewModel(coordinator: self)
-
-    var disclaimerModel: DisclaimerViewModel? {
-        guard let url = input.cardInput.disclaimer?.url else {
+    lazy var addTokensViewModel: OnboardingAddTokensViewModel? = {
+        guard
+            let userWalletModel,
+            userWalletModel.config.hasFeature(.multiCurrency)
+        else {
+            goToNextStep()
             return nil
         }
 
-        return .init(url: url, style: .onboarding)
-    }
+        let manageTokensAdapter = ManageTokensAdapter(settings: .init(
+            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+            existingCurves: userWalletModel.config.existingCurves,
+            supportedBlockchains: userWalletModel.config.supportedBlockchains,
+            userTokensManager: userWalletModel.userTokensManager
+        ))
+
+        return OnboardingAddTokensViewModel(
+            adapter: manageTokensAdapter,
+            delegate: self
+        )
+    }()
+
+    lazy var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel? = {
+        guard let permissionManager = input.pushNotificationsPermissionManager else {
+            return nil
+        }
+        return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
+    }()
 
     let input: OnboardingInput
 
@@ -155,7 +177,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         self.input = input
         self.coordinator = coordinator
 
-        // TODO: remove
         if let userWalletModel = input.cardInput.userWalletModel {
             self.userWalletModel = userWalletModel
         }
@@ -306,14 +327,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
     }
 
-    func disclaimerAccepted() {
-        guard let id = input.cardInput.disclaimer?.id else {
-            return
-        }
-
-        AppSettings.shared.termsOfServicesAccepted.append(id)
-    }
-
     private func bindAnalytics() {
         $currentStepIndex
             .removeDuplicates()
@@ -388,8 +401,12 @@ extension OnboardingViewModel {
         UIApplication.shared.endEditing()
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: userWalletModel?.walletModelsManager.walletModels ?? [],
-            userWalletEmailData: input.cardInput.emailData
+            data: [
+                .init(
+                    userWalletEmailData: input.cardInput.emailData,
+                    walletModels: userWalletModel?.walletModelsManager.walletModels ?? []
+                ),
+            ]
         )
 
         let emailConfig = input.cardInput.config?.emailConfig ?? .default
@@ -431,6 +448,18 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 
     func didDeclineToSaveUserWallets() {
         didAskToSaveUserWallets(agreed: false)
+        goToNextStep()
+    }
+}
+
+extension OnboardingViewModel: OnboardingAddTokensDelegate {
+    func showAlert(_ alert: AlertBinder) {
+        self.alert = alert
+    }
+}
+
+extension OnboardingViewModel: PushNotificationsPermissionRequestDelegate {
+    func didFinishPushNotificationOnboarding() {
         goToNextStep()
     }
 }

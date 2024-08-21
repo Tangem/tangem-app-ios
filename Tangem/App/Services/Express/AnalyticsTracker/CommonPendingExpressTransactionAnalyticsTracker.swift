@@ -15,7 +15,12 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
     private let mapper = PendingExpressTransactionAnalyticsStatusMapper()
     private var trackedStatuses: ThreadSafeContainer<[PendingTransactionId: Set<Analytics.ParameterValue>]> = .init([:])
 
-    func trackStatusForTransaction(with transactionId: PendingTransactionId, tokenSymbol: String, status: PendingExpressTransactionStatus) {
+    func trackStatusForTransaction(
+        with transactionId: PendingTransactionId,
+        tokenSymbol: String,
+        status: PendingExpressTransactionStatus,
+        provider: ExpressPendingTransactionRecord.Provider
+    ) {
         let statusToTrack = mapper.mapToAnalyticsStatus(pendingTxStatus: status)
         var trackedStatusesSet = trackedStatuses[transactionId] ?? []
         if trackedStatusesSet.contains(statusToTrack) {
@@ -25,6 +30,7 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
         Analytics.log(event: .tokenSwapStatus, params: [
             .token: tokenSymbol,
             .status: statusToTrack.rawValue,
+            .provider: provider.name,
         ])
         trackedStatusesSet.insert(statusToTrack)
         trackedStatuses.mutate { $0[transactionId] = trackedStatusesSet }
@@ -39,7 +45,7 @@ extension CommonPendingExpressTransactionAnalyticsTracker {
                 return .inProgress
             case .done:
                 return .done
-            case .failed:
+            case .failed, .awaitingHash, .unknown:
                 return .fail
             case .refunded:
                 return .refunded

@@ -104,7 +104,7 @@ private struct PreviewBottomSheet: View {
         Button(action: generateBottomSheet) {
             Text("Open Balances & Limits")
         }
-        .bottomSheet(item: $viewModel, settings: .init(backgroundColor: Colors.Background.tertiary)) { model in
+        .bottomSheet(item: $viewModel, backgroundColor: Colors.Background.tertiary) { model in
             VisaBalancesLimitsBottomSheetView(viewModel: model)
         }
     }
@@ -127,7 +127,8 @@ private struct PreviewBottomSheet: View {
                 spentOTPAmount: 59.45,
                 noOTPLimit: 50.0,
                 spentNoOTPAmount: 12.5
-            )
+            ),
+            currencySymbol: "Demo"
         )
     }
 }

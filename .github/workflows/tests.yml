@@ -12,6 +12,9 @@ on:
       - reopened
       - synchronize
       - ready_for_review
+  merge_group:
+    types:
+      - checks_requested
   workflow_dispatch:
 
 concurrency:

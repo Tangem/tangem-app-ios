@@ -18,7 +18,7 @@ protocol UserWalletRepository: Initializable {
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> { get }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
-    func setSelectedUserWalletId(_ userWalletId: UserWalletId, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason)
+    func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
     func logoutIfNeeded()
     func add(_ userWalletModel: UserWalletModel)
@@ -28,7 +28,7 @@ protocol UserWalletRepository: Initializable {
     func initializeServices(for userWalletModel: UserWalletModel)
     func initialClean()
     func setSaving(_ enabled: Bool)
-    func addOrScan(completion: @escaping (UserWalletRepositoryResult?) -> Void)
+    func addOrScan(scanner: CardScanner, completion: @escaping (UserWalletRepositoryResult?) -> Void)
 }
 
 private struct UserWalletRepositoryKey: InjectionKey {
@@ -83,7 +83,7 @@ enum UserWalletRepositoryLockReason {
 
 enum UserWalletRepositoryUnlockMethod {
     case biometry
-    case card(userWalletId: UserWalletId?)
+    case card(userWalletId: UserWalletId?, scanner: CardScanner)
 }
 
 enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {

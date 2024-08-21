@@ -25,7 +25,8 @@ struct AuthView: View {
                 ScanTroubleshootingView(
                     isPresented: $viewModel.showTroubleshootingView,
                     tryAgainAction: viewModel.tryAgain,
-                    requestSupportAction: viewModel.requestSupport
+                    requestSupportAction: viewModel.requestSupport,
+                    openScanCardManualAction: viewModel.openScanCardManual
                 )
             )
             .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))

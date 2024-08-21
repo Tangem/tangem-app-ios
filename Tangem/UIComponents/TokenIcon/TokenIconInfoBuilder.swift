@@ -19,9 +19,9 @@ struct TokenIconInfoBuilder {
         var customTokenColor: Color?
 
         switch type {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             id = blockchain.coinId
-            name = blockchain.displayName
+            name = blockchain.coinDisplayName
         case .token(let token):
             id = token.id
             name = token.name

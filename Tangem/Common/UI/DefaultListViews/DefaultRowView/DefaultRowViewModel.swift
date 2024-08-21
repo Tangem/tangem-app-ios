@@ -9,49 +9,44 @@
 import Foundation
 import SwiftUI
 
-// TODO: Make ObservableObject
-struct DefaultRowViewModel {
-    let title: String
-    private(set) var detailsType: DetailsType?
-    let action: (() -> Void)?
+class DefaultRowViewModel: ObservableObject, Identifiable {
+    @Published private(set) var title: String
+    @Published private(set) var detailsType: DetailsType?
+    @Published private(set) var action: (() -> Void)?
+    @Published private(set) var secondaryAction: (() -> Void)?
 
-    /// - Parameters:
-    ///   - title: Leading one line title
-    ///   - details: Trailing one line text
-    ///   - action: If the `action` is set that the row will be tappable and have chevron icon
     init(
         title: String,
         detailsType: DetailsType? = .none,
-        action: (() -> Void)? = nil
+        action: (() -> Void)? = nil,
+        secondaryAction: (() -> Void)? = nil
     ) {
         self.title = title
         self.detailsType = detailsType
         self.action = action
+        self.secondaryAction = secondaryAction
     }
 
-    mutating func update(detailsType: DetailsType?) {
+    func update(title: String) {
+        self.title = title
+    }
+
+    func update(detailsType: DetailsType?) {
         self.detailsType = detailsType
     }
-}
 
-extension DefaultRowViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(detailsType)
-        hasher.combine(action == nil)
+    func update(action: (() -> Void)? = nil) {
+        self.action = action
     }
 
-    static func == (lhs: DefaultRowViewModel, rhs: DefaultRowViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
+    func update(secondaryAction: (() -> Void)? = nil) {
+        self.secondaryAction = secondaryAction
     }
-}
-
-extension DefaultRowViewModel: Identifiable {
-    var id: Int { hashValue }
 }
 
 extension DefaultRowViewModel {
     enum DetailsType: Hashable {
+        case loadable(state: LoadableTextView.State)
         case text(_ string: String)
         case loader
         case icon(_ image: ImageType)

@@ -193,7 +193,8 @@ struct PushTxView_Previews: PreviewProvider {
                     amount: .zeroCoin(for: .bitcoin(testnet: false)),
                     fee: Fee(.zeroCoin(for: .bitcoin(testnet: false))),
                     date: Date(),
-                    isIncoming: false
+                    isIncoming: false,
+                    transactionType: .transfer
                 ),
                 blockchainNetwork: PreviewCard.ethereum.blockchainNetwork!,
                 userWalletModel: PreviewCard.ethereum.userWalletModel,

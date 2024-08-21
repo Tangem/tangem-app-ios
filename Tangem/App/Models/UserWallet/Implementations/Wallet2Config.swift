@@ -44,7 +44,7 @@ extension Wallet2Config: UserWalletConfig {
         "Wallet"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1, .ed25519, .bls12381_G2_AUG, .bip0340, .ed25519_slip0010]
     }
 
@@ -58,6 +58,10 @@ extension Wallet2Config: UserWalletConfig {
         }
 
         return false
+    }
+
+    var isWalletsCreated: Bool {
+        return !card.wallets.isEmpty
     }
 
     var canImportKeys: Bool {
@@ -193,6 +197,39 @@ extension Wallet2Config: UserWalletConfig {
         // Pizza Day Wallet
         case "AF33":
             return cardsCount == 2 ? Assets.Cards.pizzaDayWalletDouble : Assets.Cards.pizzaDayWalletTriple
+        // Red panda
+        case "AF34":
+            return cardsCount == 2 ? Assets.Cards.redPandaDouble : Assets.Cards.redPandaTriple
+        // Cryptoseth
+        case "AF32":
+            return cardsCount == 2 ? Assets.Cards.cryptosethDouble : Assets.Cards.cryptosethTriple
+        // Kishu
+        case "AF52":
+            return cardsCount == 2 ? Assets.Cards.kishuDouble : Assets.Cards.kishuTriple
+        // Baby Doge
+        case "AF51":
+            return cardsCount == 2 ? Assets.Cards.babyDogeDouble : Assets.Cards.babyDogeTriple
+        // TG-COQ
+        case "AF28":
+            return cardsCount == 2 ? Assets.Cards.tgDouble : Assets.Cards.tgTriple
+        // Coin Metrica
+        case "AF27":
+            return cardsCount == 2 ? Assets.Cards.coinMetricaDouble : Assets.Cards.coinMetricaTriple
+        // Volt Inu
+        case "AF35":
+            return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
+        // Kaspa 2
+        case "AF25":
+            return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
+        // Kaspa reseller
+        case "AF31":
+            return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
+        // Lemon, Aqua, Grapefruit
+        case "AF40", "AF41", "AF42":
+            return Assets.Cards.lemonAquaGrapefruit
+        // Peach, Air, Glass
+        case "AF43", "AF44", "AF45":
+            return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
@@ -274,7 +311,11 @@ extension Wallet2Config: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            if card.firmwareVersion.doubleValue >= 4.52 {
+                return .available
+            }
+
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:

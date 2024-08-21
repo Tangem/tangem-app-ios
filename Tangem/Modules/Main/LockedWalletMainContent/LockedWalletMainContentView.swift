@@ -66,6 +66,7 @@ struct LockedWalletMainContentView: View {
             FixedSizeButtonWithLeadingIcon(
                 title: Localization.organizeTokensTitle,
                 icon: Assets.sliders.image,
+                style: .disabled,
                 action: {}
             )
             .disabled(true)

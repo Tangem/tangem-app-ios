@@ -31,7 +31,7 @@ extension GenericDemoConfig: UserWalletConfig {
         1
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
@@ -176,7 +176,7 @@ extension GenericDemoConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .topup:
             return .available
         case .tokenSynchronization:

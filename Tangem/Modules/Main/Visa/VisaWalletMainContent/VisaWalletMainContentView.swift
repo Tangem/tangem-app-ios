@@ -40,7 +40,7 @@ struct VisaWalletMainContentView: View {
             )
         }
         .padding(.horizontal, 16)
-        .bottomSheet(item: $viewModel.balancesAndLimitsViewModel, settings: .init(backgroundColor: Colors.Background.tertiary)) { model in
+        .bottomSheet(item: $viewModel.balancesAndLimitsViewModel, backgroundColor: Colors.Background.tertiary) { model in
             VisaBalancesLimitsBottomSheetView(viewModel: model)
         }
     }

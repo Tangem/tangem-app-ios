@@ -12,28 +12,28 @@ import BlockchainSdk
 
 struct UserWalletConfigStubs {
     static var walletV2Stub: UserWalletConfig = Wallet2Config(
-        card: .init(card: .walletV2),
+        card: .init(card: CardMock.wallet2.card),
         isDemo: false,
         isRing: false
     )
 
     static var twinStub: UserWalletConfig = TwinConfig(
-        card: .init(card: .twin),
+        card: .init(card: CardMock.twin.card),
         walletData: .init(blockchain: "BTC", token: nil),
         twinData: .init(series: .cb62, pairPublicKey: nil)
     )
 
     static var xrpNoteStub: UserWalletConfig = NoteConfig(
-        card: .init(card: .xrpNote),
+        card: .init(card: CardMock.xrpNote.card),
         noteData: .init(blockchain: "XRP", token: nil)
     )
 
     static var xlmBirdStub: UserWalletConfig = NoteConfig(
-        card: .init(card: .xrpNote),
+        card: .init(card: CardMock.xrpNote.card),
         noteData: .init(blockchain: "XLM", token: nil)
     )
 
     static var visaStub: UserWalletConfig = VisaConfig(
-        card: .init(card: .visa)
+        card: .init(card: CardMock.visa.card)
     )
 }

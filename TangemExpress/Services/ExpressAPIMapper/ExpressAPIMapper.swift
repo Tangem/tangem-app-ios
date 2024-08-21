@@ -45,7 +45,8 @@ struct ExpressAPIMapper {
             type: provider.type,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
-            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:))
+            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
+            recommended: provider.recommended
         )
     }
 
@@ -87,13 +88,12 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
-        guard var txValue = Decimal(string: txDetails.txValue) else {
+        guard let txValue = Decimal(string: txDetails.txValue) else {
             throw ExpressAPIMapperError.mapToDecimalError(txDetails.txValue)
         }
 
         fromAmount /= pow(10, response.fromDecimals)
         toAmount /= pow(10, response.toDecimals)
-        txValue /= pow(10, response.fromDecimals)
 
         return ExpressTransactionData(
             requestId: txDetails.requestId,
@@ -106,6 +106,8 @@ struct ExpressAPIMapper {
             extraDestinationId: txDetails.txExtraId,
             value: txValue,
             txData: txDetails.txData,
+            otherNativeFee: txDetails.otherNativeFee.flatMap(Decimal.init),
+            estimatedGasLimit: txDetails.gas.flatMap(Int.init),
             externalTxId: txDetails.externalTxId,
             externalTxUrl: txDetails.externalTxUrl
         )
@@ -114,10 +116,18 @@ struct ExpressAPIMapper {
     func mapToExpressTransaction(response: ExpressDTO.ExchangeStatus.Response) -> ExpressTransaction {
         ExpressTransaction(
             providerId: .init(response.providerId),
-            externalStatus: response.externalTxStatus,
-            externalTxId: response.externalTxId,
-            externalTxUrl: response.externalTxUrl
+            externalStatus: response.status,
+            refundedCurrency: mapToRefundedExpressCurrency(response: response)
         )
+    }
+
+    private func mapToRefundedExpressCurrency(response: ExpressDTO.ExchangeStatus.Response) -> ExpressCurrency? {
+        guard let refundContractAddress = response.refundContractAddress,
+              let refundNetwork = response.refundNetwork else {
+            return nil
+        }
+
+        return ExpressCurrency(contractAddress: refundContractAddress, network: refundNetwork)
     }
 }
 

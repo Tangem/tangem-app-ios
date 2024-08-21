@@ -15,6 +15,14 @@ final class CommonRateAppController {
     private let userWalletModel: UserWalletModel
     private weak var coordinator: RateAppRoutable?
 
+    private var isBalanceLoadedPublisher: AnyPublisher<Bool, Never> {
+        userWalletModel
+            .totalBalancePublisher
+            .map { $0.value != nil }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -28,67 +36,23 @@ final class CommonRateAppController {
     }
 
     private func handleRateAppAction(_ action: RateAppAction) {
-        coordinator?.closeAppRateDialog()
-
         switch action {
-        case .openAppRateDialog:
-            let viewModel = RateAppBottomSheetViewModel { [weak self] response in
-                self?.rateAppService.respondToRateAppDialog(with: response)
-            }
-            coordinator?.openAppRateDialog(with: viewModel)
         case .openFeedbackMailWithEmailType(let emailType):
             let userWallet = userWalletModel
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.feedbackRequestDelay) { [weak self] in
                 let collector = NegativeFeedbackDataCollector(userWalletEmailData: userWallet.emailData)
                 let recipient = userWallet.config.emailConfig?.recipient ?? EmailConfig.default.recipient
-                self?.coordinator?.openFeedbackMail(with: collector, emailType: emailType, recipient: recipient)
+                self?.coordinator?.openMail(with: collector, emailType: emailType, recipient: recipient)
             }
         case .openAppStoreReview:
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.feedbackRequestDelay) { [weak self] in
                 self?.coordinator?.openAppStoreReview()
             }
+        case .requestAppRate,
+             .dismissAppRate:
+            // These cases are handled by logic in `showAppRateNotificationPublisher`
+            break
         }
-    }
-}
-
-// MARK: - RateAppController protocol conformance
-
-extension CommonRateAppController: RateAppController {
-    private var isBalanceLoadedPublisher: AnyPublisher<Bool, Never> {
-        userWalletModel
-            .totalBalancePublisher
-            .map { $0.value != nil }
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
-    func bind(
-        isPageSelectedPublisher: some Publisher<Bool, Never>,
-        notificationsPublisher1: some Publisher<[NotificationViewInput], Never>,
-        notificationsPublisher2: some Publisher<[NotificationViewInput], Never>
-    ) {
-        isPageSelectedPublisher.combineLatest(isBalanceLoadedPublisher, notificationsPublisher1, notificationsPublisher2)
-            .withWeakCaptureOf(self)
-            .sink { controller, values in
-                controller.request(isPageSelected: values.0, isBalanceLoaded: values.1, notifications: values.2 + values.3)
-            }
-            .store(in: &bag)
-
-        bind()
-    }
-
-    func bind(
-        isPageSelectedPublisher: some Publisher<Bool, Never>,
-        notificationsPublisher: some Publisher<[NotificationViewInput], Never>
-    ) {
-        isPageSelectedPublisher.combineLatest(isBalanceLoadedPublisher, notificationsPublisher)
-            .withWeakCaptureOf(self)
-            .sink { controller, values in
-                controller.request(isPageSelected: values.0, isBalanceLoaded: values.1, notifications: values.2)
-            }
-            .store(in: &bag)
-
-        bind()
     }
 
     private func bind() {
@@ -120,6 +84,71 @@ extension CommonRateAppController: RateAppController {
         )
 
         rateAppService.requestRateAppIfAvailable(with: rateAppRequest)
+    }
+}
+
+// MARK: - RateAppInteractionController protocol conformance
+
+extension CommonRateAppController: RateAppInteractionController {
+    func bind(
+        isPageSelectedPublisher: some Publisher<Bool, Never>,
+        notificationsPublisher1: some Publisher<[NotificationViewInput], Never>,
+        notificationsPublisher2: some Publisher<[NotificationViewInput], Never>
+    ) {
+        isPageSelectedPublisher.combineLatest(isBalanceLoadedPublisher, notificationsPublisher1, notificationsPublisher2)
+            .withWeakCaptureOf(self)
+            .sink { controller, values in
+                controller.request(isPageSelected: values.0, isBalanceLoaded: values.1, notifications: values.2 + values.3)
+            }
+            .store(in: &bag)
+
+        bind()
+    }
+
+    func bind(
+        isPageSelectedPublisher: some Publisher<Bool, Never>,
+        notificationsPublisher: some Publisher<[NotificationViewInput], Never>
+    ) {
+        isPageSelectedPublisher.combineLatest(isBalanceLoadedPublisher, notificationsPublisher)
+            .withWeakCaptureOf(self)
+            .sink { controller, values in
+                controller.request(isPageSelected: values.0, isBalanceLoaded: values.1, notifications: values.2)
+            }
+            .store(in: &bag)
+
+        bind()
+    }
+
+    func openFeedbackMail() {
+        rateAppService.respondToRateAppDialog(with: .negative)
+    }
+
+    func openAppStoreReview() {
+        rateAppService.respondToRateAppDialog(with: .positive)
+    }
+}
+
+// MARK: - RateAppNotificationController protocol conformance
+
+extension CommonRateAppController: RateAppNotificationController {
+    var showAppRateNotificationPublisher: AnyPublisher<Bool, Never> {
+        return rateAppService
+            .rateAppAction
+            .map { action in
+                switch action {
+                case .requestAppRate:
+                    return true
+                case .openAppStoreReview,
+                     .openFeedbackMailWithEmailType,
+                     .dismissAppRate:
+                    return false
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func dismissAppRate() {
+        rateAppService.respondToRateAppDialog(with: .dismissed)
     }
 }
 

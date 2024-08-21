@@ -31,6 +31,12 @@ class CommonTangemApiService {
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
     private let currenciesQueue = DispatchQueue(label: "currencies_request_queue", qos: .default)
 
+    private var snakeCaseJSONDecoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
+
     deinit {
         AppLog.shared.debug("CommonTangemApiService deinit")
     }
@@ -237,9 +243,33 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .resetAward(cardId: cardId))
     }
 
+    func loadAPIList() async throws -> APIListDTO {
+        try await request(for: .apiList)
+    }
+
     func loadFeatures() async throws -> [String: Bool] {
         try await request(for: .features)
     }
+
+    // MARK: - Markets Implementation
+
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try await request(for: .coinsList(requestModel), decoder: decoder)
+    }
+
+    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try await request(for: .coinsHistoryPreview(requestModel), decoder: decoder)
+    }
+
+    func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
+        return try await request(for: .tokenMarketsDetails(request: requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    // MARK: - Init
 
     func initialize() {
         provider

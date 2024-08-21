@@ -8,11 +8,12 @@
 
 import Foundation
 
-enum TokenActionType {
+enum TokenActionType: String {
     case buy
     case send
     case receive
     case exchange
+    case stake
     case sell
     case copyAddress
     case hide
@@ -23,6 +24,7 @@ enum TokenActionType {
         case .send: return Localization.commonSend
         case .receive: return Localization.commonReceive
         case .exchange: return Localization.swappingSwapAction
+        case .stake: return Localization.commonStake
         case .sell: return Localization.commonSell
         case .copyAddress: return Localization.commonCopyAddress
         case .hide: return Localization.tokenDetailsHideToken
@@ -35,6 +37,7 @@ enum TokenActionType {
         case .send: return Assets.arrowUpMini
         case .receive: return Assets.arrowDownMini
         case .exchange: return Assets.exchangeMini
+        case .stake: return Assets.dollarMini
         case .sell: return Assets.dollarMini
         case .copyAddress: return Assets.copy
         case .hide: return Assets.minusCircle
@@ -47,4 +50,21 @@ enum TokenActionType {
         default: return false
         }
     }
+
+    var description: String? {
+        switch self {
+        case .buy: return Localization.buyTokenDescription
+        case .send: return nil
+        case .receive: return Localization.receiveTokenDescription
+        case .exchange: return Localization.exсhangeTokenDescription
+        case .stake: return nil
+        case .sell: return nil
+        case .copyAddress: return nil
+        case .hide: return nil
+        }
+    }
+}
+
+extension TokenActionType: CaseIterable, Identifiable {
+    var id: String { rawValue }
 }

@@ -80,8 +80,8 @@ class LegacySendViewModel: ObservableObject {
         additionalInputFields != .none
     }
 
-    var additionalInputFields: SendAdditionalFields {
-        .fields(for: blockchainNetwork.blockchain)
+    var additionalInputFields: SendDestinationAdditionalFieldType? {
+        .type(for: blockchainNetwork.blockchain)
     }
 
     var inputDecimalsCount: Int? {
@@ -558,9 +558,9 @@ class LegacySendViewModel: ObservableObject {
     }
 
     func validateWithdrawal(_ transaction: BlockchainSdk.Transaction, _ totalAmount: Amount) {
-        #warning("TODO: remove  WithdrawalSuggestionProvider.validate")
+        #warning("TODO: remove  WithdrawalNotificationProvider.validate")
         guard
-            let validator = walletModel.withdrawalSuggestionProvider,
+            let validator = walletModel.withdrawalNotificationProvider,
             let warning = validator.validateWithdrawalWarning(amount: transaction.amount, fee: transaction.fee.amount),
             error == nil
         else {
@@ -906,7 +906,7 @@ private extension LegacySendViewModel {
         if let amount = amount {
             let currencyId: String?
             switch amount.type {
-            case .coin, .reserve:
+            case .coin, .reserve, .feeResource:
                 currencyId = walletModel.blockchainNetwork.blockchain.currencyId
             case .token:
                 currencyId = walletModel.tokenItem.currencyId
@@ -914,7 +914,7 @@ private extension LegacySendViewModel {
 
             guard
                 let currencyId,
-                let fiatValue = BalanceConverter().convertToFiat(value: amount.value, from: currencyId)
+                let fiatValue = BalanceConverter().convertToFiat(amount.value, currencyId: currencyId)
             else {
                 return nil
             }
@@ -942,7 +942,7 @@ private extension LegacySendViewModel {
         }
 
         return BalanceConverter()
-            .convertFromFiat(value: amount.value, to: currencyId)?
+            .convertFromFiat(amount.value, currencyId: currencyId)?
             .rounded(scale: amount.decimals)
     }
 
@@ -964,7 +964,7 @@ private extension LegacySendViewModel {
     }
 
     func retrieveAnalyticsMemoValue() -> Analytics.ParameterValue {
-        guard !additionalInputFields.isEmpty else {
+        guard additionalInputFields != nil else {
             return .null
         }
 
@@ -976,7 +976,7 @@ private extension LegacySendViewModel {
 // MARK: - Navigation
 
 extension LegacySendViewModel {
-    func openMail(with error: Error) {
+    func openMail(with error: SendTxError) {
         guard let transaction else { return }
 
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])

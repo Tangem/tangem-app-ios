@@ -7,56 +7,16 @@
 //
 
 import Foundation
-import BlockchainSdk
+import TangemStaking
 
 enum SendType {
     case send
-    case sell(amount: Amount, destination: String, tag: String?)
+    case sell(parameters: PredefinedSellParameters)
+    case staking(manager: StakingManager)
 }
 
-extension SendType {
-    var steps: [SendStep] {
-        switch self {
-        case .send:
-            return [.destination, .amount, .summary, .fee]
-        case .sell:
-            return [.summary]
-        }
-    }
-
-    var predefinedAmount: Amount? {
-        switch self {
-        case .send:
-            return nil
-        case .sell(let amount, _, _):
-            return amount
-        }
-    }
-
-    var predefinedDestination: String? {
-        switch self {
-        case .send:
-            return nil
-        case .sell(_, let destination, _):
-            return destination
-        }
-    }
-
-    var predefinedTag: String? {
-        switch self {
-        case .send:
-            return nil
-        case .sell(_, _, let tag):
-            return tag
-        }
-    }
-
-    var canIncludeFeeIntoAmount: Bool {
-        switch self {
-        case .send:
-            return true
-        case .sell:
-            return false
-        }
-    }
+struct PredefinedSellParameters {
+    let amount: Decimal
+    let destination: String
+    let tag: String?
 }

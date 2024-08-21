@@ -15,7 +15,7 @@ protocol MainUserWalletPageBuilderFactory {
         lockedUserWalletDelegate: MainLockedUserWalletDelegate,
         singleWalletContentDelegate: SingleWalletMainContentDelegate,
         multiWalletContentDelegate: MultiWalletMainContentDelegate?
-    ) -> MainUserWalletPageBuilder?
+    ) -> MainUserWalletPageBuilder
 
     func createPages(
         from models: [UserWalletModel],
@@ -34,7 +34,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         lockedUserWalletDelegate: MainLockedUserWalletDelegate,
         singleWalletContentDelegate: SingleWalletMainContentDelegate,
         multiWalletContentDelegate: MultiWalletMainContentDelegate?
-    ) -> MainUserWalletPageBuilder? {
+    ) -> MainUserWalletPageBuilder {
         if model.config is VisaConfig {
             return createVisaPage(userWalletModel: model, lockedUserWalletDelegate: lockedUserWalletDelegate)
         }
@@ -54,10 +54,17 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             balanceProvider: balanceProvider
         )
 
+        let rateAppController = CommonRateAppController(
+            rateAppService: RateAppService(),
+            userWalletModel: model,
+            coordinator: coordinator
+        )
+
         let signatureCountValidator = selectSignatureCountValidator(for: model)
         let userWalletNotificationManager = UserWalletNotificationManager(
             userWalletModel: model,
             signatureCountValidator: signatureCountValidator,
+            rateAppController: rateAppController,
             contextDataProvider: model
         )
 
@@ -72,12 +79,6 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 )
             )
         }
-
-        let rateAppController = CommonRateAppController(
-            rateAppService: RateAppService(),
-            userWalletModel: model,
-            coordinator: coordinator
-        )
 
         let tokenRouter = SingleTokenRouter(userWalletModel: model, coordinator: coordinator)
 
@@ -94,10 +95,14 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 walletModelsManager: model.walletModelsManager,
                 contextDataProvider: model
             )
+
+            let bannerNotificationManager = model.config.hasFeature(.multiCurrency) ? BannerNotificationManager(placement: .main, contextDataProvider: model) : nil
+
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,
                 userWalletNotificationManager: userWalletNotificationManager,
                 tokensNotificationManager: multiWalletNotificationManager,
+                bannerNotificationManager: bannerNotificationManager,
                 rateAppController: rateAppController,
                 tokenSectionsAdapter: sectionsAdapter,
                 tokenRouter: tokenRouter,
@@ -106,7 +111,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             )
             viewModel.delegate = multiWalletContentDelegate
             userWalletNotificationManager.setupManager(with: viewModel)
-
+            bannerNotificationManager?.setupManager(with: viewModel)
             return .multiWallet(
                 id: id,
                 headerModel: headerModel,
@@ -115,13 +120,12 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
         }
 
         guard let walletModel = model.walletModelsManager.walletModels.first else {
-            return nil
+            return .singleWallet(id: id, headerModel: headerModel, bodyModel: nil)
         }
 
         let singleWalletNotificationManager = SingleTokenNotificationManager(
             walletModel: walletModel,
             walletModelsManager: model.walletModelsManager,
-            expressDestinationService: nil,
             contextDataProvider: model
         )
 
@@ -140,7 +144,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             tokenRouter: tokenRouter,
             delegate: singleWalletContentDelegate
         )
-        userWalletNotificationManager.setupManager()
+        userWalletNotificationManager.setupManager(with: viewModel)
         singleWalletNotificationManager.setupManager(with: viewModel)
 
         return .singleWallet(

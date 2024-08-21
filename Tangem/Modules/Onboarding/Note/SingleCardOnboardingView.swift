@@ -13,9 +13,6 @@ struct SingleCardOnboardingView: View {
 
     private let horizontalPadding: CGFloat = 16
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let progressBarHeight: CGFloat = 4
-    private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
 
     var currentStep: SingleCardOnboardingStep { viewModel.currentStep }
 
@@ -31,18 +28,24 @@ struct SingleCardOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+            UserWalletStorageAgreementView(
+                viewModel: viewModel.userWalletStorageAgreementViewModel,
+                topInset: -viewModel.progressBarPadding
+            )
+        case .addTokens:
+            if let addTokensViewModel = viewModel.addTokensViewModel {
+                OnboardingAddTokensView(viewModel: addTokensViewModel)
+            }
+        case .pushNotifications:
+            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
+                PushNotificationsPermissionRequestView(
+                    viewModel: pushNotificationsViewModel,
+                    topInset: -viewModel.progressBarPadding,
+                    buttonsAxis: .vertical
+                )
+            }
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -52,12 +55,6 @@ struct SingleCardOnboardingView: View {
                 .allowsHitTesting(false)
                 .frame(maxWidth: screenSize.width)
                 .zIndex(100)
-
-            disclaimerContent
-                .layoutPriority(1)
-                .readGeometry(\.size) { size in
-                    viewModel.setupContainer(with: size)
-                }
 
             VStack(spacing: 0) {
                 GeometryReader { proxy in
@@ -90,8 +87,8 @@ struct SingleCardOnboardingView: View {
                         .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height / 2 : 0))
                         .opacity(isTopItemsVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
-                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + progressBarPadding : 0))
+                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
+                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + viewModel.progressBarPadding : 0))
                             .opacity(isTopItemsVisible && isProgressBarVisible ? 1.0 : 0.0)
                             .padding(.horizontal, horizontalPadding)
 
@@ -155,7 +152,7 @@ struct SingleCardOnboardingView: View {
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,

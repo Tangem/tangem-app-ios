@@ -24,7 +24,7 @@ extension NotificationView {
         let event: any NotificationEvent
         let dismissAction: NotificationAction?
 
-        var id: NotificationViewId { event.hashValue }
+        var id: NotificationViewId { event.id }
 
         static func == (lhs: Settings, rhs: Settings) -> Bool {
             return lhs.id == rhs.id
@@ -74,8 +74,7 @@ extension NotificationView {
         case action
 
         // Customs
-        case changellyPromotion
-        case travalaPromotion
+        case okx
 
         @ViewBuilder
         var color: some View {
@@ -83,16 +82,7 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .changellyPromotion:
-                Assets.swapBannerBackground.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            case .travalaPromotion:
-                ZStack(alignment: .topLeading) {
-                    Color.black
-
-                    Assets.travalaBannerIcon.image
-                }
+            case .okx: Color(hex: "#1E1E1E")!
             }
         }
 
@@ -100,7 +90,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Icon.inactive
-            case .changellyPromotion, .travalaPromotion:
+            case .okx:
                 return Colors.Text.constantWhite
             }
         }
@@ -109,8 +99,8 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.primary1
-            case .changellyPromotion, .travalaPromotion:
-                return Colors.Text.constantWhite
+            case .okx:
+                return Color(hex: "#BCFF2F")!
             }
         }
 
@@ -118,7 +108,7 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.tertiary
-            case .changellyPromotion, .travalaPromotion:
+            case .okx:
                 return Colors.Text.constantWhite
             }
         }
@@ -126,6 +116,7 @@ extension NotificationView {
 
     enum LeadingIconType {
         case image(Image)
+        case icon(TokenIconInfo)
         case progressView
     }
 

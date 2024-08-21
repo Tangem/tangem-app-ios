@@ -41,9 +41,9 @@ struct FeeRowView: View {
 
                 if let cryptoAmount = viewModel.cryptoAmount {
                     feeAmount(cryptoAmount: cryptoAmount, fiatAmount: viewModel.fiatAmount)
-                        .matchedGeometryEffectOptional(id: amountNamespaceId, in: namespace)
                         .frame(minWidth: viewModel.isLoading ? 70 : 0)
                         .skeletonable(isShown: viewModel.isLoading)
+                        .matchedGeometryEffectOptional(id: amountNamespaceId, in: namespace)
                 }
             }
             .padding(.vertical, 12)
@@ -59,7 +59,7 @@ struct FeeRowView: View {
                 .layoutPriority(1)
 
             if let fiatAmount {
-                Text("•")
+                Text(AppConstants.dotSign)
                     .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
                     .layoutPriority(3)
 

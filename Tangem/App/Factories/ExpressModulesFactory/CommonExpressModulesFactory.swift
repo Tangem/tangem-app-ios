@@ -73,12 +73,18 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
             feeFormatter: feeFormatter,
             pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
             expressInteractor: expressInteractor,
+            providerName: providerName,
+            selectedPolicy: selectedPolicy,
             coordinator: coordinator
         )
     }
@@ -87,7 +93,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         coordinator: ExpressProvidersSelectorRoutable
     ) -> ExpressProvidersSelectorViewModel {
         ExpressProvidersSelectorViewModel(
-            percentFormatter: percentFormatter,
+            priceChangeFormatter: priceChangeFormatter,
             expressProviderFormatter: expressProviderFormatter,
             expressRepository: expressRepository,
             expressInteractor: expressInteractor,
@@ -105,6 +111,23 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             feeFormatter: feeFormatter,
             coordinator: coordinator
         )
+    }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        let tokenFinder = CommonTokenFinder(supportedBlockchains: userWalletModel.config.supportedBlockchains)
+
+        let expressRefundedTokenHandler = CommonExpressRefundedTokenHandler(
+            userTokensManager: userWalletModel.userTokensManager,
+            tokenFinder: tokenFinder
+        )
+
+        let pendingExpressTransactionsManager = CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: expressRefundedTokenHandler
+        )
+
+        return pendingExpressTransactionsManager
     }
 }
 
@@ -126,7 +149,7 @@ private extension CommonExpressModulesFactory {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var percentFormatter: PercentFormatter { .init() }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
@@ -134,7 +157,7 @@ private extension CommonExpressModulesFactory {
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
     var signer: TransactionSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
-    var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
+    var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
 
     var expressTokensListAdapter: ExpressTokensListAdapter {
         CommonExpressTokensListAdapter(userWalletModel: userWalletModel)
@@ -163,7 +186,8 @@ private extension CommonExpressModulesFactory {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: analyticsLogger
         )
 
         let interactor = ExpressInteractor(
@@ -176,6 +200,7 @@ private extension CommonExpressModulesFactory {
             expressPendingTransactionRepository: pendingTransactionRepository,
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
+            expressAPIProvider: expressAPIProvider,
             signer: signer,
             logger: logger
         )

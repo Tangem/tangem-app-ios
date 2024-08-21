@@ -8,6 +8,7 @@
 
 import Combine
 import SwiftUI
+import TangemExpress
 
 final class EnvironmentSetupViewModel: ObservableObject {
     @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
@@ -15,6 +16,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var appSettingsTogglesViewModels: [DefaultToggleRowViewModel] = []
+    @Published var pickerViewModels: [DefaultPickerRowViewModel] = []
     @Published var featureStateViewModels: [FeatureStateRowViewModel] = []
     @Published var additionalSettingsViewModels: [DefaultRowViewModel] = []
     @Published var alert: AlertBinder?
@@ -60,15 +62,6 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "[Express] Use develop API",
-                isOn: BindingValue<Bool>(
-                    root: featureStorage,
-                    default: false,
-                    get: { $0.useDevApiExpress },
-                    set: { $0.useDevApiExpress = $1 }
-                )
-            ),
-            DefaultToggleRowViewModel(
                 title: "Use fake tx history",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,
@@ -84,6 +77,37 @@ final class EnvironmentSetupViewModel: ObservableObject {
                     default: false,
                     get: { $0.isPerformanceMonitorEnabled },
                     set: { $0.isPerformanceMonitorEnabled = $1 }
+                )
+            ),
+            DefaultToggleRowViewModel(
+                title: "Mocked CardScanner Enabled",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isMockedCardScannerEnabled },
+                    set: { $0.isMockedCardScannerEnabled = $1 }
+                )
+            ),
+            DefaultToggleRowViewModel(
+                title: "Visa Testnet",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isVisaTestnet },
+                    set: { $0.isVisaTestnet = $1 }
+                )
+            ),
+        ]
+
+        pickerViewModels = [
+            DefaultPickerRowViewModel(
+                title: "Express api type",
+                options: ExpressAPIType.allCases.map { $0.rawValue },
+                selection: BindingValue<String>(
+                    root: featureStorage,
+                    default: ExpressAPIType.production.rawValue,
+                    get: { $0.apiExpress },
+                    set: { $0.apiExpress = $1 }
                 )
             ),
         ]
@@ -111,6 +135,9 @@ final class EnvironmentSetupViewModel: ObservableObject {
         additionalSettingsViewModels = [
             DefaultRowViewModel(title: "Supported Blockchains") { [weak self] in
                 self?.coordinator?.openSupportedBlockchainsPreferences()
+            },
+            DefaultRowViewModel(title: "Staking Blockchains") { [weak self] in
+                self?.coordinator?.openStakingBlockchainsPreferences()
             },
         ]
 

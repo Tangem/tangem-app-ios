@@ -61,12 +61,18 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
             feeFormatter: feeFormatter,
             pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
             expressInteractor: expressInteractor,
+            providerName: providerName,
+            selectedPolicy: selectedPolicy,
             coordinator: coordinator
         )
     }
@@ -75,7 +81,7 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         coordinator: ExpressProvidersSelectorRoutable
     ) -> ExpressProvidersSelectorViewModel {
         ExpressProvidersSelectorViewModel(
-            percentFormatter: percentFormatter,
+            priceChangeFormatter: priceChangeFormatter,
             expressProviderFormatter: expressProviderFormatter,
             expressRepository: expressRepository,
             expressInteractor: expressInteractor,
@@ -92,6 +98,14 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             providerFormatter: providerFormatter,
             feeFormatter: feeFormatter,
             coordinator: coordinator
+        )
+    }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
         )
     }
 }
@@ -114,7 +128,7 @@ private extension ExpressModulesFactoryMock {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var percentFormatter: PercentFormatter { .init() }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
@@ -164,6 +178,7 @@ private extension ExpressModulesFactoryMock {
             expressPendingTransactionRepository: pendingTransactionRepository,
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
+            expressAPIProvider: expressAPIProvider,
             signer: signer,
             logger: logger
         )

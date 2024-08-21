@@ -12,22 +12,39 @@ import TangemSdk
 struct SingleCardOnboardingStepsBuilder {
     private let cardId: String
     private let hasWallets: Bool
-    private let touId: String
+    private let isMultiCurrency: Bool
+    private let isPushNotificationsAvailable: Bool
 
-    private var userWalletSavingSteps: [SingleCardOnboardingStep] {
-        guard BiometricsUtil.isAvailable,
-              !AppSettings.shared.saveUserWallets,
-              !AppSettings.shared.askedToSaveUserWallets else {
-            return []
+    private var otherSteps: [SingleCardOnboardingStep] {
+        var steps: [SingleCardOnboardingStep] = []
+
+        if BiometricsUtil.isAvailable,
+           !AppSettings.shared.saveUserWallets,
+           !AppSettings.shared.askedToSaveUserWallets {
+            steps.append(.saveUserWallet)
         }
 
-        return [.saveUserWallet]
+        if isPushNotificationsAvailable {
+            steps.append(.pushNotifications)
+        }
+
+        return steps
     }
 
-    init(cardId: String, hasWallets: Bool, touId: String) {
+    private var addTokensSteps: [SingleCardOnboardingStep] {
+        isMultiCurrency && FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
+    }
+
+    init(
+        cardId: String,
+        hasWallets: Bool,
+        isMultiCurrency: Bool,
+        isPushNotificationsAvailable: Bool
+    ) {
         self.cardId = cardId
         self.hasWallets = hasWallets
-        self.touId = touId
+        self.isMultiCurrency = isMultiCurrency
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 }
 
@@ -35,18 +52,14 @@ extension SingleCardOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [SingleCardOnboardingStep]()
 
-        if !AppSettings.shared.termsOfServicesAccepted.contains(touId) {
-            steps.append(.disclaimer)
-        }
-
         if hasWallets {
-            if !AppSettings.shared.cardsStartedActivation.contains(cardId) {
-                steps.append(contentsOf: userWalletSavingSteps)
+            if AppSettings.shared.cardsStartedActivation.contains(cardId) {
+                steps.append(contentsOf: otherSteps + addTokensSteps + [.success])
             } else {
-                steps.append(contentsOf: userWalletSavingSteps + [.success])
+                steps.append(contentsOf: otherSteps)
             }
         } else {
-            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
+            steps.append(contentsOf: [.createWallet] + otherSteps + addTokensSteps + [.success])
         }
 
         return .singleWallet(steps)

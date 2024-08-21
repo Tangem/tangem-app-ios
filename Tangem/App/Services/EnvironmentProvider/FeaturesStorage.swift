@@ -20,8 +20,8 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.useDevApi)
     var useDevApi = false
 
-    @AppStorageCompat(FeatureStorageKeys.useDevApiExpress)
-    var useDevApiExpress = false
+    @AppStorageCompat(FeatureStorageKeys.apiExpress)
+    var apiExpress: String = "production"
 
     // TODO: Remove after transaction history implementation in BlockchainSDK
     @AppStorageCompat(FeatureStorageKeys.fakeTxHistory)
@@ -30,8 +30,17 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.supportedBlockchainsIds)
     var supportedBlockchainsIds: [String] = []
 
+    @AppStorageCompat(FeatureStorageKeys.stakingBlockchainsIds)
+    var stakingBlockchainsIds: [String] = []
+
     @AppStorageCompat(FeatureStorageKeys.performanceMonitorEnabled)
     var isPerformanceMonitorEnabled = false
+
+    @AppStorageCompat(FeatureStorageKeys.mockedCardScannerEnabled)
+    var isMockedCardScannerEnabled = true
+
+    @AppStorageCompat(FeatureStorageKeys.useVisaTestnet)
+    var isVisaTestnet = false
 }
 
 // MARK: - Keys
@@ -40,8 +49,11 @@ private enum FeatureStorageKeys: String {
     case testnet
     case availableFeatures = "integrated_features"
     case useDevApi = "use_dev_api"
-    case useDevApiExpress = "use_dev_api_express"
+    case apiExpress = "api_express"
     case fakeTxHistory = "fake_transaction_history"
     case supportedBlockchainsIds
+    case stakingBlockchainsIds
     case performanceMonitorEnabled = "performance_monitor_enabled"
+    case mockedCardScannerEnabled = "mocked_card_scanner_enabled"
+    case useVisaTestnet = "use_visa_testnet"
 }

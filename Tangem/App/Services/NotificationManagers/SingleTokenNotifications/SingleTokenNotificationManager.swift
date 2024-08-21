@@ -10,14 +10,13 @@ import Foundation
 import Combine
 import TangemSdk
 import BlockchainSdk
+import TangemStaking
 
 final class SingleTokenNotificationManager {
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
     private let walletModelsManager: WalletModelsManager
-    private let expressDestinationService: ExpressDestinationService?
     private weak var delegate: NotificationTapDelegate?
 
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
@@ -25,17 +24,14 @@ final class SingleTokenNotificationManager {
     private var rentFeeNotification: NotificationViewInput?
     private var bag: Set<AnyCancellable> = []
     private var notificationsUpdateTask: Task<Void, Never>?
-    private var promotionUpdateTask: Task<Void, Never>?
 
     init(
         walletModel: WalletModel,
         walletModelsManager: WalletModelsManager,
-        expressDestinationService: ExpressDestinationService?,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
         self.walletModel = walletModel
         self.walletModelsManager = walletModelsManager
-        self.expressDestinationService = expressDestinationService
 
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
@@ -67,17 +63,34 @@ final class SingleTokenNotificationManager {
         let factory = NotificationsFactory()
 
         var events = [TokenNotificationEvent]()
+
+        if let event = makeStakingNotificationEvent() {
+            events.append(event)
+        }
+
         if let existentialWarning = walletModel.existentialDepositWarning {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .solana = walletModel.tokenItem.blockchain,
-           !walletModel.isZeroAmount {
+        if case .solana = walletModel.tokenItem.blockchain, !walletModel.isZeroAmount {
             events.append(.solanaHighImpact)
         }
 
         if case .binance = walletModel.tokenItem.blockchain {
             events.append(.bnbBeaconChainRetirement)
+        }
+
+        let amounts = walletModel.wallet.amounts
+        if case .koinos = walletModel.tokenItem.blockchain,
+           let currentMana = amounts[.feeResource(.mana)]?.value,
+           let maxMana = amounts[.coin]?.value {
+            let formatter = BalanceFormatter()
+            events.append(
+                .manaLevel(
+                    currentMana: formatter.formatDecimal(currentMana, formattingOptions: .defaultFiatFormattingOptions),
+                    maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
+                )
+            )
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -90,11 +103,13 @@ final class SingleTokenNotificationManager {
             }
         }
 
+        events += makeAssetRequirementsNotificationEvents()
+
         let inputs = events.map {
             factory.buildNotificationInput(
                 for: $0,
                 buttonAction: { [weak self] id, actionType in
-                    self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                    self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
                 dismissAction: { [weak self] id in
                     self?.dismissNotification(with: id)
@@ -105,7 +120,6 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject.send(inputs)
 
         setupRentFeeNotification()
-        setupTangemExpressPromotionNotification()
     }
 
     private func setupRentFeeNotification() {
@@ -131,47 +145,6 @@ final class SingleTokenNotificationManager {
                     self.rentFeeNotification = rentInput
                     self.notificationInputsSubject.value.append(rentInput)
                 }
-            }
-        }
-    }
-
-    private func setupTangemExpressPromotionNotification() {
-        promotionUpdateTask?.cancel()
-        promotionUpdateTask = Task { [weak self] in
-            guard let self, let expressDestinationService, !Task.isCancelled else {
-                return
-            }
-
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: .changelly, on: .tokenDetails) else {
-                notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
-                return
-            }
-
-            let factory = BannerPromotionNotificationFactory()
-            let button = factory.buildNotificationButton(actionType: .exchange) { [weak self] id, actionType in
-                self?.delegate?.didTapNotificationButton(with: id, action: actionType)
-                self?.dismissNotification(with: id)
-            }
-
-            let input = factory.buildBannerNotificationInput(
-                promotion: promotion,
-                button: button,
-                dismissAction: { [weak self] id in
-                    self?.dismissNotification(with: id)
-                }
-            )
-
-            guard await expressDestinationService.canBeSwapped(wallet: walletModel) else {
-                notificationInputsSubject.value.removeAll { $0.id == input.id }
-                return
-            }
-
-            guard !notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
-                return
-            }
-
-            await runOnMain {
-                self.notificationInputsSubject.value.insert(input, at: 0)
             }
         }
     }
@@ -202,7 +175,7 @@ final class SingleTokenNotificationManager {
                 factory.buildNotificationInput(
                     for: event,
                     buttonAction: { [weak self] id, actionType in
-                        self?.delegate?.didTapNotificationButton(with: id, action: actionType)
+                        self?.delegate?.didTapNotification(with: id, action: actionType)
                     },
                     dismissAction: { [weak self] id in
                         self?.dismissNotification(with: id)
@@ -229,6 +202,49 @@ final class SingleTokenNotificationManager {
         )
         return input
     }
+
+    private func makeAssetRequirementsNotificationEvents() -> [TokenNotificationEvent] {
+        let asset = walletModel.amountType
+
+        guard
+            !walletModel.hasPendingTransactions,
+            let assetRequirementsManager = walletModel.assetRequirementsManager,
+            assetRequirementsManager.hasRequirements(for: asset)
+        else {
+            return []
+        }
+
+        switch assetRequirementsManager.requirementsCondition(for: asset) {
+        case .paidTransaction:
+            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: nil))]
+        case .paidTransactionWithFee(let feeAmount):
+            let balanceFormatter = BalanceFormatter()
+            let associationFee = TokenNotificationEvent.UnfulfilledRequirementsConfiguration.HederaTokenAssociationFee(
+                formattedValue: balanceFormatter.formatDecimal(feeAmount.value),
+                currencySymbol: feeAmount.currencySymbol
+            )
+            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: associationFee))]
+        case .none:
+            return []
+        }
+    }
+
+    func makeStakingNotificationEvent() -> TokenNotificationEvent? {
+        guard case .availableToStake(let yield) = walletModel.stakingManagerState else {
+            return nil
+        }
+
+        let days = 2
+        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
+        let rewardPeriodDaysFormatted = days.formatted()
+
+        return .staking(
+            tokenSymbol: walletModel.tokenItem.currencySymbol,
+            tokenIconInfo: TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom),
+            earnUpToFormatted: apyFormatted,
+            rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
+        )
+    }
 }
 
 extension SingleTokenNotificationManager: NotificationManager {
@@ -248,22 +264,6 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
-            return
-        }
-
-        guard let event = notification.settings.event as? BannerNotificationEvent else {
-            return
-        }
-
-        switch event {
-        case .changelly:
-            Analytics.log(.swapPromoButtonClose)
-            bannerPromotionService.hide(promotion: .changelly, on: .tokenDetails)
-        case .travala:
-            bannerPromotionService.hide(promotion: .travala, on: .tokenDetails)
-        }
-
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
     }
 }

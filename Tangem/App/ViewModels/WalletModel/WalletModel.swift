@@ -10,6 +10,8 @@ import Foundation
 import Combine
 import CombineExt
 import BlockchainSdk
+import TangemStaking
+import TangemFoundation
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
@@ -34,39 +36,25 @@ class WalletModel {
         transactionHistoryState()
     }
 
-    var transactionHistoryNotLoaded: Bool {
-        if case .initial = _transactionHistoryService?.state {
-            return true
-        } else {
-            return false
-        }
-    }
-
     var isSupportedTransactionHistory: Bool {
         _transactionHistoryService != nil
+    }
+
+    var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
+        _stakingManager.map { $0.statePublisher } ?? .just(output: .notEnabled)
+    }
+
+    var stakingManagerState: StakingManagerState {
+        _stakingManager?.state ?? .notEnabled
     }
 
     var shouldShowFeeSelector: Bool {
         walletManager.allowsFeeSelection
     }
 
-    var supportsCustomFees: Bool {
-        let blockchain = blockchainNetwork.blockchain
-
-        if case .bitcoin = blockchain, bitcoinTransactionFeeCalculator != nil {
-            return true
-        }
-
-        if blockchain.isEvm {
-            return true
-        }
-
-        return false
-    }
-
     var tokenItem: TokenItem {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return .blockchain(blockchainNetwork)
         case .token(let token):
             return .token(token, blockchainNetwork)
@@ -81,12 +69,24 @@ class WalletModel {
             return .token(value, blockchainNetwork)
         case .sameCurrency:
             return tokenItem
+        case .feeResource(let type):
+            // We use this when displaying the fee currency on the 'Send' screen.
+            // This is because when sending KOIN, we use MANA as the fee.
+            return .token(
+                Token(
+                    name: type.rawValue,
+                    symbol: type.rawValue,
+                    contractAddress: "",
+                    decimalCount: 0
+                ),
+                blockchainNetwork
+            )
         }
     }
 
     var name: String {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return wallet.blockchain.displayName
         case .token(let token):
             return token.name
@@ -95,7 +95,7 @@ class WalletModel {
 
     var isMainToken: Bool {
         switch amountType {
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             return true
         case .token:
             return false
@@ -133,7 +133,7 @@ class WalletModel {
             return nil
         }
 
-        return converter.convertToFiat(value: balanceValue, from: currencyId)
+        return converter.convertToFiat(balanceValue, currencyId: currencyId)
     }
 
     var rateFormatted: String {
@@ -156,6 +156,10 @@ class WalletModel {
     }
 
     var wallet: Wallet { walletManager.wallet }
+
+    var addresses: [String] {
+        wallet.addresses.map { $0.value }
+    }
 
     var addressNames: [String] {
         wallet.addresses.map { $0.localizedName }
@@ -212,10 +216,11 @@ class WalletModel {
     }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
-        swapAvailabilityProvider
-            .tokenItemsAvailableToSwapPublisher
-            .mapToVoid()
-            .eraseToAnyPublisher()
+        Publishers.Merge(
+            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
+            stakingManagerStatePublisher.mapToVoid()
+        )
+        .eraseToAnyPublisher()
     }
 
     var isDemo: Bool { demoBalance != nil }
@@ -225,6 +230,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let walletManager: WalletManager
+    private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
     private var updateTimer: AnyCancellable?
     private var updateWalletModelSubscription: AnyCancellable?
@@ -245,12 +251,14 @@ class WalletModel {
 
     init(
         walletManager: WalletManager,
+        stakingManager: StakingManager?,
         transactionHistoryService: TransactionHistoryService?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool
     ) {
         self.walletManager = walletManager
+        _stakingManager = stakingManager
         _transactionHistoryService = transactionHistoryService
         self.amountType = amountType
         self.isCustom = isCustom
@@ -338,9 +346,9 @@ class WalletModel {
 
         updateWalletModelSubscription = walletManager
             .updatePublisher()
-            .combineLatest(loadQuotes())
+            .combineLatest(loadQuotes(), updateStakingManagerState()) { state, _, _ in state }
             .receive(on: updateQueue)
-            .sink { [weak self] newState, _ in
+            .sink { [weak self] newState in
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Finished common update for \(self)")
@@ -392,6 +400,12 @@ class WalletModel {
         }
     }
 
+    private func updateAfterSendingTransaction() {
+        // Force update transactions history to take a new pending transaction from the local storage
+        _localPendingTransactionSubject.send(())
+        startUpdatingTimer()
+    }
+
     // MARK: - Load Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
@@ -433,23 +447,25 @@ class WalletModel {
         }
     }
 
-    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, Error> {
+    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         if isDemo {
             let hash = Data.randomData(count: 32)
             return signer.sign(hash: hash, walletPublicKey: wallet.publicKey)
+                .mapSendError(tx: hash.hexString)
                 .map { _ in TransactionSendResult(hash: hash.hexString) }
                 .receive(on: DispatchQueue.main)
+                .eraseSendError()
                 .eraseToAnyPublisher()
         }
 
-        return walletManager.send(tx, signer: signer)
+        return walletManager
+            .send(tx, signer: signer)
             .receive(on: DispatchQueue.main)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                // Force update transactions history to take a new pending transaction from the local storage
-                self?._localPendingTransactionSubject.send(())
-                self?.startUpdatingTimer()
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
             })
-            .receive(on: DispatchQueue.main)
+            .map(\.1)
             .eraseToAnyPublisher()
     }
 
@@ -496,6 +512,23 @@ extension WalletModel {
 
     func getDecimalBalance(for type: Amount.AmountType) -> Decimal? {
         return wallet.amounts[type]?.value
+    }
+
+    /// A convenience wrapper for `AssetRequirementsManager.fulfillRequirements(for:signer:)`
+    /// that automatically triggers the update of the internal state of this wallet model.
+    func fulfillRequirements(signer: any TransactionSigner) -> some Publisher<Void, Error> {
+        return assetRequirementsManager
+            .publisher
+            .withWeakCaptureOf(self)
+            .flatMap { walletModel, assetRequirementsManager in
+                assetRequirementsManager.fulfillRequirements(for: walletModel.amountType, signer: signer)
+            }
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, _ in
+                walletModel.updateAfterSendingTransaction()
+            })
+            .mapToVoid()
     }
 }
 
@@ -604,6 +637,19 @@ extension WalletModel {
     }
 }
 
+// MARK: - Staking
+
+extension WalletModel {
+    func updateStakingManagerState() -> AnyPublisher<Void, Never> {
+        Future.async { [weak self] in
+            try await self?._stakingManager?.updateState()
+        }
+        // Here we have to skip the error to let the PTR to complete
+        .replaceError(with: ())
+        .eraseToAnyPublisher()
+    }
+}
+
 // MARK: - Interfaces
 
 extension WalletModel {
@@ -631,10 +677,6 @@ extension WalletModel {
         walletManager as? BitcoinTransactionFeeCalculator
     }
 
-    var ethereumGasLoader: EthereumGasLoader? {
-        walletManager as? EthereumGasLoader
-    }
-
     var ethereumTransactionSigner: EthereumTransactionSigner? {
         walletManager as? EthereumTransactionSigner
     }
@@ -643,8 +685,8 @@ extension WalletModel {
         walletManager as? EthereumNetworkProvider
     }
 
-    var ethereumTransactionProcessor: EthereumTransactionProcessor? {
-        walletManager as? EthereumTransactionProcessor
+    var ethereumTransactionDataBuilder: EthereumTransactionDataBuilder? {
+        walletManager as? EthereumTransactionDataBuilder
     }
 
     var signatureCountValidator: SignatureCountValidator? {
@@ -655,8 +697,8 @@ extension WalletModel {
         walletManager as? AddressResolver
     }
 
-    var withdrawalSuggestionProvider: WithdrawalSuggestionProvider? {
-        walletManager as? WithdrawalSuggestionProvider
+    var withdrawalNotificationProvider: WithdrawalNotificationProvider? {
+        walletManager as? WithdrawalNotificationProvider
     }
 
     var hasRent: Bool {
@@ -665,6 +707,14 @@ extension WalletModel {
 
     var existentialDepositProvider: ExistentialDepositProvider? {
         walletManager as? ExistentialDepositProvider
+    }
+
+    var assetRequirementsManager: AssetRequirementsManager? {
+        walletManager as? AssetRequirementsManager
+    }
+
+    var stakingManager: StakingManager? {
+        _stakingManager
     }
 }
 

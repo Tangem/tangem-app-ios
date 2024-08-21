@@ -13,11 +13,16 @@ import BlockchainSdk
 class CommonWalletManagersRepository {
     // MARK: - Dependencies
 
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
+
     private let keysProvider: KeysProvider
     private let userTokenListManager: UserTokenListManager
     private let walletManagerFactory: AnyWalletManagerFactory
 
-    private var walletManagers = CurrentValueSubject<[BlockchainNetwork: WalletManager], Never>([:])
+    /// We need to keep optional dictionary to track state when wallet managers dictionary wasn't able to initialize
+    /// This state can happen while app awaiting API list from server, because Wallet managers can't be created without this info
+    /// Nil state is not the same as an empty state, because user can remove all tokens from main and the dictionary will be empty
+    private var walletManagers = CurrentValueSubject<[BlockchainNetwork: WalletManager]?, Never>(nil)
     private var bag = Set<AnyCancellable>()
 
     init(
@@ -32,20 +37,23 @@ class CommonWalletManagersRepository {
     }
 
     private func bind() {
-        userTokenListManager.userTokensPublisher
-            .combineLatest(keysProvider.keysPublisher)
-            .sink { [weak self] entries, keys in
-                self?.update(with: entries, keys)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest3(
+            userTokenListManager.userTokensPublisher,
+            keysProvider.keysPublisher,
+            apiListProvider.apiListPublisher
+        )
+        .sink { [weak self] entries, keys, apiList in
+            self?.update(with: entries, keys, apiList: apiList)
+        }
+        .store(in: &bag)
     }
 
-    private func update(with entries: [StorageEntry], _ keys: [CardDTO.Wallet]) {
-        var managers = walletManagers.value
+    private func update(with entries: [StorageEntry], _ keys: [CardDTO.Wallet], apiList: APIList) {
+        var managers = walletManagers.value ?? [:]
         var hasUpdates = false
 
         for entry in entries {
-            if let existingWalletManager = walletManagers.value[entry.blockchainNetwork] {
+            if let existingWalletManager = walletManagers.value?[entry.blockchainNetwork] {
                 let tokensToRemove = Set(existingWalletManager.cardTokens).subtracting(entry.tokens)
                 for tokenToRemove in tokensToRemove {
                     existingWalletManager.removeToken(tokenToRemove)
@@ -61,7 +69,7 @@ class CommonWalletManagersRepository {
                     hasUpdates = true
                 }
 
-            } else if let newWalletManager = makeWalletManager(for: entry, keys) {
+            } else if let newWalletManager = makeWalletManager(for: entry, keys, apiList: apiList) {
                 managers[entry.blockchainNetwork] = newWalletManager
                 hasUpdates = true
             }
@@ -78,14 +86,19 @@ class CommonWalletManagersRepository {
             hasUpdates = true
         }
 
+        if walletManagers.value == nil {
+            // Emit initial list. Case with first card scan without derivations
+            hasUpdates = true
+        }
+
         if hasUpdates {
             walletManagers.send(managers)
         }
     }
 
-    private func makeWalletManager(for entry: StorageEntry, _ keys: [CardDTO.Wallet]) -> WalletManager? {
+    private func makeWalletManager(for entry: StorageEntry, _ keys: [CardDTO.Wallet], apiList: APIList) -> WalletManager? {
         do {
-            return try walletManagerFactory.makeWalletManager(for: entry, keys: keys)
+            return try walletManagerFactory.makeWalletManager(for: entry, keys: keys, apiList: apiList)
         } catch AnyWalletManagerFactoryError.noDerivation {
             AppLog.shared.debug("‼️ No derivation for \(entry.blockchainNetwork.blockchain.displayName)")
         } catch {
@@ -99,6 +112,8 @@ class CommonWalletManagersRepository {
 
 extension CommonWalletManagersRepository: WalletManagersRepository {
     var walletManagersPublisher: AnyPublisher<[BlockchainNetwork: any WalletManager], Never> {
-        walletManagers.eraseToAnyPublisher()
+        walletManagers
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
 }

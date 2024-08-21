@@ -10,13 +10,14 @@ import Foundation
 import BlockchainSdk
 
 class SupportedBlockchainsPreferencesViewModel: ObservableObject {
-    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-
     @Published var blockchainViewModels: [DefaultToggleRowViewModel] = []
     private let featureStorage = FeatureStorage()
 
-    init() {
-        blockchainViewModels = SupportedBlockchains.testableIDs
+    init(
+        blockchainIds: Set<String>,
+        featureStorageKeyPath: ReferenceWritableKeyPath<FeatureStorage, [String]>
+    ) {
+        blockchainViewModels = blockchainIds
             .map { coinId in
                 DefaultToggleRowViewModel(
                     title: coinId.capitalizingFirstLetter(),
@@ -24,12 +25,12 @@ class SupportedBlockchainsPreferencesViewModel: ObservableObject {
                         root: self,
                         default: false,
                         get: { root in
-                            return root.featureStorage.supportedBlockchainsIds.contains(coinId)
+                            return root.featureStorage[keyPath: featureStorageKeyPath].contains(coinId)
                         }, set: { root, newValue in
                             if newValue {
-                                root.featureStorage.supportedBlockchainsIds.append(coinId)
+                                root.featureStorage[keyPath: featureStorageKeyPath].append(coinId)
                             } else {
-                                root.featureStorage.supportedBlockchainsIds.removeAll(where: { $0 == coinId })
+                                root.featureStorage[keyPath: featureStorageKeyPath].removeAll(where: { $0 == coinId })
                             }
                         }
                     )

@@ -11,6 +11,7 @@ import Combine
 import TangemSdk
 
 class UserWalletModelMock: UserWalletModel {
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
     var name: String { "" }
     var hasBackupCards: Bool { false }
@@ -56,7 +57,8 @@ class UserWalletModelMock: UserWalletModel {
             productType: .other,
             batchId: "",
             firmware: "",
-            baseCurrency: ""
+            baseCurrency: "",
+            userWalletId: userWalletId
         )
     }
 
@@ -72,7 +74,7 @@ class UserWalletModelMock: UserWalletModel {
 
     func validate() -> Bool { true }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
 
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {}
+    func addAssociatedCard(_ cardId: String) {}
 }

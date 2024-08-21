@@ -12,19 +12,21 @@ class OnboardingCoordinator: CoordinatorObject {
     var dismissAction: Action<OutputOptions>
     var popToRootAction: Action<PopToRootOptions>
 
+    var isNavigationBarHidden: Bool {
+        viewState?.isMain == false
+    }
+
+    var transitionAnimationValue: Bool {
+        viewState?.isMain == false
+    }
+
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
 
     // MARK: - Main view models
 
-    @Published private(set) var singleCardViewModel: SingleCardOnboardingViewModel? = nil
-    @Published private(set) var twinsViewModel: TwinsOnboardingViewModel? = nil
-    @Published private(set) var walletViewModel: WalletOnboardingViewModel? = nil
-
-    // MARK: - Child coordinators
-
-    @Published var mainCoordinator: MainCoordinator? = nil
+    @Published private(set) var viewState: ViewState? = nil
 
     // MARK: - Child view models
 
@@ -57,15 +59,15 @@ class OnboardingCoordinator: CoordinatorObject {
         case .singleWallet:
             let model = SingleCardOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            singleCardViewModel = model
+            viewState = .singleCard(model)
         case .twins:
             let model = TwinsOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            twinsViewModel = model
+            viewState = .twins(model)
         case .wallet:
             let model = WalletOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            walletViewModel = model
+            viewState = .wallet(model)
         }
 
         Analytics.log(.onboardingStarted)
@@ -186,8 +188,28 @@ extension OnboardingCoordinator: OnboardingRoutable {
 
     private func openMain(with userWalletModel: UserWalletModel) {
         let coordinator = MainCoordinator(popToRootAction: popToRootAction)
+
         let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
-        mainCoordinator = coordinator
+
+        viewState = .main(coordinator)
+    }
+}
+
+// MARK: ViewState
+
+extension OnboardingCoordinator {
+    enum ViewState {
+        case singleCard(SingleCardOnboardingViewModel)
+        case twins(TwinsOnboardingViewModel)
+        case wallet(WalletOnboardingViewModel)
+        case main(MainCoordinator)
+
+        var isMain: Bool {
+            if case .main = self {
+                return true
+            }
+            return false
+        }
     }
 }

@@ -32,16 +32,13 @@ class StoriesViewModel: ObservableObject {
     private let longTapDuration = 0.25
     private let minimumSwipeDistance = 100.0
     private let promotionCheckTimeout: TimeInterval = 5
+    private var shouldStartTimer: Bool = true
 
-    init() {
-        runTask { [weak self] in
-            guard let self else { return }
-
-            let isNewCard = true
-            let userWalletId: String? = nil
-            await promotionService.checkPromotion(isNewCard: isNewCard, userWalletId: userWalletId, timeout: promotionCheckTimeout)
-            await didFinishCheckingPromotion()
-        }
+    func checkPromotion() async {
+        let isNewCard = true
+        let userWalletId: String? = nil
+        await promotionService.checkPromotion(isNewCard: isNewCard, userWalletId: userWalletId, timeout: promotionCheckTimeout)
+        await didFinishCheckingPromotion()
     }
 
     func onAppear() {
@@ -52,13 +49,18 @@ class StoriesViewModel: ObservableObject {
             .store(in: &bag)
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.resumeTimer()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                if viewModel.shouldStartTimer {
+                    viewModel.resumeTimer()
+                }
             }
             .store(in: &bag)
 
-        DispatchQueue.main.async {
-            self.restartTimer()
+        if shouldStartTimer {
+            DispatchQueue.main.async {
+                self.restartTimer()
+            }
         }
     }
 
@@ -227,13 +229,18 @@ class StoriesViewModel: ObservableObject {
 }
 
 extension StoriesViewModel: WelcomeViewLifecycleListener {
-    func resignActve() {
+    func resignActive() {
         if timerIsRunning() {
             pauseTimer()
+        } else {
+            // First start of the app with welcome onboarding
+            shouldStartTimer = false
         }
     }
 
     func becomeActive() {
+        shouldStartTimer = true
+
         if !timerIsRunning() {
             resumeTimer()
         }
