@@ -1,5 +1,5 @@
 {
-  "originHash" : "0fe87dbbc37361bf54f9deb9f2349fae7a21fe6a29988014528e21f7ce3b081f",
+  "originHash" : "075de3e24c2b843c7ca823c45d9a9eb94d54bca81938a008551eefd90553cf5f",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "7892a123f7e8d0fe62f9f03728b17bbd4f94df5c",
         "version" : "1.8.1"
+      }
+    },
+    {
+      "identity" : "dgcharts",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/DGCharts",
+      "state" : {
+        "revision" : "d3a5133be92153dc581ed653ea3a6950b18d5eb1",
+        "version" : "5.1.0-tangem1"
       }
     },
     {
@@ -260,6 +269,15 @@
       "state" : {
         "revision" : "67be5876186284e85a5f5f8757de209ba53d5729",
         "version" : "4.0.46-tangem1"
+      }
+    },
+    {
+      "identity" : "zipfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/weichsel/ZIPFoundation.git",
+      "state" : {
+        "revision" : "b979e8b52c7ae7f3f39fa0182e738e9e7257eb78",
+        "version" : "0.9.18"
       }
     }
   ],

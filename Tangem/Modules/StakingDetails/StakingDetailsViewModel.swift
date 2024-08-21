@@ -272,7 +272,7 @@ private extension StakingDetailsViewModel {
 
         let subtitleType: ValidatorViewData.SubtitleType? = {
             switch balance.balanceType {
-            case .unknown:
+            case .rewards:
                 .none
             case .warmup:
                 .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
