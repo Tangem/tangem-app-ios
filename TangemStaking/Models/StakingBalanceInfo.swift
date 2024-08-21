@@ -10,43 +10,44 @@ import Foundation
 
 public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
-    public let blocked: Decimal
-    public let rewards: Decimal?
-    public let balanceGroupType: BalanceGroupType
+    public let amount: Decimal
+    public let balanceType: BalanceType
     public let validatorAddress: String
     public let actions: [PendingActionType]
 
     public init(
         item: StakingTokenItem,
-        blocked: Decimal,
-        rewards: Decimal?,
-        balanceGroupType: BalanceGroupType,
+        amount: Decimal,
+        balanceType: BalanceType,
         validatorAddress: String,
         actions: [PendingActionType]
     ) {
         self.item = item
-        self.blocked = blocked
-        self.rewards = rewards
-        self.balanceGroupType = balanceGroupType
+        self.amount = amount
+        self.balanceType = balanceType
         self.validatorAddress = validatorAddress
         self.actions = actions
     }
 }
 
 public extension Array where Element == StakingBalanceInfo {
-    func sumBlocked() -> Decimal {
-        reduce(Decimal.zero) { $0 + $1.blocked }
+    func staking() -> [StakingBalanceInfo] {
+        filter { $0.balanceType != .rewards }
     }
 
-    func sumRewards() -> Decimal {
-        compactMap(\.rewards).reduce(Decimal.zero, +)
+    func rewards() -> [StakingBalanceInfo] {
+        filter { $0.balanceType == .rewards }
+    }
+
+    func sum() -> Decimal {
+        reduce(.zero) { $0 + $1.amount }
     }
 }
 
-public enum BalanceGroupType {
+public enum BalanceType: String, Hashable {
     case warmup
     case active
     case unbonding
     case withdraw
-    case unknown
+    case rewards
 }

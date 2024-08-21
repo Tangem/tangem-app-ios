@@ -40,7 +40,6 @@ extension StakeKitDTO {
                     case rewards
                     case locked
                     case unlocking
-                    case unknown
                 }
 
                 struct PendingAction: Decodable {
