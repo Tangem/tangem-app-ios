@@ -642,12 +642,12 @@
 "staking_details_market_rating" = "Market rating";
 "staking_details_metrics_block_header" = "Metrics";
 "staking_details_minimum_requirement" = "Minimum Requirement";
-"staking_details_no_rewards_to_claim" = "No rewards to claim";
+"staking_details_no_rewards_to_claim" = "No rewards";
 "staking_details_reward_claiming" = "Reward claiming";
 "staking_details_reward_claiming_info" = "Method of receiving staking rewards.\nIt can be either automatic, where the reward is credited to your address, or manual, where you need to withdraw the reward by creating a transaction to receive it.";
 "staking_details_reward_schedule" = "Reward schedule";
 "staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards.";
-"staking_details_rewards_to_claim" = "Rewards to claim: %@";
+"staking_details_rewards_to_claim" = "Rewards: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
 "staking_details_unbonding_period_info" = "The period you must wait after requesting to withdraw funds from staking before the tokens become available.";
@@ -682,8 +682,8 @@
 "staking_stake_more" = "Stake more";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
-"staking_unbonding" = "Unbonding %@";
-"staking_unbonding_in" = "Unbonding in %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock locked";
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";

@@ -682,8 +682,8 @@
 "staking_stake_more" = "Застейкати більше";
 "staking_title_stake" = "Застейкати %@";
 "staking_title_unstake" = "Зняти зі стейкінгу %@";
-"staking_unbonding" = "Unbonding %@";
-"staking_unbonding_in" = "Unbonding in %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unstaked" = "Скасовано зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";

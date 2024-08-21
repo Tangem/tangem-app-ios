@@ -682,8 +682,8 @@
 "staking_stake_more" = "Застейкать еще";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
-"staking_unbonding" = "Unbonding %@";
-"staking_unbonding_in" = "Unbonding in %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unstaked" = "Выведено из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";

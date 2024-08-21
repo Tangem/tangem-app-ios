@@ -682,8 +682,8 @@
 "staking_stake_more" = "Mehr staken";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Staking beenden%@";
-"staking_unbonding" = "Unbonding %@";
-"staking_unbonding_in" = "Unbonding in %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";

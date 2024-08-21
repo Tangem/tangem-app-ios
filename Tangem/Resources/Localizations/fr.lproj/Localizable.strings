@@ -682,8 +682,8 @@
 "staking_stake_more" = "Staker plus";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
-"staking_unbonding" = "Unbonding %@";
-"staking_unbonding_in" = "Unbonding in %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock locked";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
