@@ -8128,8 +8128,8 @@
 		EF032C4D2955C59E006C1FF3 /* DefaultSelectableRowView */ = {
 			isa = PBXGroup;
 			children = (
-				EF032C4E2955C59E006C1FF3 /* DefaultSelectableRowViewModel.swift */,
 				EF032C4F2955C59E006C1FF3 /* DefaultSelectableRowView.swift */,
+				EF032C4E2955C59E006C1FF3 /* DefaultSelectableRowViewModel.swift */,
 			);
 			path = DefaultSelectableRowView;
 			sourceTree = "<group>";
@@ -8461,8 +8461,8 @@
 		EF4662182924DEEE00346B6C /* DefaultToggleRowView */ = {
 			isa = PBXGroup;
 			children = (
-				EF4662192924DEEE00346B6C /* DefaultToggleRowViewModel.swift */,
 				EF46621A2924DEEE00346B6C /* DefaultToggleRowView.swift */,
+				EF4662192924DEEE00346B6C /* DefaultToggleRowViewModel.swift */,
 			);
 			path = DefaultToggleRowView;
 			sourceTree = "<group>";

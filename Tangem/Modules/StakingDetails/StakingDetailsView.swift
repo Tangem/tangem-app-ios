@@ -23,8 +23,11 @@ struct StakingDetailsView: View {
                     banner
                 }
 
-                GroupedSection(viewModel.detailsViewModels) {
-                    DefaultRowView(viewModel: $0)
+                GroupedSection(viewModel.detailsViewModels) { data in
+                    DefaultRowView(viewModel: data)
+                        .if(viewModel.detailsViewModels.first?.id == data.id) {
+                            $0.appearance(.init(detailsColor: Colors.Text.accent))
+                        }
                 }
 
                 rewardView
