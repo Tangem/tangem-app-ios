@@ -118,7 +118,7 @@ private extension StakingDetailsViewModel {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
         setupValidatorsView(yield: yield, staking: balances.staking())
-        setupRewardView(yield: yield, rewards: balances.rewards())
+        setupRewardView(yield: yield, balances: balances)
     }
 
     func setupHeaderView(hasBalances: Bool) {
@@ -219,7 +219,13 @@ private extension StakingDetailsViewModel {
         detailsViewModels = viewModels
     }
 
-    func setupRewardView(yield: YieldInfo, rewards: [StakingBalanceInfo]) {
+    func setupRewardView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+        guard !balances.isEmpty else {
+            rewardViewData = nil
+            return
+        }
+
+        let rewards = balances.rewards()
         switch rewards.sum() {
         case .zero where yield.rewardClaimingType == .auto:
             rewardViewData = nil
