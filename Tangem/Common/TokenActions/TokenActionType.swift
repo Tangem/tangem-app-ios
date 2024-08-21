@@ -37,7 +37,7 @@ enum TokenActionType: String {
         case .send: return Assets.arrowUpMini
         case .receive: return Assets.arrowDownMini
         case .exchange: return Assets.exchangeMini
-        case .stake: return Assets.dollarMini
+        case .stake: return Assets.stakingIcon
         case .sell: return Assets.dollarMini
         case .copyAddress: return Assets.copy
         case .hide: return Assets.minusCircle

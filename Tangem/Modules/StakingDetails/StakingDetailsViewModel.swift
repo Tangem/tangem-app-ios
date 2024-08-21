@@ -122,7 +122,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupHeaderView(hasBalances: Bool) {
-        hideStakingInfoBanner = hasBalances || hideStakingInfoBanner
+        hideStakingInfoBanner = hasBalances || AppSettings.shared.hideStakingInfoBanner
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
