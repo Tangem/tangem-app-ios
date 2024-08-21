@@ -145,7 +145,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.updateTokenList()
+                viewModel.updateState(with: viewModel.coinModel)
             }
             .store(in: &bag)
     }
@@ -159,7 +159,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
     func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
-        // Фильтровать если pending transaction, уточнить
         let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletId)
         return actions
     }

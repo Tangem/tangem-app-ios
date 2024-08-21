@@ -93,11 +93,12 @@ struct MarketsPortfolioTokenItemView: View {
                     }
                 }
             }
+            .overlay(overlayView)
             .readGeometry(\.size, bindTo: $textBlockSize)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .background(background)
+        .background(backgroundView)
         .highlightable(color: Colors.Button.primary.opacity(0.03))
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
@@ -109,7 +110,7 @@ struct MarketsPortfolioTokenItemView: View {
     }
 
     @ViewBuilder
-    private var background: some View {
+    private var backgroundView: some View {
         if #available(iOS 16.0, *), let roundedCornersConfiguration = roundedCornersConfiguration {
             Colors.Background.action
                 .cornerRadiusContinuous(
@@ -120,6 +121,18 @@ struct MarketsPortfolioTokenItemView: View {
                 )
         } else {
             Colors.Background.action
+        }
+    }
+
+    @ViewBuilder
+    private var overlayView: some View {
+        if viewModel.hasError, let errorMessage = viewModel.errorMessage {
+            HStack {
+                Spacer()
+
+                Text(errorMessage)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
         }
     }
 
