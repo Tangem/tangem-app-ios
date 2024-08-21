@@ -262,16 +262,16 @@ private extension StakingDetailsViewModel {
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
-        let validatorStakeState: StakingValidatorViewMapper.ValidatorStakeState = {
+        let subtitleType: ValidatorViewData.SubtitleType? = {
             switch balance.balanceGroupType {
             case .unknown:
-                return .unknown
+                .none
             case .warmup:
-                return .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+                .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
             case .active:
-                return .active(apr: validator.apr)
+                validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding, .withdraw:
-                return .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+                .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
             }
         }()
 
@@ -286,10 +286,12 @@ private extension StakingDetailsViewModel {
             }
         }()
 
-        return StakingValidatorViewMapper().mapToValidatorViewData(
-            info: validator,
-            state: validatorStakeState,
-            detailsType: .chevron(
+        return ValidatorViewData(
+            address: validator.address,
+            name: validator.name,
+            imageURL: validator.iconURL,
+            subtitleType: subtitleType,
+            detailsType: .balance(
                 BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
                 action: action
             )
