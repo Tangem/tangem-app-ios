@@ -36,7 +36,7 @@ extension BinaryFloatingPoint {
         if self < range.upperBound {
             let rangeLength = range.upperBound - range.lowerBound
 
-            return self / rangeLength
+            return (self - range.lowerBound) / rangeLength
         }
 
         return 1.0
