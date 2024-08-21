@@ -9,8 +9,6 @@
 import SwiftUI
 
 class ResetToFactoryViewModel: ObservableObject {
-    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-
     @Published var warnings: [Warning] = []
     @Published var actionSheet: ActionSheetBinder?
     @Published var alert: AlertBinder?
@@ -28,17 +26,24 @@ class ResetToFactoryViewModel: ObservableObject {
     }
 
     private let hasBackupCards: Bool
+    private let resetHelper: ResetToFactoryService
     private let cardInteractor: FactorySettingsResetting
-    private let userWalletId: UserWalletId
     private weak var coordinator: ResetToFactoryViewRoutable?
 
     init(input: ResetToFactoryViewModel.Input, coordinator: ResetToFactoryViewRoutable) {
         cardInteractor = input.cardInteractor
-        userWalletId = input.userWalletId
-        hasBackupCards = input.hasBackupCards
+        hasBackupCards = input.backupCardsCount > 0
+        resetHelper = ResetToFactoryService(
+            userWalletId: input.userWalletId,
+            totalCardsCount: input.backupCardsCount + 1
+        )
         self.coordinator = coordinator
 
         setupView()
+    }
+
+    deinit {
+        AppLog.shared.debug("ResetToFactoryViewModel deinit")
     }
 
     func didTapMainButton() {
@@ -78,21 +83,56 @@ private extension ResetToFactoryViewModel {
     }
 
     func resetCardToFactory() {
-        cardInteractor.resetCard { [weak self] result in
+        let header = makeHeader(from: resetHelper.cardNumberToReset)
+        cardInteractor.resetCard(headerMessage: header) { [weak self] result in
             guard let self else { return }
 
             switch result {
-            case .success:
-                Analytics.log(.factoryResetFinished)
-                userWalletRepository.delete(userWalletId, logoutIfNeeded: false)
-                coordinator?.dismiss()
+            case .success(let didReset):
+                if didReset {
+                    resetHelper.cardDidReset()
+                }
+
+                if resetHelper.hasCardsToReset {
+                    alert = ResetToFactoryAlertBuilder.makeContinueResetAlert(continueAction: resetCardToFactory, cancelAction: resetDidCancel)
+                } else {
+                    alert = ResetToFactoryAlertBuilder.makeResetDidFinishAlert(continueAction: resetDidFinish)
+                }
+
             case .failure(let error):
+                if resetHelper.resettedCardsCount == 0 {
+                    if !error.isUserCancelled {
+                        alert = error.alertBinder
+                    }
+                } else {
+                    alert = ResetToFactoryAlertBuilder.makeResetIncompleteAlert(continueAction: resetCardToFactory, cancelAction: resetDidFinish)
+                }
+
                 if !error.isUserCancelled {
                     AppLog.shared.error(error, params: [.action: .purgeWallet])
-                    alert = error.alertBinder
                 }
             }
         }
+    }
+
+    func makeHeader(from cardNumber: Int?) -> String? {
+        guard let cardNumber, cardNumber > 1 else {
+            return nil
+        }
+
+        return Localization.initialMessageResetBackupCardHeader(cardNumber)
+    }
+
+    func resetDidCancel() {
+        // Add a delay between successive alerts
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.alert = ResetToFactoryAlertBuilder.makeResetIncompleteAlert(continueAction: self.resetCardToFactory, cancelAction: self.resetDidFinish)
+        }
+    }
+
+    func resetDidFinish() {
+        resetHelper.resetDidDinish()
+        coordinator?.dismiss()
     }
 }
 
@@ -116,5 +156,33 @@ extension ResetToFactoryViewModel {
                 return Localization.resetCardToFactoryCondition2
             }
         }
+    }
+}
+
+private enum ResetToFactoryAlertBuilder {
+    static func makeContinueResetAlert(continueAction: @escaping () -> Void, cancelAction: @escaping () -> Void) -> AlertBinder {
+        AlertBuilder.makeAlert(
+            title: Localization.cardSettingsContinueResetAlertTitle,
+            message: Localization.cardSettingsContinueResetAlertMessage,
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
+            secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
+        )
+    }
+
+    static func makeResetDidFinishAlert(continueAction: @escaping () -> Void) -> AlertBinder {
+        AlertBuilder.makeAlert(
+            title: Localization.cardSettingsCompletedResetAlertTitle,
+            message: Localization.cardSettingsCompletedResetAlertMessage,
+            primaryButton: .default(Text(Localization.commonOk), action: continueAction)
+        )
+    }
+
+    static func makeResetIncompleteAlert(continueAction: @escaping () -> Void, cancelAction: @escaping () -> Void) -> AlertBinder {
+        AlertBuilder.makeAlert(
+            title: Localization.cardSettingsInterruptedResetAlertTitle,
+            message: Localization.cardSettingsInterruptedResetAlertMessage,
+            primaryButton: .default(Text(Localization.cardSettingsActionSheetReset), action: continueAction),
+            secondaryButton: .destructive(Text(Localization.commonCancel), action: cancelAction)
+        )
     }
 }

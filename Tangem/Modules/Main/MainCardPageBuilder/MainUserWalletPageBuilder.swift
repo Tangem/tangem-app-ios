@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 enum MainUserWalletPageBuilder: Identifiable {
-    case singleWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: SingleWalletMainContentViewModel)
+    case singleWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: SingleWalletMainContentViewModel?)
     case multiWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: MultiWalletMainContentViewModel)
     case lockedWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: LockedWalletMainContentViewModel)
     case visaWallet(id: UserWalletId, headerModel: MainHeaderViewModel, bodyModel: VisaWalletMainContentViewModel)
@@ -66,8 +66,13 @@ enum MainUserWalletPageBuilder: Identifiable {
     var body: some View {
         switch self {
         case .singleWallet(let id, _, let bodyModel):
-            SingleWalletMainContentView(viewModel: bodyModel)
-                .id(id)
+            if let bodyModel {
+                SingleWalletMainContentView(viewModel: bodyModel)
+                    .id(id)
+            } else {
+                LoadingSingleWalletMainContentView()
+                    .id(id)
+            }
         case .multiWallet(let id, _, let bodyModel):
             MultiWalletMainContentView(viewModel: bodyModel)
                 .id(id)
@@ -77,6 +82,15 @@ enum MainUserWalletPageBuilder: Identifiable {
         case .visaWallet(let id, _, let bodyModel):
             VisaWalletMainContentView(viewModel: bodyModel)
                 .id(id)
+        }
+    }
+
+    var missingBodyModel: Bool {
+        switch self {
+        case .singleWallet(_, _, let bodyModel):
+            return bodyModel == nil
+        case .multiWallet, .lockedWallet, .visaWallet:
+            return false
         }
     }
 
@@ -101,7 +115,7 @@ extension MainUserWalletPageBuilder: MainViewPage {
     func onPageAppear() {
         switch self {
         case .singleWallet(_, _, let bodyModel):
-            bodyModel.onPageAppear()
+            bodyModel?.onPageAppear()
         case .multiWallet(_, _, let bodyModel):
             bodyModel.onPageAppear()
         case .lockedWallet, .visaWallet:
@@ -112,7 +126,7 @@ extension MainUserWalletPageBuilder: MainViewPage {
     func onPageDisappear() {
         switch self {
         case .singleWallet(_, _, let bodyModel):
-            bodyModel.onPageDisappear()
+            bodyModel?.onPageDisappear()
         case .multiWallet(_, _, let bodyModel):
             bodyModel.onPageDisappear()
         case .lockedWallet, .visaWallet:

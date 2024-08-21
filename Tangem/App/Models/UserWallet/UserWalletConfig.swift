@@ -13,17 +13,17 @@ import BlockchainSdk
 protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, TangemSdkFactory {
     var emailConfig: EmailConfig? { get }
 
-    var tou: TOU { get }
-
     var cardsCount: Int { get }
 
     var cardSetLabel: String? { get }
 
     var cardName: String { get }
 
-    var walletCurves: [EllipticCurve] { get }
+    /// Actual state of current card's curves or main card's curves in case of biometrics
+    var existingCurves: [EllipticCurve] { get }
 
-    var mandatoryCurves: [EllipticCurve] { get }
+    /// Curves to create during card initialization
+    var createWalletCurves: [EllipticCurve] { get }
 
     var derivationStyle: DerivationStyle? { get }
 
@@ -34,6 +34,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
     var canSkipBackup: Bool { get }
 
     var canImportKeys: Bool { get }
+
+    var isWalletsCreated: Bool { get }
     /// All blockchains supported by this user wallet.
     var supportedBlockchains: Set<Blockchain> { get }
 
@@ -84,11 +86,6 @@ extension UserWalletConfig {
         getFeatureAvailability(feature).disabledLocalizedReason
     }
 
-    var tou: TOU {
-        let url = URL(string: "https://tangem.com/tangem_tos.html")!
-        return TOU(id: url.absoluteString, url: url)
-    }
-
     var emailConfig: EmailConfig? {
         .default
     }
@@ -136,12 +133,16 @@ protocol CardContainer {
 }
 
 extension UserWalletConfig where Self: CardContainer {
-    var walletCurves: [EllipticCurve] {
+    var existingCurves: [EllipticCurve] {
         card.walletCurves
     }
 
     var tangemSigner: TangemSigner {
         .init(filter: cardSessionFilter, sdk: makeTangemSdk(), twinKey: nil)
+    }
+
+    var isWalletsCreated: Bool {
+        !card.wallets.isEmpty
     }
 
     var cardSessionFilter: SessionFilter {

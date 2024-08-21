@@ -18,7 +18,6 @@ class SendCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     // MARK: - Root view model
 
@@ -40,18 +39,16 @@ class SendCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let canUseFiatCalculation = quotesRepository.quote(for: options.walletModel.tokenItem) != nil
+        let factory = SendFlowFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
 
-        rootViewModel = SendViewModel(
-            walletName: options.walletName,
-            walletModel: options.walletModel,
-            userWalletModel: options.userWalletModel,
-            transactionSigner: options.transactionSigner,
-            sendType: options.type,
-            emailDataProvider: options.emailDataProvider,
-            canUseFiatCalculation: canUseFiatCalculation,
-            coordinator: self
-        )
+        switch options.type {
+        case .send:
+            rootViewModel = factory.makeSendViewModel(router: self)
+        case .sell(let parameters):
+            rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
+        case .staking(let manager):
+            rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
+        }
     }
 }
 
@@ -59,11 +56,8 @@ class SendCoordinator: CoordinatorObject {
 
 extension SendCoordinator {
     struct Options {
-        let walletName: String
-        let emailDataProvider: EmailDataProvider
         let walletModel: WalletModel
         let userWalletModel: UserWalletModel
-        let transactionSigner: TransactionSigner
         let type: SendType
     }
 }

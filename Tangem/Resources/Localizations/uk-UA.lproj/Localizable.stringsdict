@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>card_label_card_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li картка</string>
+        <key>few</key>
+        <string>%li картки</string>
+        <key>many</key>
+        <string>%li карток</string>
+        <key>other</key>
+        <string>%li карток</string>
+      </dict>
+    </dict>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li із %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li гаманця</string>
+        <key>few</key>
+        <string>%li гаманців</string>
+        <key>many</key>
+        <string>%li гаманців</string>
+        <key>other</key>
+        <string>%li гаманців</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_based_on_ratings</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>На основі %li оцінки</string>
+        <key>few</key>
+        <string>На основі %li оцінок</string>
+        <key>many</key>
+        <string>На основі %li оцінок</string>
+        <key>other</key>
+        <string>На основі %li оцінок</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Запишіть це %li слово у порядку, вказаному нижче, та збережіть його у надійному місці.</string>
+        <key>few</key>
+        <string>Запишіть ці %li слова у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+        <key>many</key>
+        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+        <key>other</key>
+        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li слово</string>
+        <key>few</key>
+        <string>%li слова</string>
+        <key>many</key>
+        <string>%li слів</string>
+        <key>other</key>
+        <string>%li слів</string>
+      </dict>
+    </dict>
+    <key>referral_number_of_wallets</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>за %li гаманець</string>
+        <key>few</key>
+        <string>за %li гаманця</string>
+        <key>many</key>
+        <string>за %li гаманців</string>
+        <key>other</key>
+        <string>за %li гаманців</string>
+      </dict>
+    </dict>
+    <key>referral_wallets_purchased_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li гаманець</string>
+        <key>few</key>
+        <string>%li гаманця</string>
+        <key>many</key>
+        <string>%li гаманців</string>
+        <key>other</key>
+        <string>%li гаманців</string>
+      </dict>
+    </dict>
+    <key>warning_missing_derivation_message</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Використовуйте вашу картку, щоб отримати адресу для %li мережі</string>
+        <key>few</key>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <key>many</key>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <key>other</key>
+        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+      </dict>
+    </dict>
+  </dict>
+</plist>

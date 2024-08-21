@@ -14,22 +14,30 @@ struct WelcomeCoordinatorView: CoordinatorView {
 
     var body: some View {
         ZStack {
-            if let welcomeModel = coordinator.welcomeViewModel {
-                WelcomeView(viewModel: welcomeModel)
-                    .navigationLinks(links)
-            }
-
+            content
             sheets
+            welcomeOnboarding
         }
-        .navigationBarHidden(true)
+        .navigationBarHidden(coordinator.isNavigationBarHidden)
+        .animation(.default, value: coordinator.viewState)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch coordinator.viewState {
+        case .welcome(let welcomeViewModel):
+            WelcomeView(viewModel: welcomeViewModel)
+                .navigationLinks(links)
+        case .main(let mainCoordinator):
+            MainCoordinatorView(coordinator: mainCoordinator)
+        case .none:
+            EmptyView()
+        }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.mainCoordinator) {
-                MainCoordinatorView(coordinator: $0)
-            }
             .navigation(item: $coordinator.pushedOnboardingCoordinator) {
                 OnboardingCoordinatorView(coordinator: $0)
             }
@@ -41,11 +49,18 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.promotionCoordinator) {
                 PromotionCoordinatorView(coordinator: $0)
             }
-            .sheet(item: $coordinator.legacyTokenListCoordinator) {
-                LegacyTokenListCoordinatorView(coordinator: $0)
+            .sheet(item: $coordinator.searchTokensViewModel) {
+                WelcomeSearchTokensView(viewModel: $0)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
+    }
+
+    @ViewBuilder
+    private var welcomeOnboarding: some View {
+        if let welcomeOnboardingCoordinator = coordinator.welcomeOnboardingCoordinator {
+            WelcomeOnboardingCoordinatorView(coordinator: welcomeOnboardingCoordinator)
+        }
     }
 }

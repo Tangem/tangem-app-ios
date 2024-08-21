@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel
@@ -44,6 +43,8 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
+        .onDidAppear(viewModel.onDidAppear)
+        .onWillDisappear(viewModel.onWillDisappear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
@@ -64,9 +65,6 @@ struct MainView: View {
             backgroundColor: Colors.Background.primary
         ) { model in
             UnlockUserWalletBottomSheetView(viewModel: model)
-        }
-        .toast(isPresenting: $viewModel.showAddressCopiedToast) {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.walletNotificationAddressCopied)
         }
     }
 
@@ -104,7 +102,8 @@ struct MainView_Preview: PreviewProvider {
         let viewModel = MainViewModel(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator)
+            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator),
+            pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub()
         )
         swipeDiscoveryHelper.delegate = viewModel
 

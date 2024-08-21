@@ -23,14 +23,16 @@ struct ExpressApproveView: View {
                 GroupedSection(viewModel.menuRowViewModel) {
                     DefaultMenuRowView(viewModel: $0, selection: $viewModel.selectedAction)
                 } footer: {
-                    DefaultFooterView(Localization.swappingPermissionPolicyTypeFooter)
+                    DefaultFooterView(Localization.givePermissionPolicyTypeFooter)
                 }
+                .backgroundColor(Colors.Background.action)
 
                 GroupedSection(viewModel.feeRowViewModel) {
                     DefaultRowView(viewModel: $0)
                 } footer: {
-                    DefaultFooterView(Localization.swappingPermissionFeeFooter)
+                    DefaultFooterView(Localization.givePermissionFeeFooter)
                 }
+                .backgroundColor(Colors.Background.action)
 
                 buttons
             }
@@ -59,7 +61,7 @@ struct ExpressApproveView: View {
     private var buttons: some View {
         VStack(spacing: 10) {
             MainButton(
-                title: Localization.swappingPermissionButtonsApprove,
+                title: Localization.commonApprove,
                 icon: .trailing(Assets.tangemIcon),
                 isLoading: viewModel.isLoading,
                 isDisabled: viewModel.mainButtonIsDisabled,
@@ -105,7 +107,7 @@ struct ExpressApproveView_Preview: PreviewProvider {
 
         func toggleItem() {
             if item == nil {
-                item = ExpressModulesFactoryMock().makeExpressApproveViewModel(coordinator: self)
+                item = ExpressModulesFactoryMock().makeExpressApproveViewModel(providerName: "1inch", selectedPolicy: .unlimited, coordinator: self)
             } else {
                 item = nil
             }

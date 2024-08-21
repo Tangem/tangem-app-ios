@@ -105,8 +105,10 @@ struct NotificationView: View {
                 case .string(let string):
                     Text(string)
                         .style(Fonts.Bold.footnote, color: settings.event.colorScheme.titleColor)
+                        .fixedSize(horizontal: false, vertical: true)
                 case .attributed(let attributedString):
                     Text(attributedString)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 if let description = settings.event.description {
@@ -130,6 +132,8 @@ struct NotificationView: View {
                 image
                     .resizable()
                     .foregroundColor(settings.event.icon.color)
+            case .icon(let tokenIconInfo):
+                TokenIcon(tokenIconInfo: tokenIconInfo, size: settings.event.icon.size)
             case .progressView:
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())

@@ -72,7 +72,7 @@ class FileLogger: TangemSdkLogger {
 
 extension FileLogger: LogFileProvider {
     var fileName: String {
-        "scanLogs.txt"
+        LogFilesNames.scanLogs
     }
 
     var logData: Data? {

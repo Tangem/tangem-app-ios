@@ -65,6 +65,8 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
                 .commission: data.feeOption.rawValue.capitalizingFirstLetter(),
                 .sendToken: data.source.tokenItem.currencySymbol,
                 .receiveToken: data.destination.tokenItem.currencySymbol,
+                .sendBlockchain: data.source.tokenItem.blockchain.displayName,
+                .receiveBlockchain: data.destination.tokenItem.blockchain.displayName,
             ]
         )
     }
@@ -100,7 +102,7 @@ private extension ExpressSuccessSentViewModel {
         let destinationTokenItem = data.destination.tokenItem
 
         let sourceAmountFormatted = balanceFormatter.formatCryptoBalance(fromAmount, currencyCode: sourceTokenItem.currencySymbol)
-        let sourceFiatAmount = balanceConverter.convertToFiat(value: fromAmount, from: sourceTokenItem.currencyId ?? "")
+        let sourceFiatAmount = balanceConverter.convertToFiat(fromAmount, currencyId: sourceTokenItem.currencyId ?? "")
         let sourceFiatAmountFormatted = balanceFormatter.formatFiatBalance(sourceFiatAmount)
 
         sourceData = AmountSummaryViewData(
@@ -111,7 +113,7 @@ private extension ExpressSuccessSentViewModel {
         )
 
         let destinationAmountFormatted = balanceFormatter.formatCryptoBalance(toAmount, currencyCode: destinationTokenItem.currencySymbol)
-        let destinationFiatAmount = balanceConverter.convertToFiat(value: toAmount, from: destinationTokenItem.currencyId ?? "")
+        let destinationFiatAmount = balanceConverter.convertToFiat(toAmount, currencyId: destinationTokenItem.currencyId ?? "")
         let destinationFiatAmountFormatted = balanceFormatter.formatFiatBalance(destinationFiatAmount)
 
         destinationData = AmountSummaryViewData(
@@ -131,7 +133,7 @@ private extension ExpressSuccessSentViewModel {
 
         provider = ProviderRowViewModel(
             provider: providerFormatter.mapToProvider(provider: data.provider),
-            titleFormat: .prefixAndName,
+            titleFormat: .name,
             isDisabled: false,
             badge: .none,
             subtitles: [subtitle],

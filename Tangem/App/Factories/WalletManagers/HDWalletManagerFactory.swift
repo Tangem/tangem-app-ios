@@ -11,7 +11,7 @@ import TangemSdk
 import BlockchainSdk
 
 struct HDWalletManagerFactory: AnyWalletManagerFactory {
-    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet]) throws -> WalletManager {
+    func makeWalletManager(for token: StorageEntry, keys: [CardDTO.Wallet], apiList: APIList) throws -> WalletManager {
         let seedKeys: [EllipticCurve: Data] = keys.reduce(into: [:]) { partialResult, cardWallet in
             partialResult[cardWallet.curve] = cardWallet.publicKey
         }
@@ -33,7 +33,7 @@ struct HDWalletManagerFactory: AnyWalletManagerFactory {
             throw AnyWalletManagerFactoryError.noDerivation
         }
 
-        let factory = WalletManagerFactoryProvider().factory
+        let factory = WalletManagerFactoryProvider(apiList: apiList).factory
         let hdKey = Wallet.PublicKey.HDKey(path: derivationPath, extendedPublicKey: derivedKey)
         let publicKey = Wallet.PublicKey(seedKey: seedKey, derivationType: .plain(hdKey))
         let walletManager = try factory.makeWalletManager(blockchain: blockchain, publicKey: publicKey)

@@ -15,25 +15,26 @@ import CombineExt
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     // MARK: - ViewState
 
     @Published var pages: [MainUserWalletPageBuilder] = []
     @Published var selectedCardIndex = 0
     @Published var isHorizontalScrollDisabled = false
-    @Published var showAddressCopiedToast = false
     @Published var actionSheet: ActionSheetBinder?
 
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
 
     let swipeDiscoveryAnimationTrigger = CardsInfoPagerSwipeDiscoveryAnimationTrigger()
 
-    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.mainScreenBottomSheet) }
+    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.markets) }
 
     // MARK: - Dependencies
 
-    private let mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
     private let swipeDiscoveryHelper: WalletSwipeDiscoveryHelper
+    private let mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
+    private let pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
     private weak var coordinator: MainRoutable?
 
     // MARK: - Internal state
@@ -51,11 +52,13 @@ final class MainViewModel: ObservableObject {
     init(
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
-        mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
+        mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
     ) {
         self.coordinator = coordinator
         self.swipeDiscoveryHelper = swipeDiscoveryHelper
         self.mainUserWalletPageBuilderFactory = mainUserWalletPageBuilderFactory
+        self.pushNotificationsAvailabilityProvider = pushNotificationsAvailabilityProvider
 
         pages = mainUserWalletPageBuilderFactory.createPages(
             from: userWalletRepository.models,
@@ -64,6 +67,8 @@ final class MainViewModel: ObservableObject {
             multiWalletContentDelegate: self
         )
 
+        assert(pages.count == userWalletRepository.models.count, "Number of pages must be equal to number of UserWalletModels")
+
         bind()
     }
 
@@ -71,12 +76,14 @@ final class MainViewModel: ObservableObject {
         selectedUserWalletId: UserWalletId,
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
-        mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory
+        mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
     ) {
         self.init(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: mainUserWalletPageBuilderFactory
+            mainUserWalletPageBuilderFactory: mainUserWalletPageBuilderFactory,
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         if let selectedIndex = pages.firstIndex(where: { $0.id == selectedUserWalletId }) {
@@ -97,19 +104,30 @@ final class MainViewModel: ObservableObject {
         coordinator?.openDetails(for: userWalletModel)
     }
 
+    /// Handles `SwiftUI.View.onAppear(perform:)`.
     func onViewAppear() {
         Analytics.log(.mainScreenOpened)
-
-        bottomSheetVisibility.show()
 
         addPendingUserWalletModelsIfNeeded { [weak self] in
             self?.swipeDiscoveryHelper.scheduleSwipeDiscoveryIfNeeded()
         }
+
+        openPushNotificationsAuthorizationIfNeeded()
     }
 
+    /// Handles `SwiftUI.View.onDisappear(perform:)`.
     func onViewDisappear() {
-        bottomSheetVisibility.hide()
         swipeDiscoveryHelper.cancelScheduledSwipeDiscovery()
+    }
+
+    /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
+    func onDidAppear() {
+        bottomSheetVisibility.show()
+    }
+
+    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
+    func onWillDisappear() {
+        bottomSheetVisibility.hide()
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
@@ -124,7 +142,7 @@ final class MainViewModel: ObservableObject {
 
         switch page {
         case .singleWallet(_, _, let viewModel):
-            viewModel.onPullToRefresh(completionHandler: completion)
+            viewModel?.onPullToRefresh(completionHandler: completion)
         case .multiWallet(_, _, let viewModel):
             viewModel.onPullToRefresh(completionHandler: completion)
         case .lockedWallet:
@@ -253,16 +271,12 @@ final class MainViewModel: ObservableObject {
             return
         }
 
-        guard
-            let newPage = mainUserWalletPageBuilderFactory.createPage(
-                for: userWalletModel,
-                lockedUserWalletDelegate: self,
-                singleWalletContentDelegate: self,
-                multiWalletContentDelegate: self
-            )
-        else {
-            return
-        }
+        let newPage = mainUserWalletPageBuilderFactory.createPage(
+            for: userWalletModel,
+            lockedUserWalletDelegate: self,
+            singleWalletContentDelegate: self,
+            multiWalletContentDelegate: self
+        )
 
         let newPageIndex = pages.count
         pages.append(newPage)
@@ -306,15 +320,14 @@ final class MainViewModel: ObservableObject {
     private func bind() {
         $selectedCardIndex
             .dropFirst()
-            .sink { [weak self] newIndex in
-                guard let userWalletId = self?.pages[newIndex].id else {
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newIndex in
+                guard let userWalletId = viewModel.pages[safe: newIndex]?.id else {
                     return
                 }
-
                 Analytics.log(.walletOpened)
-                self?.userWalletRepository.setSelectedUserWalletId(
+                viewModel.userWalletRepository.setSelectedUserWalletId(
                     userWalletId,
-                    unlockIfNeeded: false,
                     reason: .userSelected
                 )
             }
@@ -365,10 +378,64 @@ final class MainViewModel: ObservableObject {
                 }
             }
             .store(in: &bag)
+
+        // We need to check if some pages are missing body model. This can happen due to not loaded API list
+        // In this case we need to recreate this pages after API list loaded and WalletModelsManager publishes list of models
+        let indexesToRecreate: [Int] = pages.indexed().compactMap { $1.missingBodyModel ? $0 : nil }
+        if !indexesToRecreate.isEmpty {
+            let walletModelPublishers = indexesToRecreate.map { userWalletRepository.models[$0].walletModelsManager.walletModelsPublisher }
+            walletModelPublishers.combineLatest()
+                .combineLatest(apiListProvider.apiListPublisher)
+                .receive(on: DispatchQueue.main)
+                .withWeakCaptureOf(self)
+                .sink { viewModel, tuple in
+                    let (_, apiList) = tuple
+
+                    if apiList.isEmpty {
+                        return
+                    }
+
+                    var currentPages = viewModel.pages
+                    for (index, page) in currentPages.indexed() {
+                        // Double check that body model is still missing
+                        guard
+                            page.missingBodyModel,
+                            index < viewModel.userWalletRepository.models.count
+                        else {
+                            continue
+                        }
+
+                        let userWalletModel = viewModel.userWalletRepository.models[index]
+                        let updatedPage = viewModel.mainUserWalletPageBuilderFactory.createPage(
+                            for: userWalletModel,
+                            lockedUserWalletDelegate: viewModel,
+                            singleWalletContentDelegate: viewModel,
+                            multiWalletContentDelegate: viewModel
+                        )
+
+                        if updatedPage.missingBodyModel {
+                            continue
+                        }
+
+                        currentPages[index] = updatedPage
+                    }
+
+                    viewModel.pages = currentPages
+                }
+                .store(in: &bag)
+        }
     }
 
     private func log(_ message: String) {
         AppLog.shared.debug("[Main V2] \(message)")
+    }
+
+    private func openPushNotificationsAuthorizationIfNeeded() {
+        if pushNotificationsAvailabilityProvider.isAvailable {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.pushNotificationAuthorizationRequestDelay) { [weak self] in
+                self?.coordinator?.openPushNotificationsAuthorization()
+            }
+        }
     }
 }
 
@@ -390,18 +457,16 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
     }
 
     func userWalletUnlocked(_ userWalletModel: UserWalletModel) {
-        guard
-            let index = pages.firstIndex(where: { $0.id == userWalletModel.userWalletId }),
-            let page = mainUserWalletPageBuilderFactory.createPage(
-                for: userWalletModel,
-                lockedUserWalletDelegate: self,
-                singleWalletContentDelegate: self,
-                multiWalletContentDelegate: self
-            )
-        else {
+        guard let index = pages.firstIndex(where: { $0.id == userWalletModel.userWalletId }) else {
             return
         }
 
+        let page = mainUserWalletPageBuilderFactory.createPage(
+            for: userWalletModel,
+            lockedUserWalletDelegate: self,
+            singleWalletContentDelegate: self,
+            multiWalletContentDelegate: self
+        )
         pages[index] = page
         unlockWalletBottomSheetViewModel = nil
     }
@@ -412,11 +477,19 @@ extension MainViewModel: UnlockUserWalletBottomSheetDelegate {
             self?.coordinator?.openMail(with: dataCollector, emailType: emailType, recipient: recipient)
         }
     }
+
+    func openScanCardManual() {
+        coordinator?.openScanCardManual()
+    }
 }
 
 extension MainViewModel: MultiWalletMainContentDelegate {
     func displayAddressCopiedToast() {
-        showAddressCopiedToast = true
+        Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
+            .present(
+                layout: .bottom(padding: 80),
+                type: .temporary()
+            )
     }
 }
 
@@ -449,5 +522,6 @@ private extension MainViewModel {
         /// A small delay for animated addition of newly inserted wallet(s) after the main view becomes visible.
         static let pendingWalletsInsertionDelay = 1.0
         static let feedbackRequestDelay = 0.7
+        static let pushNotificationAuthorizationRequestDelay = 0.5
     }
 }

@@ -68,8 +68,12 @@ extension ExpressCoordinator: ExpressRoutable {
         expressFeeSelectorViewModel = factory.makeExpressFeeSelectorViewModel(coordinator: self)
     }
 
-    func presentApproveView() {
-        expressApproveViewModel = factory.makeExpressApproveViewModel(coordinator: self)
+    func presentApproveView(provider: ExpressProvider, selectedPolicy: ExpressApprovePolicy) {
+        expressApproveViewModel = factory.makeExpressApproveViewModel(
+            providerName: provider.name,
+            selectedPolicy: selectedPolicy,
+            coordinator: self
+        )
     }
 
     func presentSuccessView(data: SentExpressTransactionData) {
@@ -97,6 +101,10 @@ extension ExpressCoordinator: ExpressRoutable {
 
     func presentFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {
         dismiss(with: (walletModel, userWalletModel))
+    }
+
+    func closeSwappingView() {
+        dismiss(with: nil)
     }
 }
 

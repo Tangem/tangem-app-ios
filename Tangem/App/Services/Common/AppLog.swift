@@ -10,6 +10,7 @@ import Foundation
 import TangemSdk
 import TangemExpress
 import TangemVisa
+import TangemStaking
 
 class AppLog {
     static let shared = AppLog()
@@ -58,6 +59,8 @@ class AppLog {
     }
 }
 
-extension AppLog: Logger {}
+extension AppLog: TangemExpress.Logger {}
 
 extension AppLog: VisaLogger {}
+
+extension AppLog: TangemStaking.Logger {}

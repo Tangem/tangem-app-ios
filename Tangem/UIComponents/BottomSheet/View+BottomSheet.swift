@@ -31,6 +31,8 @@ extension View {
         )
     }
 
+    /// A convenience overload for `bottomSheet(item:settings:stateObject:sheetContent:)`,
+    /// useful when `backgroundColor` is the only setting that requires customization.
     @ViewBuilder
     func bottomSheet<Item: Identifiable, ContentView: View>(
         item: Binding<Item?>,
@@ -38,13 +40,11 @@ extension View {
         stateObject: BottomSheetContainer<ContentView>.StateObject = .init(),
         @ViewBuilder sheetContent: @escaping (Item) -> ContentView
     ) -> some View {
-        modifier(
-            BottomSheetModifier(
-                item: item,
-                stateObject: stateObject,
-                settings: .init(backgroundColor: backgroundColor),
-                sheetContent: sheetContent
-            )
+        bottomSheet(
+            item: item,
+            settings: .init(backgroundColor: backgroundColor),
+            stateObject: stateObject,
+            sheetContent: sheetContent
         )
     }
 }

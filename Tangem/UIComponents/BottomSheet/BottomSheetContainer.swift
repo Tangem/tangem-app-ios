@@ -16,9 +16,33 @@ struct BottomSheetContainer<ContentView: View>: View {
 
     // MARK: - Internal
 
+    @State private var isContentViewGestureActive = false
+    @State private var isBottomSheetContainerGestureActive = false
+    @State private var shouldCheckBottomSheetContainerGesture = true
+
     private let indicatorSize = CGSize(width: 32, height: 4)
+
     private var opacity: CGFloat {
         max(0, settings.backgroundOpacity * stateObject.dragPercentage)
+    }
+
+    private var gestureMask: GestureMask {
+        // Exclusively enable our drag gesture and disable all gestures in the subview hierarchy
+        if isBottomSheetContainerGestureActive {
+            return .gesture
+        }
+
+        // Enable all gestures in the subview hierarchy but disable our drag gesture
+        if isContentViewGestureActive {
+            return .subviews
+        }
+
+        // Default behavior, all gestures are enabled
+        return .all
+    }
+
+    private var transitionAnimation: Animation {
+        .easeOut(duration: settings.animationDuration)
     }
 
     init(
@@ -62,12 +86,24 @@ struct BottomSheetContainer<ContentView: View>: View {
 
             content()
                 .padding(.bottom, UIApplication.safeAreaInsets.bottom)
+                .if(settings.contentScrollsHorizontally) { view in
+                    view.modifier(ContentHorizontalScrollDetectionViewModifier())
+                }
+                .onPreferenceChange(ContentHorizontalScrollDetectionViewModifier.PreferenceKey.self) { newValue in
+                    isContentViewGestureActive = newValue
+
+                    // The content view gesture has ended, therefore there may be an opportunity for our drag gesture
+                    // to start again. Resetting the state of our drag gesture to allow it to start
+                    if !newValue {
+                        resetGestureState()
+                    }
+                }
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
         .cornerRadius(settings.cornerRadius, corners: [.topLeft, .topRight])
         .readGeometry(\.size.height, bindTo: $stateObject.contentHeight)
-        .gesture(dragGesture)
+        .simultaneousGesture(dragGesture, including: gestureMask)
         .offset(y: stateObject.offset)
     }
 
@@ -84,8 +120,21 @@ struct BottomSheetContainer<ContentView: View>: View {
     }
 
     private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
+        DragGesture(coordinateSpace: .global)
             .onChanged { value in
+                // One-time (the cycle ends with an `onEnded` closure call) check if we should start our drag gesture
+                if shouldCheckBottomSheetContainerGesture {
+                    shouldCheckBottomSheetContainerGesture = false
+
+                    if value.isMovingInVerticalDirection, !isContentViewGestureActive {
+                        isBottomSheetContainerGestureActive = true
+                    }
+                }
+
+                guard isBottomSheetContainerGestureActive else {
+                    return
+                }
+
                 if !stateObject.isDragging {
                     stateObject.isDragging = true
                 }
@@ -101,6 +150,8 @@ struct BottomSheetContainer<ContentView: View>: View {
             }
             .onEnded { value in
                 stateObject.isDragging = false
+
+                resetGestureState()
 
                 // If swipe was been enough to hide view
                 if value.translation.height > settings.distanceToHide {
@@ -141,8 +192,9 @@ struct BottomSheetContainer<ContentView: View>: View {
         }
     }
 
-    private var transitionAnimation: Animation {
-        .easeOut(duration: settings.animationDuration)
+    private func resetGestureState() {
+        shouldCheckBottomSheetContainerGesture = true
+        isBottomSheetContainerGestureActive = false
     }
 }
 
@@ -156,6 +208,9 @@ extension BottomSheetContainer {
         let distanceToHide: CGFloat
         let animationDuration: Double
         let backgroundAnimationDelay: TimeInterval
+        /// Enable to prevent vertical/horizontal gesture conflicts when the bottom sheet content view
+        /// contains a horizontal scroll. Disabled by default.
+        let contentScrollsHorizontally: Bool
 
         init(
             cornerRadius: CGFloat = 24,
@@ -163,7 +218,8 @@ extension BottomSheetContainer {
             backgroundOpacity: CGFloat = 0.4,
             distanceToHide: CGFloat = UIScreen.main.bounds.height * 0.1,
             animationDuration: Double = 0.25,
-            backgroundAnimationDelay: TimeInterval = 0.0
+            backgroundAnimationDelay: TimeInterval = 0.0,
+            contentScrollsHorizontally: Bool = false
         ) {
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
@@ -171,6 +227,7 @@ extension BottomSheetContainer {
             self.distanceToHide = distanceToHide
             self.animationDuration = animationDuration
             self.backgroundAnimationDelay = backgroundAnimationDelay
+            self.contentScrollsHorizontally = contentScrollsHorizontally
         }
     }
 }
@@ -190,6 +247,41 @@ extension BottomSheetContainer {
         }
 
         public var viewDidHidden: () -> Void = {}
+    }
+}
+
+// MARK: - Content horizontal scrolling compatibility
+
+private extension BottomSheetContainer {
+    /// Detects horizontal scrolling in the content view, helps resolve conflicts between the bottom sheet
+    /// vertical drag gesture and the horizontal drag gesture in the content view.
+    /// Native SwiftUI approaches such as `Gesture.sequenced(before:)` and `Gesture.exclusively(before:)` can't be used
+    /// here because bottom sheet is a content-agnostic UI component and knows nothing about its child view hierarchy.
+    struct ContentHorizontalScrollDetectionViewModifier: ViewModifier {
+        struct PreferenceKey: SwiftUI.PreferenceKey {
+            static var defaultValue: Bool { false }
+
+            static func reduce(value: inout Bool, nextValue: () -> Bool) {}
+        }
+
+        @GestureState
+        private var isContentViewGestureActive = false
+
+        /// A dummy drag gesture used to detect horizontal scrolling in the content view.
+        private var dragGesture: some Gesture {
+            DragGesture()
+                .updating($isContentViewGestureActive) { value, state, _ in
+                    if value.isMovingInHorizontalDirection {
+                        state = true
+                    }
+                }
+        }
+
+        func body(content: Content) -> some View {
+            content
+                .simultaneousGesture(dragGesture)
+                .preference(key: PreferenceKey.self, value: isContentViewGestureActive)
+        }
     }
 }
 

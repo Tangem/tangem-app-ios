@@ -8,30 +8,41 @@
 
 import Combine
 import SwiftUI
-import TangemSdk
 
 final class ScanCardSettingsViewModel: ObservableObject, Identifiable {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    let id = UUID()
-
+    @Published var icon: LoadingValue<CardImageResult> = .loading
     @Published var isLoading: Bool = false
     @Published var alert: AlertBinder?
 
-    private let sessionFilter: SessionFilter
-    private let sdk: TangemSdk
+    private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
+    private let cardScanner: CardScanner
     private weak var coordinator: ScanCardSettingsRoutable?
 
-    init(sessionFilter: SessionFilter, sdk: TangemSdk, coordinator: ScanCardSettingsRoutable) {
-        self.sessionFilter = sessionFilter
-        self.sdk = sdk
+    private var bag: Set<AnyCancellable> = []
+
+    init(
+        input: ScanCardSettingsViewModel.Input,
+        coordinator: ScanCardSettingsRoutable
+    ) {
+        cardImagePublisher = input.cardImagePublisher
+        cardScanner = input.cardScanner
         self.coordinator = coordinator
+
+        bind()
     }
-}
 
-// MARK: - View Output
+    func bind() {
+        cardImagePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, image in
+                viewModel.icon = .loaded(image)
+            }
+            .store(in: &bag)
+    }
 
-extension ScanCardSettingsViewModel {
     func scanCard() {
         scan { [weak self] result in
             guard let self = self else { return }
@@ -44,51 +55,6 @@ extension ScanCardSettingsViewModel {
             }
         }
     }
-
-    private func processSuccessScan(for cardInfo: CardInfo) {
-        let config = UserWalletConfigFactory(cardInfo).makeConfig()
-
-        guard let userWalletIdSeed = config.userWalletIdSeed else {
-            return
-        }
-
-        let userWalletId = UserWalletId(with: userWalletIdSeed)
-
-        let input = CardSettingsViewModel.Input(
-            userWalletId: userWalletId,
-            recoveryInteractor: UserCodeRecoveringCardInteractor(with: cardInfo),
-            securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
-            factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
-            isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
-            hasBackupCards: cardInfo.card.backupStatus?.isActive ?? false,
-            canTwin: config.hasFeature(.twinning),
-            twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
-            cardIdFormatted: cardInfo.cardIdFormatted,
-            cardIssuer: cardInfo.card.issuer.name,
-            canDisplayHashesCount: config.hasFeature(.displayHashesCount),
-            cardSignedHashes: cardInfo.card.walletSignedHashes,
-            canChangeAccessCodeRecoverySettings: config.hasFeature(.accessCodeRecoverySettings),
-            resetTofactoryDisabledLocalizedReason: config.getDisabledLocalizedReason(for: .resetToFactory)
-        )
-
-        coordinator?.openCardSettings(with: input)
-    }
-
-    private func makeTwinInput(from cardInfo: CardInfo, config: UserWalletConfig, userWalletId: UserWalletId) -> OnboardingInput? {
-        guard let twinData = cardInfo.walletData.twinData,
-              let existingModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) else {
-            return nil
-        }
-
-        let factory = TwinInputFactory(
-            firstCardId: cardInfo.card.cardId,
-            cardInput: .userWalletModel(existingModel),
-            userWalletToDelete: userWalletId,
-            twinData: twinData,
-            sdkFactory: config
-        )
-        return factory.makeTwinInput()
-    }
 }
 
 // MARK: - Private
@@ -96,8 +62,7 @@ extension ScanCardSettingsViewModel {
 extension ScanCardSettingsViewModel {
     func scan(completion: @escaping (Result<CardInfo, Error>) -> Void) {
         isLoading = true
-        let task = AppScanTask(shouldAskForAccessCode: true)
-        sdk.startSession(with: task, filter: sessionFilter) { [weak self] result in
+        cardScanner.scanCard { [weak self] result in
             self?.isLoading = false
 
             switch result {
@@ -116,5 +81,54 @@ extension ScanCardSettingsViewModel {
 
     func showErrorAlert(error: Error) {
         alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription)
+    }
+
+    func processSuccessScan(for cardInfo: CardInfo) {
+        let config = UserWalletConfigFactory(cardInfo).makeConfig()
+
+        // We just allow to reset cards wthout keys via any wallet
+        let userWalletId = config.userWalletIdSeed.map { UserWalletId(with: $0) } ?? UserWalletId(value: Data())
+
+        let input = CardSettingsViewModel.Input(
+            userWalletId: userWalletId,
+            recoveryInteractor: UserCodeRecoveringCardInteractor(with: cardInfo),
+            securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
+            factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
+            isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
+            backupCardsCount: cardInfo.card.backupStatus?.backupCardsCount ?? 0,
+            canTwin: config.hasFeature(.twinning),
+            twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
+            cardIdFormatted: cardInfo.cardIdFormatted,
+            cardIssuer: cardInfo.card.issuer.name,
+            canDisplayHashesCount: config.hasFeature(.displayHashesCount),
+            cardSignedHashes: cardInfo.card.walletSignedHashes,
+            canChangeAccessCodeRecoverySettings: config.hasFeature(.accessCodeRecoverySettings),
+            resetTofactoryDisabledLocalizedReason: config.getDisabledLocalizedReason(for: .resetToFactory)
+        )
+
+        coordinator?.openCardSettings(with: input)
+    }
+
+    func makeTwinInput(from cardInfo: CardInfo, config: UserWalletConfig, userWalletId: UserWalletId) -> OnboardingInput? {
+        guard let twinData = cardInfo.walletData.twinData,
+              let existingModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) else {
+            return nil
+        }
+
+        let factory = TwinInputFactory(
+            firstCardId: cardInfo.card.cardId,
+            cardInput: .userWalletModel(existingModel),
+            userWalletToDelete: userWalletId,
+            twinData: twinData,
+            sdkFactory: config
+        )
+        return factory.makeTwinInput()
+    }
+}
+
+extension ScanCardSettingsViewModel {
+    struct Input {
+        let cardImagePublisher: AnyPublisher<CardImageResult, Never>
+        let cardScanner: CardScanner
     }
 }

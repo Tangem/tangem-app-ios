@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemExpress
 
 protocol ExpressModulesFactory {
     func makeExpressViewModel(coordinator: ExpressRoutable) -> ExpressViewModel
@@ -16,11 +17,18 @@ protocol ExpressModulesFactory {
     ) -> ExpressTokensListViewModel
 
     func makeExpressFeeSelectorViewModel(coordinator: ExpressFeeSelectorRoutable) -> ExpressFeeSelectorViewModel
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel
+
     func makeExpressProvidersSelectorViewModel(coordinator: ExpressProvidersSelectorRoutable) -> ExpressProvidersSelectorViewModel
 
     func makeExpressSuccessSentViewModel(
         data: SentExpressTransactionData,
         coordinator: ExpressSuccessSentRoutable
     ) -> ExpressSuccessSentViewModel
+
+    func makePendingExpressTransactionsManager() -> PendingExpressTransactionsManager
 }

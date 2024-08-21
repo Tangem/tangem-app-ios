@@ -13,6 +13,8 @@ struct TangemApiTarget: TargetType {
     let type: TargetType
     let authData: AuthData?
 
+    // MARK: - TargetType
+
     var baseURL: URL {
         AppEnvironment.current.apiBaseUrl
     }
@@ -51,12 +53,32 @@ struct TangemApiTarget: TargetType {
             return "/private/manual-check/promotion-award"
         case .createAccount:
             return "/user-network-account"
+        case .apiList:
+            return "/networks/providers"
+        case .coinsList:
+            return "/coins/list"
+        case .coinsHistoryPreview:
+            return "/coins/history_preview"
+        case .tokenMarketsDetails(let request):
+            return "/coins/\(request.tokenId)"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .features, .getUserWalletTokens, .loadReferralProgramInfo, .promotion:
+        case .rates,
+             .currencies,
+             .coins,
+             .quotes,
+             .geo,
+             .getUserWalletTokens,
+             .loadReferralProgramInfo,
+             .promotion,
+             .apiList,
+             .features,
+             .coinsList,
+             .coinsHistoryPreview,
+             .tokenMarketsDetails:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -129,11 +151,35 @@ struct TangemApiTarget: TargetType {
             ], encoding: URLEncoding.default)
         case .createAccount(let parameters):
             return .requestJSONEncodable(parameters)
+        case .apiList:
+            return .requestPlain
+        case .coinsList(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
+        case .coinsHistoryPreview(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding(destination: .queryString, arrayEncoding: .noBrackets))
+        case .tokenMarketsDetails(let request):
+            return .requestParameters(parameters: [
+                "currency": request.currency,
+                "language": request.language,
+            ], encoding: URLEncoding.default)
         }
     }
 
     var headers: [String: String]? {
-        authData?.headers
+        var headers: [String: String] = [:]
+
+        if let authData {
+            headers["card_id"] = authData.cardId
+            headers["card_public_key"] = authData.cardPublicKey.hexString
+        }
+
+        if let appVersion: String = InfoDictionaryUtils.version.value() {
+            headers["version"] = appVersion
+        }
+
+        headers["platform"] = "ios"
+
+        return headers
     }
 }
 
@@ -158,25 +204,24 @@ extension TangemApiTarget {
         case awardNewUser(walletId: String, address: String, code: String)
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
+        case coinsList(_ requestModel: MarketsDTO.General.Request)
+        case coinsHistoryPreview(_ requestModel: MarketsDTO.ChartsHistory.Request)
+        case tokenMarketsDetails(request: MarketsDTO.Coins.Request)
+
+        // Configs
+        case apiList
     }
 
     struct AuthData {
         let cardId: String
         let cardPublicKey: Data
-
-        var headers: [String: String] {
-            [
-                "card_id": cardId,
-                "card_public_key": cardPublicKey.hexString,
-            ]
-        }
     }
 }
 
 extension TangemApiTarget: CachePolicyProvider {
     var cachePolicy: URLRequest.CachePolicy {
         switch type {
-        case .geo, .features:
+        case .geo, .features, .apiList:
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy

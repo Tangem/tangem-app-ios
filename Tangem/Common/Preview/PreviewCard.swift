@@ -39,16 +39,20 @@ enum PreviewCard {
                     tronGridApiKey: "",
                     hederaArkhiaApiKey: "",
                     polygonScanApiKey: "",
+                    koinosProApiKey: "",
                     tonCenterApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     fireAcademyApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     chiaTangemApiKeys: .init(mainnetApiKey: ""),
                     quickNodeSolanaCredentials: .init(apiKey: "", subdomain: ""),
-                    quickNodeBscCredentials: .init(apiKey: "", subdomain: "")
+                    quickNodeBscCredentials: .init(apiKey: "", subdomain: ""),
+                    bittensorDwellirKey: "",
+                    bittensorOnfinalityKey: ""
                 ),
                 dependencies: .init(
                     accountCreator: BlockchainAccountCreatorStub(),
                     dataStorage: FakeBlockchainDataStorage()
-                )
+                ),
+                apiList: [:]
             )
             // TODO: Inject preview models into CommonUserWalletModel
             _ = try! factory.makeWalletManager(
@@ -115,9 +119,9 @@ enum PreviewCard {
     private var card: Card {
         switch self {
         case .tangemWalletBackuped:
-            return .walletWithBackup
+            return CardMock.wallet.card
         default:
-            return .walletV2
+            return CardMock.wallet2.card
         }
     }
 }

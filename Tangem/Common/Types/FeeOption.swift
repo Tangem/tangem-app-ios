@@ -36,7 +36,7 @@ enum FeeOption: String, Hashable, Equatable {
         case .fast:
             return Localization.commonFeeSelectorOptionFast
         case .custom:
-            return Localization.commonFeeSelectorOptionCustom
+            return Localization.commonCustom
         }
     }
 

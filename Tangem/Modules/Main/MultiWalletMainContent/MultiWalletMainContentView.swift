@@ -13,6 +13,11 @@ struct MultiWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
+            ForEach(viewModel.bannerNotificationInputs) { input in
+                NotificationView(input: input)
+                    .transition(.notificationTransition)
+            }
+
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
                     .setButtonsLoadingState(to: viewModel.isScannerBusy)
@@ -30,6 +35,7 @@ struct MultiWalletMainContentView: View {
                 FixedSizeButtonWithLeadingIcon(
                     title: Localization.organizeTokensTitle,
                     icon: Assets.OrganizeTokens.filterIcon.image,
+                    style: .default,
                     action: viewModel.onOpenOrganizeTokensButtonTap
                 )
                 .infinityFrame(axis: .horizontal)
@@ -98,7 +104,8 @@ struct MultiWalletMainContentView: View {
                         let isLastItem = sectionIndex == viewModel.sections.count - 1 && itemIndex == section.items.count - 1
 
                         if isFirstItem {
-                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: .topEdge)
+                            let isSingleItem = section.items.count == 1
+                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: isSingleItem ? .all : .topEdge)
                         } else if isLastItem {
                             TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: .bottomEdge)
                         } else {
@@ -137,6 +144,7 @@ struct MultiWalletContentView_Preview: PreviewProvider {
             userWalletModel: userWalletModel,
             userWalletNotificationManager: FakeUserWalletNotificationManager(),
             tokensNotificationManager: FakeUserWalletNotificationManager(),
+            bannerNotificationManager: nil,
             rateAppController: RateAppControllerStub(),
             tokenSectionsAdapter: tokenSectionsAdapter,
             tokenRouter: SingleTokenRoutableMock(),

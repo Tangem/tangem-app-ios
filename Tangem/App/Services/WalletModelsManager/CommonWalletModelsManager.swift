@@ -14,7 +14,11 @@ class CommonWalletModelsManager {
     private let walletManagersRepository: WalletManagersRepository
     private let walletModelsFactory: WalletModelsFactory
 
-    private var _walletModels = CurrentValueSubject<[WalletModel], Never>([])
+    /// We need to keep optional array to track state when wallet models array wasn't able to initialize
+    /// This state can happen while app awaiting API list from server, because and Wallet managers can't be created without this info
+    /// Nil state is not the same as an empty state, because user can remove all tokens from main and the array will be empty
+    /// Also if we initialize CurrentValueSubject with empty array recipients will evaluate this state as an empty list
+    private var _walletModels = CurrentValueSubject<[WalletModel]?, Never>(nil)
     private var bag = Set<AnyCancellable>()
     private var updateAllSubscription: AnyCancellable?
 
@@ -51,6 +55,11 @@ class CommonWalletModelsManager {
         let walletModelIdsToAdd = newWalletModelIds.subtracting(existingWalletModelIds)
 
         if walletModelIdsToAdd.isEmpty, walletModelIdsToDelete.isEmpty {
+            if _walletModels.value == nil {
+                // Emit initial list. Case with first card scan without derivations
+                _walletModels.send([])
+            }
+
             return
         }
 
@@ -87,11 +96,13 @@ class CommonWalletModelsManager {
 
 extension CommonWalletModelsManager: WalletModelsManager {
     var walletModels: [WalletModel] {
-        _walletModels.value
+        _walletModels.value ?? []
     }
 
     var walletModelsPublisher: AnyPublisher<[WalletModel], Never> {
-        _walletModels.eraseToAnyPublisher()
+        _walletModels
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
 
     func updateAll() {

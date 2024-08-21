@@ -18,6 +18,7 @@ class CommonUserWalletModel {
 
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     let walletModelsManager: WalletModelsManager
 
@@ -31,7 +32,7 @@ class CommonUserWalletModel {
         derivationStyle: config.derivationStyle,
         derivationManager: derivationManager,
         keysDerivingProvider: self,
-        existingCurves: config.walletCurves,
+        existingCurves: config.existingCurves,
         longHashesSupported: config.hasFeature(.longHashes)
     )
 
@@ -161,30 +162,12 @@ class CommonUserWalletModel {
     }
 
     func validate() -> Bool {
-        return validateInternal(cardInfo.card, validationMode: .light)
-    }
-
-    private func validateInternal(_ card: CardDTO, validationMode: ValidationMode) -> Bool {
-        guard validateCurves(card.wallets.map { $0.curve }, validationMode: validationMode) else {
+        let pendingBackupManager = PendingBackupManager()
+        if pendingBackupManager.fetchPendingCard(cardInfo.card.cardId) != nil {
             return false
         }
 
         guard validateBackup(card.backupStatus, wallets: card.wallets) else {
-            return false
-        }
-
-        return true
-    }
-
-    private func validateCurves(_ curves: [EllipticCurve], validationMode: ValidationMode) -> Bool {
-        var expectedCurves = config.mandatoryCurves
-
-        if config is GenericConfig, validationMode == .light {
-            expectedCurves.remove(.bls12381_G2_AUG)
-        }
-
-        let curvesValidator = CurvesValidator(expectedCurves: expectedCurves)
-        if !curvesValidator.validate(curves) {
             return false
         }
 
@@ -278,7 +261,8 @@ extension CommonUserWalletModel: UserWalletModel {
         AnalyticsContextData(
             card: cardInfo.card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 
@@ -312,7 +296,8 @@ extension CommonUserWalletModel: UserWalletModel {
             cardInfo: cardInfo,
             userWalletModel: self,
             sdkFactory: config,
-            onboardingStepsBuilderFactory: config
+            onboardingStepsBuilderFactory: config,
+            pushNotificationsInteractor: pushNotificationsInteractor
         )
 
         return factory.makeBackupInput()
@@ -348,31 +333,32 @@ extension CommonUserWalletModel: UserWalletModel {
         userWalletRepository.save()
     }
 
-    func onBackupCreated(_ card: Card) {
-        for updatedWallet in card.wallets {
-            cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
-        }
+    func onBackupUpdate(type: BackupUpdateType) {
+        switch type {
+        case .primaryCardBackuped(let card):
+            for updatedWallet in card.wallets {
+                cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
+            }
 
-        cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
-        cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
-        cardInfo.card.backupStatus = card.backupStatus
-        onUpdate()
+            cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
+            cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
+            cardInfo.card.backupStatus = card.backupStatus
+            onUpdate()
+        case .backupCompleted:
+            // we have to read an actual status from backup validator
+            _updatePublisher.send()
+        }
     }
 
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode) {
+    func addAssociatedCard(_ cardId: String) {
         let cardInfo = CardInfo(card: card, walletData: .none, name: "")
         guard let userWalletId = UserWalletIdFactory().userWalletId(from: cardInfo),
               userWalletId == self.userWalletId else {
             return
         }
 
-        if !associatedCardIds.contains(card.cardId) {
-            associatedCardIds.insert(card.cardId)
-        }
-
-        if !validateInternal(card, validationMode: validationMode) {
-            // TODO: save backup error
-            _updatePublisher.send()
+        if !associatedCardIds.contains(cardId) {
+            associatedCardIds.insert(cardId)
         }
     }
 }
@@ -420,7 +406,8 @@ extension CommonUserWalletModel: AnalyticsContextDataProvider {
         return AnalyticsContextData(
             card: card,
             productType: config.productType,
-            embeddedEntry: config.embeddedBlockchain
+            embeddedEntry: config.embeddedBlockchain,
+            userWalletId: userWalletId
         )
     }
 }

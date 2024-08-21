@@ -9,7 +9,9 @@
 import Foundation
 import Combine
 
-struct RateAppControllerStub: RateAppController {
+struct RateAppControllerStub: RateAppInteractionController, RateAppNotificationController {
+    var showAppRateNotificationPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
+
     func bind(
         isPageSelectedPublisher: some Publisher<Bool, Never>,
         notificationsPublisher1: some Publisher<[NotificationViewInput], Never>,
@@ -20,4 +22,8 @@ struct RateAppControllerStub: RateAppController {
         isPageSelectedPublisher: some Publisher<Bool, Never>,
         notificationsPublisher: some Publisher<[NotificationViewInput], Never>
     ) {}
+
+    func dismissAppRate() {}
+    func openFeedbackMail() {}
+    func openAppStoreReview() {}
 }

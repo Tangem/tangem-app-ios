@@ -26,7 +26,7 @@ public extension Publishers {
         public func receive<S>(subscriber: S) where S: Subscriber, Upstream.Failure == S.Failure, Output == S.Input {
             upstream
                 .flatMap { output in
-                    let subject = PassthroughSubject<Output, Failure>()
+                    let subject = PassthroughSubject<Output, Never>()
 
                     let task = Task(priority: priority) {
                         let mapped = await transform(output)

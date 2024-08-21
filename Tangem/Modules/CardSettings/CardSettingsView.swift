@@ -34,6 +34,7 @@ struct CardSettingsView: View {
 
                 GroupedSection(viewModel.resetToFactoryViewModel) {
                     DefaultRowView(viewModel: $0)
+                        .appearance(.destructiveButton)
                 } footer: {
                     DefaultFooterView(viewModel.resetToFactoryFooterMessage)
                 }

@@ -11,10 +11,6 @@ import SwiftUI
 import Combine
 
 extension View {
-    func toAnyView() -> AnyView {
-        AnyView(self)
-    }
-
     @ViewBuilder
     func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {
@@ -108,6 +104,15 @@ extension View {
             #else
             self
             #endif
+        }
+    }
+
+    @ViewBuilder
+    func matchedGeometryEffect(_ effect: GeometryEffect?) -> some View {
+        if let effect {
+            matchedGeometryEffect(id: effect.id, in: effect.namespace, isSource: effect.isSource)
+        } else {
+            self
         }
     }
 }

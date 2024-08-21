@@ -191,6 +191,7 @@ struct TransactionsListView: View {
             FixedSizeButtonWithLeadingIcon(
                 title: title,
                 icon: Assets.arrowRightUpMini.image,
+                style: .default,
                 action: exploreAction
             )
             .overrideBackgroundColor(Constants.buttonBackgroundColor)

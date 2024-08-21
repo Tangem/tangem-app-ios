@@ -9,7 +9,6 @@
 import SwiftUI
 import BlockchainSdk
 import Combine
-import AlertToast
 
 struct LegacyTokenListView: View {
     @ObservedObject var viewModel: LegacyTokenListViewModel
@@ -20,13 +19,10 @@ struct LegacyTokenListView: View {
 
             overlay
         }
-        .scrollDismissesKeyboardCompat(true)
-        .navigationBarTitle(Text(viewModel.titleKey), displayMode: .automatic)
+        .scrollDismissesKeyboardCompat(.immediately)
+        .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .automatic)
         .navigationBarItems(trailing: addCustomView)
         .alert(item: $viewModel.alert, content: { $0.alert })
-        .toast(isPresenting: $viewModel.showToast) {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.contractAddressCopiedMessage)
-        }
         .searchable(text: $viewModel.enteredSearchText.value, placement: .navigationBarDrawer(displayMode: .always))
         .keyboardType(.alphabet)
         .autocorrectionDisabled()
@@ -51,7 +47,7 @@ struct LegacyTokenListView: View {
                 divider
 
                 ForEach(viewModel.coinViewModels) {
-                    LegacyCoinView(model: $0)
+                    ManageTokensCoinView(model: $0)
                         .padding(.horizontal)
 
                     divider
@@ -64,9 +60,7 @@ struct LegacyTokenListView: View {
                     }
                 }
 
-                if !viewModel.isReadonlyMode {
-                    Color.clear.frame(width: 10, height: 58, alignment: .center)
-                }
+                Color.clear.frame(width: 10, height: 58, alignment: .center)
             }
         }
     }
@@ -76,59 +70,38 @@ struct LegacyTokenListView: View {
             .padding([.leading])
     }
 
-    @ViewBuilder private var addCustomView: some View {
-        if !viewModel.isReadonlyMode {
-            Button(action: viewModel.openAddCustom) {
-                ZStack {
-                    Circle().fill(Colors.Button.primary)
+    private var addCustomView: some View {
+        Button(action: viewModel.openAddCustom) {
+            ZStack {
+                Circle().fill(Colors.Button.primary)
 
-                    Image(systemName: "plus")
-                        .foregroundColor(Color.tangemBg)
-                        .font(.system(size: 13, weight: .bold, design: .default))
-                }
-                .frame(width: 26, height: 26)
+                Image(systemName: "plus")
+                    .foregroundColor(Color.tangemBg)
+                    .font(.system(size: 13, weight: .bold, design: .default))
             }
-            .animation(nil, value: 0)
-        } else {
-            EmptyView()
+            .frame(width: 26, height: 26)
         }
+        .animation(nil, value: 0)
     }
 
-    @ViewBuilder private var titleView: some View {
-        Text(viewModel.titleKey)
-            .font(Font.system(size: 30, weight: .bold, design: .default))
-            .minimumScaleFactor(0.8)
-    }
+    private var overlay: some View {
+        VStack {
+            Spacer()
 
-    @ViewBuilder private var overlay: some View {
-        if !viewModel.isReadonlyMode {
-            VStack {
-                Spacer()
-
-                MainButton(
-                    title: Localization.commonSaveChanges,
-                    isLoading: viewModel.isSaving,
-                    isDisabled: viewModel.isSaveDisabled,
-                    action: viewModel.saveChanges
-                )
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
-                .background(LinearGradient(
-                    colors: [Colors.Background.primary, Colors.Background.primary, Colors.Background.primary.opacity(0)],
-                    startPoint: .bottom,
-                    endPoint: .top
-                )
-                .edgesIgnoringSafeArea(.bottom))
-            }
+            MainButton(
+                title: Localization.commonSaveChanges,
+                isLoading: viewModel.isSaving,
+                isDisabled: viewModel.isSaveDisabled,
+                action: viewModel.saveChanges
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .background(LinearGradient(
+                colors: [Colors.Background.primary, Colors.Background.primary, Colors.Background.primary.opacity(0)],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .edgesIgnoringSafeArea(.bottom))
         }
-    }
-}
-
-struct LegacyAddNewTokensView_Previews: PreviewProvider {
-    static var previews: some View {
-        LegacyTokenListView(viewModel: .init(
-            mode: .show,
-            coordinator: LegacyTokenListCoordinator()
-        ))
     }
 }

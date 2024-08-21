@@ -17,12 +17,16 @@ struct TransactionSendAvailabilityProvider {
             return .cantSignLongTransactions
         }
 
+        if walletModel.state.isBlockchainUnreachable {
+            return .blockchainUnreachable
+        }
+
         guard let currentAmount = wallet.amounts[walletModel.amountType], currentAmount.value > 0 else {
             return .zeroWalletBalance
         }
 
         // has pending tx
-        if hasPendingTransactions(walletModel: walletModel) {
+        if hasPendingTransactions(walletModel: walletModel), !wallet.blockchain.isParallelTransactionAllowed {
             return .hasPendingTransaction(blockchain: walletModel.tokenItem.blockchain)
         }
 
@@ -60,6 +64,7 @@ extension TransactionSendAvailabilityProvider {
         case cantSignLongTransactions
         case hasPendingTransaction(blockchain: Blockchain)
         case zeroFeeCurrencyBalance(configuration: NotEnoughFeeConfiguration)
+        case blockchainUnreachable
 
         struct NotEnoughFeeConfiguration: Hashable {
             let transactionAmountTypeName: String
@@ -68,30 +73,6 @@ extension TransactionSendAvailabilityProvider {
             let feeAmountTypeIconName: String
             let networkName: String
             let currencyButtonTitle: String?
-        }
-
-        var description: String? {
-            switch self {
-            case .zeroWalletBalance:
-                return nil
-            case .cantSignLongTransactions:
-                return Localization.warningLongTransactionMessage
-            case .hasPendingTransaction(let blockchain):
-                switch blockchain.feePaidCurrency {
-                case .coin:
-                    return Localization.warningSendBlockedPendingTransactionsMessage(blockchain.currencySymbol)
-                case .token, .sameCurrency:
-                    return Localization.warningSendBlockedPendingTransactionsInBlockchainMessage(blockchain.displayName)
-                }
-            case .zeroFeeCurrencyBalance(let configuration):
-                return Localization.warningSendBlockedFundsForFeeMessage(
-                    configuration.transactionAmountTypeName,
-                    configuration.networkName,
-                    configuration.transactionAmountTypeName,
-                    configuration.feeAmountTypeName,
-                    configuration.feeAmountTypeCurrencySymbol
-                )
-            }
         }
     }
 }

@@ -15,11 +15,13 @@ struct CommonVisaAPIService {
     private var decoder: JSONDecoder
 
     private let isTestnet: Bool
+    private let additionalAPIHeaders: [String: String]
 
-    init(isTestnet: Bool, provider: MoyaProvider<VisaAPITarget>, logger: InternalLogger) {
+    init(isTestnet: Bool, additionalAPIHeaders: [String: String], provider: MoyaProvider<VisaAPITarget>, logger: InternalLogger) {
+        self.isTestnet = isTestnet
+        self.additionalAPIHeaders = additionalAPIHeaders
         self.provider = provider
         self.logger = logger
-        self.isTestnet = isTestnet
 
         decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -37,7 +39,7 @@ extension CommonVisaAPIService: VisaAPIService {
 
 private extension CommonVisaAPIService {
     func _request<T: Decodable>(target: VisaAPITarget.Target) async throws -> T {
-        let request = VisaAPITarget(isTestnet: isTestnet, target: target)
+        let request = VisaAPITarget(isTestnet: isTestnet, target: target, additionalHeaders: additionalAPIHeaders)
         var response: Response
 
         do {

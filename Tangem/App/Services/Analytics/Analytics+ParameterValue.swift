@@ -37,6 +37,8 @@ extension Analytics {
         case onboarding = "Onboarding"
         case settings = "Settings"
         case signIn = "Sign In"
+        case receive = "Receive"
+        case stories = "Stories"
 
         case transactionSourceSend = "Send"
         case transactionSourceSwap = "Swap"
@@ -60,6 +62,7 @@ extension Analytics {
         case enabled = "Enabled"
         case disabled = "Disabled"
         case reset = "Reset"
+        case allow = "Allow"
         case cancel = "Cancel"
 
         case errorCode = "Error Code"
@@ -88,6 +91,9 @@ extension Analytics {
         case sortTypeManual = "Manually"
 
         case balance = "Balance"
+
+        // Transaction is sent
+        case sent = "Sent"
 
         // MARK: - Express
 
@@ -132,13 +138,15 @@ extension Analytics {
 
         // MARK: - Promotion banners
 
-        case oneInch = "1inch"
-        case changelly = "Changelly"
-        case changeNow = "ChangeNow"
-        case travala = "Travala"
+        case okx = "OKX"
 
         case clicked = "Clicked"
         case closed = "Closed"
+
+        // MARK: - Promo
+
+        case recommended = "Recommended"
+        case native = "Native"
 
         // MARK: - Rate the app response
 
@@ -147,7 +155,9 @@ extension Analytics {
         /// Feedback email (`RateAppResponse.negative`).
         case feedbackEmail = "Feedback"
         /// The review sheet dismissed w/o further interactions (`RateAppResponse.dismissed`).
-        case appRateSheetDismissed = "Close"
+        case appRateDismissed = "Close"
+
+        // MARK: - Common
 
         static func toggleState(for boolean: Bool) -> ParameterValue {
             return boolean ? .on : .off

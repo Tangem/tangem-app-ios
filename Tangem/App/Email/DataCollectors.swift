@@ -14,7 +14,7 @@ protocol EmailDataCollector: LogFileProvider {}
 
 extension EmailDataCollector {
     var fileName: String {
-        "infoLogs.txt"
+        LogFilesNames.infoLogs
     }
 
     func prepareLogFile() -> URL {
@@ -60,10 +60,11 @@ struct SendScreenDataCollector: EmailDataCollector {
             data.append(EmailCollectedData(type: .card(.token), data: token.symbol))
             data.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
             data.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
-        case .coin, .reserve:
+        case .coin, .reserve, .feeResource:
             break
         }
 
+        // Did display current wallet manager curreny host by provider
         data.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
 
         if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
@@ -87,19 +88,13 @@ struct SendScreenDataCollector: EmailDataCollector {
             EmailCollectedData(type: .send(.isFeeIncluded), data: "\(isFeeIncluded)"),
         ])
 
-        if let txHex = txHex {
+        // The last retry attempt by the host caused an error with txHex string
+        if let exceptionHost = lastError?.lastRetryHost, let txHex = lastError?.tx {
+            data.append(EmailCollectedData(type: .wallet(.exceptionWalletManagerHost), data: exceptionHost))
             data.append(EmailCollectedData(type: .send(.transactionHex), data: txHex))
         }
 
         return formatData(data)
-    }
-
-    private var txHex: String? {
-        if let sendError = lastError as? SendTxError {
-            return sendError.tx
-        }
-
-        return nil
     }
 
     private let userWalletEmailData: [EmailCollectedData]
@@ -108,9 +103,9 @@ struct SendScreenDataCollector: EmailDataCollector {
     private let destination: String
     private let amount: Amount
     private let isFeeIncluded: Bool
-    private let lastError: Error?
+    private let lastError: SendTxError?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: Error?) {
+    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: SendTxError?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
         self.fee = fee
@@ -174,59 +169,65 @@ struct PushScreenDataCollector: EmailDataCollector {
 
 struct DetailsFeedbackDataCollector: EmailDataCollector {
     var logData: Data? {
-        var dataToFormat = userWalletEmailData
+        var dataToFormat: [EmailCollectedData] = []
 
-        for walletModel in walletModels {
-            dataToFormat.append(.separator(.dashes))
-            dataToFormat.append(EmailCollectedData(type: .card(.blockchain), data: walletModel.wallet.blockchain.displayName))
+        for dataItem in data {
+            dataToFormat.append(contentsOf: dataItem.userWalletEmailData)
 
-            let derivationPath = walletModel.wallet.publicKey.derivationPath
-            dataToFormat.append(EmailCollectedData(type: .wallet(.derivationPath), data: derivationPath?.rawPath ?? "[default]"))
+            for walletModel in dataItem.walletModels {
+                dataToFormat.append(.separator(.dashes))
+                dataToFormat.append(EmailCollectedData(type: .card(.blockchain), data: walletModel.wallet.blockchain.displayName))
 
-            if let xpubKey = walletModel.wallet.xpubKey {
-                dataToFormat.append(EmailCollectedData(type: .wallet(.xpub), data: xpubKey))
-            }
+                let derivationPath = walletModel.wallet.publicKey.derivationPath
+                dataToFormat.append(EmailCollectedData(type: .wallet(.derivationPath), data: derivationPath?.rawPath ?? "[default]"))
 
-            if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
-                dataToFormat.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
-            }
-
-            if let token = walletModel.amountType.token {
-                dataToFormat.append(EmailCollectedData(type: .token(.id), data: token.id ?? "[custom token]"))
-                dataToFormat.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
-                dataToFormat.append(EmailCollectedData(type: .token(.name), data: token.name))
-                dataToFormat.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
-            }
-
-            dataToFormat.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
-            if walletModel.addressNames.count > 1 {
-                var explorerLinks = "Multiple explorers links: "
-                var addresses = "Multiple addresses: "
-                let suffix = " ; \n"
-                walletModel.addressNames.enumerated().forEach {
-                    let namePrefix = $0.element + " - "
-                    addresses += namePrefix + walletModel.displayAddress(for: $0.offset) + suffix
-                    explorerLinks += namePrefix + (walletModel.exploreURL(for: $0.offset)?.absoluteString ?? "") + suffix
+                if let outputsDescription = walletModel.blockchainDataProvider.outputsCount?.description {
+                    dataToFormat.append(EmailCollectedData(type: .wallet(.outputsCount), data: outputsDescription))
                 }
-                explorerLinks.removeLast(suffix.count)
-                addresses.removeLast(suffix.count)
 
-                dataToFormat.append(EmailCollectedData(type: .wallet(.walletAddress), data: addresses))
-                dataToFormat.append(EmailCollectedData(type: .wallet(.explorerLink), data: explorerLinks))
-            } else if walletModel.addressNames.count == 1 {
-                dataToFormat.append(EmailCollectedData(type: .wallet(.walletAddress), data: walletModel.displayAddress(for: 0)))
-                dataToFormat.append(EmailCollectedData(type: .wallet(.explorerLink), data: walletModel.exploreURL(for: 0)?.absoluteString ?? ""))
+                if let token = walletModel.amountType.token {
+                    dataToFormat.append(EmailCollectedData(type: .token(.id), data: token.id ?? "[custom token]"))
+                    dataToFormat.append(EmailCollectedData(type: .token(.decimals), data: "\(token.decimalCount)"))
+                    dataToFormat.append(EmailCollectedData(type: .token(.name), data: token.name))
+                    dataToFormat.append(EmailCollectedData(type: .token(.contractAddress), data: token.contractAddress))
+                }
+
+                dataToFormat.append(EmailCollectedData(type: .wallet(.walletManagerHost), data: walletModel.blockchainDataProvider.currentHost))
+                if walletModel.addressNames.count > 1 {
+                    var explorerLinks = "Multiple explorers links: "
+                    var addresses = "Multiple addresses: "
+                    let suffix = " ; \n"
+                    walletModel.addressNames.enumerated().forEach {
+                        let namePrefix = $0.element + " - "
+                        addresses += namePrefix + walletModel.displayAddress(for: $0.offset) + suffix
+                        explorerLinks += namePrefix + (walletModel.exploreURL(for: $0.offset)?.absoluteString ?? "") + suffix
+                    }
+                    explorerLinks.removeLast(suffix.count)
+                    addresses.removeLast(suffix.count)
+
+                    dataToFormat.append(EmailCollectedData(type: .wallet(.walletAddress), data: addresses))
+                    dataToFormat.append(EmailCollectedData(type: .wallet(.explorerLink), data: explorerLinks))
+                } else if walletModel.addressNames.count == 1 {
+                    dataToFormat.append(EmailCollectedData(type: .wallet(.walletAddress), data: walletModel.displayAddress(for: 0)))
+                    dataToFormat.append(EmailCollectedData(type: .wallet(.explorerLink), data: walletModel.exploreURL(for: 0)?.absoluteString ?? ""))
+                }
             }
+
+            dataToFormat.append(.separator(.dashes))
+            dataToFormat.append(.separator(.dashes))
         }
 
         return formatData(dataToFormat)
     }
 
-    private let walletModels: [WalletModel]
-    private let userWalletEmailData: [EmailCollectedData]
+    private let data: [DetailsFeedbackData]
 
-    init(walletModels: [WalletModel], userWalletEmailData: [EmailCollectedData]) {
-        self.walletModels = walletModels
-        self.userWalletEmailData = userWalletEmailData
+    init(data: [DetailsFeedbackData]) {
+        self.data = data
     }
+}
+
+struct DetailsFeedbackData {
+    let userWalletEmailData: [EmailCollectedData]
+    let walletModels: [WalletModel]
 }

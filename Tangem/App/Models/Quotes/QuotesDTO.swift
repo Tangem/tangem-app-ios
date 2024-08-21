@@ -18,6 +18,8 @@ extension QuotesDTO {
         struct Fields: Decodable {
             let price: Decimal?
             let priceChange24h: Decimal?
+            let priceChange1w: Decimal?
+            let priceChange30d: Decimal?
             let prices24h: [String: Double]?
         }
     }
@@ -31,8 +33,10 @@ extension QuotesDTO {
 
         enum Fields: String, Encodable {
             case priceChange24h
+            case priceChange7d = "priceChange1w"
+            case priceChange30d
             case price
-            case prices24h
+            case lastUpdatedAt
         }
 
         enum CodingKeys: CodingKey {

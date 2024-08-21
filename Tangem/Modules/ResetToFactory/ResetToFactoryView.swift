@@ -73,8 +73,9 @@ struct ResetToFactoryView: View {
 
     private func warningMessageView(warning: ResetToFactoryViewModel.Warning) -> some View {
         Button(action: { viewModel.toggleWarning(warningType: warning.type) }) {
-            HStack(spacing: 16) {
+            HStack(alignment: .top, spacing: 16) {
                 SelectableIcon(isSelected: warning.isAccepted)
+                    .padding(.top, 2)
 
                 Text(warning.type.title)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
@@ -127,7 +128,7 @@ struct ResetToFactoryView_Previews: PreviewProvider {
     static let viewModel = ResetToFactoryViewModel(
         input: .init(
             cardInteractor: FactorySettingsResettingMock(),
-            hasBackupCards: false,
+            backupCardsCount: 0,
             userWalletId: UserWalletId(value: Data())
         ),
         coordinator: CardSettingsCoordinator()

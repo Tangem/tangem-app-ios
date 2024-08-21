@@ -41,7 +41,7 @@ class FakeUserWalletRepository: UserWalletRepository {
             switch method {
             case .biometry:
                 completion(.troubleshooting)
-            case .card(let userWalletId):
+            case .card(let userWalletId, _):
                 if let userWalletId, let userWalletModel = self.models.first(where: { $0.userWalletId == userWalletId }) {
                     completion(.success(userWalletModel))
                     return
@@ -52,7 +52,7 @@ class FakeUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func setSelectedUserWalletId(_ userWalletId: UserWalletId, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason) {}
+    func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {}
 
     func updateSelection() {}
 
@@ -60,9 +60,7 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func add(_ userWalletModel: UserWalletModel) {}
 
-    func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
-
-    func addOrScan(completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
+    func addOrScan(scanner: CardScanner, completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
 
     func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool) {}
 

@@ -12,7 +12,8 @@ import TangemSdk
 struct OnboardingInput { // TODO: Split to coordinator options and input
     let backupService: BackupService
     let primaryCardId: String
-    let cardInitializer: CardInitializable?
+    let cardInitializer: CardInitializer?
+    let pushNotificationsPermissionManager: PushNotificationsPermissionManager?
     let steps: OnboardingSteps
     let cardInput: CardInput
     let twinData: TwinData?
@@ -45,18 +46,6 @@ extension OnboardingInput {
                 return factory.makeConfig().getFeatureAvailability(.backup).disabledLocalizedReason
             case .userWalletModel(let userWalletModel):
                 return userWalletModel.config.getDisabledLocalizedReason(for: .backup)
-            case .cardId:
-                return nil
-            }
-        }
-
-        var disclaimer: TOU? {
-            switch self {
-            case .cardInfo(let cardInfo):
-                let factory = UserWalletConfigFactory(cardInfo)
-                return factory.makeConfig().tou
-            case .userWalletModel(let userWalletModel):
-                return userWalletModel.config.tou
             case .cardId:
                 return nil
             }

@@ -23,7 +23,8 @@ struct ReceiveCurrencyView: View {
                 state: viewModel.cryptoAmountState,
                 font: Fonts.Regular.title1,
                 textColor: Colors.Text.primary1,
-                loaderSize: CGSize(width: 102, height: 24)
+                loaderSize: CGSize(width: 102, height: 24),
+                prefix: "~"
             )
         }
         .didTapChangeCurrency(didTapChangeCurrency)

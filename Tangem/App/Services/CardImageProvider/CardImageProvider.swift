@@ -18,7 +18,7 @@ struct CardImageProvider {
     @Injected(\.cardImageLoader) private var imageLoader: CardImageLoaderProtocol
 
     private let supportsOnlineImage: Bool
-    private let defaultImage = UIImage(named: "dark_card")!
+    private let defaultImage = Assets.Onboarding.darkCard.uiImage
 
     private let cardVerifier: OnlineCardVerifier
     private let kingfisherCache = KingfisherManager.shared.cache

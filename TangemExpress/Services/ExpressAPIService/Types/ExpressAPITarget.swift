@@ -20,6 +20,7 @@ struct ExpressAPITarget: Moya.TargetType {
         case exchangeQuote(request: ExpressDTO.ExchangeQuote.Request)
         case exchangeData(request: ExpressDTO.ExchangeData.Request)
         case exchangeStatus(request: ExpressDTO.ExchangeStatus.Request)
+        case exchangeSent(request: ExpressDTO.ExchangeSent.Request)
     }
 
     var baseURL: URL {
@@ -28,6 +29,8 @@ struct ExpressAPITarget: Moya.TargetType {
             return URL(string: "https://express.tangem.org/v1/")!
         case .production:
             return URL(string: "https://express.tangem.com/v1/")!
+        case .stage:
+            return URL(string: "https://express-stage.tangem.com/v1/")!
         }
     }
 
@@ -39,12 +42,13 @@ struct ExpressAPITarget: Moya.TargetType {
         case .exchangeQuote: return "exchange-quote"
         case .exchangeData: return "exchange-data"
         case .exchangeStatus: return "exchange-status"
+        case .exchangeSent: return "exchange-sent"
         }
     }
 
     var method: Moya.Method {
         switch target {
-        case .assets, .pairs: return .post
+        case .assets, .pairs, .exchangeSent: return .post
         case .providers, .exchangeQuote, .exchangeData, .exchangeStatus: return .get
         }
     }
@@ -54,6 +58,8 @@ struct ExpressAPITarget: Moya.TargetType {
         case .assets(let request):
             return .requestJSONEncodable(request)
         case .pairs(let request):
+            return .requestJSONEncodable(request)
+        case .exchangeSent(let request):
             return .requestJSONEncodable(request)
         case .providers:
             return .requestPlain

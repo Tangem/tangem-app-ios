@@ -1,0 +1,1499 @@
+{
+    "limit" : 50,
+    "ts" : 1716813342732,
+    "coins" : [
+        {
+            "id" : "bitcoin",
+            "symbol" : "BTC",
+            "active" : true,
+            "name" : "Bitcoin",
+            "networks" : [
+                {
+                    "networkId" : "bitcoin",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "ethereum",
+            "symbol" : "ETH",
+            "active" : true,
+            "name" : "Ethereum",
+            "networks" : [
+                {
+                    "networkId" : "ethereum",
+                    "exchangeable" : true
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "solana",
+                    "contractAddress" : "2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk"
+                }
+            ]
+        },
+        {
+            "id" : "tether",
+            "symbol" : "USDT",
+            "active" : true,
+            "name" : "Tether",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x55d398326f99059ff775485246999027b3197955"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "solana",
+                    "contractAddress" : "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "tron",
+                    "contractAddress" : "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "cronos",
+                    "contractAddress" : "0x66e428c3f67a68878562e79a0234c1f83c208770"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "fantom",
+                    "contractAddress" : "0x049d68029688eabf473097a2fc38ef61633a3c7a"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "kava",
+                    "contractAddress" : "0x919c1c267bc06a7039e03fcc2ef738525769109c"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "moonbeam",
+                    "contractAddress" : "0xefaeee334f0fd1712f9a8cc375f427d9cdd40d73"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "shibarium",
+                    "contractAddress" : "0xab082b8ad96c7f47ed70ed971ce2116469954cfb"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "moonriver",
+                    "contractAddress" : "0xb44a9b6905af7c801311e8f4e76932ee959c663c"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "aurora",
+                    "contractAddress" : "0x4988a896b1227218e4a686fde5eabdcabd91571f"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "telos",
+                    "contractAddress" : "0xefaeee334f0fd1712f9a8cc375f427d9cdd40d73"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "polygon-zkevm",
+                    "contractAddress" : "0x1e4a5963abfd975d8c9021ce480b42188849d41d"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0x4ecaba5870353805a9f068101a40e0f32ed605c6"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "zksync",
+                    "contractAddress" : "0x493257fd37edb34451f62edf8d2a0c418852ba4c"
+                }
+            ]
+        },
+        {
+            "id" : "binancecoin",
+            "symbol" : "BNB",
+            "active" : true,
+            "name" : "BNB",
+            "networks" : [
+                {
+                    "networkId" : "binance-smart-chain",
+                    "exchangeable" : true
+                },
+                {
+                    "networkId" : "binancecoin",
+                    "exchangeable" : true
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xb8c77482e45f1f44de1745f52c74426c631bdd52"
+                }
+            ]
+        },
+        {
+            "id" : "solana",
+            "symbol" : "SOL",
+            "active" : true,
+            "name" : "Solana",
+            "networks" : [
+                {
+                    "networkId" : "solana",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "staked-ether",
+            "symbol" : "STETH",
+            "active" : true,
+            "name" : "Lido Staked Ether",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xae7ab96520de3a18e5e111b5eaab095312d7fe84"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "H2mf9QNdU2Niq6QR7367Ua2trBsvscLyX5bz7R3Pw5sE"
+                }
+            ]
+        },
+        {
+            "id" : "usd-coin",
+            "symbol" : "USDC",
+            "active" : true,
+            "name" : "USD Coin",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "solana",
+                    "contractAddress" : "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "tron",
+                    "contractAddress" : "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "hedera-hashgraph",
+                    "contractAddress" : "0.0.456858"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "cronos",
+                    "contractAddress" : "0xc21223249ca28397b4b6541dffaecc539bff0c59"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "fantom",
+                    "contractAddress" : "0x04068da6c83afcfa0e13ba15a6696662335d5b75"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "kava",
+                    "contractAddress" : "0xfa9343c3897324496a05fc75abed6bac29f8a40f"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "moonbeam",
+                    "contractAddress" : "0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "shibarium",
+                    "contractAddress" : "0xf010f12dcA0b96D2d6685bf4dB3dbB4Ad500B6Ad"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "aurora",
+                    "contractAddress" : "0xb12bfca5a55806aaf64e99521918a4bf0fc40802"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "telos",
+                    "contractAddress" : "0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0xddafbb505ad214d7b80b1f830fccc89b60fb7a83"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 6,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x0b2c639c533813f4aa9d7837caf62653d097ff85"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "polygon-zkevm",
+                    "contractAddress" : "0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "zksync",
+                    "contractAddress" : "0x1d17cbcf0d6d143135ae902365d2e5e2a16538d4"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "base",
+                    "contractAddress" : "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                }
+            ]
+        },
+        {
+            "id" : "ripple",
+            "symbol" : "XRP",
+            "active" : true,
+            "name" : "XRP",
+            "networks" : [
+                {
+                    "networkId" : "xrp",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "binancecoin",
+                    "contractAddress" : "XRP-BF2"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe"
+                }
+            ]
+        },
+        {
+            "id" : "dogecoin",
+            "symbol" : "DOGE",
+            "active" : true,
+            "name" : "Dogecoin",
+            "networks" : [
+                {
+                    "networkId" : "dogecoin",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xba2ae424d960c26247dd6c32edc70b295c744c43"
+                }
+            ]
+        },
+        {
+            "id" : "the-open-network",
+            "symbol" : "TON",
+            "active" : true,
+            "name" : "Toncoin",
+            "networks" : [
+                {
+                    "networkId" : "the-open-network",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 9,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x582d872a1b094fc48f5de31d3b73f2d9be47def1"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 9,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x76a797a59ba2c17726896976b7b3747bfd1d220f"
+                }
+            ]
+        },
+        {
+            "id" : "cardano",
+            "symbol" : "ADA",
+            "active" : true,
+            "name" : "Cardano",
+            "networks" : [
+                {
+                    "networkId" : "cardano",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "binancecoin",
+                    "contractAddress" : "ADA-9F4"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47"
+                }
+            ]
+        },
+        {
+            "id" : "avalanche-2",
+            "symbol" : "AVAX",
+            "active" : true,
+            "name" : "Avalanche",
+            "networks" : [
+                {
+                    "networkId" : "avalanche",
+                    "exchangeable" : true
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x1ce0c2827e2ef14d5c4f29a091d735a204794041"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b"
+                }
+            ]
+        },
+        {
+            "id" : "shiba-inu",
+            "symbol" : "SHIB",
+            "active" : true,
+            "name" : "Shiba Inu",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x2859e4544c4bb03966803b044a93563bd2d0dd4d"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "shibarium",
+                    "contractAddress" : "0x495eea66b0f8b636d441dc6a98d8f5c3d455c4c0"
+                }
+            ]
+        },
+        {
+            "id" : "wrapped-bitcoin",
+            "symbol" : "WBTC",
+            "active" : true,
+            "name" : "Wrapped Bitcoin",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x50b7545627a5162f82a992c33b87adc75187b218"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "cronos",
+                    "contractAddress" : "0x062e66477faf219f25d27dced647bf57c3107d52"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "fantom",
+                    "contractAddress" : "0x321162cd933e2be498cd2267a90534a804051b11"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "kava",
+                    "contractAddress" : "0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "moonbeam",
+                    "contractAddress" : "0x922d641a426dcffaef11680e5358f34d97d112e1"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "moonriver",
+                    "contractAddress" : "0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "aurora",
+                    "contractAddress" : "0xf4eb217ba2454613b15dbdea6e5f22276410e89e"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "telos",
+                    "contractAddress" : "0xf390830df829cf22c53c8840554b98eafc5dcbc2"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x68f180fcce6836688e9084f035309e29bf0a2095"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "polygon-zkevm",
+                    "contractAddress" : "0xea034fb02eb1808c2cc3adbc15f447b93cbe08e1"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "zksync",
+                    "contractAddress" : "0xbbeb516fb02a01611cbbe0453fe3c580d7281011"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0x8e5bbbb09ed1ebde8674cda39a0c169401db4252"
+                }
+            ]
+        },
+        {
+            "id" : "polkadot",
+            "symbol" : "DOT",
+            "active" : true,
+            "name" : "Polkadot",
+            "networks" : [
+                {
+                    "networkId" : "polkadot",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x7083609fce4d1d8dc0c979aab8c869ea2c873402"
+                }
+            ]
+        },
+        {
+            "id" : "chainlink",
+            "symbol" : "LINK",
+            "active" : true,
+            "name" : "Chainlink",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x514910771af9ca656af840dff83e8264ecf986ca"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x5947bb275c521040051d82396192181b413227a3"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "fantom",
+                    "contractAddress" : "0xb3654dc3d10ea7645f8319668e8f54d2574fbdc8"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x350a791bfc2c21f9ed5d10980dad2e2638ffa7f6"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0xe2e73a1c69ecf83f464efce6a5be353a37ca09b2"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0xf97f4df75117a78c1a5a0dbb814af92458539fb4"
+                }
+            ]
+        },
+        {
+            "id" : "tron",
+            "symbol" : "TRX",
+            "active" : true,
+            "name" : "TRON",
+            "networks" : [
+                {
+                    "networkId" : "tron",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xce7de646e7208a4ef112cb6ed5038fa6cc6b12e3"
+                }
+            ]
+        },
+        {
+            "id" : "bitcoin-cash",
+            "symbol" : "BCH",
+            "active" : true,
+            "name" : "Bitcoin Cash",
+            "networks" : [
+                {
+                    "networkId" : "bitcoin-cash",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x8fF795a6F4D97E7887C79beA79aba5cc76444aDf"
+                }
+            ]
+        },
+        {
+            "id" : "near",
+            "symbol" : "NEAR",
+            "active" : true,
+            "name" : "NEAR Protocol",
+            "networks" : [
+                {
+                    "networkId" : "near-protocol",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x1fa4a73a3f0133f0025378af00236f3abdee5d63"
+                }
+            ]
+        },
+        {
+            "id" : "uniswap",
+            "symbol" : "UNI",
+            "active" : true,
+            "name" : "Uniswap",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xbf5140a22578168fd562dccf235e5d43a02ce9b1"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "8FU95xFJhUUkyyCLU13HSzDLs7oC4QZdXQHL6SCeab36"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x8ebaf22b6f053dffeaf46f4dd9efa95d89ba8580"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0xb33eaad8d922b1083446dc23f610c2567fb5180f"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0x4537e328bf7e4efa29d05caea260d7fe26af9d74"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x6fd9d7ad17242c41f7131d257212c54a0e816691"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0"
+                }
+            ]
+        },
+        {
+            "id" : "matic-network",
+            "symbol" : "MATIC",
+            "active" : true,
+            "name" : "Polygon",
+            "networks" : [
+                {
+                    "networkId" : "polygon-pos",
+                    "exchangeable" : true
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xcc42724c6683b7e57334c4e856f4c9965ed682bd"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "C7NNPWuZCNjZBfW5p6JvGsR8pUdsRpEdP1ZAhnoDwj7h"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "moonbeam",
+                    "contractAddress" : "0x3405a1bd46b85c5c029483fbecf2f3e611026e45"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "moonriver",
+                    "contractAddress" : "0x682f81e57eaa716504090c3ecba8595fb54561d8"
+                }
+            ]
+        },
+        {
+            "id" : "litecoin",
+            "symbol" : "LTC",
+            "active" : true,
+            "name" : "Litecoin",
+            "networks" : [
+                {
+                    "networkId" : "litecoin",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x4338665cbb7b2485a8855a139b75d5e34ab0db94"
+                }
+            ]
+        },
+        {
+            "id" : "fetch-ai",
+            "symbol" : "FET",
+            "active" : true,
+            "name" : "Fetch.ai",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xaea46a60368a7bd060eec7df8cba43b7ef41ad85"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x031b41e504677879370e9dbcf937283a8691fa7f"
+                }
+            ]
+        },
+        {
+            "id" : "pepe",
+            "symbol" : "PEPE",
+            "active" : true,
+            "name" : "Pepe",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x25d887ce7a35172c62febfd67a1856f20faebb00"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x25d887ce7a35172c62febfd67a1856f20faebb00"
+                }
+            ]
+        },
+        {
+            "id" : "leo-token",
+            "symbol" : "LEO",
+            "active" : true,
+            "name" : "LEO Token",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3"
+                }
+            ]
+        },
+        {
+            "id" : "dai",
+            "symbol" : "DAI",
+            "active" : true,
+            "name" : "Dai",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x6b175474e89094c44da98b954eedeac495271d0f"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "EjmyN6qEC1Tf1JxiG1ae7UTJhUxSwk1TCWNWqxWV4J6o"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0xd586e7f844cea2f87f50152665bcbc2c279d8d70"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "cronos",
+                    "contractAddress" : "0xf2001b145b43032aaf5ee2884e456ccd805f677d"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "fantom",
+                    "contractAddress" : "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "kava",
+                    "contractAddress" : "0x765277eebeca2e31912c9946eae1021199b39c61"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "moonbeam",
+                    "contractAddress" : "0x765277eebeca2e31912c9946eae1021199b39c61"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "shibarium",
+                    "contractAddress" : "0x0726959d22361B79e4D50A5D157b044A83eC870d"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "moonriver",
+                    "contractAddress" : "0x80a16016cc4a2e6a2caca8a4a498b1699ff0f844"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "aurora",
+                    "contractAddress" : "0xe3520349f477a5f6eb06107066048508498a291b"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-zkevm",
+                    "contractAddress" : "0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "xdai",
+                    "contractAddress" : "0x44fa8e6f47987339850636f88629646662444217"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "zksync",
+                    "contractAddress" : "0x4b9eb6c0b6ea15176bbf62841c6b2a8a398cb656"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "base",
+                    "contractAddress" : "0x50c5725949a6f0c72e6c4a641f24049a917db0cb"
+                }
+            ]
+        },
+        {
+            "id" : "ethereum-classic",
+            "symbol" : "ETC",
+            "active" : true,
+            "name" : "Ethereum Classic",
+            "networks" : [
+                {
+                    "networkId" : "ethereum-classic",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x3d6545b08693dae087e957cb1180ee38b9e3c25e"
+                }
+            ]
+        },
+        {
+            "id" : "wrapped-eeth",
+            "symbol" : "WEETH",
+            "active" : true,
+            "name" : "Wrapped eETH",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x35751007a407ca6feffe80b3cb397736d2cf4dbe"
+                }
+            ]
+        },
+        {
+            "id" : "aptos",
+            "symbol" : "APT",
+            "active" : true,
+            "name" : "Aptos",
+            "networks" : [
+                {
+                    "networkId" : "aptos",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "hedera-hashgraph",
+            "symbol" : "HBAR",
+            "active" : true,
+            "name" : "Hedera",
+            "networks" : [
+                {
+                    "networkId" : "hedera-hashgraph",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "render-token",
+            "symbol" : "RNDR",
+            "active" : true,
+            "name" : "Render",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x6de037ef9ad2725eb40118bb1702ebb27e4aeb24"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x61299774020da444af134c82fa83e3810b309991"
+                }
+            ]
+        },
+        {
+            "id" : "renzo-restaked-eth",
+            "symbol" : "EZETH",
+            "active" : true,
+            "name" : "Renzo Restaked ETH",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xbf5495efe5db9ce00f80364c8b423567e58d2110"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x2416092f143378750bb29b79ed961ab195cceea5"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "base",
+                    "contractAddress" : "0x2416092f143378750bb29b79ed961ab195cceea5"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x2416092f143378750bb29b79ed961ab195cceea5"
+                }
+            ]
+        },
+        {
+            "id" : "immutable-x",
+            "symbol" : "IMX",
+            "active" : true,
+            "name" : "Immutable X",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff"
+                }
+            ]
+        },
+        {
+            "id" : "cosmos",
+            "symbol" : "ATOM",
+            "active" : true,
+            "name" : "Cosmos Hub",
+            "networks" : [
+                {
+                    "networkId" : "cosmos",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x8D983cb9388EaC77af0474fA441C4815500Cb7BB"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x0eb3a705fc54725037cc9e008bdede697f62f335"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0xac51C4c48Dc3116487eD4BC16542e27B5694Da1b"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "kava",
+                    "contractAddress" : "0x15932e26f5bd4923d46a2b205191c4b5d5f43fe3"
+                }
+            ]
+        },
+        {
+            "id" : "first-digital-usd",
+            "symbol" : "FDUSD",
+            "active" : true,
+            "name" : "First Digital USD",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xc5f0f7b66764f6ec8c8dff7ba683102295e16409"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xc5f0f7b66764f6ec8c8dff7ba683102295e16409"
+                }
+            ]
+        },
+        {
+            "id" : "mantle",
+            "symbol" : "MNT",
+            "active" : true,
+            "name" : "Mantle",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x3c3a81e81dc49a522a592e7622a7e711c06bf354"
+                }
+            ]
+        },
+        {
+            "id" : "crypto-com-chain",
+            "symbol" : "CRO",
+            "active" : true,
+            "name" : "Cronos",
+            "networks" : [
+                {
+                    "networkId" : "cronos",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 8,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "DvjMYMVeXgKxaixGKpzQThLoG98nc7HSU7eanzsdCboA"
+                }
+            ]
+        },
+        {
+            "id" : "kaspa",
+            "symbol" : "KAS",
+            "active" : true,
+            "name" : "Kaspa",
+            "networks" : [
+                {
+                    "networkId" : "kaspa",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "arbitrum",
+            "symbol" : "ARB",
+            "active" : true,
+            "name" : "Arbitrum",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xb50721bcf8d664c30412cfbc6cf7a15145234ad1"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x912ce59144191c1204e64559fe8253a0e49e6548"
+                }
+            ]
+        },
+        {
+            "id" : "filecoin",
+            "symbol" : "FIL",
+            "active" : true,
+            "name" : "Filecoin",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x0d8ce2a99bb6e3b7db580ed848240e4a0f9ae153"
+                }
+            ]
+        },
+        {
+            "id" : "stellar",
+            "symbol" : "XLM",
+            "active" : true,
+            "name" : "Stellar",
+            "networks" : [
+                {
+                    "networkId" : "stellar",
+                    "exchangeable" : false
+                }
+            ]
+        },
+        {
+            "id" : "the-graph",
+            "symbol" : "GRT",
+            "active" : true,
+            "name" : "The Graph",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xc944e90c64b2c07662a292be6244bdf05cda44a7"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "HGsLG4PnZ28L8A4R5nPqKgZd86zUUdmfnkTRnuFJ5dAX"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x8a0cac13c7da965a312f08ea4229c37869e85cb9"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x5fe2b58c013d7601147dcdd68c143a77499f5531"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x9623063377ad1b27544c965ccd7342f7ea7e88c7"
+                }
+            ]
+        },
+        {
+            "id" : "okb",
+            "symbol" : "OKB",
+            "active" : true,
+            "name" : "OKB",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x75231f58b43240c9718dd58b4967c5114342a86c"
+                }
+            ]
+        },
+        {
+            "id" : "optimism",
+            "symbol" : "OP",
+            "active" : true,
+            "name" : "Optimism",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "optimistic-ethereum",
+                    "contractAddress" : "0x4200000000000000000000000000000000000042"
+                }
+            ]
+        },
+        {
+            "id" : "dogwifcoin",
+            "symbol" : "WIF",
+            "active" : true,
+            "name" : "dogwifhat",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 6,
+                    "networkId" : "solana",
+                    "contractAddress" : "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+                }
+            ]
+        },
+        {
+            "id" : "ethena-usde",
+            "symbol" : "USDE",
+            "active" : true,
+            "name" : "Ethena USDe",
+            "networks" : [
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x4c9edd5852cd905f086c759e8383e09bff1e68b3"
+                }
+            ]
+        },
+        {
+            "id" : "maker",
+            "symbol" : "MKR",
+            "active" : true,
+            "name" : "Maker",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x5f0da599bb2cccfcf6fdfd7d81743b6020864350"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "avalanche",
+                    "contractAddress" : "0x88128fd4b259552a9a1d457f435a6527aab72d42"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "polygon-pos",
+                    "contractAddress" : "0x6f7c932e7684666c9fd1d44527765433e01ff61d"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "arbitrum-one",
+                    "contractAddress" : "0x2e9a6df78e42a30712c10a9dc4b1c8656f8f2879"
+                }
+            ]
+        },
+        {
+            "id" : "vechain",
+            "symbol" : "VET",
+            "active" : true,
+            "name" : "VeChain",
+            "networks" : [
+                {
+                    "networkId" : "vechain",
+                    "exchangeable" : false
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0x6FDcdfef7c496407cCb0cEC90f9C5Aaa1Cc8D888"
+                }
+            ]
+        },
+        {
+            "id" : "injective-protocol",
+            "symbol" : "INJ",
+            "active" : true,
+            "name" : "Injective",
+            "networks" : [
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0xe28b3b32b6c345a34ff64674606124dd5aceca30"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xa2b726b1145a4773f68593cf171187d8ebe4d495"
+                }
+            ]
+        },
+        {
+            "id" : "fantom",
+            "symbol" : "FTM",
+            "active" : true,
+            "name" : "Fantom",
+            "networks" : [
+                {
+                    "networkId" : "fantom",
+                    "exchangeable" : true
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "ethereum",
+                    "contractAddress" : "0x4e15361fd6b4bb609fa63c81a2be19d873717870"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "binancecoin",
+                    "contractAddress" : "FTM-A64"
+                },
+                {
+                    "exchangeable" : true,
+                    "decimalCount" : 18,
+                    "networkId" : "binance-smart-chain",
+                    "contractAddress" : "0xad29abb318791d579433d831ed122afeaf29dcfe"
+                },
+                {
+                    "exchangeable" : false,
+                    "decimalCount" : 8,
+                    "networkId" : "solana",
+                    "contractAddress" : "8gC27rQF4NEDYfyf5aS8ZmQJUum5gufowKGYRRba4ENN"
+                }
+            ]
+        }
+    ],
+    "offset" : 0,
+    "total" : 4588,
+    "imageHost" : "https:\/\/s3.eu-central-1.amazonaws.com\/tangem.api\/coins\/"
+}

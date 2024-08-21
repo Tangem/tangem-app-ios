@@ -176,6 +176,13 @@ extension TokenItemView {
                 bottomLeadingRadius: cornerRadius,
                 bottomTrailingRadius: cornerRadius
             )
+        case .all:
+            roundedCornersConfiguration = RoundedCornersConfiguration(
+                topLeadingRadius: cornerRadius,
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: cornerRadius,
+                topTrailingRadius: cornerRadius
+            )
         case .none:
             roundedCornersConfiguration = nil
         }
@@ -189,23 +196,6 @@ extension TokenItemView {
         self.viewModel = viewModel
         previewContentShapeCornerRadius = cornerRadius
         roundedCornersConfiguration = RoundedCornersConfiguration()
-    }
-}
-
-// MARK: - Auxiliary types
-
-extension TokenItemView {
-    @available(iOS 16.0, *)
-    enum RoundedCornersVerticalEdge {
-        case topEdge
-        case bottomEdge
-    }
-
-    private struct RoundedCornersConfiguration {
-        var topLeadingRadius: CGFloat = 0.0
-        var bottomLeadingRadius: CGFloat = 0.0
-        var bottomTrailingRadius: CGFloat = 0.0
-        var topTrailingRadius: CGFloat = 0.0
     }
 }
 

@@ -96,6 +96,17 @@ private extension CommonTokenQuotesRepository {
                 items.forEach { $0.didLoadPublisher.send(()) }
             })
             .store(in: &bag)
+
+        NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification) // We can't use didBecomeActive because of NFC interaction app state changes
+            .withWeakCaptureOf(self)
+            .flatMap { repository, _ in
+                // Reload saved quotes
+                repository
+                    .loadQuotes(currencyIds: Array(repository._quotes.value.keys))
+            }
+            .sink()
+            .store(in: &bag)
     }
 
     func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
@@ -103,8 +114,8 @@ private extension CommonTokenQuotesRepository {
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
 
-        // TODO: - Remove when prices24h will be available on production api
-        let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .prices24h] : [.price, .priceChange24h]
+        // TODO: - Remove when lastUpdatedAt will be available on production api
+        let fields: [QuotesDTO.Request.Fields] = FeatureStorage().useDevApi ? [.price, .priceChange24h, .lastUpdatedAt, .priceChange7d, .priceChange30d] : [.price, .priceChange24h]
 
         // We get here currencyIds. But on in the API model we named it like coinIds
         let request = QuotesDTO.Request(
@@ -132,8 +143,10 @@ private extension CommonTokenQuotesRepository {
         let quotes = quotes.map { quote in
             TokenQuote(
                 currencyId: quote.id,
-                change: quote.priceChange,
                 price: quote.price,
+                priceChange24h: quote.priceChange,
+                priceChange7d: quote.priceChange7d,
+                priceChange30d: quote.priceChange30d,
                 prices24h: quote.prices24h,
                 currencyCode: currencyCode
             )

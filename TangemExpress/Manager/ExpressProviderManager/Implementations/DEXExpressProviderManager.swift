@@ -76,16 +76,7 @@ private extension DEXExpressProviderManager {
             let data = try await expressAPIProvider.exchangeData(item: item)
             try Task.checkCancellation()
 
-            let fee = try await feeProvider.getFee(
-                amount: data.value,
-                destination: data.destinationAddress,
-                hexData: data.txData.map { Data(hexString: $0) }
-            )
-            try Task.checkCancellation()
-
-            // better to make the quote from the data
-            let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
-            return .ready(.init(fee: fee, data: data, quote: quoteData))
+            return try await proceed(request: request, quote: quote, data: data)
 
         } catch let error as ExpressAPIError {
             guard let amount = error.value?.amount else {
@@ -117,7 +108,7 @@ private extension DEXExpressProviderManager {
 
             // Check fee currency balance at least more then zero
             guard request.pair.source.feeCurrencyHasPositiveBalance else {
-                return .restriction(.notEnoughBalanceForFee, quote: quote)
+                return .restriction(.feeCurrencyHasZeroBalance, quote: quote)
             }
 
         } catch {
@@ -145,6 +136,57 @@ private extension DEXExpressProviderManager {
         return nil
     }
 
+    func proceed(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState {
+        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+        if txValue > request.pair.source.getFeeCurrencyBalance() {
+            let estimateFee = try await estimateFee(request: request, data: data)
+            return .restriction(estimateFee, quote: quote)
+        }
+
+        do {
+            let ready = try await ready(request: request, quote: quote, data: data)
+            return .ready(ready)
+        } catch {
+            let estimateFee = try await estimateFee(request: request, data: data)
+            return .restriction(estimateFee, quote: quote)
+        }
+    }
+
+    func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
+        let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) ?? 0
+
+        if let estimatedGasLimit = data.estimatedGasLimit {
+            let estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
+            let estimateTxValue = otherNativeFee + estimateFee.amount.value
+
+            return .feeCurrencyInsufficientBalanceForTxValue(estimateTxValue)
+        }
+
+        let estimatedAmount = request.amount + otherNativeFee
+        return .insufficientBalance(estimatedAmount)
+    }
+
+    func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {
+        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+
+        var fee = try await feeProvider.getFee(
+            amount: txValue,
+            destination: data.destinationAddress,
+            hexData: data.txData.map { Data(hexString: $0) },
+            isFeeTokenItem: true // decimals for txValue (other native fee) must be equal to main coin decimals
+        )
+
+        try Task.checkCancellation()
+        if let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) {
+            fee = include(otherNativeFee: otherNativeFee, in: fee)
+            log("The fee was increased by otherNativeFee \(otherNativeFee)")
+        }
+
+        // better to make the quote from the data
+        let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
+        return .init(fee: fee, data: data, quote: quoteData)
+    }
+
     func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {
         let amount: Decimal = {
             switch approvePolicy {
@@ -157,7 +199,12 @@ private extension DEXExpressProviderManager {
 
         let contractAddress = request.pair.source.expressCurrency.contractAddress
         let data = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
-        let fee = try await feeProvider.getFee(amount: 0, destination: request.pair.source.expressCurrency.contractAddress, hexData: data)
+        let fee = try await feeProvider.getFee(
+            amount: 0,
+            destination: request.pair.source.expressCurrency.contractAddress,
+            hexData: data,
+            isFeeTokenItem: false
+        )
         try Task.checkCancellation()
 
         // For approve use the fastest fee
@@ -168,6 +215,22 @@ private extension DEXExpressProviderManager {
             fee: .single(fastest),
             quote: quote
         )
+    }
+
+    func include(otherNativeFee: Decimal, in fee: ExpressFee) -> ExpressFee {
+        switch fee {
+        case .single(let fee):
+            return .single(add(value: otherNativeFee, to: fee))
+        case .double(let market, let fast):
+            return .double(
+                market: add(value: otherNativeFee, to: market),
+                fast: add(value: otherNativeFee, to: fast)
+            )
+        }
+    }
+
+    func add(value: Decimal, to fee: Fee) -> Fee {
+        Fee(.init(with: fee.amount, value: fee.amount.value + value), parameters: fee.parameters)
     }
 
     func log(_ args: Any) {

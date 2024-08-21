@@ -59,8 +59,8 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let isTestnetToken: Bool
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
-    private let percentFormatter = PercentFormatter()
-    private let priceFormatter = BalanceFormatter()
+    private let priceChangeUtility = PriceChangeUtility()
+    private let priceFormatter = CommonTokenPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
     private weak var contextActionsProvider: TokenItemContextActionsProvider?
@@ -153,13 +153,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             return
         }
 
-        if let change = quote.change {
-            let signType = ChangeSignType(from: change)
-            let percent = percentFormatter.percentFormat(value: change)
-            priceChangeState = .loaded(signType: signType, text: percent)
-        } else {
-            priceChangeState = .noData
-        }
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: quote.priceChange24h)
 
         let priceText = priceFormatter.formatFiatBalance(quote.price)
         tokenPrice = .loaded(text: priceText)

@@ -1,5 +1,5 @@
 //
-//  UserWalletNotificationService.swift
+//  UserWalletNotificationManager.swift
 //  Tangem
 //
 //  Created by Andrew Son on 26/08/23.
@@ -11,33 +11,36 @@ import Combine
 import BlockchainSdk
 
 protocol NotificationTapDelegate: AnyObject {
-    func didTapNotification(with id: NotificationViewId)
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType)
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType)
 }
 
 /// Manager for handling Notifications related to UserWalletModel.
 /// Don't forget to setup manager with delegate for proper notification handling
 final class UserWalletNotificationManager {
     @Injected(\.deprecationService) private var deprecationService: DeprecationServicing
-    @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
 
     private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
     private let signatureCountValidator: SignatureCountValidator?
+    private let rateAppController: RateAppNotificationController
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
 
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
-    private var promotionUpdateTask: Task<Void, Never>?
+
+    private var showAppRateNotification = false
+    private var shownAppRateNotificationId: NotificationViewId?
 
     init(
         userWalletModel: UserWalletModel,
         signatureCountValidator: SignatureCountValidator?,
+        rateAppController: RateAppNotificationController,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
         self.userWalletModel = userWalletModel
         self.signatureCountValidator = signatureCountValidator
+        self.rateAppController = rateAppController
 
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
@@ -45,11 +48,11 @@ final class UserWalletNotificationManager {
     private func createNotifications() {
         let factory = NotificationsFactory()
         let action: NotificationView.NotificationAction = { [weak self] id in
-            self?.delegate?.didTapNotification(with: id)
+            self?.delegate?.didTapNotification(with: id, action: .empty)
         }
 
         let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
-            self?.delegate?.didTapNotificationButton(with: id, action: action)
+            self?.delegate?.didTapNotification(with: id, action: action)
         }
 
         let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
@@ -57,11 +60,14 @@ final class UserWalletNotificationManager {
         var inputs: [NotificationViewInput] = []
 
         if !userWalletModel.validate() {
-            Analytics.log(.mainNoticeBackupErrors)
-        }
-
-        if userWalletModel.config.hasFeature(.multiCurrency) {
-            setupPromotionNotification(dismissAction: dismissAction)
+            inputs.append(
+                factory.buildNotificationInput(
+                    for: .backupErrors,
+                    action: action,
+                    buttonAction: buttonAction,
+                    dismissAction: dismissAction
+                )
+            )
         }
 
         inputs.append(contentsOf: factory.buildNotificationInputs(
@@ -104,54 +110,59 @@ final class UserWalletNotificationManager {
 
         notificationInputsSubject.send(inputs)
 
+        showAppRateNotificationIfNeeded()
+
         validateHashesCount()
     }
 
-    private func setupPromotionNotification(dismissAction: @escaping NotificationView.NotificationAction) {
-        promotionUpdateTask?.cancel()
-        promotionUpdateTask = Task { [weak self] in
-            guard let self, !Task.isCancelled else {
-                return
-            }
+    private func hideNotification(with id: NotificationViewId) {
+        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
 
-            let name: PromotionProgramName = .travala
-            guard let promotion = await bannerPromotionService.activePromotion(promotion: name, on: .main),
-                  let promotionLink = promotion.link else {
-                notificationInputsSubject.value.removeAll { $0.settings.event is BannerNotificationEvent }
-                return
-            }
-
-            if Task.isCancelled {
-                return
-            }
-
-            let factory = BannerPromotionNotificationFactory()
-            let button = factory.buildNotificationButton(actionType: .bookNow(promotionLink: promotionLink)) { [weak self] id, action in
-                var parameters = BannerNotificationEvent.travala(description: "").analyticsParams
-                parameters[.action] = Analytics.ParameterValue.clicked.rawValue
-                Analytics.log(event: .promotionBannerClicked, params: parameters)
-
-                self?.delegate?.didTapNotificationButton(with: id, action: action)
-            }
-
-            let input = factory.buildBannerNotificationInput(
-                promotion: promotion,
-                button: button,
-                dismissAction: dismissAction
-            )
-
-            await runOnMain {
-                if Task.isCancelled {
-                    return
-                }
-
-                guard !self.notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
-                    return
-                }
-
-                self.notificationInputsSubject.value.insert(input, at: 0)
-            }
+    private func showAppRateNotificationIfNeeded() {
+        guard showAppRateNotification else {
+            hideShownAppRateNotificationIfNeeded()
+            return
         }
+
+        let factory = NotificationsFactory()
+
+        let action: NotificationView.NotificationAction = { [weak self] id in
+            self?.delegate?.didTapNotification(with: id, action: .empty)
+        }
+
+        let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            self?.delegate?.didTapNotification(with: id, action: action)
+        }
+
+        let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
+
+        let input = factory.buildNotificationInput(
+            for: .rateApp,
+            action: action,
+            buttonAction: buttonAction,
+            dismissAction: dismissAction
+        )
+        shownAppRateNotificationId = input.id
+
+        addInputIfNeeded(input)
+    }
+
+    private func hideShownAppRateNotificationIfNeeded() {
+        guard let shownAppRateNotificationId else {
+            return
+        }
+
+        hideNotification(with: shownAppRateNotificationId)
+        self.shownAppRateNotificationId = nil
+    }
+
+    private func addInputIfNeeded(_ input: NotificationViewInput) {
+        guard !notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
+            return
+        }
+
+        notificationInputsSubject.value.insert(input, at: 0)
     }
 
     private func bind() {
@@ -166,6 +177,15 @@ final class UserWalletNotificationManager {
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: weakify(self, forFunction: UserWalletNotificationManager.addMissingDerivationWarningIfNeeded(pendingDerivationsCount:)))
+            .store(in: &bag)
+
+        rateAppController
+            .showAppRateNotificationPublisher
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { manager, shouldShow in
+                manager.showAppRateNotification = shouldShow
+                manager.showAppRateNotificationIfNeeded()
+            })
             .store(in: &bag)
     }
 
@@ -208,7 +228,7 @@ final class UserWalletNotificationManager {
             let notification = factory.buildNotificationInput(
                 for: .numberOfSignedHashesIncorrect,
                 action: { [weak self] id in
-                    self?.delegate?.didTapNotification(with: id)
+                    self?.delegate?.didTapNotification(with: id, action: .empty)
                 },
                 buttonAction: { _, _ in },
                 dismissAction: weakify(self, forFunction: UserWalletNotificationManager.dismissNotification(with:))
@@ -231,7 +251,7 @@ final class UserWalletNotificationManager {
                 case .failure:
                     let notification = factory.buildNotificationInput(
                         for: .numberOfSignedHashesIncorrect,
-                        action: { id in self?.delegate?.didTapNotification(with: id) },
+                        action: { id in self?.delegate?.didTapNotification(with: id, action: .empty) },
                         buttonAction: { _, _ in },
                         dismissAction: { id in self?.dismissNotification(with: id) }
                     )
@@ -288,24 +308,13 @@ extension UserWalletNotificationManager: NotificationManager {
                 recordDeprecationNotificationDismissal()
             case .numberOfSignedHashesIncorrect:
                 recordUserWalletHashesCountValidation()
+            case .rateApp:
+                rateAppController.dismissAppRate()
             default:
                 break
             }
         }
 
-        if let event = notification.settings.event as? BannerNotificationEvent {
-            switch event {
-            case .changelly:
-                bannerPromotionService.hide(promotion: .changelly, on: .main)
-            case .travala:
-                var parameters = event.analyticsParams
-                parameters[.action] = Analytics.ParameterValue.closed.rawValue
-                Analytics.log(event: .promotionBannerClicked, params: parameters)
-
-                bannerPromotionService.hide(promotion: .travala, on: .main)
-            }
-        }
-
-        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+        hideNotification(with: id)
     }
 }

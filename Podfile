@@ -24,17 +24,17 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-296'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-302'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-548.23'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-644.4'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem7'
+  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem10'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
 
   pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
@@ -52,12 +52,11 @@ target 'Tangem' do
   
   # Pods for Tangem
   pod 'Moya'
-  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.8.4'
+  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
   pod 'TonSwift', :git => 'https://github.com/tangem/ton-swift.git', :tag => '1.0.10-tangem1'
 
   # Helpers
-  pod 'AlertToast', :git => 'https://github.com/elai950/AlertToast', :commit => 'a437862bb6605080a5816e866cbd4ac8c8657b49'
   pod 'BlockiesSwift', '~> 0.1.2'
   pod 'CombineExt', '~> 1.8.0'
 
@@ -70,13 +69,16 @@ target 'Tangem' do
     release_beta_configuration,
   ]
 
-  # support chat
-#  pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
+  # Support chat
+  #pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
   
   # Analytics
-  pod 'Amplitude', '8.17.2'
-  pod 'Firebase/Crashlytics'
-  pod 'Firebase/Analytics'
+  pod 'AmplitudeSwift', '1.6.2'
+  pod 'Firebase/Crashlytics', '10.29.0'
+  pod 'Firebase/Analytics', '10.29.0'
+
+  # Push notifications
+  pod 'Firebase/Messaging', '10.29.0'
 
   target 'TangemTests' do
     inherit! :search_paths
@@ -104,6 +106,15 @@ target 'TangemVisa' do
 
   target 'TangemVisaTests' do
     blockchain_sdk_pods
+  end
+end
+
+target 'TangemStaking' do
+  blockchain_sdk_pods
+  pod 'Moya'
+
+  target 'TangemStakingTests' do
+    inherit! :search_paths
   end
 end
 
@@ -172,7 +183,7 @@ post_install do |installer|
     "BlockchainSdk",
     "https://github.com/tangem/wallet-core-binaries-ios.git",
     "TangemWalletCoreBinariesWrapper",
-    { :kind => "exactVersion", :version => "4.0.21-tangem6-xcode-15.2" }
+    { :kind => "exactVersion", :version => "4.0.21-tangem6" }
   )
 
   # `SwiftProtobuf` SPM package for `BlockchainSdk` pod
@@ -182,6 +193,24 @@ post_install do |installer|
    "https://github.com/tangem/swift-protobuf-binaries.git",
    "SwiftProtobuf",
    { :kind => "exactVersion", :version => "1.25.2-tangem1" }
+  )
+  
+  # `TonSwift` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+   installer.pods_project,
+   "BlockchainSdk",
+   "https://github.com/tangem/ton-swift.git",
+   "TonSwift",
+   { :kind => "exactVersion", :version => "1.0.10-tangem1" }
+  )
+  
+  # `ScaleCodec` SPM package for `BlockchainSdk` pod
+  add_spm_package_to_target(
+   installer.pods_project,
+   "BlockchainSdk",
+   "https://github.com/tesseract-one/ScaleCodec.swift",
+   "ScaleCodec",
+   { :kind => "exactVersion", :version => "0.2.1" }
   )
 
   # `SwiftProtobuf` SPM package for `BinanceChain` pod
@@ -200,6 +229,15 @@ post_install do |installer|
    "https://github.com/GigaBitcoin/secp256k1.swift.git",
    "secp256k1",
    { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
+  )
+  
+  # `TweetNacl` SPM package for `Solana.Swift` pod
+  add_spm_package_to_target(
+   installer.pods_project,
+   "Solana.Swift",
+   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
+   "TweetNacl",
+   { :kind => "exactVersion", :version => "1.1.0" }
   )
 
 end

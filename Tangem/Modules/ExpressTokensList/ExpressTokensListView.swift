@@ -82,28 +82,12 @@ struct ExpressTokensListView: View {
             .padding(.all, 14)
     }
 
-    @ViewBuilder
     private func section(title: String, viewModels: [ExpressTokenItemViewModel]) -> some View {
-        if !viewModels.isEmpty {
-            let horizontalPadding: CGFloat = 14
-            VStack(alignment: .leading, spacing: .zero) {
-                Text(title)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                    .padding(.horizontal, horizontalPadding)
-                    .padding(.vertical, 12)
-
-                ForEach(viewModels) { viewModel in
-                    ExpressTokenItemView(viewModel: viewModel)
-                        .padding(.horizontal, horizontalPadding)
-
-                    if viewModels.last?.id != viewModel.id {
-                        Separator(height: .minimal, color: Colors.Stroke.primary)
-                            .padding(.leading, horizontalPadding)
-                    }
-                }
-            }
-            .background(Colors.Background.action)
-            .cornerRadiusContinuous(14)
+        GroupedSection(viewModels) {
+            ExpressTokenItemView(viewModel: $0)
+        } header: {
+            DefaultHeaderView(title)
+                .padding(.vertical, 12)
         }
     }
 }

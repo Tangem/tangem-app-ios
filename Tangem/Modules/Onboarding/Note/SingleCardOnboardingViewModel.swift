@@ -1,5 +1,5 @@
 //
-//  OnboardingViewModel.swift
+//  SingleCardOnboardingViewModel.swift
 //  Tangem
 //
 //  Created by Andrew Son on 03/08/21.
@@ -14,12 +14,6 @@ import BlockchainSdk
 
 class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardingStep, OnboardingCoordinator>, ObservableObject {
     @Published var isCardScanned: Bool = true
-
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
 
     override var navbarTitle: String {
         currentStep.navbarTitle
@@ -44,7 +38,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     override var mainButtonSettings: MainButton.Settings? {
         switch currentStep {
-        case .disclaimer, .createWallet, .successTopup, .success:
+        case .pushNotifications, .createWallet, .successTopup, .success:
             return nil
         default:
             return super.mainButtonSettings
@@ -53,7 +47,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     override var supplementButtonStyle: MainButton.Style {
         switch currentStep {
-        case .disclaimer, .createWallet, .successTopup, .success:
+        case .createWallet, .successTopup, .success:
             return .primary
         default:
             return super.supplementButtonStyle
@@ -70,17 +64,10 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer:
+        case .saveUserWallet, .pushNotifications, .addTokens:
             return true
         default:
             return false
-        }
-    }
-
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet: return false
-        default: return true
         }
     }
 
@@ -185,7 +172,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
 
     override func mainButtonAction() {
         switch currentStep {
-        case .disclaimer, .createWallet, .saveUserWallet, .success, .successTopup:
+        case .pushNotifications, .createWallet, .saveUserWallet, .success, .successTopup, .addTokens:
             break
         case .topup:
             if canBuyCrypto {
@@ -208,9 +195,6 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
         switch currentStep {
         case .topup:
             openQR()
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         case .createWallet:
             createWallet()
         case .successTopup, .success:

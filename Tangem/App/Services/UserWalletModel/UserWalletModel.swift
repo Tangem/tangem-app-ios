@@ -10,7 +10,7 @@ import BlockchainSdk
 import Combine
 import TangemSdk
 
-protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProviding, MultiWalletMainHeaderSubtitleDataSource, AnalyticsContextDataProvider, MainHeaderUserWalletStateInfoProvider, EmailDataProvider, WalletConnectUserWalletInfoProvider, AnyObject {
+protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProviding, MultiWalletMainHeaderSubtitleDataSource, AnalyticsContextDataProvider, MainHeaderUserWalletStateInfoProvider, EmailDataProvider, WalletConnectUserWalletInfoProvider, KeysDerivingProvider, AnyObject {
     var tokensCount: Int? { get }
     var analyticsContextData: AnalyticsContextData { get }
     var hasBackupCards: Bool { get }
@@ -29,7 +29,12 @@ protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProvidin
     var totalSignedHashes: Int { get }
     var name: String { get }
     func validate() -> Bool
-    func onBackupCreated(_ card: Card)
+    func onBackupUpdate(type: BackupUpdateType)
     func updateWalletName(_ name: String)
-    func addAssociatedCard(_ card: CardDTO, validationMode: ValidationMode)
+    func addAssociatedCard(_ cardId: String)
+}
+
+enum BackupUpdateType {
+    case primaryCardBackuped(card: Card)
+    case backupCompleted
 }

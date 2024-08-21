@@ -118,7 +118,7 @@ final class ExpressViewModel: ObservableObject {
                 case .cex:
                     let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol ?? ""
                     return Localization.swappingAlertCexDescription(tokenItemSymbol)
-                case .dex:
+                case .dex, .dexBridge:
                     if isBigLoss {
                         return "\(Localization.swappingHighPriceImpactDescription)\n\n\(Localization.swappingAlertDexDescription)"
                     }
@@ -160,6 +160,10 @@ final class ExpressViewModel: ObservableObject {
     func didCloseFeeSelectorSheet() {
         restartTimer()
     }
+
+    func didTapCloseButton() {
+        coordinator?.closeSwappingView()
+    }
 }
 
 // MARK: - Navigation
@@ -175,7 +179,16 @@ private extension ExpressViewModel {
             return
         }
 
-        coordinator?.presentApproveView()
+        runTask(in: self) { viewModel in
+            guard let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider else {
+                return
+            }
+
+            let selectedPolicy = await viewModel.interactor.getApprovePolicy()
+            await runOnMain {
+                viewModel.coordinator?.presentApproveView(provider: selectedProvider, selectedPolicy: selectedPolicy)
+            }
+        }
     }
 
     func openFeeSelectorView() {
@@ -336,6 +349,9 @@ private extension ExpressViewModel {
         switch state {
         case .restriction(.notEnoughBalanceForSwapping, _):
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
+        case .restriction(.notEnoughAmountForTxValue, _),
+             .restriction(.notEnoughAmountForFee, _) where interactor.getSender().isFeeCurrency:
+            sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
         default:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .text(Localization.swappingFromTitle))
         }
@@ -444,6 +460,9 @@ private extension ExpressViewModel {
 
     func updateFeeValue(state: ExpressInteractor.State) {
         switch state {
+        case .restriction(.notEnoughAmountForTxValue(let estimatedFee), _):
+            // Signle estimated fee just for UI
+            updateExpressFeeRowViewModel(fee: estimatedFee, action: nil)
         case .restriction(.notEnoughAmountForFee(let state), _):
             updateExpressFeeRowViewModel(fees: state.fees)
         case .previewCEX(let state, _):
@@ -464,15 +483,18 @@ private extension ExpressViewModel {
             return
         }
 
-        let tokenItem = interactor.getSender().feeTokenItem
-        let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
-
         var action: (() -> Void)?
         // If fee is one option then don't open selector
         if fees.count > 1 {
             action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
         }
 
+        updateExpressFeeRowViewModel(fee: fee, action: action)
+    }
+
+    func updateExpressFeeRowViewModel(fee: Decimal, action: (() -> Void)?) {
+        let tokenItem = interactor.getSender().feeTokenItem
+        let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
         expressFeeRowViewModel = ExpressFeeRowData(title: Localization.commonNetworkFeeTitle, subtitle: formattedFee, action: action)
     }
 
@@ -493,10 +515,11 @@ private extension ExpressViewModel {
                  .tooBigAmountForSwapping,
                  .noDestinationTokens,
                  .validationError,
-                 .notEnoughAmountForFee,
                  .notEnoughReceivedAmount:
                 mainButtonState = .swap
-            case .notEnoughBalanceForSwapping:
+            case .notEnoughBalanceForSwapping,
+                 .notEnoughAmountForFee,
+                 .notEnoughAmountForTxValue:
                 mainButtonState = .insufficientFunds
             }
 
@@ -559,12 +582,16 @@ private extension ExpressViewModel {
                 return .none
             }
 
+            if selectedProvider.provider.recommended == true {
+                return .recommended
+            }
+
             return selectedProvider.isBest ? .bestRate : .none
         }()
 
         return ProviderRowViewModel(
             provider: expressProviderFormatter.mapToProvider(provider: selectedProvider.provider),
-            titleFormat: .prefixAndName,
+            titleFormat: .name,
             isDisabled: false,
             badge: badge,
             subtitles: [subtitle],
@@ -615,17 +642,17 @@ private extension ExpressViewModel {
 // MARK: - NotificationTapDelegate
 
 extension ExpressViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId) {}
-
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         guard
-            let notif = notificationInputs.first(where: { $0.id == id }),
-            notif.settings.event is ExpressNotificationEvent
+            let notification = notificationInputs.first(where: { $0.id == id }),
+            let event = notification.settings.event as? ExpressNotificationEvent
         else {
             return
         }
 
         switch action {
+        case .empty:
+            break
         case .refresh:
             interactor.refresh(type: .full)
         case .openFeeCurrency:
@@ -639,11 +666,39 @@ extension ExpressViewModel: NotificationTapDelegate {
             updateSendDecimalValue(to: value - amount)
         case .reduceAmountTo(let amount, _):
             updateSendDecimalValue(to: amount)
-        default:
+        case .leaveAmount(let amount, _):
+            guard let balance = try? interactor.getSender().getBalance() else {
+                AppLog.shared.debug("[Express] Couldn't find sender balance")
+                return
+            }
+
+            var targetValue = balance - amount
+            if let feeValue = feeValue(from: event) {
+                targetValue -= feeValue
+            }
+
+            updateSendDecimalValue(to: targetValue)
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refreshFee,
+             .goToProvider,
+             .addHederaTokenAssociation,
+             .openLink,
+             .stake,
+             .openFeedbackMail,
+             .openAppStoreReview,
+             .swap,
+             .support,
+             .openCurrency:
             return
         }
     }
+}
 
+// MARK: - NotificationTapDelegate helpers
+
+private extension ExpressViewModel {
     func openFeeCurrency() {
         let walletModels = userWalletModel.walletModelsManager.walletModels
         guard let feeCurrencyWalletModel = walletModels.first(where: {
@@ -654,6 +709,29 @@ extension ExpressViewModel: NotificationTapDelegate {
         }
 
         coordinator?.presentFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
+    }
+
+    func feeValue(from event: ExpressNotificationEvent) -> Decimal? {
+        switch event {
+        case .validationErrorEvent(_, let context) where context.isFeeCurrency:
+            return context.feeValue
+        case .permissionNeeded,
+             .refreshRequired,
+             .hasPendingTransaction,
+             .hasPendingApproveTransaction,
+             .notEnoughFeeForTokenTx,
+             .tooSmallAmountToSwap,
+             .tooBigAmountToSwap,
+             .noDestinationTokens,
+             .feeWillBeSubtractFromSendingAmount,
+             .notEnoughReceivedAmountForReserve,
+             .withdrawalNotificationEvent,
+             .validationErrorEvent,
+             .verificationRequired,
+             .cexOperationFailed,
+             .refunded:
+            return nil
+        }
     }
 }
 
@@ -714,7 +792,7 @@ extension ExpressViewModel {
             case .insufficientFunds:
                 return Localization.swappingInsufficientFunds
             case .givePermission:
-                return Localization.swappingGivePermission
+                return Localization.givePermissionTitle
             case .permitAndSwap:
                 return Localization.swappingPermitAndSwap
             }

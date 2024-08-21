@@ -12,6 +12,8 @@ enum VisaNotificationEvent: Hashable {
     case missingRequiredBlockchain
     case notValidBlockchain
     case failedToLoadPaymentAccount
+    case missingPublicKey
+    case failedToGenerateAddress
 }
 
 extension VisaNotificationEvent: NotificationEvent {
@@ -27,6 +29,10 @@ extension VisaNotificationEvent: NotificationEvent {
             return "WalletManager doesn't supported Smart Contract interaction"
         case .failedToLoadPaymentAccount:
             return "Failed to find Payment Account address in bridge"
+        case .missingPublicKey:
+            return "Failed to find Public key in keys repository"
+        case .failedToGenerateAddress:
+            return "Failed to generate address with provided Public key"
         }
     }
 

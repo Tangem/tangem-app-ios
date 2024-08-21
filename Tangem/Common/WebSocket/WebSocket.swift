@@ -17,8 +17,6 @@ class WebSocket {
         case connected
     }
 
-    let url: URL
-
     var request: URLRequest
     var onConnect: (() -> Void)?
     var onDisconnect: ((Error?) -> Void)?
@@ -69,7 +67,6 @@ class WebSocket {
         onDisconnect: ((Error?) -> Void)? = nil,
         onText: ((String) -> Void)? = nil
     ) {
-        self.url = url
         self.onConnect = onConnect
         self.onDisconnect = onDisconnect
         self.onText = onText
@@ -105,7 +102,7 @@ class WebSocket {
     }
 
     func connect() {
-        log("Attempting to connect WebSocket with state \(stateSubject.value) to \(url)")
+        log("Attempting to connect WebSocket with state \(stateSubject.value) to \(String(describing: request.url))")
         scheduleConnectionSetup()
     }
 
@@ -252,6 +249,12 @@ class WebSocket {
             // We need to check if task is still running, and if not - recreate it and start observing messages
             // Otherwise WC will stuck with not connected state, and only app restart will fix this problem
             log("Connection error: \(error.localizedDescription)")
+            let nsError = error as NSError
+            if nsError.code == -1011 {
+                disconnect()
+                notifyOnDisconnectOnMainThread(with: nsError)
+            }
+
             if task?.state != .running {
                 log("URLSessionWebSocketTask is not running. Resetting WebSocket state and attempting to reconnect")
                 stateSubject.value = .notConnected
@@ -309,7 +312,7 @@ class WebSocket {
     // Some crash logs and debug events indicating that there are multiple sequentials disconnect/connect requests
     // This function attempting to address this issue. Added debug log events to see if it helps...
     private func scheduleConnectionSetup() {
-        log("Attempting to schedule connection setup")
+        log("Attempting to schedule connection setup: \(String(describing: request.url))")
         Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "Attempting to schedule connection setup"))
         guard connectionSetupDispatchWorkItem == nil else {
             log("Connection setup already scheduled, no need to reschedule")

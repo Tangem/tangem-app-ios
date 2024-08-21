@@ -15,7 +15,7 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     @Published var fiatBalance: AttributedString = .init(BalanceFormatter.defaultEmptyBalanceString)
     @Published var cryptoBalance = ""
 
-    @Published var buttons: [ButtonWithIconInfo] = []
+    @Published var buttons: [FixedSizeButtonWithIconInfo] = []
 
     private weak var balanceProvider: BalanceProvider?
     private weak var buttonsProvider: ActionButtonsProvider?

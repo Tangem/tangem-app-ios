@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum WarningEvent: Equatable {
+enum WarningEvent: Equatable, Hashable {
     case numberOfSignedHashesIncorrect
     case rateApp
     case failedToVerifyCard
@@ -69,7 +69,7 @@ extension WarningEvent: NotificationEvent {
         case .supportedOnlySingleCurrencyWallet:
             return .string(Localization.manageTokensWalletSupportOnlyOneNetworkTitle)
         case .backupErrors:
-            return .string(Localization.warningBackupErrorsTitle)
+            return .string(Localization.commonAttention)
         }
     }
 
@@ -115,7 +115,9 @@ extension WarningEvent: NotificationEvent {
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .rateApp, .missingDerivation, .missingBackup:
+        case .rateApp,
+             .missingDerivation,
+             .missingBackup:
             return .primary
         default:
             return .secondary
@@ -126,7 +128,14 @@ extension WarningEvent: NotificationEvent {
         switch self {
         case .failedToVerifyCard, .devCard, .backupErrors:
             return .init(iconType: .image(Assets.redCircleWarning.image))
-        case .numberOfSignedHashesIncorrect, .testnetCard, .oldDeviceOldCard, .oldCard, .lowSignatures, .systemDeprecationPermanent, .missingBackup, .supportedOnlySingleCurrencyWallet:
+        case .numberOfSignedHashesIncorrect,
+             .testnetCard,
+             .oldDeviceOldCard,
+             .oldCard,
+             .lowSignatures,
+             .systemDeprecationPermanent,
+             .missingBackup,
+             .supportedOnlySingleCurrencyWallet:
             return .init(iconType: .image(Assets.attention.image))
         case .demoCard, .legacyDerivation, .systemDeprecationTemporary, .missingDerivation:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -164,14 +173,32 @@ extension WarningEvent: NotificationEvent {
 
     var isDismissable: Bool {
         switch self {
-        case .failedToVerifyCard, .testnetCard, .devCard, .oldDeviceOldCard, .oldCard, .demoCard, .lowSignatures, .legacyDerivation, .systemDeprecationPermanent, .missingDerivation, .walletLocked, .missingBackup, .supportedOnlySingleCurrencyWallet, .backupErrors:
+        case .failedToVerifyCard,
+             .testnetCard,
+             .devCard,
+             .oldDeviceOldCard,
+             .oldCard,
+             .demoCard,
+             .lowSignatures,
+             .legacyDerivation,
+             .systemDeprecationPermanent,
+             .missingDerivation,
+             .walletLocked,
+             .missingBackup,
+             .supportedOnlySingleCurrencyWallet,
+             .backupErrors:
             return false
-        case .rateApp, .numberOfSignedHashesIncorrect, .systemDeprecationTemporary:
+        case .numberOfSignedHashesIncorrect,
+             .systemDeprecationTemporary,
+             .rateApp:
             return true
         }
     }
 
-    func style(tapAction: NotificationView.NotificationAction? = nil, buttonAction: NotificationView.NotificationButtonTapAction? = nil) -> NotificationView.Style {
+    func style(
+        tapAction: NotificationView.NotificationAction? = nil,
+        buttonAction: NotificationView.NotificationButtonTapAction? = nil
+    ) -> NotificationView.Style {
         switch self {
         case .walletLocked:
             guard let tapAction else {
@@ -195,6 +222,24 @@ extension WarningEvent: NotificationEvent {
             return .withButtons([
                 .init(action: buttonAction, actionType: .generateAddresses, isWithLoader: true),
             ])
+        case .rateApp:
+            guard let buttonAction else {
+                break
+            }
+
+            return .withButtons([
+                .init(action: buttonAction, actionType: .openFeedbackMail, isWithLoader: false),
+                .init(action: buttonAction, actionType: .openAppStoreReview, isWithLoader: false),
+            ])
+        case .backupErrors:
+            guard let buttonAction else {
+                break
+            }
+
+            return .withButtons([
+                .init(action: buttonAction, actionType: .support, isWithLoader: false),
+            ])
+
         default: break
         }
         return .plain
@@ -207,7 +252,7 @@ extension WarningEvent {
     var analyticsEvent: Analytics.Event? {
         switch self {
         case .numberOfSignedHashesIncorrect: return .mainNoticeCardSignedTransactions
-        case .rateApp: return nil
+        case .rateApp: return nil // Analytics is sent by `RateAppService`
         case .failedToVerifyCard: return .mainNoticeProductSampleCard
         case .testnetCard: return .mainNoticeTestnetCard
         case .demoCard: return .mainNoticeDemoCard

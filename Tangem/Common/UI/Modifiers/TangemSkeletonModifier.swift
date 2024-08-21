@@ -11,9 +11,9 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func skeletonable(isShown: Bool, size: CGSize, radius: CGFloat = 3) -> some View {
+    func skeletonable(isShown: Bool, size: CGSize, radius: CGFloat = 3, paddings: EdgeInsets = EdgeInsets()) -> some View {
         modifier(
-            SkeletonModifier(isShown: isShown, modificationType: .size(size: size), radius: radius)
+            SkeletonModifier(isShown: isShown, modificationType: .size(size: size, paddings: paddings), radius: radius)
         )
     }
 
@@ -55,7 +55,7 @@ public struct SkeletonModifier: ViewModifier {
                         .cornerRadius(radius)
                         .hidden(!isShown)
                 )
-        case .size(let size):
+        case .size(let size, let paddings):
             // 'skeleton view' should control the layout of `ZStack` only if it's being shown;
             // otherwise, the layout should be controlled by the `content` view.
             //
@@ -70,6 +70,7 @@ public struct SkeletonModifier: ViewModifier {
 
                 SkeletonView()
                     .frame(size: size)
+                    .padding(paddings)
                     .cornerRadius(radius)
                     .hidden(!isShown)
                     .layoutPriority(skeletonViewLayoutPriority)
@@ -80,7 +81,7 @@ public struct SkeletonModifier: ViewModifier {
 
 public extension SkeletonModifier {
     enum ModificationType {
-        case size(size: CGSize)
+        case size(size: CGSize, paddings: EdgeInsets)
         case overlay
     }
 }

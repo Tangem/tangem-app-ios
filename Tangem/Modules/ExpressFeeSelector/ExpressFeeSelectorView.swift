@@ -25,6 +25,7 @@ struct ExpressFeeSelectorView: View {
                 Text(footerAttributedString)
             }
             .interItemSpacing(0)
+            .backgroundColor(Colors.Background.action)
             .padding(.vertical, 10)
             .padding(.horizontal, 14)
         }

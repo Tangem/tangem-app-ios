@@ -10,6 +10,8 @@ import Foundation
 import BlockchainSdk
 import struct TangemSdk.DerivationPath
 
+typealias TokenItemId = String
+
 enum TokenItem: Hashable, Codable {
     case blockchain(BlockchainNetwork)
     case token(Token, BlockchainNetwork)
@@ -18,7 +20,7 @@ enum TokenItem: Hashable, Codable {
 
     var isToken: Bool { token != nil }
 
-    var id: String? {
+    var id: TokenItemId? {
         switch self {
         case .token(let token, _):
             return token.id
@@ -90,7 +92,7 @@ enum TokenItem: Hashable, Codable {
         case .token(let token, _):
             return token.name
         case .blockchain(let blockchainNetwork):
-            return blockchainNetwork.blockchain.displayName
+            return blockchainNetwork.blockchain.coinDisplayName
         }
     }
 
@@ -118,6 +120,10 @@ enum TokenItem: Hashable, Codable {
         case .blockchain(let blockchainNetwork):
             return blockchainNetwork.blockchain.decimalCount
         }
+    }
+
+    var decimalValue: Decimal {
+        pow(10, decimalCount)
     }
 
     // We can't sign hashes on firmware prior 4.52
