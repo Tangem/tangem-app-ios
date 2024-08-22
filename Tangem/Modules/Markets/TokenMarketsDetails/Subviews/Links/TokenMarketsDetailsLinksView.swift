@@ -28,7 +28,6 @@ struct TokenMarketsDetailsLinksView: View {
                 HStack {
                     Text(Localization.marketsTokenDetailsLinks)
                         .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                        .padding(.top, 2)
 
                     Spacer()
                 }

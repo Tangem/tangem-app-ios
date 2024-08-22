@@ -28,7 +28,7 @@ struct MarketsHistoryChartView: View {
             }
             .transition(.opacity)
         }
-        .frame(height: 200.0)
+        .frame(height: 192.0)
         .animation(.linear(duration: 0.2), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
