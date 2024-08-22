@@ -642,7 +642,6 @@
 		B0E1C2422C2430C6005309E1 /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1C2412C2430C6005309E1 /* AlertBuilder.swift */; };
 		B0E1CED62B19B682006DDF98 /* PendingExpressTxStatusBottomSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1CED52B19B682006DDF98 /* PendingExpressTxStatusBottomSheetViewModel.swift */; };
 		B0E1D175257DE75D00A3AB98 /* CommonKeysManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1D174257DE75D00A3AB98 /* CommonKeysManager.swift */; };
-		B0E20E0A2C2AEA5B00213580 /* SheetHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E20E092C2AEA5B00213580 /* SheetHandleView.swift */; };
 		B0E20E122C2B01F600213580 /* PriceChangeUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E20E112C2B01F600213580 /* PriceChangeUtility.swift */; };
 		B0E3381C2A7A809600D36727 /* LockedUserTokensManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3381B2A7A809600D36727 /* LockedUserTokensManager.swift */; };
 		B0E479BA2C3E7CEC0043B239 /* MarketsTokenDetailsMetricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E479B92C3E7CEC0043B239 /* MarketsTokenDetailsMetricsView.swift */; };
@@ -2608,7 +2607,6 @@
 		B0E1C2412C2430C6005309E1 /* AlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBuilder.swift; sourceTree = "<group>"; };
 		B0E1CED52B19B682006DDF98 /* PendingExpressTxStatusBottomSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxStatusBottomSheetViewModel.swift; sourceTree = "<group>"; };
 		B0E1D174257DE75D00A3AB98 /* CommonKeysManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonKeysManager.swift; sourceTree = "<group>"; };
-		B0E20E092C2AEA5B00213580 /* SheetHandleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetHandleView.swift; sourceTree = "<group>"; };
 		B0E20E112C2B01F600213580 /* PriceChangeUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeUtility.swift; sourceTree = "<group>"; };
 		B0E3381B2A7A809600D36727 /* LockedUserTokensManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedUserTokensManager.swift; sourceTree = "<group>"; };
 		B0E479B92C3E7CEC0043B239 /* MarketsTokenDetailsMetricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsMetricsView.swift; sourceTree = "<group>"; };
@@ -3958,13 +3956,13 @@
 			path = NotificationView;
 			sourceTree = "<group>";
 		};
-		2D535E6D2A0CB4D20081EB76 /* BottonSheetInfoView */ = {
+		2D535E6D2A0CB4D20081EB76 /* BottomSheetInfoView */ = {
 			isa = PBXGroup;
 			children = (
 				2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */,
 				2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */,
 			);
-			path = BottonSheetInfoView;
+			path = BottomSheetInfoView;
 			sourceTree = "<group>";
 		};
 		2D5DCC2B2C3309F1000EE379 /* TokensNetworkSelector */ = {
@@ -5644,7 +5642,7 @@
 				EF81B2A82A6686D2006CD57B /* BottomScrollableSheet */,
 				B0A4C49E2A270F490060E039 /* BalanceWithButtonsView */,
 				EF666C242A2DF9D60044986F /* BottomSheet */,
-				2D535E6D2A0CB4D20081EB76 /* BottonSheetInfoView */,
+				2D535E6D2A0CB4D20081EB76 /* BottomSheetInfoView */,
 				2DBE29BE2B3C4A8100109D5E /* DetentBottonSheet */,
 				B05A13AF29FBF16300FB511A /* ButtonWithIcon */,
 				B675A1E42A1E050C00F624B6 /* CardsInfoPagerView */,
@@ -5928,7 +5926,6 @@
 				B09409922A3B7E9800787432 /* NavbarDotsImage.swift */,
 				B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */,
 				2DB8E1152B29068C0044BF7D /* CustomSearchBar.swift */,
-				B0E20E092C2AEA5B00213580 /* SheetHandleView.swift */,
 				B66BDAE82C7438310047FD67 /* GrabberViewFactory.swift */,
 			);
 			path = Common;
@@ -12092,7 +12089,6 @@
 				EFF763E32C4E38D200E846F4 /* SendStepNavigationTrailingViewType.swift in Sources */,
 				B6157AAD2C322733000640B4 /* OnboardingFeatureDescriptionView.swift in Sources */,
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
-				B0E20E0A2C2AEA5B00213580 /* SheetHandleView.swift in Sources */,
 				B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */,
 				B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift in Sources */,
 				EF9E2A442B55329800418559 /* ExpressCurrencyView.swift in Sources */,

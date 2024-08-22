@@ -15,7 +15,7 @@ extension View {
     ///   - settings: You can setup the sheet's appearance
     ///   - sheetContent: View for `sheetContent`
     @ViewBuilder
-    func SelfSizingDetentBottomSheet<Item: Identifiable, ContentView: SelfSizingBottomSheetContent>(
+    func selfSizingDetentBottomSheet<Item: Identifiable, ContentView: SelfSizingBottomSheetContent>(
         item: Binding<Item?>,
         detents: Set<BottomSheetDetent> = [.large],
         settings: SelfSizingDetentBottomSheetModifier<Item, ContentView>.Settings = .init(),
