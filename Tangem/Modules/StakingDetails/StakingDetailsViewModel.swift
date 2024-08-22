@@ -244,7 +244,7 @@ private extension StakingDetailsViewModel {
                     if rewards.count == 1, let balance = rewards.first {
                         self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
                     } else {
-                        self?.coordinator?.openMultipleRewards(yield: yield, rewards: rewards)
+                        self?.coordinator?.openMultipleRewards()
                     }
                 }
             )
