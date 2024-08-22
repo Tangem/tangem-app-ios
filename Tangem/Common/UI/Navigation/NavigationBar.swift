@@ -82,22 +82,23 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
         let backgroundColor: Color
         let horizontalPadding: CGFloat
         let height: CGFloat
+        let alignment: Alignment
 
         init(
             titleFont: Font = .system(size: 17, weight: .medium),
             titleColor: Color = .tangemGrayDark6,
             backgroundColor: Color = .tangemBgGray,
             horizontalPadding: CGFloat = 0,
-            height: CGFloat = 44
+            height: CGFloat = 44,
+            alignment: Alignment = .center
         ) {
             self.titleFont = titleFont
             self.titleColor = titleColor
             self.backgroundColor = backgroundColor
             self.horizontalPadding = horizontalPadding
             self.height = height
+            self.alignment = alignment
         }
-
-        //		static var `default`: Settings { .init() }
     }
 
     private let title: String
@@ -129,7 +130,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
                 .foregroundColor(settings.titleColor)
         }
         .padding(.horizontal, settings.horizontalPadding)
-        .frame(height: settings.height)
+        .frame(height: settings.height, alignment: settings.alignment)
         .background(settings.backgroundColor.edgesIgnoringSafeArea(.all))
     }
 }

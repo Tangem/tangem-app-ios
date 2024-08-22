@@ -661,6 +661,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щотиждня.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
 "staking_notification_unstake_text" = "Винагороди припиняють нараховуватися одразу після того, як ви знімаєте ставку. Процес зняття займає %@.";
+"staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Зʼєднати ще раз";
 "staking_restake" = "Повторно застейкати";
 "staking_restake_rewards" = "Застейкати винагороди";
@@ -677,10 +678,12 @@
 "staking_reward_schedule_month" = "Місяць";
 "staking_reward_schedule_week" = "Тиждень";
 "staking_rewards" = "Винагороди";
-"staking_stake_locked" = "Застейкати";
+"staking_stake_locked" = "Стейкінг закрито";
 "staking_stake_more" = "Застейкати більше";
 "staking_title_stake" = "Застейкати %@";
 "staking_title_unstake" = "Зняти зі стейкінгу %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unstaked" = "Скасовано зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";

@@ -11,7 +11,7 @@ import SwiftUI
 // MARK: - Convenience extensions
 
 extension View {
-    /// - Warning: This method maintains strong reference (via `SwiftUI.EnvironmentValues`) to the given `observer` closure.
+    /// - Warning: This method maintains a strong reference (via `SwiftUI.EnvironmentValues`) to the given `observer` closure.
     func onBottomScrollableSheetStateChange(
         _ observer: @escaping BottomScrollableSheetStateObserver
     ) -> some View {

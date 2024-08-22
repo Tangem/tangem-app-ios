@@ -40,7 +40,7 @@ final class SendViewModel: ObservableObject {
     }
 
     var shouldShowDismissAlert: Bool {
-        mainButtonType.shouldShowDismissAlert
+        stepsManager.shouldShowDismissAlert
     }
 
     private let interactor: SendBaseInteractor
@@ -287,17 +287,6 @@ extension SendViewModel: SendStepsManagerOutput {
     func update(flowActionType: SendFlowActionType) {
         DispatchQueue.main.async {
             self.flowActionType = flowActionType
-        }
-    }
-}
-
-extension SendMainButtonType {
-    var shouldShowDismissAlert: Bool {
-        switch self {
-        case .continue, .action:
-            return true
-        case .next, .close:
-            return false
         }
     }
 }

@@ -655,12 +655,13 @@
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
-"staking_notification_earn_rewards_text_period_day" = "Staking allow you to earn %1$@. Your staking rewards arrive every day.";
-"staking_notification_earn_rewards_text_period_hour" = "Staking allow you to earn %1$@. Your staking rewards arrive every hour.";
-"staking_notification_earn_rewards_text_period_month" = "Staking allow you to earn %1$@. Your staking rewards arrive every month.";
-"staking_notification_earn_rewards_text_period_week" = "Staking allow you to earn %1$@. Your staking rewards arrive every week.";
+"staking_notification_earn_rewards_text_period_day" = "Staking allows you to earn %1$@. Your staking rewards arrive every day.";
+"staking_notification_earn_rewards_text_period_hour" = "Staking allows you to earn %1$@. Your staking rewards arrive every hour.";
+"staking_notification_earn_rewards_text_period_month" = "Staking allows you to earn %1$@. Your staking rewards arrive every month.";
+"staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_title" = "Gagnez des récompenses de staking";
-"staking_notification_unstake_text" = "Rewards stop accruing immediately after you unstake. The unstaking process takes %@.";
+"staking_notification_unstake_text" = "Rewards stop accruing immediately after you start unstaking. The unstaking process takes %@.";
+"staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";
 "staking_restake" = "Restake";
 "staking_restake_rewards" = "Restake rewards";
@@ -681,6 +682,8 @@
 "staking_stake_more" = "Staker plus";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock locked";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
