@@ -1558,6 +1558,8 @@
 		EF95442A2C3C528900041FCD /* SendBaseInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9544272C3C528900041FCD /* SendBaseInteractor.swift */; };
 		EF95442D2C3C52A400041FCD /* SendStepsManagerInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF95442B2C3C52A300041FCD /* SendStepsManagerInputOutput.swift */; };
 		EF95442E2C3C52A400041FCD /* SendStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF95442C2C3C52A300041FCD /* SendStepsManager.swift */; };
+		EF977CB92C774B8E006BB27C /* MultipleRewardsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CB42C774B8E006BB27C /* MultipleRewardsCoordinator.swift */; };
+		EF977CBA2C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */; };
 		EF9C52B3287C77A10015D540 /* CardSettingsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF2286C6C7A004C33A9 /* CardSettingsRoutable.swift */; };
 		EF9E29972B4F0C8C00418559 /* TangemExpress.docc in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29962B4F0C8C00418559 /* TangemExpress.docc */; };
 		EF9E299D2B4F0C9100418559 /* TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF9E29932B4F0C8800418559 /* TangemExpress.framework */; };
@@ -3560,6 +3562,8 @@
 		EF9544272C3C528900041FCD /* SendBaseInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendBaseInteractor.swift; sourceTree = "<group>"; };
 		EF95442B2C3C52A300041FCD /* SendStepsManagerInputOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManagerInputOutput.swift; sourceTree = "<group>"; };
 		EF95442C2C3C52A300041FCD /* SendStepsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendStepsManager.swift; sourceTree = "<group>"; };
+		EF977CB42C774B8E006BB27C /* MultipleRewardsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinator.swift; sourceTree = "<group>"; };
+		EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinatorView.swift; sourceTree = "<group>"; };
 		EF9E29932B4F0C8800418559 /* TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF9E29952B4F0C8C00418559 /* TangemExpress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemExpress.h; sourceTree = "<group>"; };
 		EF9E29962B4F0C8C00418559 /* TangemExpress.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemExpress.docc; sourceTree = "<group>"; };
@@ -9810,6 +9814,8 @@
 		EFE8C7062C7738520067CF2E /* MultipleRewards */ = {
 			isa = PBXGroup;
 			children = (
+				EF977CB42C774B8E006BB27C /* MultipleRewardsCoordinator.swift */,
+				EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */,
 				EFE8C7092C77388A0067CF2E /* MultipleRewardsView.swift */,
 				EFE8C70A2C77388A0067CF2E /* MultipleRewardsViewModel.swift */,
 				EFE8C70B2C77388A0067CF2E /* MultipleRewardsRoutable.swift */,
@@ -11783,6 +11789,8 @@
 				EF95442A2C3C528900041FCD /* SendBaseInteractor.swift in Sources */,
 				B62EE31E2B28A0FE006BA412 /* AppStoreReviewModifier.swift in Sources */,
 				DC7DA81E2844F27800AD6DBD /* WelcomeCoordinatorView.swift in Sources */,
+				EF977CB92C774B8E006BB27C /* MultipleRewardsCoordinator.swift in Sources */,
+				EF977CBA2C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift in Sources */,
 				EFC84AC02C35CB2000546882 /* SendFinishView.swift in Sources */,
 				B6FCEE732C40E16100CA9252 /* CGAffineTransform+.swift in Sources */,
 				EFF2A52B2C60B70A007DB0C1 /* StakingNotificationManager.swift in Sources */,

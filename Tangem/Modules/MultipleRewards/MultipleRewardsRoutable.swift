@@ -10,6 +10,6 @@ import Foundation
 import TangemStaking
 
 protocol MultipleRewardsRoutable: AnyObject {
-    func openClaimRewardsFlow(balanceInfo: StakingBalanceInfo)
-    func dismissMultipleRewards()
+    func openUnstakingFlow(balanceInfo: StakingBalanceInfo)
+    func dismiss()
 }

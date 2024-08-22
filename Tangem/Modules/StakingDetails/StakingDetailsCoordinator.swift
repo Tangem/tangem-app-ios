@@ -26,10 +26,9 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     @Published var sendCoordinator: SendCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var multipleRewardsCoordinator: MultipleRewardsCoordinator?
 
-    // MARK: - Child view models
-
-    @Published var multipleRewardsViewModel: MultipleRewardsViewModel?
+    // MARK: - Private
 
     private var options: Options?
 
@@ -108,15 +107,16 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
-    func openMultipleRewards(yield: YieldInfo, rewards: [StakingBalanceInfo]) {
+    func openMultipleRewards() {
         guard let options else { return }
 
-        multipleRewardsViewModel = .init(
-            tokenItem: options.walletModel.tokenItem,
-            yield: yield,
-            balances: rewards,
-            coordinator: self
-        )
+        let coordinator = MultipleRewardsCoordinator(dismissAction: { [weak self] _ in
+            self?.multipleRewardsCoordinator = nil
+        })
+
+        coordinator.start(with: options)
+
+        multipleRewardsCoordinator = coordinator
     }
 
     func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
@@ -136,18 +136,5 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
 
     func openWhatIsStaking() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .whatIsStaking))
-    }
-}
-
-// MARK: - MultipleRewardsRoutable
-
-extension StakingDetailsCoordinator: MultipleRewardsRoutable {
-    func openClaimRewardsFlow(balanceInfo: TangemStaking.StakingBalanceInfo) {
-        multipleRewardsViewModel = nil
-        openUnstakingFlow(balanceInfo: balanceInfo)
-    }
-
-    func dismissMultipleRewards() {
-        multipleRewardsViewModel = nil
     }
 }

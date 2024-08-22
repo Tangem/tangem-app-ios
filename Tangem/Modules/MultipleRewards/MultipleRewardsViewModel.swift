@@ -17,8 +17,7 @@ final class MultipleRewardsViewModel: ObservableObject, Identifiable {
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
-    private let yield: YieldInfo
-    private let balances: [StakingBalanceInfo]
+    private let stakingManager: StakingManager
     private weak var coordinator: MultipleRewardsRoutable?
 
     private let percentFormatter = PercentFormatter()
@@ -27,38 +26,36 @@ final class MultipleRewardsViewModel: ObservableObject, Identifiable {
 
     init(
         tokenItem: TokenItem,
-        yield: YieldInfo,
-        balances: [StakingBalanceInfo],
+        stakingManager: StakingManager,
         coordinator: MultipleRewardsRoutable
     ) {
         self.tokenItem = tokenItem
-        self.yield = yield
-        self.balances = balances
+        self.stakingManager = stakingManager
         self.coordinator = coordinator
 
-        assert(
-            !balances.contains(where: { $0.balanceType != .rewards }),
-            "MultipleRewardsViewModel supports only the `rewards balances`"
-        )
-
-        setupView()
+        bind()
     }
 
     func dismiss() {
-        coordinator?.dismissMultipleRewards()
+        coordinator?.dismiss()
     }
 }
 
 // MARK: - Private
 
 private extension MultipleRewardsViewModel {
-    func setupView() {
-        validators = balances.compactMap { balance in
-            mapToValidatorViewData(balance: balance)
+    func bind() {
+        guard case .staked(let staked) = stakingManager.state else {
+            assertionFailure("StakingManager.state \(stakingManager.state) doesn't support in MultipleRewardsViewModel")
+            return
+        }
+
+        validators = staked.balances.rewards().compactMap { balance in
+            mapToValidatorViewData(yield: staked.yieldInfo, balance: balance)
         }
     }
 
-    func mapToValidatorViewData(balance: StakingBalanceInfo) -> ValidatorViewData? {
+    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
         guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
             return nil
         }
@@ -84,7 +81,7 @@ private extension MultipleRewardsViewModel {
             detailsType: .balance(
                 BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
                 action: { [weak self] in
-                    self?.coordinator?.openClaimRewardsFlow(balanceInfo: balance)
+                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
                 }
             )
         )
