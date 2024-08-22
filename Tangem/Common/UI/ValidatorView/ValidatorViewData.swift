@@ -20,34 +20,59 @@ struct ValidatorViewData: Hashable, Identifiable {
     var isIconMonochrome: Bool {
         switch subtitleType {
         case .selection, .warmup, .active, .none: false
-        case .unbounding: true
+        case .unbounding, .withdraw: true
         }
     }
 
     var subtitle: AttributedString? {
         switch subtitleType {
         case .none:
-            nil
-        case .selection(let percentFormatted):
-            string(Localization.stakingDetailsAnnualPercentageRate, accent: percentFormatted)
-        case .warmup(let percentFormatted):
-            string(Localization.stakingDetailsWarmupPeriod, accent: percentFormatted)
-        case .active(let percentFormatted):
-            string(Localization.stakingDetailsApr, accent: percentFormatted)
-        case .unbounding(let percentFormatted):
-            string(Localization.stakingDetailsUnbondingPeriod, accent: percentFormatted)
+            return nil
+        case .selection(let apr):
+            return string(Localization.stakingDetailsAnnualPercentageRate, accent: apr)
+        case .warmup(let period):
+            return string(Localization.stakingDetailsWarmupPeriod, accent: period)
+        case .active(let apr):
+            return string(Localization.stakingDetailsApr, accent: apr)
+        case .unbounding(let unlitDate):
+            let (text, accent) = preparedUntil(unlitDate)
+            return string(text, accent: accent)
+        case .withdraw:
+            return string(Localization.stakingReadyToWithdraw)
         }
     }
 
-    private func string(_ text: String, accent: String) -> AttributedString {
-        var descriptionPart = AttributedString(text)
-        descriptionPart.foregroundColor = Colors.Text.tertiary
-        descriptionPart.font = Fonts.Regular.caption1
+    private func preparedUntil(_ date: Date) -> (full: String, accent: String) {
+        if Calendar.current.isDateInToday(date) {
+            return (Localization.stakingUnbonding, Localization.commonToday)
+        }
 
-        var valuePart = AttributedString(accent)
-        valuePart.foregroundColor = Colors.Text.accent
-        valuePart.font = Fonts.Regular.caption1
-        return descriptionPart + " " + valuePart
+        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
+            let formatted = date.formatted(.dateTime)
+            return (Localization.stakingUnbondingIn, formatted)
+        }
+
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.day]
+        let formatted = formatter.string(from: DateComponents(day: days)) ?? days.formatted()
+
+        return (Localization.stakingUnbondingIn, formatted)
+    }
+
+    private func string(_ text: String, accent: String? = nil) -> AttributedString {
+        var string = AttributedString(text)
+        string.foregroundColor = Colors.Text.tertiary
+        string.font = Fonts.Regular.caption1
+
+        if let accent {
+            var accent = AttributedString(accent)
+            accent.foregroundColor = Colors.Text.accent
+            accent.font = Fonts.Regular.caption1
+            return string + " " + accent
+        }
+
+        return string
     }
 }
 
@@ -55,7 +80,8 @@ extension ValidatorViewData {
     enum SubtitleType: Hashable {
         case warmup(period: String)
         case active(apr: String)
-        case unbounding(period: String)
+        case unbounding(until: Date)
+        case withdraw
         case selection(percentFormatted: String)
     }
 

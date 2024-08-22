@@ -33,7 +33,6 @@ extension TangemBlogUrlBuilder {
 }
 
 private extension TangemBlogUrlBuilder.Post {
-    #warning("provide coorrect value for whatIsStaking")
     var path: String {
         switch self {
         case .fee:
@@ -43,7 +42,7 @@ private extension TangemBlogUrlBuilder.Post {
         case .refundedDex:
             "an-overview-of-cross-chain-bridges"
         case .whatIsStaking:
-            "an-overview-of-cross-chain-bridges"
+            "how-to-stake-cryptocurrency"
         }
     }
 }
