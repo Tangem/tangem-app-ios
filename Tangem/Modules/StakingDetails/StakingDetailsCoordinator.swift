@@ -29,6 +29,8 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child view models
 
+    @Published var multipleRewardsViewModel: MultipleRewardsViewModel?
+
     private var options: Options?
 
     required init(
@@ -106,6 +108,17 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
+    func openMultipleRewards(yield: YieldInfo, rewards: [StakingBalanceInfo]) {
+        guard let options else { return }
+
+        multipleRewardsViewModel = .init(
+            tokenItem: options.walletModel.tokenItem,
+            yield: yield,
+            balances: rewards,
+            coordinator: self
+        )
+    }
+
     func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
         guard let options else { return }
 
@@ -123,5 +136,18 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
 
     func openWhatIsStaking() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .whatIsStaking))
+    }
+}
+
+// MARK: - MultipleRewardsRoutable
+
+extension StakingDetailsCoordinator: MultipleRewardsRoutable {
+    func openClaimRewardsFlow(balanceInfo: TangemStaking.StakingBalanceInfo) {
+        multipleRewardsViewModel = nil
+        openUnstakingFlow(balanceInfo: balanceInfo)
+    }
+
+    func dismissMultipleRewards() {
+        multipleRewardsViewModel = nil
     }
 }

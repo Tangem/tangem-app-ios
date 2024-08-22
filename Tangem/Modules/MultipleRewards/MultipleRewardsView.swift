@@ -12,12 +12,24 @@ struct MultipleRewardsView: View {
     @ObservedObject var viewModel: MultipleRewardsViewModel
 
     var body: some View {
-        GroupedScrollView(alignment: .leading, spacing: 14) {
-            GroupedSection(viewModel.validators) { data in
-                ValidatorView(data: data)
+        NavigationView {
+            GroupedScrollView(alignment: .leading, spacing: 14) {
+                GroupedSection(viewModel.validators) { data in
+                    ValidatorView(data: data)
+                }
+                .interItemSpacing(0)
+                .innerContentPadding(0)
+                .backgroundColor(Colors.Background.action)
             }
-            .interItemSpacing(0)
-            .innerContentPadding(0)
+            .navigationTitle(Localization.commonClaimRewards)
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Colors.Background.tertiary)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(Localization.commonClose, action: viewModel.dismiss)
+                        .foregroundColor(Colors.Text.primary1)
+                }
+            }
         }
     }
 }
