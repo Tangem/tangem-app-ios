@@ -76,6 +76,10 @@ extension CommonSellStepsManager: SendStepsManager {
         .init(step: summaryStep, action: .action, backButtonVisible: false)
     }
 
+    var shouldShowDismissAlert: Bool {
+        return true
+    }
+
     func set(output: SendStepsManagerOutput) {
         self.output = output
     }

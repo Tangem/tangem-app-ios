@@ -67,9 +67,8 @@ struct StakingDetailsView: View {
         }
     }
 
-    #warning("provide localization")
     private var whatIsStakingText: some View {
-        Text("What is staking?")
+        Text(Localization.stakingDetailsBannerText)
             .font(Fonts.Bold.title1)
             .foregroundStyle(
                 LinearGradient(

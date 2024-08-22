@@ -11,9 +11,44 @@ import SwiftUI
 struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
 
+    @Environment(\.colorScheme) private var colorScheme
+
     @State private var descriptionBottomSheetHeight: CGFloat = 0
+    @State private var isNavigationBarShadowLineViewVisible = false
+
+    private var navigationBarBackgroundColor: Color {
+        return colorScheme == .dark ? Colors.Background.primary : Colors.Background.secondary
+    }
+
+    private let scrollViewFrameCoordinateSpaceName = UUID()
 
     var body: some View {
+        VStack(spacing: 0.0) {
+            NavigationBar(
+                title: viewModel.tokenName,
+                settings: .init(
+                    titleColor: Colors.Text.primary1,
+                    backgroundColor: navigationBarBackgroundColor,
+                    height: 64.0,
+                    alignment: .bottom
+                ),
+                leftItems: {
+                    BackButton(height: 44.0, isVisible: true, isEnabled: true, action: viewModel.onBackButtonTap)
+                },
+                rightItems: {}
+            )
+            .overlay(alignment: .bottom) {
+                Separator(color: Colors.Stroke.primary)
+                    .hidden(!isNavigationBarShadowLineViewVisible)
+            }
+
+            scrollView
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    private var scrollView: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .center, spacing: 24) {
                 Group {
@@ -39,10 +74,12 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
-            .padding(.top, 14)
+            .padding(.top, Constants.scrollViewContentTopInset)
+            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(Text(viewModel.tokenName))
+        .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
@@ -185,9 +222,12 @@ struct TokenMarketsDetailsView: View {
     }
 }
 
+// MARK: - Constants
+
 private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
+        static let scrollViewContentTopInset = 14.0
     }
 }
 

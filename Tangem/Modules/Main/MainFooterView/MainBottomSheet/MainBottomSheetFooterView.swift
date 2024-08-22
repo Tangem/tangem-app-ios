@@ -9,6 +9,14 @@
 import SwiftUI
 
 struct MainBottomSheetFooterView: View {
+    private var bottomInset: CGFloat {
+        return max(
+            UIApplication.safeAreaInsets.bottom - MainBottomSheetHeaderInputView.Constants.bottomInset,
+            MainBottomSheetHeaderInputView.Constants.topInset - MainBottomSheetHeaderInputView.Constants.bottomInset,
+            .zero
+        )
+    }
+
     var body: some View {
         VStack(spacing: 0.0) {
             FixedSpacer.vertical(14.0)
@@ -20,6 +28,7 @@ struct MainBottomSheetFooterView: View {
                 isTextFieldFocused: .constant(false),
                 allowsHitTestingForTextField: false
             )
+            .padding(.bottom, bottomInset)
             .bottomScrollableSheetCornerRadius()
             .bottomScrollableSheetGrabber()
             .bottomScrollableSheetShadow()
