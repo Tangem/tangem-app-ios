@@ -136,28 +136,6 @@ struct MarketsPortfolioTokenItemView: View {
         }
     }
 
-    private var unreachableView: some View {
-        VStack(alignment: .trailing) {
-            HStack(alignment: .center, spacing: .zero) {
-                Spacer()
-
-                Text(Localization.commonUnreachable)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-            }
-        }
-    }
-
-    private var noAddress: some View {
-        VStack(alignment: .trailing) {
-            HStack(alignment: .center, spacing: .zero) {
-                Spacer()
-
-                Text(Localization.commonNoAddress)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-            }
-        }
-    }
-
     @ViewBuilder
     private func contextMenuButton(for actionType: TokenActionType) -> some View {
         let action = { viewModel.didTapContextAction(actionType) }
