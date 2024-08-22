@@ -12,7 +12,14 @@ import Combine
 protocol SendBaseInput: AnyObject {
     var isFeeIncluded: Bool { get }
 
-    var isLoading: AnyPublisher<Bool, Never> { get }
+    var actionInProcessing: AnyPublisher<Bool, Never> { get }
+    var additionalActionProcessing: AnyPublisher<Bool, Never> { get }
+}
+
+extension SendBaseInput {
+    var additionalActionProcessing: AnyPublisher<Bool, Never> {
+        .just(output: false)
+    }
 }
 
 protocol SendBaseOutput: AnyObject {

@@ -187,13 +187,28 @@ struct SendView: View {
                     style: .primary,
                     size: .default,
                     isLoading: viewModel.mainButtonLoading,
-                    isDisabled: viewModel.mainButtonDisabled,
+                    isDisabled: !viewModel.actionIsAvailable,
                     action: viewModel.userDidTapActionButton
                 )
+                .disabled(viewModel.additionalButtonLoading)
             }
-            .padding(.top, 8)
-            .padding(.bottom, 14)
+
+            if viewModel.transactionURL == nil, let additionalActionType = viewModel.additionalActionType {
+                MainButton(
+                    title: additionalActionType.title,
+                    icon: additionalActionType.icon,
+                    style: .secondary,
+                    size: .default,
+                    isLoading: viewModel.additionalButtonLoading,
+                    isDisabled: !viewModel.actionIsAvailable,
+                    action: viewModel.userDidTapAdditionalActionButton
+                )
+                .disabled(viewModel.mainButtonLoading)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
+        .padding(.top, 8)
+        .padding(.bottom, 14)
         .padding(.horizontal, 16)
     }
 

@@ -26,7 +26,6 @@ struct SendDependenciesBuilder {
         case .unstake: action.title
         case .withdraw: action.title
         case .claimRewards: action.title
-        case .restakeRewards: action.title
         }
     }
 
@@ -37,7 +36,6 @@ struct SendDependenciesBuilder {
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
-        case .restakeRewards: nil
         }
     }
 
@@ -192,19 +190,21 @@ struct SendDependenciesBuilder {
             transactionCreator: walletModel.transactionCreator,
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            stakingTransactionMapper: makeStakingTransactionMapper(),
             allowanceProvider: makeAllowanceProvider(),
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
 
-    func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.ActionType) -> UnstakingModel {
+    func makeUnstakingModel(stakingManager: any StakingManager, actions: UnstakingModel.Actions) -> UnstakingModel {
         let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
 
         return UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: stakingTransactionDispatcher,
-            action: action,
+            stakingTransactionMapper: makeStakingTransactionMapper(),
+            actions: actions,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
@@ -228,5 +228,12 @@ struct SendDependenciesBuilder {
 
     func makeAllowanceProvider() -> AllowanceProvider {
         CommonAllowanceProvider(walletModel: walletModel)
+    }
+
+    func makeStakingTransactionMapper() -> StakingTransactionMapper {
+        StakingTransactionMapper(
+            amountTokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
     }
 }

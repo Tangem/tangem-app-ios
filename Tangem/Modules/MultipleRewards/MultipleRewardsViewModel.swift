@@ -89,8 +89,8 @@ private extension MultipleRewardsViewModel {
 
     func openUnstakingFlow(balance: StakingBalanceInfo) {
         do {
-            let action = try PendingActionMapper(balanceInfo: balance).getActions()
-            coordinator?.openUnstakingFlow(action: action)
+            let actions = try PendingActionMapper(balanceInfo: balance).getActions()
+            coordinator?.openUnstakingFlow(actions: actions)
         } catch {
             // Show alert
         }

@@ -18,49 +18,53 @@ struct PendingActionMapper {
         self.balanceInfo = balanceInfo
     }
 
-    func getActions() throws -> UnstakingModel.ActionType {
+    func getActions() throws -> UnstakingModel.Actions {
         switch balanceInfo.balanceType {
         case .warmup, .unbonding:
             throw PendingActionMapperError.notSupported(
                 "PendingActionMapper doesn't support balanceType: \(balanceInfo.balanceType)"
             )
         case .active:
-            return .single(stakingAction(type: .unstake))
+            return .init(main: stakingAction(type: .unstake), additional: nil)
         case .withdraw:
-            let withdrawIndex = balanceInfo.actions.firstIndex(where: {
-                if case .withdraw = $0 {
-                    return true
-                }
-                return false
-            })
-
-            guard let withdrawIndex else {
-                throw PendingActionMapperError.wrongPendingActionForBalanceType
+            guard case .withdraw(let passthrough) = balanceInfo.actions.first else {
+                throw PendingActionMapperError.passthroughNotFound
             }
 
-            return .single(stakingAction(type: .pending(balanceInfo.actions[withdrawIndex])))
+            return .init(
+                main: stakingAction(type: .pending(.withdraw(passthrough: passthrough))),
+                additional: nil
+            )
         case .rewards:
-            let claimRewardsIndex = balanceInfo.actions.firstIndex(where: {
-                if case .claimRewards = $0 {
-                    return true
+            let claimRewards: PendingActionType = try {
+                let index = balanceInfo.actions.firstIndex(where: {
+                    if case .claimRewards = $0 {
+                        return true
+                    }
+                    return false
+                })
+
+                guard let index else {
+                    throw PendingActionMapperError.passthroughNotFound
                 }
-                return false
-            })
 
-            let restakeRewardsIndex = balanceInfo.actions.firstIndex(where: {
-                if case .restakeRewards = $0 {
-                    return true
-                }
-                return false
-            })
+                return balanceInfo.actions[index]
+            }()
 
-            guard let claimRewardsIndex, let restakeRewardsIndex else {
-                throw PendingActionMapperError.wrongPendingActionForBalanceType
-            }
+            let restakeRewards: PendingActionType? = {
+                let index = balanceInfo.actions.firstIndex(where: {
+                    if case .restakeRewards = $0 {
+                        return true
+                    }
+                    return false
+                })
 
-            return .rewards(
-                claim: stakingAction(type: .pending(balanceInfo.actions[restakeRewardsIndex])),
-                restake: stakingAction(type: .pending(balanceInfo.actions[restakeRewardsIndex]))
+                return index.map { balanceInfo.actions[$0] }
+            }()
+
+            return .init(
+                main: stakingAction(type: .pending(claimRewards)),
+                additional: restakeRewards.map { stakingAction(type: .pending($0)) }
             )
         }
     }
@@ -77,24 +81,26 @@ enum PendingActionMapperError: Error {
 }
 
 protocol UnstakingModelStateProvider {
-    var state: AnyPublisher<UnstakingModel.State, Never> { get }
+    var state: UnstakingModel.State { get }
+    var statePublisher: AnyPublisher<UnstakingModel.State, Never> { get }
 }
 
 class UnstakingModel {
     // MARK: - Data
 
-    private let _state = CurrentValueSubject<State?, Never>(.none)
+    private let _state: CurrentValueSubject<State, Never>
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
+    private let _isAdditionalLoading = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Private injections
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let action: ActionType
+    private let stakingTransactionMapper: StakingTransactionMapper
+    private let actions: Actions
     private let amountTokenItem: TokenItem
     private let feeTokenItem: TokenItem
-    private let stakingMapper: StakingMapper
 
     private var estimatedFeeTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
@@ -102,20 +108,19 @@ class UnstakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        action: UnstakingModel.ActionType,
+        stakingTransactionMapper: StakingTransactionMapper,
+        actions: Actions,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.action = action
+        self.stakingTransactionMapper = stakingTransactionMapper
+        self.actions = actions
         self.amountTokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
-        stakingMapper = StakingMapper(
-            amountTokenItem: amountTokenItem,
-            feeTokenItem: feeTokenItem
-        )
 
+        _state = .init(.init(fee: .loading, actions: actions))
         updateState()
     }
 }
@@ -123,7 +128,11 @@ class UnstakingModel {
 // MARK: - UnstakingModelStateProvider
 
 extension UnstakingModel: UnstakingModelStateProvider {
-    var state: AnyPublisher<State, Never> {
+    var state: State {
+        _state.value
+    }
+
+    var statePublisher: AnyPublisher<State, Never> {
         _state.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
@@ -147,11 +156,11 @@ private extension UnstakingModel {
     }
 
     func update(fee: LoadingValue<Decimal>) {
-        _state.send(.init(fee: fee, action: action))
+        _state.send(.init(fee: fee, actions: actions))
     }
 
     func fee() async throws -> Decimal {
-        return try await stakingManager.estimateFee(action: action.first)
+        return try await stakingManager.estimateFee(action: actions.main)
     }
 
     func mapToSendFee(_ state: State?) -> SendFee {
@@ -173,7 +182,7 @@ private extension UnstakingModel {
 private extension UnstakingModel {
     private func send(action: StakingAction) async throws -> SendTransactionDispatcherResult {
         let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
+        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
 
         do {
             let result = try await sendTransactionDispatcher.send(
@@ -219,10 +228,10 @@ extension UnstakingModel: SendFeeLoader {
 extension UnstakingModel: SendAmountInput {
     var amount: SendAmount? {
         let fiat = amountTokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(action.first.amount, currencyId: $0)
+            BalanceConverter().convertToFiat(actions.main.amount, currencyId: $0)
         }
 
-        return .init(type: .typical(crypto: action.first.amount, fiat: fiat))
+        return .init(type: .typical(crypto: actions.main.amount, fiat: fiat))
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
@@ -280,7 +289,7 @@ extension UnstakingModel: SendFeeOutput {
 
 extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
-        _state.map { $0?.fee != nil }.eraseToAnyPublisher()
+        _state.map { $0.fee.value != nil }.eraseToAnyPublisher()
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
@@ -302,23 +311,30 @@ extension UnstakingModel: SendFinishInput {
 extension UnstakingModel: SendBaseInput, SendBaseOutput {
     var isFeeIncluded: Bool { false }
 
-    var isLoading: AnyPublisher<Bool, Never> {
+    var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
+    }
+
+    var additionalActionProcessing: AnyPublisher<Bool, Never> {
+        _isAdditionalLoading.eraseToAnyPublisher()
     }
 
     func sendTransaction() async throws -> SendTransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 
-        return try await send(action: action.first)
+        return try await send(action: actions.main)
     }
 
     func sendAdditionalTransaction() async throws -> SendTransactionDispatcherResult {
-        guard case .rewards(_, let restake) = action else {
+        guard let additionalAction = actions.additional else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
 
-        return try await send(action: restake)
+        _isAdditionalLoading.send(true)
+        defer { _isAdditionalLoading.send(false) }
+
+        return try await send(action: additionalAction)
     }
 }
 
@@ -333,19 +349,12 @@ extension UnstakingModel: StakingNotificationManagerInput {
 extension UnstakingModel {
     struct State: Hashable {
         let fee: LoadingValue<Decimal>
-        let action: ActionType
+        let actions: Actions
     }
 
-    enum ActionType: Hashable {
-        case single(StakingAction)
-        case rewards(claim: StakingAction, restake: StakingAction)
-
-        var first: StakingAction {
-            switch self {
-            case .single(let stakingAction): stakingAction
-            case .rewards(let claim, _): claim
-            }
-        }
+    struct Actions: Hashable {
+        let main: StakingAction
+        let additional: StakingAction?
     }
 }
 

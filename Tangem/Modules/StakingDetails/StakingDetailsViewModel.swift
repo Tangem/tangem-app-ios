@@ -323,7 +323,7 @@ private extension StakingDetailsViewModel {
     func openUnstakingFlow(balance: StakingBalanceInfo) {
         do {
             let action = try PendingActionMapper(balanceInfo: balance).getActions()
-            coordinator?.openUnstakingFlow(action: action)
+            coordinator?.openUnstakingFlow(actions: action)
         } catch {
             // show alert
         }
@@ -331,8 +331,8 @@ private extension StakingDetailsViewModel {
 
     func openPendingActionFlow(balance: StakingBalanceInfo) {
         do {
-            let action = try PendingActionMapper(balanceInfo: balance).getActions()
-            coordinator?.openUnstakingFlow(action: action)
+            let actions = try PendingActionMapper(balanceInfo: balance).getActions()
+            coordinator?.openUnstakingFlow(actions: actions)
         } catch {
             // show alert
         }
