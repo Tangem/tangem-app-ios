@@ -93,17 +93,7 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
         for walletModel: WalletModel,
         with userWalletModel: UserWalletModel
     ) -> URL? {
-        let blockchain = walletModel.blockchainNetwork.blockchain
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
-
-        if let token = walletModel.amountType.token, blockchain == .ethereum(testnet: true) {
-            TestnetBuyCryptoService().buyCrypto(
-                .erc20Token(token, walletModel: walletModel, signer: userWalletModel.signer)
-            )
-
-            return nil
-        }
-
         return exchangeUtility.buyURL
     }
 

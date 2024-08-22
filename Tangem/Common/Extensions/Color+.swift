@@ -154,14 +154,6 @@ extension UIColor {
 
     // MARK: Background
 
-    @nonobjc static var tangemBgGray: UIColor {
-        return UIColor(named: "tangem_bg_gray")!
-    }
-
-    @nonobjc static var tangemBgGray2: UIColor {
-        return UIColor(named: "tangem_bg_gray2")!
-    }
-
     @nonobjc static var tangemBg: UIColor {
         return UIColor(named: "tangem_bg")!
     }
@@ -180,10 +172,6 @@ extension UIColor {
 
     @nonobjc static var tangemGrayDark: UIColor {
         return UIColor(named: "tangem_gray_dark")!
-    }
-
-    @nonobjc static var tangemCritical: UIColor {
-        UIColor(named: "tangem_critical")!
     }
 }
 
