@@ -26,7 +26,6 @@ extension StakeKitDTO {
             case revote = "REVOTE"
             case rebond = "REBOND"
             case migrate = "MIGRATE"
-            case unknown = "UNKNOWN"
         }
 
         enum ActionStatus: String, Hashable, Codable {
@@ -36,7 +35,6 @@ extension StakeKitDTO {
             case processing = "PROCESSING"
             case failed = "FAILED"
             case success = "SUCCESS"
-            case unknown = "UNKNOWN"
         }
 
         struct ActionArgs: Decodable {

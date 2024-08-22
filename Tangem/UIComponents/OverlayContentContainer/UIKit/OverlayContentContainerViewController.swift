@@ -367,7 +367,7 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
-    private func notifyStateObserversIfNeeded() {
+    private func notifyStateObserversIfNeeded(isCollapsedState: Bool, isExpandedState: Bool) {
         for stateObserver in stateObservers.values {
             if isCollapsedState {
                 stateObserver(.bottom)
@@ -380,9 +380,9 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
-    private func notifyProgressObservers() {
+    private func notifyProgressObservers(progressValue: CGFloat) {
         for progressObserver in progressObservers.values {
-            progressObserver(progress.value)
+            progressObserver(progressValue)
         }
     }
 
@@ -403,8 +403,8 @@ final class OverlayContentContainerViewController: UIViewController {
         updateContentScale()
         updateCornerRadius()
         updateBackgroundShadowViewAlpha()
-        notifyStateObserversIfNeeded()
-        notifyProgressObservers()
+        notifyStateObserversIfNeeded(isCollapsedState: isCollapsedState, isExpandedState: isExpandedState)
+        notifyProgressObservers(progressValue: newValue.value)
 
         if didTap {
             didTap = false

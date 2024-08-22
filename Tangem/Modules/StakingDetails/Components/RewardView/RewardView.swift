@@ -13,22 +13,9 @@ struct RewardView: View {
     let data: RewardViewData
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                DefaultHeaderView(Localization.stakingRewards)
-                HStack(spacing: 4) {
-                    content
-                }
-                .infinityFrame(axis: .horizontal, alignment: .leading)
-            }
-
-            if data.hasRewards {
-                Spacer(minLength: 12)
-                Assets.chevron.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.informative)
-            }
-        }
+        content
+            .padding(.vertical, 8)
+            .infinityFrame(axis: .horizontal, alignment: .leading)
     }
 
     @ViewBuilder
@@ -37,15 +24,26 @@ struct RewardView: View {
         case .noRewards:
             Text(Localization.stakingDetailsNoRewardsToClaim)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
-        case .rewards(let fiatFormatted, let cryptoFormatted):
-            Text(fiatFormatted)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-            Text(AppConstants.dotSign)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+        case .rewards(let fiatFormatted, let cryptoFormatted, let action):
+            Button(action: action) {
+                HStack(spacing: 4) {
+                    Text(fiatFormatted)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-            Text(cryptoFormatted)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                    Text(AppConstants.dotSign)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+                    Text(cryptoFormatted)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+
+                    Spacer(minLength: 12)
+
+                    Assets.chevron.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.informative)
+                }
+            }
         }
     }
 }
@@ -58,10 +56,7 @@ struct RewardView: View {
             [
                 RewardViewData(state: .noRewards),
                 RewardViewData(
-                    state: .rewards(
-                        fiatFormatted: "24.12$",
-                        cryptoFormatted: "23.421 SOL"
-                    )
+                    state: .rewards(fiatFormatted: "24.12$", cryptoFormatted: "23.421 SOL", action: {})
                 ),
             ]
         ) {
