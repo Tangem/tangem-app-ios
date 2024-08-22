@@ -127,7 +127,11 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
     func onWillDisappear() {
-        bottomSheetVisibility.hide()
+        // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
+        // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
+        DispatchQueue.main.async {
+            self.bottomSheetVisibility.hide()
+        }
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
