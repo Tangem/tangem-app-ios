@@ -17,4 +17,11 @@ protocol SendBaseInput: AnyObject {
 
 protocol SendBaseOutput: AnyObject {
     func sendTransaction() async throws -> SendTransactionDispatcherResult
+    func sendAdditionalTransaction() async throws -> SendTransactionDispatcherResult
+}
+
+extension SendBaseOutput {
+    func sendAdditionalTransaction() async throws -> SendTransactionDispatcherResult {
+        throw SendTransactionDispatcherResult.Error.transactionNotFound
+    }
 }

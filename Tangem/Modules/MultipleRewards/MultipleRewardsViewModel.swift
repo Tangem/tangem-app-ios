@@ -81,9 +81,18 @@ private extension MultipleRewardsViewModel {
             detailsType: .balance(
                 BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
                 action: { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                    self?.openUnstakingFlow(balance: balance)
                 }
             )
         )
+    }
+
+    func openUnstakingFlow(balance: StakingBalanceInfo) {
+        do {
+            let action = try PendingActionMapper(balanceInfo: balance).getActions()
+            coordinator?.openUnstakingFlow(action: action)
+        } catch {
+            // Show alert
+        }
     }
 }

@@ -242,7 +242,7 @@ private extension StakingDetailsViewModel {
             rewardViewData = RewardViewData(
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                        self?.openPendingActionFlow(balance: balance)
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -291,7 +291,7 @@ private extension StakingDetailsViewModel {
                 return nil
             case .active, .withdraw:
                 return { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                    self?.openUnstakingFlow(balance: balance)
                 }
             }
         }()
@@ -318,6 +318,24 @@ private extension StakingDetailsViewModel {
 
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
+    }
+
+    func openUnstakingFlow(balance: StakingBalanceInfo) {
+        do {
+            let action = try PendingActionMapper(balanceInfo: balance).getActions()
+            coordinator?.openUnstakingFlow(action: action)
+        } catch {
+            // show alert
+        }
+    }
+
+    func openPendingActionFlow(balance: StakingBalanceInfo) {
+        do {
+            let action = try PendingActionMapper(balanceInfo: balance).getActions()
+            coordinator?.openUnstakingFlow(action: action)
+        } catch {
+            // show alert
+        }
     }
 
     func shouldShowMinimumRequirement() -> Bool {

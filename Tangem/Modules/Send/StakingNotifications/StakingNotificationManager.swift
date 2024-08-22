@@ -55,8 +55,16 @@ private extension CommonStakingNotificationManager {
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
-        switch state {
-        case .unstaking, .withdraw, .claim:
+        switch state.action {
+        case .single(let action) where action.type == .unstake:
+            show(notification: .unstake(
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
+        case .single(let action):
+            show(notification: .unstake(
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
+        case .rewards(let claim, let restake):
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))

@@ -198,13 +198,13 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeUnstakingModel(stakingManager: any StakingManager, balanceInfo: StakingBalanceInfo) -> UnstakingModel {
+    func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.ActionType) -> UnstakingModel {
         let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
 
         return UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: stakingTransactionDispatcher,
-            balanceInfo: balanceInfo,
+            action: action,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )

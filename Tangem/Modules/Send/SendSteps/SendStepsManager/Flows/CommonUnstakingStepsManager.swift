@@ -36,15 +36,17 @@ class CommonUnstakingStepsManager {
         provider.state
             .withWeakCaptureOf(self)
             .sink { manager, state in
-                switch state {
-                case .unstaking:
+                switch state.action.first.type {
+                case .unstake:
                     manager.output?.update(flowActionType: .unstake)
 
-                case .withdraw:
+                case .pending(.withdraw):
                     manager.output?.update(flowActionType: .withdraw)
 
-                case .claim:
+                case .pending(.claimRewards):
                     manager.output?.update(flowActionType: .claimRewards)
+                default:
+                    break
                 }
             }
             .store(in: &bag)
