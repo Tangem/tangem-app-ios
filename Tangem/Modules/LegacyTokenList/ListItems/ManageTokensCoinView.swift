@@ -36,7 +36,7 @@ struct ManageTokensCoinView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Group {
                         Text(model.name)
-                            .foregroundColor(.tangemGrayDark6)
+                            .foregroundColor(Colors.Old.tangemGrayDark6)
                             + Text(symbolFormatted)
                             .foregroundColor(Color(name: "manage_tokens_gray_text"))
                     }

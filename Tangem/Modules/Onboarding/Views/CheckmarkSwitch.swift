@@ -20,7 +20,7 @@ struct CheckmarkSwitch: View {
             .init(
                 shape: .circle,
                 color: Colors.Control.checked,
-                borderColor: .tangemGrayDark,
+                borderColor: Colors.Old.tangemGrayDark,
                 checkmarkLineWidth: 2,
                 isInteractable: interactable
             )
@@ -30,7 +30,7 @@ struct CheckmarkSwitch: View {
             .init(
                 shape: .roundedRect(cornerRadius: 3),
                 color: Colors.Control.checked,
-                borderColor: .tangemGrayDark,
+                borderColor: Colors.Old.tangemGrayDark,
                 checkmarkLineWidth: 2,
                 isInteractable: interactable
             )
