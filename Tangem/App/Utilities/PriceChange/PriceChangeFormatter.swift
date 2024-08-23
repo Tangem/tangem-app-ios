@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct PriceChangeFormatter {
+/// This formatter maintains reference semantics and uses an internal cache; for performance reasons,
+/// consider keeping the instances of this formatter alive instead of creating and discarding them in place.
+final class PriceChangeFormatter {
     private let percentFormatter: PercentFormatter
 
     init(percentFormatter: PercentFormatter = .init()) {
