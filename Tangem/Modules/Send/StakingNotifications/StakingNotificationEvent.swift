@@ -13,6 +13,8 @@ enum StakingNotificationEvent {
     case approveTransactionInProgress
     case stake(tokenSymbol: String, rewardScheduleType: RewardScheduleType)
     case unstake(periodFormatted: String)
+    case validationErrorEvent(ValidationErrorEvent)
+    case networkUnreachable
 }
 
 extension StakingNotificationEvent: NotificationEvent {
@@ -21,6 +23,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .approveTransactionInProgress: "approveTransactionInProgress".hashValue
         case .stake: "stake".hashValue
         case .unstake: "unstake".hashValue
+        case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
+        case .networkUnreachable: "networkUnreachable".hashValue
         }
     }
 
@@ -29,6 +33,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .approveTransactionInProgress: .string(Localization.warningExpressApprovalInProgressTitle)
         case .stake: .string(Localization.stakingNotificationEarnRewardsTitle)
         case .unstake: .string(Localization.commonUnstake)
+        case .validationErrorEvent(let event): event.title
+        case .networkUnreachable: .string(Localization.sendFeeUnreachableErrorTitle)
         }
     }
 
@@ -46,27 +52,54 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationEarnRewardsTextPeriodMonth(tokenSymbol)
         case .unstake(let periodFormatted):
             Localization.stakingNotificationUnstakeText(periodFormatted)
+        case .validationErrorEvent(let event):
+            event.description
+        case .networkUnreachable:
+            Localization.sendFeeUnreachableErrorText
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .approveTransactionInProgress: .secondary
-        case .stake, .unstake: .action
+        case .stake, .unstake, .networkUnreachable: .action
+        case .validationErrorEvent(let event): event.colorScheme
         }
     }
 
     var icon: NotificationView.MessageIcon {
         switch self {
+        case .networkUnreachable:
+            return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
         case .stake, .unstake:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
+        case .validationErrorEvent(let event):
+            return event.icon
         }
     }
 
     var severity: NotificationView.Severity {
-        .info
+        switch self {
+        case .networkUnreachable:
+            return .critical
+        case .approveTransactionInProgress, .stake, .unstake:
+            return .info
+        case .validationErrorEvent(let event):
+            return event.severity
+        }
+    }
+
+    var buttonActionType: NotificationButtonActionType? {
+        switch self {
+        case .networkUnreachable:
+            return .refreshFee
+        case .validationErrorEvent(let event):
+            return event.buttonActionType
+        case .approveTransactionInProgress, .stake, .unstake:
+            return nil
+        }
     }
 
     var isDismissable: Bool {

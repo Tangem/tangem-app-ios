@@ -21,6 +21,7 @@ protocol StakingNotificationManager: NotificationManager {
 
 class CommonStakingNotificationManager {
     private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
 
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
     private var stateSubscription: AnyCancellable?
@@ -34,8 +35,9 @@ class CommonStakingNotificationManager {
 
     private weak var delegate: NotificationTapDelegate?
 
-    init(tokenItem: TokenItem) {
+    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
         self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
     }
 }
 
@@ -44,6 +46,8 @@ class CommonStakingNotificationManager {
 private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
+        case .loading:
+            break
         case .approveTransactionInProgress:
             show(notification: .approveTransactionInProgress)
         case .readyToApprove, .readyToStake:
@@ -51,6 +55,13 @@ private extension CommonStakingNotificationManager {
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case .error:
+            show(notification: .networkUnreachable)
         }
     }
 
@@ -74,7 +85,10 @@ private extension CommonStakingNotificationManager {
 
 private extension CommonStakingNotificationManager {
     func show(notification event: StakingNotificationEvent) {
-        let input = NotificationsFactory().buildNotificationInput(for: event)
+        let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
+            self?.delegate?.didTapNotification(with: id, action: actionType)
+        }
+
         notificationInputsSubject.value = [input]
     }
 }
@@ -84,7 +98,7 @@ private extension CommonStakingNotificationManager {
 extension CommonStakingNotificationManager: StakingNotificationManager {
     func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
-            provider.state.removeDuplicates(),
+            provider.state,
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
         )
         .withWeakCaptureOf(self)

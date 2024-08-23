@@ -190,6 +190,7 @@ struct SendDependenciesBuilder {
         return StakingModel(
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
+            transactionValidator: walletModel.transactionValidator,
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
             stakingTransactionMapper: makeStakingTransactionMapper(),
@@ -213,7 +214,7 @@ struct SendDependenciesBuilder {
     }
 
     func makeStakingNotificationManager() -> StakingNotificationManager {
-        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
+        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 
     func makeStakingSendAmountValidator(stakingManager: any StakingManager) -> SendAmountValidator {
