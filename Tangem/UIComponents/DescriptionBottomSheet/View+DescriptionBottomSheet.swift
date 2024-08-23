@@ -9,8 +9,11 @@
 import SwiftUI
 
 extension View {
-    func descriptionBottomSheet(info: Binding<DescriptionBottomSheetInfo?>, sheetHeight: Binding<CGFloat>, backgroundColor: Color?) -> some View {
-        SelfSizingDetentBottomSheet(
+    func descriptionBottomSheet(
+        info: Binding<DescriptionBottomSheetInfo?>,
+        sheetHeight: Binding<CGFloat>, backgroundColor: Color?
+    ) -> some View {
+        selfSizingDetentBottomSheet(
             item: info,
             detents: [.custom(sheetHeight.wrappedValue)],
             settings: .init(backgroundColor: backgroundColor, contentHeightBinding: sheetHeight)

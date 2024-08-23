@@ -111,6 +111,10 @@ extension CommonStakingStepsManager: SendStepsManager {
         .init(step: amountStep, action: .next, backButtonVisible: false)
     }
 
+    var shouldShowDismissAlert: Bool {
+        stack.contains(where: { $0.type.isSummary })
+    }
+
     func set(output: SendStepsManagerOutput) {
         self.output = output
     }

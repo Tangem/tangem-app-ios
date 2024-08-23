@@ -14,6 +14,8 @@ protocol SendStepsManager {
     var initialFlowActionType: SendFlowActionType { get }
     var initialState: SendStepsManagerViewState { get }
 
+    var shouldShowDismissAlert: Bool { get }
+
     func performNext()
     func performBack()
 

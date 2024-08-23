@@ -54,11 +54,7 @@ class BottomSheetPresentationController: UIPresentationController {
 
         presentedView.addGestureRecognizer(panGestureRecognizer)
 
-        presentedView.layer.cornerRadius = sheetCornerRadius
-        presentedView.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner,
-        ]
+        presentedView.layer.cornerRadius(sheetCornerRadius, corners: .topEdge)
 
         guard let containerView = containerView else {
             return

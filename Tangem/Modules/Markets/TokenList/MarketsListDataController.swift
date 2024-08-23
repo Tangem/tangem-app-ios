@@ -17,7 +17,7 @@ class MarketsListDataController {
 
     // MARK: - Private Properties
 
-    private let dataProvider: MarketsListDataProvider
+    private weak var dataFetcher: MarketsListDataFetcher?
     private weak var cellsStateUpdater: MarketsListStateUpdater?
 
     private let lastAppearedIndexSubject: CurrentValueSubject<Int, Never> = .init(0)
@@ -30,8 +30,12 @@ class MarketsListDataController {
 
     // MARK: - Init
 
-    init(dataProvider: MarketsListDataProvider, viewVisibilityPublisher: any Publisher<Bool, Never>, cellsStateUpdater: MarketsListStateUpdater?) {
-        self.dataProvider = dataProvider
+    init(
+        dataFetcher: MarketsListDataFetcher,
+        viewVisibilityPublisher: any Publisher<Bool, Never>,
+        cellsStateUpdater: MarketsListStateUpdater?
+    ) {
+        self.dataFetcher = dataFetcher
         self.cellsStateUpdater = cellsStateUpdater
 
         bind(viewVisibilityPublisher: viewVisibilityPublisher)
@@ -142,13 +146,16 @@ class MarketsListDataController {
     }
 
     private func fetchMoreIfPossible(with range: ClosedRange<Int>) {
-        guard dataProvider.canFetchMore else {
+        guard
+            let dataFetcher,
+            dataFetcher.canFetchMore
+        else {
             return
         }
 
-        let itemsInUpperBufferZone = dataProvider.items.count - range.upperBound
+        let itemsInUpperBufferZone = dataFetcher.totalItems - range.upperBound
         if itemsInUpperBufferZone < Constants.itemsInBufferZone {
-            dataProvider.fetchMore()
+            dataFetcher.fetchMore()
         }
     }
 }

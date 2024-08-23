@@ -42,6 +42,9 @@ class CommonUnstakingStepsManager {
 
                 case .withdraw:
                     manager.output?.update(flowActionType: .withdraw)
+
+                case .claim:
+                    manager.output?.update(flowActionType: .claimRewards)
                 }
             }
             .store(in: &bag)
@@ -68,6 +71,10 @@ extension CommonUnstakingStepsManager: SendStepsManager {
 
     var initialState: SendStepsManagerViewState {
         .init(step: summaryStep, action: .action, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        return false
     }
 
     func set(output: SendStepsManagerOutput) {

@@ -56,7 +56,7 @@ private extension CommonStakingNotificationManager {
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
         switch state {
-        case .unstaking, .withdraw:
+        case .unstaking, .withdraw, .claim:
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
