@@ -26,10 +26,4 @@ enum UIFonts {
             FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .caption2) : .systemFont(ofSize: 11, weight: .regular)
         }
     }
-
-    enum Bold {
-        static var footnote: UIFont {
-            FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .footnote) : .systemFont(ofSize: 13, weight: .semibold)
-        }
-    }
 }

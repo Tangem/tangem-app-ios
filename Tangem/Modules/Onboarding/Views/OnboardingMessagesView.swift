@@ -21,7 +21,7 @@ struct OnboardingMessagesView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
-                .foregroundColor(.tangemGrayDark6)
+                .foregroundColor(Colors.Old.tangemGrayDark6)
                 .padding(.bottom, 14)
                 .transition(.opacity)
                 .id("onboarding_title_\(title)")

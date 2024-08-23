@@ -25,8 +25,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
 
-    lazy var testnetBuyCryptoService: TestnetBuyCryptoService = .init()
-
     let exchangeUtility: ExchangeCryptoUtility
     let notificationManager: NotificationManager
 

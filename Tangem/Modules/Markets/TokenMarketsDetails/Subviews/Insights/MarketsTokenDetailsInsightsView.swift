@@ -25,10 +25,11 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
             header
+                .padding(.bottom, 6)
 
-            LazyVGrid(columns: gridItems, alignment: .center, spacing: 10, content: {
+            LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.0) { index, info in
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
@@ -44,7 +45,6 @@ struct MarketsTokenDetailsInsightsView: View {
                         }
                     })
                     .transition(.opacity)
-                    .padding(.vertical, 10)
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)

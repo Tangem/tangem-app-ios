@@ -13,7 +13,7 @@ struct MarketsTokenDetailsPricePerformanceView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsPricePerformanceViewModel
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 18) {
             HStack(content: {
                 Text(Localization.marketsTokenDetailsPricePerformance)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
