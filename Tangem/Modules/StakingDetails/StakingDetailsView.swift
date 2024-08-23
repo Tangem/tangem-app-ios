@@ -122,18 +122,15 @@ struct StakingDetailsView: View {
     }
 
     private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
-        GroupedSection(
-            validators,
-            content: { data in
-                ValidatorView(data: data)
-            }, header: {
-                DefaultHeaderView(header)
-                    .padding(.top, 12)
-            }, footer: {
-                Text(footer)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-            }
-        )
+        GroupedSection(validators) { data in
+            ValidatorView(data: data)
+        } header: {
+            DefaultHeaderView(header)
+                .padding(.top, 12)
+        } footer: {
+            Text(footer)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        }
         .interItemSpacing(0)
         .innerContentPadding(0)
     }

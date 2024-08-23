@@ -24,7 +24,7 @@ struct MarketsTokenDetailsMetricsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 20) {
             HStack {
                 Text(Localization.marketsTokenDetailsMetrics)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
@@ -32,7 +32,7 @@ struct MarketsTokenDetailsMetricsView: View {
                 Spacer()
             }
 
-            LazyVGrid(columns: gridItems, alignment: .center, spacing: 10, content: {
+            LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.1.id) { index, info in
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
@@ -48,12 +48,10 @@ struct MarketsTokenDetailsMetricsView: View {
                             firstItemWidth = value
                         }
                     })
-                    .padding(.vertical, 10)
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
         }
-        .animation(nil)
         .defaultRoundedBackground(with: Colors.Background.action)
     }
 }

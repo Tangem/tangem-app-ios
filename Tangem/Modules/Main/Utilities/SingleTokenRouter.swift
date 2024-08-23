@@ -65,12 +65,8 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openSend(walletModel: WalletModel) {
-        guard let amountToSend = walletModel.wallet.amounts[walletModel.amountType] else { return }
-
         sendAnalyticsEvent(.buttonSend, for: walletModel)
         coordinator?.openSend(
-            amountToSend: amountToSend,
-            blockchainNetwork: walletModel.blockchainNetwork,
             userWalletModel: userWalletModel,
             walletModel: walletModel
         )
@@ -121,7 +117,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
             amountToSend: amountToSend,
             destination: request.targetAddress,
             tag: request.tag,
-            blockchainNetwork: walletModel.blockchainNetwork,
             userWalletModel: userWalletModel,
             walletModel: walletModel
         )
@@ -133,16 +128,7 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     private func openBuy(for walletModel: WalletModel) {
-        let blockchain = walletModel.blockchainNetwork.blockchain
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
-        if let token = walletModel.amountType.token, blockchain == .ethereum(testnet: true) {
-            TestnetBuyCryptoService().buyCrypto(.erc20Token(
-                token,
-                walletModel: walletModel,
-                signer: userWalletModel.signer
-            ))
-            return
-        }
 
         guard let url = exchangeUtility.buyURL else { return }
 
