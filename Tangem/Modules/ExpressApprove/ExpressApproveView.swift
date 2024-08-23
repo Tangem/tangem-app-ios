@@ -46,7 +46,7 @@ struct ExpressApproveView: View {
 
     private var headerView: some View {
         ZStack(alignment: .topTrailing) {
-            BottomSheetHeaderView(title: Localization.swappingPermissionHeader, subtitle: viewModel.subheader)
+            BottomSheetHeaderView(title: Localization.swappingPermissionHeader, subtitle: viewModel.subtitle)
                 .padding(.horizontal, 16)
 
             Button(action: viewModel.didTapInfoButton) {

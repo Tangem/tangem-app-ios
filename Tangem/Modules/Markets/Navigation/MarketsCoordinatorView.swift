@@ -18,6 +18,7 @@ struct MarketsCoordinatorView: CoordinatorView {
                 ZStack {
                     VStack(spacing: 0.0) {
                         header
+                            .zIndex(100) // Required for the collapsible header in `MarketsView` to work
 
                         MarketsView(viewModel: model)
                             .navigationLinks(links)
@@ -25,10 +26,14 @@ struct MarketsCoordinatorView: CoordinatorView {
 
                     sheets
                 }
-                .onOverlayContentStateChange { state in
-                    coordinator.onOverlayContentStateChange(state)
+                .onOverlayContentStateChange { [weak coordinator] state in
+                    // This method maintains a strong reference to the given `observer` closure,
+                    // so a weak capture list is required
+                    coordinator?.onOverlayContentStateChange(state)
                 }
             }
+            .navigationViewStyle(.stack)
+            .tint(Colors.Text.primary1)
         }
     }
 

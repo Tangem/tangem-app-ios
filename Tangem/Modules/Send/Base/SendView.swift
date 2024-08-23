@@ -13,6 +13,7 @@ struct SendView: View {
     let transitionService: SendTransitionService
 
     @Namespace private var namespace
+    @FocusState private var focused: Bool
 
     private let backButtonStyle: MainButton.Style = .secondary
     private let backButtonSize: MainButton.Size = .default
@@ -25,6 +26,7 @@ struct SendView: View {
 
             ZStack(alignment: .bottom) {
                 currentPage
+                    .focused($focused)
                     .allowsHitTesting(!viewModel.isUserInteractionDisabled)
 
                 bottomOverlay
@@ -39,6 +41,9 @@ struct SendView: View {
             bottomContainer
                 .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.showBackButton)
         }
+        .onReceive(viewModel.$isKeyboardActive, perform: { isKeyboardActive in
+            focused = isKeyboardActive
+        })
     }
 
     @ViewBuilder
@@ -99,35 +104,48 @@ struct SendView: View {
                 transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
+
         case .amount(let sendAmountViewModel):
             SendAmountView(
                 viewModel: sendAmountViewModel,
                 transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
         case .fee(let sendFeeViewModel):
             SendFeeView(
                 viewModel: sendFeeViewModel,
                 transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
         case .validators(let stakingValidatorsViewModel):
             StakingValidatorsView(
                 viewModel: stakingValidatorsViewModel,
                 transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
         case .summary(let sendSummaryViewModel):
             SendSummaryView(
                 viewModel: sendSummaryViewModel,
                 transitionService: transitionService,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
         case .finish(let sendFinishViewModel):
             SendFinishView(
                 viewModel: sendFinishViewModel,
                 namespace: .init(id: namespace, names: SendGeometryEffectNames())
             )
+            .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
+            .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
         }
     }
 

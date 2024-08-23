@@ -1,5 +1,5 @@
 //
-//  ExpressAllowanceProvider.swift
+//  UpdatableAllowanceProvider.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 24.11.2023.
@@ -9,7 +9,6 @@
 import Foundation
 import TangemExpress
 
-protocol ExpressAllowanceProvider: AllowanceProvider {
+protocol UpdatableAllowanceProvider: AllowanceProvider, ExpressAllowanceProvider {
     func setup(wallet: WalletModel)
-    func didSendApproveTransaction(for spender: String)
 }

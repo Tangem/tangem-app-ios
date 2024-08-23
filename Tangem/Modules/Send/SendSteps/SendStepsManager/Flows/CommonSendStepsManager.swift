@@ -93,10 +93,16 @@ class CommonSendStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonSendStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
     var initialFlowActionType: SendFlowActionType { .send }
 
     var initialState: SendStepsManagerViewState {
         .init(step: destinationStep, action: .next, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        stack.contains(where: { $0.type.isSummary })
     }
 
     func set(output: SendStepsManagerOutput) {

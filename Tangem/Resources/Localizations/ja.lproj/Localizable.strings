@@ -661,6 +661,7 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
 "staking_notification_unstake_text" = "ステーキング解除後、報酬の獲得はすぐに停止します。ステーキング解除プロセスには%@かかります。";
+"staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "再結束";
 "staking_restake" = "再度ステーキングする";
 "staking_restake_rewards" = "報酬をステーキングする";
@@ -681,6 +682,8 @@
 "staking_stake_more" = "もっとステーキングする";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
+"staking_unbonding" = "Unbonding";
+"staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "ステーキング解除はロックされています";
 "staking_unstaked" = "スタックされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
@@ -822,8 +825,8 @@
 "wallet_settings_title" = "ウォレット設定";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "%@を使用するか、カードをスキャンしてウォレットにアクセスしてください";
-"warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
-"warning_approval_in_progress_title" = "Approval in Progress";
+"warning_approval_in_progress_message" = "許可付与のプロセスは現在進行中であり、まもなく完了する予定です。";
+"warning_approval_in_progress_title" = "承認中";
 "warning_backup_errors_message" = "カードのアクティベーションが正しく完了しませんでした。デバイスの NFCモジュールに問題があるか、カードをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";

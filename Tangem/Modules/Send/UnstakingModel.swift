@@ -11,10 +11,14 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 
+protocol UnstakingModelStateProvider {
+    var state: AnyPublisher<UnstakingModel.State, Never> { get }
+}
+
 class UnstakingModel {
     // MARK: - Data
 
-    private let _state = CurrentValueSubject<LoadingValue<State>?, Never>(.none)
+    private let _state = CurrentValueSubject<State?, Never>(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -51,11 +55,11 @@ class UnstakingModel {
     }
 }
 
-// MARK: - Public
+// MARK: - UnstakingModelStateProvider
 
-extension UnstakingModel {
-    var state: AnyPublisher<UnstakingModel.State, Never> {
-        _state.compactMap { $0?.value }.eraseToAnyPublisher()
+extension UnstakingModel: UnstakingModelStateProvider {
+    var state: AnyPublisher<State, Never> {
+        _state.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
 
@@ -67,35 +71,47 @@ private extension UnstakingModel {
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
-                model._state.send(.loading)
-                try await model._state.send(.loaded(model.state()))
+                try model.update(state: .loading)
+                try await model.update(state: .loaded(model.fee()))
             } catch {
                 AppLog.shared.error(error)
-                model._state.send(.failedToLoad(error: error))
+                try? model.update(state: .failedToLoad(error: error))
             }
         }
     }
 
-    func state() async throws -> State {
+    func update(state: LoadingValue<Decimal>) throws {
         let action = try stakingAction()
-        let fee = try await stakingManager.estimateFee(action: action)
+
         switch action.type {
         case .unstake:
-            return .unstaking(fee: fee)
+            _state.send(.unstaking(fee: state))
         case .pending(.withdraw):
-            return .withdraw(fee: fee)
+            _state.send(.withdraw(fee: state))
+        case .pending(.claimRewards), .pending(.restakeRewards):
+            _state.send(.claim(fee: state))
         case .stake:
-            throw UnstakingModelError.notSupported(
-                "UnstakingModel doesn't support actionType: \(action.type)"
-            )
+            assertionFailure("UnstakingModel doesn't support actionType: \(action.type)")
         }
     }
 
-    func mapToSendFee(_ fee: LoadingValue<State>?) -> SendFee {
-        let value = fee?.mapValue { state in
-            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: state.fee))
+    func fee() async throws -> Decimal {
+        let action = try stakingAction()
+
+        return try await stakingManager.estimateFee(action: action)
+    }
+
+    func mapToSendFee(_ state: State?) -> SendFee {
+        switch state {
+        case .none:
+            return SendFee(option: .market, value: .failedToLoad(error: CommonError.noData))
+        case .unstaking(let loadingValue), .withdraw(let loadingValue), .claim(let loadingValue):
+            let newValue = loadingValue.mapValue { value in
+                Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: value))
+            }
+
+            return SendFee(option: .market, value: newValue)
         }
-        return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
 
@@ -103,14 +119,14 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func stakingAction() throws -> StakingAction {
-        switch balanceInfo.balanceGroupType {
-        case .warmup, .unbonding, .unknown:
+        switch balanceInfo.balanceType {
+        case .warmup, .unbonding:
             throw UnstakingModelError.notSupported(
-                "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceGroupType)"
+                "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceType)"
             )
         case .active:
             return StakingAction(
-                amount: balanceInfo.blocked,
+                amount: balanceInfo.amount,
                 validator: balanceInfo.validatorAddress,
                 type: .unstake
             )
@@ -120,9 +136,20 @@ private extension UnstakingModel {
             }
 
             return StakingAction(
-                amount: balanceInfo.blocked,
+                amount: balanceInfo.amount,
                 validator: balanceInfo.validatorAddress,
                 type: .pending(.withdraw(passthrough: passthrough))
+            )
+
+        case .rewards:
+            guard case .claimRewards(let passthrough) = balanceInfo.actions.first else {
+                throw UnstakingModelError.passthroughNotFound
+            }
+
+            return StakingAction(
+                amount: balanceInfo.amount,
+                validator: balanceInfo.validatorAddress,
+                type: .pending(.claimRewards(passthrough: passthrough))
             )
         }
     }
@@ -176,10 +203,10 @@ extension UnstakingModel: SendFeeLoader {
 extension UnstakingModel: SendAmountInput {
     var amount: SendAmount? {
         let fiat = amountTokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balanceInfo.blocked, currencyId: $0)
+            BalanceConverter().convertToFiat(balanceInfo.amount, currencyId: $0)
         }
 
-        return .init(type: .typical(crypto: balanceInfo.blocked, fiat: fiat))
+        return .init(type: .typical(crypto: balanceInfo.amount, fiat: fiat))
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
@@ -237,7 +264,7 @@ extension UnstakingModel: SendFeeOutput {
 
 extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
-        _state.map { $0?.value?.fee != nil }.eraseToAnyPublisher()
+        _state.map { $0?.fee != nil }.eraseToAnyPublisher()
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
@@ -281,13 +308,16 @@ extension UnstakingModel: StakingNotificationManagerInput {
 
 extension UnstakingModel {
     enum State: Hashable {
-        case unstaking(fee: Decimal)
-        case withdraw(fee: Decimal)
+        case unstaking(fee: LoadingValue<Decimal>)
+        case withdraw(fee: LoadingValue<Decimal>)
+        case claim(fee: LoadingValue<Decimal>)
 
-        var fee: Decimal {
+        var fee: Decimal? {
             switch self {
-            case .unstaking(let fee): fee
-            case .withdraw(let fee): fee
+            case .unstaking(.loaded(let fee)): fee
+            case .withdraw(.loaded(let fee)): fee
+            case .claim(.loaded(let fee)): fee
+            default: nil
             }
         }
     }

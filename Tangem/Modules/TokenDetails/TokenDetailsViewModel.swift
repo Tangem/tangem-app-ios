@@ -244,8 +244,8 @@ private extension TokenDetailsViewModel {
             balance = .loading
         case .idle, .noAccount:
             balance = .loaded(.init(
-                balance: walletModel.balance,
-                fiatBalance: walletModel.fiatBalance
+                balance: walletModel.allBalanceFormatted.crypto,
+                fiatBalance: walletModel.allBalanceFormatted.fiat
             ))
         case .failed(let message):
             balance = .failedToLoad(error: message)
@@ -326,22 +326,20 @@ extension TokenDetailsViewModel: AvailableBalanceProvider {
 
 extension TokenDetailsViewModel {
     var availableBalance: BalanceInfo {
-        BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
+        BalanceInfo(balance: walletModel.balance, fiatBalance: walletModel.availableBalanceFormatted.fiat)
     }
 
     var stakedBalance: BalanceInfo? {
-        guard let stakedBalance = walletModel.stakedBalance,
-              let stakedFiatBalance = walletModel.stakedFiatBalance else {
-            return nil
-        }
-        return BalanceInfo(balance: stakedBalance, fiatBalance: stakedFiatBalance)
+        BalanceInfo(
+            balance: walletModel.stakedBalanceFormatted.crypto,
+            fiatBalance: walletModel.stakedBalanceFormatted.fiat
+        )
     }
 
     var stakingRewardsBalance: BalanceInfo? {
-        guard let stakingRewardsBalance = walletModel.stakingRewardsBalance,
-              let stakingRewardsFiatBalance = walletModel.stakingRewardsFiatBalance else {
-            return nil
-        }
-        return BalanceInfo(balance: stakingRewardsBalance, fiatBalance: stakingRewardsFiatBalance)
+        BalanceInfo(
+            balance: walletModel.stakedRewardsBalanceFormatted.crypto,
+            fiatBalance: walletModel.stakedRewardsBalanceFormatted.fiat
+        )
     }
 }

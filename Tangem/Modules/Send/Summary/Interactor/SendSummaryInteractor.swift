@@ -18,18 +18,15 @@ class CommonSendSummaryInteractor {
     private weak var input: SendSummaryInput?
     private weak var output: SendSummaryOutput?
 
-    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let descriptionBuilder: SendTransactionSummaryDescriptionBuilder
 
     init(
         input: SendSummaryInput,
         output: SendSummaryOutput,
-        sendTransactionDispatcher: SendTransactionDispatcher,
         descriptionBuilder: SendTransactionSummaryDescriptionBuilder
     ) {
         self.input = input
         self.output = output
-        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.descriptionBuilder = descriptionBuilder
     }
 }

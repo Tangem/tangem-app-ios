@@ -21,7 +21,7 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     private let interactor: StakingValidatorsInteractor
 
-    private let stakingValidatorViewMapper = StakingValidatorViewMapper()
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(interactor: StakingValidatorsInteractor) {
@@ -47,8 +47,18 @@ private extension StakingValidatorsViewModel {
             .validatorsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, validators in
-                validators.map {
-                    viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: $0, detailsType: .checkmark)
+                validators.map { validatorInfo in
+                    let percentFormatted = validatorInfo.apr.map {
+                        viewModel.percentFormatter.format($0, option: .staking)
+                    }
+
+                    return ValidatorViewData(
+                        address: validatorInfo.address,
+                        name: validatorInfo.name,
+                        imageURL: validatorInfo.iconURL,
+                        subtitleType: .selection(percentFormatted: percentFormatted ?? ""),
+                        detailsType: .checkmark
+                    )
                 }
             }
             .receive(on: DispatchQueue.main)
