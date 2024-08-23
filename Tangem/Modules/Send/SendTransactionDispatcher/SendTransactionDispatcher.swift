@@ -15,16 +15,6 @@ protocol SendTransactionDispatcher {
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult
 }
 
-extension SendTransactionDispatcher {
-    @available(*, deprecated, message: "Used only in LegacySendViewModel")
-    func sendPublisher(transaction: SendTransactionType) -> AnyPublisher<SendTransactionDispatcherResult, Error> {
-        Future.async {
-            try await send(transaction: transaction)
-        }
-        .eraseToAnyPublisher()
-    }
-}
-
 struct SendTransactionDispatcherResult: Hashable {
     let hash: String
     let url: URL?

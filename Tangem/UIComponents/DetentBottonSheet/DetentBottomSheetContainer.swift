@@ -34,9 +34,11 @@ struct DetentBottomSheetContainer<ContentView: View>: View {
 
 extension DetentBottomSheetContainer {
     struct Settings {
+        let background: Color
         let cornerRadius: CGFloat
 
-        init(cornerRadius: CGFloat = 24) {
+        init(background: Color = .primary, cornerRadius: CGFloat = 24) {
+            self.background = background
             self.cornerRadius = cornerRadius
         }
     }

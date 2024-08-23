@@ -633,10 +633,6 @@ extension WalletModel {
         walletManager
     }
 
-    var transactionPusher: TransactionPusher? {
-        walletManager as? TransactionPusher
-    }
-
     var bitcoinTransactionFeeCalculator: BitcoinTransactionFeeCalculator? {
         walletManager as? BitcoinTransactionFeeCalculator
     }

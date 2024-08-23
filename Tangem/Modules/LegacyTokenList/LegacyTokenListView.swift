@@ -76,7 +76,7 @@ struct LegacyTokenListView: View {
                 Circle().fill(Colors.Button.primary)
 
                 Image(systemName: "plus")
-                    .foregroundColor(Color.tangemBg)
+                    .foregroundColor(Colors.Old.tangemBg)
                     .font(.system(size: 13, weight: .bold, design: .default))
             }
             .frame(width: 26, height: 26)

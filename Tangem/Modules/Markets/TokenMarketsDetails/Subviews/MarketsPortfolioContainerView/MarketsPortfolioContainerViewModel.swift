@@ -31,11 +31,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private var coinModel: CoinModel?
     private let walletDataProvider: MarketsWalletDataProvider
+    private let tokenActionContextBuilder = TokenActionContextBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
-
-    private lazy var tokenActionContextBuilder: TokenActionContextBuilder = .init(userWalletModels: walletDataProvider.userWalletModels)
 
     private var bag = Set<AnyCancellable>()
 
@@ -159,7 +158,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
     func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
-        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletId)
+        guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
+            return []
+        }
+
+        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
         return actions
     }
 }

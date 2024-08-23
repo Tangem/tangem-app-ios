@@ -16,7 +16,7 @@ extension Token {
     var customTokenColor: Color? {
         guard isCustom else { return nil }
 
-        let defaultValue = Color.tangemGrayLight4
+        let defaultValue = Colors.Old.tangemGrayLight4
         let hexPart = contractAddress.removeHexPrefix()
         let colorPrefix = String(hexPart.prefix(6))
         if colorPrefix.hexToInteger != nil {

@@ -10,7 +10,7 @@ import Foundation
 
 typealias TokenItemInfoProviderItem = (provider: TokenItemInfoProvider, isCustom: Bool)
 
-struct TokenItemInfoProviderFactory {
+struct TokenItemInfoProviderMapper {
     func mapTokenItemViewModel(from tokenItemType: TokenItemType) -> TokenItemInfoProviderItem {
         let tokenInfoProvider: TokenItemInfoProvider
         let isCustom: Bool

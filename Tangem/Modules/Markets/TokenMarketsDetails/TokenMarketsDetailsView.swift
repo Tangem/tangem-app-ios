@@ -50,11 +50,12 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var scrollView: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .center, spacing: 24) {
+            VStack(alignment: .center, spacing: 16) {
                 Group {
                     header
 
                     picker
+                        .padding(.vertical, 8)
                 }
                 .padding(.horizontal, 16.0)
 
@@ -157,6 +158,7 @@ struct TokenMarketsDetailsView: View {
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
+                    .frame(maxWidth: .infinity)
 
                 portfolioView
 
@@ -185,17 +187,31 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             if let insightsViewModel = viewModel.insightsViewModel {
                 MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {
                 MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
             if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
                 MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
-            TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+            if !viewModel.linksSections.isEmpty {
+                TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
+            }
         }
         .padding(.bottom, 46.0)
     }

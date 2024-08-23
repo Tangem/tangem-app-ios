@@ -29,8 +29,6 @@ final class CommonPushNotificationsInteractor {
 
     private var currentLaunchCount: Int { AppSettings.shared.numberOfLaunches }
 
-    private var isFeatureFlagEnabled: Bool { FeatureProvider.isAvailable(.pushNotifications) }
-
     private let pushNotificationsService: PushNotificationsService
 
     init(
@@ -86,7 +84,6 @@ final class CommonPushNotificationsInteractor {
 extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
     func isAvailable(in flow: PushNotificationsPermissionRequestFlow) -> Bool {
         guard
-            isFeatureFlagEnabled,
             canRequestAuthorization
         else {
             return false
