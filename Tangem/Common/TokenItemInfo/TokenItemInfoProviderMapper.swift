@@ -1,5 +1,5 @@
 //
-//  TokenItemInfoProviderFactory.swift
+//  TokenItemInfoProviderMapper.swift
 //  Tangem
 //
 //  Created by skibinalexander on 20.08.2024.

@@ -115,7 +115,7 @@
 		2DF5A81F2B13C33D00AA5E73 /* ManageTokensNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */; };
 		2DFC278D2C78E7A5009B247E /* TokenActionContextBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278C2C78E7A5009B247E /* TokenActionContextBuilder.swift */; };
 		2DFC27922C78E833009B247E /* TokenItemInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278E2C78E833009B247E /* TokenItemInfoProvider.swift */; };
-		2DFC27932C78E833009B247E /* TokenItemInfoProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderFactory.swift */; };
+		2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */; };
 		2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27902C78E833009B247E /* TokenItemType.swift */; };
 		2DFC27962C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */; };
 		4A293696EACF80B666320C1E /* Pods_TangemFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */; };
@@ -1994,7 +1994,7 @@
 		2DF5A81E2B13C33C00AA5E73 /* ManageTokensNetworkDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkDataSource.swift; sourceTree = "<group>"; };
 		2DFC278C2C78E7A5009B247E /* TokenActionContextBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenActionContextBuilder.swift; sourceTree = "<group>"; };
 		2DFC278E2C78E833009B247E /* TokenItemInfoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemInfoProvider.swift; sourceTree = "<group>"; };
-		2DFC278F2C78E833009B247E /* TokenItemInfoProviderFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemInfoProviderFactory.swift; sourceTree = "<group>"; };
+		2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemInfoProviderMapper.swift; sourceTree = "<group>"; };
 		2DFC27902C78E833009B247E /* TokenItemType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemType.swift; sourceTree = "<group>"; };
 		2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioTokenItemFactory.swift; sourceTree = "<group>"; };
 		34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(production).xcconfig"; sourceTree = "<group>"; };
@@ -4130,7 +4130,7 @@
 			isa = PBXGroup;
 			children = (
 				2DFC278E2C78E833009B247E /* TokenItemInfoProvider.swift */,
-				2DFC278F2C78E833009B247E /* TokenItemInfoProviderFactory.swift */,
+				2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */,
 				2DFC27902C78E833009B247E /* TokenItemType.swift */,
 			);
 			path = TokenItemInfo;
@@ -11164,7 +11164,7 @@
 				B03478602B0F6C08004FECA0 /* HighPriceImpactCalculator.swift in Sources */,
 				DA43719E2A7D1937006215CA /* ManageTokensCoinView.swift in Sources */,
 				5D51036B27C534CB0025EA55 /* EIP712TypedData.swift in Sources */,
-				2DFC27932C78E833009B247E /* TokenItemInfoProviderFactory.swift in Sources */,
+				2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */,
 				B080DE572BB3F504001A23BD /* APIListProvider.swift in Sources */,
 				E9C17C5F291951BF00FDE4BC /* AnyPublisher+.swift in Sources */,
 				DCBAF69B2A4AEF3C0029480A /* HDWalletManagerFactory.swift in Sources */,

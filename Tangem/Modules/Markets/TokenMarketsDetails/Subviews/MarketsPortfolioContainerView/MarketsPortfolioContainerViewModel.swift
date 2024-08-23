@@ -157,7 +157,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
+    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
@@ -170,7 +170,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 // MARK: - MarketsPortfolioContextActionsDelegate
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
-    func didTapContextAction(_ action: TokenActionType, for walletModelId: WalletModelId, with userWalletId: UserWalletId) {
+    func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
 
