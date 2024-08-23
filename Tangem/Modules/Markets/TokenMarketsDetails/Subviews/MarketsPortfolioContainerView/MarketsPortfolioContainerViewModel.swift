@@ -29,13 +29,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         walletDataProvider.userWalletModels
     }
 
-    private var coinModel: CoinModel?
     private let walletDataProvider: MarketsWalletDataProvider
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
     private lazy var tokenActionContextBuilder: TokenActionContextBuilder = .init(userWalletModels: walletDataProvider.userWalletModels)
+
+    private var loadableState: LoadableState?
 
     private var bag = Set<AnyCancellable>()
 
@@ -59,12 +60,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
-    func updateState(with coinModel: CoinModel?) {
-        self.coinModel = coinModel
+    func updateState(with state: LoadableState) {
+        updateTokenList(with: state)
 
-        updateTokenList()
-
-        let canAddAvailableNetworks = canAddToPortfolio(coinModel: coinModel)
+        let canAddAvailableNetworks = canAddToPortfolio(with: state.networks)
 
         guard canAddAvailableNetworks else {
             typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
@@ -75,6 +74,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         typeView = tokenItemViewModels.isEmpty ? .empty : .list
     }
 
+    func reload() {
+        guard let loadableState else { return }
+        updateState(with: loadableState)
+    }
+
     // MARK: - Private Implementation
 
     /*
@@ -82,25 +86,24 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
      - We get a list of available blockchains that came in the coin model
      - Checking the lists of available networks
      */
-    private func canAddToPortfolio(coinModel: CoinModel?) -> Bool {
+    private func canAddToPortfolio(with networks: [NetworkModel]) -> Bool {
         let multiCurrencyUserWalletModels = userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
         guard
-            let coinModel,
-            !coinModel.items.isEmpty,
+            !networks.isEmpty,
             !multiCurrencyUserWalletModels.isEmpty
         else {
             return false
         }
 
-        var coinModelBlockchains = Set<Blockchain>()
+        var networkIds = Set<String>()
 
-        coinModel.items.forEach {
-            coinModelBlockchains.insert($0.blockchain)
+        networks.forEach {
+            networkIds.insert($0.networkId)
         }
 
         for model in multiCurrencyUserWalletModels {
-            if !coinModelBlockchains.intersection(model.config.supportedBlockchains).isEmpty {
+            if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
                 return true
             }
         }
@@ -108,9 +111,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return false
     }
 
-    private func updateTokenList() {
-        guard let coinModel else { return }
-
+    private func updateTokenList(with loadableState: LoadableState) {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
             contextActionsDelegate: self
@@ -122,7 +123,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
                 let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
-                    coinModel: coinModel,
+                    coinId: loadableState.coinId,
+                    networks: loadableState.networks,
                     walletModels: walletModels,
                     entries: entries,
                     userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
@@ -145,7 +147,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.updateState(with: viewModel.coinModel)
+                viewModel.reload()
             }
             .store(in: &bag)
     }
@@ -198,5 +200,12 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         case .hide:
             return
         }
+    }
+}
+
+extension MarketsPortfolioContainerViewModel {
+    struct LoadableState {
+        let coinId: String
+        let networks: [NetworkModel]
     }
 }

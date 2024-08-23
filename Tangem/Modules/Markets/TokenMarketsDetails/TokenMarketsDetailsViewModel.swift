@@ -241,7 +241,7 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
-        portfolioViewModel?.updateState(with: model.coinModel)
+        portfolioViewModel?.updateState(with: .init(coinId: model.id, networks: model.availableNetworks))
     }
 
     @MainActor
@@ -359,13 +359,13 @@ private extension TokenMarketsDetailsViewModel {
             walletDataProvider: walletDataProvider,
             coordinator: coordinator,
             addTokenTapAction: { [weak self] in
-                guard let self, let coinModel = loadedInfo?.coinModel else {
+                guard let self, let info = loadedInfo else {
                     return
                 }
 
-                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: info.symbol])
 
-                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
+                coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
             }
         )
     }

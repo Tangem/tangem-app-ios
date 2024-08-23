@@ -10,6 +10,6 @@ import Foundation
 
 protocol TokenMarketsDetailsRoutable: AnyObject, MarketsPortfolioContainerRoutable {
     func openURL(_ url: URL)
-    func openTokenSelector(with coinModel: CoinModel, with walletDataProvider: MarketsWalletDataProvider)
+    func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider)
     func closeModule()
 }
