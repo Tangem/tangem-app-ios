@@ -244,7 +244,7 @@ private extension StakingDetailsViewModel {
                     if rewards.count == 1, let balance = rewards.first {
                         self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
                     } else {
-                        assertionFailure("https://tangem.atlassian.net/browse/IOS-7407")
+                        self?.coordinator?.openMultipleRewards()
                     }
                 }
             )

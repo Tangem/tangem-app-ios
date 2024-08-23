@@ -26,8 +26,9 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     @Published var sendCoordinator: SendCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var multipleRewardsCoordinator: MultipleRewardsCoordinator?
 
-    // MARK: - Child view models
+    // MARK: - Private
 
     private var options: Options?
 
@@ -104,6 +105,18 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .staking(manager: options.manager)
         ))
         sendCoordinator = coordinator
+    }
+
+    func openMultipleRewards() {
+        guard let options else { return }
+
+        let coordinator = MultipleRewardsCoordinator(dismissAction: { [weak self] _ in
+            self?.multipleRewardsCoordinator = nil
+        })
+
+        coordinator.start(with: options)
+
+        multipleRewardsCoordinator = coordinator
     }
 
     func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
