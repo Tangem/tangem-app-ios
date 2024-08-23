@@ -151,6 +151,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
 
+                // It is used to synchronize the execution of the target action and hide bottom sheet
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.coordinator?.dissmis()
                 }
