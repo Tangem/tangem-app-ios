@@ -41,6 +41,8 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     private let walletDataProvider: MarketsWalletDataProvider
     private let coinModel: CoinModel
 
+    private weak var coordinator: MarketsTokensNetworkRoutable?
+
     // MARK: - Computed Properties
 
     var coinIconURL: URL {
@@ -72,9 +74,10 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     // MARK: - Init
 
-    init(coinModel: CoinModel, walletDataProvider: MarketsWalletDataProvider) {
+    init(coinModel: CoinModel, walletDataProvider: MarketsWalletDataProvider, coordinator: MarketsTokensNetworkRoutable?) {
         self.coinModel = coinModel
         self.walletDataProvider = walletDataProvider
+        self.coordinator = coordinator
 
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
@@ -147,6 +150,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
+
+                // It is used to synchronize the execution of the target action and hide bottom sheet
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.coordinator?.dissmis()
+                }
             }
         }
     }

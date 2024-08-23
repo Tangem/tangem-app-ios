@@ -17,9 +17,9 @@ class WalletConnectCoordinator: CoordinatorObject {
 
     @Published private(set) var walletConnectViewModel: WalletConnectViewModel? = nil
 
-    // MARK: - Child view models
+    // MARK: - Child coordinators
 
-    @Published var qrScanViewModel: LegacyQRScanViewModel? = nil
+    @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
 
     required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
@@ -39,6 +39,12 @@ extension WalletConnectCoordinator {
 
 extension WalletConnectCoordinator: WalletConnectRoutable {
     func openQRScanner(with codeBinding: Binding<String>) {
-        qrScanViewModel = .init(code: codeBinding)
+        let coordinator = QRScanViewCoordinator { [weak self] in
+            self?.qrScanViewCoordinator = nil
+        }
+
+        let options = QRScanViewCoordinator.Options(code: codeBinding, text: "")
+        coordinator.start(with: options)
+        qrScanViewCoordinator = coordinator
     }
 }

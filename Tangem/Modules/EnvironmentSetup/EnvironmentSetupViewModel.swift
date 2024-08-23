@@ -62,15 +62,6 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "Use fake tx history",
-                isOn: BindingValue<Bool>(
-                    root: featureStorage,
-                    default: false,
-                    get: { $0.useFakeTxHistory },
-                    set: { $0.useFakeTxHistory = $1 }
-                )
-            ),
-            DefaultToggleRowViewModel(
                 title: "Enable Performance Monitor",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,

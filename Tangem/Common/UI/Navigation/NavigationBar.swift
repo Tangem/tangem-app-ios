@@ -11,7 +11,7 @@ import SwiftUI
 struct ArrowBack: View {
     let action: () -> Void
     let height: CGFloat
-    var color: Color = .tangemGrayDark6
+    var color: Color = Colors.Old.tangemGrayDark6
 
     var body: some View {
         Button(action: action, label: {
@@ -25,7 +25,7 @@ struct ArrowBack: View {
 }
 
 private enum DefaultNavigationBarSettings {
-    static let color = Color.tangemGrayDark6
+    static let color = Colors.Old.tangemGrayDark6
     static let padding = 16.0
 }
 
@@ -58,7 +58,7 @@ struct SupportButton: View {
     let height: CGFloat
     let isVisible: Bool
     let isEnabled: Bool
-    var color: Color = .tangemGrayDark6
+    var color: Color = Colors.Old.tangemGrayDark6
     var hPadding: CGFloat = 16
     let action: () -> Void
 
@@ -86,8 +86,8 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
 
         init(
             titleFont: Font = .system(size: 17, weight: .medium),
-            titleColor: Color = .tangemGrayDark6,
-            backgroundColor: Color = .tangemBgGray,
+            titleColor: Color = Colors.Old.tangemGrayDark6,
+            backgroundColor: Color = Colors.Old.tangemBgGray,
             horizontalPadding: CGFloat = 0,
             height: CGFloat = 44,
             alignment: Alignment = .center
