@@ -43,20 +43,17 @@ class CommonUnstakingStepsManager {
     }
 
     private func updateAction(state: UnstakingModel.State) {
-        switch (state.actions.main.type, state.actions.additional?.type) {
-        case (.unstake, _):
+        switch state.action.type {
+        case .unstake:
             output?.update(flowActionType: .unstake)
-            output?.update(flowAdditionalActionType: .none)
-
-        case (.pending(.withdraw), _):
+        case .pending(.withdraw):
             output?.update(flowActionType: .withdraw)
-            output?.update(flowAdditionalActionType: .none)
-
-        case (.pending(.claimRewards), .pending(.restakeRewards)):
+        case .pending(.claimRewards):
             output?.update(flowActionType: .claimRewards)
-            output?.update(flowAdditionalActionType: .restakeRewards)
-        default:
-            break
+        case .pending(.restakeRewards):
+            output?.update(flowActionType: .restakeRewards)
+        case .stake:
+            assertionFailure("Doesn't support in UnstakingFlow")
         }
     }
 
@@ -89,6 +86,8 @@ extension CommonUnstakingStepsManager: SendStepsManager {
 
     func set(output: SendStepsManagerOutput) {
         self.output = output
+
+        // Update action on UI to avoid animation jumping
         updateAction(state: provider.state)
     }
 

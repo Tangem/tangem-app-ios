@@ -385,7 +385,7 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
         _isLoading.eraseToAnyPublisher()
     }
 
-    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> SendTransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 

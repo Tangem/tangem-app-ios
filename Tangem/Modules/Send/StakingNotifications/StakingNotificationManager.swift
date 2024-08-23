@@ -55,7 +55,7 @@ private extension CommonStakingNotificationManager {
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
-        switch state.actions.main.type {
+        switch state.action.type {
         case .stake:
             break
         case .unstake:

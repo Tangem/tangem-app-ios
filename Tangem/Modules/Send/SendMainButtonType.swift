@@ -15,22 +15,6 @@ enum SendMainButtonType {
     case close
 }
 
-enum SendFlowAdditionalActionType: Hashable {
-    case restakeRewards
-
-    var title: String {
-        switch self {
-        case .restakeRewards: Localization.stakingRestakeRewards
-        }
-    }
-
-    var icon: MainButton.Icon? {
-        switch self {
-        case .restakeRewards: .trailing(Assets.tangemIcon)
-        }
-    }
-}
-
 enum SendFlowActionType: Hashable {
     case send
     case approve
@@ -38,6 +22,7 @@ enum SendFlowActionType: Hashable {
     case unstake
     case withdraw
     case claimRewards
+    case restakeRewards
 
     var title: String {
         switch self {
@@ -47,6 +32,7 @@ enum SendFlowActionType: Hashable {
         case .unstake: Localization.commonUnstake
         case .withdraw: Localization.stakingWithdraw
         case .claimRewards: Localization.commonClaimRewards
+        case .restakeRewards: Localization.stakingRestakeRewards
         }
     }
 }

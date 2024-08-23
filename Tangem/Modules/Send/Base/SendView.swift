@@ -190,21 +190,6 @@ struct SendView: View {
                     isDisabled: !viewModel.actionIsAvailable,
                     action: viewModel.userDidTapActionButton
                 )
-                .disabled(viewModel.additionalButtonLoading)
-            }
-
-            if viewModel.transactionURL == nil, let additionalActionType = viewModel.additionalActionType {
-                MainButton(
-                    title: additionalActionType.title,
-                    icon: additionalActionType.icon,
-                    style: .secondary,
-                    size: .default,
-                    isLoading: viewModel.additionalButtonLoading,
-                    isDisabled: !viewModel.actionIsAvailable,
-                    action: viewModel.userDidTapAdditionalActionButton
-                )
-                .disabled(viewModel.mainButtonLoading)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .padding(.top, 8)

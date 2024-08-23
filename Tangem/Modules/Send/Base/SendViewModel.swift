@@ -20,7 +20,6 @@ final class SendViewModel: ObservableObject {
     @Published var step: SendStep
     @Published var mainButtonType: SendMainButtonType
     @Published var flowActionType: SendFlowActionType
-    @Published var additionalActionType: SendFlowAdditionalActionType?
     @Published var showBackButton = false
     @Published var isKeyboardActive: Bool = false
 
@@ -29,7 +28,6 @@ final class SendViewModel: ObservableObject {
     @Published var closeButtonDisabled = false
     @Published var isUserInteractionDisabled = false
     @Published var mainButtonLoading: Bool = false
-    @Published var additionalButtonLoading: Bool = false
     @Published var actionIsAvailable: Bool = false
 
     @Published var alert: AlertBinder?
@@ -91,15 +89,6 @@ final class SendViewModel: ObservableObject {
             performAction()
         case .close:
             coordinator?.dismiss()
-        }
-    }
-
-    func userDidTapAdditionalActionButton() {
-        switch additionalActionType {
-        case .none:
-            break
-        case .restakeRewards:
-            performAdditionalAction()
         }
     }
 
@@ -171,22 +160,10 @@ private extension SendViewModel {
     }
 
     func performAction() {
-        performAction { viewModel in
-            try await viewModel.interactor.action()
-        }
-    }
-
-    func performAdditionalAction() {
-        performAction { viewModel in
-            try await viewModel.interactor.additionalAction()
-        }
-    }
-
-    func performAction(_ action: @escaping (SendViewModel) async throws -> SendTransactionDispatcherResult) {
         sendTask?.cancel()
         sendTask = runTask(in: self) { viewModel in
             do {
-                let result = try await action(viewModel)
+                let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
             } catch let error as SendTransactionDispatcherResult.Error {
                 await viewModel.proceed(error: error)
@@ -245,12 +222,12 @@ private extension SendViewModel {
     }
 
     func bind() {
-        Publishers.Merge(interactor.actionInProcessing, interactor.additionalActionProcessing)
+        interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
-        Publishers.Merge(interactor.actionInProcessing, interactor.additionalActionProcessing)
+        interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
@@ -258,11 +235,6 @@ private extension SendViewModel {
         interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        interactor.additionalActionProcessing
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.additionalButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }
@@ -316,12 +288,6 @@ extension SendViewModel: SendStepsManagerOutput {
     func update(flowActionType: SendFlowActionType) {
         DispatchQueue.main.async {
             self.flowActionType = flowActionType
-        }
-    }
-
-    func update(flowAdditionalActionType: SendFlowAdditionalActionType?) {
-        DispatchQueue.main.async {
-            self.additionalActionType = flowAdditionalActionType
         }
     }
 }

@@ -11,7 +11,6 @@ import Foundation
 protocol SendStepsManagerOutput: AnyObject {
     func update(state: SendStepsManagerViewState)
     func update(flowActionType: SendFlowActionType)
-    func update(flowAdditionalActionType: SendFlowAdditionalActionType?)
 }
 
 struct SendStepsManagerViewState {

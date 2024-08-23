@@ -26,6 +26,7 @@ struct SendDependenciesBuilder {
         case .unstake: action.title
         case .withdraw: action.title
         case .claimRewards: action.title
+        case .restakeRewards: action.title
         }
     }
 
@@ -36,6 +37,7 @@ struct SendDependenciesBuilder {
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
+        case .restakeRewards: nil
         }
     }
 
@@ -197,14 +199,14 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeUnstakingModel(stakingManager: any StakingManager, actions: UnstakingModel.Actions) -> UnstakingModel {
+    func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
         let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
 
         return UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: stakingTransactionDispatcher,
             stakingTransactionMapper: makeStakingTransactionMapper(),
-            actions: actions,
+            action: action,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )

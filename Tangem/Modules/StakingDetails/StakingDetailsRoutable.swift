@@ -12,6 +12,6 @@ import TangemStaking
 protocol StakingDetailsRoutable: AnyObject {
     func openStakingFlow()
     func openMultipleRewards()
-    func openUnstakingFlow(actions: UnstakingModel.Actions)
+    func openUnstakingFlow(action: UnstakingModel.Action)
     func openWhatIsStaking()
 }
