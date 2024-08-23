@@ -12,22 +12,13 @@ struct TokenActionContextBuilder {
     // MARK: - Private Properties
 
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-
-    private let userWalletModels: [UserWalletModel]
-
-    // MARK: - Init
-
-    init(userWalletModels: [UserWalletModel]) {
-        self.userWalletModels = userWalletModels
-    }
 }
 
 // MARK: - TokenItemContextActionsProvider
 
 extension TokenActionContextBuilder {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
+    func buildContextActions(for walletModelId: WalletModelId, with userWalletModel: UserWalletModel) -> [TokenActionType] {
         guard
-            let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }),
             let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
         else {

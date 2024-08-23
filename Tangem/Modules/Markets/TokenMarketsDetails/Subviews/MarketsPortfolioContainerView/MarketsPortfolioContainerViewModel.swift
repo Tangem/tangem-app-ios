@@ -30,14 +30,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private let walletDataProvider: MarketsWalletDataProvider
+    private let tokenActionContextBuilder = TokenActionContextBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
-    private lazy var tokenActionContextBuilder: TokenActionContextBuilder = .init(userWalletModels: walletDataProvider.userWalletModels)
-
     private var loadableState: LoadableState?
-
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
@@ -160,8 +158,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType] {
-        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletId)
+    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
+        guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
+            return []
+        }
+
+        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
         return actions
     }
 }
@@ -169,7 +171,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 // MARK: - MarketsPortfolioContextActionsDelegate
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
-    func didTapContextAction(_ action: TokenActionType, for walletModelId: WalletModelId, with userWalletId: UserWalletId) {
+    func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
 

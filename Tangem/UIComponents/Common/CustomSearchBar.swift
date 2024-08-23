@@ -16,6 +16,8 @@ struct CustomSearchBar: View {
     @State private var isEditing: Bool = false
     private var onEditingChanged: ((_ isEditing: Bool) -> Void)?
 
+    @FocusState private var isFocused: Bool
+
     init(searchText: Binding<String>, placeholder: String, keyboardType: UIKeyboardType = .default) {
         _searchText = searchText
         self.placeholder = placeholder
@@ -43,13 +45,15 @@ struct CustomSearchBar: View {
                 .padding(.all, 4)
 
             HStack(spacing: 4) {
-                TextField(placeholder, text: $searchText, onEditingChanged: { isEditing in
-                    self.isEditing = isEditing
-                    onEditingChanged?(isEditing)
-                })
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
-                .keyboardType(keyboardType)
-                .autocorrectionDisabled()
+                TextField(placeholder, text: $searchText, prompt: placeholderView)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                    .keyboardType(keyboardType)
+                    .autocorrectionDisabled()
+                    .focused($isFocused)
+                    .onChange(of: searchText) { _ in
+                        isEditing = isFocused
+                        onEditingChanged?(isFocused)
+                    }
 
                 clearButton
             }
@@ -60,6 +64,12 @@ struct CustomSearchBar: View {
             RoundedRectangle(cornerRadius: 14)
                 .fill(Colors.Field.primary)
         )
+    }
+
+    private var placeholderView: Text {
+        Text(placeholder)
+            .font(Fonts.Regular.subheadline)
+            .foregroundColor(Colors.Text.tertiary)
     }
 
     private var clearButton: some View {

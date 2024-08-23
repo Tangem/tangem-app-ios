@@ -9,9 +9,9 @@
 import Foundation
 
 protocol MarketsPortfolioContextActionsProvider: AnyObject {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletId: UserWalletId) -> [TokenActionType]
+    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType]
 }
 
 protocol MarketsPortfolioContextActionsDelegate: AnyObject {
-    func didTapContextAction(_ action: TokenActionType, for walletModelId: WalletModelId, with userWalletId: UserWalletId)
+    func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId)
 }

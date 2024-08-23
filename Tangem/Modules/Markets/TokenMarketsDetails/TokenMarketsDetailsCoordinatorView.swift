@@ -37,6 +37,13 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.stakingDetailsCoordinator) {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
+            .detentBottomSheet(
+                item: $coordinator.tokenNetworkSelectorCoordinator,
+                detents: [.large],
+                settings: .init(background: Colors.Background.tertiary)
+            ) {
+                MarketsTokenNetworkSelectorCoordinatorView(coordinator: $0)
+            }
 
         NavHolder()
             .bottomSheet(
@@ -45,12 +52,6 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
             ) {
                 WarningBankCardView(viewModel: $0)
                     .padding(.bottom, 10)
-            }
-            .detentBottomSheet(
-                item: $coordinator.networkSelectorViewModel,
-                detents: [.large]
-            ) { viewModel in
-                MarketsTokensNetworkSelectorView(viewModel: viewModel)
             }
             .bottomSheet(
                 item: $coordinator.receiveBottomSheetViewModel,

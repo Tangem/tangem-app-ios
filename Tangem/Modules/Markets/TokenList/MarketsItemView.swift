@@ -18,22 +18,22 @@ struct MarketsItemView: View {
         Button(action: {
             viewModel.didTapAction?()
         }) {
-            HStack(spacing: 12) {
-                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+            HStack(spacing: .zero) {
+                HStack(spacing: 12) {
+                    IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
-                VStack {
                     tokenInfoView
+                        .layoutPriority(2)
                 }
 
-                Spacer()
+                Spacer(minLength: 8)
 
-                VStack {
-                    HStack(spacing: 10) {
-                        tokenPriceView
+                HStack(spacing: 10) {
+                    tokenPriceView
 
-                        priceHistoryView
-                    }
+                    priceHistoryView
                 }
+                .layoutPriority(3)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 15)

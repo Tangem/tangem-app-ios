@@ -85,7 +85,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
-        contextActionsDelegate?.didTapContextAction(actionType, for: tokenItemInfoProvider.id, with: userWalletId)
+        contextActionsDelegate?.didTapContextAction(actionType, walletModelId: tokenItemInfoProvider.id, userWalletId: userWalletId)
     }
 
     // MARK: - Private Implementation
@@ -135,7 +135,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: tokenItemInfoProvider.id, with: userWalletId) ?? []
+        contextActions = contextActionsProvider?.buildContextActions(walletModelId: tokenItemInfoProvider.id, userWalletId: userWalletId) ?? []
     }
 
     private func updateBalances() {

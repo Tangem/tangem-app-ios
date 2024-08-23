@@ -27,6 +27,10 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         intervalInsights[selectedInterval] ?? []
     }
 
+    var shouldShowHeaderInfoButton: Bool {
+        insights.networksInfo != nil
+    }
+
     private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode)
 
     private let nonCurrencyFormatter: NumberFormatter = {
@@ -66,7 +70,17 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     }
 
     func showInfoBottomSheet(for infoProvider: MarketsTokenDetailsInfoDescriptionProvider) {
-        infoRouter?.openInfoBottomSheet(title: infoProvider.title, message: infoProvider.infoDescription)
+        showInfoBottomSheet(title: infoProvider.title, message: infoProvider.infoDescription)
+    }
+
+    func showInsightsSheetInfo() {
+        guard let networksInfo = insights.networksInfo else {
+            return
+        }
+
+        let networksList = networksInfo.map { $0.networkName }.joined(separator: ", ")
+        let message = Localization.marketsInsightsInfoDescriptionMessage(networksList)
+        showInfoBottomSheet(title: Localization.marketsTokenDetailsInsights, message: message)
     }
 
     private func setupInsights() {
@@ -136,5 +150,9 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                 viewModel.setupInsights()
             }
             .store(in: &bag)
+    }
+
+    private func showInfoBottomSheet(title: String, message: String) {
+        infoRouter?.openInfoBottomSheet(title: title, message: message)
     }
 }

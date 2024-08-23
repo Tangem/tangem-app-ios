@@ -63,6 +63,15 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     // MARK: - UI
 
     public var body: some View {
+        if #available(iOS 17, *) {
+            content
+                .sensoryFeedback(.selection, trigger: selection)
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         HStack(spacing: interSegmentSpacing) {
             ForEach(Array(zip(options.indices, options)), id: \.1.id) { index, option in
                 Segment(
@@ -81,6 +90,11 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     action: {
                         selection = option
                         selectedIndex = index
+
+                        if #unavailable(iOS 17) {
+                            let generator = UISelectionFeedbackGenerator()
+                            generator.selectionChanged()
+                        }
                     }
                 )
                 .zIndex(selection == option ? 0 : 1)

@@ -1,5 +1,5 @@
 //
-//  TokenItemInfoProviderFactory.swift
+//  TokenItemInfoProviderMapper.swift
 //  Tangem
 //
 //  Created by skibinalexander on 20.08.2024.
@@ -10,7 +10,7 @@ import Foundation
 
 typealias TokenItemInfoProviderItem = (provider: TokenItemInfoProvider, isCustom: Bool)
 
-struct TokenItemInfoProviderFactory {
+struct TokenItemInfoProviderMapper {
     func mapTokenItemViewModel(from tokenItemType: TokenItemType) -> TokenItemInfoProviderItem {
         let tokenInfoProvider: TokenItemInfoProvider
         let isCustom: Bool

@@ -160,8 +160,8 @@ struct MarketsPortfolioContainerView: View {
                 onTapAction: { actionType in
                     viewModel.didTapContextAction(
                         actionType,
-                        for: tokenItemViewModel.tokenItemInfoProvider.id,
-                        with: tokenItemViewModel.userWalletId
+                        walletModelId: tokenItemViewModel.tokenItemInfoProvider.id,
+                        userWalletId: tokenItemViewModel.userWalletId
                     )
                 }
             )
