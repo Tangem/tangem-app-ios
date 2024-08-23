@@ -38,28 +38,23 @@ struct LineChartViewConfigurator {
         /*
          chartView.xAxis.axisMinimum = xAxisData.axisMinValue.doubleValue
          chartView.xAxis.axisMaximum = xAxisData.axisMaxValue.doubleValue
-          */
+         */
     }
 
     private func makeDataSet() -> LineChartDataSet {
-        let utility = LineChartViewUtility()
-        let chartColor = utility.selectedChartLineColor(for: chartData.trend)
-        let chartFill = utility.selectedChartFillGradient(for: chartData.trend)
-
         let chartDataEntries = chartData.xAxis.values.map { value in
             return ChartDataEntry(x: value.timeStamp.doubleValue, y: value.price.doubleValue, data: value)
         }
 
         let dataSet = ColorSplitLineChartDataSet(entries: chartDataEntries)
-        dataSet.fillAlpha = 1.0
-        dataSet.fill = chartFill
-        dataSet.drawFilledEnabled = true
         dataSet.drawCirclesEnabled = false
         dataSet.drawValuesEnabled = false
         dataSet.lineCapType = .round
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
         dataSet.verticalHighlightIndicatorInset = -8.0
-        dataSet.setColor(chartColor)
+
+        // Will be set dynamically, depending on the chart trend
+        /* dataSet.setColor(chartColor) */
 
         // TODO: Andrey Fedorov - `cubicBezier` line chart does not work at the moment with `ColorSplitLineChartRenderer` renderer (IOS-7476)
         /*
