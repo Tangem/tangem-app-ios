@@ -61,6 +61,9 @@
 		2D5EBAA72ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5EBAA22ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift */; };
 		2D5EBAA82ADD15EA00A25AC4 /* ManageTokensNetworkSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5EBAA32ADD15EA00A25AC4 /* ManageTokensNetworkSelectorView.swift */; };
 		2D5F47922C21F1FC00AB6C4B /* MarketsListChartsPreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5F47912C21F1FC00AB6C4B /* MarketsListChartsPreviewProvider.swift */; };
+		2D61671E2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */; };
+		2D6167202C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */; };
+		2D6167222C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
 		2D70C61E2B21E90A00BD1DAB /* (null) in Sources */ = {isa = PBXBuildFile; };
 		2D788E8A2ADD657000E0884B /* ManageTokensNetworkSelectorAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D788E842ADD657000E0884B /* ManageTokensNetworkSelectorAlertBuilder.swift */; };
@@ -1928,6 +1931,9 @@
 		2D5EBAA22ADD15EA00A25AC4 /* ManageTokensNetworkSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D5EBAA32ADD15EA00A25AC4 /* ManageTokensNetworkSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageTokensNetworkSelectorView.swift; sourceTree = "<group>"; };
 		2D5F47912C21F1FC00AB6C4B /* MarketsListChartsPreviewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListChartsPreviewProvider.swift; sourceTree = "<group>"; };
+		2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokensNetworkRoutable.swift; sourceTree = "<group>"; };
+		2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinator.swift; sourceTree = "<group>"; };
+		2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinatorView.swift; sourceTree = "<group>"; };
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
@@ -3900,7 +3906,10 @@
 		2D5DCC2B2C3309F1000EE379 /* TokensNetworkSelector */ = {
 			isa = PBXGroup;
 			children = (
+				2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */,
+				2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */,
 				2D5DCC252C3309F1000EE379 /* MarketsTokensNetworkDataSource.swift */,
+				2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */,
 				2D5DCC262C3309F1000EE379 /* MarketsTokensNetworkSelectorAlertBuilder.swift */,
 				2D5DCC272C3309F1000EE379 /* MarketsTokensNetworkSelectorItemView.swift */,
 				2D5DCC282C3309F1000EE379 /* MarketsTokensNetworkSelectorItemViewModel.swift */,
@@ -10946,6 +10955,7 @@
 				DC261CB6292CF6B700875E64 /* UncompletedBackupViewModel.swift in Sources */,
 				B0BDF9BC2B4D3D9C00EEBE4F /* MainHeaderBalanceFormatter.swift in Sources */,
 				DC742C312BC863D400BECF09 /* CommonCardInitializer.swift in Sources */,
+				2D6167222C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift in Sources */,
 				B6AA13662A2A372500B53937 /* CardsInfoPagerPreviewProvider.swift in Sources */,
 				EFC84B2A2C37FBB300546882 /* SendDestinationStep.swift in Sources */,
 				B62C65D12C38D06B00189AD4 /* PushNotificationsAvailabilityProvider.swift in Sources */,
@@ -11923,6 +11933,7 @@
 				B63442612AFE90A700C87481 /* CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift in Sources */,
 				EFF763E32C4E38D200E846F4 /* SendStepNavigationTrailingViewType.swift in Sources */,
 				B6157AAD2C322733000640B4 /* OnboardingFeatureDescriptionView.swift in Sources */,
+				2D6167202C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift in Sources */,
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
 				B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */,
 				B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift in Sources */,
@@ -11993,6 +12004,7 @@
 				B0541DBE26FB30060043893E /* WalletOnboardingViewModel.swift in Sources */,
 				5DFCCB7824C389740014A293 /* CommonUserWalletModel.swift in Sources */,
 				EF7A072C2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift in Sources */,
+				2D61671E2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift in Sources */,
 				DCE402B82A31E69100D40C77 /* Analytics+DestinationAddressSource.swift in Sources */,
 				EFF466EA2ACD928800ACC3EA /* PendingTransactionRecordMapper.swift in Sources */,
 				DC261CB4292CF6B700875E64 /* UncompletedBackupCoordinatorView.swift in Sources */,

@@ -21,13 +21,13 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child ViewModels
 
-    @Published var networkSelectorViewModel: MarketsTokensNetworkSelectorViewModel? = nil
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
 
     // MARK: - Child Coordinators
 
+    @Published var tokenNetworkSelectorCoordinator: MarketsTokenNetworkSelectorCoordinator? = nil
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
@@ -64,7 +64,12 @@ extension TokenMarketsDetailsCoordinator {
 
 extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
     func openTokenSelector(with coinModel: CoinModel, with walletDataProvider: MarketsWalletDataProvider) {
-        networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(coinModel: coinModel, walletDataProvider: walletDataProvider)
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.tokenNetworkSelectorCoordinator = nil
+        }
+
+        tokenNetworkSelectorCoordinator = MarketsTokenNetworkSelectorCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        tokenNetworkSelectorCoordinator?.start(with: .init(coinModel: coinModel, walletDataProvider: walletDataProvider))
     }
 
     func openURL(_ url: URL) {
