@@ -241,7 +241,7 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
-        portfolioViewModel?.updateState(with: .init(coinId: model.id, networks: model.availableNetworks))
+        portfolioViewModel?.loaded(state: .init(coinId: model.id, networks: model.availableNetworks))
     }
 
     @MainActor

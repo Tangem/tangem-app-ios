@@ -58,7 +58,16 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
-    func updateState(with state: LoadableState) {
+    func loaded(state: LoadableState) {
+        loadableState = state
+        updateUI()
+    }
+
+    // MARK: - Private Implementation
+
+    private func updateUI() {
+        guard let state = loadableState else { return }
+
         updateTokenList(with: state)
 
         let canAddAvailableNetworks = canAddToPortfolio(with: state.networks)
@@ -71,13 +80,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         isShowTopAddButton = !tokenItemViewModels.isEmpty
         typeView = tokenItemViewModels.isEmpty ? .empty : .list
     }
-
-    func reload() {
-        guard let loadableState else { return }
-        updateState(with: loadableState)
-    }
-
-    // MARK: - Private Implementation
 
     /*
      - We are joined the list of available blockchains so far, all user wallet models
@@ -145,7 +147,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.reload()
+                viewModel.updateUI()
             }
             .store(in: &bag)
     }
