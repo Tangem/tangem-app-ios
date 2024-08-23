@@ -16,11 +16,16 @@ protocol NotificationEvent: Identifiable {
     var icon: NotificationView.MessageIcon { get }
     var severity: NotificationView.Severity { get }
     var isDismissable: Bool { get }
+    var buttonActionType: NotificationButtonActionType? { get }
     // TODO: Discuss analytics refactoring, probably we should combine all related data into single struct
     var analyticsEvent: Analytics.Event? { get }
     var analyticsParams: [Analytics.ParameterKey: String] { get }
     /// Determine if analytics event should be sent only once and tracked by service
     var isOneShotAnalyticsEvent: Bool { get }
+}
+
+extension NotificationEvent {
+    var buttonActionType: NotificationButtonActionType? { nil }
 }
 
 extension NotificationEvent where Self: Hashable {
