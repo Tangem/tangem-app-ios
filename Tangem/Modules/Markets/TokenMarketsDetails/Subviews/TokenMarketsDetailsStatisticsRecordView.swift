@@ -24,7 +24,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             titleView
 
             messageView
