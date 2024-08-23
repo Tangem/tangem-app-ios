@@ -118,16 +118,15 @@ private extension StakingDetailsViewModel {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
         setupValidatorsView(yield: yield, staking: balances.staking())
-        setupRewardView(yield: yield, rewards: balances.rewards())
+        setupRewardView(yield: yield, balances: balances)
     }
 
     func setupHeaderView(hasBalances: Bool) {
-        hideStakingInfoBanner = hasBalances || hideStakingInfoBanner
+        hideStakingInfoBanner = hasBalances || AppSettings.shared.hideStakingInfoBanner
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let staked = staking.sum()
-        let available = (walletModel.balanceValue ?? .zero) - staked
+        let available = walletModel.availableBalance.crypto
         let aprs = yield.validators.compactMap(\.apr)
         let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate)
 
@@ -219,7 +218,13 @@ private extension StakingDetailsViewModel {
         detailsViewModels = viewModels
     }
 
-    func setupRewardView(yield: YieldInfo, rewards: [StakingBalanceInfo]) {
+    func setupRewardView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+        guard !balances.isEmpty else {
+            rewardViewData = nil
+            return
+        }
+
+        let rewards = balances.rewards()
         switch rewards.sum() {
         case .zero where yield.rewardClaimingType == .auto:
             rewardViewData = nil
@@ -272,16 +277,11 @@ private extension StakingDetailsViewModel {
 
         let subtitleType: ValidatorViewData.SubtitleType? = {
             switch balance.balanceType {
-            case .rewards:
-                .none
-            case .warmup:
-                .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active:
-                validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding(let date):
-                .unbounding(period: remainDaysFormat(date: date))
-            case .withdraw:
-                .unbounding(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+            case .rewards: .none
+            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+            case .active: validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
+            case .unbonding(let date): .unbounding(until: date)
+            case .withdraw: .withdraw
             }
         }()
 
@@ -353,13 +353,21 @@ extension Period {
 
 private extension RewardClaimingType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .auto: Localization.stakingRewardClaimingAuto
+        case .manual: Localization.stakingRewardClaimingManual
+        }
     }
 }
 
 private extension RewardScheduleType {
     var title: String {
-        rawValue.capitalizingFirstLetter()
+        switch self {
+        case .hour: Localization.stakingRewardScheduleHour
+        case .day: Localization.stakingRewardScheduleEachDay
+        case .week: Localization.stakingRewardScheduleWeek
+        case .month: Localization.stakingRewardScheduleMonth
+        }
     }
 }
 

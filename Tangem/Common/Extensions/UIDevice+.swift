@@ -24,6 +24,11 @@ public extension UIDevice {
 
         return IPhoneModel(identifier: modelIdentifier)
     }
+
+    /// - Warning: Simple and naive, use with caution.
+    var hasTopNotch: Bool {
+        return !UIApplication.safeAreaInsets.bottom.isZero
+    }
 }
 
 public enum IPhoneModel {

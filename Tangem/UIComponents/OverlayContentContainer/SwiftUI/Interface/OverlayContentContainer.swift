@@ -10,6 +10,8 @@ import SwiftUI
 
 /// Interface that exposes `OverlayContentContainerViewController`'s API into SwiftUI.
 protocol OverlayContentContainer {
+    var cornerRadius: CGFloat { get }
+
     func installOverlay(_ overlayView: some View)
     func removeOverlay()
 }

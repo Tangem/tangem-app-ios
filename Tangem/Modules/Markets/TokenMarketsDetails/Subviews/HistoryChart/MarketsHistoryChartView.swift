@@ -89,10 +89,11 @@ struct MarketsHistoryChartView: View {
             onViewMake: { chartView in
                 chartView.minOffset = 0.0
                 chartView.extraTopOffset = 26.0
-                chartView.setScaleEnabled(false)
+                chartView.dragYEnabled = false // Prevents conflicts with the pan gesture in `overlayContentContainer`
                 chartView.pinchZoomEnabled = false
                 chartView.doubleTapToZoomEnabled = false
                 chartView.highlightPerTapEnabled = false
+                chartView.setScaleEnabled(false)
                 chartView.xAxis.drawGridLinesEnabled = false
                 chartView.xAxis.labelPosition = .bottom
                 chartView.xAxis.drawAxisLineEnabled = false
