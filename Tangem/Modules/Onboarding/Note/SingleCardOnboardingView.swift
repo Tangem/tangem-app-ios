@@ -193,12 +193,12 @@ struct CardOnboardingBackgroundCircle: View {
             .padding(10)
             .overlay(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
                     .padding(38)
             )
             .background(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
             )
             .edgesIgnoringSafeArea(.all)
             .scaleEffect(scale)

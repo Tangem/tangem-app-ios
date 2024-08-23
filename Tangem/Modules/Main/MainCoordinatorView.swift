@@ -42,9 +42,6 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }

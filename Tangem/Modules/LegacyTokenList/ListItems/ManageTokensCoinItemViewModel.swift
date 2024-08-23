@@ -25,7 +25,7 @@ class ManageTokensCoinItemViewModel: Identifiable, ObservableObject {
     var imageNameSelected: String { tokenItem.blockchain.iconNameFilled }
     var networkName: String { tokenItem.blockchain.displayName }
     var contractName: String? { tokenItem.contractName }
-    var networkNameForegroundColor: Color { selectedPublisher ? .tangemGrayDark6 : Color(name: "manage_tokens_network_name") }
+    var networkNameForegroundColor: Color { selectedPublisher ? Colors.Old.tangemGrayDark6 : Color(name: "manage_tokens_network_name") }
     var contractNameForegroundColor: Color { tokenItem.isBlockchain ? Colors.Text.accent : Color(name: "manage_tokens_contract_name") }
     var hasContextMenu: Bool { tokenItem.isToken }
 

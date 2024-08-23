@@ -24,7 +24,6 @@ class TokenDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    @Published var legacySendCoordinator: LegacySendCoordinator? = nil
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
@@ -183,20 +182,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: nil,
-                tag: nil,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -220,20 +207,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: destination,
-                tag: tag,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
