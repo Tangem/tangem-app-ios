@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum AmountRoundingType {
+enum AmountRoundingType: Hashable {
     case shortestFraction(roundingMode: NSDecimalNumber.RoundingMode)
     case `default`(roundingMode: NSDecimalNumber.RoundingMode, scale: Int)
 }

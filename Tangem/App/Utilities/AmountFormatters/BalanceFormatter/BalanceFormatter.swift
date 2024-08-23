@@ -9,13 +9,18 @@
 import Foundation
 import SwiftUI
 
-struct BalanceFormatter {
+/// This formatter maintains reference semantics and uses an internal cache; for performance reasons,
+/// consider keeping the instances of this formatter alive instead of creating and discarding them in place.
+final class BalanceFormatter {
     static var defaultEmptyBalanceString: String { "–" }
 
     private let decimalRoundingUtility = DecimalRoundingUtility()
+    private let cache = NSCacheWrapper<CacheKey, NumberFormatter>()
 
     /// Format any decimal number using `BalanceFormattingOptions`
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the cache key if a new parameter is added to this method.
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted
     ///   - formattingOptions: Options for number formatter and rounding
@@ -25,14 +30,31 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
-        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
+        let numberFormatter: NumberFormatter
+
+        let cacheKey = CacheKey(
+            methodName: #function,
+            balanceFormattingOptions: formattingOptions,
+            totalBalanceFormattingOptions: nil,
+            currencyCode: nil,
+            locale: nil
+        )
+
+        if let cachedFormatter = cache.value(forKey: cacheKey) {
+            numberFormatter = cachedFormatter
+        } else {
+            let formatter = NumberFormatter()
+            formatter.locale = Locale.current
+            formatter.numberStyle = .decimal
+            formatter.minimumFractionDigits = formattingOptions.minFractionDigits
+            formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
+            cache.setValue(formatter, forKey: cacheKey)
+            numberFormatter = formatter
+        }
 
         let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
-        return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat)"
+
+        return numberFormatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat)"
     }
 
     /// Format crypto balance using `BalanceFormattingOptions`
@@ -105,15 +127,34 @@ struct BalanceFormatter {
     }
 
     /// Format fiat balance string for main page with different font for integer and fractional parts.
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the cache key if a new parameter is added to this method.
     /// - Parameters:
     ///   - fiatBalance: Fiat balance should be formatted and with currency symbol. Use `formatFiatBalance(Decimal, BalanceFormattingOptions)
     ///   - formattingOptions: Fonts and colors for integer and fractional parts
     /// - Returns: Parameters that can be used with SwiftUI `Text` view
     func formatAttributedTotalBalance(fiatBalance: String, formattingOptions: TotalBalanceFormattingOptions = .defaultOptions) -> AttributedString {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
-        let decimalSeparator = formatter.decimalSeparator ?? ""
+        let numberFormatter: NumberFormatter
+
+        let cacheKey = CacheKey(
+            methodName: #function,
+            balanceFormattingOptions: nil,
+            totalBalanceFormattingOptions: formattingOptions,
+            currencyCode: nil,
+            locale: nil
+        )
+
+        if let cachedFormatter = cache.value(forKey: cacheKey) {
+            numberFormatter = cachedFormatter
+        } else {
+            let formatter = NumberFormatter()
+            formatter.locale = Locale.current
+            formatter.numberStyle = .currency
+            cache.setValue(formatter, forKey: cacheKey)
+            numberFormatter = formatter
+        }
+
+        let decimalSeparator = numberFormatter.decimalSeparator ?? ""
         var attributedString = AttributedString(fiatBalance)
         attributedString.font = formattingOptions.integerPartFont
         attributedString.foregroundColor = formattingOptions.integerPartColor
@@ -127,11 +168,25 @@ struct BalanceFormatter {
         return attributedString
     }
 
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the cache key if a new parameter is added to this method.
     func makeDefaultFiatFormatter(
         for currencyCode: String,
         locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions
     ) -> NumberFormatter {
+        let cacheKey = CacheKey(
+            methodName: #function,
+            balanceFormattingOptions: formattingOptions,
+            totalBalanceFormattingOptions: nil,
+            currencyCode: currencyCode,
+            locale: locale
+        )
+
+        if let cachedFormatter = cache.value(forKey: cacheKey) {
+            return cachedFormatter
+        }
+
         let formatter = NumberFormatter()
         formatter.locale = locale
         formatter.numberStyle = .currency
@@ -148,14 +203,31 @@ struct BalanceFormatter {
         default:
             break
         }
+
+        cache.setValue(formatter, forKey: cacheKey)
+
         return formatter
     }
 
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the cache key if a new parameter is added to this method.
     func makeDefaultCryptoFormatter(
         for currencyCode: String,
         locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions
     ) -> NumberFormatter {
+        let cacheKey = CacheKey(
+            methodName: #function,
+            balanceFormattingOptions: formattingOptions,
+            totalBalanceFormattingOptions: nil,
+            currencyCode: currencyCode,
+            locale: locale
+        )
+
+        if let cachedFormatter = cache.value(forKey: cacheKey) {
+            return cachedFormatter
+        }
+
         let formatter = NumberFormatter()
         formatter.locale = locale
         formatter.numberStyle = .currency
@@ -163,6 +235,21 @@ struct BalanceFormatter {
         formatter.currencySymbol = currencyCode
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
+
+        cache.setValue(formatter, forKey: cacheKey)
+
         return formatter
+    }
+}
+
+// MARK: - Auxiliary types
+
+private extension BalanceFormatter {
+    struct CacheKey: Hashable {
+        let methodName: String
+        let balanceFormattingOptions: BalanceFormattingOptions?
+        let totalBalanceFormattingOptions: TotalBalanceFormattingOptions?
+        let currencyCode: String?
+        let locale: Locale?
     }
 }
