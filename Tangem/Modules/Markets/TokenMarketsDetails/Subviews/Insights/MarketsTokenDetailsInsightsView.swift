@@ -26,21 +26,8 @@ struct MarketsTokenDetailsInsightsView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            HStack {
-                Text(Localization.marketsTokenDetailsInsights)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-
-                MarketsPickerView(
-                    marketPriceIntervalType: $viewModel.selectedInterval,
-                    options: viewModel.availableIntervals,
-                    shouldStretchToFill: false,
-                    style: .init(textVerticalPadding: 2),
-                    titleFactory: { $0.tokenDetailsNameLocalized }
-                )
-            }
-            .padding(.bottom, 6)
+            header
+                .padding(.bottom, 6)
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.0) { index, info in
@@ -64,6 +51,39 @@ struct MarketsTokenDetailsInsightsView: View {
         }
         .animation(.default, value: viewModel.selectedInterval)
         .defaultRoundedBackground(with: Colors.Background.action)
+    }
+
+    private var header: some View {
+        HStack {
+            if viewModel.shouldShowHeaderInfoButton {
+                Button(action: viewModel.showInsightsSheetInfo) {
+                    HStack(spacing: 4) {
+                        headerLabel
+
+                        Assets.infoCircle16.image
+                            .renderingMode(.template)
+                            .foregroundStyle(Colors.Icon.informative)
+                    }
+                }
+            } else {
+                headerLabel
+            }
+
+            Spacer()
+
+            MarketsPickerView(
+                marketPriceIntervalType: $viewModel.selectedInterval,
+                options: viewModel.availableIntervals,
+                shouldStretchToFill: false,
+                style: .init(textVerticalPadding: 2),
+                titleFactory: { $0.tokenDetailsNameLocalized }
+            )
+        }
+    }
+
+    private var headerLabel: some View {
+        Text(Localization.marketsTokenDetailsInsights)
+            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
     }
 }
 
@@ -131,7 +151,8 @@ extension MarketsTokenDetailsInsightsView {
                 holdersChange: [:],
                 liquidityChange: [:],
                 buyPressureChange: [:],
-                experiencedBuyerChange: [:]
+                experiencedBuyerChange: [:],
+                networks: nil
             ))!,
             insightsPublisher: insights,
             notationFormatter: .init(),

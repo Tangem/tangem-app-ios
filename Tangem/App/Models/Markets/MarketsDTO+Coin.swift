@@ -47,5 +47,6 @@ extension MarketsDTO.Coins {
         let liquidityChange: [String: Decimal?]
         let buyPressureChange: [String: Decimal?]
         let experiencedBuyerChange: [String: Decimal?]
+        let networks: [MarketsInsightsNetworkInfo]?
     }
 }

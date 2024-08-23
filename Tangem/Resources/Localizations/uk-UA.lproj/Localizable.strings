@@ -339,6 +339,7 @@
 "markets_common_my_portfolio" = "Моє портфоліо";
 "markets_common_title" = "Маркет";
 "markets_generate_addresses_notification" = "Щоб згенерувати адреси для обраних мереж, потрібно відсканувати свою картку Tangem";
+"markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Не вдалося завантажити дані...";
 "markets_quick_actions" = "Швидкі дії";
 "markets_search_result_title" = "Результат";
