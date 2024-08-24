@@ -106,7 +106,7 @@ struct SingleCardOnboardingView: View {
                             AnimatedView(settings: viewModel.$mainCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: .dark,
-                                    cardImage: viewModel.cardImage,
+                                    cardImage: viewModel.mainImage,
                                     cardScanned: viewModel.isInitialAnimPlayed && viewModel.isCardScanned
                                 )
                             }
