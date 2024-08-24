@@ -92,7 +92,7 @@ struct BackupStoryPage: View {
                 .padding(.horizontal)
                 .padding(.bottom, 6)
         }
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
