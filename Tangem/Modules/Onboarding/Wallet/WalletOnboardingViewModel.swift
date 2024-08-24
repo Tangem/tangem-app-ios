@@ -329,14 +329,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         subscribeToScreenshots()
     }
 
-    private func loadImageForRestoredbackup(cardId: String, cardPublicKey: Data) {
-        CardImageProvider()
-            .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
-            .map { $0.image }
-            .assign(to: \.mainImage, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
     override func setupContainer(with size: CGSize) {
         stackCalculator.setup(
             for: size,
