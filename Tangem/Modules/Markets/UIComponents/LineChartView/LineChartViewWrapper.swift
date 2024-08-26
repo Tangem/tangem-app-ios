@@ -45,12 +45,12 @@ struct LineChartViewWrapper: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        let configurator = LineChartViewConfigurator(chartData: chartData)
-        configurator.configure(uiViewController.lineChartView)
-
         let coordinator = context.coordinator
         coordinator.prepareFeedbackGeneratorIfNeeded()
-        coordinator.setSelectedPriceInterval(selectedPriceInterval)
+        coordinator.update(view: self, chartData: chartData, selectedPriceInterval: selectedPriceInterval)
+
+        let configurator = LineChartViewConfigurator(chartData: chartData)
+        configurator.configure(uiViewController.lineChartView)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -65,8 +65,8 @@ extension LineChartViewWrapper {
         fileprivate var xAxisValueFormatter: AxisValueFormatter { _xAxisValueFormatter }
 
         private let _xAxisValueFormatter: MarketsHistoryChartXAxisValueFormatter
-        private let view: LineChartViewWrapper
-        private let chartData: LineChartViewData
+        private var view: LineChartViewWrapper
+        private var chartData: LineChartViewData
 
         private let feedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
         private var didPrepareFeedbackGenerator = false
@@ -90,8 +90,15 @@ extension LineChartViewWrapper {
             didPrepareFeedbackGenerator = true
         }
 
-        fileprivate func setSelectedPriceInterval(_ interval: PriceInterval) {
-            _xAxisValueFormatter.setSelectedPriceInterval(interval)
+        /// - Note: The list of arguments here should mirror the list of arguments in the initializer.
+        fileprivate func update(
+            view: LineChartViewWrapper,
+            chartData: LineChartViewData,
+            selectedPriceInterval: PriceInterval
+        ) {
+            self.view = view
+            self.chartData = chartData
+            _xAxisValueFormatter.setSelectedPriceInterval(selectedPriceInterval)
         }
 
         private func endHighlighting(in chartView: ChartViewBase) {
