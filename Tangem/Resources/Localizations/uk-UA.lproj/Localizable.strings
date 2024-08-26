@@ -341,6 +341,7 @@
 "markets_generate_addresses_notification" = "Щоб згенерувати адреси для обраних мереж, потрібно відсканувати свою картку Tangem";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Не вдалося завантажити дані...";
+"markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Швидкі дії";
 "markets_search_result_title" = "Результат";
 "markets_search_see_tokens_under_100k" = "Переглянути токени до 100к ринкової капіталізації";

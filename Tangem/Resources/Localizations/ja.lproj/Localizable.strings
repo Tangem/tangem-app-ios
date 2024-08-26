@@ -341,6 +341,7 @@
 "markets_generate_addresses_notification" = "選択したネットワークのアドレスを生成するには、Tangemカードをスキャンする必要があります。";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "データを読み込めません…";
+"markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "クイックアクション";
 "markets_search_result_title" = "結果";
 "markets_search_see_tokens_under_100k" = "時価総額10万ドル以下のトークンを見る";
