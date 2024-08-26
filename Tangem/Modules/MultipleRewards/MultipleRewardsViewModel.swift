@@ -8,11 +8,13 @@
 
 import Combine
 import TangemStaking
+import SwiftUI
 
 final class MultipleRewardsViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
     @Published var validators: [ValidatorViewData] = []
+    @Published var actionSheet: ActionSheetBinder?
 
     // MARK: - Dependencies
 
@@ -23,6 +25,8 @@ final class MultipleRewardsViewModel: ObservableObject, Identifiable {
     private let percentFormatter = PercentFormatter()
     private let balanceFormatter = BalanceFormatter()
     private let balanceConverter = BalanceConverter()
+
+    private var bag: Set<AnyCancellable> = []
 
     init(
         tokenItem: TokenItem,
@@ -45,14 +49,24 @@ final class MultipleRewardsViewModel: ObservableObject, Identifiable {
 
 private extension MultipleRewardsViewModel {
     func bind() {
-        guard case .staked(let staked) = stakingManager.state else {
-            assertionFailure("StakingManager.state \(stakingManager.state) doesn't support in MultipleRewardsViewModel")
-            return
-        }
-
-        validators = staked.balances.rewards().compactMap { balance in
-            mapToValidatorViewData(yield: staked.yieldInfo, balance: balance)
-        }
+        stakingManager
+            .statePublisher
+            .withWeakCaptureOf(self)
+            .flatMap { viewModel, state in
+                switch state {
+                case .staked(let staked):
+                    let data = staked.balances.rewards().compactMap { balance in
+                        viewModel.mapToValidatorViewData(yield: staked.yieldInfo, balance: balance)
+                    }
+                    return Just(data).eraseToAnyPublisher()
+                default:
+                    // Do nothing
+                    return Empty().eraseToAnyPublisher()
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.validators, on: self, ownership: .weak)
+            .store(in: &bag)
     }
 
     func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
@@ -81,9 +95,27 @@ private extension MultipleRewardsViewModel {
             detailsType: .balance(
                 BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
                 action: { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                    self?.openUnstakingFlow(balance: balance)
                 }
             )
         )
+    }
+
+    func openUnstakingFlow(balance: StakingBalanceInfo) {
+        switch PendingActionMapper(balanceInfo: balance).getAction() {
+        case .none:
+            break
+        case .single(let action):
+            coordinator?.openUnstakingFlow(action: action)
+        case .multiple(let actions):
+            var buttons: [Alert.Button] = actions.map { action in
+                .default(Text(action.type.title)) { [weak self] in
+                    self?.coordinator?.openUnstakingFlow(action: action)
+                }
+            }
+
+            buttons.append(.cancel())
+            actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+        }
     }
 }

@@ -119,7 +119,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         multipleRewardsCoordinator = coordinator
     }
 
-    func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
+    func openUnstakingFlow(action: UnstakingModel.Action) {
         guard let options else { return }
 
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
@@ -129,7 +129,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, balanceInfo: balanceInfo)
+            type: .unstaking(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
     }
