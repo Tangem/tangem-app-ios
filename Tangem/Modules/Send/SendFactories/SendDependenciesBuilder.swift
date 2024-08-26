@@ -188,16 +188,13 @@ struct SendDependenciesBuilder {
     // MARK: - Staking
 
     func makeStakingModel(stakingManager: any StakingManager) -> StakingModel {
-        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
-        let sendTransactionDispatcher = makeSendTransactionDispatcher()
-
-        return StakingModel(
+        StakingModel(
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             transactionValidator: walletModel.transactionValidator,
             feeIncludedCalculator: makeFeeIncludedCalculator(),
-            stakingTransactionDispatcher: stakingTransactionDispatcher,
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            stakingTransactionDispatcher: makeStakingTransactionDispatcher(),
+            sendTransactionDispatcher: makeSendTransactionDispatcher(),
             stakingTransactionMapper: makeStakingTransactionMapper(),
             allowanceProvider: makeAllowanceProvider(),
             amountTokenItem: walletModel.tokenItem,
@@ -206,14 +203,13 @@ struct SendDependenciesBuilder {
     }
 
     func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
-        let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
-
-        return UnstakingModel(
+        UnstakingModel(
             stakingManager: stakingManager,
-            sendTransactionDispatcher: stakingTransactionDispatcher,
+            sendTransactionDispatcher: makeStakingTransactionDispatcher(),
             stakingTransactionMapper: makeStakingTransactionMapper(),
+            transactionValidator: walletModel.transactionValidator,
             action: action,
-            amountTokenItem: walletModel.tokenItem,
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }

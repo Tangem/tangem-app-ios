@@ -92,18 +92,19 @@ private extension CommonStakingNotificationManager {
         }
     }
 
-    func update(state: UnstakingModel.State, yield: YieldInfo) {
-        switch state.action.type {
-        case .stake:
-            break
-        case .unstake:
+    func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
+        switch state {
+        case .loading, .ready:
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
-        case .pending(let pendingActionType):
-            show(notification: .unstake(
-                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
-            ))
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case .networkError:
+            show(notification: .networkUnreachable)
         }
     }
 }
@@ -142,12 +143,12 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
 
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
-            provider.statePublisher.removeDuplicates(),
+            provider.statePublisher,
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0, yield: state.1)
+            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
         }
     }
 

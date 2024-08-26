@@ -271,7 +271,7 @@ private extension StakingModel {
 
         let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
         let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: amount)
+        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
 
         do {
             let result = try await stakingTransactionDispatcher.send(
