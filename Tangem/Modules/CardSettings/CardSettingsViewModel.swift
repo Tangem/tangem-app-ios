@@ -151,7 +151,7 @@ private extension CardSettingsViewModel {
 
 extension CardSettingsViewModel {
     func openChangeAccessCodeWarningView() {
-        if let disabledLocalizedReason = input.resetTofactoryDisabledLocalizedReason {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
@@ -168,7 +168,7 @@ extension CardSettingsViewModel {
     }
 
     func openSecurityMode() {
-        if let disabledLocalizedReason = input.resetTofactoryDisabledLocalizedReason {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
@@ -196,7 +196,7 @@ extension CardSettingsViewModel {
     }
 
     func openAccessCodeSettings() {
-        if let disabledLocalizedReason = input.resetTofactoryDisabledLocalizedReason {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
