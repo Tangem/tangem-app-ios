@@ -50,17 +50,44 @@ private extension CommonStakingNotificationManager {
             break
         case .approveTransactionInProgress:
             show(notification: .approveTransactionInProgress)
-        case .readyToApprove, .readyToStake:
+        case .readyToApprove:
             show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
+        case .readyToStake(let readyToStake):
+            var events: [StakingNotificationEvent] = [
+                .stake(
+                    tokenSymbol: tokenItem.currencySymbol,
+                    rewardScheduleType: yield.rewardScheduleType
+                ),
+            ]
+
+            if readyToStake.isFeeIncluded {
+                let feeFiatValue = feeTokenItem.currencyId.flatMap {
+                    BalanceConverter().convertToFiat(readyToStake.fee, currencyId: $0)
+                }
+
+                let formatter = BalanceFormatter()
+                let cryptoAmountFormatted = formatter.formatCryptoBalance(readyToStake.fee, currencyCode: feeTokenItem.currencySymbol)
+                let fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+                events.append(
+                    .feeWillBeSubtractFromSendingAmount(
+                        cryptoAmountFormatted: cryptoAmountFormatted,
+                        fiatAmountFormatted: fiatAmountFormatted
+                    )
+                )
+            }
+
+            show(events: events)
+
         case .validationError(let validationError, _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             show(notification: .validationErrorEvent(validationErrorEvent))
-        case .error:
+        case .networkError:
             show(notification: .networkUnreachable)
         }
     }
@@ -84,12 +111,18 @@ private extension CommonStakingNotificationManager {
 // MARK: - Show/Hide
 
 private extension CommonStakingNotificationManager {
-    func show(notification event: StakingNotificationEvent) {
-        let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
-            self?.delegate?.didTapNotification(with: id, action: actionType)
-        }
+    func show(notification: StakingNotificationEvent) {
+        show(events: [notification])
+    }
 
-        notificationInputsSubject.value = [input]
+    func show(events: [StakingNotificationEvent]) {
+        let factory = NotificationsFactory()
+
+        notificationInputsSubject.value = events.map { event in
+            factory.buildNotificationInput(for: event) { [weak self] id, actionType in
+                self?.delegate?.didTapNotification(with: id, action: actionType)
+            }
+        }
     }
 }
 

@@ -43,7 +43,7 @@ class CommonStakingStepsManager {
             .withWeakCaptureOf(self)
             .sink { manager, state in
                 switch state {
-                case .loading, .error, .validationError:
+                case .loading, .networkError, .validationError:
                     break
                 case .readyToApprove:
                     manager.output?.update(flowActionType: .approve)

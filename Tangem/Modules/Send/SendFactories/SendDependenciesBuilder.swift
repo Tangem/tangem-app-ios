@@ -191,6 +191,7 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             transactionValidator: walletModel.transactionValidator,
+            feeIncludedCalculator: .init(validator: walletModel.transactionValidator),
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
             stakingTransactionMapper: makeStakingTransactionMapper(),

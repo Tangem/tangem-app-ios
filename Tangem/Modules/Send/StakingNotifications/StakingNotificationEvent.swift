@@ -15,12 +15,14 @@ enum StakingNotificationEvent {
     case unstake(periodFormatted: String)
     case validationErrorEvent(ValidationErrorEvent)
     case networkUnreachable
+    case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
 }
 
 extension StakingNotificationEvent: NotificationEvent {
     var id: NotificationViewId {
         switch self {
         case .approveTransactionInProgress: "approveTransactionInProgress".hashValue
+        case .feeWillBeSubtractFromSendingAmount: "feeWillBeSubtractFromSendingAmount".hashValue
         case .stake: "stake".hashValue
         case .unstake: "unstake".hashValue
         case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
@@ -31,6 +33,7 @@ extension StakingNotificationEvent: NotificationEvent {
     var title: NotificationView.Title {
         switch self {
         case .approveTransactionInProgress: .string(Localization.warningExpressApprovalInProgressTitle)
+        case .feeWillBeSubtractFromSendingAmount: .string(Localization.sendNetworkFeeWarningTitle)
         case .stake: .string(Localization.stakingNotificationEarnRewardsTitle)
         case .unstake: .string(Localization.commonUnstake)
         case .validationErrorEvent(let event): event.title
@@ -42,6 +45,8 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .approveTransactionInProgress:
             Localization.warningExpressApprovalInProgressMessage
+        case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
+            Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
         case .stake(let tokenSymbol, .hour):
             Localization.stakingNotificationEarnRewardsTextPeriodHour(tokenSymbol)
         case .stake(let tokenSymbol, .day):
@@ -61,7 +66,7 @@ extension StakingNotificationEvent: NotificationEvent {
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .approveTransactionInProgress: .secondary
+        case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount: .secondary
         case .stake, .unstake, .networkUnreachable: .action
         case .validationErrorEvent(let event): event.colorScheme
         }
@@ -69,7 +74,7 @@ extension StakingNotificationEvent: NotificationEvent {
 
     var icon: NotificationView.MessageIcon {
         switch self {
-        case .networkUnreachable:
+        case .networkUnreachable, .feeWillBeSubtractFromSendingAmount:
             return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
@@ -84,7 +89,7 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable:
             return .critical
-        case .approveTransactionInProgress, .stake, .unstake:
+        case .approveTransactionInProgress, .stake, .unstake, .feeWillBeSubtractFromSendingAmount:
             return .info
         case .validationErrorEvent(let event):
             return event.severity
@@ -97,7 +102,7 @@ extension StakingNotificationEvent: NotificationEvent {
             return .refreshFee
         case .validationErrorEvent(let event):
             return event.buttonActionType
-        case .approveTransactionInProgress, .stake, .unstake:
+        case .approveTransactionInProgress, .stake, .unstake, .feeWillBeSubtractFromSendingAmount:
             return nil
         }
     }
