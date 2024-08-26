@@ -34,9 +34,9 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var hasPendingTransactions: Bool { walletModel.hasPendingTransactions }
 
-    var balance: String { walletModel.balance }
+    var balance: String { walletModel.allBalanceFormatted.crypto }
 
-    var fiatBalance: String { walletModel.fiatBalance }
+    var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
 
     var quote: TokenQuote? { walletModel.quote }
 
