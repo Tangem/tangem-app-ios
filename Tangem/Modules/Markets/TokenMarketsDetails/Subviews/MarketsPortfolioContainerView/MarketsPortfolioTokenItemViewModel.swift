@@ -8,77 +8,139 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Public Properties
 
-    @Published var fiatBalanceValue: String = ""
-    @Published var balanceValue: String = ""
+    @Published var balanceCrypto: LoadableTextView.State = .loading
+    @Published var balanceFiat: LoadableTextView.State = .loading
+
     @Published var contextActions: [TokenActionType] = []
+
+    @Published var hasPendingTransactions: Bool = false
+
+    @Published private var missingDerivation: Bool = false
+    @Published private var networkUnreachable: Bool = false
 
     var id: Int {
         hashValue
     }
 
-    var tokenIconInfo: TokenIconInfo {
-        TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
-    }
+    var name: String { tokenIcon.name }
+    var imageURL: URL? { tokenIcon.imageURL }
+    var blockchainIconName: String? { tokenIcon.blockchainIconName }
+    var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation }
+    var isCustom: Bool { tokenIcon.isCustom }
+    var customTokenColor: Color? { tokenIcon.customTokenColor }
+    var tokenItem: TokenItem { tokenItemInfoProvider.tokenItem }
 
-    var tokenName: String {
-        walletModel.tokenItem.networkName
+    var hasError: Bool { missingDerivation || networkUnreachable }
+
+    var errorMessage: String? {
+        // Don't forget to add check in trailing item in `TokenItemView` when adding new error here
+        if missingDerivation {
+            return Localization.commonNoAddress
+        }
+
+        if networkUnreachable {
+            return Localization.commonUnreachable
+        }
+
+        return nil
     }
 
     let userWalletId: UserWalletId
     let walletName: String
 
+    let tokenIcon: TokenIconInfo
+    let tokenItemInfoProvider: TokenItemInfoProvider
+
     // MARK: - Private Properties
 
-    let walletModel: WalletModel
     private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
     private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
 
-    private var updateSubscription: AnyCancellable?
+    private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
 
     init(
         userWalletId: UserWalletId,
         walletName: String,
-        walletModel: WalletModel,
+        tokenIcon: TokenIconInfo,
+        tokenItemInfoProvider: TokenItemInfoProvider,
         contextActionsProvider: MarketsPortfolioContextActionsProvider?,
         contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
     ) {
         self.userWalletId = userWalletId
         self.walletName = walletName
-        self.walletModel = walletModel
+        self.tokenIcon = tokenIcon
+        self.tokenItemInfoProvider = tokenItemInfoProvider
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
 
         bind()
-        buildContextActions()
-    }
-
-    func bind() {
-        updateSubscription = walletModel
-            .walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, walletModelState in
-                if walletModelState.isSuccessfullyLoaded {
-                    viewModel.fiatBalanceValue = viewModel.walletModel.fiatBalance
-                    viewModel.balanceValue = viewModel.walletModel.balance
-                }
-            }
+        setupState(tokenItemInfoProvider.tokenItemState)
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
-        contextActionsDelegate?.didTapContextAction(actionType, for: self)
+        contextActionsDelegate?.didTapContextAction(actionType, walletModelId: tokenItemInfoProvider.id, userWalletId: userWalletId)
     }
 
     // MARK: - Private Implementation
 
+    private func bind() {
+        tokenItemInfoProvider.tokenItemStatePublisher
+            .receive(on: DispatchQueue.main)
+            // We need this debounce to prevent initial sequential state updates that can skip `loading` state
+            .debounce(for: 0.1, scheduler: DispatchQueue.main)
+            .sink(receiveValue: weakify(self, forFunction: MarketsPortfolioTokenItemViewModel.setupState(_:)))
+            .store(in: &bag)
+
+        tokenItemInfoProvider.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.buildContextActions()
+            }
+            .store(in: &bag)
+    }
+
+    private func setupState(_ state: TokenItemViewState) {
+        switch state {
+        case .noDerivation:
+            missingDerivation = true
+            networkUnreachable = false
+            updateBalances()
+        case .networkError:
+            missingDerivation = false
+            networkUnreachable = true
+        case .notLoaded:
+            missingDerivation = false
+            networkUnreachable = false
+        case .loaded, .noAccount:
+            missingDerivation = false
+            networkUnreachable = false
+            updateBalances()
+        case .loading:
+            break
+        }
+
+        updatePendingTransactionsStateIfNeeded()
+        buildContextActions()
+    }
+
+    private func updatePendingTransactionsStateIfNeeded() {
+        hasPendingTransactions = tokenItemInfoProvider.hasPendingTransactions
+    }
+
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+        contextActions = contextActionsProvider?.buildContextActions(walletModelId: tokenItemInfoProvider.id, userWalletId: userWalletId) ?? []
+    }
+
+    private func updateBalances() {
+        balanceCrypto = .loaded(text: tokenItemInfoProvider.balance)
+        balanceFiat = .loaded(text: tokenItemInfoProvider.fiatBalance)
     }
 }
 
@@ -89,6 +151,6 @@ extension MarketsPortfolioTokenItemViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(userWalletId)
-        hasher.combine(walletModel.id)
+        hasher.combine(tokenItemInfoProvider.id)
     }
 }
