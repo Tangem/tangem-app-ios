@@ -23,6 +23,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         case .idle,
              .loading,
              .loaded,
+             .noData,
              .failed:
             return true
         }
@@ -175,11 +176,14 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         do {
             let chartViewData = try result.get()
             await updateViewState(.loaded(data: chartViewData), selectedPriceInterval: selectedPriceInterval)
+        } catch where error.isCancellationError {
+            // No-op, cancelling the ongoing request shouldn't affect the current state
+            return
+        } catch TokenMarketsHistoryChartMapper.ParsingError.notEnoughData {
+            // There is no point in updating `selectedPriceInterval` on failure, so a nil value is passed instead
+            await updateViewState(.noData, selectedPriceInterval: nil)
         } catch {
-            if error.isCancellationError {
-                return
-            }
-            // There is no point in updating `selectedPriceInterval` on failure, so nil is passed instead
+            // There is no point in updating `selectedPriceInterval` on failure, so a nil value is passed instead
             await updateViewState(.failed, selectedPriceInterval: nil)
         }
     }
@@ -192,6 +196,7 @@ extension MarketsHistoryChartViewModel {
         case idle
         case loading(previousData: LineChartViewData?)
         case loaded(data: LineChartViewData)
+        case noData
         case failed
     }
 
@@ -219,6 +224,7 @@ private extension MarketsHistoryChartViewModel.ViewState {
              .loaded(let data as LineChartViewData?):
             return data
         case .idle,
+             .noData,
              .failed:
             return nil
         }

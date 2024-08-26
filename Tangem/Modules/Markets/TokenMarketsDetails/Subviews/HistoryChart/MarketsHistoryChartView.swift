@@ -21,6 +21,8 @@ struct MarketsHistoryChartView: View {
                     makeLoadingView(for: previousData)
                 case .loaded(let chartData):
                     makeChartView(for: chartData)
+                case .noData:
+                    noDataView
                 case .failed:
                     // No need to add state for button, because view will switch to loading state and remove this view
                     MarketsUnableToLoadDataView(isButtonBusy: false, retryButtonAction: viewModel.reload)
@@ -38,6 +40,12 @@ struct MarketsHistoryChartView: View {
     private var standaloneLoadingView: some View {
         ProgressView()
             .progressViewStyle(.circular)
+    }
+
+    @ViewBuilder
+    private var noDataView: some View {
+        Text(Localization.marketsLoadingNoDataTitle)
+            .style(Fonts.Bold.caption1.weight(.medium), color: Colors.Text.tertiary)
     }
 
     @ViewBuilder

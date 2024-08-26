@@ -15,7 +15,7 @@ struct TokenMarketsHistoryChartMapper {
             .prices
             .map { key, value in
                 guard let timeStamp = UInt64(key) else {
-                    throw ParsingError.xAxisInvalidData
+                    throw ParsingError.timeStampParsingFailed
                 }
 
                 return LineChartViewData.Value(timeStamp: timeStamp, price: value)
@@ -32,13 +32,13 @@ struct TokenMarketsHistoryChartMapper {
         // both `LineChartViewData.XAxis` and `LineChartViewData.Trend`
         let values = try mapAndSortValues(from: model)
 
-        guard
-            let firstValue = values.first,
-            let lastValue = values.last
-        else {
-            throw ParsingError.xAxisInvalidData
+        guard values.count > 1 else {
+            throw ParsingError.notEnoughData
         }
 
+        // Index-based access is safe here due to a guard check above
+        let firstValue = values[0]
+        let lastValue = values[values.count - 1]
         let startTimeStamp = Decimal(firstValue.timeStamp)
         let endTimeStamp = Decimal(lastValue.timeStamp)
         let range = endTimeStamp - startTimeStamp
@@ -66,12 +66,13 @@ struct TokenMarketsHistoryChartMapper {
     ) throws -> LineChartViewData.YAxis {
         let prices = model.prices
 
-        guard
-            var minYAxisValue = prices.first?.value,
-            var maxYAxisValue = prices.first?.value
-        else {
-            throw ParsingError.yAxisInvalidData
+        guard prices.count > 1 else {
+            throw ParsingError.notEnoughData
         }
+
+        // Force unwrap is safe here due to a guard check above
+        var minYAxisValue = prices.first!.value
+        var maxYAxisValue = minYAxisValue
 
         // A single foreach loop is used for performance reasons
         for (_, value) in prices {
@@ -134,7 +135,7 @@ extension TokenMarketsHistoryChartMapper {
 
 extension TokenMarketsHistoryChartMapper {
     enum ParsingError: Error {
-        case xAxisInvalidData
-        case yAxisInvalidData
+        case notEnoughData
+        case timeStampParsingFailed
     }
 }
