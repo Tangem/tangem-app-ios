@@ -41,4 +41,11 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
     var quote: TokenQuote? { walletModel.quote }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
+
+    var isStaked: Bool {
+        switch walletModel.stakingManagerState {
+        case .staked: true
+        case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
+        }
+    }
 }
