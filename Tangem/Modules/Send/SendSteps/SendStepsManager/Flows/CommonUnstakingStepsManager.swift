@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class CommonUnstakingStepsManager {
     private let provider: UnstakingModelStateProvider
@@ -33,21 +34,27 @@ class CommonUnstakingStepsManager {
     }
 
     private func bind() {
-        provider.state
+        provider.statePublisher
             .withWeakCaptureOf(self)
             .sink { manager, state in
-                switch state {
-                case .unstaking:
-                    manager.output?.update(flowActionType: .unstake)
-
-                case .withdraw:
-                    manager.output?.update(flowActionType: .withdraw)
-
-                case .claim:
-                    manager.output?.update(flowActionType: .claimRewards)
-                }
+                manager.updateAction(state: state)
             }
             .store(in: &bag)
+    }
+
+    private func updateAction(state: UnstakingModel.State) {
+        switch state.action.type {
+        case .unstake:
+            output?.update(flowActionType: .unstake)
+        case .pending(.withdraw):
+            output?.update(flowActionType: .withdraw)
+        case .pending(.claimRewards):
+            output?.update(flowActionType: .claimRewards)
+        case .pending(.restakeRewards):
+            output?.update(flowActionType: .restakeRewards)
+        case .stake:
+            assertionFailure("Doesn't support in UnstakingFlow")
+        }
     }
 
     private func next(step: SendStep) {
@@ -79,6 +86,9 @@ extension CommonUnstakingStepsManager: SendStepsManager {
 
     func set(output: SendStepsManagerOutput) {
         self.output = output
+
+        // Update action on UI to avoid animation jumping
+        updateAction(state: provider.state)
     }
 
     func performBack() {

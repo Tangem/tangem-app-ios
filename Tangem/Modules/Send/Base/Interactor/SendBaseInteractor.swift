@@ -11,9 +11,10 @@ import Combine
 import BlockchainSdk
 
 protocol SendBaseInteractor {
-    var isLoading: AnyPublisher<Bool, Never> { get }
+    var actionInProcessing: AnyPublisher<Bool, Never> { get }
 
-    func send() async throws -> SendTransactionDispatcherResult
+    func action() async throws -> SendTransactionDispatcherResult
+
     func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
     func makeDataForExpressApproveViewModel() -> (settings: ExpressApproveViewModel.Settings, approveViewModelInput: ApproveViewModelInput)?
 }
@@ -42,12 +43,12 @@ class CommonSendBaseInteractor {
 }
 
 extension CommonSendBaseInteractor: SendBaseInteractor {
-    var isLoading: AnyPublisher<Bool, Never> {
-        input.isLoading
+    var actionInProcessing: AnyPublisher<Bool, Never> {
+        input.actionInProcessing
     }
 
-    func send() async throws -> SendTransactionDispatcherResult {
-        try await output.sendTransaction()
+    func action() async throws -> SendTransactionDispatcherResult {
+        try await output.performAction()
     }
 
     func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {

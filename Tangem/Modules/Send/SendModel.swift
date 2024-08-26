@@ -312,11 +312,11 @@ extension SendModel: SendBaseInput, SendBaseOutput {
         _isFeeIncluded.value
     }
 
-    var isLoading: AnyPublisher<Bool, Never> {
+    var actionInProcessing: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
     }
 
-    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> SendTransactionDispatcherResult {
         _isSending.send(true)
         defer { _isSending.send(false) }
 

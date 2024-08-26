@@ -10,6 +10,7 @@ import Combine
 import BlockchainSdk
 import TangemFoundation
 import TangemStaking
+import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
@@ -24,6 +25,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
     @Published var actionButtonType: ActionButtonType?
+    @Published var actionSheet: ActionSheetBinder?
 
     // MARK: - Dependencies
 
@@ -242,7 +244,7 @@ private extension StakingDetailsViewModel {
             rewardViewData = RewardViewData(
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                        self?.openUnstakingFlow(balance: balance)
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -291,7 +293,7 @@ private extension StakingDetailsViewModel {
                 return nil
             case .active, .withdraw:
                 return { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                    self?.openUnstakingFlow(balance: balance)
                 }
             }
         }()
@@ -318,6 +320,24 @@ private extension StakingDetailsViewModel {
 
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
+    }
+
+    func openUnstakingFlow(balance: StakingBalanceInfo) {
+        switch PendingActionMapper(balanceInfo: balance).getAction() {
+        case .none:
+            break
+        case .single(let action):
+            coordinator?.openUnstakingFlow(action: action)
+        case .multiple(let actions):
+            var buttons: [Alert.Button] = actions.map { action in
+                .default(Text(action.type.title)) { [weak self] in
+                    self?.coordinator?.openUnstakingFlow(action: action)
+                }
+            }
+
+            buttons.append(.cancel())
+            actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+        }
     }
 
     func shouldShowMinimumRequirement() -> Bool {
@@ -398,6 +418,18 @@ private extension BalanceType {
             return true
         case .warmup, .active, .rewards:
             return false
+        }
+    }
+}
+
+extension StakingAction.ActionType {
+    var title: String {
+        switch self {
+        case .stake: Localization.commonStake
+        case .unstake: Localization.commonUnstake
+        case .pending(.withdraw): Localization.stakingWithdraw
+        case .pending(.claimRewards): Localization.commonClaimRewards
+        case .pending(.restakeRewards): Localization.stakingRestakeRewards
         }
     }
 }

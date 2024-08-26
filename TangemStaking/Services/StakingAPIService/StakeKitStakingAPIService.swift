@@ -29,8 +29,8 @@ class StakeKitStakingAPIService: StakingAPIService {
         try await _request(target: .enabledYields)
     }
 
-    func getYield(request: StakeKitDTO.Yield.Info.Request) async throws -> StakeKitDTO.Yield.Info.Response {
-        try await _request(target: .getYield(request))
+    func getYield(id: String, request: StakeKitDTO.Yield.Info.Request) async throws -> StakeKitDTO.Yield.Info.Response {
+        try await _request(target: .getYield(id: id, request))
     }
 
     func getBalances(request: StakeKitDTO.Balances.Request) async throws -> [StakeKitDTO.Balances.Response] {
