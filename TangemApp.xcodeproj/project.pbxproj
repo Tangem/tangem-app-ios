@@ -581,8 +581,6 @@
 		B0C4F77D26F0BFF90086D815 /* OnboardingMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C4F77C26F0BFF90086D815 /* OnboardingMessagesView.swift */; };
 		B0C4F77F26F0C0BF0086D815 /* TransitionWithoutOpacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C4F77E26F0C0BF0086D815 /* TransitionWithoutOpacity.swift */; };
 		B0C4F78126F0CCF70086D815 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C4F78026F0CCF70086D815 /* OnboardingStep.swift */; };
-		B0C5BF4E2A31B037005AE2BD /* BalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5BF4D2A31B037005AE2BD /* BalanceProvider.swift */; };
-		B0C5BF502A31B050005AE2BD /* ActionButtonsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5BF4F2A31B050005AE2BD /* ActionButtonsProvider.swift */; };
 		B0C616642AFBA56E00ABADF0 /* ThemeSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C616632AFBA56E00ABADF0 /* ThemeSelectionViewModel.swift */; };
 		B0C616682AFBA58E00ABADF0 /* ThemeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C616672AFBA58E00ABADF0 /* ThemeSelectionView.swift */; };
 		B0C6B4C326CE678900FA990B /* CGSize+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4C226CE678900FA990B /* CGSize+.swift */; };
@@ -1716,6 +1714,7 @@
 		EFE8C70E2C77388A0067CF2E /* MultipleRewardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE8C7092C77388A0067CF2E /* MultipleRewardsView.swift */; };
 		EFE8C70F2C77388A0067CF2E /* MultipleRewardsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE8C70A2C77388A0067CF2E /* MultipleRewardsViewModel.swift */; };
 		EFE8C7102C77388A0067CF2E /* MultipleRewardsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE8C70B2C77388A0067CF2E /* MultipleRewardsRoutable.swift */; };
+		EFEB07C12C7CDFBC00E88352 /* WalletModel+Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEB07C02C7CDFBC00E88352 /* WalletModel+Balance.swift */; };
 		EFEBCE2B29265CF300B0C886 /* TokenIconInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEBCE2A29265CF300B0C886 /* TokenIconInfo.swift */; };
 		EFEE22BA2BFCE3D10099917E /* WithdrawalNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE22B92BFCE3D10099917E /* WithdrawalNotificationEvent.swift */; };
 		EFEE22BC2BFCE44B0099917E /* ValidationErrorEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE22BB2BFCE44B0099917E /* ValidationErrorEvent.swift */; };
@@ -2522,8 +2521,6 @@
 		B0C4F77C26F0BFF90086D815 /* OnboardingMessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingMessagesView.swift; sourceTree = "<group>"; };
 		B0C4F77E26F0C0BF0086D815 /* TransitionWithoutOpacity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionWithoutOpacity.swift; sourceTree = "<group>"; };
 		B0C4F78026F0CCF70086D815 /* OnboardingStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
-		B0C5BF4D2A31B037005AE2BD /* BalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceProvider.swift; sourceTree = "<group>"; };
-		B0C5BF4F2A31B050005AE2BD /* ActionButtonsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsProvider.swift; sourceTree = "<group>"; };
 		B0C616632AFBA56E00ABADF0 /* ThemeSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionViewModel.swift; sourceTree = "<group>"; };
 		B0C616672AFBA58E00ABADF0 /* ThemeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectionView.swift; sourceTree = "<group>"; };
 		B0C6B4C226CE678900FA990B /* CGSize+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+.swift"; sourceTree = "<group>"; };
@@ -3697,6 +3694,7 @@
 		EFE8C7092C77388A0067CF2E /* MultipleRewardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsView.swift; sourceTree = "<group>"; };
 		EFE8C70A2C77388A0067CF2E /* MultipleRewardsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsViewModel.swift; sourceTree = "<group>"; };
 		EFE8C70B2C77388A0067CF2E /* MultipleRewardsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsRoutable.swift; sourceTree = "<group>"; };
+		EFEB07C02C7CDFBC00E88352 /* WalletModel+Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletModel+Balance.swift"; sourceTree = "<group>"; };
 		EFEBCE2A29265CF300B0C886 /* TokenIconInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenIconInfo.swift; sourceTree = "<group>"; };
 		EFEE22B92BFCE3D10099917E /* WithdrawalNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawalNotificationEvent.swift; sourceTree = "<group>"; };
 		EFEE22BB2BFCE44B0099917E /* ValidationErrorEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationErrorEvent.swift; sourceTree = "<group>"; };
@@ -4640,7 +4638,6 @@
 				5DBBAB0924D853A000E78F1C /* Extensions */,
 				5D5332CD25F90DA900D32CA5 /* Formatters */,
 				DC5118672860B36C004FB954 /* Preview */,
-				B0C5BF4C2A31B026005AE2BD /* Providers */,
 				B082E91E255A8E7800A0CEA9 /* Storage */,
 				5DF2522524F914C90015B429 /* TangemSdk */,
 				B06C94CA2A3B70C200D17E85 /* TokenActions */,
@@ -4724,6 +4721,7 @@
 				B012A10E2AA5A6F80079BAB4 /* WalletModel+.swift */,
 				B012A1102AA5A75A0079BAB4 /* WalletModel+State.swift */,
 				EF0DD78F2B026A840099527D /* WalletModel+ExpressWallet.swift */,
+				EFEB07C02C7CDFBC00E88352 /* WalletModel+Balance.swift */,
 			);
 			path = WalletModel;
 			sourceTree = "<group>";
@@ -5979,15 +5977,6 @@
 				B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */,
 			);
 			path = Modifiers;
-			sourceTree = "<group>";
-		};
-		B0C5BF4C2A31B026005AE2BD /* Providers */ = {
-			isa = PBXGroup;
-			children = (
-				B0C5BF4D2A31B037005AE2BD /* BalanceProvider.swift */,
-				B0C5BF4F2A31B050005AE2BD /* ActionButtonsProvider.swift */,
-			);
-			path = Providers;
 			sourceTree = "<group>";
 		};
 		B0C616622AFBA55A00ABADF0 /* ThemeSelection */ = {
@@ -11168,6 +11157,7 @@
 				B03478602B0F6C08004FECA0 /* HighPriceImpactCalculator.swift in Sources */,
 				DA43719E2A7D1937006215CA /* ManageTokensCoinView.swift in Sources */,
 				5D51036B27C534CB0025EA55 /* EIP712TypedData.swift in Sources */,
+				EFEB07C12C7CDFBC00E88352 /* WalletModel+Balance.swift in Sources */,
 				2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */,
 				B080DE572BB3F504001A23BD /* APIListProvider.swift in Sources */,
 				E9C17C5F291951BF00FDE4BC /* AnyPublisher+.swift in Sources */,
@@ -11267,7 +11257,6 @@
 				DA28D57D290AAE2000F0C335 /* ScrollView+.swift in Sources */,
 				DA8C673D2B0B455700E1C9B8 /* DefaultTextWithTitleRowViewData.swift in Sources */,
 				5D69E0E325016A10005CFFF4 /* TapSwitchTogglColoredToggleStyleeStyle.swift in Sources */,
-				B0C5BF502A31B050005AE2BD /* ActionButtonsProvider.swift in Sources */,
 				B05D063229DEA11E0031C6AB /* AccessCodeRecoverySettingsView.swift in Sources */,
 				DC7127AD2897ECA100F60F71 /* TwinConfig.swift in Sources */,
 				EFB932152C3EC18300C999E9 /* StakingValidatorsInputOutput.swift in Sources */,
@@ -11862,7 +11851,6 @@
 				DA559C372B0261F400F59584 /* SendRoutable.swift in Sources */,
 				EF9C52B3287C77A10015D540 /* CardSettingsRoutable.swift in Sources */,
 				B0A884A12A6A5D6300210321 /* WalletConnectWalletModelProvider.swift in Sources */,
-				B0C5BF4E2A31B037005AE2BD /* BalanceProvider.swift in Sources */,
 				EF0F99AD289028F8008B01DF /* AppSettingsView.swift in Sources */,
 				EF09A309297A9B3F00B869A1 /* BottomSheetContainer.swift in Sources */,
 				B053759126CA3EFA0090FCFC /* CheckmarkSwitch.swift in Sources */,
