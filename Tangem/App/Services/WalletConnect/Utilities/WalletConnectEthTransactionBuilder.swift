@@ -28,7 +28,7 @@ struct CommonWalletConnectEthTransactionBuilder {
             // Unfortunately, Mantle's current implementation does not conform to our existing fee calculation rules.
             // https://tangem.slack.com/archives/GMXC6PP71/p1719591856597299?thread_ts=1714215815.690169&cid=GMXC6PP71
             if case .mantle = blockchain {
-                return BigUInt(ceil(Double(dappGasLimit) * 1.6))
+                return MantleUtils.multiplyGasLimit(dappGasLimit, with: MantleUtils.feeGasLimitMultiplier)
             }
             return BigUInt(dappGasLimit)
         }
