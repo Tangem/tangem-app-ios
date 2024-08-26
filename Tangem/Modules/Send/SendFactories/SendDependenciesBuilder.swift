@@ -120,6 +120,10 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeFeeIncludedCalculator() -> FeeIncludedCalculator {
+        FeeIncludedCalculator(validator: walletModel.transactionValidator)
+    }
+
     // MARK: - Send, Sell
 
     func makeSendModel(
@@ -191,7 +195,7 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             transactionValidator: walletModel.transactionValidator,
-            feeIncludedCalculator: .init(validator: walletModel.transactionValidator),
+            feeIncludedCalculator: makeFeeIncludedCalculator(),
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
             stakingTransactionMapper: makeStakingTransactionMapper(),
