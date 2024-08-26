@@ -47,7 +47,10 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .loading:
-            break
+            show(notification: .stake(
+                tokenSymbol: tokenItem.currencySymbol,
+                rewardScheduleType: yield.rewardScheduleType
+            ))
         case .approveTransactionInProgress:
             show(notification: .approveTransactionInProgress)
         case .readyToApprove:
