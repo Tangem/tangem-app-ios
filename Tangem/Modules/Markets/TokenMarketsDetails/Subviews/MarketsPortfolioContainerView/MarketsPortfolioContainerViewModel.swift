@@ -35,16 +35,18 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
-    private var loadableState: LoadableState?
+    private var inputData: InputData
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
 
     init(
+        inputData: InputData,
         walletDataProvider: MarketsWalletDataProvider,
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
+        self.inputData = inputData
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
@@ -58,19 +60,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
-    func loaded(state: LoadableState) {
-        loadableState = state
-        updateUI()
-    }
-
     // MARK: - Private Implementation
 
     private func updateUI() {
-        guard let state = loadableState else { return }
+        updateTokenList()
 
-        updateTokenList(with: state)
-
-        let canAddAvailableNetworks = canAddToPortfolio(with: state.networks)
+        let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
 
         guard canAddAvailableNetworks else {
             typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
@@ -111,7 +106,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return false
     }
 
-    private func updateTokenList(with loadableState: LoadableState) {
+    private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
             contextActionsDelegate: self
@@ -123,8 +118,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
                 let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
-                    coinId: loadableState.coinId,
-                    networks: loadableState.networks,
+                    coinId: inputData.coinId,
+                    networks: inputData.networks,
                     walletModels: walletModels,
                     entries: entries,
                     userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
@@ -208,7 +203,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 }
 
 extension MarketsPortfolioContainerViewModel {
-    struct LoadableState {
+    struct InputData {
         let coinId: String
         let networks: [NetworkModel]
     }
