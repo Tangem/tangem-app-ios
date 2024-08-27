@@ -34,10 +34,10 @@ class StakingModel {
     private let transactionCreator: TransactionCreator
     private let stakingTransactionDispatcher: SendTransactionDispatcher
     private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let stakingTransactionMapper: StakingTransactionMapper
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
-    private let stakingMapper: StakingMapper
 
     private let updateStateSubject = PassthroughSubject<Void, Never>()
 
@@ -51,6 +51,7 @@ class StakingModel {
         transactionCreator: TransactionCreator,
         stakingTransactionDispatcher: SendTransactionDispatcher,
         sendTransactionDispatcher: SendTransactionDispatcher,
+        stakingTransactionMapper: StakingTransactionMapper,
         allowanceProvider: AllowanceProvider,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -58,15 +59,11 @@ class StakingModel {
         self.stakingManager = stakingManager
         self.transactionCreator = transactionCreator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
+        self.stakingTransactionMapper = stakingTransactionMapper
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
         tokenItem = amountTokenItem
         self.feeTokenItem = feeTokenItem
-
-        stakingMapper = StakingMapper(
-            amountTokenItem: amountTokenItem,
-            feeTokenItem: feeTokenItem
-        )
 
         bind()
     }
@@ -238,7 +235,7 @@ private extension StakingModel {
 
         let action = StakingAction(amount: amount, validator: validator.address, type: .stake)
         let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: amount)
+        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: amount)
 
         do {
             let result = try await stakingTransactionDispatcher.send(
@@ -384,11 +381,11 @@ extension StakingModel: SendFinishInput {
 extension StakingModel: SendBaseInput, SendBaseOutput {
     var isFeeIncluded: Bool { false }
 
-    var isLoading: AnyPublisher<Bool, Never> {
+    var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
 
-    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> SendTransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 

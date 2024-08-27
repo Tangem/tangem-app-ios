@@ -55,8 +55,14 @@ private extension CommonStakingNotificationManager {
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo) {
-        switch state {
-        case .unstaking, .withdraw, .claim:
+        switch state.action.type {
+        case .stake:
+            break
+        case .unstake:
+            show(notification: .unstake(
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
+        case .pending(let pendingActionType):
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
@@ -89,7 +95,7 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
 
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
-            provider.state.removeDuplicates(),
+            provider.statePublisher.removeDuplicates(),
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
         )
         .withWeakCaptureOf(self)

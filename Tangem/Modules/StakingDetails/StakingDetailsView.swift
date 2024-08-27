@@ -41,6 +41,7 @@ struct StakingDetailsView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.descriptionBottomSheetInfo,
             backgroundColor: Colors.Background.tertiary

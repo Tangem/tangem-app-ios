@@ -187,13 +187,13 @@ struct SendView: View {
                     style: .primary,
                     size: .default,
                     isLoading: viewModel.mainButtonLoading,
-                    isDisabled: viewModel.mainButtonDisabled,
+                    isDisabled: !viewModel.actionIsAvailable,
                     action: viewModel.userDidTapActionButton
                 )
             }
-            .padding(.top, 8)
-            .padding(.bottom, 14)
         }
+        .padding(.top, 8)
+        .padding(.bottom, 14)
         .padding(.horizontal, 16)
     }
 

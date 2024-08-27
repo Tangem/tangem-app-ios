@@ -44,7 +44,6 @@ struct MarketsTokenDetailsInsightsView: View {
                             firstItemWidth = value
                         }
                     })
-                    .transition(.opacity)
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
@@ -148,10 +147,26 @@ extension MarketsTokenDetailsInsightsView {
         viewModel: .init(
             tokenSymbol: "BTC",
             insights: .init(dto: MarketsDTO.Coins.Insights(
-                holdersChange: [:],
-                liquidityChange: [:],
-                buyPressureChange: [:],
-                experiencedBuyerChange: [:],
+                holdersChange: [
+                    "24h": nil,
+                    "1w": 0,
+                    "1m": nil,
+                ],
+                liquidityChange: [
+                    "24h": -5704467.269745085,
+                    "1w": -5714908.849255774,
+                    "1m": -5714908.849255774,
+                ],
+                buyPressureChange: [
+                    "24h": 1379091.5783956223,
+                    "1w": -334647.79027640104,
+                    "1m": -4501466.504872012,
+                ],
+                experiencedBuyerChange: [
+                    "24h": 0,
+                    "1w": nil,
+                    "1m": nil,
+                ],
                 networks: nil
             ))!,
             insightsPublisher: insights,

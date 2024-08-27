@@ -192,19 +192,21 @@ struct SendDependenciesBuilder {
             transactionCreator: walletModel.transactionCreator,
             stakingTransactionDispatcher: stakingTransactionDispatcher,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            stakingTransactionMapper: makeStakingTransactionMapper(),
             allowanceProvider: makeAllowanceProvider(),
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
 
-    func makeUnstakingModel(stakingManager: any StakingManager, balanceInfo: StakingBalanceInfo) -> UnstakingModel {
+    func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
         let stakingTransactionDispatcher = makeStakingTransactionDispatcher()
 
         return UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: stakingTransactionDispatcher,
-            balanceInfo: balanceInfo,
+            stakingTransactionMapper: makeStakingTransactionMapper(),
+            action: action,
             amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
@@ -228,5 +230,12 @@ struct SendDependenciesBuilder {
 
     func makeAllowanceProvider() -> AllowanceProvider {
         CommonAllowanceProvider(walletModel: walletModel)
+    }
+
+    func makeStakingTransactionMapper() -> StakingTransactionMapper {
+        StakingTransactionMapper(
+            amountTokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
     }
 }
