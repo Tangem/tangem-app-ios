@@ -96,10 +96,11 @@ struct SendDependenciesBuilder {
     }
 
     func makeSendTransactionDispatcher() -> SendTransactionDispatcher {
-        CommonSendTransactionDispatcher(
+        SendTransactionDispatcherFactory(
             walletModel: walletModel,
-            transactionSigner: userWalletModel.signer
+            signer: userWalletModel.signer
         )
+        .makeSendDispatcher()
     }
 
     func makeStakingTransactionDispatcher() -> SendTransactionDispatcher {
