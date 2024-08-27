@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CombineExt
 import BlockchainSdk
 import TangemVisa
 
@@ -50,6 +51,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
     @Published var isAppStoreReviewRequested = false
     private var safariHandle: SafariHandle?
+    private var pushNotificationsViewModelSubscription: AnyCancellable?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -73,6 +75,23 @@ class MainCoordinator: CoordinatorObject {
 
         swipeDiscoveryHelper.delegate = viewModel
         mainViewModel = viewModel
+        bind()
+    }
+
+    private func bind() {
+        guard pushNotificationsViewModelSubscription == nil else {
+            return
+        }
+
+        pushNotificationsViewModelSubscription = $pushNotificationsViewModel
+            .pairwise()
+            .filter { previous, current in
+                // Transition from a non-nil value to a nil value, i.e. dismissing the sheet
+                previous != nil && current == nil
+            }
+            .sink { previous, _ in
+                previous?.didDismissSheet()
+            }
     }
 }
 
