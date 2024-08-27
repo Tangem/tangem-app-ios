@@ -21,7 +21,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
-    @Published var quickActions: [TokenActionType] = []
 
     // MARK: - Private Properties
 
@@ -131,7 +130,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 partialResult.append(contentsOf: viewModels)
             }
 
-        quickActions = makeQuickActions()
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
 
@@ -146,12 +144,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
-
-    private func makeQuickActions() -> [TokenActionType] {
-        let targetActions = tokenItemViewModels.count == 1 ? [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy] : []
-        let filteredActions = tokenItemViewModels.first?.contextActions.filter { targetActions.contains($0) }
-        return filteredActions ?? []
-    }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
@@ -161,7 +153,9 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
         }
 
         let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
-        return actions
+        let targetActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
+
+        return actions.filter { targetActions.contains($0) }
     }
 }
 

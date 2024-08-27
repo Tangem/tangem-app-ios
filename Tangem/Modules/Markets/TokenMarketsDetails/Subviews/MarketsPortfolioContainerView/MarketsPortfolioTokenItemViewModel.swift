@@ -23,6 +23,8 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
 
+    @Published var isExpandedQuickActions: Bool = false
+
     var id: Int {
         hashValue
     }

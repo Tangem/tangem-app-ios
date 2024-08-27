@@ -52,7 +52,7 @@ struct MarketsPortfolioQuickActionsView: View {
                 .resizable()
                 .frame(size: .init(bothDimensions: 20))
                 .foregroundStyle(Colors.Icon.primary1)
-                .padding(12)
+                .padding(6)
                 .background(
                     Circle()
                         .fill(Colors.Background.tertiary)
