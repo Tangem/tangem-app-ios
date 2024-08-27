@@ -129,6 +129,8 @@ private extension SendViewModel {
                 let result = try await viewModel.interactor.send()
                 await viewModel.proceed(result: result)
             } catch let error as SendTransactionDispatcherResult.Error {
+                // The demo alert doesn't show without delay
+                try? await Task.sleep(seconds: 1)
                 await viewModel.proceed(error: error)
             } catch {
                 AppLog.shared.error(error)
