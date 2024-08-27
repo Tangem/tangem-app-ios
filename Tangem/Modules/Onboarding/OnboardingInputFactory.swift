@@ -105,7 +105,7 @@ class OnboardingInputFactory {
 
 class TwinInputFactory {
     private let cardInput: OnboardingInput.CardInput
-    private let userWalletToDelete: UserWalletId? // Delete on retwin
+    private let userWalletToDelete: UserWalletId? // We have to delete the userwallet during retwin
     private let twinData: TwinData
     private let sdkFactory: TangemSdkFactory & BackupServiceFactory
     private let firstCardId: String

@@ -25,8 +25,8 @@ class ManageTokensCoinItemViewModel: Identifiable, ObservableObject {
     var imageNameSelected: String { tokenItem.blockchain.iconNameFilled }
     var networkName: String { tokenItem.blockchain.displayName }
     var contractName: String? { tokenItem.contractName }
-    var networkNameForegroundColor: Color { selectedPublisher ? Colors.Old.tangemGrayDark6 : Color(name: "manage_tokens_network_name") }
-    var contractNameForegroundColor: Color { tokenItem.isBlockchain ? Colors.Text.accent : Color(name: "manage_tokens_contract_name") }
+    var networkNameForegroundColor: Color { selectedPublisher ? Colors.Old.tangemGrayDark6 : Colors.Old.manageTokensNetworkName }
+        var contractNameForegroundColor: Color { tokenItem.isBlockchain ? Colors.Text.accent : Colors.Old.manageTokensContractName }
     var hasContextMenu: Bool { tokenItem.isToken }
 
     private var bag = Set<AnyCancellable>()

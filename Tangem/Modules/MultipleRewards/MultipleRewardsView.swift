@@ -30,6 +30,7 @@ struct MultipleRewardsView: View {
                         .foregroundColor(Colors.Text.primary1)
                 }
             }
+            .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         }
     }
 }

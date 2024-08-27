@@ -63,13 +63,18 @@ extension TokenMarketsDetailsCoordinator {
 }
 
 extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
-    func openTokenSelector(with coinModel: CoinModel, with walletDataProvider: MarketsWalletDataProvider) {
+    func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenNetworkSelectorCoordinator = nil
         }
 
         tokenNetworkSelectorCoordinator = MarketsTokenNetworkSelectorCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        tokenNetworkSelectorCoordinator?.start(with: .init(coinModel: coinModel, walletDataProvider: walletDataProvider))
+        tokenNetworkSelectorCoordinator?.start(
+            with: .init(
+                inputData: .init(coinId: model.id, coinName: model.name, coinSymbol: model.symbol, networks: model.availableNetworks),
+                walletDataProvider: walletDataProvider
+            )
+        )
     }
 
     func openURL(_ url: URL) {
