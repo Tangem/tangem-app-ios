@@ -80,7 +80,7 @@ struct ValidatorView: View {
             if case .balance(let balance, _) = data.detailsType {
                 Spacer(minLength: 4)
 
-                Text(balance.fiatBalance)
+                Text(balance.fiat)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             }
         }
@@ -98,7 +98,7 @@ struct ValidatorView: View {
                 if case .balance(let balance, _) = data.detailsType {
                     Spacer(minLength: 4)
 
-                    Text(balance.balance)
+                    Text(balance.crypto)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
             }
@@ -168,7 +168,7 @@ extension ValidatorView {
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                         subtitleType: .active(apr: "0.08%"),
-                        detailsType: .balance(BalanceInfo(balance: "543 USD", fiatBalance: "5 SOL"), action: nil)
+                        detailsType: .balance(.init(crypto: "543 USD", fiat: "5 SOL"), action: nil)
                     ),
                 ]) {
                     ValidatorView(data: $0, selection: $selected)

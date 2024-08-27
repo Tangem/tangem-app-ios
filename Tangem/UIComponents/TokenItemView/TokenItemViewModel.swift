@@ -29,6 +29,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
     @Published var contextActions: [TokenActionType] = []
+    @Published var isStaked: Bool = false
 
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
@@ -129,6 +130,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             networkUnreachable = false
             updateBalances()
             updatePriceChange()
+            updateIsStaked()
         case .loading:
             break
         }
@@ -161,5 +163,9 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
     private func buildContextActions() {
         contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+    }
+
+    private func updateIsStaked() {
+        isStaked = infoProvider.isStaked
     }
 }

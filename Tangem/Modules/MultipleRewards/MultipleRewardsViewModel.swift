@@ -92,12 +92,9 @@ private extension MultipleRewardsViewModel {
             name: validator.name,
             imageURL: validator.iconURL,
             subtitleType: subtitleType,
-            detailsType: .balance(
-                BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
-                action: { [weak self] in
-                    self?.openUnstakingFlow(balance: balance)
-                }
-            )
+            detailsType: .balance(.init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)) { [weak self] in
+                self?.openUnstakingFlow(balance: balance)
+            }
         )
     }
 
