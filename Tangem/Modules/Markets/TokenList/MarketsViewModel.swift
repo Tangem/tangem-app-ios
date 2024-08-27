@@ -166,10 +166,10 @@ private extension MarketsViewModel {
                     return
                 }
 
-                // If the sorting value has not changed, and order filter for losers or gainers, the order of the list may also change.
+                // If the sorting value has not changed, and order filter for losers or gainers or buyers, the order of the list may also change.
                 // Otherwise, we just get new charts for a given interval.
                 // The charts will also be updated when the list is updated
-                if value.order == .losers || value.order == .gainers {
+                if Constants.filterRequiredReloadInterval.contains(value.order) {
                     viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
                 } else {
                     viewModel.chartsHistoryProvider.fetch(
@@ -382,6 +382,7 @@ extension MarketsViewModel: MarketsListStateUpdater {
 private extension MarketsViewModel {
     enum Constants {
         static let marketCapThreshold: Decimal = 100_000.0
+        static let filterRequiredReloadInterval: Set<MarketsListOrderType> = [.buyers, .gainers, .losers]
     }
 }
 
