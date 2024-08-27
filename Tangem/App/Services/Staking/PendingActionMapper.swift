@@ -40,7 +40,7 @@ struct PendingActionMapper {
     }
 
     private func stakingAction(type: StakingAction.ActionType) -> StakingAction {
-        StakingAction(amount: balanceInfo.amount, validator: balanceInfo.validatorAddress, type: type)
+        StakingAction(amount: balanceInfo.amount, validator: balanceInfo.validatorAddress!, type: type)
     }
 }
 

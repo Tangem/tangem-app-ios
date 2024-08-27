@@ -25,6 +25,7 @@ extension SendTransactionDispatcherResult {
         case informationRelevanceServiceError
         case informationRelevanceServiceFeeWasIncreased
 
+        case resultNotFound
         case transactionNotFound
         case userCancelled
         case sendTxError(transaction: SendTransactionType, error: SendTxError)

@@ -27,7 +27,7 @@ extension StakeKitDTO {
                 let pricePerShare: String
                 let pendingActions: [PendingAction]
                 let token: Token
-                let validatorAddress: String
+                let validatorAddress: String?
                 let validatorAddresses: [String]?
                 let providerId: String?
 

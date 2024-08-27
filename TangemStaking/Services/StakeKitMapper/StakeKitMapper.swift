@@ -16,6 +16,8 @@ struct StakeKitMapper {
         case .withdraw: .withdraw
         case .claimRewards: .claimRewards
         case .restakeRewards: .restakeRewards
+        case .voteLocked: .voteLocked
+        case .unlockLocked: .unlockLocked
         }
     }
 
@@ -36,6 +38,10 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
         }
 
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
+        }
+
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
             try ActionTransaction(
                 id: transaction.id,
@@ -48,6 +54,7 @@ struct StakeKitMapper {
         return try EnterAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -56,6 +63,10 @@ struct StakeKitMapper {
     func mapToExitAction(from response: StakeKitDTO.Actions.Exit.Response) throws -> ExitAction {
         guard let transactions = response.transactions, !transactions.isEmpty else {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
         }
 
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
@@ -70,6 +81,7 @@ struct StakeKitMapper {
         return try ExitAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -78,6 +90,10 @@ struct StakeKitMapper {
     func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
         guard let transactions = response.transactions, !transactions.isEmpty else {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
         }
 
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
@@ -92,6 +108,7 @@ struct StakeKitMapper {
         return try PendingAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -144,7 +161,7 @@ struct StakeKitMapper {
                 item: mapToStakingTokenItem(from: balance.token),
                 amount: amount,
                 balanceType: mapToBalanceType(from: balance),
-                validatorAddress: balance.validatorAddress,
+                validatorAddress: balance.validatorAddress ?? balance.validatorAddresses?.first,
                 actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
         }
@@ -159,6 +176,10 @@ struct StakeKitMapper {
                 return .claimRewards(passthrough: action.passthrough)
             case .restakeRewards:
                 return .restakeRewards(passthrough: action.passthrough)
+            case .voteLocked, .revote:
+                return .voteLocked(passthrough: action.passthrough)
+            case .unlockLocked:
+                return .unlockLocked(passthrough: action.passthrough)
             default:
                 throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
@@ -219,6 +240,9 @@ struct StakeKitMapper {
         case .withdraw: .withdraw
         case .claimRewards: .claimRewards
         case .restakeRewards: .restakeRewards
+        // Tron specific types
+        case .freezeEnergy, .vote: .stake
+        case .unlock, .unfreezeEnergy: .unstake
         default:
             throw StakeKitMapperError.notImplement
         }

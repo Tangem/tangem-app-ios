@@ -15,17 +15,20 @@ class StakingTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TransactionSigner
     private let pendingHashesSender: StakingPendingHashesSender
+    private let stakingTransactionMapper: StakingTransactionMapper
 
-    private var transactionSentResult: TransactionSentResult?
+    private var transactionSentResult: [TransactionSentResult] = []
 
     init(
         walletModel: WalletModel,
         transactionSigner: TransactionSigner,
-        pendingHashesSender: StakingPendingHashesSender
+        pendingHashesSender: StakingPendingHashesSender,
+        stakingTransactionMapper: StakingTransactionMapper
     ) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.pendingHashesSender = pendingHashesSender
+        self.stakingTransactionMapper = stakingTransactionMapper
     }
 }
 
@@ -33,28 +36,31 @@ class StakingTransactionDispatcher {
 
 extension StakingTransactionDispatcher: SendTransactionDispatcher {
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
-        guard case .staking(let transactionId, let stakeKitTransaction) = transaction else {
+        guard case .staking(let action) = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
 
         let mapper = SendTransactionMapper()
 
         do {
-            if let transactionSentResult {
-                return try await sendHash(result: transactionSentResult)
+            if let cachedResult = try await sendCachedResultIfNeeded() {
+                return cachedResult
             }
 
-            let result = try await sendStakeKit(transaction: stakeKitTransaction)
-            let sentResult = TransactionSentResult(id: transactionId, result: result)
-            // Save it if `sendHash` will failed
-            transactionSentResult = sentResult
+            let transactions = stakingTransactionMapper.mapToStakeKitTransactions(action: action)
+            let results = try await sendStakeKit(transactions: transactions)
+            assert(action.transactions.count == results.count)
 
-            let dispatcherResult = try await sendHash(result: sentResult)
+            transactionSentResult = action.transactions.indexed().map { index, transaction in
+                TransactionSentResult(id: transaction.id, result: results[index])
+            }
 
-            // Clear after success tx was successfully sent
-            transactionSentResult = nil
+            if let cachedResult = try await sendCachedResultIfNeeded() {
+                return cachedResult
+            }
 
-            return dispatcherResult
+            throw SendTransactionDispatcherResult.Error.resultNotFound
+
         } catch {
             throw mapper.mapError(error, transaction: transaction)
         }
@@ -64,6 +70,24 @@ extension StakingTransactionDispatcher: SendTransactionDispatcher {
 // MARK: - Private
 
 private extension StakingTransactionDispatcher {
+    func sendCachedResultIfNeeded() async throws -> SendTransactionDispatcherResult? {
+        guard !transactionSentResult.isEmpty else {
+            return nil
+        }
+
+        var dispatcherResult: SendTransactionDispatcherResult?
+        for result in transactionSentResult {
+            dispatcherResult = try await sendHash(result: result)
+            transactionSentResult.removeAll(where: { $0.id == result.id })
+        }
+
+        guard let dispatcherResult else {
+            throw SendTransactionDispatcherResult.Error.resultNotFound
+        }
+
+        return dispatcherResult
+    }
+
     func stakeKitTransactionSender() throws -> StakeKitTransactionSender {
         guard let stakeKitTransactionSender = walletModel.stakeKitTransactionSender else {
             throw SendTransactionDispatcherResult.Error.stakingUnsupported
@@ -72,10 +96,15 @@ private extension StakingTransactionDispatcher {
         return stakeKitTransactionSender
     }
 
-    func sendStakeKit(transaction: StakeKitTransaction) async throws -> TransactionSendResult {
-        let result = try await stakeKitTransactionSender()
-            .sendStakeKit(transaction: transaction, signer: transactionSigner)
-            .async()
+    func sendStakeKit(transactions: [StakeKitTransaction]) async throws -> [TransactionSendResult] {
+        let sender = try stakeKitTransactionSender()
+        let result: [TransactionSendResult]
+
+        if transactions.count == 1, let tx = transactions.first {
+            result = try await sender.sendStakeKit(.single(tx), signer: transactionSigner)
+        } else {
+            result = try await sender.sendStakeKit(.multiple(transactions), signer: transactionSigner)
+        }
 
         walletModel.updateAfterSendingTransaction()
         return result

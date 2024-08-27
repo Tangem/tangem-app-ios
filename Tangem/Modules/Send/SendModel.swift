@@ -194,7 +194,8 @@ private extension SendModel {
              .transactionNotFound,
              .demoAlert,
              .userCancelled,
-             .stakingUnsupported:
+             .stakingUnsupported,
+             .resultNotFound:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
