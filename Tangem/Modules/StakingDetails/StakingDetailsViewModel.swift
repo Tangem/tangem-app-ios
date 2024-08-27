@@ -13,6 +13,8 @@ import TangemStaking
 import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
@@ -133,6 +135,7 @@ private extension StakingDetailsViewModel {
             actionButtonType = .stake
         case .staked(let staked):
             setupView(yield: staked.yieldInfo, balances: staked.balances)
+            stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
@@ -337,7 +340,7 @@ private extension StakingDetailsViewModel {
         return StakingDetailsStakeViewData(
             title: title,
             icon: icon,
-            inProgress: false,
+            inProgress: stakingPendingTransactionsRepository.hasPending(balance: balance),
             subtitleType: subtitle,
             balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
             action: action
