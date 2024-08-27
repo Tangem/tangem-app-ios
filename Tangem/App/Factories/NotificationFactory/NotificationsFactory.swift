@@ -38,101 +38,23 @@ struct NotificationsFactory {
         )
     }
 
-    func buildNotificationInput(
-        for event: TokenNotificationEvent,
+    func buildNotificationInput<Event: NotificationEvent>(
+        for event: Event,
         buttonAction: NotificationView.NotificationButtonTapAction? = nil,
         dismissAction: NotificationView.NotificationAction? = nil
     ) -> NotificationViewInput {
         return .init(
-            style: tokenNotificationStyle(for: event, action: buttonAction),
+            style: notificationStyle(for: event, action: buttonAction),
             severity: event.severity,
             settings: .init(event: event, dismissAction: dismissAction)
         )
     }
 
-    func buildNotificationInput(
-        for event: ExpressNotificationEvent,
-        buttonAction: NotificationView.NotificationButtonTapAction? = nil
-    ) -> NotificationViewInput {
-        return .init(
-            style: expressNotificationStyle(for: event, action: buttonAction),
-            severity: event.severity,
-            settings: .init(event: event, dismissAction: nil)
-        )
-    }
-
-    func buildNotificationInput(
-        for event: VisaNotificationEvent
-    ) -> NotificationViewInput {
-        return .init(
-            style: .plain,
-            severity: event.severity,
-            settings: .init(event: event, dismissAction: nil)
-        )
-    }
-
-    func buildNotificationInput(
-        for event: SendNotificationEvent,
-        buttonAction: NotificationView.NotificationButtonTapAction?,
-        dismissAction: @escaping NotificationView.NotificationAction
-    ) -> NotificationViewInput {
-        return .init(
-            style: sendNotificationStyle(for: event, action: buttonAction),
-            severity: event.severity,
-            settings: .init(event: event, dismissAction: dismissAction)
-        )
-    }
-
-    func buildNotificationInput(
-        for event: StakingNotificationEvent
-    ) -> NotificationViewInput {
-        return .init(
-            style: .plain,
-            severity: event.severity,
-            settings: .init(event: event, dismissAction: nil)
-        )
-    }
-
-    private func tokenNotificationStyle(
-        for event: TokenNotificationEvent,
+    private func notificationStyle<Event: NotificationEvent>(
+        for event: Event,
         action: NotificationView.NotificationButtonTapAction?
     ) -> NotificationView.Style {
-        guard
-            let action,
-            let actionType = event.buttonAction
-        else {
-            return .plain
-        }
-
-        return .withButtons([
-            .init(action: action, actionType: actionType, isWithLoader: false),
-        ])
-    }
-
-    private func expressNotificationStyle(
-        for event: ExpressNotificationEvent,
-        action: NotificationView.NotificationButtonTapAction?
-    ) -> NotificationView.Style {
-        guard
-            let action,
-            let actionType = event.buttonActionType
-        else {
-            return .plain
-        }
-
-        return .withButtons([
-            .init(action: action, actionType: actionType, isWithLoader: event.isWithLoader),
-        ])
-    }
-
-    private func sendNotificationStyle(
-        for event: SendNotificationEvent,
-        action: NotificationView.NotificationButtonTapAction?
-    ) -> NotificationView.Style {
-        guard
-            let action,
-            let actionType = event.buttonActionType
-        else {
+        guard let action, let actionType = event.buttonActionType else {
             return .plain
         }
 

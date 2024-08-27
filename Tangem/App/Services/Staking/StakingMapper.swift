@@ -1,5 +1,5 @@
 //
-//  StakingMapper.swift
+//  StakingTransactionMapper.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 08.08.2024.
@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 import TangemStaking
 
-struct StakingMapper {
+struct StakingTransactionMapper {
     private let amountTokenItem: TokenItem
     private let feeTokenItem: TokenItem
 

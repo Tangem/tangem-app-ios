@@ -28,7 +28,7 @@ class MarketsTokenNetworkSelectorCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         rootViewModel = MarketsTokensNetworkSelectorViewModel(
-            coinModel: options.coinModel,
+            data: options.inputData,
             walletDataProvider: options.walletDataProvider,
             coordinator: self
         )
@@ -37,7 +37,7 @@ class MarketsTokenNetworkSelectorCoordinator: CoordinatorObject {
 
 extension MarketsTokenNetworkSelectorCoordinator {
     struct Options {
-        let coinModel: CoinModel
+        let inputData: MarketsTokensNetworkSelectorViewModel.InputData
         let walletDataProvider: MarketsWalletDataProvider
     }
 }

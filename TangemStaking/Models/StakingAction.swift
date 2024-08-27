@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct StakingAction {
+public struct StakingAction: Hashable {
     public let amount: Decimal
     public let validator: String
     public let type: ActionType
