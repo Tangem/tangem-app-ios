@@ -380,7 +380,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         CardImageProvider()
             .loadTwinImage(for: twinCardSeries.pair.number)
             .map { $0.image }
-            .zip($cardImage.compactMap { $0 })
+            .zip($mainImage.compactMap { $0 })
             .receive(on: DispatchQueue.main)
             .sink { [weak self] paired, main in
                 guard let self = self else { return }

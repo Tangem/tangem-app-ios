@@ -93,6 +93,15 @@ final class SingleTokenNotificationManager {
             )
         }
 
+        /// We can't use `Blockchain.polygon(testnet: false).currencySymbol` here
+        /// because it will be changed after some time to `"POL"`
+        // TODO: https://tangem.atlassian.net/browse/IOS-7695
+        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic,
+           walletModel.tokenItem.isToken,
+           walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
+            events.append(.maticMigration)
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -265,5 +274,13 @@ extension SingleTokenNotificationManager: NotificationManager {
 
     func dismissNotification(with id: NotificationViewId) {
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+}
+
+// MARK: - Constants
+
+private extension SingleTokenNotificationManager {
+    enum CurrencySymbol {
+        static let matic = "MATIC"
     }
 }

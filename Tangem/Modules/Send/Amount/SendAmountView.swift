@@ -63,8 +63,13 @@ struct SendAmountView: View {
 
     private var amountContent: some View {
         VStack(spacing: 18) {
-            TokenIcon(tokenIconInfo: viewModel.tokenIconInfo, size: CGSize(width: 36, height: 36))
-                .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
+            TokenIcon(
+                tokenIconInfo: viewModel.tokenIconInfo,
+                size: CGSize(width: 36, height: 36),
+                // Kingfisher shows a gray background even if it has a cached image
+                forceKingfisher: false
+            )
+            .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {
                 SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
