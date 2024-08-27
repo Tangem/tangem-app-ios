@@ -244,7 +244,7 @@ final class SingleTokenNotificationManager {
         }
 
         let days = 2
-        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
+        let apyFormatted = PercentFormatter(option: .staking).format(yield.apy)
         let rewardPeriodDaysFormatted = days.formatted()
 
         return .staking(

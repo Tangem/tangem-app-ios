@@ -31,7 +31,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     private let tokenRouter: SingleTokenRoutable
 
-    private var priceChangeFormatter = PriceChangeFormatter()
+    private let priceChangeFormatter = PriceChangeFormatter(option: .priceChange)
     private var transactionHistoryBag: AnyCancellable?
     private var updateSubscription: AnyCancellable?
     private var bag = Set<AnyCancellable>()
@@ -47,7 +47,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return .noData
         }
 
-        let result = priceChangeFormatter.formatPercentValue(change, option: .priceChange)
+        let result = priceChangeFormatter.formatPercentValue(change)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 

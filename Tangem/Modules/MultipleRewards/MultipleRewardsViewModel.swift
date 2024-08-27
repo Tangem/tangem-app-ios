@@ -22,7 +22,7 @@ final class MultipleRewardsViewModel: ObservableObject, Identifiable {
     private let stakingManager: StakingManager
     private weak var coordinator: MultipleRewardsRoutable?
 
-    private let percentFormatter = PercentFormatter()
+    private let percentFormatter = PercentFormatter(option: .staking)
     private let balanceFormatter = BalanceFormatter()
     private let balanceConverter = BalanceConverter()
 
@@ -84,7 +84,7 @@ private extension MultipleRewardsViewModel {
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
         let subtitleType: ValidatorViewData.SubtitleType? = validator.apr.map {
-            .active(apr: percentFormatter.format($0, option: .staking))
+            .active(apr: percentFormatter.format($0))
         }
 
         return ValidatorViewData(
