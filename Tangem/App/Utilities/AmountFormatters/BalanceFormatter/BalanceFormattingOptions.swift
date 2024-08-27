@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct BalanceFormattingOptions: Hashable {
+struct BalanceFormattingOptions {
     let minFractionDigits: Int
     let maxFractionDigits: Int
     let formatEpsilonAsLowestRepresentableValue: Bool

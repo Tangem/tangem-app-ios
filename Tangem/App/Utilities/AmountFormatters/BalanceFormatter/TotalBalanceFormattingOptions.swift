@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct TotalBalanceFormattingOptions: Hashable {
+struct TotalBalanceFormattingOptions {
     let integerPartFont: Font
     let fractionalPartFont: Font
     let integerPartColor: Color
