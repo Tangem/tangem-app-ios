@@ -10,10 +10,10 @@ import Foundation
 
 public struct StakingAction: Hashable {
     public let amount: Decimal
-    public let validator: String
+    public let validator: String?
     public let type: ActionType
 
-    public init(amount: Decimal, validator: String, type: StakingAction.ActionType) {
+    public init(amount: Decimal, validator: String?, type: StakingAction.ActionType) {
         self.amount = amount
         self.validator = validator
         self.type = type

@@ -33,8 +33,20 @@ struct PendingActionMapper {
 
             return stakingAction(type: .pending(.withdraw(passthrough: passthrough))).map { .single($0) }
         case .locked:
-            // TODO: https://tangem.atlassian.net/browse/IOS-7821
-            return nil
+            let actions = balanceInfo.actions.compactMap { stakingAction(type: .pending($0)) }
+
+            guard let action = actions.first(where: { action in
+                if case .pending(.unlockLocked) = action.type {
+                    return true
+                }
+
+                return false
+            }) else {
+                assertionFailure("PendingActionMapperError.unlockLockedPendingActionNotFound")
+                return .none
+            }
+
+            return .single(action)
         case .rewards:
             return .multiple(
                 balanceInfo.actions.compactMap { stakingAction(type: .pending($0)) }
@@ -43,11 +55,15 @@ struct PendingActionMapper {
     }
 
     private func stakingAction(type: StakingAction.ActionType) -> StakingAction? {
-        guard let validator = balanceInfo.validatorAddress else {
-            return nil
-        }
+//        guard let validator = balanceInfo.validatorAddress else {
+//            return nil
+//        }
 
-        return StakingAction(amount: balanceInfo.amount, validator: validator, type: type)
+        return StakingAction(
+            amount: balanceInfo.amount,
+            validator: balanceInfo.validatorAddress,
+            type: type
+        )
     }
 }
 
