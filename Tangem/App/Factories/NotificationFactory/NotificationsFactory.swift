@@ -54,12 +54,12 @@ struct NotificationsFactory {
         for event: Event,
         action: NotificationView.NotificationButtonTapAction?
     ) -> NotificationView.Style {
-        guard let action, let actionType = event.buttonActionType else {
+        guard let action, let buttonAction = event.buttonAction else {
             return .plain
         }
 
         return .withButtons([
-            .init(action: action, actionType: actionType, isWithLoader: false),
+            .init(action: action, actionType: buttonAction.type, isWithLoader: buttonAction.withLoader),
         ])
     }
 }

@@ -128,14 +128,10 @@ private extension StakingDetailsViewModel {
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let available = walletModel.availableBalance.crypto
-        let aprs = yield.validators.compactMap(\.apr)
-        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate)
-
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
-                detailsType: .text(rewardRateValues.formatted(formatter: percentFormatter)),
+                detailsType: .text(yield.rewardRateValues.formatted(formatter: percentFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsAnnualPercentageRate,
@@ -147,7 +143,7 @@ private extension StakingDetailsViewModel {
                 title: Localization.stakingDetailsAvailable,
                 detailsType: .text(
                     balanceFormatter.formatCryptoBalance(
-                        available,
+                        walletModel.availableBalance.crypto,
                         currencyCode: walletModel.tokenItem.currencySymbol
                     )
                 )
