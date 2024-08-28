@@ -62,15 +62,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     var priceDate: String {
-        guard let priceDate = dateHelper.makeDate(
+        return dateHelper.makePriceDate(
             selectedDate: selectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
-        ) else {
-            // TODO: Andrey Fedorov - Temporary workaround until the issue with obtaining the beginning of `all` time interval is resolved (IOS-7476)
-            return selectedPriceChangeIntervalType == .all ? Localization.commonAll : Localization.commonToday
-        }
-
-        return "\(dateFormatter.string(from: priceDate)) – \(Localization.commonNow)"
+        )
     }
 
     var tokenName: String { tokenInfo.name }
@@ -107,13 +102,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // The date when this VM was initialized (i.e. the screen was opened)
     private let initialDate = Date()
-
-    // TODO: Andrey Fedorov - Add different date & time formats for different selected time intervals (IOS-7476)
-    private let dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM, HH:mm"
-        return dateFormatter
-    }()
 
     private let fiatBalanceFormattingOptions: BalanceFormattingOptions = .init(
         minFractionDigits: 2,
