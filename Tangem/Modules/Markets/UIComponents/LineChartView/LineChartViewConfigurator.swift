@@ -51,14 +51,8 @@ struct LineChartViewConfigurator {
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
         dataSet.verticalHighlightIndicatorInset = -8.0
 
-        // Will be set dynamically, depending on the chart trend
+        // Will be set dynamically, depending on the chart trend, in `ColorSplitLineChartContainerViewControllerDelegate` method calls
         /* dataSet.setColor(chartColor) */
-
-        // TODO: Andrey Fedorov - `cubicBezier` line chart does not work at the moment with `ColorSplitLineChartRenderer` renderer (IOS-7476)
-        /*
-         dataSet.mode = .cubicBezier
-         dataSet.cubicIntensity = 0.08
-         */
 
         dataSet.highlightLineWidth = 1.0
         dataSet.highlightLineDashLengths = [6.0, 2.0]
