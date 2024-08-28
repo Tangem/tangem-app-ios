@@ -12,33 +12,26 @@ import SwiftUI
 struct BalanceFormatter {
     static var defaultEmptyBalanceString: String { "–" }
 
-    private let decimalRoundingUtility: DecimalRoundingUtility
-    private let formattingOptions: BalanceFormattingOptions
-    private let totalBalanceFormattingOptions: TotalBalanceFormattingOptions
-
-    init(
-        formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions,
-        totalBalanceFormattingOptions: TotalBalanceFormattingOptions = .defaultOptions
-    ) {
-        self.formattingOptions = formattingOptions
-        self.totalBalanceFormattingOptions = totalBalanceFormattingOptions
-        decimalRoundingUtility = .init()
-    }
+    private let decimalRoundingUtility = DecimalRoundingUtility()
 
     /// Format any decimal number using `BalanceFormattingOptions`
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatDecimal(_ value: Decimal?, formatter: NumberFormatter? = nil) -> String {
+    func formatDecimal(_ value: Decimal?, formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions) -> String {
         guard let value else {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = formatter ?? makeDecimalFormatter()
-        let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
+        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
 
+        let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat)"
     }
 
@@ -47,14 +40,14 @@ struct BalanceFormatter {
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted
     ///   - currencyCode: Code to be used
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatCryptoBalance(_ value: Decimal?, currencyCode: String, formatter: NumberFormatter? = nil) -> String {
+    func formatCryptoBalance(_ value: Decimal?, currencyCode: String, formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions) -> String {
         guard let value else {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = formatter ?? makeDefaultCryptoFormatter(for: currencyCode)
+        let formatter = makeDefaultCryptoFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
@@ -64,10 +57,10 @@ struct BalanceFormatter {
     /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatFiatBalance(_ value: Decimal?, formatter: NumberFormatter? = nil) -> String {
-        return formatFiatBalance(value, currencyCode: AppSettings.shared.selectedCurrencyCode, formatter: formatter)
+    func formatFiatBalance(_ value: Decimal?, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
+        return formatFiatBalance(value, currencyCode: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
     }
 
     /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
@@ -75,12 +68,12 @@ struct BalanceFormatter {
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
     ///   - numericCurrencyCode: Numeric currency code according to ISO4217. If failed to find numeric currency code will be used as number in formatted string
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatFiatBalance(_ value: Decimal?, numericCurrencyCode: Int, formatter: NumberFormatter? = nil) -> String {
+    func formatFiatBalance(_ value: Decimal?, numericCurrencyCode: Int, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
         let iso4217Converter = ISO4217CodeConverter.shared
         let code = iso4217Converter.convertToStringCode(numericCode: numericCurrencyCode) ?? "???"
-        return formatFiatBalance(value, currencyCode: code, formatter: formatter)
+        return formatFiatBalance(value, currencyCode: code, formattingOptions: formattingOptions)
     }
 
     /// Format fiat balance using `BalanceFormattingOptions`. Fiat currency code will be taken from App settings
@@ -88,14 +81,14 @@ struct BalanceFormatter {
     /// - Parameters:
     ///   - value: Balance that should be rounded and formatted. If `nil` will be return `defaultEmptyBalanceString`
     ///   - currencyCode: Fiat currency code
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Options for number formatter and rounding
     /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatFiatBalance(_ value: Decimal?, currencyCode: String, formatter: NumberFormatter? = nil) -> String {
+    func formatFiatBalance(_ value: Decimal?, currencyCode: String, formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions) -> String {
         guard let balance = value else {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = formatter ?? makeDefaultFiatFormatter(for: currencyCode)
+        let formatter = makeDefaultFiatFormatter(for: currencyCode, formattingOptions: formattingOptions)
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
@@ -114,43 +107,30 @@ struct BalanceFormatter {
     /// Format fiat balance string for main page with different font for integer and fractional parts.
     /// - Parameters:
     ///   - fiatBalance: Fiat balance should be formatted and with currency symbol. Use `formatFiatBalance(Decimal, BalanceFormattingOptions)
-    ///   - formatter: Optional `NumberFormatter` instance (e.g. a cached instance)
+    ///   - formattingOptions: Fonts and colors for integer and fractional parts
     /// - Returns: Parameters that can be used with SwiftUI `Text` view
-    func formatAttributedTotalBalance(
-        fiatBalance: String,
-        formatter: NumberFormatter? = nil
-    ) -> AttributedString {
-        let formatter = formatter ?? makeTotalBalanceFormatter()
+    func formatAttributedTotalBalance(fiatBalance: String, formattingOptions: TotalBalanceFormattingOptions = .defaultOptions) -> AttributedString {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .currency
         let decimalSeparator = formatter.decimalSeparator ?? ""
         var attributedString = AttributedString(fiatBalance)
-        attributedString.font = totalBalanceFormattingOptions.integerPartFont
-        attributedString.foregroundColor = totalBalanceFormattingOptions.integerPartColor
+        attributedString.font = formattingOptions.integerPartFont
+        attributedString.foregroundColor = formattingOptions.integerPartColor
 
         if let separatorRange = attributedString.range(of: decimalSeparator) {
             let fractionalPartRange = Range<AttributedString.Index>.init(uncheckedBounds: (lower: separatorRange.upperBound, upper: attributedString.endIndex))
-            attributedString[fractionalPartRange].font = totalBalanceFormattingOptions.fractionalPartFont
-            attributedString[fractionalPartRange].foregroundColor = totalBalanceFormattingOptions.fractionalPartColor
+            attributedString[fractionalPartRange].font = formattingOptions.fractionalPartFont
+            attributedString[fractionalPartRange].foregroundColor = formattingOptions.fractionalPartColor
         }
 
         return attributedString
     }
 
-    // MARK: - Factory methods
-
-    /// Makes a formatter instance to be used in `formatDecimal(_:formatter:)`.
-    func makeDecimalFormatter() -> NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
-        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
-        return formatter
-    }
-
-    /// Makes a formatter instance to be used in `formatFiatBalance(_:currencyCode:formatter:)`.
     func makeDefaultFiatFormatter(
         for currencyCode: String,
-        locale: Locale = .current
+        locale: Locale = .current,
+        formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions
     ) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.locale = locale
@@ -171,10 +151,10 @@ struct BalanceFormatter {
         return formatter
     }
 
-    /// Makes a formatter instance to be used in `formatCryptoBalance(_:currencyCode:formatter:)`.
     func makeDefaultCryptoFormatter(
         for currencyCode: String,
-        locale: Locale = .current
+        locale: Locale = .current,
+        formattingOptions: BalanceFormattingOptions = .defaultCryptoFormattingOptions
     ) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.locale = locale
@@ -183,16 +163,6 @@ struct BalanceFormatter {
         formatter.currencySymbol = currencyCode
         formatter.minimumFractionDigits = formattingOptions.minFractionDigits
         formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
-        return formatter
-    }
-
-    /// Makes a formatter instance to be used in `formatAttributedTotalBalance(fiatBalance:formatter:)`.
-    func makeTotalBalanceFormatter(
-        locale: Locale = .current
-    ) -> NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
         return formatter
     }
 }
