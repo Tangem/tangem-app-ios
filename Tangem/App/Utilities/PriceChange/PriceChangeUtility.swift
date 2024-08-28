@@ -9,14 +9,14 @@
 import Foundation
 
 struct PriceChangeUtility {
-    private let priceChangeFormatter = PriceChangeFormatter(option: .priceChange)
+    private let priceChangeFormatter = PriceChangeFormatter()
 
     func convertToPriceChangeState(changeFractional: Decimal?) -> TokenPriceChangeView.State {
         guard let changeFractional else {
             return .noData
         }
 
-        let result = priceChangeFormatter.formatFractionalValue(changeFractional)
+        let result = priceChangeFormatter.formatFractionalValue(changeFractional, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
@@ -25,7 +25,7 @@ struct PriceChangeUtility {
             return .noData
         }
 
-        let result = priceChangeFormatter.formatPercentValue(changePercent)
+        let result = priceChangeFormatter.formatPercentValue(changePercent, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 

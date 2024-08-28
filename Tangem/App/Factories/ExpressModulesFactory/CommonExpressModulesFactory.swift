@@ -154,7 +154,7 @@ private extension CommonExpressModulesFactory {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var priceChangeFormatter: PriceChangeFormatter { .init(option: .express) }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }

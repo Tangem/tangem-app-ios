@@ -34,7 +34,7 @@ final class StakingDetailsViewModel: ObservableObject {
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
-    private let percentFormatter = PercentFormatter(option: .staking)
+    private let percentFormatter = PercentFormatter()
     private let daysFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
@@ -281,7 +281,7 @@ private extension StakingDetailsViewModel {
             switch balance.balanceType {
             case .rewards: .none
             case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active: validator.apr.map { .active(apr: percentFormatter.format($0)) }
+            case .active: validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding(let date): .unbounding(until: date)
             case .withdraw: .withdraw
             }
@@ -395,9 +395,9 @@ private extension RewardRateValues {
     func formatted(formatter: PercentFormatter) -> String {
         switch self {
         case .single(let value):
-            formatter.format(value)
+            formatter.format(value, option: .staking)
         case .interval(let min, let max):
-            formatter.formatInterval(min: min, max: max)
+            formatter.formatInterval(min: min, max: max, option: .staking)
         }
     }
 }

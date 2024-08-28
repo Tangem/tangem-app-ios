@@ -17,7 +17,7 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
 
     private weak var input: StakingValidatorsInput?
 
-    private let percentFormatter = PercentFormatter(option: .staking)
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(input: StakingValidatorsInput) {
@@ -44,7 +44,7 @@ class StakingValidatorsCompactViewModel: ObservableObject, Identifiable {
             name: validator.name,
             imageURL: validator.iconURL,
             aprFormatted: validator.apr.map {
-                "\(Localization.stakingDetailsApr) \(percentFormatter.format($0))"
+                "\(Localization.stakingDetailsApr) \(percentFormatter.format($0, option: .staking))"
             }
         )
     }

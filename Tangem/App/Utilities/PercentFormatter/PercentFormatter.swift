@@ -10,38 +10,12 @@ import Foundation
 
 struct PercentFormatter {
     private let locale: Locale
-    private let option: Option
 
-    init(
-        locale: Locale = .current,
-        option: Option
-    ) {
+    init(locale: Locale = .current) {
         self.locale = locale
-        self.option = option
     }
 
-    func format(_ value: Decimal, formatter: NumberFormatter? = nil) -> String {
-        let formatter = formatter ?? makeDefaultFormatter()
-
-        if let formatted = formatter.string(from: value as NSDecimalNumber) {
-            return formatted
-        }
-
-        return "\(value)%"
-    }
-
-    func formatInterval(min: Decimal, max: Decimal, formatter: NumberFormatter? = nil) -> String {
-        let formatter = formatter ?? makeIntervalFormatter()
-        let minFormatted = formatter.string(from: min as NSDecimalNumber) ?? "\(min)"
-        let maxFormatted = format(max)
-
-        return "\(minFormatted) - \(maxFormatted)"
-    }
-
-    // MARK: - Factory methods
-
-    /// Makes a formatter instance to be used in `format(_:formatter:)`.
-    func makeDefaultFormatter() -> NumberFormatter {
+    func format(_ value: Decimal, option: Option) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
         formatter.locale = locale
@@ -59,11 +33,14 @@ struct PercentFormatter {
             formatter.negativePrefix = ""
         }
 
-        return formatter
+        if let formatted = formatter.string(from: value as NSDecimalNumber) {
+            return formatted
+        }
+
+        return "\(value)%"
     }
 
-    /// Makes a formatter instance to be used in `formatInterval(min:max:formatter:)`.
-    func makeIntervalFormatter() -> NumberFormatter {
+    func formatInterval(min: Decimal, max: Decimal, option: Option) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
         formatter.locale = locale
@@ -75,7 +52,9 @@ struct PercentFormatter {
         formatter.positiveSuffix = ""
         formatter.negativeSuffix = ""
 
-        return formatter
+        let minFormatted = formatter.string(from: min as NSDecimalNumber) ?? "\(min)"
+        let maxFormatted = format(max, option: option)
+        return "\(minFormatted) - \(maxFormatted)"
     }
 }
 

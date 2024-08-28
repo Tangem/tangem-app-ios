@@ -131,7 +131,7 @@ private extension ExpressModulesFactoryMock {
         ExpressNotificationManager(expressInteractor: expressInteractor)
     }
 
-    var priceChangeFormatter: PriceChangeFormatter { .init(option: .staking) }
+    var priceChangeFormatter: PriceChangeFormatter { .init() }
     var balanceConverter: BalanceConverter { .init() }
     var balanceFormatter: BalanceFormatter { .init() }
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }

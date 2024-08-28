@@ -21,7 +21,7 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     private let interactor: StakingValidatorsInteractor
 
-    private let percentFormatter = PercentFormatter(option: .staking)
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(interactor: StakingValidatorsInteractor) {
@@ -49,7 +49,7 @@ private extension StakingValidatorsViewModel {
             .map { viewModel, validators in
                 validators.map { validatorInfo in
                     let percentFormatted = validatorInfo.apr.map {
-                        viewModel.percentFormatter.format($0)
+                        viewModel.percentFormatter.format($0, option: .staking)
                     }
 
                     return ValidatorViewData(
