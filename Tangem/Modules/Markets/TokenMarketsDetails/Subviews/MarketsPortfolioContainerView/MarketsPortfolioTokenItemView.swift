@@ -20,7 +20,7 @@ struct MarketsPortfolioTokenItemView: View {
             } prompt: {
                 tokenView
             } expandedView: {
-                quickActionsView(for: viewModel)
+                quickActionsView
             }
         }
         .padding(.horizontal, .zero)
@@ -114,51 +114,52 @@ struct MarketsPortfolioTokenItemView: View {
         }
     }
 
-    private func quickActionsView(for viewModel: MarketsPortfolioTokenItemViewModel) -> some View {
+    private var quickActionsView: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            ForEach(viewModel.contextActions, id: \.id) { action in
+            ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
                 Button {
                     viewModel.didTapContextAction(action)
                 } label: {
-                    makeQuickActionItem(for: action)
+                    makeQuickActionItem(for: action, at: index)
                 }
             }
         }
+        .padding(.bottom, 12)
     }
 
-    private func makeQuickActionItem(for actionType: TokenActionType) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(alignment: .center) {
-                actionType.icon.image
-                    .renderingMode(.template)
-                    .resizable()
-                    .frame(size: .init(bothDimensions: 20))
-                    .foregroundStyle(Colors.Icon.primary1)
-                    .padding(6)
-                    .background(
-                        Circle()
-                            .fill(Colors.Background.tertiary)
-                    )
+    private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {
+        HStack(spacing: Constants.quickActionIconContentSpacerLength) {
+            actionType.icon.image
+                .renderingMode(.template)
+                .resizable()
+                .frame(size: .init(bothDimensions: 20))
+                .foregroundStyle(Colors.Icon.primary1)
+                .padding(6)
+                .background(
+                    Circle()
+                        .fill(Colors.Background.tertiary)
+                )
+                .padding(.vertical, 3)
+                .padding(.horizontal, 2)
 
-                VStack(alignment: .leading, spacing: .zero) {
-                    Text(actionType.title)
-                        .style(.callout, color: Colors.Text.primary1)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(actionType.title)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-                    if let description = actionType.description {
-                        Text(description)
-                            .style(.footnote, color: Colors.Text.tertiary)
-                    }
+                if let description = actionType.description {
+                    Text(description)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
-
-                Spacer()
             }
+
+            Spacer()
         }
-        .padding(.vertical, 12)
     }
 }
 
 private extension MarketsPortfolioTokenItemView {
     enum Constants {
         static let spacerLength = 8.0
+        static let quickActionIconContentSpacerLength = 16.0
     }
 }
