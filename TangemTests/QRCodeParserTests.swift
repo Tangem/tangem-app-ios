@@ -7,7 +7,9 @@
 //
 
 import XCTest
-import BlockchainSdk
+import enum BlockchainSdk.Blockchain
+import struct BlockchainSdk.Amount
+import struct BlockchainSdk.Token
 @testable import Tangem
 
 final class QRCodeParserTests: XCTestCase {
