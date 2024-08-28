@@ -97,19 +97,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     private let balanceFormatter = BalanceFormatter()
 
-    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper(fiatBalanceFormattingOptions: fiatBalanceFormattingOptions)
+    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper()
     private lazy var dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
+
+    private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
     // The date when this VM was initialized (i.e. the screen was opened)
     private let initialDate = Date()
-
-    private let fiatBalanceFormattingOptions: BalanceFormattingOptions = .init(
-        minFractionDigits: 2,
-        maxFractionDigits: 8,
-        formatEpsilonAsLowestRepresentableValue: false,
-        roundingType: .defaultFiat(roundingMode: .bankers)
-    )
-    private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
     private let tokenInfo: MarketsTokenModel
     private let dataProvider: MarketsTokenDetailsDataProvider
