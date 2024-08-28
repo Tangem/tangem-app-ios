@@ -14,7 +14,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
     @State private var size: CGSize = .zero
 
     /// How much arrow should extrude from the edge of the icon
-    private let arrowExtrudeLength: CGFloat = 4
+    private let arrowExtrudeLength: CGFloat = 8
     private let arrowWidth: Double = Constants.iconWidth
 
     var body: some View {
@@ -52,7 +52,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
                     .scaleEffect(0.8)
                     .disabled(viewModel.isReadonly)
             }
-            .padding(.vertical, 16)
+            .padding(.vertical, 15)
         }
         .contentShape(Rectangle())
         .readGeometry(\.size, bindTo: $size)
@@ -80,7 +80,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
 extension MarketsTokensNetworkSelectorItemView {
     enum Constants {
         static let iconWidth: Double = 22
-        static let checkedSelectedIconSize = CGSize(bothDimensions: 24)
+        static let checkedSelectedIconSize = CGSize(bothDimensions: 22)
     }
 }
 
