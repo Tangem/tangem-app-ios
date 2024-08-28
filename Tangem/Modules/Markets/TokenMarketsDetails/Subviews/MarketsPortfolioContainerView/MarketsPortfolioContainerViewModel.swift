@@ -108,7 +108,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self
+            contextActionsDelegate: self,
+            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -131,6 +132,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+    }
+
+    private func quickActionDisclosureHandler(_ viewModelId: Int) {
+        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
+
+        for viewModel in filteredViewModels {
+            viewModel.isExpandedQuickActions = false
+        }
     }
 
     private func bind() {

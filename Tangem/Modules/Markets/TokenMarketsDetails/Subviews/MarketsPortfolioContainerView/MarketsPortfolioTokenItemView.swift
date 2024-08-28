@@ -11,24 +11,18 @@ import SwiftUI
 struct MarketsPortfolioTokenItemView: View {
     @ObservedObject var viewModel: MarketsPortfolioTokenItemViewModel
 
-    private let coinIconSize = CGSize(bothDimensions: 36)
-    private let networkIconSize = CGSize(bothDimensions: 14)
-
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Button(action: {
-                withAnimation {
-                    viewModel.isExpandedQuickActions.toggle()
-                }
-            }, label: {
+            CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
+                viewModel.isExpandedQuickActions.toggle()
+            } prompt: {
                 tokenView
-            })
-
-            quickActionsView
+            } expandedView: {
+                quickActionsView(for: viewModel)
+            }
         }
-        .padding(.vertical, 14)
         .padding(.horizontal, .zero)
     }
 
@@ -105,6 +99,7 @@ struct MarketsPortfolioTokenItemView: View {
             .overlay(overlayView)
             .readGeometry(\.size, bindTo: $textBlockSize)
         }
+        .padding(.vertical, 15)
     }
 
     @ViewBuilder
@@ -119,19 +114,16 @@ struct MarketsPortfolioTokenItemView: View {
         }
     }
 
-    @ViewBuilder
-    private var quickActionsView: some View {
+    private func quickActionsView(for viewModel: MarketsPortfolioTokenItemViewModel) -> some View {
         VStack(alignment: .leading, spacing: .zero) {
             ForEach(viewModel.contextActions, id: \.id) { action in
                 Button {
-                    print(action)
+                    viewModel.didTapContextAction(action)
                 } label: {
                     makeQuickActionItem(for: action)
                 }
             }
         }
-        .frame(height: viewModel.isExpandedQuickActions ? nil : 0, alignment: .top)
-        .clipped()
     }
 
     private func makeQuickActionItem(for actionType: TokenActionType) -> some View {

@@ -11,10 +11,12 @@ import SwiftUI
 struct MarketsPortfolioContainerView: View {
     @ObservedObject var viewModel: MarketsPortfolioContainerViewModel
 
+    @State var isExpandedQuickActions: Bool = false
+
     // MARK: - UI
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .leading, spacing: Constants.headerContentSpacing) {
             headerView
 
             contentView
@@ -26,7 +28,6 @@ struct MarketsPortfolioContainerView: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .center) {
                 Text(Localization.marketsCommonMyPortfolio)
-                    .lineLimit(1)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 Spacer()
@@ -49,6 +50,7 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.leading, 8)
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
+                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.cornerRadius)
                 }
             }
         }
@@ -70,11 +72,12 @@ struct MarketsPortfolioContainerView: View {
         }
     }
 
+    @ViewBuilder
     private var listView: some View {
         LazyVStack(spacing: .zero) {
             let elementItems = viewModel.tokenItemViewModels
 
-            ForEach(indexed: elementItems.indexed()) { _, itemViewModel in
+            ForEach(indexed: elementItems.indexed()) { index, itemViewModel in
                 MarketsPortfolioTokenItemView(viewModel: itemViewModel)
             }
         }
@@ -118,6 +121,7 @@ extension MarketsPortfolioContainerView {
 
 private extension MarketsPortfolioContainerView {
     enum Constants {
-        static let cornerRadius: CGFloat = 14.0
+        static let cornerRadius: CGFloat = 8.0
+        static let headerContentSpacing: CGFloat = 12.0
     }
 }
