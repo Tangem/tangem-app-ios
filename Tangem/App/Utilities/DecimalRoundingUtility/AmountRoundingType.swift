@@ -22,8 +22,4 @@ extension AmountRoundingType {
             return roundingMode
         }
     }
-
-    static func defaultFiat(roundingMode: NSDecimalNumber.RoundingMode) -> AmountRoundingType {
-        .default(roundingMode: roundingMode, scale: 2)
-    }
 }
