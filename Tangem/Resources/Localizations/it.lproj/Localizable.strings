@@ -865,8 +865,6 @@
 "warning_rent_fee_title" = "Network rent fee required";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ is an asset in the %2$@ network. To make a %3$@ transaction, you must deposit some %4$@ (%5$@) to cover the network fee.";
 "warning_send_blocked_funds_for_fee_title" = "Insufficient %1$@ to cover network fee";
-"warning_solana_fee_message" = "The Solana network is congested. If your transaction is not processed within 2 minutes, please repeat the transaction.";
-"warning_solana_fee_title" = "Solana Network Alert";
 "warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
 "warning_some_networks_unreachable_message" = "Some networks currently are unreachable. Please try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";

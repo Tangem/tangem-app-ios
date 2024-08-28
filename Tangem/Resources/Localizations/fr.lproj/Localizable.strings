@@ -865,8 +865,6 @@
 "warning_rent_fee_title" = "Frais de location de réseau requis";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ s'agit d'un actif du réseau %2$@. Pour effectuer une transaction %3$@, vous devez déposer une certaine quantité de %4$@ (%5$@) pour couvrir les frais de réseau.";
 "warning_send_blocked_funds_for_fee_title" = "%1$@ insuffisant pour couvrir les frais de réseau";
-"warning_solana_fee_message" = "Le réseau Solana est encombré. Si votre transaction n'est pas traitée dans les 2 minutes, veuillez répéter la transaction.";
-"warning_solana_fee_title" = "Alerte réseau Solana";
 "warning_solana_rent_fee_message" = "Le réseau Solana facture un loyer de %1$@ tous les 2 jours. Les comptes qui ne peuvent pas se permettre le loyer sont purgés du réseau. Déposez sur votre compte plus de %2$@ pour l'utiliser gratuitement.";
 "warning_some_networks_unreachable_message" = "Certains réseaux sont actuellement inaccessibles. Veuillez réessayer plus tard.";
 "warning_some_networks_unreachable_title" = "Certains réseaux sont inaccessibles";
