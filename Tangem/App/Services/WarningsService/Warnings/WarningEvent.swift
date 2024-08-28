@@ -195,6 +195,8 @@ extension WarningEvent: NotificationEvent {
         }
     }
 
+    var buttonActionType: NotificationButtonActionType? { nil }
+
     func style(
         tapAction: NotificationView.NotificationAction? = nil,
         buttonAction: NotificationView.NotificationButtonTapAction? = nil

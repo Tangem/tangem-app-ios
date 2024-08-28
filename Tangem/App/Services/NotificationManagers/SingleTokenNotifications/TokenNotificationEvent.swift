@@ -38,31 +38,6 @@ enum TokenNotificationEvent: Hashable {
             return .notEnoughFeeForTransaction(configuration: configuration)
         }
     }
-
-    var buttonAction: NotificationButtonActionType? {
-        switch self {
-        // One notification with button action will be added later
-        case .networkUnreachable,
-             .someNetworksUnreachable,
-             .rentFee,
-             .existentialDepositWarning,
-             .noAccount,
-             .solanaHighImpact,
-             .bnbBeaconChainRetirement,
-             .manaLevel,
-             .maticMigration:
-            return nil
-        case .notEnoughFeeForTransaction(let configuration):
-            let eventConfig = configuration.eventConfiguration
-            return configuration.isFeeCurrencyPurchaseAllowed
-                ? .openFeeCurrency(currencySymbol: eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol)
-                : nil
-        case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
-            return .addHederaTokenAssociation
-        case .staking:
-            return .stake
-        }
-    }
 }
 
 extension TokenNotificationEvent: NotificationEvent {
@@ -211,6 +186,31 @@ extension TokenNotificationEvent: NotificationEvent {
              .manaLevel,
              .maticMigration:
             return false
+        }
+    }
+
+    var buttonActionType: NotificationButtonActionType? {
+        switch self {
+        // One notification with button action will be added later
+        case .networkUnreachable,
+             .someNetworksUnreachable,
+             .rentFee,
+             .existentialDepositWarning,
+             .noAccount,
+             .solanaHighImpact,
+             .bnbBeaconChainRetirement,
+             .manaLevel,
+             .maticMigration:
+            return nil
+        case .notEnoughFeeForTransaction(let configuration):
+            let eventConfig = configuration.eventConfiguration
+            return configuration.isFeeCurrencyPurchaseAllowed
+                ? .openFeeCurrency(currencySymbol: eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol)
+                : nil
+        case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
+            return .addHederaTokenAssociation
+        case .staking:
+            return .stake
         }
     }
 }

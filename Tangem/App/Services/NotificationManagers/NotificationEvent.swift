@@ -24,10 +24,6 @@ protocol NotificationEvent: Identifiable {
     var isOneShotAnalyticsEvent: Bool { get }
 }
 
-extension NotificationEvent {
-    var buttonActionType: NotificationButtonActionType? { nil }
-}
-
 extension NotificationEvent where Self: Hashable {
     // Unique ID. Overwrite if hash value is not enough (may be influenced by associated values)
     var id: NotificationViewId {

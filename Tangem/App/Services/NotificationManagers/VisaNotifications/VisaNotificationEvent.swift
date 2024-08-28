@@ -51,6 +51,8 @@ extension VisaNotificationEvent: NotificationEvent {
     var isDismissable: Bool {
         return false
     }
+
+    var buttonActionType: NotificationButtonActionType? { nil }
 }
 
 // MARK: - Analytics
