@@ -173,15 +173,18 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
+        let validators = response.validators.compactMap(mapToValidatorInfo)
+        let aprs = validators.compactMap(\.apr)
+        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: response.rewardRate)
+
         return try YieldInfo(
             id: response.id,
             isAvailable: response.isAvailable,
-            apy: response.apy,
             rewardType: mapToRewardType(from: response.rewardType),
-            rewardRate: response.rewardRate,
+            rewardRateValues: rewardRateValues,
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
-            validators: response.validators.compactMap(mapToValidatorInfo),
+            validators: validators,
             defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
