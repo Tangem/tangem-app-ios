@@ -23,14 +23,12 @@ struct LineChartViewConfigurator {
 
     private func configureYAxis(on chartView: LineChartViewWrapper.UIViewType, using yAxisData: LineChartViewData.YAxis) {
         chartView.leftAxis.setLabelCount(yAxisData.labelCount, force: true)
-        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
-        // but that's ok - graphical charts are never 100% accurate by design
-        // TODO: Andrey Fedorov - Round yMin/yMax if needed (IOS-7476)
-
         // If all values are the same, a 5% diff is applied to the min/max values of
         // the Y-axis to give the chart some room to render a horizontal chart line
         let yAxisMinMaxDiff = yAxisData.axisMinValue == yAxisData.axisMaxValue ? 0.05 : 0.0
 
+        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
+        // but that's ok - graphical charts are never 100% accurate by design
         chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue * (1.0 - yAxisMinMaxDiff)
         chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue * (1.0 + yAxisMinMaxDiff)
     }
