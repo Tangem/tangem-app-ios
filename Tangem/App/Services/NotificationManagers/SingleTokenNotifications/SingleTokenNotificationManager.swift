@@ -163,7 +163,7 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject
             .send([
                 factory.buildNotificationInput(
-                    for: .networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
                     dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
                 ),
             ])
@@ -206,7 +206,7 @@ final class SingleTokenNotificationManager {
 
         let factory = NotificationsFactory()
         let input = factory.buildNotificationInput(
-            for: .rentFee(rentMessage: rentMessage),
+            for: TokenNotificationEvent.rentFee(rentMessage: rentMessage),
             dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
         )
         return input

@@ -49,9 +49,9 @@ struct UnstakingFlowBaseBuilder {
         )
 
         let stepsManager = CommonUnstakingStepsManager(
-            provider: unstakingModel,
             summaryStep: summary.step,
-            finishStep: finish
+            finishStep: finish,
+            action: action
         )
 
         let interactor = CommonSendBaseInteractor(
