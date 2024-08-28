@@ -39,18 +39,10 @@ struct TokenMarketsHistoryChartMapper {
         // Index-based access is safe here due to a guard check above
         let firstValue = values[0]
         let lastValue = values[values.count - 1]
-        let startTimeStamp = Decimal(firstValue.timeStamp)
-        let endTimeStamp = Decimal(lastValue.timeStamp)
-        let range = endTimeStamp - startTimeStamp
         let labelCount = makeXAxisLabelCount(for: selectedPriceInterval)
-        let interval = range / Decimal(labelCount + 1)
-        let minXAxisValue = startTimeStamp + interval
-        let maxXAxisValue = endTimeStamp - interval
 
         let xAxis = LineChartViewData.XAxis(
             labelCount: labelCount,
-            axisMinValue: minXAxisValue,
-            axisMaxValue: maxXAxisValue,
             values: values
         )
 

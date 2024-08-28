@@ -37,13 +37,6 @@ struct LineChartViewConfigurator {
 
     private func configureXAxis(on chartView: LineChartViewWrapper.UIViewType, using xAxisData: LineChartViewData.XAxis) {
         chartView.xAxis.setLabelCount(xAxisData.labelCount, force: true)
-        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
-        // but that's ok - graphical charts are never 100% accurate by design
-        // TODO: Andrey Fedorov - Setting `axisMinimum`/`axisMaximum` actually clips the entire chart within these bounds, use custom X axis renderer to avoid this (IOS-7476)
-        /*
-         chartView.xAxis.axisMinimum = xAxisData.axisMinValue.doubleValue
-         chartView.xAxis.axisMaximum = xAxisData.axisMaxValue.doubleValue
-         */
     }
 
     private func makeDataSet() -> LineChartDataSet {
