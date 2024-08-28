@@ -12,6 +12,7 @@ struct MarketPriceView: View {
     let currencySymbol: String
     let price: String
     let priceChangeState: TokenPriceChangeView.State
+    let miniChartData: LoadingValue<[Double]?>
     let tapAction: (() -> Void)?
 
     var body: some View {
@@ -25,7 +26,7 @@ struct MarketPriceView: View {
     }
 
     private var marketPriceView: some View {
-        HStack {
+        HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(Localization.walletMarketplaceBlockTitle(currencySymbol))
                     .lineLimit(1)
@@ -53,31 +54,54 @@ struct MarketPriceView: View {
 
             Spacer()
 
-            if tapAction != nil {
-                Assets.chevron.image
-                    .renderingMode(.template)
-                    .foregroundColor(Colors.Icon.informative)
-                    .padding(.trailing, 2)
+            Group {
+                miniChartView
+                    .frame(width: 56, height: 24)
+
+                if tapAction != nil {
+                    Assets.chevronRightWithOffset24.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.informative)
+                }
             }
         }
         .padding(14)
         .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
     }
+
+    @ViewBuilder
+    private var miniChartView: some View {
+        switch miniChartData {
+        case .loading, .failedToLoad:
+            SkeletonView()
+                .frame(width: 44, height: 12, alignment: .center)
+                .cornerRadiusContinuous(4)
+        case .loaded(let values):
+            if let values = values {
+                LineChartView(
+                    color: priceChangeState.signType?.textColor ?? Colors.Text.tertiary,
+                    data: values
+                )
+            } else {
+                EmptyView()
+            }
+        }
+    }
 }
 
 struct MarketPriceView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            MarketPriceView(currencySymbol: "BTC", price: "5,43 $", priceChangeState: .loaded(signType: .positive, text: "0,08 %"), tapAction: {})
+            MarketPriceView(currencySymbol: "BTC", price: "5,43 $", priceChangeState: .loaded(signType: .positive, text: "0,08 %"), miniChartData: .loading, tapAction: {})
 
-            MarketPriceView(currencySymbol: "ETH", price: "1 500,33 $", priceChangeState: .loaded(signType: .negative, text: "10,3%"), tapAction: nil)
+            MarketPriceView(currencySymbol: "ETH", price: "1 500,33 $", priceChangeState: .loaded(signType: .negative, text: "10,3%"), miniChartData: .loaded(nil), tapAction: nil)
 
-            MarketPriceView(currencySymbol: "ETH", price: "1 847.90$", priceChangeState: .loaded(signType: .positive, text: "0,08 %"), tapAction: {})
+            MarketPriceView(currencySymbol: "ETH", price: "1 847.90$", priceChangeState: .loaded(signType: .positive, text: "0,08 %"), miniChartData: .failedToLoad(error: ""), tapAction: {})
 
-            MarketPriceView(currencySymbol: "ETH", price: "1 234.50$", priceChangeState: .loaded(signType: .neutral, text: "0,0 %"), tapAction: {})
+            MarketPriceView(currencySymbol: "ETH", price: "1 234.50$", priceChangeState: .loaded(signType: .neutral, text: "0,0 %"), miniChartData: .loading, tapAction: {})
 
-            MarketPriceView(currencySymbol: "XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP", price: "1 000 000 000 000 000 000 000 000 000 000 000,33 $", priceChangeState: .loaded(signType: .positive, text: "100000000000,33%"), tapAction: {})
+            MarketPriceView(currencySymbol: "XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP XRP", price: "1 000 000 000 000 000 000 000 000 000 000 000,33 $", priceChangeState: .loaded(signType: .positive, text: "100000000000,33%"), miniChartData: .loaded([0, 1, 5, 3, 4, 9]), tapAction: {})
 
             Spacer()
         }

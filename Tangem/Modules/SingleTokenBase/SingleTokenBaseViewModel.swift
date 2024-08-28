@@ -20,6 +20,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var actionButtons: [FixedSizeButtonWithIconInfo] = []
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
+    @Published private(set) var miniChartData: LoadingValue<[Double]?> = .loading
 
     let exchangeUtility: ExchangeCryptoUtility
     let notificationManager: NotificationManager
@@ -67,6 +68,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     lazy var transactionHistoryMapper = TransactionHistoryMapper(currencySymbol: currencySymbol, walletAddresses: walletModel.wallet.addresses.map { $0.value }, showSign: true)
     lazy var pendingTransactionRecordMapper = PendingTransactionRecordMapper(formatter: BalanceFormatter())
+    lazy var miniChartsProvider = MarketsListChartsHistoryProvider()
 
     init(
         userWalletModel: UserWalletModel,
@@ -141,6 +143,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
                     completionHandler()
                 }
             })
+    }
+
+    func openMarketsTokenDetails() {
+        tokenRouter.openMarketsTokenDetails(for: walletModel)
     }
 
     func onButtonReloadHistory() {
@@ -240,6 +246,7 @@ extension SingleTokenBaseViewModel {
     private func prepareSelf() {
         bind()
         setupActionButtons()
+        setupMiniChart()
         updateActionButtons()
         updatePendingTransactionView()
         performLoadHistory()
@@ -296,6 +303,24 @@ extension SingleTokenBaseViewModel {
             .store(in: &bag)
     }
 
+    private func setupMiniChart() {
+        guard let id = walletModel.tokenItem.id else {
+            miniChartData = .failedToLoad(error: "")
+            return
+        }
+        miniChartsProvider.fetch(for: [id], with: .day)
+
+        miniChartsProvider.$items
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0[id]?[.day] }
+            .withWeakCaptureOf(self)
+            .sink { viewModel, chartsData in
+                viewModel.updateMiniChartState(using: chartsData)
+            }
+            .store(in: &bag)
+    }
+
     private func updatePendingTransactionView() {
         // Only if the transaction history isn't supported
         guard !walletModel.isSupportedTransactionHistory else {
@@ -348,6 +373,20 @@ extension SingleTokenBaseViewModel {
         case .loaded(let records):
             let listItems = transactionHistoryMapper.mapTransactionListItem(from: records)
             transactionHistoryState = .loaded(listItems)
+        }
+    }
+
+    private func updateMiniChartState(using data: MarketsChartModel) {
+        do {
+            let mapper = TokenMarketsHistoryChartMapper()
+
+            let chartPoints = try mapper
+                .mapAndSortValues(from: data)
+                .map(\.price.doubleValue)
+            miniChartData = .loaded(chartPoints)
+        } catch {
+            AppLog.shared.error(error)
+            miniChartData = .failedToLoad(error: error)
         }
     }
 

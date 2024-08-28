@@ -40,7 +40,8 @@ struct TokenDetailsView: View {
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
                 }
 
