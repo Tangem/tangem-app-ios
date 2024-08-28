@@ -9,13 +9,12 @@
 import SwiftUI
 
 struct ActiveStakingViewData {
-    let balance: String
-    let fiatBalance: String
-    let rewardsToClaim: String?
+    let balance: WalletModel.BalanceFormatted
+    let rewards: RewardsState?
 
-    var rewardsToClaimText: String {
-        rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) }
-            ?? Localization.stakingDetailsNoRewardsToClaim
+    enum RewardsState {
+        case noRewards
+        case rewardsToClaim(String)
     }
 }
 
@@ -31,28 +30,33 @@ struct ActiveStakingView: View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
                 Text(Localization.stakingNative)
-                    .lineLimit(1)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 HStack(spacing: 4) {
-                    Text(data.fiatBalance)
-                        .lineLimit(1)
+                    Text(data.balance.fiat)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                    Text(data.balance)
-                        .lineLimit(1)
+                    Text(data.balance.crypto)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 }
 
-                Text(data.rewardsToClaimText)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                switch data.rewards {
+                case .none:
+                    EmptyView()
+                case .noRewards:
+                    Text(Localization.stakingDetailsNoRewardsToClaim)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                case .rewardsToClaim(let string):
+                    Text(Localization.stakingDetailsRewardsToClaim(string))
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                }
             }
+            .lineLimit(1)
 
             Spacer()
 
@@ -67,11 +71,11 @@ struct ActiveStakingView: View {
 #Preview {
     VStack {
         ActiveStakingView(
-            data: ActiveStakingViewData(balance: "5 SOL", fiatBalance: "456.34$", rewardsToClaim: "0,43$"),
+            data: ActiveStakingViewData(balance: .init(crypto: "5 SOL", fiat: "456.34$"), rewards: .rewardsToClaim("0,43$")),
             tapAction: {}
         )
         ActiveStakingView(
-            data: ActiveStakingViewData(balance: "5 SOL", fiatBalance: "456.34$", rewardsToClaim: nil),
+            data: ActiveStakingViewData(balance: .init(crypto: "5 SOL", fiat: "456.34$"), rewards: .noRewards),
             tapAction: {}
         )
     }

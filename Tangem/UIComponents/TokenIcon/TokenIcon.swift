@@ -13,6 +13,7 @@ struct TokenIcon: View {
     let tokenIconInfo: TokenIconInfo
     let size: CGSize
     var isWithOverlays: Bool = true
+    var forceKingfisher: Bool = true
 
     private var imageURL: URL? { tokenIconInfo.imageURL }
     private var customTokenColor: Color? { tokenIconInfo.customTokenColor }
@@ -38,7 +39,7 @@ struct TokenIcon: View {
     }
 
     private var tokenIcon: some View {
-        IconView(url: imageURL, size: size, forceKingfisher: true)
+        IconView(url: imageURL, size: size, forceKingfisher: forceKingfisher)
             .overlay(networkIcon, alignment: .topTrailing)
             .overlay(customTokenIndicator, alignment: .bottomTrailing)
     }

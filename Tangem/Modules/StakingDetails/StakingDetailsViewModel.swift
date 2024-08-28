@@ -304,7 +304,7 @@ private extension StakingDetailsViewModel {
             imageURL: validator.iconURL,
             subtitleType: subtitleType,
             detailsType: .balance(
-                BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
+                .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
                 action: action
             )
         )

@@ -21,6 +21,7 @@ protocol StakingNotificationManager: NotificationManager {
 
 class CommonStakingNotificationManager {
     private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
 
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
     private var stateSubscription: AnyCancellable?
@@ -34,8 +35,9 @@ class CommonStakingNotificationManager {
 
     private weak var delegate: NotificationTapDelegate?
 
-    init(tokenItem: TokenItem) {
+    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
         self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
     }
 }
 
@@ -44,28 +46,68 @@ class CommonStakingNotificationManager {
 private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
-        case .approveTransactionInProgress:
-            show(notification: .approveTransactionInProgress)
-        case .readyToApprove, .readyToStake:
+        case .loading:
             show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
+        case .approveTransactionInProgress:
+            show(notification: .approveTransactionInProgress)
+        case .readyToApprove:
+            show(notification: .stake(
+                tokenSymbol: tokenItem.currencySymbol,
+                rewardScheduleType: yield.rewardScheduleType
+            ))
+        case .readyToStake(let readyToStake):
+            var events: [StakingNotificationEvent] = [
+                .stake(
+                    tokenSymbol: tokenItem.currencySymbol,
+                    rewardScheduleType: yield.rewardScheduleType
+                ),
+            ]
+
+            if readyToStake.isFeeIncluded {
+                let feeFiatValue = feeTokenItem.currencyId.flatMap {
+                    BalanceConverter().convertToFiat(readyToStake.fee, currencyId: $0)
+                }
+
+                let formatter = BalanceFormatter()
+                let cryptoAmountFormatted = formatter.formatCryptoBalance(readyToStake.fee, currencyCode: feeTokenItem.currencySymbol)
+                let fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+                events.append(
+                    .feeWillBeSubtractFromSendingAmount(
+                        cryptoAmountFormatted: cryptoAmountFormatted,
+                        fiatAmountFormatted: fiatAmountFormatted
+                    )
+                )
+            }
+
+            show(events: events)
+
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case .networkError:
+            show(notification: .networkUnreachable)
         }
     }
 
-    func update(state: UnstakingModel.State, yield: YieldInfo) {
-        switch state.action.type {
-        case .stake:
-            break
-        case .unstake:
+    func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
+        switch state {
+        case .loading, .ready:
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
-        case .pending(let pendingActionType):
-            show(notification: .unstake(
-                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
-            ))
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case .networkError:
+            show(notification: .networkUnreachable)
         }
     }
 }
@@ -73,9 +115,18 @@ private extension CommonStakingNotificationManager {
 // MARK: - Show/Hide
 
 private extension CommonStakingNotificationManager {
-    func show(notification event: StakingNotificationEvent) {
-        let input = NotificationsFactory().buildNotificationInput(for: event)
-        notificationInputsSubject.value = [input]
+    func show(notification: StakingNotificationEvent) {
+        show(events: [notification])
+    }
+
+    func show(events: [StakingNotificationEvent]) {
+        let factory = NotificationsFactory()
+
+        notificationInputsSubject.value = events.map { event in
+            factory.buildNotificationInput(for: event) { [weak self] id, actionType in
+                self?.delegate?.didTapNotification(with: id, action: actionType)
+            }
+        }
     }
 }
 
@@ -84,7 +135,7 @@ private extension CommonStakingNotificationManager {
 extension CommonStakingNotificationManager: StakingNotificationManager {
     func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
-            provider.state.removeDuplicates(),
+            provider.state,
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
         )
         .withWeakCaptureOf(self)
@@ -95,12 +146,12 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
 
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
-            provider.statePublisher.removeDuplicates(),
+            provider.statePublisher,
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0, yield: state.1)
+            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
         }
     }
 

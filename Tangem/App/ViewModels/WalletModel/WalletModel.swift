@@ -228,8 +228,8 @@ class WalletModel {
     private var _rate: CurrentValueSubject<Decimal?, Never> = .init(nil)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
-    private let converter = BalanceConverter()
-    private let formatter = BalanceFormatter()
+    let converter = BalanceConverter()
+    let formatter = BalanceFormatter()
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")
@@ -689,120 +689,5 @@ extension WalletModel: TransactionHistoryFetcher {
 
     func clearHistory() {
         _transactionHistoryService?.clearHistory()
-    }
-}
-
-// MARK: - Balance
-
-extension WalletModel {
-    typealias Balance = (crypto: Decimal?, fiat: Decimal?)
-    typealias BalanceFormatted = (crypto: String, fiat: String)
-
-    var allBalance: Balance {
-        let cryptoBalance: Decimal? = {
-            switch (availableBalance.crypto, stakingManager?.state.blockedBalance) {
-            case (.none, _): nil
-            // What we have to do if we have only blocked balance?
-            case (.some(let available), .none): available
-            case (.some(let available), .some(let blocked)): available + blocked
-            }
-        }()
-
-        let fiatBalance: Decimal? = {
-            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
-        }()
-
-        return (crypto: cryptoBalance, fiat: fiatBalance)
-    }
-
-    var availableBalance: Balance {
-        let cryptoBalance: Decimal? = {
-            if state.isNoAccount {
-                return 0
-            }
-
-            return wallet.amounts[amountType]?.value
-        }()
-
-        let fiatBalance: Decimal? = {
-            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
-        }()
-
-        return (crypto: cryptoBalance, fiat: fiatBalance)
-    }
-
-    var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.blockedBalance
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return (crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    var stakedRewardsBalance: Balance {
-        let rewardsToClaim = stakingManagerState.rewardsToClaim
-        let fiatBalance: Decimal? = {
-            guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(rewardsToClaim, currencyId: currencyId)
-        }()
-
-        return (crypto: rewardsToClaim, fiat: fiatBalance)
-    }
-
-    var allBalanceFormatted: BalanceFormatted {
-        formatted(allBalance)
-    }
-
-    var stakedBalanceFormatted: BalanceFormatted {
-        formatted(stakedBalance)
-    }
-
-    var availableBalanceFormatted: BalanceFormatted {
-        formatted(availableBalance)
-    }
-
-    var stakedRewardsBalanceFormatted: BalanceFormatted {
-        formatted(stakedRewardsBalance)
-    }
-
-    private func formatted(_ balance: Balance) -> BalanceFormatted {
-        let cryptoFormatted = formatter.formatCryptoBalance(balance.crypto, currencyCode: tokenItem.currencySymbol)
-        let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
-
-        return (crypto: cryptoFormatted, fiat: fiatFormatted)
-    }
-}
-
-private extension StakingManagerState {
-    var blockedBalance: Decimal? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances.staking().sum()
-    }
-
-    var rewardsToClaim: Decimal? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances.rewards().sum()
     }
 }

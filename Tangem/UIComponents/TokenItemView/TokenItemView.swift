@@ -53,14 +53,24 @@ struct TokenItemView: View {
                         Text(errorMessage)
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                     } else {
-                        LoadableTextView(
-                            state: viewModel.balanceFiat,
-                            font: Fonts.Regular.subheadline,
-                            textColor: Colors.Text.primary1,
-                            loaderSize: .init(width: 40, height: 12),
-                            isSensitiveText: true
-                        )
-                        .layoutPriority(3)
+                        HStack(spacing: 6) {
+                            if viewModel.isStaked {
+                                Assets.stakingMiniIcon.image
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .foregroundColor(Colors.Icon.accent)
+                                    .frame(width: 12, height: 12)
+                            }
+
+                            LoadableTextView(
+                                state: viewModel.balanceFiat,
+                                font: Fonts.Regular.subheadline,
+                                textColor: Colors.Text.primary1,
+                                loaderSize: .init(width: 40, height: 12),
+                                isSensitiveText: true
+                            )
+                            .layoutPriority(3)
+                        }
                     }
                 }
 

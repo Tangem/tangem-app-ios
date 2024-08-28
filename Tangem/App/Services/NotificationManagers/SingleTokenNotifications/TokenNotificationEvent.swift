@@ -20,6 +20,7 @@ enum TokenNotificationEvent: Hashable {
     case hasUnfulfilledRequirements(configuration: UnfulfilledRequirementsConfiguration)
     case staking(tokenSymbol: String, tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, rewardPeriodDaysFormatted: String)
     case manaLevel(currentMana: String, maxMana: String)
+    case maticMigration
 
     static func event(
         for reason: TransactionSendAvailabilityProvider.SendingRestrictions,
@@ -46,7 +47,8 @@ enum TokenNotificationEvent: Hashable {
              .existentialDepositWarning,
              .noAccount,
              .bnbBeaconChainRetirement,
-             .manaLevel:
+             .manaLevel,
+             .maticMigration:
             return nil
         case .notEnoughFeeForTransaction(let configuration):
             let eventConfig = configuration.eventConfiguration
@@ -84,6 +86,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
         case .manaLevel:
             return .string(Localization.koinosManaLevelTitle)
+        case .maticMigration:
+            return .string(Localization.warningMaticMigrationTitle)
         }
     }
 
@@ -122,6 +126,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return Localization.tokenDetailsStakingBlockSubtitle(tokenSymbol, rewardPeriodFormatted)
         case .manaLevel(let currentMana, let maxMana):
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
+        case .maticMigration:
+            return Localization.warningMaticMigrationMessage
         }
     }
 
@@ -133,7 +139,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .existentialDepositWarning,
              .noAccount,
              .bnbBeaconChainRetirement,
-             .manaLevel:
+             .manaLevel,
+             .maticMigration:
             return .secondary
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
@@ -145,7 +152,10 @@ extension TokenNotificationEvent: NotificationEvent {
 
     var icon: NotificationView.MessageIcon {
         switch self {
-        case .networkUnreachable, .someNetworksUnreachable, .bnbBeaconChainRetirement:
+        case .networkUnreachable,
+             .someNetworksUnreachable,
+             .bnbBeaconChainRetirement,
+             .maticMigration:
             return .init(iconType: .image(Assets.attention.image))
         case .rentFee, .noAccount, .existentialDepositWarning, .manaLevel:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -164,7 +174,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .rentFee,
              .existentialDepositWarning,
              .staking,
-             .manaLevel:
+             .manaLevel,
+             .maticMigration:
             return .info
         case .networkUnreachable,
              .someNetworksUnreachable,
@@ -187,7 +198,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
-             .manaLevel:
+             .manaLevel,
+             .maticMigration:
             return false
         }
     }
@@ -230,6 +242,7 @@ extension TokenNotificationEvent {
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
         case .staking: return nil
         case .manaLevel: return nil
+        case .maticMigration: return nil
         }
     }
 
@@ -246,7 +259,8 @@ extension TokenNotificationEvent {
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
-             .manaLevel:
+             .manaLevel,
+             .maticMigration:
             return [:]
         }
     }

@@ -40,4 +40,8 @@ final class PushNotificationsPermissionRequestViewModel: ObservableObject, Ident
         permissionManager.postponePermissionRequest()
         delegate?.didFinishPushNotificationOnboarding()
     }
+
+    func didDismissSheet() {
+        permissionManager.postponePermissionRequest()
+    }
 }
