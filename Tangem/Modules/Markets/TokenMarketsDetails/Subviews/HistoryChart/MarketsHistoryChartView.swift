@@ -103,13 +103,13 @@ struct MarketsHistoryChartView: View {
                 chartView.highlightPerTapEnabled = false
                 chartView.setScaleEnabled(false)
                 chartView.xAxis.drawGridLinesEnabled = false
-                chartView.xAxis.labelPosition = .bottom
                 chartView.xAxis.drawAxisLineEnabled = false
+                chartView.xAxis.labelPosition = .bottom
                 chartView.xAxis.labelFont = UIFonts.Regular.caption2
                 chartView.xAxis.labelTextColor = .textTertiary
                 chartView.xAxis.yOffset = 26.0
                 chartView.xAxis.xOffset = 0.0
-                // TODO: Andrey Fedorov - Disable if custom X axis renderer is used (IOS-7476)
+                chartView.xAxis.firstLastLabelYOffset = 4.0
                 chartView.xAxis.avoidFirstLastClippingEnabled = true
                 // Allows highlight vertical line to be draw outside of the chart minY/maxY (using `verticalHighlightIndicatorInset` property)
                 chartView.clipDataToContentEnabled = false
