@@ -189,7 +189,7 @@ extension TokenNotificationEvent: NotificationEvent {
         }
     }
 
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         // One notification with button action will be added later
         case .networkUnreachable,
@@ -204,13 +204,16 @@ extension TokenNotificationEvent: NotificationEvent {
             return nil
         case .notEnoughFeeForTransaction(let configuration):
             let eventConfig = configuration.eventConfiguration
-            return configuration.isFeeCurrencyPurchaseAllowed
-                ? .openFeeCurrency(currencySymbol: eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol)
-                : nil
+            let currencySymbol = eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol
+            if configuration.isFeeCurrencyPurchaseAllowed {
+                return .init(.openFeeCurrency(currencySymbol: currencySymbol))
+            }
+
+            return nil
         case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
-            return .addHederaTokenAssociation
+            return .init(.addHederaTokenAssociation)
         case .staking:
-            return .stake
+            return .init(.stake)
         }
     }
 }

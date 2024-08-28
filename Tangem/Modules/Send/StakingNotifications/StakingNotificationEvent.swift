@@ -96,12 +96,12 @@ extension StakingNotificationEvent: NotificationEvent {
         }
     }
 
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .networkUnreachable:
-            return .refreshFee
+            return .init(.refreshFee)
         case .validationErrorEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         case .approveTransactionInProgress, .stake, .unstake, .feeWillBeSubtractFromSendingAmount:
             return nil
         }

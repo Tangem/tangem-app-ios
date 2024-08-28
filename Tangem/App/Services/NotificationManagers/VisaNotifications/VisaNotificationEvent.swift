@@ -52,7 +52,9 @@ extension VisaNotificationEvent: NotificationEvent {
         return false
     }
 
-    var buttonActionType: NotificationButtonActionType? { nil }
+    var buttonAction: NotificationButtonAction? {
+        nil
+    }
 }
 
 // MARK: - Analytics
