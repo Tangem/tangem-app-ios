@@ -865,8 +865,8 @@
 "warning_low_signatures_message" = "このカードには%@の署名のみが残っています。資金をすべて引き出す必要があります。";
 "warning_low_signatures_title" = "署名数が少ないです";
 "warning_manage_tokens_legacy_derivation_message" = "異なるネットワーク上のトークンは、異なるアドレスを持つ場合があります。資金を送金する際には、アドレスがネットワークと一致していることを再確認してください。";
-"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
-"warning_matic_migration_title" = "MATIC to POL Migration";
+"warning_matic_migration_message" = "MATICはPOLに移行中です。ただし、期限は設定されておらず、MATICはまだ廃止されていません。MATICトークンを引き続き安全に使用することも、取引所でPOLに交換することもできます。";
+"warning_matic_migration_title" = "MATICからPOLへの移行";
 "warning_missing_derivation_title" = "一部のアドレスが見つかりません";
 "warning_network_unreachable_message" = "現在、ネットワークにアクセスできません。しばらくしてからもう一度お試しください。";
 "warning_network_unreachable_title" = "ネットワークにアクセスできません";

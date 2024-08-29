@@ -865,8 +865,8 @@
 "warning_low_signatures_message" = "Auf dieser Karte sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
 "warning_low_signatures_title" = "Geringe Anzahl von Unterschriften";
 "warning_manage_tokens_legacy_derivation_message" = "Token in verschiedenen Netzwerken können unterschiedliche Adressen haben. Überprüfe bei der Überweisung noch einmal, ob deine Adresse mit der des Netzwerks übereinstimmt.";
-"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
-"warning_matic_migration_title" = "MATIC to POL Migration";
+"warning_matic_migration_message" = "MATIC wird auf POL migriert. Es gibt jedoch keine Frist, und MATIC wird noch nicht abgeschafft. Du kannst MATIC-Token weiterhin verwenden oder sie über eien Exchange gegen POL tauschen.";
+"warning_matic_migration_title" = "Migration von MATIC zu POL";
 "warning_missing_derivation_title" = "Einige Adressen fehlen";
 "warning_network_unreachable_message" = "Das Netzwerk ist derzeit nicht erreichbar. Bitte versuchen Sie es später erneut.";
 "warning_network_unreachable_title" = "Netzwerk ist nicht erreichbar";
