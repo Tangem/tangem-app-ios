@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "Покриття мережевої комісії";
 "send_notification_exceed_balance_text" = "Недостатньо коштів для здійснення переказу, оскільки загальна сума комісії та переказу перевищує наявний баланс";
 "send_notification_exceed_balance_title" = "Сума перевищує баланс";
-"send_notification_existential_deposit_text" = "Рахунок буде видалено з блокчейну, якщо баланс стане нижчим за екзистенційний депозит. Будь ласка, залиште %@ на своєму балансі.";
+"send_notification_existential_deposit_text" = "Для збереження вашого акаунту у блокчейні та захисту від можливих ризиків необхідний баланс не менше %@. Ця сума залишиться на вашому рахунку та не може бути знята.";
 "send_notification_existential_deposit_title" = "Екзистенційний депозит";
 "send_notification_fee_too_high_text" = "Сума комісії в %@ разів перевищує рекомендовану. Переконайтеся, що користувацькі налаштування вірні.";
 "send_notification_fee_too_high_title" = "Встановлена комісія завелика";

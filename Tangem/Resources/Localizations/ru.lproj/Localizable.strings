@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "Покрытие сетевой комиссии";
 "send_notification_exceed_balance_text" = "Недостаточно средств для перевода, так как сумма комиссии и сумма перевода в совокупности больше имеющегося баланса";
 "send_notification_exceed_balance_title" = "Недостаточно средств";
-"send_notification_existential_deposit_text" = "Аккаунт будет удален из блокчейна, если баланс упадет ниже экзистенциального депозита. Пожалуйста, оставьте %@ на балансе.";
+"send_notification_existential_deposit_text" = "Для сохранения вашего аккаунта в блокчейне и защиты от возможных рисков необходим баланс не менее %@. Эта сумма останется на вашем счете и не может быть снята.";
 "send_notification_existential_deposit_title" = "Экзистенциальный депозит";
 "send_notification_fee_too_high_text" = "Сумма комиссии в %@ раз превышает рекомендованную. Убедитесь, что указанная комиссия верна.";
 "send_notification_fee_too_high_title" = "Установлена высокая комиссия";

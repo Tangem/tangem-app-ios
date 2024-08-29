@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "Abdeckung der Netzgebühren";
 "send_notification_exceed_balance_text" = "Unzureichende Mittel für die Überweisung, da die Summe aus Gebühr und Überweisungsbetrag das bestehende Guthaben übersteigt";
 "send_notification_exceed_balance_title" = "Gesamtbetrag übersteigt den Saldo";
-"send_notification_existential_deposit_text" = "Das Konto wird von der Blockchain gelöscht, wenn der Kontostand unter die Mindesteinlage fällt. Bitte belasse %@ auf deinem Konto.";
+"send_notification_existential_deposit_text" = "Ein Guthaben von mindestens %@ ist erforderlich, um dein Konto in der Blockchain aktiv zu halten und Sicherheitsrisiken zu vermeiden. Dieser Betrag verbleibt auf deinem Guthaben und kann nicht abgehoben werden.";
 "send_notification_existential_deposit_title" = "Mindesteinlage";
 "send_notification_fee_too_high_text" = "Der Kommissionsbetrag ist %@ mal der empfohlene Betrag. Stelle sicher, dass die benutzerdefinierten Einstellungen korrekt sind.";
 "send_notification_fee_too_high_title" = "Die individuelle Gebühr ist hoch";
