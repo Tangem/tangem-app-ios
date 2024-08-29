@@ -865,8 +865,6 @@
 "warning_rent_fee_title" = "ネットワーク使用料が必要です";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ は %2$@ ネットワーク内のアセットです。%3$@ 取引を行うには、ネットワーク手数料のために %4$@ (%5$@) を入金する必要があります。";
 "warning_send_blocked_funds_for_fee_title" = "ネットワーク料金をカバーするための%1$@が足りません";
-"warning_solana_fee_message" = "Solanaネットワークが混雑しています。2分以内に取引が完了しない場合は、再度取引を繰り返してください。";
-"warning_solana_fee_title" = "Solanaネットワークアラート";
 "warning_solana_rent_fee_message" = "Solana ネットワークは 2 日ごとに%1$@のレンタル料を請求します。レンタル料を支払えないアカウントはネットワークから削除されます。アカウントに%2$@以上入金すると、無料で使用できます。";
 "warning_some_networks_unreachable_message" = "現在、一部のネットワークにアクセスできません。しばらくしてからもう一度お試しください。";
 "warning_some_networks_unreachable_title" = "一部のネットワークにアクセスできません";

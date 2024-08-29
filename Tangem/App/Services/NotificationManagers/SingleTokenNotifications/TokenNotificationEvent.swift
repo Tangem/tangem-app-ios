@@ -16,7 +16,6 @@ enum TokenNotificationEvent: Hashable {
     case noAccount(message: String)
     case existentialDepositWarning(message: String)
     case notEnoughFeeForTransaction(configuration: NotEnoughFeeConfiguration)
-    case solanaHighImpact
     case bnbBeaconChainRetirement
     case hasUnfulfilledRequirements(configuration: UnfulfilledRequirementsConfiguration)
     case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, description: String)
@@ -55,8 +54,6 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.warningExistentialDepositTitle)
         case .notEnoughFeeForTransaction(let configuration):
             return .string(Localization.warningSendBlockedFundsForFeeTitle(configuration.eventConfiguration.feeAmountTypeName))
-        case .solanaHighImpact:
-            return .string(Localization.warningSolanaFeeTitle)
         case .bnbBeaconChainRetirement:
             return .string(Localization.warningBeaconChainRetirementTitle)
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
@@ -90,8 +87,6 @@ extension TokenNotificationEvent: NotificationEvent {
                 configuration.eventConfiguration.feeAmountTypeName,
                 configuration.eventConfiguration.feeAmountTypeCurrencySymbol
             )
-        case .solanaHighImpact:
-            return Localization.warningSolanaFeeMessage
         case .bnbBeaconChainRetirement:
             return Localization.warningBeaconChainRetirementContent
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(let associationFee)):
@@ -119,7 +114,6 @@ extension TokenNotificationEvent: NotificationEvent {
              .rentFee,
              .existentialDepositWarning,
              .noAccount,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .manaLevel,
              .maticMigration:
@@ -136,7 +130,6 @@ extension TokenNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable,
              .someNetworksUnreachable,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .maticMigration:
             return .init(iconType: .image(Assets.attention.image))
@@ -163,7 +156,6 @@ extension TokenNotificationEvent: NotificationEvent {
         case .networkUnreachable,
              .someNetworksUnreachable,
              .notEnoughFeeForTransaction,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .warning
@@ -179,7 +171,6 @@ extension TokenNotificationEvent: NotificationEvent {
              .existentialDepositWarning,
              .notEnoughFeeForTransaction,
              .noAccount,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
@@ -197,7 +188,6 @@ extension TokenNotificationEvent: NotificationEvent {
              .rentFee,
              .existentialDepositWarning,
              .noAccount,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .manaLevel,
              .maticMigration:
@@ -251,7 +241,6 @@ extension TokenNotificationEvent {
         case .noAccount: return nil
         case .existentialDepositWarning: return nil
         case .notEnoughFeeForTransaction: return .tokenNoticeNotEnoughFee
-        case .solanaHighImpact: return nil
         case .bnbBeaconChainRetirement: return nil
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
         case .staking: return nil
@@ -270,7 +259,6 @@ extension TokenNotificationEvent {
              .rentFee,
              .noAccount,
              .existentialDepositWarning,
-             .solanaHighImpact,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
