@@ -20,7 +20,7 @@ protocol SingleTokenRoutable {
     func openSell(for walletModel: WalletModel)
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel)
     func openExplorer(at url: URL, for walletModel: WalletModel)
-    func openMarketsTokenDetails(for walletModel: WalletModel)
+    func openMarketsTokenDetails(for tokenItem: TokenItem)
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
@@ -129,17 +129,16 @@ final class SingleTokenRouter: SingleTokenRoutable {
         coordinator?.openInSafari(url: url)
     }
 
-    func openMarketsTokenDetails(for walletModel: WalletModel) {
-        // TODO: Add analytics for navigation
-        guard let tokenId = walletModel.tokenItem.id else {
+    func openMarketsTokenDetails(for tokenItem: TokenItem) {
+        guard let tokenId = tokenItem.id else {
             return
         }
 
         let quoteData = quotesRepository.quote(for: tokenId)
         let model = MarketsTokenModel(
             id: tokenId,
-            name: walletModel.name,
-            symbol: walletModel.tokenItem.currencySymbol,
+            name: tokenItem.name,
+            symbol: tokenItem.currencySymbol,
             currentPrice: quoteData?.price,
             priceChangePercentage: MarketsTokenQuoteHelper().makePriceChangeIntervalsDictionary(from: quoteData) ?? [:],
             marketRating: nil,

@@ -31,6 +31,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     var availableActions: [TokenActionType] = []
 
     private let tokenRouter: SingleTokenRoutable
+    private let priceFormatter = MarketsTokenPriceFormatter()
 
     private var priceChangeFormatter = PriceChangeFormatter()
     private var transactionHistoryBag: AnyCancellable?
@@ -41,7 +42,9 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     var amountType: Amount.AmountType { walletModel.amountType }
 
-    var rateFormatted: String { walletModel.rateFormatted }
+    var rateFormatted: String {
+        priceFormatter.formatFiatBalance(walletModel.quote?.price)
+    }
 
     var priceChangeState: TokenPriceChangeView.State {
         guard let change = walletModel.quote?.priceChange24h else {
@@ -144,7 +147,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     /// This method should be overridden to send analytics events for navigation.
     /// Please check `SingleWalletMainContentViewModel` and `TokenDetailsViewModel`
     func openMarketsTokenDetails() {
-        tokenRouter.openMarketsTokenDetails(for: walletModel)
+        tokenRouter.openMarketsTokenDetails(for: walletModel.tokenItem)
     }
 
     func onButtonReloadHistory() {

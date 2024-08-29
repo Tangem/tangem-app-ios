@@ -439,57 +439,40 @@ extension MultiWalletMainContentViewModel: MainViewPage {
 // MARK: Context actions
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
-    // TODO: Refactor to use `TokenActionContextBuilder`
-    func buildContextActions(for tokenItem: TokenItemViewModel) -> [TokenActionType] {
-        guard
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItem.id }),
-            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
-        else {
-            return [.hide]
-        }
-
-        let actionsBuilder = TokenActionListBuilder()
-        let utility = ExchangeCryptoUtility(
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            address: walletModel.defaultAddress,
-            amountType: walletModel.amountType
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [ContextActionSection] {
+        let actionBuilder = TokenContextActionsBuilder()
+        return actionBuilder.buildContextActions(
+            tokenItem: tokenItemViewModel.tokenItem,
+            walletModelId: tokenItemViewModel.id,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: true,
+            canHideToken: canManageTokens
         )
-
-        let canExchange = userWalletModel.config.isFeatureVisible(.exchange)
-        // On the Main view we have to hide send button if we have any sending restrictions
-        let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
-        let canSwap = userWalletModel.config.isFeatureVisible(.swapping) && swapAvailabilityProvider.canSwap(tokenItem: tokenItem.tokenItem) && !walletModel.isCustom
-        let canStake = canStake(walletModel: walletModel)
-        let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
-        let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
-        let canNavigateToMarketsDetails = walletModel.tokenItem.id != nil
-
-        return actionsBuilder.buildTokenContextActions(
-            canExchange: canExchange,
-            canSignTransactions: canSignTransactions,
-            canSend: canSend,
-            canSwap: canSwap,
-            canStake: canStake,
-            canHide: canManageTokens,
-            canNavigateToMarketsDetails: canNavigateToMarketsDetails,
-            isBlockchainReachable: isBlockchainReachable,
-            exchangeUtility: utility
-        )
-    }
-
-    private func canStake(walletModel: WalletModel) -> Bool {
-        StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
     }
 }
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
-    func didTapContextAction(_ action: TokenActionType, for tokenItem: TokenItemViewModel) {
-        if case .hide = action {
-            hideTokenAction(for: tokenItem)
+    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel) {
+        switch action {
+        case .hide:
+            hideTokenAction(for: tokenItemViewModel)
+            return
+        case .marketsDetails:
+            let tokenItem = tokenItemViewModel.tokenItem
+            let analyticsParams: [Analytics.ParameterKey: String] = [
+                .source: Analytics.ParameterValue.longTap.rawValue,
+                .token: tokenItem.currencySymbol,
+                .blockchain: tokenItem.blockchain.displayName,
+            ]
+            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            tokenRouter.openMarketsTokenDetails(for: tokenItem)
+            return
+        default:
+            break
         }
 
         guard
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItem.id })
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id })
         else {
             return
         }
@@ -511,15 +494,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             tokenRouter.openExchange(walletModel: walletModel)
         case .stake:
             tokenRouter.openStaking(walletModel: walletModel)
-        case .marketsDetails:
-            let analyticsParams: [Analytics.ParameterKey: String] = [
-                .source: Analytics.ParameterValue.longTap.rawValue,
-                .token: walletModel.tokenItem.currencySymbol,
-                .blockchain: walletModel.tokenItem.blockchain.displayName,
-            ]
-            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
-            tokenRouter.openMarketsTokenDetails(for: walletModel)
-        case .hide:
+        case .marketsDetails, .hide:
             return
         }
     }

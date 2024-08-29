@@ -8,6 +8,9 @@
 
 import Foundation
 
+// TODO: Replace with actual implementation
+typealias MarketsTokenPriceFormatter = CommonTokenPriceFormatter
+
 struct CommonTokenPriceFormatter {
     private let balanceFormatter = BalanceFormatter()
 }
