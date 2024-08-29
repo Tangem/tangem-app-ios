@@ -737,6 +737,7 @@
 		B645BF3F2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B645BF3D2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift */; };
 		B64781E22C22F74300B0E882 /* CustomTokenContractAddressConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */; };
 		B64959832C414E8900B71164 /* RootViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64959822C414E8900B71164 /* RootViewControllerFactory.swift */; };
+		B64E38692C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */; };
 		B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
 		B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */; };
@@ -2685,6 +2686,7 @@
 		B645BF3D2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartProvider.swift; sourceTree = "<group>"; };
 		B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTokenContractAddressConverter.swift; sourceTree = "<group>"; };
 		B64959822C414E8900B71164 /* RootViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerFactory.swift; sourceTree = "<group>"; };
+		B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentFormatterNumberFormatterRepository.swift; sourceTree = "<group>"; };
 		B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerAnimationFactory.swift; sourceTree = "<group>"; };
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
 		B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentStateObserverViewModifier.swift; sourceTree = "<group>"; };
@@ -8044,6 +8046,7 @@
 			isa = PBXGroup;
 			children = (
 				EFE7D5782AA201CB0047D93A /* PercentFormatter.swift */,
+				B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */,
 			);
 			path = PercentFormatter;
 			sourceTree = "<group>";
@@ -11131,6 +11134,7 @@
 				B05FADF02C4810BB00ED96E5 /* AsyncTaskScheduler.swift in Sources */,
 				DC3DCAEA2A49B5E900F72554 /* CommonUserTokensManager.swift in Sources */,
 				B0FAD01226BAF35C00F45E88 /* FrameSizeModifier.swift in Sources */,
+				B64E38692C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift in Sources */,
 				EFC46F01292669A0003928E3 /* ReceiveCurrencyViewModel.swift in Sources */,
 				DC3B49FA2893EEA600C207EA /* UserWalletConfigFeatures.swift in Sources */,
 				EF8DBCE02C060CCE009072CF /* StakingDependenciesFactory.swift in Sources */,

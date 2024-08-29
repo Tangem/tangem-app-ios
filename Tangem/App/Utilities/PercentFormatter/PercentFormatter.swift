@@ -11,26 +11,38 @@ import Foundation
 struct PercentFormatter {
     private let locale: Locale
 
+    private var repository: PercentFormatterNumberFormatterRepository { .shared }
+
     init(locale: Locale = .current) {
         self.locale = locale
     }
 
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the repository if a new parameter is added to this method.
     func format(_ value: Decimal, option: Option) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        formatter.locale = locale
-        formatter.maximumFractionDigits = option.fractionDigits
-        formatter.minimumFractionDigits = option.fractionDigits
+        let formatter: NumberFormatter
 
-        formatter.negativePrefix = "-"
-        formatter.positivePrefix = "+"
+        if let cachedFormatter = repository.numberFormatter(locale: locale, option: option, uniqueIdentifier: #function) {
+            formatter = cachedFormatter
+        } else {
+            formatter = NumberFormatter()
+            formatter.numberStyle = .percent
+            formatter.locale = locale
+            formatter.maximumFractionDigits = option.fractionDigits
+            formatter.minimumFractionDigits = option.fractionDigits
 
-        formatter.positiveSuffix = " %"
-        formatter.negativeSuffix = " %"
+            formatter.negativePrefix = "-"
+            formatter.positivePrefix = "+"
 
-        if option.clearPrefix {
-            formatter.positivePrefix = ""
-            formatter.negativePrefix = ""
+            formatter.positiveSuffix = " %"
+            formatter.negativeSuffix = " %"
+
+            if option.clearPrefix {
+                formatter.positivePrefix = ""
+                formatter.negativePrefix = ""
+            }
+
+            repository.storeNumberFormatter(formatter, locale: locale, option: option, uniqueIdentifier: #function)
         }
 
         if let formatted = formatter.string(from: value as NSDecimalNumber) {
@@ -40,20 +52,31 @@ struct PercentFormatter {
         return "\(value)%"
     }
 
+    /// - Warning: The internal implementation of this method is using cache;
+    /// therefore don't forget to update the repository if a new parameter is added to this method.
     func formatInterval(min: Decimal, max: Decimal, option: Option) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        formatter.locale = locale
-        formatter.maximumFractionDigits = option.fractionDigits
-        formatter.minimumFractionDigits = option.fractionDigits
+        let formatter: NumberFormatter
 
-        formatter.positivePrefix = ""
-        formatter.negativePrefix = ""
-        formatter.positiveSuffix = ""
-        formatter.negativeSuffix = ""
+        if let cachedFormatter = repository.numberFormatter(locale: locale, option: option, uniqueIdentifier: #function) {
+            formatter = cachedFormatter
+        } else {
+            formatter = NumberFormatter()
+            formatter.numberStyle = .percent
+            formatter.locale = locale
+            formatter.maximumFractionDigits = option.fractionDigits
+            formatter.minimumFractionDigits = option.fractionDigits
+
+            formatter.positivePrefix = ""
+            formatter.negativePrefix = ""
+            formatter.positiveSuffix = ""
+            formatter.negativeSuffix = ""
+
+            repository.storeNumberFormatter(formatter, locale: locale, option: option, uniqueIdentifier: #function)
+        }
 
         let minFormatted = formatter.string(from: min as NSDecimalNumber) ?? "\(min)"
         let maxFormatted = format(max, option: option)
+
         return "\(minFormatted) - \(maxFormatted)"
     }
 }
