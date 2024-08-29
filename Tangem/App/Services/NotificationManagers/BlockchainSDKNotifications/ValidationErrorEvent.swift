@@ -94,7 +94,7 @@ extension ValidationErrorEvent: NotificationEvent {
     }
 
     var colorScheme: NotificationView.ColorScheme {
-        let hasButton = buttonActionType != nil
+        let hasButton = buttonAction != nil
         if hasButton {
             return .action
         }
@@ -147,16 +147,16 @@ extension ValidationErrorEvent: NotificationEvent {
 // MARK: Button
 
 extension ValidationErrorEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .insufficientBalanceForFee(let configuration):
-            return .openFeeCurrency(currencySymbol: configuration.feeAmountTypeCurrencySymbol)
+            return .init(.openFeeCurrency(currencySymbol: configuration.feeAmountTypeCurrencySymbol))
         case .amountExceedMaximumUTXO(let amount, let amountFormatted, _, _):
-            return .reduceAmountTo(amount: amount, amountFormatted: amountFormatted)
+            return .init(.reduceAmountTo(amount: amount, amountFormatted: amountFormatted))
         case .existentialDeposit(let amount, let amountFormatted):
-            return .leaveAmount(amount: amount, amountFormatted: amountFormatted)
+            return .init(.leaveAmount(amount: amount, amountFormatted: amountFormatted))
         case .manaLimit(let available):
-            return .reduceAmountTo(amount: available, amountFormatted: "\(available)")
+            return .init(.reduceAmountTo(amount: available, amountFormatted: "\(available)"))
         case .invalidNumber,
              .insufficientBalance,
              .dustRestriction,

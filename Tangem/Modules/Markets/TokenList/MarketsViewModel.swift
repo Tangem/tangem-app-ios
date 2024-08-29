@@ -46,7 +46,7 @@ final class MarketsViewModel: ObservableObject {
     private let quotesUpdatesScheduler = MarketsQuotesUpdatesScheduler()
     private let imageCache = KingfisherManager.shared.cache
 
-    private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, viewVisibilityPublisher: $isViewVisible, cellsStateUpdater: self)
+    private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, cellsStateUpdater: self)
 
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
@@ -72,7 +72,6 @@ final class MarketsViewModel: ObservableObject {
         searchTextBind(searchTextPublisher: searchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
-        bind()
         dataProviderBind()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -88,17 +87,13 @@ final class MarketsViewModel: ObservableObject {
         onAppearPrepareImageCache()
 
         Analytics.log(.marketsScreenOpened)
+
+        quotesUpdatesScheduler.forceUpdate()
     }
 
     func onBottomSheetDisappear() {
-        dataProvider.reset()
-        // Need reset state bottom sheet for next open bottom sheet
-        fetch(with: "", by: filterProvider.currentFilterValue)
-        currentSearchValue = ""
         isViewVisible = false
-        showItemsBelowCapThreshold = false
-        chartsHistoryProvider.reset()
-        onDisappearPrepareImageCache()
+        quotesUpdatesScheduler.pauseUpdates()
     }
 
     func onShowUnderCapAction() {
@@ -166,29 +161,16 @@ private extension MarketsViewModel {
                     return
                 }
 
-                // If the sorting value has not changed, and order filter for losers or gainers, the order of the list may also change.
+                // If the sorting value has not changed, and order filter for losers or gainers or buyers, the order of the list may also change.
                 // Otherwise, we just get new charts for a given interval.
                 // The charts will also be updated when the list is updated
-                if value.order == .losers || value.order == .gainers {
+                if Constants.filterRequiredReloadInterval.contains(value.order) {
                     viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
                 } else {
                     viewModel.chartsHistoryProvider.fetch(
                         for: viewModel.dataProvider.items.map { $0.id },
                         with: viewModel.filterProvider.currentFilterValue.interval
                     )
-                }
-            }
-            .store(in: &bag)
-    }
-
-    func bind() {
-        $isViewVisible
-            .withWeakCaptureOf(self)
-            .sink { viewModel, isVisible in
-                if isVisible {
-                    viewModel.quotesUpdatesScheduler.resumeUpdates()
-                } else {
-                    viewModel.quotesUpdatesScheduler.pauseUpdates()
                 }
             }
             .store(in: &bag)
@@ -319,11 +301,6 @@ private extension MarketsViewModel {
         imageCache.memoryStorage.config.countLimit = 250
     }
 
-    private func onDisappearPrepareImageCache() {
-        imageCache.memoryStorage.removeAll()
-        imageCache.memoryStorage.config.countLimit = .max
-    }
-
     private func resetUI() {
         showItemsBelowCapThreshold = false
     }
@@ -382,6 +359,7 @@ extension MarketsViewModel: MarketsListStateUpdater {
 private extension MarketsViewModel {
     enum Constants {
         static let marketCapThreshold: Decimal = 100_000.0
+        static let filterRequiredReloadInterval: Set<MarketsListOrderType> = [.buyers, .gainers, .losers]
     }
 }
 

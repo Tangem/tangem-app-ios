@@ -50,10 +50,10 @@ struct CustomSearchBar: View {
                     .keyboardType(keyboardType)
                     .autocorrectionDisabled()
                     .focused($isFocused)
-                    .onChange(of: searchText) { _ in
-                        isEditing = isFocused
-                        onEditingChanged?(isFocused)
-                    }
+                    .onChange(of: isFocused, perform: { newValue in
+                        isEditing = newValue
+                        onEditingChanged?(newValue)
+                    })
 
                 clearButton
             }

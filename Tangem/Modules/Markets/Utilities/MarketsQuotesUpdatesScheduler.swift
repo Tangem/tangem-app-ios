@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import TangemFoundation
 
 class MarketsQuotesUpdatesScheduler {
@@ -17,6 +18,7 @@ class MarketsQuotesUpdatesScheduler {
 
     private var updateList = Set<String>()
     private var task: AsyncTaskScheduler = .init()
+    private var forceUpdateTask: AnyCancellable?
 
     func scheduleQuotesUpdate(for tokenIDs: Set<String>) {
         lock {
@@ -38,6 +40,16 @@ class MarketsQuotesUpdatesScheduler {
 
     func resumeUpdates() {
         setupUpdateTask()
+    }
+
+    func forceUpdate() {
+        task.cancel()
+        forceUpdateTask?.cancel()
+        forceUpdateTask = runTask(in: self, code: { scheduler in
+            await scheduler.updateQuotes()
+            scheduler.setupUpdateTask()
+            scheduler.forceUpdateTask = nil
+        }).eraseToAnyCancellable()
     }
 
     private func setupUpdateTask() {
