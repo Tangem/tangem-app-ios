@@ -146,19 +146,19 @@ extension SendNotificationEvent: NotificationEvent {
 }
 
 extension SendNotificationEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .networkFeeUnreachable:
-            return .refreshFee
+            return .init(.refreshFee)
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
              .customFeeTooLow,
              .accountNotActivated:
             return nil
         case .withdrawalNotificationEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         case .validationErrorEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         }
     }
 }

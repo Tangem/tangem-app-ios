@@ -18,7 +18,7 @@ enum TokenNotificationEvent: Hashable {
     case notEnoughFeeForTransaction(configuration: NotEnoughFeeConfiguration)
     case bnbBeaconChainRetirement
     case hasUnfulfilledRequirements(configuration: UnfulfilledRequirementsConfiguration)
-    case staking(tokenSymbol: String, tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, rewardPeriodDaysFormatted: String)
+    case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, description: String)
     case manaLevel(currentMana: String, maxMana: String)
     case maticMigration
 
@@ -35,30 +35,6 @@ enum TokenNotificationEvent: Hashable {
                 eventConfiguration: eventConfiguration
             )
             return .notEnoughFeeForTransaction(configuration: configuration)
-        }
-    }
-
-    var buttonAction: NotificationButtonActionType? {
-        switch self {
-        // One notification with button action will be added later
-        case .networkUnreachable,
-             .someNetworksUnreachable,
-             .rentFee,
-             .existentialDepositWarning,
-             .noAccount,
-             .bnbBeaconChainRetirement,
-             .manaLevel,
-             .maticMigration:
-            return nil
-        case .notEnoughFeeForTransaction(let configuration):
-            let eventConfig = configuration.eventConfiguration
-            return configuration.isFeeCurrencyPurchaseAllowed
-                ? .openFeeCurrency(currencySymbol: eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol)
-                : nil
-        case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
-            return .addHederaTokenAssociation
-        case .staking:
-            return .stake
         }
     }
 }
@@ -82,7 +58,7 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.warningBeaconChainRetirementTitle)
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .string(Localization.warningHederaMissingTokenAssociationTitle)
-        case .staking(_, _, let earnUpToFormatted, _):
+        case .staking(_, let earnUpToFormatted, _):
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
         case .manaLevel:
             return .string(Localization.koinosManaLevelTitle)
@@ -122,8 +98,8 @@ extension TokenNotificationEvent: NotificationEvent {
                 associationFee.formattedValue,
                 associationFee.currencySymbol
             )
-        case .staking(let tokenSymbol, _, _, let rewardPeriodFormatted):
-            return Localization.tokenDetailsStakingBlockSubtitle(tokenSymbol, rewardPeriodFormatted)
+        case .staking(_, _, let description):
+            return description
         case .manaLevel(let currentMana, let maxMana):
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
         case .maticMigration:
@@ -163,7 +139,7 @@ extension TokenNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Image(configuration.eventConfiguration.feeAmountTypeIconName)))
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .init(iconType: .image(Tokens.hederaFill.image))
-        case .staking(_, let tokenIconInfo, _, _):
+        case .staking(let tokenIconInfo, _, _):
             return .init(iconType: .icon(tokenIconInfo))
         }
     }
@@ -201,6 +177,33 @@ extension TokenNotificationEvent: NotificationEvent {
              .manaLevel,
              .maticMigration:
             return false
+        }
+    }
+
+    var buttonAction: NotificationButtonAction? {
+        switch self {
+        // One notification with button action will be added later
+        case .networkUnreachable,
+             .someNetworksUnreachable,
+             .rentFee,
+             .existentialDepositWarning,
+             .noAccount,
+             .bnbBeaconChainRetirement,
+             .manaLevel,
+             .maticMigration:
+            return nil
+        case .notEnoughFeeForTransaction(let configuration):
+            let eventConfig = configuration.eventConfiguration
+            let currencySymbol = eventConfig.currencyButtonTitle ?? eventConfig.feeAmountTypeCurrencySymbol
+            if configuration.isFeeCurrencyPurchaseAllowed {
+                return .init(.openFeeCurrency(currencySymbol: currencySymbol))
+            }
+
+            return nil
+        case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
+            return .init(.addHederaTokenAssociation)
+        case .staking:
+            return .init(.stake)
         }
     }
 }
