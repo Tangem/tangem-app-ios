@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "Network fee coverage";
 "send_notification_exceed_balance_text" = "Insufficient funds for the transfer, as the total of the fee and transfer amount exceeds the existing balance";
 "send_notification_exceed_balance_title" = "Total exceeds balance";
-"send_notification_existential_deposit_text" = "The account will be wiped from the blockchain if a balance goes below the existential deposit. Please leave %@ on your balance.";
+"send_notification_existential_deposit_text" = "A balance of at least %@ is required to keep your account on the blockchain to prevent security risks. This amount will remain in your balance and cannot be withdrawn.";
 "send_notification_existential_deposit_title" = "Existential deposit";
 "send_notification_fee_too_high_text" = "The commission amount is %@ times the recommended amount. Make sure that the custom settings are correct.";
 "send_notification_fee_too_high_title" = "Custom fee is high";

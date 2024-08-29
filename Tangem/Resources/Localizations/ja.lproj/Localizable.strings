@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "ネットワーク手数料のカバー";
 "send_notification_exceed_balance_text" = "手数料と送金額の合計が残高を超えているため、送金に必要な資金が不足しています。";
 "send_notification_exceed_balance_title" = "合計が残高を超えています";
-"send_notification_existential_deposit_text" = "残高が最低量を下回ると、当アカウントはブロックチェーンから消去されます。残高に%@を残しておいてください。";
+"send_notification_existential_deposit_text" = "セキュリティリスクを防ぐため、ブロックチェーン上にアカウントを維持するには、少なくとも%@ の残高が必要です。この金額は残高に残り、引き出すことはできません。";
 "send_notification_existential_deposit_title" = "アカウント維持に必要な最低残高";
 "send_notification_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。カスタム設定が正しいことを再度確認してください。";
 "send_notification_fee_too_high_title" = "カスタム手数料が高くなっています";

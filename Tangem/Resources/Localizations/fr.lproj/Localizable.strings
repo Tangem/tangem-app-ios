@@ -569,7 +569,7 @@
 "send_network_fee_warning_title" = "Couverture des frais de réseau";
 "send_notification_exceed_balance_text" = "Fonds insuffisants pour le transfert, car le total des frais et du montant du transfert dépasse le solde existant";
 "send_notification_exceed_balance_title" = "Le total dépasse le solde";
-"send_notification_existential_deposit_text" = "Le compte sera effacé de la blockchain si un solde descend en dessous du dépôt existentiel. Veuillez en laisser %@ sur votre solde.";
+"send_notification_existential_deposit_text" = "Un solde d'au moins %@ est requis pour conserver votre compte sur la blockchain afin d'éviter les risques de sécurité. Ce montant restera sur votre solde et ne pourra pas être retiré.";
 "send_notification_existential_deposit_title" = "Dépôt existentiel";
 "send_notification_fee_too_high_text" = "Le montant de la commission est %@ fois le montant recommandé. Assurez-vous que les paramètres personnalisés sont corrects.";
 "send_notification_fee_too_high_title" = "Les frais de douane sont élevés";
