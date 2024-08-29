@@ -439,6 +439,7 @@ extension MultiWalletMainContentViewModel: MainViewPage {
 // MARK: Context actions
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
+    // TODO: Refactor to use `TokenActionContextBuilder`
     func buildContextActions(for tokenItem: TokenItemViewModel) -> [TokenActionType] {
         guard
             let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItem.id }),
@@ -461,6 +462,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
         let canStake = canStake(walletModel: walletModel)
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
+        let canNavigateToMarketsDetails = walletModel.tokenItem.id != nil
 
         return actionsBuilder.buildTokenContextActions(
             canExchange: canExchange,
@@ -469,6 +471,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
             canSwap: canSwap,
             canStake: canStake,
             canHide: canManageTokens,
+            canNavigateToMarketsDetails: canNavigateToMarketsDetails,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility
         )
@@ -508,6 +511,14 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             tokenRouter.openExchange(walletModel: walletModel)
         case .stake:
             tokenRouter.openStaking(walletModel: walletModel)
+        case .marketsDetails:
+            let analyticsParams: [Analytics.ParameterKey: String] = [
+                .source: Analytics.ParameterValue.longTap.rawValue,
+                .token: walletModel.tokenItem.currencySymbol,
+                .blockchain: walletModel.tokenItem.blockchain.displayName,
+            ]
+            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            tokenRouter.openMarketsTokenDetails(for: walletModel)
         case .hide:
             return
         }

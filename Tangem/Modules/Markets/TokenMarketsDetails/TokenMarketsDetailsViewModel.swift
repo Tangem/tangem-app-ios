@@ -169,10 +169,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // MARK: - Actions
 
-    func onAppear() {
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
-    }
-
     func loadDetailedInfo() {
         isLoading = true
         loadingTask?.cancel()

@@ -17,7 +17,11 @@ struct TokenActionContextBuilder {
 // MARK: - TokenItemContextActionsProvider
 
 extension TokenActionContextBuilder {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletModel: UserWalletModel) -> [TokenActionType] {
+    func buildContextActions(
+        for walletModelId: WalletModelId,
+        with userWalletModel: UserWalletModel,
+        canNavigateToMarketsDetails: Bool
+    ) -> [TokenActionType] {
         guard
             let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
@@ -52,6 +56,7 @@ extension TokenActionContextBuilder {
             canSwap: canSwap,
             canStake: canStake,
             canHide: false,
+            canNavigateToMarketsDetails: canNavigateToMarketsDetails,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility
         )

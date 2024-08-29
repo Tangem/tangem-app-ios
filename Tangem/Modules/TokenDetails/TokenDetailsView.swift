@@ -35,7 +35,7 @@ struct TokenDetailsView: View {
                         .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,

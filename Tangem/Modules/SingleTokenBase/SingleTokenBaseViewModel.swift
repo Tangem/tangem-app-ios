@@ -58,12 +58,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         amountType.token?.symbol ?? blockchainNetwork.blockchain.currencySymbol
     }
 
-    var isMarketPriceAvailable: Bool {
-        if case .token(let token) = amountType {
-            return token.id != nil
-        } else {
-            return true
-        }
+    var isMarketsDetailsAvailable: Bool {
+        walletModel.tokenItem.id != nil
     }
 
     lazy var transactionHistoryMapper = TransactionHistoryMapper(currencySymbol: currencySymbol, walletAddresses: walletModel.wallet.addresses.map { $0.value }, showSign: true)
@@ -145,6 +141,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             })
     }
 
+    /// This method should be overridden to send analytics events for navigation.
+    /// Please check `SingleWalletMainContentViewModel` and `TokenDetailsViewModel`
     func openMarketsTokenDetails() {
         tokenRouter.openMarketsTokenDetails(for: walletModel)
     }
@@ -402,7 +400,7 @@ extension SingleTokenBaseViewModel {
             return isSwapDisabled()
         case .sell:
             return sendIsDisabled() || !exchangeUtility.sellAvailable
-        case .copyAddress, .hide, .stake:
+        case .copyAddress, .hide, .stake, .marketsDetails:
             return true
         }
     }
@@ -414,7 +412,7 @@ extension SingleTokenBaseViewModel {
         case .receive: return openReceive
         case .exchange: return openExchangeAndLogAnalytics
         case .sell: return openSell
-        case .copyAddress, .hide, .stake: return nil
+        case .copyAddress, .hide, .stake, .marketsDetails: return nil
         }
     }
 
@@ -422,7 +420,7 @@ extension SingleTokenBaseViewModel {
         switch buttonType {
         case .receive:
             return weakify(self, forFunction: SingleTokenBaseViewModel.copyDefaultAddress)
-        case .buy, .send, .exchange, .sell, .copyAddress, .hide, .stake:
+        case .buy, .send, .exchange, .sell, .copyAddress, .hide, .stake, .marketsDetails:
             return nil
         }
     }

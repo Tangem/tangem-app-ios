@@ -160,7 +160,11 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             return []
         }
 
-        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
+        let actions = tokenActionContextBuilder.buildContextActions(
+            for: walletModelId,
+            with: userWalletModel,
+            canNavigateToMarketsDetails: false
+        )
         return actions
     }
 }
@@ -196,7 +200,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
             coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide:
+        case .hide, .marketsDetails:
             return
         }
     }

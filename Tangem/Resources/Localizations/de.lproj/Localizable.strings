@@ -68,6 +68,7 @@
 "common_access_denied" = "Zugang verweigert";
 "common_all" = "Alle";
 "common_allow" = "Erlauben";
+"common_analytics" = "Analytics";
 "common_apply" = "Anwenden";
 "common_approval" = "Genehmigung";
 "common_approve" = "Genehmigen";

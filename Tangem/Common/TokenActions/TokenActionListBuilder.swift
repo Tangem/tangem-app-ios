@@ -38,6 +38,7 @@ struct TokenActionListBuilder {
         canSwap: Bool,
         canStake: Bool,
         canHide: Bool,
+        canNavigateToMarketsDetails: Bool,
         isBlockchainReachable: Bool,
         exchangeUtility: ExchangeCryptoUtility
     ) -> [TokenActionType] {
@@ -67,6 +68,10 @@ struct TokenActionListBuilder {
 
         if canSend, canExchange, canSell {
             availableActions.append(.sell)
+        }
+
+        if canNavigateToMarketsDetails {
+            availableActions.append(.marketsDetails)
         }
 
         if canHide {

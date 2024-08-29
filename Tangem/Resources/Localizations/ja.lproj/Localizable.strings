@@ -68,6 +68,7 @@
 "common_access_denied" = "アクセスが拒否されました";
 "common_all" = "すべて";
 "common_allow" = "許可する";
+"common_analytics" = "Analytics";
 "common_apply" = "適用する";
 "common_approval" = "承認";
 "common_approve" = "承認";

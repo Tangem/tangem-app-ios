@@ -68,6 +68,7 @@
 "common_access_denied" = "Доступ запрещен";
 "common_all" = "Все";
 "common_allow" = "Разрешить";
+"common_analytics" = "Аналитика";
 "common_apply" = "Применить";
 "common_approval" = "Одобрение";
 "common_approve" = "Подтвердить";
