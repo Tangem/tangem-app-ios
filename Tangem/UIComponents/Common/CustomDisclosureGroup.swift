@@ -26,7 +26,7 @@ struct CustomDisclosureGroup<Prompt: View, ExpandedView: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
+        VStack(alignment: .leading, spacing: .zero) {
             prompt
 
             if isExpanded {

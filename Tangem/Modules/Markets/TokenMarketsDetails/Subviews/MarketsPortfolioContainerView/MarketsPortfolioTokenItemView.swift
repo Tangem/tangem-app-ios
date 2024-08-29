@@ -14,16 +14,13 @@ struct MarketsPortfolioTokenItemView: View {
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
-                viewModel.isExpandedQuickActions.toggle()
-            } prompt: {
-                tokenView
-            } expandedView: {
-                quickActionsView
-            }
+        CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
+            viewModel.isExpandedQuickActions.toggle()
+        } prompt: {
+            tokenView
+        } expandedView: {
+            quickActionsView
         }
-        .padding(.horizontal, .zero)
     }
 
     private var tokenView: some View {
@@ -115,20 +112,30 @@ struct MarketsPortfolioTokenItemView: View {
     }
 
     private var quickActionsView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
+        ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
+            VStack(alignment: .leading, spacing: .zero) {
+                // It is necessary to draw the indentation with a strip
+                makeLineRowActionItem()
+
+                // Directly in the view of the fastest action
                 Button {
                     viewModel.didTapContextAction(action)
                 } label: {
                     makeQuickActionItem(for: action, at: index)
                 }
+
+                // Lower indentation
+                if index == viewModel.contextActions.count {
+                    Spacer()
+                        .frame(width: 12)
+                }
             }
+            .offset(y: -12)
         }
-        .padding(.bottom, 12)
     }
 
     private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {
-        HStack(spacing: Constants.quickActionIconContentSpacerLength) {
+        HStack(spacing: 16.0) {
             actionType.icon.image
                 .renderingMode(.template)
                 .resizable()
@@ -148,6 +155,7 @@ struct MarketsPortfolioTokenItemView: View {
 
                 if let description = actionType.description {
                     Text(description)
+                        .multilineTextAlignment(.leading)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
             }
@@ -155,11 +163,25 @@ struct MarketsPortfolioTokenItemView: View {
             Spacer()
         }
     }
+
+    private func makeLineRowActionItem() -> some View {
+        HStack(alignment: .center) {
+            Spacer()
+                .frame(width: 18)
+
+            Rectangle()
+                .fill(Colors.Stroke.primary)
+                .frame(width: 1, height: 16)
+                .padding(.vertical, 4)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
 }
 
 private extension MarketsPortfolioTokenItemView {
     enum Constants {
         static let spacerLength = 8.0
-        static let quickActionIconContentSpacerLength = 16.0
     }
 }
