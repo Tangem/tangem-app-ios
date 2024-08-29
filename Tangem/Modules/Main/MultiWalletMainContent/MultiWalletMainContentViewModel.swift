@@ -439,7 +439,7 @@ extension MultiWalletMainContentViewModel: MainViewPage {
 // MARK: Context actions
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [ContextActionSection] {
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection] {
         let actionBuilder = TokenContextActionsBuilder()
         return actionBuilder.buildContextActions(
             tokenItem: tokenItemViewModel.tokenItem,

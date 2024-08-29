@@ -162,7 +162,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [ContextActionSection] {
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenContextActionsSection] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }

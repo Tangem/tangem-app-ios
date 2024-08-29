@@ -13,17 +13,11 @@ import BlockchainSdk
 typealias WalletModelId = Int
 
 protocol TokenItemContextActionsProvider: AnyObject {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [ContextActionSection]
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
 
 protocol TokenItemContextActionDelegate: AnyObject {
     func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel)
-}
-
-struct ContextActionSection: Identifiable, Hashable {
-    let items: [TokenActionType]
-
-    var id: Int { hashValue }
 }
 
 final class TokenItemViewModel: ObservableObject, Identifiable {
@@ -34,7 +28,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
-    @Published var contextActionSections: [ContextActionSection] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
     @Published var isStaked: Bool = false
 
     @Published private var missingDerivation: Bool = false

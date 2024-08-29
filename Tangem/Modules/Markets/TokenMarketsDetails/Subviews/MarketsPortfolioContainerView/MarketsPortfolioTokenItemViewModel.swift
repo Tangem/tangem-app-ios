@@ -16,7 +16,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published var balanceCrypto: LoadableTextView.State = .loading
     @Published var balanceFiat: LoadableTextView.State = .loading
 
-    @Published var contextActionSections: [ContextActionSection] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
 
     @Published var hasPendingTransactions: Bool = false
 

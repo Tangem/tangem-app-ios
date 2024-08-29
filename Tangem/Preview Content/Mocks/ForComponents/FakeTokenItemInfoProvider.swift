@@ -62,7 +62,7 @@ class FakeTokenItemInfoProvider: ObservableObject {
 }
 
 extension FakeTokenItemInfoProvider: TokenItemContextActionsProvider, TokenItemContextActionDelegate {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [ContextActionSection] {
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection] {
         [.init(items: [.copyAddress, .hide])]
     }
 
