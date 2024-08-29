@@ -237,7 +237,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
             if hasExternalURL {
                 let input = notificationFactory.buildNotificationInput(
-                    for: .cexOperationFailed,
+                    for: ExpressNotificationEvent.cexOperationFailed,
                     buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
                 )
 
@@ -247,7 +247,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         case .verificationRequired:
             showGoToProviderHeaderButton = false
             let input = notificationFactory.buildNotificationInput(
-                for: .verificationRequired,
+                for: ExpressNotificationEvent.verificationRequired,
                 buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
             )
 
@@ -261,7 +261,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
         if let refundedTokenItem {
             let input = notificationFactory.buildNotificationInput(
-                for: .refunded(tokenItem: refundedTokenItem),
+                for: ExpressNotificationEvent.refunded(tokenItem: refundedTokenItem),
                 buttonAction: weakify(self, forFunction: PendingExpressTxStatusBottomSheetViewModel.didTapNotification(with:action:))
             )
 

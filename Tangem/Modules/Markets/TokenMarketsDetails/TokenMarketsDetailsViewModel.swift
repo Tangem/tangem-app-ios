@@ -135,7 +135,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         bind()
         loadDetailedInfo()
-        makePreloadBlocksViewModels()
         makeHistoryChartViewModel()
         bindToHistoryChartViewModel()
     }
@@ -223,7 +222,7 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
-        portfolioViewModel?.updateState(with: model.coinModel)
+        makePortfolioViewModel(using: model)
     }
 
     @MainActor
@@ -336,22 +335,6 @@ private extension TokenMarketsDetailsViewModel {
             .store(in: &bag)
     }
 
-    func makePreloadBlocksViewModels() {
-        portfolioViewModel = .init(
-            walletDataProvider: walletDataProvider,
-            coordinator: coordinator,
-            addTokenTapAction: { [weak self] in
-                guard let self, let coinModel = loadedInfo?.coinModel else {
-                    return
-                }
-
-                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
-
-                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
-            }
-        )
-    }
-
     func makeHistoryChartViewModel() {
         let historyChartProvider = CommonMarketsHistoryChartProvider(
             tokenId: tokenInfo.id,
@@ -390,6 +373,23 @@ private extension TokenMarketsDetailsViewModel {
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
+    }
+
+    func makePortfolioViewModel(using model: TokenMarketsDetailsModel) {
+        portfolioViewModel = .init(
+            inputData: .init(coinId: model.id, networks: model.availableNetworks),
+            walletDataProvider: walletDataProvider,
+            coordinator: coordinator,
+            addTokenTapAction: { [weak self] in
+                guard let self, let info = loadedInfo else {
+                    return
+                }
+
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: info.symbol])
+
+                coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
+            }
+        )
     }
 
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {

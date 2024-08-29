@@ -93,6 +93,15 @@ final class SingleTokenNotificationManager {
             )
         }
 
+        /// We can't use `Blockchain.polygon(testnet: false).currencySymbol` here
+        /// because it will be changed after some time to `"POL"`
+        // TODO: https://tangem.atlassian.net/browse/IOS-7695
+        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic,
+           walletModel.tokenItem.isToken,
+           walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
+            events.append(.maticMigration)
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -154,7 +163,7 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject
             .send([
                 factory.buildNotificationInput(
-                    for: .networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
                     dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
                 ),
             ])
@@ -197,7 +206,7 @@ final class SingleTokenNotificationManager {
 
         let factory = NotificationsFactory()
         let input = factory.buildNotificationInput(
-            for: .rentFee(rentMessage: rentMessage),
+            for: TokenNotificationEvent.rentFee(rentMessage: rentMessage),
             dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
         )
         return input
@@ -265,5 +274,13 @@ extension SingleTokenNotificationManager: NotificationManager {
 
     func dismissNotification(with id: NotificationViewId) {
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+}
+
+// MARK: - Constants
+
+private extension SingleTokenNotificationManager {
+    enum CurrencySymbol {
+        static let matic = "MATIC"
     }
 }

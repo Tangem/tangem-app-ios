@@ -27,10 +27,6 @@ extension Decimal {
         (rounded(roundingMode: roundingMode) as NSDecimalNumber).intValue
     }
 
-    func isEqual(to value: Decimal, delta: Decimal) -> Bool {
-        abs(self - value) <= delta
-    }
-
     /// Parses given string using a fixed `en_US_POSIX` locale.
     /// - Note: Prefer this initializer to the `init?(string:locale:)` or `init?(_:)`.
     init?(stringValue: String?) {

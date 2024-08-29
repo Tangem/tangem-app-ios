@@ -86,39 +86,29 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     private func setupInsights() {
         let amountNotationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
 
+        func makeRecord(value: Decimal?, type: MarketsTokenDetailsInsightsView.RecordType, numberFormatter: NumberFormatter) -> MarketsTokenDetailsInsightsView.RecordInfo? {
+            guard let value else {
+                return nil
+            }
+
+            let recordData = notationFormatter.format(
+                value,
+                notationFormatter: amountNotationFormatter,
+                numberFormatter: numberFormatter,
+                addingSignPrefix: true
+            )
+
+            return .init(type: type, recordData: recordData)
+        }
+
         intervalInsights = availableIntervals.reduce(into: [:]) { partialResult, interval in
-            let buyers = notationFormatter.format(
-                insights.experiencedBuyers[interval],
-                notationFormatter: amountNotationFormatter,
-                numberFormatter: nonCurrencyFormatter,
-                addingSignPrefix: true
-            )
-            let holders = notationFormatter.format(
-                insights.holders[interval],
-                notationFormatter: amountNotationFormatter,
-                numberFormatter: nonCurrencyFormatter,
-                addingSignPrefix: true
-            )
-
-            let liquidity = notationFormatter.format(
-                insights.liquidity[interval],
-                notationFormatter: amountNotationFormatter,
-                numberFormatter: fiatAmountFormatter,
-                addingSignPrefix: true
-            )
-            let buyPressure = notationFormatter.format(
-                insights.buyPressure[interval],
-                notationFormatter: amountNotationFormatter,
-                numberFormatter: fiatAmountFormatter,
-                addingSignPrefix: true
-            )
-
-            partialResult[interval] = [
-                .init(type: .buyers, recordData: buyers),
-                .init(type: .buyPressure, recordData: buyPressure),
-                .init(type: .holdersChange, recordData: holders),
-                .init(type: .liquidity, recordData: liquidity),
+            let records: [MarketsTokenDetailsInsightsView.RecordInfo?] = [
+                makeRecord(value: insights.experiencedBuyers[interval], type: .buyers, numberFormatter: nonCurrencyFormatter),
+                makeRecord(value: insights.holders[interval], type: .holdersChange, numberFormatter: nonCurrencyFormatter),
+                makeRecord(value: insights.liquidity[interval], type: .liquidity, numberFormatter: fiatAmountFormatter),
+                makeRecord(value: insights.buyPressure[interval], type: .buyPressure, numberFormatter: fiatAmountFormatter),
             ]
+            partialResult[interval] = records.compactMap { $0 }
         }
     }
 

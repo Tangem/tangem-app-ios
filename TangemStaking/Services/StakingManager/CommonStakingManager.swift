@@ -156,7 +156,7 @@ private extension CommonStakingManager {
 
         let transactionType: TransactionType = {
             switch type {
-            case .withdraw: .unstake
+            case .withdraw: .withdraw
             case .claimRewards: .claimRewards
             case .restakeRewards: .restakeRewards
             }

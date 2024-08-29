@@ -329,19 +329,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         subscribeToScreenshots()
     }
 
-    private func loadImageForRestoredbackup(cardId: String, cardPublicKey: Data) {
-        CardImageProvider()
-            .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
-            .map { $0.image }
-            .assign(to: \.cardImage, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
-    override func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        super.loadImage(supportsOnlineImage: supportsOnlineImage, cardId: cardId, cardPublicKey: cardPublicKey)
-        secondImage = nil
-    }
-
     override func setupContainer(with size: CGSize) {
         stackCalculator.setup(
             for: size,
@@ -691,8 +678,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 Future { [weak self] promise in
                     self?.backupService.addBackupCard { result in
                         switch result {
-                        case .success:
-                            promise(.success(()))
+                        case .success(let card):
+                            promise(.success(card))
                         case .failure(let error):
                             promise(.failure(error))
                         }
@@ -708,12 +695,30 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                     self?.isMainButtonBusy = false
                 }
                 self?.stepPublisher = nil
-            }, receiveValue: { [weak self] (_: Void, _: Notification) in
+            }, receiveValue: { [weak self] card, _ in
+                self?.loadImage(for: card)
                 self?.updateStep()
                 withAnimation {
                     self?.isMainButtonBusy = false
                 }
             })
+    }
+
+    private func loadImage(for card: Card) {
+        let input = OnboardingInput.ImageLoadInput(
+            supportsOnlineImage: true,
+            cardId: card.cardId,
+            cardPublicKey: card.cardPublicKey
+        )
+
+        switch backupService.addedBackupCardsCount {
+        case 1:
+            loadSecondImage(imageLoadInput: input)
+        case 2:
+            loadThirdImage(imageLoadInput: input)
+        default:
+            break
+        }
     }
 
     private func backupCard() {
@@ -834,6 +839,34 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             self?.isMainButtonBusy = false
             withExtendedLifetime(interactor) {}
         }
+    }
+
+    private func loadSecondImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.secondImage = image
+            }
+        }
+        .store(in: &bag)
+    }
+
+    private func loadThirdImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.thirdImage = image
+            }
+        }
+        .store(in: &bag)
     }
 }
 
