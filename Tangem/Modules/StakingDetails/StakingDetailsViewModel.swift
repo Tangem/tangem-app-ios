@@ -24,6 +24,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published private(set) var unstakedValidators: [ValidatorViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
+    @Published var actionButtonDisabled: Bool = false
     @Published var actionButtonType: ActionButtonType?
     @Published var actionSheet: ActionSheetBinder?
 
@@ -94,6 +95,25 @@ private extension StakingDetailsViewModel {
                 viewModel.setupView(state: state)
             }
             .store(in: &bag)
+
+        walletModel
+            .walletDidChangePublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, state in
+                viewModel.setupMainActionButton(state: state)
+            }
+            .store(in: &bag)
+    }
+
+    func setupMainActionButton(state: WalletModel.State) {
+        switch state {
+        case .created, .loading:
+            break
+        case .idle, .failed, .noAccount, .noDerivation:
+            let hasBalance = (walletModel.availableBalance.crypto ?? 0) > 0
+            actionButtonDisabled = !hasBalance
+        }
     }
 
     func setupView(state: StakingManagerState) {
@@ -141,12 +161,7 @@ private extension StakingDetailsViewModel {
             ),
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAvailable,
-                detailsType: .text(
-                    balanceFormatter.formatCryptoBalance(
-                        walletModel.availableBalance.crypto,
-                        currencyCode: walletModel.tokenItem.currencySymbol
-                    )
-                )
+                detailsType: .text(walletModel.availableBalanceFormatted.crypto)
             ),
         ]
 
