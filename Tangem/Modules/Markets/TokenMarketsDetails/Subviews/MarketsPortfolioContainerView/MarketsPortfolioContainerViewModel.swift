@@ -134,6 +134,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
 
+    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
     private func quickActionDisclosureHandler(_ viewModelId: Int) {
         let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
 
@@ -162,9 +163,9 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
         }
 
         let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
-        let targetActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
+        let targetActions = [TokenActionType.buy, TokenActionType.exchange, TokenActionType.receive]
 
-        return actions.filter { targetActions.contains($0) }
+        return targetActions.filter { actions.contains($0) }
     }
 }
 

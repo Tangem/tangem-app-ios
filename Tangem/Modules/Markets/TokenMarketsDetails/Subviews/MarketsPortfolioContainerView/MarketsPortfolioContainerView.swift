@@ -11,8 +11,6 @@ import SwiftUI
 struct MarketsPortfolioContainerView: View {
     @ObservedObject var viewModel: MarketsPortfolioContainerViewModel
 
-    @State var isExpandedQuickActions: Bool = false
-
     // MARK: - UI
 
     var body: some View {
@@ -50,7 +48,7 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.leading, 8)
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
-                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.cornerRadius)
+                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.buttonCornerRadius)
                 }
             }
         }
@@ -121,7 +119,7 @@ extension MarketsPortfolioContainerView {
 
 private extension MarketsPortfolioContainerView {
     enum Constants {
-        static let cornerRadius: CGFloat = 8.0
+        static let buttonCornerRadius: CGFloat = 8.0
         static let headerContentSpacing: CGFloat = 12.0
     }
 }
