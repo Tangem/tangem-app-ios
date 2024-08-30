@@ -8,46 +8,27 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class CommonUnstakingStepsManager {
-    private let provider: UnstakingModelStateProvider
-
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
+    private let action: UnstakingModel.Action
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
     private weak var output: SendStepsManagerOutput?
 
     init(
-        provider: UnstakingModelStateProvider,
         summaryStep: SendSummaryStep,
-        finishStep: SendFinishStep
+        finishStep: SendFinishStep,
+        action: UnstakingModel.Action
     ) {
-        self.provider = provider
         self.summaryStep = summaryStep
         self.finishStep = finishStep
+        self.action = action
 
         stack = [summaryStep]
-        bind()
-    }
-
-    private func bind() {
-        provider.state
-            .withWeakCaptureOf(self)
-            .sink { manager, state in
-                switch state {
-                case .unstaking:
-                    manager.output?.update(flowActionType: .unstake)
-
-                case .withdraw:
-                    manager.output?.update(flowActionType: .withdraw)
-
-                case .claim:
-                    manager.output?.update(flowActionType: .claimRewards)
-                }
-            }
-            .store(in: &bag)
     }
 
     private func next(step: SendStep) {
@@ -67,7 +48,21 @@ class CommonUnstakingStepsManager {
 extension CommonUnstakingStepsManager: SendStepsManager {
     var initialKeyboardState: Bool { false }
 
-    var initialFlowActionType: SendFlowActionType { .unstake }
+    var initialFlowActionType: SendFlowActionType {
+        switch action.type {
+        case .unstake:
+            return .unstake
+        case .pending(.withdraw):
+            return .withdraw
+        case .pending(.claimRewards):
+            return .claimRewards
+        case .pending(.restakeRewards):
+            return .restakeRewards
+        case .stake:
+            assertionFailure("Doesn't support in UnstakingFlow")
+            return .unstake
+        }
+    }
 
     var initialState: SendStepsManagerViewState {
         .init(step: summaryStep, action: .action, backButtonVisible: false)

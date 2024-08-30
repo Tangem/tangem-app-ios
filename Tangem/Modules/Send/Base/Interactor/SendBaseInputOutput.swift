@@ -12,9 +12,9 @@ import Combine
 protocol SendBaseInput: AnyObject {
     var isFeeIncluded: Bool { get }
 
-    var isLoading: AnyPublisher<Bool, Never> { get }
+    var actionInProcessing: AnyPublisher<Bool, Never> { get }
 }
 
 protocol SendBaseOutput: AnyObject {
-    func sendTransaction() async throws -> SendTransactionDispatcherResult
+    func performAction() async throws -> SendTransactionDispatcherResult
 }

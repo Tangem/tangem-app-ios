@@ -16,6 +16,7 @@ protocol NotificationEvent: Identifiable {
     var icon: NotificationView.MessageIcon { get }
     var severity: NotificationView.Severity { get }
     var isDismissable: Bool { get }
+    var buttonAction: NotificationButtonAction? { get }
     // TODO: Discuss analytics refactoring, probably we should combine all related data into single struct
     var analyticsEvent: Analytics.Event? { get }
     var analyticsParams: [Analytics.ParameterKey: String] { get }

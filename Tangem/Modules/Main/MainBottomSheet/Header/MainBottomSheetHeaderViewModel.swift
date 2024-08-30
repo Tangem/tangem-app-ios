@@ -23,8 +23,5 @@ final class MainBottomSheetHeaderViewModel: ObservableObject {
         }
     }
 
-    func onBottomSheetDisappear() {
-        // Needed to clear the token search field after the bottom sheet is collapsed
-        enteredSearchText = ""
-    }
+    func onBottomSheetDisappear() {}
 }

@@ -35,7 +35,7 @@ extension WithdrawalNotificationEvent: NotificationEvent {
     }
 
     var colorScheme: NotificationView.ColorScheme {
-        let hasButton = buttonActionType != nil
+        let hasButton = buttonAction != nil
         if hasButton {
             return .action
         }
@@ -67,10 +67,10 @@ extension WithdrawalNotificationEvent: NotificationEvent {
 // MARK: Button
 
 extension WithdrawalNotificationEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .reduceAmountBecauseFeeIsTooHigh(let amount, let amountFormatted, _):
-            return .reduceAmountBy(amount: amount, amountFormatted: amountFormatted)
+            return .init(.reduceAmountBy(amount: amount, amountFormatted: amountFormatted))
         case .cardanoWillBeSendAlongToken:
             return nil
         }

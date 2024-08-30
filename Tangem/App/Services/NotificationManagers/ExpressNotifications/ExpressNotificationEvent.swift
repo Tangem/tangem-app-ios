@@ -186,20 +186,20 @@ extension ExpressNotificationEvent: NotificationEvent {
         }
     }
 
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .notEnoughFeeForTokenTx(_, let mainTokenSymbol, _):
-            return .openFeeCurrency(currencySymbol: mainTokenSymbol)
+            return .init(.openFeeCurrency(currencySymbol: mainTokenSymbol))
         case .refreshRequired:
-            return .refresh
+            return .init(.refresh, withLoader: true)
         case .verificationRequired, .cexOperationFailed:
-            return .goToProvider
+            return .init(.goToProvider)
         case .validationErrorEvent(let event, _):
-            return event.buttonActionType
+            return event.buttonAction
         case .withdrawalNotificationEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         case .refunded:
-            return .openCurrency
+            return .init(.openCurrency)
         default:
             return nil
         }

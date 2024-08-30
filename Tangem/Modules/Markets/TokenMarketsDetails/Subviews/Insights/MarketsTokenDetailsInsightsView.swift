@@ -25,23 +25,11 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text(Localization.marketsTokenDetailsInsights)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+        VStack(spacing: 12) {
+            header
+                .padding(.bottom, 6)
 
-                Spacer()
-
-                MarketsPickerView(
-                    marketPriceIntervalType: $viewModel.selectedInterval,
-                    options: viewModel.availableIntervals,
-                    shouldStretchToFill: false,
-                    style: .init(textVerticalPadding: 2),
-                    titleFactory: { $0.tokenDetailsNameLocalized }
-                )
-            }
-
-            LazyVGrid(columns: gridItems, alignment: .center, spacing: 10, content: {
+            LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.0) { index, info in
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
@@ -56,14 +44,45 @@ struct MarketsTokenDetailsInsightsView: View {
                             firstItemWidth = value
                         }
                     })
-                    .transition(.opacity)
-                    .padding(.vertical, 10)
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
         }
         .animation(.default, value: viewModel.selectedInterval)
         .defaultRoundedBackground(with: Colors.Background.action)
+    }
+
+    private var header: some View {
+        HStack {
+            if viewModel.shouldShowHeaderInfoButton {
+                Button(action: viewModel.showInsightsSheetInfo) {
+                    HStack(spacing: 4) {
+                        headerLabel
+
+                        Assets.infoCircle16.image
+                            .renderingMode(.template)
+                            .foregroundStyle(Colors.Icon.informative)
+                    }
+                }
+            } else {
+                headerLabel
+            }
+
+            Spacer()
+
+            MarketsPickerView(
+                marketPriceIntervalType: $viewModel.selectedInterval,
+                options: viewModel.availableIntervals,
+                shouldStretchToFill: false,
+                style: .init(textVerticalPadding: 2),
+                titleFactory: { $0.tokenDetailsNameLocalized }
+            )
+        }
+    }
+
+    private var headerLabel: some View {
+        Text(Localization.marketsTokenDetailsInsights)
+            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
     }
 }
 
@@ -128,10 +147,27 @@ extension MarketsTokenDetailsInsightsView {
         viewModel: .init(
             tokenSymbol: "BTC",
             insights: .init(dto: MarketsDTO.Coins.Insights(
-                holdersChange: [:],
-                liquidityChange: [:],
-                buyPressureChange: [:],
-                experiencedBuyerChange: [:]
+                holdersChange: [
+                    "24h": nil,
+                    "1w": 0,
+                    "1m": nil,
+                ],
+                liquidityChange: [
+                    "24h": -5704467.269745085,
+                    "1w": -5714908.849255774,
+                    "1m": -5714908.849255774,
+                ],
+                buyPressureChange: [
+                    "24h": 1379091.5783956223,
+                    "1w": -334647.79027640104,
+                    "1m": -4501466.504872012,
+                ],
+                experiencedBuyerChange: [
+                    "24h": 0,
+                    "1w": nil,
+                    "1m": nil,
+                ],
+                networks: nil
             ))!,
             insightsPublisher: insights,
             notationFormatter: .init(),

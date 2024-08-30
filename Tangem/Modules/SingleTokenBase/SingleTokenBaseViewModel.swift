@@ -9,11 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import TangemSdk
 import BlockchainSdk
-import TangemExpress
-import CombineExt
-import TangemStaking
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -24,8 +20,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var actionButtons: [FixedSizeButtonWithIconInfo] = []
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
-
-    lazy var testnetBuyCryptoService: TestnetBuyCryptoService = .init()
 
     let exchangeUtility: ExchangeCryptoUtility
     let notificationManager: NotificationManager
@@ -551,10 +545,6 @@ extension SingleTokenBaseViewModel {
 
         openExplorer(at: url)
     }
-}
-
-extension SingleTokenBaseViewModel: ActionButtonsProvider {
-    var buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never> { $actionButtons.eraseToAnyPublisher() }
 }
 
 // MARK: - CustomStringConvertible protocol conformance

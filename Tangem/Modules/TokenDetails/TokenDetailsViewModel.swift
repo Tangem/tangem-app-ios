@@ -11,11 +11,11 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 import TangemExpress
+import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
-    @Published private var balance: LoadingValue<BalanceInfo> = .loading
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
@@ -28,6 +28,9 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
     private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
+
+    private let balances = CurrentValueSubject<LoadingValue<BalanceWithButtonsViewModel.Balances>, Never>(.loading)
+
     private var bag = Set<AnyCancellable>()
 
     var iconUrl: URL? {
@@ -72,7 +75,11 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         )
         notificationManager.setupManager(with: self)
         bannerNotificationManager?.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, availableBalanceProvider: self, buttonsProvider: self)
+
+        balanceWithButtonsModel = .init(
+            balancesPublisher: balances.eraseToAnyPublisher(),
+            buttonsPublisher: $actionButtons.eraseToAnyPublisher()
+        )
 
         prepareSelf()
     }
@@ -236,22 +243,50 @@ private extension TokenDetailsViewModel {
             .removeDuplicates()
             .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
+
+        walletModel.stakingManagerStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                AppLog.shared.debug("Token details receive new StakingManager state: \(state)")
+                self?.updateStaking(state: state)
+            }
+            .store(in: &bag)
     }
 
     private func updateBalance(walletModelState: WalletModel.State) {
         switch walletModelState {
         case .created, .loading:
-            balance = .loading
+            balances.send(.loading)
         case .idle, .noAccount:
-            balance = .loaded(.init(
-                balance: walletModel.allBalanceFormatted.crypto,
-                fiatBalance: walletModel.allBalanceFormatted.fiat
-            ))
+            balances.send(.loaded(.init(all: walletModel.allBalanceFormatted, available: walletModel.availableBalanceFormatted)))
         case .failed(let message):
-            balance = .failedToLoad(error: message)
+            balances.send(.failedToLoad(error: message))
         case .noDerivation:
             // User can't reach this screen without derived keys
-            balance = .failedToLoad(error: "")
+            balances.send(.failedToLoad(error: CommonError.notImplemented))
+        }
+    }
+
+    private func updateStaking(state: StakingManagerState) {
+        switch state {
+        case .loading:
+            // Do nothing
+            break
+        case .availableToStake, .notEnabled, .temporaryUnavailable:
+            activeStakingViewData = nil
+        case .staked(let staked):
+            let rewards: ActiveStakingViewData.RewardsState? = {
+                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewardsBalance.fiat) {
+                case (.auto, _):
+                    return nil
+                case (.manual, .none):
+                    return .noRewards
+                case (.manual, .some):
+                    return .rewardsToClaim(walletModel.stakedRewardsBalanceFormatted.fiat)
+                }
+            }()
+
+            activeStakingViewData = ActiveStakingViewData(balance: walletModel.stakedBalanceFormatted, rewards: rewards)
         }
     }
 
@@ -286,60 +321,5 @@ private extension TokenDetailsViewModel {
         }
 
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
-    }
-}
-
-extension TokenDetailsViewModel: BalanceProvider {
-    var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
-}
-
-extension TokenDetailsViewModel: AvailableBalanceProvider {
-    var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
-        guard let stakingManager = walletModel.stakingManager else {
-            return Just(nil).eraseToAnyPublisher()
-        }
-        return stakingManager.statePublisher
-            .receive(on: DispatchQueue.main)
-            .filter { $0 != .loading }
-            .withWeakCaptureOf(self)
-            .map { viewModel, state in
-                switch state {
-                case .staked:
-                    return viewModel.availableBalance
-                default:
-                    return nil
-                }
-            }
-            .handleEvents(receiveOutput: { [weak self] value in
-                guard let self else { return }
-                activeStakingViewData = stakedBalance.flatMap {
-                    ActiveStakingViewData(
-                        balance: $0.balance,
-                        fiatBalance: $0.fiatBalance,
-                        rewardsToClaim: self.stakingRewardsBalance?.fiatBalance
-                    )
-                }
-            })
-            .eraseToAnyPublisher()
-    }
-}
-
-extension TokenDetailsViewModel {
-    var availableBalance: BalanceInfo {
-        BalanceInfo(balance: walletModel.balance, fiatBalance: walletModel.availableBalanceFormatted.fiat)
-    }
-
-    var stakedBalance: BalanceInfo? {
-        BalanceInfo(
-            balance: walletModel.stakedBalanceFormatted.crypto,
-            fiatBalance: walletModel.stakedBalanceFormatted.fiat
-        )
-    }
-
-    var stakingRewardsBalance: BalanceInfo? {
-        BalanceInfo(
-            balance: walletModel.stakedRewardsBalanceFormatted.crypto,
-            fiatBalance: walletModel.stakedRewardsBalanceFormatted.fiat
-        )
     }
 }

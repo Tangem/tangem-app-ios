@@ -25,6 +25,9 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     @Published var isSaving: Bool = false
 
+    let coinName: String
+    let coinSymbol: String
+
     var isSaveDisabled: Bool {
         pendingAdd.isEmpty
     }
@@ -38,25 +41,31 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     private var bag = Set<AnyCancellable>()
     private let alertBuilder = MarketsTokensNetworkSelectorAlertBuilder()
 
+    private let coinId: String
+    private let networks: [NetworkModel]
+
     private let walletDataProvider: MarketsWalletDataProvider
-    private let coinModel: CoinModel
+
+    private weak var coordinator: MarketsTokensNetworkRoutable?
 
     // MARK: - Computed Properties
 
     var coinIconURL: URL {
-        IconURLBuilder().tokenIconURL(id: coinModel.id)
-    }
-
-    var coinName: String {
-        coinModel.name
-    }
-
-    var coinSymbol: String {
-        coinModel.symbol
+        IconURLBuilder().tokenIconURL(id: coinId)
     }
 
     private var tokenItems: [TokenItem] {
-        coinModel.items.map { $0.tokenItem }
+        guard let selectedUserWalletModel else {
+            return []
+        }
+
+        let tokenItemMapper = TokenItemMapper(supportedBlockchains: selectedUserWalletModel.config.supportedBlockchains)
+
+        let tokenItems = networks.compactMap {
+            tokenItemMapper.mapToTokenItem(id: coinId, name: coinName, symbol: coinSymbol, network: $0)
+        }
+
+        return tokenItems
     }
 
     // The cache of the proper state storage
@@ -72,9 +81,15 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     // MARK: - Init
 
-    init(coinModel: CoinModel, walletDataProvider: MarketsWalletDataProvider) {
-        self.coinModel = coinModel
+    init(data: InputData, walletDataProvider: MarketsWalletDataProvider, coordinator: MarketsTokensNetworkRoutable?) {
+        coinId = data.coinId
+        coinName = data.coinName
+        coinSymbol = data.coinSymbol
+        networks = data.networks
+
         self.walletDataProvider = walletDataProvider
+
+        self.coordinator = coordinator
 
         walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
 
@@ -147,6 +162,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
+
+                // It is used to synchronize the execution of the target action and hide bottom sheet
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.coordinator?.dissmis()
+                }
             }
         }
     }
@@ -217,11 +237,9 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func updateSelectionByTokenItems() {
-        coinModel.items
-            .map { $0.tokenItem }
-            .forEach { tokenItem in
-                updateSelection(tokenItem)
-            }
+        tokenItems.forEach {
+            updateSelection($0)
+        }
     }
 }
 
@@ -284,5 +302,14 @@ private extension MarketsTokensNetworkSelectorViewModel {
             buttonAction: { _, _ in },
             dismissAction: { _ in }
         )
+    }
+}
+
+extension MarketsTokensNetworkSelectorViewModel {
+    struct InputData {
+        let coinId: String
+        let coinName: String
+        let coinSymbol: String
+        let networks: [NetworkModel]
     }
 }

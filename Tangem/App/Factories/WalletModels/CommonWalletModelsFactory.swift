@@ -28,10 +28,6 @@ struct CommonWalletModelsFactory {
     }
 
     private func makeTransactionHistoryService(tokenItem: TokenItem, addresses: [String]) -> TransactionHistoryService? {
-        if FeatureStorage().useFakeTxHistory, let address = addresses.first {
-            return FakeTransactionHistoryService(blockchain: tokenItem.blockchain, address: address)
-        }
-
         if addresses.count == 1, let address = addresses.first {
             let factory = TransactionHistoryFactoryProvider().factory
 

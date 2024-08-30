@@ -10,6 +10,7 @@ import Combine
 import BlockchainSdk
 import TangemFoundation
 import TangemStaking
+import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
@@ -24,6 +25,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
     @Published var actionButtonType: ActionButtonType?
+    @Published var actionSheet: ActionSheetBinder?
 
     // MARK: - Dependencies
 
@@ -126,14 +128,10 @@ private extension StakingDetailsViewModel {
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let available = walletModel.availableBalance.crypto
-        let aprs = yield.validators.compactMap(\.apr)
-        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: yield.rewardRate)
-
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
-                detailsType: .text(rewardRateValues.formatted(formatter: percentFormatter)),
+                detailsType: .text(yield.rewardRateValues.formatted(formatter: percentFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsAnnualPercentageRate,
@@ -145,7 +143,7 @@ private extension StakingDetailsViewModel {
                 title: Localization.stakingDetailsAvailable,
                 detailsType: .text(
                     balanceFormatter.formatCryptoBalance(
-                        available,
+                        walletModel.availableBalance.crypto,
                         currencyCode: walletModel.tokenItem.currencySymbol
                     )
                 )
@@ -227,7 +225,7 @@ private extension StakingDetailsViewModel {
         let rewards = balances.rewards()
         switch rewards.sum() {
         case .zero where yield.rewardClaimingType == .auto:
-            rewardViewData = nil
+            rewardViewData = RewardViewData(state: .automaticRewards)
         case .zero:
             rewardViewData = RewardViewData(state: .noRewards)
         case let rewardsValue:
@@ -242,9 +240,9 @@ private extension StakingDetailsViewModel {
             rewardViewData = RewardViewData(
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                        self?.openUnstakingFlow(balance: balance)
                     } else {
-                        assertionFailure("https://tangem.atlassian.net/browse/IOS-7407")
+                        self?.coordinator?.openMultipleRewards()
                     }
                 }
             )
@@ -291,7 +289,7 @@ private extension StakingDetailsViewModel {
                 return nil
             case .active, .withdraw:
                 return { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(balanceInfo: balance)
+                    self?.openUnstakingFlow(balance: balance)
                 }
             }
         }()
@@ -302,7 +300,7 @@ private extension StakingDetailsViewModel {
             imageURL: validator.iconURL,
             subtitleType: subtitleType,
             detailsType: .balance(
-                BalanceInfo(balance: balanceCryptoFormatted, fiatBalance: balanceFiatFormatted),
+                .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
                 action: action
             )
         )
@@ -318,6 +316,24 @@ private extension StakingDetailsViewModel {
 
     func openBottomSheet(title: String, description: String) {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
+    }
+
+    func openUnstakingFlow(balance: StakingBalanceInfo) {
+        switch PendingActionMapper(balanceInfo: balance).getAction() {
+        case .none:
+            break
+        case .single(let action):
+            coordinator?.openUnstakingFlow(action: action)
+        case .multiple(let actions):
+            var buttons: [Alert.Button] = actions.map { action in
+                .default(Text(action.type.title)) { [weak self] in
+                    self?.coordinator?.openUnstakingFlow(action: action)
+                }
+            }
+
+            buttons.append(.cancel())
+            actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+        }
     }
 
     func shouldShowMinimumRequirement() -> Bool {
@@ -398,6 +414,18 @@ private extension BalanceType {
             return true
         case .warmup, .active, .rewards:
             return false
+        }
+    }
+}
+
+extension StakingAction.ActionType {
+    var title: String {
+        switch self {
+        case .stake: Localization.commonStake
+        case .unstake: Localization.commonUnstake
+        case .pending(.withdraw): Localization.stakingWithdraw
+        case .pending(.claimRewards): Localization.commonClaimRewards
+        case .pending(.restakeRewards): Localization.stakingRestakeRewards
         }
     }
 }
