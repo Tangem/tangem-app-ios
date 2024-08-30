@@ -1,5 +1,5 @@
 //
-//  MarketsHistoryChartDateFormatterRepository.swift
+//  MarketsTokenDetailsDateFormatterRepository.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 23.07.2024.
@@ -9,8 +9,8 @@
 import Foundation
 
 /// Creates new (if needed) and caches existing `DateFormatter` instances.
-final class MarketsHistoryChartDateFormatterRepository {
-    static let shared = MarketsHistoryChartDateFormatterRepository()
+final class MarketsTokenDetailsDateFormatterRepository {
+    static let shared = MarketsTokenDetailsDateFormatterRepository()
 
     private let cache = NSCacheWrapper<CacheKey, DateFormatter>()
 
@@ -54,7 +54,7 @@ final class MarketsHistoryChartDateFormatterRepository {
 
 // MARK: - Auxiliary types
 
-private extension MarketsHistoryChartDateFormatterRepository {
+private extension MarketsTokenDetailsDateFormatterRepository {
     struct CacheKey: Hashable {
         let localeIdentifier: String
         let intervalType: MarketsPriceIntervalType
