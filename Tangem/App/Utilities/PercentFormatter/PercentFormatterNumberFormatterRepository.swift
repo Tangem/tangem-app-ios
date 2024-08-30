@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Creates new (if needed) and caches existing `NumberFormatter` instances.
 final class PercentFormatterNumberFormatterRepository {
     static let shared = PercentFormatterNumberFormatterRepository()
 
