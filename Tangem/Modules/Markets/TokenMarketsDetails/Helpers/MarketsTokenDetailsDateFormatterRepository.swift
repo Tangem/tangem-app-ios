@@ -13,29 +13,39 @@ final class MarketsTokenDetailsDateFormatterRepository {
     static let shared = MarketsTokenDetailsDateFormatterRepository()
 
     private let cache = NSCacheWrapper<CacheKey, DateFormatter>()
+    private var locale: Locale { .current }
 
-    private init() {}
+    func xAxisDateFormatter(for intervalType: MarketsPriceIntervalType) -> DateFormatter {
+        return getCachedOrMakeNewFormatter(
+            cacheKey: .xAxis(localeIdentifier: locale.identifier, intervalType: intervalType),
+            dateFormatTemplate: makeXAxisDateFormatTemplate(for: intervalType)
+        )
+    }
 
-    func dateFormatter(for intervalType: MarketsPriceIntervalType) -> DateFormatter {
-        let locale = Locale.current
-        let cacheKey = CacheKey(localeIdentifier: locale.identifier, intervalType: intervalType)
+    func priceDateFormatter(for intervalType: MarketsPriceIntervalType) -> DateFormatter {
+        return getCachedOrMakeNewFormatter(
+            cacheKey: .selectedChartValue(localeIdentifier: locale.identifier, intervalType: intervalType),
+            dateFormatTemplate: makePriceDateFormatTemplate(for: intervalType)
+        )
+    }
 
+    private func getCachedOrMakeNewFormatter(
+        cacheKey: CacheKey,
+        dateFormatTemplate: @autoclosure () -> String
+    ) -> DateFormatter {
         if let cachedDateFormatter = cache.value(forKey: cacheKey) {
             return cachedDateFormatter
         }
 
         let dateFormatter = DateFormatter()
         dateFormatter.locale = locale
-
-        let dateFormatTemplate = makeDateFormatTemplate(for: intervalType)
-        dateFormatter.setLocalizedDateFormatFromTemplate(dateFormatTemplate)
-
+        dateFormatter.setLocalizedDateFormatFromTemplate(dateFormatTemplate())
         cache.setValue(dateFormatter, forKey: cacheKey)
 
         return dateFormatter
     }
 
-    private func makeDateFormatTemplate(for intervalType: MarketsPriceIntervalType) -> String {
+    private func makeXAxisDateFormatTemplate(for intervalType: MarketsPriceIntervalType) -> String {
         switch intervalType {
         case .day:
             "HH:mm"
@@ -50,13 +60,27 @@ final class MarketsTokenDetailsDateFormatterRepository {
             "yyyy"
         }
     }
+
+    private func makePriceDateFormatTemplate(for intervalType: MarketsPriceIntervalType) -> String {
+        switch intervalType {
+        case .day,
+             .week,
+             .month,
+             .quarter:
+            return "dd MMM HH:mm"
+        case .halfYear,
+             .year,
+             .all:
+            return "dd MMM yyyy"
+        }
+    }
 }
 
 // MARK: - Auxiliary types
 
 private extension MarketsTokenDetailsDateFormatterRepository {
-    struct CacheKey: Hashable {
-        let localeIdentifier: String
-        let intervalType: MarketsPriceIntervalType
+    enum CacheKey: Hashable {
+        case xAxis(localeIdentifier: String, intervalType: MarketsPriceIntervalType)
+        case selectedChartValue(localeIdentifier: String, intervalType: MarketsPriceIntervalType)
     }
 }

@@ -27,11 +27,11 @@ struct TokenMarketsDetailsDateHelper {
         case (.all, .none):
             return Localization.commonAll
         case (_, .none):
-            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.dateFormatter(for: intervalType)
+            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.priceDateFormatter(for: intervalType)
             let intervalBeginningDate = makeIntervalBeginningDate(using: intervalType)
             return makePriceDate(intervalBeginningDate: intervalBeginningDate, dateFormatter: dateFormatter)
         case (_, .some(let selectedDate)):
-            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.dateFormatter(for: intervalType)
+            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.priceDateFormatter(for: intervalType)
             return makePriceDate(intervalBeginningDate: selectedDate, dateFormatter: dateFormatter)
         }
     }
