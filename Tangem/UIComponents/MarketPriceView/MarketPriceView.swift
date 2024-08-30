@@ -35,25 +35,26 @@ struct MarketPriceView: View {
                 HStack(spacing: 0) {
                     Text(price)
                         .lineLimit(1)
-                        .layoutPriority(-1)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
                     FixedSpacer.horizontal(6)
 
                     TokenPriceChangeView(state: priceChangeState)
+                        .layoutPriority(1)
 
                     FixedSpacer.horizontal(6)
 
                     Text(Localization.walletMarketpriceBlockUpdateTime)
                         .lineLimit(1)
+                        .layoutPriority(1)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }
 
             Spacer(minLength: 0)
 
-            Group {
+            HStack(spacing: 0) {
                 miniChartView
                     .frame(width: 56, height: 24)
 
