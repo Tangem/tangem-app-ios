@@ -225,7 +225,7 @@ private extension StakingDetailsViewModel {
         let rewards = balances.rewards()
         switch rewards.sum() {
         case .zero where yield.rewardClaimingType == .auto:
-            rewardViewData = nil
+            rewardViewData = RewardViewData(state: .automaticRewards)
         case .zero:
             rewardViewData = RewardViewData(state: .noRewards)
         case let rewardsValue:
