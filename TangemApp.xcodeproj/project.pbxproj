@@ -18072,13 +18072,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		B6C21FB62C7CA8B6009F7F77 /* XCLocalSwiftPackageReference "../../DGCharts" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../DGCharts;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
