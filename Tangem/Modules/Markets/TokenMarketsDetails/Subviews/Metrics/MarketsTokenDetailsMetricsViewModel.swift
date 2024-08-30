@@ -38,10 +38,10 @@ struct MarketsTokenDetailsMetricsViewModel {
         self.infoRouter = infoRouter
 
         let balanceFormatter = BalanceFormatter()
-        cryptoFormatter = balanceFormatter.makeDefaultCryptoFormatter(for: cryptoCurrencyCode, formattingOptions: formattingOptions)
+        cryptoFormatter = balanceFormatter.makeDefaultCryptoFormatter(forCurrencyCode: cryptoCurrencyCode, formattingOptions: formattingOptions)
 
         let amountNotationFormatter = AmountNotationSuffixFormatter(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
-        let fiatFormatter = balanceFormatter.makeDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
+        let fiatFormatter = balanceFormatter.makeDefaultFiatFormatter(forCurrencyCode: AppSettings.shared.selectedCurrencyCode, formattingOptions: formattingOptions)
 
         let emptyValue = BalanceFormatter.defaultEmptyBalanceString
 

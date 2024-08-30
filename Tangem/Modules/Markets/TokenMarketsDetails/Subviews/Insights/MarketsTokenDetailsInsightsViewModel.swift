@@ -32,7 +32,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     }
 
     private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(
-        for: AppSettings.shared.selectedCurrencyCode,
+        forCurrencyCode: AppSettings.shared.selectedCurrencyCode,
         formattingOptions: .defaultFiatFormattingOptions
     )
 
@@ -140,7 +140,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
             .withWeakCaptureOf(self)
             .sink { viewModel, newCurrencyCode in
                 viewModel.fiatAmountFormatter = BalanceFormatter().makeDefaultFiatFormatter(
-                    for: newCurrencyCode,
+                    forCurrencyCode: newCurrencyCode,
                     formattingOptions: .defaultFiatFormattingOptions
                 )
                 viewModel.setupInsights()
