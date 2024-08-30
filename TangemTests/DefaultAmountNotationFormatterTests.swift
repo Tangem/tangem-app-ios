@@ -522,7 +522,7 @@ extension DefaultAmountNotationFormatterTests {
             formatEpsilonAsLowestRepresentableValue: true,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
-        let numberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: currencyCode, locale: locale, formattingOptions: options)
+        let numberFormatter = BalanceFormatter().makeDefaultFiatFormatter(forCurrencyCode: currencyCode, locale: locale, formattingOptions: options)
         return numberFormatter
     }
 
@@ -533,6 +533,6 @@ extension DefaultAmountNotationFormatterTests {
             formatEpsilonAsLowestRepresentableValue: true,
             roundingType: .default(roundingMode: .plain, scale: 2)
         )
-        return BalanceFormatter().makeDefaultCryptoFormatter(for: currencyCode, locale: locale, formattingOptions: options)
+        return BalanceFormatter().makeDefaultCryptoFormatter(forCurrencyCode: currencyCode, locale: locale, formattingOptions: options)
     }
 }
