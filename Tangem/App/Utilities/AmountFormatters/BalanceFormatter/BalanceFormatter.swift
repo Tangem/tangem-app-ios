@@ -54,7 +54,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = formatter ?? makeDefaultCryptoFormatter(for: currencyCode, formattingOptions: formattingOptions)
+        let formatter = formatter ?? makeDefaultCryptoFormatter(forCurrencyCode: currencyCode, formattingOptions: formattingOptions)
         let valueToFormat = decimalRoundingUtility.roundDecimal(value, with: formattingOptions.roundingType)
 
         return formatter.string(from: valueToFormat as NSDecimalNumber) ?? "\(valueToFormat) \(currencyCode)"
@@ -115,7 +115,7 @@ struct BalanceFormatter {
             return Self.defaultEmptyBalanceString
         }
 
-        let formatter = formatter ?? makeDefaultFiatFormatter(for: currencyCode, formattingOptions: formattingOptions)
+        let formatter = formatter ?? makeDefaultFiatFormatter(forCurrencyCode: currencyCode, formattingOptions: formattingOptions)
 
         let lowestRepresentableValue: Decimal = 1 / pow(10, formattingOptions.maxFractionDigits)
 
@@ -171,7 +171,7 @@ struct BalanceFormatter {
 
     /// Makes a formatter instance to be used in `formatFiatBalance(_:currencyCode:formattingOptions:formatter:)`.
     func makeDefaultFiatFormatter(
-        for currencyCode: String,
+        forCurrencyCode currencyCode: String,
         locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions
     ) -> NumberFormatter {
@@ -196,7 +196,7 @@ struct BalanceFormatter {
 
     /// Makes a formatter instance to be used in `formatCryptoBalance(_:currencyCode:formattingOptions:formatter:)`.
     func makeDefaultCryptoFormatter(
-        for currencyCode: String,
+        forCurrencyCode currencyCode: String,
         locale: Locale = .current,
         formattingOptions: BalanceFormattingOptions
     ) -> NumberFormatter {
