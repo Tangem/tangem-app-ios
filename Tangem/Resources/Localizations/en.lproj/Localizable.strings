@@ -68,6 +68,7 @@
 "common_access_denied" = "Access denied";
 "common_all" = "All";
 "common_allow" = "Allow";
+"common_analytics" = "Analytics";
 "common_apply" = "Apply";
 "common_approval" = "Approval";
 "common_approve" = "Approve";
@@ -81,6 +82,7 @@
 "common_camera_denied_alert_message" = "You have not given access to your camera, please adjust your privacy settings";
 "common_camera_denied_alert_title" = "Camera access denied";
 "common_cancel" = "Cancel";
+"common_choose_action" = "Choose action";
 "common_claim_rewards" = "Claim rewards";
 "common_close" = "Close";
 "common_continue" = "Continue";
@@ -341,6 +343,7 @@
 "markets_generate_addresses_notification" = "To generate addresses for selected networks, you must scan your Tangem Wallet card";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Unable to load the data…";
+"markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Result";
 "markets_search_see_tokens_under_100k" = "See tokens under 100k market cap";
@@ -611,12 +614,13 @@
 "settings_forget_wallet_footer" = "This will remove the wallet from the application. The wallet itself can be added again.";
 "settings_wallet_name_title" = "Name";
 "staking_active" = "Active";
-"staking_active_footer" = "To unstake your assets, click here.";
+"staking_active_footer" = "To unstake your assets, tap the block above";
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_claim_unstaked" = "Claim unstaked";
 "staking_details_annual_percentage_rate" = "Annual percentage rate";
 "staking_details_annual_percentage_rate_info" = "The annual percentage return you can earn from participating in staking.";
 "staking_details_apr" = "APR";
+"staking_details_auto_claiming_rewards_daily_text" = "Rewards automatically accumulate in your staking balance daily.";
 "staking_details_available" = "Available";
 "staking_details_average_reward_rate" = "Average Reward Rate";
 "staking_details_banner_text" = "What is Staking?";
@@ -635,6 +639,7 @@
 "staking_details_unbonding_period_info" = "The period you must wait after requesting to withdraw funds from staking before the tokens become available.";
 "staking_details_warmup_period" = "Warmup period";
 "staking_details_warmup_period_info" = "The allocated time for activating participation in staking.";
+"staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
 "staking_notification_earn_rewards_text_period_day" = "Staking allows you to earn %1$@. Your staking rewards arrive every day.";
@@ -643,6 +648,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_notification_unstake_text" = "Rewards stop accruing immediately after you start unstaking. The unstaking process takes %@.";
+"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";
 "staking_restake" = "Restake";

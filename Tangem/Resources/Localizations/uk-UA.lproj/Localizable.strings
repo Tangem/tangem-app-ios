@@ -68,6 +68,7 @@
 "common_access_denied" = "Доступ заборонено";
 "common_all" = "Усе";
 "common_allow" = "Дозволити";
+"common_analytics" = "Analytics";
 "common_apply" = "Застосовувати";
 "common_approval" = "Затвердження";
 "common_approve" = "Підтвердити";
@@ -81,6 +82,7 @@
 "common_camera_denied_alert_message" = "Ви не надали доступ до камери, будь ласка, змініть налаштування конфіденційності";
 "common_camera_denied_alert_title" = "Доступ до камери заборонено";
 "common_cancel" = "Скасувати";
+"common_choose_action" = "Choose action";
 "common_claim_rewards" = "Отримати винагороди";
 "common_close" = "Закрити";
 "common_continue" = "Продовжити";
@@ -145,7 +147,7 @@
 "common_stake" = "Застейкати";
 "common_staking" = "Стейкінг";
 "common_start" = "Почати";
-"common_submit" = "Надіслати";
+"common_submit" = "Продовжити";
 "common_success" = "Успіх";
 "common_support" = "Підтримка";
 "common_swap" = "Обмін";
@@ -341,6 +343,7 @@
 "markets_generate_addresses_notification" = "Щоб згенерувати адреси для обраних мереж, потрібно відсканувати свою картку Tangem";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Не вдалося завантажити дані...";
+"markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Швидкі дії";
 "markets_search_result_title" = "Результат";
 "markets_search_see_tokens_under_100k" = "Переглянути токени до 100к ринкової капіталізації";
@@ -451,7 +454,7 @@
 "onboarding_seed_intro_title" = "Використовувати seed-фразу";
 "onboarding_seed_mnemonic_invalid_checksum" = "Невірна seed-фраза. Будь ласка, перевірте порядок слів.";
 "onboarding_seed_mnemonic_wrong_words" = "Невірна seed-фраза. Будь ласка, перевірте правопис.";
-"onboarding_seed_phrase_intro_legacy" = "Застарілий";
+"onboarding_seed_phrase_intro_legacy" = "Застаріло";
 "onboarding_seed_screenshot_alert" = "Ми не рекомендуємо зберігати seed-фразу у вигляді скріншоту через високий ризик втрати або злому";
 "onboarding_seed_user_validation_message" = "Щоб перевірити чи правильно ви записали seed-фразу, введіть 2-е, 7-е та 11-те слова";
 "onboarding_seed_user_validation_title" = "Отже, давайте перевіримо";
@@ -504,7 +507,7 @@
 "referral_less" = "Менше";
 "referral_more" = "Більше";
 "referral_no_expected_awards" = "Немає майбутніх виплат";
-"referral_point_currencies_description" = "Отримайте ^^%1$@^^ на вашу адресу в мережі %2$@%3$@ ^^через 30 днів^^ за кожен гаманець, який придбає ваш друг";
+"referral_point_currencies_description" = "Отримаєте ^^%1$@^^ на вашу адресу в мережі %2$@ %3$@ ^^через 30 днів^^ за кожен гаманець, який придбає ваш друг";
 "referral_point_currencies_title" = "Ви";
 "referral_point_discount_description_prefix" = "Отримає";
 "referral_point_discount_description_suffix" = "при купівлі гаманця на сайті tangem.com";
@@ -606,17 +609,18 @@
 "send_transaction_success" = "Транзакція успішно підписана і відправлена до блокчейну. Баланс гаманця буде оновлено через деякий час";
 "send_tron_account_activation_error" = "%1$@ — це монета у мережі Tron. Щоб розрахувати комісію та здійснити транзакцію, вам необхідно внести певну кількість Tron (TRX) на свій рахунок.";
 "sent_transaction_sent_title" = "Трансакцію надіслано";
-"settings_card_settings_footer" = "Підготуйтеся до сканування картку, яку потрібно налаштувати.";
+"settings_card_settings_footer" = "Підготуйте до сканування картку, яку потрібно налаштувати.";
 "settings_forget_wallet" = "Забути гаманець";
 "settings_forget_wallet_footer" = "Це призведе до видалення гаманця з застосунку. Сам гаманець можна додати знову.";
 "settings_wallet_name_title" = "Ім'я";
 "staking_active" = "Активний";
-"staking_active_footer" = "Щоб вивести активи зі стейкінгу, натисніть тут.";
+"staking_active_footer" = "Для завершення стейкінгу натисніть на блок вище";
 "staking_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
 "staking_claim_unstaked" = "Зняти кошти";
-"staking_details_annual_percentage_rate" = "Annual percentage rate";
+"staking_details_annual_percentage_rate" = "Процентна ставка";
 "staking_details_annual_percentage_rate_info" = "Річний відсоток, який ви можете отримати, беручи участь у стейкінгу.";
 "staking_details_apr" = "APR";
+"staking_details_auto_claiming_rewards_daily_text" = "Rewards automatically accumulate in your staking balance daily.";
 "staking_details_available" = "Доступно";
 "staking_details_average_reward_rate" = "Середня ставка винагороди";
 "staking_details_banner_text" = "Що таке стейкінг?";
@@ -635,6 +639,7 @@
 "staking_details_unbonding_period_info" = "Період, який ви повинні чекати після запиту на виведення коштів зі стейкінгу, перш ніж токени стануть доступними.";
 "staking_details_warmup_period" = "Період блокування";
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
+"staking_locked" = "Locked";
 "staking_migrate" = "Перемістити";
 "staking_native" = "Нативний стейкінг";
 "staking_notification_earn_rewards_text_period_day" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щодня.";
@@ -643,6 +648,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щотиждня.";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
 "staking_notification_unstake_text" = "Винагороди припиняють нараховуватися одразу після того, як ви знімаєте ставку. Процес зняття займає %@.";
+"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Зʼєднати ще раз";
 "staking_restake" = "Повторно застейкати";
@@ -828,7 +834,7 @@
 "warning_express_not_enough_fee_for_token_tx_title" = "Неможливо покрити комісію %@";
 "warning_express_notification_invalid_reserve_amount_title" = "Сума отримання не може бути меншою за %@";
 "warning_express_pair_unavailable_message" = "Це може статися тому, що провайдер наразі не може обміняти обрану пару. Будь ласка, зачекайте трохи та спробуйте ще раз. (Код %@)";
-"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
+"warning_express_pair_unavailable_title" = "Обрана пара тимчасово недоступна";
 "warning_express_refresh_required_title" = "Сервіс тимчасово недоступний";
 "warning_express_too_maximum_amount_title" = "Сума до обміну не повинна перевищувати %@";
 "warning_express_too_minimal_amount_title" = "Сума для обміну має бути не менше %@";

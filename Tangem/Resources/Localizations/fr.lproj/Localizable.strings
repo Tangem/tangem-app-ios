@@ -68,6 +68,7 @@
 "common_access_denied" = "Accès refusé";
 "common_all" = "Tout";
 "common_allow" = "Permettre";
+"common_analytics" = "Analytics";
 "common_apply" = "Appliquer";
 "common_approval" = "Approbation";
 "common_approve" = "Approuver";
@@ -81,6 +82,7 @@
 "common_camera_denied_alert_message" = "Vous n'avez pas octroyé l'accès à votre caméra, veuillez modifier vos paramètres de confidentialité";
 "common_camera_denied_alert_title" = "L'accès à la caméra est refusé";
 "common_cancel" = "Annuler";
+"common_choose_action" = "Choose action";
 "common_claim_rewards" = "Claim rewards";
 "common_close" = "Fermer";
 "common_continue" = "Continuer";
@@ -341,6 +343,7 @@
 "markets_generate_addresses_notification" = "Pour générer des adresses pour les réseaux sélectionnés, vous devez scanner votre carte Tangem";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Impossible de charger les données…";
+"markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Résultat";
 "markets_search_see_tokens_under_100k" = "Voir les jetons de moins de 100 000 $ de capitalisation boursière";
@@ -611,12 +614,13 @@
 "settings_forget_wallet_footer" = "Cela supprimera le portefeuille de l'application. Le portefeuille lui-même peut être ajouté à nouveau.";
 "settings_wallet_name_title" = "Nom";
 "staking_active" = "Actif";
-"staking_active_footer" = "Afin d'unstaker vos actifs, cliquez ici.";
+"staking_active_footer" = "Afin d'unstaker vos actifs, appuyez sur le bloc ci-dessus";
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_claim_unstaked" = "Claim unstaked";
-"staking_details_annual_percentage_rate" = "Annual percentage rate";
+"staking_details_annual_percentage_rate" = "Pourcentage de rendement annuel";
 "staking_details_annual_percentage_rate_info" = "Le pourcentage de rendement annuel que vous pouvez gagner en participant au staking.";
 "staking_details_apr" = "APR";
+"staking_details_auto_claiming_rewards_daily_text" = "Rewards automatically accumulate in your staking balance daily.";
 "staking_details_available" = "Disponible";
 "staking_details_average_reward_rate" = "Taux de récompense moyen";
 "staking_details_banner_text" = "What is Staking?";
@@ -635,6 +639,7 @@
 "staking_details_unbonding_period_info" = "La période que vous devez attendre après avoir demandé le retrait des fonds du staking avant que les jetons ne soient disponibles.";
 "staking_details_warmup_period" = "Période d'échauffement";
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
+"staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
 "staking_notification_earn_rewards_text_period_day" = "Staking allows you to earn %1$@. Your staking rewards arrive every day.";
@@ -643,6 +648,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_title" = "Gagnez des récompenses de staking";
 "staking_notification_unstake_text" = "Les récompenses cessent de s'accumuler immédiatement après que vous ayez commencé le unstaking. Le processus de unstaking prend %@.";
+"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";
 "staking_restake" = "Restake";
@@ -828,7 +834,7 @@
 "warning_express_not_enough_fee_for_token_tx_title" = "Impossible de couvrir %@ frais";
 "warning_express_notification_invalid_reserve_amount_title" = "Le montant à recevoir doit être d'au moins %@";
 "warning_express_pair_unavailable_message" = "Cela peut se produire car le fournisseur n'est actuellement pas en mesure d'échanger la paire que vous avez sélectionnée. Veuillez patienter un instant et réessayer. (Code %@)";
-"warning_express_pair_unavailable_title" = "Selected pair temporarily unavailable";
+"warning_express_pair_unavailable_title" = "La paire sélectionnée est temporairement indisponible";
 "warning_express_refresh_required_title" = "Service temporairement indisponible";
 "warning_express_too_maximum_amount_title" = "Le nombre de jetons à échanger ne doit pas dépasser %@";
 "warning_express_too_minimal_amount_title" = "Le montant à échanger doit être d'au moins %@";
