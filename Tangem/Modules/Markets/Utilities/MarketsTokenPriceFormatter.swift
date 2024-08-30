@@ -9,7 +9,9 @@
 import Foundation
 
 // TODO: Andrey Fedorov - An experimental implementation, currently used only in `Markets` module. Most likely requires some tuning (IOS-7793)
-struct MarketsTokenPriceFormatter {
+/// This formatter maintains reference semantics and uses an internal cache; for performance reasons,
+/// consider keeping the instances of this formatter alive instead of creating and discarding them in place.
+final class MarketsTokenPriceFormatter {
     /// - threshold: Values like `0.1`, `0.01`, `0.001` and so on; used for the quick lookup of a cached scale value.
     /// - scale: Scale of a decimal number
     private typealias Scale = (threshold: Decimal, scale: Int)
@@ -20,6 +22,8 @@ struct MarketsTokenPriceFormatter {
         cachedScales.reserveCapacity(128) // Maximum scale of `Decimal`
         return cachedScales
     }()
+
+    private static let cachedNumberFormatters = NSCacheWrapper<CacheKey, NumberFormatter>()
 
     private let fractionalPartLengthAfterLeadingZeroes: Int
     private let balanceFormatter = BalanceFormatter()
@@ -35,13 +39,15 @@ struct MarketsTokenPriceFormatter {
             let value,
             value < 1.0
         else {
-            return balanceFormatter.formatFiatBalance(value, formattingOptions: defaultFormattingOptions)
+            return formatPrice(value, formattingOptions: defaultFormattingOptions)
         }
 
         // Check if the scale for a given `value` has been calculated previously and stored in the cache
         for (threshold, scale) in Self.cachedScales {
             if value >= threshold {
-                return balanceFormatter.formatFiatBalance(value, formattingOptions: makeFormattingOptions(forScale: scale))
+                let formattingOptions = makeFormattingOptions(forScale: scale)
+
+                return formatPrice(value, formattingOptions: formattingOptions)
             }
         }
 
@@ -69,7 +75,9 @@ struct MarketsTokenPriceFormatter {
             fractionalPartLeadingZeroesCount += 1
         }
 
-        return balanceFormatter.formatFiatBalance(value, formattingOptions: makeFormattingOptions(forScale: Self.cachedScales.last!.scale))
+        let formattingOptions = makeFormattingOptions(forScale: Self.cachedScales.last?.scale ?? 0)
+
+        return formatPrice(value, formattingOptions: formattingOptions)
     }
 
     private func makeFormattingOptions(forScale scale: Int) -> BalanceFormattingOptions {
@@ -79,6 +87,32 @@ struct MarketsTokenPriceFormatter {
 
         return formattingOptions
     }
+
+    private func formatPrice(_ value: Decimal?, formattingOptions: BalanceFormattingOptions) -> String {
+        let locale = Locale.current
+        let currencyCode = AppSettings.shared.selectedCurrencyCode
+        let cacheKey = CacheKey(localeIdentifier: locale.identifier, currencyCode: currencyCode, formattingOptions: formattingOptions)
+        let numberFormatter: NumberFormatter
+
+        if let cachedNumberFormatter = Self.cachedNumberFormatters.value(forKey: cacheKey) {
+            numberFormatter = cachedNumberFormatter
+        } else {
+            numberFormatter = balanceFormatter.makeDefaultFiatFormatter(
+                forCurrencyCode: currencyCode,
+                locale: locale,
+                formattingOptions: formattingOptions
+            )
+
+            Self.cachedNumberFormatters.setValue(numberFormatter, forKey: cacheKey)
+        }
+
+        return balanceFormatter.formatFiatBalance(
+            value,
+            currencyCode: currencyCode,
+            formattingOptions: formattingOptions,
+            formatter: numberFormatter
+        )
+    }
 }
 
 // MARK: - Constants
@@ -87,5 +121,15 @@ private extension MarketsTokenPriceFormatter {
     enum Constants {
         /// This default value of `fractionalPartLengthAfterLeadingZeroes` apparently corresponds to the one used by CMC.
         static let fractionalPartLengthAfterLeadingZeroes = 4
+    }
+}
+
+// MARK: - Auxiliary types
+
+private extension MarketsTokenPriceFormatter {
+    struct CacheKey: Hashable {
+        let localeIdentifier: String
+        let currencyCode: String
+        let formattingOptions: BalanceFormattingOptions
     }
 }
