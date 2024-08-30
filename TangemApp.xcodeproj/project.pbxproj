@@ -18093,8 +18093,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/DGCharts";
 			requirement = {
-				branch = "feature/IOS-7560_performance_improvements_for_large_datasets";
-				kind = branch;
+				kind = exactVersion;
+				version = "5.1.0-tangem2";
 			};
 		};
 		B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
