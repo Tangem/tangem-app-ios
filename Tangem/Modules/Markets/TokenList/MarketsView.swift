@@ -143,7 +143,7 @@ struct MarketsView: View {
 
     @ViewBuilder
     private var listOverlaySeparator: some View {
-        Separator(color: Colors.Stroke.primary)
+        Separator(height: .minimal, color: Colors.Stroke.primary)
             .hidden(!isListOverlayShadowLineViewVisible)
     }
 
