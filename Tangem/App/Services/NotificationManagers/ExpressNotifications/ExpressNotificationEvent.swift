@@ -13,7 +13,12 @@ import TangemExpress
 enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
     case permissionNeeded(providerName: String, currencyCode: String)
-    case refreshRequired(title: String, message: String, expressErrorCode: ExpressAPIError.Code? = nil)
+    case refreshRequired(
+        title: String,
+        message: String,
+        expressErrorCode: ExpressAPIError.Code? = nil,
+        analyticsParams: [Analytics.ParameterKey: String]? = nil
+    )
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
     case notEnoughFeeForTokenTx(mainTokenName: String, mainTokenSymbol: String, blockchainIconName: String)
@@ -39,7 +44,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded:
             return .string(Localization.expressProviderPermissionNeeded)
-        case .refreshRequired(let title, _, _):
+        case .refreshRequired(let title, _, _, _):
             return .string(title)
         case .hasPendingTransaction:
             return .string(Localization.warningExpressActiveTransactionTitle)
@@ -74,7 +79,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded(let providerName, let currencyCode):
             return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
-        case .refreshRequired(_, let message, _):
+        case .refreshRequired(_, let message, _, _):
             return message
         case .hasPendingTransaction(let symbol):
             return Localization.warningExpressActiveTransactionMessage(symbol)
@@ -243,15 +248,20 @@ extension ExpressNotificationEvent: NotificationEvent {
 extension ExpressNotificationEvent {
     var analyticsEvent: Analytics.Event? {
         switch self {
-        case .refreshRequired(_, _, .exchangeNotPossibleError):
-            .swapPairIsUnvailableError
+        case .refreshRequired(_, _, .exchangeNotPossibleError, _):
+            .swapNoticeExpressError
         default:
             nil
         }
     }
 
     var analyticsParams: [Analytics.ParameterKey: String] {
-        return [:]
+        switch self {
+        case .refreshRequired(_, _, _, .some(let params)):
+            params
+        default:
+            [:]
+        }
     }
 
     var isOneShotAnalyticsEvent: Bool {
