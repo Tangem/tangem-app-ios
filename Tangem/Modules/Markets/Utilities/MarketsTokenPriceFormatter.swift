@@ -29,7 +29,7 @@ struct MarketsTokenPriceFormatter {
         self.fractionalPartLengthAfterLeadingZeroes = fractionalPartLengthAfterLeadingZeroes
     }
 
-    func formatFiatBalance(_ value: Decimal?) -> String {
+    func formatPrice(_ value: Decimal?) -> String {
         // Whole numbers and absent values are formatted using default formatting options
         guard
             let value,

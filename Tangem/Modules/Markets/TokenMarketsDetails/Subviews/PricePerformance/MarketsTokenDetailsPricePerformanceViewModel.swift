@@ -66,7 +66,7 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
 
         let decimalProgress = Math().inverseLerp(from: performanceData.lowPrice, to: performanceData.highPrice, value: currentPrice) as NSDecimalNumber
         pricePerformanceProgress = CGFloat(decimalProgress.doubleValue)
-        lowValue = priceFormatter.formatFiatBalance(performanceData.lowPrice)
-        highValue = priceFormatter.formatFiatBalance(performanceData.highPrice)
+        lowValue = priceFormatter.formatPrice(performanceData.lowPrice)
+        highValue = priceFormatter.formatPrice(performanceData.highPrice)
     }
 }

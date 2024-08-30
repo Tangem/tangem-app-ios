@@ -91,7 +91,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Private Implementation
 
     private func setupPriceInfo(price: Decimal?, priceChangePercent: Decimal?) {
-        priceValue = priceFormatter.formatFiatBalance(price)
+        priceValue = priceFormatter.formatPrice(price)
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangePercent)
     }
 

@@ -23,7 +23,7 @@ final class TokenMarketsDetailsPriceInfoHelper {
             currentPrice: currentPrice,
             previousPrice: selectedPrice
         )
-        let price = priceFormatter.formatFiatBalance(selectedPrice)
+        let price = priceFormatter.formatPrice(selectedPrice)
 
         return (price, priceChangeState)
     }
@@ -36,7 +36,7 @@ final class TokenMarketsDetailsPriceInfoHelper {
     ) -> PriceInfo {
         let changePercent = priceChangeInfo[selectedPriceChangeIntervalType.rawValue]
         let priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: changePercent)
-        let price = priceFormatter.formatFiatBalance(currentPrice)
+        let price = priceFormatter.formatPrice(currentPrice)
 
         return (price, priceChangeState)
     }
