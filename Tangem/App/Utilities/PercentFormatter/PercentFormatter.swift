@@ -25,23 +25,7 @@ struct PercentFormatter {
         if let cachedFormatter = repository.numberFormatter(locale: locale, option: option, uniqueIdentifier: #function) {
             formatter = cachedFormatter
         } else {
-            formatter = NumberFormatter()
-            formatter.numberStyle = .percent
-            formatter.locale = locale
-            formatter.maximumFractionDigits = option.fractionDigits
-            formatter.minimumFractionDigits = option.fractionDigits
-
-            formatter.negativePrefix = "-"
-            formatter.positivePrefix = "+"
-
-            formatter.positiveSuffix = " %"
-            formatter.negativeSuffix = " %"
-
-            if option.clearPrefix {
-                formatter.positivePrefix = ""
-                formatter.negativePrefix = ""
-            }
-
+            formatter = makeFormatter(option: option)
             repository.storeNumberFormatter(formatter, locale: locale, option: option, uniqueIdentifier: #function)
         }
 
@@ -60,17 +44,7 @@ struct PercentFormatter {
         if let cachedFormatter = repository.numberFormatter(locale: locale, option: option, uniqueIdentifier: #function) {
             formatter = cachedFormatter
         } else {
-            formatter = NumberFormatter()
-            formatter.numberStyle = .percent
-            formatter.locale = locale
-            formatter.maximumFractionDigits = option.fractionDigits
-            formatter.minimumFractionDigits = option.fractionDigits
-
-            formatter.positivePrefix = ""
-            formatter.negativePrefix = ""
-            formatter.positiveSuffix = ""
-            formatter.negativeSuffix = ""
-
+            formatter = makeIntervalFormatter(option: option)
             repository.storeNumberFormatter(formatter, locale: locale, option: option, uniqueIdentifier: #function)
         }
 
@@ -78,6 +52,48 @@ struct PercentFormatter {
         let maxFormatted = format(max, option: option)
 
         return "\(minFormatted) - \(maxFormatted)"
+    }
+
+    // MARK: - Factory methods
+
+    /// Makes a formatter instance to be used in `format(_:option:)`.
+    func makeFormatter(option: Option) -> NumberFormatter {
+        let formatter = NumberFormatter()
+
+        formatter.numberStyle = .percent
+        formatter.locale = locale
+        formatter.maximumFractionDigits = option.fractionDigits
+        formatter.minimumFractionDigits = option.fractionDigits
+
+        formatter.negativePrefix = "-"
+        formatter.positivePrefix = "+"
+
+        formatter.positiveSuffix = " %"
+        formatter.negativeSuffix = " %"
+
+        if option.clearPrefix {
+            formatter.positivePrefix = ""
+            formatter.negativePrefix = ""
+        }
+
+        return formatter
+    }
+
+    /// Makes a formatter instance to be used in `formatInterval(min:max:option:)`.
+    func makeIntervalFormatter(option: Option) -> NumberFormatter {
+        let formatter = NumberFormatter()
+
+        formatter.numberStyle = .percent
+        formatter.locale = locale
+        formatter.maximumFractionDigits = option.fractionDigits
+        formatter.minimumFractionDigits = option.fractionDigits
+
+        formatter.positivePrefix = ""
+        formatter.negativePrefix = ""
+        formatter.positiveSuffix = ""
+        formatter.negativeSuffix = ""
+
+        return formatter
     }
 }
 

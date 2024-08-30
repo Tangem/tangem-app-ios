@@ -1,5 +1,5 @@
 {
-  "originHash" : "87518858a7f9681d361ee1c50e8fb9940c9278fa184db1c63d13053691842875",
+  "originHash" : "075de3e24c2b843c7ca823c45d9a9eb94d54bca81938a008551eefd90553cf5f",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/DGCharts",
       "state" : {
-        "branch" : "feature/IOS-7560_performance_improvements_for_large_datasets",
-        "revision" : "d1b80c99173709eb5a8479f35ea1169ed39e8a2c"
+        "revision" : "b12e6d38f0e06587aa2ee47fb1b642965669e48d",
+        "version" : "5.1.0-tangem2"
       }
     },
     {
