@@ -48,6 +48,7 @@ struct DescriptionBottomSheetView: View {
             }
 
             Markdown { info.description }
+                .markdownSoftBreakMode(.lineBreak)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .style(Fonts.Regular.callout, color: Colors.Text.primary1)
                 .fixedSize(horizontal: false, vertical: true)
@@ -66,6 +67,6 @@ extension DescriptionBottomSheetView: SelfSizingBottomSheetContent, Setupable {
 #Preview {
     DescriptionBottomSheetView(info: .init(
         title: "About Ethereum",
-        description: "Ethereum network is a blockchain network.\n- Ethereum is an open-source platform for decentralized applications.\n- It aims to create a world computer for building applications in a decentralized manner.\n- Supports smart contracts allowing developers to program digital value.\n- Examples of dapps include tokens, NFTs, DeFi apps, lending protocols, and decentralized exchanges.\n- Transactions and smart contract executions require Gas fees, paid in Ether (ETH).\n- Gas measures the computational effort needed for operations, with fees fluctuating based on network demand."
+        description: "Ethereum network is a blockchain network.\n- Ethereum is an open-source platform for decentralized applications.\n- It aims to create a world computer for building applications in a decentralized manner.\n- Supports smart contracts allowing developers to program digital value.\n- Examples of dapps include tokens, NFTs, DeFi apps, lending protocols, and decentralized exchanges.\n- Transactions and smart contract executions require Gas fees, paid in Ether (ETH).\n- Gas measures the computational effort needed for operations, with fees fluctuating based on network demand.\n\n• Tether (USDT) is a stablecoin pegged to the U.S. dollar. \n • It offers stability in the volatile crypto market. \n• Issued by Tether Limited, governed by British Virgin Islands laws.\n• Used on exchanges like Bitfinex for trading cryptocurrencies.\n• Facilitates quick and cheap fiat movement in exchanges.\n• No transaction fees, but conversion fees apply on Tether.to.\n• Supports Ethereum network; ending support on EOS, Algorand, and others."
     ))
 }
