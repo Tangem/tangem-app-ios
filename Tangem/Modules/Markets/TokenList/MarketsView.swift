@@ -29,7 +29,6 @@ struct MarketsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     private var showSearchResult: Bool { viewModel.isSearching }
-    private var viewOpacity: CGFloat { overlayContentProgress.interpolatedProgress(inRange: 0.0 ... 0.2) }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -39,7 +38,7 @@ struct MarketsView: View {
                 defaultMarketsView
             }
         }
-        .opacity(viewOpacity)
+        .modifier(MarketsContentHidingViewModifier())
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
@@ -69,7 +68,6 @@ struct MarketsView: View {
         .onOverlayContentProgressChange { progress in
             overlayContentProgress = progress
         }
-        .animation(.easeInOut(duration: 0.2), value: viewOpacity)
     }
 
     @ViewBuilder

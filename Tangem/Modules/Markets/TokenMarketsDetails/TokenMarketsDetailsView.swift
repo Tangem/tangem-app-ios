@@ -75,6 +75,9 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
+            // This view is always presented when the overlay is fully visible, i.e. when its progress equals 1.0
+            // Therefore, the same value used here as the initial progress value
+            .modifier(MarketsContentHidingViewModifier(initialProgress: 1.0))
             .padding(.top, Constants.scrollViewContentTopInset)
             .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
                 isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
