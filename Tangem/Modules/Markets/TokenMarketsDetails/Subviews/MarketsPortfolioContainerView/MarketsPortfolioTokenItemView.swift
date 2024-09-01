@@ -96,7 +96,7 @@ struct MarketsPortfolioTokenItemView: View {
             .overlay(overlayView)
             .readGeometry(\.size, bindTo: $textBlockSize)
         }
-        .padding(.vertical, 15)
+        .padding(.vertical, 14)
     }
 
     @ViewBuilder
@@ -125,29 +125,26 @@ struct MarketsPortfolioTokenItemView: View {
                 }
 
                 // Lower indentation
-                if index == viewModel.contextActions.count {
-                    Spacer()
-                        .frame(width: 12)
+                if index == (viewModel.contextActions.count - 1) {
+                    FixedSpacer(width: 12)
                 }
             }
-            .offset(y: -12)
+            .offset(y: -12) // Required within the design
         }
     }
 
     private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {
-        HStack(spacing: 16.0) {
+        HStack(spacing: 16) {
             actionType.icon.image
                 .renderingMode(.template)
-                .resizable()
-                .frame(size: .init(bothDimensions: 20))
+                .frame(size: .init(bothDimensions: 12))
                 .foregroundStyle(Colors.Icon.primary1)
-                .padding(6)
+                .padding(10)
                 .background(
                     Circle()
                         .fill(Colors.Background.tertiary)
                 )
-                .padding(.vertical, 3)
-                .padding(.horizontal, 2)
+                .padding(.leading, 2)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(actionType.title)
@@ -166,8 +163,7 @@ struct MarketsPortfolioTokenItemView: View {
 
     private func makeLineRowActionItem() -> some View {
         HStack(alignment: .center) {
-            Spacer()
-                .frame(width: 18)
+            FixedSpacer(width: 18)
 
             Rectangle()
                 .fill(Colors.Stroke.primary)

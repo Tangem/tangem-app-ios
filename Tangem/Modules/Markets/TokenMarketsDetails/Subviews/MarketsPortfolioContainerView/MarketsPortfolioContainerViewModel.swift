@@ -133,6 +133,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
 
+    private func filterQuickActions(for viewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
+        let actionsFilter: Set<TokenActionType> = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
+        let availableActions = viewModel.contextActions.filter { actionsFilter.contains($0) }
+        return availableActions.unique()
+    }
+
     // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
     private func quickActionDisclosureHandler(_ viewModelId: Int) {
         let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
@@ -153,20 +159,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
-
-    private func makeQuickActions() -> [TokenActionType] {
-        guard
-            tokenItemViewModels.count == 1,
-            let itemViewModels = tokenItemViewModels.first
-        else {
-            return []
-        }
-
-        let actionsFilter: Set<TokenActionType> = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
-        let availableActions = itemViewModels.contextActionSections.flatMap { $0.items.filter { actionsFilter.contains($0) } }
-
-        return availableActions.unique()
-    }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
@@ -180,8 +172,10 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             walletModelId: walletModelId,
             userWalletModel: userWalletModel,
             canNavigateToMarketsDetails: false,
-            canHideToken: false
+            canHideToken: false,
+            sortedFilter: [.buy, .exchange, .receive]
         )
+
         return actions
     }
 }

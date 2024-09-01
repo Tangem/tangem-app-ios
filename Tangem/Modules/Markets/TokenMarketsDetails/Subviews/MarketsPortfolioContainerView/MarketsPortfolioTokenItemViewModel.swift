@@ -36,6 +36,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     var isCustom: Bool { tokenIcon.isCustom }
     var customTokenColor: Color? { tokenIcon.customTokenColor }
     var tokenItem: TokenItem { tokenItemInfoProvider.tokenItem }
+    var contextActions: [TokenActionType] { Array(contextActionSections.map { $0.items }.joined()) }
 
     var hasError: Bool { missingDerivation || networkUnreachable }
 
