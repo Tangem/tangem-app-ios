@@ -21,4 +21,5 @@ protocol SingleTokenBaseRoutable: AnyObject {
     func openExpress(input: CommonExpressModulesFactory.InputModel)
     func openStaking(options: StakingDetailsCoordinator.Options)
     func openInSafari(url: URL)
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel)
 }

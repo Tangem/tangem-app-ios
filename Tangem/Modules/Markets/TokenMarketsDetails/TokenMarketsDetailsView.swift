@@ -24,6 +24,19 @@ struct TokenMarketsDetailsView: View {
 
     var body: some View {
         VStack(spacing: 0.0) {
+            navigationBar
+
+            scrollView
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .if(!viewModel.isMarketsSheetStyle, transform: { view in
+            view.navigationTitle(viewModel.tokenName)
+        })
+    }
+
+    @ViewBuilder
+    private var navigationBar: some View {
+        if viewModel.isMarketsSheetStyle {
             NavigationBar(
                 title: viewModel.tokenName,
                 settings: .init(
@@ -41,10 +54,7 @@ struct TokenMarketsDetailsView: View {
                 Separator(color: Colors.Stroke.primary)
                     .hidden(!isNavigationBarShadowLineViewVisible)
             }
-
-            scrollView
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
@@ -76,9 +86,12 @@ struct TokenMarketsDetailsView: View {
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
-            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
-            }
+            .if(viewModel.isMarketsSheetStyle, transform: { view in
+                view
+                    .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                        isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+                    }
+            })
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         .background(Colors.Background.tertiary.ignoresSafeArea())
@@ -96,9 +109,6 @@ struct TokenMarketsDetailsView: View {
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
-        .onAppear {
-            viewModel.onAppear()
-        }
     }
 
     @ViewBuilder
@@ -260,5 +270,5 @@ private extension TokenMarketsDetailsView {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, style: .marketsSheet, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
 }
