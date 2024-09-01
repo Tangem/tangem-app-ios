@@ -1,5 +1,5 @@
 {
-  "originHash" : "075de3e24c2b843c7ca823c45d9a9eb94d54bca81938a008551eefd90553cf5f",
+  "originHash" : "b28913ecd789c4712900743ff0a5e2709f20a88cfbdf046c9516a04cdd85d340",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -83,6 +83,15 @@
       }
     },
     {
+      "identity" : "networkimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/NetworkImage",
+      "state" : {
+        "revision" : "7aff8d1b31148d32c5933d75557d42f6323ee3d1",
+        "version" : "6.0.0"
+      }
+    },
+    {
       "identity" : "potentcodables",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/outfoxx/PotentCodables.git",
@@ -161,6 +170,15 @@
       "state" : {
         "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
         "version" : "1.5.4"
+      }
+    },
+    {
+      "identity" : "swift-markdown-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
+      "state" : {
+        "revision" : "55441810c0f678c78ed7e2ebd46dde89228e02fc",
+        "version" : "2.4.0"
       }
     },
     {

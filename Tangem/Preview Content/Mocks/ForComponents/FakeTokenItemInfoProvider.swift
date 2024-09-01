@@ -62,8 +62,8 @@ class FakeTokenItemInfoProvider: ObservableObject {
 }
 
 extension FakeTokenItemInfoProvider: TokenItemContextActionsProvider, TokenItemContextActionDelegate {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenActionType] {
-        [.copyAddress, .hide]
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection] {
+        [.init(items: [.copyAddress, .hide])]
     }
 
     func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel) {}
