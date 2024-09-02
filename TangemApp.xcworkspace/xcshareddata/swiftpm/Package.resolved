@@ -1,5 +1,5 @@
 {
-  "originHash" : "b28913ecd789c4712900743ff0a5e2709f20a88cfbdf046c9516a04cdd85d340",
+  "originHash" : "7d5614222cbc3e48b4b54390f07441e18aa07cf8033300ec868eb08f60a709fb",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/DGCharts",
       "state" : {
-        "revision" : "b12e6d38f0e06587aa2ee47fb1b642965669e48d",
-        "version" : "5.1.0-tangem2"
+        "revision" : "a2c1aa43650995d5139ad9e3ad4fd9c93d41776d",
+        "version" : "5.1.0-tangem3"
       }
     },
     {
