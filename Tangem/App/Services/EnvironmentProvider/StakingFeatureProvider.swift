@@ -111,17 +111,3 @@ extension StakingFeatureProvider {
         }
     }
 }
-
-// public extension StakingTokenItem {
-//    var id: String {
-//        var id = network.rawValue
-//        if let contractAddress {
-//            id += "_\(contractAddress)"
-//        }
-//        return id
-//    }
-
-//    var name: String {
-//        "\(network.rawValue.capitalizingFirstLetter())\(contractAddress.map { "\nToken: (\($0))" } ?? "")"
-//    }
-// }

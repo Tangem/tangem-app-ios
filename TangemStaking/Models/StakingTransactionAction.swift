@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct StakingTransactionAction {
+public struct StakingTransactionAction: Hashable {
     public let id: String
     public let amount: Decimal
     public let transactions: [StakingTransactionInfo]

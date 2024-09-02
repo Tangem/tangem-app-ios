@@ -161,11 +161,9 @@ private extension UnstakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
-             .sendTxError,
-             .resultNotFound:
+             .sendTxError:
             // TODO: Add analytics
             break
         }
