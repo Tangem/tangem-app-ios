@@ -20,11 +20,13 @@ protocol SingleTokenRoutable {
     func openSell(for walletModel: WalletModel)
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel)
     func openExplorer(at url: URL, for walletModel: WalletModel)
+    func openMarketsTokenDetails(for tokenItem: TokenItem)
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.keysManager) private var keysManager: KeysManager
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     private let userWalletModel: UserWalletModel
     private weak var coordinator: SingleTokenBaseRoutable?
@@ -125,6 +127,25 @@ final class SingleTokenRouter: SingleTokenRoutable {
     func openExplorer(at url: URL, for walletModel: WalletModel) {
         sendAnalyticsEvent(.buttonExplore, for: walletModel)
         coordinator?.openInSafari(url: url)
+    }
+
+    func openMarketsTokenDetails(for tokenItem: TokenItem) {
+        guard let tokenId = tokenItem.id else {
+            return
+        }
+
+        let quoteData = quotesRepository.quote(for: tokenId)
+        let model = MarketsTokenModel(
+            id: tokenId,
+            name: tokenItem.name,
+            symbol: tokenItem.currencySymbol,
+            currentPrice: quoteData?.price,
+            priceChangePercentage: MarketsTokenQuoteHelper().makePriceChangeIntervalsDictionary(from: quoteData) ?? [:],
+            marketRating: nil,
+            marketCap: nil
+        )
+
+        coordinator?.openMarketsTokenDetails(tokenModel: model)
     }
 
     private func openBuy(for walletModel: WalletModel) {

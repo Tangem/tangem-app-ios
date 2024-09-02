@@ -26,29 +26,20 @@ class MarketsListDataController {
     private let hotAreaSubject: CurrentValueSubject<VisibleArea, Never> = .init(VisibleArea(range: 0 ... 1, direction: .down))
 
     private var bag = Set<AnyCancellable>()
-    private var isViewVisible: Bool = false
 
     // MARK: - Init
 
     init(
         dataFetcher: MarketsListDataFetcher,
-        viewVisibilityPublisher: any Publisher<Bool, Never>,
         cellsStateUpdater: MarketsListStateUpdater?
     ) {
         self.dataFetcher = dataFetcher
         self.cellsStateUpdater = cellsStateUpdater
 
-        bind(viewVisibilityPublisher: viewVisibilityPublisher)
         bind()
     }
 
     // MARK: - Private Implementation
-
-    private func bind(viewVisibilityPublisher: any Publisher<Bool, Never>) {
-        viewVisibilityPublisher
-            .assign(to: \.isViewVisible, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
 
     private func bind() {
         lastAppearedIndexSubject.dropFirst().removeDuplicates()

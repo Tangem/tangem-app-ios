@@ -96,17 +96,19 @@ private extension CommonStakingNotificationManager {
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
-        switch state {
-        case .loading, .ready:
+        switch (state, action.type) {
+        case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
+            show(notification: .withdraw)
+        case (.loading, _), (.ready, _):
             show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
-        case .validationError(let validationError, _):
+        case (.validationError(let validationError, _), _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             show(notification: .validationErrorEvent(validationErrorEvent))
-        case .networkError:
+        case (.networkError, _):
             show(notification: .networkUnreachable)
         }
     }

@@ -195,6 +195,11 @@ extension WarningEvent: NotificationEvent {
         }
     }
 
+    var buttonAction: NotificationButtonAction? {
+        // TODO: Adapt `func style` to `buttonAction`
+        nil
+    }
+
     func style(
         tapAction: NotificationView.NotificationAction? = nil,
         buttonAction: NotificationView.NotificationButtonTapAction? = nil

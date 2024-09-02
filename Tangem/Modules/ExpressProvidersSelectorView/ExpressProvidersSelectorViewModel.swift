@@ -77,8 +77,8 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         let viewModels: [ProviderRowViewModel] = await allProviders
             .asyncSorted(sort: >, by: { await $0.getPriority() })
             .asyncCompactMap { provider in
-                if !provider.isAvailable {
-                    return unavailableProviderRowViewModel(provider: provider.provider)
+                guard provider.isAvailable else {
+                    return nil
                 }
 
                 // If the provider `isSelected` we are forced to show it anyway
