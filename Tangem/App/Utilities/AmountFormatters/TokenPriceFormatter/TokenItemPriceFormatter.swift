@@ -8,10 +8,6 @@
 
 import Foundation
 
-// TODO: Replace with actual implementation
-typealias MarketsTokenPriceFormatter = CommonTokenPriceFormatter
-
-struct CommonTokenPriceFormatter {
 @available(*, deprecated, message: "Temporary solution for token list on the main screen only, do not use (IOS-7793)")
 struct TokenItemPriceFormatter {
     private let balanceFormatter = BalanceFormatter()
@@ -25,7 +21,7 @@ struct TokenItemPriceFormatter {
         )
     }
 
-    func formatFiatBalance(_ value: Decimal?) -> String {
+    func formatPrice(_ value: Decimal?) -> String {
         guard let value else {
             return balanceFormatter.formatFiatBalance(value)
         }
