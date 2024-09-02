@@ -8,6 +8,10 @@
 
 import Foundation
 
+// TODO: Replace with actual implementation
+typealias MarketsTokenPriceFormatter = CommonTokenPriceFormatter
+
+struct CommonTokenPriceFormatter {
 @available(*, deprecated, message: "Temporary solution for token list on the main screen only, do not use (IOS-7793)")
 struct TokenItemPriceFormatter {
     private let balanceFormatter = BalanceFormatter()

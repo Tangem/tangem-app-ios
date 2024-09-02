@@ -23,7 +23,11 @@ struct RewardView: View {
         switch data.state {
         case .noRewards:
             Text(Localization.stakingDetailsNoRewardsToClaim)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+        case .automaticRewards:
+            Text(Localization.stakingDetailsAutoClaimingRewardsDailyText)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
         case .rewards(let fiatFormatted, let cryptoFormatted, let action):
             Button(action: action) {

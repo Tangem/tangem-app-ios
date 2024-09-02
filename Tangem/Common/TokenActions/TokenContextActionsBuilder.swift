@@ -1,5 +1,5 @@
 //
-//  TokenActionContextBuilder.swift
+//  TokenContextActionsBuilder.swift
 //  Tangem
 //
 //  Created by skibinalexander on 20.08.2024.
@@ -8,21 +8,27 @@
 
 import Foundation
 
-struct TokenActionContextBuilder {
-    // MARK: - Private Properties
-
+struct TokenContextActionsBuilder {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-}
 
-// MARK: - TokenItemContextActionsProvider
+    func buildContextActions(
+        tokenItem: TokenItem,
+        walletModelId: WalletModelId,
+        userWalletModel: UserWalletModel,
+        canNavigateToMarketsDetails: Bool,
+        canHideToken: Bool
+    ) -> [TokenContextActionsSection] {
+        let hideTokenSection = canHideToken ? [TokenContextActionsSection(items: [.hide])] : []
 
-extension TokenActionContextBuilder {
-    func buildContextActions(for walletModelId: WalletModelId, with userWalletModel: UserWalletModel) -> [TokenActionType] {
         guard
             let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
         else {
-            return []
+            return addMarketsSectionIfAvailable(
+                for: tokenItem,
+                baseSections: hideTokenSection,
+                canNavigateToMarketsDetails: canNavigateToMarketsDetails
+            )
         }
 
         let actionsBuilder = TokenActionListBuilder()
@@ -45,17 +51,30 @@ extension TokenActionContextBuilder {
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
 
-        let contextActions = actionsBuilder.buildTokenContextActions(
+        let baseSectionItems = actionsBuilder.buildTokenContextActions(
             canExchange: canExchange,
             canSignTransactions: canSignTransactions,
             canSend: canSend,
             canSwap: canSwap,
             canStake: canStake,
-            canHide: false,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility
         )
+        let baseSection = [TokenContextActionsSection(items: baseSectionItems)]
 
-        return contextActions
+        return addMarketsSectionIfAvailable(
+            for: tokenItem,
+            baseSections: baseSection + hideTokenSection,
+            canNavigateToMarketsDetails: canNavigateToMarketsDetails
+        )
+    }
+
+    private func addMarketsSectionIfAvailable(for tokenItem: TokenItem, baseSections: [TokenContextActionsSection], canNavigateToMarketsDetails: Bool) -> [TokenContextActionsSection] {
+        guard canNavigateToMarketsDetails, tokenItem.id != nil else {
+            return baseSections
+        }
+
+        let marketsSection = TokenContextActionsSection(items: [.marketsDetails])
+        return [marketsSection] + baseSections
     }
 }

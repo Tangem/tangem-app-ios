@@ -28,6 +28,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -296,6 +297,12 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
 
     func openInSafari(url: URL) {
         safariManager.openURL(url)
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        let coordinator = TokenMarketsDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+        marketsTokenDetailsCoordinator = coordinator
     }
 }
 
