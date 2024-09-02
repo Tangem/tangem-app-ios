@@ -94,6 +94,24 @@ private extension StakingDetailsViewModel {
                 viewModel.setupView(state: state)
             }
             .store(in: &bag)
+        
+        stakingManager
+            .statePublisher
+            .compactMap { state -> String? in
+                guard case .staked(let stakeInfo) = state else {
+                    return nil
+                }
+                return String(stakeInfo.balances.filter(\.balanceType.isActive).count)
+            }
+            .first()
+            .receive(on: DispatchQueue.main)
+            .sink { validatorsCount in
+                Analytics.log(
+                    event: .stakingInfoScreenOpened,
+                    params: [.validatorsCount: validatorsCount]
+                )
+            }
+            .store(in: &bag)
     }
 
     func setupView(state: StakingManagerState) {
@@ -257,13 +275,6 @@ private extension StakingDetailsViewModel {
         unstakedValidators = staking.filter { $0.balanceType.isInactive }.compactMap { balance -> ValidatorViewData? in
             mapToValidatorViewData(yield: yield, balance: balance)
         }
-        
-        // "Staking Info Screen Opened" analytics call should be called only after validator count is available
-        // FIXME: move into the place where it will be called only once
-        Analytics.log(
-            event: .stakingInfoScreenOpened,
-            params: [.validatorsCount: String(activeValidators.count + unstakedValidators.count)]
-        )
     }
 
     func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {

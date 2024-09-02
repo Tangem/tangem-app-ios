@@ -105,7 +105,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .staking(manager: options.manager)
         ))
         sendCoordinator = coordinator
-        Analytics.log(.stakingButtonStake)
+        Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceStakeInfo])
     }
 
     func openMultipleRewards() {
