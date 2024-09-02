@@ -289,15 +289,15 @@ struct OrganizeTokensView: View {
         self.viewModel = viewModel
         // Explicit @State/ @StateObject initialization is used here because we have a classic chicken-egg problem:
         // 'Cannot use instance member within property initializer; property initializers run before 'self' is available'
-        let topContentInsetdentifier = UUID()
+        let topContentInsetIdentifier = UUID()
         let bottomContentInsetIdentifier = UUID()
-        _scrollViewTopContentInsetSpacerIdentifier = .init(initialValue: topContentInsetdentifier)
+        _scrollViewTopContentInsetSpacerIdentifier = .init(initialValue: topContentInsetIdentifier)
         _scrollViewBottomContentInsetSpacerIdentifier = .init(initialValue: bottomContentInsetIdentifier)
         _dragAndDropController = .init(
             wrappedValue: OrganizeTokensDragAndDropController(
                 autoScrollFrequency: Constants.autoScrollFrequency,
                 destinationItemSelectionThresholdRatio: Constants.dragAndDropDestinationItemSelectionThresholdRatio,
-                topEdgeAdditionalAutoScrollTargets: [topContentInsetdentifier],
+                topEdgeAdditionalAutoScrollTargets: [topContentInsetIdentifier],
                 bottomEdgeAdditionalAutoScrollTargets: [bottomContentInsetIdentifier]
             )
         )

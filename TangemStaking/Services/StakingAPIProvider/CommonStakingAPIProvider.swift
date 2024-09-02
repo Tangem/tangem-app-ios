@@ -24,7 +24,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func yield(integrationId: String) async throws -> YieldInfo {
-        let response = try await service.getYield(request: .init(integrationId: integrationId))
+        let response = try await service.getYield(id: integrationId, request: .init())
         let yieldInfo = try mapper.mapToYieldInfo(from: response)
         return yieldInfo
     }
@@ -48,7 +48,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
-                inputToken: mapper.mapToTokenDTO(from: request.token)
+                inputToken: mapper.mapToTokenDTO(from: request.token),
+                tronResource: request.tronResource
             )
         )
 
@@ -72,7 +73,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
-                inputToken: mapper.mapToTokenDTO(from: request.token)
+                inputToken: mapper.mapToTokenDTO(from: request.token),
+                tronResource: request.tronResource
             )
         )
 
@@ -98,7 +100,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
-                inputToken: mapper.mapToTokenDTO(from: request.token)
+                inputToken: mapper.mapToTokenDTO(from: request.token),
+                tronResource: request.tronResource
             )
         )
 
@@ -122,7 +125,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
-                inputToken: mapper.mapToTokenDTO(from: request.token)
+                inputToken: mapper.mapToTokenDTO(from: request.token),
+                tronResource: request.tronResource
             )
         )
 
@@ -143,7 +147,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
-                inputToken: mapper.mapToTokenDTO(from: request.token)
+                inputToken: mapper.mapToTokenDTO(from: request.token),
+                tronResource: request.tronResource
             )
         )
 

@@ -14,6 +14,8 @@ extension TokenMarketsDetailsView {
             VStack(spacing: 14) {
                 description
 
+                portfolio
+
                 insights
 
                 securityScore
@@ -34,6 +36,25 @@ extension TokenMarketsDetailsView {
 
                 skeletonView(width: 270, height: 18)
             }
+        }
+
+        private var portfolio: some View {
+            VStack(spacing: 10) {
+                HStack {
+                    Text(Localization.marketsCommonMyPortfolio)
+                        .lineLimit(1)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                    Spacer()
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    skeletonView(width: .infinity, height: 15)
+
+                    skeletonView(width: 218, height: 15)
+                }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
         }
 
         private var insights: some View {
@@ -122,7 +143,7 @@ extension TokenMarketsDetailsView {
                         .padding(.horizontal, 16)
 
                         if index != 2 {
-                            Separator(height: .exact(0.5), color: Colors.Stroke.primary, axis: .horizontal)
+                            Separator(color: Colors.Stroke.primary)
                                 .padding(.leading, 16)
                         }
                     }

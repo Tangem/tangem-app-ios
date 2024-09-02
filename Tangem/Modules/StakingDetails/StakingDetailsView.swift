@@ -9,40 +9,39 @@
 import SwiftUI
 
 struct StakingDetailsView: View {
-    @ObservedObject private var viewModel: StakingDetailsViewModel
-    @State private var bottomViewHeight: CGFloat = .zero
-
-    init(viewModel: StakingDetailsViewModel) {
-        self.viewModel = viewModel
-    }
+    @ObservedObject var viewModel: StakingDetailsViewModel
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            GroupedScrollView(alignment: .leading, spacing: 14) {
-                if !viewModel.hideStakingInfoBanner {
-                    banner
-                }
-
-                GroupedSection(viewModel.detailsViewModels) {
-                    DefaultRowView(viewModel: $0)
-                }
-
-                rewardView
-
-                activeValidatorsView
-
-                unstakedValidatorsView
-
-                FixedSpacer(height: bottomViewHeight)
+        GroupedScrollView(alignment: .leading, spacing: 14) {
+            if !viewModel.hideStakingInfoBanner {
+                banner
             }
-            .interContentPadding(14)
 
+            GroupedSection(viewModel.detailsViewModels) { data in
+                DefaultRowView(viewModel: data)
+                    .if(viewModel.detailsViewModels.first?.id == data.id) {
+                        $0.appearance(.init(detailsColor: Colors.Text.accent))
+                    }
+            }
+
+            rewardView
+
+            activeValidatorsView
+
+            unstakedValidatorsView
+        }
+        .interContentPadding(14)
+        .refreshable {
+            await Task { await viewModel.refresh() }.value
+        }
+        .safeAreaInset(edge: .bottom) {
             actionButton
         }
         .background(Colors.Background.secondary)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.descriptionBottomSheetInfo,
             backgroundColor: Colors.Background.tertiary
@@ -69,9 +68,8 @@ struct StakingDetailsView: View {
         }
     }
 
-    #warning("provide localization")
     private var whatIsStakingText: some View {
-        Text("What is staking?")
+        Text(Localization.stakingDetailsBannerText)
             .font(Fonts.Bold.title1)
             .foregroundStyle(
                 LinearGradient(
@@ -100,11 +98,12 @@ struct StakingDetailsView: View {
     @ViewBuilder
     private var rewardView: some View {
         GroupedSection(viewModel.rewardViewData) { data in
-            Button(action: {}, label: {
-                RewardView(data: data)
-            })
+            RewardView(data: data)
+        } header: {
+            DefaultHeaderView(Localization.stakingRewards)
+                .padding(.top, 8)
         }
-        .innerContentPadding(12)
+        .innerContentPadding(4)
     }
 
     private var activeValidatorsView: some View {
@@ -124,19 +123,17 @@ struct StakingDetailsView: View {
     }
 
     private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
-        GroupedSection(
-            validators,
-            content: { data in
-                ValidatorView(data: data)
-            }, header: {
-                DefaultHeaderView(header)
-            }, footer: {
-                Text(footer)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-            }
-        )
-        .interItemSpacing(10)
-        .innerContentPadding(12)
+        GroupedSection(validators) { data in
+            ValidatorView(data: data)
+        } header: {
+            DefaultHeaderView(header)
+                .padding(.top, 12)
+        } footer: {
+            Text(footer)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        }
+        .interItemSpacing(0)
+        .innerContentPadding(0)
     }
 
     @ViewBuilder
@@ -150,7 +147,6 @@ struct StakingDetailsView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
-            .readGeometry(\.size.height, bindTo: $bottomViewHeight)
         }
     }
 }

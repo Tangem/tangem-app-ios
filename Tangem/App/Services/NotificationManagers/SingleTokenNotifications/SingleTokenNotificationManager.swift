@@ -72,10 +72,6 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .solana = walletModel.tokenItem.blockchain, !walletModel.isZeroAmount {
-            events.append(.solanaHighImpact)
-        }
-
         if case .binance = walletModel.tokenItem.blockchain {
             events.append(.bnbBeaconChainRetirement)
         }
@@ -91,6 +87,15 @@ final class SingleTokenNotificationManager {
                     maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
                 )
             )
+        }
+
+        /// We can't use `Blockchain.polygon(testnet: false).currencySymbol` here
+        /// because it will be changed after some time to `"POL"`
+        // TODO: https://tangem.atlassian.net/browse/IOS-7695
+        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic,
+           walletModel.tokenItem.isToken,
+           walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
+            events.append(.maticMigration)
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -154,7 +159,7 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject
             .send([
                 factory.buildNotificationInput(
-                    for: .networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
                     dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
                 ),
             ])
@@ -197,7 +202,7 @@ final class SingleTokenNotificationManager {
 
         let factory = NotificationsFactory()
         let input = factory.buildNotificationInput(
-            for: .rentFee(rentMessage: rentMessage),
+            for: TokenNotificationEvent.rentFee(rentMessage: rentMessage),
             dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
         )
         return input
@@ -234,15 +239,27 @@ final class SingleTokenNotificationManager {
             return nil
         }
 
-        let days = 2
-        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
-        let rewardPeriodDaysFormatted = days.formatted()
+        let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        let apyFormatted = PercentFormatter().format(yield.rewardRateValues.max, option: .staking)
+        let currencySymbol = walletModel.tokenItem.currencySymbol
+
+        let description: String = {
+            switch yield.rewardScheduleType {
+            case .day:
+                Localization.stakingNotificationEarnRewardsTextPeriodDay(currencySymbol)
+            case .hour:
+                Localization.stakingNotificationEarnRewardsTextPeriodHour(currencySymbol)
+            case .month:
+                Localization.stakingNotificationEarnRewardsTextPeriodMonth(currencySymbol)
+            case .week:
+                Localization.stakingNotificationEarnRewardsTextPeriodWeek(currencySymbol)
+            }
+        }()
 
         return .staking(
-            tokenSymbol: walletModel.tokenItem.currencySymbol,
-            tokenIconInfo: TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom),
+            tokenIconInfo: tokenIconInfo,
             earnUpToFormatted: apyFormatted,
-            rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
+            description: description
         )
     }
 }
@@ -265,5 +282,13 @@ extension SingleTokenNotificationManager: NotificationManager {
 
     func dismissNotification(with id: NotificationViewId) {
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+}
+
+// MARK: - Constants
+
+private extension SingleTokenNotificationManager {
+    enum CurrencySymbol {
+        static let matic = "MATIC"
     }
 }

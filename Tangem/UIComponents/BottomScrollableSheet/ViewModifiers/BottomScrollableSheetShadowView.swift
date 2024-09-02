@@ -9,17 +9,27 @@
 import SwiftUI
 
 private struct BottomScrollableSheetShadowView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var startColor: Color {
+        return Constants.shadowColor.opacity(0.0)
+    }
+
+    private var endColor: Color {
+        return Constants.shadowColor.opacity(colorScheme == .dark ? 0.36 : 0.04)
+    }
+
     var body: some View {
         LinearGradient(
             colors: [
-                Constants.shadowColor.opacity(0.0),
-                Constants.shadowColor.opacity(0.04),
+                startColor,
+                endColor,
             ],
             startPoint: .top,
             endPoint: .bottom
         )
         .frame(height: 69.0)
-        .offset(y: -39.0)
+        .offset(y: -42.0)
         .allowsHitTesting(false)
     }
 }

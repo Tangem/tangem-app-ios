@@ -19,9 +19,9 @@ struct TokenMarketsDetailsModel: Identifiable {
     let priceChangePercentage: [String: Decimal]
     let insights: TokenMarketsDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
-    let coinModel: CoinModel
     let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]
     let links: MarketsTokenDetailsLinks
+    let availableNetworks: [NetworkModel]
 }
 
 extension TokenMarketsDetailsModel: Equatable {
@@ -38,6 +38,7 @@ struct TokenMarketsDetailsInsights: Equatable {
     let liquidity: [MarketsPriceIntervalType: Decimal]
     let buyPressure: [MarketsPriceIntervalType: Decimal]
     let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
+    let networksInfo: [MarketsInsightsNetworkInfo]?
 
     init?(dto: MarketsDTO.Coins.Insights?) {
         guard let dto else {
@@ -61,5 +62,6 @@ struct TokenMarketsDetailsInsights: Equatable {
         liquidity = mapToInterval(dto.liquidityChange)
         buyPressure = mapToInterval(dto.buyPressureChange)
         experiencedBuyers = mapToInterval(dto.experiencedBuyerChange)
+        networksInfo = dto.networks
     }
 }

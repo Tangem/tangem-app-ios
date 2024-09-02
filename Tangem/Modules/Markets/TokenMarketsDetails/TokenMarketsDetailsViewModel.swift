@@ -45,6 +45,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     var priceChangeState: TokenPriceChangeView.State? { priceInfo?.priceChangeState }
 
+    var isMarketsSheetStyle: Bool { style == .marketsSheet }
+
     private var priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo? {
         guard let currentPrice = priceFromQuoteRepository else {
             return nil
@@ -124,6 +126,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
     private let tokenInfo: MarketsTokenModel
+    private let style: Style
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
@@ -136,11 +139,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     init(
         tokenInfo: MarketsTokenModel,
+        style: Style,
         dataProvider: MarketsTokenDetailsDataProvider,
         marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: TokenMarketsDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
+        self.style = style
         self.dataProvider = dataProvider
         self.marketsQuotesUpdateHelper = marketsQuotesUpdateHelper
         self.coordinator = coordinator
@@ -153,7 +158,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         bind()
         loadDetailedInfo()
-        makePreloadBlocksViewModels()
         makeHistoryChartViewModel()
         bindToHistoryChartViewModel()
     }
@@ -164,10 +168,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     // MARK: - Actions
-
-    func onAppear() {
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
-    }
 
     func loadDetailedInfo() {
         isLoading = true
@@ -205,6 +205,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
         openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
     }
+
+    func onBackButtonTap() {
+        coordinator?.closeModule()
+    }
 }
 
 // MARK: - Details response processing
@@ -237,6 +241,7 @@ private extension TokenMarketsDetailsViewModel {
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
+        makePortfolioViewModel(using: model)
     }
 
     @MainActor
@@ -282,14 +287,6 @@ private extension TokenMarketsDetailsViewModel {
                 return mergedData
             }
             .assign(to: \.priceChangeInfo, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        $isLoading
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, isLoading in
-                viewModel.portfolioViewModel?.isLoading = isLoading
-            }
             .store(in: &bag)
 
         AppSettings.shared.$selectedCurrencyCode
@@ -357,23 +354,6 @@ private extension TokenMarketsDetailsViewModel {
             .store(in: &bag)
     }
 
-    func makePreloadBlocksViewModels() {
-        portfolioViewModel = .init(
-            userWalletModels: walletDataProvider.userWalletModels,
-            coinId: tokenInfo.id,
-            coordinator: coordinator,
-            addTokenTapAction: { [weak self] in
-                guard let self, let coinModel = loadedInfo?.coinModel, !coinModel.items.isEmpty else {
-                    return
-                }
-
-                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: coinModel.symbol])
-
-                coordinator?.openTokenSelector(with: coinModel, with: walletDataProvider)
-            }
-        )
-    }
-
     func makeHistoryChartViewModel() {
         let historyChartProvider = CommonMarketsHistoryChartProvider(
             tokenId: tokenInfo.id,
@@ -412,6 +392,27 @@ private extension TokenMarketsDetailsViewModel {
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
+    }
+
+    func makePortfolioViewModel(using model: TokenMarketsDetailsModel) {
+        guard style == .marketsSheet else {
+            return
+        }
+
+        portfolioViewModel = .init(
+            inputData: .init(coinId: model.id, networks: model.availableNetworks),
+            walletDataProvider: walletDataProvider,
+            coordinator: coordinator,
+            addTokenTapAction: { [weak self] in
+                guard let self, let info = loadedInfo else {
+                    return
+                }
+
+                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: info.symbol])
+
+                coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
+            }
+        )
     }
 
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
@@ -466,5 +467,12 @@ extension TokenMarketsDetailsViewModel {
         case failedToLoadDetails
         case failedToLoadAllData
         case loaded(model: TokenMarketsDetailsModel)
+    }
+}
+
+extension TokenMarketsDetailsViewModel {
+    enum Style {
+        case marketsSheet
+        case defaultNavigationStack
     }
 }

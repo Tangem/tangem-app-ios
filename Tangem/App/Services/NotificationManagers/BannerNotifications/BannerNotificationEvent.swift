@@ -40,6 +40,10 @@ struct BannerNotificationEvent: NotificationEvent {
         programName.hashValue
     }
 
+    var buttonAction: NotificationButtonAction? {
+        nil
+    }
+
     private var analyticsSource: String {
         switch placement {
         case .main:

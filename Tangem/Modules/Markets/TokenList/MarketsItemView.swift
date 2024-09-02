@@ -18,22 +18,22 @@ struct MarketsItemView: View {
         Button(action: {
             viewModel.didTapAction?()
         }) {
-            HStack(spacing: 12) {
-                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+            HStack(spacing: .zero) {
+                HStack(spacing: 12) {
+                    IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
-                VStack {
                     tokenInfoView
+                        .layoutPriority(2)
                 }
 
-                Spacer()
+                Spacer(minLength: 8)
 
-                VStack {
-                    HStack(spacing: 10) {
-                        tokenPriceView
+                HStack(spacing: 10) {
+                    tokenPriceView
 
-                        priceHistoryView
-                    }
+                    priceHistoryView
                 }
+                .layoutPriority(3)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 15)
@@ -125,20 +125,11 @@ extension MarketsItemView {
 
     return ScrollView(.vertical) {
         ForEach(tokens.indexed(), id: \.1.id) { index, token in
-            let inputData = MarketsItemViewModel.InputData(
-                index: index,
-                id: token.id,
-                name: token.name,
-                symbol: token.symbol,
-                marketCap: token.marketCap,
-                marketRating: token.marketRating,
-                priceValue: token.currentPrice,
-                priceChangeStateValues: [:]
-            )
-
-            return MarketsItemView(
+            MarketsItemView(
                 viewModel: .init(
-                    inputData, prefetchDataSource: nil,
+                    index: index,
+                    tokenModel: token,
+                    prefetchDataSource: nil,
                     chartsProvider: .init(),
                     filterProvider: .init(),
                     onTapAction: nil

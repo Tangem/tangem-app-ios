@@ -124,7 +124,7 @@ private extension CommonStakingManager {
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionInfo {
         let action = try await provider.enterAction(request: request)
 
-        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
+        guard let transactionId = action.transactions.first(where: { $0.type == .stake })?.id else {
             throw StakingManagerError.transactionNotFound
         }
 
@@ -154,7 +154,15 @@ private extension CommonStakingManager {
     func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionInfo {
         let action = try await provider.pendingAction(request: request, type: type)
 
-        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
+        let transactionType: TransactionType = {
+            switch type {
+            case .withdraw: .withdraw
+            case .claimRewards: .claimRewards
+            case .restakeRewards: .restakeRewards
+            }
+        }()
+
+        guard let transactionId = action.transactions.first(where: { $0.type == transactionType })?.id else {
             throw StakingManagerError.transactionNotFound
         }
 
@@ -174,23 +182,28 @@ private extension CommonStakingManager {
         .init(
             amount: action.amount,
             address: wallet.address,
-            additionalAddresses: additionalAddresses(),
+            additionalAddresses: getAdditionalAddresses(),
             token: wallet.item,
             validator: action.validator,
-            integrationId: integrationId
+            integrationId: integrationId,
+            tronResource: getTronResource()
         )
     }
 
     func canStakeMore(item: StakingTokenItem) -> Bool {
         switch item.network {
-        case .solana:
+        case .solana, .cosmos:
             return true
         default:
             return false
         }
     }
+}
 
-    func additionalAddresses() -> AdditionalAddresses? {
+// MARK: - Blockchain specific
+
+private extension CommonStakingManager {
+    func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
         case .cosmos:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
@@ -198,6 +211,15 @@ private extension CommonStakingManager {
             }
 
             return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
+        default:
+            return nil
+        }
+    }
+
+    func getTronResource() -> String? {
+        switch wallet.item.network {
+        case .tron:
+            return StakeKitDTO.Actions.ActionArgs.TronResource.energy.rawValue
         default:
             return nil
         }

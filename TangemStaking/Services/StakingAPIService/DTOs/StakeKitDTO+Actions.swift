@@ -26,7 +26,6 @@ extension StakeKitDTO {
             case revote = "REVOTE"
             case rebond = "REBOND"
             case migrate = "MIGRATE"
-            case unknown = "UNKNOWN"
         }
 
         enum ActionStatus: String, Hashable, Codable {
@@ -36,7 +35,6 @@ extension StakeKitDTO {
             case processing = "PROCESSING"
             case failed = "FAILED"
             case success = "SUCCESS"
-            case unknown = "UNKNOWN"
         }
 
         struct ActionArgs: Decodable {
@@ -66,9 +64,9 @@ extension StakeKitDTO {
                 let bakcId: Required?
             }
 
-            struct TronResource: Codable {
-                let required: Bool
-                let options: [String]
+            enum TronResource: String, Codable {
+                case energy = "ENERGY"
+                case bandwidth = "BANDWIDTH"
             }
         }
 
@@ -146,11 +144,18 @@ extension StakeKitDTO {
             let amount: String
             let validatorAddress: String
             let inputToken: Token?
+            let tronResource: String?
 
-            init(amount: String, validatorAddress: String, inputToken: StakeKitDTO.Token? = nil) {
+            init(
+                amount: String,
+                validatorAddress: String,
+                inputToken: StakeKitDTO.Token? = nil,
+                tronResource: String? = nil
+            ) {
                 self.amount = amount
                 self.validatorAddress = validatorAddress
                 self.inputToken = inputToken
+                self.tronResource = tronResource
             }
         }
     }

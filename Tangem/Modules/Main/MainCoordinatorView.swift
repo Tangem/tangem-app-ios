@@ -34,6 +34,9 @@ struct MainCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.stakingDetailsCoordinator) {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
@@ -41,9 +44,6 @@ struct MainCoordinatorView: CoordinatorView {
         NavHolder()
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
-            }
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)

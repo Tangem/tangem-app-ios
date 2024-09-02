@@ -14,14 +14,14 @@ struct TwinIntroBackgroundView: View {
     var body: some View {
         ZStack {
             Ellipse()
-                .fill(Color(name: "onboarding_twin_wave_1").opacity(0.4))
+                .fill(Colors.Old.onboardingTwinWave1.opacity(0.4))
 
             Ellipse()
-                .fill(Color(name: "onboarding_twin_wave_2").opacity(0.4))
+                .fill(Colors.Old.onboardingTwinWave2.opacity(0.4))
                 .padding(inset(for: 0.6))
 
             Ellipse()
-                .fill(Color(name: "onboarding_twin_wave_3").opacity(0.4))
+                .fill(Colors.Old.onboardingTwinWave3.opacity(0.4))
                 .padding(inset(for: 0.3))
         }
         .frame(size: size)

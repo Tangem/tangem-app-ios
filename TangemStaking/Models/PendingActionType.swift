@@ -10,10 +10,14 @@ import Foundation
 
 public enum PendingActionType: Hashable {
     case withdraw(passthrough: String)
+    case claimRewards(passthrough: String)
+    case restakeRewards(passthrough: String)
 
     var passthrough: String {
         switch self {
         case .withdraw(let passthrough): passthrough
+        case .claimRewards(let passthrough): passthrough
+        case .restakeRewards(let passthrough): passthrough
         }
     }
 }

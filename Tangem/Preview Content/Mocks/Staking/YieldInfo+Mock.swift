@@ -13,9 +13,8 @@ extension YieldInfo {
     static let mock: YieldInfo = .init(
         id: "tron-trx-native-staking",
         isAvailable: true,
-        apy: 0.03712381,
         rewardType: .apr,
-        rewardRate: 0.03712381,
+        rewardRateValues: .single(0.03712381),
         enterMinimumRequirement: 1,
         exitMinimumRequirement: 1,
         validators: [
@@ -37,6 +36,6 @@ extension YieldInfo {
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),
         rewardClaimingType: .manual,
-        rewardScheduleType: .block
+        rewardScheduleType: .day
     )
 }

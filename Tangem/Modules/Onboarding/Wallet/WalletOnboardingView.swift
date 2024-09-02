@@ -130,7 +130,7 @@ struct WalletOnboardingView: View {
                             AnimatedView(settings: viewModel.$thirdCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: secondCardPlaceholder,
-                                    cardImage: viewModel.secondImage ?? viewModel.cardImage,
+                                    cardImage: viewModel.thirdImage,
                                     cardScanned: viewModel.canShowThirdCardImage && (viewModel.backupCardsAddedCount >= 2 || currentStep == .backupIntro) && viewModel.canDisplayCardImage
                                 )
                             }
@@ -138,7 +138,7 @@ struct WalletOnboardingView: View {
                             AnimatedView(settings: viewModel.$supplementCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: secondCardPlaceholder,
-                                    cardImage: viewModel.secondImage ?? viewModel.cardImage,
+                                    cardImage: viewModel.secondImage,
                                     cardScanned: (viewModel.backupCardsAddedCount >= 1 || currentStep == .backupIntro) && viewModel.canDisplayCardImage
                                 )
                             }
@@ -147,7 +147,7 @@ struct WalletOnboardingView: View {
                                 ZStack(alignment: .topTrailing) {
                                     OnboardingCardView(
                                         placeholderCardType: .dark,
-                                        cardImage: viewModel.customOnboardingImage ?? viewModel.cardImage,
+                                        cardImage: viewModel.customOnboardingImage ?? viewModel.mainImage,
                                         cardScanned: viewModel.isInitialAnimPlayed
                                     )
                                     Text(Localization.commonOriginCard)

@@ -11,10 +11,17 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 
+protocol UnstakingModelStateProvider {
+    var stakingAction: UnstakingModel.Action { get }
+
+    var state: UnstakingModel.State { get }
+    var statePublisher: AnyPublisher<UnstakingModel.State, Never> { get }
+}
+
 class UnstakingModel {
     // MARK: - Data
 
-    private let _state = CurrentValueSubject<LoadingValue<State>?, Never>(.none)
+    private let _state = CurrentValueSubject<State, Never>(.loading)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -22,10 +29,11 @@ class UnstakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let balanceInfo: StakingBalanceInfo
-    private let amountTokenItem: TokenItem
+    private let stakingTransactionMapper: StakingTransactionMapper
+    private let transactionValidator: TransactionValidator
+    private let action: StakingAction
+    private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
-    private let stakingMapper: StakingMapper
 
     private var estimatedFeeTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
@@ -33,29 +41,37 @@ class UnstakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        balanceInfo: StakingBalanceInfo,
-        amountTokenItem: TokenItem,
+        stakingTransactionMapper: StakingTransactionMapper,
+        transactionValidator: TransactionValidator,
+        action: StakingAction,
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.balanceInfo = balanceInfo
-        self.amountTokenItem = amountTokenItem
+        self.stakingTransactionMapper = stakingTransactionMapper
+        self.transactionValidator = transactionValidator
+        self.action = action
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-        stakingMapper = StakingMapper(
-            amountTokenItem: amountTokenItem,
-            feeTokenItem: feeTokenItem
-        )
 
         updateState()
     }
 }
 
-// MARK: - Public
+// MARK: - UnstakingModelStateProvider
 
-extension UnstakingModel {
-    var state: AnyPublisher<UnstakingModel.State, Never> {
-        _state.compactMap { $0?.value }.eraseToAnyPublisher()
+extension UnstakingModel: UnstakingModelStateProvider {
+    var stakingAction: Action {
+        action
+    }
+
+    var state: State {
+        _state.value
+    }
+
+    var statePublisher: AnyPublisher<State, Never> {
+        _state.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
 
@@ -67,70 +83,67 @@ private extension UnstakingModel {
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
-                model._state.send(.loading)
-                try await model._state.send(.loaded(model.state()))
+                model.update(state: .loading)
+                let state = try await model.state()
+                model.update(state: state)
             } catch {
                 AppLog.shared.error(error)
-                model._state.send(.failedToLoad(error: error))
+                model.update(state: .networkError(error))
             }
         }
     }
 
-    func state() async throws -> State {
-        let action = try stakingAction()
-        let fee = try await stakingManager.estimateFee(action: action)
-        switch action.type {
-        case .unstake:
-            return .unstaking(fee: fee)
-        case .pending(.withdraw):
-            return .withdraw(fee: fee)
-        case .stake:
-            throw UnstakingModelError.notSupported(
-                "UnstakingModel doesn't support actionType: \(action.type)"
-            )
+    func state() async throws -> UnstakingModel.State {
+        let estimateFee = try await stakingManager.estimateFee(action: action)
+
+        if let error = validate(amount: action.amount, fee: estimateFee) {
+            return error
+        }
+
+        return .ready(fee: estimateFee)
+    }
+
+    func validate(amount: Decimal, fee: Decimal) -> UnstakingModel.State? {
+        do {
+            try transactionValidator.validate(amount: makeAmount(value: amount), fee: makeFee(value: fee))
+            return nil
+        } catch let error as ValidationError {
+            return .validationError(error, fee: fee)
+        } catch {
+            return .networkError(error)
         }
     }
 
-    func mapToSendFee(_ fee: LoadingValue<State>?) -> SendFee {
-        let value = fee?.mapValue { state in
-            Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: state.fee))
+    func update(state: UnstakingModel.State) {
+        _state.send(state)
+    }
+
+    func makeAmount(value: Decimal) -> BSDKAmount {
+        .init(with: tokenItem.blockchain, type: tokenItem.amountType, value: value)
+    }
+
+    func makeFee(value: Decimal) -> Fee {
+        Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: value))
+    }
+
+    func mapToSendFee(_ state: State) -> SendFee {
+        switch state {
+        case .loading:
+            return SendFee(option: .market, value: .loading)
+        case .networkError(let error):
+            return SendFee(option: .market, value: .failedToLoad(error: error))
+        case .validationError(_, let fee), .ready(let fee):
+            return SendFee(option: .market, value: .loaded(makeFee(value: fee)))
         }
-        return SendFee(option: .market, value: value ?? .failedToLoad(error: CommonError.noData))
     }
 }
 
 // MARK: - Send
 
 private extension UnstakingModel {
-    private func stakingAction() throws -> StakingAction {
-        switch balanceInfo.balanceGroupType {
-        case .warmup, .unbonding, .unknown:
-            throw UnstakingModelError.notSupported(
-                "UnstakingModel doesn't support balanceType: \(balanceInfo.balanceGroupType)"
-            )
-        case .active:
-            return StakingAction(
-                amount: balanceInfo.blocked,
-                validator: balanceInfo.validatorAddress,
-                type: .unstake
-            )
-        case .withdraw:
-            guard case .withdraw(let passthrough) = balanceInfo.actions.first else {
-                throw UnstakingModelError.passthroughNotFound
-            }
-
-            return StakingAction(
-                amount: balanceInfo.blocked,
-                validator: balanceInfo.validatorAddress,
-                type: .pending(.withdraw(passthrough: passthrough))
-            )
-        }
-    }
-
     private func send() async throws -> SendTransactionDispatcherResult {
-        let action = try stakingAction()
         let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
+        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
 
         do {
             let result = try await sendTransactionDispatcher.send(
@@ -175,11 +188,11 @@ extension UnstakingModel: SendFeeLoader {
 
 extension UnstakingModel: SendAmountInput {
     var amount: SendAmount? {
-        let fiat = amountTokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balanceInfo.blocked, currencyId: $0)
+        let fiat = tokenItem.currencyId.flatMap {
+            BalanceConverter().convertToFiat(action.amount, currencyId: $0)
         }
 
-        return .init(type: .typical(crypto: balanceInfo.blocked, fiat: fiat))
+        return .init(type: .typical(crypto: action.amount, fiat: fiat))
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
@@ -237,7 +250,14 @@ extension UnstakingModel: SendFeeOutput {
 
 extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
-        _state.map { $0?.value?.fee != nil }.eraseToAnyPublisher()
+        _state.map { state in
+            switch state {
+            case .loading, .validationError, .networkError:
+                return false
+            case .ready:
+                return true
+            }
+        }.eraseToAnyPublisher()
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
@@ -259,11 +279,11 @@ extension UnstakingModel: SendFinishInput {
 extension UnstakingModel: SendBaseInput, SendBaseOutput {
     var isFeeIncluded: Bool { false }
 
-    var isLoading: AnyPublisher<Bool, Never> {
+    var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
 
-    func sendTransaction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> SendTransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 
@@ -280,20 +300,12 @@ extension UnstakingModel: StakingNotificationManagerInput {
 }
 
 extension UnstakingModel {
-    enum State: Hashable {
-        case unstaking(fee: Decimal)
-        case withdraw(fee: Decimal)
+    typealias Action = StakingAction
 
-        var fee: Decimal {
-            switch self {
-            case .unstaking(let fee): fee
-            case .withdraw(let fee): fee
-            }
-        }
+    enum State {
+        case loading
+        case ready(fee: Decimal)
+        case validationError(ValidationError, fee: Decimal)
+        case networkError(Error)
     }
-}
-
-enum UnstakingModelError: Error {
-    case passthroughNotFound
-    case notSupported(String)
 }

@@ -151,6 +151,11 @@ private extension CardSettingsViewModel {
 
 extension CardSettingsViewModel {
     func openChangeAccessCodeWarningView() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.buttonChangeUserCode)
         isChangeAccessCodeLoading = true
         setupSecurityOptions()
@@ -163,12 +168,17 @@ extension CardSettingsViewModel {
     }
 
     func openSecurityMode() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.buttonChangeSecurityMode)
         coordinator?.openSecurityMode(with: input.securityOptionChangeInteractor)
     }
 
     func openResetCard() {
-        if let disabledLocalizedReason = input.resetTofactoryDisabledLocalizedReason {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
@@ -186,6 +196,11 @@ extension CardSettingsViewModel {
     }
 
     func openAccessCodeSettings() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.cardSettingsButtonAccessCodeRecovery)
         coordinator?.openAccessCodeRecoverySettings(with: input.recoveryInteractor)
     }
@@ -206,6 +221,6 @@ extension CardSettingsViewModel {
         let canDisplayHashesCount: Bool
         let cardSignedHashes: Int
         let canChangeAccessCodeRecoverySettings: Bool
-        let resetTofactoryDisabledLocalizedReason: String?
+        let resetToFactoryDisabledLocalizedReason: String?
     }
 }

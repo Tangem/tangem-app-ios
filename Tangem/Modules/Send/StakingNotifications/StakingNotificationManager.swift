@@ -15,14 +15,16 @@ protocol StakingNotificationManagerInput {
 }
 
 protocol StakingNotificationManager: NotificationManager {
-    func setup(input: StakingNotificationManagerInput)
+    func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
 }
 
 class CommonStakingNotificationManager {
     private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
 
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
-    private var stakingManagerStateSubscription: AnyCancellable?
+    private var stateSubscription: AnyCancellable?
 
     private lazy var daysFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
@@ -33,37 +35,81 @@ class CommonStakingNotificationManager {
 
     private weak var delegate: NotificationTapDelegate?
 
-    init(tokenItem: TokenItem) {
+    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
         self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
     }
 }
 
 // MARK: - Bind
 
 private extension CommonStakingNotificationManager {
-    func bind(input: StakingNotificationManagerInput) {
-        stakingManagerStateSubscription = input
-            .stakingManagerStatePublisher
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .sink { manager, state in
-                manager.update(state: state)
-            }
-    }
-
-    func update(state: StakingManagerState) {
+    func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
-        case .loading, .notEnabled, .temporaryUnavailable:
-            break
-        case .availableToStake(let yield):
+        case .loading:
             show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
-                periodFormatted: yield.rewardScheduleType.rawValue
+                rewardScheduleType: yield.rewardScheduleType
             ))
-        case .staked(let staked):
+        case .approveTransactionInProgress:
+            show(notification: .approveTransactionInProgress)
+        case .readyToApprove:
+            show(notification: .stake(
+                tokenSymbol: tokenItem.currencySymbol,
+                rewardScheduleType: yield.rewardScheduleType
+            ))
+        case .readyToStake(let readyToStake):
+            var events: [StakingNotificationEvent] = [
+                .stake(
+                    tokenSymbol: tokenItem.currencySymbol,
+                    rewardScheduleType: yield.rewardScheduleType
+                ),
+            ]
+
+            if readyToStake.isFeeIncluded {
+                let feeFiatValue = feeTokenItem.currencyId.flatMap {
+                    BalanceConverter().convertToFiat(readyToStake.fee, currencyId: $0)
+                }
+
+                let formatter = BalanceFormatter()
+                let cryptoAmountFormatted = formatter.formatCryptoBalance(readyToStake.fee, currencyCode: feeTokenItem.currencySymbol)
+                let fiatAmountFormatted = formatter.formatFiatBalance(feeFiatValue)
+
+                events.append(
+                    .feeWillBeSubtractFromSendingAmount(
+                        cryptoAmountFormatted: cryptoAmountFormatted,
+                        fiatAmountFormatted: fiatAmountFormatted
+                    )
+                )
+            }
+
+            show(events: events)
+
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case .networkError:
+            show(notification: .networkUnreachable)
+        }
+    }
+
+    func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
+        switch (state, action.type) {
+        case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
+            show(notification: .withdraw)
+        case (.loading, _), (.ready, _):
             show(notification: .unstake(
-                periodFormatted: staked.yieldInfo.unbondingPeriod.formatted(formatter: daysFormatter)
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
+        case (.validationError(let validationError, _), _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(notification: .validationErrorEvent(validationErrorEvent))
+        case (.networkError, _):
+            show(notification: .networkUnreachable)
         }
     }
 }
@@ -71,12 +117,17 @@ private extension CommonStakingNotificationManager {
 // MARK: - Show/Hide
 
 private extension CommonStakingNotificationManager {
-    func show(notification event: StakingNotificationEvent) {
-        let input = NotificationsFactory().buildNotificationInput(for: event)
-        if let index = notificationInputsSubject.value.firstIndex(where: { $0.id == input.id }) {
-            notificationInputsSubject.value[index] = input
-        } else {
-            notificationInputsSubject.value.append(input)
+    func show(notification: StakingNotificationEvent) {
+        show(events: [notification])
+    }
+
+    func show(events: [StakingNotificationEvent]) {
+        let factory = NotificationsFactory()
+
+        notificationInputsSubject.value = events.map { event in
+            factory.buildNotificationInput(for: event) { [weak self] id, actionType in
+                self?.delegate?.didTapNotification(with: id, action: actionType)
+            }
         }
     }
 }
@@ -84,8 +135,26 @@ private extension CommonStakingNotificationManager {
 // MARK: - NotificationManager
 
 extension CommonStakingNotificationManager: StakingNotificationManager {
-    func setup(input: any StakingNotificationManagerInput) {
-        bind(input: input)
+    func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.state,
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0, yield: state.1)
+        }
+    }
+
+    func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.statePublisher,
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
+        }
     }
 
     var notificationInputs: [NotificationViewInput] {

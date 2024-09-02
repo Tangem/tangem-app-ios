@@ -12,13 +12,13 @@ import TangemExpress
 
 struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
     func makeTransaction(wallet: WalletModel, data: ExpressTransactionData, fee: Fee) async throws -> BlockchainSdk.Transaction {
-        let destination: Destination = try {
+        let destination: TransactionCreatorDestination = try {
             switch data.transactionType {
             case .send:
-                return .send(data.destinationAddress)
+                return .send(destination: data.destinationAddress)
             case .swap:
                 if let txData = data.txData {
-                    return .contractCall(data.destinationAddress, data: Data(hexString: txData))
+                    return .contractCall(contract: data.destinationAddress, data: Data(hexString: txData))
                 }
 
                 throw ExpressTransactionBuilderError.transactionDataForSwapOperationNotFound
@@ -29,7 +29,6 @@ struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
             wallet: wallet,
             amount: data.txValue,
             fee: fee,
-            sourceAddress: data.sourceAddress,
             destination: destination
         )
 
@@ -41,7 +40,7 @@ struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
         return transaction
     }
 
-    func makeApproveTransaction(wallet: WalletModel, data: ExpressApproveData, fee: Fee) async throws -> BlockchainSdk.Transaction {
+    func makeApproveTransaction(wallet: WalletModel, data: ApproveTransactionData, fee: Fee) async throws -> BlockchainSdk.Transaction {
         guard wallet.ethereumNetworkProvider != nil else {
             throw ExpressTransactionBuilderError.approveImpossibleInNotEvmBlockchain
         }
@@ -50,7 +49,7 @@ struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
             wallet: wallet,
             amount: 0, // For approve value isn't needed
             fee: fee,
-            destination: .contractCall(data.toContractAddress, data: data.data)
+            destination: .contractCall(contract: data.toContractAddress, data: data.txData)
         )
 
         return transaction
@@ -62,35 +61,15 @@ private extension CommonExpressTransactionBuilder {
         wallet: WalletModel,
         amount: Decimal,
         fee: Fee,
-        sourceAddress: String? = nil,
-        destination: Destination
-    ) async throws -> Transaction {
-        let source = sourceAddress ?? wallet.defaultAddress
-
-        switch destination {
-        case .send(let string):
-            let amount = Amount(with: wallet.tokenItem.blockchain, type: wallet.tokenItem.amountType, value: amount)
-
-            return try await wallet.transactionCreator.createTransaction(amount: amount, fee: fee, destinationAddress: string)
-        case .contractCall(let contract, let data):
-            let amount = Amount(with: wallet.feeTokenItem.blockchain, type: wallet.feeTokenItem.amountType, value: amount)
-
-            var transaction = BlockchainSdk.Transaction(
-                amount: amount,
-                fee: fee,
-                sourceAddress: source,
-                destinationAddress: contract,
-                changeAddress: source,
-                contractAddress: contract
-            )
-
-            // In EVM-like blockchains we should add the txData to the transaction
-            if wallet.tokenItem.blockchain.isEvm {
-                transaction.params = EthereumTransactionParams(data: data)
-            }
-
-            return transaction
-        }
+        destination: TransactionCreatorDestination
+    ) async throws -> BSDKTransaction {
+        try await wallet.transactionCreator.buildTransaction(
+            tokenItem: wallet.tokenItem,
+            feeTokenItem: wallet.feeTokenItem,
+            amount: amount,
+            fee: fee,
+            destination: destination
+        )
     }
 
     func mapToTransactionParams(blockchain: Blockchain, extraDestinationId: String) throws -> TransactionParams? {
@@ -181,11 +160,6 @@ private extension CommonExpressTransactionBuilder {
              .blast:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
-    }
-
-    enum Destination {
-        case send(String)
-        case contractCall(String, data: Data)
     }
 }
 

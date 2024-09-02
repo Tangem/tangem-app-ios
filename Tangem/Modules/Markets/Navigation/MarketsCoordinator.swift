@@ -48,7 +48,7 @@ class MarketsCoordinator: CoordinatorObject {
         )
     }
 
-    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
         if state.isBottom {
             rootViewModel?.onBottomSheetDisappear()
             headerViewModel?.onBottomSheetDisappear()
@@ -71,8 +71,12 @@ extension MarketsCoordinator: MarketsRoutable {
     }
 
     func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {
-        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator()
-        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
+        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator(
+            dismissAction: { [weak self] in
+                self?.tokenMarketsDetailsCoordinator = nil
+            }
+        )
+        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo, style: .marketsSheet))
 
         self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
     }

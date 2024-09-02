@@ -8,40 +8,27 @@
 
 import Foundation
 import Combine
+import TangemStaking
 
 class CommonUnstakingStepsManager {
-    private let state: AnyPublisher<UnstakingModel.State, Never>
-
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
+    private let action: UnstakingModel.Action
 
-    private var action: SendFlowActionType = .unstake
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
     private weak var output: SendStepsManagerOutput?
 
     init(
-        state: AnyPublisher<UnstakingModel.State, Never>,
         summaryStep: SendSummaryStep,
-        finishStep: SendFinishStep
+        finishStep: SendFinishStep,
+        action: UnstakingModel.Action
     ) {
-        self.state = state
         self.summaryStep = summaryStep
         self.finishStep = finishStep
+        self.action = action
 
         stack = [summaryStep]
-        bind()
-    }
-
-    private func bind() {
-        state.map { state in
-            switch state {
-            case .unstaking: .unstake
-            case .withdraw: .withdraw
-            }
-        }
-        .assign(to: \.action, on: self, ownership: .weak)
-        .store(in: &bag)
     }
 
     private func next(step: SendStep) {
@@ -59,8 +46,30 @@ class CommonUnstakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonUnstakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
+    var initialFlowActionType: SendFlowActionType {
+        switch action.type {
+        case .unstake:
+            return .unstake
+        case .pending(.withdraw):
+            return .withdraw
+        case .pending(.claimRewards):
+            return .claimRewards
+        case .pending(.restakeRewards):
+            return .restakeRewards
+        case .stake:
+            assertionFailure("Doesn't support in UnstakingFlow")
+            return .unstake
+        }
+    }
+
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action(action), backButtonVisible: false)
+        .init(step: summaryStep, action: .action, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        return false
     }
 
     func set(output: SendStepsManagerOutput) {

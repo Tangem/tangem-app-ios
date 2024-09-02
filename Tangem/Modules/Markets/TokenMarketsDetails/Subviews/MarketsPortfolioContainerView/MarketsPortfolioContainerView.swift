@@ -62,7 +62,6 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: 8)
-                    .skeletonable(isShown: viewModel.isLoading)
                 }
             }
         }
@@ -88,6 +87,9 @@ struct MarketsPortfolioContainerView: View {
                 listView
             case .unavailable:
                 unavailableView
+            case .none:
+                // Need for dissmis side effect
+                EmptyView()
             }
         }
     }
@@ -133,10 +135,7 @@ struct MarketsPortfolioContainerView: View {
                 .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            MainButton(
-                title: Localization.marketsAddToPortfolioButton,
-                isLoading: viewModel.isLoading
-            ) {
+            MainButton(title: Localization.marketsAddToPortfolioButton) {
                 viewModel.onAddTapAction()
             }
         }
@@ -155,11 +154,15 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private var quickActionsView: some View {
-        if viewModel.isOneTokenInPortfolio, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
+        if !viewModel.quickActions.isEmpty, let tokenItemViewModel = viewModel.tokenItemViewModels.first {
             MarketsPortfolioQuickActionsView(
-                actions: viewModel.buildContextActions(for: tokenItemViewModel),
+                actions: viewModel.quickActions,
                 onTapAction: { actionType in
-                    viewModel.didTapContextAction(actionType, for: tokenItemViewModel)
+                    viewModel.didTapContextAction(
+                        actionType,
+                        walletModelId: tokenItemViewModel.tokenItemInfoProvider.id,
+                        userWalletId: tokenItemViewModel.userWalletId
+                    )
                 }
             )
         }

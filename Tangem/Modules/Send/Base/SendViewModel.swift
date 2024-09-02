@@ -19,14 +19,16 @@ final class SendViewModel: ObservableObject {
 
     @Published var step: SendStep
     @Published var mainButtonType: SendMainButtonType
+    @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
+    @Published var isKeyboardActive: Bool = false
 
     @Published var transactionURL: URL?
 
     @Published var closeButtonDisabled = false
     @Published var isUserInteractionDisabled = false
     @Published var mainButtonLoading: Bool = false
-    @Published var mainButtonDisabled: Bool = false
+    @Published var actionIsAvailable: Bool = false
 
     @Published var alert: AlertBinder?
 
@@ -38,7 +40,7 @@ final class SendViewModel: ObservableObject {
     }
 
     var shouldShowDismissAlert: Bool {
-        mainButtonType.shouldShowDismissAlert
+        stepsManager.shouldShowDismissAlert
     }
 
     private let interactor: SendBaseInteractor
@@ -68,6 +70,8 @@ final class SendViewModel: ObservableObject {
 
         step = stepsManager.initialState.step
         mainButtonType = stepsManager.initialState.action
+        flowActionType = stepsManager.initialFlowActionType
+        isKeyboardActive = stepsManager.initialKeyboardState
 
         bind()
         bind(step: stepsManager.initialState.step)
@@ -79,8 +83,10 @@ final class SendViewModel: ObservableObject {
             stepsManager.performNext()
         case .continue:
             stepsManager.performContinue()
+        case .action where flowActionType == .approve:
+            performApprove()
         case .action:
-            performSend()
+            performAction()
         case .close:
             coordinator?.dismiss()
         }
@@ -90,11 +96,36 @@ final class SendViewModel: ObservableObject {
         stepsManager.performBack()
     }
 
+    func onAppear(newStep: any SendStep) {
+        switch (step.type, newStep.type) {
+        case (_, .summary):
+            isKeyboardActive = false
+        default:
+            break
+        }
+    }
+
+    func onDisappear(oldStep: any SendStep) {
+        oldStep.sendStepViewAnimatable.viewDidChangeVisibilityState(.disappeared)
+        step.sendStepViewAnimatable.viewDidChangeVisibilityState(.appeared)
+
+        switch (oldStep.type, step.type) {
+        // It's possible to the destination step
+        // if the destination's TextField will be support @FocusState
+        // case (_, .destination):
+        //    isKeyboardActive = true
+        case (_, .amount):
+            isKeyboardActive = true
+        default:
+            break
+        }
+    }
+
     func dismiss() {
         Analytics.log(.sendButtonClose, params: [
             .source: step.type.analyticsSourceParameterValue,
             .fromSummary: .affirmativeOrNegative(for: step.type.isSummary),
-            .valid: .affirmativeOrNegative(for: !mainButtonDisabled),
+            .valid: .affirmativeOrNegative(for: actionIsAvailable),
         ])
 
         if shouldShowDismissAlert {
@@ -120,14 +151,24 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
-    func performSend() {
+    func performApprove() {
+        guard let (settings, approveViewModelInput) = interactor.makeDataForExpressApproveViewModel() else {
+            return
+        }
+
+        coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
+    }
+
+    func performAction() {
         sendTask?.cancel()
         sendTask = runTask(in: self) { viewModel in
             do {
-                let result = try await viewModel.interactor.send()
+                let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
             } catch let error as SendTransactionDispatcherResult.Error {
                 await viewModel.proceed(error: error)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 AppLog.shared.error(error)
                 await runOnMain { viewModel.showAlert(error.alertBinder) }
@@ -148,7 +189,7 @@ private extension SendViewModel {
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
-                self?.performSend()
+                self?.performAction()
             }
         case .informationRelevanceServiceFeeWasIncreased:
             alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
@@ -176,25 +217,24 @@ private extension SendViewModel {
 
     func bind(step: SendStep) {
         isValidSubscription = step.isValidPublisher
-            .map { !$0 }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.mainButtonDisabled, on: self, ownership: .weak)
+            .assign(to: \.actionIsAvailable, on: self, ownership: .weak)
     }
 
     func bind() {
-        interactor.isLoading
+        interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
-        interactor.isLoading
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        interactor.isLoading
+        interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor.actionInProcessing
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }
@@ -244,15 +284,10 @@ extension SendViewModel: SendStepsManagerOutput {
             self.bind(step: state.step)
         }
     }
-}
 
-extension SendMainButtonType {
-    var shouldShowDismissAlert: Bool {
-        switch self {
-        case .continue, .action:
-            return true
-        case .next, .close:
-            return false
+    func update(flowActionType: SendFlowActionType) {
+        DispatchQueue.main.async {
+            self.flowActionType = flowActionType
         }
     }
 }

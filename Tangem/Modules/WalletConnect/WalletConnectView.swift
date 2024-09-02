@@ -64,7 +64,7 @@ struct WalletConnectView: View {
                 .alert(item: $viewModel.alert) { $0.alert }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemBgGray.edgesIgnoringSafeArea(.all))
         .navigationBarTitle(Text(Localization.walletConnectSessionsTitle))
         .navigationBarItems(trailing: navBarButton)
         .onAppear(perform: viewModel.onAppear)
