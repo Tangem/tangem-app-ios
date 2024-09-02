@@ -29,8 +29,8 @@ struct RootViewControllerFactory {
         // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7664)
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
-            overlayCollapsedHeight: 102.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
-            overlayExpandedVerticalOffset: 54.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=22985-125042&t=Z1kPdSQJ0JLoYgW0-4
+            contentExpandedVerticalOffset: UIApplication.safeAreaInsets.top,
+            overlayCollapsedHeight: 102.0,
             overlayCornerRadius: UIDevice.current.hasHomeScreenIndicator ? 24.0 : 16.0
         )
 

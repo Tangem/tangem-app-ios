@@ -15,8 +15,8 @@ final class OverlayContentContainerViewController: UIViewController {
     let overlayCornerRadius: CGFloat
 
     private let contentViewController: UIViewController
+    private let contentExpandedVerticalOffset: CGFloat
     private let overlayCollapsedHeight: CGFloat
-    private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
 
     // MARK: - Mutable state
@@ -71,17 +71,17 @@ final class OverlayContentContainerViewController: UIViewController {
 
     // MARK: - Initialization/Deinitialization
 
-    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `overlayExpandedVerticalOffset`, etc)
+    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `contentExpandedVerticalOffset`, etc)
     /// are relative to the main screen bounds (w/o safe area).
     init(
         contentViewController: UIViewController,
+        contentExpandedVerticalOffset: CGFloat,
         overlayCollapsedHeight: CGFloat,
-        overlayExpandedVerticalOffset: CGFloat,
         overlayCornerRadius: CGFloat
     ) {
         self.contentViewController = contentViewController
+        self.contentExpandedVerticalOffset = Self.calculateContentExpandedVerticalOffset(fromInput: contentExpandedVerticalOffset)
         self.overlayCollapsedHeight = overlayCollapsedHeight
-        self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
         self.overlayCornerRadius = overlayCornerRadius
         super.init(nibName: nil, bundle: nil)
     }
@@ -172,7 +172,7 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     func expand() {
-        let newVerticalOffset = overlayExpandedVerticalOffset
+        let newVerticalOffset = contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
         let animationContext = Constants.defaultAnimationContext
@@ -253,7 +253,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - overlayExpandedVerticalOffset),
+            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
@@ -300,7 +300,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     private func updateProgress(verticalOffset: CGFloat, animationContext: OverlayContentContainerProgress.AnimationContext?) {
         let value = clamp(
-            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - overlayExpandedVerticalOffset),
+            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - contentExpandedVerticalOffset),
             min: 0.0,
             max: 1.0
         )
@@ -311,8 +311,8 @@ final class OverlayContentContainerViewController: UIViewController {
     private func updateContentScale() {
         let contentLayer = contentViewController.view.layer
         let invertedProgress = 1.0 - progress.value
-        let scale = Constants.minContentViewScale
-            + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
+        let minContentViewScale = (screenBounds.height - contentExpandedVerticalOffset + Constants.overlayVerticalPadding) / screenBounds.height
+        let scale = minContentViewScale + (Constants.maxContentViewScale - minContentViewScale) * invertedProgress
 
         if isFinalState, let animationContext = progress.context {
             let keyPath = String(_sel: #selector(getter: CALayer.transform))
@@ -474,7 +474,7 @@ final class OverlayContentContainerViewController: UIViewController {
         let currentVerticalOffset = overlayViewTopAnchorConstraint?.constant ?? .zero
         let newVerticalOffset = clamp(
             currentVerticalOffset + translation.y,
-            min: overlayExpandedVerticalOffset,
+            min: contentExpandedVerticalOffset,
             max: overlayCollapsedVerticalOffset
         )
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7664)
@@ -511,7 +511,7 @@ final class OverlayContentContainerViewController: UIViewController {
             curve: Constants.defaultAnimationContext.curve
         )
 
-        let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : overlayExpandedVerticalOffset
+        let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
         UIView.animate(with: animationContext) {
@@ -559,9 +559,19 @@ final class OverlayContentContainerViewController: UIViewController {
 
         let remainingDistance = isCollapsing
             ? max(overlayCollapsedVerticalOffset - overlayViewFrame.minY, .zero)
-            : max(overlayViewFrame.minY - overlayExpandedVerticalOffset, .zero)
+            : max(overlayViewFrame.minY - contentExpandedVerticalOffset, .zero)
 
         return min(remainingDistance / abs(gestureVelocity.y), Constants.defaultAnimationContext.duration)
+    }
+
+    private static func calculateContentExpandedVerticalOffset(fromInput contentExpandedVerticalOffset: CGFloat) -> CGFloat {
+        var offset = contentExpandedVerticalOffset + Constants.overlayVerticalPadding
+
+        if !UIDevice.current.hasHomeScreenIndicator {
+            offset += Constants.notchlessDevicesAdditionalVerticalOffset
+        }
+
+        return offset
     }
 }
 
@@ -646,7 +656,8 @@ extension OverlayContentContainerViewController: OverlayContentContainerAppLifec
 
 private extension OverlayContentContainerViewController {
     enum Constants {
-        static let minContentViewScale = 0.95
+        static let overlayVerticalPadding = 10.0
+        static let notchlessDevicesAdditionalVerticalOffset = 10.0
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.4
