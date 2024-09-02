@@ -31,7 +31,7 @@ struct TokenContextActionsBuilder {
             )
         }
 
-        let baseSectionItems = makeContextActions(
+        let baseSectionItems = makeBaseContextActions(
             tokenItem: tokenItem,
             walletModel: walletModel,
             userWalletModel: userWalletModel,
@@ -48,47 +48,7 @@ struct TokenContextActionsBuilder {
         )
     }
 
-    func buildContextActions(
-        tokenItem: TokenItem,
-        walletModelId: WalletModelId,
-        userWalletModel: UserWalletModel,
-        canNavigateToMarketsDetails: Bool,
-        canHideToken: Bool,
-        sortedFilter: [TokenActionType]
-    ) -> [TokenContextActionsSection] {
-        let hideTokenSection = canHideToken ? [TokenContextActionsSection(items: [.hide])] : []
-
-        guard
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
-            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
-        else {
-            return addMarketsSectionIfAvailable(
-                for: tokenItem,
-                baseSections: hideTokenSection,
-                canNavigateToMarketsDetails: canNavigateToMarketsDetails
-            )
-        }
-
-        let baseSectionItems = makeContextActions(
-            tokenItem: tokenItem,
-            walletModel: walletModel,
-            userWalletModel: userWalletModel,
-            canNavigateToMarketsDetails: canNavigateToMarketsDetails,
-            canHideToken: canHideToken
-        )
-
-        let baseSection = [TokenContextActionsSection(items: sortedFilter.filter { baseSectionItems.contains($0) })]
-
-        return addMarketsSectionIfAvailable(
-            for: tokenItem,
-            baseSections: baseSection + hideTokenSection,
-            canNavigateToMarketsDetails: canNavigateToMarketsDetails
-        )
-    }
-
-    // MARK: - Private Implementation
-
-    private func makeContextActions(
+    func makeBaseContextActions(
         tokenItem: TokenItem,
         walletModel: WalletModel,
         userWalletModel: UserWalletModel,
@@ -127,6 +87,8 @@ struct TokenContextActionsBuilder {
 
         return baseSectionItems
     }
+
+    // MARK: - Private Implementation
 
     private func addMarketsSectionIfAvailable(for tokenItem: TokenItem, baseSections: [TokenContextActionsSection], canNavigateToMarketsDetails: Bool) -> [TokenContextActionsSection] {
         guard canNavigateToMarketsDetails, tokenItem.id != nil else {

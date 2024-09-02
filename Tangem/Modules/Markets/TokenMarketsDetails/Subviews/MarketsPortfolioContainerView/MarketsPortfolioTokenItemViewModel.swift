@@ -15,8 +15,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
     @Published var balanceCrypto: LoadableTextView.State = .loading
     @Published var balanceFiat: LoadableTextView.State = .loading
-
-    @Published var contextActionSections: [TokenContextActionsSection] = []
+    @Published var contextActions: [TokenActionType] = []
 
     @Published var hasPendingTransactions: Bool = false
 
@@ -36,7 +35,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     var isCustom: Bool { tokenIcon.isCustom }
     var customTokenColor: Color? { tokenIcon.customTokenColor }
     var tokenItem: TokenItem { tokenItemInfoProvider.tokenItem }
-    var contextActions: [TokenActionType] { Array(contextActionSections.map { $0.items }.joined()) }
 
     var hasError: Bool { missingDerivation || networkUnreachable }
 
@@ -153,7 +151,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func buildContextActions() {
-        contextActionSections = contextActionsProvider?.buildContextActions(
+        contextActions = contextActionsProvider?.buildContextActions(
             tokenItem: tokenItem,
             walletModelId: tokenItemInfoProvider.id,
             userWalletId: userWalletId

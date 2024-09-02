@@ -133,12 +133,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
 
-    private func filterQuickActions(for viewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
-        let actionsFilter: Set<TokenActionType> = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
-        let availableActions = viewModel.contextActions.filter { actionsFilter.contains($0) }
-        return availableActions.unique()
-    }
-
     // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
     private func quickActionDisclosureHandler(_ viewModelId: Int) {
         let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
@@ -162,21 +156,30 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenContextActionsSection] {
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
 
-        let actions = TokenContextActionsBuilder().buildContextActions(
-            tokenItem: tokenItem,
-            walletModelId: walletModelId,
+        guard
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
+            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
+        else {
+            return []
+        }
+
+        let baseAcctions = TokenContextActionsBuilder().makeBaseContextActions(
+            tokenItem: walletModel.tokenItem,
+            walletModel: walletModel,
             userWalletModel: userWalletModel,
             canNavigateToMarketsDetails: false,
-            canHideToken: false,
-            sortedFilter: [.buy, .exchange, .receive]
+            canHideToken: false
         )
 
-        return actions
+        // This is what business logic requires
+        let filteredActions: [TokenActionType] = [.buy, .exchange, .receive]
+
+        return filteredActions.filter { baseAcctions.contains($0) }
     }
 }
 

@@ -135,16 +135,17 @@ struct MarketsPortfolioTokenItemView: View {
 
     private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {
         HStack(spacing: 16) {
-            actionType.icon.image
-                .renderingMode(.template)
-                .frame(size: .init(bothDimensions: 12))
-                .foregroundStyle(Colors.Icon.primary1)
-                .padding(10)
-                .background(
-                    Circle()
-                        .fill(Colors.Background.tertiary)
-                )
-                .padding(.leading, 2)
+            if let image = portfolioTokenActionTypeAsset(for: actionType) {
+                image
+                    .renderingMode(.template)
+                    .foregroundStyle(Colors.Icon.primary1)
+                    .padding(10)
+                    .background(
+                        Circle()
+                            .fill(Colors.Background.tertiary)
+                    )
+                    .padding(.leading, 2)
+            }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(actionType.title)
@@ -173,6 +174,19 @@ struct MarketsPortfolioTokenItemView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+
+    private func portfolioTokenActionTypeAsset(for type: TokenActionType) -> Image? {
+        switch type {
+        case .buy:
+            return Assets.Portfolio.buy12.image
+        case .exchange:
+            return Assets.Portfolio.exchange12.image
+        case .receive:
+            return Assets.Portfolio.receive12.image
+        default:
+            return nil
+        }
     }
 }
 
