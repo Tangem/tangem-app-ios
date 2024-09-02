@@ -335,7 +335,7 @@ final class OverlayContentContainerViewController: UIViewController {
         let contentLayer = contentViewController.view.layer
 
         // On devices with notch, the corner radius property isn't animated and always has a constant value
-        guard !UIDevice.current.hasTopNotch else {
+        guard !UIDevice.current.hasHomeScreenIndicator else {
             if !contentLayer.cornerRadius.isEqual(to: overlayCornerRadius) {
                 contentLayer.cornerRadius = overlayCornerRadius
             }
