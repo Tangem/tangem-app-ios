@@ -325,8 +325,7 @@ final class OverlayContentContainerViewController: UIViewController {
         let transform: CGAffineTransform = .scaleTransform(
             for: contentLayer.bounds.size,
             scaledBy: .init(x: scale, y: scale),
-            aroundAnchorPoint: .init(x: 0.0, y: 1.0), // Bottom left corner
-            translationCoefficient: Constants.contentViewTranslationCoefficient
+            aroundAnchorPoint: .init(x: 0.5, y: 1.0) // Bottom center
         )
 
         contentLayer.setAffineTransform(transform)
@@ -651,7 +650,6 @@ private extension OverlayContentContainerViewController {
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.4
-        static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(duration: 0.3, curve: .easeOut)
     }
