@@ -35,12 +35,13 @@ struct TokenDetailsView: View {
                         .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
                 }
 

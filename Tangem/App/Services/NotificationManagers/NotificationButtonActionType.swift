@@ -8,6 +8,16 @@
 
 import Foundation
 
+struct NotificationButtonAction {
+    let type: NotificationButtonActionType
+    let withLoader: Bool
+
+    init(_ type: NotificationButtonActionType, withLoader: Bool = false) {
+        self.type = type
+        self.withLoader = withLoader
+    }
+}
+
 enum NotificationButtonActionType: Identifiable, Hashable {
     case generateAddresses
     case backupCard

@@ -115,10 +115,16 @@ struct TokenItemView: View {
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
         .contextMenu {
-            ForEach(viewModel.contextActions, id: \.self) { menuAction in
-                contextMenuButton(for: menuAction)
+            ForEach(viewModel.contextActionSections, id: \.self) { section in
+                Section {
+                    ForEach(section.items, id: \.self) { menuAction in
+                        contextMenuButton(for: menuAction)
+                    }
+                }
             }
         }
+        // TODO: Use .contextMenu(menuItems:preview:) for iOS 16 and higher with Chart Preview
+        // IOS-7796
     }
 
     @ViewBuilder

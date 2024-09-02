@@ -48,7 +48,9 @@ class ExpressNotificationManager {
                 return !event.removingOnFullLoadingState
             }
         case .restriction(let restrictions, _):
-            setupNotification(for: restrictions)
+            runTask(in: self) { manager in
+                await manager.setupNotification(for: restrictions)
+            }
 
         case .permissionRequired:
             setupPermissionRequiredNotification()
@@ -64,7 +66,7 @@ class ExpressNotificationManager {
         }
     }
 
-    private func setupNotification(for restrictions: ExpressInteractor.RestrictionType) {
+    private func setupNotification(for restrictions: ExpressInteractor.RestrictionType) async {
         guard let interactor = expressInteractor else { return }
 
         let sourceTokenItem = interactor.getSender().tokenItem
@@ -99,10 +101,24 @@ class ExpressNotificationManager {
         case .requiredRefresh(let occurredError as ExpressAPIError):
             // For only a express error we use "Service temporary unavailable"
             // or "Selected pair temporarily unavailable" depending on the error code.
+            var analyticsParams: [Analytics.ParameterKey: String] = [
+                .sendToken: sourceTokenItemSymbol,
+                .errorCode: "\(occurredError.errorCode.rawValue)",
+            ]
+
+            if let provider = await interactor.getSelectedProvider()?.provider.name {
+                analyticsParams[.provider] = provider
+            }
+
+            if let receiveToken = interactor.getDestination()?.tokenItem.currencySymbol {
+                analyticsParams[.receiveToken] = receiveToken
+            }
+
             event = .refreshRequired(
                 title: occurredError.localizedTitle,
                 message: occurredError.localizedMessage,
-                expressErrorCode: occurredError.errorCode
+                expressErrorCode: occurredError.errorCode,
+                analyticsParams: analyticsParams
             )
         case .requiredRefresh:
             event = .refreshRequired(title: Localization.commonError, message: Localization.commonUnknownError)

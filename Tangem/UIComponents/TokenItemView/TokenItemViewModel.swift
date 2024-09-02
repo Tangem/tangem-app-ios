@@ -13,7 +13,7 @@ import BlockchainSdk
 typealias WalletModelId = Int
 
 protocol TokenItemContextActionsProvider: AnyObject {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenActionType]
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
 
 protocol TokenItemContextActionDelegate: AnyObject {
@@ -28,7 +28,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
-    @Published var contextActions: [TokenActionType] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
     @Published var isStaked: Bool = false
 
     @Published private var missingDerivation: Bool = false
@@ -157,12 +157,12 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: quote.priceChange24h)
 
-        let priceText = priceFormatter.formatFiatBalance(quote.price)
+        let priceText = priceFormatter.formatPrice(quote.price)
         tokenPrice = .loaded(text: priceText)
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+        contextActionSections = contextActionsProvider?.buildContextActions(for: self) ?? []
     }
 
     private func updateIsStaked() {

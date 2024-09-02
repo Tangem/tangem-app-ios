@@ -45,6 +45,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     var priceChangeState: TokenPriceChangeView.State? { priceInfo?.priceChangeState }
 
+    var isMarketsSheetStyle: Bool { style == .marketsSheet }
+
     private var priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo? {
         guard let currentPrice = priceFromQuoteRepository else {
             return nil
@@ -104,6 +106,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     private let initialDate = Date()
 
     private let tokenInfo: MarketsTokenModel
+    private let style: Style
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
@@ -116,11 +119,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     init(
         tokenInfo: MarketsTokenModel,
+        style: Style,
         dataProvider: MarketsTokenDetailsDataProvider,
         marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: TokenMarketsDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
+        self.style = style
         self.dataProvider = dataProvider
         self.marketsQuotesUpdateHelper = marketsQuotesUpdateHelper
         self.coordinator = coordinator
@@ -143,10 +148,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     // MARK: - Actions
-
-    func onAppear() {
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
-    }
 
     func loadDetailedInfo() {
         isLoading = true
@@ -374,6 +375,10 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makePortfolioViewModel(using model: TokenMarketsDetailsModel) {
+        guard style == .marketsSheet else {
+            return
+        }
+
         portfolioViewModel = .init(
             inputData: .init(coinId: model.id, networks: model.availableNetworks),
             walletDataProvider: walletDataProvider,
@@ -442,5 +447,12 @@ extension TokenMarketsDetailsViewModel {
         case failedToLoadDetails
         case failedToLoadAllData
         case loaded(model: TokenMarketsDetailsModel)
+    }
+}
+
+extension TokenMarketsDetailsViewModel {
+    enum Style {
+        case marketsSheet
+        case defaultNavigationStack
     }
 }

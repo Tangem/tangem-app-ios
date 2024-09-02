@@ -67,6 +67,10 @@ struct MarketsView: View {
         )
         .onOverlayContentProgressChange { progress in
             overlayContentProgress = progress
+
+            if progress < 1 {
+                UIResponder.current?.resignFirstResponder()
+            }
         }
     }
 
