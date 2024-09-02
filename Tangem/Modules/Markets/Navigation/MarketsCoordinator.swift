@@ -76,7 +76,7 @@ extension MarketsCoordinator: MarketsRoutable {
                 self?.tokenMarketsDetailsCoordinator = nil
             }
         )
-        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
+        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo, style: .marketsSheet))
 
         self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
     }

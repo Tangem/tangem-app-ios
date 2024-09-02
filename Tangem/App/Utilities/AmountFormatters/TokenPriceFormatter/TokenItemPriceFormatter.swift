@@ -21,7 +21,7 @@ struct TokenItemPriceFormatter {
         )
     }
 
-    func formatFiatBalance(_ value: Decimal?) -> String {
+    func formatPrice(_ value: Decimal?) -> String {
         guard let value else {
             return balanceFormatter.formatFiatBalance(value)
         }

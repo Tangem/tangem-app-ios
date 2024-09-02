@@ -27,4 +27,6 @@ class SingleTokenRoutableMock: SingleTokenRoutable {
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel) {}
 
     func openExplorer(at url: URL, for walletModel: WalletModel) {}
+
+    func openMarketsTokenDetails(for tokenItem: TokenItem) {}
 }

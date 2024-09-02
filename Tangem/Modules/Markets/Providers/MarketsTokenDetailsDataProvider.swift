@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class MarketsTokenDetailsDataProvider {
+struct MarketsTokenDetailsDataProvider {
     @Injected(\.tangemApiService) private var tangemAPIService: TangemApiService
 
     private let mapper = TokenMarketsDetailsMapper(supportedBlockchains: SupportedBlockchains.all)

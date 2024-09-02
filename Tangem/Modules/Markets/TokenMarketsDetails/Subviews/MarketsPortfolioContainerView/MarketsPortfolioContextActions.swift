@@ -9,7 +9,7 @@
 import Foundation
 
 protocol MarketsPortfolioContextActionsProvider: AnyObject {
-    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType]
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenContextActionsSection]
 }
 
 protocol MarketsPortfolioContextActionsDelegate: AnyObject {

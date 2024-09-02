@@ -16,7 +16,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published var balanceCrypto: LoadableTextView.State = .loading
     @Published var balanceFiat: LoadableTextView.State = .loading
 
-    @Published var contextActions: [TokenActionType] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
 
     @Published var hasPendingTransactions: Bool = false
 
@@ -135,7 +135,11 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(walletModelId: tokenItemInfoProvider.id, userWalletId: userWalletId) ?? []
+        contextActionSections = contextActionsProvider?.buildContextActions(
+            tokenItem: tokenItem,
+            walletModelId: tokenItemInfoProvider.id,
+            userWalletId: userWalletId
+        ) ?? []
     }
 
     private func updateBalances() {

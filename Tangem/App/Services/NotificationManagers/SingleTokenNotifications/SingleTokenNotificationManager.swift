@@ -72,10 +72,6 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .solana = walletModel.tokenItem.blockchain, !walletModel.isZeroAmount {
-            events.append(.solanaHighImpact)
-        }
-
         if case .binance = walletModel.tokenItem.blockchain {
             events.append(.bnbBeaconChainRetirement)
         }
@@ -243,15 +239,27 @@ final class SingleTokenNotificationManager {
             return nil
         }
 
-        let days = 2
-        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
-        let rewardPeriodDaysFormatted = days.formatted()
+        let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        let apyFormatted = PercentFormatter().format(yield.rewardRateValues.max, option: .staking)
+        let currencySymbol = walletModel.tokenItem.currencySymbol
+
+        let description: String = {
+            switch yield.rewardScheduleType {
+            case .day:
+                Localization.stakingNotificationEarnRewardsTextPeriodDay(currencySymbol)
+            case .hour:
+                Localization.stakingNotificationEarnRewardsTextPeriodHour(currencySymbol)
+            case .month:
+                Localization.stakingNotificationEarnRewardsTextPeriodMonth(currencySymbol)
+            case .week:
+                Localization.stakingNotificationEarnRewardsTextPeriodWeek(currencySymbol)
+            }
+        }()
 
         return .staking(
-            tokenSymbol: walletModel.tokenItem.currencySymbol,
-            tokenIconInfo: TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom),
+            tokenIconInfo: tokenIconInfo,
             earnUpToFormatted: apyFormatted,
-            rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
+            description: description
         )
     }
 }
