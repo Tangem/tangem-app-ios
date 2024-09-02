@@ -34,6 +34,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -351,6 +352,12 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         )
 
         tokenDetailsCoordinator = coordinator
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        let coordinator = TokenMarketsDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+        marketsTokenDetailsCoordinator = coordinator
     }
 }
 

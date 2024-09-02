@@ -232,7 +232,7 @@ private extension LegacyTokenListViewModel {
         } set: { _ in
             Toast(view: SuccessToast(text: Localization.contractAddressCopiedMessage))
                 .present(
-                    layout: .bottom(padding: 80),
+                    layout: .top(padding: 12),
                     type: .temporary()
                 )
         }

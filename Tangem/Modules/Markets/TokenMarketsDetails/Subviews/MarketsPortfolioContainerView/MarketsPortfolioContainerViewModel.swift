@@ -30,7 +30,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private let walletDataProvider: MarketsWalletDataProvider
-    private let tokenActionContextBuilder = TokenActionContextBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
@@ -148,19 +147,33 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private func makeQuickActions() -> [TokenActionType] {
-        let targetActions = tokenItemViewModels.count == 1 ? [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy] : []
-        let filteredActions = tokenItemViewModels.first?.contextActions.filter { targetActions.contains($0) }
-        return filteredActions ?? []
+        guard
+            tokenItemViewModels.count == 1,
+            let itemViewModels = tokenItemViewModels.first
+        else {
+            return []
+        }
+
+        let actionsFilter: Set<TokenActionType> = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
+        let availableActions = itemViewModels.contextActionSections.flatMap { $0.items.filter { actionsFilter.contains($0) } }
+
+        return availableActions.unique()
     }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenContextActionsSection] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
 
-        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
+        let actions = TokenContextActionsBuilder().buildContextActions(
+            tokenItem: tokenItem,
+            walletModelId: walletModelId,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: false,
+            canHideToken: false
+        )
         return actions
     }
 }
@@ -196,7 +209,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
             coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide:
+        case .hide, .marketsDetails:
             return
         }
     }

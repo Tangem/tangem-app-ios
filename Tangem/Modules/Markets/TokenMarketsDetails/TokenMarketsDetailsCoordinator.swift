@@ -49,6 +49,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     func start(with options: Options) {
         rootViewModel = .init(
             tokenInfo: options.info,
+            style: options.style,
             dataProvider: .init(),
             marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(),
             coordinator: self
@@ -59,6 +60,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 extension TokenMarketsDetailsCoordinator {
     struct Options {
         let info: MarketsTokenModel
+        let style: TokenMarketsDetailsViewModel.Style
     }
 }
 
