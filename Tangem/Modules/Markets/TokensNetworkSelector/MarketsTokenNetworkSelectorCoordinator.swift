@@ -16,6 +16,10 @@ class MarketsTokenNetworkSelectorCoordinator: CoordinatorObject {
 
     @Published var rootViewModel: MarketsTokensNetworkSelectorViewModel? = nil
 
+    // MARK: - Child ViewModels
+
+    @Published var walletSelectorViewModel: WalletSelectorViewModel?
+
     // MARK: - Init
 
     required init(
@@ -45,6 +49,11 @@ extension MarketsTokenNetworkSelectorCoordinator {
 // MARK: - MarketsTokensNetworkRoutable
 
 extension MarketsTokenNetworkSelectorCoordinator: MarketsTokensNetworkRoutable {
+    func openWalletSelector(with provider: MarketsWalletDataProvider) {
+        let walletSelectorViewModel = WalletSelectorViewModel(dataSource: provider)
+        self.walletSelectorViewModel = walletSelectorViewModel
+    }
+
     func dissmis() {
         dismissAction(())
     }

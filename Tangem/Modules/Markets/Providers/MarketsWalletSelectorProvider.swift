@@ -9,10 +9,4 @@
 import Foundation
 import Combine
 
-protocol MarketsWalletSelectorProvider: AnyObject {
-    /// Published value selected UserWalletModel
-    var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> { get }
-
-    /// ViewModels list for wallet selector screen
-    var itemViewModels: [WalletSelectorItemViewModel] { get }
-}
+protocol MarketsWalletSelectorProvider: AnyObject, WalletSelectorDataSource {}

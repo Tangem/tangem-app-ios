@@ -13,7 +13,8 @@ class PreviewWalletSelectorDataSourceStub: WalletSelectorDataSource {
     private var _selectedUserWalletModel: CurrentValueSubject<UserWalletModel?, Never> = .init(nil)
 
     var itemViewModels: [WalletSelectorItemViewModel] = []
-    var selectedUserWalletModelPublisher: AnyPublisher<UserWalletId?, Never> {
+
+    var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }
 }

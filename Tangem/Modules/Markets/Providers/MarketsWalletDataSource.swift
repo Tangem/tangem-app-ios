@@ -22,6 +22,10 @@ class MarketsWalletDataProvider {
     var userWalletModels: [UserWalletModel] { _userWalletModels.value }
     var selectedUserWalletModel: UserWalletModel? { _selectedUserWalletModel.value }
 
+    var isAvaialableWalletSelector: Bool {
+        userWalletModels.filter { !$0.isUserWalletLocked && $0.config.hasFeature(.multiCurrency) }.count > 1
+    }
+
     // MARK: - Init
 
     init() {
@@ -52,7 +56,10 @@ extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
             .map { userWalletModel in
                 WalletSelectorItemViewModel(
                     userWalletId: userWalletModel.userWalletId,
-                    name: userWalletModel.config.cardName,
+                    cardsCount: userWalletModel.cardsCount,
+                    isUserWalletLocked: userWalletModel.isUserWalletLocked,
+                    userWalletNamePublisher: userWalletModel.userWalletNamePublisher,
+                    totalBalancePublisher: userWalletModel.totalBalancePublisher,
                     cardImagePublisher: userWalletModel.cardImagePublisher,
                     isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
                 ) { [weak self] userWalletId in

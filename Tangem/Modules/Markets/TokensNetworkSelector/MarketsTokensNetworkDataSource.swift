@@ -46,7 +46,10 @@ extension MarketsTokensNetworkDataSource: MarketsWalletSelectorProvider {
         userWalletModels.map { userWalletModel in
             WalletSelectorItemViewModel(
                 userWalletId: userWalletModel.userWalletId,
-                name: userWalletModel.config.cardName,
+                cardsCount: userWalletModel.cardsCount,
+                isUserWalletLocked: userWalletModel.isUserWalletLocked,
+                userWalletNamePublisher: userWalletModel.userWalletNamePublisher,
+                totalBalancePublisher: userWalletModel.totalBalancePublisher,
                 cardImagePublisher: userWalletModel.cardImagePublisher,
                 isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
             ) { [weak self] userWalletId in
