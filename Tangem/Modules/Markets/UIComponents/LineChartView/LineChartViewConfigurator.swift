@@ -23,22 +23,18 @@ struct LineChartViewConfigurator {
 
     private func configureYAxis(on chartView: LineChartViewWrapper.UIViewType, using yAxisData: LineChartViewData.YAxis) {
         chartView.leftAxis.setLabelCount(yAxisData.labelCount, force: true)
+        // If all values are the same, a 5% diff is applied to the min/max values of
+        // the Y-axis to give the chart some room to render a horizontal chart line
+        let yAxisMinMaxDiff = yAxisData.axisMinValue == yAxisData.axisMaxValue ? 0.05 : 0.0
+
         // We're losing some precision here due to the `Decimal` -> `Double` conversion,
         // but that's ok - graphical charts are never 100% accurate by design
-        // TODO: Andrey Fedorov - Round yMin/yMax if needed (IOS-7476)
-        chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue
-        chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue
+        chartView.leftAxis.axisMinimum = yAxisData.axisMinValue.doubleValue * (1.0 - yAxisMinMaxDiff)
+        chartView.leftAxis.axisMaximum = yAxisData.axisMaxValue.doubleValue * (1.0 + yAxisMinMaxDiff)
     }
 
     private func configureXAxis(on chartView: LineChartViewWrapper.UIViewType, using xAxisData: LineChartViewData.XAxis) {
         chartView.xAxis.setLabelCount(xAxisData.labelCount, force: true)
-        // We're losing some precision here due to the `Decimal` -> `Double` conversion,
-        // but that's ok - graphical charts are never 100% accurate by design
-        // TODO: Andrey Fedorov - Setting `axisMinimum`/`axisMaximum` actually clips the entire chart within these bounds, use custom X axis renderer to avoid this (IOS-7476)
-        /*
-         chartView.xAxis.axisMinimum = xAxisData.axisMinValue.doubleValue
-         chartView.xAxis.axisMaximum = xAxisData.axisMaxValue.doubleValue
-         */
     }
 
     private func makeDataSet() -> LineChartDataSet {
@@ -53,14 +49,8 @@ struct LineChartViewConfigurator {
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
         dataSet.verticalHighlightIndicatorInset = -8.0
 
-        // Will be set dynamically, depending on the chart trend
+        // Will be set dynamically, depending on the chart trend, in `ColorSplitLineChartContainerViewControllerDelegate` method calls
         /* dataSet.setColor(chartColor) */
-
-        // TODO: Andrey Fedorov - `cubicBezier` line chart does not work at the moment with `ColorSplitLineChartRenderer` renderer (IOS-7476)
-        /*
-         dataSet.mode = .cubicBezier
-         dataSet.cubicIntensity = 0.08
-         */
 
         dataSet.highlightLineWidth = 1.0
         dataSet.highlightLineDashLengths = [6.0, 2.0]

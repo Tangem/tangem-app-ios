@@ -20,7 +20,7 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
     private let tokenSymbol: String
     private let pricePerformanceData: [MarketsPriceIntervalType: MarketsPricePerformanceData]
     private let currentPricePublisher: AnyPublisher<Decimal, Never>
-    private let formatter = BalanceFormatter()
+    private let priceFormatter = MarketsTokenPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
 
@@ -66,7 +66,7 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
 
         let decimalProgress = Math().inverseLerp(from: performanceData.lowPrice, to: performanceData.highPrice, value: currentPrice) as NSDecimalNumber
         pricePerformanceProgress = CGFloat(decimalProgress.doubleValue)
-        lowValue = formatter.formatFiatBalance(performanceData.lowPrice)
-        highValue = formatter.formatFiatBalance(performanceData.highPrice)
+        lowValue = priceFormatter.formatPrice(performanceData.lowPrice)
+        highValue = priceFormatter.formatPrice(performanceData.highPrice)
     }
 }

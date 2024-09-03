@@ -35,6 +35,7 @@ struct LineChartViewWrapper: UIViewControllerRepresentable {
         chartView.renderer = renderer
         chartView.delegate = coordinator
         chartView.xAxis.valueFormatter = coordinator.xAxisValueFormatter
+        chartView.leftAxis.valueFormatter = coordinator.yAxisValueFormatter
 
         onViewMake(chartView)
 
@@ -63,6 +64,7 @@ struct LineChartViewWrapper: UIViewControllerRepresentable {
 extension LineChartViewWrapper {
     final class Coordinator {
         fileprivate var xAxisValueFormatter: AxisValueFormatter { _xAxisValueFormatter }
+        fileprivate let yAxisValueFormatter: AxisValueFormatter
 
         private let _xAxisValueFormatter: MarketsHistoryChartXAxisValueFormatter
         private var view: LineChartViewWrapper
@@ -79,6 +81,7 @@ extension LineChartViewWrapper {
             self.view = view
             self.chartData = chartData
             _xAxisValueFormatter = MarketsHistoryChartXAxisValueFormatter(selectedPriceInterval: selectedPriceInterval)
+            yAxisValueFormatter = MarketsHistoryChartYAxisValueFormatter()
         }
 
         fileprivate func prepareFeedbackGeneratorIfNeeded() {

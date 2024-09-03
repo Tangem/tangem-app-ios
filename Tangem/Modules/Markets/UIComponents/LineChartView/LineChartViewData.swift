@@ -31,10 +31,6 @@ struct LineChartViewData: Equatable {
 
     struct XAxis: Equatable {
         let labelCount: Int
-        /// Axis min value, do not confuse with the min value of the data set.
-        let axisMinValue: Decimal
-        /// Axis max value, do not confuse with the max value of the data set.
-        let axisMaxValue: Decimal
         let values: [Value]
     }
 
