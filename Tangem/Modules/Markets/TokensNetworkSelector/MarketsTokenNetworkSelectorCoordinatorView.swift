@@ -15,7 +15,16 @@ struct MarketsTokenNetworkSelectorCoordinatorView: CoordinatorView {
         NavigationView {
             if let viewModel = coordinator.rootViewModel {
                 MarketsTokensNetworkSelectorView(viewModel: viewModel)
+                    .navigationLinks(links)
             }
         }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.walletSelectorViewModel) {
+                WalletSelectorView(viewModel: $0)
+            }
     }
 }

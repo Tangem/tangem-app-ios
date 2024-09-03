@@ -95,7 +95,7 @@ final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject
     // MARK: - Private Implementation
 
     private func bind() {
-        dataSource.selectedUserWalletModelPublisher
+        dataSource.selectedUserWalletIdPublisher
             .sink { [weak self] userWalletId in
                 guard let userWalletModel = self?.dataSource.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return

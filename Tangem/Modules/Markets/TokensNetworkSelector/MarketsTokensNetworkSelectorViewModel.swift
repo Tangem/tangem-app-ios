@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import UIKit
 import Combine
 import BlockchainSdk
 import TangemSdk
@@ -15,7 +16,7 @@ import TangemSdk
 final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObject {
     // MARK: - Published Properties
 
-    @Published var walletSelectorViewModel: MarketsWalletSelectorViewModel
+    @Published var walletSelectorViewModel: MarketsWalletSelectorViewModel?
     @Published var notificationInput: NotificationViewInput?
 
     @Published var tokenItemViewModels: [MarketsTokensNetworkSelectorItemViewModel] = []
@@ -30,10 +31,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
     var isSaveDisabled: Bool {
         pendingAdd.isEmpty
-    }
-
-    var isShowWalletSelector: Bool {
-        walletDataProvider.userWalletModels.count > 1
     }
 
     // MARK: - Private Implementation
@@ -91,8 +88,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
         self.coordinator = coordinator
 
-        walletSelectorViewModel = MarketsWalletSelectorViewModel(provider: walletDataProvider)
-
         bind()
     }
 
@@ -104,6 +99,11 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         }
 
         applyChanges(with: userTokensManager)
+    }
+
+    func selectWalletActionDidTap() {
+        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
+        coordinator?.openWalletSelector(with: walletDataProvider)
     }
 
     // MARK: - Private Implementation
@@ -120,8 +120,21 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 viewModel.setNeedSelectWallet(userWalletModel)
                 viewModel.readonlyTokens = viewModel.tokenItems.filter { viewModel.isAdded($0) }
                 viewModel.reloadSelectorItemsFromTokenItems()
+                viewModel.makeWalletSelectorViewModel(by: userWalletModel)
             }
             .store(in: &bag)
+    }
+
+    private func makeWalletSelectorViewModel(by userWalletModel: UserWalletModel) {
+        guard walletDataProvider.isAvaialableWalletSelector else {
+            walletSelectorViewModel = nil
+            return
+        }
+
+        walletSelectorViewModel = MarketsWalletSelectorViewModel(
+            userWalletNamePublisher: userWalletModel.userWalletNamePublisher,
+            cardImagePublisher: userWalletModel.cardImagePublisher
+        )
     }
 
     private func reloadSelectorItemsFromTokenItems() {
