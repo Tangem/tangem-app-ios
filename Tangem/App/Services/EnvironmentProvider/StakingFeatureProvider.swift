@@ -29,7 +29,7 @@ class StakingFeatureProvider {
             return nil
         }
 
-        if tokenItem.hasLongHashes, !longHashesSupported {
+        if tokenItem.hasLongHashesForStaking, !longHashesSupported {
             return nil
         }
 
