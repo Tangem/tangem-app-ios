@@ -25,7 +25,6 @@
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
 		2D1400D22C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400D12C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift */; };
-		2D1400D62C4434E800B75A42 /* MarketsPortfolioQuickActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400D52C4434E800B75A42 /* MarketsPortfolioQuickActionsView.swift */; };
 		2D1BB3682C07421C008392F7 /* MarketsTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */; };
 		2D1BB36A2C074534008392F7 /* MarketsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3692C074534008392F7 /* MarketsDTO.swift */; };
 		2D1BB36C2C0745ED008392F7 /* MarketsListOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */; };
@@ -72,6 +71,7 @@
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
+		2DB4041B2C7F41BC00FED291 /* CustomDisclosureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4041A2C7F41BC00FED291 /* CustomDisclosureGroup.swift */; };
 		2DB43917296EBC6000CBBB1E /* AppsFlyerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */; };
 		2DB4EAD92C41938E00F9E860 /* MarketsPortfolioContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4EAD42C41938E00F9E860 /* MarketsPortfolioContainerView.swift */; };
 		2DB4EADA2C41938E00F9E860 /* MarketsPortfolioContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4EAD52C41938E00F9E860 /* MarketsPortfolioContainerViewModel.swift */; };
@@ -1907,7 +1907,6 @@
 		2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContextActions.swift; sourceTree = "<group>"; };
 		2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerRoutable.swift; sourceTree = "<group>"; };
 		2D1400D12C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsPortfolioCoordinatorFactory.swift; sourceTree = "<group>"; };
-		2D1400D52C4434E800B75A42 /* MarketsPortfolioQuickActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioQuickActionsView.swift; sourceTree = "<group>"; };
 		2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenModel.swift; sourceTree = "<group>"; };
 		2D1BB3692C074534008392F7 /* MarketsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsDTO.swift; sourceTree = "<group>"; };
 		2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListOrderType.swift; sourceTree = "<group>"; };
@@ -1955,6 +1954,7 @@
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
+		2DB4041A2C7F41BC00FED291 /* CustomDisclosureGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDisclosureGroup.swift; sourceTree = "<group>"; };
 		2DB43916296EBC6000CBBB1E /* AppsFlyerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerConfig.swift; sourceTree = "<group>"; };
 		2DB4EAD42C41938E00F9E860 /* MarketsPortfolioContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerView.swift; sourceTree = "<group>"; };
 		2DB4EAD52C41938E00F9E860 /* MarketsPortfolioContainerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerViewModel.swift; sourceTree = "<group>"; };
@@ -3996,7 +3996,6 @@
 				2DB4EAD42C41938E00F9E860 /* MarketsPortfolioContainerView.swift */,
 				2DB4EAD52C41938E00F9E860 /* MarketsPortfolioContainerViewModel.swift */,
 				2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */,
-				2D1400D52C4434E800B75A42 /* MarketsPortfolioQuickActionsView.swift */,
 				2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */,
 				2DB4EAD62C41938E00F9E860 /* MarketsPortfolioTokenItemView.swift */,
 				2DB4EAD72C41938E00F9E860 /* MarketsPortfolioTokenItemViewModel.swift */,
@@ -5847,6 +5846,7 @@
 				B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */,
 				2DB8E1152B29068C0044BF7D /* CustomSearchBar.swift */,
 				B66BDAE82C7438310047FD67 /* GrabberViewFactory.swift */,
+				2DB4041A2C7F41BC00FED291 /* CustomDisclosureGroup.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -11415,7 +11415,6 @@
 				EFC597BD2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift in Sources */,
 				DAF59CC62ACC4D8C004FCA86 /* AddCustomTokenDerivationPathSelectorItemView.swift in Sources */,
 				DA8C33952BF38CB2002AE4F9 /* UserWalletFinder.swift in Sources */,
-				2D1400D62C4434E800B75A42 /* MarketsPortfolioQuickActionsView.swift in Sources */,
 				B02B74AA29879CC5006473F2 /* WalletConnectV2Factory.swift in Sources */,
 				DA4371A32A7D1937006215CA /* LegacyTokenListCoordinatorView.swift in Sources */,
 				B6AA136E2A2A376900B53937 /* CardInfoPageTransactionDefaultCellPreviewViewModel.swift in Sources */,
@@ -11612,6 +11611,7 @@
 				DC66BBFC285A389000CDF765 /* PopoverModifier.swift in Sources */,
 				B06BB8E52BCD0F6C00C0FBCF /* SingleTokenAlertBuilder.swift in Sources */,
 				EF0DD7902B026A840099527D /* WalletModel+ExpressWallet.swift in Sources */,
+				2DB4041B2C7F41BC00FED291 /* CustomDisclosureGroup.swift in Sources */,
 				EF729B772AF3E95F00D80205 /* ProviderRowView.swift in Sources */,
 				B0B8670326DF5AE1008DAA67 /* ModalSheetPreferenceKey.swift in Sources */,
 				B69D5EEB2A3252A800B494A9 /* OrganizeTokensListCornerRadiusParametersProvider.swift in Sources */,
