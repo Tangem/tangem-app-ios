@@ -8,7 +8,8 @@
 
 import Foundation
 
-/// An experimental implementation, currently used only in the `Markets` module. Most likely requires some tuning (IOS-7793)
+/// An experimental implementation, currently used only in the `Markets` module.
+/// Most likely requires some tuning and improvements (IOS-7793 and IOS-7837).
 ///
 /// This formatter maintains reference semantics and uses an internal cache; for performance reasons,
 /// consider keeping the instances of this formatter alive instead of creating and discarding them in place.

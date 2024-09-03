@@ -51,7 +51,7 @@ struct TokenMarketsDetailsView: View {
                 rightItems: {}
             )
             .overlay(alignment: .bottom) {
-                Separator(color: Colors.Stroke.primary)
+                Separator(height: .minimal, color: Colors.Stroke.primary)
                     .hidden(!isNavigationBarShadowLineViewVisible)
             }
         }
@@ -85,6 +85,9 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
+            // This view is always presented when the overlay is fully visible, i.e. when its progress equals 1.0
+            // Therefore, the same value used here as the initial progress value
+            .modifier(MarketsContentHidingViewModifier(initialProgress: 1.0))
             .padding(.top, Constants.scrollViewContentTopInset)
             .if(viewModel.isMarketsSheetStyle, transform: { view in
                 view

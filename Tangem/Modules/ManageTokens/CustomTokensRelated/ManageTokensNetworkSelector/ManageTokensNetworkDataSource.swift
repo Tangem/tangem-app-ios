@@ -34,7 +34,7 @@ class ManageTokensNetworkDataSource {
 }
 
 extension ManageTokensNetworkDataSource: WalletSelectorDataSource {
-    var selectedUserWalletModelPublisher: AnyPublisher<UserWalletId?, Never> {
+    var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }
 
@@ -42,7 +42,10 @@ extension ManageTokensNetworkDataSource: WalletSelectorDataSource {
         userWalletModels.map { userWalletModel in
             WalletSelectorItemViewModel(
                 userWalletId: userWalletModel.userWalletId,
-                name: userWalletModel.config.cardName,
+                cardsCount: userWalletModel.cardsCount,
+                isUserWalletLocked: userWalletModel.isUserWalletLocked,
+                userWalletNamePublisher: userWalletModel.userWalletNamePublisher,
+                totalBalancePublisher: userWalletModel.totalBalancePublisher,
                 cardImagePublisher: userWalletModel.cardImagePublisher,
                 isSelected: userWalletModel.userWalletId == _selectedUserWalletModel.value?.userWalletId
             ) { [weak self] userWalletId in

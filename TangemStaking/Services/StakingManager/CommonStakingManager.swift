@@ -230,7 +230,7 @@ private extension CommonStakingManager {
 
 private extension CommonStakingManager {
     func log(_ args: Any) {
-        logger.debug("[Staking] \(self) \(args)")
+        logger.debug("[Staking] \(self) \(wallet.item) \(args)")
     }
 }
 

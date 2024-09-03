@@ -15,8 +15,11 @@ struct MarketsTokensNetworkSelectorView: View {
         ZStack(alignment: .bottom) {
             ScrollView {
                 VStack(spacing: 14) {
-                    if viewModel.isShowWalletSelector {
-                        MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+                    if let walletSelectorViewModel = viewModel.walletSelectorViewModel {
+                        MarketsWalletSelectorView(viewModel: walletSelectorViewModel)
+                            .onTapGesture {
+                                viewModel.selectWalletActionDidTap()
+                            }
                     }
 
                     contentView
