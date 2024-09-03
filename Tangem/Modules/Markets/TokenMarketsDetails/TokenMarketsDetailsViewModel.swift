@@ -64,7 +64,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     var priceDate: String {
-        return dateHelper.makePriceDate(
+        dateHelper.makePriceDate(
             selectedDate: selectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
         )
