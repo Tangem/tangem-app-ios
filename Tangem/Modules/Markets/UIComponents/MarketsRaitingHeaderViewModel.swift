@@ -43,6 +43,7 @@ class MarketsRatingHeaderViewModel: ObservableObject {
 
     func bind(with filterPublisher: some Publisher<MarketsListDataProvider.Filter, Never>) {
         $marketPriceIntervalType
+            .dropFirst()
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
@@ -51,6 +52,7 @@ class MarketsRatingHeaderViewModel: ObservableObject {
             .store(in: &bag)
 
         filterPublisher
+            .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)

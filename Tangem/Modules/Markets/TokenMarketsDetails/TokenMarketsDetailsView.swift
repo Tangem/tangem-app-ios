@@ -28,6 +28,9 @@ struct TokenMarketsDetailsView: View {
 
             scrollView
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
         .navigationBarTitleDisplayMode(.inline)
         .if(!viewModel.isMarketsSheetStyle, transform: { view in
             view.navigationTitle(viewModel.tokenName)

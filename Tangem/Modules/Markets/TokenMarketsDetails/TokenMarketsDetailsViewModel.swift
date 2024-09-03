@@ -169,6 +169,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // MARK: - Actions
 
+    func onAppear() {
+        Analytics.log(event: .marketsChartScreenOpened, params: [Analytics.ParameterKey.token: tokenInfo.symbol])
+    }
+
     func loadDetailedInfo() {
         isLoading = true
         loadingTask?.cancel()
@@ -188,7 +192,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
-        Analytics.log(event: .marketsButtonLinks, params: [.link: info.title])
+        Analytics.log(event: .marketsChartButtonLinks, params: [.link: info.title])
 
         guard let url = URL(string: info.link) else {
             log("Failed to create link from: \(info.link)")
@@ -408,7 +412,7 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
-                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: info.symbol])
+                Analytics.log(event: .marketsChartButtonAddToPortfolio, params: [.token: info.symbol])
 
                 coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
             }
