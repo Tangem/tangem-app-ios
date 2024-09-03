@@ -17,6 +17,8 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     @Published var selectedValidator: String = ""
     @Published var auxiliaryViewsVisible: Bool = true
 
+    private var initialSelectedValidator: String?
+
     // MARK: - Dependencies
 
     private let interactor: StakingValidatorsInteractor
@@ -36,6 +38,10 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     func onDisappear() {
         auxiliaryViewsVisible = false
+        if selectedValidator != initialSelectedValidator,
+           let validator = validators.first(where: { $0.address == selectedValidator }) {
+            Analytics.log(event: .stakingValidatorChosen, params: [.validator: validator.name])
+        }
     }
 }
 
@@ -74,6 +80,9 @@ private extension StakingValidatorsViewModel {
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedValidator in
                 viewModel.selectedValidator = selectedValidator.address
+                if viewModel.initialSelectedValidator == nil {
+                    viewModel.initialSelectedValidator = selectedValidator.address
+                }
             }
             .store(in: &bag)
 

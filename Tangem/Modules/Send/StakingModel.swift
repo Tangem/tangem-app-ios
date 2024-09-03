@@ -269,6 +269,8 @@ private extension StakingModel {
             throw StakingModelError.readyToStakeNotFound
         }
 
+        Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
+
         let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
         let transactionInfo = try await stakingManager.transaction(action: action)
         let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
@@ -283,12 +285,14 @@ private extension StakingModel {
             proceed(error: error)
             throw error
         } catch {
+            logTransactionRejected()
             throw error
         }
     }
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -517,4 +521,32 @@ enum StakingModelError: String, Hashable, Error {
     case readyToStakeNotFound
     case validatorNotFound
     case approveDataNotFound
+}
+
+// MARK: Analytics
+
+extension StakingModel {
+    func logTransactionAnalytics() {
+        Analytics.log(event: .transactionSent, params: [
+            .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
+            .token: tokenItem.currencySymbol,
+            .blockchain: tokenItem.blockchain.displayName,
+            .feeType: selectedFee.option.rawValue, // FIXME:
+            .memo: Analytics.ParameterValue.null.rawValue // FIXME:
+        ])
+
+        switch amount?.type {
+        case .none:
+            break
+        case .typical:
+            Analytics.log(.stakingSelectedCurrency, params: [.commonType: .token])
+
+        case .alternative:
+            Analytics.log(.stakingSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
+        }
+    }
+    
+    func logTransactionRejected() {
+        Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
+    }
 }

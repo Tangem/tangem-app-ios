@@ -94,7 +94,7 @@ private extension StakingDetailsViewModel {
                 viewModel.setupView(state: state)
             }
             .store(in: &bag)
-        
+
         stakingManager
             .statePublisher
             .compactMap { state -> String? in
@@ -257,8 +257,14 @@ private extension StakingDetailsViewModel {
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
             rewardViewData = RewardViewData(
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
+
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
+
+                        guard let validator = yield.validators.first(
+                            where: { $0.address == balance.validatorAddress }
+                        ) else { return }
+                        Analytics.log(event: .stakingButtonRewards, params: [.validator: validator.name])
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -308,6 +314,10 @@ private extension StakingDetailsViewModel {
             case .active, .withdraw:
                 return { [weak self] in
                     self?.openUnstakingFlow(balance: balance)
+                    Analytics.log(
+                        event: .stakingButtonValidator,
+                        params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
+                    )
                 }
             }
         }()

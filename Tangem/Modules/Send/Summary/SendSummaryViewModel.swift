@@ -114,6 +114,12 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     func userDidTapValidator() {
         didTapSummary()
+
+        Analytics.log(
+            event: .stakingButtonValidator,
+            params: [.source: Analytics.ParameterValue.stakeSourceConfirmation.rawValue]
+        )
+
         router?.summaryStepRequestEditValidators()
     }
 

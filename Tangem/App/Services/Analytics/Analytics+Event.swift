@@ -317,5 +317,11 @@ extension Analytics {
         case stakingButtonRestake = "[Staking] Button - Restake"
         case stakingButtonUnstake = "[Staking] Button - Unstake"
         case stakingButtonWithdraw = "[Staking] Button - Withdraw"
+        case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
+        case stakingErrors = "[Staking] Errors"
+        case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingSelectedCurrency = "[Staking] Selected Currency"
+        case stakingButtonShare = "[Staking] Button - Share"
+        case stakingButtonExplore = "[Staking] Button - Explore"
     }
 }

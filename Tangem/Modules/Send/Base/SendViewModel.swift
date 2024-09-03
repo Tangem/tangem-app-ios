@@ -138,12 +138,20 @@ final class SendViewModel: ObservableObject {
     }
 
     func share(url: URL) {
-        Analytics.log(.sendButtonShare)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonShare)
+        } else {
+            Analytics.log(.stakingButtonShare)
+        }
         coordinator?.openShareSheet(url: url)
     }
 
     func explore(url: URL) {
-        Analytics.log(.sendButtonExplore)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonExplore)
+        } else {
+            Analytics.log(.stakingButtonExplore)
+        }
         coordinator?.openExplorer(url: url)
     }
 }

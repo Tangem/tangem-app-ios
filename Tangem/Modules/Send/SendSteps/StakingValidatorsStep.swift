@@ -35,8 +35,4 @@ extension StakingValidatorsStep: SendStep {
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
     }
-    
-    func willAppear(previous step: any SendStep) {
-        Analytics.log(.stakingButtonValidator, params: [.source: .stakeSourceConfirmation])
-    }
 }
