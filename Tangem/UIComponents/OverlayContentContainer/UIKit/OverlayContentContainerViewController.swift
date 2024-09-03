@@ -568,7 +568,7 @@ final class OverlayContentContainerViewController: UIViewController {
         var offset = contentExpandedVerticalOffset + Constants.overlayVerticalPadding
 
         if !UIDevice.current.hasHomeScreenIndicator {
-            offset += Constants.notchlessDevicesAdditionalVerticalOffset
+            offset += Constants.notchlessDevicesAdditionalVerticalPadding
         }
 
         return offset
@@ -656,8 +656,14 @@ extension OverlayContentContainerViewController: OverlayContentContainerAppLifec
 
 private extension OverlayContentContainerViewController {
     enum Constants {
+        /// Vertical padding between the top edge of the `content` (a view in the background)
+        /// and the top edge of the `overlay` (a view in front) in expanded state.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
         static let overlayVerticalPadding = 10.0
-        static let notchlessDevicesAdditionalVerticalOffset = 10.0
+        /// On notchless devices, the native iOS sheet adds additional vertical padding to the `safeAreaInsets.top`
+        /// to ensure that there is enough free space between the status bar and the top edge of the sheet.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
+        static let notchlessDevicesAdditionalVerticalPadding = 10.0
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.4
