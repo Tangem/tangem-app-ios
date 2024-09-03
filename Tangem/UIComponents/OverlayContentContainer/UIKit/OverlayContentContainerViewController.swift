@@ -448,7 +448,7 @@ final class OverlayContentContainerViewController: UIViewController {
         case _ where scrollViewContentOffsetLocker == nil:
             // There is no scroll view in the overlay view, use default logic
             break
-        case .up where isExpandedState:
+        case .up where isExpandedState && scrollViewContentOffsetLocker?.isLocked == false:
             // Normal scrolling to the bottom of the scroll view content, pan gesture recognizer should be ignored
             // for the entire duration of the gesture (until end)
             shouldIgnorePanGestureRecognizer = true
