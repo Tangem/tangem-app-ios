@@ -225,7 +225,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne else {
+        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return

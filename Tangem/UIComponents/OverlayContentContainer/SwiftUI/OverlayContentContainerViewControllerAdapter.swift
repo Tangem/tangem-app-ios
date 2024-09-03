@@ -21,9 +21,9 @@ final class OverlayContentContainerViewControllerAdapter {
 // MARK: - OverlayContentContainer protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer {
-    var cornerRadius: CGFloat {
-        return containerViewController?.overlayCornerRadius ?? .zero
-    }
+    var cornerRadius: CGFloat { containerViewController?.overlayCornerRadius ?? .zero }
+
+    var isScrollViewLocked: Bool { containerViewController?.isScrollViewLocked ?? false }
 
     func installOverlay(_ overlayView: some View) {
         let overlayViewController = UIHostingController(rootView: overlayView)

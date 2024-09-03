@@ -36,6 +36,8 @@ final class OverlayContentContainerViewController: UIViewController {
 
     // MARK: - Read-only state
 
+    var isScrollViewLocked: Bool { scrollViewContentOffsetLocker?.isLocked ?? false }
+
     private var screenBounds: CGRect {
         return UIScreen.main.bounds
     }

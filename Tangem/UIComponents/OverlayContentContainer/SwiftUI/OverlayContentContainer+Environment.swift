@@ -56,6 +56,11 @@ private struct DummyOverlayContentContainerViewControllerAdapter:
         return .zero
     }
 
+    var isScrollViewLocked: Bool {
+        assertIfNeeded(for: OverlayContentContainer.self)
+        return false
+    }
+
     func installOverlay(_ overlayView: some View) {
         assertIfNeeded(for: OverlayContentContainer.self)
     }
