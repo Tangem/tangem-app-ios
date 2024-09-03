@@ -70,7 +70,7 @@ struct TokenContextActionsBuilder {
             swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
             !walletModel.isCustom
 
-        let canStake = StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
+        let canStake = StakingFeatureProvider(config: userWalletModel.config).isAvailable(for: walletModel.tokenItem)
 
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
         let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions

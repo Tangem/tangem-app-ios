@@ -12,14 +12,14 @@ import BlockchainSdk
 import TangemStaking
 
 struct CommonWalletModelsFactory {
-    private let derivationStyle: DerivationStyle?
+    private let config: UserWalletConfig
 
-    init(derivationStyle: DerivationStyle?) {
-        self.derivationStyle = derivationStyle
+    init(config: UserWalletConfig) {
+        self.config = config
     }
 
     private func isDerivationDefault(blockchain: Blockchain, derivationPath: DerivationPath?) -> Bool {
-        guard let derivationStyle else {
+        guard let derivationStyle = config.derivationStyle else {
             return true
         }
 
@@ -61,7 +61,9 @@ struct CommonWalletModelsFactory {
     }
 
     func makeStakingManager(publicKey: Data, tokenItem: TokenItem, address: String) -> StakingManager? {
-        guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem),
+        let featureProvider = StakingFeatureProvider(config: config)
+
+        guard let integrationId = featureProvider.yieldId(for: tokenItem),
               let item = tokenItem.stakingTokenItem else {
             return nil
         }
