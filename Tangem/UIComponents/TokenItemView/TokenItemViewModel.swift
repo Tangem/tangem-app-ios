@@ -61,7 +61,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
     private let priceChangeUtility = PriceChangeUtility()
-    private let priceFormatter = CommonTokenPriceFormatter()
+    private let priceFormatter = TokenItemPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
     private weak var contextActionsProvider: TokenItemContextActionsProvider?
@@ -157,7 +157,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: quote.priceChange24h)
 
-        let priceText = priceFormatter.formatFiatBalance(quote.price)
+        let priceText = priceFormatter.formatPrice(quote.price)
         tokenPrice = .loaded(text: priceText)
     }
 

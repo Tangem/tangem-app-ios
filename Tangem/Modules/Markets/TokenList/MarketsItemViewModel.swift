@@ -36,7 +36,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     private var bag = Set<AnyCancellable>()
 
     private let priceChangeUtility = PriceChangeUtility()
-    private let priceFormatter = CommonTokenPriceFormatter()
+    private let priceFormatter = MarketsTokenPriceFormatter()
     private let marketCapFormatter = MarketCapFormatter()
 
     private weak var prefetchDataSource: MarketsListPrefetchDataSource?
@@ -91,7 +91,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Private Implementation
 
     private func setupPriceInfo(price: Decimal?, priceChangePercent: Decimal?) {
-        priceValue = priceFormatter.formatFiatBalance(price)
+        priceValue = priceFormatter.formatPrice(price)
         priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangePercent)
     }
 

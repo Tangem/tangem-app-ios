@@ -16,7 +16,7 @@ private struct BottomScrollableSheetShadowView: View {
     }
 
     private var endColor: Color {
-        return Constants.shadowColor.opacity(colorScheme == .dark ? 0.36 : 0.04)
+        return Constants.shadowColor.opacity(colorScheme == .dark ? 0.36 : 0.08)
     }
 
     var body: some View {

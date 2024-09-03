@@ -143,7 +143,7 @@ extension TokenMarketsDetailsView {
                         .padding(.horizontal, 16)
 
                         if index != 2 {
-                            Separator(color: Colors.Stroke.primary)
+                            Separator(height: .minimal, color: Colors.Stroke.primary)
                                 .padding(.leading, 16)
                         }
                     }

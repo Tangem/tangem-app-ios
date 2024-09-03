@@ -43,7 +43,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     var amountType: Amount.AmountType { walletModel.amountType }
 
     var rateFormatted: String {
-        priceFormatter.formatFiatBalance(walletModel.quote?.price)
+        priceFormatter.formatPrice(walletModel.quote?.price)
     }
 
     var priceChangeState: TokenPriceChangeView.State {

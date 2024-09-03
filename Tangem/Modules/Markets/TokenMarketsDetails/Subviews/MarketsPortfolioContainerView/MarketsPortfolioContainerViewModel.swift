@@ -21,7 +21,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
-    @Published var quickActions: [TokenActionType] = []
 
     // MARK: - Private Properties
 
@@ -108,7 +107,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self
+            contextActionsDelegate: self,
+            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -130,8 +130,16 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 partialResult.append(contentsOf: viewModels)
             }
 
-        quickActions = makeQuickActions()
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+    }
+
+    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
+    private func quickActionDisclosureHandler(_ viewModelId: Int) {
+        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
+
+        for viewModel in filteredViewModels {
+            viewModel.isExpandedQuickActions = false
+        }
     }
 
     private func bind() {
@@ -145,36 +153,33 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
-
-    private func makeQuickActions() -> [TokenActionType] {
-        guard
-            tokenItemViewModels.count == 1,
-            let itemViewModels = tokenItemViewModels.first
-        else {
-            return []
-        }
-
-        let actionsFilter: Set<TokenActionType> = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
-        let availableActions = itemViewModels.contextActionSections.flatMap { $0.items.filter { actionsFilter.contains($0) } }
-
-        return availableActions.unique()
-    }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenContextActionsSection] {
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
 
-        let actions = TokenContextActionsBuilder().buildContextActions(
-            tokenItem: tokenItem,
-            walletModelId: walletModelId,
+        guard
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
+            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
+        else {
+            return []
+        }
+
+        let baseActions = TokenContextActionsBuilder().makeBaseContextActions(
+            tokenItem: walletModel.tokenItem,
+            walletModel: walletModel,
             userWalletModel: userWalletModel,
             canNavigateToMarketsDetails: false,
             canHideToken: false
         )
-        return actions
+
+        // This is what business logic requires
+        let filteredActions: [TokenActionType] = [.buy, .exchange, .receive]
+
+        return filteredActions.filter { baseActions.contains($0) }
     }
 }
 
