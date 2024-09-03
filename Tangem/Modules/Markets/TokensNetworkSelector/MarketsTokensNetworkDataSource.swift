@@ -33,7 +33,7 @@ class MarketsTokensNetworkDataSource {
     }
 }
 
-extension MarketsTokensNetworkDataSource: MarketsWalletSelectorProvider {
+extension MarketsTokensNetworkDataSource: WalletSelectorDataSource {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }

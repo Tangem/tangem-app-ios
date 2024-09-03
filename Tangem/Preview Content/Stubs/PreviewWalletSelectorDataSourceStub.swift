@@ -19,7 +19,7 @@ class PreviewWalletSelectorDataSourceStub: WalletSelectorDataSource {
     }
 }
 
-class PreviewMarketsWalletSelectorDataSourceStub: MarketsWalletSelectorProvider {
+class PreviewMarketsWalletSelectorDataSourceStub: WalletSelectorDataSource {
     private var _selectedUserWalletModel: CurrentValueSubject<UserWalletModel?, Never> = .init(nil)
 
     var itemViewModels: [WalletSelectorItemViewModel] = []

@@ -41,7 +41,7 @@ class MarketsWalletDataProvider {
     }
 }
 
-extension MarketsWalletDataProvider: MarketsWalletSelectorProvider {
+extension MarketsWalletDataProvider: WalletSelectorDataSource {
     var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
         _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
     }

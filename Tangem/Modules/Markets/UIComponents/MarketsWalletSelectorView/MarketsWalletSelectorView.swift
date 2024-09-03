@@ -32,7 +32,7 @@ struct MarketsWalletSelectorView: View {
                 .foregroundColor(Colors.Icon.informative)
         }
         .frame(maxWidth: .infinity)
-        .roundedBackground(with: Colors.Background.action, verticalPadding: 12, horizontalPadding: 14, radius: 14)
+        .defaultRoundedBackground(with: Colors.Background.action)
     }
 
     @ViewBuilder
