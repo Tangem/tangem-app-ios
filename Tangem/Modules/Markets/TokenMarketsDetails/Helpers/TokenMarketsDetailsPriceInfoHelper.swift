@@ -8,19 +8,11 @@
 
 import Foundation
 
-struct TokenMarketsDetailsPriceInfoHelper {
+final class TokenMarketsDetailsPriceInfoHelper {
     typealias PriceInfo = (price: String, priceChangeState: TokenPriceChangeView.State)
 
-    private let fiatBalanceFormattingOptions: BalanceFormattingOptions
-
     private let priceChangeUtility = PriceChangeUtility()
-    private let balanceFormatter = BalanceFormatter()
-
-    init(
-        fiatBalanceFormattingOptions: BalanceFormattingOptions
-    ) {
-        self.fiatBalanceFormattingOptions = fiatBalanceFormattingOptions
-    }
+    private let priceFormatter = MarketsTokenPriceFormatter()
 
     /// This overload should be used when the interval of interest is defined by the value selected on the chart.
     func makePriceInfo(
@@ -31,7 +23,7 @@ struct TokenMarketsDetailsPriceInfoHelper {
             currentPrice: currentPrice,
             previousPrice: selectedPrice
         )
-        let price = balanceFormatter.formatFiatBalance(selectedPrice, formattingOptions: fiatBalanceFormattingOptions)
+        let price = priceFormatter.formatPrice(selectedPrice)
 
         return (price, priceChangeState)
     }
@@ -44,7 +36,7 @@ struct TokenMarketsDetailsPriceInfoHelper {
     ) -> PriceInfo {
         let changePercent = priceChangeInfo[selectedPriceChangeIntervalType.rawValue]
         let priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: changePercent)
-        let price = balanceFormatter.formatFiatBalance(currentPrice, formattingOptions: fiatBalanceFormattingOptions)
+        let price = priceFormatter.formatPrice(currentPrice)
 
         return (price, priceChangeState)
     }

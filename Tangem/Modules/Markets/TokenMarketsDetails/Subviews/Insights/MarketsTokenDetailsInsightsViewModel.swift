@@ -31,7 +31,10 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
         insights.networksInfo != nil
     }
 
-    private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: AppSettings.shared.selectedCurrencyCode)
+    private var fiatAmountFormatter: NumberFormatter = BalanceFormatter().makeDefaultFiatFormatter(
+        forCurrencyCode: AppSettings.shared.selectedCurrencyCode,
+        formattingOptions: .defaultFiatFormattingOptions
+    )
 
     private let nonCurrencyFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
@@ -136,7 +139,10 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, newCurrencyCode in
-                viewModel.fiatAmountFormatter = BalanceFormatter().makeDefaultFiatFormatter(for: newCurrencyCode)
+                viewModel.fiatAmountFormatter = BalanceFormatter().makeDefaultFiatFormatter(
+                    forCurrencyCode: newCurrencyCode,
+                    formattingOptions: .defaultFiatFormattingOptions
+                )
                 viewModel.setupInsights()
             }
             .store(in: &bag)

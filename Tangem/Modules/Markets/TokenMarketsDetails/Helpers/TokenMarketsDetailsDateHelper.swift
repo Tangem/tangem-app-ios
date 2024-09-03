@@ -17,19 +17,31 @@ struct TokenMarketsDetailsDateHelper {
         self.initialDate = initialDate
     }
 
-    func makeDate(
+    func makePriceDate(
         selectedDate: Date?,
-        selectedPriceChangeIntervalType: MarketsPriceIntervalType
-    ) -> Date? {
-        // Fallback to the date defined by the selected `MarketsPriceIntervalType` if `selectedDate` is nil
-        return selectedDate ?? makeDate(using: selectedPriceChangeIntervalType)
+        selectedPriceChangeIntervalType intervalType: MarketsPriceIntervalType
+    ) -> String {
+        switch (intervalType, selectedDate) {
+        case (.day, .none):
+            return Localization.commonToday
+        case (.all, .none):
+            return Localization.commonAll
+        case (_, .none):
+            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.priceDateFormatter(for: intervalType)
+            let intervalBeginningDate = makeIntervalBeginningDate(using: intervalType)
+            return makePriceDate(intervalBeginningDate: intervalBeginningDate, dateFormatter: dateFormatter)
+        case (_, .some(let selectedDate)):
+            let dateFormatter = MarketsTokenDetailsDateFormatterRepository.shared.priceDateFormatter(for: intervalType)
+            return makePriceDate(intervalBeginningDate: selectedDate, dateFormatter: dateFormatter)
+        }
     }
 
-    private func makeDate(using selectedPriceChangeIntervalType: MarketsPriceIntervalType) -> Date? {
+    private func makePriceDate(intervalBeginningDate: Date, dateFormatter: DateFormatter) -> String {
+        return "\(dateFormatter.string(from: intervalBeginningDate)) – \(Localization.commonNow)"
+    }
+
+    private func makeIntervalBeginningDate(using selectedPriceChangeIntervalType: MarketsPriceIntervalType) -> Date {
         switch selectedPriceChangeIntervalType {
-        case .day:
-            // Causes fallback to the `Localization.commonToday`
-            return nil
         case .week:
             return initialDate.dateByAdding(-7, .day).date
         case .month:
@@ -40,10 +52,10 @@ struct TokenMarketsDetailsDateHelper {
             return initialDate.dateByAdding(-6, .month).date
         case .year:
             return initialDate.dateByAdding(-1, .year).date
-        case .all:
-            // TODO: Andrey Fedorov - How to get the beginning of `all` time interval? Obtain asynchronously from `historyChartViewModel`? (IOS-7476)
-            // Causes fallback to the `Localization.commonAll`
-            return nil
+        case .day,
+             .all:
+            assertionFailure("Unreachable")
+            return Date()
         }
     }
 }
