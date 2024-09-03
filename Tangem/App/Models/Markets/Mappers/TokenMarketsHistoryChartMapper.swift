@@ -32,13 +32,14 @@ struct TokenMarketsHistoryChartMapper {
         // both `LineChartViewData.XAxis` and `LineChartViewData.Trend`
         let values = try mapAndSortValues(from: model)
 
-        guard values.count > 1 else {
+        guard
+            values.count > 1,
+            let firstValue = values.first,
+            let lastValue = values.last
+        else {
             throw ParsingError.notEnoughData
         }
 
-        // Index-based access is safe here due to a guard check above
-        let firstValue = values[0]
-        let lastValue = values[values.count - 1]
         let labelCount = makeXAxisLabelCount(for: selectedPriceInterval)
 
         let xAxis = LineChartViewData.XAxis(
@@ -58,12 +59,13 @@ struct TokenMarketsHistoryChartMapper {
     ) throws -> LineChartViewData.YAxis {
         let prices = model.prices
 
-        guard prices.count > 1 else {
+        guard
+            prices.count > 1,
+            var minYAxisValue = prices.first?.value
+        else {
             throw ParsingError.notEnoughData
         }
 
-        // Force unwrap is safe here due to a guard check above
-        var minYAxisValue = prices.first!.value
         var maxYAxisValue = minYAxisValue
 
         // A single foreach loop is used for performance reasons
