@@ -31,10 +31,10 @@ struct RootViewControllerFactory {
 
         if UIDevice.current.hasHomeScreenIndicator {
             overlayCollapsedHeight = Constants.notchDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
-            overlayCornerRadius = 24.0
+            overlayCornerRadius = Constants.notchDevicesOverlayCornerRadius
         } else {
             overlayCollapsedHeight = Constants.notchlessDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
-            overlayCornerRadius = 16.0
+            overlayCornerRadius = Constants.notchlessDevicesOverlayCornerRadius
         }
 
         let containerViewController = OverlayContentContainerViewController(
@@ -52,13 +52,15 @@ struct RootViewControllerFactory {
 
 // MARK: - Constants
 
-private extension RootViewControllerFactory {
+extension RootViewControllerFactory {
     enum Constants {
         /// Based on Figma mockups.
-        static let notchDevicesOverlayCollapsedHeight = 100.0
+        fileprivate static let notchDevicesOverlayCollapsedHeight = 100.0
         /// Based on Figma mockups.
-        static let notchlessDevicesOverlayCollapsedHeight = 86.0
+        fileprivate static let notchlessDevicesOverlayCollapsedHeight = 86.0
         /// The height of `SwiftUI.TextField` used in the `CustomSearchBar` UI components differs from the mockups by this small margin.
-        static let overlayCollapsedHeightAdjustment = 2.0
+        fileprivate static let overlayCollapsedHeightAdjustment = 2.0
+        static let notchDevicesOverlayCornerRadius = 24.0
+        static let notchlessDevicesOverlayCornerRadius = 16.0
     }
 }

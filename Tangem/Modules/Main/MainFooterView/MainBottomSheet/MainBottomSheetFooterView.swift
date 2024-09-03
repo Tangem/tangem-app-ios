@@ -20,6 +20,12 @@ struct MainBottomSheetFooterView: View {
         )
     }
 
+    private var cornerRadius: CGFloat {
+        UIDevice.current.hasHomeScreenIndicator
+            ? RootViewControllerFactory.Constants.notchDevicesOverlayCornerRadius
+            : RootViewControllerFactory.Constants.notchlessDevicesOverlayCornerRadius
+    }
+
     var body: some View {
         VStack(spacing: 0.0) {
             FixedSpacer.vertical(14.0)
@@ -33,7 +39,7 @@ struct MainBottomSheetFooterView: View {
             )
             .padding(.bottom, bottomInset)
             .background(Colors.Background.primary) // Fills a small gap at the bottom on notchless devices
-            .bottomScrollableSheetCornerRadius()
+            .cornerRadius(cornerRadius, corners: .topEdge)
             .bottomScrollableSheetGrabber()
             .bottomScrollableSheetShadow()
         }
