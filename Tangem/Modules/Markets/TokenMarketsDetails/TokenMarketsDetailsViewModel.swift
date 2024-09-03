@@ -102,8 +102,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             .share(replay: 1)
     }()
 
-    private let balanceFormatter = BalanceFormatter()
-
     private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper(fiatBalanceFormattingOptions: fiatBalanceFormattingOptions)
     private lazy var dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
 

@@ -9,8 +9,9 @@
 import SwiftUI
 import DGCharts
 
-/// Wrapper for `DGCharts.LineChartView` view.
-struct LineChartViewWrapper: UIViewRepresentable {
+/// Wrapper for `DGCharts.ColorSplitLineChartContainerViewController` VC.
+struct LineChartViewWrapper: UIViewControllerRepresentable {
+    typealias UIViewControllerType = DGCharts.ColorSplitLineChartContainerViewController
     typealias UIViewType = DGCharts.LineChartView
     typealias ChartValue = LineChartViewData.Value
     typealias PriceInterval = MarketsPriceIntervalType
@@ -20,15 +21,17 @@ struct LineChartViewWrapper: UIViewRepresentable {
     let onValueSelection: (_ chartValue: ChartValue?) -> Void
     let onViewMake: (_ chartView: UIViewType) -> Void
 
-    func makeUIView(context: Context) -> UIViewType {
+    func makeUIViewController(context: Context) -> UIViewControllerType {
         let coordinator = context.coordinator
-        let chartView = UIViewType()
+        let viewController = UIViewControllerType(nibName: nil, bundle: nil)
+        let chartView = viewController.lineChartView
         let renderer = ColorSplitLineChartRenderer(
             dataProvider: chartView,
             animator: chartView.chartAnimator,
             viewPortHandler: chartView.viewPortHandler
         )
-        renderer.delegate = coordinator
+        viewController.delegate = coordinator
+        renderer.pathHandler = viewController
         chartView.renderer = renderer
         chartView.delegate = coordinator
         chartView.xAxis.valueFormatter = coordinator.xAxisValueFormatter
@@ -38,20 +41,20 @@ struct LineChartViewWrapper: UIViewRepresentable {
         let configurator = LineChartViewConfigurator(chartData: chartData)
         configurator.configure(chartView)
 
-        return chartView
+        return viewController
     }
 
-    func updateUIView(_ uiView: UIViewType, context: Context) {
-        let configurator = LineChartViewConfigurator(chartData: chartData)
-        configurator.configure(uiView)
-
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         let coordinator = context.coordinator
         coordinator.prepareFeedbackGeneratorIfNeeded()
-        coordinator.setSelectedPriceInterval(selectedPriceInterval)
+        coordinator.update(view: self, chartData: chartData, selectedPriceInterval: selectedPriceInterval)
+
+        let configurator = LineChartViewConfigurator(chartData: chartData)
+        configurator.configure(uiViewController.lineChartView)
     }
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator(view: self, selectedPriceInterval: selectedPriceInterval, chartFillAlpha: 1.0)
+        return Coordinator(view: self, chartData: chartData, selectedPriceInterval: selectedPriceInterval)
     }
 }
 
@@ -62,19 +65,19 @@ extension LineChartViewWrapper {
         fileprivate var xAxisValueFormatter: AxisValueFormatter { _xAxisValueFormatter }
 
         private let _xAxisValueFormatter: MarketsHistoryChartXAxisValueFormatter
-        private let view: LineChartViewWrapper
-        private let chartFillAlpha: CGFloat
+        private var view: LineChartViewWrapper
+        private var chartData: LineChartViewData
 
         private let feedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
         private var didPrepareFeedbackGenerator = false
 
         fileprivate init(
             view: LineChartViewWrapper,
-            selectedPriceInterval: PriceInterval,
-            chartFillAlpha: CGFloat
+            chartData: LineChartViewData,
+            selectedPriceInterval: PriceInterval
         ) {
             self.view = view
-            self.chartFillAlpha = chartFillAlpha
+            self.chartData = chartData
             _xAxisValueFormatter = MarketsHistoryChartXAxisValueFormatter(selectedPriceInterval: selectedPriceInterval)
         }
 
@@ -87,8 +90,15 @@ extension LineChartViewWrapper {
             didPrepareFeedbackGenerator = true
         }
 
-        fileprivate func setSelectedPriceInterval(_ interval: PriceInterval) {
-            _xAxisValueFormatter.setSelectedPriceInterval(interval)
+        /// - Note: The list of arguments here should mirror the list of arguments in the initializer.
+        fileprivate func update(
+            view: LineChartViewWrapper,
+            chartData: LineChartViewData,
+            selectedPriceInterval: PriceInterval
+        ) {
+            self.view = view
+            self.chartData = chartData
+            _xAxisValueFormatter.setSelectedPriceInterval(selectedPriceInterval)
         }
 
         private func endHighlighting(in chartView: ChartViewBase) {
@@ -165,29 +175,42 @@ extension LineChartViewWrapper.Coordinator: ChartViewDelegate {
     }
 }
 
-// MARK: - ColorSplitLineChartRendererDelegate protocol conformance
+// MARK: - ColorSplitLineChartContainerViewControllerDelegate protocol conformance
 
-extension LineChartViewWrapper.Coordinator: ColorSplitLineChartRendererDelegate {
+extension LineChartViewWrapper.Coordinator: ColorSplitLineChartContainerViewControllerDelegate {
+    func defaultSegmentAppearance(
+        viewController: ColorSplitLineChartContainerViewController
+    ) -> ColorSplitLineChartSegmentAppearance? {
+        let utility = LineChartViewUtility()
+        let chartTrend = chartData.trend
+        let chartLineColor = utility.selectedChartLineColor(for: chartTrend)
+        let chartGradientColors = utility.selectedChartGradientColors(for: chartTrend)
+
+        return ColorSplitLineChartSegmentAppearance(
+            lineColor: chartLineColor,
+            gradient: .init(colors: chartGradientColors)
+        )
+    }
+
     func segmentAppearanceBefore(
         highlightedEntry: ChartDataEntry,
         highlight: Highlight,
-        renderer: ColorSplitLineChartRenderer
+        viewController: ColorSplitLineChartContainerViewController
     ) -> ColorSplitLineChartSegmentAppearance? {
         let utility = LineChartViewUtility()
         let chartLineColor = utility.inactiveChartLineColor()
-        let chartFill = utility.inactiveChartFillGradient()
+        let chartGradientColors = utility.inactiveChartGradientColors()
 
         return ColorSplitLineChartSegmentAppearance(
-            fill: chartFill,
-            fillAlpha: chartFillAlpha,
-            lineColor: chartLineColor
+            lineColor: chartLineColor,
+            gradient: .init(colors: chartGradientColors)
         )
     }
 
     func segmentAppearanceAfter(
         highlightedEntry: ChartDataEntry,
         highlight: Highlight,
-        renderer: ColorSplitLineChartRenderer
+        viewController: ColorSplitLineChartContainerViewController
     ) -> ColorSplitLineChartSegmentAppearance? {
         guard let lastValue = view.chartData.xAxis.values.last else {
             assertionFailure("Unable to get the last value for the X axis")
@@ -202,12 +225,11 @@ extension LineChartViewWrapper.Coordinator: ColorSplitLineChartRendererDelegate 
         let utility = LineChartViewUtility()
         let chartTrend = utility.chartTrend(firstValue: highlightedValue, lastValue: lastValue)
         let chartLineColor = utility.selectedChartLineColor(for: chartTrend)
-        let chartFill = utility.selectedChartFillGradient(for: chartTrend)
+        let chartGradientColors = utility.selectedChartGradientColors(for: chartTrend)
 
         return ColorSplitLineChartSegmentAppearance(
-            fill: chartFill,
-            fillAlpha: chartFillAlpha,
-            lineColor: chartLineColor
+            lineColor: chartLineColor,
+            gradient: .init(colors: chartGradientColors)
         )
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TokenMarketsDetailsPriceInfoHelper {
+final class TokenMarketsDetailsPriceInfoHelper {
     typealias PriceInfo = (price: String, priceChangeState: TokenPriceChangeView.State)
 
     private let fiatBalanceFormattingOptions: BalanceFormattingOptions

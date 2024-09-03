@@ -681,7 +681,7 @@
 		B600F4D12C50F714008E53FE /* MarketsHistoryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4D02C50F714008E53FE /* MarketsHistoryChartView.swift */; };
 		B600F4D72C50F73E008E53FE /* MarketsHistoryChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4D22C50F73D008E53FE /* MarketsHistoryChartViewModel.swift */; };
 		B600F4D92C50F73E008E53FE /* MarketsHistoryChartXAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4D42C50F73D008E53FE /* MarketsHistoryChartXAxisValueFormatter.swift */; };
-		B600F4DB2C50F73E008E53FE /* MarketsHistoryChartDateFormatterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterFactory.swift */; };
+		B600F4DB2C50F73E008E53FE /* MarketsHistoryChartDateFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterRepository.swift */; };
 		B600F4E02C50F7D8008E53FE /* LineChartViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4DD2C50F7D7008E53FE /* LineChartViewData.swift */; };
 		B600F4E12C50F7D8008E53FE /* LineChartViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4DE2C50F7D8008E53FE /* LineChartViewWrapper.swift */; };
 		B600F4E22C50F7D8008E53FE /* LineChartViewConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B600F4DF2C50F7D8008E53FE /* LineChartViewConfigurator.swift */; };
@@ -739,6 +739,7 @@
 		B645BF3F2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B645BF3D2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift */; };
 		B64781E22C22F74300B0E882 /* CustomTokenContractAddressConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */; };
 		B64959832C414E8900B71164 /* RootViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64959822C414E8900B71164 /* RootViewControllerFactory.swift */; };
+		B64E38692C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */; };
 		B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
 		B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */; };
@@ -859,7 +860,6 @@
 		B6DA215E2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA215D2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift */; };
 		B6DD245E2B1A77860097F674 /* BottomScrollableSheetStateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD245D2B1A77860097F674 /* BottomScrollableSheetStateObserver.swift */; };
 		B6DF7E792AA95DBB007C92BD /* ListFooterOverlayShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */; };
-		B6E298CF2C5D9CC3004336BC /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B6E298CE2C5D9CC3004336BC /* DGCharts */; };
 		B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */; };
 		B6E932B12A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932B02A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift */; };
 		B6E932C22A2F2D860068D466 /* OrganizeTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932BD2A2F2D860068D466 /* OrganizeTokensView.swift */; };
@@ -876,6 +876,8 @@
 		B6ED08302A7D9FA70090E51F /* OrganizeTokensOptionsEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED082F2A7D9FA70090E51F /* OrganizeTokensOptionsEditing.swift */; };
 		B6ED08362A7DA9780090E51F /* OrganizeTokensOptionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED08352A7DA9780090E51F /* OrganizeTokensOptionsManager.swift */; };
 		B6ED083A2A7DB99D0090E51F /* UserTokensReorderingOptionsConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED08392A7DB99D0090E51F /* UserTokensReorderingOptionsConverter.swift */; };
+		B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B6EE3B612C789C6E00B464FC /* DGCharts */; };
+		B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B6F6252F2C85E1A600DEF098 /* DGCharts */; };
 		B6FB04E52B1FEEF6000BB59E /* RootHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E42B1FEEF6000BB59E /* RootHostingController.swift */; };
 		B6FB04E72B1FEF13000BB59E /* StatusBarStyleConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */; };
 		B6FB04E92B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */; };
@@ -2630,7 +2632,7 @@
 		B600F4D02C50F714008E53FE /* MarketsHistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartView.swift; sourceTree = "<group>"; };
 		B600F4D22C50F73D008E53FE /* MarketsHistoryChartViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartViewModel.swift; sourceTree = "<group>"; };
 		B600F4D42C50F73D008E53FE /* MarketsHistoryChartXAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartXAxisValueFormatter.swift; sourceTree = "<group>"; };
-		B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartDateFormatterFactory.swift; sourceTree = "<group>"; };
+		B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartDateFormatterRepository.swift; sourceTree = "<group>"; };
 		B600F4DD2C50F7D7008E53FE /* LineChartViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartViewData.swift; sourceTree = "<group>"; };
 		B600F4DE2C50F7D8008E53FE /* LineChartViewWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartViewWrapper.swift; sourceTree = "<group>"; };
 		B600F4DF2C50F7D8008E53FE /* LineChartViewConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartViewConfigurator.swift; sourceTree = "<group>"; };
@@ -2687,6 +2689,7 @@
 		B645BF3D2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartProvider.swift; sourceTree = "<group>"; };
 		B64781E12C22F74300B0E882 /* CustomTokenContractAddressConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTokenContractAddressConverter.swift; sourceTree = "<group>"; };
 		B64959822C414E8900B71164 /* RootViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerFactory.swift; sourceTree = "<group>"; };
+		B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentFormatterNumberFormatterRepository.swift; sourceTree = "<group>"; };
 		B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerAnimationFactory.swift; sourceTree = "<group>"; };
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
 		B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentStateObserverViewModifier.swift; sourceTree = "<group>"; };
@@ -3747,13 +3750,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6E298CF2C5D9CC3004336BC /* DGCharts in Frameworks */,
+				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				EF2D9C9B2BBDA87D0055C485 /* TangemFoundation.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
+				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
 				B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */,
@@ -6467,7 +6471,7 @@
 			isa = PBXGroup;
 			children = (
 				B600F4D42C50F73D008E53FE /* MarketsHistoryChartXAxisValueFormatter.swift */,
-				B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterFactory.swift */,
+				B600F4D62C50F73E008E53FE /* MarketsHistoryChartDateFormatterRepository.swift */,
 			);
 			path = Formatters;
 			sourceTree = "<group>";
@@ -8047,6 +8051,7 @@
 			isa = PBXGroup;
 			children = (
 				EFE7D5782AA201CB0047D93A /* PercentFormatter.swift */,
+				B64E38682C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift */,
 			);
 			path = PercentFormatter;
 			sourceTree = "<group>";
@@ -9886,8 +9891,9 @@
 				0ABC61142C410AFD00065EBA /* TweetNacl */,
 				B620FC9F2C5D326D00AD0FD1 /* DGCharts */,
 				B620FCAD2C5D337900AD0FD1 /* DGCharts */,
-				B6E298CE2C5D9CC3004336BC /* DGCharts */,
+				B6EE3B612C789C6E00B464FC /* DGCharts */,
 				B0B11A072C787FE70018A2A6 /* MarkdownUI */,
+				B6F6252F2C85E1A600DEF098 /* DGCharts */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -10162,8 +10168,8 @@
 				B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */,
 				0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
-				B6E298CD2C5D9CC2004336BC /* XCRemoteSwiftPackageReference "DGCharts" */,
 				B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -11087,7 +11093,7 @@
 				B6ACD00C2AD698E0005A6CA3 /* DragAndDropGesturePredicate.swift in Sources */,
 				DC0A5801282500460031BECC /* SellCryptoRequest.swift in Sources */,
 				EF6EDD7E296C0D40001B21A3 /* CommonIncomingActionManager.swift in Sources */,
-				B600F4DB2C50F73E008E53FE /* MarketsHistoryChartDateFormatterFactory.swift in Sources */,
+				B600F4DB2C50F73E008E53FE /* MarketsHistoryChartDateFormatterRepository.swift in Sources */,
 				B08E26AF29D5580E00346C43 /* SeedPhraseSuggestionsView.swift in Sources */,
 				B06C085E2A73FCB700D982BC /* MainUserWalletPageBuilder.swift in Sources */,
 				B04EADEA2A80D62E009B5768 /* SingleTokenBaseRoutable.swift in Sources */,
@@ -11136,6 +11142,7 @@
 				B05FADF02C4810BB00ED96E5 /* AsyncTaskScheduler.swift in Sources */,
 				DC3DCAEA2A49B5E900F72554 /* CommonUserTokensManager.swift in Sources */,
 				B0FAD01226BAF35C00F45E88 /* FrameSizeModifier.swift in Sources */,
+				B64E38692C810BA400B0CFA0 /* PercentFormatterNumberFormatterRepository.swift in Sources */,
 				EFC46F01292669A0003928E3 /* ReceiveCurrencyViewModel.swift in Sources */,
 				DC3B49FA2893EEA600C207EA /* UserWalletConfigFeatures.swift in Sources */,
 				EF8DBCE02C060CCE009072CF /* StakingDependenciesFactory.swift in Sources */,
@@ -18106,20 +18113,20 @@
 				minimumVersion = 0.12.0;
 			};
 		};
-		B6E298CD2C5D9CC2004336BC /* XCRemoteSwiftPackageReference "DGCharts" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tangem/DGCharts";
-			requirement = {
-				kind = exactVersion;
-				version = "5.1.0-tangem1";
-			};
-		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
 			requirement = {
 				kind = exactVersion;
 				version = "4.0.46-tangem1";
+			};
+		};
+		B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/DGCharts";
+			requirement = {
+				kind = exactVersion;
+				version = "5.1.0-tangem3";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -18158,9 +18165,13 @@
 			package = B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
 			productName = secp256k1;
 		};
-		B6E298CE2C5D9CC3004336BC /* DGCharts */ = {
+		B6EE3B612C789C6E00B464FC /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6E298CD2C5D9CC2004336BC /* XCRemoteSwiftPackageReference "DGCharts" */;
+			productName = DGCharts;
+		};
+		B6F6252F2C85E1A600DEF098 /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */;
 			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */
