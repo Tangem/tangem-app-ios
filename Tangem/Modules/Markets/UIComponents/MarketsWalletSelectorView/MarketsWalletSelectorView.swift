@@ -12,23 +12,84 @@ import Combine
 struct MarketsWalletSelectorView: View {
     @ObservedObject var viewModel: MarketsWalletSelectorViewModel
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Localization.marketsSelectWallet)
-                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+    private let maxImageWidth = 50.0
+    private let imageHeight = 30.0
 
-            ForEach(viewModel.itemViewModels) { itemViewModel in
-                WalletSelectorItemView(viewModel: itemViewModel)
+    var body: some View {
+        HStack(spacing: 12) {
+            icon
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(viewModel.name)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
             }
+
+            Spacer()
+
+            Assets.chevron.image
+                .renderingMode(.template)
+                .frame(width: 24, height: 24)
+                .foregroundColor(Colors.Icon.informative)
         }
-        .background(Colors.Background.action)
         .frame(maxWidth: .infinity)
-        .roundedBackground(with: Colors.Background.action, padding: 14, radius: 14)
+        .defaultRoundedBackground(with: Colors.Background.action)
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        image
+            .frame(width: 36, height: 36)
+            .skeletonable(
+                isShown: viewModel.icon.isLoading,
+                size: CGSize(width: 36, height: 22),
+                paddings: EdgeInsets(top: 7, leading: 0, bottom: 7, trailing: 0)
+            )
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        switch viewModel.icon {
+        case .loading:
+            Color.clear
+        case .loaded(let image):
+            image.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+
+        case .failedToLoad:
+            Assets.Onboarding.darkCard.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
     }
 }
 
 #Preview {
-    MarketsWalletSelectorView(
-        viewModel: MarketsWalletSelectorViewModel(provider: PreviewMarketsWalletSelectorDataSourceStub())
-    )
+    ZStack {
+        Colors.Background.tertiary.ignoresSafeArea()
+
+        VStack {
+            MarketsWalletSelectorView(
+                viewModel: MarketsWalletSelectorViewModel(
+                    userWalletNamePublisher: .just(output: "Old wallet"),
+                    cardImagePublisher: .just(output: .embedded(Assets.Onboarding.darkCard.uiImage))
+                )
+            )
+
+            MarketsWalletSelectorView(
+                viewModel: MarketsWalletSelectorViewModel(
+                    userWalletNamePublisher: .just(output: "My wallet"),
+                    cardImagePublisher: .just(output: .embedded(Assets.Onboarding.walletCard.uiImage))
+                )
+            )
+
+            MarketsWalletSelectorView(
+                viewModel: MarketsWalletSelectorViewModel(
+                    userWalletNamePublisher: .just(output: "My wallet"),
+                    cardImagePublisher: .just(output: .embedded(Assets.Onboarding.walletCard.uiImage))
+                )
+            )
+        }
+        .padding()
+    }
 }
