@@ -31,6 +31,30 @@ struct TokenContextActionsBuilder {
             )
         }
 
+        let baseSectionItems = makeBaseContextActions(
+            tokenItem: tokenItem,
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: canNavigateToMarketsDetails,
+            canHideToken: canHideToken
+        )
+
+        let baseSection = [TokenContextActionsSection(items: baseSectionItems)]
+
+        return addMarketsSectionIfAvailable(
+            for: tokenItem,
+            baseSections: baseSection + hideTokenSection,
+            canNavigateToMarketsDetails: canNavigateToMarketsDetails
+        )
+    }
+
+    func makeBaseContextActions(
+        tokenItem: TokenItem,
+        walletModel: WalletModel,
+        userWalletModel: UserWalletModel,
+        canNavigateToMarketsDetails: Bool,
+        canHideToken: Bool
+    ) -> [TokenActionType] {
         let actionsBuilder = TokenActionListBuilder()
 
         let utility = ExchangeCryptoUtility(
@@ -60,14 +84,11 @@ struct TokenContextActionsBuilder {
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility
         )
-        let baseSection = [TokenContextActionsSection(items: baseSectionItems)]
 
-        return addMarketsSectionIfAvailable(
-            for: tokenItem,
-            baseSections: baseSection + hideTokenSection,
-            canNavigateToMarketsDetails: canNavigateToMarketsDetails
-        )
+        return baseSectionItems
     }
+
+    // MARK: - Private Implementation
 
     private func addMarketsSectionIfAvailable(for tokenItem: TokenItem, baseSections: [TokenContextActionsSection], canNavigateToMarketsDetails: Bool) -> [TokenContextActionsSection] {
         guard canNavigateToMarketsDetails, tokenItem.id != nil else {
