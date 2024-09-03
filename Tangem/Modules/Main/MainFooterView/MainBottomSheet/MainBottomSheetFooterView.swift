@@ -29,6 +29,7 @@ struct MainBottomSheetFooterView: View {
                 allowsHitTestingForTextField: false
             )
             .padding(.bottom, bottomInset)
+            .background(Colors.Background.primary) // Fills a small gap at the bottom on notch-less devices
             .bottomScrollableSheetCornerRadius()
             .bottomScrollableSheetGrabber()
             .bottomScrollableSheetShadow()

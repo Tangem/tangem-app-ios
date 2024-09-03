@@ -26,16 +26,36 @@ struct RootViewControllerFactory {
 
         let contentViewController = UIHostingController(rootView: rootView)
 
-        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7664)
+        let overlayCollapsedHeight: CGFloat
+        let overlayCornerRadius: CGFloat
+
+        if UIDevice.current.hasHomeScreenIndicator {
+            overlayCollapsedHeight = Constants.notchDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
+            overlayCornerRadius = 24.0
+        } else {
+            overlayCollapsedHeight = Constants.notchlessDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
+            overlayCornerRadius = 16.0
+        }
+
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
             contentExpandedVerticalOffset: UIApplication.safeAreaInsets.top,
-            overlayCollapsedHeight: 102.0,
-            overlayCornerRadius: UIDevice.current.hasHomeScreenIndicator ? 24.0 : 16.0
+            overlayCollapsedHeight: overlayCollapsedHeight,
+            overlayCornerRadius: overlayCornerRadius
         )
 
         adapter.set(containerViewController)
 
         return containerViewController
+    }
+}
+
+// MARK: - Constants
+
+private extension RootViewControllerFactory {
+    enum Constants {
+        static let notchDevicesOverlayCollapsedHeight = 100.0
+        static let notchlessDevicesOverlayCollapsedHeight = 86.0
+        static let overlayCollapsedHeightAdjustment = 2.0
     }
 }
