@@ -168,7 +168,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
             return []
         }
 
-        let baseAcctions = TokenContextActionsBuilder().makeBaseContextActions(
+        let baseActions = TokenContextActionsBuilder().makeBaseContextActions(
             tokenItem: walletModel.tokenItem,
             walletModel: walletModel,
             userWalletModel: userWalletModel,
@@ -179,7 +179,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
         // This is what business logic requires
         let filteredActions: [TokenActionType] = [.buy, .exchange, .receive]
 
-        return filteredActions.filter { baseAcctions.contains($0) }
+        return filteredActions.filter { baseActions.contains($0) }
     }
 }
 
