@@ -102,7 +102,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     func selectWalletActionDidTap() {
-        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
         coordinator?.openWalletSelector(with: walletDataProvider)
     }
 
@@ -236,7 +235,14 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .marketsTokenNetworkSelected, params: [.token: tokenItem.currencySymbol, .count: "\(pendingAdd.count)"])
+        Analytics.log(
+            event: .marketsChartTokenNetworkSelected,
+            params: [
+                .token: tokenItem.currencySymbol,
+                .count: "\(pendingAdd.count)",
+                .blockchain: tokenItem.blockchain.displayName.capitalizingFirstLetter(),
+            ]
+        )
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {

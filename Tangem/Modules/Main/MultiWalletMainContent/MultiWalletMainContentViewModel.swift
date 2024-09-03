@@ -464,7 +464,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
                 .token: tokenItem.currencySymbol,
                 .blockchain: tokenItem.blockchain.displayName,
             ]
-            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
             tokenRouter.openMarketsTokenDetails(for: tokenItem)
             return
         default:

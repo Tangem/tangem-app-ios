@@ -288,17 +288,20 @@ extension Analytics {
 
         case marketsScreenOpened = "[Markets] Markets Screen Opened"
         case marketsTokensSort = "[Markets] Sort By"
+        case marketsDataError = "[Markets] Data Error"
 
         // MARK: - Markets / Chart
 
-        case marketsChartScreenOpened = "[Markets / Chart] Markets Screen Opened"
+        case marketsChartScreenOpened = "[Markets / Chart] Token Chart Screen Opened"
         case marketsChartButtonPeriod = "[Markets / Chart] Button - Period"
         case marketsChartButtonReadMore = "[Markets / Chart] Button - Read More"
         case marketsChartButtonLinks = "[Markets / Chart] Button - Links"
         case marketsChartButtonAddToPortfolio = "[Markets / Chart] Button - Add To Portfolio"
-        case marketsChartTokenChartScreenOpened = "[Markets / Chart] Token Chart Screen Opened"
         case marketsChartWalletSelected = "[Markets / Chart] Wallet Selected"
         case marketsChartTokenNetworkSelected = "[Markets / Chart] Token Network Selected"
-        case marketsChartActionButtons = "[Markets / Chart] Action Buttons"
+        case marketsChartButtonBuy = "[Markets / Chart] Button - Buy"
+        case marketsChartButtonReceive = "[Markets / Chart] Button - Receive"
+        case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
+        case marketsChartDataError = "[Markets / Chart] Data Error"
     }
 }

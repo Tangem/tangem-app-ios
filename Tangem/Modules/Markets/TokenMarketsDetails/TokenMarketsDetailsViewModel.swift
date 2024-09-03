@@ -170,7 +170,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     // MARK: - Actions
 
     func onAppear() {
-        Analytics.log(event: .marketsChartScreenOpened, params: [Analytics.ParameterKey.token: tokenInfo.symbol])
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.market.rawValue,
+            .token: tokenInfo.symbol.uppercased(),
+        ]
+
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
     }
 
     func loadDetailedInfo() {
@@ -207,6 +212,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             return
         }
 
+        Analytics.log(event: .marketsChartButtonReadMore, params: [.token: tokenInfo.symbol.uppercased()])
+
         openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
     }
 
@@ -234,6 +241,7 @@ private extension TokenMarketsDetailsViewModel {
             }
 
             await setupFailedState()
+
             log("Failed to load detailed info. Reason: \(error)")
         }
     }
@@ -246,6 +254,8 @@ private extension TokenMarketsDetailsViewModel {
 
         makeBlocksViewModels(using: model)
         makePortfolioViewModel(using: model)
+
+        makeAnalyticsViewModel(using: model)
     }
 
     @MainActor
@@ -417,6 +427,28 @@ private extension TokenMarketsDetailsViewModel {
                 coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
             }
         )
+    }
+
+    func makeAnalyticsViewModel(using model: TokenMarketsDetailsModel) {
+        if model.insights == nil {
+            Analytics.log(.marketsChartDataError, params: [.source: .insights])
+        }
+
+        if model.metrics == nil {
+            Analytics.log(.marketsChartDataError, params: [.source: .metrics])
+        }
+
+        if model.links.blockchainSite.isEmpty, model.links.officialLinks.isEmpty, model.links.repository.isEmpty, model.links.social.isEmpty {
+            Analytics.log(.marketsChartDataError, params: [.source: .metrics])
+        }
+
+        if model.pricePerformance.isEmpty {
+            Analytics.log(.marketsChartDataError, params: [.source: .pricePerfomance])
+        }
+
+        if model.shortDescription == nil {
+            Analytics.log(.marketsChartDataError, params: [.source: .shortDescription])
+        }
     }
 
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {

@@ -143,20 +143,19 @@ final class MarketsHistoryChartViewModel: ObservableObject {
     // MARK: - Data fetching
 
     private func loadHistoryChart(selectedPriceInterval: MarketsPriceIntervalType) {
-        Analytics.log(
-            event: .marketsButtonPeriod,
-            params: [
-                .token: tokenSymbol,
-                .period: selectedPriceInterval.rawValue,
-                .source: Analytics.MarketsIntervalTypeSourceType.chart.rawValue,
-            ]
-        )
-
         loadHistoryChartTask?.cancel()
 
         // If data fetching takes a relatively short amount of time, there is no point in showing the loading indicator at all
         // Therefore, we don't switch to the loading state unless data fetching takes more than `Constants.loadingStateDelay` seconds
         scheduleLoadingState(previousData: viewState.data)
+
+        Analytics.log(
+            event: .marketsChartButtonPeriod,
+            params: [
+                .source: Analytics.ParameterValue.chart.rawValue,
+                .period: selectedPriceInterval.rawValue,
+            ]
+        )
 
         loadHistoryChartTask = runTask(in: self) { [interval = selectedPriceInterval] viewModel in
             do {
@@ -179,6 +178,9 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             if error.isCancellationError {
                 return
             }
+
+            Analytics.log(.marketsChartDataError, params: [.source: .chart])
+
             // There is no point in updating `selectedPriceInterval` on failure, so nil is passed instead
             await updateViewState(.failed, selectedPriceInterval: nil)
         }

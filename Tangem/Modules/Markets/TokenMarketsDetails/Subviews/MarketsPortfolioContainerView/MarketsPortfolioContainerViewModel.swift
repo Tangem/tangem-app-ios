@@ -194,14 +194,20 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             return
         }
 
-        Analytics.log(event: .marketsActionButtons, params: [.button: action.analyticsParameterValue])
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.market.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
 
         switch action {
         case .buy:
+            Analytics.log(event: .marketsChartButtonBuy, params: analyticsParams)
             coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)
         case .send:
             coordinator.openSend(for: walletModel, with: userWalletModel)
         case .receive:
+            Analytics.log(event: .marketsChartButtonReceive, params: analyticsParams)
             coordinator.openReceive(walletModel: walletModel)
         case .sell:
             coordinator.openSell(for: walletModel, with: userWalletModel)
@@ -211,6 +217,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
                 .present(layout: .bottom(padding: 80), type: .temporary())
         case .exchange:
+            Analytics.log(event: .marketsChartButtonSwap, params: analyticsParams)
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
             coordinator.openStaking(for: walletModel, with: userWalletModel)

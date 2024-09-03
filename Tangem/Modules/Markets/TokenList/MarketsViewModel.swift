@@ -199,6 +199,7 @@ private extension MarketsViewModel {
                 case .failedToFetchData:
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
+                        Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
                     } else {
                         viewModel.tokenListLoadingState = .loading

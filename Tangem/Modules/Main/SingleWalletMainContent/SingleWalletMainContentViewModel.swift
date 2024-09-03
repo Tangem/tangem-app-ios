@@ -86,7 +86,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
             .token: walletModel.tokenItem.currencySymbol,
             .blockchain: walletModel.tokenItem.blockchain.displayName,
         ]
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
         super.openMarketsTokenDetails()
     }
 

@@ -121,7 +121,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                 let interval = value.1
 
                 Analytics.log(
-                    event: .marketsButtonPeriod,
+                    event: .marketsChartButtonPeriod,
                     params: [
                         .token: weakSelf.tokenSymbol,
                         .period: interval.rawValue,
