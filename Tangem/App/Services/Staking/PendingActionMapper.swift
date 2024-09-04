@@ -32,6 +32,9 @@ struct PendingActionMapper {
             }
 
             return stakingAction(type: .pending(.withdraw(passthrough: passthrough))).map { .single($0) }
+        case .locked:
+            // TODO: https://tangem.atlassian.net/browse/IOS-7821
+            return nil
         case .rewards:
             return .multiple(
                 balanceInfo.actions.compactMap { stakingAction(type: .pending($0)) }
