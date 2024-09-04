@@ -304,8 +304,10 @@ extension CommonUserTokensManager: UserTokensReordering {
                         let userTokensKeyedByIds = entries.keyedFirst(by: \.walletModelId)
                         let reorderedEntries = reorderedWalletModelIds.compactMap { userTokensKeyedByIds[$0] }
 
-                        assert(reorderedEntries.count == entries.count, "Model inconsistency detected")
-                        entries = reorderedEntries
+                        // TODO: Refactor user tokens. Fix data layers mixing.
+                        if reorderedEntries.count == entries.count {
+                            entries = reorderedEntries
+                        }
                     }
                 }
 
