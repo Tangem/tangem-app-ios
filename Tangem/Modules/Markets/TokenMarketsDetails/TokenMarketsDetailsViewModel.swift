@@ -149,15 +149,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     // MARK: - Actions
 
-    func onAppear() {
-        let analyticsParams: [Analytics.ParameterKey: String] = [
-            .source: Analytics.ParameterValue.market.rawValue,
-            .token: tokenInfo.symbol.uppercased(),
-        ]
-
-        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
-    }
-
     func loadDetailedInfo() {
         isLoading = true
         loadingTask?.cancel()
@@ -409,25 +400,40 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
-    func makeAnalyticsViewModel(using model: TokenMarketsDetailsModel) {
+    func sendBlocksAnalyticsErrors(using model: TokenMarketsDetailsModel) {
         if model.insights == nil {
-            Analytics.log(.marketsChartDataError, params: [.source: .insights])
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .source: .insights
+            ])
         }
 
         if model.metrics == nil {
-            Analytics.log(.marketsChartDataError, params: [.source: .metrics])
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .source: .metrics
+            ])
         }
 
         if model.links.blockchainSite.isEmpty, model.links.officialLinks.isEmpty, model.links.repository.isEmpty, model.links.social.isEmpty {
-            Analytics.log(.marketsChartDataError, params: [.source: .metrics])
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .source: .metrics
+            ])
         }
 
         if model.pricePerformance.isEmpty {
-            Analytics.log(.marketsChartDataError, params: [.source: .pricePerfomance])
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .source: .pricePerfomance
+            ])
         }
 
         if model.shortDescription == nil {
-            Analytics.log(.marketsChartDataError, params: [.source: .shortDescription])
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .source: .shortDescription
+            ])
         }
     }
 

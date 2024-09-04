@@ -115,7 +115,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 guard let userWalletModel = viewModel.walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return
                 }
-                
+
                 Analytics.log(.marketsChartWalletSelected)
 
                 viewModel.setNeedSelectWallet(userWalletModel)

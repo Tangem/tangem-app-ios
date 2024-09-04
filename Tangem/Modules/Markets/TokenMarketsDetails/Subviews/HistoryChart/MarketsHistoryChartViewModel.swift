@@ -153,6 +153,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         Analytics.log(
             event: .marketsChartButtonPeriod,
             params: [
+                .token: tokenSymbol.uppercased(),
                 .source: Analytics.ParameterValue.chart.rawValue,
                 .period: selectedPriceInterval.rawValue,
             ]
@@ -179,8 +180,11 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             // No-op, cancelling the ongoing request shouldn't affect the current state
             return
         } catch TokenMarketsHistoryChartMapper.ParsingError.notEnoughData {
-            Analytics.log(.marketsChartDataError, params: [.source: .chart])
-            
+            Analytics.log(.marketsChartDataError, params: [
+                .token: tokenSymbol.uppercased(),
+                .source: .chart
+            ])
+
             // There is no point in updating `selectedPriceInterval` on failure, so a nil value is passed instead
             await updateViewState(.noData, selectedPriceInterval: nil)
         } catch {

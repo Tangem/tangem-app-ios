@@ -293,6 +293,13 @@ private extension MarketsViewModel {
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,
             onTapAction: { [weak self] in
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .source: Analytics.ParameterValue.market.rawValue,
+                    .token: tokenItemModel.symbol.uppercased(),
+                ]
+
+                Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+                
                 self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
             }
         )
