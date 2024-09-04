@@ -668,6 +668,7 @@
 "staking_rewards" = "Винагороди";
 "staking_stake_locked" = "Стейкінг закрито";
 "staking_stake_more" = "Застейкати більше";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving ~%2$@ yearly";
 "staking_title_stake" = "Застейкати %@";
 "staking_title_unstake" = "Зняти зі стейкінгу %@";
 "staking_unbonding" = "Unbonding";

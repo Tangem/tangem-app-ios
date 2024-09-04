@@ -668,6 +668,7 @@
 "staking_rewards" = "Récompenses";
 "staking_stake_locked" = "Stake verrouillé";
 "staking_stake_more" = "Staker plus";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving ~%2$@ yearly";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
 "staking_unbonding" = "Unbonding";

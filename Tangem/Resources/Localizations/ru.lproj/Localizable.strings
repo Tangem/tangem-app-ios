@@ -668,6 +668,7 @@
 "staking_rewards" = "Вознаграждения";
 "staking_stake_locked" = "Стейкинг закрыт";
 "staking_stake_more" = "Застейкать еще";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving ~%2$@ yearly";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
 "staking_unbonding" = "Unbonding";

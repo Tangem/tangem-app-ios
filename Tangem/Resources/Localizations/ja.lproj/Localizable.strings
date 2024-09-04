@@ -668,6 +668,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
+"staking_summary_description_text" = "[%1$s]をステーキングし、年間 ~ [%2$s]を受け取ります";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
 "staking_unbonding" = "ステーキング解約中";
