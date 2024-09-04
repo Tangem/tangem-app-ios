@@ -306,8 +306,8 @@ private extension StakingDetailsViewModel {
             switch balance.balanceType {
             case .rewards, .warmup, .active: .image(url: validator?.iconURL)
             case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
-            case .unbonding: .icon(Assets.arrowDownMini, color: Colors.Icon.accent)
-            case .withdraw: .icon(Assets.arrowDownMini, color: Colors.Icon.informative)
+            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
+            case .withdraw: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
             }
         }()
 

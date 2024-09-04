@@ -60,12 +60,14 @@ struct StakingDetailsStakeView: View {
     }
 
     private var topLineView: some View {
-        HStack(alignment: .top, spacing: 0) {
-            Text(data.title)
-                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+        HStack(alignment: .center, spacing: 0) {
+            HStack(alignment: .center, spacing: 6) {
+                Text(data.title)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-            if data.inProgress {
-                Assets.pendingTxIndicator.image
+                if data.inProgress {
+                    Assets.pendingTxIndicator.image
+                }
             }
 
             Spacer(minLength: 4)
