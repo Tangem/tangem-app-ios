@@ -178,7 +178,8 @@ private extension CommonExpressTransactionBuilder {
              .koinos,
              .internetComputer,
              .cyber,
-             .blast:
+             .blast,
+             .filecoin:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }

@@ -99,7 +99,8 @@ struct SendTransactionParametersBuilder {
              .koinos,
              .internetComputer,
              .cyber,
-             .blast:
+             .blast,
+             .filecoin:
             return nil
         }
     }
