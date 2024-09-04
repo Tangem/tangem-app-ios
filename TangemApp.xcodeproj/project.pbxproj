@@ -3249,6 +3249,9 @@
 		DCD9CBA429F7F4EF00440C93 /* LogFileProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFileProvider.swift; sourceTree = "<group>"; };
 		DCDBDA052A27C16C0000EBA2 /* LockedUserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedUserWalletModel.swift; sourceTree = "<group>"; };
 		DCDE745B2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeOnboardingTOSDelegate.swift; sourceTree = "<group>"; };
+		DCDECB942C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = es; path = es.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		DCDECB952C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DCDECB962C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82A2C542AFA00A6BDDE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82B2C542B0F00A6BDDE /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82C2C542B1000A6BDDE /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Intents.strings; sourceTree = "<group>"; };
@@ -10173,6 +10176,7 @@
 				"zh-Hant",
 				ja,
 				"uk-UA",
+				es,
 			);
 			mainGroup = 5D3F77B924BF56D800E8695B;
 			packageReferences = (
@@ -12514,6 +12518,7 @@
 				DA69F558298BB3AC004A5A93 /* zh-Hant */,
 				DC4772CA2C2B251E00D2459D /* ja */,
 				DC4772CC2C2B253000D2459D /* uk-UA */,
+				DCDECB952C88D78700E10564 /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -12547,6 +12552,7 @@
 				DA69F557298BB3AC004A5A93 /* zh-Hant */,
 				DC4772C92C2B251E00D2459D /* ja */,
 				DC4772CB2C2B252F00D2459D /* uk-UA */,
+				DCDECB942C88D78700E10564 /* es */,
 			);
 			name = Localizable.stringsdict;
 			sourceTree = "<group>";
@@ -12562,6 +12568,7 @@
 				DCE1E82D2C542B1100A6BDDE /* ja */,
 				DCE1E82E2C542B1200A6BDDE /* de */,
 				DCE1E82F2C542B1300A6BDDE /* uk-UA */,
+				DCDECB962C88D78700E10564 /* es */,
 			);
 			name = Intents.strings;
 			sourceTree = "<group>";
