@@ -331,6 +331,11 @@ final class OverlayContentContainerViewController: UIViewController {
         )
 
         contentLayer.setAffineTransform(transform)
+
+        // Workaround: prevents the navigation bar in the `contentViewController` from being laid out incorrectly
+        // Without this workaround, the `frame.origin.y` property of the navigation bar may be set to zero in some cases,
+        // resulting in an incorrect layout
+        contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY
     }
 
     private func updateCornerRadius() {
