@@ -31,11 +31,6 @@ extension Analytics {
         case passcode = "Passcode"
         case market = "Market"
         case chart = "Chart"
-        case insights = "Insights"
-        case metrics = "Metrics"
-        case links = "Links"
-        case pricePerfomance = "Price Perfomance"
-        case shortDescription = "Short Description"
 
         case main = "Main"
         case token = "Token"

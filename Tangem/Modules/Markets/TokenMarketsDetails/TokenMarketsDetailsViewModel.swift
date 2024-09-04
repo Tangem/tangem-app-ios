@@ -226,7 +226,7 @@ private extension TokenMarketsDetailsViewModel {
         makeBlocksViewModels(using: model)
         makePortfolioViewModel(using: model)
 
-        makeAnalyticsViewModel(using: model)
+        sendBlocksAnalyticsErrors(using: model)
     }
 
     @MainActor
@@ -402,37 +402,39 @@ private extension TokenMarketsDetailsViewModel {
 
     func sendBlocksAnalyticsErrors(using model: TokenMarketsDetailsModel) {
         if model.insights == nil {
-            Analytics.log(.marketsChartDataError, params: [
+            Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .insights,
+                .source: Analytics.MarketsIntervalTypeSourceType.insights.rawValue,
             ])
         }
 
+        let sourceType = Analytics.MarketsChartErrorSourceType.self
+
         if model.metrics == nil {
-            Analytics.log(.marketsChartDataError, params: [
+            Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .metrics,
+                .source: sourceType.metrics.rawValue,
             ])
         }
 
         if model.links.blockchainSite.isEmpty, model.links.officialLinks.isEmpty, model.links.repository.isEmpty, model.links.social.isEmpty {
-            Analytics.log(.marketsChartDataError, params: [
+            Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .metrics,
+                .source: sourceType.metrics.rawValue,
             ])
         }
 
         if model.pricePerformance.isEmpty {
-            Analytics.log(.marketsChartDataError, params: [
+            Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .pricePerfomance,
+                .source: sourceType.pricePerfomance.rawValue,
             ])
         }
 
         if model.shortDescription == nil {
-            Analytics.log(.marketsChartDataError, params: [
+            Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .shortDescription,
+                .source: sourceType.shortDescription.rawValue,
             ])
         }
     }
