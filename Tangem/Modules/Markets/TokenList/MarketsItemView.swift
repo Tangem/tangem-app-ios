@@ -18,25 +18,18 @@ struct MarketsItemView: View {
         Button(action: {
             viewModel.didTapAction?()
         }) {
-            HStack(spacing: .zero) {
-                HStack(spacing: 12) {
-                    IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+            HStack(spacing: 12) {
+                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
-                    tokenInfoView
-                        .layoutPriority(2)
-                }
+                tokenInfoView
+                    .layoutPriority(2)
 
-                Spacer(minLength: 8)
+                Spacer(minLength: .zero)
 
-                HStack(spacing: 10) {
-                    tokenPriceView
-
-                    priceHistoryView
-                }
-                .layoutPriority(3)
+                tokenPriceView
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 15)
+            .padding(.vertical, 14)
             .onAppear {
                 viewModel.onAppear()
             }
@@ -76,20 +69,27 @@ struct MarketsItemView: View {
     }
 
     private var tokenPriceView: some View {
-        VStack(alignment: .trailing, spacing: 3) {
-            Text(viewModel.priceValue)
-                .lineLimit(1)
-                .truncationMode(.middle)
-                .blinkForegroundColor(
-                    publisher: viewModel.$priceChangeAnimation,
-                    positiveColor: Colors.Text.accent,
-                    negativeColor: Colors.Text.warning,
-                    originalColor: Colors.Text.primary1
-                )
-                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+        HStack(spacing: 10) {
+            VStack(alignment: .trailing, spacing: .zero) {
+                Text(viewModel.priceValue)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .blinkForegroundColor(
+                        publisher: viewModel.$priceChangeAnimation,
+                        positiveColor: Colors.Text.accent,
+                        negativeColor: Colors.Text.warning,
+                        originalColor: Colors.Text.primary1
+                    )
+                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-            TokenPriceChangeView(state: viewModel.priceChangeState)
+                Spacer(minLength: 2)
+
+                TokenPriceChangeView(state: viewModel.priceChangeState)
+            }
+
+            priceHistoryView
         }
+        .layoutPriority(3)
     }
 
     private var priceHistoryView: some View {
