@@ -404,35 +404,35 @@ private extension TokenMarketsDetailsViewModel {
         if model.insights == nil {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .insights
+                .source: .insights,
             ])
         }
 
         if model.metrics == nil {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .metrics
+                .source: .metrics,
             ])
         }
 
         if model.links.blockchainSite.isEmpty, model.links.officialLinks.isEmpty, model.links.repository.isEmpty, model.links.social.isEmpty {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .metrics
+                .source: .metrics,
             ])
         }
 
         if model.pricePerformance.isEmpty {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .pricePerfomance
+                .source: .pricePerfomance,
             ])
         }
 
         if model.shortDescription == nil {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenInfo.symbol.uppercased(),
-                .source: .shortDescription
+                .source: .shortDescription,
             ])
         }
     }

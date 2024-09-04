@@ -299,7 +299,7 @@ private extension MarketsViewModel {
                 ]
 
                 Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
-                
+
                 self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
             }
         )

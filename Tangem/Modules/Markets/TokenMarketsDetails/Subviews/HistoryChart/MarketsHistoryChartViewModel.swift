@@ -182,7 +182,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         } catch TokenMarketsHistoryChartMapper.ParsingError.notEnoughData {
             Analytics.log(.marketsChartDataError, params: [
                 .token: tokenSymbol.uppercased(),
-                .source: .chart
+                .source: .chart,
             ])
 
             // There is no point in updating `selectedPriceInterval` on failure, so a nil value is passed instead
