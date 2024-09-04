@@ -133,7 +133,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .unstaking(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
-        
+
         guard let validator = options.manager.state.validator(for: action.validator) else { return }
         Analytics.log(event: action.type.analyticsEvent, params: [.validator: validator.name])
     }

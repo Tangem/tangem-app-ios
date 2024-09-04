@@ -531,8 +531,7 @@ extension StakingModel {
             .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
             .token: tokenItem.currencySymbol,
             .blockchain: tokenItem.blockchain.displayName,
-            .feeType: selectedFee.option.rawValue, // FIXME:
-            .memo: Analytics.ParameterValue.null.rawValue // FIXME:
+            .feeType: selectedFee.option.rawValue
         ])
 
         switch amount?.type {
@@ -545,7 +544,7 @@ extension StakingModel {
             Analytics.log(.stakingSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
         }
     }
-    
+
     func logTransactionRejected() {
         Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
     }

@@ -144,7 +144,7 @@ private extension UnstakingModel {
 private extension UnstakingModel {
     private func send() async throws -> SendTransactionDispatcherResult {
         logTransactionAnalytics()
-        
+
         let transactionInfo = try await stakingManager.transaction(action: action)
         let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
 
@@ -322,12 +322,12 @@ private extension UnstakingModel {
         guard let validator = stakingManager.state.validator(for: action.validator) else { return }
         Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator.name])
     }
-    
+
     func logTransactionAnalytics() {
         guard let validator = stakingManager.state.validator(for: action.validator) else { return }
         Analytics.log(event: action.type.analyticsEvent, params: [.validator: validator.name])
     }
-    
+
     func logTransactionRejected() {
         Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
     }
