@@ -25,7 +25,7 @@ class ServicesManager {
     private var bag = Set<AnyCancellable>()
 
     init() {
-        if StakingFeatureProvider().isStakingAvailable {
+        if StakingFeatureProvider.isStakingAvailable {
             stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
         }
     }
@@ -57,7 +57,7 @@ class ServicesManager {
         apiListProvider.initialize()
         pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
-        if StakingFeatureProvider().isStakingAvailable {
+        if StakingFeatureProvider.isStakingAvailable {
             stakingPendingHashesSender?.sendHashesIfNeeded()
         }
     }

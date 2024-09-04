@@ -206,7 +206,7 @@ extension LegacyConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .hidden
+            return .available
         case .topup:
             return .available
         case .tokenSynchronization, .swapping:
@@ -225,7 +225,7 @@ extension LegacyConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
