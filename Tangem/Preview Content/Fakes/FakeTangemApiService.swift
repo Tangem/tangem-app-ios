@@ -20,10 +20,15 @@ class FakeTangemApiService: TangemApiService {
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
         let provider = FakeCoinListProvider()
         do {
-            return .justWithError(output: try provider.parseCoinResponse())
+            return .justWithError(output: try provider.parseCoinModels())
         } catch {
             return .anyFail(error: error)
         }
+    }
+
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        let provider = FakeCoinListProvider()
+        return try provider.parseCoinResponse()
     }
 
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
@@ -120,10 +125,14 @@ class FakeTangemApiService: TangemApiService {
 }
 
 private struct FakeCoinListProvider {
-    func parseCoinResponse() throws -> [CoinModel] {
+    func parseCoinModels() throws -> [CoinModel] {
         let response = try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
         let mapper = CoinsResponseMapper(supportedBlockchains: Set(Blockchain.allMainnetCases))
         let coinModels = mapper.mapToCoinModels(response)
         return coinModels
+    }
+
+    func parseCoinResponse() throws -> CoinsList.Response {
+        try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
     }
 }
