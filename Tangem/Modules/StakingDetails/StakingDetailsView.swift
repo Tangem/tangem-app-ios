@@ -11,31 +11,44 @@ import SwiftUI
 struct StakingDetailsView: View {
     @ObservedObject var viewModel: StakingDetailsViewModel
 
+    @State private var viewGeometryInfo: GeometryInfo = .zero
+    @State private var contentSize: CGSize = .zero
+    @State private var bottomViewSize: CGSize = .zero
+
+    private var spacer: CGFloat {
+        var height = viewGeometryInfo.frame.height
+        height -= contentSize.height
+        height -= bottomViewSize.height
+        return max(0, height)
+    }
+
     var body: some View {
-        GroupedScrollView(alignment: .leading, spacing: 14) {
-            if !viewModel.hideStakingInfoBanner {
-                banner
+        GroupedScrollView(alignment: .leading, spacing: .zero) {
+            VStack(spacing: 14) {
+                if !viewModel.hideStakingInfoBanner {
+                    banner
+                }
+
+                GroupedSection(viewModel.detailsViewModels) { data in
+                    DefaultRowView(viewModel: data)
+                        .if(viewModel.detailsViewModels.first?.id == data.id) {
+                            $0.appearance(.init(detailsColor: Colors.Text.accent))
+                        }
+                }
+
+                rewardView
+
+                activeValidatorsView
+
+                unstakedValidatorsView
             }
+            .readGeometry(\.frame.size, bindTo: $contentSize)
 
-            GroupedSection(viewModel.detailsViewModels) { data in
-                DefaultRowView(viewModel: data)
-                    .if(viewModel.detailsViewModels.first?.id == data.id) {
-                        $0.appearance(.init(detailsColor: Colors.Text.accent))
-                    }
-            }
-
-            rewardView
-
-            activeValidatorsView
-
-            unstakedValidatorsView
+            bottomView
         }
-        .interContentPadding(14)
+        .readGeometry(bindTo: $viewGeometryInfo)
         .refreshable {
             await Task { await viewModel.refresh() }.value
-        }
-        .safeAreaInset(edge: .bottom) {
-            actionButton
         }
         .background(Colors.Background.secondary)
         .navigationTitle(viewModel.title)
@@ -134,6 +147,32 @@ struct StakingDetailsView: View {
         }
         .interItemSpacing(0)
         .innerContentPadding(0)
+    }
+
+    @ViewBuilder
+    private var bottomView: some View {
+        VStack(spacing: 12) {
+            FixedSpacer(height: spacer)
+
+            VStack(spacing: 12) {
+                legalView
+
+                actionButton
+            }
+            .readGeometry(\.frame.size, bindTo: $bottomViewSize)
+        }
+        // To force `.animation(nil)` behaviour
+        .transaction { transaction in
+            transaction.animation = nil
+        }
+    }
+
+    @ViewBuilder
+    private var legalView: some View {
+        if let legalText = viewModel.legalText {
+            Text(legalText)
+                .multilineTextAlignment(.center)
+        }
     }
 
     @ViewBuilder

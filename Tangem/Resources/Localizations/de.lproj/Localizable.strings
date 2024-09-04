@@ -124,6 +124,7 @@
 "common_origin_card" = "Primär Karte";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Einfügen";
+"common_privacy_policy" = "Datenschutzbestimmungen";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "Weiterlesen";
@@ -152,6 +153,7 @@
 "common_support" = "Unterstützung";
 "common_swap" = "Tauschen";
 "common_terms_and_conditions" = "Allgemeine Geschäftsbedingungen";
+"common_terms_of_use" = "Nutzungsbedingungen";
 "common_today" = "Heute";
 "common_transaction_failed" = "Transaktion fehlgeschlagen";
 "common_transactions" = "Transaktionen";
@@ -259,7 +261,6 @@
 "express_legal_one_placeholder" = "Durch die Nutzung der Swap-Funktion erklärst du dich mit den folgenden Bedingungen des Anbieters einverstanden %@";
 "express_legal_two_placeholders" = "Durch die Nutzung der Swap-Funktionalität erklärst du dich mit des Anbieters %1$@ und %2$@ einverstanden";
 "express_more_providers_soon" = "Weitere Anbieter werden bald folgen.\nBleib dabei!";
-"express_privacy_policy" = "Datenschutzbestimmungen";
 "express_provider" = "Anbieter";
 "express_provider_best_rate" = "Bester Preis";
 "express_provider_max_amount" = "Verfügbar bis zu %@";
@@ -267,7 +268,6 @@
 "express_provider_not_available" = "Für dieses Paar nicht verfügbar";
 "express_provider_permission_needed" = "Erlaubnis erforderlich";
 "express_provider_recommended" = "Empfohlen";
-"express_terms_of_use" = "Nutzungsbedingungen";
 "express_token_list_empty_search" = "Keine Token gefunden. Bitte versuche eine andere Anfrage";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaktions-ID kopiert";
@@ -639,6 +639,7 @@
 "staking_details_unbonding_period_info" = "Der Zeitraum, den du nach der Beantragung der Abhebung von Geldern aus dem Staking warten musst, bevor die Token verfügbar werden.";
 "staking_details_warmup_period" = "Aufwärmphase";
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
+"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrieren";
 "staking_native" = "Natives Staking";

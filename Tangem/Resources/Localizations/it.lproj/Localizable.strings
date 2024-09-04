@@ -124,6 +124,7 @@
 "common_origin_card" = "Primary Card";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Paste";
+"common_privacy_policy" = "Privacy Policy";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "Read more";
@@ -152,6 +153,7 @@
 "common_support" = "Support";
 "common_swap" = "Swap";
 "common_terms_and_conditions" = "terms and conditions";
+"common_terms_of_use" = "Terms of Use";
 "common_today" = "Today";
 "common_transaction_failed" = "Transaction failed";
 "common_transactions" = "Transactions";
@@ -259,7 +261,6 @@
 "express_legal_one_placeholder" = "By using swap functionality, you agree with provider’s %@";
 "express_legal_two_placeholders" = "By using swap functionality, you agree with provider’s %1$@ and %2$@";
 "express_more_providers_soon" = "More providers are coming soon.\nStay tuned!";
-"express_privacy_policy" = "Privacy Policy";
 "express_provider" = "Provider";
 "express_provider_best_rate" = "Best rate";
 "express_provider_max_amount" = "Available up to %@";
@@ -267,7 +268,6 @@
 "express_provider_not_available" = "Unavailable for this pair";
 "express_provider_permission_needed" = "Permission Required";
 "express_provider_recommended" = "Recommended";
-"express_terms_of_use" = "Terms of Use";
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
@@ -639,6 +639,7 @@
 "staking_details_unbonding_period_info" = "The period you must wait after requesting to withdraw funds from staking before the tokens become available.";
 "staking_details_warmup_period" = "Warmup period";
 "staking_details_warmup_period_info" = "The allocated time for activating participation in staking.";
+"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";

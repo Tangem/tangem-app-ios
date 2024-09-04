@@ -28,6 +28,32 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var actionButtonType: ActionButtonType?
     @Published var actionSheet: ActionSheetBinder?
 
+    lazy var legalText: AttributedString? = {
+        let tos = Localization.commonTermsOfUse
+        let policy = Localization.commonPrivacyPolicy
+
+        func makeBaseAttributedString(for text: String) -> AttributedString {
+            var attributedString = AttributedString(text)
+            attributedString.font = Fonts.Regular.footnote
+            attributedString.foregroundColor = Colors.Text.tertiary
+            return attributedString
+        }
+
+        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
+            guard let range = attributedString.range(of: textToSearch) else {
+                return
+            }
+
+            attributedString[range].link = url
+            attributedString[range].foregroundColor = Colors.Text.accent
+        }
+
+        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
+        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
+        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
+        return attributedString
+    }()
+
     // MARK: - Dependencies
 
     private let walletModel: WalletModel
@@ -442,5 +468,12 @@ extension StakingAction.ActionType {
         case .pending(.claimRewards): Localization.commonClaimRewards
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
         }
+    }
+}
+
+extension StakingDetailsViewModel {
+    enum Constants {
+        static let tosURL = URL(string: "https://docs.stakek.it/docs/terms-of-use")!
+        static let privacyPolicyURL = URL(string: "https://docs.stakek.it/docs/privacy-policy")!
     }
 }

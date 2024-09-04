@@ -124,6 +124,7 @@
 "common_origin_card" = "Основна картка";
 "common_passphrase" = "Парольна фраза";
 "common_paste" = "Вставити";
+"common_privacy_policy" = "Політикою конфіденційності";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "Детальніше";
@@ -152,6 +153,7 @@
 "common_support" = "Підтримка";
 "common_swap" = "Обмін";
 "common_terms_and_conditions" = "умови участі";
+"common_terms_of_use" = "Умовами використання";
 "common_today" = "Сьогодні";
 "common_transaction_failed" = "Помилка транзакції";
 "common_transactions" = "Транзакції";
@@ -259,7 +261,6 @@
 "express_legal_one_placeholder" = "Використовуючи сервіс обміну, ви погоджуєтеся з його %@";
 "express_legal_two_placeholders" = "Використовуючи сервіс обміну, ви погоджуєтеся з його %1$@ та %2$@";
 "express_more_providers_soon" = "Незабаром з'являться нові провайдери.\nСлідкуйте за новинами!";
-"express_privacy_policy" = "Політикою конфіденційності";
 "express_provider" = "Провайдер";
 "express_provider_best_rate" = "Найкращий курс";
 "express_provider_max_amount" = "Доступно до %@";
@@ -267,7 +268,6 @@
 "express_provider_not_available" = "Недоступно для цієї пари";
 "express_provider_permission_needed" = "Потрібен дозвіл";
 "express_provider_recommended" = "Рекомендовано";
-"express_terms_of_use" = "Умовами використання";
 "express_token_list_empty_search" = "Токенів не знайдено. Будь ласка, спробуйте інший запит";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакції скопійовано";
@@ -639,6 +639,7 @@
 "staking_details_unbonding_period_info" = "Період, який ви повинні чекати після запиту на виведення коштів зі стейкінгу, перш ніж токени стануть доступними.";
 "staking_details_warmup_period" = "Період блокування";
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
+"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Перемістити";
 "staking_native" = "Нативний стейкінг";

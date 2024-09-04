@@ -124,6 +124,7 @@
 "common_origin_card" = "プライマリーカード";
 "common_passphrase" = "パスフレーズ";
 "common_paste" = "ペースト";
+"common_privacy_policy" = "プライバシーポリシー";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "続きを読む";
@@ -152,6 +153,7 @@
 "common_support" = "サポート";
 "common_swap" = "スワップ";
 "common_terms_and_conditions" = "利用規約";
+"common_terms_of_use" = "利用規約";
 "common_today" = "今日";
 "common_transaction_failed" = "取引が失敗しました";
 "common_transactions" = "取引";
@@ -259,7 +261,6 @@
 "express_legal_one_placeholder" = "スワップ機能を使用すると、プロバイダーの%@に同意したことになります。";
 "express_legal_two_placeholders" = "スワップ機能を使用すると、プロバイダーの%1$@および%2$@に同意したことになります。";
 "express_more_providers_soon" = "さらに多くのプロバイダーを追加予定です。 \nお楽しみに。";
-"express_privacy_policy" = "プライバシーポリシー";
 "express_provider" = "プロバイダー";
 "express_provider_best_rate" = "ベストレート";
 "express_provider_max_amount" = "最大 %@ まで使用可能";
@@ -267,7 +268,6 @@
 "express_provider_not_available" = "このペアは利用できません";
 "express_provider_permission_needed" = "許可が必要です";
 "express_provider_recommended" = "推奨";
-"express_terms_of_use" = "利用規約";
 "express_token_list_empty_search" = "トークンが見つかりません。別のリクエストをお試しください。";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "取引IDをコピーしました";
@@ -639,6 +639,7 @@
 "staking_details_unbonding_period_info" = "ステーキングから資金の引き出しを要求した後、トークンが利用可能になるまでの待機期間。";
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
+"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";

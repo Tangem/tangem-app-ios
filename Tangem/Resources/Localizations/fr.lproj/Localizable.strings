@@ -124,6 +124,7 @@
 "common_origin_card" = "Carte principale";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Coller";
+"common_privacy_policy" = "Politique de confidentialité";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "En savoir plus";
@@ -152,6 +153,7 @@
 "common_support" = "Support";
 "common_swap" = "Échange";
 "common_terms_and_conditions" = "termes et conditions";
+"common_terms_of_use" = "Conditions d'utilisation";
 "common_today" = "Aujourd'hui";
 "common_transaction_failed" = "La transaction a échoué";
 "common_transactions" = "Transactions";
@@ -259,7 +261,6 @@
 "express_legal_one_placeholder" = "En utilisant la fonctionnalité d'échange, vous acceptez les %@";
 "express_legal_two_placeholders" = "En utilisant la fonctionnalité d'échange, vous acceptez les conditions %1$@ et %2$@ du fournisseur.";
 "express_more_providers_soon" = "D'autres fournisseurs arriveront bientôt.\nRestez branchés !";
-"express_privacy_policy" = "Politique de confidentialité";
 "express_provider" = "Fournisseur";
 "express_provider_best_rate" = "Meilleur taux";
 "express_provider_max_amount" = "Disponible jusqu'à %@";
@@ -267,7 +268,6 @@
 "express_provider_not_available" = "Indisponible pour cette paire";
 "express_provider_permission_needed" = "Permission requise";
 "express_provider_recommended" = "Recommended";
-"express_terms_of_use" = "Conditions d'utilisation";
 "express_token_list_empty_search" = "Aucun jeton trouvé. Veuillez essayer une autre demande";
 "express_transaction_id" = "ID : %@";
 "express_transaction_id_copied" = "ID de transaction copié";
@@ -639,6 +639,7 @@
 "staking_details_unbonding_period_info" = "La période que vous devez attendre après avoir demandé le retrait des fonds du staking avant que les jetons ne soient disponibles.";
 "staking_details_warmup_period" = "Période d'échauffement";
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
+"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
