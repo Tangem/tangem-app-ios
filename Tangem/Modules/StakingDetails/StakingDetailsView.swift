@@ -29,7 +29,7 @@ struct StakingDetailsView: View {
             GroupedSection(viewModel.stakes) { data in
                 StakingDetailsStakeView(data: data)
             } header: {
-                DefaultHeaderView("Your stakes")
+                DefaultHeaderView(Localization.stakingYourStakes)
                     .padding(.top, 12)
                     .padding(.bottom, 8)
             }

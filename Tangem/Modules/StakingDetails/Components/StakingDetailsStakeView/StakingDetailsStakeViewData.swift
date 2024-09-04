@@ -10,18 +10,6 @@ import Foundation
 import TangemStaking
 import SwiftUI
 
-extension StakingDetailsStakeViewData: Hashable {
-    static func == (lhs: StakingDetailsStakeViewData, rhs: StakingDetailsStakeViewData) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(subtitleType)
-        hasher.combine(balance)
-    }
-}
-
 struct StakingDetailsStakeViewData: Identifiable {
     var id: Int { hashValue }
 
@@ -37,7 +25,7 @@ struct StakingDetailsStakeViewData: Identifiable {
         case .none:
             return nil
         case .locked:
-            return string("Tap to unlock")
+            return string(Localization.stakingTapToUnlock)
         case .warmup(let period):
             return string(Localization.stakingDetailsWarmupPeriod, accent: period)
         case .active(let apr):
@@ -81,6 +69,18 @@ struct StakingDetailsStakeViewData: Identifiable {
         }
 
         return string
+    }
+}
+
+extension StakingDetailsStakeViewData: Hashable {
+    static func == (lhs: StakingDetailsStakeViewData, rhs: StakingDetailsStakeViewData) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(subtitleType)
+        hasher.combine(balance)
     }
 }
 
