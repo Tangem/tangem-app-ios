@@ -29,35 +29,61 @@ class CommonStakingPendingTransactionsRepository {
 // MARK: - StakingPendingTransactionsRepository
 
 extension CommonStakingPendingTransactionsRepository: StakingPendingTransactionsRepository {
-    func transactionDidSent(action: StakingAction) {
-        let record = mapToStakingPendingTransactionRecord(action: action)
+    var records: [StakingPendingTransactionRecord] { cache.asArray }
+
+    func transactionDidSent(action: StakingAction, validator: ValidatorInfo?) {
+        let record = mapToStakingPendingTransactionRecord(action: action, validator: validator)
+        log("Will be add record - \(record)")
+
         cache.insert(record)
     }
 
     func checkIfConfirmed(balances: [StakingBalanceInfo]) {
         cache = cache.filter { record in
-            switch record.type {
-            case .stake, .voteLocked:
-                return balances.contains { $0.validatorAddress == record.validator && $0.balanceType == .active }
-            case .unstake:
-                return !balances.contains { $0.validatorAddress == record.validator && $0.balanceType == .active }
-            case .withdraw:
-                return !balances.contains { $0.validatorAddress == record.validator && $0.balanceType == .withdraw }
-            case .claimRewards, .restakeRewards:
-                return !balances.contains { $0.amount == record.amount && $0.validatorAddress == record.validator }
-            case .unlockLocked:
-                return !balances.contains { $0.amount == record.amount && $0.balanceType == .locked }
-            }
+            let shouldDelete: Bool = {
+                switch record.type {
+                case .stake, .voteLocked:
+                    return balances.contains {
+                        $0.validatorAddress == record.validator.address && $0.balanceType == .active
+                    }
+                case .unstake:
+                    return !balances.contains {
+                        $0.validatorAddress == record.validator.address && $0.balanceType == .active
+                    }
+                case .withdraw:
+                    return !balances.contains {
+                        $0.validatorAddress == record.validator.address && $0.balanceType == .withdraw
+                    }
+                case .claimRewards, .restakeRewards:
+                    return !balances.contains {
+                        $0.validatorAddress == record.validator.address && $0.amount == record.amount
+                    }
+                case .unlockLocked:
+                    return !balances.contains {
+                        $0.amount == record.amount && $0.balanceType == .locked
+                    }
+                }
+            }()
+
+            log("Record \(record) will be delete - \(shouldDelete)")
+            return !shouldDelete
         }
     }
 
     func hasPending(balance: StakingBalanceInfo) -> Bool {
+        let hasPending: Bool
         switch balance.balanceType {
         case .locked:
-            return cache.contains { $0.amount == balance.amount }
+            hasPending = cache.contains { $0.amount == balance.amount }
         case .active, .rewards, .unbonding, .warmup, .withdraw:
-            return cache.contains { $0.validator == balance.validatorAddress }
+            hasPending = cache.contains { $0.validator.address == balance.validatorAddress }
         }
+
+        if hasPending {
+            log("Has pending transaction for \(balance)")
+        }
+
+        return hasPending
     }
 }
 
@@ -80,7 +106,7 @@ private extension CommonStakingPendingTransactionsRepository {
         }
     }
 
-    private func mapToStakingPendingTransactionRecord(action: StakingAction) -> StakingPendingTransactionRecord {
+    private func mapToStakingPendingTransactionRecord(action: StakingAction, validator: ValidatorInfo?) -> StakingPendingTransactionRecord {
         let type: StakingPendingTransactionRecord.ActionType = {
             switch action.type {
             case .stake: .stake
@@ -93,7 +119,14 @@ private extension CommonStakingPendingTransactionsRepository {
             }
         }()
 
-        return StakingPendingTransactionRecord(amount: action.amount, validator: action.validator, type: type)
+        let validator = StakingPendingTransactionRecord.Validator(
+            address: validator?.address ?? action.validator,
+            name: validator?.name,
+            iconURL: validator?.iconURL,
+            apr: validator?.apr
+        )
+
+        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type)
     }
 
     func log<T>(_ message: @autoclosure () -> T) {

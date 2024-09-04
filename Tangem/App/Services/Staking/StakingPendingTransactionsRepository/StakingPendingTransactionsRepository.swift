@@ -10,9 +10,10 @@ import Foundation
 import TangemStaking
 
 protocol StakingPendingTransactionsRepository {
-    func transactionDidSent(action: StakingAction)
-    func checkIfConfirmed(balances: [StakingBalanceInfo])
+    var records: [StakingPendingTransactionRecord] { get }
 
+    func transactionDidSent(action: StakingAction, validator: ValidatorInfo?)
+    func checkIfConfirmed(balances: [StakingBalanceInfo])
     func hasPending(balance: StakingBalanceInfo) -> Bool
 }
 

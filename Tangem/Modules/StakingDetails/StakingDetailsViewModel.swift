@@ -37,6 +37,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
+    private lazy var stakingDetailsStakesProvider = StakingDetailsStakesProvider(tokenItem: walletModel.tokenItem)
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
@@ -271,80 +272,23 @@ private extension StakingDetailsViewModel {
     }
 
     func setupStakes(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        stakes = staking
-            .sorted(by: { lhs, rhs in
-                if lhs.balanceType.priority != rhs.balanceType.priority {
-                    return lhs.balanceType.priority < rhs.balanceType.priority
-                }
-
-                return lhs.amount > rhs.amount
-            })
-            .compactMap { balance -> StakingDetailsStakeViewData? in
-                mapToStakingDetailsStakeViewData(yield: yield, balance: balance)
-            }
-    }
-
-    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> StakingDetailsStakeViewData? {
-        let validator = yield.validators.first(where: { $0.address == balance.validatorAddress })
-
-        let title: String = {
-            switch balance.balanceType {
-            case .rewards: Localization.stakingRewards
-            case .locked: Localization.stakingLocked
-            case .warmup, .active: validator?.name ?? Localization.stakingValidator
-            case .unbonding: Localization.stakingUnstaking
-            case .withdraw: Localization.stakingUnstaked
-            }
-        }()
-
-        let subtitle: StakingDetailsStakeViewData.SubtitleType? = {
-            switch balance.balanceType {
-            case .rewards: .none
-            case .locked: .locked
-            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active: validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding(let date): .unbounding(until: date)
-            case .withdraw: .withdraw
-            }
-        }()
-
-        let icon: StakingDetailsStakeViewData.IconType = {
-            switch balance.balanceType {
-            case .rewards, .warmup, .active: .image(url: validator?.iconURL)
-            case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
-            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
-            case .withdraw: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
-            }
-        }()
-
-        let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-            balance.amount,
-            currencyCode: walletModel.tokenItem.currencySymbol
-        )
-        let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
+        let cachedStakes = stakingPendingTransactionsRepository.records.filter { $0.type == .stake }.compactMap { record in
+            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, record: record)
         }
-        let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
-        let action: (() -> Void)? = {
-            switch balance.balanceType {
-            case .rewards, .warmup, .unbonding:
-                return nil
-            case .active, .withdraw, .locked:
-                return { [weak self] in
-                    self?.openUnstakingFlow(balance: balance)
-                }
+        let staking = staking.map { balance in
+            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+                self?.openUnstakingFlow(balance: balance)
             }
-        }()
+        }
 
-        return StakingDetailsStakeViewData(
-            title: title,
-            icon: icon,
-            inProgress: stakingPendingTransactionsRepository.hasPending(balance: balance),
-            subtitleType: subtitle,
-            balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
-            action: action
-        )
+        stakes = (cachedStakes + staking).sorted(by: { lhs, rhs in
+            if lhs.priority != rhs.priority {
+                return lhs.priority < rhs.priority
+            }
+
+            return lhs.balance.crypto > rhs.balance.crypto
+        })
     }
 
     func openBottomSheet(title: String, description: String) {

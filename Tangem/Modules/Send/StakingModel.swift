@@ -270,7 +270,7 @@ private extension StakingModel {
             let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
-            stakingPendingTransactionsRepository.transactionDidSent(action: action)
+            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: _selectedValidator.value.value)
 
             proceed(result: result)
             return result

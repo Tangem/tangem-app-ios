@@ -10,10 +10,17 @@ import Foundation
 
 struct StakingPendingTransactionRecord: Hashable, Codable {
     let amount: Decimal
-    let validator: String?
+    let validator: Validator
     let type: ActionType
 
-    public enum ActionType: Hashable, Codable {
+    struct Validator: Hashable, Codable {
+        let address: String?
+        let name: String?
+        let iconURL: URL?
+        let apr: Decimal?
+    }
+
+    enum ActionType: Hashable, Codable {
         case stake
         case unstake
         case withdraw

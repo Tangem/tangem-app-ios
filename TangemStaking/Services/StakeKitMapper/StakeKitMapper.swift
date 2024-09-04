@@ -350,11 +350,7 @@ struct StakeKitMapper {
         case .staked:
             return .active
         case .unstaking, .unlocking:
-            guard let date = balance.date else {
-                throw StakeKitMapperError.noData("Balance.date for BalanceType.unbonding not found")
-            }
-
-            return .unbonding(date: date)
+            return .unbonding(date: balance.date)
         case .unstaked:
             return .withdraw
         case .rewards:
