@@ -11,12 +11,25 @@ import BlockchainSdk
 import TangemStaking
 
 class StakingFeatureProvider {
-    var isStakingAvailable: Bool {
+    private let longHashesSupported: Bool
+    private let isFeatureAvailable: Bool
+
+    init(config: UserWalletConfig) {
+        longHashesSupported = config.hasFeature(.longHashes)
+        isFeatureAvailable = config.isFeatureVisible(.staking)
+    }
+
+    static var isStakingAvailable: Bool {
         FeatureProvider.isAvailable(.staking)
     }
 
     func yieldId(for tokenItem: TokenItem) -> String? {
-        guard isStakingAvailable else {
+        guard StakingFeatureProvider.isStakingAvailable,
+              isFeatureAvailable else {
+            return nil
+        }
+
+        if tokenItem.hasLongHashesForStaking, !longHashesSupported {
             return nil
         }
 
@@ -46,15 +59,6 @@ class StakingFeatureProvider {
     func isAvailable(for tokenItem: TokenItem) -> Bool {
         yieldId(for: tokenItem) != nil
     }
-
-    func canStake(with userWalletModel: UserWalletModel, by walletModel: WalletModel) -> Bool {
-        [
-            isAvailable(for: walletModel.tokenItem),
-            userWalletModel.config.isFeatureVisible(.staking),
-            yieldId(for: walletModel.tokenItem) != nil,
-            !walletModel.isCustom,
-        ].allConforms { $0 }
-    }
 }
 
 extension StakingFeatureProvider {
@@ -63,7 +67,7 @@ extension StakingFeatureProvider {
         ]
     }
 
-    var testableBlockchainIds: Set<StakingTokenItem> {
+    static var testableBlockchainIds: Set<StakingTokenItem> {
         [
             StakingTokenItem(network: .solana, contractAddress: nil, name: "Solana", decimals: 9, symbol: "SOL"),
             StakingTokenItem(network: .cosmos, contractAddress: nil, name: "Cosmos", decimals: 6, symbol: "ATOM"),
