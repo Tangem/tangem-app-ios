@@ -103,12 +103,7 @@ private extension StakingModel {
                 updateStateSubject.prepend(()) // CombineLatest has to have first element
             )
             .sink { [weak self] amount, validator, approvePolicy, _ in
-                self?.inputDataDidChange(
-                    amount: amount,
-                    validator: validator.address,
-                    apr: validator.apr,
-                    approvePolicy: approvePolicy
-                )
+                self?.inputDataDidChange(amount: amount, validator: validator.address, approvePolicy: approvePolicy)
             }
             .store(in: &bag)
 
@@ -129,18 +124,13 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    func inputDataDidChange(amount: Decimal, validator: String, apr: Decimal?, approvePolicy: ApprovePolicy) {
+    func inputDataDidChange(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) {
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
                 model.update(state: .loading)
-                let newState = try await model.state(
-                    amount: amount,
-                    validator: validator,
-                    apr: apr,
-                    approvePolicy: approvePolicy
-                )
+                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: approvePolicy)
                 model.update(state: newState)
             } catch {
                 model.update(state: .networkError(error))
@@ -148,12 +138,7 @@ private extension StakingModel {
         }
     }
 
-    func state(
-        amount: Decimal,
-        validator: String,
-        apr: Decimal?,
-        approvePolicy: ApprovePolicy
-    ) async throws -> StakingModel.State {
+    func state(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
         if let allowanceState = try await allowanceState(amount: amount, validator: validator, approvePolicy: approvePolicy) {
             switch allowanceState {
             case .permissionRequired(let approveData):
@@ -183,15 +168,7 @@ private extension StakingModel {
             return validateError
         }
 
-        return .readyToStake(
-            .init(
-                amount: newAmount,
-                validator: validator,
-                fee: fee,
-                isFeeIncluded: includeFee,
-                apr: apr
-            )
-        )
+        return .readyToStake(.init(amount: newAmount, validator: validator, fee: fee, isFeeIncluded: includeFee))
     }
 
     func validate(amount: Decimal, fee: Decimal) -> StakingModel.State? {
@@ -422,9 +399,9 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        Publishers.CombineLatest(_amount, _state)
-            .map { amount, state in
-                guard let amount, let fee = state?.fee, let apr = state?.apr else {
+        Publishers.CombineLatest3(_amount, _state, _selectedValidator)
+            .map { amount, state, selectedValidator in
+                guard let amount, let fee = state?.fee, let apr = selectedValidator.value?.apr else {
                     return nil
                 }
 
@@ -527,19 +504,11 @@ extension StakingModel {
             }
         }
 
-        var apr: Decimal? {
-            switch self {
-            case .readyToStake(let model): model.apr
-            case .readyToApprove, .approveTransactionInProgress, .loading, .validationError, .networkError: nil
-            }
-        }
-
         struct ReadyToStake {
             let amount: Decimal
             let validator: String
             let fee: Decimal
             let isFeeIncluded: Bool
-            let apr: Decimal?
         }
     }
 }
