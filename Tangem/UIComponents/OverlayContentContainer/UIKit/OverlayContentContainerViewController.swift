@@ -336,23 +336,30 @@ final class OverlayContentContainerViewController: UIViewController {
     private func updateCornerRadius() {
         let contentLayer = contentViewController.view.layer
 
-        // On devices with notch, the corner radius property isn't animated and always has a constant value
-        guard !UIDevice.current.hasHomeScreenIndicator else {
-            if !contentLayer.cornerRadius.isEqual(to: overlayCornerRadius) {
+        // On devices with a notch, the corner radius property isn't animated and always has a constant value
+        // (`overlayCornerRadius`) UNLESS it's completely invisible and hidden behind screen borders.
+        // In the latter case, the corner radius property is set to zero,
+        // which prevents screenshots from being spoiled and other similar issues
+        if UIDevice.current.hasHomeScreenIndicator {
+            if isCollapsedState {
+                // Wait for the collapsing animation to finish
+                CATransaction.setCompletionBlock {
+                    contentLayer.cornerRadius = .zero
+                }
+            } else {
                 contentLayer.cornerRadius = overlayCornerRadius
             }
-            return
-        }
+        } else {
+            if isFinalState, let animationContext = progress.context {
+                let keyPath = String(_sel: #selector(getter: CALayer.cornerRadius))
+                let animation = CABasicAnimation(keyPath: keyPath)
+                animation.duration = animationContext.duration
+                animation.timingFunction = animationContext.curve.toMediaTimingFunction()
+                contentLayer.add(animation, forKey: #function)
+            }
 
-        if isFinalState, let animationContext = progress.context {
-            let keyPath = String(_sel: #selector(getter: CALayer.cornerRadius))
-            let animation = CABasicAnimation(keyPath: keyPath)
-            animation.duration = animationContext.duration
-            animation.timingFunction = animationContext.curve.toMediaTimingFunction()
-            contentLayer.add(animation, forKey: #function)
+            contentLayer.cornerRadius = overlayCornerRadius * progress.value
         }
-
-        contentLayer.cornerRadius = overlayCornerRadius * progress.value
     }
 
     private func updateBackgroundShadowViewAlpha() {
