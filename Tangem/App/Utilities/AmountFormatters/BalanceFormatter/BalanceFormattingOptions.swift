@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct BalanceFormattingOptions {
-    let minFractionDigits: Int
-    let maxFractionDigits: Int
-    let formatEpsilonAsLowestRepresentableValue: Bool
-    let roundingType: AmountRoundingType?
+struct BalanceFormattingOptions: Hashable {
+    var minFractionDigits: Int
+    var maxFractionDigits: Int
+    var formatEpsilonAsLowestRepresentableValue: Bool
+    var roundingType: AmountRoundingType?
 
     static var defaultFiatFormattingOptions: BalanceFormattingOptions {
         .init(
@@ -33,11 +33,9 @@ struct BalanceFormattingOptions {
     }
 
     static var defaultCryptoFeeFormattingOptions: BalanceFormattingOptions {
-        .init(
-            minFractionDigits: Self.defaultCryptoFormattingOptions.minFractionDigits,
-            maxFractionDigits: 6,
-            formatEpsilonAsLowestRepresentableValue: Self.defaultCryptoFormattingOptions.formatEpsilonAsLowestRepresentableValue,
-            roundingType: Self.defaultCryptoFormattingOptions.roundingType
-        )
+        var options = Self.defaultCryptoFormattingOptions
+        options.maxFractionDigits = 6
+
+        return options
     }
 }

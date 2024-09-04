@@ -8,16 +8,10 @@
 
 import Foundation
 
-// TODO: Replace with actual implementation
-typealias MarketsTokenPriceFormatter = CommonTokenPriceFormatter
-
-struct CommonTokenPriceFormatter {
+@available(*, deprecated, message: "Temporary solution for token list on the main screen only, do not use (IOS-7793)")
+struct TokenItemPriceFormatter {
     private let balanceFormatter = BalanceFormatter()
-}
 
-// MARK: - FeeFormatter
-
-extension CommonTokenPriceFormatter {
     private var lowPriceFiatFormattingOptions: BalanceFormattingOptions {
         .init(
             minFractionDigits: 2,
@@ -27,18 +21,22 @@ extension CommonTokenPriceFormatter {
         )
     }
 
-    func formatFiatBalance(_ value: Decimal?) -> String {
+    func formatPrice(_ value: Decimal?) -> String {
         guard let value else {
             return balanceFormatter.formatFiatBalance(value)
         }
 
-        let fiatFormattingOptions: BalanceFormattingOptions = value >= Constants.boundaryLowDigitOptions ? .defaultFiatFormattingOptions : lowPriceFiatFormattingOptions
+        let fiatFormattingOptions: BalanceFormattingOptions = value >= Constants.boundaryLowDigitOptions
+            ? .defaultFiatFormattingOptions
+            : lowPriceFiatFormattingOptions
 
         return balanceFormatter.formatFiatBalance(value, formattingOptions: fiatFormattingOptions)
     }
 }
 
-extension CommonTokenPriceFormatter {
+// MARK: - Constants
+
+private extension TokenItemPriceFormatter {
     enum Constants {
         // Need use for token with low very price, when display 2-6 digits with scale 6
         static let boundaryLowDigitOptions: Decimal = 0.01

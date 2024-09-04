@@ -7,29 +7,46 @@
 //
 
 import Foundation
+import UIKit
 import Combine
 
 class MarketsWalletSelectorViewModel: ObservableObject {
-    var itemViewModels: [WalletSelectorItemViewModel] = []
+    @Published var name: String = ""
+    @Published var icon: LoadingValue<CardImageResult> = .loading
 
-    private weak var provider: MarketsWalletSelectorProvider?
-    private var bag = Set<AnyCancellable>()
+    private let userWalletNamePublisher: AnyPublisher<String, Never>
+    private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
+
+    private var bag: Set<AnyCancellable> = []
+
+    private let balanceFomatter = BalanceFormatter()
 
     // MARK: - Init
 
-    init(provider: MarketsWalletSelectorProvider?) {
-        self.provider = provider
-        itemViewModels = provider?.itemViewModels ?? []
+    init(
+        userWalletNamePublisher: AnyPublisher<String, Never>,
+        cardImagePublisher: AnyPublisher<CardImageResult, Never>
+    ) {
+        self.userWalletNamePublisher = userWalletNamePublisher
+        self.cardImagePublisher = cardImagePublisher
 
         bind()
     }
 
-    private func bind() {
-        provider?.selectedUserWalletIdPublisher
-            .sink { [weak self] userWalletId in
-                self?.itemViewModels.forEach { item in
-                    item.isSelected = item.userWalletId == userWalletId
-                }
+    func bind() {
+        userWalletNamePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, name in
+                viewModel.name = name
+            }
+            .store(in: &bag)
+
+        cardImagePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, image in
+                viewModel.icon = .loaded(image)
             }
             .store(in: &bag)
     }
