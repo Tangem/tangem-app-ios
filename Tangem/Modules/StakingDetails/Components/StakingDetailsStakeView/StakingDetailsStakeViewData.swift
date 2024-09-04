@@ -32,13 +32,6 @@ struct StakingDetailsStakeViewData: Identifiable {
     let balance: WalletModel.BalanceFormatted
     let action: (() -> Void)?
 
-//    var isIconMonochrome: Bool {
-//        switch subtitleType {
-//        case .locked, .warmup, .active: false
-//        case .unbounding, .withdraw: true
-//        }
-//    }
-
     var subtitle: AttributedString? {
         switch subtitleType {
         case .none:
@@ -92,10 +85,6 @@ struct StakingDetailsStakeViewData: Identifiable {
 }
 
 extension StakingDetailsStakeViewData {
-    enum ViewType {
-        case active(validator: ValidatorInfo)
-    }
-
     enum SubtitleType: Hashable {
         case warmup(period: String)
         case active(apr: String)
