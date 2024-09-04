@@ -43,7 +43,7 @@ class StakingFeatureProvider {
 
         let item = StakingItem(network: stakingTokenItem.network, contractAddress: stakingTokenItem.contractAddress)
         let itemID = item.id
-        let isSupported = supportedBlockchainIds.contains(itemID)
+        let isSupported = StakingFeatureProvider.supportedBlockchainItems.contains(item)
         let isTesting = FeatureStorage().stakingBlockchainsIds.contains(itemID)
 
         guard isSupported || isTesting else {
@@ -63,12 +63,12 @@ class StakingFeatureProvider {
 }
 
 extension StakingFeatureProvider {
-    static var supportedBlockchainIds: Set<String> {
+    static var supportedBlockchainItems: Set<StakingItem> {
         [
         ]
     }
 
-    static var testableBlockchainIds: Set<StakingItem> {
+    static var testableBlockchainItems: Set<StakingItem> {
         [
             StakingItem(network: .solana, contractAddress: nil),
             StakingItem(network: .cosmos, contractAddress: nil),

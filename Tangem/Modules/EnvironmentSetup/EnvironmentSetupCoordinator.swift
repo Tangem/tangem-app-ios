@@ -53,7 +53,7 @@ extension EnvironmentSetupCoordinator: EnvironmentSetupRoutable {
 
     func openStakingBlockchainsPreferences() {
         stakingBlockchainsPreferencesViewModel = SupportedBlockchainsPreferencesViewModel(
-            blockchainIds: StakingFeatureProvider.testableBlockchainIds.map { .init(name: $0.name, id: $0.id) }.toSet(),
+            blockchainIds: StakingFeatureProvider.testableBlockchainItems.map { .init(name: $0.name, id: $0.id) }.toSet(),
             featureStorageKeyPath: \.stakingBlockchainsIds
         )
     }
