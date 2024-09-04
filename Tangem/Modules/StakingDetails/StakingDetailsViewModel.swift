@@ -441,6 +441,8 @@ extension StakingAction.ActionType {
         case .pending(.withdraw): Localization.stakingWithdraw
         case .pending(.claimRewards): Localization.commonClaimRewards
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
+        case .pending(.voteLocked): Localization.stakingVote
+        case .pending(.unlockLocked): "Unlock locked"
         }
     }
 }

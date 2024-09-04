@@ -34,6 +34,7 @@ struct StakingDetailsView: View {
         .refreshable {
             await Task { await viewModel.refresh() }.value
         }
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .safeAreaInset(edge: .bottom) {
             actionButton
         }
@@ -41,7 +42,6 @@ struct StakingDetailsView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
-        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.descriptionBottomSheetInfo,
             backgroundColor: Colors.Background.tertiary
