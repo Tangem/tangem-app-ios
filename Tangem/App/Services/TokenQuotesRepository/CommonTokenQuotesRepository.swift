@@ -52,10 +52,10 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
 }
 
 extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
         log("Request loading quotes for ids: \(currencyIds)")
 
-        let outputPublisher = PassthroughSubject<Void, Never>()
+        let outputPublisher = PassthroughSubject<[String: Decimal], Never>()
         let item = QueueItem(ids: currencyIds, didLoadPublisher: outputPublisher)
         loadingQueue.send(item)
 
@@ -102,11 +102,19 @@ private extension CommonTokenQuotesRepository {
 
                 return repository
                     .loadAndSaveQuotes(currencyIds: ids)
-                    .map { items }
+                    .map { (items, $0) }
             }
-            .sink(receiveValue: { items in
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { repository, items in
+                let (queueItems, loadedRates) = items
                 // Send the event that quotes for currencyIds have been loaded
-                items.forEach { $0.didLoadPublisher.send(()) }
+                queueItems.forEach { queueItem in
+                    let results: [String: Decimal] = queueItem.ids.reduce(into: [:]) {
+                        $0[$1] = loadedRates[$1]
+                    }
+
+                    queueItem.didLoadPublisher.send(results)
+                }
             })
             .store(in: &bag)
 
@@ -135,7 +143,7 @@ private extension CommonTokenQuotesRepository {
             .store(in: &bag)
     }
 
-    func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
+    func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
         log("Start loading quotes for ids: \(currencyIds)")
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
@@ -154,12 +162,12 @@ private extension CommonTokenQuotesRepository {
             .map { [weak self] quotes in
                 self?.log("Finish loading quotes for ids: \(currencyIds)")
                 self?.saveQuotes(quotes, currencyCode: currencyCode)
-                return ()
+                return quotes.reduce(into: [:]) { $0[$1.id] = $1.price }
             }
-            .catch { [weak self] error in
+            .catch { [weak self] error -> AnyPublisher<[String: Decimal], Never> in
                 self?.log("Loading quotes catch error")
                 AppLog.shared.error(error: error, params: [:])
-                return Just(())
+                return Just([:]).eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
@@ -192,6 +200,6 @@ private extension CommonTokenQuotesRepository {
 extension CommonTokenQuotesRepository {
     struct QueueItem {
         let ids: [String]
-        let didLoadPublisher: PassthroughSubject<Void, Never>
+        let didLoadPublisher: PassthroughSubject<[String: Decimal], Never>
     }
 }
