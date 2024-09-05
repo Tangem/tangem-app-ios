@@ -134,11 +134,17 @@ private extension CommonTokenQuotesRepository {
             .store(in: &bag)
 
         userWalletRepository.eventProvider
-            .withWeakCaptureOf(self)
-            .sink { repository, event in
-                if case .locked = event {
-                    repository.clearRepository()
+            .filter {
+                if case .locked = $0 {
+                    return true
                 }
+
+                return false
+            }
+            .delay(for: 0.5, scheduler: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { repository, _ in
+                repository.clearRepository()
             }
             .store(in: &bag)
     }
