@@ -18,5 +18,5 @@ protocol SendSummaryOutput: AnyObject {}
 
 enum SendSummaryTransactionData {
     case send(amount: Decimal, fee: Decimal)
-    case staking(amount: SendAmount, fee: Decimal)
+    case staking(amount: SendAmount, fee: Decimal, apr: Decimal)
 }

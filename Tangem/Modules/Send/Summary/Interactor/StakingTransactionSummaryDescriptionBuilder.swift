@@ -22,14 +22,12 @@ struct StakingTransactionSummaryDescriptionBuilder {
 
 extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
     func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
-        guard case .staking(let amount, let fee) = transactionType else {
+        guard case .staking(let amount, let fee, let apr) = transactionType,
+              let amountFiat = amount.fiat else {
             return nil
         }
 
-        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
-        let totalInFiat = [amount.fiat, feeInFiat].compactMap { $0 }.reduce(0, +)
-
-        let formattingOptions = BalanceFormattingOptions(
+        let amountFormattingOptions = BalanceFormattingOptions(
             minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
             maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
             formatEpsilonAsLowestRepresentableValue: true,
@@ -37,9 +35,17 @@ extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDes
         )
 
         let formatter = BalanceFormatter()
-        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
+        let amountInFiatFormatted = formatter.formatFiatBalance(amountFiat, formattingOptions: amountFormattingOptions)
 
-        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
+        let incomeFormattingOptions = BalanceFormattingOptions(
+            minFractionDigits: 0,
+            maxFractionDigits: 0,
+            formatEpsilonAsLowestRepresentableValue: false,
+            roundingType: .shortestFraction(roundingMode: .down)
+        )
+
+        let income = formatter.formatFiatBalance(amountFiat * apr, formattingOptions: incomeFormattingOptions)
+
+        return Localization.stakingSummaryDescriptionText(amountInFiatFormatted, income)
     }
 }
