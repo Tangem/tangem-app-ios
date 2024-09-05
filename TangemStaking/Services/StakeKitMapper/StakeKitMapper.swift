@@ -194,9 +194,14 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
-        let validators = response.validators.compactMap(mapToValidatorInfo)
-        let aprs = validators.compactMap(\.apr)
-        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: response.rewardRate)
+        let validators = response.validators
+            .compactMap(mapToValidatorInfo)
+            .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
+
+        let rewardRateValues = RewardRateValues(
+            aprs: validators.compactMap(\.apr),
+            rewardRate: response.rewardRate
+        )
 
         return try YieldInfo(
             id: response.id,
