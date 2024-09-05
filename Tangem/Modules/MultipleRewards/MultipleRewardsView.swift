@@ -23,6 +23,8 @@ struct MultipleRewardsView: View {
             }
             .navigationTitle(Localization.commonClaimRewards)
             .navigationBarTitleDisplayMode(.inline)
+            .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
+            .alert(item: $viewModel.alert) { $0.alert }
             .background(Colors.Background.tertiary)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -30,7 +32,6 @@ struct MultipleRewardsView: View {
                         .foregroundColor(Colors.Text.primary1)
                 }
             }
-            .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         }
     }
 }

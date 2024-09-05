@@ -27,6 +27,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var actionButtonDisabled: Bool = false
     @Published var actionButtonType: ActionButtonType?
     @Published var actionSheet: ActionSheetBinder?
+    @Published var alert: AlertBinder?
 
     lazy var legalText: AttributedString? = makeLegalText()
 
@@ -348,20 +349,23 @@ private extension StakingDetailsViewModel {
     }
 
     func openUnstakingFlow(balance: StakingBalanceInfo) {
-        switch PendingActionMapper(balanceInfo: balance).getAction() {
-        case .none:
-            break
-        case .single(let action):
-            coordinator?.openUnstakingFlow(action: action)
-        case .multiple(let actions):
-            var buttons: [Alert.Button] = actions.map { action in
-                .default(Text(action.type.title)) { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(action: action)
+        do {
+            let action = try PendingActionMapper(balanceInfo: balance).getAction()
+            switch action {
+            case .single(let action):
+                coordinator?.openUnstakingFlow(action: action)
+            case .multiple(let actions):
+                var buttons: [Alert.Button] = actions.map { action in
+                    .default(Text(action.type.title)) { [weak self] in
+                        self?.coordinator?.openUnstakingFlow(action: action)
+                    }
                 }
-            }
 
-            buttons.append(.cancel())
-            actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+                buttons.append(.cancel())
+                actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+            }
+        } catch {
+            alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription)
         }
     }
 
