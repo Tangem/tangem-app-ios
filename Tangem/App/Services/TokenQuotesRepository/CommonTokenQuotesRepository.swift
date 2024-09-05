@@ -141,6 +141,8 @@ private extension CommonTokenQuotesRepository {
 
                 return false
             }
+            // We need to postpone repository cleanup because currently all rows are depends on this data
+            // and logout logic is not triggering immediately, so on main screen missing values can appear
             .delay(for: 0.5, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { repository, _ in
