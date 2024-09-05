@@ -36,7 +36,6 @@ class StakingModel {
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let stakingTransactionDispatcher: SendTransactionDispatcher
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let stakingTransactionMapper: StakingTransactionMapper
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
@@ -55,7 +54,6 @@ class StakingModel {
         feeIncludedCalculator: FeeIncludedCalculator,
         stakingTransactionDispatcher: SendTransactionDispatcher,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        stakingTransactionMapper: StakingTransactionMapper,
         allowanceProvider: AllowanceProvider,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -65,7 +63,6 @@ class StakingModel {
         self.transactionValidator = transactionValidator
         self.feeIncludedCalculator = feeIncludedCalculator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
-        self.stakingTransactionMapper = stakingTransactionMapper
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
         tokenItem = amountTokenItem
@@ -269,14 +266,11 @@ private extension StakingModel {
             throw StakingModelError.readyToStakeNotFound
         }
 
-        let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
-        let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
-
         do {
-            let result = try await stakingTransactionDispatcher.send(
-                transaction: .staking(transactionId: transactionInfo.id, transaction: transaction)
-            )
+            let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
+            let transactionInfo = try await stakingManager.transaction(action: action)
+            let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
+
             proceed(result: result)
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
@@ -296,7 +290,6 @@ private extension StakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:

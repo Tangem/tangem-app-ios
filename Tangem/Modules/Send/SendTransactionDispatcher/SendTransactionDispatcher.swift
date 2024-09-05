@@ -30,6 +30,5 @@ extension SendTransactionDispatcherResult {
         case sendTxError(transaction: SendTransactionType, error: SendTxError)
 
         case demoAlert
-        case stakingUnsupported
     }
 }

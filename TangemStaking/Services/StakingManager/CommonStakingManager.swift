@@ -78,7 +78,7 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func transaction(action: StakingAction) async throws -> StakingTransactionInfo {
+    func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
         case (.availableToStake, .stake), (.staked, .stake):
             try await getStakeTransactionInfo(
@@ -121,37 +121,35 @@ private extension CommonStakingManager {
         return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
-    func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionInfo {
+    func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
         let action = try await provider.enterAction(request: request)
 
-        guard let transactionId = action.transactions.first(where: { $0.type == .stake })?.id else {
-            throw StakingManagerError.transactionNotFound
-        }
-
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-        let transaction = try await provider.patchTransaction(id: transactionId)
 
-        return transaction
+        let transactions = try await action.transactions.asyncMap { transaction in
+            try await provider.patchTransaction(id: transaction.id)
+        }
+
+        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
     }
 
-    func getUnstakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionInfo {
+    func getUnstakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
         let action = try await provider.exitAction(request: request)
 
-        guard let transactionId = action.transactions.first(where: { $0.stepIndex == action.currentStepIndex })?.id else {
-            throw StakingManagerError.transactionNotFound
-        }
-
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-        let transaction = try await provider.patchTransaction(id: transactionId)
 
-        return transaction
+        let transactions = try await action.transactions.asyncMap { transaction in
+            try await provider.patchTransaction(id: transaction.id)
+        }
+
+        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
     }
 
-    func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionInfo {
+    func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionAction {
         let action = try await provider.pendingAction(request: request, type: type)
 
         let transactionType: TransactionType = {
@@ -159,6 +157,8 @@ private extension CommonStakingManager {
             case .withdraw: .withdraw
             case .claimRewards: .claimRewards
             case .restakeRewards: .restakeRewards
+            case .voteLocked: .vote
+            case .unlockLocked: .unstake
             }
         }()
 
@@ -171,7 +171,7 @@ private extension CommonStakingManager {
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
         let transaction = try await provider.patchTransaction(id: transactionId)
 
-        return transaction
+        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: [transaction])
     }
 }
 
@@ -192,7 +192,7 @@ private extension CommonStakingManager {
 
     func canStakeMore(item: StakingTokenItem) -> Bool {
         switch item.network {
-        case .solana, .cosmos:
+        case .solana, .cosmos, .tron:
             return true
         default:
             return false
