@@ -209,11 +209,7 @@ extension GenericConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            if card.firmwareVersion.doubleValue >= 4.52 {
-                return .available
-            }
-
-            return .hidden
+            return .available
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -234,7 +230,7 @@ extension GenericConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

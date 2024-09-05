@@ -15,7 +15,7 @@ public protocol StakingManager {
 
     func updateState() async throws
     func estimateFee(action: StakingAction) async throws -> Decimal
-    func transaction(action: StakingAction) async throws -> StakingTransactionInfo
+    func transaction(action: StakingAction) async throws -> StakingTransactionAction
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {

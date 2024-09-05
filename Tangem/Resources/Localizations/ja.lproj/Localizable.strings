@@ -68,7 +68,7 @@
 "common_access_denied" = "アクセスが拒否されました";
 "common_all" = "すべて";
 "common_allow" = "許可する";
-"common_analytics" = "Analytics";
+"common_analytics" = "アナリティクス";
 "common_apply" = "適用する";
 "common_approval" = "承認";
 "common_approve" = "承認";
@@ -82,7 +82,8 @@
 "common_camera_denied_alert_message" = "カメラへのアクセスを許可していません。プライバシー設定を調整してください。";
 "common_camera_denied_alert_title" = "カメラへのアクセスが拒否されました";
 "common_cancel" = "キャンセル";
-"common_choose_action" = "Choose action";
+"common_choose_action" = "アクションを選択";
+"common_claim" = "請求";
 "common_claim_rewards" = "報酬を受け取る";
 "common_close" = "閉じる";
 "common_continue" = "続ける";
@@ -112,6 +113,7 @@
 "common_import" = "インポート";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
+"common_left" = "%1$@ left";
 "common_locked" = "ロックされています";
 "common_main_network" = "メインネットワーク";
 "common_network_fee_title" = "ネットワーク手数料";
@@ -124,6 +126,7 @@
 "common_origin_card" = "プライマリーカード";
 "common_passphrase" = "パスフレーズ";
 "common_paste" = "ペースト";
+"common_privacy_policy" = "プライバシーポリシー";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
 "common_read_more" = "続きを読む";
@@ -152,6 +155,7 @@
 "common_support" = "サポート";
 "common_swap" = "スワップ";
 "common_terms_and_conditions" = "利用規約";
+"common_terms_of_use" = "利用規約";
 "common_today" = "今日";
 "common_transaction_failed" = "取引が失敗しました";
 "common_transactions" = "取引";
@@ -259,7 +263,6 @@
 "express_legal_one_placeholder" = "スワップ機能を使用すると、プロバイダーの%@に同意したことになります。";
 "express_legal_two_placeholders" = "スワップ機能を使用すると、プロバイダーの%1$@および%2$@に同意したことになります。";
 "express_more_providers_soon" = "さらに多くのプロバイダーを追加予定です。 \nお楽しみに。";
-"express_privacy_policy" = "プライバシーポリシー";
 "express_provider" = "プロバイダー";
 "express_provider_best_rate" = "ベストレート";
 "express_provider_max_amount" = "最大 %@ まで使用可能";
@@ -267,7 +270,6 @@
 "express_provider_not_available" = "このペアは利用できません";
 "express_provider_permission_needed" = "許可が必要です";
 "express_provider_recommended" = "推奨";
-"express_terms_of_use" = "利用規約";
 "express_token_list_empty_search" = "トークンが見つかりません。別のリクエストをお試しください。";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "取引IDをコピーしました";
@@ -403,6 +405,8 @@
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
 "markets_token_details_trading_volume" = "取引量（24時間）";
 "markets_token_details_trading_volume_24h_description" = "過去24時間以内に取引された暗号資産の合計額。市場の活発さと流動性を示します。";
+"markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
+"markets_tooltip_title" = "Add tokens";
 "onboarding_access_code_feature_1_description" = "すべてのカードを保護するには、単一のアクセスコードを設定する必要があります";
 "onboarding_access_code_feature_1_title" = "保護する";
 "onboarding_access_code_feature_2_description" = "後で各カードに個別のアクセスコードを設定できます";
@@ -620,7 +624,7 @@
 "staking_details_annual_percentage_rate" = "年率";
 "staking_details_annual_percentage_rate_info" = "ステーキングに参加することで得られる年間収益率。";
 "staking_details_apr" = "APR";
-"staking_details_auto_claiming_rewards_daily_text" = "Rewards automatically accumulate in your staking balance daily.";
+"staking_details_auto_claiming_rewards_daily_text" = "報酬は毎日自動的にステーキング残高に蓄積されます。";
 "staking_details_available" = "利用可能";
 "staking_details_average_reward_rate" = "平均報酬率";
 "staking_details_banner_text" = "ステーキングとは？";
@@ -639,16 +643,20 @@
 "staking_details_unbonding_period_info" = "ステーキングから資金の引き出しを要求した後、トークンが利用可能になるまでの待機期間。";
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
+"staking_legal" = "ステーキング機能を使用すると、プロバイダーの%1$@と%2$@に同意したことになります";
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";
+"staking_notification_claim_rewards_text" = "獲得した報酬はあなたのアドレスに直接送られます。受け取り後、資金は使用可能になります。";
 "staking_notification_earn_rewards_text_period_day" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎日受け取れます。";
 "staking_notification_earn_rewards_text_period_hour" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎時間受け取れます。";
 "staking_notification_earn_rewards_text_period_month" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎月受け取れます。";
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
+"staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
 "staking_notification_unstake_text" = "ステーキング解除プロセスの開始後、報酬の獲得はすぐに停止します。ステーキング解除には%@かかります。";
-"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
+"staking_notification_withdraw_text" = "あなたの資金はステーキング解除されました。獲得した報酬とともに引き出すことができます。";
+"staking_preparing" = "準備中";
 "staking_ready_to_withdraw" = "引き出し準備完了";
 "staking_rebond" = "再結束";
 "staking_restake" = "再度ステーキングする";
@@ -668,6 +676,9 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
+"staking_summary_description_text" = "%1$@をステーキングし、年間 ~ %2$@を受け取ります";
+"staking_tap_to_unlock" = "Tap to unlock";
+"staking_tap_to_withdraw" = "Tap to withdraw";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
 "staking_unbonding" = "ステーキング解約中";
@@ -676,11 +687,13 @@
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
 "staking_unstaking" = "ステーキング解除";
+"staking_unstaking_item_name" = "ステーキング解除中の資産%@";
 "staking_validator" = "バリデーター";
 "staking_validators" = "バリデーター";
 "staking_vote" = "投票する";
 "staking_vote_locked" = "投票はロックされています";
 "staking_withdraw" = "引き出す";
+"staking_your_stakes" = "Your stakes";
 "story_awe_description" = "カード内に秘密鍵を保管しながら暗号資産を安全に保管します";
 "story_awe_title" = "革新的なハードウェアウォレット";
 "story_backup_description" = "1つのウォレットに最大3枚のカード";
