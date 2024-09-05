@@ -770,6 +770,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 }
             }
             .combineLatest(NotificationCenter.didBecomeActivePublisher)
+            .delay(for: 0.1, scheduler: DispatchQueue.main)
             .first()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
