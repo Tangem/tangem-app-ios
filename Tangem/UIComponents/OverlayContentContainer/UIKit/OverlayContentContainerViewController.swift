@@ -334,8 +334,20 @@ final class OverlayContentContainerViewController: UIViewController {
 
         // Workaround: prevents the navigation bar in the `contentViewController` from being laid out incorrectly
         // Without this workaround, the `frame.origin.y` property of the navigation bar may be set to zero in some cases,
-        // resulting in an incorrect layout
-        contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY
+        // resulting in an incorrect layout of the status bar
+        if UIDevice.current.hasHomeScreenIndicator {
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY
+        } else {
+            // On notchless devices, some additional math is needed due to the existence of
+            // `Constants.notchlessDevicesAdditionalVerticalPadding` constant
+            let additionalVerticalPadding = Constants.notchlessDevicesAdditionalVerticalPadding
+            let minSafeAreaTopInset = UIApplication.safeAreaInsets.top
+            let maxSafeAreaTopInset = minSafeAreaTopInset + additionalVerticalPadding
+            let lowerBound = minSafeAreaTopInset / maxSafeAreaTopInset // Essentially 2/3
+            let upperBound = maxSafeAreaTopInset / maxSafeAreaTopInset // Essentially 1.0
+            let progress = progress.value.interpolatedProgress(inRange: lowerBound ... upperBound)
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY - progress * additionalVerticalPadding
+        }
     }
 
     private func updateCornerRadius() {
