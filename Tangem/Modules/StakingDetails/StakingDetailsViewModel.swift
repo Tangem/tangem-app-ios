@@ -163,7 +163,7 @@ private extension StakingDetailsViewModel {
             ),
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAvailable,
-                detailsType: .text(walletModel.availableBalanceFormatted.crypto)
+                detailsType: .text(walletModel.availableBalanceFormatted.crypto, sensitive: true)
             ),
         ]
 
