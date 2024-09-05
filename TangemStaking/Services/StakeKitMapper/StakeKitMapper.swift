@@ -336,9 +336,13 @@ struct StakeKitMapper {
         from balance: StakeKitDTO.Balances.Response.Balance
     ) throws -> BalanceType {
         switch balance.type {
-        case .preparing, .locked:
+        case .available:
+            throw StakeKitMapperError.notImplement
+        case .locked:
+            return .locked
+        case .preparing:
             return .warmup
-        case .available, .staked:
+        case .staked:
             return .active
         case .unstaking, .unlocking:
             guard let date = balance.date else {

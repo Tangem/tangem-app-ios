@@ -45,6 +45,7 @@ public extension Array where Element == StakingBalanceInfo {
 }
 
 public enum BalanceType: Hashable {
+    case locked
     case warmup
     case active
     case unbonding(date: Date)
