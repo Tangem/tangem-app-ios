@@ -37,7 +37,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
-    private lazy var stakingDetailsStakesProvider = StakingDetailsStakesProvider(tokenItem: walletModel.tokenItem)
+    private lazy var stakingDetailsStakesProvider = StakingDetailsStakeViewDataBuilder(tokenItem: walletModel.tokenItem)
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
