@@ -101,7 +101,8 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                 addingSignPrefix: true
             )
 
-            return .init(type: type, recordData: recordData)
+            let trend: TokenMarketsDetailsStatisticsRecordView.Trend? = value > 0 ? .positive : value < 0 ? .negative : nil
+            return .init(type: type, recordData: recordData, trend: trend)
         }
 
         intervalInsights = availableIntervals.reduce(into: [:]) { partialResult, interval in
