@@ -61,6 +61,7 @@ struct StakingDetailsView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
+        .alert(item: $viewModel.alert) { $0.alert }
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.descriptionBottomSheetInfo,

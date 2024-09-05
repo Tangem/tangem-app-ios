@@ -184,7 +184,7 @@ private extension StakingModel {
 
     func estimateFee(amount: Decimal, validator: String) async throws -> Decimal {
         try await stakingManager.estimateFee(
-            action: StakingAction(amount: amount, validator: validator, type: .stake)
+            action: StakingAction(amount: amount, type: .stake(validator: validator))
         )
     }
 
@@ -267,7 +267,7 @@ private extension StakingModel {
         }
 
         do {
-            let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
+            let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
 

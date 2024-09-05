@@ -149,7 +149,7 @@ private extension CommonStakingManager {
         return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
     }
 
-    func getPendingTransactionInfo(request: ActionGenericRequest, type: PendingActionType) async throws -> StakingTransactionAction {
+    func getPendingTransactionInfo(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> StakingTransactionAction {
         let action = try await provider.pendingAction(request: request, type: type)
 
         let transactionType: TransactionType = {
