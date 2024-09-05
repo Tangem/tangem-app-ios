@@ -722,6 +722,12 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     }
 
     private func backupCard() {
+        // Sometimes a step state does not update for an unknown reason.
+        if backupServiceState == .finished {
+            goToNextStep()
+            return
+        }
+
         isMainButtonBusy = true
 
         // Ring onboarding. Set custom image for first step
