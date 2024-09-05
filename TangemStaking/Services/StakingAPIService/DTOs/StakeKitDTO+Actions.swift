@@ -142,15 +142,15 @@ extension StakeKitDTO {
 
         struct Args: Encodable {
             let amount: String
-            let validatorAddress: String
-            let validatorAddresses: [String]
+            let validatorAddress: String?
+            let validatorAddresses: [String]?
             let inputToken: Token?
             let tronResource: String?
 
             init(
                 amount: String,
-                validatorAddress: String,
-                validatorAddresses: [String],
+                validatorAddress: String?,
+                validatorAddresses: [String]?,
                 inputToken: StakeKitDTO.Token? = nil,
                 tronResource: String? = nil
             ) {

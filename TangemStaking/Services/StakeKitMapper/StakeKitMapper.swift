@@ -11,7 +11,7 @@ import Foundation
 struct StakeKitMapper {
     // MARK: - To DTO
 
-    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+    func mapToActionType(from action: StakingAction.PendingActionType) -> StakeKitDTO.Actions.ActionType {
         switch action {
         case .withdraw: .withdraw
         case .claimRewards: .claimRewards
@@ -171,15 +171,15 @@ struct StakeKitMapper {
         try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
-                return .withdraw(passthrough: action.passthrough)
+                return .init(type: .withdraw, passthrough: action.passthrough)
             case .claimRewards:
-                return .claimRewards(passthrough: action.passthrough)
+                return .init(type: .claimRewards, passthrough: action.passthrough)
             case .restakeRewards:
-                return .restakeRewards(passthrough: action.passthrough)
+                return .init(type: .restakeRewards, passthrough: action.passthrough)
             case .voteLocked, .revote:
-                return .voteLocked(passthrough: action.passthrough)
+                return .init(type: .voteLocked, passthrough: action.passthrough)
             case .unlockLocked:
-                return .unlockLocked(passthrough: action.passthrough)
+                return .init(type: .unlockLocked, passthrough: action.passthrough)
             default:
                 throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
@@ -194,9 +194,14 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
-        let validators = response.validators.compactMap(mapToValidatorInfo)
-        let aprs = validators.compactMap(\.apr)
-        let rewardRateValues = RewardRateValues(aprs: aprs, rewardRate: response.rewardRate)
+        let validators = response.validators
+            .compactMap(mapToValidatorInfo)
+            .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
+
+        let rewardRateValues = RewardRateValues(
+            aprs: validators.compactMap(\.apr),
+            rewardRate: response.rewardRate
+        )
 
         return try YieldInfo(
             id: response.id,
