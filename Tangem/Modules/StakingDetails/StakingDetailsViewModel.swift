@@ -28,6 +28,8 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var actionButtonType: ActionButtonType?
     @Published var actionSheet: ActionSheetBinder?
 
+    lazy var legalText: AttributedString? = makeLegalText()
+
     // MARK: - Dependencies
 
     private let walletModel: WalletModel
@@ -453,7 +455,7 @@ extension StakingAction.ActionType {
 }
 
 extension StakingDetailsViewModel {
-    var legalText: AttributedString? {
+    func makeLegalText() -> AttributedString {
         let tos = Localization.commonTermsOfUse
         let policy = Localization.commonPrivacyPolicy
 
