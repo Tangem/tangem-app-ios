@@ -71,7 +71,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
 
         Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
             .present(
-                layout: .top(padding: 80),
+                layout: .top(padding: 12),
                 type: .temporary()
             )
     }

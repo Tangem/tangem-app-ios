@@ -8,7 +8,6 @@
 
 import Foundation
 
-#warning("TODO: remove with LegacySendViewModel")
 class SendFeatureProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
@@ -17,7 +16,7 @@ class SendFeatureProvider {
     var isAvailable: Bool {
         let isSendAvailableRemote = features["send"] ?? true
 
-        return FeatureProvider.isAvailable(.sendV2) && isSendAvailableRemote
+        return isSendAvailableRemote
     }
 
     private(set) var features: [String: Bool] = [:]

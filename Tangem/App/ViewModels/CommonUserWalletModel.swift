@@ -57,8 +57,6 @@ class CommonUserWalletModel {
         return commonDerivationManager
     }()
 
-    let warningsService = WarningsService()
-
     var signer: TangemSigner { _signer }
 
     var cardId: String { cardInfo.card.cardId }
@@ -153,14 +151,6 @@ class CommonUserWalletModel {
         Log.debug("CommonUserWalletModel deinit 🥳🤟")
     }
 
-    func setupWarnings() {
-        warningsService.setupWarnings(
-            for: config,
-            card: cardInfo.card,
-            validator: walletModelsManager.walletModels.first?.signatureCountValidator
-        )
-    }
-
     func validate() -> Bool {
         let pendingBackupManager = PendingBackupManager()
         if pendingBackupManager.fetchPendingCard(cardInfo.card.cardId) != nil {
@@ -207,17 +197,11 @@ class CommonUserWalletModel {
         config = UserWalletConfigFactory(cardInfo).makeConfig()
         _cardHeaderImagePublisher.send(config.cardHeaderImage)
         _signer = config.tangemSigner
-        updateModel()
         // prevent save until onboarding completed
         if userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) != nil {
             userWalletRepository.save()
         }
         _updatePublisher.send()
-    }
-
-    private func updateModel() {
-        AppLog.shared.debug("🔄 Updating Card view model")
-        setupWarnings()
     }
 
     private func bind() {

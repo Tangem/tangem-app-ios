@@ -15,7 +15,7 @@ struct StakeKitTarget: Moya.TargetType {
 
     enum Target {
         case enabledYields
-        case getYield(StakeKitDTO.Yield.Info.Request)
+        case getYield(id: String, StakeKitDTO.Yield.Info.Request)
         case getBalances(StakeKitDTO.Balances.Request)
 
         case enterAction(StakeKitDTO.Actions.Enter.Request)
@@ -40,8 +40,8 @@ struct StakeKitTarget: Moya.TargetType {
         switch target {
         case .enabledYields:
             return "yields/enabled"
-        case .getYield(let stakekitDTO):
-            return "yields/\(stakekitDTO.integrationId)"
+        case .getYield(let id, _):
+            return "yields/\(id)"
         case .getBalances:
             return "yields/balances/scan"
         case .estimateGasEnterAction:
@@ -79,8 +79,10 @@ struct StakeKitTarget: Moya.TargetType {
 
     var task: Moya.Task {
         switch target {
-        case .getYield, .enabledYields, .transaction:
+        case .enabledYields, .transaction:
             return .requestPlain
+        case .getYield(_, let request):
+            return .requestParameters(request, encoding: URLEncoding(boolEncoding: .literal))
         case .enterAction(let request):
             return .requestJSONEncodable(request)
         case .pendingAction(let request):

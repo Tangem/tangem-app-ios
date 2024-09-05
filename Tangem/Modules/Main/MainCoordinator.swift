@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CombineExt
 import BlockchainSdk
 import TangemVisa
 
@@ -29,11 +30,11 @@ class MainCoordinator: CoordinatorObject {
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
-    @Published var legacySendCoordinator: LegacySendCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -50,6 +51,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
     @Published var isAppStoreReviewRequested = false
     private var safariHandle: SafariHandle?
+    private var pushNotificationsViewModelSubscription: AnyCancellable?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -73,6 +75,23 @@ class MainCoordinator: CoordinatorObject {
 
         swipeDiscoveryHelper.delegate = viewModel
         mainViewModel = viewModel
+        bind()
+    }
+
+    private func bind() {
+        guard pushNotificationsViewModelSubscription == nil else {
+            return
+        }
+
+        pushNotificationsViewModelSubscription = $pushNotificationsViewModel
+            .pairwise()
+            .filter { previous, current in
+                // Transition from a non-nil value to a nil value, i.e. dismissing the sheet
+                previous != nil && current == nil
+            }
+            .sink { previous, _ in
+                previous?.didDismissSheet()
+            }
     }
 }
 
@@ -205,20 +224,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: nil,
-                tag: nil,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -242,20 +249,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: destination,
-                tag: tag,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -357,6 +352,12 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         )
 
         tokenDetailsCoordinator = coordinator
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        let coordinator = TokenMarketsDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+        marketsTokenDetailsCoordinator = coordinator
     }
 }
 

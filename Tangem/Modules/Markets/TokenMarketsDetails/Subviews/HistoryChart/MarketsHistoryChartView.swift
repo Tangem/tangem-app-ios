@@ -21,6 +21,8 @@ struct MarketsHistoryChartView: View {
                     makeLoadingView(for: previousData)
                 case .loaded(let chartData):
                     makeChartView(for: chartData)
+                case .noData:
+                    noDataView
                 case .failed:
                     // No need to add state for button, because view will switch to loading state and remove this view
                     MarketsUnableToLoadDataView(isButtonBusy: false, retryButtonAction: viewModel.reload)
@@ -28,7 +30,7 @@ struct MarketsHistoryChartView: View {
             }
             .transition(.opacity)
         }
-        .frame(height: 200.0)
+        .frame(height: 192.0)
         .animation(.linear(duration: 0.2), value: viewModel.viewState)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .onAppear(perform: viewModel.onViewAppear)
@@ -38,6 +40,12 @@ struct MarketsHistoryChartView: View {
     private var standaloneLoadingView: some View {
         ProgressView()
             .progressViewStyle(.circular)
+    }
+
+    @ViewBuilder
+    private var noDataView: some View {
+        Text(Localization.marketsLoadingNoDataTitle)
+            .style(Fonts.Bold.caption1.weight(.medium), color: Colors.Text.tertiary)
     }
 
     @ViewBuilder
@@ -89,18 +97,19 @@ struct MarketsHistoryChartView: View {
             onViewMake: { chartView in
                 chartView.minOffset = 0.0
                 chartView.extraTopOffset = 26.0
-                chartView.setScaleEnabled(false)
+                chartView.dragYEnabled = false // Prevents conflicts with the pan gesture in `overlayContentContainer`
                 chartView.pinchZoomEnabled = false
                 chartView.doubleTapToZoomEnabled = false
                 chartView.highlightPerTapEnabled = false
+                chartView.setScaleEnabled(false)
                 chartView.xAxis.drawGridLinesEnabled = false
-                chartView.xAxis.labelPosition = .bottom
                 chartView.xAxis.drawAxisLineEnabled = false
+                chartView.xAxis.labelPosition = .bottom
                 chartView.xAxis.labelFont = UIFonts.Regular.caption2
                 chartView.xAxis.labelTextColor = .textTertiary
                 chartView.xAxis.yOffset = 26.0
                 chartView.xAxis.xOffset = 0.0
-                // TODO: Andrey Fedorov - Disable if custom X axis renderer is used (IOS-7476)
+                chartView.xAxis.firstLastLabelYOffset = 4.0
                 chartView.xAxis.avoidFirstLastClippingEnabled = true
                 // Allows highlight vertical line to be draw outside of the chart minY/maxY (using `verticalHighlightIndicatorInset` property)
                 chartView.clipDataToContentEnabled = false

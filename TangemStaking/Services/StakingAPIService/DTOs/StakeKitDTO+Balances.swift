@@ -27,7 +27,7 @@ extension StakeKitDTO {
                 let pricePerShare: String
                 let pendingActions: [PendingAction]
                 let token: Token
-                let validatorAddress: String
+                let validatorAddress: String?
                 let validatorAddresses: [String]?
                 let providerId: String?
 
@@ -40,7 +40,6 @@ extension StakeKitDTO {
                     case rewards
                     case locked
                     case unlocking
-                    case unknown
                 }
 
                 struct PendingAction: Decodable {

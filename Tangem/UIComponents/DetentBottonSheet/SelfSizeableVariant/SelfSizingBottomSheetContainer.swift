@@ -21,18 +21,17 @@ struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottom
     let content: () -> ContentView
 
     private let handleHeight: CGFloat = 20
-    private let indicatorSize = CGSize(width: 32, height: 4)
     private let defaultBottomPadding: CGFloat = 16
     private let scrollViewBottomOffset: CGFloat = 40
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack {
-                Capsule(style: .continuous)
-                    .fill(Colors.Icon.inactive)
-                    .frame(size: indicatorSize)
-            }
-            .frame(height: handleHeight, alignment: .center)
+            Color.clear
+                .frame(height: handleHeight)
+                .overlay(alignment: .top) {
+                    GrabberViewFactory()
+                        .makeSwiftUIView()
+                }
 
             sheetContent
                 .frame(minWidth: mainWindowSize.width)

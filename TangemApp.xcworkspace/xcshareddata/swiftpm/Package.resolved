@@ -1,5 +1,5 @@
 {
-  "originHash" : "075de3e24c2b843c7ca823c45d9a9eb94d54bca81938a008551eefd90553cf5f",
+  "originHash" : "dd280b305b0856afed44da3a23d7aa227c3a100d5fab9ce792c1e01541801b56",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/DGCharts",
       "state" : {
-        "revision" : "d3a5133be92153dc581ed653ea3a6950b18d5eb1",
-        "version" : "5.1.0-tangem1"
+        "revision" : "a2c1aa43650995d5139ad9e3ad4fd9c93d41776d",
+        "version" : "5.1.0-tangem3"
       }
     },
     {
@@ -80,6 +80,15 @@
       "state" : {
         "revision" : "02aad763a1ebb0847b1f0eaff755159b3a95707a",
         "version" : "0.1.2-tangem3"
+      }
+    },
+    {
+      "identity" : "networkimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/NetworkImage",
+      "state" : {
+        "revision" : "7aff8d1b31148d32c5933d75557d42f6323ee3d1",
+        "version" : "6.0.0"
       }
     },
     {
@@ -161,6 +170,15 @@
       "state" : {
         "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
         "version" : "1.5.4"
+      }
+    },
+    {
+      "identity" : "swift-markdown-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
+      "state" : {
+        "revision" : "55441810c0f678c78ed7e2ebd46dde89228e02fc",
+        "version" : "2.4.0"
       }
     },
     {

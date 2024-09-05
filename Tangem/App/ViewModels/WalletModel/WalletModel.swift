@@ -103,17 +103,11 @@ class WalletModel {
     }
 
     var balanceValue: Decimal? {
-        if state.isNoAccount {
-            return 0
-        }
-
-        return wallet.amounts[amountType]?.value
+        availableBalance.crypto
     }
 
     var balance: String {
-        guard let balanceValue else { return BalanceFormatter.defaultEmptyBalanceString }
-
-        return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
+        availableBalanceFormatted.crypto
     }
 
     var isZeroAmount: Bool {
@@ -121,19 +115,11 @@ class WalletModel {
     }
 
     var fiatBalance: String {
-        formatter.formatFiatBalance(fiatValue)
+        availableBalanceFormatted.fiat
     }
 
     var fiatValue: Decimal? {
-        guard
-            let balanceValue,
-            canUseQuotes,
-            let currencyId = tokenItem.currencyId
-        else {
-            return nil
-        }
-
-        return converter.convertToFiat(balanceValue, currencyId: currencyId)
+        availableBalance.fiat
     }
 
     var rateFormatted: String {
@@ -239,11 +225,11 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<Decimal?, Never> = .init(nil)
+    private var _rate: CurrentValueSubject<LoadingValue<Decimal?>, Never> = .init(.loading)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
-    private let converter = BalanceConverter()
-    private let formatter = BalanceFormatter()
+    let converter = BalanceConverter()
+    let formatter = BalanceFormatter()
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")
@@ -278,7 +264,8 @@ class WalletModel {
 
         quotesRepository
             .quotesPublisher
-            .compactMap { [canUseQuotes, tokenItem] quotes -> Decimal? in
+            .dropFirst() // we need to drop first value because it's an empty dictionary
+            .map { [canUseQuotes, tokenItem] quotes -> Decimal? in
                 guard
                     canUseQuotes,
                     let currencyId = tokenItem.currencyId
@@ -293,13 +280,14 @@ class WalletModel {
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Quotes updated for \(self)")
-                _rate.send(rate)
+                _rate.send(.loaded(rate))
             }
             .store(in: &bag)
 
+        let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
         _state
             .removeDuplicates()
-            .combineLatest(_rate.removeDuplicates(), walletManager.walletPublisher)
+            .combineLatest(filteredRate, walletManager.walletPublisher)
             .map { $0.0 }
             .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
             .store(in: &bag)
@@ -413,6 +401,7 @@ class WalletModel {
             canUseQuotes,
             let currencyId = tokenItem.currencyId
         else {
+            _rate.send(.loaded(nil))
             return .just(output: ())
         }
 
@@ -420,8 +409,15 @@ class WalletModel {
 
         return quotesRepository
             .loadQuotes(currencyIds: [currencyId])
-            .handleEvents(receiveOutput: { [weak self] _ in
-                AppLog.shared.debug("🔄 Finished loading quotes for \(String(describing: self))")
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, dict in
+                AppLog.shared.debug("🔄 Finished loading quotes for \(walletModel)")
+                guard dict[currencyId] == nil else {
+                    return
+                }
+
+                AppLog.shared.debug("🔄 Quotes wasn't loaded for \(walletModel)")
+                walletModel._rate.send(.loaded(nil))
             })
             .mapToVoid()
             .eraseToAnyPublisher()
@@ -647,10 +643,6 @@ extension WalletModel {
         walletManager
     }
 
-    var transactionPusher: TransactionPusher? {
-        walletManager as? TransactionPusher
-    }
-
     var bitcoinTransactionFeeCalculator: BitcoinTransactionFeeCalculator? {
         walletManager as? BitcoinTransactionFeeCalculator
     }
@@ -707,66 +699,5 @@ extension WalletModel: TransactionHistoryFetcher {
 
     func clearHistory() {
         _transactionHistoryService?.clearHistory()
-    }
-}
-
-extension WalletModel {
-    private var stakingBalancesInfo: [StakingBalanceInfo]? {
-        switch stakingManager?.state {
-        case .staked(let staked):
-            return staked.balances
-        default:
-            return nil
-        }
-    }
-
-    private var availableBalanceValue: Decimal? {
-        guard let stakingBalancesInfo, let balanceValue else {
-            return nil
-        }
-        return balanceValue - stakingBalancesInfo.sumBlocked()
-    }
-
-    private var availableFiatValue: Decimal? {
-        guard let availableBalanceValue,
-              canUseQuotes,
-              let currencyId = tokenItem.currencyId
-        else {
-            return nil
-        }
-        return converter.convertToFiat(availableBalanceValue, currencyId: currencyId)
-    }
-
-    var availableBalance: String {
-        guard let availableBalanceValue else {
-            return BalanceFormatter.defaultEmptyBalanceString
-        }
-        return formatter.formatCryptoBalance(availableBalanceValue, currencyCode: tokenItem.currencySymbol)
-    }
-
-    var availableFiatBalance: String {
-        formatter.formatFiatBalance(availableFiatValue)
-    }
-
-    var stakedBalance: String? {
-        guard let stakingBalancesInfo else {
-            return nil
-        }
-
-        return formatter.formatCryptoBalance(stakingBalancesInfo.sumBlocked(), currencyCode: tokenItem.currencySymbol)
-    }
-
-    var stakedFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.sumBlocked()) }
-    }
-
-    var stakingRewardsBalance: String? {
-        stakingBalancesInfo.flatMap {
-            formatter.formatCryptoBalance($0.sumRewards(), currencyCode: tokenItem.currencySymbol)
-        }
-    }
-
-    var stakingRewardsFiatBalance: String? {
-        stakingBalancesInfo.flatMap { formatter.formatFiatBalance($0.sumRewards()) }
     }
 }

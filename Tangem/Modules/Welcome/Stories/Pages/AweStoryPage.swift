@@ -49,8 +49,8 @@ struct AweStoryPage: View {
                     .overlay(
                         LinearGradient(colors: [
                             .clear,
-                            Color("tangem_story_background"),
-                            Color("tangem_story_background"),
+                            Colors.Old.tangemStoryBackground,
+                            Colors.Old.tangemStoryBackground,
                         ], startPoint: .top, endPoint: .bottom)
                             .frame(height: 100),
                         alignment: .bottom
@@ -62,7 +62,7 @@ struct AweStoryPage: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
     }
 }
 

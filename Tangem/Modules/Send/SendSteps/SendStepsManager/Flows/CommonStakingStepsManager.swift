@@ -43,6 +43,8 @@ class CommonStakingStepsManager {
             .withWeakCaptureOf(self)
             .sink { manager, state in
                 switch state {
+                case .loading, .networkError, .validationError:
+                    break
                 case .readyToApprove:
                     manager.output?.update(flowActionType: .approve)
 
@@ -109,6 +111,10 @@ extension CommonStakingStepsManager: SendStepsManager {
 
     var initialState: SendStepsManagerViewState {
         .init(step: amountStep, action: .next, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        stack.contains(where: { $0.type.isSummary })
     }
 
     func set(output: SendStepsManagerOutput) {

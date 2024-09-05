@@ -21,9 +21,12 @@ final class OverlayContentContainerViewControllerAdapter {
 // MARK: - OverlayContentContainer protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer {
+    var cornerRadius: CGFloat {
+        return containerViewController?.overlayCornerRadius ?? .zero
+    }
+
     func installOverlay(_ overlayView: some View) {
-        // TODO: Andrey Fedorov - UIKit UI component must add this grabber, not a SwiftUI consumer (IOS-7364)
-        let overlayViewController = UIHostingController(rootView: overlayView.bottomScrollableSheetGrabber())
+        let overlayViewController = UIHostingController(rootView: overlayView)
         containerViewController?.installOverlay(overlayViewController)
     }
 
@@ -35,7 +38,11 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer 
 // MARK: - OverlayContentStateObserver protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentStateObserver {
-    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
+        containerViewController?.addObserver(observer, forToken: token)
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
         containerViewController?.addObserver(observer, forToken: token)
     }
 
@@ -48,10 +55,10 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentStateObser
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentStateController {
     func collapse() {
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-7364)
+        containerViewController?.collapse()
     }
 
     func expand() {
-        // TODO: Andrey Fedorov - Add actual implementation (IOS-7364)
+        containerViewController?.expand()
     }
 }

@@ -13,4 +13,7 @@ public enum TransactionType: String, Hashable {
     case stake
     case unstake
     case withdraw
+    case claimRewards
+    case restakeRewards
+    case vote
 }

@@ -15,7 +15,7 @@ struct TokenMarketsHistoryChartMapper {
             .prices
             .map { key, value in
                 guard let timeStamp = UInt64(key) else {
-                    throw ParsingError.xAxisInvalidData
+                    throw ParsingError.timeStampParsingFailed
                 }
 
                 return LineChartViewData.Value(timeStamp: timeStamp, price: value)
@@ -33,24 +33,17 @@ struct TokenMarketsHistoryChartMapper {
         let values = try mapAndSortValues(from: model)
 
         guard
+            values.count > 1,
             let firstValue = values.first,
             let lastValue = values.last
         else {
-            throw ParsingError.xAxisInvalidData
+            throw ParsingError.notEnoughData
         }
 
-        let startTimeStamp = Decimal(firstValue.timeStamp)
-        let endTimeStamp = Decimal(lastValue.timeStamp)
-        let range = endTimeStamp - startTimeStamp
         let labelCount = makeXAxisLabelCount(for: selectedPriceInterval)
-        let interval = range / Decimal(labelCount + 1)
-        let minXAxisValue = startTimeStamp + interval
-        let maxXAxisValue = endTimeStamp - interval
 
         let xAxis = LineChartViewData.XAxis(
             labelCount: labelCount,
-            axisMinValue: minXAxisValue,
-            axisMaxValue: maxXAxisValue,
             values: values
         )
 
@@ -67,11 +60,13 @@ struct TokenMarketsHistoryChartMapper {
         let prices = model.prices
 
         guard
-            var minYAxisValue = prices.first?.value,
-            var maxYAxisValue = prices.first?.value
+            prices.count > 1,
+            var minYAxisValue = prices.first?.value
         else {
-            throw ParsingError.yAxisInvalidData
+            throw ParsingError.notEnoughData
         }
+
+        var maxYAxisValue = minYAxisValue
 
         // A single foreach loop is used for performance reasons
         for (_, value) in prices {
@@ -134,7 +129,7 @@ extension TokenMarketsHistoryChartMapper {
 
 extension TokenMarketsHistoryChartMapper {
     enum ParsingError: Error {
-        case xAxisInvalidData
-        case yAxisInvalidData
+        case notEnoughData
+        case timeStampParsingFailed
     }
 }

@@ -12,28 +12,31 @@ struct MarketsTokensNetworkSelectorView: View {
     @ObservedObject var viewModel: MarketsTokensNetworkSelectorViewModel
 
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .bottom) {
-                ScrollView {
-                    VStack(spacing: 14) {
-                        if viewModel.isShowWalletSelector {
-                            MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
-                        }
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                VStack(spacing: 14) {
+                    if let walletSelectorViewModel = viewModel.walletSelectorViewModel {
+                        MarketsWalletSelectorView(viewModel: walletSelectorViewModel)
+                            .onTapGesture {
+                                viewModel.selectWalletActionDidTap()
+                            }
+                    }
 
-                        contentView
+                    contentView
 
+                    if !viewModel.pendingAdd.isEmpty {
                         MarketsGeneratedAddressView()
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 72)
                 }
-
-                overlayButtonView
+                .padding(.horizontal, 16)
+                .padding(.bottom, 72)
             }
-            .alert(item: $viewModel.alert, content: { $0.alert })
-            .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
-            .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
+
+            overlayButtonView
         }
+        .alert(item: $viewModel.alert, content: { $0.alert })
+        .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
+        .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
     }
 
     private var contentView: some View {

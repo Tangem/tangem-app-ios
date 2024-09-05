@@ -22,37 +22,34 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
 
-    // This strict condition is conditioned by the requirements
-    var isOneTokenInPortfolio: Bool {
-        tokenItemViewModels.count == 1
-    }
-
     // MARK: - Private Properties
 
     private var userWalletModels: [UserWalletModel] {
         walletDataProvider.userWalletModels
     }
 
-    private let coinId: String
     private let walletDataProvider: MarketsWalletDataProvider
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
+    private var inputData: InputData
+    private var bag = Set<AnyCancellable>()
+
     // MARK: - Init
 
     init(
-        coinId: String,
+        inputData: InputData,
         walletDataProvider: MarketsWalletDataProvider,
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
-        self.coinId = coinId
+        self.inputData = inputData
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
-        updateTokenList()
+        bind()
     }
 
     // MARK: - Public Implementation
@@ -61,8 +58,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
-    func updateState(with coinModel: CoinModel?) {
-        let canAddAvailableNetworks = canAddToPortfolio(coinModel: coinModel)
+    // MARK: - Private Implementation
+
+    private func updateUI() {
+        updateTokenList()
+
+        let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
 
         guard canAddAvailableNetworks else {
             typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
@@ -73,32 +74,29 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         typeView = tokenItemViewModels.isEmpty ? .empty : .list
     }
 
-    // MARK: - Private Implementation
-
     /*
      - We are joined the list of available blockchains so far, all user wallet models
      - We get a list of available blockchains that came in the coin model
      - Checking the lists of available networks
      */
-    private func canAddToPortfolio(coinModel: CoinModel?) -> Bool {
+    private func canAddToPortfolio(with networks: [NetworkModel]) -> Bool {
         let multiCurrencyUserWalletModels = userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
         guard
-            let coinModel,
-            !coinModel.items.isEmpty,
+            !networks.isEmpty,
             !multiCurrencyUserWalletModels.isEmpty
         else {
             return false
         }
 
-        var coinModelBlockchains = Set<Blockchain>()
+        var networkIds = Set<String>()
 
-        coinModel.items.forEach {
-            coinModelBlockchains.insert($0.blockchain)
+        networks.forEach {
+            networkIds.insert($0.networkId)
         }
 
         for model in multiCurrencyUserWalletModels {
-            if !coinModelBlockchains.intersection(model.config.supportedBlockchains).isEmpty {
+            if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
                 return true
             }
         }
@@ -106,96 +104,93 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return false
     }
 
-    private func filterAvailableTokenActions(_ actions: [TokenActionType]) -> [TokenActionType] {
-        if isOneTokenInPortfolio {
-            let filteredActions = [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy]
-
-            return filteredActions.filter { actionType in
-                actions.contains(actionType)
-            }
-        }
-
-        return actions
-    }
-
     private func updateTokenList() {
+        let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
+            contextActionsProvider: self,
+            contextActionsDelegate: self,
+            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
+        )
+
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
             .reduce(into: []) { partialResult, userWalletModel in
-                let filteredWalletModels = userWalletModel.walletModelsManager.walletModels.filter {
-                    $0.tokenItem.id?.caseInsensitiveCompare(coinId) == .orderedSame
-                }
+                let walletModels = userWalletModel.walletModelsManager.walletModels
+                let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
-                let viewModels = filteredWalletModels.map { walletModel in
-                    return MarketsPortfolioTokenItemViewModel(
-                        userWalletId: userWalletModel.userWalletId,
-                        walletName: userWalletModel.name,
-                        walletModel: walletModel,
-                        contextActionsProvider: self,
-                        contextActionsDelegate: self
+                let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
+                    coinId: inputData.coinId,
+                    networks: inputData.networks,
+                    walletModels: walletModels,
+                    entries: entries,
+                    userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
+                        userWalletName: userWalletModel.name,
+                        userWalletId: userWalletModel.userWalletId
                     )
-                }
+                )
 
                 partialResult.append(contentsOf: viewModels)
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
     }
+
+    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
+    private func quickActionDisclosureHandler(_ viewModelId: Int) {
+        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
+
+        for viewModel in filteredViewModels {
+            viewModel.isExpandedQuickActions = false
+        }
+    }
+
+    private func bind() {
+        let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
+
+        Publishers.MergeMany(publishers)
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateUI()
+            }
+            .store(in: &bag)
+    }
 }
 
-// MARK: - TokenItemContextActionsProvider
-
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) -> [TokenActionType] {
-        let walletModel = tokenItemViewModel.walletModel
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
+        guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
+            return []
+        }
 
         guard
-            let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId }),
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
             TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
         else {
             return []
         }
 
-        let actionsBuilder = TokenActionListBuilder()
-
-        let utility = ExchangeCryptoUtility(
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            address: walletModel.defaultAddress,
-            amountType: walletModel.amountType
+        let baseActions = TokenContextActionsBuilder().makeBaseContextActions(
+            tokenItem: walletModel.tokenItem,
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: false,
+            canHideToken: false
         )
 
-        let canExchange = userWalletModel.config.isFeatureVisible(.exchange)
-        // On the Main view we have to hide send button if we have any sending restrictions
-        let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
-        let canSwap = userWalletModel.config.isFeatureVisible(.swapping) &&
-            swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
-            !walletModel.isCustom
+        // This is what business logic requires
+        let filteredActions: [TokenActionType] = [.buy, .exchange, .receive]
 
-        let canStake = StakingFeatureProvider().canStake(with: userWalletModel, by: walletModel)
-
-        let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
-        let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
-
-        let contextActions = actionsBuilder.buildTokenContextActions(
-            canExchange: canExchange,
-            canSignTransactions: canSignTransactions,
-            canSend: canSend,
-            canSwap: canSwap,
-            canStake: canStake,
-            canHide: false,
-            isBlockchainReachable: isBlockchainReachable,
-            exchangeUtility: utility
-        )
-
-        return filterAvailableTokenActions(contextActions)
+        return filteredActions.filter { baseActions.contains($0) }
     }
 }
 
-extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
-    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: MarketsPortfolioTokenItemViewModel) {
-        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == tokenItemViewModel.userWalletId })
-        let walletModel = tokenItemViewModel.walletModel
+// MARK: - MarketsPortfolioContextActionsDelegate
 
-        guard let userWalletModel, let coordinator else {
+extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
+    func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
+        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
+        let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
+
+        guard let userWalletModel, let walletModel, let coordinator else {
             return
         }
 
@@ -219,8 +214,15 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
             coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide:
+        case .hide, .marketsDetails:
             return
         }
+    }
+}
+
+extension MarketsPortfolioContainerViewModel {
+    struct InputData {
+        let coinId: String
+        let networks: [NetworkModel]
     }
 }

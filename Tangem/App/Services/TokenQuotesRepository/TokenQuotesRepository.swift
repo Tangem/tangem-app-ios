@@ -19,7 +19,7 @@ protocol TokenQuotesRepository: AnyObject {
     func quote(for currencyId: String) async throws -> TokenQuote
     /// Use it just for load and save quotes in the cache
     /// For get updates make a subscribe to quotesPublisher
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never>
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never>
 }
 
 extension TokenQuotesRepository {
@@ -36,7 +36,7 @@ extension TokenQuotesRepository {
     }
 
     func loadQuotes(currencyIds: [String]) async {
-        try? await loadQuotes(currencyIds: currencyIds).async()
+        _ = try? await loadQuotes(currencyIds: currencyIds).async()
     }
 }
 

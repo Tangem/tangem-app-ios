@@ -11,15 +11,61 @@ import SwiftUI
 struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
 
+    @Environment(\.colorScheme) private var colorScheme
+
     @State private var descriptionBottomSheetHeight: CGFloat = 0
+    @State private var isNavigationBarShadowLineViewVisible = false
+
+    private var navigationBarBackgroundColor: Color {
+        return colorScheme == .dark ? Colors.Background.primary : Colors.Background.secondary
+    }
+
+    private let scrollViewFrameCoordinateSpaceName = UUID()
 
     var body: some View {
+        VStack(spacing: 0.0) {
+            navigationBar
+
+            scrollView
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .if(!viewModel.isMarketsSheetStyle, transform: { view in
+            view.navigationTitle(viewModel.tokenName)
+        })
+    }
+
+    @ViewBuilder
+    private var navigationBar: some View {
+        if viewModel.isMarketsSheetStyle {
+            NavigationBar(
+                title: viewModel.tokenName,
+                settings: .init(
+                    titleColor: Colors.Text.primary1,
+                    backgroundColor: navigationBarBackgroundColor,
+                    height: 64.0,
+                    alignment: .bottom
+                ),
+                leftItems: {
+                    BackButton(height: 44.0, isVisible: true, isEnabled: true, action: viewModel.onBackButtonTap)
+                },
+                rightItems: {}
+            )
+            .overlay(alignment: .bottom) {
+                Separator(height: .minimal, color: Colors.Stroke.primary)
+                    .hidden(!isNavigationBarShadowLineViewVisible)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var scrollView: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .center, spacing: 24) {
+            VStack(alignment: .center, spacing: 16) {
                 Group {
                     header
 
                     picker
+                        .padding(.vertical, 8)
                 }
                 .padding(.horizontal, 16.0)
 
@@ -39,10 +85,18 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
-            .padding(.top, 14)
+            // This view is always presented when the overlay is fully visible, i.e. when its progress equals 1.0
+            // Therefore, the same value used here as the initial progress value
+            .modifier(MarketsContentHidingViewModifier(initialProgress: 1.0))
+            .padding(.top, Constants.scrollViewContentTopInset)
+            .if(viewModel.isMarketsSheetStyle, transform: { view in
+                view
+                    .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                        isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+                    }
+            })
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(Text(viewModel.tokenName))
+        .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
@@ -58,9 +112,6 @@ struct TokenMarketsDetailsView: View {
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
-        .onAppear {
-            viewModel.onAppear()
-        }
     }
 
     @ViewBuilder
@@ -120,6 +171,7 @@ struct TokenMarketsDetailsView: View {
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 portfolioView
 
@@ -148,17 +200,31 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             if let insightsViewModel = viewModel.insightsViewModel {
                 MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {
                 MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
             if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
                 MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
             }
 
-            TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+            if !viewModel.linksSections.isEmpty {
+                TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+                    .transaction { transaction in
+                        transaction.animation = nil
+                    }
+            }
         }
         .padding(.bottom, 46.0)
     }
@@ -185,9 +251,12 @@ struct TokenMarketsDetailsView: View {
     }
 }
 
+// MARK: - Constants
+
 private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
+        static let scrollViewContentTopInset = 14.0
     }
 }
 
@@ -204,5 +273,5 @@ private extension TokenMarketsDetailsView {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, style: .marketsSheet, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
 }

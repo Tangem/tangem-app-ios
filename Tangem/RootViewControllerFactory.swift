@@ -21,15 +21,17 @@ struct RootViewControllerFactory {
         let rootView = rootView
             .environment(\.overlayContentContainer, adapter)
             .environment(\.overlayContentStateObserver, adapter)
+            .environment(\.overlayContentStateController, adapter)
             .environment(\.mainWindowSize, window.screen.bounds.size)
 
         let contentViewController = UIHostingController(rootView: rootView)
 
-        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7364)
+        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7664)
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
             overlayCollapsedHeight: 102.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
-            overlayExpandedVerticalOffset: 54.0 // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=22985-125042&t=Z1kPdSQJ0JLoYgW0-4
+            overlayExpandedVerticalOffset: 54.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=22985-125042&t=Z1kPdSQJ0JLoYgW0-4
+            overlayCornerRadius: UIDevice.current.hasTopNotch ? 24.0 : 16.0
         )
 
         adapter.set(containerViewController)

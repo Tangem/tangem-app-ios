@@ -60,7 +60,7 @@ struct LearnAndEarnStoryPage: View {
                     .frame(width: 10_000, height: 10_000)
                     .offset(x: geometry.size.width / 2, y: geometry.size.height / 4)
             )
-            .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+            .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         }
     }
 }

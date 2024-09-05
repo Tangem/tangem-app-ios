@@ -26,8 +26,9 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     @Published var sendCoordinator: SendCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var multipleRewardsCoordinator: MultipleRewardsCoordinator?
 
-    // MARK: - Child view models
+    // MARK: - Private
 
     private var options: Options?
 
@@ -106,7 +107,19 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
-    func openUnstakingFlow(balanceInfo: StakingBalanceInfo) {
+    func openMultipleRewards() {
+        guard let options else { return }
+
+        let coordinator = MultipleRewardsCoordinator(dismissAction: { [weak self] _ in
+            self?.multipleRewardsCoordinator = nil
+        })
+
+        coordinator.start(with: options)
+
+        multipleRewardsCoordinator = coordinator
+    }
+
+    func openUnstakingFlow(action: UnstakingModel.Action) {
         guard let options else { return }
 
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
@@ -116,13 +129,9 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, balanceInfo: balanceInfo)
+            type: .unstaking(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
-    }
-
-    func openClaimRewardsFlow() {
-        // TBD: https://tangem.atlassian.net/browse/IOS-6899
     }
 
     func openWhatIsStaking() {

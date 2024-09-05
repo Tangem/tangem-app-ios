@@ -11,168 +11,182 @@ import SwiftUI
 struct MarketsPortfolioTokenItemView: View {
     @ObservedObject var viewModel: MarketsPortfolioTokenItemViewModel
 
-    private let coinIconSize = CGSize(bothDimensions: 36)
-    private let networkIconSize = CGSize(bothDimensions: 14)
-
-    /// Not used on iOS versions below iOS 16.0.
-    /// - Note: Although this property has no effect on iOS versions below iOS 16.0,
-    /// it can't be marked using `@available` declaration in Swift 5.7 and above.
-    private let roundedCornersConfiguration: RoundedCornersConfiguration?
-
-    private let previewContentShapeCornerRadius: CGFloat
-
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
+        CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
+            viewModel.isExpandedQuickActions.toggle()
+        } prompt: {
+            tokenView
+        } expandedView: {
+            quickActionsView
+        }
+    }
+
+    private var tokenView: some View {
         HStack(spacing: 12) {
-            iconView
+            TokenItemViewLeadingComponent(
+                name: viewModel.name,
+                imageURL: viewModel.imageURL,
+                customTokenColor: viewModel.customTokenColor,
+                blockchainIconName: viewModel.blockchainIconName,
+                hasMonochromeIcon: viewModel.hasMonochromeIcon,
+                isCustom: viewModel.isCustom
+            )
 
-            tokenInfoView
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(background)
-        .highlightable(color: Colors.Button.primary.opacity(0.03))
-        // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
-        .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
-        .contextMenu {
-            ForEach(viewModel.contextActions, id: \.self) { menuAction in
-                contextMenuButton(for: menuAction)
-            }
-        }
-    }
+            VStack(spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    HStack(spacing: 6) {
+                        Text(viewModel.walletName)
+                            .style(
+                                Fonts.Bold.subheadline,
+                                color: viewModel.hasError ? Colors.Text.tertiary : Colors.Text.primary1
+                            )
+                            .lineLimit(1)
 
-    private var iconView: some View {
-        TokenIcon(
-            tokenIconInfo: viewModel.tokenIconInfo,
-            size: coinIconSize,
-            isWithOverlays: true
-        )
-    }
+                        if viewModel.hasPendingTransactions {
+                            Assets.pendingTxIndicator.image
+                        }
+                    }
+                    .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
 
-    private var tokenInfoView: some View {
-        VStack(spacing: 4) {
-            HStack(spacing: .zero) {
-                HStack(spacing: .zero) {
-                    Text(viewModel.walletName)
-                        .lineLimit(1)
-                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                    Spacer(minLength: 8)
+
+                    if viewModel.hasError, let errorMessage = viewModel.errorMessage {
+                        // Need for define size overlay view
+                        Text(errorMessage)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                            .hidden(true)
+                    } else {
+                        LoadableTextView(
+                            state: viewModel.balanceFiat,
+                            font: Fonts.Regular.subheadline,
+                            textColor: Colors.Text.primary1,
+                            loaderSize: .init(width: 40, height: 12),
+                            isSensitiveText: true
+                        )
+                        .layoutPriority(3)
+                    }
                 }
-                .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
 
-                Spacer(minLength: Constants.spacerLength)
+                HStack(alignment: .center, spacing: 0) {
+                    HStack(spacing: 6, content: {
+                        Text(viewModel.tokenItem.name)
+                            .lineLimit(1)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .layoutPriority(1)
+                    })
+                    .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+                    .layoutPriority(2)
 
-                Text(viewModel.fiatBalanceValue)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                    Spacer(minLength: Constants.spacerLength)
+
+                    if !viewModel.hasError {
+                        LoadableTextView(
+                            state: viewModel.balanceCrypto,
+                            font: Fonts.Regular.caption1,
+                            textColor: Colors.Text.tertiary,
+                            loaderSize: .init(width: 40, height: 12),
+                            isSensitiveText: true
+                        )
+                        .layoutPriority(3)
+                    }
+                }
+            }
+            .overlay(overlayView)
+            .readGeometry(\.size, bindTo: $textBlockSize)
+        }
+        .padding(.vertical, 14)
+    }
+
+    @ViewBuilder
+    private var overlayView: some View {
+        if viewModel.hasError, let errorMessage = viewModel.errorMessage {
+            HStack {
+                Spacer()
+
+                Text(errorMessage)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
+        }
+    }
+
+    private var quickActionsView: some View {
+        ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
+            VStack(alignment: .leading, spacing: .zero) {
+                // It is necessary to draw the indentation with a strip
+                makeLineRowActionItem()
+
+                // Directly in the view of the fastest action
+                Button {
+                    viewModel.didTapContextAction(action)
+                } label: {
+                    makeQuickActionItem(for: action, at: index)
+                }
+
+                // Lower indentation
+                if index == (viewModel.contextActions.count - 1) {
+                    FixedSpacer(width: 12)
+                }
+            }
+            .offset(y: -12) // Required within the design
+        }
+    }
+
+    private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {
+        HStack(spacing: 16) {
+            if let image = portfolioTokenActionTypeAsset(for: actionType) {
+                image
+                    .renderingMode(.template)
+                    .foregroundStyle(Colors.Icon.primary1)
+                    .padding(10)
+                    .background(
+                        Circle()
+                            .fill(Colors.Background.tertiary)
+                    )
+                    .padding(.leading, 2)
             }
 
-            HStack {
-                HStack(spacing: .zero) {
-                    Text(viewModel.tokenName)
-                        .lineLimit(1)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(actionType.title)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                if let description = actionType.description {
+                    Text(description)
+                        .multilineTextAlignment(.leading)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
-                .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
-
-                Spacer(minLength: Constants.spacerLength)
-
-                Text(viewModel.balanceValue)
-                    .truncationMode(.middle)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
-        }
-        .readGeometry(\.size, bindTo: $textBlockSize)
-    }
 
-    @ViewBuilder
-    private var background: some View {
-        if #available(iOS 16.0, *), let roundedCornersConfiguration = roundedCornersConfiguration {
-            Colors.Background.action
-                .cornerRadiusContinuous(
-                    topLeadingRadius: roundedCornersConfiguration.topLeadingRadius,
-                    bottomLeadingRadius: roundedCornersConfiguration.bottomLeadingRadius,
-                    bottomTrailingRadius: roundedCornersConfiguration.bottomTrailingRadius,
-                    topTrailingRadius: roundedCornersConfiguration.topTrailingRadius
-                )
-        } else {
-            Colors.Background.action
+            Spacer()
         }
     }
 
-    @ViewBuilder
-    private func contextMenuButton(for actionType: TokenActionType) -> some View {
-        let action = { viewModel.didTapContextAction(actionType) }
+    private func makeLineRowActionItem() -> some View {
+        HStack(alignment: .center) {
+            FixedSpacer(width: 18)
 
-        if actionType.isDestructive {
-            Button(
-                role: .destructive,
-                action: action,
-                label: {
-                    labelForContextButton(with: actionType)
-                }
-            )
-        } else {
-            Button(action: action, label: {
-                labelForContextButton(with: actionType)
-            })
+            Rectangle()
+                .fill(Colors.Stroke.primary)
+                .frame(width: 1, height: 16)
+                .padding(.vertical, 4)
+
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
     }
 
-    private func labelForContextButton(with action: TokenActionType) -> some View {
-        HStack {
-            Text(action.title)
-
-            action.icon.image
-                .renderingMode(.template)
+    private func portfolioTokenActionTypeAsset(for type: TokenActionType) -> Image? {
+        switch type {
+        case .buy:
+            return Assets.Portfolio.buy12.image
+        case .exchange:
+            return Assets.Portfolio.exchange12.image
+        case .receive:
+            return Assets.Portfolio.receive12.image
+        default:
+            return nil
         }
-    }
-}
-
-// MARK: - Initialization
-
-extension MarketsPortfolioTokenItemView {
-    @available(iOS 16.0, *)
-    init(
-        viewModel: MarketsPortfolioTokenItemViewModel,
-        cornerRadius: CGFloat,
-        roundedCornersVerticalEdge: RoundedCornersVerticalEdge?
-    ) {
-        self.viewModel = viewModel
-        previewContentShapeCornerRadius = cornerRadius
-
-        switch roundedCornersVerticalEdge {
-        case .topEdge:
-            roundedCornersConfiguration = RoundedCornersConfiguration(
-                topLeadingRadius: cornerRadius,
-                topTrailingRadius: cornerRadius
-            )
-        case .bottomEdge:
-            roundedCornersConfiguration = RoundedCornersConfiguration(
-                bottomLeadingRadius: cornerRadius,
-                bottomTrailingRadius: cornerRadius
-            )
-        case .all:
-            roundedCornersConfiguration = RoundedCornersConfiguration(
-                topLeadingRadius: cornerRadius,
-                bottomLeadingRadius: cornerRadius,
-                bottomTrailingRadius: cornerRadius,
-                topTrailingRadius: cornerRadius
-            )
-        case .none:
-            roundedCornersConfiguration = nil
-        }
-    }
-
-    @available(iOS, obsoleted: 16.0, message: "Use 'init(viewModel:cornerRadius:roundedCornersConfiguration:)' instead")
-    init(
-        viewModel: MarketsPortfolioTokenItemViewModel,
-        cornerRadius: CGFloat
-    ) {
-        self.viewModel = viewModel
-        previewContentShapeCornerRadius = cornerRadius
-        roundedCornersConfiguration = RoundedCornersConfiguration()
     }
 }
 

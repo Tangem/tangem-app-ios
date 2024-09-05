@@ -21,13 +21,13 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child ViewModels
 
-    @Published var networkSelectorViewModel: MarketsTokensNetworkSelectorViewModel? = nil
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
 
     // MARK: - Child Coordinators
 
+    @Published var tokenNetworkSelectorCoordinator: MarketsTokenNetworkSelectorCoordinator? = nil
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
@@ -49,6 +49,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     func start(with options: Options) {
         rootViewModel = .init(
             tokenInfo: options.info,
+            style: options.style,
             dataProvider: .init(),
             marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(),
             coordinator: self
@@ -59,16 +60,31 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 extension TokenMarketsDetailsCoordinator {
     struct Options {
         let info: MarketsTokenModel
+        let style: TokenMarketsDetailsViewModel.Style
     }
 }
 
 extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
-    func openTokenSelector(with coinModel: CoinModel, with walletDataProvider: MarketsWalletDataProvider) {
-        networkSelectorViewModel = MarketsTokensNetworkSelectorViewModel(coinModel: coinModel, walletDataProvider: walletDataProvider)
+    func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.tokenNetworkSelectorCoordinator = nil
+        }
+
+        tokenNetworkSelectorCoordinator = MarketsTokenNetworkSelectorCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        tokenNetworkSelectorCoordinator?.start(
+            with: .init(
+                inputData: .init(coinId: model.id, coinName: model.name, coinSymbol: model.symbol, networks: model.availableNetworks),
+                walletDataProvider: walletDataProvider
+            )
+        )
     }
 
     func openURL(_ url: URL) {
         safariManager.openURL(url)
+    }
+
+    func closeModule() {
+        dismiss()
     }
 }
 

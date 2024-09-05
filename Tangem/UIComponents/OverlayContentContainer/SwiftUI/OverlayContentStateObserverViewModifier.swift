@@ -11,17 +11,37 @@ import SwiftUI
 // MARK: - Convenience extensions
 
 extension View {
+    /// - Warning: This method maintains a strong reference to the given `observer` closure.
+    @ViewBuilder
     func onOverlayContentStateChange(
-        _ observer: @escaping OverlayContentStateObserver.Observer
+        _ observer: @escaping OverlayContentStateObserver.StateObserver
     ) -> some View {
-        modifier(OverlayContentStateObserverViewModifier(observer: observer))
+        modifier(
+            OverlayContentStateObserverViewModifier { stateObserver, token in
+                stateObserver.addObserver(observer, forToken: token)
+            }
+        )
+    }
+
+    /// - Warning: This method maintains a strong reference to the given `observer` closure.
+    @ViewBuilder
+    func onOverlayContentProgressChange(
+        _ observer: @escaping OverlayContentStateObserver.ProgressObserver
+    ) -> some View {
+        modifier(
+            OverlayContentStateObserverViewModifier { stateObserver, token in
+                stateObserver.addObserver(observer, forToken: token)
+            }
+        )
     }
 }
 
 // MARK: - Private implementation
 
 private struct OverlayContentStateObserverViewModifier: ViewModifier {
-    private let observer: OverlayContentStateObserver.Observer
+    typealias Selector = (_ stateObserver: OverlayContentStateObserver, _ token: UUID) -> Void
+
+    private let selector: Selector
 
     @State private var token = UUID()
 
@@ -30,8 +50,8 @@ private struct OverlayContentStateObserverViewModifier: ViewModifier {
 
     @Environment(\.overlayContentStateObserver) private var overlayContentStateObserver
 
-    init(observer: @escaping BottomScrollableSheetStateObserver) {
-        self.observer = observer
+    init(selector: @escaping Selector) {
+        self.selector = selector
     }
 
     func body(content: Content) -> some View {
@@ -62,6 +82,6 @@ private struct OverlayContentStateObserverViewModifier: ViewModifier {
 
     private func updateObserver(oldToken: UUID, newToken: UUID) {
         overlayContentStateObserver.removeObserver(forToken: oldToken)
-        overlayContentStateObserver.addObserver(observer, forToken: newToken)
+        selector(overlayContentStateObserver, newToken)
     }
 }
