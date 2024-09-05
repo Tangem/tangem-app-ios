@@ -311,11 +311,7 @@ extension Wallet2Config: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            if card.firmwareVersion.doubleValue >= 4.52 {
-                return .available
-            }
-
-            return .hidden
+            return .available
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -345,10 +341,10 @@ extension Wallet2Config: UserWalletConfig {
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(derivationStyle: derivationStyle)
+            return DemoWalletModelsFactory(config: self)
         }
 
-        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

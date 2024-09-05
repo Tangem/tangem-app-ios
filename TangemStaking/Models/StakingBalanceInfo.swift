@@ -12,14 +12,14 @@ public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
     public let amount: Decimal
     public let balanceType: BalanceType
-    public let validatorAddress: String
+    public let validatorAddress: String?
     public let actions: [PendingActionType]
 
     public init(
         item: StakingTokenItem,
         amount: Decimal,
         balanceType: BalanceType,
-        validatorAddress: String,
+        validatorAddress: String?,
         actions: [PendingActionType]
     ) {
         self.item = item

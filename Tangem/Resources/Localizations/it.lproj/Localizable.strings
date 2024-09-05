@@ -83,6 +83,7 @@
 "common_camera_denied_alert_title" = "Accesso alla videocamera negato";
 "common_cancel" = "Annulla";
 "common_choose_action" = "Choose action";
+"common_claim" = "Claim";
 "common_claim_rewards" = "Claim rewards";
 "common_close" = "Close";
 "common_continue" = "Continue";
@@ -112,6 +113,7 @@
 "common_import" = "Import";
 "common_later" = "Later";
 "common_learn_and_earn" = "Learn & Earn";
+"common_left" = "%1$@ left";
 "common_locked" = "Locked";
 "common_main_network" = "Main network";
 "common_network_fee_title" = "Costi della rete";
@@ -346,7 +348,7 @@
 "markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Quick actions";
 "markets_search_result_title" = "Result";
-"markets_search_see_tokens_under_100k" = "See tokens under 100k market cap";
+"markets_search_see_tokens_under_100k" = "See tokens under 100k USD market cap";
 "markets_search_show_tokens" = "Show tokens";
 "markets_search_token_no_result_title" = "No result";
 "markets_select_network" = "Select network";
@@ -403,6 +405,8 @@
 "markets_token_details_total_supply_description" = "The maximum number of coins or tokens that can ever exist for a particular cryptocurrency";
 "markets_token_details_trading_volume" = "Trading volume (24h)";
 "markets_token_details_trading_volume_24h_description" = "The total amount of a cryptocurrency that has been traded within the last 24 hours, indicating the level of activity and liquidity in the market";
+"markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
+"markets_tooltip_title" = "Add tokens";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
 "onboarding_access_code_feature_1_title" = "Protect";
 "onboarding_access_code_feature_2_description" = "You can set up an individual access code on each card later";
@@ -643,13 +647,16 @@
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
+"staking_notification_claim_rewards_text" = "Earned rewards are sent directly to your address. Once claimed, the funds are available for use.";
 "staking_notification_earn_rewards_text_period_day" = "Staking allows you to earn %1$@. Your staking rewards arrive every day.";
 "staking_notification_earn_rewards_text_period_hour" = "Staking allows you to earn %1$@. Your staking rewards arrive every hour.";
 "staking_notification_earn_rewards_text_period_month" = "Staking allows you to earn %1$@. Your staking rewards arrive every month.";
 "staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
+"staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
 "staking_notification_unstake_text" = "Rewards stop accruing immediately after you start unstaking. The unstaking process takes %@.";
 "staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
+"staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";
 "staking_restake" = "Restake";
@@ -669,6 +676,9 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving ~%2$@ yearly";
+"staking_tap_to_unlock" = "Tap to unlock";
+"staking_tap_to_withdraw" = "Tap to withdraw";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
 "staking_unbonding" = "Unbonding";
@@ -677,11 +687,13 @@
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
 "staking_unstaking" = "Unstaking";
+"staking_unstaking_item_name" = "Unstaking assets %@";
 "staking_validator" = "Validator";
 "staking_validators" = "Validators";
 "staking_vote" = "Vote";
 "staking_vote_locked" = "Vote locked";
 "staking_withdraw" = "Withdraw";
+"staking_your_stakes" = "Your stakes";
 "story_awe_description" = "Store your crypto assets secure while keeping private keys contained in your card";
 "story_awe_title" = "Revolutionary Hardware Wallet";
 "story_backup_description" = "Up to 3 physical cards to one wallet";
