@@ -168,7 +168,7 @@ private extension MarketsViewModel {
                 if Constants.filterRequiredReloadInterval.contains(value.order) {
                     viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
                 } else {
-                    let hotAreaRange = viewModel.listDataController.currentHotArea
+                    let hotAreaRange = viewModel.listDataController.hotArea
                     viewModel.requestMiniCharts(forRange: hotAreaRange.range)
                 }
             }

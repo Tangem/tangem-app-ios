@@ -19,7 +19,7 @@ class MarketsListDataController {
         hotAreaSubject
     }
 
-    var currentHotArea: VisibleArea {
+    var hotArea: VisibleArea {
         hotAreaSubject.value
     }
 
@@ -93,7 +93,7 @@ class MarketsListDataController {
             .compactMap { dataController, newVisibleArea in
                 guard
                     let dataFetcher = dataController.dataFetcher,
-                    dataFetcher.totalItems > 0 
+                    dataFetcher.totalItems > 0
                 else {
                     return nil
                 }

@@ -52,11 +52,7 @@ final class MarketsListChartsHistoryProvider {
 
                 for response in responses {
                     for (key, value) in response {
-                        if copyItems[key] == nil {
-                            copyItems[key] = [interval: value]
-                        } else {
-                            copyItems[key]?[interval] = value
-                        }
+                        copyItems[key, default: [:]][interval] = value
                     }
                 }
 
@@ -105,6 +101,7 @@ private extension MarketsListChartsHistoryProvider {
     func registerLoadedItems(requestedItemsIds: [String], interval: MarketsPriceIntervalType) {
         lock {
             guard var requestedItems = requestedItemsDictionary[interval] else {
+                assertionFailure("Requested items should contains items for provided interval")
                 return
             }
 
