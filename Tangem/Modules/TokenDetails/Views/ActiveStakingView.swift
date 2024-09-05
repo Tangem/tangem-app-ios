@@ -33,14 +33,14 @@ struct ActiveStakingView: View {
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 HStack(spacing: 4) {
-                    Text(data.balance.fiat)
+                    SensitiveText(data.balance.fiat)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                    Text(data.balance.crypto)
+                    SensitiveText(data.balance.crypto)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 }
@@ -52,7 +52,7 @@ struct ActiveStakingView: View {
                     Text(Localization.stakingDetailsNoRewardsToClaim)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 case .rewardsToClaim(let string):
-                    Text(Localization.stakingDetailsRewardsToClaim(string))
+                    SensitiveText(builder: Localization.stakingDetailsRewardsToClaim, sensitive: string)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
             }
