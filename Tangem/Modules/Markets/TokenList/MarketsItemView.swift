@@ -22,7 +22,6 @@ struct MarketsItemView: View {
                 IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
 
                 tokenInfoView
-                    .layoutPriority(2)
 
                 Spacer(minLength: .zero)
 
@@ -66,25 +65,32 @@ struct MarketsItemView: View {
                 }
             }
         }
+        .layoutPriority(2)
     }
 
     private var tokenPriceView: some View {
         HStack(spacing: 10) {
             VStack(alignment: .trailing, spacing: .zero) {
-                Text(viewModel.priceValue)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .blinkForegroundColor(
-                        publisher: viewModel.$priceChangeAnimation,
-                        positiveColor: Colors.Text.accent,
-                        negativeColor: Colors.Text.warning,
-                        originalColor: Colors.Text.primary1
-                    )
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                Spacer()
 
-                Spacer(minLength: 2)
+                HStack(alignment: .firstBaselineCustom, spacing: .zero) {
+                    Text(viewModel.priceValue)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .blinkForegroundColor(
+                            publisher: viewModel.$priceChangeAnimation,
+                            positiveColor: Colors.Text.accent,
+                            negativeColor: Colors.Text.warning,
+                            originalColor: Colors.Text.primary1
+                        )
+                        .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                }
+
+                FixedSpacer(height: 2)
 
                 TokenPriceChangeView(state: viewModel.priceChangeState)
+
+                Spacer()
             }
 
             priceHistoryView
