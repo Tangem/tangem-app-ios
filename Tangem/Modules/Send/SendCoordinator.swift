@@ -52,7 +52,7 @@ class SendCoordinator: CoordinatorObject {
             Analytics.log(.stakingAmountScreenOpened)
         case .unstaking(let manager, let action):
             rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
-            
+
             guard let validator = manager.state.validator(for: action.validator) else { return }
             Analytics.log(event: .stakingConfirmationScreenOpened, params: [.validator: validator.name])
         }

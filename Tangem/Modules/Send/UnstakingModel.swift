@@ -155,11 +155,9 @@ private extension UnstakingModel {
             proceed(result: result)
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
-            logTransactionRejected()
             proceed(error: error)
             throw error
         } catch {
-            logTransactionRejected()
             throw error
         }
     }
@@ -177,8 +175,7 @@ private extension UnstakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            // TODO: Add analytics
-            break
+            logTransactionRejected()
         }
     }
 }

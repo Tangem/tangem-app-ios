@@ -285,7 +285,6 @@ private extension StakingModel {
             proceed(error: error)
             throw error
         } catch {
-            logTransactionRejected()
             throw error
         }
     }
@@ -304,8 +303,7 @@ private extension StakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            // TODO: Add analytics
-            break
+            logTransactionRejected()
         }
     }
 }
@@ -531,7 +529,7 @@ extension StakingModel {
             .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
             .token: tokenItem.currencySymbol,
             .blockchain: tokenItem.blockchain.displayName,
-            .feeType: selectedFee.option.rawValue
+            .feeType: selectedFee.option.rawValue,
         ])
 
         switch amount?.type {
