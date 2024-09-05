@@ -195,7 +195,7 @@ private extension SendViewModel {
     @MainActor
     func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .userCancelled, .transactionNotFound, .stakingUnsupported:
+        case .userCancelled, .transactionNotFound:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in

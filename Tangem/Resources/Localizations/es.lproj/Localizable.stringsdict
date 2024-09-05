@@ -13,19 +13,15 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li картка</string>
-        <key>few</key>
-        <string>%li картки</string>
-        <key>many</key>
-        <string>%li карток</string>
+        <string>%li tarjeta</string>
         <key>other</key>
-        <string>%li карток</string>
+        <string>%li tarjetas </string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li із %#@total_wallets@</string>
+      <string>%li %#@total_wallets@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
@@ -33,13 +29,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li гаманця</string>
-        <key>few</key>
-        <string>%li гаманців</string>
-        <key>many</key>
-        <string>%li гаманців</string>
+        <string>%li billetera</string>
         <key>other</key>
-        <string>%li гаманців</string>
+        <string>%li billeteras</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -53,13 +45,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>На основі %li оцінки</string>
-        <key>few</key>
-        <string>На основі %li оцінок</string>
-        <key>many</key>
-        <string>На основі %li оцінок</string>
+        <string>Basado en %li evaluación </string>
         <key>other</key>
-        <string>На основі %li оцінок</string>
+        <string>Basado en %li evaluaciónes</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
@@ -73,13 +61,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Запишіть це %li слово у порядку, вказаному нижче, та збережіть його у надійному місці.</string>
-        <key>few</key>
-        <string>Запишіть ці %li слова у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
-        <key>many</key>
-        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+        <string>Vacío</string>
         <key>other</key>
-        <string>Запишіть ці %li слів у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
+        <string>Escriba estas %li palabras en el orden que se indica a continuación y guárdelas en un lugar seguro y secreto.</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_words_count</key>
@@ -93,13 +77,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li слово</string>
-        <key>few</key>
-        <string>%li слова</string>
-        <key>many</key>
-        <string>%li слів</string>
+        <string>Vacío</string>
         <key>other</key>
-        <string>%li слів</string>
+        <string>%li palabras</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -113,13 +93,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>за %li гаманець</string>
-        <key>few</key>
-        <string>за %li гаманця</string>
-        <key>many</key>
-        <string>за %li гаманців</string>
+        <string>para %li billetera </string>
         <key>other</key>
-        <string>за %li гаманців</string>
+        <string>para %li billeteras</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -133,13 +109,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li гаманець</string>
-        <key>few</key>
-        <string>%li гаманця</string>
-        <key>many</key>
-        <string>%li гаманців</string>
+        <string>%li billetera</string>
         <key>other</key>
-        <string>%li гаманців</string>
+        <string>%li billeteras</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>
@@ -153,13 +125,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Використовуйте вашу картку, щоб отримати адресу для %li мережі</string>
-        <key>few</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
-        <key>many</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Use su tarjeta para obtener una dirección para la red</string>
         <key>other</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Use su tarjeta para obtener direcciónes para la red</string>
       </dict>
     </dict>
   </dict>

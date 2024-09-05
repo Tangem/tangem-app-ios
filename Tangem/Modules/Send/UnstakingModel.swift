@@ -29,7 +29,6 @@ class UnstakingModel {
 
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let stakingTransactionMapper: StakingTransactionMapper
     private let transactionValidator: TransactionValidator
     private let action: StakingAction
     private let tokenItem: TokenItem
@@ -41,7 +40,6 @@ class UnstakingModel {
     init(
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        stakingTransactionMapper: StakingTransactionMapper,
         transactionValidator: TransactionValidator,
         action: StakingAction,
         tokenItem: TokenItem,
@@ -49,7 +47,6 @@ class UnstakingModel {
     ) {
         self.stakingManager = stakingManager
         self.sendTransactionDispatcher = sendTransactionDispatcher
-        self.stakingTransactionMapper = stakingTransactionMapper
         self.transactionValidator = transactionValidator
         self.action = action
         self.tokenItem = tokenItem
@@ -143,15 +140,9 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func send() async throws -> SendTransactionDispatcherResult {
-        logTransactionAnalytics()
-
-        let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
-
         do {
-            let result = try await sendTransactionDispatcher.send(
-                transaction: .staking(transactionId: transactionInfo.id, transaction: transaction)
-            )
+            let transaction = try await stakingManager.transaction(action: action)
+            let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
@@ -164,6 +155,7 @@ private extension UnstakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -171,7 +163,6 @@ private extension UnstakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:
@@ -321,8 +312,9 @@ private extension UnstakingModel {
     }
 
     func logTransactionAnalytics() {
-        guard let validator = stakingManager.state.validator(for: action.validator) else { return }
-        Analytics.log(event: action.type.analyticsEvent, params: [.validator: validator.name])
+        guard let validator = stakingManager.state.validator(for: action.validator),
+              let analyticsEvent = action.type.analyticsEvent else { return }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator.name])
     }
 
     func logTransactionRejected() {
@@ -331,17 +323,18 @@ private extension UnstakingModel {
 }
 
 extension PendingActionType {
-    var analyticsEvent: Analytics.Event {
+    var analyticsEvent: Analytics.Event? {
         switch self {
         case .withdraw: .stakingButtonWithdraw
         case .claimRewards: .stakingButtonClaim
         case .restakeRewards: .stakingButtonRestake
+        default: nil
         }
     }
 }
 
 extension UnstakingModel.Action.ActionType {
-    var analyticsEvent: Analytics.Event {
+    var analyticsEvent: Analytics.Event? {
         switch self {
         case .stake: .stakingButtonStake
         case .unstake: .stakingButtonUnstake
