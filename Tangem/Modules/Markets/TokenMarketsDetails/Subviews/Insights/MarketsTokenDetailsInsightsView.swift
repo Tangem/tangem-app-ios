@@ -34,6 +34,7 @@ struct MarketsTokenDetailsInsightsView: View {
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
+                        trend: info.trend,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
                         },
@@ -123,6 +124,7 @@ extension MarketsTokenDetailsInsightsView {
     struct RecordInfo: Identifiable {
         let type: RecordType
         let recordData: String
+        let trend: TokenMarketsDetailsStatisticsRecordView.Trend?
 
         var id: String {
             "\(type.id) - \(recordData)"

@@ -37,6 +37,7 @@ struct MarketsTokenDetailsMetricsView: View {
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
+                        trend: nil,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
                         },

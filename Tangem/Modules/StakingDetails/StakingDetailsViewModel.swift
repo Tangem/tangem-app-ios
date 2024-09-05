@@ -16,12 +16,12 @@ final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
+
     @Published var hideStakingInfoBanner = true
     @Published var detailsViewModels: [DefaultRowViewModel] = []
 
     @Published var rewardViewData: RewardViewData?
-    @Published private(set) var activeValidators: [ValidatorViewData] = []
-    @Published private(set) var unstakedValidators: [ValidatorViewData] = []
+    @Published var stakes: [StakingDetailsStakeViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
     @Published var actionButtonDisabled: Bool = false
@@ -139,7 +139,7 @@ private extension StakingDetailsViewModel {
     func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
-        setupValidatorsView(yield: yield, staking: balances.staking())
+        setupStakes(yield: yield, staking: balances.staking())
         setupRewardView(yield: yield, balances: balances)
     }
 
@@ -264,20 +264,52 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupValidatorsView(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        activeValidators = staking.filter { $0.balanceType.isActive }.compactMap { balance -> ValidatorViewData? in
-            mapToValidatorViewData(yield: yield, balance: balance)
-        }
+    func setupStakes(yield: YieldInfo, staking: [StakingBalanceInfo]) {
+        stakes = staking
+            .sorted(by: { lhs, rhs in
+                if lhs.balanceType.priority != rhs.balanceType.priority {
+                    return lhs.balanceType.priority < rhs.balanceType.priority
+                }
 
-        unstakedValidators = staking.filter { $0.balanceType.isInactive }.compactMap { balance -> ValidatorViewData? in
-            mapToValidatorViewData(yield: yield, balance: balance)
-        }
+                return lhs.amount > rhs.amount
+            })
+            .compactMap { balance -> StakingDetailsStakeViewData? in
+                mapToStakingDetailsStakeViewData(yield: yield, balance: balance)
+            }
     }
 
-    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
-        guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
-            return nil
-        }
+    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> StakingDetailsStakeViewData? {
+        let validator = yield.validators.first(where: { $0.address == balance.validatorAddress })
+
+        let title: String = {
+            switch balance.balanceType {
+            case .rewards: Localization.stakingRewards
+            case .locked: Localization.stakingLocked
+            case .warmup, .active: validator?.name ?? Localization.stakingValidator
+            case .unbonding: Localization.stakingUnstaking
+            case .withdraw: Localization.stakingUnstaked
+            }
+        }()
+
+        let subtitle: StakingDetailsStakeViewData.SubtitleType? = {
+            switch balance.balanceType {
+            case .rewards: .none
+            case .locked: .locked
+            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+            case .active: validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
+            case .unbonding(let date): .unbounding(until: date)
+            case .withdraw: .withdraw
+            }
+        }()
+
+        let icon: StakingDetailsStakeViewData.IconType = {
+            switch balance.balanceType {
+            case .rewards, .warmup, .active: .image(url: validator?.iconURL)
+            case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
+            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
+            case .withdraw: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
+            }
+        }()
 
         let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
             balance.amount,
@@ -288,45 +320,25 @@ private extension StakingDetailsViewModel {
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
 
-        let subtitleType: ValidatorViewData.SubtitleType? = {
-            switch balance.balanceType {
-            case .rewards: .none
-            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active: validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding(let date): .unbounding(until: date)
-            case .withdraw: .withdraw
-            }
-        }()
-
         let action: (() -> Void)? = {
             switch balance.balanceType {
             case .rewards, .warmup, .unbonding:
                 return nil
-            case .active, .withdraw:
+            case .active, .withdraw, .locked:
                 return { [weak self] in
                     self?.openUnstakingFlow(balance: balance)
                 }
             }
         }()
 
-        return ValidatorViewData(
-            address: validator.address,
-            name: validator.name,
-            imageURL: validator.iconURL,
-            subtitleType: subtitleType,
-            detailsType: .balance(
-                .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
-                action: action
-            )
+        return StakingDetailsStakeViewData(
+            title: title,
+            icon: icon,
+            inProgress: false,
+            subtitleType: subtitle,
+            balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
+            action: action
         )
-    }
-
-    func remainDaysFormat(date: Date) -> String {
-        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
-            return date.formatted()
-        }
-
-        return daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -414,21 +426,14 @@ private extension RewardRateValues {
 }
 
 private extension BalanceType {
-    var isActive: Bool {
+    var priority: Int {
         switch self {
-        case .warmup, .active:
-            return true
-        case .unbonding, .withdraw, .rewards:
-            return false
-        }
-    }
-
-    var isInactive: Bool {
-        switch self {
-        case .unbonding, .withdraw:
-            return true
-        case .warmup, .active, .rewards:
-            return false
+        case .locked: -2
+        case .warmup: -1
+        case .active: 0
+        case .unbonding: 1
+        case .withdraw: 2
+        case .rewards: -10 // Will not use to rewards
         }
     }
 }
@@ -442,7 +447,7 @@ extension StakingAction.ActionType {
         case .pending(.claimRewards): Localization.commonClaimRewards
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
         case .pending(.voteLocked): Localization.stakingVote
-        case .pending(.unlockLocked): "Unlock locked"
+        case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
     }
 }

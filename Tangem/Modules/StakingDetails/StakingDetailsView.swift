@@ -26,9 +26,16 @@ struct StakingDetailsView: View {
 
             rewardView
 
-            activeValidatorsView
-
-            unstakedValidatorsView
+            GroupedSection(viewModel.stakes) { data in
+                StakingDetailsStakeView(data: data)
+            } header: {
+                DefaultHeaderView(Localization.stakingYourStakes)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+            }
+            .separatorStyle(.none)
+            .interItemSpacing(0)
+            .innerContentPadding(0)
         }
         .interContentPadding(14)
         .refreshable {
@@ -104,36 +111,6 @@ struct StakingDetailsView: View {
                 .padding(.top, 8)
         }
         .innerContentPadding(4)
-    }
-
-    private var activeValidatorsView: some View {
-        validatorsView(
-            validators: viewModel.activeValidators,
-            header: Localization.stakingActive,
-            footer: Localization.stakingActiveFooter
-        )
-    }
-
-    private var unstakedValidatorsView: some View {
-        validatorsView(
-            validators: viewModel.unstakedValidators,
-            header: Localization.stakingUnstaked,
-            footer: Localization.stakingUnstakedFooter
-        )
-    }
-
-    private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
-        GroupedSection(validators) { data in
-            ValidatorView(data: data)
-        } header: {
-            DefaultHeaderView(header)
-                .padding(.top, 12)
-        } footer: {
-            Text(footer)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-        }
-        .interItemSpacing(0)
-        .innerContentPadding(0)
     }
 
     @ViewBuilder
