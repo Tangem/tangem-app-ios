@@ -35,7 +35,7 @@ class ExpressInteractor {
     private let expressDestinationService: ExpressDestinationService
     private let expressTransactionBuilder: ExpressTransactionBuilder
     private let expressAPIProvider: ExpressAPIProvider
-    private let transactionDispatcher: SendTransactionDispatcher
+    private let signer: TransactionSigner
     private let logger: Logger
 
     // MARK: - Options
@@ -57,7 +57,7 @@ class ExpressInteractor {
         expressDestinationService: ExpressDestinationService,
         expressTransactionBuilder: ExpressTransactionBuilder,
         expressAPIProvider: ExpressAPIProvider,
-        transactionDispatcher: SendTransactionDispatcher,
+        signer: TransactionSigner,
         logger: Logger
     ) {
         self.userWalletId = userWalletId
@@ -70,7 +70,7 @@ class ExpressInteractor {
         self.expressDestinationService = expressDestinationService
         self.expressTransactionBuilder = expressTransactionBuilder
         self.expressAPIProvider = expressAPIProvider
-        self.transactionDispatcher = transactionDispatcher
+        self.signer = signer
         self.logger = logger
 
         _swappingPair = .init(SwappingPair(sender: initialWallet, destination: .loading))
@@ -250,6 +250,8 @@ extension ExpressInteractor {
             fee: fee
         )
 
+        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
         logger.debug("Sent the approve transaction with result: \(result)")
         allowanceProvider.didSendApproveTransaction(for: state.data.spender)
@@ -463,6 +465,9 @@ private extension ExpressInteractor {
         let fee = try selectedFee(fees: state.fees)
         let sender = getSender()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: state.data, fee: fee)
+
+        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
         return TransactionSendResultState(hash: result.hash, data: state.data, fee: fee, provider: provider)
@@ -472,6 +477,9 @@ private extension ExpressInteractor {
         let fee = try selectedFee(fees: state.fees)
         let sender = getSender()
         let data = try await expressManager.requestData()
+
+        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let transactionDispatcher = factory.makeSendDispatcher()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: data, fee: fee)
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
