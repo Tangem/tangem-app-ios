@@ -47,16 +47,16 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .loading:
-            show(info: .stake(
+            show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
             hideErrorEvents()
         case .approveTransactionInProgress:
-            show(info: .approveTransactionInProgress)
+            show(notification: .approveTransactionInProgress)
             hideErrorEvents()
         case .readyToApprove:
-            show(info: .stake(
+            show(notification: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
@@ -86,7 +86,7 @@ private extension CommonStakingNotificationManager {
                 )
             }
 
-            show(info: events)
+            show(events: events)
             hideErrorEvents()
 
         case .validationError(let validationError, _):
@@ -102,10 +102,10 @@ private extension CommonStakingNotificationManager {
     func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
         switch (state, action.type) {
         case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
-            show(info: .withdraw)
+            show(notification: .withdraw)
             hideErrorEvents()
         case (.loading, _), (.ready, _):
-            show(info: .unstake(
+            show(notification: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
             hideErrorEvents()
@@ -123,11 +123,11 @@ private extension CommonStakingNotificationManager {
 // MARK: - Show/Hide
 
 private extension CommonStakingNotificationManager {
-    func show(info event: StakingNotificationEvent) {
-        show(info: [event])
+    func show(notification: StakingNotificationEvent) {
+        show(events: [notification])
     }
 
-    func show(info events: [StakingNotificationEvent]) {
+    func show(events: [StakingNotificationEvent]) {
         let factory = NotificationsFactory()
 
         notificationInputsSubject.value = events.map { event in
