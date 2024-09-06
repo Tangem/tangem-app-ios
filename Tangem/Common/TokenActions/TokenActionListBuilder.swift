@@ -55,10 +55,6 @@ struct TokenActionListBuilder {
             availableActions.append(.exchange)
         }
 
-        if canSignTransactions, isBlockchainReachable, canStake {
-            availableActions.append(.stake)
-        }
-
         // TODO: Fix naming for canExchange
         if canExchange, canBuy {
             availableActions.append(.buy)
@@ -66,6 +62,10 @@ struct TokenActionListBuilder {
 
         if canSend, canExchange, canSell {
             availableActions.append(.sell)
+        }
+
+        if canSignTransactions, isBlockchainReachable, canStake {
+            availableActions.append(.stake)
         }
 
         return availableActions
