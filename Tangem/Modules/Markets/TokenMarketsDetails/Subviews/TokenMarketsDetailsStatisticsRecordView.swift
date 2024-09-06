@@ -15,6 +15,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     let infoButtonAction: () -> Void
     let containerWidth: CGFloat
     var estimateTitleAndMessageSizes: Bool = true
+    var adaptiveLayout: Bool = false
 
     @State private var titleTargetWidth: CGFloat = .zero
     @State private var messageTargetWidth: CGFloat = .zero
@@ -30,20 +31,23 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
 
             messageView
         }
-        .frame(minWidth: minimumWidth, maxWidth: containerWidth, alignment: .leading)
-        .overlay {
-            titleView
-                .opacity(0.0)
-                .fixedSize()
-                .readGeometry(\.size.width, bindTo: $titleTargetWidth)
-        }
-        .if(estimateTitleAndMessageSizes) { view in
-            view.overlay {
-                messageView
-                    .opacity(0.0)
-                    .fixedSize()
-                    .readGeometry(\.size.width, bindTo: $messageTargetWidth)
-            }
+        .if(adaptiveLayout) { view in
+            view
+                .frame(minWidth: minimumWidth, maxWidth: containerWidth, alignment: .leading)
+                .overlay {
+                    titleView
+                        .opacity(0.0)
+                        .fixedSize()
+                        .readGeometry(\.size.width, bindTo: $titleTargetWidth)
+                }
+                .if(estimateTitleAndMessageSizes) { view in
+                    view.overlay {
+                        messageView
+                            .opacity(0.0)
+                            .fixedSize()
+                            .readGeometry(\.size.width, bindTo: $messageTargetWidth)
+                    }
+                }
         }
     }
 

@@ -12,15 +12,10 @@ struct MarketsTokenDetailsMetricsView: View {
     let viewModel: MarketsTokenDetailsMetricsViewModel
 
     @State private var gridWidth: CGFloat = .zero
-    @State private var firstItemWidth: CGFloat = .zero
-
-    private var itemWidth: CGFloat {
-        let halfSizeWidth = gridWidth / 2 - Constants.itemsSpacing
-        return halfSizeWidth > firstItemWidth ? halfSizeWidth : firstItemWidth
-    }
 
     private var gridItems: [GridItem] {
-        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
+        let itemWidth = max(0, gridWidth / 2 - Constants.itemsSpacing)
+        return [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
@@ -44,11 +39,6 @@ struct MarketsTokenDetailsMetricsView: View {
                         containerWidth: gridWidth,
                         estimateTitleAndMessageSizes: false
                     )
-                    .readGeometry(\.size.width, onChange: { value in
-                        if value > firstItemWidth {
-                            firstItemWidth = value
-                        }
-                    })
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
