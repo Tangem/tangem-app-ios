@@ -22,7 +22,7 @@ struct StakingTransactionSummaryDescriptionBuilder {
 
 extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
     func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
-        guard case .staking(let amount, let fee, let apr) = transactionType,
+        guard case .staking(let amount, _, let apr) = transactionType,
               let amountFiat = amount.fiat else {
             return nil
         }
