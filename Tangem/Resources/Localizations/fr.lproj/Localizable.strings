@@ -647,7 +647,7 @@
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";
 "staking_native" = "Native staking";
-"staking_notification_claim_rewards_text" = "Earned rewards are sent directly to your address. Once claimed, the funds are available for use.";
+"staking_notification_claim_rewards_text" = "Earned rewards will be sent to your wallet and available for use immediately";
 "staking_notification_earn_rewards_text_period_day" = "Le staking vous permet de gagner %1$@. Vos récompenses de staking arrivent tous les jours.";
 "staking_notification_earn_rewards_text_period_hour" = "Le staking vous permet de gagner %1$@. Vos récompenses de staking arrivent toutes les heures.";
 "staking_notification_earn_rewards_text_period_month" = "Le staking vous permet de gagner %1$@. Vos récompenses de staking arrivent tous les mois.";

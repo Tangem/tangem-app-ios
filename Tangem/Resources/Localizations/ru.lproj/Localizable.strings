@@ -83,7 +83,7 @@
 "common_camera_denied_alert_title" = "Доступ к камере запрещен";
 "common_cancel" = "Отмена";
 "common_choose_action" = "Choose action";
-"common_claim" = "Claim";
+"common_claim" = "Получить";
 "common_claim_rewards" = "Вывести награду";
 "common_close" = "Закрыть";
 "common_continue" = "Продолжить";
@@ -647,15 +647,15 @@
 "staking_locked" = "Заблокировано";
 "staking_migrate" = "Переместить";
 "staking_native" = "Нативный стейкинг";
-"staking_notification_claim_rewards_text" = "Earned rewards are sent directly to your address. Once claimed, the funds are available for use.";
+"staking_notification_claim_rewards_text" = "Полученная награда будет отправлена на ваш кошелек и будет сразу доступна для использования";
 "staking_notification_earn_rewards_text_period_day" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждый день.";
 "staking_notification_earn_rewards_text_period_hour" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждый час.";
 "staking_notification_earn_rewards_text_period_month" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждый месяц.";
 "staking_notification_earn_rewards_text_period_week" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждую неделю.";
 "staking_notification_earn_rewards_title" = "Получите награду за стейкинг";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
-"staking_notification_unstake_text" = "Награда перестанет начисляться сразу после того, как вы начнете процесс завершения стейкинга. Процесс завершения длится %@.";
-"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
+"staking_notification_unstake_text" = "Ваши средства будут доступны после %@ периода отзыва.";
+"staking_notification_withdraw_text" = "Вы можете вывести свои средства из стейкинга, они будут доступны для использования незамедлительно.";
 "staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";
