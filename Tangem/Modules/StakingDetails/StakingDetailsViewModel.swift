@@ -31,7 +31,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var actionSheet: ActionSheetBinder?
     @Published var alert: AlertBinder?
 
-    lazy var legalText: AttributedString? = makeLegalText()
+    lazy var legalText = makeLegalText()
 
     // MARK: - Dependencies
 
