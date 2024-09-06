@@ -42,10 +42,16 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        Analytics.log(event: .sendTransactionSentScreenOpened, params: [
-            .token: tokenItem.currencySymbol,
-            .feeType: feeTypeAnalyticsParameter.rawValue,
-        ])
+        if let validatorName = stakingValidatorsCompactViewModel?.selectedValidator?.name {
+            Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
+                .validator: validatorName,
+            ])
+        } else {
+            Analytics.log(event: .sendTransactionSentScreenOpened, params: [
+                .token: tokenItem.currencySymbol,
+                .feeType: feeTypeAnalyticsParameter.rawValue,
+            ])
+        }
 
         withAnimation(SendTransitionService.Constants.defaultAnimation) {
             showHeader = true

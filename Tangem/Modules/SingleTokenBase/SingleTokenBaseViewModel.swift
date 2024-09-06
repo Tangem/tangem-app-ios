@@ -530,6 +530,7 @@ extension SingleTokenBaseViewModel {
     }
 
     func openStaking() {
+        Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
         tokenRouter.openStaking(walletModel: walletModel)
     }
 

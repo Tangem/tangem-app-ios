@@ -37,6 +37,17 @@ enum SendFlowActionType: Hashable {
         case .unlock: Localization.stakingUnlockedLocked
         }
     }
+
+    var analyticsAction: Analytics.ParameterValue? {
+        switch self {
+        case .stake: .stakeActionStake
+        case .withdraw: .stakeActionWithdraw
+        case .claimRewards: .stakeActionClaim
+        case .restakeRewards: .stakeActionRestake
+        case .unlock: .stakeActionUnlock
+        default: nil
+        }
+    }
 }
 
 extension SendMainButtonType {

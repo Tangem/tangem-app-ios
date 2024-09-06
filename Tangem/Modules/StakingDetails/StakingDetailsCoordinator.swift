@@ -105,6 +105,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .staking(manager: options.manager)
         ))
         sendCoordinator = coordinator
+        Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceStakeInfo])
     }
 
     func openMultipleRewards() {
@@ -132,9 +133,14 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .unstaking(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
+
+        guard let analyticsEvent = action.type.analyticsEvent else { return }
+        let validator = action.validator.flatMap { options.manager.state.validator(for: $0) }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
     }
 
     func openWhatIsStaking() {
+        Analytics.log(.stakingLinkWhatIsStaking)
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .whatIsStaking))
     }
 }

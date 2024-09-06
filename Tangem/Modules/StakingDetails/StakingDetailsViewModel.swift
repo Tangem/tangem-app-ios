@@ -82,6 +82,11 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func onAppear() {
         loadValues()
+        let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
+        Analytics.log(
+            event: .stakingInfoScreenOpened,
+            params: [.validatorsCount: balances]
+        )
     }
 }
 
@@ -263,6 +268,11 @@ private extension StakingDetailsViewModel {
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
+
+                        let validator = yield.validators.first(
+                            where: { $0.address == balance.validatorAddress }
+                        )
+                        Analytics.log(event: .stakingButtonRewards, params: [.validator: validator?.name ?? ""])
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -278,6 +288,10 @@ private extension StakingDetailsViewModel {
 
         let staking = staking.map { balance in
             stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+                Analytics.log(
+                    event: .stakingButtonValidator,
+                    params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
+                )
                 self?.openUnstakingFlow(balance: balance)
             }
         }

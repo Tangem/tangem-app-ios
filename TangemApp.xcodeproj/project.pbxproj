@@ -13,10 +13,12 @@
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */; };
 		0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF96A2C6CE96B00163492 /* StakingAction.swift */; };
+		0A7FF63D2C888D380072C2E8 /* StakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
 		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
+		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
 		290167CAE4AB04EF14809C71 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1A9153420AB02B11100282 /* Pods_Tangem_TangemUITests.framework */; };
 		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
@@ -1902,8 +1904,10 @@
 		0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
 		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
+		0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
 		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
+		0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
@@ -3878,6 +3882,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A7FF63B2C888D180072C2E8 /* StakingAnalytics */ = {
+			isa = PBXGroup;
+			children = (
+				0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */,
+			);
+			path = StakingAnalytics;
+			sourceTree = "<group>";
+		};
 		2D1400D32C44260500B75A42 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -6100,6 +6112,7 @@
 				DC8D72132BB1967D0077F241 /* Analytics+EventLimit.swift */,
 				2D42AA582C6379DC006A2FD4 /* Analytics+Markets.swift */,
 				DC1D4C442C38616500B2A422 /* CommonExpressAnalyticsLogger.swift */,
+				0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -9546,6 +9559,7 @@
 		EFBC5C722C00A74100B662E0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0A7FF63B2C888D180072C2E8 /* StakingAnalytics */,
 				EF8DBCDB2C0609F5009072CF /* StakingManager */,
 				DC592B882C419EA9005AB9A7 /* StakingPendingHashes */,
 				EF031A262C08E64F001535C9 /* StakingCalculator */,
@@ -12181,6 +12195,7 @@
 				EFB9320D2C3EC0C800C999E9 /* ValidatorView.swift in Sources */,
 				B60B9FDB2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift in Sources */,
 				DAC37FBA2A2DFB730068F3ED /* PromotionView.swift in Sources */,
+				0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */,
 				DA559C392B0261F400F59584 /* SendViewModel.swift in Sources */,
 				B66655712C6EC901001E2C68 /* UIView.AnimationCurve+.swift in Sources */,
 				EF9E2A4E2B56A54400418559 /* ExpressModulesFactoryMock.swift in Sources */,
@@ -12458,6 +12473,7 @@
 				EF0FBB8B2C53FFCD0095A6BD /* ActionStatus.swift in Sources */,
 				DC592B902C41A4BA005AB9A7 /* StakingPendingHash.swift in Sources */,
 				EF407E642C04D6A400366733 /* StakeKitTarget.swift in Sources */,
+				0A7FF63D2C888D380072C2E8 /* StakingAnalyticsLogger.swift in Sources */,
 				EF72DC1F2C4670E6003DD97F /* TransactionStatus.swift in Sources */,
 				EFB019412C4160EF009EE857 /* StakeKitDTO+Balances.swift in Sources */,
 				0A0DB7582C48FB0000003450 /* RewardRateValues.swift in Sources */,
