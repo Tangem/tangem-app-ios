@@ -7,15 +7,21 @@
 //
 
 import Foundation
+import TangemFoundation
 
 final class MarketsListChartsHistoryProvider {
+    typealias TokensChartsHistory = [String: [MarketsPriceIntervalType: MarketsChartModel]]
+
     // MARK: Dependencies
 
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     // MARK: Published Properties
 
-    @Published var items: [String: [MarketsPriceIntervalType: MarketsChartModel]] = [:]
+    @Published var items: TokensChartsHistory = [:]
+
+    private var requestedItemsDictionary: [MarketsPriceIntervalType: Set<String>] = [:]
+    private let lock = Lock(isRecursive: false)
 
     // MARK: - Private Properties
 
@@ -26,37 +32,36 @@ final class MarketsListChartsHistoryProvider {
     // MARK: - Implementation
 
     func fetch(for coinIds: [String], with interval: MarketsPriceIntervalType) {
-        guard !coinIds.isEmpty else {
+        if coinIds.isEmpty {
             return
         }
 
         runTask(in: self) { provider in
-            let response: MarketsDTO.ChartsHistory.PreviewResponse
+            let filteredItems = provider.filterItemsToRequest(coinIds, interval: interval)
 
             do {
-                // Need for filtered coins already received
-                let filteredCoinIds = coinIds.filter {
-                    !(provider.items[$0]?.keys.contains(interval) ?? false)
-                }
-
-                guard !filteredCoinIds.isEmpty else {
+                if filteredItems.isEmpty {
+                    provider.log("Filtered items list to request is empty. Skip loading")
                     return
                 }
 
-                response = try await provider.loadItems(for: filteredCoinIds, with: interval)
+                provider.log("Filtered items list to request is not empty. Attempting to fetch \(filteredItems.count) items")
+                let responses = try await provider.fetchItems(ids: filteredItems, interval: interval)
+
+                var copyItems: TokensChartsHistory = provider.items
+
+                for response in responses {
+                    for (key, value) in response {
+                        copyItems[key, default: [:]][interval] = value
+                    }
+                }
+
+                provider.items = copyItems
             } catch {
-                AppLog.shared.debug("\(String(describing: provider)) loaded charts history preview list tokens did receive error \(error.localizedDescription)")
-                return
+                provider.log("Loaded charts history preview list tokens did receive error \(error.localizedDescription)")
             }
 
-            // It is necessary in order to set the value once in the value of items
-            var copyItems: [String: [MarketsPriceIntervalType: MarketsChartModel]] = provider.items
-
-            for (key, value) in response {
-                copyItems[key] = [interval: value]
-            }
-
-            provider.items = copyItems
+            provider.registerLoadedItems(requestedItemsIds: filteredItems, interval: interval)
         }
     }
 
@@ -65,9 +70,84 @@ final class MarketsListChartsHistoryProvider {
     }
 }
 
+private extension MarketsListChartsHistoryProvider {
+    var maxNumberOfItemsPerRequest: Int { 200 }
+}
+
 // MARK: Private
 
 private extension MarketsListChartsHistoryProvider {
+    func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[\(String(describing: self))] - \(message())")
+    }
+
+    func filterItemsToRequest(_ newItemsToRequest: [String], interval: MarketsPriceIntervalType) -> [String] {
+        let notLoadedItems = newItemsToRequest.filter { items[$0]?[interval] == nil }
+        return lock {
+            guard let alreadyRequestedItemsForInterval = requestedItemsDictionary[interval] else {
+                requestedItemsDictionary[interval] = notLoadedItems.toSet()
+                return notLoadedItems
+            }
+
+            let filteredList = notLoadedItems.filter { tokenId in
+                let alreadyRequested = alreadyRequestedItemsForInterval.contains(tokenId)
+                return !alreadyRequested
+            }
+            requestedItemsDictionary[interval] = alreadyRequestedItemsForInterval.union(filteredList)
+            return filteredList
+        }
+    }
+
+    func registerLoadedItems(requestedItemsIds: [String], interval: MarketsPriceIntervalType) {
+        lock {
+            guard var requestedItems = requestedItemsDictionary[interval] else {
+                assertionFailure("Requested items should contains items for provided interval")
+                return
+            }
+
+            requestedItemsIds.forEach { requestedItems.remove($0) }
+            if requestedItems.isEmpty {
+                requestedItemsDictionary.removeValue(forKey: interval)
+            } else {
+                requestedItemsDictionary[interval] = requestedItems
+            }
+        }
+    }
+
+    func fetchItems(ids: [String], interval: MarketsPriceIntervalType) async throws -> [MarketsDTO.ChartsHistory.PreviewResponse] {
+        var idsToRequest: [[String]] = []
+
+        var offset = 0
+        log("Attempt to fetch items for interval: \(interval.rawValue). Number of items: \(ids.count)")
+        while offset < ids.count {
+            if ids.count - offset <= maxNumberOfItemsPerRequest {
+                log("Number of items is less than or equal to max items per request. Executing one request")
+                idsToRequest.append(Array(ids[offset...]))
+                break
+            } else {
+                let lowerBound = offset
+                offset += maxNumberOfItemsPerRequest
+                let range = lowerBound ..< offset
+                idsToRequest.append(Array(ids[range]))
+                log("Number of items is more than max per request. Adding to request list range: \(range)")
+            }
+        }
+
+        return try await withThrowingTaskGroup(of: MarketsDTO.ChartsHistory.PreviewResponse.self, returning: [MarketsDTO.ChartsHistory.PreviewResponse].self) { [weak self] group in
+            guard let self else { return [] }
+
+            for idsList in idsToRequest {
+                group.addTask { try await self.loadItems(for: idsList, with: interval) }
+            }
+
+            var responses = [MarketsDTO.ChartsHistory.PreviewResponse]()
+            for try await taskResult in group {
+                responses.append(taskResult)
+            }
+            return responses
+        }
+    }
+
     func loadItems(
         for coinIds: [String],
         with interval: MarketsPriceIntervalType
@@ -78,7 +158,7 @@ private extension MarketsListChartsHistoryProvider {
             interval: interval
         )
 
-        AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
+        log("Loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
         return try await tangemApiService.loadCoinsHistoryChartPreview(requestModel: requestModel)
     }

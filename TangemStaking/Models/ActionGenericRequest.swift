@@ -13,7 +13,7 @@ public struct ActionGenericRequest {
     public let address: String
     public let additionalAddresses: AdditionalAddresses?
     public let token: StakingTokenItem
-    public let validator: String
+    public let validator: String?
     public let integrationId: String
     public let tronResource: String?
 
@@ -22,7 +22,7 @@ public struct ActionGenericRequest {
         address: String,
         additionalAddresses: AdditionalAddresses?,
         token: StakingTokenItem,
-        validator: String,
+        validator: String?,
         integrationId: String,
         tronResource: String?
     ) {

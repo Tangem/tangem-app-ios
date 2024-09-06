@@ -184,7 +184,7 @@ private extension StakingModel {
 
     func estimateFee(amount: Decimal, validator: String) async throws -> Decimal {
         try await stakingManager.estimateFee(
-            action: StakingAction(amount: amount, validator: validator, type: .stake)
+            action: StakingAction(amount: amount, type: .stake(validator: validator))
         )
     }
 
@@ -269,7 +269,7 @@ private extension StakingModel {
         Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
 
         do {
-            let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
+            let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
 
@@ -394,13 +394,13 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        Publishers.CombineLatest(_amount, _state)
-            .map { amount, state in
-                guard let amount, let fee = state?.fee else {
+        Publishers.CombineLatest3(_amount, _state, _selectedValidator)
+            .map { amount, state, selectedValidator in
+                guard let amount, let fee = state?.fee, let apr = selectedValidator.value?.apr else {
                     return nil
                 }
 
-                return .staking(amount: amount, fee: fee)
+                return .staking(amount: amount, fee: fee, apr: apr)
             }
             .eraseToAnyPublisher()
     }

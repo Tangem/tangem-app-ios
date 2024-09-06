@@ -30,7 +30,7 @@ class UnstakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let transactionValidator: TransactionValidator
-    private let action: StakingAction
+    private let action: Action
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -41,7 +41,7 @@ class UnstakingModel {
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
         transactionValidator: TransactionValidator,
-        action: StakingAction,
+        action: Action,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
