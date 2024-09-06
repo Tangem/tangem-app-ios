@@ -1,5 +1,5 @@
 //
-//  StakingAnalytics.swift
+//  StakingAnalyticsLogger.swift
 //  TangemStaking
 //
 //  Created by Dmitry Fedorov on 04.09.2024.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol StakingAnalytics {
-    static func log(_ event: String)
+public protocol StakingAnalyticsLogger {
+    func logAPIError()
 }

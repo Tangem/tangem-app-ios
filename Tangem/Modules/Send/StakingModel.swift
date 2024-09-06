@@ -296,7 +296,7 @@ private extension StakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            logTransactionRejected()
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -516,7 +516,7 @@ enum StakingModelError: String, Hashable, Error {
 
 // MARK: Analytics
 
-extension StakingModel {
+private extension StakingModel {
     func logTransactionAnalytics() {
         Analytics.log(event: .transactionSent, params: [
             .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
@@ -534,9 +534,5 @@ extension StakingModel {
         case .alternative:
             Analytics.log(.stakingSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
         }
-    }
-
-    func logTransactionRejected() {
-        Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
     }
 }

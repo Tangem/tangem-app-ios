@@ -13,7 +13,7 @@ import TangemFoundation
 class StakeKitStakingAPIService: StakingAPIService {
     private let provider: MoyaProvider<StakeKitTarget>
     private let credential: StakingAPICredential
-    private let analytics: StakingAnalytics.Type
+    private let analyticsLogger: StakingAnalyticsLogger
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -21,10 +21,10 @@ class StakeKitStakingAPIService: StakingAPIService {
         return decoder
     }()
 
-    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential, analytics: StakingAnalytics.Type) {
+    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential, analyticsLogger: StakingAnalyticsLogger) {
         self.provider = provider
         self.credential = credential
-        self.analytics = analytics
+        self.analyticsLogger = analyticsLogger
     }
 
     func enabledYields() async throws -> StakeKitDTO.Yield.Enabled.Response {
@@ -96,7 +96,7 @@ private extension StakeKitStakingAPIService {
         do {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
         } catch {
-            analytics.log(Constants.errors)
+            analyticsLogger.logAPIError()
             if let stakeKitError = tryMapError(target: request, response: response) {
                 throw stakeKitError
             }
@@ -122,10 +122,4 @@ extension JSONDecoder.DateDecodingStrategy {
         let dateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         return .formatted(dateFormatter)
     }()
-}
-
-extension StakeKitStakingAPIService {
-    enum Constants {
-        static let errors = "[Staking] Errors"
-    }
 }

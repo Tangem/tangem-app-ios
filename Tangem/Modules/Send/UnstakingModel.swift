@@ -53,7 +53,7 @@ class UnstakingModel {
         self.feeTokenItem = feeTokenItem
 
         updateState()
-        logOpenRewards()
+        logOpenScreen()
     }
 }
 
@@ -166,7 +166,7 @@ private extension UnstakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            logTransactionRejected()
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -306,23 +306,24 @@ extension UnstakingModel {
 // MARK: Analytics
 
 private extension UnstakingModel {
-    func logOpenRewards() {
-        guard let validator = stakingManager.state.validator(for: action.validator) else { return }
-        Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator.name])
+    func logOpenScreen() {
+        guard case .pending(let pendingType) = action.type else { return }
+        switch pendingType {
+        case .claimRewards(let validator, let passthrough),
+             .restakeRewards(let validator, let passthrough):
+            Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator ?? ""])
+        default: break
+        }
     }
 
     func logTransactionAnalytics() {
-        guard let validator = stakingManager.state.validator(for: action.validator),
-              let analyticsEvent = action.type.analyticsEvent else { return }
-        Analytics.log(event: analyticsEvent, params: [.validator: validator.name])
-    }
-
-    func logTransactionRejected() {
-        Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
+        guard let analyticsEvent = action.type.analyticsEvent else { return }
+        let validator = action.validator.flatMap { stakingManager.state.validator(for: $0) }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
     }
 }
 
-extension PendingActionType {
+private extension StakingAction.PendingActionType {
     var analyticsEvent: Analytics.Event? {
         switch self {
         case .withdraw: .stakingButtonWithdraw

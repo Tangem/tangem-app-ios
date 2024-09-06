@@ -79,6 +79,11 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func onAppear() {
         loadValues()
+        let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
+        Analytics.log(
+            event: .stakingInfoScreenOpened,
+            params: [.validatorsCount: balances]
+        )
     }
 }
 
@@ -96,24 +101,6 @@ private extension StakingDetailsViewModel {
             .receive(on: DispatchQueue.main)
             .sink { viewModel, state in
                 viewModel.setupView(state: state)
-            }
-            .store(in: &bag)
-
-        stakingManager
-            .statePublisher
-            .compactMap { state -> String? in
-                guard case .staked(let stakeInfo) = state else {
-                    return nil
-                }
-                return String(stakeInfo.balances.filter(\.balanceType.isActive).count)
-            }
-            .first()
-            .receive(on: DispatchQueue.main)
-            .sink { validatorsCount in
-                Analytics.log(
-                    event: .stakingInfoScreenOpened,
-                    params: [.validatorsCount: validatorsCount]
-                )
             }
             .store(in: &bag)
 

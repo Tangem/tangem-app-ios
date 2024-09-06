@@ -53,6 +53,13 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var balances: [StakingBalanceInfo]? {
+        guard case .staked(let stakeInfo) = self else {
+            return nil
+        }
+        return stakeInfo.balances
+    }
+
     public var description: String {
         switch self {
         case .loading: "loading"

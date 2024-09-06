@@ -305,6 +305,7 @@ extension Analytics {
         case stakingLinkWhatIsStaking = "[Staking] Link - What Is Staking"
         case stakingButtonStake = "[Staking] Button - Stake"
         case stakingAmountScreenOpened = "[Staking] Amount Screen Opened"
+        case stakingScreenReopened = "[Staking] Screen Reopened"
         case stakingButtonMax = "[Staking] Button - Max"
         case stakingButtonNext = "[Staking] Button - Next"
         case stakingButtonCancel = "[Staking] Button - Cancel"

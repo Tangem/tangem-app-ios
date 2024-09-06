@@ -134,9 +134,9 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         ))
         sendCoordinator = coordinator
 
-        guard let validator = options.manager.state.validator(for: action.validator),
-              let analyticsEvent = action.type.analyticsEvent else { return }
-        Analytics.log(event: analyticsEvent, params: [.validator: validator.name])
+        guard let analyticsEvent = action.type.analyticsEvent else { return }
+        let validator = action.validator.flatMap { options.manager.state.validator(for: $0) }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
     }
 
     func openWhatIsStaking() {

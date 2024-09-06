@@ -16,7 +16,7 @@ class StakingDependenciesFactory {
         TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
             configuration: .defaultConfiguration,
-            analytics: Analytics.self
+            analyticsLogger: CommonStakingAnalyticsLogger()
         )
     }
 
@@ -39,12 +39,5 @@ class StakingDependenciesFactory {
             repository: repository,
             provider: provider
         )
-    }
-}
-
-extension Analytics: StakingAnalytics {
-    static func log(_ event: String) {
-        guard let event = Analytics.Event(rawValue: event) else { return }
-        log(event, params: [:])
     }
 }
