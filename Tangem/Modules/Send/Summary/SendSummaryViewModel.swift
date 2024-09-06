@@ -97,8 +97,10 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         } else {
             Analytics.log(
                 event: .stakingConfirmationScreenOpened,
-                params: [.validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
-                         .action: actionType.analyticsAction?.rawValue ?? ""]
+                params: [
+                    .validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
+                    .action: actionType.analyticsAction?.rawValue ?? "",
+                ]
             )
         }
 

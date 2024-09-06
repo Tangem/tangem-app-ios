@@ -163,7 +163,7 @@ extension Analytics {
         case stakeSourceStakeInfo = "Stake Info"
         case stakeSourceConfirmation = "Confirmation"
         case stakeSourceValidators = "Validators"
-        
+
         case stakeActionStake = "Stake"
         case stakeActionRestake = "Restake"
         case stakeActionClaim = "Claim"

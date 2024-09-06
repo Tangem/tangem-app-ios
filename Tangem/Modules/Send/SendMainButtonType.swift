@@ -37,7 +37,7 @@ enum SendFlowActionType: Hashable {
         case .unlock: Localization.stakingUnlockedLocked
         }
     }
-    
+
     var analyticsAction: Analytics.ParameterValue? {
         switch self {
         case .stake: .stakeActionStake
