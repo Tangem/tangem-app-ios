@@ -22,6 +22,7 @@ struct UnstakingFlowBaseBuilder {
         let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
+        notificationManager.setupManager(with: unstakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)

@@ -295,6 +295,19 @@ extension UnstakingModel: StakingNotificationManagerInput {
     }
 }
 
+// MARK: - NotificationTapDelegate
+
+extension UnstakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateState()
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
+    }
+}
+
 extension UnstakingModel {
     typealias Action = StakingAction
 
