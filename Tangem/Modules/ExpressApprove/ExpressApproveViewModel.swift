@@ -185,7 +185,7 @@ private extension ExpressApproveViewModel {
             do {
                 try await viewModel.expressInteractor.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
-            } catch TangemSdkError.userCancelled {
+            } catch SendTransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
                 viewModel.logger.error(error)

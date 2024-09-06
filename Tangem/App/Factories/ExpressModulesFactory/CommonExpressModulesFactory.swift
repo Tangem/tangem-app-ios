@@ -190,8 +190,6 @@ private extension CommonExpressModulesFactory {
             analyticsLogger: analyticsLogger
         )
 
-        let transactionDispatcher = SendTransactionDispatcherFactory(walletModel: initialWalletModel, signer: signer).makeSendDispatcher()
-
         let interactor = ExpressInteractor(
             userWalletId: userWalletId,
             initialWallet: initialWalletModel,
@@ -203,7 +201,7 @@ private extension CommonExpressModulesFactory {
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
             expressAPIProvider: expressAPIProvider,
-            transactionDispatcher: transactionDispatcher,
+            signer: signer,
             logger: logger
         )
 
