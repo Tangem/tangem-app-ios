@@ -47,17 +47,20 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .loading:
-            show(notification: .stake(
+            show(info: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
+            hideErrorEvents()
         case .approveTransactionInProgress:
-            show(notification: .approveTransactionInProgress)
+            show(info: .approveTransactionInProgress)
+            hideErrorEvents()
         case .readyToApprove:
-            show(notification: .stake(
+            show(info: .stake(
                 tokenSymbol: tokenItem.currencySymbol,
                 rewardScheduleType: yield.rewardScheduleType
             ))
+            hideErrorEvents()
         case .readyToStake(let readyToStake):
             var events: [StakingNotificationEvent] = [
                 .stake(
@@ -83,33 +86,36 @@ private extension CommonStakingNotificationManager {
                 )
             }
 
-            show(events: events)
+            show(info: events)
+            hideErrorEvents()
 
         case .validationError(let validationError, _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
-            show(notification: .validationErrorEvent(validationErrorEvent))
+            show(error: .validationErrorEvent(validationErrorEvent))
         case .networkError:
-            show(notification: .networkUnreachable)
+            show(error: .networkUnreachable)
         }
     }
 
     func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
         switch (state, action.type) {
         case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
-            show(notification: .withdraw)
+            show(info: .withdraw)
+            hideErrorEvents()
         case (.loading, _), (.ready, _):
-            show(notification: .unstake(
+            show(info: .unstake(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
+            hideErrorEvents()
         case (.validationError(let validationError, _), _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
-            show(notification: .validationErrorEvent(validationErrorEvent))
+            show(error: .validationErrorEvent(validationErrorEvent))
         case (.networkError, _):
-            show(notification: .networkUnreachable)
+            show(error: .networkUnreachable)
         }
     }
 }
@@ -117,16 +123,35 @@ private extension CommonStakingNotificationManager {
 // MARK: - Show/Hide
 
 private extension CommonStakingNotificationManager {
-    func show(notification: StakingNotificationEvent) {
-        show(events: [notification])
+    func show(info event: StakingNotificationEvent) {
+        show(info: [event])
     }
 
-    func show(events: [StakingNotificationEvent]) {
+    func show(info events: [StakingNotificationEvent]) {
         let factory = NotificationsFactory()
 
         notificationInputsSubject.value = events.map { event in
             factory.buildNotificationInput(for: event) { [weak self] id, actionType in
                 self?.delegate?.didTapNotification(with: id, action: actionType)
+            }
+        }
+    }
+
+    func show(error event: StakingNotificationEvent) {
+        let input = NotificationsFactory().buildNotificationInput(for: event) { [weak self] id, actionType in
+            self?.delegate?.didTapNotification(with: id, action: actionType)
+        }
+
+        notificationInputsSubject.value.append(input)
+    }
+
+    func hideErrorEvents() {
+        notificationInputsSubject.value.removeAll { input in
+            switch input.settings.event {
+            case StakingNotificationEvent.validationErrorEvent, StakingNotificationEvent.networkUnreachable:
+                return true
+            default:
+                return false
             }
         }
     }
