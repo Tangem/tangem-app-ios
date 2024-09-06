@@ -1,0 +1,4 @@
+"NFCReaderUsageDescription" = "To Scan Smart Card";
+"NSCameraUsageDescription" = "To Scan QR Code or take a photo for chat support";
+"NSFaceIDUsageDescription" = "Face ID is used to save your cards in the app";
+"NSPhotoLibraryUsageDescription" = "To share with chat support";
