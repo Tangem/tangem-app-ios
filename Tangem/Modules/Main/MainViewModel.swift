@@ -43,6 +43,11 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
 
+    /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
+    /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from
+    /// being placed over the authorization screen.
+    /// This is a workaround until IOS-7856 is implemented.
+    private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
 
     private var bag: Set<AnyCancellable> = []
@@ -122,7 +127,14 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
-        bottomSheetVisibility.show()
+        if shouldDelayBottomSheetVisibility {
+            shouldDelayBottomSheetVisibility = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.bottomSheetVisibilityColdStartDelay) {
+                self.bottomSheetVisibility.show()
+            }
+        } else {
+            bottomSheetVisibility.show()
+        }
     }
 
     /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
@@ -527,5 +539,7 @@ private extension MainViewModel {
         static let pendingWalletsInsertionDelay = 1.0
         static let feedbackRequestDelay = 0.7
         static let pushNotificationAuthorizationRequestDelay = 0.5
+        // TODO: Andrey Fedorov - Get rid of this workaround (IOS-7856)
+        static let bottomSheetVisibilityColdStartDelay = 0.5
     }
 }
