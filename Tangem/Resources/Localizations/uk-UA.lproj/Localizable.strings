@@ -390,7 +390,7 @@
 "markets_token_details_low" = "Низький";
 "markets_token_details_market_capitalization" = "Ринкова капіталізація";
 "markets_token_details_market_capitalization_description" = "Загальна ринкова вартість криптовалюти, що розраховується шляхом множення поточної ціни монети на загальну кількість монет в обігу";
-"markets_token_details_market_rating" = "Рейтинг ринку";
+"markets_token_details_market_rating" = "Рейтинг";
 "markets_token_details_market_rating_description" = "Позиція в крипторейтингу між усіма монетами на основі ринкової капіталізації";
 "markets_token_details_max_supply" = "Максимальна пропозиція";
 "markets_token_details_max_supply_description" = "";

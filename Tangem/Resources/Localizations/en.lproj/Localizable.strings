@@ -129,7 +129,7 @@
 "common_privacy_policy" = "Privacy Policy";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
-"common_read_more" = "Read more";
+"common_read_more" = "Read&nbsp;more";
 "common_receive" = "Receive";
 "common_reject" = "Reject";
 "common_reload" = "Reload";
@@ -388,7 +388,7 @@
 "markets_token_details_liquidity_index" = "Liquidity index";
 "markets_token_details_liquidity_index_description" = "";
 "markets_token_details_low" = "Low";
-"markets_token_details_market_capitalization" = "Market capitalization";
+"markets_token_details_market_capitalization" = "Market cap";
 "markets_token_details_market_capitalization_description" = "The total market value of a cryptocurrency, calculated by multiplying the current price of the coin by the total number of coins in circulation";
 "markets_token_details_market_rating" = "Market rating";
 "markets_token_details_market_rating_description" = "Position in crypto rating between all coins based on market capitalization";
