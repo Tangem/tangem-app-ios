@@ -38,6 +38,8 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
 
+    var isNonZeroFiatBalanceValue: Bool { walletModel.fiatValue ?? 0 > 0 }
+
     var quote: TokenQuote? { walletModel.quote }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }

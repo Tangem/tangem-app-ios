@@ -17,6 +17,7 @@ protocol TokenItemInfoProvider: AnyObject {
     var hasPendingTransactions: Bool { get }
     var balance: String { get }
     var fiatBalance: String { get }
+    var isNonZeroFiatBalanceValue: Bool { get }
     var quote: TokenQuote? { get }
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { get }
     var isStaked: Bool { get }
