@@ -48,9 +48,8 @@ class MarketsQuotesUpdatesScheduler {
     func forceUpdate() {
         cancelUpdates()
         let date = Date()
-        let lastUpdateData = quotesLastUpdateDate ?? date
-        let distance = abs(lastUpdateData.distance(to: date))
-        let remainingTime = max(quotesUpdateTimeInterval - distance, 0)
+        let lastUpdateDate = quotesLastUpdateDate ?? date
+        let remainingTime = max(quotesUpdateTimeInterval - date.timeIntervalSince(lastUpdateDate), 0)
         forceUpdateTask = Task.delayed(withDelay: remainingTime, operation: { [weak self] in
             do {
                 try Task.checkCancellation()
