@@ -76,6 +76,7 @@ final class MarketsViewModel: ObservableObject {
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
+        quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
@@ -94,7 +95,7 @@ final class MarketsViewModel: ObservableObject {
 
     func onBottomSheetDisappear() {
         isViewVisible = false
-        quotesUpdatesScheduler.pauseUpdates()
+        quotesUpdatesScheduler.cancelUpdates()
     }
 
     func onShowUnderCapAction() {
@@ -224,6 +225,7 @@ private extension MarketsViewModel {
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         viewModel.tokenListLoadingState = .error
+                        viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
                         viewModel.tokenListLoadingState = .loading
                     }
@@ -232,6 +234,8 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
+                    viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
                 default:
                     break
                 }
