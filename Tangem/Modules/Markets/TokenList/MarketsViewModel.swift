@@ -48,6 +48,7 @@ final class MarketsViewModel: ObservableObject {
 
     private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, cellsStateUpdater: self)
 
+    private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
     private var showItemsBelowCapThreshold: Bool = false
@@ -66,15 +67,20 @@ final class MarketsViewModel: ObservableObject {
         self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
+        marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: AppSettings.shared.selectedCurrencyCode, notationFormatter: DefaultAmountNotationFormatter())
+
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
         marketsRatingHeaderViewModel.delegate = self
 
         searchTextBind(searchTextPublisher: searchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
+        bindToCurrencyCodeUpdate()
         dataProviderBind()
+        bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
+        quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
@@ -93,7 +99,7 @@ final class MarketsViewModel: ObservableObject {
 
     func onBottomSheetDisappear() {
         isViewVisible = false
-        quotesUpdatesScheduler.pauseUpdates()
+        quotesUpdatesScheduler.cancelUpdates()
     }
 
     func onShowUnderCapAction() {
@@ -167,13 +173,47 @@ private extension MarketsViewModel {
                 if Constants.filterRequiredReloadInterval.contains(value.order) {
                     viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
                 } else {
-                    viewModel.chartsHistoryProvider.fetch(
-                        for: viewModel.dataProvider.items.map { $0.id },
-                        with: viewModel.filterProvider.currentFilterValue.interval
-                    )
+                    let hotAreaRange = viewModel.listDataController.hotArea
+                    viewModel.requestMiniCharts(forRange: hotAreaRange.range)
                 }
             }
             .store(in: &bag)
+    }
+
+    func bindToCurrencyCodeUpdate() {
+        AppSettings.shared.$selectedCurrencyCode
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newCurrencyCode in
+                viewModel.marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: newCurrencyCode, notationFormatter: .init())
+                viewModel.dataProvider.reset()
+                viewModel.fetch(with: viewModel.currentSearchValue, by: viewModel.filterProvider.currentFilterValue)
+            }
+            .store(in: &bag)
+    }
+
+    func bindToHotArea() {
+        listDataController.hotAreaPublisher
+            .dropFirst()
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .map { $0.range }
+            .withWeakCaptureOf(self)
+            .sink { viewModel, hotAreaRange in
+                viewModel.requestMiniCharts(forRange: hotAreaRange)
+            }
+            .store(in: &bag)
+    }
+
+    func requestMiniCharts(forRange range: ClosedRange<Int>) {
+        let items = tokenViewModels
+        let itemsToFetch: Array<MarketsItemViewModel>.SubSequence
+        if items.count <= range.upperBound {
+            itemsToFetch = items[range.lowerBound...]
+        } else {
+            itemsToFetch = items[range]
+        }
+        let idsToFetch = Array(itemsToFetch).map { $0.tokenId }
+        chartsHistoryProvider.fetch(for: idsToFetch, with: filterProvider.currentFilterValue.interval)
     }
 
     func dataProviderBind() {
@@ -200,6 +240,7 @@ private extension MarketsViewModel {
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         viewModel.tokenListLoadingState = .error
+                        viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
                         viewModel.tokenListLoadingState = .loading
                     }
@@ -208,6 +249,8 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
+                    viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
                 default:
                     break
                 }
@@ -263,14 +306,12 @@ private extension MarketsViewModel {
             .store(in: &bag)
     }
 
-    // MARK: - Private Implementation
-
-    private func mapToItemViewModel(_ list: [MarketsTokenModel], offset: Int) -> [MarketsItemViewModel] {
+    func mapToItemViewModel(_ list: [MarketsTokenModel], offset: Int) -> [MarketsItemViewModel] {
         let listToProcess = filterItemsBelowMarketCapIfNeeded(list)
         return listToProcess.enumerated().map { mapToTokenViewModel(index: $0 + offset, tokenItemModel: $1) }
     }
 
-    private func filterItemsBelowMarketCapIfNeeded(_ list: [MarketsTokenModel]) -> [MarketsTokenModel] {
+    func filterItemsBelowMarketCapIfNeeded(_ list: [MarketsTokenModel]) -> [MarketsTokenModel] {
         guard filterItemsBelowMarketCapThreshold else {
             return list
         }
@@ -284,10 +325,11 @@ private extension MarketsViewModel {
         }
     }
 
-    private func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
+    func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
         return MarketsItemViewModel(
             index: index,
             tokenModel: tokenItemModel,
+            marketCapFormatter: marketCapFormatter,
             prefetchDataSource: listDataController,
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,
@@ -297,11 +339,11 @@ private extension MarketsViewModel {
         )
     }
 
-    private func onAppearPrepareImageCache() {
+    func onAppearPrepareImageCache() {
         imageCache.memoryStorage.config.countLimit = 250
     }
 
-    private func resetUI() {
+    func resetUI() {
         showItemsBelowCapThreshold = false
     }
 }

@@ -41,6 +41,7 @@ struct MultiWalletMainContentView: View {
                 .infinityFrame(axis: .horizontal)
             }
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokensNotificationInputs)
         .padding(.horizontal, 16)

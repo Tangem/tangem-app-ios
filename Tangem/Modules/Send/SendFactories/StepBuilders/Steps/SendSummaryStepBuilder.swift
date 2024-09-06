@@ -33,6 +33,7 @@ struct SendSummaryStepBuilder {
 
         let viewModel = makeSendSummaryViewModel(
             interactor: interactor,
+            actionType: actionType,
             notificationManager: notificationManager,
             editableType: editableType,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
@@ -57,6 +58,7 @@ struct SendSummaryStepBuilder {
 private extension SendSummaryStepBuilder {
     func makeSendSummaryViewModel(
         interactor: SendSummaryInteractor,
+        actionType: SendFlowActionType,
         notificationManager: NotificationManager,
         editableType: SendSummaryViewModel.EditableType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
@@ -66,7 +68,8 @@ private extension SendSummaryStepBuilder {
     ) -> SendSummaryViewModel {
         let settings = SendSummaryViewModel.Settings(
             tokenItem: walletModel.tokenItem,
-            editableType: editableType
+            editableType: editableType,
+            actionType: actionType
         )
 
         return SendSummaryViewModel(

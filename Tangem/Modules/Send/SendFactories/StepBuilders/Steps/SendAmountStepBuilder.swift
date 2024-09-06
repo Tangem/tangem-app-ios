@@ -19,7 +19,8 @@ struct SendAmountStepBuilder {
         io: IO,
         sendFeeLoader: any SendFeeLoader,
         sendQRCodeService: SendQRCodeService?,
-        sendAmountValidator: SendAmountValidator
+        sendAmountValidator: SendAmountValidator,
+        source: SendModel.PredefinedValues.Source
     ) -> ReturnValue {
         let interactor = makeSendAmountInteractor(io: io, sendAmountValidator: sendAmountValidator)
         let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
@@ -27,7 +28,8 @@ struct SendAmountStepBuilder {
         let step = SendAmountStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendFeeLoader: sendFeeLoader
+            sendFeeLoader: sendFeeLoader,
+            source: source
         )
 
         let compact = makeSendAmountCompactViewModel(input: io.input)

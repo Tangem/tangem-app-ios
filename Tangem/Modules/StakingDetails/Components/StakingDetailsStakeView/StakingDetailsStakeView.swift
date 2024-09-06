@@ -72,7 +72,7 @@ struct StakingDetailsStakeView: View {
 
             Spacer(minLength: 4)
 
-            Text(data.balance.fiat)
+            SensitiveText(data.balance.fiat)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
         }
     }
@@ -86,7 +86,7 @@ struct StakingDetailsStakeView: View {
 
             Spacer(minLength: 4)
 
-            Text(data.balance.crypto)
+            SensitiveText(data.balance.crypto)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
     }

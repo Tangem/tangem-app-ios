@@ -8,20 +8,15 @@
 
 import Foundation
 
-public enum PendingActionType: Hashable {
-    case withdraw(passthrough: String)
-    case claimRewards(passthrough: String)
-    case restakeRewards(passthrough: String)
-    case voteLocked(passthrough: String)
-    case unlockLocked(passthrough: String)
+public struct PendingActionType: Hashable {
+    public let type: ActionType
+    public let passthrough: String
 
-    var passthrough: String {
-        switch self {
-        case .withdraw(let passthrough): passthrough
-        case .claimRewards(let passthrough): passthrough
-        case .restakeRewards(let passthrough): passthrough
-        case .voteLocked(let passthrough): passthrough
-        case .unlockLocked(let passthrough): passthrough
-        }
+    public enum ActionType: Hashable {
+        case withdraw
+        case claimRewards
+        case restakeRewards
+        case voteLocked
+        case unlockLocked
     }
 }

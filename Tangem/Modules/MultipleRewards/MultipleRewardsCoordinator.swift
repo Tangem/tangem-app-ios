@@ -59,6 +59,7 @@ extension MultipleRewardsCoordinator: MultipleRewardsRoutable {
 
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
             self?.sendCoordinator = nil
+            self?.dismiss()
         })
 
         coordinator.start(with: .init(

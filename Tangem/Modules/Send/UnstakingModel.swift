@@ -19,6 +19,8 @@ protocol UnstakingModelStateProvider {
 }
 
 class UnstakingModel {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - Data
 
     private let _state = CurrentValueSubject<State, Never>(.loading)
@@ -30,7 +32,7 @@ class UnstakingModel {
     private let stakingManager: StakingManager
     private let sendTransactionDispatcher: SendTransactionDispatcher
     private let transactionValidator: TransactionValidator
-    private let action: StakingAction
+    private let action: Action
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -41,7 +43,7 @@ class UnstakingModel {
         stakingManager: StakingManager,
         sendTransactionDispatcher: SendTransactionDispatcher,
         transactionValidator: TransactionValidator,
-        action: StakingAction,
+        action: Action,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
@@ -53,6 +55,7 @@ class UnstakingModel {
         self.feeTokenItem = feeTokenItem
 
         updateState()
+        logOpenScreen()
     }
 }
 
@@ -102,7 +105,7 @@ private extension UnstakingModel {
 
     func validate(amount: Decimal, fee: Decimal) -> UnstakingModel.State? {
         do {
-            try transactionValidator.validate(amount: makeAmount(value: amount), fee: makeFee(value: fee))
+            try transactionValidator.validate(fee: makeFee(value: fee).amount)
             return nil
         } catch let error as ValidationError {
             return .validationError(error, fee: fee)
@@ -143,6 +146,8 @@ private extension UnstakingModel {
             let transaction = try await stakingManager.transaction(action: action)
             let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
+            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: nil)
+
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
             proceed(error: error)
@@ -154,6 +159,7 @@ private extension UnstakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -164,8 +170,7 @@ private extension UnstakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            // TODO: Add analytics
-            break
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -291,6 +296,19 @@ extension UnstakingModel: StakingNotificationManagerInput {
     }
 }
 
+// MARK: - NotificationTapDelegate
+
+extension UnstakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateState()
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
+    }
+}
+
 extension UnstakingModel {
     typealias Action = StakingAction
 
@@ -299,5 +317,46 @@ extension UnstakingModel {
         case ready(fee: Decimal)
         case validationError(ValidationError, fee: Decimal)
         case networkError(Error)
+    }
+}
+
+// MARK: Analytics
+
+private extension UnstakingModel {
+    func logOpenScreen() {
+        guard case .pending(let pendingType) = action.type else { return }
+        switch pendingType {
+        case .claimRewards(let validator, let passthrough),
+             .restakeRewards(let validator, let passthrough):
+            Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator ?? ""])
+        default: break
+        }
+    }
+
+    func logTransactionAnalytics() {
+        guard let analyticsEvent = action.type.analyticsEvent else { return }
+        let validator = action.validator.flatMap { stakingManager.state.validator(for: $0) }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
+    }
+}
+
+private extension StakingAction.PendingActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .withdraw: .stakingButtonWithdraw
+        case .claimRewards: .stakingButtonClaim
+        case .restakeRewards: .stakingButtonRestake
+        default: nil
+        }
+    }
+}
+
+extension UnstakingModel.Action.ActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .stake: .stakingButtonStake
+        case .unstake: .stakingButtonUnstake
+        case .pending(let pending): pending.analyticsEvent
+        }
     }
 }

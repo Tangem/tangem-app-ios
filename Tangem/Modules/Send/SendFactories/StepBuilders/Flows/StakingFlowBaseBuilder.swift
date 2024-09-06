@@ -23,6 +23,7 @@ struct StakingFlowBaseBuilder {
         let stakingModel = builder.makeStakingModel(stakingManager: manager)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: stakingModel, input: stakingModel)
+        notificationManager.setupManager(with: stakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
         sendFeeCompactViewModel.bind(input: stakingModel)
@@ -31,7 +32,8 @@ struct StakingFlowBaseBuilder {
             io: (input: stakingModel, output: stakingModel),
             sendFeeLoader: stakingModel,
             sendQRCodeService: .none,
-            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager)
+            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            source: .staking
         )
 
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(

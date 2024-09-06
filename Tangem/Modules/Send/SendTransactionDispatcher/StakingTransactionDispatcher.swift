@@ -17,7 +17,7 @@ class StakingTransactionDispatcher {
     private let pendingHashesSender: StakingPendingHashesSender
     private let stakingTransactionMapper: StakingTransactionMapper
 
-    private var stuck: Stuck? = .none
+    private var stuck: DispatchProgressStuck? = .none
 
     init(
         walletModel: WalletModel,
@@ -45,18 +45,6 @@ extension StakingTransactionDispatcher: SendTransactionDispatcher {
             switch stuck?.type {
             case .none:
                 return try await sendStakeKit(action: action)
-
-            case .sendHash(let result) where action.transactions.last?.id == result.transaction.id:
-                // If it was the last transaction then return
-                let transactionDispatcherResult = try await sendHash(action: action, result: result)
-                stuck = .none
-                return transactionDispatcherResult
-
-            case .sendHash(let result):
-                let index = action.transactions.firstIndex(where: { $0.id == result.transaction.id })
-                let transactionDispatcherResult = try await sendStakeKit(action: action, offset: index)
-                stuck = .none
-                return transactionDispatcherResult
 
             case .send(let transaction):
                 let index = action.transactions.firstIndex(where: { $0.id == transaction.id })
@@ -114,26 +102,20 @@ private extension StakingTransactionDispatcher {
 
     func sendHash(action: StakingTransactionAction, result: StakeKitTransactionSendResult) async throws -> SendTransactionDispatcherResult {
         let hash = StakingPendingHash(transactionId: result.transaction.id, hash: result.result.hash)
-        do {
-            try await pendingHashesSender.sendHash(hash)
-        } catch {
-            stuck = .init(action: action, type: .sendHash(result: result))
-            throw error
-        }
+        try? await pendingHashesSender.sendHash(hash)
 
         return SendTransactionMapper().mapResult(result.result, blockchain: walletModel.blockchainNetwork.blockchain)
     }
 }
 
 extension StakingTransactionDispatcher {
-    struct Stuck: Hashable {
+    struct DispatchProgressStuck: Hashable {
         let action: StakingTransactionAction
         let type: StuckType
-    }
 
-    enum StuckType: Hashable {
-        case send(transaction: StakeKitTransaction)
-        case sendHash(result: StakeKitTransactionSendResult)
+        enum StuckType: Hashable {
+            case send(transaction: StakeKitTransaction)
+        }
     }
 
     enum Errors: Error {
