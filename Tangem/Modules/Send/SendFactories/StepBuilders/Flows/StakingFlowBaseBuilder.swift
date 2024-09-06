@@ -23,6 +23,7 @@ struct StakingFlowBaseBuilder {
         let stakingModel = builder.makeStakingModel(stakingManager: manager)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: stakingModel, input: stakingModel)
+        notificationManager.setupManager(with: stakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
         sendFeeCompactViewModel.bind(input: stakingModel)

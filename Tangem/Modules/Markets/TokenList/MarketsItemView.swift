@@ -67,10 +67,8 @@ struct MarketsItemView: View {
                         .cornerRadiusContinuous(4)
                 }
 
-                if let marketCap = viewModel.marketCap {
-                    Text(marketCap)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                }
+                Text(viewModel.marketCap)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
         }
     }
@@ -129,6 +127,7 @@ extension MarketsItemView {
                 viewModel: .init(
                     index: index,
                     tokenModel: token,
+                    marketCapFormatter: .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: "USD", notationFormatter: .init()),
                     prefetchDataSource: nil,
                     chartsProvider: .init(),
                     filterProvider: .init(),
