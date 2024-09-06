@@ -113,7 +113,7 @@
 "common_import" = "インポート";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
-"common_left" = "%1$@ left";
+"common_left" = "残り%1$@";
 "common_locked" = "ロックされています";
 "common_main_network" = "メインネットワーク";
 "common_network_fee_title" = "ネットワーク手数料";
@@ -405,8 +405,8 @@
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
 "markets_token_details_trading_volume" = "取引量（24時間）";
 "markets_token_details_trading_volume_24h_description" = "過去24時間以内に取引された暗号資産の合計額。市場の活発さと流動性を示します。";
-"markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
-"markets_tooltip_title" = "Add tokens";
+"markets_tooltip_message" = "これをドラッグするか、検索窓をタップして、マーケットから直接トークンを追加します";
+"markets_tooltip_title" = "トークンを追加";
 "onboarding_access_code_feature_1_description" = "すべてのカードを保護するには、単一のアクセスコードを設定する必要があります";
 "onboarding_access_code_feature_1_title" = "保護する";
 "onboarding_access_code_feature_2_description" = "後で各カードに個別のアクセスコードを設定できます";
@@ -677,8 +677,8 @@
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
 "staking_summary_description_text" = "%1$@をステーキングし、年間 ~ %2$@を受け取ります";
-"staking_tap_to_unlock" = "Tap to unlock";
-"staking_tap_to_withdraw" = "Tap to withdraw";
+"staking_tap_to_unlock" = "タップしてロック解除";
+"staking_tap_to_withdraw" = "タップして引き出す";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
 "staking_unbonding" = "ステーキング解約中";
@@ -693,7 +693,7 @@
 "staking_vote" = "投票する";
 "staking_vote_locked" = "投票はロックされています";
 "staking_withdraw" = "引き出す";
-"staking_your_stakes" = "Your stakes";
+"staking_your_stakes" = "あなたのステーキング";
 "story_awe_description" = "カード内に秘密鍵を保管しながら暗号資産を安全に保管します";
 "story_awe_title" = "革新的なハードウェアウォレット";
 "story_backup_description" = "1つのウォレットに最大3枚のカード";
