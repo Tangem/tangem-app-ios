@@ -17,6 +17,8 @@ protocol StakingModelStateProvider {
 }
 
 class StakingModel {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
@@ -25,8 +27,6 @@ class StakingModel {
     private let _approvePolicy = CurrentValueSubject<ApprovePolicy, Never>(.unlimited)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
-
-    // MARK: - Dependencies
 
     // MARK: - Private injections
 
@@ -270,6 +270,7 @@ private extension StakingModel {
             let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
+            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: _selectedValidator.value.value)
 
             proceed(result: result)
             return result

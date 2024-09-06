@@ -19,6 +19,8 @@ protocol UnstakingModelStateProvider {
 }
 
 class UnstakingModel {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - Data
 
     private let _state = CurrentValueSubject<State, Never>(.loading)
@@ -143,6 +145,8 @@ private extension UnstakingModel {
             let transaction = try await stakingManager.transaction(action: action)
             let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
+            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: nil)
+
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
             proceed(error: error)

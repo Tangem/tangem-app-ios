@@ -30,7 +30,9 @@ struct StakingDetailsStakeViewData: Identifiable {
             return string(Localization.stakingDetailsWarmupPeriod, accent: period)
         case .active(let apr):
             return string(Localization.stakingDetailsApr, accent: apr)
-        case .unbounding(let unlitDate):
+        case .unbondingPeriod(let period):
+            return string(Localization.stakingDetailsUnbondingPeriod, accent: period)
+        case .unbonding(let unlitDate):
             let (text, accent) = preparedUntil(unlitDate)
             return string(text, accent: accent)
         case .withdraw:
@@ -80,7 +82,9 @@ extension StakingDetailsStakeViewData: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(title)
         hasher.combine(subtitleType)
+        hasher.combine(icon)
         hasher.combine(balance)
+        hasher.combine(inProgress)
     }
 }
 
@@ -88,13 +92,23 @@ extension StakingDetailsStakeViewData {
     enum SubtitleType: Hashable {
         case warmup(period: String)
         case active(apr: String)
-        case unbounding(until: Date)
+        case unbonding(until: Date)
+        case unbondingPeriod(period: String)
         case withdraw
         case locked
     }
 
-    enum IconType {
+    enum IconType: Hashable {
         case icon(ImageType, color: Color)
         case image(url: URL?)
+
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .icon(let imageType, _):
+                hasher.combine(imageType)
+            case .image(let url):
+                hasher.combine(url)
+            }
+        }
     }
 }
