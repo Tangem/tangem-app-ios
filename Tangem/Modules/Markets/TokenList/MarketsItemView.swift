@@ -12,31 +12,28 @@ import SwiftUI
 struct MarketsItemView: View {
     @ObservedObject var viewModel: MarketsItemViewModel
 
+    @State private var textBlockSize: CGSize = .zero
     private let iconSize = CGSize(bothDimensions: 36)
 
     var body: some View {
         Button(action: {
             viewModel.didTapAction?()
         }) {
-            HStack(spacing: .zero) {
-                HStack(spacing: 12) {
-                    IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+            HStack(spacing: 10) {
+                IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+                    .padding(.trailing, 2)
 
+                VStack(spacing: 3) {
                     tokenInfoView
-                        .layoutPriority(2)
+
+                    tokenMarketPriceView
                 }
+                .readGeometry(\.size, bindTo: $textBlockSize)
 
-                Spacer(minLength: 8)
-
-                HStack(spacing: 10) {
-                    tokenPriceView
-
-                    priceHistoryView
-                }
-                .layoutPriority(3)
+                priceHistoryView
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 15)
+            .padding(.vertical, 14)
             .onAppear {
                 viewModel.onAppear()
             }
@@ -47,37 +44,23 @@ struct MarketsItemView: View {
     }
 
     private var tokenInfoView: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstBaselineCustom, spacing: 4) {
+        HStack(alignment: .firstTextBaseline, spacing: .zero) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(viewModel.name)
                     .lineLimit(1)
+                    .truncationMode(.middle)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                 Text(viewModel.symbol)
                     .lineLimit(1)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
+            .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
 
-            HStack(spacing: 6) {
-                if let marketRating = viewModel.marketRating {
-                    Text(marketRating)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .padding(.horizontal, 5)
-                        .background(Colors.Field.primary)
-                        .cornerRadiusContinuous(4)
-                }
+            Spacer(minLength: Constants.spacerLength)
 
-                Text(viewModel.marketCap)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-            }
-        }
-    }
-
-    private var tokenPriceView: some View {
-        VStack(alignment: .trailing, spacing: 3) {
             Text(viewModel.priceValue)
                 .lineLimit(1)
-                .truncationMode(.middle)
                 .blinkForegroundColor(
                     publisher: viewModel.$priceChangeAnimation,
                     positiveColor: Colors.Text.accent,
@@ -85,6 +68,24 @@ struct MarketsItemView: View {
                     originalColor: Colors.Text.primary1
                 )
                 .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+        }
+    }
+
+    private var tokenMarketPriceView: some View {
+        HStack(spacing: .zero) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                if let marketRating = viewModel.marketRating {
+                    Text(marketRating)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .roundedBackground(with: Colors.Field.primary, verticalPadding: .zero, horizontalPadding: 5, radius: 4)
+                }
+
+                Text(viewModel.marketCap)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            }
+            .frame(minWidth: 0.32 * textBlockSize.width, alignment: .leading)
+
+            Spacer(minLength: Constants.spacerLength)
 
             TokenPriceChangeView(state: viewModel.priceChangeState)
         }
@@ -113,6 +114,7 @@ struct MarketsItemView: View {
 
 extension MarketsItemView {
     enum Constants {
+        static let spacerLength = 8.0
         static let skeletonMediumWidthValue: String = "---------"
         static let skeletonSmallWidthValue: String = "------"
     }
