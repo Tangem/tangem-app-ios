@@ -57,6 +57,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     private let editableType: EditableType
     private let interactor: SendSummaryInteractor
     private let notificationManager: NotificationManager
+    private let actionType: SendFlowActionType
     weak var router: SendSummaryStepsRoutable?
 
     private var bag: Set<AnyCancellable> = []
@@ -72,6 +73,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     ) {
         editableType = settings.editableType
         tokenItem = settings.tokenItem
+        actionType = settings.actionType
 
         self.interactor = interactor
         self.notificationManager = notificationManager
@@ -90,7 +92,17 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         feeVisible = true
         transactionDescriptionIsVisible = true
 
-        Analytics.log(.sendConfirmScreenOpened)
+        if actionType == .send {
+            Analytics.log(.sendConfirmScreenOpened)
+        } else {
+            Analytics.log(
+                event: .stakingConfirmationScreenOpened,
+                params: [
+                    .validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
+                    .action: actionType.analyticsAction?.rawValue ?? "",
+                ]
+            )
+        }
 
         // For the sake of simplicity we're assuming that notifications aren't going to be created after the screen has been displayed
         if notificationInputs.isEmpty, !AppSettings.shared.userDidTapSendScreenSummary {
@@ -114,6 +126,12 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     func userDidTapValidator() {
         didTapSummary()
+
+        Analytics.log(
+            event: .stakingButtonValidator,
+            params: [.source: Analytics.ParameterValue.stakeSourceConfirmation.rawValue]
+        )
+
         router?.summaryStepRequestEditValidators()
     }
 
@@ -221,6 +239,7 @@ extension SendSummaryViewModel {
     struct Settings {
         let tokenItem: TokenItem
         let editableType: EditableType
+        let actionType: SendFlowActionType
     }
 
     enum EditableType: Hashable {

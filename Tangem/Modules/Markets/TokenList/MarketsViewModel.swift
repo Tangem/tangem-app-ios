@@ -48,6 +48,7 @@ final class MarketsViewModel: ObservableObject {
 
     private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, cellsStateUpdater: self)
 
+    private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
     private var showItemsBelowCapThreshold: Bool = false
@@ -66,16 +67,20 @@ final class MarketsViewModel: ObservableObject {
         self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
+        marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: AppSettings.shared.selectedCurrencyCode, notationFormatter: DefaultAmountNotationFormatter())
+
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
         marketsRatingHeaderViewModel.delegate = self
 
         searchTextBind(searchTextPublisher: searchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
+        bindToCurrencyCodeUpdate()
         dataProviderBind()
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
+        quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
@@ -94,7 +99,7 @@ final class MarketsViewModel: ObservableObject {
 
     func onBottomSheetDisappear() {
         isViewVisible = false
-        quotesUpdatesScheduler.pauseUpdates()
+        quotesUpdatesScheduler.cancelUpdates()
     }
 
     func onShowUnderCapAction() {
@@ -175,6 +180,17 @@ private extension MarketsViewModel {
             .store(in: &bag)
     }
 
+    func bindToCurrencyCodeUpdate() {
+        AppSettings.shared.$selectedCurrencyCode
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newCurrencyCode in
+                viewModel.marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: newCurrencyCode, notationFormatter: .init())
+                viewModel.dataProvider.reset()
+                viewModel.fetch(with: viewModel.currentSearchValue, by: viewModel.filterProvider.currentFilterValue)
+            }
+            .store(in: &bag)
+    }
+
     func bindToHotArea() {
         listDataController.hotAreaPublisher
             .dropFirst()
@@ -224,6 +240,7 @@ private extension MarketsViewModel {
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         viewModel.tokenListLoadingState = .error
+                        viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
                         viewModel.tokenListLoadingState = .loading
                     }
@@ -232,6 +249,8 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
+                    viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
                 default:
                     break
                 }
@@ -310,6 +329,7 @@ private extension MarketsViewModel {
         return MarketsItemViewModel(
             index: index,
             tokenModel: tokenItemModel,
+            marketCapFormatter: marketCapFormatter,
             prefetchDataSource: listDataController,
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,

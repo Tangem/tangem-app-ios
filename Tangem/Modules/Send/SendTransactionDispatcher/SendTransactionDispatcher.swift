@@ -21,7 +21,7 @@ struct SendTransactionDispatcherResult: Hashable {
 }
 
 extension SendTransactionDispatcherResult {
-    enum Error: Swift.Error {
+    enum Error: Swift.Error, LocalizedError {
         case informationRelevanceServiceError
         case informationRelevanceServiceFeeWasIncreased
 
@@ -30,5 +30,22 @@ extension SendTransactionDispatcherResult {
         case sendTxError(transaction: SendTransactionType, error: SendTxError)
 
         case demoAlert
+
+        var errorDescription: String? {
+            switch self {
+            case .sendTxError(_, let error):
+                return error.localizedDescription
+            case .demoAlert:
+                return "Demo mode"
+            case .informationRelevanceServiceError:
+                return "Service error"
+            case .informationRelevanceServiceFeeWasIncreased:
+                return "Fee was increased"
+            case .transactionNotFound:
+                return "Transaction not found"
+            case .userCancelled:
+                return "User cancelled"
+            }
+        }
     }
 }

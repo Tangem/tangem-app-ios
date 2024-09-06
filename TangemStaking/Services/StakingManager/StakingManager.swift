@@ -53,6 +53,13 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var balances: [StakingBalanceInfo]? {
+        guard case .staked(let stakeInfo) = self else {
+            return nil
+        }
+        return stakeInfo.balances
+    }
+
     public var description: String {
         switch self {
         case .loading: "loading"
@@ -61,6 +68,13 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .availableToStake: "availableToStake"
         case .staked: "staked"
         }
+    }
+
+    public func validator(for address: String) -> ValidatorInfo? {
+        guard case .staked(let stakedModel) = self else { return nil }
+        return stakedModel.yieldInfo.validators.first(
+            where: { $0.address == address }
+        )
     }
 }
 

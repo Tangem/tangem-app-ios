@@ -45,6 +45,7 @@ extension Analytics {
         case transactionSourceApprove = "Approve"
         case transactionSourceWalletConnect = "WalletConnect"
         case transactionSourceSell = "Sell"
+        case transactionSourceStaking = "Staking"
 
         case transactionFeeFixed = "Fixed"
         case transactionFeeMin = "Min"
@@ -156,6 +157,18 @@ extension Analytics {
         case feedbackEmail = "Feedback"
         /// The review sheet dismissed w/o further interactions (`RateAppResponse.dismissed`).
         case appRateDismissed = "Close"
+
+        // MARK: - Stake
+
+        case stakeSourceStakeInfo = "Stake Info"
+        case stakeSourceConfirmation = "Confirmation"
+        case stakeSourceValidators = "Validators"
+
+        case stakeActionStake = "Stake"
+        case stakeActionRestake = "Restake"
+        case stakeActionClaim = "Claim"
+        case stakeActionWithdraw = "Withdraw"
+        case stakeActionUnlock = "Unlock"
 
         // MARK: - Common
 
