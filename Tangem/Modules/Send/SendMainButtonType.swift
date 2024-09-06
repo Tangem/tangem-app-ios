@@ -44,7 +44,7 @@ enum SendFlowActionType: Hashable {
         case .withdraw: .stakeActionWithdraw
         case .claimRewards: .stakeActionClaim
         case .restakeRewards: .stakeActionRestake
-        case .unlock: .stakeActionUnlock
+        case .unlockLocked: .stakeActionUnlock
         default: nil
         }
     }
