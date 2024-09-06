@@ -104,7 +104,7 @@ private extension UnstakingModel {
 
     func validate(amount: Decimal, fee: Decimal) -> UnstakingModel.State? {
         do {
-            try transactionValidator.validate(amount: makeAmount(value: amount), fee: makeFee(value: fee))
+            try transactionValidator.validate(fee: makeFee(value: fee).amount)
             return nil
         } catch let error as ValidationError {
             return .validationError(error, fee: fee)
@@ -292,6 +292,19 @@ extension UnstakingModel: SendBaseInput, SendBaseOutput {
 extension UnstakingModel: StakingNotificationManagerInput {
     var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
         stakingManager.statePublisher
+    }
+}
+
+// MARK: - NotificationTapDelegate
+
+extension UnstakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateState()
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
     }
 }
 

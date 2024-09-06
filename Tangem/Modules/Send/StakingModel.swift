@@ -438,6 +438,19 @@ extension StakingModel: StakingNotificationManagerInput {
     }
 }
 
+// MARK: - NotificationTapDelegate
+
+extension StakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateStateSubject.send(())
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
+    }
+}
+
 // MARK: - ApproveViewModelInput
 
 extension StakingModel: ApproveViewModelInput {

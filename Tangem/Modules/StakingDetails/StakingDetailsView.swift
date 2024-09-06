@@ -147,10 +147,8 @@ struct StakingDetailsView: View {
 
     @ViewBuilder
     private var legalView: some View {
-        if let legalText = viewModel.legalText {
-            Text(legalText)
-                .multilineTextAlignment(.center)
-        }
+        Text(viewModel.legalText)
+            .multilineTextAlignment(.center)
     }
 
     @ViewBuilder
@@ -163,7 +161,6 @@ struct StakingDetailsView: View {
             ) {
                 viewModel.userDidTapActionButton()
             }
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
     }
