@@ -23,7 +23,7 @@ struct MarketsItemView: View {
                 IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
                     .padding(.trailing, 2)
 
-                VStack(spacing: 2) {
+                VStack(spacing: 3) {
                     tokenInfoView
 
                     tokenMarketPriceView
