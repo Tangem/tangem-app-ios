@@ -647,7 +647,7 @@
 "staking_locked" = "Locked";
 "staking_migrate" = "Перемістити";
 "staking_native" = "Нативний стейкінг";
-"staking_notification_claim_rewards_text" = "Earned rewards are sent directly to your address. Once claimed, the funds are available for use.";
+"staking_notification_claim_rewards_text" = "Earned rewards will be sent to your wallet and available for use immediately";
 "staking_notification_earn_rewards_text_period_day" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щодня.";
 "staking_notification_earn_rewards_text_period_hour" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються кожну годину.";
 "staking_notification_earn_rewards_text_period_month" = "Стейкінг дозволяє заробляти %1$@. Ваші винагороди за стейкінг зараховуються щомісяця.";
@@ -655,7 +655,7 @@
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
 "staking_notification_unstake_text" = "Винагорода припиняє нараховуватися одразу після того, як ви почнете процес завершення стейкінгу. Процес завершення триває %@.";
-"staking_notification_withdraw_text" = "Your funds have been unstaked. You can now withdraw them along with your earned rewards.";
+"staking_notification_withdraw_text" = "You can now withdraw your funds, it will be available to use immediatly";
 "staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Зʼєднати ще раз";

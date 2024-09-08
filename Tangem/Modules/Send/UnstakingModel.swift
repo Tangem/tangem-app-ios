@@ -55,6 +55,7 @@ class UnstakingModel {
         self.feeTokenItem = feeTokenItem
 
         updateState()
+        logOpenScreen()
     }
 }
 
@@ -158,6 +159,7 @@ private extension UnstakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -168,8 +170,7 @@ private extension UnstakingModel {
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            // TODO: Add analytics
-            break
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -316,5 +317,46 @@ extension UnstakingModel {
         case ready(fee: Decimal)
         case validationError(ValidationError, fee: Decimal)
         case networkError(Error)
+    }
+}
+
+// MARK: Analytics
+
+private extension UnstakingModel {
+    func logOpenScreen() {
+        guard case .pending(let pendingType) = action.type else { return }
+        switch pendingType {
+        case .claimRewards(let validator, let passthrough),
+             .restakeRewards(let validator, let passthrough):
+            Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator ?? ""])
+        default: break
+        }
+    }
+
+    func logTransactionAnalytics() {
+        guard let analyticsEvent = action.type.analyticsEvent else { return }
+        let validator = action.validator.flatMap { stakingManager.state.validator(for: $0) }
+        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
+    }
+}
+
+private extension StakingAction.PendingActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .withdraw: .stakingButtonWithdraw
+        case .claimRewards: .stakingButtonClaim
+        case .restakeRewards: .stakingButtonRestake
+        default: nil
+        }
+    }
+}
+
+extension UnstakingModel.Action.ActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .stake: .stakingButtonStake
+        case .unstake: .stakingButtonUnstake
+        case .pending(let pending): pending.analyticsEvent
+        }
     }
 }
