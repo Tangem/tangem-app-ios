@@ -35,7 +35,7 @@ struct ActiveStakingView: View {
                 HStack(spacing: 4) {
                     SensitiveText(data.balance.fiat)
                         .truncationMode(.middle)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
