@@ -113,7 +113,7 @@
 "common_import" = "Импортировать";
 "common_later" = "Позже";
 "common_learn_and_earn" = "Learn & Earn";
-"common_left" = "%1$@ left";
+"common_left" = "Осталось %1$@";
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
 "common_network_fee_title" = "Сетевая комиссия";
@@ -633,9 +633,9 @@
 "staking_details_metrics_block_header" = "Метрики";
 "staking_details_minimum_requirement" = "Минимальное количество";
 "staking_details_no_rewards_to_claim" = "Нет вознаграждений к получению";
-"staking_details_reward_claiming" = "Способ возраграждения";
+"staking_details_reward_claiming" = "Способ вознаграждения";
 "staking_details_reward_claiming_info" = "Способ получения вознаграждений за стейкинг. Он может быть автоматическим, при котором вознаграждение само зачисляется вам на адрес или в ручную, когда вознаграждение нужно вывести, создав транзакцию на её получение.";
-"staking_details_reward_schedule" = "Период возрагражения";
+"staking_details_reward_schedule" = "Период вознагражения";
 "staking_details_reward_schedule_info" = "Это период, определяющий, когда участники стейкинга получат свои вознаграждения.";
 "staking_details_rewards_to_claim" = "Вознаграждение для получения: %@";
 "staking_details_title" = "Стейкинг %@";
@@ -643,7 +643,7 @@
 "staking_details_unbonding_period_info" = "Период, который необходимо подождать после запроса на вывод средств из стейкинга, прежде чем токены станут доступны.";
 "staking_details_warmup_period" = "Период прогрева";
 "staking_details_warmup_period_info" = "Время, необходимое для начала процесса стейкинга и активации процесса начисления наград";
-"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
+"staking_legal" = "Пользуясь стейкинг сервисом, вы соглашаетесь с %1$@ и %2$@";
 "staking_locked" = "Заблокировано";
 "staking_migrate" = "Переместить";
 "staking_native" = "Нативный стейкинг";
@@ -677,8 +677,8 @@
 "staking_stake_locked" = "Стейкинг закрыт";
 "staking_stake_more" = "Застейкать еще";
 "staking_summary_description_text" = "You stake %1$@ and will be receiving ~%2$@ yearly";
-"staking_tap_to_unlock" = "Tap to unlock";
-"staking_tap_to_withdraw" = "Tap to withdraw";
+"staking_tap_to_unlock" = "Нажмите для разблокировки";
+"staking_tap_to_withdraw" = "Нажмите для вывода";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
 "staking_unbonding" = "Отзыв";

@@ -129,7 +129,7 @@
 "common_privacy_policy" = "Privacy Policy";
 "common_range" = "%1$@-%2$@";
 "common_range_with_space" = "%1$@ — %2$@";
-"common_read_more" = "Read&nbsp;more";
+"common_read_more" = "Read more";
 "common_receive" = "Receive";
 "common_reject" = "Reject";
 "common_reload" = "Reload";
