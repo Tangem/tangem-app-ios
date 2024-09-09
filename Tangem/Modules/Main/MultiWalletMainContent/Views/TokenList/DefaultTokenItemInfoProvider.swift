@@ -36,9 +36,9 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var balance: String { walletModel.allBalanceFormatted.crypto }
 
-    var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
+    var isZeroBalanceValue: Bool { walletModel.allBalance.crypto?.isZero ?? true }
 
-    var isNonZeroFiatBalanceValue: Bool { walletModel.fiatValue ?? 0 > 0 }
+    var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
 
     var quote: TokenQuote? { walletModel.quote }
 

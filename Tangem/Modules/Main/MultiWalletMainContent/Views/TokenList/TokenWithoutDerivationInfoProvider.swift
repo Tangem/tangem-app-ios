@@ -17,7 +17,7 @@ class TokenWithoutDerivationInfoProvider: TokenItemInfoProvider {
     let hasPendingTransactions: Bool = false
     let balance: String = Localization.walletBalanceMissingDerivation
     let fiatBalance: String = BalanceFormatter.defaultEmptyBalanceString
-    var isNonZeroFiatBalanceValue: Bool { false }
+    var isZeroBalanceValue: Bool { true }
     var quote: TokenQuote? { nil }
 
     var tokenItemState: TokenItemViewState = .noDerivation

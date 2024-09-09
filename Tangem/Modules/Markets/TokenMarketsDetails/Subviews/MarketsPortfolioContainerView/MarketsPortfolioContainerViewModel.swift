@@ -137,7 +137,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateExpandedAction() {
         guard
             tokenItemViewModels.count == 1, let tokenViewModel = tokenItemViewModels.first,
-            !tokenViewModel.tokenItemInfoProvider.isNonZeroFiatBalanceValue
+            tokenViewModel.tokenItemInfoProvider.isZeroBalanceValue
         else {
             return
         }
