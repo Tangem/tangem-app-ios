@@ -11,11 +11,12 @@ import SwiftUI
 struct MarketsTokensNetworkSelectorItemView: View {
     @ObservedObject var viewModel: MarketsTokensNetworkSelectorItemViewModel
 
+    let arrowWidth: Double
+
     @State private var size: CGSize = .zero
 
     /// How much arrow should extrude from the edge of the icon
-    private let arrowExtrudeLength: CGFloat = 8
-    private let arrowWidth: Double = Constants.iconWidth
+    private let arrowExtrudeLength: CGFloat = 4
 
     var body: some View {
         HStack(spacing: 8) {
@@ -52,7 +53,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
                     .scaleEffect(0.8)
                     .disabled(viewModel.isReadonly)
             }
-            .padding(.vertical, 15)
+            .padding(.vertical, 16)
         }
         .contentShape(Rectangle())
         .readGeometry(\.size, bindTo: $size)
@@ -90,7 +91,7 @@ struct MarketsTokensNetworkSelectorItemView_Previews: PreviewProvider {
             VStack(spacing: 0) {
                 ForEach(itemsList(count: 1, isSelected: .constant(Bool.random())), id: \.id) { viewModel in
                     StatefulPreviewWrapper(false) { _ in
-                        MarketsTokensNetworkSelectorItemView(viewModel: viewModel)
+                        MarketsTokensNetworkSelectorItemView(viewModel: viewModel, arrowWidth: 40)
                     }
                 }
 

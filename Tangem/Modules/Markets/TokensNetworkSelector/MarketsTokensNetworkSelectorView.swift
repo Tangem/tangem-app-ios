@@ -57,7 +57,6 @@ struct MarketsTokensNetworkSelectorView: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .center, spacing: 12) {
                 IconView(url: viewModel.coinIconURL, size: .init(bothDimensions: 36), forceKingfisher: true)
-                    .background(.red)
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -73,7 +72,6 @@ struct MarketsTokensNetworkSelectorView: View {
                     Text(Localization.marketsAvailableNetworks)
                         .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                 }
-                .background(.yellow)
             }
         }
         .padding(.vertical, 12)
@@ -104,10 +102,9 @@ struct MarketsTokensNetworkSelectorView: View {
     private var networkListView: some View {
         VStack(spacing: .zero) {
             ForEach(viewModel.tokenItemViewModels) {
-                MarketsTokensNetworkSelectorItemView(viewModel: $0)
+                MarketsTokensNetworkSelectorItemView(viewModel: $0, arrowWidth: 36)
             }
         }
-        .padding(.leading, 8)
     }
 }
 
