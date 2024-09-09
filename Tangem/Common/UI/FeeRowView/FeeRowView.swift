@@ -65,7 +65,7 @@ struct FeeRowView: View {
                 .frame(width: 70, height: 15)
         case .loaded(let components):
             trailingView(for: components)
-        case .failedToLoad(let error):
+        case .failedToLoad:
             Text(AppConstants.dashSign)
                 .style(leadingFont, color: Colors.Text.primary1)
                 .layoutPriority(1)

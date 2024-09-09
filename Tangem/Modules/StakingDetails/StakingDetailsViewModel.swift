@@ -13,25 +13,31 @@ import TangemStaking
 import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
+
     @Published var hideStakingInfoBanner = true
     @Published var detailsViewModels: [DefaultRowViewModel] = []
 
     @Published var rewardViewData: RewardViewData?
-    @Published private(set) var activeValidators: [ValidatorViewData] = []
-    @Published private(set) var unstakedValidators: [ValidatorViewData] = []
+    @Published var stakes: [StakingDetailsStakeViewData] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
     @Published var actionButtonDisabled: Bool = false
     @Published var actionButtonType: ActionButtonType?
     @Published var actionSheet: ActionSheetBinder?
+    @Published var alert: AlertBinder?
+
+    lazy var legalText = makeLegalText()
 
     // MARK: - Dependencies
 
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
+    private lazy var stakingDetailsStakesProvider = StakingDetailsStakeViewDataBuilder(tokenItem: walletModel.tokenItem)
     private weak var coordinator: StakingDetailsRoutable?
 
     private let balanceFormatter = BalanceFormatter()
@@ -76,6 +82,11 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func onAppear() {
         loadValues()
+        let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
+        Analytics.log(
+            event: .stakingInfoScreenOpened,
+            params: [.validatorsCount: balances]
+        )
     }
 }
 
@@ -130,6 +141,7 @@ private extension StakingDetailsViewModel {
             actionButtonType = .stake
         case .staked(let staked):
             setupView(yield: staked.yieldInfo, balances: staked.balances)
+            stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
@@ -139,7 +151,7 @@ private extension StakingDetailsViewModel {
     func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
-        setupValidatorsView(yield: yield, staking: balances.staking())
+        setupStakes(yield: yield, staking: balances.staking())
         setupRewardView(yield: yield, balances: balances)
     }
 
@@ -161,7 +173,7 @@ private extension StakingDetailsViewModel {
             ),
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAvailable,
-                detailsType: .text(walletModel.availableBalanceFormatted.crypto)
+                detailsType: .text(walletModel.availableBalanceFormatted.crypto, sensitive: true)
             ),
         ]
 
@@ -256,6 +268,11 @@ private extension StakingDetailsViewModel {
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
+
+                        let validator = yield.validators.first(
+                            where: { $0.address == balance.validatorAddress }
+                        )
+                        Analytics.log(event: .stakingButtonRewards, params: [.validator: validator?.name ?? ""])
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -264,69 +281,28 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupValidatorsView(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        activeValidators = staking.filter { $0.balanceType.isActive }.compactMap { balance -> ValidatorViewData? in
-            mapToValidatorViewData(yield: yield, balance: balance)
+    func setupStakes(yield: YieldInfo, staking: [StakingBalanceInfo]) {
+        let cachedStakes = stakingPendingTransactionsRepository.records.filter { $0.type == .stake }.compactMap { record in
+            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, record: record)
         }
 
-        unstakedValidators = staking.filter { $0.balanceType.isInactive }.compactMap { balance -> ValidatorViewData? in
-            mapToValidatorViewData(yield: yield, balance: balance)
-        }
-    }
-
-    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
-        guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
-            return nil
-        }
-
-        let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-            balance.amount,
-            currencyCode: walletModel.tokenItem.currencySymbol
-        )
-        let balanceFiat = walletModel.tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
-        }
-        let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-
-        let subtitleType: ValidatorViewData.SubtitleType? = {
-            switch balance.balanceType {
-            case .rewards: .none
-            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active: validator.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
-            case .unbonding(let date): .unbounding(until: date)
-            case .withdraw: .withdraw
+        let staking = staking.map { balance in
+            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+                Analytics.log(
+                    event: .stakingButtonValidator,
+                    params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
+                )
+                self?.openUnstakingFlow(balance: balance)
             }
-        }()
-
-        let action: (() -> Void)? = {
-            switch balance.balanceType {
-            case .rewards, .warmup, .unbonding:
-                return nil
-            case .active, .withdraw:
-                return { [weak self] in
-                    self?.openUnstakingFlow(balance: balance)
-                }
-            }
-        }()
-
-        return ValidatorViewData(
-            address: validator.address,
-            name: validator.name,
-            imageURL: validator.iconURL,
-            subtitleType: subtitleType,
-            detailsType: .balance(
-                .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
-                action: action
-            )
-        )
-    }
-
-    func remainDaysFormat(date: Date) -> String {
-        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
-            return date.formatted()
         }
 
-        return daysFormatter.string(from: DateComponents(day: days)) ?? days.formatted()
+        stakes = (cachedStakes + staking).sorted(by: { lhs, rhs in
+            if lhs.priority != rhs.priority {
+                return lhs.priority < rhs.priority
+            }
+
+            return lhs.balance.crypto > rhs.balance.crypto
+        })
     }
 
     func openBottomSheet(title: String, description: String) {
@@ -334,20 +310,23 @@ private extension StakingDetailsViewModel {
     }
 
     func openUnstakingFlow(balance: StakingBalanceInfo) {
-        switch PendingActionMapper(balanceInfo: balance).getAction() {
-        case .none:
-            break
-        case .single(let action):
-            coordinator?.openUnstakingFlow(action: action)
-        case .multiple(let actions):
-            var buttons: [Alert.Button] = actions.map { action in
-                .default(Text(action.type.title)) { [weak self] in
-                    self?.coordinator?.openUnstakingFlow(action: action)
+        do {
+            let action = try PendingActionMapper(balanceInfo: balance).getAction()
+            switch action {
+            case .single(let action):
+                coordinator?.openUnstakingFlow(action: action)
+            case .multiple(let actions):
+                var buttons: [Alert.Button] = actions.map { action in
+                    .default(Text(action.type.title)) { [weak self] in
+                        self?.coordinator?.openUnstakingFlow(action: action)
+                    }
                 }
-            }
 
-            buttons.append(.cancel())
-            actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+                buttons.append(.cancel())
+                actionSheet = .init(sheet: .init(title: Text(Localization.commonSelectAction), buttons: buttons))
+            }
+        } catch {
+            alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription)
         }
     }
 
@@ -414,21 +393,14 @@ private extension RewardRateValues {
 }
 
 private extension BalanceType {
-    var isActive: Bool {
+    var priority: Int {
         switch self {
-        case .warmup, .active:
-            return true
-        case .unbonding, .withdraw, .rewards:
-            return false
-        }
-    }
-
-    var isInactive: Bool {
-        switch self {
-        case .unbonding, .withdraw:
-            return true
-        case .warmup, .active, .rewards:
-            return false
+        case .locked: -2
+        case .warmup: -1
+        case .active: 0
+        case .unbonding: 1
+        case .withdraw: 2
+        case .rewards: -10 // Will not use to rewards
         }
     }
 }
@@ -441,6 +413,43 @@ extension StakingAction.ActionType {
         case .pending(.withdraw): Localization.stakingWithdraw
         case .pending(.claimRewards): Localization.commonClaimRewards
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
+        case .pending(.voteLocked): Localization.stakingVote
+        case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
+    }
+}
+
+extension StakingDetailsViewModel {
+    func makeLegalText() -> AttributedString {
+        let tos = Localization.commonTermsOfUse
+        let policy = Localization.commonPrivacyPolicy
+
+        func makeBaseAttributedString(for text: String) -> AttributedString {
+            var attributedString = AttributedString(text)
+            attributedString.font = Fonts.Regular.footnote
+            attributedString.foregroundColor = Colors.Text.tertiary
+            return attributedString
+        }
+
+        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
+            guard let range = attributedString.range(of: textToSearch) else {
+                return
+            }
+
+            attributedString[range].link = url
+            attributedString[range].foregroundColor = Colors.Text.accent
+        }
+
+        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
+        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
+        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
+        return attributedString
+    }
+}
+
+extension StakingDetailsViewModel {
+    enum Constants {
+        static let tosURL = URL(string: "https://docs.stakek.it/docs/terms-of-use")!
+        static let privacyPolicyURL = URL(string: "https://docs.stakek.it/docs/privacy-policy")!
     }
 }

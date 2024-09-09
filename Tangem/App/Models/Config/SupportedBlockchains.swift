@@ -130,6 +130,7 @@ struct SupportedBlockchains {
             .mantle(testnet: false),
             .cyber(testnet: false),
             .blast(testnet: false),
+            .filecoin,
         ]
     }
 

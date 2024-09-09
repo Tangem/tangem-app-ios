@@ -68,9 +68,14 @@ struct DefaultRowView: View {
             EmptyView()
         case .loader:
             ActivityIndicatorView(style: .medium, color: .gray)
-        case .text(let string):
-            Text(string)
-                .style(appearance.font, color: appearance.detailsColor)
+        case .text(let string, let sensitive):
+            if sensitive {
+                SensitiveText(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            } else {
+                Text(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            }
         case .loadable(let state):
             LoadableTextView(
                 state: state,

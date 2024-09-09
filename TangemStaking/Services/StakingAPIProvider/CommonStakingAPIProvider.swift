@@ -48,6 +48,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] },
                 inputToken: mapper.mapToTokenDTO(from: request.token),
                 tronResource: request.tronResource
             )
@@ -73,6 +74,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] },
                 inputToken: mapper.mapToTokenDTO(from: request.token),
                 tronResource: request.tronResource
             )
@@ -86,7 +88,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return result
     }
 
-    func estimatePendingFee(request: ActionGenericRequest, type: PendingActionType) async throws -> Decimal {
+    func estimatePendingFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {
         let request = StakeKitDTO.EstimateGas.Pending.Request(
             type: mapper.mapToActionType(from: type),
             integrationId: request.integrationId,
@@ -100,6 +102,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] },
                 inputToken: mapper.mapToTokenDTO(from: request.token),
                 tronResource: request.tronResource
             )
@@ -125,6 +128,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] },
                 inputToken: mapper.mapToTokenDTO(from: request.token),
                 tronResource: request.tronResource
             )
@@ -147,6 +151,7 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             args: .init(
                 amount: request.amount.description,
                 validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] },
                 inputToken: mapper.mapToTokenDTO(from: request.token),
                 tronResource: request.tronResource
             )
@@ -157,13 +162,17 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return enterAction
     }
 
-    func pendingAction(request: ActionGenericRequest, type: PendingActionType) async throws -> PendingAction {
+    func pendingAction(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> PendingAction {
         let request = StakeKitDTO.EstimateGas.Pending.Request(
             type: mapper.mapToActionType(from: type),
             integrationId: request.integrationId,
             passthrough: type.passthrough,
             addresses: .init(address: request.address),
-            args: .init(amount: request.amount.description, validatorAddress: request.validator)
+            args: .init(
+                amount: request.amount.description,
+                validatorAddress: request.validator,
+                validatorAddresses: request.validator.map { [$0] }
+            )
         )
 
         let response = try await service.pendingAction(request: request)

@@ -12,7 +12,15 @@ import CombineExt
 
 class MarketsListDataController {
     var visibleRangeAreaPublisher: some Publisher<VisibleArea, Never> {
-        visibleRangeAreaSubject.eraseToAnyPublisher()
+        visibleRangeAreaSubject
+    }
+
+    var hotAreaPublisher: some Publisher<VisibleArea, Never> {
+        hotAreaSubject
+    }
+
+    var hotArea: VisibleArea {
+        hotAreaSubject.value
     }
 
     // MARK: - Private Properties
@@ -81,10 +89,19 @@ class MarketsListDataController {
 
         visibleRangeAreaSubject.dropFirst().removeDuplicates()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
-            .map { newVisibleArea in
+            .withWeakCaptureOf(self)
+            .compactMap { dataController, newVisibleArea in
+                guard
+                    let dataFetcher = dataController.dataFetcher,
+                    dataFetcher.totalItems > 0
+                else {
+                    return nil
+                }
                 let numberOfItemsInBufferZone = Constants.itemsInBufferZone
+                let lowerBound = max(0, newVisibleArea.range.lowerBound - numberOfItemsInBufferZone)
+                let upperBound = min(dataFetcher.totalItems - 1, newVisibleArea.range.upperBound + numberOfItemsInBufferZone)
                 return .init(
-                    range: max(0, newVisibleArea.range.lowerBound - numberOfItemsInBufferZone) ... newVisibleArea.range.upperBound + numberOfItemsInBufferZone,
+                    range: lowerBound ... upperBound,
                     direction: newVisibleArea.direction
                 )
             }

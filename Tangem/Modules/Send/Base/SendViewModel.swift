@@ -138,12 +138,20 @@ final class SendViewModel: ObservableObject {
     }
 
     func share(url: URL) {
-        Analytics.log(.sendButtonShare)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonShare)
+        } else {
+            Analytics.log(.stakingButtonShare)
+        }
         coordinator?.openShareSheet(url: url)
     }
 
     func explore(url: URL) {
-        Analytics.log(.sendButtonExplore)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonExplore)
+        } else {
+            Analytics.log(.stakingButtonExplore)
+        }
         coordinator?.openExplorer(url: url)
     }
 }
@@ -187,7 +195,7 @@ private extension SendViewModel {
     @MainActor
     func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .userCancelled, .transactionNotFound, .stakingUnsupported:
+        case .userCancelled, .transactionNotFound:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
