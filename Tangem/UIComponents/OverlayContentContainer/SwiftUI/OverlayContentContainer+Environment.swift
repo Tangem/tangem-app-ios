@@ -2,7 +2,7 @@
 //  OverlayContentContainer+Environment.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 12.07.2024.
+//  Created by Andrey Fedorov on 12.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 

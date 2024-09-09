@@ -19,6 +19,7 @@ class MarketsQuotesUpdatesScheduler {
     private var updateList = Set<String>()
     private var task: AsyncTaskScheduler = .init()
     private var forceUpdateTask: AnyCancellable?
+    private var quotesLastUpdateDate: Date?
 
     func scheduleQuotesUpdate(for tokenIDs: Set<String>) {
         lock {
@@ -34,8 +35,10 @@ class MarketsQuotesUpdatesScheduler {
         }
     }
 
-    func pauseUpdates() {
+    func cancelUpdates() {
         task.cancel()
+        forceUpdateTask?.cancel()
+        forceUpdateTask = nil
     }
 
     func resumeUpdates() {
@@ -43,13 +46,32 @@ class MarketsQuotesUpdatesScheduler {
     }
 
     func forceUpdate() {
-        task.cancel()
-        forceUpdateTask?.cancel()
-        forceUpdateTask = runTask(in: self, code: { scheduler in
-            await scheduler.updateQuotes()
-            scheduler.setupUpdateTask()
-            scheduler.forceUpdateTask = nil
+        cancelUpdates()
+        let date = Date()
+        let lastUpdateDate = quotesLastUpdateDate ?? date
+        let remainingTime = max(quotesUpdateTimeInterval - date.timeIntervalSince(lastUpdateDate), 0)
+        forceUpdateTask = Task.delayed(withDelay: remainingTime, operation: { [weak self] in
+            do {
+                try Task.checkCancellation()
+                await self?.updateQuotes()
+                try Task.checkCancellation()
+                self?.setupUpdateTask()
+                self?.forceUpdateTask = nil
+            } catch {
+                if !error.isCancellationError {
+                    self?.forceUpdateTask = nil
+                }
+            }
         }).eraseToAnyCancellable()
+    }
+
+    func resetUpdates() {
+        cancelUpdates()
+        setupUpdateTask()
+    }
+
+    func saveQuotesUpdateDate(_ date: Date) {
+        quotesLastUpdateDate = date
     }
 
     private func setupUpdateTask() {
@@ -69,6 +91,7 @@ class MarketsQuotesUpdatesScheduler {
             return
         }
 
+        saveQuotesUpdateDate(Date())
         await quotesRepository.loadQuotes(currencyIds: quotesToUpdate)
     }
 }

@@ -129,7 +129,7 @@ extension DetailsViewModel {
     }
 
     func openSupportChat() {
-        guard let selectedUserWalletModel else {
+        guard selectedUserWalletModel != nil else {
             return
         }
 
