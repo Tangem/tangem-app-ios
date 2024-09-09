@@ -62,6 +62,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private func updateUI() {
         updateTokenList()
+        updateExpandedAction()
 
         let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
 
@@ -131,6 +132,17 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+    }
+
+    private func updateExpandedAction() {
+        guard
+            tokenItemViewModels.count == 1, let tokenViewModel = tokenItemViewModels.first,
+            tokenViewModel.tokenItemInfoProvider.isZeroBalanceValue
+        else {
+            return
+        }
+
+        tokenViewModel.isExpandedQuickActions = true
     }
 
     // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
