@@ -59,6 +59,7 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .internetComputer,
+            .sei(testnet: false),
         ]
     }
 
@@ -131,7 +132,6 @@ struct SupportedBlockchains {
             .cyber(testnet: false),
             .blast(testnet: false),
             .filecoin,
-            .sei(testnet: false),
         ]
     }
 
