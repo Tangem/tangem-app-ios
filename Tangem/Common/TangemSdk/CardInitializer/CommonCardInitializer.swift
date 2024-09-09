@@ -17,7 +17,7 @@ class CommonCardInitializer {
     private var cardInfo: CardInfo
     private var cancellable: AnyCancellable?
 
-    internal init(tangemSdk: TangemSdk, cardInfo: CardInfo) {
+    init(tangemSdk: TangemSdk, cardInfo: CardInfo) {
         self.tangemSdk = tangemSdk
         self.cardInfo = cardInfo
     }

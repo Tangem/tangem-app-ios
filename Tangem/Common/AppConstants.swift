@@ -14,7 +14,7 @@ enum AppConstants {
     static var webShopUrl: URL {
         var urlComponents = URLComponents(string: "https://buy.tangem.com")!
 
-        var queryItemsDict = [
+        let queryItemsDict = [
             "utm_source": "tangem",
             "utm_medium": "app",
             "app_instance_id": FirebaseAnalytics.Analytics.appInstanceID(),
