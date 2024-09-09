@@ -47,6 +47,8 @@ class ListDataLoader {
     private var cachedSearch: [String: [CoinModel]] = [:]
     private var lastSearchText: String?
 
+    private var taskCancellable: AnyCancellable?
+
     // MARK: - Init
 
     init(supportedBlockchains: Set<Blockchain>, exchangeable: Bool? = nil) {
@@ -69,20 +71,16 @@ class ListDataLoader {
             reset(searchText)
         }
 
-        runTask(in: self) { provider in
-            let items = await provider.loadItems(searchText)
+        taskCancellable?.cancel()
 
-            // If count of data received is less than perPage value then it is last page.
-            if provider.currentPage < provider.totalPages {
-                provider.currentPage += 1
-            } else {
-                provider.canFetchMore = false
+        taskCancellable = runTask(in: self) { provider in
+            do {
+                let items = try await provider.loadItems(searchText)
+                provider.handle(result: .success(items))
+            } catch {
+                provider.handle(result: .failure(error))
             }
-            
-            await runOnMain {
-                provider.items.append(contentsOf: items)
-            }
-        }
+        }.eraseToAnyCancellable()
     }
 
     func fetchMore() {
@@ -90,12 +88,37 @@ class ListDataLoader {
             fetch(lastSearchText)
         }
     }
+
+    func handle(result: Result<[CoinModel], Error>) {
+        do {
+            let items = try result.get()
+
+            try Task.checkCancellation()
+
+            // If count of data received is less than perPage value then it is last page.
+            if currentPage < totalPages {
+                currentPage += 1
+            } else {
+                canFetchMore = false
+            }
+
+            log("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
+
+            self.items.append(contentsOf: items)
+        } catch {
+            if error.isCancellationError {
+                return
+            }
+
+            log("Failed to load next page. Error: \(error)")
+        }
+    }
 }
 
 // MARK: Private
 
 private extension ListDataLoader {
-    func loadItems(_ searchText: String) async -> [CoinModel] {
+    func loadItems(_ searchText: String) async throws -> [CoinModel] {
         let searchText = searchText.trimmed()
         let requestModel = CoinsList.Request(
             supportedBlockchains: supportedBlockchains,
@@ -106,7 +129,7 @@ private extension ListDataLoader {
             active: true
         )
 
-        return await loadMainnetItems(requestModel)
+        return try await loadMainnetItems(requestModel)
     }
 
     func loadTestnetItems(_ requestModel: CoinsList.Request) async -> [CoinModel] {
@@ -119,7 +142,7 @@ private extension ListDataLoader {
             itemsList = cached
         }
 
-        totalPages = Decimal(Double(itemsList.count) / Double(perPage)).intValue(roundingMode: .up)
+        totalPages = itemsList.count / perPage + (itemsList.count % perPage == 0 ? 0 : 1)
 
         guard let searchText = searchText, !searchText.isEmpty else {
             return itemsList
@@ -138,21 +161,16 @@ private extension ListDataLoader {
         return getPage(for: itemsList)
     }
 
-    func loadMainnetItems(_ requestModel: CoinsList.Request) async -> [CoinModel] {
-        do {
-            let response = try await tangemApiService.loadCoins(requestModel: requestModel)
+    func loadMainnetItems(_ requestModel: CoinsList.Request) async throws -> [CoinModel] {
+        let response = try await tangemApiService.loadCoins(requestModel: requestModel)
 
-            totalPages = Decimal(Double(response.total) / Double(perPage)).intValue(roundingMode: .up)
+        totalPages = response.total / perPage + (response.total % perPage == 0 ? 0 : 1)
 
-            return map(
-                response: response,
-                supportedBlockchains: requestModel.supportedBlockchains,
-                contractAddress: requestModel.contractAddress
-            )
-        } catch {
-            log("Ignoring fetch request error")
-            return []
-        }
+        return map(
+            response: response,
+            supportedBlockchains: requestModel.supportedBlockchains,
+            contractAddress: requestModel.contractAddress
+        )
     }
 
     func loadCoinsFromLocalJsonPublisher(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
