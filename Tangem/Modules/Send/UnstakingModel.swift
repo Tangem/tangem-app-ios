@@ -326,8 +326,8 @@ private extension UnstakingModel {
     func logOpenScreen() {
         guard case .pending(let pendingType) = action.type else { return }
         switch pendingType {
-        case .claimRewards(let validator, let passthrough),
-             .restakeRewards(let validator, let passthrough):
+        case .claimRewards(let validator, _),
+             .restakeRewards(let validator, _):
             Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator ?? ""])
         default: break
         }

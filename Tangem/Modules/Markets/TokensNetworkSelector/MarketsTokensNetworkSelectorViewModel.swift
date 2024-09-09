@@ -58,9 +58,14 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
         let tokenItemMapper = TokenItemMapper(supportedBlockchains: selectedUserWalletModel.config.supportedBlockchains)
 
-        let tokenItems = networks.compactMap {
-            tokenItemMapper.mapToTokenItem(id: coinId, name: coinName, symbol: coinSymbol, network: $0)
-        }
+        let tokenItems = networks
+            .compactMap {
+                tokenItemMapper.mapToTokenItem(id: coinId, name: coinName, symbol: coinSymbol, network: $0)
+            }
+            .sorted { lhs, rhs in
+                // Main networks must be up list networks
+                lhs.isBlockchain && lhs.isBlockchain != rhs.isBlockchain
+            }
 
         return tokenItems
     }
