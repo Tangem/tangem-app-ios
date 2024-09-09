@@ -240,14 +240,19 @@ struct TokenMarketsDetailsView: View {
                 Button(action: viewModel.openFullDescription) {
                     Group {
                         Text("\(shortDescription) ")
-                            + Text(Localization.commonReadMore)
-                            .foregroundColor(Colors.Text.accent)
+                            + readMoreText
                     }
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                     .multilineTextAlignment(.leading)
                 }
             }
         }
+    }
+
+    private var readMoreText: Text {
+        let nonBreakingSpace = "\u{00a0}"
+        let readMoreText = Localization.commonReadMore.replacingOccurrences(of: " ", with: nonBreakingSpace)
+        return Text(readMoreText).foregroundColor(Colors.Text.accent)
     }
 }
 
