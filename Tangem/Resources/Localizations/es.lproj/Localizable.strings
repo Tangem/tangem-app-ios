@@ -405,8 +405,8 @@
 "markets_token_details_total_supply_description" = "La cantidad máxima de monedas o tokens que pueden existir para una criptomoneda en particular";
 "markets_token_details_trading_volume" = "Volumen de operaciones (24 horas)";
 "markets_token_details_trading_volume_24h_description" = "La cantidad total de una criptomoneda que se ha negociado en las últimas 24 horas, lo que indica el nivel de actividad y liquidez en el mercado.";
-"markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
-"markets_tooltip_title" = "Add tokens";
+"markets_tooltip_message" = "Tire hacia arriba o toque la barra de búsqueda para agregar tokens directamente desde el mercado";
+"markets_tooltip_title" = "Agregar tokens";
 "onboarding_access_code_feature_1_description" = "Deba configurar un único código de acceso para proteger todas sus tarjetas";
 "onboarding_access_code_feature_1_title" = "Proteger";
 "onboarding_access_code_feature_2_description" = "Puede configurar un código de acceso individual en cada tarjeta más tarde";
