@@ -47,7 +47,7 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
 
-    var isStaked: AnyPublisher<Bool, Never> {
+    var isStakedPublisher: AnyPublisher<Bool, Never> {
         walletModel.stakingManagerStatePublisher
             .map { state in
                 switch state {
