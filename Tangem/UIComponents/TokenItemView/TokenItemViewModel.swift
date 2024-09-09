@@ -113,9 +113,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         infoProvider.isStaked
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.isStaked = $0
-            }
+            .assign(to: \.isStaked, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

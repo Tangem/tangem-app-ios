@@ -231,8 +231,8 @@ private extension TokenDetailsViewModel {
 
     private func bind() {
         Publishers.CombineLatest(
-            walletModel.walletDidChangePublisher, 
-            walletModel.stakingManagerStatePublisher.mapToVoid()
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
         )
         .receive(on: DispatchQueue.main)
         .sink { _ in } receiveValue: { [weak self] newState, _ in
