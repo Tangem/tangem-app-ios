@@ -111,6 +111,7 @@
 "common_go_to_provider" = "Zum Anbieter gehen";
 "common_go_to_token" = "Zum Token";
 "common_import" = "Importieren";
+"common_in_progress" = "In Arbeit";
 "common_later" = "Später";
 "common_learn_and_earn" = "Lernen und verdienen";
 "common_left" = "%1$@ übrig";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "Zum abheben antippen";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Staking beenden%@";
+"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
 "staking_unbonding" = "Lösen der Bindungen";
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";

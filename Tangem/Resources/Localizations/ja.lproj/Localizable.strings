@@ -111,6 +111,7 @@
 "common_go_to_provider" = "プロバイダーへ移動";
 "common_go_to_token" = "トークンへ移動";
 "common_import" = "インポート";
+"common_in_progress" = "進行中";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
 "common_left" = "残り%1$@";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "タップして引き出す";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
+"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
 "staking_unbonding" = "ステーキング解約中";
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ステーキング解除はロックされています";

@@ -111,6 +111,7 @@
 "common_go_to_provider" = "К провайдеру";
 "common_go_to_token" = "Перейти в токен";
 "common_import" = "Импортировать";
+"common_in_progress" = "В процессе";
 "common_later" = "Позже";
 "common_learn_and_earn" = "Learn & Earn";
 "common_left" = "Осталось %1$@";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "Нажмите для вывода";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
+"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
 "staking_unbonding" = "Отзыв";
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
