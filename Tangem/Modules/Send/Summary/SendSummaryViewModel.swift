@@ -21,6 +21,11 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var stakingValidatorsCompactViewModelId: UUID = .init()
     @Published var sendFeeCompactViewModelId: UUID = .init()
 
+    @Published var destinationExpanding = false
+    @Published var amountExpanding = false
+    @Published var validatorExpanding = false
+    @Published var feeExpanding = false
+
     @Published var destinationEditMode = false
     @Published var amountEditMode = false
     @Published var validatorEditMode = false
@@ -115,16 +120,31 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     func onDisappear() {}
 
     func userDidTapDestination() {
+        destinationExpanding = true
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = false
+
         didTapSummary()
         router?.summaryStepRequestEditDestination()
     }
 
     func userDidTapAmount() {
+        destinationExpanding = false
+        amountExpanding = true
+        validatorExpanding = false
+        feeExpanding = false
+
         didTapSummary()
         router?.summaryStepRequestEditAmount()
     }
 
     func userDidTapValidator() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = true
+        feeExpanding = false
+
         didTapSummary()
 
         Analytics.log(
@@ -136,6 +156,11 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     }
 
     func userDidTapFee() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = true
+
         didTapSummary()
         router?.summaryStepRequestEditFee()
     }
