@@ -25,9 +25,14 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
     }
 
     var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> {
-        walletModel.walletDidChangePublisher
-            .map(TokenItemViewState.init)
-            .eraseToAnyPublisher()
+        Publishers.CombineLatest(
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
+        )
+        .map { state, _ in
+            TokenItemViewState(walletModelState: state)
+        }
+        .eraseToAnyPublisher()
     }
 
     var tokenItem: TokenItem { walletModel.tokenItem }
@@ -42,10 +47,14 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
 
-    var isStaked: Bool {
-        switch walletModel.stakingManagerState {
-        case .staked: true
-        case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
-        }
+    var isStaked: AnyPublisher<Bool, Never> {
+        walletModel.stakingManagerStatePublisher
+            .map { state in
+                switch state {
+                case .staked: true
+                case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }
