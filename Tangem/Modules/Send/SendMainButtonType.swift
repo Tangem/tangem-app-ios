@@ -23,7 +23,7 @@ enum SendFlowActionType: Hashable {
     case withdraw
     case claimRewards
     case restakeRewards
-    case unlock
+    case unlockLocked
 
     var title: String {
         switch self {
@@ -34,7 +34,18 @@ enum SendFlowActionType: Hashable {
         case .withdraw: Localization.stakingWithdraw
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.stakingRestakeRewards
-        case .unlock: Localization.stakingUnlockedLocked
+        case .unlockLocked: Localization.stakingUnlockedLocked
+        }
+    }
+
+    var analyticsAction: Analytics.ParameterValue? {
+        switch self {
+        case .stake: .stakeActionStake
+        case .withdraw: .stakeActionWithdraw
+        case .claimRewards: .stakeActionClaim
+        case .restakeRewards: .stakeActionRestake
+        case .unlockLocked: .stakeActionUnlock
+        default: nil
         }
     }
 }

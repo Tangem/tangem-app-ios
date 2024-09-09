@@ -18,8 +18,6 @@ class PendingBackupManager {
 
     func onProceedBackup(_ card: Card) {
         let cardInfo = CardInfo(card: CardDTO(card: card), walletData: .none, name: "")
-        let config = UserWalletConfigFactory(cardInfo).makeConfig()
-
         let backupValidator = BackupValidator()
 
         // clean card from existing pending backup
