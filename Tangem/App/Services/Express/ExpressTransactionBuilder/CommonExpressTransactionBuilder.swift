@@ -91,7 +91,7 @@ private extension CommonExpressTransactionBuilder {
         case .ton:
             return TONTransactionParams(memo: extraDestinationId)
 
-        case .cosmos, .terraV1, .terraV2:
+        case .cosmos, .terraV1, .terraV2, .sei:
             return CosmosTransactionParams(memo: extraDestinationId)
 
         case .algorand:

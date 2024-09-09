@@ -131,6 +131,7 @@ struct SupportedBlockchains {
             .cyber(testnet: false),
             .blast(testnet: false),
             .filecoin,
+            .sei(testnet: false),
         ]
     }
 
@@ -182,6 +183,7 @@ struct SupportedBlockchains {
             .koinos(testnet: true),
             .cyber(testnet: true),
             .blast(testnet: true),
+            .sei(testnet: true),
         ]
     }
 
