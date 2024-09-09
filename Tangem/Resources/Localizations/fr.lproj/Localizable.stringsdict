@@ -18,26 +18,10 @@
         <string>%li cartes</string>
       </dict>
     </dict>
-    <key>common_in_days</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>in %li day</string>
-        <key>other</key>
-        <string>in %li days</string>
-      </dict>
-    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li %#@portefeuilles_en tout@</string>
+      <string>%li %#@total_wallets@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
@@ -61,9 +45,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Based on %li rating</string>
+        <string>Basé sur %li évaluation</string>
         <key>other</key>
-        <string>Based on %li ratings</string>
+        <string>Basé sur %li évaluations</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
@@ -77,7 +61,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string></string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -93,7 +77,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string></string>
         <key>other</key>
         <string>%li mots</string>
       </dict>

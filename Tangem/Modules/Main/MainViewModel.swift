@@ -491,7 +491,7 @@ extension MainViewModel: MultiWalletMainContentDelegate {
     func displayAddressCopiedToast() {
         Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
             .present(
-                layout: .bottom(padding: 80),
+                layout: .top(padding: 12),
                 type: .temporary()
             )
     }

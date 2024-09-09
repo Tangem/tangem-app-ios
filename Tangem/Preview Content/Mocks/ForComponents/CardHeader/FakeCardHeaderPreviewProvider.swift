@@ -26,7 +26,8 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     provider.balance = .loaded(TotalBalance(
                         balance: firstValue,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
                 case .loaded(let total):
                     let newValue: Decimal?
@@ -45,7 +46,8 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     provider.balance = .loaded(TotalBalance(
                         balance: newValue,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
                 case .failedToLoad:
                     provider.balance = .loading
@@ -61,7 +63,8 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     provider.balance = .loaded(TotalBalance(
                         balance: 92324.2133654889,
                         currencyCode: "EUR",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
                 case .loaded, .failedToLoad:
                     provider.balance = .loading
@@ -76,7 +79,8 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     provider.balance = .loaded(TotalBalance(
                         balance: 4567575476468896456534878754.2114313,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
                 case .loaded, .failedToLoad:
                     provider.balance = .loading
@@ -91,7 +95,8 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     provider.balance = .loaded(TotalBalance(
                         balance: 4567575476468896456532344878754.2114313,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
                 case .loaded, .failedToLoad:
                     provider.balance = .loading

@@ -24,6 +24,19 @@ struct TokenMarketsDetailsView: View {
 
     var body: some View {
         VStack(spacing: 0.0) {
+            navigationBar
+
+            scrollView
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .if(!viewModel.isMarketsSheetStyle, transform: { view in
+            view.navigationTitle(viewModel.tokenName)
+        })
+    }
+
+    @ViewBuilder
+    private var navigationBar: some View {
+        if viewModel.isMarketsSheetStyle {
             NavigationBar(
                 title: viewModel.tokenName,
                 settings: .init(
@@ -38,13 +51,10 @@ struct TokenMarketsDetailsView: View {
                 rightItems: {}
             )
             .overlay(alignment: .bottom) {
-                Separator(color: Colors.Stroke.primary)
+                Separator(height: .minimal, color: Colors.Stroke.primary)
                     .hidden(!isNavigationBarShadowLineViewVisible)
             }
-
-            scrollView
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
@@ -75,10 +85,16 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
+            // This view is always presented when the overlay is fully visible, i.e. when its progress equals 1.0
+            // Therefore, the same value used here as the initial progress value
+            .modifier(MarketsContentHidingViewModifier(initialProgress: 1.0))
             .padding(.top, Constants.scrollViewContentTopInset)
-            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
-            }
+            .if(viewModel.isMarketsSheetStyle, transform: { view in
+                view
+                    .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                        isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+                    }
+            })
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         .background(Colors.Background.tertiary.ignoresSafeArea())
@@ -96,9 +112,6 @@ struct TokenMarketsDetailsView: View {
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
-        .onAppear {
-            viewModel.onAppear()
-        }
     }
 
     @ViewBuilder
@@ -158,7 +171,7 @@ struct TokenMarketsDetailsView: View {
                 ContentBlockSkeletons()
             case .loaded(let model):
                 description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 portfolioView
 
@@ -260,5 +273,5 @@ private extension TokenMarketsDetailsView {
         marketCap: 100_000_000_000
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, style: .marketsSheet, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
 }

@@ -22,7 +22,7 @@ extension WalletModel {
 
     var allBalance: Balance {
         let cryptoBalance: Decimal? = {
-            switch (availableBalance.crypto, stakingManager?.state.blockedBalance) {
+            switch (availableBalance.crypto, stakingManager?.state.balances?.sum()) {
             case (.none, _): nil
             // What we have to do if we have only blocked balance?
             case (.some(let available), .none): available
@@ -62,7 +62,7 @@ extension WalletModel {
     }
 
     var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.blockedBalance
+        let stakingBalance = stakingManagerState.balances?.staking().sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -112,12 +112,12 @@ extension WalletModel {
 }
 
 private extension StakingManagerState {
-    var blockedBalance: Decimal? {
+    var balances: [StakingBalanceInfo]? {
         guard case .staked(let staked) = self else {
             return nil
         }
 
-        return staked.balances.staking().sum()
+        return staked.balances
     }
 
     var rewardsToClaim: Decimal? {

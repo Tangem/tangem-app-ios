@@ -11,11 +11,13 @@ import Foundation
 struct StakeKitMapper {
     // MARK: - To DTO
 
-    func mapToActionType(from action: PendingActionType) -> StakeKitDTO.Actions.ActionType {
+    func mapToActionType(from action: StakingAction.PendingActionType) -> StakeKitDTO.Actions.ActionType {
         switch action {
         case .withdraw: .withdraw
         case .claimRewards: .claimRewards
         case .restakeRewards: .restakeRewards
+        case .voteLocked: .voteLocked
+        case .unlockLocked: .unlockLocked
         }
     }
 
@@ -36,6 +38,10 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
         }
 
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
+        }
+
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
             try ActionTransaction(
                 id: transaction.id,
@@ -48,6 +54,7 @@ struct StakeKitMapper {
         return try EnterAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -56,6 +63,10 @@ struct StakeKitMapper {
     func mapToExitAction(from response: StakeKitDTO.Actions.Exit.Response) throws -> ExitAction {
         guard let transactions = response.transactions, !transactions.isEmpty else {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
         }
 
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
@@ -70,6 +81,7 @@ struct StakeKitMapper {
         return try ExitAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -78,6 +90,10 @@ struct StakeKitMapper {
     func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
         guard let transactions = response.transactions, !transactions.isEmpty else {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        }
+
+        guard let amount = Decimal(string: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction.amount not found")
         }
 
         let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
@@ -92,6 +108,7 @@ struct StakeKitMapper {
         return try PendingAction(
             id: response.id,
             status: mapToActionStatus(from: response.status),
+            amount: amount,
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction
         )
@@ -144,7 +161,7 @@ struct StakeKitMapper {
                 item: mapToStakingTokenItem(from: balance.token),
                 amount: amount,
                 balanceType: mapToBalanceType(from: balance),
-                validatorAddress: balance.validatorAddress,
+                validatorAddress: balance.validatorAddress ?? balance.validatorAddresses?.first,
                 actions: mapToStakingBalanceInfoPendingAction(from: balance)
             )
         }
@@ -154,11 +171,15 @@ struct StakeKitMapper {
         try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
-                return .withdraw(passthrough: action.passthrough)
+                return .init(type: .withdraw, passthrough: action.passthrough)
             case .claimRewards:
-                return .claimRewards(passthrough: action.passthrough)
+                return .init(type: .claimRewards, passthrough: action.passthrough)
             case .restakeRewards:
-                return .restakeRewards(passthrough: action.passthrough)
+                return .init(type: .restakeRewards, passthrough: action.passthrough)
+            case .voteLocked, .revote:
+                return .init(type: .voteLocked, passthrough: action.passthrough)
+            case .unlockLocked:
+                return .init(type: .unlockLocked, passthrough: action.passthrough)
             default:
                 throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
@@ -173,15 +194,23 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
+        let validators = response.validators
+            .compactMap(mapToValidatorInfo)
+            .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
+
+        let rewardRateValues = RewardRateValues(
+            aprs: validators.compactMap(\.apr),
+            rewardRate: response.rewardRate
+        )
+
         return try YieldInfo(
             id: response.id,
             isAvailable: response.isAvailable,
-            apy: response.apy,
             rewardType: mapToRewardType(from: response.rewardType),
-            rewardRate: response.rewardRate,
+            rewardRateValues: rewardRateValues,
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
-            validators: response.validators.compactMap(mapToValidatorInfo),
+            validators: validators,
             defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
@@ -216,6 +245,9 @@ struct StakeKitMapper {
         case .withdraw: .withdraw
         case .claimRewards: .claimRewards
         case .restakeRewards: .restakeRewards
+        // Tron specific types
+        case .freezeEnergy, .vote: .stake
+        case .unlock, .unfreezeEnergy: .unstake
         default:
             throw StakeKitMapperError.notImplement
         }
@@ -309,16 +341,16 @@ struct StakeKitMapper {
         from balance: StakeKitDTO.Balances.Response.Balance
     ) throws -> BalanceType {
         switch balance.type {
-        case .preparing, .locked:
+        case .available:
+            throw StakeKitMapperError.notImplement
+        case .locked:
+            return .locked
+        case .preparing:
             return .warmup
-        case .available, .staked:
+        case .staked:
             return .active
         case .unstaking, .unlocking:
-            guard let date = balance.date else {
-                throw StakeKitMapperError.noData("Balance.date for BalanceType.unbonding not found")
-            }
-
-            return .unbonding(date: date)
+            return .unbonding(date: balance.date)
         case .unstaked:
             return .withdraw
         case .rewards:

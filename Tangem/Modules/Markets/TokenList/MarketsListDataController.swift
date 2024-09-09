@@ -12,7 +12,15 @@ import CombineExt
 
 class MarketsListDataController {
     var visibleRangeAreaPublisher: some Publisher<VisibleArea, Never> {
-        visibleRangeAreaSubject.eraseToAnyPublisher()
+        visibleRangeAreaSubject
+    }
+
+    var hotAreaPublisher: some Publisher<VisibleArea, Never> {
+        hotAreaSubject
+    }
+
+    var hotArea: VisibleArea {
+        hotAreaSubject.value
     }
 
     // MARK: - Private Properties
@@ -26,29 +34,20 @@ class MarketsListDataController {
     private let hotAreaSubject: CurrentValueSubject<VisibleArea, Never> = .init(VisibleArea(range: 0 ... 1, direction: .down))
 
     private var bag = Set<AnyCancellable>()
-    private var isViewVisible: Bool = false
 
     // MARK: - Init
 
     init(
         dataFetcher: MarketsListDataFetcher,
-        viewVisibilityPublisher: any Publisher<Bool, Never>,
         cellsStateUpdater: MarketsListStateUpdater?
     ) {
         self.dataFetcher = dataFetcher
         self.cellsStateUpdater = cellsStateUpdater
 
-        bind(viewVisibilityPublisher: viewVisibilityPublisher)
         bind()
     }
 
     // MARK: - Private Implementation
-
-    private func bind(viewVisibilityPublisher: any Publisher<Bool, Never>) {
-        viewVisibilityPublisher
-            .assign(to: \.isViewVisible, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
 
     private func bind() {
         lastAppearedIndexSubject.dropFirst().removeDuplicates()
@@ -90,10 +89,19 @@ class MarketsListDataController {
 
         visibleRangeAreaSubject.dropFirst().removeDuplicates()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
-            .map { newVisibleArea in
+            .withWeakCaptureOf(self)
+            .compactMap { dataController, newVisibleArea in
+                guard
+                    let dataFetcher = dataController.dataFetcher,
+                    dataFetcher.totalItems > 0
+                else {
+                    return nil
+                }
                 let numberOfItemsInBufferZone = Constants.itemsInBufferZone
+                let lowerBound = max(0, newVisibleArea.range.lowerBound - numberOfItemsInBufferZone)
+                let upperBound = min(dataFetcher.totalItems - 1, newVisibleArea.range.upperBound + numberOfItemsInBufferZone)
                 return .init(
-                    range: max(0, newVisibleArea.range.lowerBound - numberOfItemsInBufferZone) ... newVisibleArea.range.upperBound + numberOfItemsInBufferZone,
+                    range: lowerBound ... upperBound,
                     direction: newVisibleArea.direction
                 )
             }

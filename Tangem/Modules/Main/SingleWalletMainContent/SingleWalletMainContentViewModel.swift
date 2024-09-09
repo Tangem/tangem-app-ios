@@ -76,6 +76,20 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         }
     }
 
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.main.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
+    }
+
     private func bind() {
         userWalletNotificationManager
             .notificationPublisher

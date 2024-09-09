@@ -193,8 +193,7 @@ private extension SendModel {
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
              .demoAlert,
-             .userCancelled,
-             .stakingUnsupported:
+             .userCancelled:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
@@ -442,11 +441,13 @@ extension SendModel {
         enum Source {
             case send
             case sell
+            case staking
 
             var analyticsValue: Analytics.ParameterValue {
                 switch self {
                 case .send: .transactionSourceSend
                 case .sell: .transactionSourceSell
+                case .staking: .transactionSourceStaking
                 }
             }
         }

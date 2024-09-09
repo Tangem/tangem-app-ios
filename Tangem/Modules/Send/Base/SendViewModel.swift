@@ -138,12 +138,20 @@ final class SendViewModel: ObservableObject {
     }
 
     func share(url: URL) {
-        Analytics.log(.sendButtonShare)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonShare)
+        } else {
+            Analytics.log(.stakingButtonShare)
+        }
         coordinator?.openShareSheet(url: url)
     }
 
     func explore(url: URL) {
-        Analytics.log(.sendButtonExplore)
+        if flowActionType == .send {
+            Analytics.log(.sendButtonExplore)
+        } else {
+            Analytics.log(.stakingButtonExplore)
+        }
         coordinator?.openExplorer(url: url)
     }
 }
@@ -166,6 +174,8 @@ private extension SendViewModel {
                 let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
             } catch let error as SendTransactionDispatcherResult.Error {
+                // The demo alert doesn't show without delay
+                try? await Task.sleep(seconds: 1)
                 await viewModel.proceed(error: error)
             } catch _ as CancellationError {
                 // Do nothing
@@ -185,7 +195,7 @@ private extension SendViewModel {
     @MainActor
     func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .userCancelled, .transactionNotFound, .stakingUnsupported:
+        case .userCancelled, .transactionNotFound:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in

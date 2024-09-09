@@ -23,18 +23,22 @@ struct RewardView: View {
         switch data.state {
         case .noRewards:
             Text(Localization.stakingDetailsNoRewardsToClaim)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+        case .automaticRewards:
+            Text(Localization.stakingDetailsAutoClaimingRewardsDailyText)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
         case .rewards(let fiatFormatted, let cryptoFormatted, let action):
             Button(action: action) {
                 HStack(spacing: 4) {
-                    Text(fiatFormatted)
+                    SensitiveText(fiatFormatted)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    Text(cryptoFormatted)
+                    SensitiveText(cryptoFormatted)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
 
                     Spacer(minLength: 12)

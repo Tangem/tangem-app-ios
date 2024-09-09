@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
-import DGCharts
 
 struct LineChartViewUtility {
+    private var inactiveColor: UIColor { .iconInformative }
+
     func chartTrend(
         firstValue: LineChartViewData.Value,
         lastValue: LineChartViewData.Value
@@ -28,44 +29,37 @@ struct LineChartViewUtility {
 
     /// `Inactive` stands for the part of the chart before (on the left of) the vertical highlight line.
     func inactiveChartLineColor() -> UIColor {
-        return UIColor.iconInformative
+        return inactiveColor.withAlphaComponent(0.2)
     }
 
     /// `Selected` stands for the part of the chart after (on the right of) the vertical highlight line.
     func selectedChartLineColor(for trend: LineChartViewData.Trend) -> UIColor {
         switch trend {
-        case .uptrend,
-             .neutral:
+        case .uptrend:
             return .iconAccent
         case .downtrend:
             return .iconWarning
+        case .neutral:
+            return inactiveColor
         }
     }
 
     /// `Inactive` stands for the part of the chart before (on the left of) the vertical highlight line.
-    func inactiveChartFillGradient() -> Fill? {
-        let fillColor = inactiveChartLineColor()
-
-        return makeChartFillGradient(fillColor: fillColor)
+    func inactiveChartGradientColors() -> [UIColor] {
+        return makeChartGradientColors(fillColor: inactiveColor)
     }
 
     /// `Selected` stands for the part of the chart after (on the right of) the vertical highlight line.
-    func selectedChartFillGradient(for trend: LineChartViewData.Trend) -> Fill? {
+    func selectedChartGradientColors(for trend: LineChartViewData.Trend) -> [UIColor] {
         let fillColor = selectedChartLineColor(for: trend)
 
-        return makeChartFillGradient(fillColor: fillColor)
+        return makeChartGradientColors(fillColor: fillColor)
     }
 
-    private func makeChartFillGradient(fillColor: UIColor) -> Fill? {
-        let gradientColors = [
-            fillColor.withAlphaComponent(0.0).cgColor,
-            fillColor.withAlphaComponent(0.24).cgColor,
+    private func makeChartGradientColors(fillColor: UIColor) -> [UIColor] {
+        return [
+            fillColor.withAlphaComponent(0.24),
+            fillColor.withAlphaComponent(0.0),
         ]
-
-        guard let gradient = CGGradient(colorsSpace: nil, colors: gradientColors as CFArray, locations: nil) else {
-            return nil
-        }
-
-        return LinearGradientFill(gradient: gradient, angle: 90.0)
     }
 }

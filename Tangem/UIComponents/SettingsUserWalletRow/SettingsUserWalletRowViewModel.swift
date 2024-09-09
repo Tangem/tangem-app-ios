@@ -22,7 +22,7 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
     private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
     private var bag: Set<AnyCancellable> = []
 
-    private let balanceFomatter = BalanceFormatter()
+    private let balanceFormatter = BalanceFormatter()
 
     convenience init(userWallet: UserWalletModel, tapAction: @escaping () -> Void) {
         self.init(
@@ -82,7 +82,12 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
                 case .loading:
                     viewModel.balanceState = .loading
                 case .loaded(let totalBalance):
-                    let formatted = viewModel.balanceFomatter.formatFiatBalance(totalBalance.balance)
+                    guard totalBalance.allTokensBalancesIncluded else {
+                        viewModel.balanceState = .loaded(text: BalanceFormatter.defaultEmptyBalanceString)
+                        return
+                    }
+
+                    let formatted = viewModel.balanceFormatter.formatFiatBalance(totalBalance.balance)
                     viewModel.balanceState = .loaded(text: formatted)
                 case .failedToLoad:
                     viewModel.balanceState = .loaded(text: Localization.commonUnreachable)

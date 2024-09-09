@@ -35,12 +35,13 @@ struct TokenDetailsView: View {
                         .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
                 }
 
@@ -80,6 +81,7 @@ struct TokenDetailsView: View {
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
         .animation(.default, value: viewModel.pendingExpressTransactions)
         .padding(.horizontal, 16)

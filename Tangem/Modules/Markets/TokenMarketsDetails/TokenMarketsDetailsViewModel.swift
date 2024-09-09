@@ -45,6 +45,8 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     var priceChangeState: TokenPriceChangeView.State? { priceInfo?.priceChangeState }
 
+    var isMarketsSheetStyle: Bool { style == .marketsSheet }
+
     private var priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo? {
         guard let currentPrice = priceFromQuoteRepository else {
             return nil
@@ -62,15 +64,10 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     var priceDate: String {
-        guard let priceDate = dateHelper.makeDate(
+        dateHelper.makePriceDate(
             selectedDate: selectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
-        ) else {
-            // TODO: Andrey Fedorov - Temporary workaround until the issue with obtaining the beginning of `all` time interval is resolved (IOS-7476)
-            return selectedPriceChangeIntervalType == .all ? Localization.commonAll : Localization.commonToday
-        }
-
-        return "\(dateFormatter.string(from: priceDate)) – \(Localization.commonNow)"
+        )
     }
 
     var tokenName: String { tokenInfo.name }
@@ -100,30 +97,16 @@ class TokenMarketsDetailsViewModel: ObservableObject {
             .share(replay: 1)
     }()
 
-    private let balanceFormatter = BalanceFormatter()
-
-    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper(fiatBalanceFormattingOptions: fiatBalanceFormattingOptions)
+    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper()
     private lazy var dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
+
+    private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
     // The date when this VM was initialized (i.e. the screen was opened)
     private let initialDate = Date()
 
-    // TODO: Andrey Fedorov - Add different date & time formats for different selected time intervals (IOS-7476)
-    private let dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM, HH:mm"
-        return dateFormatter
-    }()
-
-    private let fiatBalanceFormattingOptions: BalanceFormattingOptions = .init(
-        minFractionDigits: 2,
-        maxFractionDigits: 8,
-        formatEpsilonAsLowestRepresentableValue: false,
-        roundingType: .defaultFiat(roundingMode: .bankers)
-    )
-    private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
-
     private let tokenInfo: MarketsTokenModel
+    private let style: Style
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
@@ -136,11 +119,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     init(
         tokenInfo: MarketsTokenModel,
+        style: Style,
         dataProvider: MarketsTokenDetailsDataProvider,
         marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: TokenMarketsDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
+        self.style = style
         self.dataProvider = dataProvider
         self.marketsQuotesUpdateHelper = marketsQuotesUpdateHelper
         self.coordinator = coordinator
@@ -163,10 +148,6 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     // MARK: - Actions
-
-    func onAppear() {
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: [.token: tokenInfo.symbol])
-    }
 
     func loadDetailedInfo() {
         isLoading = true
@@ -394,6 +375,10 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makePortfolioViewModel(using model: TokenMarketsDetailsModel) {
+        guard style == .marketsSheet else {
+            return
+        }
+
         portfolioViewModel = .init(
             inputData: .init(coinId: model.id, networks: model.availableNetworks),
             walletDataProvider: walletDataProvider,
@@ -462,5 +447,12 @@ extension TokenMarketsDetailsViewModel {
         case failedToLoadDetails
         case failedToLoadAllData
         case loaded(model: TokenMarketsDetailsModel)
+    }
+}
+
+extension TokenMarketsDetailsViewModel {
+    enum Style {
+        case marketsSheet
+        case defaultNavigationStack
     }
 }

@@ -85,5 +85,8 @@ extension Analytics {
 
         case sendBlockchain = "Send Blockchain"
         case receiveBlockchain = "Receive Blockchain"
+
+        case validatorsCount = "Validators Count"
+        case validator = "Validator"
     }
 }

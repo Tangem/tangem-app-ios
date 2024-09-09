@@ -619,7 +619,7 @@ private extension ExpressViewModel {
                 try Task.checkCancellation()
 
                 await root.openSuccessView(sentTransactionData: sentTransactionData)
-            } catch TangemSdkError.userCancelled {
+            } catch SendTransactionDispatcherResult.Error.userCancelled {
                 root.restartTimer()
             } catch let error as ExpressAPIError {
                 await runOnMain {

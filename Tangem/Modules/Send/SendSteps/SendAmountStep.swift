@@ -14,15 +14,18 @@ class SendAmountStep {
     private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
     private let sendFeeLoader: SendFeeLoader
+    private let source: SendModel.PredefinedValues.Source
 
     init(
         viewModel: SendAmountViewModel,
         interactor: SendAmountInteractor,
-        sendFeeLoader: SendFeeLoader
+        sendFeeLoader: SendFeeLoader,
+        source: SendModel.PredefinedValues.Source
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.sendFeeLoader = sendFeeLoader
+        self.source = source
     }
 }
 
@@ -40,9 +43,14 @@ extension SendAmountStep: SendStep {
     }
 
     func willAppear(previous step: any SendStep) {
-        if step.type.isSummary {
+        switch (source, step.type.isSummary) {
+        case (.staking, false):
+            Analytics.log(.stakingAmountScreenOpened)
+        case (.staking, true):
+            Analytics.log(.stakingScreenReopened, params: [.source: .amount])
+        case (_, true):
             Analytics.log(.sendScreenReopened, params: [.source: .amount])
-        } else {
+        case (_, false):
             Analytics.log(.sendAmountScreenOpened)
         }
     }

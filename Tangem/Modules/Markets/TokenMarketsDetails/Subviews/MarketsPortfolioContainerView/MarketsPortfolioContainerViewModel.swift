@@ -21,7 +21,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
-    @Published var quickActions: [TokenActionType] = []
 
     // MARK: - Private Properties
 
@@ -30,7 +29,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private let walletDataProvider: MarketsWalletDataProvider
-    private let tokenActionContextBuilder = TokenActionContextBuilder()
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
@@ -109,7 +107,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self
+            contextActionsDelegate: self,
+            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -131,8 +130,16 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 partialResult.append(contentsOf: viewModels)
             }
 
-        quickActions = makeQuickActions()
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+    }
+
+    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
+    private func quickActionDisclosureHandler(_ viewModelId: Int) {
+        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
+
+        for viewModel in filteredViewModels {
+            viewModel.isExpandedQuickActions = false
+        }
     }
 
     private func bind() {
@@ -146,22 +153,33 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
             .store(in: &bag)
     }
-
-    private func makeQuickActions() -> [TokenActionType] {
-        let targetActions = tokenItemViewModels.count == 1 ? [TokenActionType.receive, TokenActionType.exchange, TokenActionType.buy] : []
-        let filteredActions = tokenItemViewModels.first?.contextActions.filter { targetActions.contains($0) }
-        return filteredActions ?? []
-    }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
-    func buildContextActions(walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
+    func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
         guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
 
-        let actions = tokenActionContextBuilder.buildContextActions(for: walletModelId, with: userWalletModel)
-        return actions
+        guard
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == walletModelId }),
+            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
+        else {
+            return []
+        }
+
+        let baseActions = TokenContextActionsBuilder().makeBaseContextActions(
+            tokenItem: walletModel.tokenItem,
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: false,
+            canHideToken: false
+        )
+
+        // This is what business logic requires
+        let filteredActions: [TokenActionType] = [.buy, .exchange, .receive]
+
+        return filteredActions.filter { baseActions.contains($0) }
     }
 }
 
@@ -196,7 +214,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             coordinator.openExchange(for: walletModel, with: userWalletModel)
         case .stake:
             coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide:
+        case .hide, .marketsDetails:
             return
         }
     }
