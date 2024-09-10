@@ -111,6 +111,7 @@
 "common_go_to_provider" = "プロバイダーへ移動";
 "common_go_to_token" = "トークンへ移動";
 "common_import" = "インポート";
+"common_in_progress" = "進行中";
 "common_later" = "後で";
 "common_learn_and_earn" = "学ぶ＆稼ぐ";
 "common_left" = "残り%1$@";
@@ -647,15 +648,15 @@
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";
-"staking_notification_claim_rewards_text" = "獲得した報酬はあなたのアドレスに直接送られます。受け取り後、資金は使用可能になります。";
+"staking_notification_claim_rewards_text" = "獲得した報酬はあなたのアドレスに直接送られ、すぐ使用可能です。";
 "staking_notification_earn_rewards_text_period_day" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎日受け取れます。";
 "staking_notification_earn_rewards_text_period_hour" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎時間受け取れます。";
 "staking_notification_earn_rewards_text_period_month" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎月受け取れます。";
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
-"staking_notification_unstake_text" = "ステーキング解除プロセスの開始後、報酬の獲得はすぐに停止します。ステーキング解除には%@かかります。";
-"staking_notification_withdraw_text" = "あなたの資金はステーキング解除されました。獲得した報酬とともに引き出すことができます。";
+"staking_notification_unstake_text" = "%@のステーキング解除期間後、資金はすぐ利用可能となります。";
+"staking_notification_withdraw_text" = "資金を引き出すことができ、すぐに使用できます";
 "staking_preparing" = "準備中";
 "staking_ready_to_withdraw" = "引き出し準備完了";
 "staking_rebond" = "再結束";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "タップして引き出す";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
+"staking_transaction_in_progress_text" = "取引を処理中です。現在、ブロックチェーンで検証が行われています。これには数分かかる場合があります。";
 "staking_unbonding" = "ステーキング解約中";
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ステーキング解除はロックされています";
@@ -720,7 +722,6 @@
 "swapping_insufficient_funds" = "残高不足";
 "swapping_permission_header" = "許可を与える";
 "swapping_permit_and_swap" = "許可してスワップ";
-"swapping_success_view_title" = "進行中";
 "swapping_swap_action" = "スワップ";
 "swapping_to_title" = "受け取る";
 "swapping_token_list_title" = "トークンを選択";
