@@ -139,7 +139,9 @@ final class MainViewModel: ObservableObject {
         // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
         // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
         DispatchQueue.main.async {
-            self.bottomSheetVisibility.hide()
+            if self.bottomSheetVisibility.isShown {
+                self.bottomSheetVisibility.hide()
+            }
         }
     }
 
