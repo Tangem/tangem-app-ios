@@ -8,47 +8,66 @@
 
 import Foundation
 import UIKit
+import TangemFoundation
 
-final class ViewHierarchySnapshottingContainerViewController: UIViewController {
-    private let contentViewController: UIViewController
+final class ViewHierarchySnapshottingContainerViewController: UIViewController {}
 
-    init(
-        contentViewController: UIViewController
-    ) {
-        self.contentViewController = contentViewController
-        super.init(nibName: nil, bundle: nil)
+// MARK: - ViewHierarchySnapshotting protocol conformance
+
+extension ViewHierarchySnapshottingContainerViewController: ViewHierarchySnapshotting {
+    func makeSnapshotView(afterScreenUpdates: Bool) -> UIView? {
+        ensureOnMainQueue()
+
+        return viewIfLoaded?.snapshotView(afterScreenUpdates: afterScreenUpdates)
     }
 
-    @available(*, unavailable, message: "init(coder:) has not been implemented")
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func makeSnapshotViewImage(afterScreenUpdates: Bool, isOpaque: Bool) -> UIImage? {
+        ensureOnMainQueue()
+
+        guard let snapshotView = viewIfLoaded else {
+            return nil
+        }
+
+        let format = UIGraphicsImageRendererFormat.preferred()
+        format.opaque = isOpaque
+
+        let bounds = snapshotView.bounds
+        let renderer = UIGraphicsImageRenderer(size: bounds.size, format: format)
+
+        return renderer.image { _ in
+            _ = snapshotView.drawHierarchy(in: bounds, afterScreenUpdates: afterScreenUpdates)
+        }
     }
 
-    // MARK: - Lifecycle
+    func makeSnapshotLayerImage(options: CALayerSnapshotOptions, isOpaque: Bool) -> UIImage? {
+        ensureOnMainQueue()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupContent()
-        ViewHierarchySnapshottingManager.shared.register(self)
-    }
+        guard let snapshotView = viewIfLoaded else {
+            return nil
+        }
 
-    // MARK: - Setup
+        let snapshotLayer: CALayer?
+        switch options {
+        case .default:
+            snapshotLayer = snapshotView.layer
+        case .model:
+            snapshotLayer = snapshotView.layer.model()
+        case .presentation:
+            snapshotLayer = snapshotView.layer.presentation()
+        }
 
-    private func setupContent() {
-        addChild(contentViewController)
+        guard let snapshotLayer else {
+            return nil
+        }
 
-        let containerView = view!
-        let contentView = contentViewController.view!
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(contentView)
+        let format = UIGraphicsImageRendererFormat.preferred()
+        format.opaque = isOpaque
 
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-        ])
+        let bounds = snapshotLayer.bounds
+        let renderer = UIGraphicsImageRenderer(size: bounds.size, format: format)
 
-        contentViewController.didMove(toParent: self)
+        return renderer.image { context in
+            snapshotLayer.render(in: context.cgContext)
+        }
     }
 }
