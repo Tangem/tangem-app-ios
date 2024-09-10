@@ -100,7 +100,8 @@ struct CustomTokenContractAddressConverter {
              .internetComputer,
              .cyber,
              .blast,
-             .filecoin:
+             .filecoin,
+             .sei:
             // Did you get a compilation error here? If so, check if the network supports multiple token contract address
             // formats (as Hedera does, for example) and add the appropriate conversion logic here if needed
             return originalAddress
