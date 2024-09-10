@@ -14,7 +14,7 @@ import CombineExt
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     // MARK: - ViewState

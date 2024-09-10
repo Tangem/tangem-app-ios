@@ -8,18 +8,59 @@
 
 import Foundation
 import Combine
+import class UIKit.UIImage
+import TangemFoundation
 
-struct MainBottomSheetVisibility {
+final class MainBottomSheetVisibility {
+    private let isShownSubject: CurrentValueSubject<Bool, Never> = .init(false)
+    private let footerSnapshotSubject: PassthroughSubject<UIImage?, Never> = .init()
+    private let footerSnapshotUpdateTriggerSubject: PassthroughSubject<Void, Never> = .init()
+    private var pendingFooterSnapshotUpdateCompletions: [() -> Void] = []
+}
+
+// MARK: - Visibility management
+
+extension MainBottomSheetVisibility {
     var isShown: Bool { isShownSubject.value }
     var isShownPublisher: some Publisher<Bool, Never> { isShownSubject }
-    private let isShownSubject: CurrentValueSubject<Bool, Never> = .init(false)
 
-    mutating func show() {
-        isShownSubject.value = true
+    func show() {
+        ensureOnMainQueue()
+
+        isShownSubject.send(true)
     }
 
-    mutating func hide() {
-        isShownSubject.value = false
+    func hide() {
+        ensureOnMainQueue()
+
+        setFooterSnapshotNeedsUpdate { [weak self] in
+            self?.isShownSubject.send(false)
+        }
+    }
+}
+
+// MARK: - Snapshot management
+
+extension MainBottomSheetVisibility {
+    /// Provides updated snapshot.
+    var footerSnapshotPublisher: some Publisher<UIImage?, Never> { footerSnapshotSubject }
+
+    /// Triggers snapshot update.
+    var footerSnapshotUpdateTriggerPublisher: some Publisher<Void, Never> { footerSnapshotUpdateTriggerSubject }
+
+    func setFooterSnapshot(_ snapshotImage: UIImage?) {
+        ensureOnMainQueue()
+
+        footerSnapshotSubject.send(snapshotImage)
+
+        let completions = pendingFooterSnapshotUpdateCompletions
+        pendingFooterSnapshotUpdateCompletions.removeAll(keepingCapacity: true)
+        completions.forEach { $0() }
+    }
+
+    private func setFooterSnapshotNeedsUpdate(with completion: @escaping () -> Void) {
+        pendingFooterSnapshotUpdateCompletions.append(completion)
+        footerSnapshotUpdateTriggerSubject.send()
     }
 }
 
