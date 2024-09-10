@@ -66,13 +66,7 @@ struct MarketsView: View {
             updateOnChangeOf: responderChainIntrospectionTrigger,
             action: navigationControllerConfigurator.configure(_:)
         )
-        .onOverlayContentProgressChange { progress in
-            overlayContentProgress = progress
-
-            if progress < 1 {
-                UIResponder.current?.resignFirstResponder()
-            }
-        }
+        .onOverlayContentProgressChange(updateOverlayContentProgress(progress:))
         .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
     }
 
@@ -259,6 +253,14 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
+    }
+
+    private func updateOverlayContentProgress(progress: CGFloat) {
+        overlayContentProgress = progress
+
+        if progress < 1 {
+            UIResponder.current?.resignFirstResponder()
+        }
     }
 
     private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
