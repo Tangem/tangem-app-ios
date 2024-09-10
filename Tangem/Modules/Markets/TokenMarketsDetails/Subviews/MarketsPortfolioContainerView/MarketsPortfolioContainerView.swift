@@ -14,12 +14,13 @@ struct MarketsPortfolioContainerView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.headerContentSpacing) {
+        VStack(alignment: .leading, spacing: 6) {
             headerView
 
             contentView
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .padding(.top, 12) // Need for top padding without bottom padding
+        .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
     }
 
     private var headerView: some View {
@@ -120,6 +121,5 @@ extension MarketsPortfolioContainerView {
 private extension MarketsPortfolioContainerView {
     enum Constants {
         static let buttonCornerRadius: CGFloat = 8.0
-        static let headerContentSpacing: CGFloat = 12.0
     }
 }

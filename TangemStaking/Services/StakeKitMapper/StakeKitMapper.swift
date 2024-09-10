@@ -144,7 +144,7 @@ struct StakeKitMapper {
 
     func mapToBalanceInfo(from response: [StakeKitDTO.Balances.Response]) throws -> [StakingBalanceInfo] {
         guard let balances = response.first?.balances else {
-            throw StakeKitMapperError.noData("Balances not found")
+            return []
         }
 
         return try balances.compactMap { balance in
