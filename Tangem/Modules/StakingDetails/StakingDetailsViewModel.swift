@@ -140,8 +140,8 @@ private extension StakingDetailsViewModel {
             actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
-            setupView(yield: staked.yieldInfo, balances: staked.balances)
             stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
+            setupView(yield: staked.yieldInfo, balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
