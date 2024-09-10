@@ -99,7 +99,8 @@ struct TokenInteractionAvailabilityProvider {
              .internetComputer,
              .cyber,
              .blast,
-             .filecoin:
+             .filecoin,
+             .sei:
 
             // Checking that we have at least one valid (non-empty) address
             //
