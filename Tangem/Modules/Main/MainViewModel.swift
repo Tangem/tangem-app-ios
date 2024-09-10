@@ -120,6 +120,7 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
+        let uiManager = mainBottomSheetUIManager
         /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
         /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from
         /// being placed over the authorization screen.
@@ -127,20 +128,21 @@ final class MainViewModel: ObservableObject {
         if shouldDelayBottomSheetVisibility {
             shouldDelayBottomSheetVisibility = false
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.bottomSheetVisibilityColdStartDelay) {
-                self.mainBottomSheetUIManager.show()
+                uiManager.show()
             }
         } else {
-            mainBottomSheetUIManager.show()
+            uiManager.show()
         }
     }
 
     /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
     func onWillDisappear() {
+        let uiManager = mainBottomSheetUIManager
         // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
         // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
         DispatchQueue.main.async {
-            if self.mainBottomSheetUIManager.isShown {
-                self.mainBottomSheetUIManager.hide()
+            if uiManager.isShown {
+                uiManager.hide()
             }
         }
     }
