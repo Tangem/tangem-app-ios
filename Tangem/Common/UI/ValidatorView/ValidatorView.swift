@@ -110,10 +110,6 @@ struct ValidatorView: View {
         case .checkmark:
             let isSelected = selection?.isActive(compare: data.address).wrappedValue ?? false
             CheckIconView(isSelected: isSelected)
-        case .balance(_, .some(_)):
-            Assets.chevron.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.informative)
         default:
             EmptyView()
         }
