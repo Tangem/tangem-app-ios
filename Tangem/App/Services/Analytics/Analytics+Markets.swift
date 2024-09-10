@@ -14,12 +14,4 @@ extension Analytics {
         case price = "Price"
         case chart = "Chart"
     }
-
-    enum MarketsChartErrorSourceType: String {
-        case insights = "Insights"
-        case metrics = "Metrics"
-        case links = "Links"
-        case pricePerfomance = "Price Perfomance"
-        case shortDescription = "Short Description"
-    }
 }

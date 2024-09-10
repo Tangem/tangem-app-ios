@@ -18,6 +18,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private(set) var state: ViewState = .loading
     @Published var selectedPriceChangeIntervalType: MarketsPriceIntervalType
     @Published var alert: AlertBinder?
+    @Published private(set) var contentHidingInitialProgress = 1.0
 
     // MARK: Blocks
 
@@ -64,7 +65,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     var priceDate: String {
-        dateHelper.makePriceDate(
+        return dateHelper.makePriceDate(
             selectedDate: selectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
         )
@@ -168,7 +169,13 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
-        Analytics.log(event: .marketsChartButtonLinks, params: [.link: info.title])
+        Analytics.log(
+            event: .marketsChartButtonLinks,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .link: info.title,
+            ]
+        )
 
         guard let url = URL(string: info.link) else {
             log("Failed to create link from: \(info.link)")
@@ -190,6 +197,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     func onBackButtonTap() {
         coordinator?.closeModule()
+    }
+
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
+        // Our view can be recreated when the bottom sheet is in a collapsed state
+        // In this case, content should be hidden (i.e. the initial progress should be zero)
+        contentHidingInitialProgress = state.isBottom ? 0.0 : 1.0
     }
 }
 
@@ -213,6 +226,8 @@ private extension TokenMarketsDetailsViewModel {
 
             await setupFailedState()
 
+            sendBlocksAnalyticsErrors()
+
             log("Failed to load detailed info. Reason: \(error)")
         }
     }
@@ -225,8 +240,6 @@ private extension TokenMarketsDetailsViewModel {
 
         makeBlocksViewModels(using: model)
         makePortfolioViewModel(using: model)
-
-        sendBlocksAnalyticsErrors(using: model)
     }
 
     @MainActor
@@ -400,43 +413,11 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
-    func sendBlocksAnalyticsErrors(using model: TokenMarketsDetailsModel) {
-        if model.insights == nil {
-            Analytics.log(event: .marketsChartDataError, params: [
-                .token: tokenInfo.symbol.uppercased(),
-                .source: Analytics.MarketsIntervalTypeSourceType.insights.rawValue,
-            ])
-        }
-
-        let sourceType = Analytics.MarketsChartErrorSourceType.self
-
-        if model.metrics == nil {
-            Analytics.log(event: .marketsChartDataError, params: [
-                .token: tokenInfo.symbol.uppercased(),
-                .source: sourceType.metrics.rawValue,
-            ])
-        }
-
-        if model.links.blockchainSite.isEmpty, model.links.officialLinks.isEmpty, model.links.repository.isEmpty, model.links.social.isEmpty {
-            Analytics.log(event: .marketsChartDataError, params: [
-                .token: tokenInfo.symbol.uppercased(),
-                .source: sourceType.metrics.rawValue,
-            ])
-        }
-
-        if model.pricePerformance.isEmpty {
-            Analytics.log(event: .marketsChartDataError, params: [
-                .token: tokenInfo.symbol.uppercased(),
-                .source: sourceType.pricePerfomance.rawValue,
-            ])
-        }
-
-        if model.shortDescription == nil {
-            Analytics.log(event: .marketsChartDataError, params: [
-                .token: tokenInfo.symbol.uppercased(),
-                .source: sourceType.shortDescription.rawValue,
-            ])
-        }
+    func sendBlocksAnalyticsErrors() {
+        Analytics.log(event: .marketsChartDataError, params: [
+            .token: tokenInfo.symbol.uppercased(),
+            .source: Analytics.ParameterValue.chart.rawValue,
+        ])
     }
 
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {

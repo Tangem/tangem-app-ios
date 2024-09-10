@@ -11,10 +11,19 @@ import SwiftUI
 struct MainBottomSheetFooterView: View {
     private var bottomInset: CGFloat {
         return max(
+            // Devices with a notch
             UIApplication.safeAreaInsets.bottom - MainBottomSheetHeaderInputView.Constants.bottomInset,
+            // Notchless devices
             MainBottomSheetHeaderInputView.Constants.topInset - MainBottomSheetHeaderInputView.Constants.bottomInset,
+            // Fallback
             .zero
         )
+    }
+
+    private var cornerRadius: CGFloat {
+        UIDevice.current.hasHomeScreenIndicator
+            ? RootViewControllerFactory.Constants.notchDevicesOverlayCornerRadius
+            : RootViewControllerFactory.Constants.notchlessDevicesOverlayCornerRadius
     }
 
     var body: some View {
@@ -29,7 +38,8 @@ struct MainBottomSheetFooterView: View {
                 allowsHitTestingForTextField: false
             )
             .padding(.bottom, bottomInset)
-            .bottomScrollableSheetCornerRadius()
+            .background(Colors.Background.primary) // Fills a small gap at the bottom on notchless devices
+            .cornerRadius(cornerRadius, corners: .topEdge)
             .bottomScrollableSheetGrabber()
             .bottomScrollableSheetShadow()
         }

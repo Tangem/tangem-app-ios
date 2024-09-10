@@ -2,7 +2,7 @@
 //  OverlayContentContainerViewControllerAdapter.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 12.07.2024.
+//  Created by Andrey Fedorov on 12.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
@@ -21,9 +21,9 @@ final class OverlayContentContainerViewControllerAdapter {
 // MARK: - OverlayContentContainer protocol conformance
 
 extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer {
-    var cornerRadius: CGFloat {
-        return containerViewController?.overlayCornerRadius ?? .zero
-    }
+    var cornerRadius: CGFloat { containerViewController?.overlayCornerRadius ?? .zero }
+
+    var isScrollViewLocked: Bool { containerViewController?.isScrollViewLocked ?? false }
 
     func installOverlay(_ overlayView: some View) {
         let overlayViewController = UIHostingController(rootView: overlayView)

@@ -32,6 +32,9 @@ struct TokenMarketsDetailsView: View {
         .if(!viewModel.isMarketsSheetStyle, transform: { view in
             view.navigationTitle(viewModel.tokenName)
         })
+        .onOverlayContentStateChange { [weak viewModel] state in
+            viewModel?.onOverlayContentStateChange(state)
+        }
     }
 
     @ViewBuilder
@@ -85,9 +88,7 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
-            // This view is always presented when the overlay is fully visible, i.e. when its progress equals 1.0
-            // Therefore, the same value used here as the initial progress value
-            .modifier(MarketsContentHidingViewModifier(initialProgress: 1.0))
+            .modifier(MarketsContentHidingViewModifier(initialProgress: viewModel.contentHidingInitialProgress))
             .padding(.top, Constants.scrollViewContentTopInset)
             .if(viewModel.isMarketsSheetStyle, transform: { view in
                 view
@@ -240,14 +241,18 @@ struct TokenMarketsDetailsView: View {
                 Button(action: viewModel.openFullDescription) {
                     Group {
                         Text("\(shortDescription) ")
-                            + Text(Localization.commonReadMore)
-                            .foregroundColor(Colors.Text.accent)
+                            + readMoreText
                     }
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                     .multilineTextAlignment(.leading)
                 }
             }
         }
+    }
+
+    private var readMoreText: Text {
+        let readMoreText = Localization.commonReadMore.replacingOccurrences(of: " ", with: AppConstants.unbreakableSpace)
+        return Text(readMoreText).foregroundColor(Colors.Text.accent)
     }
 }
 

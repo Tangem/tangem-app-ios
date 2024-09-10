@@ -17,6 +17,8 @@ protocol StakingModelStateProvider {
 }
 
 class StakingModel {
+    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
+
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
@@ -26,8 +28,6 @@ class StakingModel {
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
-    // MARK: - Dependencies
-
     // MARK: - Private injections
 
     private let stakingManager: StakingManager
@@ -36,7 +36,6 @@ class StakingModel {
     private let feeIncludedCalculator: FeeIncludedCalculator
     private let stakingTransactionDispatcher: SendTransactionDispatcher
     private let sendTransactionDispatcher: SendTransactionDispatcher
-    private let stakingTransactionMapper: StakingTransactionMapper
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
@@ -55,7 +54,6 @@ class StakingModel {
         feeIncludedCalculator: FeeIncludedCalculator,
         stakingTransactionDispatcher: SendTransactionDispatcher,
         sendTransactionDispatcher: SendTransactionDispatcher,
-        stakingTransactionMapper: StakingTransactionMapper,
         allowanceProvider: AllowanceProvider,
         amountTokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -65,7 +63,6 @@ class StakingModel {
         self.transactionValidator = transactionValidator
         self.feeIncludedCalculator = feeIncludedCalculator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
-        self.stakingTransactionMapper = stakingTransactionMapper
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
         tokenItem = amountTokenItem
@@ -187,7 +184,7 @@ private extension StakingModel {
 
     func estimateFee(amount: Decimal, validator: String) async throws -> Decimal {
         try await stakingManager.estimateFee(
-            action: StakingAction(amount: amount, validator: validator, type: .stake)
+            action: StakingAction(amount: amount, type: .stake(validator: validator))
         )
     }
 
@@ -269,14 +266,14 @@ private extension StakingModel {
             throw StakingModelError.readyToStakeNotFound
         }
 
-        let action = StakingAction(amount: readyToStake.amount, validator: readyToStake.validator, type: .stake)
-        let transactionInfo = try await stakingManager.transaction(action: action)
-        let transaction = stakingTransactionMapper.mapToStakeKitTransaction(transactionInfo: transactionInfo, value: action.amount)
+        Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
 
         do {
-            let result = try await stakingTransactionDispatcher.send(
-                transaction: .staking(transactionId: transactionInfo.id, transaction: transaction)
-            )
+            let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
+            let transactionInfo = try await stakingManager.transaction(action: action)
+            let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
+            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: _selectedValidator.value.value)
+
             proceed(result: result)
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
@@ -289,6 +286,7 @@ private extension StakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -296,12 +294,10 @@ private extension StakingModel {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .stakingUnsupported,
              .demoAlert,
              .userCancelled,
              .sendTxError:
-            // TODO: Add analytics
-            break
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -399,13 +395,13 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        Publishers.CombineLatest(_amount, _state)
-            .map { amount, state in
-                guard let amount, let fee = state?.fee else {
+        Publishers.CombineLatest3(_amount, _state, _selectedValidator)
+            .map { amount, state, selectedValidator in
+                guard let amount, let fee = state?.fee, let apr = selectedValidator.value?.apr else {
                     return nil
                 }
 
-                return .staking(amount: amount, fee: fee)
+                return .staking(amount: amount, fee: fee, apr: apr)
             }
             .eraseToAnyPublisher()
     }
@@ -441,6 +437,19 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
 extension StakingModel: StakingNotificationManagerInput {
     var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
         stakingManager.statePublisher
+    }
+}
+
+// MARK: - NotificationTapDelegate
+
+extension StakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateStateSubject.send(())
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
     }
 }
 
@@ -517,4 +526,27 @@ enum StakingModelError: String, Hashable, Error {
     case readyToStakeNotFound
     case validatorNotFound
     case approveDataNotFound
+}
+
+// MARK: Analytics
+
+private extension StakingModel {
+    func logTransactionAnalytics() {
+        Analytics.log(event: .transactionSent, params: [
+            .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
+            .token: tokenItem.currencySymbol,
+            .blockchain: tokenItem.blockchain.displayName,
+            .feeType: selectedFee.option.rawValue,
+        ])
+
+        switch amount?.type {
+        case .none:
+            break
+        case .typical:
+            Analytics.log(.stakingSelectedCurrency, params: [.commonType: .token])
+
+        case .alternative:
+            Analytics.log(.stakingSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
+        }
+    }
 }

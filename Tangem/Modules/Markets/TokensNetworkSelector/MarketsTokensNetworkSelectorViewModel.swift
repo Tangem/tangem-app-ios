@@ -58,9 +58,14 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
 
         let tokenItemMapper = TokenItemMapper(supportedBlockchains: selectedUserWalletModel.config.supportedBlockchains)
 
-        let tokenItems = networks.compactMap {
-            tokenItemMapper.mapToTokenItem(id: coinId, name: coinName, symbol: coinSymbol, network: $0)
-        }
+        let tokenItems = networks
+            .compactMap {
+                tokenItemMapper.mapToTokenItem(id: coinId, name: coinName, symbol: coinSymbol, network: $0)
+            }
+            .sorted { lhs, rhs in
+                // Main networks must be up list networks
+                lhs.isBlockchain && lhs.isBlockchain != rhs.isBlockchain
+            }
 
         return tokenItems
     }
@@ -176,6 +181,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
+                self.sendAnalytics()
 
                 // It is used to synchronize the execution of the target action and hide bottom sheet
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -189,8 +195,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         guard let userTokensManager = selectedUserWalletModel?.userTokensManager else {
             return
         }
-
-        sendAnalyticsOnChangeTokenState(tokenIsSelected: selected, tokenItem: tokenItem)
 
         if selected {
             guard !isAdded(tokenItem) else { return }
@@ -236,13 +240,13 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             .updateSelection(with: bindSelection(tokenItem), isReadonly: isReadonly(tokenItem))
     }
 
-    private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
+    private func sendAnalytics() {
         Analytics.log(
             event: .marketsChartTokenNetworkSelected,
             params: [
-                .token: tokenItem.currencySymbol,
+                .token: coinSymbol.uppercased(),
                 .count: "\(pendingAdd.count)",
-                .blockchain: tokenItem.blockchain.displayName.capitalizingFirstLetter(),
+                .blockchain: pendingAdd.map { $0.blockchain.displayName.capitalizingFirstLetter() }.joined(separator: ","),
             ]
         )
     }

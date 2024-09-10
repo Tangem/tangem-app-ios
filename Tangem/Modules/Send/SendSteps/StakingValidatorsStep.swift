@@ -26,7 +26,7 @@ class StakingValidatorsStep {
 // MARK: - SendStep
 
 extension StakingValidatorsStep: SendStep {
-    var title: String? { Localization.sendRecipientLabel }
+    var title: String? { Localization.stakingValidator }
 
     var type: SendStepType { .validators(viewModel) }
 

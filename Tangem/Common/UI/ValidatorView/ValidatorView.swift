@@ -63,7 +63,6 @@ struct ValidatorView: View {
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
-            .saturation(data.isIconMonochrome ? 0 : 1)
             .matchedGeometryEffect(
                 namespace.map { .init(id: $0.names.validatorIcon(id: data.address), namespace: $0.id) }
             )
@@ -111,10 +110,6 @@ struct ValidatorView: View {
         case .checkmark:
             let isSelected = selection?.isActive(compare: data.address).wrappedValue ?? false
             CheckIconView(isSelected: isSelected)
-        case .balance(_, .some(_)):
-            Assets.chevron.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.informative)
         default:
             EmptyView()
         }
@@ -147,14 +142,14 @@ extension ValidatorView {
                         address: "1",
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        subtitleType: .active(apr: "0.08%"),
+                        subtitleType: .none,
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
                         address: "2",
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        subtitleType: .active(apr: "0.08%"),
+                        subtitleType: .selection(percentFormatted: "0.08%"),
                         detailsType: .checkmark
                     ),
                 ]) {
@@ -167,7 +162,7 @@ extension ValidatorView {
                         address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        subtitleType: .active(apr: "0.08%"),
+                        subtitleType: .selection(percentFormatted: "0.08%"),
                         detailsType: .balance(.init(crypto: "543 USD", fiat: "5 SOL"), action: nil)
                     ),
                 ]) {

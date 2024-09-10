@@ -148,6 +148,8 @@ private extension ExpressApproveViewModel {
             do {
                 try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
+            } catch SendTransactionDispatcherResult.Error.userCancelled {
+                // Do nothing
             } catch {
                 viewModel.logger.error(error)
                 await runOnMain {

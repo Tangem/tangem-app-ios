@@ -52,9 +52,7 @@ private extension CommonStakingValidatorsInteractor {
             return
         }
 
-        if let defaultValidator = yield.validators.first(where: { $0.address == yield.defaultValidator }) {
-            output?.userDidSelected(validator: defaultValidator)
-        } else if let first = yield.validators.first {
+        if let first = yield.validators.first {
             output?.userDidSelected(validator: first)
         }
 

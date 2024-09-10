@@ -21,6 +21,11 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     @Published var stakingValidatorsCompactViewModelId: UUID = .init()
     @Published var sendFeeCompactViewModelId: UUID = .init()
 
+    @Published var destinationExpanding = false
+    @Published var amountExpanding = false
+    @Published var validatorExpanding = false
+    @Published var feeExpanding = false
+
     @Published var destinationEditMode = false
     @Published var amountEditMode = false
     @Published var validatorEditMode = false
@@ -57,6 +62,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     private let editableType: EditableType
     private let interactor: SendSummaryInteractor
     private let notificationManager: NotificationManager
+    private let actionType: SendFlowActionType
     weak var router: SendSummaryStepsRoutable?
 
     private var bag: Set<AnyCancellable> = []
@@ -72,6 +78,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     ) {
         editableType = settings.editableType
         tokenItem = settings.tokenItem
+        actionType = settings.actionType
 
         self.interactor = interactor
         self.notificationManager = notificationManager
@@ -90,7 +97,17 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
         feeVisible = true
         transactionDescriptionIsVisible = true
 
-        Analytics.log(.sendConfirmScreenOpened)
+        if actionType == .send {
+            Analytics.log(.sendConfirmScreenOpened)
+        } else {
+            Analytics.log(
+                event: .stakingConfirmationScreenOpened,
+                params: [
+                    .validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
+                    .action: actionType.analyticsAction?.rawValue ?? "",
+                ]
+            )
+        }
 
         // For the sake of simplicity we're assuming that notifications aren't going to be created after the screen has been displayed
         if notificationInputs.isEmpty, !AppSettings.shared.userDidTapSendScreenSummary {
@@ -103,21 +120,47 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
     func onDisappear() {}
 
     func userDidTapDestination() {
+        destinationExpanding = true
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = false
+
         didTapSummary()
         router?.summaryStepRequestEditDestination()
     }
 
     func userDidTapAmount() {
+        destinationExpanding = false
+        amountExpanding = true
+        validatorExpanding = false
+        feeExpanding = false
+
         didTapSummary()
         router?.summaryStepRequestEditAmount()
     }
 
     func userDidTapValidator() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = true
+        feeExpanding = false
+
         didTapSummary()
+
+        Analytics.log(
+            event: .stakingButtonValidator,
+            params: [.source: Analytics.ParameterValue.stakeSourceConfirmation.rawValue]
+        )
+
         router?.summaryStepRequestEditValidators()
     }
 
     func userDidTapFee() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = true
+
         didTapSummary()
         router?.summaryStepRequestEditFee()
     }
@@ -221,6 +264,7 @@ extension SendSummaryViewModel {
     struct Settings {
         let tokenItem: TokenItem
         let editableType: EditableType
+        let actionType: SendFlowActionType
     }
 
     enum EditableType: Hashable {

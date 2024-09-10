@@ -108,11 +108,21 @@ struct SendScreenDataCollector: EmailDataCollector {
     init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, transaction: SendTransactionType, isFeeIncluded: Bool, lastError: SendTxError?) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
-        fee = transaction.fee.amount
-        destination = transaction.destinationAddress
-        amount = transaction.amount
         self.isFeeIncluded = isFeeIncluded
         self.lastError = lastError
+
+        switch transaction {
+        case .transfer(let transaction):
+            fee = transaction.fee.amount
+            destination = transaction.destinationAddress
+            amount = transaction.amount
+        case .staking(let action):
+            fee = action.transactions.last.map {
+                .init(with: walletModel.feeTokenItem.blockchain, type: walletModel.feeTokenItem.amountType, value: $0.fee)
+            } ?? .zeroCoin(for: walletModel.tokenItem.blockchain)
+            destination = ""
+            amount = .init(with: walletModel.tokenItem.blockchain, type: walletModel.amountType, value: action.amount)
+        }
     }
 }
 
@@ -230,35 +240,4 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
 struct DetailsFeedbackData {
     let userWalletEmailData: [EmailCollectedData]
     let walletModels: [WalletModel]
-}
-
-// MARK: - SendTransactionType
-
-private extension SendTransactionType {
-    var amount: Amount {
-        switch self {
-        case .staking(_, let transaction):
-            return transaction.amount
-        case .transfer(let transaction):
-            return transaction.amount
-        }
-    }
-
-    var fee: Fee {
-        switch self {
-        case .staking(_, let transaction):
-            return transaction.fee
-        case .transfer(let transaction):
-            return transaction.fee
-        }
-    }
-
-    var destinationAddress: String {
-        switch self {
-        case .staking:
-            return ""
-        case .transfer(let transaction):
-            return transaction.destinationAddress
-        }
-    }
 }

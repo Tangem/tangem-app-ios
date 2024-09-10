@@ -13,15 +13,10 @@ struct MarketsTokenDetailsInsightsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsInsightsViewModel
 
     @State private var gridWidth: CGFloat = .zero
-    @State private var firstItemWidth: CGFloat = .zero
-
-    private var itemWidth: CGFloat {
-        let halfSizeWidth = gridWidth / 2 - Constants.itemsSpacing
-        return halfSizeWidth > firstItemWidth ? halfSizeWidth : firstItemWidth
-    }
 
     private var gridItems: [GridItem] {
-        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .leading)]
+        let itemWidth = max(0, gridWidth / 2 - Constants.itemsSpacing)
+        return [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
@@ -34,16 +29,12 @@ struct MarketsTokenDetailsInsightsView: View {
                     TokenMarketsDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
+                        trend: info.trend,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
                         },
                         containerWidth: gridWidth
                     )
-                    .readGeometry(\.size.width, onChange: { value in
-                        if value > firstItemWidth {
-                            firstItemWidth = value
-                        }
-                    })
                 }
             })
             .readGeometry(\.size.width, bindTo: $gridWidth)
@@ -123,6 +114,7 @@ extension MarketsTokenDetailsInsightsView {
     struct RecordInfo: Identifiable {
         let type: RecordType
         let recordData: String
+        let trend: TokenMarketsDetailsStatisticsRecordView.Trend?
 
         var id: String {
             "\(type.id) - \(recordData)"
@@ -135,12 +127,6 @@ extension MarketsTokenDetailsInsightsView {
 }
 
 #Preview {
-    let records: [MarketsTokenDetailsInsightsView.RecordInfo] = [
-        .init(type: .buyers, recordData: "+44"),
-        .init(type: .buyPressure, recordData: "-$400"),
-        .init(type: .holdersChange, recordData: "+100"),
-        .init(type: .liquidity, recordData: "+445,9K"),
-    ]
     let insights = CurrentValueSubject<TokenMarketsDetailsInsights?, Never>(nil)
 
     return MarketsTokenDetailsInsightsView(

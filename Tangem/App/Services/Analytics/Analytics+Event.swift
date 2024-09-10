@@ -81,6 +81,7 @@ extension Analytics {
         case buttonCopyAddress = "[Token / Receive] Button - Copy Address"
         case buttonShareAddress = "[Token / Receive] Button - Share Address"
         case buttonAddTokenTrustline = "[Token] Button - Token Trustline"
+        case stakingClicked = "[Token] Staking Clicked"
 
         // MARK: - Send
 
@@ -283,6 +284,32 @@ extension Analytics {
         case pushButtonAllow = "[Push] Button - Allow"
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
+
+        // MARK: - Staking
+
+        case stakingInfoScreenOpened = "[Staking] Staking Info Screen Opened"
+        case stakingLinkWhatIsStaking = "[Staking] Link - What Is Staking"
+        case stakingButtonStake = "[Staking] Button - Stake"
+        case stakingAmountScreenOpened = "[Staking] Amount Screen Opened"
+        case stakingScreenReopened = "[Staking] Screen Reopened"
+        case stakingButtonMax = "[Staking] Button - Max"
+        case stakingButtonNext = "[Staking] Button - Next"
+        case stakingButtonCancel = "[Staking] Button - Cancel"
+        case stakingButtonValidator = "[Staking] Button - Validator"
+        case stakingValidatorChosen = "[Staking] Validator Chosen"
+        case stakingStakeInProgressScreenOpened = "[Staking] Stake In Progress Screen Opened"
+        case stakingButtonRewards = "[Staking] Button - Rewards"
+        case stakingRewardScreenOpened = "[Staking] Reward Screen Opened"
+        case stakingButtonClaim = "[Staking] Button - Claim"
+        case stakingButtonRestake = "[Staking] Button - Restake"
+        case stakingButtonUnstake = "[Staking] Button - Unstake"
+        case stakingButtonWithdraw = "[Staking] Button - Withdraw"
+        case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
+        case stakingErrors = "[Staking] Errors"
+        case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingSelectedCurrency = "[Staking] Selected Currency"
+        case stakingButtonShare = "[Staking] Button - Share"
+        case stakingButtonExplore = "[Staking] Button - Explore"
 
         // MARK: - Markets
 

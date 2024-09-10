@@ -112,25 +112,27 @@ struct MarketsPortfolioTokenItemView: View {
     }
 
     private var quickActionsView: some View {
-        ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
-            VStack(alignment: .leading, spacing: .zero) {
-                // It is necessary to draw the indentation with a strip
-                makeLineRowActionItem()
+        VStack(spacing: .zero) {
+            ForEach(indexed: viewModel.contextActions.indexed()) { index, action in
+                VStack(alignment: .leading, spacing: .zero) {
+                    // It is necessary to draw the indentation with a strip
+                    makeLineRowActionItem()
 
-                // Directly in the view of the fastest action
-                Button {
-                    viewModel.didTapContextAction(action)
-                } label: {
-                    makeQuickActionItem(for: action, at: index)
-                }
+                    // Directly in the view of the fastest action
+                    Button {
+                        viewModel.didTapContextAction(action)
+                    } label: {
+                        makeQuickActionItem(for: action, at: index)
+                    }
 
-                // Lower indentation
-                if index == (viewModel.contextActions.count - 1) {
-                    FixedSpacer(width: 12)
+                    // Lower indentation
+                    if index == (viewModel.contextActions.count - 1) {
+                        FixedSpacer(width: 12)
+                    }
                 }
             }
-            .offset(y: -12) // Required within the design
         }
+        .offset(y: -12) // Required within the design
     }
 
     private func makeQuickActionItem(for actionType: TokenActionType, at index: Int) -> some View {

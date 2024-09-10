@@ -15,11 +15,11 @@ public protocol StakingAPIProvider {
 
     func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal
     func estimateUnstakeFee(request: ActionGenericRequest) async throws -> Decimal
-    func estimatePendingFee(request: ActionGenericRequest, type: PendingActionType) async throws -> Decimal
+    func estimatePendingFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal
 
     func enterAction(request: ActionGenericRequest) async throws -> EnterAction
     func exitAction(request: ActionGenericRequest) async throws -> ExitAction
-    func pendingAction(request: ActionGenericRequest, type: PendingActionType) async throws -> PendingAction
+    func pendingAction(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> PendingAction
 
     func transaction(id: String) async throws -> StakingTransactionInfo
     func patchTransaction(id: String) async throws -> StakingTransactionInfo

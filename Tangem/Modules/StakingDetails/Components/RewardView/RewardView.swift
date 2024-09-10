@@ -32,13 +32,13 @@ struct RewardView: View {
         case .rewards(let fiatFormatted, let cryptoFormatted, let action):
             Button(action: action) {
                 HStack(spacing: 4) {
-                    Text(fiatFormatted)
+                    SensitiveText(fiatFormatted)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    Text(cryptoFormatted)
+                    SensitiveText(cryptoFormatted)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
 
                     Spacer(minLength: 12)

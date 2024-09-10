@@ -42,6 +42,7 @@ struct SendSummaryView: View {
                     }
                     .frame(height: sendDestinationViewModel.viewSize.height)
                     .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.destinationExpanding ? 1 : 0)
                 }
 
                 if let sendAmountViewModel = viewModel.sendAmountCompactViewModel {
@@ -66,6 +67,7 @@ struct SendSummaryView: View {
                     }
                     .frame(height: sendAmountViewModel.viewSize.height)
                     .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.amountExpanding ? 1 : 0)
                 }
 
                 if let stakingValidatorsCompactViewModel = viewModel.stakingValidatorsCompactViewModel {
@@ -90,6 +92,7 @@ struct SendSummaryView: View {
                     }
                     .frame(height: stakingValidatorsCompactViewModel.viewSize.height)
                     .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.validatorExpanding ? 1 : 0)
                 }
 
                 if let sendFeeCompactViewModel = viewModel.sendFeeCompactViewModel {
@@ -114,6 +117,7 @@ struct SendSummaryView: View {
                     }
                     .frame(height: sendFeeCompactViewModel.viewSize.height)
                     .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.feeExpanding ? 1 : 0)
                 }
 
                 if viewModel.showHint {

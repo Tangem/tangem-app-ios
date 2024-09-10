@@ -13,14 +13,14 @@ public extension Result {
         switch self {
         case .success(let success):
             return success
-        case .failure(let failure):
+        case .failure:
             return nil
         }
     }
 
     var error: Error? {
         switch self {
-        case .success(let success):
+        case .success:
             return nil
         case .failure(let failure):
             return failure
