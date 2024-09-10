@@ -127,12 +127,6 @@ extension MarketsTokenDetailsInsightsView {
 }
 
 #Preview {
-    let records: [MarketsTokenDetailsInsightsView.RecordInfo] = [
-        .init(type: .buyers, recordData: "0", trend: nil),
-        .init(type: .buyPressure, recordData: "-$400", trend: .negative),
-        .init(type: .holdersChange, recordData: "+100", trend: .positive),
-        .init(type: .liquidity, recordData: "+445,9K", trend: .positive),
-    ]
     let insights = CurrentValueSubject<TokenMarketsDetailsInsights?, Never>(nil)
 
     return MarketsTokenDetailsInsightsView(

@@ -66,8 +66,6 @@ extension MarketsSkeletonItemView {
 }
 
 #Preview {
-    let tokens = DummyMarketTokenModelFactory().list()
-
     return ScrollView(.vertical) {
         ForEach(0 ..< 10) { _ in
             MarketsSkeletonItemView()

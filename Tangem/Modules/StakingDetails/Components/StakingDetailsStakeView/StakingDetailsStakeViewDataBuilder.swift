@@ -89,8 +89,8 @@ class StakingDetailsStakeViewDataBuilder {
             switch balance.balanceType {
             case .rewards, .warmup, .active: .image(url: validator?.iconURL)
             case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
-            case .unbonding: .icon(Assets.arrowDownMini, color: Colors.Icon.accent)
-            case .withdraw: .icon(Assets.arrowDownMini, color: Colors.Icon.informative)
+            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
+            case .withdraw: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
             }
         }()
 
@@ -102,20 +102,21 @@ class StakingDetailsStakeViewDataBuilder {
             BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
+        let inProgress = stakingPendingTransactionsRepository.hasPending(balance: balance)
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
             case .rewards, .warmup, .unbonding:
                 return nil
             case .active, .withdraw, .locked:
-                return action
+                return inProgress ? nil : action
             }
         }()
 
         return StakingDetailsStakeViewData(
             title: title,
             icon: icon,
-            inProgress: stakingPendingTransactionsRepository.hasPending(balance: balance),
+            inProgress: inProgress,
             subtitleType: subtitle,
             balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
             action: action

@@ -73,10 +73,8 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
                 }
 
                 if viewModel.hasNextPage {
-                    HStack(alignment: .center) {
-                        ActivityIndicatorView(color: .gray)
-                            .onAppear(perform: viewModel.fetch)
-                    }
+                    ManageTokensListLoaderView()
+                        .onAppear(perform: viewModel.fetch)
                 }
 
                 if let footer {
