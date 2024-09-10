@@ -63,5 +63,6 @@ struct MarketsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
                 TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
+            .emptyNavigationLink()
     }
 }
