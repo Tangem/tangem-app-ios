@@ -14,7 +14,7 @@ import CombineExt
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     // MARK: - ViewState
@@ -127,10 +127,10 @@ final class MainViewModel: ObservableObject {
         if shouldDelayBottomSheetVisibility {
             shouldDelayBottomSheetVisibility = false
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.bottomSheetVisibilityColdStartDelay) {
-                self.bottomSheetVisibility.show()
+                self.mainBottomSheetUIManager.show()
             }
         } else {
-            bottomSheetVisibility.show()
+            mainBottomSheetUIManager.show()
         }
     }
 
@@ -139,8 +139,8 @@ final class MainViewModel: ObservableObject {
         // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
         // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
         DispatchQueue.main.async {
-            if self.bottomSheetVisibility.isShown {
-                self.bottomSheetVisibility.hide()
+            if self.mainBottomSheetUIManager.isShown {
+                self.mainBottomSheetUIManager.hide()
             }
         }
     }

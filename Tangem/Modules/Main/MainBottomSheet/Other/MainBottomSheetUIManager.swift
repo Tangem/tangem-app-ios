@@ -1,5 +1,5 @@
 //
-//  MainBottomSheetVisibility.swift
+//  MainBottomSheetUIManager.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 02.11.2023.
@@ -11,7 +11,7 @@ import Combine
 import class UIKit.UIImage
 import TangemFoundation
 
-final class MainBottomSheetVisibility {
+final class MainBottomSheetUIManager {
     private let isShownSubject: CurrentValueSubject<Bool, Never> = .init(false)
     private let footerSnapshotSubject: PassthroughSubject<UIImage?, Never> = .init()
     private let footerSnapshotUpdateTriggerSubject: PassthroughSubject<Void, Never> = .init()
@@ -20,7 +20,7 @@ final class MainBottomSheetVisibility {
 
 // MARK: - Visibility management
 
-extension MainBottomSheetVisibility {
+extension MainBottomSheetUIManager {
     var isShown: Bool { isShownSubject.value }
     var isShownPublisher: some Publisher<Bool, Never> { isShownSubject }
 
@@ -41,7 +41,7 @@ extension MainBottomSheetVisibility {
 
 // MARK: - Snapshot management
 
-extension MainBottomSheetVisibility {
+extension MainBottomSheetUIManager {
     /// Provides updated snapshot.
     var footerSnapshotPublisher: some Publisher<UIImage?, Never> { footerSnapshotSubject }
 
@@ -66,13 +66,13 @@ extension MainBottomSheetVisibility {
 
 // MARK: - Dependency injection
 
-private struct MainBottomSheetVisibilityKey: InjectionKey {
-    static var currentValue = MainBottomSheetVisibility()
+private struct MainBottomSheetUIManagerKey: InjectionKey {
+    static var currentValue = MainBottomSheetUIManager()
 }
 
 extension InjectedValues {
-    var mainBottomSheetVisibility: MainBottomSheetVisibility {
-        get { Self[MainBottomSheetVisibilityKey.self] }
-        set { Self[MainBottomSheetVisibilityKey.self] = newValue }
+    var mainBottomSheetUIManager: MainBottomSheetUIManager {
+        get { Self[MainBottomSheetUIManagerKey.self] }
+        set { Self[MainBottomSheetUIManagerKey.self] = newValue }
     }
 }

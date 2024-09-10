@@ -20,7 +20,7 @@ final class MarketsViewModel: ObservableObject {
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
 
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Properties
 
@@ -81,7 +81,7 @@ final class MarketsViewModel: ObservableObject {
 
         bindToCurrencyCodeUpdate()
         dataProviderBind()
-        bottomSheetVisibilityBind()
+        bindToMainBottomSheetUIManager()
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -126,7 +126,7 @@ final class MarketsViewModel: ObservableObject {
     }
 
     func onViewSnapshot(_ viewSnapshot: UIImage?) {
-        bottomSheetVisibility.setFooterSnapshot(viewSnapshot)
+        mainBottomSheetUIManager.setFooterSnapshot(viewSnapshot)
     }
 }
 
@@ -315,8 +315,8 @@ private extension MarketsViewModel {
             .store(in: &bag)
     }
 
-    func bottomSheetVisibilityBind() {
-        bottomSheetVisibility
+    func bindToMainBottomSheetUIManager() {
+        mainBottomSheetUIManager
             .footerSnapshotUpdateTriggerPublisher
             .mapToValue(true)
             .assign(to: \.isViewSnapshotRequested, on: self, ownership: .weak)

@@ -14,7 +14,7 @@ import class UIKit.UIImage
 final class MainBottomSheetFooterViewModel: ObservableObject {
     @Published private(set) var snapshotImage: UIImage?
 
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     private var subscription: AnyCancellable?
 
@@ -27,7 +27,7 @@ final class MainBottomSheetFooterViewModel: ObservableObject {
             return
         }
 
-        subscription = bottomSheetVisibility
+        subscription = mainBottomSheetUIManager
             .footerSnapshotPublisher
             .assign(to: \.snapshotImage, on: self, ownership: .weak)
     }
