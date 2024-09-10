@@ -706,6 +706,7 @@
 		B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B620FC9F2C5D326D00AD0FD1 /* DGCharts */; };
 		B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B620FCAD2C5D337900AD0FD1 /* DGCharts */; };
 		B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */; };
+		B62688292C8FD478003FAAFF /* Dispatch+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62688282C8FD478003FAAFF /* Dispatch+.swift */; };
 		B62C65CE2C38D06B00189AD4 /* PushNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C72C38D06A00189AD4 /* PushNotificationsService.swift */; };
 		B62C65CF2C38D06B00189AD4 /* PushNotificationsHelpersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C82C38D06A00189AD4 /* PushNotificationsHelpersFactory.swift */; };
 		B62C65D02C38D06B00189AD4 /* PushNotificationsPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C92C38D06B00189AD4 /* PushNotificationsPermissionManager.swift */; };
@@ -2667,6 +2668,7 @@
 		B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableViewModifier.swift; sourceTree = "<group>"; };
 		B61D2A1F2B1947E6004F2C2D /* TokenDetailsScrollState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenDetailsScrollState.swift; sourceTree = "<group>"; };
 		B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFactory.swift; sourceTree = "<group>"; };
+		B62688282C8FD478003FAAFF /* Dispatch+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dispatch+.swift"; sourceTree = "<group>"; };
 		B62C65C72C38D06A00189AD4 /* PushNotificationsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsService.swift; sourceTree = "<group>"; };
 		B62C65C82C38D06A00189AD4 /* PushNotificationsHelpersFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsHelpersFactory.swift; sourceTree = "<group>"; };
 		B62C65C92C38D06B00189AD4 /* PushNotificationsPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionManager.swift; sourceTree = "<group>"; };
@@ -8302,6 +8304,7 @@
 				EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */,
 				EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */,
 				EFF763F02C4E60BA00E846F4 /* Result+.swift */,
+				B62688282C8FD478003FAAFF /* Dispatch+.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -12342,6 +12345,7 @@
 				EFEE23702BFE3A8A0099917E /* DateFormatter+.swift in Sources */,
 				EF2D9CC42BBDAB3E0055C485 /* ThreadSafeContainer.swift in Sources */,
 				EFA568092C471C1E0064EBA1 /* Future+.swift in Sources */,
+				B62688292C8FD478003FAAFF /* Dispatch+.swift in Sources */,
 				EF2D9CC22BBDAB350055C485 /* Moya.Task+.swift in Sources */,
 				EF2D9CC12BBDAB2E0055C485 /* Sequence+Async.swift in Sources */,
 				EF2D9CC02BBDAB290055C485 /* Publisher+ThrowingAsyncMap.swift in Sources */,
