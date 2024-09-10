@@ -111,6 +111,7 @@
 "common_go_to_provider" = "К провайдеру";
 "common_go_to_token" = "Перейти в токен";
 "common_import" = "Импортировать";
+"common_in_progress" = "В процессе";
 "common_later" = "Позже";
 "common_learn_and_earn" = "Learn & Earn";
 "common_left" = "Осталось %1$@";
@@ -344,7 +345,7 @@
 "markets_common_title" = "Рынок";
 "markets_generate_addresses_notification" = "Чтобы создать адреса для выбранных сетей, отсканируйте вашу карту Tangem кошелька";
 "markets_insights_info_description_message" = "Данные раздела получены из следующих сетей: %@";
-"markets_loading_error_title" = "Unable to load the data…";
+"markets_loading_error_title" = "Невозможно загрузить данные";
 "markets_loading_no_data_title" = "Нет данных";
 "markets_quick_actions" = "Быстрые действия";
 "markets_search_result_title" = "Результат";
@@ -368,12 +369,12 @@
 "markets_sort_by_trending_title" = "В тренде";
 "markets_token_details_about_token_title" = "О %@";
 "markets_token_details_blockchain_site" = "Веб-сайт";
-"markets_token_details_buy_pressure" = "Покуп. предпочтение";
-"markets_token_details_buy_pressure_description" = "Разница между объемом покупателей и  продавцов";
+"markets_token_details_buy_pressure" = "Покуп. предпоч.";
+"markets_token_details_buy_pressure_description" = "Разница между объемом покупателей и продавцов";
 "markets_token_details_circulating_supply" = "Циркулир. предл.";
 "markets_token_details_circulating_supply_description" = "Общее количество монет, доступных для торговли и находящихся в обращении на рынке";
-"markets_token_details_experienced_buyers" = "Опытные покупкатели";
-"markets_token_details_experienced_buyers_description" = "Net buyers with the additional requirement of having at least 100 outgoing transactions";
+"markets_token_details_experienced_buyers" = "Опытные трейдеры";
+"markets_token_details_experienced_buyers_description" = "Покупатели, у которых было как минимум 100 исходящих транзакций.";
 "markets_token_details_fully_diluted_valuation" = "Полн. разб. кап.";
 "markets_token_details_fully_diluted_valuation_description" = "Общая теоретическая стоимость криптовалюты, если все монеты, которые могут существовать, находятся в обращении, включая те, которые в настоящее время не обращаются";
 "markets_token_details_genesis_date" = "Дата создания";
@@ -391,7 +392,7 @@
 "markets_token_details_market_capitalization" = "Рын. кап.";
 "markets_token_details_market_capitalization_description" = "Общая рыночная стоимость криптовалюты, рассчитываемая путем умножения текущей цены монеты на общее количество монет в обращении.";
 "markets_token_details_market_rating" = "Рейтинг";
-"markets_token_details_market_rating_description" = "Position in crypto rating between all coins based on market capitalization";
+"markets_token_details_market_rating_description" = "Позиция в рейтинге криптовалют среди всех монет на основе рыночной капитализации.";
 "markets_token_details_max_supply" = "Максимальный объем";
 "markets_token_details_max_supply_description" = "";
 "markets_token_details_metrics" = "Метрики";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "Нажмите для вывода";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
+"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
 "staking_unbonding" = "Отзыв";
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
@@ -720,7 +722,6 @@
 "swapping_insufficient_funds" = "Недостаточно средств";
 "swapping_permission_header" = "Дать разрешение";
 "swapping_permit_and_swap" = "Разрешить и обменять";
-"swapping_success_view_title" = "В процессе";
 "swapping_swap_action" = "Обменять";
 "swapping_to_title" = "Вы получите";
 "swapping_token_list_title" = "Выберите токен";
