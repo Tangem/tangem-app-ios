@@ -14,6 +14,7 @@ struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
     @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
 
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
@@ -72,6 +73,7 @@ struct MarketsView: View {
                 UIResponder.current?.resignFirstResponder()
             }
         }
+        .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
     }
 
     @ViewBuilder
@@ -257,6 +259,16 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
+    }
+
+    private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
+        if isViewSnapshotRequested {
+            let snapshotter = viewHierarchySnapshotter
+            let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
+                ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
+            viewModel.isViewSnapshotRequested.toggle()
+            viewModel.onViewSnapshot(viewSnapshot)
+        }
     }
 }
 

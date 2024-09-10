@@ -28,8 +28,6 @@ final class MainViewModel: ObservableObject {
 
     let swipeDiscoveryAnimationTrigger = CardsInfoPagerSwipeDiscoveryAnimationTrigger()
 
-    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.markets) }
-
     // MARK: - Dependencies
 
     private let swipeDiscoveryHelper: WalletSwipeDiscoveryHelper

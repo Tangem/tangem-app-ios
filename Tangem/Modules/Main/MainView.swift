@@ -30,10 +30,7 @@ struct MainView: View {
                 info.body
             },
             bottomOverlayFactory: { info, didScrollToBottom in
-                info.makeBottomOverlay(
-                    isMainBottomSheetEnabled: viewModel.isMainBottomSheetEnabled,
-                    didScrollToBottom: didScrollToBottom
-                )
+                info.makeBottomOverlay(didScrollToBottom: didScrollToBottom)
             },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )

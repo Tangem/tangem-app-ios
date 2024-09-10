@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import CombineExt
 import Kingfisher
 
 final class MarketsViewModel: ObservableObject {
@@ -19,10 +20,13 @@ final class MarketsViewModel: ObservableObject {
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
 
+    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+
     // MARK: - Properties
 
     @Published var isViewVisible: Bool = false
     @Published var isDataProviderBusy: Bool = false
+    @Published var isViewSnapshotRequested: Bool = false
 
     let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
@@ -77,6 +81,7 @@ final class MarketsViewModel: ObservableObject {
 
         bindToCurrencyCodeUpdate()
         dataProviderBind()
+        bottomSheetVisibilityBind()
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -118,6 +123,10 @@ final class MarketsViewModel: ObservableObject {
     func onTryLoadList() {
         resetUI()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
+    }
+
+    func onViewSnapshot(_ viewSnapshot: UIImage?) {
+        bottomSheetVisibility.setFooterSnapshot(viewSnapshot)
     }
 }
 
@@ -303,6 +312,14 @@ private extension MarketsViewModel {
 
                 viewModel.tokenListLoadingState = .idle
             }
+            .store(in: &bag)
+    }
+
+    func bottomSheetVisibilityBind() {
+        bottomSheetVisibility
+            .footerSnapshotUpdateTriggerPublisher
+            .mapToValue(true)
+            .assign(to: \.isViewSnapshotRequested, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
