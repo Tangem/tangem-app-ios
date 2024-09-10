@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 public struct StakingAction: Hashable {
     public let amount: Decimal
@@ -38,7 +39,7 @@ public extension StakingAction {
     }
 
     enum PendingActionType: Hashable {
-        case withdraw(validator: String, passthrough: String)
+        case withdraw(validator: String, passthrough: NonEmptyArray<String>)
         case claimRewards(validator: String?, passthrough: String)
         case restakeRewards(validator: String?, passthrough: String)
         case voteLocked(validator: String, passthrough: String)
@@ -46,7 +47,7 @@ public extension StakingAction {
 
         var passthrough: String {
             switch self {
-            case .withdraw(_, let passthrough): passthrough
+            case .withdraw(_, let passthrough): passthrough.single
             case .claimRewards(_, let passthrough): passthrough
             case .restakeRewards(_, let passthrough): passthrough
             case .voteLocked(_, let passthrough): passthrough

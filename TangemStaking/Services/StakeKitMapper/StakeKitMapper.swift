@@ -11,6 +11,51 @@ import Foundation
 struct StakeKitMapper {
     // MARK: - To DTO
 
+    func mapToEnterRequest(request: ActionGenericRequest) -> StakeKitDTO.EstimateGas.Enter.Request {
+        StakeKitDTO.EstimateGas.Enter.Request(
+            integrationId: request.integrationId,
+            addresses: mapToAddress(request: request),
+            args: mapToActionsArgs(request: request)
+        )
+    }
+
+    func mapToExitRequest(request: ActionGenericRequest) -> StakeKitDTO.EstimateGas.Exit.Request {
+        StakeKitDTO.EstimateGas.Exit.Request(
+            integrationId: request.integrationId,
+            addresses: mapToAddress(request: request),
+            args: mapToActionsArgs(request: request)
+        )
+    }
+
+    func mapToPendingRequest(request: PendingActionRequest) -> StakeKitDTO.EstimateGas.Pending.Request {
+        StakeKitDTO.EstimateGas.Pending.Request(
+            type: mapToActionType(from: request.type),
+            integrationId: request.request.integrationId,
+            passthrough: request.passthrough,
+            addresses: mapToAddress(request: request.request),
+            args: mapToActionsArgs(request: request.request)
+        )
+    }
+
+    func mapToAddress(request: ActionGenericRequest) -> StakeKitDTO.Address {
+        .init(
+            address: request.address,
+            additionalAddresses: request.additionalAddresses.flatMap {
+                StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
+            }
+        )
+    }
+
+    func mapToActionsArgs(request: ActionGenericRequest) -> StakeKitDTO.Actions.Args {
+        StakeKitDTO.Actions.Args(
+            amount: request.amount.description,
+            validatorAddress: request.validator,
+            validatorAddresses: request.validator.map { [$0] },
+            inputToken: mapToTokenDTO(from: request.token),
+            tronResource: request.tronResource
+        )
+    }
+
     func mapToActionType(from action: StakingAction.PendingActionType) -> StakeKitDTO.Actions.ActionType {
         switch action {
         case .withdraw: .withdraw
@@ -246,8 +291,9 @@ struct StakeKitMapper {
         case .claimRewards: .claimRewards
         case .restakeRewards: .restakeRewards
         // Tron specific types
-        case .freezeEnergy, .vote: .stake
-        case .unlock, .unfreezeEnergy: .unstake
+        case .freezeEnergy, .vote: .voteLocked
+        case .unlock: .unlockLocked
+        case .unfreezeEnergy: .unstake
         default:
             throw StakeKitMapperError.notImplement
         }

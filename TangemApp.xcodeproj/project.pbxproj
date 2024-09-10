@@ -1506,6 +1506,8 @@
 		EF7A070F2C2EF628003DED83 /* SendFinishInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A070E2C2EF628003DED83 /* SendFinishInputOutput.swift */; };
 		EF7A072C2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A072B2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift */; };
 		EF7A072E2C2F0738003DED83 /* SendTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A072D2C2F0738003DED83 /* SendTransactionDispatcher.swift */; };
+		EF7A25F22C906CBE0089A4A4 /* NonEmptyArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A25F12C906CBE0089A4A4 /* NonEmptyArray.swift */; };
+		EF7A25F42C9092960089A4A4 /* PendingActionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A25F32C9092960089A4A4 /* PendingActionRequest.swift */; };
 		EF7B9CEF286C6BD7004C33A9 /* CardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CEE286C6BD7004C33A9 /* CardSettingsView.swift */; };
 		EF7B9CF1286C6BE2004C33A9 /* CardSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF0286C6BE2004C33A9 /* CardSettingsViewModel.swift */; };
 		EF7B9CF5286C7023004C33A9 /* CardSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF4286C7023004C33A9 /* CardSettingsCoordinator.swift */; };
@@ -3497,6 +3499,8 @@
 		EF7A070E2C2EF628003DED83 /* SendFinishInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFinishInputOutput.swift; sourceTree = "<group>"; };
 		EF7A072B2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		EF7A072D2C2F0738003DED83 /* SendTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionDispatcher.swift; sourceTree = "<group>"; };
+		EF7A25F12C906CBE0089A4A4 /* NonEmptyArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonEmptyArray.swift; sourceTree = "<group>"; };
+		EF7A25F32C9092960089A4A4 /* PendingActionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingActionRequest.swift; sourceTree = "<group>"; };
 		EF7B9CEE286C6BD7004C33A9 /* CardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSettingsView.swift; sourceTree = "<group>"; };
 		EF7B9CF0286C6BE2004C33A9 /* CardSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSettingsViewModel.swift; sourceTree = "<group>"; };
 		EF7B9CF2286C6C7A004C33A9 /* CardSettingsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSettingsRoutable.swift; sourceTree = "<group>"; };
@@ -8235,6 +8239,7 @@
 		EF2D9C872BBDA87A0055C485 /* TangemFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				EF7A25F02C906CB50089A4A4 /* Models */,
 				EF2D9CB92BBDA91A0055C485 /* Helpers */,
 				EF9E29B92B4F0CCE00418559 /* Extensions */,
 				EF2D9C882BBDA87A0055C485 /* TangemFoundation.h */,
@@ -8859,6 +8864,14 @@
 				EF22B9902C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift */,
 			);
 			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EF7A25F02C906CB50089A4A4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EF7A25F12C906CBE0089A4A4 /* NonEmptyArray.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		EF7B9CED286C6B95004C33A9 /* CardSettings */ = {
@@ -9528,6 +9541,7 @@
 				EF19FAF72C6D575B002155F1 /* ActionGenericRequest.swift */,
 				EF19FAF92C6D577A002155F1 /* PendingActionType.swift */,
 				EFA5BC092C88D31C004662CA /* StakingTransactionAction.swift */,
+				EF7A25F32C9092960089A4A4 /* PendingActionRequest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -12328,6 +12342,7 @@
 				EFA568092C471C1E0064EBA1 /* Future+.swift in Sources */,
 				EF2D9CC22BBDAB350055C485 /* Moya.Task+.swift in Sources */,
 				EF2D9CC12BBDAB2E0055C485 /* Sequence+Async.swift in Sources */,
+				EF7A25F22C906CBE0089A4A4 /* NonEmptyArray.swift in Sources */,
 				EF2D9CC02BBDAB290055C485 /* Publisher+ThrowingAsyncMap.swift in Sources */,
 				EF2D9CBE2BBDAB290055C485 /* Publisher+AsyncMap.swift in Sources */,
 				EFF763F12C4E60BA00E846F4 /* Result+.swift in Sources */,
@@ -12431,6 +12446,7 @@
 				EFBC5C902C00B8B800B662E0 /* StakeKitDTO+Yield.swift in Sources */,
 				EF407E382C04B09A00366733 /* Logger.swift in Sources */,
 				EF8DBCEA2C061B0E009072CF /* CommonStakingManager.swift in Sources */,
+				EF7A25F42C9092960089A4A4 /* PendingActionRequest.swift in Sources */,
 				EF407E682C04D7E700366733 /* RewardClaimingType.swift in Sources */,
 				DC592B8C2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift in Sources */,
 				EF407E6C2C04D80100366733 /* RewardType.swift in Sources */,

@@ -68,7 +68,7 @@ extension CommonStakingManager: StakingManager {
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await provider.estimatePendingFee(
+            try await getPendingEstimateFee(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -157,21 +157,24 @@ private extension CommonStakingManager {
             case .withdraw: .withdraw
             case .claimRewards: .claimRewards
             case .restakeRewards: .restakeRewards
-            case .voteLocked: .vote
-            case .unlockLocked: .unstake
+            case .voteLocked: .voteLocked
+            case .unlockLocked: .unlockLocked
             }
         }()
-
-        guard let transactionId = action.transactions.first(where: { $0.type == transactionType })?.id else {
-            throw StakingManagerError.transactionNotFound
-        }
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-        let transaction = try await provider.patchTransaction(id: transactionId)
 
-        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: [transaction])
+        let transactions = try await action.transactions.filter { $0.type == transactionType }.asyncMap { transaction in
+            try await provider.patchTransaction(id: transaction.id)
+        }
+
+        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
+    }
+
+    func getPendingEstimateFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {
+        try await provider.estimatePendingFee(request: request, type: type)
     }
 }
 
