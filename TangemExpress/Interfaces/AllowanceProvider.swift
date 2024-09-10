@@ -8,14 +8,26 @@
 
 import Foundation
 
-public protocol AllowanceProvider {
-    func isPermissionRequired(request: ExpressManagerSwappingPairRequest, for spender: String) async throws -> Bool
-    func getAllowance(owner: String, to spender: String, contract: String) async throws -> Decimal
-    func makeApproveData(spender: String, amount: Decimal) throws -> Data
+public protocol ExpressAllowanceProvider {
+    func allowanceState(request: ExpressManagerSwappingPairRequest, spender: String, policy: ExpressApprovePolicy) async throws -> AllowanceState
 }
 
-public enum AllowanceProviderError: LocalizedError {
-    case ethereumNetworkProviderNotFound
-    case ethereumTransactionProcessorNotFound
+public enum AllowanceState: Hashable {
+    case permissionRequired(ApproveTransactionData)
     case approveTransactionInProgress
+    case enoughAllowance
+}
+
+public struct ApproveTransactionData: Hashable {
+    public let txData: Data
+    public let spender: String
+    public let toContractAddress: String
+    public let fee: Fee
+
+    public init(txData: Data, spender: String, toContractAddress: String, fee: Fee) {
+        self.txData = txData
+        self.spender = spender
+        self.toContractAddress = toContractAddress
+        self.fee = fee
+    }
 }

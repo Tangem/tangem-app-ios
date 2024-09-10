@@ -58,9 +58,7 @@ struct SupportedBlockchains {
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
         [
-            .mantle(testnet: false),
-            .manta(testnet: false),
-            .radiant(testnet: false),
+            .internetComputer,
         ]
     }
 
@@ -125,6 +123,14 @@ struct SupportedBlockchains {
             .flare(testnet: false),
             .taraxa(testnet: false),
             .joystream(curve: ed25519Curve(for: version)),
+            .manta(testnet: false),
+            .radiant(testnet: false),
+            .bittensor(curve: ed25519Curve(for: version)),
+            .koinos(testnet: false),
+            .mantle(testnet: false),
+            .cyber(testnet: false),
+            .blast(testnet: false),
+            .filecoin,
         ]
     }
 
@@ -173,6 +179,9 @@ struct SupportedBlockchains {
             .flare(testnet: true),
             .taraxa(testnet: true),
             .base(testnet: true),
+            .koinos(testnet: true),
+            .cyber(testnet: true),
+            .blast(testnet: true),
         ]
     }
 

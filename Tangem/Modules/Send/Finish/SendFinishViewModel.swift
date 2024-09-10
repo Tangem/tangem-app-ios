@@ -2,84 +2,88 @@
 //  SendFinishViewModel.swift
 //  Tangem
 //
-//  Created by Andrey Chukavin on 16.11.2023.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by Sergey Balashov on 03.07.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
 
-protocol SendFinishViewModelInput: AnyObject {
-    var userInputAmountValue: Amount? { get }
-    var destinationText: String? { get }
-    var additionalField: (SendAdditionalFields, String)? { get }
-    var feeValue: Fee? { get }
-    var selectedFeeOption: FeeOption { get }
-
-    var transactionTime: Date? { get }
-    var transactionURL: URL? { get }
-}
-
-class SendFinishViewModel: ObservableObject {
+class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var showHeader = false
-    @ObservedObject var addressTextViewHeightModel: AddressTextViewHeightModel
+    @Published var transactionSentTime: String?
+    @Published var alert: AlertBinder?
 
-    let transactionTime: String
+    @Published var sendDestinationCompactViewModel: SendDestinationCompactViewModel?
+    @Published var sendAmountCompactViewModel: SendAmountCompactViewModel?
+    @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
+    @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
 
-    let destinationViewTypes: [SendDestinationSummaryViewType]
-    let amountSummaryViewData: SendAmountSummaryViewData?
-    let feeSummaryViewData: SendFeeSummaryViewModel?
+    private let tokenItem: TokenItem
+    private var feeTypeAnalyticsParameter: Analytics.ParameterValue = .null
+    private var bag: Set<AnyCancellable> = []
 
-    private let feeTypeAnalyticsParameter: Analytics.ParameterValue
-    private let walletInfo: SendWalletInfo
+    init(
+        settings: Settings,
+        input: SendFinishInput,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
+    ) {
+        tokenItem = settings.tokenItem
+        self.sendDestinationCompactViewModel = sendDestinationCompactViewModel
+        self.sendAmountCompactViewModel = sendAmountCompactViewModel
+        self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
+        self.sendFeeCompactViewModel = sendFeeCompactViewModel
 
-    init?(input: SendFinishViewModelInput, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, feeTypeAnalyticsParameter: Analytics.ParameterValue, walletInfo: SendWalletInfo) {
-        guard
-            let destinationText = input.destinationText,
-            let transactionTime = input.transactionTime,
-            let feeValue = input.feeValue
-        else {
-            return nil
-        }
-
-        let sectionViewModelFactory = SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
-        )
-
-        destinationViewTypes = sectionViewModelFactory.makeDestinationViewTypes(
-            address: destinationText,
-            additionalField: input.additionalField
-        )
-        amountSummaryViewData = sectionViewModelFactory.makeAmountViewData(
-            from: fiatCryptoValueProvider.formattedAmount,
-            amountAlternative: fiatCryptoValueProvider.formattedAmountAlternative
-        )
-        feeSummaryViewData = sectionViewModelFactory.makeFeeViewData(from: .loaded(feeValue), feeOption: input.selectedFeeOption)
-
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .short
-        self.transactionTime = formatter.string(from: transactionTime)
-
-        self.addressTextViewHeightModel = addressTextViewHeightModel
-        self.feeTypeAnalyticsParameter = feeTypeAnalyticsParameter
-        self.walletInfo = walletInfo
+        bind(input: input)
     }
 
     func onAppear() {
-        Analytics.log(event: .sendTransactionSentScreenOpened, params: [
-            .token: walletInfo.cryptoCurrencyCode,
-            .feeType: feeTypeAnalyticsParameter.rawValue,
-        ])
+        if let validatorName = stakingValidatorsCompactViewModel?.selectedValidator?.name {
+            Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
+                .validator: validatorName,
+            ])
+        } else {
+            Analytics.log(event: .sendTransactionSentScreenOpened, params: [
+                .token: tokenItem.currencySymbol,
+                .feeType: feeTypeAnalyticsParameter.rawValue,
+            ])
+        }
 
-        withAnimation(SendView.Constants.defaultAnimation) {
+        withAnimation(SendTransitionService.Constants.defaultAnimation) {
             showHeader = true
         }
+    }
+
+    func bind(input: SendFinishInput) {
+        input.transactionSentDate
+            .map { date in
+                let formatter = DateFormatter()
+                formatter.dateStyle = .long
+                formatter.timeStyle = .short
+                return formatter.string(from: date)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] time in
+                withAnimation(SendTransitionService.Constants.defaultAnimation) {
+                    self?.transactionSentTime = time
+                }
+            })
+            .store(in: &bag)
+    }
+}
+
+// MARK: - SendStepViewAnimatable
+
+extension SendFinishViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
+}
+
+extension SendFinishViewModel {
+    struct Settings {
+        let tokenItem: TokenItem
     }
 }

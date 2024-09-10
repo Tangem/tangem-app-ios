@@ -19,10 +19,8 @@ struct DefaultRowView: View {
     private var isTappable: Bool { viewModel.action != nil }
 
     var body: some View {
-        if isTappable {
-            Button {
-                viewModel.action?()
-            } label: {
+        if let action = viewModel.action {
+            Button(action: action) {
                 content
             }
             .buttonStyle(PlainButtonStyle())
@@ -33,8 +31,7 @@ struct DefaultRowView: View {
 
     private var content: some View {
         HStack {
-            Text(viewModel.title)
-                .style(appearance.font, color: appearance.textColor)
+            titleView
 
             Spacer()
 
@@ -49,6 +46,21 @@ struct DefaultRowView: View {
         .contentShape(Rectangle())
     }
 
+    private var titleView: some View {
+        HStack(spacing: 0) {
+            Text(viewModel.title)
+                .style(appearance.font, color: appearance.textColor)
+
+            if let secondaryAction = viewModel.secondaryAction {
+                Button(action: secondaryAction) {
+                    Assets.infoCircle16.image
+                        .padding(.horizontal, 4)
+                        .foregroundColor(Colors.Icon.informative)
+                }
+            }
+        }
+    }
+
     @ViewBuilder
     private var detailsView: some View {
         switch viewModel.detailsType {
@@ -56,9 +68,21 @@ struct DefaultRowView: View {
             EmptyView()
         case .loader:
             ActivityIndicatorView(style: .medium, color: .gray)
-        case .text(let string):
-            Text(string)
-                .style(appearance.font, color: appearance.detailsColor)
+        case .text(let string, let sensitive):
+            if sensitive {
+                SensitiveText(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            } else {
+                Text(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            }
+        case .loadable(let state):
+            LoadableTextView(
+                state: state,
+                font: appearance.font,
+                textColor: appearance.detailsColor,
+                loaderSize: CGSize(width: 60, height: 14)
+            )
         case .icon(let imageType):
             imageType.image
         }
@@ -83,7 +107,7 @@ extension DefaultRowView {
 
         init(
             isChevronVisible: Bool = true,
-            font: Font = Fonts.Regular.body,
+            font: Font = Fonts.Regular.callout,
             textColor: Color = Colors.Text.primary1,
             detailsColor: Color = Colors.Text.tertiary
         ) {
@@ -96,18 +120,32 @@ extension DefaultRowView {
 }
 
 struct DefaultRowView_Preview: PreviewProvider {
-    static let viewModel = DefaultRowViewModel(
-        title: "App settings",
-        detailsType: .text("A Long long long long long long long text"),
-        action: nil
-    )
-
     static var previews: some View {
         ZStack {
-            Colors.Background.secondary
+            Colors.Background.secondary.ignoresSafeArea()
 
-            DefaultRowView(viewModel: viewModel)
-                .padding(.horizontal, 16)
+            GroupedSection(
+                [
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .text("A Long long long long long long long text"),
+                        action: nil
+                    ),
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .loadable(state: .loading),
+                        action: nil
+                    ),
+                    DefaultRowViewModel(
+                        title: "App settings",
+                        detailsType: .loader,
+                        action: nil
+                    ),
+                ]
+            ) {
+                DefaultRowView(viewModel: $0)
+            }
+            .padding()
         }
     }
 }

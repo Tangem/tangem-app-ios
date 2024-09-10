@@ -32,14 +32,17 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenDetailsCoordinator) {
                 TokenDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }
@@ -60,7 +63,7 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             }
             .bottomSheet(
                 item: $coordinator.receiveBottomSheetViewModel,
-                backgroundColor: Colors.Background.primary
+                settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }

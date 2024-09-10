@@ -42,6 +42,26 @@
         <string>%li кошельков</string>
       </dict>
     </dict>
+    <key>markets_token_details_based_on_ratings</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>На основе %li оценки</string>
+        <key>few</key>
+        <string>На основе %li оценок</string>
+        <key>many</key>
+        <string>На основе %li оценок</string>
+        <key>other</key>
+        <string>На основе %li оценок</string>
+      </dict>
+    </dict>
     <key>onboarding_seed_generate_message_words_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -73,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>%li слово</string>
         <key>few</key>
         <string>%li слова</string>
         <key>many</key>

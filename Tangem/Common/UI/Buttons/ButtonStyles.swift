@@ -93,7 +93,7 @@ enum ButtonColorStyle {
     #warning("TODO: add all buttons styles properly")
     var bgColor: Color {
         switch self {
-        case .black: return .tangemGrayDark6
+        case .black: return Colors.Old.tangemGrayDark6
         case .gray: return Colors.Button.secondary
         case .transparentWhite: return .clear
         case .grayAlt3: return Colors.Button.secondary
@@ -102,8 +102,8 @@ enum ButtonColorStyle {
 
     var bgPressedColor: Color {
         switch self {
-        case .black: return .tangemGrayDark5
-        case .gray: return .tangemGrayDark
+        case .black: return Colors.Old.tangemGrayDark5
+        case .gray: return Colors.Old.tangemGrayDark
         case .transparentWhite: return .clear
         case .grayAlt3: return Colors.Button.secondary
         }
@@ -113,15 +113,15 @@ enum ButtonColorStyle {
         switch self {
         case .gray:
             return Colors.Text.primary1
-        case .transparentWhite, .grayAlt3: return .tangemGrayDark6
-        default: return .tangemBg
+        case .transparentWhite, .grayAlt3: return Colors.Old.tangemGrayDark6
+        default: return Colors.Old.tangemBg
         }
     }
 
     var fgPressedColor: Color {
         switch self {
         case .transparentWhite:
-            return .tangemGrayDark3
+            return Colors.Old.tangemGrayDark3
         default:
             return fgColor
         }
@@ -270,6 +270,6 @@ struct ButtonStyles_Previews: PreviewProvider {
 struct TangemTokenButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(configuration.isPressed ? Color.tangemHoverButton : Color.white)
+            .background(configuration.isPressed ? Colors.Old.tangemBtnHoverBg : Color.white)
     }
 }

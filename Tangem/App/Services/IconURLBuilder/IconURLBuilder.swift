@@ -22,6 +22,14 @@ struct IconURLBuilder {
             .appendingPathComponent("\(id).png")
     }
 
+    func tokenIconURL(optionalId: String?, size: TokenURLIconSize = .large) -> URL? {
+        guard let optionalId else {
+            return nil
+        }
+
+        return tokenIconURL(id: optionalId, size: size)
+    }
+
     func fiatIconURL(currencyCode: String) -> URL {
         baseURL
             .appendingPathComponent("currencies")

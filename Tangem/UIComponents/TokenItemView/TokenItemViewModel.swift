@@ -13,7 +13,7 @@ import BlockchainSdk
 typealias WalletModelId = Int
 
 protocol TokenItemContextActionsProvider: AnyObject {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenActionType]
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
 
 protocol TokenItemContextActionDelegate: AnyObject {
@@ -28,7 +28,8 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
-    @Published var contextActions: [TokenActionType] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
+    @Published var isStaked: Bool = false
 
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
@@ -59,8 +60,8 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let isTestnetToken: Bool
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
-    private let priceChangeFormatter = PriceChangeFormatter()
-    private let priceFormatter = CommonTokenPriceFormatter()
+    private let priceChangeUtility = PriceChangeUtility()
+    private let priceFormatter = TokenItemPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
     private weak var contextActionsProvider: TokenItemContextActionsProvider?
@@ -129,6 +130,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             networkUnreachable = false
             updateBalances()
             updatePriceChange()
+            updateIsStaked()
         case .loading:
             break
         }
@@ -153,18 +155,17 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             return
         }
 
-        if let change = quote.change {
-            let result = priceChangeFormatter.format(value: change)
-            priceChangeState = .loaded(signType: result.signType, text: result.formattedText)
-        } else {
-            priceChangeState = .noData
-        }
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: quote.priceChange24h)
 
-        let priceText = priceFormatter.formatFiatBalance(quote.price)
+        let priceText = priceFormatter.formatPrice(quote.price)
         tokenPrice = .loaded(text: priceText)
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+        contextActionSections = contextActionsProvider?.buildContextActions(for: self) ?? []
+    }
+
+    private func updateIsStaked() {
+        isStaked = infoProvider.isStaked
     }
 }

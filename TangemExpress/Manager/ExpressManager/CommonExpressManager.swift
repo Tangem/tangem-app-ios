@@ -16,6 +16,7 @@ actor CommonExpressManager {
     private let expressProviderManagerFactory: ExpressProviderManagerFactory
     private let expressRepository: ExpressRepository
     private let logger: Logger
+    private let analyticsLogger: ExpressAnalyticsLogger
 
     // MARK: - State
 
@@ -34,12 +35,14 @@ actor CommonExpressManager {
         expressAPIProvider: ExpressAPIProvider,
         expressProviderManagerFactory: ExpressProviderManagerFactory,
         expressRepository: ExpressRepository,
-        logger: Logger
+        logger: Logger,
+        analyticsLogger: ExpressAnalyticsLogger
     ) {
         self.expressAPIProvider = expressAPIProvider
         self.expressProviderManagerFactory = expressProviderManagerFactory
         self.expressRepository = expressRepository
         self.logger = logger
+        self.analyticsLogger = analyticsLogger
     }
 }
 
@@ -200,6 +203,9 @@ private extension CommonExpressManager {
         // just update it
         if selectedProvider == nil || selectedIsError == true {
             selectedProvider = await bestProvider()
+            if let selectedProvider {
+                analyticsLogger.bestProviderSelected(selectedProvider)
+            }
         }
     }
 
@@ -214,6 +220,9 @@ private extension CommonExpressManager {
     func bestProvider() async -> ExpressAvailableProvider? {
         // If we have more then one provider then selected the best
         if availableProviders.count > 1 {
+            if let recommendedProvider = await recommendedProvder() {
+                return recommendedProvider
+            }
             // Try to find the best with expectAmount
             if let bestByRateProvider = await bestByRateProvider() {
                 return bestByRateProvider
@@ -241,6 +250,20 @@ private extension CommonExpressManager {
 
         if hasProviderWithQuote, let best = bests.first {
             return best
+        }
+
+        return nil
+    }
+
+    func recommendedProvder() async -> ExpressAvailableProvider? {
+        for provider in availableProviders {
+            if await provider.getState().isError {
+                continue
+            }
+
+            if provider.provider.recommended == true {
+                return provider
+            }
         }
 
         return nil

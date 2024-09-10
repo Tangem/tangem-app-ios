@@ -17,63 +17,65 @@ struct OnboardingSeedPhraseUserValidationView: View {
     @State private var isButtonPositionAnimationEnabled = false
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
-                Text(Localization.onboardingSeedUserValidationTitle)
-                    .style(Fonts.Bold.title1, color: Colors.Text.primary1)
-                    .padding(.top, 40)
+        VStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    Text(Localization.onboardingSeedUserValidationTitle)
+                        .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                        .padding(.top, 40)
 
-                Text(Localization.onboardingSeedUserValidationMessage)
-                    .style(Fonts.Regular.callout, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 14)
-                    .padding(.horizontal, 32)
+                    Text(Localization.onboardingSeedUserValidationMessage)
+                        .style(Fonts.Regular.callout, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 14)
+                        .padding(.horizontal, 32)
 
-                WordInputView(
-                    wordNumber: 2,
-                    hasError: viewModel.firstInputHasError,
-                    text: $viewModel.firstInputText
-                )
-                .padding(.top, 38)
+                    WordInputView(
+                        wordNumber: 2,
+                        hasError: viewModel.firstInputHasError,
+                        text: $viewModel.firstInputText
+                    )
+                    .padding(.top, 38)
 
-                WordInputView(
-                    wordNumber: 7,
-                    hasError: viewModel.secondInputHasError,
-                    text: $viewModel.secondInputText
-                )
-                .padding(.top, 20)
+                    WordInputView(
+                        wordNumber: 7,
+                        hasError: viewModel.secondInputHasError,
+                        text: $viewModel.secondInputText
+                    )
+                    .padding(.top, 20)
 
-                WordInputView(
-                    wordNumber: 11,
-                    hasError: viewModel.thirdInputHasError,
-                    text: $viewModel.thirdInputText
-                )
-                .padding(.top, 20)
+                    WordInputView(
+                        wordNumber: 11,
+                        hasError: viewModel.thirdInputHasError,
+                        text: $viewModel.thirdInputText
+                    )
+                    .padding(.top, 20)
 
-                Color.clear
-                    .frame(minHeight: max(20, containerSize.height - contentSize.height))
-
-                MainButton(
-                    title: Localization.onboardingCreateWalletButtonCreateWallet,
-                    icon: .trailing(Assets.tangemIcon),
-                    style: .primary,
-                    isLoading: false,
-                    isDisabled: !viewModel.isCreateWalletButtonEnabled,
-                    action: viewModel.createWallet
-                )
-                .padding(.bottom, 8)
-            }
-            .readGeometry(\.size) { contentSize in
-                if self.contentSize == .zero {
-                    self.contentSize = contentSize
+                    Color.clear
+                        .frame(minHeight: max(20, containerSize.height - contentSize.height))
+                }
+                .readGeometry(\.size) { contentSize in
+                    if self.contentSize == .zero {
+                        self.contentSize = contentSize
+                    }
                 }
             }
-        }
-        .readGeometry(\.size, inCoordinateSpace: .local) { containerSize in
-            if self.containerSize != .zero, !isButtonPositionAnimationEnabled {
-                isButtonPositionAnimationEnabled = true
+            .readGeometry(\.size, inCoordinateSpace: .local) { containerSize in
+                if self.containerSize != .zero, !isButtonPositionAnimationEnabled {
+                    isButtonPositionAnimationEnabled = true
+                }
+                self.containerSize = containerSize
             }
-            self.containerSize = containerSize
+
+            MainButton(
+                title: Localization.onboardingCreateWalletButtonCreateWallet,
+                icon: .trailing(Assets.tangemIcon),
+                style: .primary,
+                isLoading: false,
+                isDisabled: !viewModel.isCreateWalletButtonEnabled,
+                action: viewModel.createWallet
+            )
+            .padding(.bottom, 6)
         }
         .animation(isButtonPositionAnimationEnabled ? .easeOut(duration: 0.35) : nil, value: containerSize)
         .padding(.horizontal, 16)

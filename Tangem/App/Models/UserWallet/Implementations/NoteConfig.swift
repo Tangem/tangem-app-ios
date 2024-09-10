@@ -128,7 +128,7 @@ extension NoteConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -149,7 +149,7 @@ extension NoteConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

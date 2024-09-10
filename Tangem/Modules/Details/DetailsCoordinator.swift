@@ -32,7 +32,7 @@ class DetailsCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel?
     @Published var supportChatViewModel: SupportChatViewModel?
-    @Published var disclaimerViewModel: DisclaimerViewModel?
+    @Published var tosViewModel: TOSViewModel?
     @Published var environmentSetupCoordinator: EnvironmentSetupCoordinator?
 
     // MARK: - Helpers
@@ -107,12 +107,16 @@ extension DetailsCoordinator: DetailsRoutable {
         supportChatViewModel = SupportChatViewModel(input: input)
     }
 
-    func openDisclaimer(url: URL) {
-        disclaimerViewModel = .init(url: url, style: .details)
+    func openTOS() {
+        tosViewModel = .init(bottomOverlayHeight: 0)
     }
 
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
+
+    func openShop() {
+        safariManager.openURL(AppConstants.webShopUrl)
     }
 
     func openSocialNetwork(url: URL) {

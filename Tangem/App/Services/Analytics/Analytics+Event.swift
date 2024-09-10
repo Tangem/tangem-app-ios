@@ -81,6 +81,7 @@ extension Analytics {
         case buttonCopyAddress = "[Token / Receive] Button - Copy Address"
         case buttonShareAddress = "[Token / Receive] Button - Share Address"
         case buttonAddTokenTrustline = "[Token] Button - Token Trustline"
+        case stakingClicked = "[Token] Staking Clicked"
 
         // MARK: - Send
 
@@ -96,6 +97,7 @@ extension Analytics {
         case sendFeeScreenOpened = "[Token / Send] Fee Screen Opened"
         case sendFeeSelected = "[Token / Send] Fee Selected"
         case sendCustomFeeClicked = "[Token / Send] Custom Fee Clicked"
+        case sendGasPriceInserted = "[Token / Send] Gas Price Inserted"
         case sendCustomFeeInserted = "[Token / Send] Custom Fee Inserted"
         case sendGasLimitInserted = "[Token / Send] Gas Limit Inserted"
         case sendMaxFeeInserted = "[Token / Send] Max Fee Inserted"
@@ -148,6 +150,7 @@ extension Analytics {
         case buttonScanNewCardSettings = "[Settings] Button - Scan New Card"
         case buttonFactoryReset = "[Settings / Card Settings] Button - Factory Reset"
         case factoryResetFinished = "[Settings / Card Settings] Factory Reset Finished"
+        case factoryResetCancelled = "[Settings / Card Settings] Factory Reset Cancelled"
         case buttonChangeUserCode = "[Settings / Card Settings] Button - Change User Code"
         case userCodeChanged = "[Settings / Card Settings] User Code Changed"
         case buttonChangeSecurityMode = "[Settings / Card Settings] Button - Change Security Mode"
@@ -217,6 +220,7 @@ extension Analytics {
         case tokenSwapStatus = "[Token] Swap Status"
         case tokenSwapStatusScreenOpened = "[Token] Swap Status Opened"
         case tokenButtonGoToProvider = "[Token] Button - Go To Provider"
+        case tokenButtonGoToToken = "[Token] Button - Go to Token"
 
         // MARK: - App settings
 
@@ -270,5 +274,55 @@ extension Analytics {
         case cantScanTheCard = "[Errors] Cant Scan The Card"
         case cantScanTheCardButtonBlog = "[Errors] Cant Scan The Card - Button Blog"
         case cantScanTheCardTryAgainButton = "[Errors] Cant Scan The Card - Try Again Button"
+
+        // MARK: - Promo
+
+        case promoChangellyActivity = "[Promo] Changelly Activity"
+
+        // MARK: - Push notifications
+
+        case pushButtonAllow = "[Push] Button - Allow"
+        case pushButtonPostpone = "[Push] Button - Later"
+        case pushPermissionStatus = "[Push] Permission Status"
+
+        // MARK: - Markets
+
+        case marketsScreenOpened = "[Markets] Markets Screen Opened"
+        case marketsTokenChartScreenOpened = "[Markets] Token Chart Screen Opened"
+        case marketsTokensSort = "[Markets] Tokens Sort"
+        case marketsTokenPeriod = "[Markets] Token Period"
+        case marketsButtonPeriod = "[Markets] Button - Period"
+        case marketsButtonReadMore = "[Markets] Button - Read More"
+        case marketsButtonLinks = "[Markets] Button - Links"
+        case marketsButtonAddToPortfolio = "[Markets] Button - Add To Portfolio"
+        case marketsWalletSelected = "[Markets] Wallet Selected"
+        case marketsTokenNetworkSelected = "[Markets] Token Network Selected"
+        case marketsActionButtons = "[Markets] Action Buttons"
+
+        // MARK: - Staking
+
+        case stakingInfoScreenOpened = "[Staking] Staking Info Screen Opened"
+        case stakingLinkWhatIsStaking = "[Staking] Link - What Is Staking"
+        case stakingButtonStake = "[Staking] Button - Stake"
+        case stakingAmountScreenOpened = "[Staking] Amount Screen Opened"
+        case stakingScreenReopened = "[Staking] Screen Reopened"
+        case stakingButtonMax = "[Staking] Button - Max"
+        case stakingButtonNext = "[Staking] Button - Next"
+        case stakingButtonCancel = "[Staking] Button - Cancel"
+        case stakingButtonValidator = "[Staking] Button - Validator"
+        case stakingValidatorChosen = "[Staking] Validator Chosen"
+        case stakingStakeInProgressScreenOpened = "[Staking] Stake In Progress Screen Opened"
+        case stakingButtonRewards = "[Staking] Button - Rewards"
+        case stakingRewardScreenOpened = "[Staking] Reward Screen Opened"
+        case stakingButtonClaim = "[Staking] Button - Claim"
+        case stakingButtonRestake = "[Staking] Button - Restake"
+        case stakingButtonUnstake = "[Staking] Button - Unstake"
+        case stakingButtonWithdraw = "[Staking] Button - Withdraw"
+        case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
+        case stakingErrors = "[Staking] Errors"
+        case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingSelectedCurrency = "[Staking] Selected Currency"
+        case stakingButtonShare = "[Staking] Button - Share"
+        case stakingButtonExplore = "[Staking] Button - Explore"
     }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import BlockchainSdk
+import TangemStaking
 
 extension WalletModel: Equatable {
     static func == (lhs: WalletModel, rhs: WalletModel) -> Bool {

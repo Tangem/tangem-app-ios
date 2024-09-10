@@ -13,6 +13,11 @@ struct MultiWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
+            ForEach(viewModel.bannerNotificationInputs) { input in
+                NotificationView(input: input)
+                    .transition(.notificationTransition)
+            }
+
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
                     .setButtonsLoadingState(to: viewModel.isScannerBusy)
@@ -36,6 +41,7 @@ struct MultiWalletMainContentView: View {
                 .infinityFrame(axis: .horizontal)
             }
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokensNotificationInputs)
         .padding(.horizontal, 16)
@@ -139,6 +145,7 @@ struct MultiWalletContentView_Preview: PreviewProvider {
             userWalletModel: userWalletModel,
             userWalletNotificationManager: FakeUserWalletNotificationManager(),
             tokensNotificationManager: FakeUserWalletNotificationManager(),
+            bannerNotificationManager: nil,
             rateAppController: RateAppControllerStub(),
             tokenSectionsAdapter: tokenSectionsAdapter,
             tokenRouter: SingleTokenRoutableMock(),

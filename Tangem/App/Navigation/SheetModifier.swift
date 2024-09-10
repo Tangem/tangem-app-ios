@@ -51,9 +51,9 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
 
         controller.modalPresentationStyle = .automatic
         controller.overrideUserInterfaceStyle = UIApplication.topViewController?.overrideUserInterfaceStyle ?? .unspecified
-        controller.transitioningDelegate = stateObject
+        controller.sheetPresentationController?.delegate = stateObject
 
-        stateObject.controllerDidDissmiss = {
+        stateObject.controllerDidDismisss = {
             didDismiss()
         }
 
@@ -79,18 +79,17 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
 // MARK: - DelegateKeeper
 
 extension UIKitSheetModifier {
-    class State: NSObject, ObservableObject, UIViewControllerTransitioningDelegate {
+    class State: NSObject, ObservableObject, UISheetPresentationControllerDelegate {
         var controller: UIHostingController<ContentView>?
-        var controllerDidDissmiss: (() -> Void)?
+        var controllerDidDismisss: (() -> Void)?
 
         func clear() {
             controller = nil
-            controllerDidDissmiss = nil
+            controllerDidDismisss = nil
         }
 
-        func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-            controllerDidDissmiss?()
-            return nil
+        func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+            controllerDidDismisss?()
         }
     }
 }

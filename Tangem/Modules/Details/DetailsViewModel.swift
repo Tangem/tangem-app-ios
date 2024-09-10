@@ -29,6 +29,7 @@ class DetailsViewModel: ObservableObject {
         return viewModels
     }
 
+    @Published var buyWalletViewModel: DefaultRowViewModel?
     @Published var appSettingsViewModel: DefaultRowViewModel?
     @Published var supportSectionModels: [DefaultRowViewModel] = []
     @Published var environmentSetupViewModel: DefaultRowViewModel?
@@ -99,12 +100,15 @@ extension DetailsViewModel {
             return
         }
 
-        // Collect data from the all wallets
-        let walletModels = userWalletRepository.models.flatMap { $0.walletModelsManager.walletModels }
-        let emailData = userWalletRepository.models.flatMap { $0.emailData }
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
+
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: walletModels,
-            userWalletEmailData: emailData
+            data: data
         )
 
         coordinator?.openMail(
@@ -119,16 +123,27 @@ extension DetailsViewModel {
         coordinator?.openAppSettings()
     }
 
+    func openBuyWallet() {
+        Analytics.log(.shopScreenOpened)
+        coordinator?.openShop()
+    }
+
     func openSupportChat() {
-        guard let selectedUserWalletModel else {
+        guard selectedUserWalletModel != nil else {
             return
         }
 
         Analytics.log(.settingsButtonChat)
 
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
+
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: selectedUserWalletModel.walletModelsManager.walletModels,
-            userWalletEmailData: selectedUserWalletModel.emailData
+            data: data
         )
 
         coordinator?.openSupportChat(input: .init(
@@ -136,12 +151,8 @@ extension DetailsViewModel {
         ))
     }
 
-    func openDisclaimer() {
-        guard let tos = selectedUserWalletModel?.config.tou.url else {
-            return
-        }
-
-        coordinator?.openDisclaimer(url: tos)
+    func openTOS() {
+        coordinator?.openTOS()
     }
 
     func openSocialNetwork(network: SocialNetwork) {
@@ -186,6 +197,7 @@ private extension DetailsViewModel {
     func setupView() {
         setupWalletConnectRowViewModel()
         setupUserWalletViewModels()
+        setupBuyWalletViewModel()
         setupAppSettingsViewModel()
         setupSupportSectionModels()
         setupEnvironmentSetupSection()
@@ -248,6 +260,13 @@ private extension DetailsViewModel {
         addOrScanNewUserWalletViewModel?.update(action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet))
     }
 
+    func setupBuyWalletViewModel() {
+        buyWalletViewModel = DefaultRowViewModel(
+            title: Localization.detailsBuyWallet,
+            action: weakify(self, forFunction: DetailsViewModel.openBuyWallet)
+        )
+    }
+
     func setupAppSettingsViewModel() {
         appSettingsViewModel = DefaultRowViewModel(
             title: Localization.appSettingsTitle,
@@ -263,7 +282,7 @@ private extension DetailsViewModel {
             ),
             DefaultRowViewModel(
                 title: Localization.disclaimerTitle,
-                action: weakify(self, forFunction: DetailsViewModel.openDisclaimer)
+                action: weakify(self, forFunction: DetailsViewModel.openTOS)
             ),
         ]
     }

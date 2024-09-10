@@ -11,21 +11,30 @@ import TangemSdk
 
 struct Start2CoinOnboardingStepsBuilder {
     private let hasWallets: Bool
-    private let touId: String
+    private let isPushNotificationsAvailable: Bool
 
-    private var userWalletSavingSteps: [SingleCardOnboardingStep] {
-        guard BiometricsUtil.isAvailable,
-              !AppSettings.shared.saveUserWallets,
-              !AppSettings.shared.askedToSaveUserWallets else {
-            return []
+    private var otherSteps: [SingleCardOnboardingStep] {
+        var steps: [SingleCardOnboardingStep] = []
+
+        if BiometricsUtil.isAvailable,
+           !AppSettings.shared.saveUserWallets,
+           !AppSettings.shared.askedToSaveUserWallets {
+            steps.append(.saveUserWallet)
         }
 
-        return [.saveUserWallet]
+        if isPushNotificationsAvailable {
+            steps.append(.pushNotifications)
+        }
+
+        return steps
     }
 
-    init(hasWallets: Bool, touId: String) {
+    init(
+        hasWallets: Bool,
+        isPushNotificationsAvailable: Bool
+    ) {
         self.hasWallets = hasWallets
-        self.touId = touId
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
     }
 }
 
@@ -33,14 +42,10 @@ extension Start2CoinOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [SingleCardOnboardingStep]()
 
-        if !AppSettings.shared.termsOfServicesAccepted.contains(touId) {
-            steps.append(.disclaimer)
-        }
-
         if hasWallets {
-            steps.append(contentsOf: userWalletSavingSteps)
+            steps.append(contentsOf: otherSteps)
         } else {
-            steps.append(contentsOf: [.createWallet] + userWalletSavingSteps + [.success])
+            steps.append(contentsOf: [.createWallet] + otherSteps + [.success])
         }
 
         return .singleWallet(steps)

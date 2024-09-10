@@ -35,10 +35,6 @@ extension GenericDemoConfig: UserWalletConfig {
         [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
-    var validationCurves: [EllipticCurve] {
-        [.secp256k1, .ed25519]
-    }
-
     var derivationStyle: DerivationStyle? {
         guard hasFeature(.hdWallets) else {
             return nil
@@ -180,7 +176,7 @@ extension GenericDemoConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -201,7 +197,7 @@ extension GenericDemoConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return DemoWalletModelsFactory(derivationStyle: derivationStyle)
+        return DemoWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

@@ -25,12 +25,13 @@ struct MainBottomSheetHeaderInputView: View {
     private var searchBar: some View {
         CustomSearchBar(
             searchText: $searchText,
-            placeholder: Localization.manageTokensSearchPlaceholder
+            placeholder: Localization.commonSearch,
+            keyboardType: .alphabet
         )
         .padding(.horizontal, 16)
         .allowsHitTesting(allowsHitTestingForTextField)
-        .padding(.top, Constants.verticalInset)
-        .padding(.bottom, max(UIApplication.safeAreaInsets.bottom, Constants.verticalInset))
+        .padding(.top, Constants.topInset)
+        .padding(.bottom, Constants.bottomInset)
         .background(Colors.Background.primary)
     }
 }
@@ -74,8 +75,9 @@ private extension MainBottomSheetHeaderInputView {
 
 // MARK: - Constants
 
-private extension MainBottomSheetHeaderInputView {
+extension MainBottomSheetHeaderInputView {
     enum Constants {
-        static let verticalInset = 20.0
+        static let topInset = 20.0
+        static let bottomInset = 12.0
     }
 }

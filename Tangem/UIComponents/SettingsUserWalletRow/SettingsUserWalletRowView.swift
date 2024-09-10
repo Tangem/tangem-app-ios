@@ -17,6 +17,7 @@ struct SettingsUserWalletRowView: View {
             content
         }
         .buttonStyle(.plain)
+        .allowsHitTesting(!viewModel.isUserWalletLocked)
     }
 
     @ViewBuilder
@@ -28,7 +29,9 @@ struct SettingsUserWalletRowView: View {
 
             Spacer()
 
-            Assets.chevron.image
+            if !viewModel.isUserWalletLocked {
+                Assets.chevron.image
+            }
         }
         .infinityFrame(axis: .horizontal, alignment: .leading)
         .padding(.vertical, 12)
@@ -122,7 +125,7 @@ struct SettingsUserWalletRowView: View {
                     cardsCount: 2,
                     isUserWalletLocked: false,
                     userWalletNamePublisher: .just(output: "Old wallet"),
-                    totalBalancePublisher: .just(output: .loaded(.init(balance: 96.75, currencyCode: "USD", hasError: false))),
+                    totalBalancePublisher: .just(output: .loaded(.init(balance: 96.75, currencyCode: "USD", hasError: false, allTokensBalancesIncluded: true))),
                     cardImagePublisher: .just(output: .embedded(Assets.Onboarding.darkCard.uiImage)),
                     tapAction: {}
                 )

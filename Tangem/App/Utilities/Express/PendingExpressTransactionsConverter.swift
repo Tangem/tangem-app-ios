@@ -21,9 +21,9 @@ struct PendingExpressTransactionsConverter {
             switch $0.transactionRecord.transactionStatus {
             case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
-            case .failed, .canceled:
+            case .failed, .canceled, .unknown:
                 state = .error
-            case .verificationRequired:
+            case .verificationRequired, .awaitingHash:
                 state = .warning
             }
 
@@ -62,14 +62,17 @@ struct PendingExpressTransactionsConverter {
         currentStatus: PendingExpressTransactionStatus,
         lastStatusIndex: Int
     ) -> PendingExpressTransactionStatusRow.StatusRowData {
-        let isFinished = !currentStatus.isTransactionInProgress
+        let isFinished = currentStatus.isTerminated
         if isFinished {
             // Always display cross for failed state
+            // TODO: Refactor for clarity
             switch status {
             case .failed:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: true))
-            case .canceled:
+            case .canceled, .unknown, .refunded:
                 return .init(title: status.passedStatusTitle, state: .cross(passed: false))
+            case .awaitingHash:
+                return .init(title: status.passedStatusTitle, state: .exclamationMark)
             default:
                 return .init(title: status.passedStatusTitle, state: .checkmark)
             }
@@ -82,13 +85,13 @@ struct PendingExpressTransactionsConverter {
         var state: PendingExpressTransactionStatusRow.State = isCurrentStatus ? .loader : isPendingStatus ? .empty : .checkmark
 
         switch status {
-        case .failed:
+        case .failed, .unknown:
             state = .cross(passed: false)
+        case .verificationRequired, .awaitingHash:
+            state = .exclamationMark
         case .refunded:
             // Refunded state is the final state and it can't be pending (with loader)
             state = isFinished ? .checkmark : .empty
-        case .verificationRequired:
-            state = .exclamationMark
         case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .canceled:
             break
         }

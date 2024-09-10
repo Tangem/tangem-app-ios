@@ -59,7 +59,7 @@ class LockedUserWalletModel: UserWalletModel {
     }
 
     var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
-        .just(output: .loaded(.init(balance: 0, currencyCode: "", hasError: false)))
+        .just(output: .loaded(.init(balance: 0, currencyCode: "", hasError: false, allTokensBalancesIncluded: true)))
     }
 
     var analyticsContextData: AnalyticsContextData {
@@ -80,6 +80,8 @@ class LockedUserWalletModel: UserWalletModel {
     }
 
     var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingCardInteractor(with: userWallet.cardInfo()) }
+
     var name: String { userWallet.cardInfo().name }
 
     let backupInput: OnboardingInput? = nil
@@ -102,7 +104,7 @@ class LockedUserWalletModel: UserWalletModel {
         return true
     }
 
-    func onBackupCreated(_ card: Card) {}
+    func onBackupUpdate(type: BackupUpdateType) {}
 
     func addAssociatedCard(_ cardId: String) {}
 }

@@ -29,6 +29,9 @@ struct UserWalletSettingsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var links: some View {
         NavHolder()
+            .navigation(item: $coordinator.manageTokensCoordinator) {
+                ManageTokensCoordinatorView(coordinator: $0)
+            }
             .navigation(item: $coordinator.cardSettingsCoordinator) {
                 CardSettingsCoordinatorView(coordinator: $0)
             }

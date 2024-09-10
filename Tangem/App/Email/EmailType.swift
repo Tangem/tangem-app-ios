@@ -86,6 +86,7 @@ enum EmailCollectedDataType {
         case token
         case userWalletId
         case linkedCardsCount = "Linked cards count"
+        case backupCardsCount = "Backup cards count"
     }
 
     enum SendData: String {
@@ -107,7 +108,6 @@ enum EmailCollectedDataType {
         case exceptionWalletManagerHost = "Exception Host"
         case outputsCount = "Outputs count"
         case derivationPath = "Derivation path"
-        case xpub = "XPUB"
         case hasSeedPhrase = "Has seed phrase"
     }
 

@@ -12,8 +12,13 @@ extension Locale {
     // Copyright https://github.com/mattt
     // https://gist.github.com/mattt/6d022b66f08ea8c1b99ebe7e48b95c4b
     func localizedCurrencySymbol(forCurrencyCode currencyCode: String) -> String? {
-        if currencyCode == "RUB" {
-            return "₽"
+        switch currencyCode {
+        case AppConstants.rubCurrencyCode:
+            return AppConstants.rubSign
+        case AppConstants.usdCurrencyCode:
+            return AppConstants.usdSign
+        default:
+            break
         }
 
         guard let languageCode = languageCode, let regionCode = regionCode else { return nil }
@@ -36,4 +41,7 @@ extension Locale {
 
         return Locale(identifier: identifier).currencySymbol
     }
+
+    /// See https://developer.apple.com/documentation/foundation/nsdateformatter#2528261 for details.
+    static let posixEnUS = Locale(identifier: "en_US_POSIX")
 }

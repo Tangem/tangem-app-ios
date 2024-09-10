@@ -77,8 +77,8 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         let viewModels: [ProviderRowViewModel] = await allProviders
             .asyncSorted(sort: >, by: { await $0.getPriority() })
             .asyncCompactMap { provider in
-                if !provider.isAvailable {
-                    return unavailableProviderRowViewModel(provider: provider.provider)
+                guard provider.isAvailable else {
+                    return nil
                 }
 
                 // If the provider `isSelected` we are forced to show it anyway
@@ -113,7 +113,18 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         )
 
         let isSelected = selectedProvider?.provider.id == provider.provider.id
-        let badge: ProviderRowViewModel.Badge? = state.isPermissionRequired ? .permissionNeeded : .none
+
+        let badge: ProviderRowViewModel.Badge? = {
+            if state.isPermissionRequired {
+                return .permissionNeeded
+            }
+
+            if provider.provider.recommended == true {
+                return .recommended
+            }
+
+            return .none
+        }()
 
         if let percentSubtitle = await makePercentSubtitle(provider: provider) {
             subtitles.append(percentSubtitle)
@@ -164,7 +175,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         }
 
         let changePercent = quote.rate / selectedRate - 1
-        let result = priceChangeFormatter.formatExpress(value: changePercent)
+        let result = priceChangeFormatter.formatFractionalValue(changePercent, option: .express)
         return .percent(result.formattedText, signType: result.signType)
     }
 }

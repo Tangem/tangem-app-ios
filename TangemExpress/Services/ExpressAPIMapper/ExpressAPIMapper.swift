@@ -45,7 +45,8 @@ struct ExpressAPIMapper {
             type: provider.type,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
-            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:))
+            privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
+            recommended: provider.recommended
         )
     }
 
@@ -68,7 +69,11 @@ struct ExpressAPIMapper {
         )
     }
 
-    func mapToExpressTransactionData(request: ExpressDTO.ExchangeData.Request, response: ExpressDTO.ExchangeData.Response) throws -> ExpressTransactionData {
+    func mapToExpressTransactionData(
+        item: ExpressSwappableItem,
+        request: ExpressDTO.ExchangeData.Request,
+        response: ExpressDTO.ExchangeData.Response
+    ) throws -> ExpressTransactionData {
         let txDetails = try exchangeDataDecoder.decode(txDetailsJson: response.txDetailsJson, signature: response.signature)
 
         guard request.requestId == txDetails.requestId else {
@@ -93,7 +98,19 @@ struct ExpressAPIMapper {
 
         fromAmount /= pow(10, response.fromDecimals)
         toAmount /= pow(10, response.toDecimals)
-        txValue /= pow(10, response.fromDecimals)
+
+        switch item.providerInfo.type {
+        case .cex:
+            // For CEX we have txValue amount as value which have to be sent
+            txValue /= pow(10, item.source.decimalCount)
+        case .dex, .dexBridge:
+            // For DEX we have txValue amount as coin. Because it's EVM
+            txValue /= pow(10, item.source.feeCurrencyDecimalCount)
+        }
+
+        let otherNativeFee = txDetails.otherNativeFee
+            .flatMap(Decimal.init)
+            .map { $0 / pow(10, item.source.feeCurrencyDecimalCount) }
 
         return ExpressTransactionData(
             requestId: txDetails.requestId,
@@ -104,8 +121,10 @@ struct ExpressAPIMapper {
             sourceAddress: txDetails.txFrom,
             destinationAddress: txDetails.txTo,
             extraDestinationId: txDetails.txExtraId,
-            value: txValue,
+            txValue: txValue,
             txData: txDetails.txData,
+            otherNativeFee: otherNativeFee,
+            estimatedGasLimit: txDetails.gas.flatMap(Int.init),
             externalTxId: txDetails.externalTxId,
             externalTxUrl: txDetails.externalTxUrl
         )
@@ -115,9 +134,17 @@ struct ExpressAPIMapper {
         ExpressTransaction(
             providerId: .init(response.providerId),
             externalStatus: response.status,
-            externalTxId: response.externalTxId,
-            externalTxUrl: response.externalTxUrl
+            refundedCurrency: mapToRefundedExpressCurrency(response: response)
         )
+    }
+
+    private func mapToRefundedExpressCurrency(response: ExpressDTO.ExchangeStatus.Response) -> ExpressCurrency? {
+        guard let refundContractAddress = response.refundContractAddress,
+              let refundNetwork = response.refundNetwork else {
+            return nil
+        }
+
+        return ExpressCurrency(contractAddress: refundContractAddress, network: refundNetwork)
     }
 }
 

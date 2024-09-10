@@ -32,6 +32,22 @@
         <string>%li wallets</string>
       </dict>
     </dict>
+    <key>markets_token_details_based_on_ratings</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Based on %li rating</string>
+        <key>other</key>
+        <string>Based on %li ratings</string>
+      </dict>
+    </dict>
     <key>onboarding_seed_generate_message_words_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>

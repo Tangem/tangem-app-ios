@@ -48,7 +48,7 @@ public extension Publishers {
 }
 
 public extension Publisher where Failure == Error {
-    func asyncMap<T>(priority: TaskPriority? = .none, _ transform: @escaping (Output) async throws -> T) -> Publishers.ThrowingAsyncMap<Self, T> {
+    func tryAsyncMap<T>(priority: TaskPriority? = .none, _ transform: @escaping (Output) async throws -> T) -> Publishers.ThrowingAsyncMap<Self, T> {
         .init(upstream: self, priority: priority, transform: transform)
     }
 }

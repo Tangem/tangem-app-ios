@@ -16,7 +16,7 @@ extension SentExpressTransactionData {
         destination: .mockETH,
         fee: 0.032,
         feeOption: .market,
-        provider: ExpressProvider(id: "1inch", name: "1inch", type: .dex, imageURL: nil, termsOfUse: nil, privacyPolicy: nil),
+        provider: ExpressProvider(id: "1inch", name: "1inch", type: .dex, imageURL: nil, termsOfUse: nil, privacyPolicy: nil, recommended: nil),
         date: Date(),
         expressTransactionData: .init(
             requestId: "",
@@ -27,8 +27,10 @@ extension SentExpressTransactionData {
             sourceAddress: nil,
             destinationAddress: "",
             extraDestinationId: nil,
-            value: 123,
+            txValue: 123,
             txData: nil,
+            otherNativeFee: nil,
+            estimatedGasLimit: nil,
             externalTxId: nil,
             externalTxUrl: nil
         )

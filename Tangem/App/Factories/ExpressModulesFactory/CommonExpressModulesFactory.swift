@@ -73,12 +73,23 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
-        ExpressApproveViewModel(
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
+        let tokenItem = expressInteractor.getSender().tokenItem
+
+        return ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, tokenItem.currencySymbol),
+                tokenItem: tokenItem,
+                feeTokenItem: expressInteractor.getSender().feeTokenItem,
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -105,6 +116,23 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             feeFormatter: feeFormatter,
             coordinator: coordinator
         )
+    }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        let tokenFinder = CommonTokenFinder(supportedBlockchains: userWalletModel.config.supportedBlockchains)
+
+        let expressRefundedTokenHandler = CommonExpressRefundedTokenHandler(
+            userTokensManager: userWalletModel.userTokensManager,
+            tokenFinder: tokenFinder
+        )
+
+        let pendingExpressTransactionsManager = CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: expressRefundedTokenHandler
+        )
+
+        return pendingExpressTransactionsManager
     }
 }
 
@@ -134,7 +162,7 @@ private extension CommonExpressModulesFactory {
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
     var signer: TransactionSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
-    var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
+    var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
 
     var expressTokensListAdapter: ExpressTokensListAdapter {
         CommonExpressTokensListAdapter(userWalletModel: userWalletModel)
@@ -163,7 +191,8 @@ private extension CommonExpressModulesFactory {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: analyticsLogger
         )
 
         let interactor = ExpressInteractor(
@@ -184,10 +213,8 @@ private extension CommonExpressModulesFactory {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

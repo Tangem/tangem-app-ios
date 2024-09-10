@@ -61,16 +61,7 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var isWalletsCreated: Bool {
-        // Temporary disable strict checking because of possible usecases with activated wallet2 cards with legacy apps
-        // let validator = CurvesValidator(expectedCurves: createWalletCurves)
-
-        /// It is allowed to skip backup In the case of demo cards and cards with `cardLinked` backup status .
-        /// To handle cards with incorrectly created wallets in these cases, a check for backup status was added.
-//        if card.backupStatus == .noBackup {
-//            return validator.validate(card.walletCurves)
-//        } else {
         return !card.wallets.isEmpty
-//        }
     }
 
     var canImportKeys: Bool {
@@ -206,6 +197,39 @@ extension Wallet2Config: UserWalletConfig {
         // Pizza Day Wallet
         case "AF33":
             return cardsCount == 2 ? Assets.Cards.pizzaDayWalletDouble : Assets.Cards.pizzaDayWalletTriple
+        // Red panda
+        case "AF34":
+            return cardsCount == 2 ? Assets.Cards.redPandaDouble : Assets.Cards.redPandaTriple
+        // Cryptoseth
+        case "AF32":
+            return cardsCount == 2 ? Assets.Cards.cryptosethDouble : Assets.Cards.cryptosethTriple
+        // Kishu
+        case "AF52":
+            return cardsCount == 2 ? Assets.Cards.kishuDouble : Assets.Cards.kishuTriple
+        // Baby Doge
+        case "AF51":
+            return cardsCount == 2 ? Assets.Cards.babyDogeDouble : Assets.Cards.babyDogeTriple
+        // TG-COQ
+        case "AF28":
+            return cardsCount == 2 ? Assets.Cards.tgDouble : Assets.Cards.tgTriple
+        // Coin Metrica
+        case "AF27":
+            return cardsCount == 2 ? Assets.Cards.coinMetricaDouble : Assets.Cards.coinMetricaTriple
+        // Volt Inu
+        case "AF35":
+            return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
+        // Kaspa 2
+        case "AF25":
+            return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
+        // Kaspa reseller
+        case "AF31":
+            return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
+        // Lemon, Aqua, Grapefruit
+        case "AF40", "AF41", "AF42":
+            return Assets.Cards.lemonAquaGrapefruit
+        // Peach, Air, Glass
+        case "AF43", "AF44", "AF45":
+            return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
@@ -317,10 +341,10 @@ extension Wallet2Config: UserWalletConfig {
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(derivationStyle: derivationStyle)
+            return DemoWalletModelsFactory(config: self)
         }
 
-        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

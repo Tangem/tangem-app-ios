@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import Firebase
 import BlockchainSdk
+import TangemStaking
 
 class ServicesManager {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
@@ -17,8 +18,17 @@ class ServicesManager {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+
+    private var stakingPendingHashesSender: StakingPendingHashesSender?
 
     private var bag = Set<AnyCancellable>()
+
+    init() {
+        if StakingFeatureProvider.isStakingAvailable {
+            stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
+        }
+    }
 
     func initialize() {
         AppLog.shared.configure()
@@ -41,12 +51,15 @@ class ServicesManager {
 
         configureBlockchainSdkExceptionHandler()
 
-        S2CTOUMigrator().migrate()
         exchangeService.initialize()
         tangemApiService.initialize()
         accountHealthChecker.initialize()
         apiListProvider.initialize()
+        pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
+        if StakingFeatureProvider.isStakingAvailable {
+            stakingPendingHashesSender?.sendHashesIfNeeded()
+        }
     }
 
     private func configureFirebase() {

@@ -13,41 +13,55 @@ struct MarketsCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MarketsCoordinator
 
     var body: some View {
-        ZStack {
-            if let model = coordinator.manageTokensViewModel {
-                MarketsView(viewModel: model)
+        if let model = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
+                    VStack(spacing: 0.0) {
+                        header
+                            .zIndex(100) // Required for the collapsible header in `MarketsView` to work
 
-                sheets
+                        MarketsView(viewModel: model)
+                            .navigationLinks(links)
+                    }
+
+                    sheets
+                }
+                .onOverlayContentStateChange { [weak coordinator] state in
+                    // This method maintains a strong reference to the given `observer` closure,
+                    // so a weak capture list is required
+                    coordinator?.onOverlayContentStateChange(state)
+                }
             }
+            .navigationViewStyle(.stack)
+            .tint(Colors.Text.primary1)
+        }
+    }
+
+    @ViewBuilder
+    private var header: some View {
+        if let headerViewModel = coordinator.headerViewModel {
+            MainBottomSheetHeaderView(viewModel: headerViewModel)
+        } else {
+            EmptyView()
         }
     }
 
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .detentBottomSheet(
-                item: $coordinator.networkSelectorViewModel,
-                detents: [.medium, .large]
-            ) { viewModel in
-                NavigationView {
-                    ManageTokensNetworkSelectorView(viewModel: viewModel)
-                        .navigationLinks(links)
-                }
-                .navigationViewStyle(.stack)
-            }
-            .detentBottomSheet(
-                item: $coordinator.addCustomTokenCoordinator,
-                detents: [.large]
-            ) { coordinator in
-                AddCustomTokenCoordinatorView(coordinator: coordinator)
+            .bottomSheet(
+                item: $coordinator.marketsListOrderBottomSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                MarketsListOrderBottomSheetView(viewModel: $0)
             }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.walletSelectorViewModel) {
-                WalletSelectorView(viewModel: $0)
+            .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
     }
 }

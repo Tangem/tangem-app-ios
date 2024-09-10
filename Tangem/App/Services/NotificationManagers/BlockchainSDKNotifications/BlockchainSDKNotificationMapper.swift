@@ -10,12 +10,14 @@ import Foundation
 import SwiftUI
 import enum BlockchainSdk.ValidationError
 import enum BlockchainSdk.WithdrawalNotification
+import enum BlockchainSdk.FeeResourceType
 
 struct BlockchainSDKNotificationMapper {
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
     private var tokenItemSymbol: String { tokenItem.currencySymbol }
+    private var isFeeCurrency: Bool { tokenItem == feeTokenItem }
 
     init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
         self.tokenItem = tokenItem
@@ -27,6 +29,10 @@ struct BlockchainSDKNotificationMapper {
         case .balanceNotFound, .invalidAmount, .invalidFee:
             return .invalidNumber
         case .amountExceedsBalance, .totalExceedsBalance:
+            return .insufficientBalance
+        case .feeExceedsBalance where isFeeCurrency:
+            // If the fee more than the fee/coin balance and we try to send feeCurrency e.g. coin
+            // We have to show just `insufficientBalance` without `openFeeCurrency` button
             return .insufficientBalance
         case .feeExceedsBalance:
             return .insufficientBalanceForFee(
@@ -47,11 +53,17 @@ struct BlockchainSDKNotificationMapper {
         case .maximumUTXO(let blockchainName, let newAmount, let maxUtxo):
             return .amountExceedMaximumUTXO(amount: newAmount.value, amountFormatted: newAmount.string(), blockchainName: blockchainName, maxUTXO: maxUtxo)
         case .reserve(let amount):
-            return .insufficientAmountToReserveAtDestination(minimumAmountFormatted: "\(amount.value)\(tokenItemSymbol)")
+            return .insufficientAmountToReserveAtDestination(minimumAmountFormatted: amount.string())
         case .cardanoHasTokens:
             return .cardanoCannotBeSentBecauseHasTokens
         case .cardanoInsufficientBalanceToSendToken:
             return .cardanoInsufficientBalanceToSendToken(tokenSymbol: tokenItemSymbol)
+        case .insufficientFeeResource(.mana, let current, let max):
+            return .notEnoughMana(current: current, max: max)
+        case .amountExeedsFeeResourceCapacity(.mana, let availableAmount):
+            return .manaLimit(availableAmount: availableAmount)
+        case .feeExceedsMaxFeeResource:
+            return .koinosInsufficientBalanceToSendKoin
         }
     }
 

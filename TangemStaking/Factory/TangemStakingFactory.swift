@@ -8,14 +8,29 @@
 
 import Foundation
 import Moya
-import BlockchainSdk
+import class BlockchainSdk.TangemNetworkLoggerPlugin
 
 public struct TangemStakingFactory {
     public init() {}
 
+    public func makeStakingManager(
+        integrationId: String,
+        wallet: StakingWallet,
+        provider: StakingAPIProvider,
+        logger: Logger
+    ) -> StakingManager {
+        CommonStakingManager(
+            integrationId: integrationId,
+            wallet: wallet,
+            provider: provider,
+            logger: logger
+        )
+    }
+
     public func makeStakingAPIProvider(
         credential: StakingAPICredential,
-        configuration: URLSessionConfiguration
+        configuration: URLSessionConfiguration,
+        analyticsLogger: StakingAnalyticsLogger
     ) -> StakingAPIProvider {
         let plugins: [PluginType] = [
             TangemNetworkLoggerPlugin(configuration: .init(
@@ -24,9 +39,20 @@ public struct TangemStakingFactory {
             )),
         ]
         let provider = MoyaProvider<StakeKitTarget>(session: Session(configuration: configuration), plugins: plugins)
-        let service = StakeKitStakingAPIService(provider: provider, credential: credential)
+        let service = StakeKitStakingAPIService(
+            provider: provider,
+            credential: credential,
+            analyticsLogger: analyticsLogger
+        )
         let mapper = StakeKitMapper()
         return CommonStakingAPIProvider(service: service, mapper: mapper)
+    }
+
+    public func makePendingHashesSender(
+        repository: StakingPendingHashesRepository,
+        provider: StakingAPIProvider
+    ) -> StakingPendingHashesSender {
+        CommonStakingPendingHashesSender(repository: repository, provider: provider)
     }
 }
 

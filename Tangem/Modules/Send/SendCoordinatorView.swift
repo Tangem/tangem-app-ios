@@ -18,7 +18,7 @@ struct SendCoordinatorView: CoordinatorView {
     var body: some View {
         ZStack {
             if let rootViewModel = coordinator.rootViewModel {
-                SendView(viewModel: rootViewModel)
+                SendView(viewModel: rootViewModel, transitionService: .init())
                     .navigationLinks(links)
             }
 
@@ -34,6 +34,12 @@ struct SendCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
+            .bottomSheet(
+                item: $coordinator.expressApproveViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                ExpressApproveView(viewModel: $0)
+            }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }

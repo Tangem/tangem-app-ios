@@ -13,7 +13,9 @@ import TangemSdk
 class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable> {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    let navbarSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 44)
+    var navbarSize: CGSize { OnboardingLayoutConstants.navbarSize }
+    var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
+    var progressBarPadding: CGFloat { OnboardingLayoutConstants.progressBarPadding }
     let resetAnimDuration: Double = 0.3
 
     @Published var steps: [Step] = []
@@ -26,9 +28,10 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     @Published var supplementCardSettings: AnimatedViewSettings = .zero
     @Published var isNavBarVisible: Bool = false
     @Published var alert: AlertBinder?
-    @Published var cardImage: Image?
+    @Published var mainImage: Image?
     @Published var customOnboardingImage: Image?
     @Published var secondImage: Image?
+    @Published var thirdImage: Image?
 
     private var confettiFired: Bool = false
     var bag: Set<AnyCancellable> = []
@@ -156,13 +159,12 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         )
     }()
 
-    var disclaimerModel: DisclaimerViewModel? {
-        guard let url = input.cardInput.disclaimer?.url else {
+    lazy var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel? = {
+        guard let permissionManager = input.pushNotificationsPermissionManager else {
             return nil
         }
-
-        return .init(url: url, style: .onboarding)
-    }
+        return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
+    }()
 
     let input: OnboardingInput
 
@@ -183,12 +185,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         isFromMain = input.isStandalone
         isNavBarVisible = input.isStandalone
 
-        let loadImageInput = input.cardInput.imageLoadInput
-        loadImage(
-            supportsOnlineImage: loadImageInput.supportsOnlineImage,
-            cardId: loadImageInput.cardId,
-            cardPublicKey: loadImageInput.cardPublicKey
-        )
+        loadMainImage(imageLoadInput: input.cardInput.imageLoadInput)
 
         bindAnalytics()
     }
@@ -211,20 +208,11 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         userWalletRepository.add(userWalletModel)
     }
 
-    func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        guard let cardId = cardId, let cardPublicKey = cardPublicKey else {
-            return
-        }
-
+    func loadImage(supportsOnlineImage: Bool, cardId: String, cardPublicKey: Data) -> AnyPublisher<Image, Never> {
         CardImageProvider(supportsOnlineImage: supportsOnlineImage)
             .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
             .map { $0.image }
-            .sink { [weak self] image in
-                withAnimation {
-                    self?.cardImage = image
-                }
-            }
-            .store(in: &bag)
+            .eraseToAnyPublisher()
     }
 
     func setupContainer(with size: CGSize) {
@@ -326,12 +314,18 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
     }
 
-    func disclaimerAccepted() {
-        guard let id = input.cardInput.disclaimer?.id else {
-            return
+    private func loadMainImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.mainImage = image
+            }
         }
-
-        AppSettings.shared.termsOfServicesAccepted.append(id)
+        .store(in: &bag)
     }
 
     private func bindAnalytics() {
@@ -408,8 +402,12 @@ extension OnboardingViewModel {
         UIApplication.shared.endEditing()
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: userWalletModel?.walletModelsManager.walletModels ?? [],
-            userWalletEmailData: input.cardInput.emailData
+            data: [
+                .init(
+                    userWalletEmailData: input.cardInput.emailData,
+                    walletModels: userWalletModel?.walletModelsManager.walletModels ?? []
+                ),
+            ]
         )
 
         let emailConfig = input.cardInput.config?.emailConfig ?? .default
@@ -458,5 +456,11 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 extension OnboardingViewModel: OnboardingAddTokensDelegate {
     func showAlert(_ alert: AlertBinder) {
         self.alert = alert
+    }
+}
+
+extension OnboardingViewModel: PushNotificationsPermissionRequestDelegate {
+    func didFinishPushNotificationOnboarding() {
+        goToNextStep()
     }
 }

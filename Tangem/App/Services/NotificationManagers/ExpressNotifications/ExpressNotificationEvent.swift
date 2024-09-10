@@ -8,11 +8,17 @@
 
 import Foundation
 import SwiftUI
+import TangemExpress
 
-enum ExpressNotificationEvent {
+enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
-    case permissionNeeded(currencyCode: String)
-    case refreshRequired(title: String, message: String)
+    case permissionNeeded(providerName: String, currencyCode: String)
+    case refreshRequired(
+        title: String,
+        message: String,
+        expressErrorCode: ExpressAPIError.Code? = nil,
+        analyticsParams: [Analytics.ParameterKey: String]? = nil
+    )
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
     case notEnoughFeeForTokenTx(mainTokenName: String, mainTokenSymbol: String, blockchainIconName: String)
@@ -24,11 +30,13 @@ enum ExpressNotificationEvent {
 
     // Generic notifications is received from BSDK
     case withdrawalNotificationEvent(WithdrawalNotificationEvent)
-    case validationErrorEvent(ValidationErrorEvent)
+    case validationErrorEvent(event: ValidationErrorEvent, context: ValidationErrorContext)
 
     // The notifications which is used only on the PendingExpressTxStatusBottomSheetView
     case verificationRequired
     case cexOperationFailed
+
+    case refunded(tokenItem: TokenItem)
 }
 
 extension ExpressNotificationEvent: NotificationEvent {
@@ -36,7 +44,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded:
             return .string(Localization.expressProviderPermissionNeeded)
-        case .refreshRequired(let title, _):
+        case .refreshRequired(let title, _, _, _):
             return .string(title)
         case .hasPendingTransaction:
             return .string(Localization.warningExpressActiveTransactionTitle)
@@ -60,16 +68,18 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .string(Localization.warningExpressNotificationInvalidReserveAmountTitle(amountFormatted))
         case .withdrawalNotificationEvent(let event):
             return event.title
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.title
+        case .refunded(tokenItem: let tokenItem):
+            return .string(Localization.expressExchangeNotificationRefundTitle(tokenItem.currencySymbol, tokenItem.networkName))
         }
     }
 
     var description: String? {
         switch self {
-        case .permissionNeeded(let currencyCode):
-            return Localization.swappingPermissionSubheader(currencyCode)
-        case .refreshRequired(_, let message):
+        case .permissionNeeded(let providerName, let currencyCode):
+            return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
+        case .refreshRequired(_, let message, _, _):
             return message
         case .hasPendingTransaction(let symbol):
             return Localization.warningExpressActiveTransactionMessage(symbol)
@@ -89,10 +99,17 @@ extension ExpressNotificationEvent: NotificationEvent {
             return Localization.expressExchangeNotificationFailedText
         case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
             return Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
+        // Only for dustRestriction we have to use different description
+        case .validationErrorEvent(.dustRestriction(let minimumAmountFormatted, let minimumChangeFormatted), _):
+            return Localization.warningExpressDustMessage(minimumAmountFormatted, minimumChangeFormatted)
         case .withdrawalNotificationEvent(let event):
             return event.description
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.description
+        case .refunded(tokenItem: let tokenItem):
+            let url = TangemBlogUrlBuilder().url(post: .refundedDex)
+            let readMore = "[\(Localization.commonReadMore)](\(url.absoluteString))"
+            return Localization.expressExchangeNotificationRefundText(tokenItem.currencySymbol, readMore)
         }
     }
 
@@ -110,11 +127,12 @@ extension ExpressNotificationEvent: NotificationEvent {
              .refreshRequired,
              .verificationRequired,
              .cexOperationFailed,
-             .notEnoughReceivedAmountForReserve:
+             .notEnoughReceivedAmountForReserve,
+             .refunded:
             return .action
         case .withdrawalNotificationEvent(let event):
             return event.colorScheme
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.colorScheme
         }
     }
@@ -140,8 +158,11 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.redCircleWarning.image))
         case .withdrawalNotificationEvent(let event):
             return event.icon
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.icon
+        case .refunded(let tokenItem):
+            let iconInfo = TokenIconInfoBuilder().build(from: tokenItem, isCustom: false)
+            return .init(iconType: .icon(iconInfo), size: CGSize(bothDimensions: 36))
         }
     }
 
@@ -151,7 +172,8 @@ extension ExpressNotificationEvent: NotificationEvent {
              .hasPendingTransaction,
              .hasPendingApproveTransaction,
              .verificationRequired,
-             .feeWillBeSubtractFromSendingAmount:
+             .feeWillBeSubtractFromSendingAmount,
+             .refunded:
             return .info
         case .notEnoughFeeForTokenTx,
              .tooSmallAmountToSwap,
@@ -164,23 +186,25 @@ extension ExpressNotificationEvent: NotificationEvent {
             return .critical
         case .withdrawalNotificationEvent(let event):
             return event.severity
-        case .validationErrorEvent(let event):
+        case .validationErrorEvent(let event, _):
             return event.severity
         }
     }
 
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .notEnoughFeeForTokenTx(_, let mainTokenSymbol, _):
-            return .openFeeCurrency(currencySymbol: mainTokenSymbol)
+            return .init(.openFeeCurrency(currencySymbol: mainTokenSymbol))
         case .refreshRequired:
-            return .refresh
+            return .init(.refresh, withLoader: true)
         case .verificationRequired, .cexOperationFailed:
-            return .goToProvider
-        case .validationErrorEvent(let event):
-            return event.buttonActionType
+            return .init(.goToProvider)
+        case .validationErrorEvent(let event, _):
+            return event.buttonAction
         case .withdrawalNotificationEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
+        case .refunded:
+            return .init(.openCurrency)
         default:
             return nil
         }
@@ -197,7 +221,7 @@ extension ExpressNotificationEvent: NotificationEvent {
 
     var removingOnFullLoadingState: Bool {
         switch self {
-        case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed:
+        case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed, .refunded:
             return false
         case .permissionNeeded,
              .hasPendingTransaction,
@@ -223,11 +247,21 @@ extension ExpressNotificationEvent: NotificationEvent {
 // TODO: Add analytics
 extension ExpressNotificationEvent {
     var analyticsEvent: Analytics.Event? {
-        return nil
+        switch self {
+        case .refreshRequired(_, _, .exchangeNotPossibleError, _):
+            .swapNoticeExpressError
+        default:
+            nil
+        }
     }
 
     var analyticsParams: [Analytics.ParameterKey: String] {
-        return [:]
+        switch self {
+        case .refreshRequired(_, _, _, .some(let params)):
+            params
+        default:
+            [:]
+        }
     }
 
     var isOneShotAnalyticsEvent: Bool {

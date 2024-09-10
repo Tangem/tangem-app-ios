@@ -11,6 +11,8 @@ import SwiftUI
 struct OnboardingAddTokensView: View {
     @ObservedObject var viewModel: OnboardingAddTokensViewModel
 
+    @State private var contentOffset: CGPoint = .zero
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -18,14 +20,19 @@ struct OnboardingAddTokensView: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
 
+                if contentOffset.y > 0 {
+                    Divider()
+                }
+
                 ManageTokensListView(viewModel: viewModel.manageTokensListViewModel)
+                    .addContentOffsetObserver($contentOffset)
             }
 
             VStack {
                 Spacer()
 
                 MainButton(settings: viewModel.buttonSettings)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 6)
                     .padding(.horizontal, 16)
                     .background(
                         ListFooterOverlayShadowView()

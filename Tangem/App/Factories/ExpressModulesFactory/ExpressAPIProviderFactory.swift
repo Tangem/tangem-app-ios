@@ -18,7 +18,7 @@ struct ExpressAPIProviderFactory {
                 return .production
             }
 
-            return FeatureStorage().useDevApiExpress ? .develop : .production
+            return ExpressAPIType(rawValue: FeatureStorage().apiExpress) ?? .production
         }()
 
         let apiKey = apiKey(expressAPIType: expressAPIType)
@@ -50,7 +50,7 @@ struct ExpressAPIProviderFactory {
 private extension ExpressAPIProviderFactory {
     func apiKey(expressAPIType: ExpressAPIType) -> String {
         switch expressAPIType {
-        case .develop:
+        case .develop, .stage:
             if let apiKey = keysManager.devExpressKeys?.apiKey {
                 return apiKey
             }
@@ -64,7 +64,7 @@ private extension ExpressAPIProviderFactory {
 
     func signVerifierPublicKey(expressAPIType: ExpressAPIType) -> String {
         switch expressAPIType {
-        case .develop:
+        case .develop, .stage:
             if let publicKey = keysManager.devExpressKeys?.signVerifierPublicKey {
                 return publicKey
             }

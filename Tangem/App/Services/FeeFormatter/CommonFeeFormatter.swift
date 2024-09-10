@@ -29,7 +29,7 @@ extension CommonFeeFormatter: FeeFormatter {
         let cryptoFeeFormatted = balanceFormatter.formatCryptoBalance(fee, currencyCode: currencySymbol, formattingOptions: .defaultCryptoFeeFormattingOptions)
         let fiatFeeFormatted: String?
 
-        if let currencyId, let fiatFee = balanceConverter.convertToFiat(value: fee, from: currencyId) {
+        if let currencyId, let fiatFee = balanceConverter.convertToFiat(fee, currencyId: currencyId) {
             let formattingOptions = BalanceFormattingOptions(
                 minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
                 maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,

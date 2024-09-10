@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// User to service responses.
 enum RateAppResponse {
     case positive
     case negative

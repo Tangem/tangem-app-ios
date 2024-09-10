@@ -11,7 +11,6 @@ import Foundation
 enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
-    case sendV2
     case markets
     case dynamicFonts
     case staking
@@ -20,7 +19,6 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
         case .learnToEarn: return "Learn to Earn"
-        case .sendV2: return "Send screen 2.0"
         case .markets: return "Markets"
         case .dynamicFonts: return "Dynamic fonts"
         case .staking: return "Staking"
@@ -31,7 +29,6 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .sendV2: return .version("5.10")
         case .markets: return .unspecified
         case .dynamicFonts: return .unspecified
         case .staking: return .unspecified
@@ -41,7 +38,7 @@ enum Feature: String, Hashable, CaseIterable {
 
 extension Feature {
     enum ReleaseVersion: Hashable {
-        /// This case is for an unterminated release date
+        /// This case is for an undetermined release date
         case unspecified
 
         /// Version in the format "1.1.0" or "1.2"

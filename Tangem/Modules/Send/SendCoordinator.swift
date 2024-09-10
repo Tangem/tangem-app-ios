@@ -18,7 +18,6 @@ class SendCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     // MARK: - Root view model
 
@@ -30,6 +29,7 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel? = nil
     @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
+    @Published var expressApproveViewModel: ExpressApproveViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -40,18 +40,18 @@ class SendCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let canUseFiatCalculation = quotesRepository.quote(for: options.walletModel.tokenItem) != nil
+        let factory = SendFlowFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
 
-        rootViewModel = SendViewModel(
-            walletName: options.walletName,
-            walletModel: options.walletModel,
-            userWalletModel: options.userWalletModel,
-            transactionSigner: options.transactionSigner,
-            sendType: options.type,
-            emailDataProvider: options.emailDataProvider,
-            canUseFiatCalculation: canUseFiatCalculation,
-            coordinator: self
-        )
+        switch options.type {
+        case .send:
+            rootViewModel = factory.makeSendViewModel(router: self)
+        case .sell(let parameters):
+            rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
+        case .staking(let manager):
+            rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
+        case .unstaking(let manager, let action):
+            rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
+        }
     }
 }
 
@@ -59,11 +59,8 @@ class SendCoordinator: CoordinatorObject {
 
 extension SendCoordinator {
     struct Options {
-        let walletName: String
-        let emailDataProvider: EmailDataProvider
         let walletModel: WalletModel
         let userWalletModel: UserWalletModel
-        let transactionSigner: TransactionSigner
         let type: SendType
     }
 }
@@ -108,5 +105,30 @@ extension SendCoordinator: SendRoutable {
 
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {
         dismiss(with: (walletModel, userWalletModel))
+    }
+
+    func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {
+        expressApproveViewModel = .init(
+            settings: settings,
+            feeFormatter: CommonFeeFormatter(
+                balanceFormatter: .init(),
+                balanceConverter: .init()
+            ),
+            logger: AppLog.shared,
+            approveViewModelInput: approveViewModelInput,
+            coordinator: self
+        )
+    }
+}
+
+// MARK: - ExpressApproveRoutable
+
+extension SendCoordinator: ExpressApproveRoutable {
+    func didSendApproveTransaction() {
+        expressApproveViewModel = nil
+    }
+
+    func userDidCancel() {
+        expressApproveViewModel = nil
     }
 }

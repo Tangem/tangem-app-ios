@@ -20,12 +20,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     var retwinMode: Bool = false
 
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
-
     override var navbarTitle: String {
         currentStep.navbarTitle
     }
@@ -111,7 +105,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     override var supplementButtonStyle: MainButton.Style {
         switch currentStep {
-        case .disclaimer, .intro, .success, .first, .second, .third, .done, .alert:
+        case .intro, .success, .first, .second, .third, .done, .alert:
             return .primary
         default:
             return super.supplementButtonStyle
@@ -128,17 +122,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer:
+        case .saveUserWallet, .pushNotifications:
             return true
         default:
             return false
-        }
-    }
-
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet: return false
-        default: return true
         }
     }
 
@@ -229,7 +216,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     override func mainButtonAction() {
         switch currentStep {
-        case .disclaimer, .first, .second, .third, .saveUserWallet, .done, .intro, .success, .alert:
+        case .pushNotifications, .first, .second, .third, .saveUserWallet, .done, .intro, .success, .alert:
             break
         case .topup:
             if canBuy {
@@ -250,9 +237,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             withAnimation {
                 openQR()
             }
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         case .first:
             if !retwinMode {
                 AppSettings.shared.cardsStartedActivation.insert(twinsService.firstTwinCid)
@@ -360,7 +344,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                     fallthrough
                 case (.second, .third), (.third, .done):
                     if case .done(let cardInfo) = newStep {
-                        viewModel.initializeUserWallet(from: cardInfo)
+                        if !viewModel.retwinMode {
+                            // userwallet remains deleted after retwin
+                            viewModel.initializeUserWallet(from: cardInfo)
+                        }
                         if viewModel.input.isStandalone {
                             viewModel.fireConfetti()
                         } else {
@@ -393,7 +380,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         CardImageProvider()
             .loadTwinImage(for: twinCardSeries.pair.number)
             .map { $0.image }
-            .zip($cardImage.compactMap { $0 })
+            .zip($mainImage.compactMap { $0 })
             .receive(on: DispatchQueue.main)
             .sink { [weak self] paired, main in
                 guard let self = self else { return }

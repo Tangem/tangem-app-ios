@@ -8,62 +8,17 @@
 
 import Foundation
 
-struct FeeRowViewModel: Identifiable {
-    var id: Int {
-        hashValue
-    }
+struct FeeRowViewModel: Identifiable, Hashable {
+    var id: Int { hashValue }
 
     let option: FeeOption
-    let isSelected: BindingValue<Bool>
-
-    var cryptoAmount: String? {
-        switch formattedFeeComponents {
-        case .loading:
-            return ""
-        case .loaded(let value):
-            return value?.cryptoFee
-        case .failedToLoad:
-            return AppConstants.dashSign
-        }
-    }
-
-    var fiatAmount: String? {
-        switch formattedFeeComponents {
-        case .loading, .failedToLoad:
-            // Corresponding UI will be displayed by the cryptoAmount field
-            return nil
-        case .loaded(let value):
-            return value?.fiatFee
-        }
-    }
-
-    var isLoading: Bool {
-        formattedFeeComponents.isLoading
-    }
-
-    private let formattedFeeComponents: LoadingValue<FormattedFeeComponents?>
-
-    init(
-        option: FeeOption,
-        formattedFeeComponents: LoadingValue<FormattedFeeComponents?>,
-        isSelected: BindingValue<Bool>
-    ) {
-        self.option = option
-        self.formattedFeeComponents = formattedFeeComponents
-        self.isSelected = isSelected
-    }
+    let components: LoadingValue<FormattedFeeComponents>
+    let style: Style
 }
 
-extension FeeRowViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(option)
-        hasher.combine(formattedFeeComponents.isLoading)
-        hasher.combine(formattedFeeComponents.value)
-        hasher.combine(formattedFeeComponents.error != nil)
-        hasher.combine(isSelected)
-    }
-
-    static func == (lhs: FeeRowViewModel, rhs: FeeRowViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
+extension FeeRowViewModel {
+    enum Style: Hashable {
+        case plain
+        case selectable(isSelected: BindingValue<Bool>)
     }
 }

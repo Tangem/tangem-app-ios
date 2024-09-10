@@ -27,7 +27,7 @@ class CardSettingsViewModel: ObservableObject {
     }
 
     var resetToFactoryFooterMessage: String {
-        if input.hasBackupCards {
+        if input.backupCardsCount > 0 {
             return Localization.resetCardWithBackupToFactoryMessage
         } else {
             return Localization.resetCardWithoutBackupToFactoryMessage
@@ -151,6 +151,11 @@ private extension CardSettingsViewModel {
 
 extension CardSettingsViewModel {
     func openChangeAccessCodeWarningView() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.buttonChangeUserCode)
         isChangeAccessCodeLoading = true
         setupSecurityOptions()
@@ -163,12 +168,17 @@ extension CardSettingsViewModel {
     }
 
     func openSecurityMode() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.buttonChangeSecurityMode)
         coordinator?.openSecurityMode(with: input.securityOptionChangeInteractor)
     }
 
     func openResetCard() {
-        if let disabledLocalizedReason = input.resetTofactoryDisabledLocalizedReason {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
@@ -178,7 +188,7 @@ extension CardSettingsViewModel {
         } else {
             let input = ResetToFactoryViewModel.Input(
                 cardInteractor: input.factorySettingsResettingCardInteractor,
-                hasBackupCards: input.hasBackupCards,
+                backupCardsCount: input.backupCardsCount,
                 userWalletId: input.userWalletId
             )
             coordinator?.openResetCardToFactoryWarning(with: input)
@@ -186,6 +196,11 @@ extension CardSettingsViewModel {
     }
 
     func openAccessCodeSettings() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.cardSettingsButtonAccessCodeRecovery)
         coordinator?.openAccessCodeRecoverySettings(with: input.recoveryInteractor)
     }
@@ -198,7 +213,7 @@ extension CardSettingsViewModel {
         let securityOptionChangeInteractor: SecurityOptionChanging
         let factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor
         let isResetToFactoryAvailable: Bool
-        let hasBackupCards: Bool
+        let backupCardsCount: Int
         let canTwin: Bool
         let twinInput: OnboardingInput?
         let cardIdFormatted: String
@@ -206,6 +221,6 @@ extension CardSettingsViewModel {
         let canDisplayHashesCount: Bool
         let cardSignedHashes: Int
         let canChangeAccessCodeRecoverySettings: Bool
-        let resetTofactoryDisabledLocalizedReason: String?
+        let resetToFactoryDisabledLocalizedReason: String?
     }
 }

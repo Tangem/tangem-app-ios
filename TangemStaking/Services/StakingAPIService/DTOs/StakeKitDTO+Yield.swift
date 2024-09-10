@@ -18,21 +18,23 @@ extension StakeKitDTO {
 
         enum Info {
             struct Request: Encodable {
-                let integrationId: String
+                let preferredValidatorsOnly: Bool = true
             }
 
             struct Response: Decodable {
                 let id: String
+                let isAvailable: Bool
                 let token: Token
                 let tokens: [Token]?
                 let args: Actions
-                let status: Status
+                let status: Status?
+
                 let apy: Decimal
                 let rewardRate: Decimal
                 let rewardType: RewardType
+
                 let metadata: Metadata
                 let validators: [Validator]
-                let isAvailable: Bool?
 
                 struct Actions: Decodable {
                     let enter: Action?
@@ -96,10 +98,8 @@ extension StakeKitDTO {
                     let withdrawPeriod: Period?
                     let rewardClaiming: RewardClaiming
                     let defaultValidator: String?
-                    let supportsMultipleValidators: Bool?
-                    let supportsLedgerWalletApi: Bool?
+                    let supportsMultipleValidators: Bool
                     let revshare: Enabled
-                    let fee: Enabled?
 
                     enum MetadataType: String, Decodable {
                         case staking
@@ -164,26 +164,8 @@ extension StakeKitDTO {
                 }
 
                 struct PendingAction: Decodable {
-                    let type: PendingActionType
+                    let type: Actions.ActionType
                     let passthrough: String
-
-                    enum PendingActionType: String, Decodable {
-                        case STAKE
-                        case UNSTAKE
-                        case CLAIM_REWARDS
-                        case RESTAKE_REWARDS
-                        case WITHDRAW
-                        case RESTAKE
-                        case CLAIM_UNSTAKED
-                        case UNLOCK_LOCKED
-                        case STAKE_LOCKED
-                        case VOTE
-                        case REVOKE
-                        case VOTE_LOCKED
-                        case REVOTE
-                        case REBOND
-                        case MIGRATE
-                    }
                 }
             }
         }

@@ -92,7 +92,7 @@ enum TokenItem: Hashable, Codable {
         case .token(let token, _):
             return token.name
         case .blockchain(let blockchainNetwork):
-            return blockchainNetwork.blockchain.displayName
+            return blockchainNetwork.blockchain.coinDisplayName
         }
     }
 
@@ -131,6 +131,16 @@ enum TokenItem: Hashable, Codable {
         switch blockchain {
         case .solana:
             return isToken ? true : false
+        default:
+            return false
+        }
+    }
+
+    // We can't sign hashes on firmware prior 4.52
+    var hasLongHashesForStaking: Bool {
+        switch blockchain {
+        case .solana:
+            return true
         default:
             return false
         }

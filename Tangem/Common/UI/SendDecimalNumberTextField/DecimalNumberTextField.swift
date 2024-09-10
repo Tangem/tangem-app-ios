@@ -12,13 +12,9 @@ import Combine
 struct DecimalNumberTextField: View {
     @ObservedObject private var viewModel: ViewModel
 
-    // Septupable properties
+    // Setupable properties
     private var placeholder: String = "0"
     private var appearance: Appearance = .init()
-
-    // Internal state
-    @State private var textFieldText: String = ""
-    @State private var size: CGSize = .zero
 
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
@@ -26,21 +22,19 @@ struct DecimalNumberTextField: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            Text(textFieldText.isEmpty ? placeholder : textFieldText)
+            // A dummy invisible view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
+            Text(viewModel.textFieldText.isEmpty ? placeholder : viewModel.textFieldText)
                 .font(appearance.font)
-                .opacity(0)
+                .hidden(true)
                 .layoutPriority(1)
-                .readGeometry(\.frame.size, bindTo: $size)
 
             textField
-                .frame(width: size.width)
         }
         .lineLimit(1)
-        .animation(.none, value: size.width)
     }
 
     private var textField: some View {
-        TextField(text: $textFieldText, prompt: prompt, label: {})
+        TextField(text: $viewModel.textFieldText, prompt: prompt, label: {})
             .style(appearance.font, color: appearance.textColor)
             .tint(appearance.textColor)
             .labelsHidden()
@@ -57,11 +51,8 @@ struct DecimalNumberTextField: View {
                     updateValues(with: formattedNewValue)
                 }
             }
-            .onChange(of: textFieldText) { newValue in
+            .onChange(of: viewModel.textFieldText) { newValue in
                 updateValues(with: newValue)
-            }
-            .onAppear {
-                textFieldText = viewModel.value.map { viewModel.format(value: $0) } ?? ""
             }
     }
 
@@ -100,7 +91,7 @@ struct DecimalNumberTextField: View {
         numberString = viewModel.format(value: numberString)
 
         // Update private `@State` for display not correct number, like 0,000
-        textFieldText = numberString
+        viewModel.textFieldText = numberString
 
         if let value = viewModel.mapToDecimal(string: numberString) {
             viewModel.update(decimalValue: .internal(value))
@@ -132,6 +123,9 @@ struct DecimalNumberTextField_Previews: PreviewProvider {
 
 extension DecimalNumberTextField {
     class ViewModel: ObservableObject {
+        @Published var textFieldText: String = ""
+        @Published var measuredTextSize: CGSize = .zero
+
         // Public properties
         var value: Decimal? {
             decimalValue?.value

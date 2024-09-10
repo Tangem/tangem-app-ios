@@ -13,6 +13,8 @@ struct TangemApiTarget: TargetType {
     let type: TargetType
     let authData: AuthData?
 
+    // MARK: - TargetType
+
     var baseURL: URL {
         AppEnvironment.current.apiBaseUrl
     }
@@ -53,12 +55,33 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
+        case .coinsList:
+            return "/coins/list"
+        case .coinsHistoryChartPreview:
+            return "/coins/history_preview"
+        case .tokenMarketsDetails(let requestModel):
+            return "/coins/\(requestModel.tokenId)"
+        case .historyChart(let requestModel):
+            return "/coins/\(requestModel.tokenId)/history"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates, .currencies, .coins, .quotes, .geo, .getUserWalletTokens, .loadReferralProgramInfo, .promotion, .apiList, .features:
+        case .rates,
+             .currencies,
+             .coins,
+             .quotes,
+             .geo,
+             .getUserWalletTokens,
+             .loadReferralProgramInfo,
+             .promotion,
+             .apiList,
+             .features,
+             .coinsList,
+             .coinsHistoryChartPreview,
+             .tokenMarketsDetails,
+             .historyChart:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -133,11 +156,41 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
+        case .coinsList(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
+        case .coinsHistoryChartPreview(let requestData):
+            return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding(destination: .queryString, arrayEncoding: .noBrackets))
+        case .tokenMarketsDetails(let requestModel):
+            return .requestParameters(parameters: [
+                "currency": requestModel.currency,
+                "language": requestModel.language,
+            ], encoding: URLEncoding.default)
+        case .historyChart(let requestModel):
+            return .requestParameters(
+                parameters: [
+                    "currency": requestModel.currency,
+                    "interval": requestModel.interval.historyChartId,
+                ],
+                encoding: URLEncoding.default
+            )
         }
     }
 
     var headers: [String: String]? {
-        authData?.headers
+        var headers: [String: String] = [:]
+
+        if let authData {
+            headers["card_id"] = authData.cardId
+            headers["card_public_key"] = authData.cardPublicKey.hexString
+        }
+
+        if let appVersion: String = InfoDictionaryUtils.version.value() {
+            headers["version"] = appVersion
+        }
+
+        headers["platform"] = "ios"
+
+        return headers
     }
 }
 
@@ -163,6 +216,12 @@ extension TangemApiTarget {
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
 
+        // Markets
+        case coinsList(_ requestModel: MarketsDTO.General.Request)
+        case coinsHistoryChartPreview(_ requestModel: MarketsDTO.ChartsHistory.PreviewRequest)
+        case tokenMarketsDetails(_ requestModel: MarketsDTO.Coins.Request)
+        case historyChart(_ requestModel: MarketsDTO.ChartsHistory.HistoryRequest)
+
         // Configs
         case apiList
     }
@@ -170,20 +229,13 @@ extension TangemApiTarget {
     struct AuthData {
         let cardId: String
         let cardPublicKey: Data
-
-        var headers: [String: String] {
-            [
-                "card_id": cardId,
-                "card_public_key": cardPublicKey.hexString,
-            ]
-        }
     }
 }
 
 extension TangemApiTarget: CachePolicyProvider {
     var cachePolicy: URLRequest.CachePolicy {
         switch type {
-        case .geo, .features:
+        case .geo, .features, .apiList:
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy

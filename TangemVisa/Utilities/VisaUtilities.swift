@@ -10,7 +10,11 @@ import Foundation
 import BlockchainSdk
 
 public struct VisaUtilities {
-    public init() {}
+    private let isTestnet: Bool
+
+    public init(isTestnet: Bool) {
+        self.isTestnet = isTestnet
+    }
 
     public var tokenId: String {
         "tether"
@@ -27,6 +31,6 @@ public struct VisaUtilities {
     }
 
     public var visaBlockchain: Blockchain {
-        .polygon(testnet: true)
+        .polygon(testnet: isTestnet)
     }
 }

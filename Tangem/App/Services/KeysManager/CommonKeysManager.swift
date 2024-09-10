@@ -45,6 +45,7 @@ extension CommonKeysManager: KeysManager {
             tronGridApiKey: keys.tronGridApiKey,
             hederaArkhiaApiKey: keys.hederaArkhiaKey,
             polygonScanApiKey: keys.polygonScanApiKey,
+            koinosProApiKey: keys.koinosProApiKey,
             tonCenterApiKeys: .init(mainnetApiKey: keys.tonCenterApiKey.mainnet, testnetApiKey: keys.tonCenterApiKey.testnet),
             fireAcademyApiKeys: .init(mainnetApiKey: keys.chiaFireAcademyApiKey, testnetApiKey: keys.chiaFireAcademyApiKey),
             chiaTangemApiKeys: .init(mainnetApiKey: keys.chiaTangemApiKey),
@@ -52,7 +53,9 @@ extension CommonKeysManager: KeysManager {
             quickNodeSolanaCredentials: .init(apiKey: keys.quiknodeApiKey, subdomain: keys.quiknodeSubdomain),
             quickNodeBscCredentials: .init(apiKey: keys.bscQuiknodeApiKey, subdomain: keys.bscQuiknodeSubdomain),
             defaultNetworkProviderConfiguration: .init(logger: .verbose, urlSessionConfiguration: .standard),
-            networkProviderConfigurations: [:]
+            networkProviderConfigurations: [:],
+            bittensorDwellirKey: keys.bittensorDwellirKey,
+            bittensorOnfinalityKey: keys.bittensorOnfinalityKey
         )
     }
 
@@ -87,6 +90,10 @@ extension CommonKeysManager: KeysManager {
     var walletConnectProjectId: String {
         keys.walletConnectProjectId
     }
+
+    var stakeKitKey: String {
+        keys.stakeKitApiKey
+    }
 }
 
 extension CommonKeysManager {
@@ -114,10 +121,14 @@ extension CommonKeysManager {
         let bscQuiknodeApiKey: String
         let bscQuiknodeSubdomain: String
         let polygonScanApiKey: String
+        let koinosProApiKey: String
         let tangemComAuthorization: String?
         let walletConnectProjectId: String
         let sprinklr: SprinklrConfig
         let express: ExpressKeys
         let devExpress: ExpressKeys?
+        let stakeKitApiKey: String
+        let bittensorDwellirKey: String
+        let bittensorOnfinalityKey: String
     }
 }

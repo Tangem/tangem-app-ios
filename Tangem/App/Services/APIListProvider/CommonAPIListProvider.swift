@@ -15,7 +15,9 @@ class CommonAPIListProvider {
 
     private let remoteListRequestTimeout: TimeInterval = 5.0
 
-    private var apiListSubject = CurrentValueSubject<APIList?, Never>(nil)
+    /// - Warning: DO NOT emit values to this subject directly, use convenience method `updateAPIListSubject(with:)`
+    /// instead. This method guarantees thread safety and provides required synchronization.
+    private let apiListSubject = CurrentValueSubject<APIList?, Never>(nil)
 
     func initialize() {
         runTask(withTimeout: remoteListRequestTimeout) { [weak self] in
@@ -45,7 +47,7 @@ class CommonAPIListProvider {
                 return remote.isEmpty ? local : remote
             })
 
-            apiListSubject.value = convertedRemoteAPIList
+            await updateAPIListSubject(with: convertedRemoteAPIList)
             let remoteFileParseTime = CFAbsoluteTimeGetCurrent()
             log("Remote API list loading and parsing time: \(remoteFileParseTime - startTime) seconds")
         } catch {
@@ -60,17 +62,25 @@ class CommonAPIListProvider {
     }
 
     private func loadLocalFile() {
+        let apiList: APIList
+
         do {
-            let localAPIList = try APIListUtils().parseLocalAPIListJson()
-            apiListSubject.value = localAPIList
+            apiList = try APIListUtils().parseLocalAPIListJson()
         } catch {
             log("Failed to parse local file.\nReason: \(error).\nPublishing empty list")
-            apiListSubject.value = [:]
+            apiList = [:]
         }
+
+        runTask(in: self) { await $0.updateAPIListSubject(with: apiList) }
     }
 
     private func log<T>(_ message: @autoclosure () -> T, function: String = #function) {
         AppLog.shared.debug("[CommonAPIListProvider, line: \(function)] - \(message())")
+    }
+
+    @MainActor
+    private func updateAPIListSubject(with value: APIList?) {
+        apiListSubject.value = value
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 // Warning/Information Notifications
-enum WithdrawalNotificationEvent {
+enum WithdrawalNotificationEvent: Hashable {
     case reduceAmountBecauseFeeIsTooHigh(amount: Decimal, amountFormatted: String, blockchainName: String)
     case cardanoWillBeSendAlongToken(cardanoAmountFormatted: String, tokenSymbol: String)
 }
@@ -28,14 +28,14 @@ extension WithdrawalNotificationEvent: NotificationEvent {
     var description: String? {
         switch self {
         case .reduceAmountBecauseFeeIsTooHigh(_, let amount, let blockchainName):
-            return Localization.sendNotificationHighFeeText(amount, blockchainName)
+            return Localization.sendNotificationHighFeeText(blockchainName, amount)
         case .cardanoWillBeSendAlongToken(let cardanoAmountFormatted, let tokenSymbol):
             return Localization.cardanoCoinWillBeSendWithTokenDescription(cardanoAmountFormatted, tokenSymbol)
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
-        let hasButton = buttonActionType != nil
+        let hasButton = buttonAction != nil
         if hasButton {
             return .action
         }
@@ -67,10 +67,10 @@ extension WithdrawalNotificationEvent: NotificationEvent {
 // MARK: Button
 
 extension WithdrawalNotificationEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .reduceAmountBecauseFeeIsTooHigh(let amount, let amountFormatted, _):
-            return .reduceAmountBy(amount: amount, amountFormatted: amountFormatted)
+            return .init(.reduceAmountBy(amount: amount, amountFormatted: amountFormatted))
         case .cardanoWillBeSendAlongToken:
             return nil
         }

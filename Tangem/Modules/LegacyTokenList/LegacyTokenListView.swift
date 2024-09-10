@@ -19,8 +19,8 @@ struct LegacyTokenListView: View {
 
             overlay
         }
-        .scrollDismissesKeyboardCompat(.interactively)
-        .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .automatic)
+        .scrollDismissesKeyboardCompat(.immediately)
+        .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .inline)
         .navigationBarItems(trailing: addCustomView)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .searchable(text: $viewModel.enteredSearchText.value, placement: .navigationBarDrawer(displayMode: .always))
@@ -76,7 +76,7 @@ struct LegacyTokenListView: View {
                 Circle().fill(Colors.Button.primary)
 
                 Image(systemName: "plus")
-                    .foregroundColor(Color.tangemBg)
+                    .foregroundColor(Colors.Old.tangemBg)
                     .font(.system(size: 13, weight: .bold, design: .default))
             }
             .frame(width: 26, height: 26)

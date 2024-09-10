@@ -9,10 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import TangemSdk
 import BlockchainSdk
-import TangemExpress
-import CombineExt
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -23,8 +20,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var actionButtons: [FixedSizeButtonWithIconInfo] = []
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
     @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
-
-    lazy var testnetBuyCryptoService: TestnetBuyCryptoService = .init()
+    @Published private(set) var miniChartData: LoadingValue<[Double]?> = .loading
 
     let exchangeUtility: ExchangeCryptoUtility
     let notificationManager: NotificationManager
@@ -35,6 +31,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     var availableActions: [TokenActionType] = []
 
     private let tokenRouter: SingleTokenRoutable
+    private let priceFormatter = MarketsTokenPriceFormatter()
 
     private var priceChangeFormatter = PriceChangeFormatter()
     private var transactionHistoryBag: AnyCancellable?
@@ -45,14 +42,16 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
     var amountType: Amount.AmountType { walletModel.amountType }
 
-    var rateFormatted: String { walletModel.rateFormatted }
+    var rateFormatted: String {
+        priceFormatter.formatPrice(walletModel.quote?.price)
+    }
 
     var priceChangeState: TokenPriceChangeView.State {
-        guard let change = walletModel.quote?.change else {
+        guard let change = walletModel.quote?.priceChange24h else {
             return .noData
         }
 
-        let result = priceChangeFormatter.format(value: change)
+        let result = priceChangeFormatter.formatPercentValue(change, option: .priceChange)
         return .loaded(signType: result.signType, text: result.formattedText)
     }
 
@@ -62,16 +61,13 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         amountType.token?.symbol ?? blockchainNetwork.blockchain.currencySymbol
     }
 
-    var isMarketPriceAvailable: Bool {
-        if case .token(let token) = amountType {
-            return token.id != nil
-        } else {
-            return true
-        }
+    var isMarketsDetailsAvailable: Bool {
+        walletModel.tokenItem.id != nil
     }
 
     lazy var transactionHistoryMapper = TransactionHistoryMapper(currencySymbol: currencySymbol, walletAddresses: walletModel.wallet.addresses.map { $0.value }, showSign: true)
     lazy var pendingTransactionRecordMapper = PendingTransactionRecordMapper(formatter: BalanceFormatter())
+    lazy var miniChartsProvider = MarketsListChartsHistoryProvider()
 
     init(
         userWalletModel: UserWalletModel,
@@ -148,6 +144,12 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             })
     }
 
+    /// This method should be overridden to send analytics events for navigation.
+    /// Please check `SingleWalletMainContentViewModel` and `TokenDetailsViewModel`
+    func openMarketsTokenDetails() {
+        tokenRouter.openMarketsTokenDetails(for: walletModel.tokenItem)
+    }
+
     func onButtonReloadHistory() {
         Analytics.log(event: .buttonReload, params: [.token: currencySymbol])
 
@@ -168,17 +170,17 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     }
 
     // We need to keep this not in extension because we may want to override this logic and
-    // implementation from extensions can't be overriden
-    func didTapNotification(with id: NotificationViewId) {}
-
-    // We need to keep this not in extension because we may want to override this logic and
-    // implementation from extensions can't be overriden
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    // implementation from extensions can't be overridden
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .buyCrypto:
             openBuyCryptoIfPossible()
         case .addHederaTokenAssociation:
             fulfillAssetRequirements()
+        case .stake:
+            openStaking()
+        case .empty:
+            break
         default:
             break
         }
@@ -222,9 +224,19 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         }
 
         sendAnalytics(isSuccessful: true)
+
         walletModel
             .fulfillRequirements(signer: userWalletModel.signer)
-            .sink()
+            .materialize()
+            .failures()
+            .withWeakCaptureOf(self)
+            .map { viewModel, error in
+                let alertBuilder = SingleTokenAlertBuilder()
+                let networkName = viewModel.blockchain.displayName
+
+                return alertBuilder.fulfillmentAssetRequirementsFailedAlert(error: error, networkName: networkName)
+            }
+            .assign(to: \.alert, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }
@@ -235,6 +247,7 @@ extension SingleTokenBaseViewModel {
     private func prepareSelf() {
         bind()
         setupActionButtons()
+        setupMiniChart()
         updateActionButtons()
         updatePendingTransactionView()
         performLoadHistory()
@@ -280,6 +293,32 @@ extension SingleTokenBaseViewModel {
             // TODO: Refactor in IOS-5470
             .debounce(for: 0.1, scheduler: DispatchQueue.main)
             .assign(to: \.tokenNotificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        walletModel.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateActionButtons()
+            }
+            .store(in: &bag)
+    }
+
+    private func setupMiniChart() {
+        guard let id = walletModel.tokenItem.id else {
+            miniChartData = .failedToLoad(error: "")
+            return
+        }
+        miniChartsProvider.fetch(for: [id], with: .day)
+
+        miniChartsProvider.$items
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0[id]?[.day] }
+            .withWeakCaptureOf(self)
+            .sink { viewModel, chartsData in
+                viewModel.updateMiniChartState(using: chartsData)
+            }
             .store(in: &bag)
     }
 
@@ -338,6 +377,20 @@ extension SingleTokenBaseViewModel {
         }
     }
 
+    private func updateMiniChartState(using data: MarketsChartModel) {
+        do {
+            let mapper = TokenMarketsHistoryChartMapper()
+
+            let chartPoints = try mapper
+                .mapAndSortValues(from: data)
+                .map(\.price.doubleValue)
+            miniChartData = .loaded(chartPoints)
+        } catch {
+            AppLog.shared.error(error)
+            miniChartData = .failedToLoad(error: error)
+        }
+    }
+
     private func isButtonDisabled(with type: TokenActionType) -> Bool {
         switch type {
         case .buy:
@@ -350,7 +403,7 @@ extension SingleTokenBaseViewModel {
             return isSwapDisabled()
         case .sell:
             return sendIsDisabled() || !exchangeUtility.sellAvailable
-        case .copyAddress, .hide:
+        case .copyAddress, .hide, .stake, .marketsDetails:
             return true
         }
     }
@@ -362,7 +415,7 @@ extension SingleTokenBaseViewModel {
         case .receive: return openReceive
         case .exchange: return openExchangeAndLogAnalytics
         case .sell: return openSell
-        case .copyAddress, .hide: return nil
+        case .copyAddress, .hide, .stake, .marketsDetails: return nil
         }
     }
 
@@ -370,7 +423,7 @@ extension SingleTokenBaseViewModel {
         switch buttonType {
         case .receive:
             return weakify(self, forFunction: SingleTokenBaseViewModel.copyDefaultAddress)
-        case .buy, .send, .exchange, .sell, .copyAddress, .hide:
+        case .buy, .send, .exchange, .sell, .copyAddress, .hide, .stake, .marketsDetails:
             return nil
         }
     }
@@ -476,6 +529,11 @@ extension SingleTokenBaseViewModel {
         tokenRouter.openExchange(walletModel: walletModel)
     }
 
+    func openStaking() {
+        Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
+        tokenRouter.openStaking(walletModel: walletModel)
+    }
+
     func openSell() {
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
@@ -528,10 +586,6 @@ extension SingleTokenBaseViewModel {
 
         openExplorer(at: url)
     }
-}
-
-extension SingleTokenBaseViewModel: ActionButtonsProvider {
-    var buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never> { $actionButtons.eraseToAnyPublisher() }
 }
 
 // MARK: - CustomStringConvertible protocol conformance

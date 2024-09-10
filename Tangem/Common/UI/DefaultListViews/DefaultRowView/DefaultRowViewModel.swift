@@ -13,15 +13,18 @@ class DefaultRowViewModel: ObservableObject, Identifiable {
     @Published private(set) var title: String
     @Published private(set) var detailsType: DetailsType?
     @Published private(set) var action: (() -> Void)?
+    @Published private(set) var secondaryAction: (() -> Void)?
 
     init(
         title: String,
         detailsType: DetailsType? = .none,
-        action: (() -> Void)? = nil
+        action: (() -> Void)? = nil,
+        secondaryAction: (() -> Void)? = nil
     ) {
         self.title = title
         self.detailsType = detailsType
         self.action = action
+        self.secondaryAction = secondaryAction
     }
 
     func update(title: String) {
@@ -35,11 +38,16 @@ class DefaultRowViewModel: ObservableObject, Identifiable {
     func update(action: (() -> Void)? = nil) {
         self.action = action
     }
+
+    func update(secondaryAction: (() -> Void)? = nil) {
+        self.secondaryAction = secondaryAction
+    }
 }
 
 extension DefaultRowViewModel {
     enum DetailsType: Hashable {
-        case text(_ string: String)
+        case loadable(state: LoadableTextView.State)
+        case text(_ string: String, sensitive: Bool = false)
         case loader
         case icon(_ image: ImageType)
     }

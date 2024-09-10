@@ -75,4 +75,8 @@ extension AddCustomTokenNotificationEvent: NotificationEvent {
             return false
         }
     }
+
+    var buttonAction: NotificationButtonAction? {
+        nil
+    }
 }

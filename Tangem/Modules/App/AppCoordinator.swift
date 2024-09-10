@@ -26,13 +26,17 @@ class AppCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    @Published private(set) var viewState: ViewState?
+    // Published property, used by UI. `SwiftUI.Binding` API requires it to be writable,
+    // but in fact this is a read-only binding since the UI never mutates it.
+    @Published var marketsCoordinator: MarketsCoordinator?
 
-    @Published var mainBottomSheetCoordinator: MainBottomSheetCoordinator?
+    // Non-published property, used to preserve the state of the `MainBottomSheetCoordinator`
+    // instance between show-hide cycles
+    private var __marketsCoordinator: MarketsCoordinator?
 
     // MARK: - View State
 
-    @Published private(set) var isMainBottomSheetShown = false
+    @Published private(set) var viewState: ViewState?
 
     // MARK: - Private
 
@@ -120,21 +124,28 @@ class AppCoordinator: CoordinatorObject {
     private func setupMainBottomSheetCoordinatorIfNeeded() {
         guard
             FeatureProvider.isAvailable(.markets),
-            mainBottomSheetCoordinator == nil
+            __marketsCoordinator == nil
         else {
             return
         }
 
         let dismissAction: Action<Void> = { [weak self] _ in
-            self?.mainBottomSheetCoordinator = nil
+            self?.marketsCoordinator = nil
+            self?.__marketsCoordinator = nil
         }
 
-        let coordinator = MainBottomSheetCoordinator(
+        let coordinator = MarketsCoordinator(
             dismissAction: dismissAction,
             popToRootAction: popToRootAction
         )
-        coordinator.start()
-        mainBottomSheetCoordinator = coordinator
+        coordinator.start(with: .init())
+        __marketsCoordinator = coordinator
+
+        // If this condition evaluates to `false` here, the `mainBottomSheetCoordinator` property will be updated later
+        // based on the `bottomSheetVisibility.isShownPublisher` reactive stream
+        if bottomSheetVisibility.isShown {
+            marketsCoordinator = coordinator
+        }
     }
 
     private func bind() {
@@ -149,7 +160,11 @@ class AppCoordinator: CoordinatorObject {
 
         bottomSheetVisibility
             .isShownPublisher
-            .assign(to: \.isMainBottomSheetShown, on: self, ownership: .weak)
+            .withWeakCaptureOf(self)
+            .map { coordinator, isShown in
+                return isShown ? coordinator.__marketsCoordinator : nil
+            }
+            .assign(to: \.marketsCoordinator, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -180,10 +195,13 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func closeAllSheetsIfNeeded(animated: Bool, completion: @escaping () -> Void = {}) {
-        mainBottomSheetCoordinator = nil
+        marketsCoordinator = nil
+        __marketsCoordinator = nil
 
-        guard let topViewController = UIApplication.topViewController,
-              topViewController.presentingViewController != nil else {
+        guard
+            let topViewController = UIApplication.topViewController,
+            topViewController.presentingViewController != nil
+        else {
             DispatchQueue.main.async {
                 completion()
             }

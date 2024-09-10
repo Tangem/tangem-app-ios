@@ -88,7 +88,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
             return
         }
 
-        if let fiatValue = BalanceConverter().convertToFiat(value: expectAmount, from: currencyId) {
+        if let fiatValue = BalanceConverter().convertToFiat(expectAmount, currencyId: currencyId) {
             let formatted = BalanceFormatter().formatFiatBalance(fiatValue)
             update(fiatAmountState: .loaded(text: formatted))
             return
@@ -98,7 +98,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
 
         balanceConvertTask?.cancel()
         balanceConvertTask = runTask(in: self) { [currencyId] viewModel in
-            let fiatValue = try await BalanceConverter().convertToFiat(value: expectAmount, from: currencyId)
+            let fiatValue = try await BalanceConverter().convertToFiat(expectAmount, currencyId: currencyId)
             let formatted = BalanceFormatter().formatFiatBalance(fiatValue)
 
             try Task.checkCancellation()
@@ -134,7 +134,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
             }
 
             let percentFormatter = PercentFormatter()
-            let formatted = percentFormatter.expressRatePercentFormat(value: -result.lossesInPercents)
+            let formatted = percentFormatter.format(-result.lossesInPercents, option: .express)
             await runOnMain {
                 viewModel.priceChangeState = .percent(formatted)
             }

@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 import CombineExt
+import TangemStaking
 
 final class MultiWalletMainContentViewModel: ObservableObject {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -20,6 +21,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     @Published var sections: [Section] = []
     @Published var notificationInputs: [NotificationViewInput] = []
     @Published var tokensNotificationInputs: [NotificationViewInput] = []
+    @Published var bannerNotificationInputs: [NotificationViewInput] = []
 
     @Published var isScannerBusy = false
     @Published var error: AlertBinder? = nil
@@ -54,10 +56,11 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let userWalletModel: UserWalletModel
     private let userWalletNotificationManager: NotificationManager
     private let tokensNotificationManager: NotificationManager
+    private let bannerNotificationManager: NotificationManager?
     private let tokenSectionsAdapter: TokenSectionsAdapter
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
-    private let rateAppController: RateAppController
+    private let rateAppController: RateAppInteractionController
     private weak var coordinator: MultiWalletMainContentRoutable?
 
     private var canManageTokens: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
@@ -78,7 +81,8 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         userWalletModel: UserWalletModel,
         userWalletNotificationManager: NotificationManager,
         tokensNotificationManager: NotificationManager,
-        rateAppController: RateAppController,
+        bannerNotificationManager: NotificationManager?,
+        rateAppController: RateAppInteractionController,
         tokenSectionsAdapter: TokenSectionsAdapter,
         tokenRouter: SingleTokenRoutable,
         optionsEditing: OrganizeTokensOptionsEditing,
@@ -87,6 +91,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         self.userWalletModel = userWalletModel
         self.userWalletNotificationManager = userWalletNotificationManager
         self.tokensNotificationManager = tokensNotificationManager
+        self.bannerNotificationManager = bannerNotificationManager
         self.rateAppController = rateAppController
         self.tokenSectionsAdapter = tokenSectionsAdapter
         self.tokenRouter = tokenRouter
@@ -180,6 +185,13 @@ final class MultiWalletMainContentViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .assign(to: \.tokensNotificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        bannerNotificationManager?
+            .notificationPublisher
+            .receive(on: DispatchQueue.main)
+            .removeDuplicates()
+            .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
 
         rateAppController.bind(
@@ -280,36 +292,15 @@ private extension MultiWalletMainContentViewModel {
     func hideTokenAction(for tokenItemViewModel: TokenItemViewModel) {
         let tokenItem = tokenItemViewModel.tokenItem
 
+        let alertBuilder = HideTokenAlertBuilder()
         if userWalletModel.userTokensManager.canRemove(tokenItem) {
-            showHideWarningAlert(tokenItem: tokenItem)
-        } else {
-            showUnableToHideAlert(name: tokenItem.name, currencySymbol: tokenItem.currencySymbol, blockchainName: tokenItem.blockchain.displayName)
-        }
-    }
-
-    func showHideWarningAlert(tokenItem: TokenItem) {
-        error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsHideAlertTitle(tokenItem.name),
-            message: Localization.tokenDetailsHideAlertMessage,
-            primaryButton: .destructive(Text(Localization.tokenDetailsHideAlertHide)) { [weak self] in
+            error = alertBuilder.hideTokenAlert(tokenItem: tokenItem, hideAction: {
+                [weak self] in
                 self?.hideToken(tokenItem: tokenItem)
-            },
-            secondaryButton: .cancel()
-        )
-    }
-
-    func showUnableToHideAlert(name: String, currencySymbol: String, blockchainName: String) {
-        let message = Localization.tokenDetailsUnableHideAlertMessage(
-            name,
-            currencySymbol,
-            blockchainName
-        )
-
-        error = AlertBuilder.makeAlert(
-            title: Localization.tokenDetailsUnableHideAlertTitle(name),
-            message: message,
-            primaryButton: .default(Text(Localization.commonOk))
-        )
+            })
+        } else {
+            error = alertBuilder.unableToHideTokenAlert(tokenItem: tokenItem)
+        }
     }
 
     func hideToken(tokenItem: TokenItem) {
@@ -344,12 +335,31 @@ extension MultiWalletMainContentViewModel {
         coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
     }
 
-    private func openTravalaPromotion(url: URL) {
+    private func openURL(_ url: URL) {
         coordinator?.openInSafari(url: url)
     }
 
     private func openOrganizeTokens() {
         coordinator?.openOrganizeTokens(for: userWalletModel)
+    }
+
+    private func openSupport() {
+        Analytics.log(.requestSupport, params: [.source: .main])
+
+        let dataCollector = DetailsFeedbackDataCollector(
+            data: [
+                .init(
+                    userWalletEmailData: userWalletModel.emailData,
+                    walletModels: userWalletModel.walletModelsManager.walletModels
+                ),
+            ]
+        )
+
+        coordinator?.openMail(
+            with: dataCollector,
+            emailType: .appFeedback(subject: EmailConfig.default.subject),
+            recipient: EmailConfig.default.recipient
+        )
     }
 
     private func openBuy(for walletModel: WalletModel) {
@@ -374,30 +384,35 @@ extension MultiWalletMainContentViewModel {
 // MARK: - Notification tap delegate
 
 extension MultiWalletMainContentViewModel: NotificationTapDelegate {
-    func didTapNotification(with id: NotificationViewId) {
-        guard let notification = notificationInputs.first(where: { $0.id == id }) else {
-            userWalletNotificationManager.dismissNotification(with: id)
-            return
-        }
-
-        switch notification.settings.event {
-        case let userWalletEvent as WarningEvent:
-            handleUserWalletNotificationTap(event: userWalletEvent, id: id)
-        default:
-            break
-        }
-    }
-
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            guard let notification = notificationInputs.first(where: { $0.id == id }) else {
+                userWalletNotificationManager.dismissNotification(with: id)
+                return
+            }
+
+            switch notification.settings.event {
+            case let userWalletEvent as WarningEvent:
+                handleUserWalletNotificationTap(event: userWalletEvent, id: id)
+            default:
+                break
+            }
+
         case .generateAddresses:
             deriveEntriesWithoutDerivation()
         case .backupCard:
             startBackupProcess()
-        case .bookNow(let url):
-            openTravalaPromotion(url: url)
+        case .openLink(let url, _):
+            openURL(url)
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
+        case .support:
+            openSupport()
         default:
-            return
+            break
         }
     }
 
@@ -424,48 +439,40 @@ extension MultiWalletMainContentViewModel: MainViewPage {
 // MARK: Context actions
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionsProvider {
-    func buildContextActions(for tokenItem: TokenItemViewModel) -> [TokenActionType] {
-        guard
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItem.id }),
-            TokenInteractionAvailabilityProvider(walletModel: walletModel).isContextMenuAvailable()
-        else {
-            return [.hide]
-        }
-
-        let actionsBuilder = TokenActionListBuilder()
-        let utility = ExchangeCryptoUtility(
-            blockchain: walletModel.blockchainNetwork.blockchain,
-            address: walletModel.defaultAddress,
-            amountType: walletModel.amountType
-        )
-
-        let canExchange = userWalletModel.config.isFeatureVisible(.exchange)
-        // On the Main view we have to hide send button if we have any sending restrictions
-        let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
-        let canSwap = userWalletModel.config.isFeatureVisible(.swapping) && swapAvailabilityProvider.canSwap(tokenItem: tokenItem.tokenItem) && !walletModel.isCustom
-        let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
-        let canSignTransactions = walletModel.sendingRestrictions != .cantSignLongTransactions
-
-        return actionsBuilder.buildTokenContextActions(
-            canExchange: canExchange,
-            canSignTransactions: canSignTransactions,
-            canSend: canSend,
-            canSwap: canSwap,
-            canHide: canManageTokens,
-            isBlockchainReachable: isBlockchainReachable,
-            exchangeUtility: utility
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection] {
+        let actionBuilder = TokenContextActionsBuilder()
+        return actionBuilder.buildContextActions(
+            tokenItem: tokenItemViewModel.tokenItem,
+            walletModelId: tokenItemViewModel.id,
+            userWalletModel: userWalletModel,
+            canNavigateToMarketsDetails: true,
+            canHideToken: canManageTokens
         )
     }
 }
 
 extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
-    func didTapContextAction(_ action: TokenActionType, for tokenItem: TokenItemViewModel) {
-        if case .hide = action {
-            hideTokenAction(for: tokenItem)
+    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel) {
+        switch action {
+        case .hide:
+            hideTokenAction(for: tokenItemViewModel)
+            return
+        case .marketsDetails:
+            let tokenItem = tokenItemViewModel.tokenItem
+            let analyticsParams: [Analytics.ParameterKey: String] = [
+                .source: Analytics.ParameterValue.longTap.rawValue,
+                .token: tokenItem.currencySymbol,
+                .blockchain: tokenItem.blockchain.displayName,
+            ]
+            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            tokenRouter.openMarketsTokenDetails(for: tokenItem)
+            return
+        default:
+            break
         }
 
         guard
-            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItem.id })
+            let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: { $0.id == tokenItemViewModel.id })
         else {
             return
         }
@@ -485,7 +492,10 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
         case .exchange:
             Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openExchange(walletModel: walletModel)
-        case .hide:
+        case .stake:
+            Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
+            tokenRouter.openStaking(walletModel: walletModel)
+        case .marketsDetails, .hide:
             return
         }
     }

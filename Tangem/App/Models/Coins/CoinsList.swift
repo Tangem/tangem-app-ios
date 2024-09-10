@@ -89,13 +89,6 @@ extension CoinsList {
         public let id: String
         public let name: String
         public let symbol: String
-        public let networks: [Network]
-    }
-
-    struct Network: Codable {
-        public let networkId: String
-        public let contractAddress: String?
-        public let decimalCount: Int?
-        public let exchangeable: Bool
+        public let networks: [NetworkModel]
     }
 }

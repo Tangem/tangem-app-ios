@@ -10,7 +10,16 @@ import Foundation
 
 public protocol FeeProvider {
     func estimatedFee(amount: Decimal) async throws -> ExpressFee
-    func getFee(amount: Decimal, destination: String, hexData: Data?) async throws -> ExpressFee
+    func estimatedFee(estimatedGasLimit: Int) async throws -> Fee
+    func getFee(amount: ExpressAmount, destination: String) async throws -> ExpressFee
+}
+
+public enum ExpressAmount {
+    /// Usual transfer for CEX
+    case transfer(amount: Decimal)
+
+    /// For `DEX` / `DEX/Bridge` operations
+    case dex(txValue: Decimal, txData: Data)
 }
 
 public enum ExpressFee {

@@ -8,26 +8,6 @@
 
 import SwiftUI
 
-struct Counter {
-    let number: Int
-    let totalCount: Int
-}
-
-struct CounterView: View {
-    let counter: Counter
-
-    var body: some View {
-        HStack {
-            Text("\(counter.number)/\(counter.totalCount)")
-                .font(.system(size: 13, weight: .medium, design: .default))
-        }
-        .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
-        .frame(minWidth: 40, minHeight: 24, maxHeight: 24)
-        .background(Color.tangemGrayDark5)
-        .cornerRadius(50)
-    }
-}
-
 @available(*, deprecated, message: "Use NotificationView instead")
 struct WarningView: View {
     let warning: AppWarning
@@ -45,7 +25,7 @@ struct WarningView: View {
                     Spacer()
                     Button(action: { buttonAction(.dismiss) }, label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.tangemGrayDark)
+                            .foregroundColor(Colors.Old.tangemGrayDark)
                             .frame(width: 26, height: 26)
                     })
                     .buttonStyle(PlainButtonStyle())
@@ -93,7 +73,7 @@ struct WarningView: View {
                     .buttonStyle(PlainButtonStyle())
                     .frame(height: 24)
                     if warningButtons.count > 1, item.offset < warningButtons.count - 1 {
-                        Color.tangemGrayDark5
+                        Colors.Old.tangemGrayDark5
                             .frame(width: 1, height: 16)
                             .padding(.horizontal, 4)
                     }
@@ -110,8 +90,6 @@ struct WarningView: View {
 extension WarningView {
     enum WarningButton: String, Identifiable {
         case okGotIt
-        case rateApp
-        case reportProblem
         case dismiss
 
         var id: String { rawValue }
@@ -119,8 +97,6 @@ extension WarningView {
         var buttonTitle: String {
             switch self {
             case .okGotIt: return Localization.warningButtonOk
-            case .rateApp: return Localization.warningButtonReallyCool
-            case .reportProblem: return Localization.warningButtonCouldBeBetter
             case .dismiss: return ""
             }
         }

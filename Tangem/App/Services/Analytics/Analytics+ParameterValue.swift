@@ -38,12 +38,14 @@ extension Analytics {
         case settings = "Settings"
         case signIn = "Sign In"
         case receive = "Receive"
+        case stories = "Stories"
 
         case transactionSourceSend = "Send"
         case transactionSourceSwap = "Swap"
         case transactionSourceApprove = "Approve"
         case transactionSourceWalletConnect = "WalletConnect"
         case transactionSourceSell = "Sell"
+        case transactionSourceStaking = "Staking"
 
         case transactionFeeFixed = "Fixed"
         case transactionFeeMin = "Min"
@@ -61,6 +63,7 @@ extension Analytics {
         case enabled = "Enabled"
         case disabled = "Disabled"
         case reset = "Reset"
+        case allow = "Allow"
         case cancel = "Cancel"
 
         case errorCode = "Error Code"
@@ -136,13 +139,15 @@ extension Analytics {
 
         // MARK: - Promotion banners
 
-        case oneInch = "1inch"
-        case changelly = "Changelly"
-        case changeNow = "ChangeNow"
-        case travala = "Travala"
+        case okx = "OKX"
 
         case clicked = "Clicked"
         case closed = "Closed"
+
+        // MARK: - Promo
+
+        case recommended = "Recommended"
+        case native = "Native"
 
         // MARK: - Rate the app response
 
@@ -151,7 +156,21 @@ extension Analytics {
         /// Feedback email (`RateAppResponse.negative`).
         case feedbackEmail = "Feedback"
         /// The review sheet dismissed w/o further interactions (`RateAppResponse.dismissed`).
-        case appRateSheetDismissed = "Close"
+        case appRateDismissed = "Close"
+
+        // MARK: - Stake
+
+        case stakeSourceStakeInfo = "Stake Info"
+        case stakeSourceConfirmation = "Confirmation"
+        case stakeSourceValidators = "Validators"
+
+        case stakeActionStake = "Stake"
+        case stakeActionRestake = "Restake"
+        case stakeActionClaim = "Claim"
+        case stakeActionWithdraw = "Withdraw"
+        case stakeActionUnlock = "Unlock"
+
+        // MARK: - Common
 
         static func toggleState(for boolean: Bool) -> ParameterValue {
             return boolean ? .on : .off

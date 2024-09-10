@@ -18,7 +18,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
     // MARK: - Dependencies
 
     private let userWalletNotificationManager: NotificationManager
-    private let rateAppController: RateAppController
+    private let rateAppController: RateAppInteractionController
 
     private let isPageSelectedSubject = PassthroughSubject<Bool, Never>()
 
@@ -33,7 +33,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         exchangeUtility: ExchangeCryptoUtility,
         userWalletNotificationManager: NotificationManager,
         tokenNotificationManager: NotificationManager,
-        rateAppController: RateAppController,
+        rateAppController: RateAppInteractionController,
         tokenRouter: SingleTokenRoutable,
         delegate: SingleWalletMainContentDelegate?
     ) {
@@ -63,6 +63,31 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
             .source: Analytics.ParameterValue.main.rawValue,
         ])
         delegate?.displayAddressCopiedToast()
+    }
+
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
+        default:
+            super.didTapNotification(with: id, action: action)
+        }
+    }
+
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.main.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
     }
 
     private func bind() {

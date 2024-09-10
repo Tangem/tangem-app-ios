@@ -9,271 +9,267 @@
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
 
-protocol SendSummaryViewModelInput: AnyObject {
-    var canEditAmount: Bool { get }
-    var canEditDestination: Bool { get }
-    var feeOptions: [FeeOption] { get }
+class SendSummaryViewModel: ObservableObject, Identifiable {
+    @Published var sendDestinationCompactViewModel: SendDestinationCompactViewModel?
+    @Published var sendAmountCompactViewModel: SendAmountCompactViewModel?
+    @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
+    @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
 
-    var transactionAmountPublisher: AnyPublisher<Amount?, Never> { get }
-    var destinationTextPublisher: AnyPublisher<String, Never> { get }
-    var additionalFieldPublisher: AnyPublisher<(SendAdditionalFields, String)?, Never> { get }
-    var feeValuePublisher: AnyPublisher<Fee?, Never> { get }
-    var feeValues: AnyPublisher<[FeeOption: LoadingValue<Fee>], Never> { get }
-    var selectedFeeOptionPublisher: AnyPublisher<FeeOption, Never> { get }
+    @Published var sendDestinationCompactViewModelId: UUID = .init()
+    @Published var sendAmountCompactViewModelId: UUID = .init()
+    @Published var stakingValidatorsCompactViewModelId: UUID = .init()
+    @Published var sendFeeCompactViewModelId: UUID = .init()
 
-    var isSending: AnyPublisher<Bool, Never> { get }
-}
+    @Published var destinationExpanding = false
+    @Published var amountExpanding = false
+    @Published var validatorExpanding = false
+    @Published var feeExpanding = false
 
-class SendSummaryViewModel: ObservableObject {
-    let canEditAmount: Bool
-    let canEditDestination: Bool
-    @Published var canEditFee: Bool = true
+    @Published var destinationEditMode = false
+    @Published var amountEditMode = false
+    @Published var validatorEditMode = false
+    @Published var feeEditMode = false
 
-    var destinationBackground: Color {
-        sectionBackground(canEdit: canEditDestination)
-    }
+    @Published var destinationVisible = true
+    @Published var amountVisible = true
+    @Published var validatorVisible = true
+    @Published var feeVisible = true
 
-    var amountBackground: Color {
-        sectionBackground(canEdit: canEditAmount)
-    }
-
-    var walletName: String {
-        walletInfo.walletName
-    }
-
-    var balance: String {
-        walletInfo.balance
-    }
-
-    @Published var isSending = false
-    @Published var alert: AlertBinder?
-
-    @Published var destinationViewTypes: [SendDestinationSummaryViewType] = []
-    @Published var amountSummaryViewData: SendAmountSummaryViewData?
-    @Published var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
-    @Published var deselectedFeeRowViewModels: [FeeRowViewModel] = []
-
-    @Published var animatingDestinationOnAppear = false
-    @Published var animatingAmountOnAppear = false
-    @Published var animatingFeeOnAppear = false
     @Published var showHint = false
+    @Published var notificationInputs: [NotificationViewInput] = []
+
     @Published var transactionDescription: String?
-    @Published var showTransactionDescription = true
+    @Published var transactionDescriptionIsVisible: Bool = false
 
-    var didProperlyDisappear: Bool = true
+    var destinationCompactViewType: SendCompactViewEditableType {
+        switch editableType {
+        case .disable: .disabled
+        case .editable: .enabled(action: userDidTapDestination)
+        case .noEditable: .enabled()
+        }
+    }
 
-    @Published private(set) var notificationInputs: [NotificationViewInput] = []
+    var amountCompactViewType: SendCompactViewEditableType {
+        switch editableType {
+        case .disable: .disabled
+        case .editable: .enabled(action: userDidTapAmount)
+        case .noEditable: .enabled()
+        }
+    }
 
-    weak var router: SendSummaryRoutable?
+    private let tokenItem: TokenItem
+    private let editableType: EditableType
+    private let interactor: SendSummaryInteractor
+    private let notificationManager: NotificationManager
+    private let actionType: SendFlowActionType
+    weak var router: SendSummaryStepsRoutable?
 
-    private let sectionViewModelFactory: SendSummarySectionViewModelFactory
     private var bag: Set<AnyCancellable> = []
-    private let input: SendSummaryViewModelInput
-    private let walletInfo: SendWalletInfo
-    private let notificationManager: SendNotificationManager
-    private let fiatCryptoValueProvider: SendFiatCryptoValueProvider
-    private var isVisible = false
 
-    let addressTextViewHeightModel: AddressTextViewHeightModel
+    init(
+        settings: Settings,
+        interactor: SendSummaryInteractor,
+        notificationManager: NotificationManager,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
+    ) {
+        editableType = settings.editableType
+        tokenItem = settings.tokenItem
+        actionType = settings.actionType
 
-    init(input: SendSummaryViewModelInput, notificationManager: SendNotificationManager, fiatCryptoValueProvider: SendFiatCryptoValueProvider, addressTextViewHeightModel: AddressTextViewHeightModel, walletInfo: SendWalletInfo) {
-        self.input = input
-        self.walletInfo = walletInfo
+        self.interactor = interactor
         self.notificationManager = notificationManager
-        self.fiatCryptoValueProvider = fiatCryptoValueProvider
-        self.addressTextViewHeightModel = addressTextViewHeightModel
-
-        sectionViewModelFactory = SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletInfo.feeCurrencySymbol,
-            feeCurrencyId: walletInfo.feeCurrencyId,
-            isFeeApproximate: walletInfo.isFeeApproximate,
-            currencyId: walletInfo.currencyId,
-            tokenIconInfo: walletInfo.tokenIconInfo
-        )
-
-        canEditAmount = input.canEditAmount
-        canEditDestination = input.canEditDestination
+        self.sendDestinationCompactViewModel = sendDestinationCompactViewModel
+        self.sendAmountCompactViewModel = sendAmountCompactViewModel
+        self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
+        self.sendFeeCompactViewModel = sendFeeCompactViewModel
 
         bind()
     }
 
-    func setupAnimations(previousStep: SendStep) {
-        switch previousStep {
-        case .destination:
-            animatingAmountOnAppear = true
-            animatingFeeOnAppear = true
-        case .amount:
-            animatingDestinationOnAppear = true
-            animatingFeeOnAppear = true
-        case .fee:
-            animatingDestinationOnAppear = true
-            animatingAmountOnAppear = true
-        default:
-            break
-        }
-
-        showHint = false
-        showTransactionDescription = false
-    }
-
     func onAppear() {
-        isVisible = true
+        destinationVisible = true
+        amountVisible = true
+        validatorVisible = true
+        feeVisible = true
+        transactionDescriptionIsVisible = true
 
-        selectedFeeSummaryViewModel?.setAnimateTitleOnAppear(true)
-
-        withAnimation(SendView.Constants.defaultAnimation) {
-            self.animatingDestinationOnAppear = false
-            self.animatingAmountOnAppear = false
-            self.animatingFeeOnAppear = false
-            self.showTransactionDescription = self.transactionDescription != nil
+        if actionType == .send {
+            Analytics.log(.sendConfirmScreenOpened)
+        } else {
+            Analytics.log(
+                event: .stakingConfirmationScreenOpened,
+                params: [
+                    .validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
+                    .action: actionType.analyticsAction?.rawValue ?? "",
+                ]
+            )
         }
-
-        Analytics.log(.sendConfirmScreenOpened)
 
         // For the sake of simplicity we're assuming that notifications aren't going to be created after the screen has been displayed
         if notificationInputs.isEmpty, !AppSettings.shared.userDidTapSendScreenSummary {
-            withAnimation(SendView.Constants.defaultAnimation.delay(SendView.Constants.animationDuration * 2)) {
+            withAnimation(SendTransitionService.Constants.defaultAnimation.delay(SendTransitionService.Constants.animationDuration * 2)) {
                 self.showHint = true
             }
         }
     }
 
-    func onDisappear() {
-        isVisible = false
+    func onDisappear() {}
+
+    func userDidTapDestination() {
+        destinationExpanding = true
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = false
+
+        didTapSummary()
+        router?.summaryStepRequestEditDestination()
     }
 
-    func didTapSummary(for step: SendStep) {
-        if isSending {
-            return
-        }
+    func userDidTapAmount() {
+        destinationExpanding = false
+        amountExpanding = true
+        validatorExpanding = false
+        feeExpanding = false
 
+        didTapSummary()
+        router?.summaryStepRequestEditAmount()
+    }
+
+    func userDidTapValidator() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = true
+        feeExpanding = false
+
+        didTapSummary()
+
+        Analytics.log(
+            event: .stakingButtonValidator,
+            params: [.source: Analytics.ParameterValue.stakeSourceConfirmation.rawValue]
+        )
+
+        router?.summaryStepRequestEditValidators()
+    }
+
+    func userDidTapFee() {
+        destinationExpanding = false
+        amountExpanding = false
+        validatorExpanding = false
+        feeExpanding = true
+
+        didTapSummary()
+        router?.summaryStepRequestEditFee()
+    }
+
+    private func didTapSummary() {
         AppSettings.shared.userDidTapSendScreenSummary = true
         showHint = false
-
-        router?.openStep(step)
     }
 
     private func bind() {
-        input
-            .isSending
-            .assign(to: \.isSending, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        Publishers.CombineLatest(input.destinationTextPublisher, input.additionalFieldPublisher)
-            .map { [weak self] destination, additionalField in
-                self?.sectionViewModelFactory.makeDestinationViewTypes(address: destination, additionalField: additionalField) ?? []
-            }
-            .assign(to: \.destinationViewTypes, on: self)
-            .store(in: &bag)
-
-        Publishers.CombineLatest(
-            fiatCryptoValueProvider.formattedAmountPublisher,
-            fiatCryptoValueProvider.formattedAmountAlternativePublisher
-        )
-        .compactMap { [weak self] formattedAmount, formattedAmountAlternative in
-            self?.sectionViewModelFactory.makeAmountViewData(
-                from: formattedAmount,
-                amountAlternative: formattedAmountAlternative
-            )
-        }
-        .assign(to: \.amountSummaryViewData, on: self, ownership: .weak)
-        .store(in: &bag)
-
-        Publishers.CombineLatest(input.feeValues, input.selectedFeeOptionPublisher)
-            .sink { [weak self] feeValues, selectedFeeOption in
-                guard let self else { return }
-
-                var selectedFeeSummaryViewModel: SendFeeSummaryViewModel?
-                var deselectedFeeRowViewModels: [FeeRowViewModel] = []
-
-                for feeOption in input.feeOptions {
-                    let feeValue = feeValues[feeOption] ?? .loading
-
-                    if feeOption == selectedFeeOption {
-                        selectedFeeSummaryViewModel = sectionViewModelFactory.makeFeeViewData(
-                            from: feeValue,
-                            feeOption: feeOption
-                        )
-                    } else {
-                        let model = sectionViewModelFactory.makeDeselectedFeeRowViewModel(from: feeValue, feeOption: feeOption)
-                        deselectedFeeRowViewModels.append(model)
-                    }
-                }
-
-                self.selectedFeeSummaryViewModel = selectedFeeSummaryViewModel
-                self.deselectedFeeRowViewModels = deselectedFeeRowViewModels
-
-                let multipleFeeOptions = input.feeOptions.count > 1
-                let noFeeErrors = feeValues.allSatisfy { $0.value.error == nil }
-                canEditFee = multipleFeeOptions && noFeeErrors
-            }
-            .store(in: &bag)
-
-        Publishers.CombineLatest(input.transactionAmountPublisher, input.feeValuePublisher)
-            .withWeakCaptureOf(self)
-            .map { parameters -> String? in
-                let (thisSendSummaryViewModel, (amount, fee)) = parameters
-
-                return thisSendSummaryViewModel.makeTransactionDescription(amount: amount, fee: fee)
-            }
-            .sink { [weak self] transactionDescription in
-                guard let self else { return }
-
-                self.transactionDescription = transactionDescription
-
-                if isVisible, !showTransactionDescription, transactionDescription != nil {
-                    withAnimation(SendView.Constants.defaultAnimation) {
-                        self.showTransactionDescription = true
-                    }
-                }
-            }
+        interactor
+            .transactionDescription
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.transactionDescription, on: self, ownership: .weak)
             .store(in: &bag)
 
         notificationManager
-            .notificationPublisher(for: .summary)
-            .sink { [weak self] notificationInputs in
-                self?.notificationInputs = notificationInputs
+            .notificationPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, notificationInputs in
+                viewModel.notificationInputs = notificationInputs
             }
             .store(in: &bag)
     }
+}
 
-    private func sectionBackground(canEdit: Bool) -> Color {
-        canEdit ? Colors.Background.action : Colors.Button.disabled
+// MARK: - SendStepViewAnimatable
+
+extension SendSummaryViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.destination(_)):
+            destinationEditMode = true
+            amountEditMode = false
+            validatorEditMode = false
+            feeEditMode = false
+
+            destinationVisible = false
+            amountVisible = true
+            validatorVisible = true
+            feeVisible = true
+
+            showHint = false
+            transactionDescriptionIsVisible = false
+
+        case .appearing(.amount(_)):
+            destinationEditMode = false
+            amountEditMode = true
+            validatorEditMode = false
+            feeEditMode = false
+
+            destinationVisible = true
+            amountVisible = false
+            validatorVisible = true
+            feeVisible = true
+
+            showHint = false
+            transactionDescriptionIsVisible = false
+
+        case .appearing(.validators(_)):
+            destinationEditMode = false
+            amountEditMode = false
+            validatorEditMode = true
+            feeEditMode = false
+
+            destinationVisible = true
+            amountVisible = true
+            validatorVisible = false
+            feeVisible = true
+
+            showHint = false
+            transactionDescriptionIsVisible = false
+        case .appearing(.fee(_)):
+            destinationEditMode = false
+            amountEditMode = false
+            validatorEditMode = false
+            feeEditMode = true
+
+            destinationVisible = true
+            amountVisible = true
+            validatorVisible = true
+            feeVisible = false
+
+            showHint = false
+            transactionDescriptionIsVisible = false
+        default:
+            // Do not update ids
+            return
+        }
+
+        // Force to update the compact view transition
+        sendDestinationCompactViewModelId = .init()
+        sendAmountCompactViewModelId = .init()
+        stakingValidatorsCompactViewModelId = .init()
+        sendFeeCompactViewModelId = .init()
+    }
+}
+
+extension SendSummaryViewModel {
+    struct Settings {
+        let tokenItem: TokenItem
+        let editableType: EditableType
+        let actionType: SendFlowActionType
     }
 
-    private func makeTransactionDescription(amount: Amount?, fee: Fee?) -> String? {
-        guard
-            let amount,
-            let fee,
-            let amountCurrencyId = walletInfo.currencyId,
-            let feeCurrencyId = walletInfo.feeCurrencyId
-        else {
-            return nil
-        }
-
-        let converter = BalanceConverter()
-        let amountInFiat = converter.convertToFiat(value: amount.value, from: amountCurrencyId)
-        let feeInFiat = converter.convertToFiat(value: fee.amount.value, from: feeCurrencyId)
-
-        let totalInFiat: Decimal?
-        if let amountInFiat, let feeInFiat {
-            totalInFiat = amountInFiat + feeInFiat
-        } else {
-            totalInFiat = nil
-        }
-
-        let formattingOptions = BalanceFormattingOptions(
-            minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,
-            maxFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.maxFractionDigits,
-            formatEpsilonAsLowestRepresentableValue: true,
-            roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
-        )
-        let formatter = BalanceFormatter()
-        let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
-
-        return Localization.sendSummaryTransactionDescription(totalInFiatFormatted, feeInFiatFormatted)
+    enum EditableType: Hashable {
+        case disable
+        case editable
+        case noEditable
     }
 }

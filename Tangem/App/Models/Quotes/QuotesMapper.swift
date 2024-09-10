@@ -19,6 +19,8 @@ struct QuotesMapper {
                 id: key,
                 price: price,
                 priceChange: value.priceChange24h,
+                priceChange7d: value.priceChange1w,
+                priceChange30d: value.priceChange30d,
                 prices24h: value.prices24h.map { Array($0.values) }
             )
 

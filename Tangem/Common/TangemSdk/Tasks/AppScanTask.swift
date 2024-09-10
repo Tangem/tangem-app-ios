@@ -31,12 +31,16 @@ struct AppScanTaskResponse {
     let primaryCard: PrimaryCard?
 
     func getCardInfo() -> CardInfo {
-        return CardInfo(
+        var cardInfo = CardInfo(
             card: CardDTO(card: card),
             walletData: walletData,
             name: "",
             primaryCard: primaryCard
         )
+
+        let config = UserWalletConfigFactory(cardInfo).makeConfig()
+        cardInfo.name = config.cardName
+        return cardInfo
     }
 }
 

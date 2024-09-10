@@ -151,7 +151,7 @@ extension TwinConfig: UserWalletConfig {
         case .onlineImage:
             return .available
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -172,7 +172,7 @@ extension TwinConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
@@ -183,12 +183,15 @@ extension TwinConfig: UserWalletConfig {
         return TwinWalletManagerFactory(pairPublicKey: savedPairKey)
     }
 
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return TwinOnboardingStepsBulder(
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return TwinOnboardingStepsBuilder(
             cardId: card.cardId,
             hasWallets: !card.wallets.isEmpty,
             twinData: twinData,
-            touId: tou.id
+            isPushNotificationsAvailable: isPushNotificationsAvailable
         )
     }
 

@@ -22,6 +22,7 @@ protocol KeysManager {
     var walletConnectProjectId: String { get }
     var expressKeys: ExpressKeys { get }
     var devExpressKeys: ExpressKeys? { get }
+    var stakeKitKey: String { get }
 }
 
 private struct KeysManagerKey: InjectionKey {

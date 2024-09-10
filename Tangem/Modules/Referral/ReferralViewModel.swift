@@ -102,7 +102,7 @@ class ReferralViewModel: ObservableObject {
 
         Toast(view: SuccessToast(text: Localization.referralPromoCodeCopied))
             .present(
-                layout: .top(padding: 80),
+                layout: .top(padding: 12),
                 type: .temporary()
             )
     }

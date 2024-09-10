@@ -11,19 +11,25 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 import TangemExpress
+import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
-    @Published private var balance: LoadingValue<BalanceInfo> = .loading
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
+    @Published var bannerNotificationInputs: [NotificationViewInput] = []
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: walletModel.tokenItem)
+    @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
+    private let bannerNotificationManager: NotificationManager?
+    private let xpubGenerator: XPUBGenerator?
+
+    private let balances = CurrentValueSubject<LoadingValue<BalanceWithButtonsViewModel.Balances>, Never>(.loading)
 
     private var bag = Set<AnyCancellable>()
 
@@ -41,17 +47,25 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     var canHideToken: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
 
+    var canGenerateXPUB: Bool { xpubGenerator != nil }
+
+    var hasDotsMenu: Bool { canHideToken || canGenerateXPUB }
+
     init(
         userWalletModel: UserWalletModel,
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
+        bannerNotificationManager: NotificationManager?,
         pendingExpressTransactionsManager: PendingExpressTransactionsManager,
+        xpubGenerator: XPUBGenerator?,
         coordinator: TokenDetailsRoutable,
         tokenRouter: SingleTokenRoutable
     ) {
         self.coordinator = coordinator
         self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
+        self.bannerNotificationManager = bannerNotificationManager
+        self.xpubGenerator = xpubGenerator
         super.init(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
@@ -60,7 +74,12 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
             tokenRouter: tokenRouter
         )
         notificationManager.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
+        bannerNotificationManager?.setupManager(with: self)
+
+        balanceWithButtonsModel = .init(
+            balancesPublisher: balances.eraseToAnyPublisher(),
+            buttonsPublisher: $actionButtons.eraseToAnyPublisher()
+        )
 
         prepareSelf()
     }
@@ -73,10 +92,14 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         Analytics.log(event: .detailsScreenOpened, params: [Analytics.ParameterKey.token: walletModel.tokenItem.currencySymbol])
     }
 
-    override func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType) {
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
+        case .empty:
+            break
         case .openFeeCurrency:
             openFeeCurrency()
+        case .swap:
+            openExchange()
         case .generateAddresses,
              .backupCard,
              .buyCrypto,
@@ -87,8 +110,13 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .reduceAmountTo,
              .addHederaTokenAssociation,
              .leaveAmount,
-             .bookNow:
-            super.didTapNotificationButton(with: id, action: action)
+             .openLink,
+             .stake,
+             .openFeedbackMail,
+             .openAppStoreReview,
+             .support,
+             .openCurrency:
+            super.didTapNotification(with: id, action: action)
         }
     }
 
@@ -108,6 +136,20 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
                 type: .temporary()
             )
     }
+
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.token.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
+    }
 }
 
 // MARK: - Hide token
@@ -118,6 +160,23 @@ extension TokenDetailsViewModel {
             showHideWarningAlert()
         } else {
             showUnableToHideAlert()
+        }
+    }
+
+    func generateXPUBButtonAction() {
+        guard let xpubGenerator else { return }
+
+        runTask { [weak self] in
+            do {
+                let xpub = try await xpubGenerator.generateXPUB()
+                let viewController = await UIActivityViewController(activityItems: [xpub], applicationActivities: nil)
+                AppPresenter.shared.show(viewController)
+            } catch {
+                let sdkError = error.toTangemSdkError()
+                if !sdkError.isUserCancelled {
+                    self?.alert = error.alertBinder
+                }
+            }
         }
     }
 
@@ -192,22 +251,56 @@ private extension TokenDetailsViewModel {
             .receive(on: DispatchQueue.main)
             .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
             .store(in: &bag)
+
+        bannerNotificationManager?.notificationPublisher
+            .receive(on: DispatchQueue.main)
+            .removeDuplicates()
+            .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        walletModel.stakingManagerStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                AppLog.shared.debug("Token details receive new StakingManager state: \(state)")
+                self?.updateStaking(state: state)
+            }
+            .store(in: &bag)
     }
 
     private func updateBalance(walletModelState: WalletModel.State) {
         switch walletModelState {
         case .created, .loading:
-            balance = .loading
+            balances.send(.loading)
         case .idle, .noAccount:
-            balance = .loaded(.init(
-                balance: walletModel.balance,
-                fiatBalance: walletModel.fiatBalance
-            ))
+            balances.send(.loaded(.init(all: walletModel.allBalanceFormatted, available: walletModel.availableBalanceFormatted)))
         case .failed(let message):
-            balance = .failedToLoad(error: message)
+            balances.send(.failedToLoad(error: message))
         case .noDerivation:
             // User can't reach this screen without derived keys
-            balance = .failedToLoad(error: "")
+            balances.send(.failedToLoad(error: CommonError.notImplemented))
+        }
+    }
+
+    private func updateStaking(state: StakingManagerState) {
+        switch state {
+        case .loading:
+            // Do nothing
+            break
+        case .availableToStake, .notEnabled, .temporaryUnavailable:
+            activeStakingViewData = nil
+        case .staked(let staked):
+            let rewards: ActiveStakingViewData.RewardsState? = {
+                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewardsBalance.fiat) {
+                case (.auto, _):
+                    return nil
+                case (.manual, .none):
+                    return .noRewards
+                case (.manual, .some):
+                    return .rewardsToClaim(walletModel.stakedRewardsBalanceFormatted.fiat)
+                }
+            }()
+
+            activeStakingViewData = ActiveStakingViewData(balance: walletModel.stakedBalanceFormatted, rewards: rewards)
         }
     }
 
@@ -243,8 +336,4 @@ private extension TokenDetailsViewModel {
 
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
     }
-}
-
-extension TokenDetailsViewModel: BalanceProvider {
-    var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
 }

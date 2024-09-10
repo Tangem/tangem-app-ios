@@ -309,20 +309,6 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         return blockchain
     }
 
-    private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
-        if case .binance = blockchain, !contractAddress.trimmed().isEmpty {
-            return contractAddress // skip validation for binance
-        }
-
-        let addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
-
-        guard addressService.validate(contractAddress) else {
-            throw TokenCreationErrors.invalidContractAddress
-        }
-
-        return contractAddress
-    }
-
     private func enteredDerivationPath() -> DerivationPath? {
         let derivationItemID = derivationsPicker.selection
 
@@ -337,6 +323,27 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         }
     }
 
+    private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
+        let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+        let validator = ContractAddressValidatorFactory(blockchain: blockchain).makeValidator()
+
+        guard validator.validate(contractAddress) else {
+            throw TokenCreationErrors.invalidContractAddress
+        }
+
+        return contractAddress
+    }
+
+    private func convertContractAddressIfPossible(_ contractAddress: String, in blockchain: Blockchain?) -> String {
+        guard let blockchain else {
+            return contractAddress
+        }
+
+        let converter = CustomTokenContractAddressConverter(blockchain: blockchain)
+        let enteredSymbol = symbol.isEmpty ? nil : symbol
+        return converter.convert(contractAddress, symbol: enteredSymbol)
+    }
+
     private func checkLocalStorage() throws {
         guard let tokenItem = try? enteredTokenItem() else {
             return
@@ -348,6 +355,9 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
     }
 
     private func findToken(contractAddress: String) -> AnyPublisher<[CoinModel], Never> {
+        let blockchain = try? enteredBlockchain()
+        let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+
         if let currentCurrencyModel = foundStandardToken,
            let token = currentCurrencyModel.items.first?.token,
            token.contractAddress.caseInsensitiveCompare(contractAddress) == .orderedSame {
@@ -531,16 +541,5 @@ struct LegacyPickerModel: Identifiable {
 
     static var empty: LegacyPickerModel {
         .init(items: [], selection: "")
-    }
-}
-
-private extension Blockchain {
-    var canHandleCustomTokens: Bool {
-        switch self {
-        case .terraV1:
-            return false
-        default:
-            return canHandleTokens
-        }
     }
 }

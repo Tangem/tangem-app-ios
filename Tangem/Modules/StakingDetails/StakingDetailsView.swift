@@ -9,101 +9,167 @@
 import SwiftUI
 
 struct StakingDetailsView: View {
-    @ObservedObject private var viewModel: StakingDetailsViewModel
-    @State private var bottomViewHeight: CGFloat = .zero
+    @ObservedObject var viewModel: StakingDetailsViewModel
 
-    init(viewModel: StakingDetailsViewModel) {
-        self.viewModel = viewModel
+    @State private var viewGeometryInfo: GeometryInfo = .zero
+    @State private var contentSize: CGSize = .zero
+    @State private var bottomViewSize: CGSize = .zero
+
+    private var spacer: CGFloat {
+        var height = viewGeometryInfo.frame.height
+        height -= contentSize.height
+        height -= bottomViewSize.height
+        return max(0, height)
     }
 
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .bottom) {
-                GroupedScrollView(alignment: .leading, spacing: 14) {
+        GroupedScrollView(alignment: .leading, spacing: .zero) {
+            VStack(spacing: 14) {
+                if !viewModel.hideStakingInfoBanner {
                     banner
-
-                    averageRewardingView
-
-                    GroupedSection(viewModel.detailsViewModels) {
-                        DefaultRowView(viewModel: $0)
-                    }
-
-                    rewardView
-
-                    FixedSpacer(height: bottomViewHeight)
                 }
-                .interContentPadding(14)
+
+                GroupedSection(viewModel.detailsViewModels) { data in
+                    DefaultRowView(viewModel: data)
+                        .if(viewModel.detailsViewModels.first?.id == data.id) {
+                            $0.appearance(.init(detailsColor: Colors.Text.accent))
+                        }
+                }
+
+                rewardView
+
+                GroupedSection(viewModel.stakes) { data in
+                    StakingDetailsStakeView(data: data)
+                } header: {
+                    DefaultHeaderView(Localization.stakingYourStakes)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
+                }
+                .separatorStyle(.none)
+                .interItemSpacing(0)
+                .innerContentPadding(0)
+            }
+            .readGeometry(\.frame.size, bindTo: $contentSize)
+
+            bottomView
+        }
+        .readGeometry(bindTo: $viewGeometryInfo)
+        .refreshable {
+            await Task { await viewModel.refresh() }.value
+        }
+        .background(Colors.Background.secondary)
+        .navigationTitle(viewModel.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: viewModel.onAppear)
+        .alert(item: $viewModel.alert) { $0.alert }
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
+        .bottomSheet(
+            item: $viewModel.descriptionBottomSheetInfo,
+            backgroundColor: Colors.Background.tertiary
+        ) {
+            DescriptionBottomSheetView(
+                info: DescriptionBottomSheetInfo(title: $0.title, description: $0.description)
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var banner: some View {
+        Button(action: viewModel.userDidTapBanner) {
+            ZStack(alignment: .leading) {
+                Assets.whatIsStakingBanner.image
+                    .resizable()
+                    .cornerRadiusContinuous(18)
+                whatIsStakingText
+                    .padding(.leading, 14)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            closeBannerButton
+        }
+    }
+
+    private var whatIsStakingText: some View {
+        Text(Localization.stakingDetailsBannerText)
+            .font(Fonts.Bold.title1)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+    }
+
+    private var closeBannerButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.userDidTapHideBanner()
+            }
+        }) {
+            Assets.cross.image
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.constant)
+                .opacity(0.5)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+        }
+    }
+
+    @ViewBuilder
+    private var rewardView: some View {
+        GroupedSection(viewModel.rewardViewData) { data in
+            RewardView(data: data)
+        } header: {
+            DefaultHeaderView(Localization.stakingRewards)
+                .padding(.top, 8)
+        }
+        .innerContentPadding(4)
+    }
+
+    @ViewBuilder
+    private var bottomView: some View {
+        VStack(spacing: 12) {
+            FixedSpacer(height: spacer)
+
+            VStack(spacing: 12) {
+                legalView
 
                 actionButton
             }
-            .background(Colors.Background.secondary)
-            .navigationTitle(viewModel.title)
-            .navigationBarTitleDisplayMode(.inline)
+            .readGeometry(\.frame.size, bindTo: $bottomViewSize)
+        }
+        // To force `.animation(nil)` behaviour
+        .transaction { transaction in
+            transaction.animation = nil
         }
     }
 
-    private var banner: some View {
-        Button(action: { viewModel.userDidTapBanner() }) {
-            Assets.whatIsStakingBanner.image
-                .resizable()
-                .cornerRadiusContinuous(18)
-        }
+    @ViewBuilder
+    private var legalView: some View {
+        Text(viewModel.legalText)
+            .multilineTextAlignment(.center)
     }
 
-    private var averageRewardingView: some View {
-        GroupedSection(viewModel.averageRewardingViewData) {
-            AverageRewardingView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingDetailsAverageRewardRate)
-        }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
-    }
-
-    private var rewardView: some View {
-        GroupedSection(viewModel.rewardViewData) {
-            RewardView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingRewards)
-        }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
-    }
-
+    @ViewBuilder
     private var actionButton: some View {
-        MainButton(title: Localization.commonStake) {
-            viewModel.userDidTapActionButton()
+        if let actionButtonType = viewModel.actionButtonType {
+            MainButton(
+                title: actionButtonType.title,
+                isLoading: viewModel.actionButtonLoading,
+                isDisabled: viewModel.actionButtonDisabled
+            ) {
+                viewModel.userDidTapActionButton()
+            }
+            .padding(.bottom, 8)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .readGeometry(\.size.height, bindTo: $bottomViewHeight)
     }
 }
 
 struct StakingDetailsView_Preview: PreviewProvider {
     static let viewModel = StakingDetailsViewModel(
-        inputData: .init(
-            tokenItem: .blockchain(
-                .init(
-                    .solana(
-                        curve: .ed25519_slip0010,
-                        testnet: false
-                    ),
-                    derivationPath: .none
-                )
-            ),
-            monthEstimatedProfit: 56.25,
-            available: 15,
-            staked: 0,
-            minAPR: 3.54,
-            maxAPR: 5.06,
-            unbonding: .days(3),
-            minimumRequirement: 0.000028,
-            rewardClaimingType: .auto,
-            rewardType: .apr,
-            warmupPeriod: .days(3),
-            rewardScheduleType: .block
-        ),
+        walletModel: .mockETH,
+        stakingManager: StakingManagerMock(),
         coordinator: StakingDetailsCoordinator()
     )
 

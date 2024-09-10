@@ -14,5 +14,6 @@ protocol UserWalletSettingsRoutable: AnyObject {
 
     func openScanCardSettings(with input: ScanCardSettingsViewModel.Input)
     func openReferral(input: ReferralInputModel)
+    func openManageTokens(userWalletModel: UserWalletModel)
     func dismiss()
 }

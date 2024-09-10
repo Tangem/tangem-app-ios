@@ -7,5 +7,11 @@
 //
 
 import Foundation
+import TangemStaking
 
-protocol StakingDetailsRoutable: AnyObject {}
+protocol StakingDetailsRoutable: AnyObject {
+    func openStakingFlow()
+    func openMultipleRewards()
+    func openUnstakingFlow(action: UnstakingModel.Action)
+    func openWhatIsStaking()
+}

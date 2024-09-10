@@ -25,18 +25,34 @@ struct TokenDetailsView: View {
 
                 BalanceWithButtonsView(viewModel: viewModel.balanceWithButtonsModel)
 
+                ForEach(viewModel.bannerNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
+                }
+
                 ForEach(viewModel.tokenNotificationInputs) { input in
                     NotificationView(input: input)
                         .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
+                }
+
+                if let activeStakingViewData = viewModel.activeStakingViewData {
+                    ActiveStakingView(
+                        data: activeStakingViewData,
+                        tapAction: viewModel.openStaking
+                    )
+                    .padding(14)
+                    .background(Colors.Background.primary)
+                    .cornerRadiusContinuous(14)
                 }
 
                 ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
@@ -65,6 +81,7 @@ struct TokenDetailsView: View {
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
         .animation(.default, value: viewModel.pendingExpressTransactions)
         .padding(.horizontal, 16)
@@ -98,9 +115,15 @@ struct TokenDetailsView: View {
 
     @ViewBuilder
     private var navbarTrailingButton: some View {
-        if viewModel.canHideToken {
+        if viewModel.hasDotsMenu {
             Menu {
-                Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
+                    Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                }
             } label: {
                 NavbarDotsImage()
             }
@@ -128,21 +151,25 @@ private extension TokenDetailsView {
     let notifManager = SingleTokenNotificationManager(
         walletModel: walletModel,
         walletModelsManager: userWalletModel.walletModelsManager,
-        expressDestinationService: nil,
         contextDataProvider: nil
     )
     let pendingTxsManager = CommonPendingExpressTransactionsManager(
         userWalletId: userWalletModel.userWalletId.stringValue,
-        walletModel: walletModel
+        walletModel: walletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
     )
     let coordinator = TokenDetailsCoordinator()
+
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
 
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,
         walletModel: walletModel,
         exchangeUtility: exchangeUtility,
         notificationManager: notifManager,
+        bannerNotificationManager: bannerNotificationManager,
         pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
     ))

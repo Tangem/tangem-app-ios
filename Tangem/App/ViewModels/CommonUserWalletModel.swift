@@ -18,6 +18,7 @@ class CommonUserWalletModel {
 
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     let walletModelsManager: WalletModelsManager
 
@@ -55,8 +56,6 @@ class CommonUserWalletModel {
         commonDerivationManager.delegate = self
         return commonDerivationManager
     }()
-
-    let warningsService = WarningsService()
 
     var signer: TangemSigner { _signer }
 
@@ -152,34 +151,13 @@ class CommonUserWalletModel {
         Log.debug("CommonUserWalletModel deinit 🥳🤟")
     }
 
-    func setupWarnings() {
-        warningsService.setupWarnings(
-            for: config,
-            card: cardInfo.card,
-            validator: walletModelsManager.walletModels.first?.signatureCountValidator
-        )
-    }
-
     func validate() -> Bool {
         let pendingBackupManager = PendingBackupManager()
         if pendingBackupManager.fetchPendingCard(cardInfo.card.cardId) != nil {
             return false
         }
 
-        guard validateCurves(card.wallets.map { $0.curve }) else {
-            return false
-        }
-
         guard validateBackup(card.backupStatus, wallets: card.wallets) else {
-            return false
-        }
-
-        return true
-    }
-
-    private func validateCurves(_ curves: [EllipticCurve]) -> Bool {
-        let curvesValidator = CurvesValidator(expectedCurves: config.validationCurves)
-        if !curvesValidator.validate(curves) {
             return false
         }
 
@@ -219,17 +197,11 @@ class CommonUserWalletModel {
         config = UserWalletConfigFactory(cardInfo).makeConfig()
         _cardHeaderImagePublisher.send(config.cardHeaderImage)
         _signer = config.tangemSigner
-        updateModel()
         // prevent save until onboarding completed
         if userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) != nil {
             userWalletRepository.save()
         }
         _updatePublisher.send()
-    }
-
-    private func updateModel() {
-        AppLog.shared.debug("🔄 Updating Card view model")
-        setupWarnings()
     }
 
     private func bind() {
@@ -308,7 +280,8 @@ extension CommonUserWalletModel: UserWalletModel {
             cardInfo: cardInfo,
             userWalletModel: self,
             sdkFactory: config,
-            onboardingStepsBuilderFactory: config
+            onboardingStepsBuilderFactory: config,
+            pushNotificationsInteractor: pushNotificationsInteractor
         )
 
         return factory.makeBackupInput()
@@ -344,15 +317,21 @@ extension CommonUserWalletModel: UserWalletModel {
         userWalletRepository.save()
     }
 
-    func onBackupCreated(_ card: Card) {
-        for updatedWallet in card.wallets {
-            cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
-        }
+    func onBackupUpdate(type: BackupUpdateType) {
+        switch type {
+        case .primaryCardBackuped(let card):
+            for updatedWallet in card.wallets {
+                cardInfo.card.wallets[updatedWallet.publicKey]?.hasBackup = updatedWallet.hasBackup
+            }
 
-        cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
-        cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
-        cardInfo.card.backupStatus = card.backupStatus
-        onUpdate()
+            cardInfo.card.settings = CardDTO.Settings(settings: card.settings)
+            cardInfo.card.isAccessCodeSet = card.isAccessCodeSet
+            cardInfo.card.backupStatus = card.backupStatus
+            onUpdate()
+        case .backupCompleted:
+            // we have to read an actual status from backup validator
+            _updatePublisher.send()
+        }
     }
 
     func addAssociatedCard(_ cardId: String) {

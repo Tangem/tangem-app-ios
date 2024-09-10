@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum ValidationErrorEvent {
+enum ValidationErrorEvent: Hashable {
     // Amount/Fee notifications
     case invalidNumber
     case insufficientBalance
@@ -22,6 +22,10 @@ enum ValidationErrorEvent {
     case insufficientAmountToReserveAtDestination(minimumAmountFormatted: String)
     case cardanoCannotBeSentBecauseHasTokens
     case cardanoInsufficientBalanceToSendToken(tokenSymbol: String)
+
+    case notEnoughMana(current: Decimal, max: Decimal)
+    case manaLimit(availableAmount: Decimal)
+    case koinosInsufficientBalanceToSendKoin
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -45,6 +49,12 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.sendNotificationInvalidAmountTitle)
         case .cardanoInsufficientBalanceToSendToken:
             return .string(Localization.cardanoInsufficientBalanceToSendTokenTitle)
+        case .notEnoughMana:
+            return .string(Localization.koinosInsufficientManaToSendKoinTitle)
+        case .manaLimit:
+            return .string(Localization.koinosManaExceedsKoinBalanceTitle)
+        case .koinosInsufficientBalanceToSendKoin:
+            return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
         }
     }
 
@@ -63,22 +73,28 @@ extension ValidationErrorEvent: NotificationEvent {
                 configuration.feeAmountTypeCurrencySymbol
             )
         case .dustRestriction(let minimumAmountText, let minimumChangeText):
-            return Localization.warningExpressDustMessage(minimumAmountText, minimumChangeText)
+            return Localization.sendNotificationInvalidMinimumAmountText(minimumAmountText, minimumChangeText)
         case .existentialDeposit(_, let amountFormatted):
             return Localization.sendNotificationExistentialDepositText(amountFormatted)
         case .amountExceedMaximumUTXO(_, let amountFormatted, let blockchainName, let maxUtxo):
             return Localization.sendNotificationTransactionLimitText(blockchainName, maxUtxo, amountFormatted)
-        case .insufficientAmountToReserveAtDestination(let maximumAmountText):
+        case .insufficientAmountToReserveAtDestination:
             return Localization.sendNotificationInvalidReserveAmountText
         case .cardanoCannotBeSentBecauseHasTokens:
             return Localization.cardanoMaxAmountHasTokenDescription
         case .cardanoInsufficientBalanceToSendToken(let tokenSymbol):
             return Localization.cardanoInsufficientBalanceToSendTokenDescription(tokenSymbol)
+        case .notEnoughMana(let current, let max):
+            return Localization.koinosInsufficientManaToSendKoinDescription(current, max)
+        case .manaLimit(let validMax):
+            return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
+        case .koinosInsufficientBalanceToSendKoin:
+            return Localization.koinosInsufficientBalanceToSendKoinDescription
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
-        let hasButton = buttonActionType != nil
+        let hasButton = buttonAction != nil
         if hasButton {
             return .action
         }
@@ -97,7 +113,10 @@ extension ValidationErrorEvent: NotificationEvent {
              .amountExceedMaximumUTXO,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .manaLimit,
+             .koinosInsufficientBalanceToSendKoin:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
@@ -112,7 +131,10 @@ extension ValidationErrorEvent: NotificationEvent {
              .amountExceedMaximumUTXO,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .manaLimit,
+             .koinosInsufficientBalanceToSendKoin:
             return .critical
         }
     }
@@ -125,20 +147,24 @@ extension ValidationErrorEvent: NotificationEvent {
 // MARK: Button
 
 extension ValidationErrorEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .insufficientBalanceForFee(let configuration):
-            return .openFeeCurrency(currencySymbol: configuration.feeAmountTypeCurrencySymbol)
+            return .init(.openFeeCurrency(currencySymbol: configuration.feeAmountTypeCurrencySymbol))
         case .amountExceedMaximumUTXO(let amount, let amountFormatted, _, _):
-            return .reduceAmountTo(amount: amount, amountFormatted: amountFormatted)
+            return .init(.reduceAmountTo(amount: amount, amountFormatted: amountFormatted))
         case .existentialDeposit(let amount, let amountFormatted):
-            return .leaveAmount(amount: amount, amountFormatted: amountFormatted)
+            return .init(.leaveAmount(amount: amount, amountFormatted: amountFormatted))
+        case .manaLimit(let available):
+            return .init(.reduceAmountTo(amount: available, amountFormatted: "\(available)"))
         case .invalidNumber,
              .insufficientBalance,
              .dustRestriction,
              .insufficientAmountToReserveAtDestination,
              .cardanoCannotBeSentBecauseHasTokens,
-             .cardanoInsufficientBalanceToSendToken:
+             .cardanoInsufficientBalanceToSendToken,
+             .notEnoughMana,
+             .koinosInsufficientBalanceToSendKoin:
             return nil
         }
     }

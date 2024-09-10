@@ -86,11 +86,8 @@ extension ScanCardSettingsViewModel {
     func processSuccessScan(for cardInfo: CardInfo) {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
 
-        guard let userWalletIdSeed = config.userWalletIdSeed else {
-            return
-        }
-
-        let userWalletId = UserWalletId(with: userWalletIdSeed)
+        // We just allow to reset cards without keys via any wallet
+        let userWalletId = config.userWalletIdSeed.map { UserWalletId(with: $0) } ?? UserWalletId(value: Data())
 
         let input = CardSettingsViewModel.Input(
             userWalletId: userWalletId,
@@ -98,7 +95,7 @@ extension ScanCardSettingsViewModel {
             securityOptionChangeInteractor: SecurityOptionChangingCardInteractor(with: cardInfo),
             factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor(with: cardInfo),
             isResetToFactoryAvailable: !config.getFeatureAvailability(.resetToFactory).isHidden,
-            hasBackupCards: cardInfo.card.backupStatus?.isActive ?? false,
+            backupCardsCount: cardInfo.card.backupStatus?.backupCardsCount ?? 0,
             canTwin: config.hasFeature(.twinning),
             twinInput: makeTwinInput(from: cardInfo, config: config, userWalletId: userWalletId),
             cardIdFormatted: cardInfo.cardIdFormatted,
@@ -106,21 +103,20 @@ extension ScanCardSettingsViewModel {
             canDisplayHashesCount: config.hasFeature(.displayHashesCount),
             cardSignedHashes: cardInfo.card.walletSignedHashes,
             canChangeAccessCodeRecoverySettings: config.hasFeature(.accessCodeRecoverySettings),
-            resetTofactoryDisabledLocalizedReason: config.getDisabledLocalizedReason(for: .resetToFactory)
+            resetToFactoryDisabledLocalizedReason: config.getDisabledLocalizedReason(for: .resetToFactory)
         )
 
         coordinator?.openCardSettings(with: input)
     }
 
     func makeTwinInput(from cardInfo: CardInfo, config: UserWalletConfig, userWalletId: UserWalletId) -> OnboardingInput? {
-        guard let twinData = cardInfo.walletData.twinData,
-              let existingModel = userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) else {
+        guard let twinData = cardInfo.walletData.twinData else {
             return nil
         }
 
         let factory = TwinInputFactory(
             firstCardId: cardInfo.card.cardId,
-            cardInput: .userWalletModel(existingModel),
+            cardInput: .cardInfo(cardInfo),
             userWalletToDelete: userWalletId,
             twinData: twinData,
             sdkFactory: config

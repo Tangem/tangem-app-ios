@@ -61,12 +61,21 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         )
     }
 
-    func makeExpressApproveViewModel(coordinator: ExpressApproveRoutable) -> ExpressApproveViewModel {
+    func makeExpressApproveViewModel(
+        providerName: String,
+        selectedPolicy: ExpressApprovePolicy,
+        coordinator: ExpressApproveRoutable
+    ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, "USDT"),
+                tokenItem: .token(.tetherMock, .init(.ethereum(testnet: false), derivationPath: .none)),
+                feeTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)),
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -92,6 +101,14 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             providerFormatter: providerFormatter,
             feeFormatter: feeFormatter,
             coordinator: coordinator
+        )
+    }
+
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+        CommonPendingExpressTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel,
+            expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
         )
     }
 }
@@ -172,10 +189,8 @@ private extension ExpressModulesFactoryMock {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

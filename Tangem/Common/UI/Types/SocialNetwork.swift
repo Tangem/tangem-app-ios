@@ -32,9 +32,9 @@ enum SocialNetwork: Hashable, CaseIterable, Identifiable {
         case .instagram:
             return Assets.SocialNetwork.instagram
         case .youtube:
-            return Assets.SocialNetwork.youTube
+            return Assets.SocialNetwork.youtube
         case .linkedin:
-            return Assets.SocialNetwork.linkedIn
+            return Assets.SocialNetwork.linkedin
         case .discord:
             return Assets.SocialNetwork.discord
         case .reddit:

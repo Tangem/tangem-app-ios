@@ -31,6 +31,12 @@ struct MainCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenDetailsCoordinator) {
                 TokenDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
@@ -38,9 +44,6 @@ struct MainCoordinatorView: CoordinatorView {
         NavHolder()
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
-            }
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
@@ -78,15 +81,15 @@ struct MainCoordinatorView: CoordinatorView {
             }
             .bottomSheet(
                 item: $coordinator.receiveBottomSheetViewModel,
-                backgroundColor: Colors.Background.primary
+                settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.rateAppBottomSheetViewModel,
+                item: $coordinator.pushNotificationsViewModel,
                 backgroundColor: Colors.Background.primary
-            ) { viewModel in
-                RateAppBottomSheetView(viewModel: viewModel)
+            ) {
+                PushNotificationsBottomSheetView(viewModel: $0)
             }
 
         NavHolder()

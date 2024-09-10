@@ -26,12 +26,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     private var cardIdDisplayFormat: CardIdDisplayFormat = .lastMasked(4)
 
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
-
     override var navbarTitle: String {
         currentStep.navbarTitle
     }
@@ -99,7 +93,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override var mainButtonSettings: MainButton.Settings? {
         switch currentStep {
-        case .createWallet, .disclaimer, .seedPhraseIntro, .backupCards, .success, .scanPrimaryCard:
+        case .createWallet, .pushNotifications, .seedPhraseIntro, .backupCards, .success, .scanPrimaryCard:
             return nil
         default:
             return MainButton.Settings(
@@ -164,7 +158,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override var supplementButtonStyle: MainButton.Style {
         switch currentStep {
-        case .createWallet, .selectBackupCards, .scanPrimaryCard, .backupCards, .success, .disclaimer:
+        case .createWallet, .selectBackupCards, .scanPrimaryCard, .backupCards, .success:
             return .primary
         default:
             return .secondary
@@ -204,16 +198,9 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens:
+        case .saveUserWallet, .pushNotifications, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens:
             return true
         default: return false
-        }
-    }
-
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet, .seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport, .addTokens: return false
-        default: return true
         }
     }
 
@@ -342,19 +329,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         subscribeToScreenshots()
     }
 
-    private func loadImageForRestoredbackup(cardId: String, cardPublicKey: Data) {
-        CardImageProvider()
-            .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
-            .map { $0.image }
-            .assign(to: \.cardImage, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
-    override func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        super.loadImage(supportsOnlineImage: supportsOnlineImage, cardId: cardId, cardPublicKey: cardPublicKey)
-        secondImage = nil
-    }
-
     override func setupContainer(with size: CGSize) {
         stackCalculator.setup(
             for: size,
@@ -461,9 +435,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             } else {
                 openAccessCode()
             }
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         case .backupCards:
             backupCard()
         case .success:
@@ -523,8 +494,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
     override func backButtonAction() {
         switch currentStep {
-        case .disclaimer:
-            back()
         case .seedPhraseIntro:
             goToStep(.createWalletSelector)
         case .seedPhraseGeneration:
@@ -709,8 +678,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 Future { [weak self] promise in
                     self?.backupService.addBackupCard { result in
                         switch result {
-                        case .success:
-                            promise(.success(()))
+                        case .success(let card):
+                            promise(.success(card))
                         case .failure(let error):
                             promise(.failure(error))
                         }
@@ -726,7 +695,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                     self?.isMainButtonBusy = false
                 }
                 self?.stepPublisher = nil
-            }, receiveValue: { [weak self] (_: Void, _: Notification) in
+            }, receiveValue: { [weak self] card, _ in
+                self?.loadImage(for: card)
                 self?.updateStep()
                 withAnimation {
                     self?.isMainButtonBusy = false
@@ -734,7 +704,30 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             })
     }
 
+    private func loadImage(for card: Card) {
+        let input = OnboardingInput.ImageLoadInput(
+            supportsOnlineImage: true,
+            cardId: card.cardId,
+            cardPublicKey: card.cardPublicKey
+        )
+
+        switch backupService.addedBackupCardsCount {
+        case 1:
+            loadSecondImage(imageLoadInput: input)
+        case 2:
+            loadThirdImage(imageLoadInput: input)
+        default:
+            break
+        }
+    }
+
     private func backupCard() {
+        // Sometimes a step state does not update for an unknown reason.
+        if backupServiceState == .finished {
+            goToNextStep()
+            return
+        }
+
         isMainButtonBusy = true
 
         // Ring onboarding. Set custom image for first step
@@ -757,14 +750,15 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                             self.userWalletModel?.addAssociatedCard(updatedCard.cardId)
                             self.pendingBackupManager.onProceedBackup(updatedCard)
                             if updatedCard.cardId == self.backupService.primaryCard?.cardId {
-                                self.userWalletModel?.onBackupCreated(updatedCard)
+                                self.userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
                             }
 
                             if self.backupServiceState == .finished {
                                 self.pendingBackupManager.onBackupCompleted()
+                                self.userWalletModel?.onBackupUpdate(type: .backupCompleted)
                                 Analytics.log(
                                     event: .backupFinished,
-                                    params: [.cardsCount: String((updatedCard.backupStatus?.linkedCardsCount ?? 0) + 1)]
+                                    params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
                                 )
                             }
 
@@ -776,6 +770,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 }
             }
             .combineLatest(NotificationCenter.didBecomeActivePublisher)
+            .delay(for: 0.1, scheduler: DispatchQueue.main)
             .first()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -851,6 +846,34 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             self?.isMainButtonBusy = false
             withExtendedLifetime(interactor) {}
         }
+    }
+
+    private func loadSecondImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.secondImage = image
+            }
+        }
+        .store(in: &bag)
+    }
+
+    private func loadThirdImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.thirdImage = image
+            }
+        }
+        .store(in: &bag)
     }
 }
 
