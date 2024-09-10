@@ -90,6 +90,7 @@ class SendAmountViewModel: ObservableObject {
 private extension SendAmountViewModel {
     func bind() {
         $amountType
+            .dropFirst()
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
