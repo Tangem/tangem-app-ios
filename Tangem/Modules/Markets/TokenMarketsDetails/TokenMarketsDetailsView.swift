@@ -250,8 +250,7 @@ struct TokenMarketsDetailsView: View {
     }
 
     private var readMoreText: Text {
-        let nonBreakingSpace = "\u{00a0}"
-        let readMoreText = Localization.commonReadMore.replacingOccurrences(of: " ", with: nonBreakingSpace)
+        let readMoreText = Localization.commonReadMore.replacingOccurrences(of: " ", with: AppConstants.unbreakableSpace)
         return Text(readMoreText).foregroundColor(Colors.Text.accent)
     }
 }
