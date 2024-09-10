@@ -80,7 +80,7 @@ class AppSettings {
 
     @AppStorageCompat(StorageType.didMigrateUserWalletNames)
     var didMigrateUserWalletNames: Bool = false
-    
+
     static let shared: AppSettings = .init()
 
     private init() {}

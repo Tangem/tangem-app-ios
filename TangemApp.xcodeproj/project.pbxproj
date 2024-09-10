@@ -12285,7 +12285,6 @@
 				0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */,
 				EF6221B3292B5FCD00D1D4A0 /* DecimalNumberFormatterTests.swift in Sources */,
 				DC7AC96A292BE2C900580668 /* TangemTests.swift in Sources */,
-				DA151FBE2C058B6E00BB208D /* SendCryptoValueFormatterTests.swift in Sources */,
 				DA64DACB2C08BE7B000CBC1E /* UserWalletNameIndexationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

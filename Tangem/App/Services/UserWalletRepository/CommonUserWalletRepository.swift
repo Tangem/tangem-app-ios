@@ -94,7 +94,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 failedCardScanTracker.resetCounter()
                 sendEvent(.scan(isScanning: false))
 
-                let cardInfo = response.getCardInfo()
+                var cardInfo = response.getCardInfo()
                 updateAssociatedCard(for: cardInfo)
                 resetServices()
                 initializeAnalyticsContext(with: cardInfo)
