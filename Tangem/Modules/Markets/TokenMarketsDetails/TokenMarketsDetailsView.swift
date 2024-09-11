@@ -29,9 +29,9 @@ struct TokenMarketsDetailsView: View {
             scrollView
         }
         .navigationBarTitleDisplayMode(.inline)
-        .if(!viewModel.isMarketsSheetStyle, transform: { view in
+        .if(!viewModel.isMarketsSheetStyle) { view in
             view.navigationTitle(viewModel.tokenName)
-        })
+        }
         .onOverlayContentStateChange { [weak viewModel] state in
             viewModel?.onOverlayContentStateChange(state)
         }
@@ -99,12 +99,12 @@ struct TokenMarketsDetailsView: View {
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
-            .if(viewModel.isMarketsSheetStyle, transform: { view in
+            .if(viewModel.isMarketsSheetStyle) { view in
                 view
                     .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
                         isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
                     }
-            })
+            }
         }
         .opacity(viewModel.overlayContentHidingProgress)
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
