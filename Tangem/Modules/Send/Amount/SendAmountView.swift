@@ -87,7 +87,8 @@ struct SendAmountView: View {
 
                 Text(viewModel.error ?? " ")
                     .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
             }
         }
     }
