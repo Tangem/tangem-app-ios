@@ -126,7 +126,7 @@ private extension CommonStakingManager {
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
             try await provider.patchTransaction(id: transaction.id)
@@ -140,7 +140,7 @@ private extension CommonStakingManager {
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
             try await provider.patchTransaction(id: transaction.id)
@@ -150,23 +150,33 @@ private extension CommonStakingManager {
     }
 
     func getPendingTransactionInfo(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> StakingTransactionAction {
-        let action = try await provider.pendingAction(request: request, type: type)
-
-        let transactionType: TransactionType = {
-            switch type {
-            case .withdraw: .withdraw
-            case .claimRewards: .claimRewards
-            case .restakeRewards: .restakeRewards
-            case .voteLocked: .voteLocked
-            case .unlockLocked: .unlockLocked
+        switch type {
+        case .claimRewards(_, let passthrough),
+             .restakeRewards(_, let passthrough),
+             .voteLocked(_, let passthrough),
+             .unlockLocked(let passthrough):
+            let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+            let action = try await getPendingTransactionAction(request: request)
+            return action
+        case .withdraw(_, let passthroughs):
+            let actions = try await passthroughs.array.asyncMap { passthrough in
+                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                let action = try await getPendingTransactionAction(request: request)
+                return action
             }
-        }()
+
+            return StakingTransactionAction(amount: request.amount, transactions: actions.flatMap { $0.transactions })
+        }
+    }
+
+    func getPendingTransactionAction(request: PendingActionRequest) async throws -> StakingTransactionAction {
+        let action = try await provider.pendingAction(request: request)
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
-        let transactions = try await action.transactions.filter { $0.type == transactionType }.asyncMap { transaction in
+        let transactions = try await action.transactions.asyncMap { transaction in
             try await provider.patchTransaction(id: transaction.id)
         }
 
@@ -174,7 +184,21 @@ private extension CommonStakingManager {
     }
 
     func getPendingEstimateFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {
-        try await provider.estimatePendingFee(request: request, type: type)
+        switch type {
+        case .claimRewards(_, let passthrough),
+             .restakeRewards(_, let passthrough),
+             .voteLocked(_, let passthrough),
+             .unlockLocked(let passthrough):
+            let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+            return try await provider.estimatePendingFee(request: request)
+        case .withdraw(_, let passthroughs):
+            let fees = try await passthroughs.array.asyncMap { passthrough in
+                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                return try await provider.estimatePendingFee(request: request)
+            }
+
+            return fees.reduce(0, +)
+        }
     }
 }
 
@@ -234,6 +258,12 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func log(_ args: Any) {
         logger.debug("[Staking] \(self) \(wallet.item) \(args)")
+    }
+}
+
+private extension CommonStakingManager {
+    enum Constants {
+        static let delay: UInt64 = 1 * NSEC_PER_SEC
     }
 }
 

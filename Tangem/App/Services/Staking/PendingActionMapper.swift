@@ -32,7 +32,7 @@ struct PendingActionMapper {
 
             let type: StakingAction.PendingActionType = .withdraw(
                 validator: try validator(),
-                passthrough: .init(single: withdraw, array: withdraws)
+                passthroughs: .init(single: withdraw, array: withdraws)
             )
 
             return .single(stakingAction(type: .pending(type)))

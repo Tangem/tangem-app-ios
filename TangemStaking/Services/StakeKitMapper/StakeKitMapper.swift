@@ -38,7 +38,7 @@ struct StakeKitMapper {
     }
 
     func mapToAddress(request: ActionGenericRequest) -> StakeKitDTO.Address {
-        .init(
+        StakeKitDTO.Address(
             address: request.address,
             additionalAddresses: request.additionalAddresses.flatMap {
                 StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
@@ -91,7 +91,6 @@ struct StakeKitMapper {
             try ActionTransaction(
                 id: transaction.id,
                 stepIndex: transaction.stepIndex,
-                type: mapToTransactionType(from: transaction.type),
                 status: mapToTransactionStatus(from: transaction.status)
             )
         }
@@ -118,7 +117,6 @@ struct StakeKitMapper {
             try ActionTransaction(
                 id: transaction.id,
                 stepIndex: transaction.stepIndex,
-                type: mapToTransactionType(from: transaction.type),
                 status: mapToTransactionStatus(from: transaction.status)
             )
         }
@@ -145,7 +143,6 @@ struct StakeKitMapper {
             try ActionTransaction(
                 id: transaction.id,
                 stepIndex: transaction.stepIndex,
-                type: mapToTransactionType(from: transaction.type),
                 status: mapToTransactionStatus(from: transaction.status)
             )
         }
@@ -178,7 +175,6 @@ struct StakeKitMapper {
             id: response.id,
             actionId: stakeId,
             network: response.network.rawValue,
-            type: mapToTransactionType(from: response.type),
             status: mapToTransactionStatus(from: response.status),
             unsignedTransactionData: mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
@@ -212,7 +208,7 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [PendingActionType] {
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingBalanceInfo.PendingActionType] {
         try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
@@ -228,6 +224,27 @@ struct StakeKitMapper {
             default:
                 throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
+        }
+    }
+
+    func mapToBalanceType(
+        from balance: StakeKitDTO.Balances.Response.Balance
+    ) throws -> StakingBalanceInfo.BalanceType {
+        switch balance.type {
+        case .available:
+            throw StakeKitMapperError.notImplement
+        case .locked:
+            return .locked
+        case .preparing:
+            return .warmup
+        case .staked:
+            return .active
+        case .unstaking, .unlocking:
+            return .unbonding(date: balance.date)
+        case .unstaked:
+            return .withdraw
+        case .rewards:
+            return .rewards
         }
     }
 
@@ -281,23 +298,6 @@ struct StakeKitMapper {
     }
 
     // MARK: - Inner types
-
-    func mapToTransactionType(from type: StakeKitDTO.Transaction.Response.TransactionType) throws -> TransactionType {
-        switch type {
-        case .approval: .approval
-        case .stake: .stake
-        case .unstake: .unstake
-        case .withdraw: .withdraw
-        case .claimRewards: .claimRewards
-        case .restakeRewards: .restakeRewards
-        // Tron specific types
-        case .freezeEnergy, .vote: .voteLocked
-        case .unlock: .unlockLocked
-        case .unfreezeEnergy: .unstake
-        default:
-            throw StakeKitMapperError.notImplement
-        }
-    }
 
     func mapToTransactionStatus(from status: StakeKitDTO.Transaction.Response.Status) throws -> TransactionStatus {
         switch status {
@@ -380,27 +380,6 @@ struct StakeKitMapper {
         case .block, .epoch, .era, .day: .day
         case .week: .week
         case .month: .month
-        }
-    }
-
-    func mapToBalanceType(
-        from balance: StakeKitDTO.Balances.Response.Balance
-    ) throws -> BalanceType {
-        switch balance.type {
-        case .available:
-            throw StakeKitMapperError.notImplement
-        case .locked:
-            return .locked
-        case .preparing:
-            return .warmup
-        case .staked:
-            return .active
-        case .unstaking, .unlocking:
-            return .unbonding(date: balance.date)
-        case .unstaked:
-            return .unstaked
-        case .rewards:
-            return .rewards
         }
     }
 }
