@@ -17,6 +17,7 @@ enum StakingNotificationEvent {
     case validationErrorEvent(ValidationErrorEvent)
     case networkUnreachable
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
+    case stakesWillMoveToNewValidator(blockchain: String)
 }
 
 extension StakingNotificationEvent: NotificationEvent {
@@ -29,6 +30,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .withdraw: "withdraw".hashValue
         case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
         case .networkUnreachable: "networkUnreachable".hashValue
+        case .stakesWillMoveToNewValidator: "stakesWillMoveToNewValidator".hashValue
         }
     }
 
@@ -41,6 +43,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .withdraw: .string(Localization.stakingWithdraw)
         case .validationErrorEvent(let event): event.title
         case .networkUnreachable: .string(Localization.sendFeeUnreachableErrorTitle)
+        case .stakesWillMoveToNewValidator(let blockchain):
+            .string(Localization.stakingNotificationNewValidatorFundsTransfer(blockchain))
         }
     }
 
@@ -66,12 +70,15 @@ extension StakingNotificationEvent: NotificationEvent {
             event.description
         case .networkUnreachable:
             Localization.sendFeeUnreachableErrorText
+        case .stakesWillMoveToNewValidator:
+            nil
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount: .secondary
+        case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount, .stakesWillMoveToNewValidator:
+            .secondary
         case .stake, .unstake, .networkUnreachable, .withdraw: .action
         case .validationErrorEvent(let event): event.colorScheme
         }
@@ -83,7 +90,7 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
-        case .stake, .unstake, .withdraw:
+        case .stake, .unstake, .withdraw, .stakesWillMoveToNewValidator:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .validationErrorEvent(let event):
             return event.icon
@@ -94,7 +101,8 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable:
             return .critical
-        case .approveTransactionInProgress, .stake, .unstake, .feeWillBeSubtractFromSendingAmount, .withdraw:
+        case .approveTransactionInProgress, .stake, .unstake,
+             .feeWillBeSubtractFromSendingAmount, .withdraw, .stakesWillMoveToNewValidator:
             return .info
         case .validationErrorEvent(let event):
             return event.severity
@@ -107,7 +115,8 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(.refreshFee)
         case .validationErrorEvent(let event):
             return event.buttonAction
-        case .approveTransactionInProgress, .stake, .unstake, .feeWillBeSubtractFromSendingAmount, .withdraw:
+        case .approveTransactionInProgress, .stake, .unstake,
+             .feeWillBeSubtractFromSendingAmount, .withdraw, .stakesWillMoveToNewValidator:
             return nil
         }
     }
