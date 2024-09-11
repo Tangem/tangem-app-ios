@@ -25,14 +25,9 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
     }
 
     var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> {
-        Publishers.CombineLatest(
-            walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher
-        )
-        .map { state, _ in
-            TokenItemViewState(walletModelState: state)
-        }
-        .eraseToAnyPublisher()
+        walletModel.walletDidChangePublisher
+            .map(TokenItemViewState.init)
+            .eraseToAnyPublisher()
     }
 
     var tokenItem: TokenItem { walletModel.tokenItem }
