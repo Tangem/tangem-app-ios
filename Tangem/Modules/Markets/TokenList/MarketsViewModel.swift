@@ -322,7 +322,7 @@ private extension MarketsViewModel {
                 return false
             }
 
-            return marketCap >= Constants.marketCapThreshold
+            return !($0.isUnderMarketCapLimit ?? false)
         }
     }
 
@@ -401,7 +401,6 @@ extension MarketsViewModel: MarketsListStateUpdater {
 
 private extension MarketsViewModel {
     enum Constants {
-        static let marketCapThreshold: Decimal = 100_000.0
         static let filterRequiredReloadInterval: Set<MarketsListOrderType> = [.buyers, .gainers, .losers]
     }
 }

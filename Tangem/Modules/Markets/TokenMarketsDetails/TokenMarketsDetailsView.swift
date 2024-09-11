@@ -275,7 +275,8 @@ private extension TokenMarketsDetailsView {
         currentPrice: nil,
         priceChangePercentage: [:],
         marketRating: 1,
-        marketCap: 100_000_000_000
+        marketCap: 100_000_000_000,
+        isUnderMarketCapLimit: false
     )
 
     return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, style: .marketsSheet, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))

@@ -143,7 +143,8 @@ final class SingleTokenRouter: SingleTokenRoutable {
             currentPrice: quoteData?.price,
             priceChangePercentage: MarketsTokenQuoteHelper().makePriceChangeIntervalsDictionary(from: quoteData) ?? [:],
             marketRating: nil,
-            marketCap: nil
+            marketCap: nil,
+            isUnderMarketCapLimit: nil
         )
 
         coordinator?.openMarketsTokenDetails(tokenModel: model)
