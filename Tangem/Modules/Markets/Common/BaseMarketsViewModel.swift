@@ -41,6 +41,6 @@ class BaseMarketsViewModel: ObservableObject {
 private extension BaseMarketsViewModel {
     enum Constants {
         static let overlayContentHidingProgressInterpolationRange: ClosedRange<CGFloat> = 0.0 ... 0.2
-        static let overlayContentHidingAnimationDuration: TimeInterval = 2.2 // TODO: Andrey Fedorov - use proper duration
+        static let overlayContentHidingAnimationDuration: TimeInterval = 0.2
     }
 }

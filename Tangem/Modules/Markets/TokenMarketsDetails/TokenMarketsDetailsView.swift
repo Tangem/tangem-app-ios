@@ -16,8 +16,12 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
     @State private var isNavigationBarShadowLineViewVisible = false
 
-    private var navigationBarBackgroundColor: Color {
+    private var defaultBackgroundColor: Color {
         return colorScheme == .dark ? Colors.Background.primary : Colors.Background.secondary
+    }
+
+    private var overlayContentHidingBackgroundColor: Color {
+        return colorScheme == .dark ? defaultBackgroundColor : Colors.Background.plain
     }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
@@ -264,9 +268,12 @@ struct TokenMarketsDetailsView: View {
         ZStack {
             Group {
                 // These two colors with dynamic opacity imitate color blending
-                Color.red.opacity(viewModel.overlayContentHidingProgress) // TODO: Andrey Fedorov - use proper color
 
-                Color.blue.opacity(1.0 - viewModel.overlayContentHidingProgress) // TODO: Andrey Fedorov - use proper color
+                defaultBackgroundColor
+                    .opacity(viewModel.overlayContentHidingProgress)
+
+                overlayContentHidingBackgroundColor
+                    .opacity(1.0 - viewModel.overlayContentHidingProgress)
             }
             .ignoresSafeArea()
         }
