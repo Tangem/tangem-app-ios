@@ -406,7 +406,7 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
-                Analytics.log(event: .marketsChartButtonAddToPortfolio, params: [.token: info.symbol])
+                Analytics.log(event: .marketsChartButtonAddToPortfolio, params: [.token: info.symbol.uppercased()])
 
                 coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
             }

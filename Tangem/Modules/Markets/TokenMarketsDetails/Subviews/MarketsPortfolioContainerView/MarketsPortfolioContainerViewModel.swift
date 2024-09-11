@@ -208,7 +208,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: Analytics.ParameterValue.market.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
             .blockchain: walletModel.tokenItem.blockchain.displayName,
         ]
 

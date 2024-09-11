@@ -461,7 +461,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             let tokenItem = tokenItemViewModel.tokenItem
             let analyticsParams: [Analytics.ParameterKey: String] = [
                 .source: Analytics.ParameterValue.longTap.rawValue,
-                .token: tokenItem.currencySymbol,
+                .token: tokenItem.currencySymbol.uppercased(),
                 .blockchain: tokenItem.blockchain.displayName,
             ]
             Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)

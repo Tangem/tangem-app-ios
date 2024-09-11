@@ -144,7 +144,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: Analytics.ParameterValue.token.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
             .blockchain: walletModel.tokenItem.blockchain.displayName,
         ]
         Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
