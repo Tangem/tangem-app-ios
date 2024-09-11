@@ -158,8 +158,12 @@ private extension CommonStakingManager {
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
-        case .withdraw(_, let passthroughs):
-            let actions = try await passthroughs.array.asyncMap { passthrough in
+        case .withdraw(let validator, let passthroughs):
+            if passthroughs.isEmpty {
+                throw StakingManagerError.pendingActionNotFound(validator: validator)
+            }
+
+            let actions = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 let action = try await getPendingTransactionAction(request: request)
                 return action
@@ -191,8 +195,12 @@ private extension CommonStakingManager {
              .unlockLocked(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await provider.estimatePendingFee(request: request)
-        case .withdraw(_, let passthroughs):
-            let fees = try await passthroughs.array.asyncMap { passthrough in
+        case .withdraw(let validator, let passthroughs):
+            if passthroughs.isEmpty {
+                throw StakingManagerError.pendingActionNotFound(validator: validator)
+            }
+
+            let fees = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 return try await provider.estimatePendingFee(request: request)
             }

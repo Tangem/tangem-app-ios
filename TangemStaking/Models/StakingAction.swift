@@ -39,7 +39,7 @@ public extension StakingAction {
     }
 
     enum PendingActionType: Hashable {
-        case withdraw(validator: String, passthroughs: NonEmptyArray<String>)
+        case withdraw(validator: String, passthroughs: Set<String>)
         case claimRewards(validator: String?, passthrough: String)
         case restakeRewards(validator: String?, passthrough: String)
         case voteLocked(validator: String, passthrough: String)
