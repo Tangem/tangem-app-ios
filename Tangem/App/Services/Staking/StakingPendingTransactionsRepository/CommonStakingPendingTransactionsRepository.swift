@@ -165,5 +165,4 @@ private extension CommonStakingPendingTransactionsRepository {
         case amount
         case type([BalanceType])
     }
-
 }
