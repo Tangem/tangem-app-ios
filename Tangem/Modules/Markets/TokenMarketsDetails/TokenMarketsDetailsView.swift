@@ -16,13 +16,9 @@ struct TokenMarketsDetailsView: View {
     @State private var descriptionBottomSheetHeight: CGFloat = 0
     @State private var isNavigationBarShadowLineViewVisible = false
 
-    private var defaultBackgroundColor: Color {
-        return colorScheme == .dark ? Colors.Background.primary : Colors.Background.secondary
-    }
-
-    private var overlayContentHidingBackgroundColor: Color {
-        return colorScheme == .dark ? defaultBackgroundColor : Colors.Background.plain
-    }
+    private var isDarkColorScheme: Bool { colorScheme == .dark }
+    private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
+    private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -267,13 +263,16 @@ struct TokenMarketsDetailsView: View {
     private var viewBackground: some View {
         ZStack {
             Group {
-                // These two colors with dynamic opacity imitate color blending
-
+                // When a light color scheme is active, `defaultBackgroundColor` and `overlayContentHidingBackgroundColor`
+                // colors simulate color blending with the help of dynamic opacity.
+                //
+                // When the dark color scheme is active, no color blending is needed, and only `defaultBackgroundColor`
+                // is visible (btw in dark mode both colors are the same),
                 defaultBackgroundColor
-                    .opacity(viewModel.overlayContentHidingProgress)
+                    .opacity(isDarkColorScheme ? 1.0 : viewModel.overlayContentHidingProgress)
 
                 overlayContentHidingBackgroundColor
-                    .opacity(1.0 - viewModel.overlayContentHidingProgress)
+                    .opacity(isDarkColorScheme ? 0.0 : 1.0 - viewModel.overlayContentHidingProgress)
             }
             .ignoresSafeArea()
         }
