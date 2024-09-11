@@ -43,24 +43,42 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
             let shouldDelete: Bool = {
                 switch record.type {
                 case .stake, .voteLocked:
-                    return balances.contains {
-                        $0.validatorAddress == record.validator.address && $0.balanceType == .active
+                    balances.contains {
+                        [
+                            $0.validatorAddress == record.validator.address,
+                            $0.balanceType == .active,
+                        ].allConforms { $0 }
                     }
                 case .unstake:
-                    return !balances.contains {
-                        $0.validatorAddress == record.validator.address && $0.balanceType == .active
+                    !balances.contains {
+                        [
+                            $0.validatorAddress == record.validator.address,
+                            $0.balanceType == .active,
+                            $0.amount == record.amount,
+                        ].allConforms { $0 }
                     }
                 case .withdraw:
-                    return !balances.contains {
-                        $0.validatorAddress == record.validator.address && $0.balanceType == .withdraw
+                    !balances.contains {
+                        [
+                            $0.validatorAddress == record.validator.address,
+                            $0.balanceType == .unstaked,
+                            $0.amount == record.amount,
+                        ].allConforms { $0 }
                     }
                 case .claimRewards, .restakeRewards:
-                    return !balances.contains {
-                        $0.validatorAddress == record.validator.address && $0.amount == record.amount
+                    !balances.contains {
+                        [
+                            $0.validatorAddress == record.validator.address,
+                            $0.balanceType == .rewards,
+                            $0.amount == record.amount,
+                        ].allConforms { $0 }
                     }
                 case .unlockLocked:
-                    return !balances.contains {
-                        $0.amount == record.amount && $0.balanceType == .locked
+                    !balances.contains {
+                        [
+                            $0.balanceType == .locked,
+                            $0.amount == record.amount,
+                        ].allConforms { $0 }
                     }
                 }
             }()
@@ -75,7 +93,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         switch balance.balanceType {
         case .locked:
             hasPending = cache.contains { $0.amount == balance.amount }
-        case .active, .rewards, .unbonding, .warmup, .withdraw:
+        case .active, .rewards, .unbonding, .warmup, .unstaked:
             hasPending = cache.contains { $0.validator.address == balance.validatorAddress }
         }
 
@@ -93,9 +111,19 @@ private extension CommonStakingPendingTransactionsRepository {
     private func loadPendingTransactions() {
         do {
             cache = try storage.value(for: .pendingStakingTransactions) ?? []
+            checkOldRecords()
         } catch {
             log("Couldn't get the staking transactions list from the storage with error \(error)")
         }
+    }
+
+    private func checkOldRecords() {
+        guard let deadline = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.date else {
+            return
+        }
+
+        // Leave the records only newer then deadline(24 hours ago)
+        cache = cache.filter { $0.date > deadline }
     }
 
     private func saveChanges() {
@@ -126,7 +154,7 @@ private extension CommonStakingPendingTransactionsRepository {
             apr: validator?.apr
         )
 
-        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type)
+        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type, date: Date())
     }
 
     func log<T>(_ message: @autoclosure () -> T) {
