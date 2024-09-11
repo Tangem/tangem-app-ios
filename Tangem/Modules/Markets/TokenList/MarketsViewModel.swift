@@ -182,6 +182,7 @@ private extension MarketsViewModel {
 
     func bindToCurrencyCodeUpdate() {
         AppSettings.shared.$selectedCurrencyCode
+            .dropFirst()
             .withWeakCaptureOf(self)
             .sink { viewModel, newCurrencyCode in
                 viewModel.marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: newCurrencyCode, notationFormatter: .init())
