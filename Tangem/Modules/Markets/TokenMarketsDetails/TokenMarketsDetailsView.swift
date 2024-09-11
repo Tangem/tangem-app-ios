@@ -35,6 +35,13 @@ struct TokenMarketsDetailsView: View {
         .onOverlayContentStateChange { [weak viewModel] state in
             viewModel?.onOverlayContentStateChange(state)
         }
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
+        }
+        .background {
+            viewBackground
+        }
+        .animation(.easeInOut(duration: 2.2), value: viewModel.overlayContentHidingProgress) // TODO: Andrey Fedorov - use proper duration
     }
 
     @ViewBuilder
@@ -44,7 +51,7 @@ struct TokenMarketsDetailsView: View {
                 title: viewModel.tokenName,
                 settings: .init(
                     titleColor: Colors.Text.primary1,
-                    backgroundColor: navigationBarBackgroundColor,
+                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
                     height: 64.0,
                     alignment: .bottom
                 ),
@@ -88,7 +95,6 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
-            .modifier(MarketsContentHidingViewModifier(initialProgress: viewModel.contentHidingInitialProgress))
             .padding(.top, Constants.scrollViewContentTopInset)
             .if(viewModel.isMarketsSheetStyle, transform: { view in
                 view
@@ -97,8 +103,8 @@ struct TokenMarketsDetailsView: View {
                     }
             })
         }
+        .opacity(viewModel.overlayContentHidingProgress)
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-        .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
@@ -247,6 +253,19 @@ struct TokenMarketsDetailsView: View {
                     .multilineTextAlignment(.leading)
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var viewBackground: some View {
+        ZStack {
+            Group {
+                // These two colors with dynamic opacity imitate color blending
+                Color.red.opacity(viewModel.overlayContentHidingProgress) // TODO: Andrey Fedorov - use proper color
+
+                Color.blue.opacity(1.0 - viewModel.overlayContentHidingProgress) // TODO: Andrey Fedorov - use proper color
+            }
+            .ignoresSafeArea()
         }
     }
 
