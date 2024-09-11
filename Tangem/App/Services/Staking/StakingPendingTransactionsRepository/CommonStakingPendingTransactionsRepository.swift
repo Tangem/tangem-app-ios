@@ -119,7 +119,10 @@ private extension CommonStakingPendingTransactionsRepository {
         }
 
         // Leave the records only newer then deadline(24 hours ago)
-        cache = cache.filter { $0.date > deadline }
+        let records = cachedRecords.value.filter { $0.date > deadline }
+        if records != cachedRecords.value {
+            cachedRecords.send(records)
+        }
     }
 
     func saveChanges() {
@@ -177,6 +180,6 @@ private extension CommonStakingPendingTransactionsRepository {
     enum CompareType {
         case validator
         case amount
-        case type([BalanceType])
+        case type([StakingBalanceInfo.BalanceType])
     }
 }
