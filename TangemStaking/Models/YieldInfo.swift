@@ -10,6 +10,7 @@ import Foundation
 
 public struct YieldInfo: Hashable {
     public let id: String
+    public let isAvailable: Bool
 
     // Rewards
     public let apy: Decimal
@@ -17,7 +18,8 @@ public struct YieldInfo: Hashable {
     public let rewardRate: Decimal
 
     // Actions
-    public let minimumRequirement: Decimal
+    public let enterMinimumRequirement: Decimal
+    public let exitMinimumRequirement: Decimal
 
     // Validators
     public let validators: [ValidatorInfo]
@@ -33,10 +35,12 @@ public struct YieldInfo: Hashable {
 
     public init(
         id: String,
+        isAvailable: Bool,
         apy: Decimal,
         rewardType: RewardType,
         rewardRate: Decimal,
-        minimumRequirement: Decimal,
+        enterMinimumRequirement: Decimal,
+        exitMinimumRequirement: Decimal,
         validators: [ValidatorInfo],
         defaultValidator: String?,
         item: StakingTokenItem,
@@ -46,10 +50,12 @@ public struct YieldInfo: Hashable {
         rewardScheduleType: RewardScheduleType
     ) {
         self.id = id
+        self.isAvailable = isAvailable
         self.apy = apy
         self.rewardType = rewardType
         self.rewardRate = rewardRate
-        self.minimumRequirement = minimumRequirement
+        self.enterMinimumRequirement = enterMinimumRequirement
+        self.exitMinimumRequirement = exitMinimumRequirement
         self.validators = validators
         self.defaultValidator = defaultValidator
         self.item = item

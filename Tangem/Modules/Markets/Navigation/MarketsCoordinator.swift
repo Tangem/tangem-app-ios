@@ -27,7 +27,7 @@ class MarketsCoordinator: CoordinatorObject {
     // MARK: - Child ViewModels
 
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
-    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel?
+    @Published var marketsListOrderBottomSheetViewModel: MarketsListOrderBottomSheetViewModel?
 
     // MARK: - Init
 
@@ -41,7 +41,11 @@ class MarketsCoordinator: CoordinatorObject {
     func start(with options: MarketsCoordinator.Options) {
         let headerViewModel = MainBottomSheetHeaderViewModel()
         self.headerViewModel = headerViewModel
-        rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
+        rootViewModel = .init(
+            searchTextPublisher: headerViewModel.enteredSearchTextPublisher,
+            quotesRepositoryUpdateHelper: CommonMarketsQuotesUpdateHelper(),
+            coordinator: self
+        )
     }
 
     func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
@@ -61,7 +65,9 @@ extension MarketsCoordinator {
 
 extension MarketsCoordinator: MarketsRoutable {
     func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider) {
-        marketsListOrderBottonSheetViewModel = .init(from: provider)
+        marketsListOrderBottomSheetViewModel = .init(from: provider, onDismiss: { [weak self] in
+            self?.marketsListOrderBottomSheetViewModel = nil
+        })
     }
 
     func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {

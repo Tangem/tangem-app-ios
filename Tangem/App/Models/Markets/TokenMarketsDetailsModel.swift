@@ -24,24 +24,36 @@ struct TokenMarketsDetailsModel: Identifiable {
     let links: MarketsTokenDetailsLinks
 }
 
-struct TokenMarketsDetailsInsights {
+extension TokenMarketsDetailsModel: Equatable {
+    // This model won't be reloaded for now (no PTR or some kind of refresh mechanism),
+    // so it is safe to compare this fields.
+    static func == (lhs: TokenMarketsDetailsModel, rhs: TokenMarketsDetailsModel) -> Bool {
+        return lhs.id == rhs.id && lhs.insights == rhs.insights && lhs.metrics == rhs.metrics
+            && lhs.pricePerformance == rhs.pricePerformance && lhs.links == rhs.links
+    }
+}
+
+struct TokenMarketsDetailsInsights: Equatable {
     let holders: [MarketsPriceIntervalType: Decimal]
     let liquidity: [MarketsPriceIntervalType: Decimal]
     let buyPressure: [MarketsPriceIntervalType: Decimal]
     let experiencedBuyers: [MarketsPriceIntervalType: Decimal]
 
-    init?(dto: MarketsDTO.Coins.Insight?) {
+    init?(dto: MarketsDTO.Coins.Insights?) {
         guard let dto else {
             return nil
         }
 
-        func mapToInterval(_ dict: [String: Decimal]) -> [MarketsPriceIntervalType: Decimal] {
+        func mapToInterval(_ dict: [String: Decimal?]) -> [MarketsPriceIntervalType: Decimal] {
             return dict.reduce(into: [:]) { partialResult, pair in
-                guard let interval = MarketsPriceIntervalType(rawValue: pair.key) else {
+                guard
+                    let interval = MarketsPriceIntervalType(rawValue: pair.key),
+                    let value = pair.value
+                else {
                     return
                 }
 
-                partialResult[interval] = pair.value
+                partialResult[interval] = value
             }
         }
 

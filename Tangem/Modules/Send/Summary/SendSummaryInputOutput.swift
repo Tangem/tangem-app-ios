@@ -10,7 +10,13 @@ import Foundation
 import Combine
 
 protocol SendSummaryInput: AnyObject {
-    var transactionPublisher: AnyPublisher<SendTransactionType?, Never> { get }
+    var isReadyToSendPublisher: AnyPublisher<Bool, Never> { get }
+    var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> { get }
 }
 
 protocol SendSummaryOutput: AnyObject {}
+
+enum SendSummaryTransactionData {
+    case send(amount: Decimal, fee: Decimal)
+    case staking(amount: SendAmount, fee: Decimal)
+}

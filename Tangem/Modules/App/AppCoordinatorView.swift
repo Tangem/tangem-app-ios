@@ -13,6 +13,8 @@ struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AppCoordinator
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
+    @Environment(\.mainWindowSize) var mainWindowSize: CGSize
+
     var body: some View {
         NavigationView {
             switch coordinator.viewState {
@@ -33,6 +35,7 @@ struct AppCoordinatorView: CoordinatorView {
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
             MarketsCoordinatorView(coordinator: coordinator)
+                .environment(\.mainWindowSize, mainWindowSize)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,

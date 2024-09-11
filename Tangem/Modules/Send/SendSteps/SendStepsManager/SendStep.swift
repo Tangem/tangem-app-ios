@@ -16,16 +16,14 @@ protocol SendStep {
 
     var type: SendStepType { get }
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? { get }
+    var sendStepViewAnimatable: any SendStepViewAnimatable { get }
 
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool
 
     func willAppear(previous step: any SendStep)
-    func didAppear()
-
     func willDisappear(next step: any SendStep)
-    func didDisappear()
 }
 
 extension SendStep {
@@ -37,12 +35,5 @@ extension SendStep {
     }
 
     func willAppear(previous step: any SendStep) {}
-    func didAppear() {}
-
     func willDisappear(next step: any SendStep) {}
-    func didDisappear() {}
-}
-
-enum SendStepNavigationTrailingViewType {
-    case qrCodeButton(action: () -> Void)
 }

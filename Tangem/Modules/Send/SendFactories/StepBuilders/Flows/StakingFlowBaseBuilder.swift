@@ -20,17 +20,23 @@ struct StakingFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
-        let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendTransactionDispatcher = builder.makeStakingTransactionDispatcher()
         let stakingModel = builder.makeStakingModel(
             stakingManager: manager,
             sendTransactionDispatcher: sendTransactionDispatcher
         )
 
+        let notificationManager = builder.makeStakingNotificationManager()
+        notificationManager.setup(input: stakingModel)
+
+        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
+        sendFeeCompactViewModel.bind(input: stakingModel)
+
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: stakingModel, output: stakingModel),
             sendFeeLoader: stakingModel,
-            sendQRCodeService: .none
+            sendQRCodeService: .none,
+            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager)
         )
 
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
@@ -40,21 +46,24 @@ struct StakingFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: stakingModel, output: stakingModel),
+            actionType: .stake,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            addressTextViewHeightModel: .none,
-            editableType: .editable
+            editableType: .editable,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
-        let finish = sendFinishStepBuilder.makeSendFinishStep(addressTextViewHeightModel: .none)
-
-        summary.step.setup(sendAmountInput: stakingModel)
-        summary.step.setup(sendFeeInput: stakingModel)
-        summary.step.setup(stakingValidatorsInput: stakingModel)
-
-        finish.setup(sendAmountInput: stakingModel)
-        finish.setup(sendFeeInput: stakingModel)
-        finish.setup(sendFinishInput: stakingModel)
+        let finish = sendFinishStepBuilder.makeSendFinishStep(
+            input: stakingModel,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
+        )
 
         let stepsManager = CommonStakingStepsManager(
             amountStep: amount.step,

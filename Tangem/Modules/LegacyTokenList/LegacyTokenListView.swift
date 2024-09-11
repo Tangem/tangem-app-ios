@@ -20,7 +20,7 @@ struct LegacyTokenListView: View {
             overlay
         }
         .scrollDismissesKeyboardCompat(.immediately)
-        .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .automatic)
+        .navigationBarTitle(Text(Localization.addTokensTitle), displayMode: .inline)
         .navigationBarItems(trailing: addCustomView)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .searchable(text: $viewModel.enteredSearchText.value, placement: .navigationBarDrawer(displayMode: .always))

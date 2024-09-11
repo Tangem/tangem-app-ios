@@ -19,15 +19,19 @@ struct StakingDetailsView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             GroupedScrollView(alignment: .leading, spacing: 14) {
-                banner
-
-                averageRewardingView
+                if !viewModel.hideStakingInfoBanner {
+                    banner
+                }
 
                 GroupedSection(viewModel.detailsViewModels) {
                     DefaultRowView(viewModel: $0)
                 }
 
                 rewardView
+
+                activeValidatorsView
+
+                unstakedValidatorsView
 
                 FixedSpacer(height: bottomViewHeight)
             }
@@ -49,41 +53,105 @@ struct StakingDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var banner: some View {
-        Button(action: { viewModel.userDidTapBanner() }) {
-            Assets.whatIsStakingBanner.image
-                .resizable()
-                .cornerRadiusContinuous(18)
+        Button(action: viewModel.userDidTapBanner) {
+            ZStack(alignment: .leading) {
+                Assets.whatIsStakingBanner.image
+                    .resizable()
+                    .cornerRadiusContinuous(18)
+                whatIsStakingText
+                    .padding(.leading, 14)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            closeBannerButton
         }
     }
 
-    private var averageRewardingView: some View {
-        GroupedSection(viewModel.averageRewardingViewData) {
-            AverageRewardingView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingDetailsAverageRewardRate)
-        }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
+    #warning("provide localization")
+    private var whatIsStakingText: some View {
+        Text("What is staking?")
+            .font(Fonts.Bold.title1)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
     }
 
+    private var closeBannerButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.userDidTapHideBanner()
+            }
+        }) {
+            Assets.cross.image
+                .renderingMode(.template)
+                .foregroundColor(Colors.Icon.constant)
+                .opacity(0.5)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+        }
+    }
+
+    @ViewBuilder
     private var rewardView: some View {
-        GroupedSection(viewModel.rewardViewData) {
-            RewardView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingRewards)
+        GroupedSection(viewModel.rewardViewData) { data in
+            Button(action: {}, label: {
+                RewardView(data: data)
+            })
         }
-        .interItemSpacing(12)
         .innerContentPadding(12)
     }
 
+    private var activeValidatorsView: some View {
+        validatorsView(
+            validators: viewModel.activeValidators,
+            header: Localization.stakingActive,
+            footer: Localization.stakingActiveFooter
+        )
+    }
+
+    private var unstakedValidatorsView: some View {
+        validatorsView(
+            validators: viewModel.unstakedValidators,
+            header: Localization.stakingUnstaked,
+            footer: Localization.stakingUnstakedFooter
+        )
+    }
+
+    private func validatorsView(validators: [ValidatorViewData], header: String, footer: String) -> some View {
+        GroupedSection(
+            validators,
+            content: { data in
+                ValidatorView(data: data)
+            }, header: {
+                DefaultHeaderView(header)
+            }, footer: {
+                Text(footer)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
+        )
+        .interItemSpacing(10)
+        .innerContentPadding(12)
+    }
+
+    @ViewBuilder
     private var actionButton: some View {
-        MainButton(title: Localization.commonStake) {
-            viewModel.userDidTapActionButton()
+        if let actionButtonType = viewModel.actionButtonType {
+            MainButton(
+                title: actionButtonType.title,
+                isLoading: viewModel.actionButtonLoading
+            ) {
+                viewModel.userDidTapActionButton()
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            .readGeometry(\.size.height, bindTo: $bottomViewHeight)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .readGeometry(\.size.height, bindTo: $bottomViewHeight)
     }
 }
 

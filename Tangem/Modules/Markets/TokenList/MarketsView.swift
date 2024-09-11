@@ -13,48 +13,142 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    private let scrollTopAnchorID = "markets_scroll_view_top_anchor_id"
+
     var body: some View {
-        VStack {
-            header
+        ZStack(alignment: .topLeading) {
+            if viewModel.isSearching {
+                searchResultView
+            } else {
+                defaultMarketsView
+            }
+        }
+        .scrollDismissesKeyboardCompat(.immediately)
+        .background(Colors.Background.primary)
+        .alert(item: $viewModel.alert, content: { $0.alert })
+        .background(Colors.Background.primary)
+    }
+
+    @ViewBuilder
+    private var defaultMarketsView: some View {
+        VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(Localization.marketsCommonTitle)
+                    .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+
+                MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 16)
 
             list
         }
-        .scrollDismissesKeyboardCompat(.immediately)
-        .alert(item: $viewModel.alert, content: { $0.alert })
-    }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(Localization.marketsCommonTitle)
-                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
-                .lineLimit(1)
-
-            MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
+        if case .error = viewModel.tokenListLoadingState {
+            errorStateView
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 16)
     }
 
+    @ViewBuilder
     private var list: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.tokenViewModels) {
-                    MarketsItemView(viewModel: $0)
-                }
+        ScrollView(showsIndicators: false) {
+            ScrollViewReader { proxy in
+                Color.clear.frame(height: 0)
+                    .id(scrollTopAnchorID)
 
-                // Need for display list skeleton view
-                if viewModel.isLoading {
-                    ForEach(0 ..< 20) { _ in
-                        MarketsSkeletonItemView()
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.tokenViewModels) {
+                        MarketsItemView(viewModel: $0)
+                    }
+
+                    // Need for display list skeleton view
+                    if case .loading = viewModel.tokenListLoadingState {
+                        loadingSkeletons
+                    }
+
+                    if viewModel.shouldDisplayShowTokensUnderCapView {
+                        showTokensUnderCapView
                     }
                 }
-
-                if viewModel.hasNextPage, viewModel.viewDidAppear {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.informative))
-                        .onAppear(perform: viewModel.fetchMore)
+                .onReceive(viewModel.resetScrollPositionPublisher) { _ in
+                    proxy.scrollTo(scrollTopAnchorID)
                 }
             }
         }
+    }
+
+    private var loadingSkeletons: some View {
+        ForEach(0 ..< 20) { _ in
+            MarketsSkeletonItemView()
+        }
+    }
+
+    @ViewBuilder
+    private var searchResultView: some View {
+        switch viewModel.tokenListLoadingState {
+        case .noResults:
+            noResultsStateView
+        case .error:
+            errorStateView
+        case .loading, .allDataLoaded, .idle:
+            VStack(spacing: 12) {
+                Text(Localization.marketsSearchResultTitle)
+                    .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+
+                list
+            }
+        }
+    }
+
+    private var showTokensUnderCapView: some View {
+        VStack(alignment: .center, spacing: 8) {
+            HStack(spacing: .zero) {
+                Text(Localization.marketsSearchSeeTokensUnder100k)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
+
+            HStack(spacing: .zero) {
+                Button(action: {
+                    viewModel.onShowUnderCapAction()
+                }, label: {
+                    HStack(spacing: .zero) {
+                        Text(Localization.marketsSearchShowTokens)
+                            .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
+                    }
+                })
+                .roundedBackground(with: Colors.Button.secondary, verticalPadding: 8, horizontalPadding: 14, radius: 10)
+            }
+        }
+        .padding(.vertical, 12)
+    }
+
+    private var noResultsStateView: some View {
+        Text(Localization.marketsSearchTokenNoResultTitle)
+            .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 16)
+    }
+
+    private var errorStateView: some View {
+        MarketsUnableToLoadDataView(
+            isButtonBusy: viewModel.isDataProviderBusy,
+            retryButtonAction: viewModel.onTryLoadList
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 16)
+    }
+}
+
+extension MarketsView {
+    enum ListLoadingState: String, Identifiable, Hashable {
+        case noResults
+        case error
+        case loading
+        case allDataLoaded
+        case idle
+
+        var id: String { rawValue }
     }
 }

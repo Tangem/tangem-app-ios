@@ -11,14 +11,34 @@ import TangemStaking
 import BlockchainSdk
 
 struct SendDependenciesBuilder {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
-
     private let walletModel: WalletModel
     private let userWalletModel: UserWalletModel
 
     init(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         self.userWalletModel = userWalletModel
         self.walletModel = walletModel
+    }
+
+    func summaryTitle(action: SendFlowActionType) -> String {
+        switch action {
+        case .send: Localization.sendSummaryTitle(walletModel.tokenItem.currencySymbol)
+        case .stake: "\(action.title) \(walletModel.tokenItem.currencySymbol)"
+        case .unstake: action.title
+        case .withdraw: action.title
+        case .claimRewards: action.title
+        case .restakeRewards: action.title
+        }
+    }
+
+    func summarySubtitle(action: SendFlowActionType) -> String? {
+        switch action {
+        case .send: walletName()
+        case .stake: walletName()
+        case .unstake: nil
+        case .withdraw: nil
+        case .claimRewards: nil
+        case .restakeRewards: nil
+        }
     }
 
     func walletName() -> String {
@@ -76,9 +96,18 @@ struct SendDependenciesBuilder {
     }
 
     func makeSendTransactionDispatcher() -> SendTransactionDispatcher {
-        CommonSendTransactionDispatcher(
+        SendTransactionDispatcherFactory(
             walletModel: walletModel,
-            transactionSigner: userWalletModel.signer
+            signer: userWalletModel.signer
+        )
+        .makeSendDispatcher()
+    }
+
+    func makeStakingTransactionDispatcher() -> SendTransactionDispatcher {
+        StakingTransactionDispatcher(
+            walletModel: walletModel,
+            transactionSigner: userWalletModel.signer,
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender()
         )
     }
 
@@ -140,6 +169,19 @@ struct SendDependenciesBuilder {
         return SendModel.PredefinedValues(source: source, destination: destination, tag: additionalField, amount: amount)
     }
 
+    func makeSendAmountValidator() -> SendAmountValidator {
+        CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
+    }
+
+    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        switch walletModel.tokenItem.blockchain {
+        case .koinos:
+            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        default:
+            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        }
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(
@@ -149,7 +191,38 @@ struct SendDependenciesBuilder {
         StakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: sendTransactionDispatcher,
+            amountTokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeUnstakingModel(
+        stakingManager: any StakingManager,
+        sendTransactionDispatcher: any SendTransactionDispatcher,
+        balanceInfo: StakingBalanceInfo
+    ) -> UnstakingModel {
+        UnstakingModel(
+            stakingManager: stakingManager,
+            sendTransactionDispatcher: sendTransactionDispatcher,
+            balanceInfo: balanceInfo,
+            amountTokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
+    }
+
+    func makeStakingNotificationManager() -> StakingNotificationManager {
+        CommonStakingNotificationManager(tokenItem: walletModel.tokenItem)
+    }
+
+    func makeStakingSendAmountValidator(stakingManager: any StakingManager) -> SendAmountValidator {
+        StakingSendAmountValidator(
+            tokenItem: walletModel.tokenItem,
+            validator: walletModel.transactionValidator,
+            stakingManagerStatePublisher: stakingManager.statePublisher
+        )
+    }
+
+    func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
+        StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 }

@@ -45,7 +45,7 @@ struct MeetTangemStoryPage: View {
 
             StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))

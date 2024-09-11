@@ -11,13 +11,15 @@ import SwiftUI
 struct CustomSearchBar: View {
     @Binding var searchText: String
     private let placeholder: String
+    private let keyboardType: UIKeyboardType
 
     @State private var isEditing: Bool = false
     private var onEditingChanged: ((_ isEditing: Bool) -> Void)?
 
-    init(searchText: Binding<String>, placeholder: String) {
+    init(searchText: Binding<String>, placeholder: String, keyboardType: UIKeyboardType = .default) {
         _searchText = searchText
         self.placeholder = placeholder
+        self.keyboardType = keyboardType
     }
 
     var body: some View {
@@ -45,7 +47,8 @@ struct CustomSearchBar: View {
                     self.isEditing = isEditing
                     onEditingChanged?(isEditing)
                 })
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                .keyboardType(keyboardType)
                 .autocorrectionDisabled()
 
                 clearButton
@@ -55,7 +58,7 @@ struct CustomSearchBar: View {
         .padding(.horizontal, 12)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(Colors.Field.focused)
+                .fill(Colors.Field.primary)
         )
     }
 

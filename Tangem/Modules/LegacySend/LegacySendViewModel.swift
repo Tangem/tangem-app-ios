@@ -732,8 +732,9 @@ class LegacySendViewModel: ObservableObject {
         appDelegate.addLoadingView()
 
         let isDemo = walletModel.isDemo
+        let dispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: userWalletModel.signer)
 
-        walletModel.send(tx, signer: userWalletModel.signer)
+        dispatcher.sendPublisher(transaction: .transfer(tx))
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
@@ -750,20 +751,20 @@ class LegacySendViewModel: ObservableObject {
                         .action: Analytics.ParameterValue.sendTx.rawValue,
                     ])
 
-                    let fullErrorDescription: String
-                    if let blockchainSdkError = error as? BlockchainSdkError {
-                        fullErrorDescription = blockchainSdkError.errorDescriptionWithCode
-                    } else {
-                        fullErrorDescription = error.localizedDescription
-                    }
+//                    let fullErrorDescription: String
+//                    if let blockchainSdkError = error as? BlockchainSdkError {
+//                        fullErrorDescription = blockchainSdkError.errorDescriptionWithCode
+//                    } else {
+//                        fullErrorDescription = error.localizedDescription
+//                    }
 
-                    self.error = SendError(
-                        title: Localization.feedbackSubjectTxFailed,
-                        message: Localization.alertFailedToSendTransactionMessage(fullErrorDescription.dropTrailingPeriod),
-                        error: error,
-                        openMailAction: openMail
-                    )
-                    .alertBinder
+//                    self.error = SendError(
+//                        title: Localization.feedbackSubjectTxFailed,
+//                        message: Localization.alertFailedToSendTransactionMessage(fullErrorDescription.dropTrailingPeriod),
+//                        error: error,
+//                        openMailAction: openMail
+//                    )
+//                    .alertBinder
                 } else {
                     if !isDemo {
                         let sourceValue: Analytics.ParameterValue = isSellingCrypto ? .transactionSourceSell : .transactionSourceSend
@@ -981,18 +982,18 @@ extension LegacySendViewModel {
 
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
-        let emailDataCollector = SendScreenDataCollector(
-            userWalletEmailData: userWalletModel.emailData,
-            walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: destination,
-            amount: transaction.amount,
-            isFeeIncluded: isFeeIncluded,
-            lastError: error
-        )
-
-        let recipient = userWalletModel.emailConfig?.recipient ?? EmailConfig.default.recipient
-        coordinator?.openMail(with: emailDataCollector, recipient: recipient)
+//        let emailDataCollector = SendScreenDataCollector(
+//            userWalletEmailData: userWalletModel.emailData,
+//            walletModel: walletModel,
+//            fee: transaction.fee.amount,
+//            destination: destination,
+//            amount: transaction.amount,
+//            isFeeIncluded: isFeeIncluded,
+//            lastError: error
+//        )
+//
+//        let recipient = userWalletModel.emailConfig?.recipient ?? EmailConfig.default.recipient
+//        coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
     func close() {

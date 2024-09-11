@@ -9,10 +9,8 @@
 import Foundation
 
 public enum TransactionType: String, Hashable {
-    case enter
+    case approval
     case stake
-    case reinvest
-    case claim
-    case claimRewards
     case unstake
+    case withdraw
 }

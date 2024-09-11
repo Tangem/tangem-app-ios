@@ -22,7 +22,6 @@ extension MarketsDTO.General {
         let limit: Int
         let interval: MarketsPriceIntervalType
         let order: MarketsListOrderType
-        let generalCoins: Bool
         let search: String?
 
         init(
@@ -31,7 +30,6 @@ extension MarketsDTO.General {
             limit: Int = 20,
             interval: MarketsPriceIntervalType,
             order: MarketsListOrderType,
-            generalCoins: Bool = false,
             search: String?
         ) {
             self.currency = currency
@@ -39,7 +37,6 @@ extension MarketsDTO.General {
             self.limit = limit
             self.interval = interval
             self.order = order
-            self.generalCoins = generalCoins
             self.search = search
         }
 
@@ -53,10 +50,6 @@ extension MarketsDTO.General {
                 "interval": interval.marketsListId,
                 "order": order.rawValue,
             ]
-
-            if generalCoins {
-                params["general_coins"] = generalCoins
-            }
 
             if let search, !search.isEmpty {
                 params["search"] = search
@@ -77,7 +70,10 @@ extension MarketsDTO.General {
 // MARK: - HistoryPreview
 
 extension MarketsDTO.ChartsHistory {
-    struct Request: Encodable {
+    typealias PreviewResponse = [String: MarketsChartModel]
+    typealias HistoryResponse = MarketsChartModel
+
+    struct PreviewRequest: Encodable {
         let currency: String
         let coinIds: [String]
         let interval: MarketsPriceIntervalType
@@ -101,5 +97,11 @@ extension MarketsDTO.ChartsHistory {
                 "interval": interval.marketsListId,
             ]
         }
+    }
+
+    struct HistoryRequest: Encodable {
+        let currency: String
+        let tokenId: TokenItemId
+        let interval: MarketsPriceIntervalType
     }
 }

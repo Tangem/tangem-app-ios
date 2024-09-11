@@ -11,11 +11,11 @@ import SwiftUI
 
 struct ValidatorView: View {
     private let data: ValidatorViewData
-    private let selection: Binding<String>
+    private let selection: Binding<String>?
 
     private var namespace: Namespace?
 
-    init(data: ValidatorViewData, selection: Binding<String>) {
+    init(data: ValidatorViewData, selection: Binding<String>? = nil) {
         self.data = data
         self.selection = selection
     }
@@ -23,7 +23,11 @@ struct ValidatorView: View {
     var body: some View {
         switch data.detailsType {
         case .checkmark:
-            Button(action: { selection.isActive(compare: data.id).toggle() }) {
+            Button(action: { selection?.isActive(compare: data.address).toggle() }) {
+                content
+            }
+        case .chevron(_, .some(let action)):
+            Button(action: action) {
                 content
             }
         case .none, .chevron, .balance:
@@ -43,15 +47,19 @@ struct ValidatorView: View {
                 Spacer(minLength: 12)
 
                 detailsView(detailsType: detailsType)
+                    .matchedGeometryEffect(
+                        namespace.map { .init(id: $0.names.validatorDetailsView(id: data.address), namespace: $0.id) }
+                    )
             }
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 6)
     }
 
     private var image: some View {
         IconView(url: data.imageURL, size: CGSize(width: 36, height: 36))
+            .saturation(data.hasMonochromeIcon ? 0 : 1)
             .matchedGeometryEffect(
-                namespace.map { .init(id: $0.names.validatorIcon(id: data.id), namespace: $0.id) }
+                namespace.map { .init(id: $0.names.validatorIcon(id: data.address), namespace: $0.id) }
             )
     }
 
@@ -60,19 +68,15 @@ struct ValidatorView: View {
             Text(data.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                 .matchedGeometryEffect(
-                    namespace.map { .init(id: $0.names.validatorTitle(id: data.id), namespace: $0.id) }
+                    namespace.map { .init(id: $0.names.validatorTitle(id: data.address), namespace: $0.id) }
                 )
 
-            if let aprFormatted = data.aprFormatted {
+            if let subtitle = data.subtitle {
                 HStack(spacing: 4) {
-                    Text("APR")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-
-                    Text(aprFormatted)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.accent)
+                    Text(subtitle)
                 }
                 .matchedGeometryEffect(
-                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.id), namespace: $0.id) }
+                    namespace.map { .init(id: $0.names.validatorSubtitle(id: data.address), namespace: $0.id) }
                 )
             }
         }
@@ -83,18 +87,33 @@ struct ValidatorView: View {
     private func detailsView(detailsType: ValidatorViewData.DetailsType) -> some View {
         switch detailsType {
         case .checkmark:
-            CircleCheckmarkIcon(isSelected: selection.isActive(compare: data.id).wrappedValue)
-        case .chevron:
-            Assets.chevron.image
-        case .balance(let crypto, let fiat):
-            VStack(alignment: .trailing, spacing: 2, content: {
-                Text(crypto)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            CircleCheckmarkIcon(isSelected: selection?.isActive(compare: data.address).wrappedValue ?? false)
+        case .chevron(let balanceInfo, let action):
+            HStack(spacing: 20) {
+                if let balanceInfo {
+                    balanceView(balanceInfo: balanceInfo)
+                }
 
-                Text(fiat)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-            })
+                if action != nil {
+                    Assets.chevron.image
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.informative)
+                }
+            }
+        case .balance(let balanceInfo):
+            balanceView(balanceInfo: balanceInfo)
         }
+    }
+
+    @ViewBuilder
+    private func balanceView(balanceInfo: BalanceInfo) -> some View {
+        VStack(alignment: .trailing, spacing: 2, content: {
+            Text(balanceInfo.balance)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+            Text(balanceInfo.fiatBalance)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        })
     }
 }
 
@@ -123,17 +142,19 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
                         detailsType: .checkmark
                     ),
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "Coinbase",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        aprFormatted: nil,
+                        hasMonochromeIcon: true,
+                        subtitle: nil,
                         detailsType: .checkmark
                     ),
                 ]) {
@@ -157,18 +178,20 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
-                        detailsType: .chevron
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
+                        detailsType: .chevron()
                     ),
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "Aconcagua",
                         imageURL: URL(string: "https://assets.stakek.it/validators/coinbase.png"),
-                        aprFormatted: nil,
-                        detailsType: .chevron
+                        hasMonochromeIcon: true,
+                        subtitle: nil,
+                        detailsType: .chevron()
                     ),
 
                 ]) {
@@ -192,11 +215,12 @@ extension ValidatorView {
 
                 GroupedSection([
                     ValidatorViewData(
-                        id: UUID().uuidString,
+                        address: UUID().uuidString,
                         name: "InfStones",
                         imageURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                        aprFormatted: "0.08%",
-                        detailsType: .balance(crypto: "543 USD", fiat: "5 SOL")
+                        hasMonochromeIcon: true,
+                        subtitle: AttributedString("0.08%"),
+                        detailsType: .balance(BalanceInfo(balance: "543 USD", fiatBalance: "5 SOL"))
                     ),
                 ]) {
                     ValidatorView(data: $0, selection: $selected)

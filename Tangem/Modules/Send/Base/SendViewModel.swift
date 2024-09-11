@@ -17,17 +17,9 @@ protocol SendViewAlertPresenter: AnyObject {
 final class SendViewModel: ObservableObject {
     // MARK: - ViewState
 
-    @Published var stepAnimation: SendView.StepAnimation
-    @Published var step: SendStep {
-        willSet {
-            step.willDisappear(next: newValue)
-            newValue.willAppear(previous: step)
-        } didSet {
-            bind(step: step)
-        }
-    }
-
+    @Published var step: SendStep
     @Published var mainButtonType: SendMainButtonType
+    @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
 
     @Published var transactionURL: URL?
@@ -47,11 +39,7 @@ final class SendViewModel: ObservableObject {
     }
 
     var shouldShowDismissAlert: Bool {
-        if case .finish = step.type {
-            return false
-        }
-
-        return mainButtonType == .send || mainButtonType == .continue
+        mainButtonType.shouldShowDismissAlert
     }
 
     private let interactor: SendBaseInteractor
@@ -63,7 +51,7 @@ final class SendViewModel: ObservableObject {
 
     private var bag: Set<AnyCancellable> = []
 
-    private var sendSubscription: AnyCancellable?
+    private var sendTask: Task<Void, Never>?
     private var isValidSubscription: AnyCancellable?
 
     init(
@@ -80,19 +68,11 @@ final class SendViewModel: ObservableObject {
         self.coordinator = coordinator
 
         step = stepsManager.initialState.step
-        stepAnimation = stepsManager.initialState.animation
-        mainButtonType = stepsManager.initialState.mainButtonType
+        mainButtonType = stepsManager.initialState.action
+        flowActionType = stepsManager.initialFlowActionType
 
         bind()
         bind(step: stepsManager.initialState.step)
-    }
-
-    func onCurrentPageAppear() {
-        step.didAppear()
-    }
-
-    func onCurrentPageDisappear() {
-        step.didDisappear()
     }
 
     func userDidTapActionButton() {
@@ -101,7 +81,7 @@ final class SendViewModel: ObservableObject {
             stepsManager.performNext()
         case .continue:
             stepsManager.performContinue()
-        case .send:
+        case .action:
             performSend()
         case .close:
             coordinator?.dismiss()
@@ -143,20 +123,32 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performSend() {
-        sendSubscription = interactor.send()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, result in
-                viewModel.proceed(result: result)
+        sendTask?.cancel()
+        sendTask = runTask(in: self) { viewModel in
+            do {
+                let result = try await viewModel.interactor.send()
+                await viewModel.proceed(result: result)
+            } catch let error as SendTransactionDispatcherResult.Error {
+                // The demo alert doesn't show without delay
+                try? await Task.sleep(seconds: 1)
+                await viewModel.proceed(error: error)
+            } catch {
+                AppLog.shared.error(error)
+                await runOnMain { viewModel.showAlert(error.alertBinder) }
             }
+        }
     }
 
+    @MainActor
     func proceed(result: SendTransactionDispatcherResult) {
-        switch result {
-        case .success(let url):
-            transactionURL = url
-            stepsManager.performFinish()
-        case .userCancelled, .transactionNotFound:
+        transactionURL = result.url
+        stepsManager.performFinish()
+    }
+
+    @MainActor
+    func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
+        case .userCancelled, .transactionNotFound, .stakingUnsupported:
             break
         case .informationRelevanceServiceError:
             alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
@@ -179,7 +171,7 @@ private extension SendViewModel {
         }
     }
 
-    func openMail(transaction: BSDKTransaction, error: SendTxError) {
+    func openMail(transaction: SendTransactionType, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
@@ -195,14 +187,17 @@ private extension SendViewModel {
 
     func bind() {
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.mainButtonLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.isLoading
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isUserInteractionDisabled, on: self, ownership: .weak)
             .store(in: &bag)
     }
@@ -234,13 +229,40 @@ extension SendViewModel: SendViewAlertPresenter {
 
 extension SendViewModel: SendStepsManagerOutput {
     func update(state: SendStepsManagerViewState) {
-        stepAnimation = state.animation
-        mainButtonType = state.mainButtonType
+        step.willDisappear(next: state.step)
+        step.sendStepViewAnimatable.viewDidChangeVisibilityState(
+            .disappearing(nextStep: state.step.type)
+        )
+
+        state.step.willAppear(previous: step)
+        state.step.sendStepViewAnimatable.viewDidChangeVisibilityState(
+            .appearing(previousStep: step.type)
+        )
+
+        mainButtonType = state.action
         showBackButton = state.backButtonVisible
 
-        // Give some time to update `stepAnimation`
+        // Give some time to update `transitions`
         DispatchQueue.main.async {
             self.step = state.step
+            self.bind(step: state.step)
+        }
+    }
+
+    func update(flowActionType: SendFlowActionType) {
+        DispatchQueue.main.async {
+            self.flowActionType = flowActionType
+        }
+    }
+}
+
+extension SendMainButtonType {
+    var shouldShowDismissAlert: Bool {
+        switch self {
+        case .continue, .action:
+            return true
+        case .next, .close:
+            return false
         }
     }
 }

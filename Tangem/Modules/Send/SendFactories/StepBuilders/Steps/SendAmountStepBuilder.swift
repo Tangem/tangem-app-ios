@@ -10,7 +10,7 @@ import Foundation
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
-    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
+    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor, compact: SendAmountCompactViewModel)
 
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
@@ -18,9 +18,10 @@ struct SendAmountStepBuilder {
     func makeSendAmountStep(
         io: IO,
         sendFeeLoader: any SendFeeLoader,
-        sendQRCodeService: SendQRCodeService?
+        sendQRCodeService: SendQRCodeService?,
+        sendAmountValidator: SendAmountValidator
     ) -> ReturnValue {
-        let interactor = makeSendAmountInteractor(io: io)
+        let interactor = makeSendAmountInteractor(io: io, sendAmountValidator: sendAmountValidator)
         let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
 
         let step = SendAmountStep(
@@ -29,7 +30,16 @@ struct SendAmountStepBuilder {
             sendFeeLoader: sendFeeLoader
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendAmountCompactViewModel(input: io.input)
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendAmountCompactViewModel(input: SendAmountInput) -> SendAmountCompactViewModel {
+        .init(
+            input: input,
+            tokenIconInfo: builder.makeTokenIconInfo(),
+            tokenItem: walletModel.tokenItem
+        )
     }
 }
 
@@ -45,7 +55,7 @@ private extension SendAmountStepBuilder {
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
             balanceValue: walletModel.balanceValue ?? 0,
-            balanceFormatted: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
+            balanceFormatted: Localization.commonCryptoFiatFormat(walletModel.balance, walletModel.fiatBalance),
             currencyPickerData: builder.makeCurrencyPickerData()
         )
 
@@ -56,18 +66,14 @@ private extension SendAmountStepBuilder {
         )
     }
 
-    private func makeSendAmountInteractor(io: IO) -> SendAmountInteractor {
+    private func makeSendAmountInteractor(io: IO, sendAmountValidator: SendAmountValidator) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
             tokenItem: walletModel.tokenItem,
             balanceValue: walletModel.balanceValue ?? 0,
-            validator: makeSendAmountValidator(),
+            validator: sendAmountValidator,
             type: .crypto
         )
-    }
-
-    private func makeSendAmountValidator() -> SendAmountValidator {
-        CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 }

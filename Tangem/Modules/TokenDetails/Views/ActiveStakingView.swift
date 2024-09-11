@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct ActiveStakingViewData {
-    let usdAmount: String
-    let coinAmount: String
+    let balance: String
+    let fiatBalance: String
     let rewardsToClaim: String?
 
     var rewardsToClaimText: String {
@@ -35,7 +35,7 @@ struct ActiveStakingView: View {
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 HStack(spacing: 4) {
-                    Text(data.usdAmount)
+                    Text(data.fiatBalance)
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
@@ -43,7 +43,7 @@ struct ActiveStakingView: View {
                     Text(AppConstants.dotSign)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                    Text(data.coinAmount)
+                    Text(data.balance)
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
@@ -67,11 +67,11 @@ struct ActiveStakingView: View {
 #Preview {
     VStack {
         ActiveStakingView(
-            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: "0,43$"),
+            data: ActiveStakingViewData(balance: "5 SOL", fiatBalance: "456.34$", rewardsToClaim: "0,43$"),
             tapAction: {}
         )
         ActiveStakingView(
-            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: nil),
+            data: ActiveStakingViewData(balance: "5 SOL", fiatBalance: "456.34$", rewardsToClaim: nil),
             tapAction: {}
         )
     }

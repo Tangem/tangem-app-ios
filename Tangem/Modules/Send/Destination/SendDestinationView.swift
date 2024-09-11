@@ -10,11 +10,8 @@ import SwiftUI
 
 struct SendDestinationView: View {
     @ObservedObject var viewModel: SendDestinationViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
-
-    private var auxiliaryViewTransition: AnyTransition {
-        .offset(y: 100).combined(with: .opacity)
-    }
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
@@ -27,10 +24,10 @@ struct SendDestinationView: View {
                     .setTextNamespaceId(namespace.names.addressText)
                     .setClearButtonNamespaceId(namespace.names.addressClearButton)
             } footer: {
-                if !viewModel.animatingAuxiliaryViewsOnAppear, let viewModel = viewModel.addressViewModel {
-                    Text(viewModel.description)
+                if viewModel.auxiliaryViewsVisible {
+                    Text(viewModel.addressDescription)
                         .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .transition(auxiliaryViewTransition)
+                        .transition(transitionService.destinationAuxiliaryViewTransition)
                 }
             }
             .backgroundColor(Colors.Background.action)
@@ -39,38 +36,42 @@ struct SendDestinationView: View {
                 namespace: namespace.id
             ))
 
-            GroupedSection(viewModel.additionalFieldViewModel) {
-                SendDestinationTextView(viewModel: $0)
-                    .setNamespace(namespace.id)
-                    .setContainerNamespaceId(namespace.names.addressAdditionalFieldContainer)
-                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
-                    .setIconNamespaceId(namespace.names.addressAdditionalFieldIcon)
-                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
-                    .setClearButtonNamespaceId(namespace.names.addressAdditionalFieldClearButton)
-                    .padding(.vertical, 2)
-            } footer: {
-                if let additionalFieldViewModel = viewModel.additionalFieldViewModel, !viewModel.animatingAuxiliaryViewsOnAppear {
-                    Text(additionalFieldViewModel.description)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .transition(auxiliaryViewTransition)
+            // We show as auxiliaryView without value
+            // And We show with GeometryEffect if it has value
+            if viewModel.additionalFieldViewModelHasValue || viewModel.auxiliaryViewsVisible {
+                GroupedSection(viewModel.additionalFieldViewModel) {
+                    SendDestinationTextView(viewModel: $0)
+                        .setNamespace(namespace.id)
+                        .setContainerNamespaceId(namespace.names.addressAdditionalFieldContainer)
+                        .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                        .setIconNamespaceId(namespace.names.addressAdditionalFieldIcon)
+                        .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
+                        .setClearButtonNamespaceId(namespace.names.addressAdditionalFieldClearButton)
+                        .padding(.vertical, 2)
+                } footer: {
+                    if viewModel.auxiliaryViewsVisible {
+                        Text(viewModel.additionalFieldDescription)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .transition(transitionService.destinationAuxiliaryViewTransition)
+                    }
                 }
+                .backgroundColor(Colors.Background.action)
+                .geometryEffect(.init(
+                    id: namespace.names.addressAdditionalFieldBackground,
+                    namespace: namespace.id
+                ))
+                .transition(transitionService.destinationAuxiliaryViewTransition)
             }
-            .backgroundColor(Colors.Background.action)
-            .geometryEffect(.init(
-                id: namespace.names.addressAdditionalFieldBackground,
-                namespace: namespace.id
-            ))
 
             if viewModel.showSuggestedDestinations,
                let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
                 SendSuggestedDestinationView(viewModel: suggestedDestinationViewModel)
-                    .transition(.opacity)
             }
         }
+        .transition(transitionService.transitionToDestinationStep(isEditMode: viewModel.isEditMode))
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.auxiliaryViewsVisible)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.showSuggestedDestinations)
         .onAppear(perform: viewModel.onAppear)
-        .onAppear(perform: viewModel.onAuxiliaryViewAppear)
-        .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
-        .animation(SendView.Constants.defaultAnimation, value: viewModel.showSuggestedDestinations)
     }
 }
 

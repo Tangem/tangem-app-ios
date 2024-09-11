@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MarketsTokenDetailsLinks: Codable {
+struct MarketsTokenDetailsLinks: Codable, Equatable {
     let officialLinks: [LinkInfo]
     let social: [LinkInfo]
     let repository: [LinkInfo]
@@ -16,7 +16,7 @@ struct MarketsTokenDetailsLinks: Codable {
 }
 
 extension MarketsTokenDetailsLinks {
-    struct LinkInfo: Codable {
+    struct LinkInfo: Codable, Equatable {
         let id: String?
         let title: String
         let link: String

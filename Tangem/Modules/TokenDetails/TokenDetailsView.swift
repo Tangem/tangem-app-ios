@@ -44,6 +44,16 @@ struct TokenDetailsView: View {
                     )
                 }
 
+                if let activeStakingViewData = viewModel.activeStakingViewData {
+                    ActiveStakingView(
+                        data: activeStakingViewData,
+                        tapAction: viewModel.openStaking
+                    )
+                    .padding(14)
+                    .background(Colors.Background.primary)
+                    .cornerRadiusContinuous(14)
+                }
+
                 ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
                     PendingExpressTransactionView(info: transactionInfo)
                         .transition(.notificationTransition)

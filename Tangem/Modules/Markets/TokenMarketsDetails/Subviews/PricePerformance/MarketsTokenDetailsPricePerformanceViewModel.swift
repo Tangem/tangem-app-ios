@@ -17,6 +17,7 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
 
     let intervalOptions: [MarketsPriceIntervalType] = [.day, .month, .all]
 
+    private let tokenSymbol: String
     private let pricePerformanceData: [MarketsPriceIntervalType: MarketsPricePerformanceData]
     private let currentPricePublisher: AnyPublisher<Decimal, Never>
     private let formatter = BalanceFormatter()
@@ -24,9 +25,11 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
 
     init(
+        tokenSymbol: String,
         pricePerformanceData: [MarketsPriceIntervalType: MarketsPricePerformanceData],
         currentPricePublisher: AnyPublisher<Decimal, Never>
     ) {
+        self.tokenSymbol = tokenSymbol
         self.pricePerformanceData = pricePerformanceData
         self.currentPricePublisher = currentPricePublisher
 
@@ -41,6 +44,16 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
             .sink(receiveValue: { value in
                 let weakSelf = value.0
                 let (currentPrice, interval) = value.1
+
+                Analytics.log(
+                    event: .marketsButtonPeriod,
+                    params: [
+                        .token: weakSelf.tokenSymbol,
+                        .period: interval.rawValue,
+                        .source: Analytics.MarketsIntervalTypeSourceType.price.rawValue,
+                    ]
+                )
+
                 weakSelf.updateProgressUI(currentPrice: currentPrice, selectedInterval: interval)
             })
             .store(in: &bag)

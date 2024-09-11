@@ -11,19 +11,39 @@ import Foundation
 enum SendMainButtonType {
     case next
     case `continue`
-    case send
+    case action
     case close
 }
 
-extension SendMainButtonType {
+enum SendFlowActionType: Hashable {
+    case send
+    case stake
+    case unstake
+    case withdraw
+    case claimRewards
+    case restakeRewards
+
     var title: String {
+        switch self {
+        case .send: Localization.commonSend
+        case .stake: Localization.commonStake
+        case .unstake: Localization.commonUnstake
+        case .withdraw: Localization.stakingWithdraw
+        case .claimRewards: Localization.commonClaimRewards
+        case .restakeRewards: Localization.commonClaimRewards // TODO: Check it action
+        }
+    }
+}
+
+extension SendMainButtonType {
+    func title(action: SendFlowActionType) -> String {
         switch self {
         case .next:
             Localization.commonNext
         case .continue:
             Localization.commonContinue
-        case .send:
-            Localization.commonSend
+        case .action:
+            action.title
         case .close:
             Localization.commonClose
         }
@@ -31,7 +51,7 @@ extension SendMainButtonType {
 
     var icon: MainButton.Icon? {
         switch self {
-        case .send:
+        case .action:
             .trailing(Assets.tangemIcon)
         default:
             nil

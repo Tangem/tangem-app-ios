@@ -21,7 +21,11 @@ struct KoinosSendTransactionSummaryDescriptionBuilder {
 // MARK: - SendTransactionSummaryDescriptionBuilder
 
 extension KoinosSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
-    func makeDescription(amount: Decimal, fee: Decimal) -> String? {
+    func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
+        guard case .send(let amount, let fee) = transactionType else {
+            return nil
+        }
+
         let amountInFiat = tokenItem.id.flatMap { BalanceConverter().convertToFiat(amount, currencyId: $0) }
 
         let formattingOptions = BalanceFormattingOptions(

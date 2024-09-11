@@ -17,29 +17,37 @@ struct SendSummaryStepBuilder {
 
     func makeSendSummaryStep(
         io: IO,
+        actionType: SendFlowActionType,
         sendTransactionDispatcher: any SendTransactionDispatcher,
+        descriptionBuilder: any SendTransactionSummaryDescriptionBuilder,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel?,
-        editableType: SendSummaryViewModel.EditableType
+        editableType: SendSummaryViewModel.EditableType,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> ReturnValue {
         let interactor = makeSendSummaryInteractor(
             io: io,
-            sendTransactionDispatcher: sendTransactionDispatcher
+            sendTransactionDispatcher: sendTransactionDispatcher,
+            descriptionBuilder: descriptionBuilder
         )
 
         let viewModel = makeSendSummaryViewModel(
             interactor: interactor,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: editableType
+            editableType: editableType,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
         let step = SendSummaryStep(
             viewModel: viewModel,
-            interactor: interactor,
             input: io.input,
-            tokenItem: walletModel.tokenItem,
-            walletName: builder.walletName()
+            title: builder.summaryTitle(action: actionType),
+            subtitle: builder.summarySubtitle(action: actionType)
         )
 
         return (step: step, interactor: interactor)
@@ -52,8 +60,11 @@ private extension SendSummaryStepBuilder {
     func makeSendSummaryViewModel(
         interactor: SendSummaryInteractor,
         notificationManager: NotificationManager,
-        addressTextViewHeightModel: AddressTextViewHeightModel?,
-        editableType: SendSummaryViewModel.EditableType
+        editableType: SendSummaryViewModel.EditableType,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> SendSummaryViewModel {
         let settings = SendSummaryViewModel.Settings(
             tokenItem: walletModel.tokenItem,
@@ -64,39 +75,23 @@ private extension SendSummaryStepBuilder {
             settings: settings,
             interactor: interactor,
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            sectionViewModelFactory: makeSendSummarySectionViewModelFactory()
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
     }
 
     func makeSendSummaryInteractor(
         io: IO,
-        sendTransactionDispatcher: any SendTransactionDispatcher
+        sendTransactionDispatcher: any SendTransactionDispatcher,
+        descriptionBuilder: any SendTransactionSummaryDescriptionBuilder
     ) -> SendSummaryInteractor {
         CommonSendSummaryInteractor(
             input: io.input,
             output: io.output,
             sendTransactionDispatcher: sendTransactionDispatcher,
-            descriptionBuilder: makeSendTransactionSummaryDescriptionBuilder()
+            descriptionBuilder: descriptionBuilder
         )
-    }
-
-    func makeSendSummarySectionViewModelFactory() -> SendSummarySectionViewModelFactory {
-        SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
-            feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: builder.isFeeApproximate(),
-            currencyId: walletModel.tokenItem.currencyId,
-            tokenIconInfo: builder.makeTokenIconInfo()
-        )
-    }
-
-    func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
-        switch walletModel.wallet.blockchain {
-        case .koinos:
-            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
-        default:
-            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
-        }
     }
 }

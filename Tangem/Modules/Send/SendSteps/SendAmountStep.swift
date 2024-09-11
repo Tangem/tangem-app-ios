@@ -33,16 +33,18 @@ extension SendAmountStep: SendStep {
 
     var type: SendStepType { .amount(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        if step.type.isSummary {
+            Analytics.log(.sendScreenReopened, params: [.source: .amount])
+        } else {
+            Analytics.log(.sendAmountScreenOpened)
         }
-
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {
@@ -53,5 +55,13 @@ extension SendAmountStep: SendStep {
         }
 
         sendFeeLoader.updateFees()
+    }
+}
+
+// MARK: - Constants
+
+extension SendAmountStep {
+    enum Constants {
+        static let amountMinTextScale = 0.5
     }
 }

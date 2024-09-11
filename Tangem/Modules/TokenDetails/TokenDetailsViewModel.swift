@@ -22,6 +22,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: walletModel.tokenItem)
+    @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
@@ -71,7 +72,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         )
         notificationManager.setupManager(with: self)
         bannerNotificationManager?.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
+        balanceWithButtonsModel = .init(balanceProvider: self, availableBalanceProvider: self, buttonsProvider: self)
 
         prepareSelf()
     }
@@ -290,4 +291,57 @@ private extension TokenDetailsViewModel {
 
 extension TokenDetailsViewModel: BalanceProvider {
     var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
+}
+
+extension TokenDetailsViewModel: AvailableBalanceProvider {
+    var availableBalancePublisher: AnyPublisher<BalanceInfo?, Never> {
+        guard let stakingManager = walletModel.stakingManager else {
+            return Just(nil).eraseToAnyPublisher()
+        }
+        return stakingManager.statePublisher
+            .receive(on: DispatchQueue.main)
+            .filter { $0 != .loading }
+            .withWeakCaptureOf(self)
+            .map { viewModel, state in
+                switch state {
+                case .staked:
+                    return viewModel.availableBalance
+                default:
+                    return nil
+                }
+            }
+            .handleEvents(receiveOutput: { [weak self] value in
+                guard let self else { return }
+                activeStakingViewData = stakedBalance.flatMap {
+                    ActiveStakingViewData(
+                        balance: $0.balance,
+                        fiatBalance: $0.fiatBalance,
+                        rewardsToClaim: self.stakingRewardsBalance?.fiatBalance
+                    )
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+}
+
+extension TokenDetailsViewModel {
+    var availableBalance: BalanceInfo {
+        BalanceInfo(balance: walletModel.availableBalance, fiatBalance: walletModel.availableFiatBalance)
+    }
+
+    var stakedBalance: BalanceInfo? {
+        guard let stakedBalance = walletModel.stakedBalance,
+              let stakedFiatBalance = walletModel.stakedFiatBalance else {
+            return nil
+        }
+        return BalanceInfo(balance: stakedBalance, fiatBalance: stakedFiatBalance)
+    }
+
+    var stakingRewardsBalance: BalanceInfo? {
+        guard let stakingRewardsBalance = walletModel.stakingRewardsBalance,
+              let stakingRewardsFiatBalance = walletModel.stakingRewardsFiatBalance else {
+            return nil
+        }
+        return BalanceInfo(balance: stakingRewardsBalance, fiatBalance: stakingRewardsFiatBalance)
+    }
 }

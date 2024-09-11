@@ -29,7 +29,7 @@ extension MarketsDTO.Coins {
         let networks: [Network]?
         let shortDescription: String?
         let fullDescription: String?
-        let insights: [Insight]?
+        let insights: Insights?
         let links: MarketsTokenDetailsLinks
         let metrics: MarketsTokenDetailsMetrics?
         let pricePerformance: [String: MarketsPricePerformanceData]
@@ -42,10 +42,10 @@ extension MarketsDTO.Coins {
         let decimalCount: Int?
     }
 
-    struct Insight: Codable {
-        let holdersChange: [String: Decimal]
-        let liquidityChange: [String: Decimal]
-        let buyPressureChange: [String: Decimal]
-        let experiencedBuyerChange: [String: Decimal]
+    struct Insights: Codable {
+        let holdersChange: [String: Decimal?]
+        let liquidityChange: [String: Decimal?]
+        let buyPressureChange: [String: Decimal?]
+        let experiencedBuyerChange: [String: Decimal?]
     }
 }
