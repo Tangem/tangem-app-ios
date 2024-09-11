@@ -111,6 +111,7 @@
 "common_go_to_provider" = "Go to provider";
 "common_go_to_token" = "Go to token";
 "common_import" = "Import";
+"common_in_progress" = "In progress";
 "common_later" = "Later";
 "common_learn_and_earn" = "Learn & Earn";
 "common_left" = "%1$@ left";
@@ -681,6 +682,7 @@
 "staking_tap_to_withdraw" = "Tap to withdraw";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
+"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
 "staking_unbonding" = "Unbonding";
 "staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock locked";
@@ -720,7 +722,6 @@
 "swapping_insufficient_funds" = "Insufficient funds";
 "swapping_permission_header" = "Give Permission";
 "swapping_permit_and_swap" = "Permit and Swap";
-"swapping_success_view_title" = "In progress";
 "swapping_swap_action" = "Swap";
 "swapping_to_title" = "You receive";
 "swapping_token_list_title" = "Choose token";

@@ -153,3 +153,9 @@ extension Publisher {
         scan((initialPreviousValue, initialPreviousValue)) { ($0.1, $1) }.eraseToAnyPublisher()
     }
 }
+
+extension Publisher {
+    func eraseToOptional() -> Publishers.Map<Self, Self.Output?> {
+        map(Optional.some)
+    }
+}

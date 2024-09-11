@@ -31,9 +31,13 @@ class CommonSendAmountInteractor {
     private let validator: SendAmountValidator
 
     private var type: SendAmountCalculationType
+
+    private var _cachedAmount: CurrentValueSubject<SendAmount?, Never> = .init(nil)
     private var _error: CurrentValueSubject<Error?, Never> = .init(nil)
     private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
+
     private var _externalAmount: PassthroughSubject<SendAmount?, Never> = .init()
+    private var bag: Set<AnyCancellable> = []
 
     init(
         input: SendAmountInput,
@@ -49,6 +53,17 @@ class CommonSendAmountInteractor {
         self.balanceValue = balanceValue
         self.validator = validator
         self.type = type
+
+        bind()
+    }
+
+    private func bind() {
+        _cachedAmount
+            .withWeakCaptureOf(self)
+            .sink { interactor, amount in
+                interactor.validateAndUpdate(amount: amount)
+            }
+            .store(in: &bag)
     }
 
     private func validateAndUpdate(amount: SendAmount?) {
@@ -123,12 +138,13 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
 
     func update(amount: Decimal?) -> SendAmount? {
         guard let amount else {
-            validateAndUpdate(amount: nil)
+            _cachedAmount.send(nil)
             return nil
         }
 
         let sendAmount = makeSendAmount(value: amount)
-        validateAndUpdate(amount: sendAmount)
+        _cachedAmount.send(sendAmount)
+
         return sendAmount
     }
 
@@ -138,7 +154,7 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
         }
 
         self.type = type
-        let sendAmount = input?.amount?.toggle(type: type)
+        let sendAmount = _cachedAmount.value?.toggle(type: type)
         validateAndUpdate(amount: sendAmount)
         return sendAmount
     }
@@ -148,12 +164,12 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
         case .crypto:
             let fiat = convertToFiat(cryptoValue: balanceValue)
             let amount = SendAmount(type: .typical(crypto: balanceValue, fiat: fiat))
-            validateAndUpdate(amount: amount)
+            _cachedAmount.send(amount)
             return amount
         case .fiat:
             let fiat = convertToFiat(cryptoValue: balanceValue)
             let amount = SendAmount(type: .alternative(fiat: fiat, crypto: balanceValue))
-            validateAndUpdate(amount: amount)
+            _cachedAmount.send(amount)
             return amount
         }
     }
