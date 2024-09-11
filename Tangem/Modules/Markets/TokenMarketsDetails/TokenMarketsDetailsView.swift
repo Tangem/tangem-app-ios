@@ -64,8 +64,11 @@ struct TokenMarketsDetailsView: View {
                 rightItems: {}
             )
             .overlay(alignment: .bottom) {
-                Separator(height: .minimal, color: Colors.Stroke.primary)
-                    .hidden(!isNavigationBarShadowLineViewVisible)
+                Separator(
+                    height: .minimal,
+                    color: Colors.Stroke.primary.opacity(viewModel.overlayContentHidingProgress)
+                )
+                .hidden(!isNavigationBarShadowLineViewVisible)
             }
         }
     }
