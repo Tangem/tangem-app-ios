@@ -115,6 +115,16 @@ private extension StakingDetailsViewModel {
                 viewModel.setupMainActionButton(state: state)
             }
             .store(in: &bag)
+
+        stakingPendingTransactionsRepository
+            .recordsPublisher
+            .combineLatest(stakingManager.statePublisher)
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, state in
+                viewModel.setupView(state: state.1)
+            }
+            .store(in: &bag)
     }
 
     func setupMainActionButton(state: WalletModel.State) {
