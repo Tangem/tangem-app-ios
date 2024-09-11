@@ -15,6 +15,7 @@ struct MarketsView: View {
 
     @Environment(\.overlayContentContainer) private var overlayContentContainer
     @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
+    @Environment(\.mainWindowSize) private var mainWindowSize
 
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
@@ -167,7 +168,7 @@ struct MarketsView: View {
 
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.tokenViewModels) {
-                            MarketsItemView(viewModel: $0)
+                            MarketsItemView(viewModel: $0, cellWidth: mainWindowSize.width)
                         }
 
                         // Need for display list skeleton view
