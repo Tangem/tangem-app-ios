@@ -19,7 +19,6 @@ struct MarketsView: View {
 
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
-    @State private var overlayContentProgress: CGFloat = .zero
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -40,7 +39,7 @@ struct MarketsView: View {
                 defaultMarketsView
             }
         }
-        .modifier(MarketsContentHidingViewModifier())
+        .opacity(viewModel.overlayContentHidingProgress)
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
@@ -67,8 +66,18 @@ struct MarketsView: View {
             updateOnChangeOf: responderChainIntrospectionTrigger,
             action: navigationControllerConfigurator.configure(_:)
         )
-        .onOverlayContentProgressChange(updateOverlayContentProgress(progress:))
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
+
+            if progress < 1 {
+                UIResponder.current?.resignFirstResponder()
+            }
+        }
         .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
+        .animation(
+            .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+            value: viewModel.overlayContentHidingProgress
+        )
     }
 
     @ViewBuilder
@@ -232,7 +241,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
+        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return
@@ -254,14 +263,6 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
-    }
-
-    private func updateOverlayContentProgress(progress: CGFloat) {
-        overlayContentProgress = progress
-
-        if progress < 1 {
-            UIResponder.current?.resignFirstResponder()
-        }
     }
 
     private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {

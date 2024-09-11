@@ -12,21 +12,20 @@ import Combine
 import CombineExt
 import Kingfisher
 
-final class MarketsViewModel: ObservableObject {
+final class MarketsViewModel: BaseMarketsViewModel {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
     @Published var tokenViewModels: [MarketsItemViewModel] = []
     @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published var isViewVisible: Bool = false
+    @Published var isDataProviderBusy: Bool = false
+    @Published var isViewSnapshotRequested: Bool = false
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Properties
-
-    @Published var isViewVisible: Bool = false
-    @Published var isDataProviderBusy: Bool = false
-    @Published var isViewSnapshotRequested: Bool = false
 
     let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
@@ -74,6 +73,10 @@ final class MarketsViewModel: ObservableObject {
         marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: AppSettings.shared.selectedCurrencyCode, notationFormatter: DefaultAmountNotationFormatter())
 
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
+
+        /// Our view is initially presented when the sheet is collapsed, hence the `0.0` initial value.
+        super.init(overlayContentProgressInitialValue: 0.0)
+
         marketsRatingHeaderViewModel.delegate = self
 
         searchTextBind(searchTextPublisher: searchTextPublisher)
