@@ -20,5 +20,5 @@ protocol TokenItemInfoProvider: AnyObject {
     var fiatBalance: String { get }
     var quote: TokenQuote? { get }
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { get }
-    var isStaked: Bool { get }
+    var isStakedPublisher: AnyPublisher<Bool, Never> { get }
 }

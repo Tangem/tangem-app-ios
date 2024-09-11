@@ -134,6 +134,10 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        return try await request(for: .coins(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
         let target = TangemApiTarget(type: .quotes(requestModel), authData: authData)
 

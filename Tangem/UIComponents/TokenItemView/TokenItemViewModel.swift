@@ -110,6 +110,16 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
                 self?.buildContextActions()
             }
             .store(in: &bag)
+
+        infoProvider.isStakedPublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isStaked in
+                guard let self else { return }
+                self.isStaked = isStaked
+                // balances may be updated on changing staking state
+                setupState(infoProvider.tokenItemState)
+            })
+            .store(in: &bag)
     }
 
     private func setupState(_ state: TokenItemViewState) {
@@ -130,7 +140,6 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             networkUnreachable = false
             updateBalances()
             updatePriceChange()
-            updateIsStaked()
         case .loading:
             break
         }
@@ -163,9 +172,5 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
     private func buildContextActions() {
         contextActionSections = contextActionsProvider?.buildContextActions(for: self) ?? []
-    }
-
-    private func updateIsStaked() {
-        isStaked = infoProvider.isStaked
     }
 }
