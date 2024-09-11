@@ -20,8 +20,10 @@ struct MarketPriceView: View {
             Button(action: tapAction) {
                 marketPriceView
             }
+            .defaultRoundedBackground()
         } else {
             marketPriceView
+                .defaultRoundedBackground()
         }
     }
 
@@ -65,9 +67,6 @@ struct MarketPriceView: View {
                 }
             }
         }
-        .padding(14)
-        .background(Colors.Background.primary)
-        .cornerRadiusContinuous(14)
     }
 
     @ViewBuilder
