@@ -26,7 +26,7 @@ public extension UIDevice {
     }
 
     /// - Warning: Simple and naive, use with caution.
-    var hasTopNotch: Bool {
+    var hasHomeScreenIndicator: Bool {
         return !UIApplication.safeAreaInsets.bottom.isZero
     }
 }

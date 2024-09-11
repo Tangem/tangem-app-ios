@@ -285,7 +285,7 @@ extension CommonTangemApiService: TangemApiService {
             .filterSuccessfulStatusAndRedirectCodes()
             .map(GeoResponse.self)
             .map(\.code)
-            .map(Optional.some)
+            .eraseToOptional()
             .replaceError(with: fallbackRegionCode)
             .subscribe(on: DispatchQueue.global())
             .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)

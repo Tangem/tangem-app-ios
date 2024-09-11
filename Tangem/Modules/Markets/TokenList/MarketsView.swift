@@ -77,7 +77,9 @@ struct MarketsView: View {
     @ViewBuilder
     private var defaultMarketsView: some View {
         list
-            .safeAreaInset(edge: .top, spacing: 0.0) {
+            .overlay(alignment: .top) {
+                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                 defaultListOverlay
             }
 
@@ -101,7 +103,9 @@ struct MarketsView: View {
             errorStateView
         case .loading, .allDataLoaded, .idle:
             list
-                .safeAreaInset(edge: .top, spacing: 0.0) {
+                .overlay(alignment: .top) {
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                     searchResultListOverlay
                 }
                 .overlay(alignment: .top) {
@@ -156,8 +160,14 @@ struct MarketsView: View {
                 // ScrollView inserts default spacing between its content views.
                 // Wrapping content into a `VStack` prevents it.
                 VStack(spacing: 0.0) {
-                    Color.clear.frame(height: 0)
+                    Color.clear
+                        .frame(height: 0)
                         .id(scrollTopAnchorId)
+
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                    Color.clear
+                        .frame(height: showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight)
 
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.tokenViewModels) {
@@ -225,7 +235,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne else {
+        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return
