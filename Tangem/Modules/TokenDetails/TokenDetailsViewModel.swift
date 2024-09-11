@@ -230,13 +230,16 @@ private extension TokenDetailsViewModel {
     }
 
     private func bind() {
-        walletModel.walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] newState in
-                AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
-                self?.updateBalance(walletModelState: newState)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { _ in } receiveValue: { [weak self] newState, _ in
+            AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
+            self?.updateBalance(walletModelState: newState)
+        }
+        .store(in: &bag)
 
         pendingExpressTransactionsManager.pendingTransactionsPublisher
             .withWeakCaptureOf(self)

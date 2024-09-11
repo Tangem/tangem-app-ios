@@ -23,7 +23,7 @@ class TokenWithoutDerivationInfoProvider: TokenItemInfoProvider {
     var tokenItemState: TokenItemViewState = .noDerivation
     var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> { .just(output: tokenItemState) }
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { .just(output: ()) }
-    var isStaked: Bool { false }
+    var isStakedPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
 
     init(id: Int, tokenItem: TokenItem) {
         self.id = id
