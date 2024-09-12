@@ -35,27 +35,25 @@ struct MarketsPortfolioContainerView: View {
 
                 Spacer()
 
-                if viewModel.isShowTopAddButton {
-                    Button(action: {
-                        viewModel.onAddTapAction()
-                    }, label: {
-                        HStack(spacing: 2) {
-                            Assets.plus24.image
-                                .resizable()
-                                .renderingMode(.template)
-                                .foregroundColor(Colors.Icon.primary1)
-                                .frame(size: .init(bothDimensions: 14))
+                Button(action: {
+                    viewModel.onAddTapAction()
+                }, label: {
+                    HStack(spacing: 2) {
+                        Assets.plus24.image
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundColor(Colors.Icon.primary1)
+                            .frame(size: .init(bothDimensions: 14))
 
-                            Text(Localization.marketsAddToken)
-                                .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
-                        }
-                    })
-                    .padding(.leading, 8)
-                    .padding(.trailing, 10)
-                    .padding(.vertical, 4)
-                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.buttonCornerRadius)
-                    .skeletonable(isShown: viewModel.isLoadingNetworks, radius: 3)
-                }
+                        Text(Localization.marketsAddToken)
+                            .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                    }
+                })
+                .padding(.leading, 8)
+                .padding(.trailing, 10)
+                .padding(.vertical, 4)
+                .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.buttonCornerRadius)
+                .hidden(!viewModel.isShowTopAddButton)
             }
         }
     }

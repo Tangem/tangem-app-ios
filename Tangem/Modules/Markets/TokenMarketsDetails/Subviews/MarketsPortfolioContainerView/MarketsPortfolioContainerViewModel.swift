@@ -22,10 +22,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
 
-    var isLoadingNetworks: Bool {
-        networks == nil
-    }
-
     // MARK: - Private Properties
 
     private var userWalletModels: [UserWalletModel] {
@@ -77,16 +73,15 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
         if let networks {
             let canAddAvailableNetworks = canAddToPortfolio(with: networks)
+            isShowTopAddButton = !tokenItemViewModels.isEmpty && canAddAvailableNetworks
 
             guard canAddAvailableNetworks else {
                 typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
                 return
             }
 
-            isShowTopAddButton = !tokenItemViewModels.isEmpty && canAddAvailableNetworks
             typeView = tokenItemViewModels.isEmpty ? .empty : .list
         } else {
-            isShowTopAddButton = !tokenItemViewModels.isEmpty
             typeView = tokenItemViewModels.isEmpty ? .loading : .list
         }
     }
