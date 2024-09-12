@@ -323,8 +323,7 @@ extension UnstakingModel {
 private extension UnstakingModel {
     func logOpenScreen() {
         switch action.type {
-        case .pending(.claimRewards),
-             .pending(.restakeRewards):
+        case .pending(.claimRewards), .pending(.restakeRewards):
             Analytics.log(
                 event: .stakingRewardScreenOpened,
                 params: [.validator: action.validatorInfo?.address ?? ""]

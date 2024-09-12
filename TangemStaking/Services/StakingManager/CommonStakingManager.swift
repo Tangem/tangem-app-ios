@@ -111,7 +111,7 @@ extension CommonStakingManager: StakingManager {
     func transactionDidSent(action: StakingAction) {
         repository.transactionDidSent(action: action, integrationId: integrationId)
 
-        // We update state without request to API
+        // We will update the state without requesting the API
         switch state {
         case .loading, .notEnabled, .temporaryUnavailable:
             break

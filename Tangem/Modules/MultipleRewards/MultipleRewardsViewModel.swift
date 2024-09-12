@@ -57,7 +57,7 @@ private extension MultipleRewardsViewModel {
                 switch state {
                 case .staked(let staked):
                     let data = staked.balances.rewards().compactMap { balance in
-                        viewModel.mapToValidatorViewData(yield: staked.yieldInfo, balance: balance)
+                        viewModel.mapToValidatorViewData(balance: balance)
                     }
                     return Just(data).eraseToAnyPublisher()
                 default:
@@ -70,7 +70,7 @@ private extension MultipleRewardsViewModel {
             .store(in: &bag)
     }
 
-    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalance) -> ValidatorViewData? {
+    func mapToValidatorViewData(balance: StakingBalance) -> ValidatorViewData? {
         guard let validator = balance.validatorType.validator else {
             return nil
         }

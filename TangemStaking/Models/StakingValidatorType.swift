@@ -7,12 +7,13 @@
 //
 
 public enum StakingValidatorType: Hashable {
+    /// In the case when there is a validator on the balance
     case validator(ValidatorInfo)
 
-    /// In case when balance have validator which was turned off
+    /// In the case when there is a validator on the balance that has been disabled
     case disabled
 
-    /// In case when balance / action doesn't have validator
+    /// In the case when the balance / action doesn't have a validator
     case empty
 
     public var validator: ValidatorInfo? {
