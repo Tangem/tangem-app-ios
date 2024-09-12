@@ -19,6 +19,10 @@ struct MarketsPortfolioContainerView: View {
 
             contentView
         }
+        .if(viewModel.typeView != .list, transform: { view in
+            view
+                .padding(.bottom, 12) // Bottom padding use for no list views
+        })
         .padding(.top, 12) // Need for top padding without bottom padding
         .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
     }
@@ -50,6 +54,7 @@ struct MarketsPortfolioContainerView: View {
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                     .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.buttonCornerRadius)
+                    .skeletonable(isShown: viewModel.isLoadingNetworks, radius: 3)
                 }
             }
         }
@@ -60,6 +65,8 @@ struct MarketsPortfolioContainerView: View {
             switch viewModel.typeView {
             case .empty:
                 emptyView
+            case .loading:
+                loadingView
             case .list:
                 listView
             case .unavailable:
@@ -104,6 +111,20 @@ struct MarketsPortfolioContainerView: View {
             }
         }
     }
+
+    private var loadingView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            skeletonView(width: .infinity, height: 15)
+
+            skeletonView(width: 218, height: 15)
+        }
+    }
+
+    private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
+        SkeletonView()
+            .cornerRadiusContinuous(3)
+            .frame(maxWidth: width, minHeight: height, maxHeight: height)
+    }
 }
 
 extension MarketsPortfolioContainerView {
@@ -111,6 +132,7 @@ extension MarketsPortfolioContainerView {
         case empty
         case list
         case unavailable
+        case loading
 
         var id: Int {
             rawValue

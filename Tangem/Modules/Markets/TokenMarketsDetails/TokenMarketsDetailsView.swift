@@ -167,15 +167,14 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var content: some View {
         VStack(spacing: 14) {
+            description
+
+            portfolioView
+
             switch viewModel.state {
             case .loading:
                 ContentBlockSkeletons()
-            case .loaded(let model):
-                description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                portfolioView
-
+            case .loaded:
                 contentBlocks
             case .failedToLoadDetails:
                 MarketsUnableToLoadDataView(
@@ -201,52 +200,46 @@ struct TokenMarketsDetailsView: View {
         VStack(spacing: 14) {
             if let insightsViewModel = viewModel.insightsViewModel {
                 MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {
                 MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
 
             if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
                 MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
 
             if !viewModel.linksSections.isEmpty {
                 TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
         }
         .padding(.bottom, 46.0)
     }
 
     @ViewBuilder
-    private func description(shortDescription: String?, fullDescription: String?) -> some View {
-        if let shortDescription {
-            if fullDescription == nil {
-                Text(shortDescription)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.leading)
-            } else {
-                Button(action: viewModel.openFullDescription) {
-                    Group {
-                        Text("\(shortDescription) ")
-                            + readMoreText
+    private var description: some View {
+        if case .loaded(let model) = viewModel.state {
+            if let shortDescription = model.shortDescription {
+                if model.fullDescription == nil {
+                    Text(shortDescription)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Button(action: viewModel.openFullDescription) {
+                        Group {
+                            Text("\(shortDescription) ")
+                                + readMoreText
+                        }
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
                     }
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.leading)
                 }
             }
+        }
+
+        if case .loading = viewModel.state {
+            DescriptionBlockSkeletons()
         }
     }
 

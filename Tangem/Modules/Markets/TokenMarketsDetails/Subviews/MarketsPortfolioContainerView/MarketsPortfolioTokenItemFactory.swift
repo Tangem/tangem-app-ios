@@ -31,7 +31,6 @@ struct MarketsPortfolioTokenItemFactory {
 
     func makeViewModels(
         coinId: String,
-        networks: [NetworkModel],
         walletModels: [WalletModel],
         entries: [StoredUserTokenList.Entry],
         userWalletInfo: UserWalletInfo
@@ -41,11 +40,9 @@ struct MarketsPortfolioTokenItemFactory {
             .map(\.blockchainNetwork)
             .toSet()
 
-        let networkIds = Set(networks.map { $0.networkId })
-
         let tokenItemTypes: [TokenItemType] = entries
             .filter { entry in
-                entry.id == coinId && networkIds.contains(entry.blockchainNetwork.blockchain.networkId)
+                entry.id == coinId
             }
             .compactMap { userToken in
                 if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {

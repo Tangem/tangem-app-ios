@@ -14,7 +14,7 @@ struct MarketsPortfolioTokenItemView: View {
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
-        CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
+        CustomDisclosureGroup(animation: .easeInOut(duration: 0.3), isExpanded: $viewModel.isExpandedQuickActions) {
             viewModel.isExpandedQuickActions.toggle()
         } prompt: {
             tokenView

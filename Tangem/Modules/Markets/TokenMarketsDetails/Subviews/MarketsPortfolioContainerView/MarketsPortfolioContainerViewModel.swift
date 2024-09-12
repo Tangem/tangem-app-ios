@@ -22,6 +22,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
 
+    var isLoadingNetworks: Bool {
+        networks == nil
+    }
+
     // MARK: - Private Properties
 
     private var userWalletModels: [UserWalletModel] {
@@ -33,7 +37,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
-    private var inputData: InputData
+    private var coinId: String
+    private var networks: [NetworkModel]?
+
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
@@ -44,7 +50,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
-        self.inputData = inputData
+        coinId = inputData.coinId
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
@@ -58,21 +64,31 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
+    func update(networks: [NetworkModel]) {
+        self.networks = networks
+        updateUI()
+    }
+
     // MARK: - Private Implementation
 
     private func updateUI() {
         updateTokenList()
         updateExpandedAction()
 
-        let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
+        if let networks {
+            let canAddAvailableNetworks = canAddToPortfolio(with: networks)
 
-        guard canAddAvailableNetworks else {
-            typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
-            return
+            guard canAddAvailableNetworks else {
+                typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
+                return
+            }
+
+            isShowTopAddButton = !tokenItemViewModels.isEmpty && canAddAvailableNetworks
+            typeView = tokenItemViewModels.isEmpty ? .empty : .list
+        } else {
+            isShowTopAddButton = !tokenItemViewModels.isEmpty
+            typeView = tokenItemViewModels.isEmpty ? .loading : .list
         }
-
-        isShowTopAddButton = !tokenItemViewModels.isEmpty
-        typeView = tokenItemViewModels.isEmpty ? .empty : .list
     }
 
     /*
@@ -118,8 +134,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
                 let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
-                    coinId: inputData.coinId,
-                    networks: inputData.networks,
+                    coinId: coinId,
                     walletModels: walletModels,
                     entries: entries,
                     userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
@@ -225,6 +240,5 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 extension MarketsPortfolioContainerViewModel {
     struct InputData {
         let coinId: String
-        let networks: [NetworkModel]
     }
 }

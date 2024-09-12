@@ -9,13 +9,33 @@
 import SwiftUI
 
 extension TokenMarketsDetailsView {
+    struct DescriptionBlockSkeletons: View {
+        var body: some View {
+            VStack(spacing: .zero) {
+                description
+            }
+        }
+
+        private var description: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(0 ... 1) { _ in
+                    skeletonView(width: .infinity, height: 18)
+                }
+
+                skeletonView(width: 270, height: 18)
+            }
+        }
+
+        private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
+            SkeletonView()
+                .cornerRadiusContinuous(3)
+                .frame(maxWidth: width, minHeight: height, maxHeight: height)
+        }
+    }
+
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
-                description
-
-                portfolio
-
                 insights
 
                 securityScore
