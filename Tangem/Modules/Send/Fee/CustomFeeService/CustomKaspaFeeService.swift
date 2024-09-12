@@ -54,8 +54,8 @@ extension CustomKaspaFeeService: CustomFeeService {
             return
         }
 
-        calculationModel.setup(utxoCount: kaspaFeeParameters.utxoCount)
-        feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(kaspaFeeParameters.valuePerUtxo))
+        calculationModel.setup(mass: kaspaFeeParameters.mass)
+        feeInfoSubject.send(calculationModel.calculateWithFeerate(kaspaFeeParameters.feerate))
     }
 
     func inputFieldModels() -> [SendCustomFeeInputFieldModel] {
@@ -63,7 +63,7 @@ extension CustomKaspaFeeService: CustomFeeService {
             title: Localization.sendMaxFee,
             amountPublisher: amountPublisher,
             fieldSuffix: feeTokenItem.currencySymbol,
-            fractionDigits: Blockchain.kaspa.decimalCount,
+            fractionDigits: feeTokenItem.blockchain.decimalCount,
             amountAlternativePublisher: amountAlternativePublisher,
             footer: Localization.sendCustomAmountFeeFooter,
             onFieldChange: { [weak self] decimalValue in
@@ -74,14 +74,14 @@ extension CustomKaspaFeeService: CustomFeeService {
 
         let customValuePerUtxoModel = SendCustomFeeInputFieldModel(
             title: Localization.sendCustomKaspaPerUtxoTitle,
-            amountPublisher: valuePerUtxoPublisher,
+            amountPublisher: feeratePublisher,
             fieldSuffix: nil,
-            fractionDigits: Blockchain.kaspa.decimalCount,
+            fractionDigits: feeTokenItem.blockchain.decimalCount,
             amountAlternativePublisher: .just(output: nil),
             footer: Localization.sendCustomKaspaPerUtxoFooter,
             onFieldChange: { [weak self] decimalValue in
                 guard let decimalValue, let self else { return }
-                feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(decimalValue))
+                feeInfoSubject.send(calculationModel.calculateWithFeerate(decimalValue))
             }
         )
 
@@ -106,9 +106,9 @@ private extension CustomKaspaFeeService {
             .eraseToAnyPublisher()
     }
 
-    var valuePerUtxoPublisher: AnyPublisher<Decimal?, Never> {
+    var feeratePublisher: AnyPublisher<Decimal?, Never> {
         feeInfoSubject
-            .map(\.?.params.valuePerUtxo)
+            .map(\.?.params.feerate)
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

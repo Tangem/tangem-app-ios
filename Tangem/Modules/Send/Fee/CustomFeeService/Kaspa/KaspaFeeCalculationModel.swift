@@ -15,19 +15,19 @@ final class KaspaFeeCalculationModel {
 
     private let feeTokenItem: TokenItem
     private let delta: Decimal
-    private var utxoCount: Int?
+    private var mass: Decimal?
 
     init(feeTokenItem: TokenItem) {
         self.feeTokenItem = feeTokenItem
         delta = 1 / feeTokenItem.decimalValue
     }
 
-    func setup(utxoCount: Int) {
-        self.utxoCount = utxoCount
+    func setup(mass: Decimal) {
+        self.mass = mass
     }
 
     func calculateWithAmount(_ amount: Decimal) -> FeeInfo? {
-        guard let utxoCount else {
+        guard let mass else {
             assertionFailure("'setup(utxoCount:)' was never called")
             return nil
         }
@@ -36,30 +36,30 @@ final class KaspaFeeCalculationModel {
             return feeInfo
         }
 
-        let valuePerUtxo = amount / Decimal(utxoCount)
-        feeInfo = makeFeeInfo(utxoCount: utxoCount, amount: amount, valuePerUtxo: valuePerUtxo)
+        let feerate = amount / mass * feeTokenItem.decimalValue
+        feeInfo = makeFeeInfo(mass: mass, amount: amount, feerate: feerate)
         return feeInfo
     }
 
-    func calculateWithValuePerUtxo(_ valuePerUtxo: Decimal) -> FeeInfo? {
-        guard let utxoCount else {
+    func calculateWithFeerate(_ feerate: Decimal) -> FeeInfo? {
+        guard let mass else {
             assertionFailure("'setup(utxoCount:)' was never called")
             return nil
         }
 
-        if feeInfo?.params.valuePerUtxo.isEqual(to: valuePerUtxo, delta: delta) == true {
+        if feeInfo?.params.feerate.isEqual(to: feerate, delta: delta) == true {
             return feeInfo
         }
 
-        let amount = valuePerUtxo * Decimal(utxoCount)
-        feeInfo = makeFeeInfo(utxoCount: utxoCount, amount: amount, valuePerUtxo: valuePerUtxo)
+        let amount = mass * feerate / feeTokenItem.decimalValue
+        feeInfo = makeFeeInfo(mass: mass, amount: amount, feerate: feerate)
         return feeInfo
     }
 
-    private func makeFeeInfo(utxoCount: Int, amount: Decimal, valuePerUtxo: Decimal) -> FeeInfo {
+    private func makeFeeInfo(mass: Decimal, amount: Decimal, feerate: Decimal) -> FeeInfo {
         let params = KaspaFeeParameters(
-            valuePerUtxo: valuePerUtxo,
-            utxoCount: utxoCount
+            mass: mass,
+            feerate: feerate
         )
         let fee = Fee(
             Amount(
