@@ -24,11 +24,17 @@ struct PendingActionMapper {
             let action = stakingAction(type: .unstake(validator: try validator()))
             return .single(action)
         case .unstaked:
-            guard let withdrawAction = balanceInfo.actions.first(where: { $0.type == .withdraw }) else {
+            let withdraws = balanceInfo.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
+
+            guard !withdraws.isEmpty else {
                 throw PendingActionMapperError.notFound("Pending withdraw action")
             }
 
-            let type: StakingAction.PendingActionType = .withdraw(validator: try validator(), passthrough: withdrawAction.passthrough)
+            let type: StakingAction.PendingActionType = .withdraw(
+                validator: try validator(),
+                passthroughs: withdraws.toSet()
+            )
+
             return .single(stakingAction(type: .pending(type)))
         case .locked:
             guard let unlockLockedAction = balanceInfo.actions.first(where: { $0.type == .unlockLocked }) else {

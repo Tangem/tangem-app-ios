@@ -14,6 +14,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 
     let title: String?
     let description: String
+    var isGeneratedWithAI: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -27,9 +28,9 @@ struct DescriptionBottomSheetView: View {
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
-        textContent
+        content
             .overlay {
-                textContent
+                content
                     .opacity(0)
                     .readGeometry(\.size.height, onChange: { value in
                         sheetHeight.wrappedValue = value
@@ -38,7 +39,7 @@ struct DescriptionBottomSheetView: View {
             .padding(.horizontal, 16)
     }
 
-    private var textContent: some View {
+    private var content: some View {
         VStack(spacing: 14) {
             if let title = info.title {
                 Text(title)
@@ -62,8 +63,24 @@ struct DescriptionBottomSheetView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
+
+            if info.isGeneratedWithAI {
+                generatedWithAILabel
+            }
         }
-        .padding(.bottom, 16)
+        .padding(.bottom, 10)
+    }
+
+    private var generatedWithAILabel: some View {
+        HStack(spacing: 12) {
+            Assets.stars.image
+                .foregroundStyle(Colors.Icon.accent)
+
+            Text(Localization.informationGeneratedWithAi)
+                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .defaultRoundedBackground(with: Colors.Background.tertiary)
     }
 }
 

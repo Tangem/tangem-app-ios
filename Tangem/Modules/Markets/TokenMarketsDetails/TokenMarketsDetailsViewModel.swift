@@ -194,7 +194,11 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
             return
         }
 
-        openInfoBottomSheet(title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name), message: fullDescription)
+        descriptionBottomSheetInfo = .init(
+            title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
+            description: fullDescription,
+            isGeneratedWithAI: true
+        )
     }
 
     func onBackButtonTap() {

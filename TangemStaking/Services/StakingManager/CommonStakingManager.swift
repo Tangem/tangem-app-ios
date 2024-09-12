@@ -68,7 +68,7 @@ extension CommonStakingManager: StakingManager {
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await provider.estimatePendingFee(
+            try await getPendingEstimateFee(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -126,7 +126,7 @@ private extension CommonStakingManager {
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
             try await provider.patchTransaction(id: transaction.id)
@@ -140,7 +140,7 @@ private extension CommonStakingManager {
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
             try await provider.patchTransaction(id: transaction.id)
@@ -150,28 +150,63 @@ private extension CommonStakingManager {
     }
 
     func getPendingTransactionInfo(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> StakingTransactionAction {
-        let action = try await provider.pendingAction(request: request, type: type)
-
-        let transactionType: TransactionType = {
-            switch type {
-            case .withdraw: .withdraw
-            case .claimRewards: .claimRewards
-            case .restakeRewards: .restakeRewards
-            case .voteLocked: .vote
-            case .unlockLocked: .unstake
+        switch type {
+        case .claimRewards(_, let passthrough),
+             .restakeRewards(_, let passthrough),
+             .voteLocked(_, let passthrough),
+             .unlockLocked(let passthrough):
+            let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+            let action = try await getPendingTransactionAction(request: request)
+            return action
+        case .withdraw(let validator, let passthroughs):
+            if passthroughs.isEmpty {
+                throw StakingManagerError.pendingActionNotFound(validator: validator)
             }
-        }()
 
-        guard let transactionId = action.transactions.first(where: { $0.type == transactionType })?.id else {
-            throw StakingManagerError.transactionNotFound
+            let actions = try await passthroughs.asyncMap { passthrough in
+                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                let action = try await getPendingTransactionAction(request: request)
+                return action
+            }
+
+            return StakingTransactionAction(amount: request.amount, transactions: actions.flatMap { $0.transactions })
         }
+    }
+
+    func getPendingTransactionAction(request: PendingActionRequest) async throws -> StakingTransactionAction {
+        let action = try await provider.pendingAction(request: request)
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-        let transaction = try await provider.patchTransaction(id: transactionId)
+        try await Task.sleep(nanoseconds: Constants.delay)
 
-        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: [transaction])
+        let transactions = try await action.transactions.asyncMap { transaction in
+            try await provider.patchTransaction(id: transaction.id)
+        }
+
+        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
+    }
+
+    func getPendingEstimateFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {
+        switch type {
+        case .claimRewards(_, let passthrough),
+             .restakeRewards(_, let passthrough),
+             .voteLocked(_, let passthrough),
+             .unlockLocked(let passthrough):
+            let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+            return try await provider.estimatePendingFee(request: request)
+        case .withdraw(let validator, let passthroughs):
+            if passthroughs.isEmpty {
+                throw StakingManagerError.pendingActionNotFound(validator: validator)
+            }
+
+            let fees = try await passthroughs.asyncMap { passthrough in
+                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                return try await provider.estimatePendingFee(request: request)
+            }
+
+            return fees.reduce(0, +)
+        }
     }
 }
 
@@ -231,6 +266,12 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func log(_ args: Any) {
         logger.debug("[Staking] \(self) \(wallet.item) \(args)")
+    }
+}
+
+private extension CommonStakingManager {
+    enum Constants {
+        static let delay: UInt64 = 1 * NSEC_PER_SEC
     }
 }
 
