@@ -196,6 +196,8 @@ struct SendDependenciesBuilder {
         switch walletModel.tokenItem.blockchain {
         case .koinos:
             KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        case .tron:
+            TronSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
         default:
             CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
         }
