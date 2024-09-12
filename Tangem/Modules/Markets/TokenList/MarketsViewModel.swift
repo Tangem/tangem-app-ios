@@ -273,8 +273,13 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
-                    viewModel.quotesUpdatesScheduler.resetUpdates()
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
+
+                    guard viewModel.isBottomSheetExpanded else {
+                        return
+                    }
+
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
                 default:
                     break
                 }
