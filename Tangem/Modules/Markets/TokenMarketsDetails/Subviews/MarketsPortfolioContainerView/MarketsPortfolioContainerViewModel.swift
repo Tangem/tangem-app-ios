@@ -211,22 +211,12 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         switch action {
         case .buy:
             coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)
-        case .send:
-            coordinator.openSend(for: walletModel, with: userWalletModel)
         case .receive:
             coordinator.openReceive(walletModel: walletModel)
-        case .sell:
-            coordinator.openSell(for: walletModel, with: userWalletModel)
-        case .copyAddress:
-            UIPasteboard.general.string = walletModel.defaultAddress
-
-            Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
-                .present(layout: .bottom(padding: 80), type: .temporary())
         case .exchange:
             coordinator.openExchange(for: walletModel, with: userWalletModel)
-        case .stake:
-            coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide, .marketsDetails:
+        case .hide, .marketsDetails, .send, .stake, .sell, .copyAddress:
+            // An empty value because it is not available
             return
         }
     }
