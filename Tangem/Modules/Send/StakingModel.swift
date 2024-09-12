@@ -164,7 +164,7 @@ private extension StakingModel {
         }
 
         let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
-            balance.balanceType == .active && balance.validatorAddress == validator
+            balance.balanceType == .active && balance.validatorType.validator == validator
         } ?? false
 
         return .readyToStake(
