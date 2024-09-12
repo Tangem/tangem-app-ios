@@ -106,7 +106,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     func onOverlayContentStateChange(_ state: OverlayContentState) {
         switch state {
-        case .top(let trigger):
+        case .top:
             // Need for locked fetchMore process when bottom sheet not yet open
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isBottomSheetExpanded = true
@@ -169,7 +169,7 @@ private extension MarketsViewModel {
 
                 let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
 
-                // Always use raiting sorting for search
+                // Always use rating sorting for search
                 let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
 
                 viewModel.fetch(with: value, by: searchFilter)
