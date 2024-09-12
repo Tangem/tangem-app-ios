@@ -8,6 +8,7 @@
 
 import Foundation
 import BlockchainSdk
+import TangemSdk
 
 struct TronSendTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem
@@ -23,8 +24,12 @@ struct TronSendTransactionSummaryDescriptionBuilder {
 
 extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
     func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
-        guard case .send(let amount, let fee) = transactionType,
-              let feeParameters = fee.parameters as? TronFeeParameters else {
+        guard case .send(let amount, let fee) = transactionType else {
+            return nil
+        }
+
+        guard let feeParameters = fee.parameters as? TronFeeParameters else {
+            Log.error("Fee paramenters must be set for TronSendTransactionSummaryDescriptionBuilder")
             return nil
         }
 
@@ -41,6 +46,7 @@ extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDe
 
         let formatter = BalanceFormatter()
         let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
+        
         let prefix = Localization.sendSummaryTransactionDescriptionPrefix(totalInFiatFormatted)
         let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
 
