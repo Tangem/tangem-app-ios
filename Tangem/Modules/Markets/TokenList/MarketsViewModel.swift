@@ -15,11 +15,12 @@ final class MarketsViewModel: BaseMarketsViewModel {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
-    @Published var tokenViewModels: [MarketsItemViewModel] = []
-    @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
-    @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published var isViewVisible: Bool = false
-    @Published var isDataProviderBusy: Bool = false
+    @Published private(set) var tokenViewModels: [MarketsItemViewModel] = []
+    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
+    @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
+    @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published private(set) var isViewVisible: Bool = false
+    @Published private(set) var isDataProviderBusy: Bool = false
 
     // MARK: - Properties
 
@@ -59,15 +60,19 @@ final class MarketsViewModel: BaseMarketsViewModel {
     // MARK: - Init
 
     init(
-        searchTextPublisher: some Publisher<String, Never>,
         quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: MarketsRoutable
     ) {
         self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
-        marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: AppSettings.shared.selectedCurrencyCode, notationFormatter: DefaultAmountNotationFormatter())
+        marketCapFormatter = .init(
+            divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList,
+            baseCurrencyCode: AppSettings.shared.selectedCurrencyCode,
+            notationFormatter: DefaultAmountNotationFormatter()
+        )
 
+        headerViewModel = MainBottomSheetHeaderViewModel()
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
 
         /// Our view is initially presented when the sheet is collapsed, hence the `0.0` initial value.
@@ -75,7 +80,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
         marketsRatingHeaderViewModel.delegate = self
 
-        searchTextBind(searchTextPublisher: searchTextPublisher)
+        searchTextBind(searchTextPublisher: headerViewModel.enteredSearchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         bindToCurrencyCodeUpdate()
@@ -87,22 +92,24 @@ final class MarketsViewModel: BaseMarketsViewModel {
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
-    func onBottomSheetAppear() {
-        // Need for locked fetchMore process when bottom sheet not yet open
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isViewVisible = true
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
+        switch state {
+        case .top(let trigger):
+            // Need for locked fetchMore process when bottom sheet not yet open
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.isViewVisible = true
+            }
+
+            onAppearPrepareImageCache()
+
+            Analytics.log(.marketsScreenOpened)
+
+            headerViewModel.onBottomSheetExpand(isTapGesture: state.isTapGesture)
+            quotesUpdatesScheduler.forceUpdate()
+        case .bottom:
+            isViewVisible = false
+            quotesUpdatesScheduler.cancelUpdates()
         }
-
-        onAppearPrepareImageCache()
-
-        Analytics.log(.marketsScreenOpened)
-
-        quotesUpdatesScheduler.forceUpdate()
-    }
-
-    func onBottomSheetDisappear() {
-        isViewVisible = false
-        quotesUpdatesScheduler.cancelUpdates()
     }
 
     func onShowUnderCapAction() {
