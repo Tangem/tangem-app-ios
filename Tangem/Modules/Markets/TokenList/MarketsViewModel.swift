@@ -19,7 +19,6 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published private(set) var isViewVisible: Bool = false
     @Published private(set) var isDataProviderBusy: Bool = false
 
     // MARK: - Properties
@@ -51,6 +50,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
     private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
+    private var isBottomSheetExpanded: Bool = false
     private var showItemsBelowCapThreshold: Bool = false
 
     private var filterItemsBelowMarketCapThreshold: Bool {
@@ -97,7 +97,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
         case .top(let trigger):
             // Need for locked fetchMore process when bottom sheet not yet open
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.isViewVisible = true
+                self.isBottomSheetExpanded = true
             }
 
             onAppearPrepareImageCache()
@@ -107,7 +107,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
             headerViewModel.onBottomSheetExpand(isTapGesture: state.isTapGesture)
             quotesUpdatesScheduler.forceUpdate()
         case .bottom:
-            isViewVisible = false
+            isBottomSheetExpanded = false
             quotesUpdatesScheduler.cancelUpdates()
         }
     }
@@ -145,7 +145,7 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                guard viewModel.isViewVisible else {
+                guard viewModel.isBottomSheetExpanded else {
                     return
                 }
 
