@@ -14,7 +14,7 @@ struct StakingSendAlertBuilder: SendAlertBuilder {
         let cancelButton = Alert.Button.cancel(Text(Localization.commonNo))
         return AlertBuilder.makeAlert(
             title: "",
-            message: Localization.sendDismissMessage,
+            message: Localization.stakingDismissMessage,
             primaryButton: dismissButton,
             secondaryButton: cancelButton
         )

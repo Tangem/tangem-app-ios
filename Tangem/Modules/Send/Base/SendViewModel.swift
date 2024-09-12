@@ -207,9 +207,11 @@ private extension SendViewModel {
         case .informationRelevanceServiceFeeWasIncreased:
             alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
         case .sendTxError(let transaction, let sendTxError):
-            alert = alertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError, openMailAction: { [weak self] in
+            alert = alertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError) { [weak self] in
                 self?.openMail(transaction: transaction, error: sendTxError)
-            })
+            }
+        case .loadTransactionInfo(let error):
+            alert = error.alertBinder
         case .demoAlert:
             alert = AlertBuilder.makeDemoAlert(Localization.alertDemoFeatureDisabled) { [weak self] in
                 self?.coordinator?.dismiss()

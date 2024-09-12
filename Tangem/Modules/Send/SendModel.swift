@@ -193,7 +193,8 @@ private extension SendModel {
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
              .demoAlert,
-             .userCancelled:
+             .userCancelled,
+             .loadTransactionInfo:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [

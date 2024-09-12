@@ -32,11 +32,10 @@ extension SendAlertBuilder {
     }
 
     func makeFeeRetryAlert(retryAction: @escaping () -> Void) -> AlertBinder {
-        let retryButton = Alert.Button.default(Text(Localization.commonRetry), action: retryAction)
-        return AlertBuilder.makeAlert(
+        AlertBuilder.makeAlert(
             title: Localization.sendFeeUnreachableErrorTitle,
             message: Localization.sendFeeUnreachableErrorText,
-            primaryButton: retryButton,
+            primaryButton: .default(Text(Localization.commonRetry), action: retryAction),
             secondaryButton: .cancel()
         )
     }
