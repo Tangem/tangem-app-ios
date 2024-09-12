@@ -165,10 +165,9 @@ private extension StakingModel {
             return validateError
         }
 
-        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?
-            .filter { $0.balanceType == .active }
-            .map(\.validatorAddress)
-            .contains(validator)
+        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
+            balance.balanceType == .active && balance.validatorAddress == validator
+        } ?? false
 
         return .readyToStake(
             .init(
@@ -176,7 +175,7 @@ private extension StakingModel {
                 validator: validator,
                 fee: fee,
                 isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: hasPreviousStakeOnSameValidator.flatMap { !$0 } ?? true
+                stakeOnDifferentValidator: stakingManager.state.isStaked && !hasPreviousStakeOnSameValidator
             )
         )
     }
