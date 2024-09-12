@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import Combine
 import TangemStaking
 
 protocol StakingPendingTransactionsRepository {
-    var records: [StakingPendingTransactionRecord] { get }
+    var recordsPublisher: AnyPublisher<Set<StakingPendingTransactionRecord>, Never> { get }
+    var records: Set<StakingPendingTransactionRecord> { get }
 
     func transactionDidSent(action: StakingAction, validator: ValidatorInfo?)
     func checkIfConfirmed(balances: [StakingBalanceInfo])
