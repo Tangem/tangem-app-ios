@@ -33,6 +33,11 @@ final class MarketsViewModel: BaseMarketsViewModel {
         !currentSearchValue.isEmpty
     }
 
+    override var overlayContentHidingProgress: CGFloat {
+        // Prevents unwanted content hiding (see https://tangem.slack.com/archives/C05UW00656X/p1725683301009589 for details)
+        isViewVisible ? super.overlayContentHidingProgress : 1.0
+    }
+
     var shouldDisplayShowTokensUnderCapView: Bool {
         let hasFilteredItems = tokenViewModels.count != dataProvider.items.count
         let dataLoaded = !dataProvider.isLoading
