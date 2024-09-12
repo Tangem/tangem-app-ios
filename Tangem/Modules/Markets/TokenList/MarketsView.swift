@@ -18,7 +18,6 @@ struct MarketsView: View {
 
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
-    @State private var overlayContentProgress: CGFloat = .zero
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -39,7 +38,7 @@ struct MarketsView: View {
                 defaultMarketsView
             }
         }
-        .modifier(MarketsContentHidingViewModifier())
+        .opacity(viewModel.overlayContentHidingProgress)
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
@@ -66,13 +65,17 @@ struct MarketsView: View {
             updateOnChangeOf: responderChainIntrospectionTrigger,
             action: navigationControllerConfigurator.configure(_:)
         )
-        .onOverlayContentProgressChange { progress in
-            overlayContentProgress = progress
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
 
             if progress < 1 {
                 UIResponder.current?.resignFirstResponder()
             }
         }
+        .animation(
+            .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+            value: viewModel.overlayContentHidingProgress
+        )
     }
 
     @ViewBuilder
@@ -236,7 +239,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
+        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return
