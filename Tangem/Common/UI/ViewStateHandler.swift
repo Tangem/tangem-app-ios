@@ -1,5 +1,5 @@
 //
-//  OnWillDissapear.swift
+//  ViewStateHandler.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 29.08.2020.

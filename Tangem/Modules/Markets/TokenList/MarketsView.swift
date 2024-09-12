@@ -102,8 +102,8 @@ struct MarketsView: View {
             // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
             // Therefore, we left with two options:
             // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
-            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)`
-            // from UIKit and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
+            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
+            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
             content
                 .navigationBarHidden(true)
         }
