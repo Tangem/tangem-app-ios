@@ -46,9 +46,9 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
                 let (currentPrice, interval) = value.1
 
                 Analytics.log(
-                    event: .marketsButtonPeriod,
+                    event: .marketsChartButtonPeriod,
                     params: [
-                        .token: weakSelf.tokenSymbol,
+                        .token: weakSelf.tokenSymbol.uppercased(),
                         .period: interval.rawValue,
                         .source: Analytics.MarketsIntervalTypeSourceType.price.rawValue,
                     ]

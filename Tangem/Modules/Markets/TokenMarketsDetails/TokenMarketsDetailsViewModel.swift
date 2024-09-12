@@ -179,7 +179,13 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     }
 
     func openLinkAction(_ info: MarketsTokenDetailsLinks.LinkInfo) {
-        Analytics.log(event: .marketsButtonLinks, params: [.link: info.title])
+        Analytics.log(
+            event: .marketsChartButtonLinks,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .link: info.title,
+            ]
+        )
 
         guard let url = URL(string: info.link) else {
             log("Failed to create link from: \(info.link)")
@@ -193,6 +199,8 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         guard let fullDescription = loadedInfo?.fullDescription else {
             return
         }
+
+        Analytics.log(event: .marketsChartButtonReadMore, params: [.token: tokenInfo.symbol.uppercased()])
 
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
@@ -231,6 +239,9 @@ private extension TokenMarketsDetailsViewModel {
             }
 
             await setupFailedState()
+
+            sendBlocksAnalyticsErrors()
+
             log("Failed to load detailed info. Reason: \(error)")
         }
     }
@@ -409,11 +420,18 @@ private extension TokenMarketsDetailsViewModel {
                     return
                 }
 
-                Analytics.log(event: .marketsButtonAddToPortfolio, params: [.token: info.symbol])
+                Analytics.log(event: .marketsChartButtonAddToPortfolio, params: [.token: info.symbol.uppercased()])
 
                 coordinator?.openTokenSelector(with: info, walletDataProvider: walletDataProvider)
             }
         )
+    }
+
+    func sendBlocksAnalyticsErrors() {
+        Analytics.log(event: .marketsChartDataError, params: [
+            .token: tokenInfo.symbol.uppercased(),
+            .source: Analytics.ParameterValue.chart.rawValue,
+        ])
     }
 
     func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
