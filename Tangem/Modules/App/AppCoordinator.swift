@@ -182,6 +182,7 @@ class AppCoordinator: CoordinatorObject {
         }
 
         if FeatureProvider.isAvailable(.markets) {
+            __marketsCoordinator = nil
             bottomSheetVisibility.hide()
         }
 
@@ -199,9 +200,6 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func closeAllSheetsIfNeeded(animated: Bool, completion: @escaping () -> Void = {}) {
-        marketsCoordinator = nil
-        __marketsCoordinator = nil
-
         guard
             let topViewController = UIApplication.topViewController,
             topViewController.presentingViewController != nil
