@@ -113,16 +113,6 @@ private extension StakingDetailsViewModel {
                 viewModel.setupMainActionButton(state: state)
             }
             .store(in: &bag)
-
-//        stakingPendingTransactionsRepository
-//            .recordsPublisher
-//            .combineLatest(stakingManager.statePublisher)
-//            .withWeakCaptureOf(self)
-//            .receive(on: DispatchQueue.main)
-//            .sink { viewModel, state in
-//                viewModel.setupView(state: state.1)
-//            }
-//            .store(in: &bag)
     }
 
     func setupMainActionButton(state: WalletModel.State) {
@@ -148,7 +138,6 @@ private extension StakingDetailsViewModel {
             actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
-//            stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
             setupView(yield: staked.yieldInfo, balances: staked.balances)
 
             actionButtonLoading = false
@@ -277,7 +266,7 @@ private extension StakingDetailsViewModel {
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
 
-                        let name = balance.validator.validator?.name
+                        let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
                     } else {
                         self?.coordinator?.openMultipleRewards()

@@ -26,7 +26,7 @@ class StakingDetailsStakeViewDataBuilder {
     }
 
     func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalance, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
-        let validator = balance.validator.validator
+        let validator = balance.validatorType.validator
 
         let title: String = {
             switch balance.balanceType {
@@ -45,7 +45,7 @@ class StakingDetailsStakeViewDataBuilder {
             case .unstaked: .withdraw
             case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
             case .active:
-                balance.validator.validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
+                validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding(let date):
                 date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
             }

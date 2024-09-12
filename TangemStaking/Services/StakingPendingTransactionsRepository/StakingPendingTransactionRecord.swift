@@ -9,6 +9,7 @@
 import Foundation
 
 public struct StakingPendingTransactionRecord: Hashable, Codable {
+    public let integrationId: String
     public let amount: Decimal
     public let validator: Validator
     public let type: ActionType

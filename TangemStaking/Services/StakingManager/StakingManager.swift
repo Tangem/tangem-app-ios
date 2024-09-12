@@ -28,22 +28,6 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
     case availableToStake(YieldInfo)
     case staked(Staked)
 
-    public var isAvailable: Bool {
-        switch self {
-        case .loading, .notEnabled, .temporaryUnavailable:
-            return false
-        case .availableToStake, .staked:
-            return true
-        }
-    }
-
-    public var isStaked: Bool {
-        switch self {
-        case .staked: true
-        default: false
-        }
-    }
-
     public var yieldInfo: YieldInfo? {
         switch self {
         case .loading, .notEnabled:
@@ -71,10 +55,6 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .availableToStake: "availableToStake"
         case .staked: "staked"
         }
-    }
-
-    public func validator(for address: String) -> ValidatorInfo? {
-        yieldInfo?.validators.first { $0.address == address }
     }
 }
 

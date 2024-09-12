@@ -44,9 +44,6 @@ struct PendingActionMapper {
                 throw PendingActionMapperError.notFound("Pending claimRewards action")
             }
 
-            // In the Tron network we don't validatorAddress for claim/restake rewards
-            let validator = balance.validator.validator?.address
-
             let claimRewards = stakingAction(
                 type: .pending(.claimRewards(passthrough: claimRewardsAction.passthrough))
             )
@@ -64,7 +61,7 @@ struct PendingActionMapper {
     }
 
     private func stakingAction(type: StakingAction.ActionType) -> StakingAction {
-        StakingAction(amount: balance.amount, validatorType: balance.validator, type: type)
+        StakingAction(amount: balance.amount, validatorType: balance.validatorType, type: type)
     }
 }
 

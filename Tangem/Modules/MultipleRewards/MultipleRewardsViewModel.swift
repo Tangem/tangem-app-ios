@@ -71,7 +71,7 @@ private extension MultipleRewardsViewModel {
     }
 
     func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalance) -> ValidatorViewData? {
-        guard let validator = balance.validator.validator else {
+        guard let validator = balance.validatorType.validator else {
             return nil
         }
 

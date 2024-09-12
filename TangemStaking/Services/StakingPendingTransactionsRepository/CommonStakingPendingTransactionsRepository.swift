@@ -41,8 +41,8 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         cachedRecords.removeDuplicates().eraseToAnyPublisher()
     }
 
-    func transactionDidSent(action: StakingAction) {
-        let record = mapToStakingPendingTransactionRecord(action: action)
+    func transactionDidSent(action: StakingAction, integrationId: String) {
+        let record = mapToStakingPendingTransactionRecord(action: action, integrationId: integrationId)
         log("Will be add record - \(record)")
 
         cachedRecords.value.insert(record)
@@ -151,7 +151,7 @@ private extension CommonStakingPendingTransactionsRepository {
         return equals.allConforms { $0 }
     }
 
-    func mapToStakingPendingTransactionRecord(action: StakingAction) -> StakingPendingTransactionRecord {
+    func mapToStakingPendingTransactionRecord(action: StakingAction, integrationId: String) -> StakingPendingTransactionRecord {
         let type: StakingPendingTransactionRecord.ActionType = {
             switch action.type {
             case .stake: .stake
@@ -171,7 +171,13 @@ private extension CommonStakingPendingTransactionsRepository {
             apr: action.validatorInfo?.apr
         )
 
-        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type, date: Date())
+        return StakingPendingTransactionRecord(
+            integrationId: integrationId,
+            amount: action.amount,
+            validator: validator,
+            type: type,
+            date: Date()
+        )
     }
 
     func log<T>(_ message: @autoclosure () -> T) {

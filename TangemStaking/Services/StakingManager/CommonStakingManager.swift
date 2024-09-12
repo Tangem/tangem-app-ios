@@ -20,6 +20,12 @@ class CommonStakingManager {
     // MARK: Private
 
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
+    private var canStakeMore: Bool {
+        switch wallet.item.network {
+        case .solana, .cosmos, .tron: true
+        default: false
+        }
+    }
 
     init(
         integrationId: String,
@@ -103,18 +109,19 @@ extension CommonStakingManager: StakingManager {
     }
 
     func transactionDidSent(action: StakingAction) {
-        repository.transactionDidSent(action: action)
-        // TODO: Update state
+        repository.transactionDidSent(action: action, integrationId: integrationId)
 
-//        switch state {
-//        case .loading, .notEnabled, .temporaryUnavailable:
-//            break
-//        case .availableToStake(let yieldInfo):
-//            let balances = prepareStakingBalances(balances: [], yield: yieldInfo)
-//        case .staked(let staked):
-//            let balances = prepareStakingBalances(balances: staked.balances, yield: staked.yieldInfo)
-//
-//        }
+        // We update state without request to API
+        switch state {
+        case .loading, .notEnabled, .temporaryUnavailable:
+            break
+        case .availableToStake(let yieldInfo):
+            let balances = prepareStakingBalances(balances: [], yield: yieldInfo)
+            updateState(.staked(.init(balances: balances, yieldInfo: yieldInfo, canStakeMore: canStakeMore)))
+        case .staked(let staked):
+            let balances = cachedStakingBalances(yield: staked.yieldInfo) + staked.balances
+            updateState(.staked(.init(balances: balances, yieldInfo: staked.yieldInfo, canStakeMore: canStakeMore)))
+        }
     }
 }
 
@@ -135,9 +142,7 @@ private extension CommonStakingManager {
             return .availableToStake(yield)
         }
 
-        let canStakeMore = canStakeMore(item: yield.item)
         let balances = prepareStakingBalances(balances: balances, yield: yield)
-
         return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
@@ -238,33 +243,35 @@ private extension CommonStakingManager {
     }
 
     func mapToStakingBalance(balance: StakingBalanceInfo, yield: YieldInfo) -> StakingBalance {
-        let validator = yield.validators.first(where: { $0.address == balance.validatorAddress })
+        let validatorType: StakingValidatorType = {
+            guard let validatorAddress = balance.validatorAddress else {
+                return .empty
+            }
+
+            let validator = yield.validators.first(where: { $0.address == validatorAddress })
+            return validator.map { .validator($0) } ?? .disabled
+        }()
+
         let inProgress = repository.hasPending(balance: balance)
 
         return StakingBalance(
             item: balance.item,
             amount: balance.amount,
             balanceType: balance.balanceType,
-            validator: validator.map { .validator($0) } ?? .disabled,
+            validatorType: validatorType,
             inProgress: inProgress,
             actions: balance.actions
         )
     }
 
     func mapToStakingBalance(record: StakingPendingTransactionRecord, yield: YieldInfo) -> StakingBalance {
-        assert(record.type == .stake, "We don't make a StakingBalance")
-
-        let validator: ValidatorInfo? = {
-            guard let address = record.validator.address,
-                  let name = record.validator.name else {
-                return nil
+        let validatorType: StakingValidatorType = {
+            guard let address = record.validator.address, let name = record.validator.name else {
+                return .empty
             }
 
-            return .init(
-                address: address,
-                name: name,
-                iconURL: record.validator.iconURL,
-                apr: record.validator.apr
+            return .validator(
+                .init(address: address, name: name, iconURL: record.validator.iconURL, apr: record.validator.apr)
             )
         }()
 
@@ -272,16 +279,14 @@ private extension CommonStakingManager {
             item: yield.item,
             amount: record.amount,
             balanceType: .active,
-            validator: validator.map { .validator($0) } ?? .disabled,
+            validatorType: validatorType,
             inProgress: true,
             actions: []
         )
     }
 
     func prepareStakingBalances(balances: [StakingBalanceInfo], yield: YieldInfo) -> [StakingBalance] {
-        let cached = repository.records.filter { $0.type == .stake }.map { record in
-            mapToStakingBalance(record: record, yield: yield)
-        }
+        let cached = cachedStakingBalances(yield: yield)
 
         let active = balances.map { balance in
             mapToStakingBalance(balance: balance, yield: yield)
@@ -290,13 +295,12 @@ private extension CommonStakingManager {
         return cached + active
     }
 
-    func canStakeMore(item: StakingTokenItem) -> Bool {
-        switch item.network {
-        case .solana, .cosmos, .tron:
-            return true
-        default:
-            return false
-        }
+    func cachedStakingBalances(yield: YieldInfo) -> [StakingBalance] {
+        repository.records
+            .filter { $0.integrationId == yield.id && $0.type == .stake }
+            .map { record in
+                mapToStakingBalance(record: record, yield: yield)
+            }
     }
 }
 

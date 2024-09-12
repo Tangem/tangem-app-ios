@@ -12,7 +12,7 @@ public struct StakingBalance: Hashable {
     public let item: StakingTokenItem
     public let amount: Decimal
     public let balanceType: StakingBalanceType
-    public let validator: StakingValidatorType
+    public let validatorType: StakingValidatorType
     public let inProgress: Bool
     public let actions: [StakingPendingActionInfo]
 
@@ -20,14 +20,14 @@ public struct StakingBalance: Hashable {
         item: StakingTokenItem,
         amount: Decimal,
         balanceType: StakingBalanceType,
-        validator: StakingValidatorType,
+        validatorType: StakingValidatorType,
         inProgress: Bool,
         actions: [StakingPendingActionInfo]
     ) {
         self.item = item
         self.amount = amount
         self.balanceType = balanceType
-        self.validator = validator
+        self.validatorType = validatorType
         self.inProgress = inProgress
         self.actions = actions
     }
