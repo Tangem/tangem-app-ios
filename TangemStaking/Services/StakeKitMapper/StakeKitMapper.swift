@@ -208,7 +208,7 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingBalanceInfo.PendingActionType] {
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
@@ -229,7 +229,7 @@ struct StakeKitMapper {
 
     func mapToBalanceType(
         from balance: StakeKitDTO.Balances.Response.Balance
-    ) throws -> StakingBalanceInfo.BalanceType {
+    ) throws -> StakingBalanceType {
         switch balance.type {
         case .available:
             throw StakeKitMapperError.notImplement

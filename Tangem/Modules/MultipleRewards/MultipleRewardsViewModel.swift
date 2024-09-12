@@ -70,8 +70,8 @@ private extension MultipleRewardsViewModel {
             .store(in: &bag)
     }
 
-    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalanceInfo) -> ValidatorViewData? {
-        guard let validator = yield.validators.first(where: { $0.address == balance.validatorAddress }) else {
+    func mapToValidatorViewData(yield: YieldInfo, balance: StakingBalance) -> ValidatorViewData? {
+        guard let validator = balance.validator.validator else {
             return nil
         }
 
@@ -99,9 +99,9 @@ private extension MultipleRewardsViewModel {
         )
     }
 
-    func openUnstakingFlow(balance: StakingBalanceInfo) {
+    func openUnstakingFlow(balance: StakingBalance) {
         do {
-            let action = try PendingActionMapper(balanceInfo: balance).getAction()
+            let action = try PendingActionMapper(balance: balance).getAction()
             switch action {
             case .single(let action):
                 coordinator?.openUnstakingFlow(action: action)

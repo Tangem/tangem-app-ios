@@ -143,7 +143,7 @@ extension StakeKitDTO {
 
             struct Response: Decodable {
                 let groupId: String
-                let type: BalanceType
+                let type: StakingBalanceType
                 let amount: String
                 let date: Date?
                 let pricePerShare: String
@@ -152,7 +152,7 @@ extension StakeKitDTO {
                 let validatorAddress: String?
                 let providerId: String?
 
-                enum BalanceType: String, Decodable {
+                enum StakingBalanceType: String, Decodable {
                     case available
                     case staked
                     case unstaking
