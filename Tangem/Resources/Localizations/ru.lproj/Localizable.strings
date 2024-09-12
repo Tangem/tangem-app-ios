@@ -296,6 +296,7 @@
 "give_permission_unlimited" = "Безлимитно";
 "home_button_order" = "Купить";
 "home_button_scan" = "Сканировать";
+"information_generated_with_ai" = "Информация сгенерирована ИИ";
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
 "initial_message_create_wallet_body" = "Чтобы создать кошелек, приложите карту как показано выше и не убирайте до окончания операции";
@@ -612,8 +613,8 @@
 "send_summary_transaction_description" = "Вы отправляете **%1$@**, включая комиссию сети %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "Вы отправляете **%1$@** и %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
-"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ %2$@";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ %2$@";
+"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "Транзакция успешно подписана и отправлена в блокчейн. Баланс будет обновлен через некоторое время";
 "send_tron_account_activation_error" = "%1$@ — это монета в сети Tron. Чтобы рассчитать комиссию и совершить транзакцию, вам необходимо внести немного Tron (TRX) на свой адрес.";
