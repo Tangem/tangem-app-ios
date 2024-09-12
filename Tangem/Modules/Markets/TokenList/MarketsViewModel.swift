@@ -19,7 +19,6 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published private(set) var isViewVisible: Bool = false
     @Published private(set) var isDataProviderBusy: Bool = false
 
     // MARK: - Properties
