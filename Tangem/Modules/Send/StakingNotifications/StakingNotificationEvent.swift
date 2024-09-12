@@ -43,8 +43,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .withdraw: .string(Localization.stakingWithdraw)
         case .validationErrorEvent(let event): event.title
         case .networkUnreachable: .string(Localization.sendFeeUnreachableErrorTitle)
-        case .stakesWillMoveToNewValidator(let blockchain):
-            .string(Localization.stakingNotificationNewValidatorFundsTransfer(blockchain))
+        case .stakesWillMoveToNewValidator: .string(Localization.stakingRevote)
         }
     }
 
@@ -70,8 +69,8 @@ extension StakingNotificationEvent: NotificationEvent {
             event.description
         case .networkUnreachable:
             Localization.sendFeeUnreachableErrorText
-        case .stakesWillMoveToNewValidator:
-            nil
+        case .stakesWillMoveToNewValidator(let blockchain):
+            Localization.stakingNotificationNewValidatorFundsTransfer(blockchain)
         }
     }
 
