@@ -296,6 +296,7 @@
 "give_permission_unlimited" = "Unbegrenzt";
 "home_button_order" = "Karte bestellen";
 "home_button_scan" = "Karte scannen";
+"information_generated_with_ai" = "This information was generated with AI";
 "initial_message_change_access_code_body" = "Um den Zugangscode zu ändern, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_change_passcode_body" = "Um den Passcode zu ändern, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_create_wallet_body" = "Um die Wallet zu erstellen, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
@@ -612,8 +613,8 @@
 "send_summary_transaction_description" = "Du sendest **%1$@** inklusive der Netzwerkgebühr %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "Du sendest **%1$@** und %2$@";
 "send_summary_transaction_description_prefix" = "Du sendest **%1$@**";
-"send_summary_transaction_description_suffix_fee_covered" = "Die Netzwerkgebühr wird durch die Nutzung von %1$@ %2$@ gedeckt.";
-"send_summary_transaction_description_suffix_fee_reduced" = "Die Netzwerkgebühr wird durch das Ausgeben von %1$@ %2$@ reduziert.";
+"send_summary_transaction_description_suffix_fee_covered" = "Die Netzwerkgebühr wird durch die Nutzung von %1$@ Energieträgern gedeckt.";
+"send_summary_transaction_description_suffix_fee_reduced" = "Die Netzwerkgebühr wird durch das Ausgeben von %1$@ Energieträgern reduziert.";
 "send_summary_transaction_description_suffix_including" = "inklusive einer Netzgebühr von %1$@";
 "send_transaction_success" = "Die Transaktion wurde erfolgreich signiert und an den Blockchain-Knoten gesendet. Die Walletbilanz wird aktualisiert";
 "send_tron_account_activation_error" = "%1$@ ist ein Vermögenswert im Tron-Netzwerk. Um die Gebühr zu berechnen und eine Transaktion durchzuführen, musst du etwas Tron (TRX) auf deinem Konto einzahlen.";
