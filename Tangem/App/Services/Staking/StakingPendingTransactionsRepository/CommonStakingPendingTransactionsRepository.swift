@@ -70,7 +70,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
             return !shouldDelete
         }
 
-        // Exclude unnecessary emit values
+        // Submit changes only if we have them
         if records != cachedRecords.value {
             cachedRecords.send(records)
         }
@@ -120,6 +120,8 @@ private extension CommonStakingPendingTransactionsRepository {
 
         // Leave the records only newer then deadline(24 hours ago)
         let records = cachedRecords.value.filter { $0.date > deadline }
+
+        // Submit changes only if we have them
         if records != cachedRecords.value {
             cachedRecords.send(records)
         }
