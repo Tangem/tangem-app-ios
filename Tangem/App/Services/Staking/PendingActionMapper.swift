@@ -23,7 +23,7 @@ struct PendingActionMapper {
         case .active:
             let action = stakingAction(type: .unstake(validator: try validator()))
             return .single(action)
-        case .withdraw:
+        case .unstaked:
             guard let withdrawAction = balanceInfo.actions.first(where: { $0.type == .withdraw }) else {
                 throw PendingActionMapperError.notFound("Pending withdraw action")
             }
