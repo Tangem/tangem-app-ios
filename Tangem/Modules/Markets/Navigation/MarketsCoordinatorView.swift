@@ -16,33 +16,14 @@ struct MarketsCoordinatorView: CoordinatorView {
         if let model = coordinator.rootViewModel {
             NavigationView {
                 ZStack {
-                    VStack(spacing: 0.0) {
-                        header
-                            .zIndex(100) // Required for the collapsible header in `MarketsView` to work
-
-                        MarketsView(viewModel: model)
-                            .navigationLinks(links)
-                    }
+                    MarketsView(viewModel: model)
+                        .navigationLinks(links)
 
                     sheets
-                }
-                .onOverlayContentStateChange { [weak coordinator] state in
-                    // This method maintains a strong reference to the given `observer` closure,
-                    // so a weak capture list is required
-                    coordinator?.onOverlayContentStateChange(state)
                 }
             }
             .navigationViewStyle(.stack)
             .tint(Colors.Text.primary1)
-        }
-    }
-
-    @ViewBuilder
-    private var header: some View {
-        if let headerViewModel = coordinator.headerViewModel {
-            MainBottomSheetHeaderView(viewModel: headerViewModel)
-        } else {
-            EmptyView()
         }
     }
 
@@ -63,5 +44,6 @@ struct MarketsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
                 TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
+            .emptyNavigationLink()
     }
 }

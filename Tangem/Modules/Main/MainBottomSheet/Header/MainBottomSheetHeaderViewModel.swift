@@ -17,11 +17,16 @@ final class MainBottomSheetHeaderViewModel: ObservableObject {
     @Published var enteredSearchText = ""
     @Published var inputShouldBecomeFocused = false
 
-    func onBottomSheetAppear(isTapGesture: Bool) {
-        if isTapGesture {
-            inputShouldBecomeFocused = true
-        }
-    }
+    weak var delegate: MainBottomSheetHeaderViewModelDelegate?
 
-    func onBottomSheetDisappear() {}
+    func onBottomSheetExpand(isTapGesture: Bool) {
+        guard
+            isTapGesture,
+            delegate?.isViewVisibleForHeaderViewModel(self) == true
+        else {
+            return
+        }
+
+        inputShouldBecomeFocused = true
+    }
 }
