@@ -296,6 +296,7 @@
 "give_permission_unlimited" = "Illimité";
 "home_button_order" = "Commandez";
 "home_button_scan" = "Scannez";
+"information_generated_with_ai" = "This information was generated with AI";
 "initial_message_change_access_code_body" = "Touchez, pour modifier le code d'accès";
 "initial_message_change_passcode_body" = "Touchez, pour modifier le mot de passe";
 "initial_message_create_wallet_body" = "Pour créer le portefeuille, appuyez sur la carte comme indiqué ci-dessus et ne la retirez pas jusqu'à la fin de l'opération";
@@ -612,8 +613,8 @@
 "send_summary_transaction_description" = "Vous envoyez **%1$@** incluant des frais de réseau de %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "Vous envoyez **%1$@** et %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
-"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ %2$@";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ %2$@";
+"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "La transaction a été signée avec succès et envoyée au nœud de blockchain. Le solde du portefeuille sera mis à jour après un certain temps";
 "send_tron_account_activation_error" = "%1$@ est un actif du réseau Tron. Pour calculer les frais et effectuer une transaction, déposez du Tron (TRX) sur votre compte.";

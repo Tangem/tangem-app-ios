@@ -296,6 +296,7 @@
 "give_permission_unlimited" = "Unlimited";
 "home_button_order" = "Order card";
 "home_button_scan" = "掃描卡片";
+"information_generated_with_ai" = "This information was generated with AI";
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
 "initial_message_change_passcode_body" = "要更改密碼，請完全按照上圖所示連接手機和卡";
 "initial_message_create_wallet_body" = "要創建錢包，請完全按照上圖所示連接手機和卡";
@@ -612,8 +613,8 @@
 "send_summary_transaction_description" = "You are sending **%1$@** including a network fee of %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "You are sending **%1$@** and %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
-"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ %2$@";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ %2$@";
+"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "交易已成功簽署並發送至區塊鏈節點。錢包餘額稍後更新";
 "send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron (TRX) in your account.";
