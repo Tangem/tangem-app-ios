@@ -30,9 +30,9 @@ extension MarketsDTO.Coins {
         let shortDescription: String?
         let fullDescription: String?
         let insights: Insights?
-        let links: MarketsTokenDetailsLinks
+        let links: MarketsTokenDetailsLinks?
         let metrics: MarketsTokenDetailsMetrics?
-        let pricePerformance: [String: MarketsPricePerformanceData]
+        let pricePerformance: [String: MarketsPricePerformanceData]?
     }
 
     struct Insights: Codable {

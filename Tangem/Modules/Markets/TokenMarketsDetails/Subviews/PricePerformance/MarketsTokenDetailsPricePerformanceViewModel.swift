@@ -60,13 +60,20 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
     }
 
     private func updateProgressUI(currentPrice: Decimal, selectedInterval: MarketsPriceIntervalType) {
-        guard let performanceData = pricePerformanceData[selectedInterval] else {
+        guard
+            let performanceData = pricePerformanceData[selectedInterval],
+            let lowPrice = performanceData.lowPrice,
+            let highPrice = performanceData.highPrice
+        else {
+            pricePerformanceProgress = 0
+            lowValue = priceFormatter.formatPrice(nil)
+            highValue = priceFormatter.formatPrice(nil)
             return
         }
 
-        let decimalProgress = Math().inverseLerp(from: performanceData.lowPrice, to: performanceData.highPrice, value: currentPrice) as NSDecimalNumber
+        lowValue = priceFormatter.formatPrice(lowPrice)
+        highValue = priceFormatter.formatPrice(highPrice)
+        let decimalProgress = Math().inverseLerp(from: lowPrice, to: highPrice, value: currentPrice) as NSDecimalNumber
         pricePerformanceProgress = CGFloat(decimalProgress.doubleValue)
-        lowValue = priceFormatter.formatPrice(performanceData.lowPrice)
-        highValue = priceFormatter.formatPrice(performanceData.highPrice)
     }
 }
