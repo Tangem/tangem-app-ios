@@ -22,7 +22,7 @@ class AppCoordinator: CoordinatorObject {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
     // MARK: - Child coordinators
 
@@ -179,6 +179,10 @@ class AppCoordinator: CoordinatorObject {
         case .nothingToDisplay:
             animated = true
             newScan = false
+        }
+
+        if FeatureProvider.isAvailable(.markets) {
+            bottomSheetVisibility.hide()
         }
 
         let options = AppCoordinator.Options(newScan: newScan)
