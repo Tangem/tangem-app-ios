@@ -1,5 +1,5 @@
 //
-//  MarketsRaitingHeaderViewModel.swift
+//  MarketsRatingHeaderViewModel.swift
 //  Tangem
 //
 //  Created by skibinalexander on 03.06.2024.

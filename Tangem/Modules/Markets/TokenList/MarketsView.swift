@@ -13,12 +13,11 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
+    @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
+
     @Environment(\.overlayContentContainer) private var overlayContentContainer
     @Environment(\.mainWindowSize) private var mainWindowSize
 
-    @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
-
-    @State private var overlayContentProgress: CGFloat = .zero
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -32,15 +31,24 @@ struct MarketsView: View {
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            if showSearchResult {
-                searchResultView
-            } else {
-                defaultMarketsView
+        VStack(spacing: 0.0) {
+            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
+                .zIndex(100) // Required for the collapsible header to work
+
+            ZStack(alignment: .topLeading) {
+                if showSearchResult {
+                    searchResultView
+                } else {
+                    defaultMarketsView
+                }
             }
+            .opacity(viewModel.overlayContentHidingProgress)
+            .animation(
+                .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+                value: viewModel.overlayContentHidingProgress
+            )
+            .scrollDismissesKeyboardCompat(.immediately)
         }
-        .modifier(MarketsContentHidingViewModifier())
-        .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
         // This dummy title won't be shown in the UI, but it's required since without it UIKit will allocate
@@ -60,18 +68,24 @@ struct MarketsView: View {
             // `UINavigationBar` may be installed into the view hierarchy quite late;
             // therefore, we're triggering introspection in the `onAppear` callback
             responderChainIntrospectionTrigger = UUID()
+
+            viewModel.onViewAppear()
         }
+        .onDisappear(perform: viewModel.onViewDisappear)
         .introspectResponderChain(
             introspectedType: UINavigationController.self,
             updateOnChangeOf: responderChainIntrospectionTrigger,
             action: navigationControllerConfigurator.configure(_:)
         )
-        .onOverlayContentProgressChange { progress in
-            overlayContentProgress = progress
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
 
             if progress < 1 {
                 UIResponder.current?.resignFirstResponder()
             }
+        }
+        .onOverlayContentStateChange { [weak viewModel] state in
+            viewModel?.onOverlayContentStateChange(state)
         }
     }
 
@@ -236,7 +250,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
+        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return
