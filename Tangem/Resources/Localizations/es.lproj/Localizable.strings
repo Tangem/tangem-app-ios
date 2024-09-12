@@ -296,6 +296,7 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Ordenar ";
 "home_button_scan" = "Escanee";
+"information_generated_with_ai" = "This information was generated with AI";
 "initial_message_change_access_code_body" = "Toque para cambiar la contraseña";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";
 "initial_message_create_wallet_body" = "Para crear la billetera, toque la tarjeta como se muestra arriba y no la retire hasta el final de la operación";
@@ -612,8 +613,8 @@
 "send_summary_transaction_description" = "Está enviando **%1$@** incluida una tarifa de red de %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "Está enviando**%1$@** y %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
-"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ %2$@";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ %2$@";
+"send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "La transacción se firmó con éxito y se envió al nodo blockchain. El saldo de la billetera se actualizará después de un tiempo.";
 "send_tron_account_activation_error" = "%1$@  es un activo en la red Tron. Para calcular la tarifa y realizar una transacción, deba depositar algo de Tron (TRX) en su cuenta.";

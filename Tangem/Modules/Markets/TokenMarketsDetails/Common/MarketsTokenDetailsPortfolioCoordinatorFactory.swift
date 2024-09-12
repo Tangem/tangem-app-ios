@@ -29,21 +29,6 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
 
     // MARK: - Make
 
-    func makeSendCoordinator(
-        for walletModel: WalletModel,
-        with userWalletModel: UserWalletModel,
-        dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
-    ) -> SendCoordinator {
-        let coordinator = SendCoordinator(dismissAction: dismissAction)
-        let options = SendCoordinator.Options(
-            walletModel: walletModel,
-            userWalletModel: userWalletModel,
-            type: .send
-        )
-        coordinator.start(with: options)
-        return coordinator
-    }
-
     func makeExpressCoordinator(
         for walletModel: WalletModel,
         with userWalletModel: UserWalletModel,
@@ -63,32 +48,6 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
         return coordinator
     }
 
-    func makeStakingDetailsCoordinator(
-        for walletModel: WalletModel,
-        with userWalletModel: UserWalletModel,
-        dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions>
-    ) -> StakingDetailsCoordinator? {
-        guard let stakingManager = walletModel.stakingManager else {
-            return nil
-        }
-
-        let coordinator = StakingDetailsCoordinator(
-            dismissAction: dismissAction,
-            popToRootAction: popToRootAction
-        )
-
-        let options = StakingDetailsCoordinator.InputOptions(
-            userWalletModel: userWalletModel,
-            walletModel: walletModel,
-            manager: stakingManager
-        )
-
-        coordinator.start(with: options)
-
-        return coordinator
-    }
-
     func makeBuyURL(
         for walletModel: WalletModel,
         with userWalletModel: UserWalletModel
@@ -100,27 +59,5 @@ struct MarketsTokenDetailsPortfolioCoordinatorFactory {
     func makeSellCryptoRequest(from closeURL: URL, with walletModel: WalletModel) -> SellCryptoRequest? {
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
         return exchangeUtility.extractSellCryptoRequest(from: closeURL.absoluteString)
-    }
-
-    func makeSell(
-        request: SellCryptoRequest,
-        for walletModel: WalletModel,
-        with userWalletModel: UserWalletModel,
-        dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
-    ) -> SendCoordinator? {
-        let coordinator = SendCoordinator(dismissAction: dismissAction)
-
-        let options = SendCoordinator.Options(
-            walletModel: walletModel,
-            userWalletModel: userWalletModel,
-            type: .sell(parameters: .init(amount: request.amount, destination: request.targetAddress, tag: request.tag))
-        )
-        coordinator.start(with: options)
-        return coordinator
-    }
-
-    func makeSellURL(for walletModel: WalletModel) -> URL? {
-        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
-        return exchangeUtility.sellURL
     }
 }
