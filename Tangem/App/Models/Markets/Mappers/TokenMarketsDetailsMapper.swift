@@ -40,20 +40,16 @@ struct TokenMarketsDetailsMapper {
     // MARK: - Private Implementation
 
     private func mapPriceChangePercentage(response: MarketsDTO.Coins.Response) throws -> [String: Decimal] {
-        var percentage = response.priceChangePercentage
-
-        guard let allTimeValue = percentage[MarketsPriceIntervalType.all.rawValue] else {
+        // We need to specify that our target type is Decimal, otherwise it will be Decimal?
+        guard let allTimeValue = response.priceChangePercentage[MarketsPriceIntervalType.all.rawValue] as? Decimal else {
             throw MapperError.missingAllTimePriceChangeValue
         }
 
-        MarketsPriceIntervalType.allCases.forEach {
-            guard percentage[$0.rawValue] == nil else {
-                return
-            }
-
-            percentage[$0.rawValue] = allTimeValue
+        return MarketsPriceIntervalType.allCases.reduce(into: [:]) {
+            let key = $1.rawValue
+            // We need to specify that our target type is Decimal, otherwise it will be Decimal?
+            $0[key] = (response.priceChangePercentage[key] as? Decimal) ?? allTimeValue
         }
-        return percentage
     }
 
     private func mapPricePerformance(response: MarketsDTO.Coins.Response) -> [MarketsPriceIntervalType: MarketsPricePerformanceData]? {
