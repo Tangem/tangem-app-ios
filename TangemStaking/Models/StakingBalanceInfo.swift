@@ -49,6 +49,6 @@ public enum BalanceType: Hashable {
     case warmup
     case active
     case unbonding(date: Date?)
-    case withdraw
+    case unstaked
     case rewards
 }
