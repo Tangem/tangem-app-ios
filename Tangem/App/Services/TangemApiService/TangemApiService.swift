@@ -20,6 +20,9 @@ protocol TangemApiService: AnyObject, Initializable {
     func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
+    // Copy loadCoins request via async await
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response
+
     // MARK: - Markets
 
     /// Get general market data for a list of tokens

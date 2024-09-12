@@ -26,7 +26,6 @@ class MarketsCoordinator: CoordinatorObject {
 
     // MARK: - Child ViewModels
 
-    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
     @Published var marketsListOrderBottomSheetViewModel: MarketsListOrderBottomSheetViewModel?
 
     // MARK: - Init
@@ -39,23 +38,10 @@ class MarketsCoordinator: CoordinatorObject {
     // MARK: - Implementation
 
     func start(with options: MarketsCoordinator.Options) {
-        let headerViewModel = MainBottomSheetHeaderViewModel()
-        self.headerViewModel = headerViewModel
         rootViewModel = .init(
-            searchTextPublisher: headerViewModel.enteredSearchTextPublisher,
             quotesRepositoryUpdateHelper: CommonMarketsQuotesUpdateHelper(),
             coordinator: self
         )
-    }
-
-    func onOverlayContentStateChange(_ state: OverlayContentState) {
-        if state.isBottom {
-            rootViewModel?.onBottomSheetDisappear()
-            headerViewModel?.onBottomSheetDisappear()
-        } else {
-            rootViewModel?.onBottomSheetAppear()
-            headerViewModel?.onBottomSheetAppear(isTapGesture: state.isTapGesture)
-        }
     }
 }
 

@@ -36,7 +36,7 @@ struct SendTransactionParametersBuilder {
             }
         case .ton:
             return TONTransactionParams(memo: value)
-        case .cosmos, .terraV1, .terraV2:
+        case .cosmos, .terraV1, .terraV2, .sei:
             return CosmosTransactionParams(memo: value)
         case .algorand:
             return AlgorandTransactionParams(nonce: value)

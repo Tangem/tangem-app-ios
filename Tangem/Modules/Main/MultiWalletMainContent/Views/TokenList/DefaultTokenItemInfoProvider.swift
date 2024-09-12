@@ -44,10 +44,14 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
 
-    var isStaked: Bool {
-        switch walletModel.stakingManagerState {
-        case .staked: true
-        case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
-        }
+    var isStakedPublisher: AnyPublisher<Bool, Never> {
+        walletModel.stakingManagerStatePublisher
+            .map { state in
+                switch state {
+                case .staked: true
+                case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }

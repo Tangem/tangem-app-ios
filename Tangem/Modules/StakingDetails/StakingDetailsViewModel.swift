@@ -399,7 +399,7 @@ private extension BalanceType {
         case .warmup: -1
         case .active: 0
         case .unbonding: 1
-        case .withdraw: 2
+        case .unstaked: 2
         case .rewards: -10 // Will not use to rewards
         }
     }

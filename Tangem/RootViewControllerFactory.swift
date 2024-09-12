@@ -26,16 +26,41 @@ struct RootViewControllerFactory {
 
         let contentViewController = UIHostingController(rootView: rootView)
 
-        // TODO: Andrey Fedorov - Adjust all numeric values here for different devices and safe area (IOS-7664)
+        let overlayCollapsedHeight: CGFloat
+        let overlayCornerRadius: CGFloat
+
+        if UIDevice.current.hasHomeScreenIndicator {
+            overlayCollapsedHeight = Constants.notchDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
+            overlayCornerRadius = Constants.notchDevicesOverlayCornerRadius
+        } else {
+            overlayCollapsedHeight = Constants.notchlessDevicesOverlayCollapsedHeight + Constants.overlayCollapsedHeightAdjustment
+            overlayCornerRadius = Constants.notchlessDevicesOverlayCornerRadius
+        }
+
         let containerViewController = OverlayContentContainerViewController(
             contentViewController: contentViewController,
-            overlayCollapsedHeight: 102.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=21140-91435&t=Z1kPdSQJ0JLoYgW0-4
-            overlayExpandedVerticalOffset: 54.0, // https://www.figma.com/design/91bpyCrISuWSvUzTLmcYRc/iOS-%E2%80%93-Draft?node-id=22985-125042&t=Z1kPdSQJ0JLoYgW0-4
-            overlayCornerRadius: UIDevice.current.hasTopNotch ? 24.0 : 16.0
+            contentExpandedVerticalOffset: UIApplication.safeAreaInsets.top,
+            overlayCollapsedHeight: overlayCollapsedHeight,
+            overlayCornerRadius: overlayCornerRadius
         )
 
         adapter.set(containerViewController)
 
         return containerViewController
+    }
+}
+
+// MARK: - Constants
+
+extension RootViewControllerFactory {
+    enum Constants {
+        /// Based on Figma mockups.
+        fileprivate static let notchDevicesOverlayCollapsedHeight = 100.0
+        /// Based on Figma mockups.
+        fileprivate static let notchlessDevicesOverlayCollapsedHeight = 86.0
+        /// The height of `SwiftUI.TextField` used in the `CustomSearchBar` UI components differs from the mockups by this small margin.
+        fileprivate static let overlayCollapsedHeightAdjustment = 2.0
+        static let notchDevicesOverlayCornerRadius = 24.0
+        static let notchlessDevicesOverlayCornerRadius = 16.0
     }
 }

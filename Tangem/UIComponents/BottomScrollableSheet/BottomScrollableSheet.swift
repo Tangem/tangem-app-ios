@@ -152,7 +152,6 @@ struct BottomScrollableSheet<Header, Content, Overlay>: View where Header: View,
             .layoutPriority(1000.0) // This child defines the layout of the outer container, so a higher layout priority is used
         }
         .frame(height: stateObject.maxHeight)
-        .bottomScrollableSheetCornerRadius()
         .bottomScrollableSheetShadow()
         .hidden(isHiddenWhenCollapsed ? isHidden : false)
         .onAnimationStarted(for: stateObject.progress) {

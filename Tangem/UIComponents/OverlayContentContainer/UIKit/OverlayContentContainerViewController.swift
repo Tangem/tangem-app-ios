@@ -15,8 +15,8 @@ final class OverlayContentContainerViewController: UIViewController {
     let overlayCornerRadius: CGFloat
 
     private let contentViewController: UIViewController
+    private let contentExpandedVerticalOffset: CGFloat
     private let overlayCollapsedHeight: CGFloat
-    private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
 
     // MARK: - Mutable state
@@ -35,6 +35,8 @@ final class OverlayContentContainerViewController: UIViewController {
     private var progressObservers: [AnyHashable: OverlayContentStateObserver.ProgressObserver] = [:]
 
     // MARK: - Read-only state
+
+    var isScrollViewLocked: Bool { scrollViewContentOffsetLocker?.isLocked ?? false }
 
     private var screenBounds: CGRect {
         return UIScreen.main.bounds
@@ -71,17 +73,17 @@ final class OverlayContentContainerViewController: UIViewController {
 
     // MARK: - Initialization/Deinitialization
 
-    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `overlayExpandedVerticalOffset`, etc)
+    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `contentExpandedVerticalOffset`, etc)
     /// are relative to the main screen bounds (w/o safe area).
     init(
         contentViewController: UIViewController,
+        contentExpandedVerticalOffset: CGFloat,
         overlayCollapsedHeight: CGFloat,
-        overlayExpandedVerticalOffset: CGFloat,
         overlayCornerRadius: CGFloat
     ) {
         self.contentViewController = contentViewController
+        self.contentExpandedVerticalOffset = Self.calculateContentExpandedVerticalOffset(fromInput: contentExpandedVerticalOffset)
         self.overlayCollapsedHeight = overlayCollapsedHeight
-        self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
         self.overlayCornerRadius = overlayCornerRadius
         super.init(nibName: nil, bundle: nil)
     }
@@ -172,7 +174,7 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     func expand() {
-        let newVerticalOffset = overlayExpandedVerticalOffset
+        let newVerticalOffset = contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
         let animationContext = Constants.defaultAnimationContext
@@ -253,7 +255,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - overlayExpandedVerticalOffset),
+            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
@@ -300,7 +302,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     private func updateProgress(verticalOffset: CGFloat, animationContext: OverlayContentContainerProgress.AnimationContext?) {
         let value = clamp(
-            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - overlayExpandedVerticalOffset),
+            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - contentExpandedVerticalOffset),
             min: 0.0,
             max: 1.0
         )
@@ -311,8 +313,8 @@ final class OverlayContentContainerViewController: UIViewController {
     private func updateContentScale() {
         let contentLayer = contentViewController.view.layer
         let invertedProgress = 1.0 - progress.value
-        let scale = Constants.minContentViewScale
-            + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
+        let minContentViewScale = (screenBounds.height - contentExpandedVerticalOffset + Constants.overlayVerticalPadding) / screenBounds.height
+        let scale = minContentViewScale + (Constants.maxContentViewScale - minContentViewScale) * invertedProgress
 
         if isFinalState, let animationContext = progress.context {
             let keyPath = String(_sel: #selector(getter: CALayer.transform))
@@ -325,33 +327,56 @@ final class OverlayContentContainerViewController: UIViewController {
         let transform: CGAffineTransform = .scaleTransform(
             for: contentLayer.bounds.size,
             scaledBy: .init(x: scale, y: scale),
-            aroundAnchorPoint: .init(x: 0.0, y: 1.0), // Bottom left corner
-            translationCoefficient: Constants.contentViewTranslationCoefficient
+            aroundAnchorPoint: .init(x: 0.5, y: 1.0) // Bottom center
         )
 
         contentLayer.setAffineTransform(transform)
+
+        // Workaround: prevents the navigation bar in the `contentViewController` from being laid out incorrectly
+        // Without this workaround, the `frame.origin.y` property of the navigation bar may be set to zero in some cases,
+        // resulting in an incorrect layout of the status bar
+        if UIDevice.current.hasHomeScreenIndicator {
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY
+        } else {
+            // On notchless devices, some additional math is needed due to the existence of
+            // `Constants.notchlessDevicesAdditionalVerticalPadding` constant
+            let additionalVerticalPadding = Constants.notchlessDevicesAdditionalVerticalPadding
+            let minSafeAreaTopInset = UIApplication.safeAreaInsets.top
+            let maxSafeAreaTopInset = minSafeAreaTopInset + additionalVerticalPadding
+            let lowerBound = minSafeAreaTopInset / maxSafeAreaTopInset // Essentially 2/3
+            let upperBound = maxSafeAreaTopInset / maxSafeAreaTopInset // Essentially 1.0
+            let progress = progress.value.interpolatedProgress(inRange: lowerBound ... upperBound)
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY - progress * additionalVerticalPadding
+        }
     }
 
     private func updateCornerRadius() {
         let contentLayer = contentViewController.view.layer
 
-        // On devices with notch, the corner radius property isn't animated and always has a constant value
-        guard !UIDevice.current.hasTopNotch else {
-            if !contentLayer.cornerRadius.isEqual(to: overlayCornerRadius) {
+        // On devices with a notch, the corner radius property isn't animated and always has a constant value
+        // (`overlayCornerRadius`) UNLESS it's completely invisible and hidden behind screen borders.
+        // In the latter case, the corner radius property is set to zero,
+        // which prevents screenshots from being spoiled and other similar issues
+        if UIDevice.current.hasHomeScreenIndicator {
+            if isCollapsedState {
+                // Wait for the collapsing animation to finish
+                CATransaction.setCompletionBlock {
+                    contentLayer.cornerRadius = .zero
+                }
+            } else {
                 contentLayer.cornerRadius = overlayCornerRadius
             }
-            return
-        }
+        } else {
+            if isFinalState, let animationContext = progress.context {
+                let keyPath = String(_sel: #selector(getter: CALayer.cornerRadius))
+                let animation = CABasicAnimation(keyPath: keyPath)
+                animation.duration = animationContext.duration
+                animation.timingFunction = animationContext.curve.toMediaTimingFunction()
+                contentLayer.add(animation, forKey: #function)
+            }
 
-        if isFinalState, let animationContext = progress.context {
-            let keyPath = String(_sel: #selector(getter: CALayer.cornerRadius))
-            let animation = CABasicAnimation(keyPath: keyPath)
-            animation.duration = animationContext.duration
-            animation.timingFunction = animationContext.curve.toMediaTimingFunction()
-            contentLayer.add(animation, forKey: #function)
+            contentLayer.cornerRadius = overlayCornerRadius * progress.value
         }
-
-        contentLayer.cornerRadius = overlayCornerRadius * progress.value
     }
 
     private func updateBackgroundShadowViewAlpha() {
@@ -449,7 +474,7 @@ final class OverlayContentContainerViewController: UIViewController {
         case _ where scrollViewContentOffsetLocker == nil:
             // There is no scroll view in the overlay view, use default logic
             break
-        case .up where isExpandedState:
+        case .up where isExpandedState && scrollViewContentOffsetLocker?.isLocked == false:
             // Normal scrolling to the bottom of the scroll view content, pan gesture recognizer should be ignored
             // for the entire duration of the gesture (until end)
             shouldIgnorePanGestureRecognizer = true
@@ -475,7 +500,7 @@ final class OverlayContentContainerViewController: UIViewController {
         let currentVerticalOffset = overlayViewTopAnchorConstraint?.constant ?? .zero
         let newVerticalOffset = clamp(
             currentVerticalOffset + translation.y,
-            min: overlayExpandedVerticalOffset,
+            min: contentExpandedVerticalOffset,
             max: overlayCollapsedVerticalOffset
         )
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7664)
@@ -512,7 +537,7 @@ final class OverlayContentContainerViewController: UIViewController {
             curve: Constants.defaultAnimationContext.curve
         )
 
-        let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : overlayExpandedVerticalOffset
+        let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
         UIView.animate(with: animationContext) {
@@ -560,9 +585,19 @@ final class OverlayContentContainerViewController: UIViewController {
 
         let remainingDistance = isCollapsing
             ? max(overlayCollapsedVerticalOffset - overlayViewFrame.minY, .zero)
-            : max(overlayViewFrame.minY - overlayExpandedVerticalOffset, .zero)
+            : max(overlayViewFrame.minY - contentExpandedVerticalOffset, .zero)
 
         return min(remainingDistance / abs(gestureVelocity.y), Constants.defaultAnimationContext.duration)
+    }
+
+    private static func calculateContentExpandedVerticalOffset(fromInput contentExpandedVerticalOffset: CGFloat) -> CGFloat {
+        var offset = contentExpandedVerticalOffset + Constants.overlayVerticalPadding
+
+        if !UIDevice.current.hasHomeScreenIndicator {
+            offset += Constants.notchlessDevicesAdditionalVerticalPadding
+        }
+
+        return offset
     }
 }
 
@@ -647,11 +682,17 @@ extension OverlayContentContainerViewController: OverlayContentContainerAppLifec
 
 private extension OverlayContentContainerViewController {
     enum Constants {
-        static let minContentViewScale = 0.95
+        /// Vertical padding between the top edge of the `content` (a view in the background)
+        /// and the top edge of the `overlay` (a view in front) in expanded state.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
+        static let overlayVerticalPadding = 10.0
+        /// On notchless devices, the native iOS sheet adds additional vertical padding to the `safeAreaInsets.top`
+        /// to ensure that there is enough free space between the status bar and the top edge of the sheet.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
+        static let notchlessDevicesAdditionalVerticalPadding = 10.0
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.4
-        static let contentViewTranslationCoefficient = 0.5
         static let minAdjustedContentOffsetToLockScrollView = 10.0
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(duration: 0.3, curve: .easeOut)
     }

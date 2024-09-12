@@ -134,6 +134,10 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        return try await request(for: .coins(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
         let target = TangemApiTarget(type: .quotes(requestModel), authData: authData)
 
@@ -281,7 +285,7 @@ extension CommonTangemApiService: TangemApiService {
             .filterSuccessfulStatusAndRedirectCodes()
             .map(GeoResponse.self)
             .map(\.code)
-            .map(Optional.some)
+            .eraseToOptional()
             .replaceError(with: fallbackRegionCode)
             .subscribe(on: DispatchQueue.global())
             .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)

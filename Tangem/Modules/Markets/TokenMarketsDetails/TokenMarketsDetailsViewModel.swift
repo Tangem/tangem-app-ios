@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 
-class TokenMarketsDetailsViewModel: ObservableObject {
+class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
@@ -18,6 +18,14 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     @Published private(set) var state: ViewState = .loading
     @Published var selectedPriceChangeIntervalType: MarketsPriceIntervalType
     @Published var alert: AlertBinder?
+
+    /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
+    /// navigation controllers in the application, which causes the state of this property to be lost if it were stored
+    /// in the view as a `@State` variable.
+    /// Therefore, we store it here in the view model as the `@Published` property.
+    ///
+    /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
+    @Published private(set) var overlayContentHidingInitialProgress = 1.0
 
     // MARK: Blocks
 
@@ -64,7 +72,7 @@ class TokenMarketsDetailsViewModel: ObservableObject {
     }
 
     var priceDate: String {
-        dateHelper.makePriceDate(
+        return dateHelper.makePriceDate(
             selectedDate: selectedDate,
             selectedPriceChangeIntervalType: selectedPriceChangeIntervalType
         )
@@ -131,6 +139,9 @@ class TokenMarketsDetailsViewModel: ObservableObject {
         self.coordinator = coordinator
         selectedPriceChangeIntervalType = .day
 
+        /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
+        super.init(overlayContentProgressInitialValue: 1.0)
+
         let tokenQuoteHelper = MarketsTokenQuoteHelper()
         loadedTokenDetailsPriceChangeInfo = tokenQuoteHelper.makePriceChangeIntervalsDictionary(
             from: quotesRepository.quote(for: tokenInfo.id)
@@ -188,6 +199,12 @@ class TokenMarketsDetailsViewModel: ObservableObject {
 
     func onBackButtonTap() {
         coordinator?.closeModule()
+    }
+
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
+        // Our view can be recreated when the bottom sheet is in a collapsed state
+        // In this case, content should be hidden (i.e. the initial progress should be zero)
+        overlayContentHidingInitialProgress = state.isBottom ? 0.0 : 1.0
     }
 }
 

@@ -49,8 +49,17 @@ struct DescriptionBottomSheetView: View {
 
             Markdown { info.description }
                 .markdownSoftBreakMode(.lineBreak)
+                .markdownTextStyle(\.text, textStyle: {
+                    FontFamily(.system())
+                    FontWeight(.regular)
+                    FontSize(16)
+                    ForegroundColor(Colors.Text.primary1)
+                })
+                .markdownBlockStyle(\.paragraph, body: { configuration in
+                    configuration.label
+                        .relativeLineSpacing(.em(0.2))
+                })
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-                .style(Fonts.Regular.callout, color: Colors.Text.primary1)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
         }
