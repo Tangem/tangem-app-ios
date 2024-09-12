@@ -12,6 +12,7 @@ struct StakingPendingTransactionRecord: Hashable, Codable {
     let amount: Decimal
     let validator: Validator
     let type: ActionType
+    let date: Date
 
     struct Validator: Hashable, Codable {
         let address: String?

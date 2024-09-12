@@ -352,7 +352,7 @@ struct StakeKitMapper {
         case .unstaking, .unlocking:
             return .unbonding(date: balance.date)
         case .unstaked:
-            return .withdraw
+            return .unstaked
         case .rewards:
             return .rewards
         }
