@@ -50,6 +50,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
     private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
+    private var isViewVisible: Bool = false
     private var isBottomSheetExpanded: Bool = false
     private var showItemsBelowCapThreshold: Bool = false
 
@@ -78,6 +79,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
         /// Our view is initially presented when the sheet is collapsed, hence the `0.0` initial value.
         super.init(overlayContentProgressInitialValue: 0.0)
 
+        headerViewModel.delegate = self
         marketsRatingHeaderViewModel.delegate = self
 
         searchTextBind(searchTextPublisher: headerViewModel.enteredSearchTextPublisher)
@@ -90,6 +92,16 @@ final class MarketsViewModel: BaseMarketsViewModel {
         // Need for preload markets list, when bottom sheet it has not been opened yet
         quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
         fetch(with: "", by: filterProvider.currentFilterValue)
+    }
+
+    /// Handles `SwiftUI.View.onAppear(perform:)`.
+    func onViewAppear() {
+        isViewVisible = true
+    }
+
+    /// Handles `SwiftUI.View.onDisappear(perform:)`.
+    func onViewDisappear() {
+        isViewVisible = false
     }
 
     func onOverlayContentStateChange(_ state: OverlayContentState) {
@@ -370,6 +382,12 @@ extension MarketsViewModel: MarketsListDataFetcher {
 
     func fetchMore() {
         dataProvider.fetchMore()
+    }
+}
+
+extension MarketsViewModel: MainBottomSheetHeaderViewModelDelegate {
+    func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool {
+        return isViewVisible
     }
 }
 

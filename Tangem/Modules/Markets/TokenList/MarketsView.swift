@@ -68,7 +68,10 @@ struct MarketsView: View {
             // `UINavigationBar` may be installed into the view hierarchy quite late;
             // therefore, we're triggering introspection in the `onAppear` callback
             responderChainIntrospectionTrigger = UUID()
+
+            viewModel.onViewAppear()
         }
+        .onDisappear(perform: viewModel.onViewDisappear)
         .introspectResponderChain(
             introspectedType: UINavigationController.self,
             updateOnChangeOf: responderChainIntrospectionTrigger,
