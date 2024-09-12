@@ -115,6 +115,16 @@ private extension StakingDetailsViewModel {
                 viewModel.setupMainActionButton(state: state)
             }
             .store(in: &bag)
+
+        stakingPendingTransactionsRepository
+            .recordsPublisher
+            .combineLatest(stakingManager.statePublisher)
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, state in
+                viewModel.setupView(state: state.1)
+            }
+            .store(in: &bag)
     }
 
     func setupMainActionButton(state: WalletModel.State) {
@@ -336,6 +346,32 @@ private extension StakingDetailsViewModel {
         default: false
         }
     }
+
+    func makeLegalText() -> AttributedString {
+        let tos = Localization.commonTermsOfUse
+        let policy = Localization.commonPrivacyPolicy
+
+        func makeBaseAttributedString(for text: String) -> AttributedString {
+            var attributedString = AttributedString(text)
+            attributedString.font = Fonts.Regular.footnote
+            attributedString.foregroundColor = Colors.Text.tertiary
+            return attributedString
+        }
+
+        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
+            guard let range = attributedString.range(of: textToSearch) else {
+                return
+            }
+
+            attributedString[range].link = url
+            attributedString[range].foregroundColor = Colors.Text.accent
+        }
+
+        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
+        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
+        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
+        return attributedString
+    }
 }
 
 extension StakingDetailsViewModel {
@@ -392,19 +428,6 @@ private extension RewardRateValues {
     }
 }
 
-private extension BalanceType {
-    var priority: Int {
-        switch self {
-        case .locked: -2
-        case .warmup: -1
-        case .active: 0
-        case .unbonding: 1
-        case .unstaked: 2
-        case .rewards: -10 // Will not use to rewards
-        }
-    }
-}
-
 extension StakingAction.ActionType {
     var title: String {
         switch self {
@@ -416,34 +439,6 @@ extension StakingAction.ActionType {
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
-    }
-}
-
-extension StakingDetailsViewModel {
-    func makeLegalText() -> AttributedString {
-        let tos = Localization.commonTermsOfUse
-        let policy = Localization.commonPrivacyPolicy
-
-        func makeBaseAttributedString(for text: String) -> AttributedString {
-            var attributedString = AttributedString(text)
-            attributedString.font = Fonts.Regular.footnote
-            attributedString.foregroundColor = Colors.Text.tertiary
-            return attributedString
-        }
-
-        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
-            guard let range = attributedString.range(of: textToSearch) else {
-                return
-            }
-
-            attributedString[range].link = url
-            attributedString[range].foregroundColor = Colors.Text.accent
-        }
-
-        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
-        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
-        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
-        return attributedString
     }
 }
 
