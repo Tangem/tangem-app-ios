@@ -132,13 +132,23 @@ struct TokenMarketsDetailsView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 if let price = viewModel.price {
-                    Text(price)
-                        .blinkForegroundColor(
-                            publisher: viewModel.$priceChangeAnimation,
-                            positiveColor: Colors.Text.accent,
-                            negativeColor: Colors.Text.warning,
-                            originalColor: Colors.Text.primary1
-                        )
+                    // This `Text` view acts as an invisible container, maintaining constant height
+                    // to prevent UI from jumping when the font of the price label is scaled down
+                    Text(Constants.priceLabelSizeMeasureText)
+                        .opacity(0.0)
+                        .infinityFrame(axis: .horizontal)
+                        .overlay(alignment: .leadingFirstTextBaseline) {
+                            Text(price)
+                                .blinkForegroundColor(
+                                    publisher: viewModel.$priceChangeAnimation,
+                                    positiveColor: Colors.Text.accent,
+                                    negativeColor: Colors.Text.warning,
+                                    originalColor: Colors.Text.primary1
+                                )
+                                .minimumScaleFactor(0.5)
+                        }
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                         .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                 }
 
@@ -293,6 +303,7 @@ private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let priceLabelSizeMeasureText = "1234.0"
     }
 }
 
