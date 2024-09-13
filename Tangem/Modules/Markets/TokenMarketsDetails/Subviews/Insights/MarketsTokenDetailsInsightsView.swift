@@ -11,12 +11,14 @@ import Combine
 
 struct MarketsTokenDetailsInsightsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsInsightsViewModel
+    let viewWidth: CGFloat
 
-    @State private var gridWidth: CGFloat = .zero
+    private var itemWidth: CGFloat {
+        max(0, viewWidth / 2 - Constants.itemsSpacing - Constants.backgroundHorizontalPadding * 2)
+    }
 
     private var gridItems: [GridItem] {
-        let itemWidth = max(0, gridWidth / 2 - Constants.itemsSpacing)
-        return [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
+        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
@@ -32,15 +34,15 @@ struct MarketsTokenDetailsInsightsView: View {
                         trend: info.trend,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
-                        },
-                        containerWidth: gridWidth
+                        }
                     )
                 }
             })
-            .readGeometry(\.size.width, bindTo: $gridWidth)
         }
-        .animation(.default, value: viewModel.selectedInterval)
         .defaultRoundedBackground(with: Colors.Background.action)
+        .transaction { transaction in
+            transaction.animation = .default
+        }
     }
 
     private var header: some View {
@@ -80,6 +82,7 @@ struct MarketsTokenDetailsInsightsView: View {
 extension MarketsTokenDetailsInsightsView {
     enum Constants {
         static let itemsSpacing: CGFloat = 12
+        static let backgroundHorizontalPadding: CGFloat = 14
     }
 }
 
@@ -158,6 +161,7 @@ extension MarketsTokenDetailsInsightsView {
             insightsPublisher: insights,
             notationFormatter: .init(),
             infoRouter: nil
-        )
+        ),
+        viewWidth: 300
     )
 }

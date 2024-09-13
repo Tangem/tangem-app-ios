@@ -12,6 +12,7 @@ struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.mainWindowSize) private var mainWindowSize
 
     @State private var descriptionBottomSheetHeight: CGFloat = 0
     @State private var isNavigationBarShadowLineViewVisible = false
@@ -98,7 +99,7 @@ struct TokenMarketsDetailsView: View {
 
                 content
                     .hidden(viewModel.allDataLoadFailed)
-                    .padding(.horizontal, 16.0)
+                    .padding(.horizontal, Constants.blockHorizontalPadding)
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
@@ -210,12 +211,13 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var contentBlocks: some View {
         VStack(spacing: 14) {
+            let blocksWidth = mainWindowSize.width - Constants.blockHorizontalPadding * 2
             if let insightsViewModel = viewModel.insightsViewModel {
-                MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
+                MarketsTokenDetailsInsightsView(viewModel: insightsViewModel, viewWidth: blocksWidth)
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {
-                MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
+                MarketsTokenDetailsMetricsView(viewModel: metricsViewModel, viewWidth: blocksWidth)
             }
 
             if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
@@ -286,6 +288,7 @@ private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let blockHorizontalPadding: CGFloat = 16.0
     }
 }
 

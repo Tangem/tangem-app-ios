@@ -10,12 +10,14 @@ import SwiftUI
 
 struct MarketsTokenDetailsMetricsView: View {
     let viewModel: MarketsTokenDetailsMetricsViewModel
+    let viewWidth: CGFloat
 
-    @State private var gridWidth: CGFloat = .zero
+    private var itemWidth: CGFloat {
+        max(0, viewWidth / 2 - Constants.itemsSpacing - Constants.backgroundHorizontalPadding * 2)
+    }
 
     private var gridItems: [GridItem] {
-        let itemWidth = max(0, gridWidth / 2 - Constants.itemsSpacing)
-        return [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
+        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
@@ -35,21 +37,22 @@ struct MarketsTokenDetailsMetricsView: View {
                         trend: nil,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
-                        },
-                        containerWidth: gridWidth,
-                        estimateTitleAndMessageSizes: false
+                        }
                     )
                 }
             })
-            .readGeometry(\.size.width, bindTo: $gridWidth)
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: Constants.backgroundHorizontalPadding)
+        .transaction { transaction in
+            transaction.animation = .default
+        }
     }
 }
 
 extension MarketsTokenDetailsMetricsView {
     enum Constants {
         static let itemsSpacing: CGFloat = 12
+        static let backgroundHorizontalPadding: CGFloat = 14
     }
 }
 
@@ -115,6 +118,7 @@ extension MarketsTokenDetailsMetricsView {
             notationFormatter: .init(),
             cryptoCurrencyCode: "USDT",
             infoRouter: nil
-        )
+        ),
+        viewWidth: 300
     )
 }
