@@ -33,7 +33,7 @@ struct MarketsTokenDetailsDataProvider {
             language: languageCode ?? defaultLanguageCode
         )
         let result = try await tangemAPIService.loadTokenMarketsDetails(requestModel: request)
-        let model = mapper.map(response: result)
+        let model = try mapper.map(response: result)
         return model
     }
 }
