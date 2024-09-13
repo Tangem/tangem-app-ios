@@ -21,6 +21,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     @Published var isShowTopAddButton: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView?
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
+    @Published var tokenWithExpandedQuickActions: MarketsPortfolioTokenItemViewModel?
 
     // MARK: - Private Properties
 
@@ -119,8 +120,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self,
-            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
+            contextActionsDelegate: self
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -152,16 +152,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             return
         }
 
-        tokenViewModel.isExpandedQuickActions = true
-    }
-
-    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
-    private func quickActionDisclosureHandler(_ viewModelId: Int) {
-        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
-
-        for viewModel in filteredViewModels {
-            viewModel.isExpandedQuickActions = false
-        }
+        tokenWithExpandedQuickActions = tokenViewModel
     }
 
     private func bind() {
@@ -208,6 +199,16 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 // MARK: - MarketsPortfolioContextActionsDelegate
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
+    func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel) {
+        withAnimation {
+            if tokenWithExpandedQuickActions == viewModel {
+                tokenWithExpandedQuickActions = nil
+            } else {
+                tokenWithExpandedQuickActions = viewModel
+            }
+        }
+    }
+
     func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })

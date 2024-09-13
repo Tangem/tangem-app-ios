@@ -41,7 +41,7 @@ struct MarketsTokenDetailsInsightsView: View {
             })
             .drawingGroup()
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: Constants.backgroundHorizontalPadding)
     }
 
     private var header: some View {

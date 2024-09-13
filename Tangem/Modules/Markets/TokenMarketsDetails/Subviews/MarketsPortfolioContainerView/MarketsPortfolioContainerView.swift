@@ -84,7 +84,10 @@ struct MarketsPortfolioContainerView: View {
             let elementItems = viewModel.tokenItemViewModels
 
             ForEach(indexed: elementItems.indexed()) { index, itemViewModel in
-                MarketsPortfolioTokenItemView(viewModel: itemViewModel)
+                MarketsPortfolioTokenItemView(
+                    viewModel: itemViewModel,
+                    isExpanded: viewModel.tokenWithExpandedQuickActions == itemViewModel
+                )
             }
         }
     }

@@ -11,7 +11,6 @@ import Foundation
 struct MarketsPortfolioTokenItemFactory {
     private let contextActionsProvider: MarketsPortfolioContextActionsProvider
     private let contextActionsDelegate: MarketsPortfolioContextActionsDelegate
-    private var quickActionDisclosureTap: ((Int) -> Void)?
 
     private let tokenItemInfoProviderMapper = TokenItemInfoProviderMapper()
 
@@ -19,12 +18,10 @@ struct MarketsPortfolioTokenItemFactory {
 
     init(
         contextActionsProvider: MarketsPortfolioContextActionsProvider,
-        contextActionsDelegate: MarketsPortfolioContextActionsDelegate,
-        quickActionDisclosureTap: ((Int) -> Void)? = nil
+        contextActionsDelegate: MarketsPortfolioContextActionsDelegate
     ) {
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
-        self.quickActionDisclosureTap = quickActionDisclosureTap
     }
 
     // MARK: - Implementation
@@ -75,9 +72,7 @@ struct MarketsPortfolioTokenItemFactory {
             tokenItemInfoProvider: infoProviderItem.provider,
             contextActionsProvider: contextActionsProvider,
             contextActionsDelegate: contextActionsDelegate
-        ) { viewModelId in
-            quickActionDisclosureTap?(viewModelId)
-        }
+        )
     }
 }
 

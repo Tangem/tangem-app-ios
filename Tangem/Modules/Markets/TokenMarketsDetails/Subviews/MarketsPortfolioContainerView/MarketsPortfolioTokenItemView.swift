@@ -11,11 +11,12 @@ import SwiftUI
 struct MarketsPortfolioTokenItemView: View {
     @ObservedObject var viewModel: MarketsPortfolioTokenItemViewModel
 
+    let isExpanded: Bool
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
-        CustomDisclosureGroup(isExpanded: $viewModel.isExpandedQuickActions) {
-            viewModel.isExpandedQuickActions.toggle()
+        CustomDisclosureGroup(isExpanded: isExpanded) {
+            viewModel.showContextActions()
         } prompt: {
             tokenView
         } expandedView: {
