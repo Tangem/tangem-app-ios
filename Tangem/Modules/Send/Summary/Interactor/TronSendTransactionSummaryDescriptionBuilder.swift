@@ -46,7 +46,7 @@ extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDe
 
         let formatter = BalanceFormatter()
         let totalInFiatFormatted = formatter.formatFiatBalance(totalInFiat, formattingOptions: formattingOptions)
-        
+
         let prefix = Localization.sendSummaryTransactionDescriptionPrefix(totalInFiatFormatted)
         let feeInFiatFormatted = formatter.formatFiatBalance(feeInFiat, formattingOptions: formattingOptions)
 
@@ -62,6 +62,6 @@ extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDe
             Localization.sendSummaryTransactionDescriptionSuffixIncluding(feeInFiatFormatted)
         }
 
-        return prefix + ", " + suffix
+        return [prefix, suffix].joined(separator: ", ")
     }
 }
