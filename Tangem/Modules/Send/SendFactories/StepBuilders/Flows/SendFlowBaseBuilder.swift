@@ -100,6 +100,7 @@ struct SendFlowBaseBuilder {
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
+            alertBuilder: builder.makeSendAlertBuilder(),
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
