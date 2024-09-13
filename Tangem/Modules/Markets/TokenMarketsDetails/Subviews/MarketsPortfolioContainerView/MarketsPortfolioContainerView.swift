@@ -78,7 +78,9 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private var listView: some View {
-        LazyVStack(spacing: .zero) {
+        // Right now we need to use here VStack instead of LazyVStack because of not resolved issues
+        // with expanding and collapsing animations for quick actions. Will be investigated in IOS-7971
+        VStack(spacing: .zero) {
             let elementItems = viewModel.tokenItemViewModels
 
             ForEach(indexed: elementItems.indexed()) { index, itemViewModel in

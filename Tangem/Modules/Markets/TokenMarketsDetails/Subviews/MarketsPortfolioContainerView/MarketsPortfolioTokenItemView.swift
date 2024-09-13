@@ -14,7 +14,7 @@ struct MarketsPortfolioTokenItemView: View {
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
-        CustomDisclosureGroup(animation: .easeInOut(duration: 0.3), isExpanded: $viewModel.isExpandedQuickActions) {
+        CustomDisclosureGroup(isExpanded: $viewModel.isExpandedQuickActions) {
             viewModel.isExpandedQuickActions.toggle()
         } prompt: {
             tokenView
@@ -94,7 +94,11 @@ struct MarketsPortfolioTokenItemView: View {
                 }
             }
             .overlay(overlayView)
-            .readGeometry(\.size, bindTo: $textBlockSize)
+            .readGeometry(\.size, onChange: { newValue in
+                withAnimation(nil) {
+                    textBlockSize = newValue
+                }
+            })
         }
         .padding(.vertical, 14)
     }

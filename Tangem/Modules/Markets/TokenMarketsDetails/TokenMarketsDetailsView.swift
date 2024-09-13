@@ -225,7 +225,7 @@ struct TokenMarketsDetailsView: View {
             }
 
             if !viewModel.linksSections.isEmpty {
-                TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
+                TokenMarketsDetailsLinksView(viewWidth: blocksWidth, sections: viewModel.linksSections)
             }
         }
         .padding(.bottom, 46.0)

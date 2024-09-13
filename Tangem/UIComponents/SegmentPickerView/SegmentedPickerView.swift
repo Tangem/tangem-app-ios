@@ -88,8 +88,10 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     namespaceID: namespaceID,
                     targetWidth: targetWidth,
                     action: {
-                        selection = option
-                        selectedIndex = index
+                        withAnimation {
+                            selection = option
+                            selectedIndex = index
+                        }
 
                         if #unavailable(iOS 17) {
                             let generator = UISelectionFeedbackGenerator()
@@ -106,7 +108,6 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                         }
                         .padding(.vertical, 4)
                         .opacity((selectedIndex == index || selectedIndex - 1 == index) ? 0.0 : 1.0)
-                        .animation(.easeInOut, value: selectedIndex)
                     }
                 }
                 .overlay(content: {
@@ -120,13 +121,16 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                             }
 
                             if value > (targetWidth ?? 0) {
-                                targetWidth = value
+                                withAnimation(nil) {
+                                    targetWidth = value
+                                }
                             }
                         }
                 })
             }
         }
         .padding(segmentedControlInsets)
+        .drawingGroup()
     }
 }
 

@@ -14,7 +14,7 @@ struct MarketsTokenDetailsInsightsView: View {
     let viewWidth: CGFloat
 
     private var itemWidth: CGFloat {
-        max(0, viewWidth / 2 - Constants.itemsSpacing - Constants.backgroundHorizontalPadding * 2)
+        max(0, (viewWidth - Constants.itemsSpacing - Constants.backgroundHorizontalPadding * 2) / 2)
     }
 
     private var gridItems: [GridItem] {
@@ -36,13 +36,12 @@ struct MarketsTokenDetailsInsightsView: View {
                             viewModel.showInfoBottomSheet(for: info.type)
                         }
                     )
+                    .frame(minWidth: itemWidth, alignment: .leading)
                 }
             })
+            .drawingGroup()
         }
         .defaultRoundedBackground(with: Colors.Background.action)
-        .transaction { transaction in
-            transaction.animation = .default
-        }
     }
 
     private var header: some View {

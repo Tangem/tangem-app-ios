@@ -35,7 +35,6 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
                     .foregroundStyle(Colors.Icon.informative)
             }
         })
-        .transition(.opacity)
     }
 
     private var messageView: some View {

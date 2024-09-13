@@ -17,7 +17,7 @@ struct CustomDisclosureGroup<Prompt: View, ExpandedView: View>: View {
     let prompt: Prompt
     let expandedView: ExpandedView
 
-    init(animation: Animation?, isExpanded: Binding<Bool>, actionOnClick: @escaping () -> Void, prompt: () -> Prompt, expandedView: () -> ExpandedView) {
+    init(animation: Animation? = .default, isExpanded: Binding<Bool>, actionOnClick: @escaping () -> Void, prompt: () -> Prompt, expandedView: () -> ExpandedView) {
         self.actionOnClick = actionOnClick
         _isExpanded = isExpanded
         self.animation = animation
