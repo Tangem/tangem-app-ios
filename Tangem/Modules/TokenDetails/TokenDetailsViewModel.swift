@@ -232,7 +232,7 @@ private extension TokenDetailsViewModel {
     private func bind() {
         Publishers.CombineLatest(
             walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher
+            walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
         )
         .receive(on: DispatchQueue.main)
         .sink { _ in } receiveValue: { [weak self] newState, _ in
