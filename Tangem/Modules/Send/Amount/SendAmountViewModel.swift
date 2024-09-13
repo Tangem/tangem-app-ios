@@ -27,7 +27,7 @@ class SendAmountViewModel: ObservableObject {
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
 
-    @Published var error: String?
+    @Published var error: BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     @Published var amountType: SendAmountCalculationType = .crypto
 
@@ -109,11 +109,11 @@ private extension SendAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher
+            .infoTextPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, error in
-                viewModel.error = error?.localizedDescription
+                viewModel.error = error
             }
             .store(in: &bag)
 
@@ -206,5 +206,10 @@ extension SendAmountViewModel {
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
+    }
+
+    enum BottomInfoTextType: Hashable {
+        case info(String)
+        case error(String)
     }
 }

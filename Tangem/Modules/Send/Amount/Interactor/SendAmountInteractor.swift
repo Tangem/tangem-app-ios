@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 protocol SendAmountInteractor {
-    var errorPublisher: AnyPublisher<String?, Never> { get }
+    var infoTextPublisher: AnyPublisher<SendAmountViewModel.BottomInfoTextType?, Never> { get }
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
     var externalAmountPublisher: AnyPublisher<SendAmount?, Never> { get }
 
@@ -33,7 +33,8 @@ class CommonSendAmountInteractor {
     private var type: SendAmountCalculationType
 
     private var _cachedAmount: CurrentValueSubject<SendAmount?, Never> = .init(nil)
-    private var _error: CurrentValueSubject<Error?, Never> = .init(nil)
+    private var _info: CurrentValueSubject<String?, Never> = .init(nil)
+    private var _error: CurrentValueSubject<String?, Never> = .init(nil)
     private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
 
     private var _externalAmount: PassthroughSubject<SendAmount?, Never> = .init()
@@ -68,27 +69,38 @@ class CommonSendAmountInteractor {
 
     private func validateAndUpdate(amount: SendAmount?) {
         do {
-            switch amount?.type {
-            case .typical(.some(let crypto), _) where crypto > 0,
-                 .alternative(_, .some(let crypto)) where crypto > 0:
+            let amount = roundIfNeeded(amount: amount)
 
-                try validator.validate(amount: crypto)
-                _error.send(.none)
-                _isValid.send(true)
-                output?.amountDidChanged(amount: amount)
-            default:
+            guard let crypto = amount?.crypto, crypto > 0 else {
                 // Field is empty or zero
-                notValid(error: .none)
+                update(amount: .none, isValid: false, error: .none)
+                return
             }
+
+            try validator.validate(amount: crypto)
+            update(amount: amount, isValid: true, error: .none)
         } catch {
-            notValid(error: error)
+            update(amount: .none, isValid: false, error: error)
+        }
+    }
+
+    private func update(amount: SendAmount?, isValid: Bool, error: Error?) {
+        _error.send(error?.localizedDescription)
+        _isValid.send(isValid)
+        output?.amountDidChanged(amount: amount)
+    }
+
+    private func roundIfNeeded(amount: SendAmount?) -> SendAmount? {
+        guard let crypto = amount?.crypto, tokenItem.hasToBeRounded else {
+            return amount
         }
 
-        func notValid(error: Error?) {
-            _error.send(error)
-            _isValid.send(false)
-            output?.amountDidChanged(amount: .none)
-        }
+        let rounded = crypto.rounded()
+        let isFloat = rounded != amount?.crypto
+        _info.send(isFloat ? Localization.stakingAmountTronIntegerError(rounded) : nil)
+
+        let roundedAmount = makeSendAmount(value: rounded)
+        return roundedAmount
     }
 
     private func makeSendAmount(value: Decimal) -> SendAmount? {
@@ -124,8 +136,12 @@ class CommonSendAmountInteractor {
 // MARK: - SendAmountInteractor
 
 extension CommonSendAmountInteractor: SendAmountInteractor {
-    var errorPublisher: AnyPublisher<String?, Never> {
-        _error.map { $0?.localizedDescription }.eraseToAnyPublisher()
+    var infoTextPublisher: AnyPublisher<SendAmountViewModel.BottomInfoTextType?, Never> {
+        Publishers.Merge(
+            _info.removeDuplicates().map { $0.map { .info($0) } },
+            _error.removeDuplicates().map { $0.map { .error($0) } }
+        )
+        .eraseToAnyPublisher()
     }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
@@ -183,4 +199,13 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
 enum SendAmountCalculationType {
     case crypto
     case fiat
+}
+
+private extension TokenItem {
+    var hasToBeRounded: Bool {
+        switch blockchain {
+        case .tron: true
+        default: false
+        }
+    }
 }
