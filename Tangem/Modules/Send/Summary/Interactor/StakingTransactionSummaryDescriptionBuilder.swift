@@ -47,7 +47,7 @@ extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDes
             minFractionDigits: fractionDigits,
             maxFractionDigits: fractionDigits,
             formatEpsilonAsLowestRepresentableValue: true,
-            roundingType: .shortestFraction(roundingMode: .down)
+            roundingType: .shortestFraction(roundingMode: .up)
         )
 
         var income = formatter.formatFiatBalance(amountPerYear, formattingOptions: incomeFormattingOptions)
