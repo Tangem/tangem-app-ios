@@ -84,6 +84,8 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     }
 
     func showContextActions() {
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
         contextActionsDelegate?.showContextAction(for: self)
     }
 

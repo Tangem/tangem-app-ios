@@ -83,7 +83,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         } else if tokenItemViewModels.isEmpty {
             targetState = .loading
         }
-        
+
         withAnimation(.default) {
             typeView = targetState
         }
