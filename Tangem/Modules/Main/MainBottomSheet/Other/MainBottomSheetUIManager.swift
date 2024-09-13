@@ -34,7 +34,13 @@ extension MainBottomSheetUIManager {
         ensureOnMainQueue()
 
         setFooterSnapshotNeedsUpdate { [weak self] in
-            self?.isShownSubject.send(false)
+            // Workaround: delaying hiding main bottom sheet roughly for the duration of one frame so that the UI
+            // has a chance to actually render an updated view snapshot.
+            // Dispatching to the next runloop tick (via `DispatchQueue.main.async`) doesn't work reliably enough
+            // because not every runloop tick is used for rendering.
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.mainBottomSheetHidingDelay) {
+                self?.isShownSubject.send(false)
+            }
         }
     }
 }
@@ -61,6 +67,14 @@ extension MainBottomSheetUIManager {
     private func setFooterSnapshotNeedsUpdate(with completion: @escaping () -> Void) {
         pendingFooterSnapshotUpdateCompletions.append(completion)
         footerSnapshotUpdateTriggerSubject.send()
+    }
+}
+
+// MARK: - Constants
+
+private extension MainBottomSheetUIManager {
+    enum Constants {
+        static let mainBottomSheetHidingDelay: TimeInterval = 1.0 / 60.0
     }
 }
 
