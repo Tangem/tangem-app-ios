@@ -112,7 +112,7 @@ extension WalletModel {
 }
 
 private extension StakingManagerState {
-    var balances: [StakingBalanceInfo]? {
+    var balances: [StakingBalance]? {
         guard case .staked(let staked) = self else {
             return nil
         }

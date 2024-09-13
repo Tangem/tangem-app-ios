@@ -11,38 +11,32 @@ import TangemFoundation
 
 public struct StakingAction: Hashable {
     public let amount: Decimal
+    public let validatorType: StakingValidatorType
     public let type: ActionType
 
-    public var validator: String? {
-        switch type {
-        case .stake(let validator): validator
-        case .unstake(let validator): validator
-        case .pending(.withdraw(let validator, _)): validator
-        case .pending(.claimRewards(let validator, _)): validator
-        case .pending(.restakeRewards(let validator, _)): validator
-        case .pending(.voteLocked(let validator, _)): validator
-        case .pending(.unlockLocked): nil
-        }
+    public var validatorInfo: ValidatorInfo? {
+        validatorType.validator
     }
 
-    public init(amount: Decimal, type: ActionType) {
+    public init(amount: Decimal, validatorType: StakingValidatorType, type: ActionType) {
         self.amount = amount
+        self.validatorType = validatorType
         self.type = type
     }
 }
 
 public extension StakingAction {
     enum ActionType: Hashable {
-        case stake(validator: String)
-        case unstake(validator: String)
+        case stake
+        case unstake
         case pending(PendingActionType)
     }
 
     enum PendingActionType: Hashable {
-        case withdraw(validator: String, passthroughs: Set<String>)
-        case claimRewards(validator: String?, passthrough: String)
-        case restakeRewards(validator: String?, passthrough: String)
-        case voteLocked(validator: String, passthrough: String)
+        case withdraw(passthroughs: Set<String>)
+        case claimRewards(passthrough: String)
+        case restakeRewards(passthrough: String)
+        case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
     }
 }
