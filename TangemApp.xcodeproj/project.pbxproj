@@ -1255,6 +1255,7 @@
 		DC9632632C5141B8009B250A /* TokenFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632622C5141B8009B250A /* TokenFinder.swift */; };
 		DC9632662C51434C009B250A /* CommonTokenFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632652C51434C009B250A /* CommonTokenFinder.swift */; };
 		DC9632682C515566009B250A /* ExpressRefundedTokenHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */; };
+		DC99D0C02C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */; };
 		DC9A4A2D2AB4ADD30031C7C2 /* UserCodeRecovering.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */; };
 		DC9A4A302AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */; };
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
@@ -3230,6 +3231,7 @@
 		DC9632622C5141B8009B250A /* TokenFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenFinder.swift; sourceTree = "<group>"; };
 		DC9632652C51434C009B250A /* CommonTokenFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenFinder.swift; sourceTree = "<group>"; };
 		DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressRefundedTokenHandlerMock.swift; sourceTree = "<group>"; };
+		DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AdaptiveSizeSheetModifier.swift"; sourceTree = "<group>"; };
 		DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecovering.swift; sourceTree = "<group>"; };
 		DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecoveringCardInteractor.swift; sourceTree = "<group>"; };
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
@@ -6273,6 +6275,7 @@
 			children = (
 				B0EA18AC2C465D860023B72A /* DescriptionBottomSheetView.swift */,
 				B0EA18AE2C465DC60023B72A /* View+DescriptionBottomSheet.swift */,
+				DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */,
 			);
 			path = DescriptionBottomSheet;
 			sourceTree = "<group>";
@@ -11761,6 +11764,7 @@
 				DAAA3C6F2B3D79FA0002DBB0 /* SendTransactionParametersBuilder.swift in Sources */,
 				B0DD16282A331C2100CB23AA /* TokenDetailsCoordinator.swift in Sources */,
 				DC261CB3292CF6B700875E64 /* UncompletedBackupCoordinator.swift in Sources */,
+				DC99D0C02C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift in Sources */,
 				2DCAFE762C46BDC100626748 /* AuxiliaryTypes.swift in Sources */,
 				B0431B442919F94400F84DEF /* ReferralModels.swift in Sources */,
 				EFC84B292C37FBB300546882 /* SendAmountStep.swift in Sources */,
