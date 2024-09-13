@@ -276,6 +276,7 @@ private extension MarketsViewModel {
                 case .failedToFetchData:
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
+                        Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
                         viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
@@ -286,8 +287,13 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
-                    viewModel.quotesUpdatesScheduler.resetUpdates()
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
+
+                    guard viewModel.isBottomSheetExpanded else {
+                        return
+                    }
+
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
                 default:
                     break
                 }
@@ -379,6 +385,13 @@ private extension MarketsViewModel {
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,
             onTapAction: { [weak self] in
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .source: Analytics.ParameterValue.market.rawValue,
+                    .token: tokenItemModel.symbol.uppercased(),
+                ]
+
+                Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+
                 self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
             }
         )

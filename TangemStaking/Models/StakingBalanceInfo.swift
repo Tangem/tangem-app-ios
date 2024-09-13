@@ -44,11 +44,26 @@ public extension Array where Element == StakingBalanceInfo {
     }
 }
 
-public enum BalanceType: Hashable {
-    case locked
-    case warmup
-    case active
-    case unbonding(date: Date?)
-    case unstaked
-    case rewards
+public extension StakingBalanceInfo {
+    enum BalanceType: Hashable {
+        case locked
+        case warmup
+        case active
+        case unbonding(date: Date?)
+        case unstaked
+        case rewards
+    }
+
+    struct PendingActionType: Hashable {
+        public let type: ActionType
+        public let passthrough: String
+
+        public enum ActionType: Hashable {
+            case withdraw
+            case claimRewards
+            case restakeRewards
+            case voteLocked
+            case unlockLocked
+        }
+    }
 }

@@ -165,7 +165,19 @@ private extension StakingModel {
             return validateError
         }
 
-        return .readyToStake(.init(amount: newAmount, validator: validator, fee: fee, isFeeIncluded: includeFee))
+        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
+            balance.balanceType == .active && balance.validatorAddress == validator
+        } ?? false
+
+        return .readyToStake(
+            .init(
+                amount: newAmount,
+                validator: validator,
+                fee: fee,
+                isFeeIncluded: includeFee,
+                stakeOnDifferentValidator: stakingManager.state.isStaked && !hasPreviousStakeOnSameValidator
+            )
+        )
     }
 
     func validate(amount: Decimal, fee: Decimal) -> StakingModel.State? {
@@ -280,7 +292,7 @@ private extension StakingModel {
             proceed(error: error)
             throw error
         } catch {
-            throw error
+            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
@@ -291,12 +303,14 @@ private extension StakingModel {
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .informationRelevanceServiceError,
+        case .demoAlert,
+             .userCancelled,
+             .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .sendTxError:
+             .loadTransactionInfo:
+            break
+        case .sendTxError:
             Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
@@ -518,6 +532,7 @@ extension StakingModel {
             let validator: String
             let fee: Decimal
             let isFeeIncluded: Bool
+            let stakeOnDifferentValidator: Bool
         }
     }
 }
