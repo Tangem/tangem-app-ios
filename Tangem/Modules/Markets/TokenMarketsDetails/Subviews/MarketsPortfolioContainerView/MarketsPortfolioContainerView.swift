@@ -69,9 +69,6 @@ struct MarketsPortfolioContainerView: View {
                 listView
             case .unavailable:
                 unavailableView
-            case .none:
-                // Need for dissmis side effect
-                EmptyView()
             }
         }
     }

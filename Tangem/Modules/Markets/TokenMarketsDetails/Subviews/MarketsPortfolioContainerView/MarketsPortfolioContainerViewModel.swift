@@ -19,7 +19,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Published Properties
 
     @Published var isShowTopAddButton: Bool = false
-    @Published var typeView: MarketsPortfolioContainerView.TypeView?
+    @Published var typeView: MarketsPortfolioContainerView.TypeView = .loading
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
     @Published var tokenWithExpandedQuickActions: MarketsPortfolioTokenItemViewModel?
 
@@ -72,18 +72,20 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         updateTokenList()
         updateExpandedAction()
 
+        var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
             let canAddAvailableNetworks = canAddToPortfolio(with: networks)
             isShowTopAddButton = !tokenItemViewModels.isEmpty && canAddAvailableNetworks
 
-            guard canAddAvailableNetworks else {
-                typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
-                return
+            if tokenItemViewModels.isEmpty {
+                targetState = canAddAvailableNetworks ? .empty : .unavailable
             }
-
-            typeView = tokenItemViewModels.isEmpty ? .empty : .list
-        } else {
-            typeView = tokenItemViewModels.isEmpty ? .loading : .list
+        } else if tokenItemViewModels.isEmpty {
+            targetState = .loading
+        }
+        
+        withAnimation(.default) {
+            typeView = targetState
         }
     }
 
