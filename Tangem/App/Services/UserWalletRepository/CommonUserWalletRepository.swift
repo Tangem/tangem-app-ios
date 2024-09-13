@@ -101,7 +101,10 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
-                cardInfo.name = suggestedUserWalletName(defaultName: config.cardName)
+                cardInfo.name = UserWalletNameIndexationHelper.suggestedName(
+                    config.cardName,
+                    names: models.map(\.name)
+                )
 
                 let userWalletModel = CommonUserWalletModel(cardInfo: cardInfo)
                 if let userWalletModel {
@@ -148,13 +151,6 @@ class CommonUserWalletRepository: UserWalletRepository {
                 withExtendedLifetime(scanner) {}
             })
             .eraseToAnyPublisher()
-    }
-
-    private func suggestedUserWalletName(defaultName: String) -> String {
-        let otherNames = models.map(\.name)
-        let helper = UserWalletNameIndexationHelper(mode: .newName, names: otherNames)
-
-        return helper.suggestedName(defaultName)
     }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
@@ -535,20 +531,7 @@ class CommonUserWalletRepository: UserWalletRepository {
             return
         }
 
-        let oldNames = wallets.map(\.name)
-        let helper = UserWalletNameIndexationHelper(mode: .migration, names: oldNames)
-
-        var didChangeNames = true
-        for i in 0 ..< wallets.count {
-            let oldName = wallets[i].name
-            let newName = helper.suggestedName(oldName)
-            if newName != oldName {
-                wallets[i].name = newName
-                didChangeNames = true
-            }
-        }
-
-        if didChangeNames {
+        if let migratedWallets = UserWalletNameIndexationHelper.migratedWallets(wallets) {
             UserWalletRepositoryUtil().saveUserWallets(wallets)
         }
 

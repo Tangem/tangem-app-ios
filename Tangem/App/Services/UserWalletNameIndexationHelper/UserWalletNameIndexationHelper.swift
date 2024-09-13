@@ -8,35 +8,47 @@
 
 import Foundation
 
-class UserWalletNameIndexationHelper {
-    private var indexesByNameTemplate: [String: [Int]] = [:]
-    private let nameComponentsRegex = try! NSRegularExpression(pattern: "^(.+)(\\s+\\d+)$")
+final class UserWalletNameIndexationHelper {
+    private var existingNames: Set<String>
 
-    init(mode: Mode, names: [String]) {
-        for name in names {
-            guard let nameComponents = nameComponents(from: name) else {
-                if mode == .newName {
-                    addIndex(1, for: name)
-                }
-                continue
-            }
-
-            let indexesByNameTemplate = indexesByNameTemplate[nameComponents.template] ?? []
-            if !indexesByNameTemplate.contains(nameComponents.index) {
-                addIndex(nameComponents.index, for: nameComponents.template)
-            }
-        }
+    private init(existingNames: [String]) {
+        self.existingNames = Set(existingNames).filter { NameComponents(from: $0) != nil }
     }
 
-    func suggestedName(_ rawName: String) -> String {
-        if let _ = nameComponents(from: rawName) {
+    static func migratedWallets<T: NameableWallet>(_ wallets: [T]) -> [T]? {
+        var wallets = wallets
+        let helper = UserWalletNameIndexationHelper(existingNames: wallets.map(\.name))
+
+        var didChangeNames = false
+        for (index, wallet) in wallets.enumerated() {
+            let suggestedName = helper.suggestedName(for: wallet.name)
+            if wallet.name != suggestedName {
+                var wallet = wallet
+                wallet.name = suggestedName
+                wallets[index] = wallet
+                didChangeNames = true
+            }
+        }
+
+        return didChangeNames ? wallets : nil
+    }
+
+    static func suggestedName(_ rawName: String, names: [String]) -> String {
+        if NameComponents(from: rawName) != nil {
             return rawName
         }
 
-        let nameTemplate = rawName.trimmingCharacters(in: .whitespaces)
-        let nameIndex = nextIndex(for: nameTemplate)
+        let indicesByNameTemplate = names.reduce(into: [String: Set<Int>]()) { dict, name in
+            guard let nameComponents = NameComponents(from: name) else {
+                dict[name, default: []].insert(1)
+                return
+            }
 
-        addIndex(nameIndex, for: nameTemplate)
+            dict[nameComponents.template, default: []].insert(nameComponents.index)
+        }
+
+        let nameTemplate = rawName.trimmingCharacters(in: .whitespaces)
+        let nameIndex = indicesByNameTemplate.nextIndex(for: nameTemplate)
 
         if nameIndex == 1 {
             return nameTemplate
@@ -45,13 +57,43 @@ class UserWalletNameIndexationHelper {
         }
     }
 
-    private func addIndex(_ index: Int, for nameTemplate: String) {
-        let newIndexes = (indexesByNameTemplate[nameTemplate] ?? []) + [index]
-        indexesByNameTemplate[nameTemplate] = newIndexes.sorted()
+    private func suggestedName(for rawName: String) -> String {
+        let name = Self.suggestedName(rawName, names: Array(existingNames))
+        existingNames.insert(name)
+        return name
     }
+}
 
-    private func nextIndex(for nameTemplate: String) -> Int {
-        let indexes = indexesByNameTemplate[nameTemplate] ?? []
+private extension UserWalletNameIndexationHelper {
+    struct NameComponents {
+        static let nameComponentsRegex = try! NSRegularExpression(pattern: "^(.+)(\\s+\\d+)$")
+
+        let template: String
+        let index: Int
+
+        init?(from rawName: String) {
+            let name = rawName.trimmingCharacters(in: .whitespaces)
+            let range = NSRange(location: 0, length: name.count)
+
+            guard
+                let match = Self.nameComponentsRegex.matches(in: name, range: range).first,
+                match.numberOfRanges == 3,
+                let templateRange = Range(match.range(at: 1), in: name),
+                let indexRange = Range(match.range(at: 2), in: name),
+                let index = Int(String(name[indexRange]).trimmingCharacters(in: .whitespaces))
+            else {
+                return nil
+            }
+
+            template = String(name[templateRange])
+            self.index = index
+        }
+    }
+}
+
+private extension [String: Set<Int>] {
+    func nextIndex(for nameTemplate: String) -> Int {
+        let indexes = self[nameTemplate, default: []]
 
         for i in 1 ... 100 {
             if !indexes.contains(i) {
@@ -61,37 +103,5 @@ class UserWalletNameIndexationHelper {
 
         let defaultIndex = indexes.count + 1
         return defaultIndex
-    }
-
-    private func nameComponents(from rawName: String) -> NameComponents? {
-        let name = rawName.trimmingCharacters(in: .whitespaces)
-        let range = NSRange(location: 0, length: name.count)
-
-        guard
-            let match = nameComponentsRegex.matches(in: name, range: range).first,
-            match.numberOfRanges == 3,
-            let templateRange = Range(match.range(at: 1), in: name),
-            let indexRange = Range(match.range(at: 2), in: name),
-            let index = Int(String(name[indexRange]).trimmingCharacters(in: .whitespaces))
-        else {
-            return nil
-        }
-
-        let template = String(name[templateRange])
-        return NameComponents(template: template, index: index)
-    }
-}
-
-extension UserWalletNameIndexationHelper {
-    enum Mode {
-        case migration
-        case newName
-    }
-}
-
-private extension UserWalletNameIndexationHelper {
-    struct NameComponents {
-        let template: String
-        let index: Int
     }
 }
