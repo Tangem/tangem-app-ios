@@ -11,6 +11,8 @@ import SwiftUI
 struct MainCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainCoordinator
 
+    @State var isShowMarketsTip: Bool = true
+
     var body: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
@@ -18,8 +20,51 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
+//            marketsTipVisualEffectView
+            Color.black
+                .opacity(0.4)
+
+            if isShowMarketsTip {
+                VStack(spacing: .zero) {
+                    Spacer()
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Add tokens")
+                            .lineLimit(1)
+                            .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                        Text("Pull this up or tap the search bar to add tokens directly from the market")
+                            .lineLimit(2)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                    }
+                    .defaultRoundedBackground()
+
+                    Triangle()
+                        .foregroundStyle(Colors.Background.action)
+                        .frame(size: .init(width: 20, height: 8))
+                        .rotationEffect(.degrees(180))
+                }
+                .padding(.horizontal, 64)
+                .padding(.bottom, 96)
+            }
+
             sheets
         }
+    }
+
+    private var marketsTipVisualEffectView: some View {
+        VisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            .hidden(!isShowMarketsTip)
+            .ignoresSafeArea(.all)
+            .onOverlayContentStateChange { state in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    if case .bottom = state {
+                        isShowMarketsTip = true
+                    } else {
+                        isShowMarketsTip = false
+                    }
+                }
+            }
     }
 
     @ViewBuilder
@@ -94,5 +139,18 @@ struct MainCoordinatorView: CoordinatorView {
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
+    }
+}
+
+struct Triangle: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
+
+        return path
     }
 }
